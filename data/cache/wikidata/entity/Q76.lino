@@ -1,11 +1,12 @@
 Q76
   aliases
-    en ("POTUS 44")
+    es ("Barack Hussein Obama Jr." "Barack Hussein Obama Jr" "Barack Hussein Obama, Jr" "Barack Obama Jr" "Barack Obama, Jr." "Barack Obama Jr." "Barack Obama, Jr" "Barack Obama Junior")
     hi ("बराक हुसैन ओबामा द्वितीय" "बराक ओबामा द्वितीय" "बराक हुसैन ओबामा" "ओबामा")
     ru ("Барак Хуссейн Обама II" "Барак Хуссейн Обама-младший" "Бара́к Хуссе́йн Оба́ма" "Обама, Барак" "Обама")
     zh ("奧巴馬" "歐巴馬" "巴拉克·歐巴馬" "巴拉克·欧巴马" "巴拉克·奧巴馬" "貝拉克·奧巴馬" "贝拉克·侯赛因·奥巴马" "贝拉克·侯赛因·奥巴马二世" "巴拉克·海珊·歐巴馬二世" "巴拉克·奥巴马" "歐巴馬總統" "奧巴馬總統" "奥巴马")
   descriptions
-    en "president of the United States from 2009 to 2017"
+    en "44th President of the United States (2009–2017)"
+    es "44.º presidente de los Estados Unidos"
     hi "संयुक्त राज्य अमेरिका के राष्ट्रपति 2009 से 2017 तक"
     ru "американский политик, 44-й президент США (2009—2017)"
     zh "第44任美國總統"
@@ -15,5 +16,26 @@ Q76
     hi "बराक ओबामा"
     ru "Барак Обама"
     zh "贝拉克·奥巴马"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Barack Obama"
+    eswiki
+      site eswiki
+      title "Barack Obama"
+    hiwiki
+      site hiwiki
+      title "बराक ओबामा"
+    ruwiki
+      site ruwiki
+      title "Обама, Барак"
+    zhwiki
+      site zhwiki
+      title "巴拉克·奧巴馬"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

@@ -1,0 +1,4 @@
+ci_gate check_language_parity
+  stage rust
+  description "Derive every lexeme-owning meaning from Links Notation structure, require en/ru/hi/zh/es parity or one exact dated uncovered_behavior row, and reject missing, duplicate, or stale debt rows; data/meta/debt-ratchet.lino independently ratchets the live gap count."
+  run "rust-script --test scripts/check-language-parity.rs && rust-script scripts/check-language-parity.rs"

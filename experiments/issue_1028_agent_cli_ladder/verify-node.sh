@@ -45,21 +45,30 @@ record() {
 target_dir() {
   printf '%s' "${LADDER_CARGO_TARGET_DIR:-$workspace/target}"
 }
-# The unit-test filter for a module path: its file stem, or the directory name
-# for a `mod.rs`.
+# The unit-test filter for a source or seed path. A `meanings-*.lino` file owns
+# the same semantic family as its suffix, so `meanings-verifiable-task.lino`
+# exercises `verifiable_task` instead of silently running zero tests.
 module_filter() {
-  local stem
-  stem=$(basename "$1" .rs)
+  local path="$1" stem
+  stem=$(basename "$path")
+  stem="${stem%.rs}"
+  stem="${stem%.lino}"
   if [[ "$stem" == mod ]]; then
-    stem=$(basename "$(dirname "$1")")
+    stem=$(basename "$(dirname "$path")")
   fi
-  printf '%s' "$stem"
+  if [[ "$path" == data/seed/meanings-*.lino ]]; then
+    stem="${stem#meanings-}"
+  fi
+  printf '%s' "${stem//-/_}"
 }
 cargo_check() {
   [[ "${LADDER_CARGO_CHECK:-1}" != 0 ]] || { record compile skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record compile unavailable; return 0; }
+  # A workspace that is not a Rust package has nothing to compile; the missing
+  # package is not an uncompilable change (leaf criteria may name a README).
+  [[ -f "$workspace/rust/Cargo.toml" ]] || { record compile unavailable; return 0; }
   local started=$SECONDS
-  if (cd "$workspace" && CARGO_TARGET_DIR="$(target_dir)" \
+  if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
       cargo check --lib --quiet >"$workspace/.agent-ladder/cargo-check.log" 2>&1); then
     echo "verify $node: cargo check --lib took $((SECONDS - started))s" >&2
     record compile ok
@@ -75,9 +84,10 @@ cargo_test() {
   local filter="$1" log passed
   [[ "${LADDER_CARGO_TEST:-1}" != 0 ]] || { record "tests:$filter" skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record "tests:$filter" unavailable; return 0; }
+  [[ -f "$workspace/rust/Cargo.toml" ]] || { record "tests:$filter" unavailable; return 0; }
   log="$workspace/.agent-ladder/cargo-test-$filter.log"
   local started=$SECONDS
-  if (cd "$workspace" && CARGO_TARGET_DIR="$(target_dir)" \
+  if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
       cargo test --test unit --quiet -- "$filter" >"$log" 2>&1); then
     echo "verify $node: cargo test --test unit $filter took $((SECONDS - started))s" >&2
     passed=$(sed -n 's/^test result: ok\. \([0-9]*\) passed.*/\1/p' "$log" | tail -1)
@@ -150,10 +160,8 @@ if [[ "$depth" -eq 5 ]]; then
   [[ "$tracked_changes" == " M $criterion_path" ]] || fail unexpected_tracked_changes
   record diff_lines "$(diff_lines "$criterion_path")"
   rustfmt_parses "$criterion_path" || fail unparsable_leaf_change
-  if [[ "$criterion_path" == *.rs ]]; then
-    cargo_check || fail uncompilable_leaf_change
-    cargo_test "$(module_filter "$criterion_path")" || fail failing_leaf_tests
-  fi
+  cargo_check || fail uncompilable_leaf_change
+  cargo_test "$(module_filter "$criterion_path")" || fail failing_leaf_tests
   [[ "$result" == *"$criterion_marker"* ]] || fail unverified_leaf_result
 elif [[ "$depth" -eq 4 ]]; then
   child_directory=".agent-ladder/verified-children"

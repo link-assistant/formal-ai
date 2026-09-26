@@ -1,0 +1,176 @@
+{
+  "entities": {
+    "Q230": {
+      "type": "item",
+      "id": "Q230",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Georgia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Грузия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जॉर्जिया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "格鲁吉亚"
+        },
+        "es": {
+          "language": "es",
+          "value": "Georgia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "country in the Caucasus region of Europe and Asia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство в Евразии"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पूर्वी यूरोप में स्थित एक देश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "高加索地區國家"
+        },
+        "es": {
+          "language": "es",
+          "value": "país del Cáucaso en Europa Oriental y Asia Occidental"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Republic of Georgia"
+          },
+          {
+            "language": "en",
+            "value": "Georgia (country)"
+          },
+          {
+            "language": "en",
+            "value": "Georgia (Sakartvelo)"
+          },
+          {
+            "language": "en",
+            "value": "Sakartvelo"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Республика Грузия"
+          },
+          {
+            "language": "ru",
+            "value": "Сакартвело"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "格魯吉亞"
+          },
+          {
+            "language": "zh",
+            "value": "喬治亞"
+          },
+          {
+            "language": "zh",
+            "value": "格鲁吉亚共和国"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "República de Georgia"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Georgia (country)"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Грузия"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "जॉर्जिया (देश)"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "格鲁吉亚"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Georgia"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "145bebe388f3ac6b97830000dee2c80ed9f0f910",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 230,
+                  "id": "Q230"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ],
+        "P297": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P297",
+              "hash": "3d13d6cede9c6eadf44d3f3d570b158241dbcfc3",
+              "datavalue": {
+                "value": "GE",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

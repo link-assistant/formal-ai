@@ -1,0 +1,832 @@
+use std::collections::{BTreeMap, BTreeSet};
+
+use formal_ai::{ConversationTurn, FormalAiEngine, UniversalSolver};
+
+const WEB_SEARCH_SOURCE_MARKER_CASES: &[(&str, &str, &str)] = &[
+    ("en", "Find apple on the internet", "apple"),
+    ("ru", "Найди яблоко в интернете", "яблоко"),
+    ("hi", "सेब के बारे में इंटरनेट पर खोजो", "सेब"),
+    ("zh", "查找苹果网上信息", "苹果"),
+];
+
+const WEB_SEARCH_ENUMERATION_RESEARCH_CASES: &[(&str, &str, &str)] = &[
+    (
+        "en",
+        "list all genshin characters with off-field DMG",
+        "genshin characters with off field dmg",
+    ),
+    (
+        "ru",
+        "перечисли всех персонажей genshin с уроном вне поля",
+        "персонажей genshin с уроном вне поля",
+    ),
+    (
+        "hi",
+        "सभी Genshin पात्र जिनके पास off-field DMG है",
+        "genshin पात्र जिनके पास off field dmg है",
+    ),
+    (
+        "zh",
+        "列出所有 Genshin 角色 具有 off-field DMG",
+        "genshin 角色 具有 off field dmg",
+    ),
+];
+
+const WEB_SEARCH_TERM_INFORMATION_CASES: &[(&str, &str, &str)] = &[
+    ("Russian", "расскажи мне об языке Rust", "языке rust"),
+    (
+        "English",
+        "Tell me about ferrocene catalysis",
+        "ferrocene catalysis",
+    ),
+    ("Hindi", "बताओ Rust borrow checker", "rust borrow checker"),
+    (
+        "Chinese",
+        "告诉我Rust borrow checker",
+        "rust borrow checker",
+    ),
+];
+
+struct InterestTopicCase {
+    language: &'static str,
+    prompt: &'static str,
+    expected_query: &'static str,
+}
+
+const WEB_SEARCH_INTEREST_TOPIC_CASES: &[InterestTopicCase] = &[
+    InterestTopicCase {
+        language: "en",
+        prompt: "Interested in Cursor AI",
+        expected_query: "cursor ai",
+    },
+    InterestTopicCase {
+        language: "ru",
+        prompt: "Интересует Cursor AI",
+        expected_query: "cursor ai",
+    },
+    InterestTopicCase {
+        language: "hi",
+        prompt: "मुझे Cursor AI में रुचि है",
+        expected_query: "cursor ai",
+    },
+    InterestTopicCase {
+        language: "zh",
+        prompt: "我对Cursor AI感兴趣",
+        expected_query: "cursor ai",
+    },
+];
+
+struct EventListingCase {
+    language: &'static str,
+    prompt: &'static str,
+    expected_query: &'static str,
+}
+
+const WEB_SEARCH_EVENT_LISTING_CASES: &[EventListingCase] = &[
+    EventListingCase {
+        language: "en",
+        prompt: "Where can I find hackathons?",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "ru",
+        prompt: "Найди мне хакатоны",
+        expected_query: "хакатоны",
+    },
+    EventListingCase {
+        language: "hi",
+        prompt: "देखो hackathons",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "zh",
+        prompt: "查看黑客松",
+        expected_query: "黑客松",
+    },
+];
+
+const WEB_SEARCH_CURRENT_EVENT_LISTING_CASES: &[EventListingCase] = &[
+    EventListingCase {
+        language: "en",
+        prompt: "Where can I find current hackathons?",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "ru",
+        prompt: "Где посмотреть актуальные хакатоны?",
+        expected_query: "хакатоны",
+    },
+];
+
+const WEB_SEARCH_CURRENT_EVENT_QUESTION_CASES: &[EventListingCase] = &[
+    EventListingCase {
+        language: "en",
+        prompt: "Which current hackathons?",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "ru",
+        prompt: "Какие хакатоны сейчас проходят?",
+        expected_query: "хакатоны",
+    },
+    EventListingCase {
+        language: "hi",
+        prompt: "कौन से hackathons अभी हो रहे हैं?",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "zh",
+        prompt: "哪些黑客松现在举行？",
+        expected_query: "黑客松",
+    },
+];
+
+const WEB_SEARCH_LATEST_NEWS_CASES: &[(&str, &str, &str)] = &[
+    ("English", "latest news", "latest news"),
+    ("Russian", "последние новости", "последние новости"),
+    ("Hindi", "नवीनतम समाचार", "नवीनतम समाचार"),
+    ("Chinese", "最新新闻", "最新新闻"),
+];
+
+fn expected_no_results_research_followup(prior_search: &str) -> String {
+    let compact = prior_search
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
+    let preview = if compact.chars().count() <= 240 {
+        compact
+    } else {
+        format!("{}...", compact.chars().take(237).collect::<String>())
+    };
+    format!(
+        "The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: `{preview}`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources."
+    )
+}
+
+#[test]
+fn latest_news_routes_to_wikinews_search_across_supported_languages() {
+    for &(language, prompt, expected_query) in WEB_SEARCH_LATEST_NEWS_CASES {
+        let response = FormalAiEngine.answer(prompt);
+        if language == "English" {
+            assert_eq!(
+                response.answer,
+                "No captured provider response is available for `latest news`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+            );
+        }
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} latest-news prompt should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "{language} latest-news prompt should preserve the requested news query: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:latest_news"),
+            "{language} latest-news prompt should record the specialized query kind: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:provider_planned:wikinews"),
+            "{language} latest-news prompt should include Wikinews in the search plan: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("wikinews")
+                || response.answer.to_lowercase().contains("викиновости"),
+            "{language} latest-news answer should direct the user to Wikinews, got: {}",
+            response.answer,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn navigation_describes_frame_policy_check_before_iframe_preview() {
+    // Regression test for issue #169: navigation must not use a host-specific
+    // blocklist or blindly render an iframe that may show a blocked-frame page.
+    // The browser checks frame-policy metadata first, then chooses an iframe or
+    // a direct external link.
+    let response = FormalAiEngine.answer("Navigate to github.com");
+
+    assert_eq!(response.intent, "url_navigate");
+    assert!(response.answer.contains("https://github.com"));
+    assert!(
+        response
+            .answer
+            .contains("I suggest opening this in a new tab"),
+        "Navigation should be phrased as a polite suggestion, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("Open this"),
+        "Navigation copy should not command the user, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("browser web app"),
+        "Navigation copy should describe the browser web app behavior, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("frame-policy metadata"),
+        "Navigation copy should mention frame-policy metadata, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("X-Frame-Options"),
+        "Navigation copy should mention X-Frame-Options, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("CSP frame-ancestors"),
+        "Navigation copy should mention CSP frame-ancestors, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("cannot reliably confirm"),
+        "Navigation copy should not give up before checking headers, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.to_lowercase().contains("demo"),
+        "Navigation copy should not call the product a demo, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("URL requested for"),
+        "GitHub navigation copy should be natural, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.to_lowercase().contains("preview below"),
+        "GitHub navigation must not blindly promise a preview below, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("url_preview:frame_policy_check:")),
+        "Navigation should record the frame-policy check path: {:?}",
+        response.evidence_links
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("url_preview:external_link:")),
+        "Navigation should record the direct external-link preview path: {:?}",
+        response.evidence_links
+    );
+}
+
+#[test]
+fn generic_navigation_uses_same_frame_policy_path_as_github() {
+    let response = FormalAiEngine.answer("Navigate to example.com");
+
+    assert_eq!(response.intent, "url_navigate");
+    assert!(response.answer.contains("https://example.com"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("url_preview:frame_policy_check:")),
+        "Generic navigation should not depend on a hardcoded frame-blocked host table: {:?}",
+        response.evidence_links
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("url_preview:external_link:")),
+        "The offline Rust answer should still expose a direct-link fallback: {:?}",
+        response.evidence_links
+    );
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("url_preview:blocked:")),
+        "Generic navigation should not hardcode a blocked host verdict: {:?}",
+        response.evidence_links
+    );
+}
+
+#[test]
+fn web_search_source_marker_cases_cover_every_supported_language() {
+    let languages = formal_ai::supported_languages();
+    let supported_languages = languages
+        .iter()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let mut case_languages = BTreeMap::<&str, usize>::new();
+    for &(language, _, _) in WEB_SEARCH_SOURCE_MARKER_CASES {
+        *case_languages.entry(language).or_insert(0) += 1;
+    }
+    assert_eq!(
+        case_languages.keys().copied().collect::<BTreeSet<_>>(),
+        supported_languages,
+        "source-marker web-search prompts must cover every supported language",
+    );
+    assert!(
+        case_languages.values().all(|count| *count == 1),
+        "source-marker web-search prompts should add one case per supported language: {case_languages:?}",
+    );
+}
+
+#[test]
+fn web_search_enumeration_research_cases_cover_every_supported_language() {
+    let languages = formal_ai::supported_languages();
+    let supported_languages = languages
+        .iter()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let mut case_languages = BTreeMap::<&str, usize>::new();
+    for &(language, _, _) in WEB_SEARCH_ENUMERATION_RESEARCH_CASES {
+        *case_languages.entry(language).or_insert(0) += 1;
+    }
+    assert_eq!(
+        case_languages.keys().copied().collect::<BTreeSet<_>>(),
+        supported_languages,
+        "enumeration-research web-search prompts must cover every supported language",
+    );
+    assert!(
+        case_languages.values().all(|count| *count == 1),
+        "enumeration-research prompts should add one case per supported language: {case_languages:?}",
+    );
+}
+
+#[test]
+fn web_search_interest_topic_cases_cover_every_supported_language() {
+    let languages = formal_ai::supported_languages();
+    let supported_languages = languages
+        .iter()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let mut case_languages = BTreeMap::<&str, usize>::new();
+    for case in WEB_SEARCH_INTEREST_TOPIC_CASES {
+        *case_languages.entry(case.language).or_insert(0) += 1;
+    }
+    assert_eq!(
+        case_languages.keys().copied().collect::<BTreeSet<_>>(),
+        supported_languages,
+        "interest-topic web-search prompts must cover every supported language",
+    );
+    assert!(
+        case_languages.values().all(|count| *count == 1),
+        "interest-topic prompts should add one case per supported language: {case_languages:?}",
+    );
+}
+
+#[test]
+fn web_search_event_listing_cases_cover_every_supported_language() {
+    let languages = formal_ai::supported_languages();
+    let supported_languages = languages
+        .iter()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let mut case_languages = BTreeMap::<&str, usize>::new();
+    for case in WEB_SEARCH_EVENT_LISTING_CASES {
+        *case_languages.entry(case.language).or_insert(0) += 1;
+    }
+    assert_eq!(
+        case_languages.keys().copied().collect::<BTreeSet<_>>(),
+        supported_languages,
+        "event-listing web-search prompts must cover every supported language",
+    );
+    assert!(
+        case_languages.values().all(|count| *count == 1),
+        "event-listing prompts should add one case per supported language: {case_languages:?}",
+    );
+}
+
+#[test]
+fn web_search_source_marker_prompts_extract_query_without_source_marker() {
+    for &(language, prompt, expected_query) in WEB_SEARCH_SOURCE_MARKER_CASES {
+        let response = FormalAiEngine.answer(prompt);
+        if language == "en" {
+            assert_eq!(
+                response.answer,
+                "No captured provider response is available for `apple`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+            );
+        }
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "{language} web search should extract only the query term {expected_query:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response.answer.contains(&format!("`{expected_query}`")),
+            "{language} web-search answer should echo the extracted query, got: {}",
+            response.answer,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn event_listing_prompts_route_to_web_search_handler() {
+    for case in WEB_SEARCH_EVENT_LISTING_CASES
+        .iter()
+        .chain(WEB_SEARCH_CURRENT_EVENT_LISTING_CASES)
+    {
+        let response = FormalAiEngine.answer(case.prompt);
+
+        assert_eq!(
+            response.intent,
+            "web_search",
+            "{language} event-listing prompt should route to web_search, got {} with answer {}",
+            response.intent,
+            response.answer,
+            language = case.language,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{}", case.expected_query)),
+            "{language} web_search should extract only the event category {expected_query:?}: {:?}",
+            response.evidence_links,
+            language = case.language,
+            expected_query = case.expected_query,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:semantic_action"),
+            "{language} event-listing prompt should record semantic-action routing: {:?}",
+            response.evidence_links,
+            language = case.language,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn issue_507_russian_hackathon_dialog_routes_to_web_search() {
+    let solver = UniversalSolver::default();
+    let first_prompt = "Где посмотреть актуальные хакатоны?";
+    let first_response = solver.solve(first_prompt);
+
+    assert_eq!(
+        first_response.intent, "web_search",
+        "reported Russian current-hackathon prompt should route to web_search, got {} with answer {}",
+        first_response.intent, first_response.answer,
+    );
+    assert!(
+        first_response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:request:хакатоны"),
+        "current-hackathon search should extract only the event category: {:?}",
+        first_response.evidence_links,
+    );
+    assert_ne!(first_response.intent, "unknown");
+
+    let history = [
+        ConversationTurn::user(first_prompt),
+        ConversationTurn::assistant(first_response.answer),
+    ];
+    let second_response = solver.solve_with_history("Найди мне хакатоны", &history);
+
+    assert_eq!(
+        second_response.intent, "web_search",
+        "reported follow-up hackathon prompt should route to web_search, got {} with answer {}",
+        second_response.intent, second_response.answer,
+    );
+    assert!(
+        second_response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:request:хакатоны"),
+        "follow-up hackathon search should preserve the event category: {:?}",
+        second_response.evidence_links,
+    );
+    assert_ne!(second_response.intent, "unknown");
+}
+
+#[test]
+fn current_event_questions_route_to_web_search_handler() {
+    for case in WEB_SEARCH_CURRENT_EVENT_QUESTION_CASES {
+        let response = FormalAiEngine.answer(case.prompt);
+
+        assert_eq!(
+            response.intent,
+            "web_search",
+            "{language} current-event question should route to web_search, got {} with answer {}",
+            response.intent,
+            response.answer,
+            language = case.language,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{}", case.expected_query)),
+            "{language} web_search should extract only the event category {expected_query:?}: {:?}",
+            response.evidence_links,
+            language = case.language,
+            expected_query = case.expected_query,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:implicit_research_question"),
+            "{language} current-event question should record implicit-research routing: {:?}",
+            response.evidence_links,
+            language = case.language,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn interest_topic_prompts_route_to_web_search_handler() {
+    for case in WEB_SEARCH_INTEREST_TOPIC_CASES {
+        let response = FormalAiEngine.answer(case.prompt);
+
+        assert_eq!(
+            response.intent,
+            "web_search",
+            "{language} interest-topic prompt should route to web_search, got {} with answer {}",
+            response.intent,
+            response.answer,
+            language = case.language,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{}", case.expected_query)),
+            "{language} web_search should extract only the interested topic {expected_query:?}: {:?}",
+            response.evidence_links,
+            language = case.language,
+            expected_query = case.expected_query,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:explicit_prefix"),
+            "{language} interest-topic search should record explicit template routing: {:?}",
+            response.evidence_links,
+            language = case.language,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn information_search_variants_route_to_web_search_handler() {
+    let prompts = [
+        "Найди информацию о Rust программировании",
+        "Поищи информацию про Rust программирование",
+        "Найди подробные сведения о Rust программировании",
+        "Поищи материалы по Rust программированию в Википедии",
+        "Find information about Rust programming",
+        "Look up information on Rust programming",
+        "Find detailed information about Rust programming",
+        "Research Rust programming online",
+        "Rust programming के बारे में जानकारी खोजो",
+        "Rust programming पर जानकारी ढूंढो",
+        "Rust programming के बारे में विकिपीडिया में खोजें",
+        "查找关于 Rust 编程的信息",
+        "搜索 Rust 编程 的资料",
+        "在维基百科上查一下 Rust 编程",
+    ];
+    for prompt in prompts {
+        let response = FormalAiEngine.answer(prompt);
+        if prompt == "Find information about Rust programming" {
+            assert_eq!(
+                response.answer,
+                "No captured provider response is available for `rust programming`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+            );
+        }
+        assert_eq!(
+            response.intent, "web_search",
+            "prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "web search response should preserve the query, got {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn source_search_prompts_drop_follow_up_instruction_clauses() {
+    let cases = [
+        (
+            "Search Wikipedia for \"War of Currents\" and summarize who won and why",
+            "war of currents",
+        ),
+        (
+            "Search Wikipedia for Nikola Tesla and Thomas Edison. Compare their number of patents.",
+            "nikola tesla and thomas edison",
+        ),
+    ];
+
+    for (prompt, expected_query) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "web_search should keep only the source query term {expected_query:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:explicit_prefix"),
+            "source-specific searches should record explicit-prefix routing: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn source_search_prompts_still_cover_supported_languages() {
+    let cases = [
+        ("English", "Find information about Rust programming"),
+        (
+            "Russian",
+            "Поищи материалы по Rust программированию в Википедии",
+        ),
+        ("Hindi", "Rust programming के बारे में विकिपीडिया में खोजें"),
+        ("Chinese", "在维基百科上查一下 Rust 编程"),
+    ];
+
+    for (language, prompt) in cases {
+        let response = FormalAiEngine.answer(prompt);
+        if language == "English" {
+            assert_eq!(
+                response.answer,
+                "No captured provider response is available for `rust programming`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+            );
+        }
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} source-search prompt should still route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "{language} web-search answer should preserve the requested topic, got: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn research_comparison_table_followup_uses_prior_search_topics() {
+    let solver = UniversalSolver::default();
+    let search_prompt = "Search for information about:\n\
+                         1. Machine learning algorithms\n\
+                         2. Deep learning vs traditional ML\n\
+                         3. Neural networks basics";
+    let search_response = solver.solve(search_prompt);
+    assert_eq!(search_response.intent, "web_search");
+
+    let history = [
+        ConversationTurn::user(search_prompt),
+        ConversationTurn::assistant(search_response.answer),
+    ];
+    let response = solver.solve_with_history(
+        "create a comparison table showing:\n\
+         - Key differences\n\
+         - Use cases for each\n\
+         - Advantages and disadvantages",
+        &history,
+    );
+
+    assert_eq!(
+        response.intent, "research_comparison_table",
+        "agent follow-up should create a comparison table instead of falling through, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response
+            .answer
+            .contains("| Topic | Key differences | Use cases | Advantages | Disadvantages |")
+    );
+    assert!(response.answer.contains("Machine learning algorithms"));
+    assert!(response.answer.contains("Deep learning vs traditional ML"));
+    assert!(response.answer.contains("Neural networks basics"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("research_table:prior_search:")),
+        "comparison table should record the prior search it reused: {:?}",
+        response.evidence_links,
+    );
+    assert_ne!(response.intent, "unknown");
+}
+
+#[test]
+fn research_result_followup_reports_prior_search_failure_instead_of_defining_result() {
+    let solver = UniversalSolver::default();
+    let research_prompt = "Research task: What would be the economic impact if Rust replaced C++ in all major open-source projects by 2030?\n\
+                           Steps required:\n\
+                           1. Search for current C++ vs Rust usage statistics in open-source projects.\n\
+                           2. Find data on memory safety vulnerabilities and average breach costs.\n\
+                           3. Estimate developer retraining and migration costs.\n\
+                           4. Find Rust adoption rates in major tech companies.\n\
+                           5. Calculate projected reduction in CVEs and maintenance costs.\n\
+                           6. Present findings as executive summary with data table and sources.";
+    let history = [
+        ConversationTurn::user(research_prompt),
+        ConversationTurn::assistant(
+            "No CORS-enabled web search results were returned for `C++ vs Rust usage statistics memory safety vulnerabilities breach costs Rust adoption rates`.\n\n\
+             Providers tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.",
+        ),
+    ];
+
+    let response = solver.solve_with_history("What is the result?", &history);
+    assert_eq!(
+        response.answer,
+        expected_no_results_research_followup(research_prompt)
+    );
+
+    assert_eq!(
+        response.intent, "research_result_followup",
+        "research-result follow-up should bind to prior research state instead of concept lookup, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response
+            .answer
+            .contains("no CORS-readable web search results were returned"),
+        "follow-up should report the prior failed search status, got: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("verified source data"),
+        "follow-up should not fabricate the requested economic analysis, got: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("Prior research task"),
+        "follow-up should make clear which research task it is summarizing, got: {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("research_result_followup:prior_search:")),
+        "follow-up should record the prior research prompt it reused: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("research_result_followup:status:")),
+        "follow-up should record the prior research status: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        !response.answer.contains("outcome or consequence"),
+        "follow-up must not define the standalone concept 'result': {}",
+        response.answer,
+    );
+}
+
+mod extended;

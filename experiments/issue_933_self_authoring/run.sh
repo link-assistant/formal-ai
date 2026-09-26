@@ -6,7 +6,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8933}"
 ARTIFACT_DIR="$ROOT/docs/case-studies/issue-933/self-hosting-authorship"
 WORKSPACE="$(mktemp -d)"

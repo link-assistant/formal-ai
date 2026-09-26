@@ -1,0 +1,188 @@
+{
+  "entities": {
+    "Q43287": {
+      "type": "item",
+      "id": "Q43287",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "German Empire"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Германская империя"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जर्मन साम्राज्य"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "德意志帝國"
+        },
+        "es": {
+          "language": "es",
+          "value": "Imperio alemán"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "German nation-state in Central Europe from 1871 to 1918"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "германское государство в 1871–1918 годы"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "1871年普鲁士王國建立的德意志第二帝國"
+        },
+        "es": {
+          "language": "es",
+          "value": "país de Europa (1871-1918)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "German Reich"
+          },
+          {
+            "language": "en",
+            "value": "Imperial Germany"
+          },
+          {
+            "language": "en",
+            "value": "Second Reich"
+          },
+          {
+            "language": "en",
+            "value": "German Empire (1871-1918)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Второй Рейх"
+          },
+          {
+            "language": "ru",
+            "value": "Немецкая монархия"
+          },
+          {
+            "language": "ru",
+            "value": "II Рейх"
+          },
+          {
+            "language": "ru",
+            "value": "Кайзеровская Германия"
+          },
+          {
+            "language": "ru",
+            "value": "Германия"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "德意志帝国"
+          },
+          {
+            "language": "zh",
+            "value": "德意志第二帝國"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Imperio de Alemania"
+          },
+          {
+            "language": "es",
+            "value": "Monarquía en Alemania"
+          },
+          {
+            "language": "es",
+            "value": "II Reich"
+          },
+          {
+            "language": "es",
+            "value": "Segundo Reich"
+          },
+          {
+            "language": "es",
+            "value": "Segundo Imperio Aleman"
+          },
+          {
+            "language": "es",
+            "value": "II Imperio Alemán"
+          },
+          {
+            "language": "es",
+            "value": "Monarquia en Alemania"
+          },
+          {
+            "language": "es",
+            "value": "Segundo Imperio Alemán"
+          },
+          {
+            "language": "es",
+            "value": "Kaiserlich Deutsches Reich"
+          },
+          {
+            "language": "es",
+            "value": "Kaiserreich"
+          },
+          {
+            "language": "es",
+            "value": "Imperio Alemán"
+          },
+          {
+            "language": "es",
+            "value": "Reich Alemán"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "German Empire"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Германская империя"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "जर्मन साम्राज्य"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "德意志帝國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Imperio alemán"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

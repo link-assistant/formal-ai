@@ -2,31 +2,31 @@ self_ast_census
   target src/meta_self_improvement.rs
   language rust
   fidelity signature
-  byte_len 12587
-  line_count 330
-  content_id source_module_e49b4ce27ea28bb4
+  byte_len 12948
+  line_count 337
+  content_id source_module_9e0b3e8c74b7aeb5
   symbol_count 23
   symbols
     const RECIPE_LINO 31 31
     const PIPELINE_SRC 35 35
-    enum SelfImprovementMode 42 48
-    function proposes 53 55
-    function slug 59 64
-    function from_slug 68 74
-    struct PipelineStage 80 85
-    function source_file 90 92
-    struct MetaRecipeProposal 102 107
-    function is_self_consistent 113 115
-    function change_count 119 121
-    function summary 125 142
-    function to_links_notation 146 176
-    struct MetaSelfImprovement 181 186
-    function from_sources 191 196
-    function from_repo 201 203
-    function pipeline_stages 207 209
-    function propose 213 235
-    function propose_recipe_update 244 251
-    function recipe_record_functions 256 278
-    function pipeline_stages 282 308
-    function is_ident 311 316
-    function field_value 319 330
+    enum SelfImprovementMode 48 55
+    function proposes 60 62
+    function slug 66 71
+    function from_slug 75 81
+    struct PipelineStage 87 92
+    function source_file 97 99
+    struct MetaRecipeProposal 109 114
+    function is_self_consistent 120 122
+    function change_count 126 128
+    function summary 132 149
+    function to_links_notation 153 183
+    struct MetaSelfImprovement 188 193
+    function from_sources 198 203
+    function from_repo 208 210
+    function pipeline_stages 214 216
+    function propose 220 242
+    function propose_recipe_update 251 258
+    function recipe_record_functions 263 285
+    function pipeline_stages 289 315
+    function is_ident 318 323
+    function field_value 326 337

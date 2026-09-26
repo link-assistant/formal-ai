@@ -4,8 +4,10 @@ Issue [#848](https://github.com/link-assistant/formal-ai/issues/848) asks where
 Formal AI can perform coding work rather than describe it. The expanded ladder
 contains 130 real repository tasks in 16 families, from reading and search to
 test authoring, targeted edits, multi-file deliverables, and whole issues. Each
-task runs through `formal-ai with agent`; a write passes only when the requested
-workspace effect is observed.
+task ran through `formal-ai with agent` through v0.320.0; since the plan 03 L14
+conversion each task runs through the deterministic `formal-ai solve`
+workspace protocol. A write passes only when the requested workspace effect is
+observed.
 
 The issue baseline on v0.303.0 was 38/130. The prepared branch before this fix
 measured 45/130, with `test_authoring` and `targeted_edit` both at zero. The
@@ -192,6 +194,30 @@ replay harnesses are
 [`experiments/issue_848_self_authoring/run.sh`](../../../experiments/issue_848_self_authoring/run.sh)
 and
 [`run_workspace_learning.sh`](../../../experiments/issue_848_self_authoring/run_workspace_learning.sh).
+
+## The deterministic protocol baseline
+
+Plan 03 L14 (issue #1138) converted the harness from `formal-ai with agent` to
+`formal-ai solve`, the deterministic repository workspace protocol, and
+directed that the first complete post-conversion run be recorded whatever its
+number is. That run is 35783073283 on `9d98e28ad` (2026-09-23), reproducing
+the score the `df2701415` round measured. It measured all 130 tasks with no
+`NOT MEASURED` rows and passed 20/130:
+
+```text
+L1  0/16
+L2  2/12
+L3  8/28
+L4 10/74
+```
+
+The 45-task difference against the v0.320.0 agent-transport result is
+capability, not measurement noise: the protocol's edit derivation currently
+covers one shape (adding quoted members to a census-located declaration), and
+read-family tasks have no answer channel yet, so those tasks stop honestly at
+an open obligation instead of guessing. The committed canonical result and the
+ratchet floor now carry this 20/130 baseline, and the floor may only rise as
+the protocol gains shapes.
 
 ## Residual boundary
 

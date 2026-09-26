@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.092Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.093Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 写几页关于量子力学如何起步的内容。 --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.beSA9yQpm7",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.093Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.beSA9yQpm7",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.093Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.beSA9yQpm7",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.101Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "写几页关于量子力学如何起步的内容。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "写几页关于量子力学如何起步的内容。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.101Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.102Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.103Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.103Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.106Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.106Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.beSA9yQpm7/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.108Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 5618,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.108Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.121Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:17:35.125Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.125Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.125Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.125Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.125Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.125Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.125Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.125Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 23,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.126Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:17:35.126Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.129Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.129Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.130Z",
+  "service": "session",
+  "id": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.beSA9yQpm7",
+  "title": "New session - 2026-09-16T03:17:35.130Z",
+  "time": {
+    "created": 1789528655130,
+    "updated": 1789528655130
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.130Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.130Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.130Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.131Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.131Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c7bae5ffeVR1Yeaw6qDTSm1/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.131Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c7bae5ffeVR1Yeaw6qDTSm1/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.133Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57c7bae5ffeVR1Yeaw6qDTSm1/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.135Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.136Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.136Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.137Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.138Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.138Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.138Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.139Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.139Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.139Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.139Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.139Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.139Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.255Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.259Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.259Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.268Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.272Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.276Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.276Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.276Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.276Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.693Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528655693,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a8384747001X8vdM62Z3crCll",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838459a001utJEDAufzMhy83",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.694Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528655695,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a838474e001DEO0pXG7BxxGcQ",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838459a001utJEDAufzMhy83",
+    "type": "tool",
+    "callID": "call_35ecd6f4d824b600",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528655695,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a838474d0019oGpqmbxkB0eZZ",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838459a001utJEDAufzMhy83",
+    "type": "text",
+    "text": "我来上网搜索 写几页关于量子力学如何起步的内容。",
+    "time": {
+      "start": 1789528655695,
+      "end": 1789528655695
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:35.696Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528655696,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a838474e001DEO0pXG7BxxGcQ",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838459a001utJEDAufzMhy83",
+    "type": "tool",
+    "callID": "call_35ecd6f4d824b600",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "写几页关于量子力学如何起步的内容"
+      },
+      "time": {
+        "start": 1789528655695
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.517Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528659518,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a838474e001DEO0pXG7BxxGcQ",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838459a001utJEDAufzMhy83",
+    "type": "tool",
+    "callID": "call_35ecd6f4d824b600",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "写几页关于量子力学如何起步的内容"
+      },
+      "output": "Title: 量子力学诞生的动荡岁月\nURL: https://psr.pku.edu.cn/rxx/publications/SP/QM100.pdf\nPublished: N/A\nAuthor: Administrator\nHighlights:\n这些想法的出 \n现归功于一些核心人物的勇于思维 \n跳跃、超越传统经验和严谨逻辑。 \n探索物理世界的量子属性竟始 \n于一个看似微不足道的开端。1900 \n年，柏林大学物理学家普朗克提 \n出，热物体原子振动的能量是量子 \n化的，其离散频率犹如音阶音符。 \n普朗克的贡献常常被误解。他 \n起初感兴趣于化学反应的不可逆 \n性，不满意奥地利物理学家玻尔兹 \n曼给出的答案。玻尔兹曼认为，化 \n学反应方向仅体现若干分子过程的 \n最可几结果。(普朗克为避免概率论 \n而被量子假说吸引，有点讽刺。)这 \n一探索导致普朗克思考一个电动力 \n学难题：完全吸收的物体(称为黑 \n体)如何发射电磁辐射(热和光)？ \n黑体辐射谱的峰值位于波长 λm \n处；当温度 T 升高时，峰值波长变 \n短。德国物理学家维恩通过实验表 \n明 λmT 为常数。普朗克假设辐射源 \n于定义模糊的“振子”的振动，着 \n手从基本原理推导维恩定律。这些 \n振子可被理解为原子，而那时普朗 \n克并不完全相信原子真的存在。 \n1900年12月，普朗克宣称，假 \n定给定频率 v 的辐射能量 Et是量子 \n化的(即是 hv的 n倍，n为整数)，就 \n可以得到跟实验一致的结果。也就 \n是说，Et = nhv，后来将这里的常数 \nh称为普朗克常数。 \n普朗克并不认为这种量子化有 \n啥物理意义——如其所言，此乃特 \n定“技巧”以获得符合数据的理论 \n结果。他当然不认为他的理论与经 \n典物理学决裂，几乎所有其他人也 \n一样。荷兰物理学家洛伦兹指出： \n普朗克公式尽管符合数据，但缺乏 \n坚实的理论基础。 \n爱因斯坦是个例外，他于 1905 \n年将普朗克的能量公式 E = hv 应用 \n于光。普朗克的黑体辐射 \n研究没有提到这一点。该 \n提议非常激进，但现在看 \n来爱因斯坦的推理好像很 \n随意。 \n爱因斯坦认为，物质 \n由离散的原子组成，但电 \n动力学描述的电磁辐射却 \n是连续的，这似乎很奇 \n怪。将光视作离散的、与 \n普朗克公式一致的能量包 \n不更自然些吗？ \n爱因斯坦的假说产生了可验证 \n的实验预测。众所周知，光照射金 \n属会发射电子，即“光电效应”。爱 \n因斯坦指出，如果存在这种能量 \n包，则发射电子的能量应取决于光 \n的频率而非光强。 \n所有这些似乎暗示：光根本就 \n不是波。尽管这已被迄今为止的实 \n验明确论证，但那时没人意识到亟 \n待解决光电效应问题。爱因斯坦的 \n预言即便于 1916年被美国物理学家 \n密立根验证，也仅勉强接受。各种 \n经典理论不能解释密立根实验，这 \n在当时并非显而易见。 \n爱因斯坦提出光量子是有风险 \n的。他晓得这有多激进：当回顾 \n1905 年他的四篇开创性论文时，他 \n认为光量子论文最具革命性。 \n爱因斯坦进而将量子假说用于 \n固体热容研究，成为刻画物质和能 \n量的坚实基础。然而，大多数物理 \n学家仍不觉得有理由怀疑经典物理 \n的完整性。以“辐射与量子”为主 \n题，1911\n...\n在这个会议上，量子假说受到的评 价也褒贬不一，尤其是资深学者。 然而，普朗克勉强改变观念，同年 在 德 国 化 学 学 会 的 会 议 上 他 说 ： “量子假说有助于构建一个理论， 让我们有朝一日用全新的眼光透视 分子世界。” 1913 年是历史转折点；那时丹 麦物理学家玻尔在英国曼彻斯特大 学卢瑟福实验室工作，他用量子假 说挽救了卢瑟福的原子模型(微型太 阳系)。根据经典理论，绕原子核运 动的电子会因辐射而失去能量，故 原子不能稳定存在。玻尔理论避免 了原子塌缩，将电子能量设为量子 化的、不能任意改变的值。只有当 原子吸收或发射光量子的能量 hv等 于两个量子化轨道间的能量差时， 电子才能改变轨道，实现瞬间“量 子跃迁”。 玻尔假说可以解释氢原子的离 散光谱发射线，即巴尔末线系(曾 困扰物理学家多年)。该理论进而 可 以 精 确 描 述 氦 离 子 He + 的 光 谱 后，人们才开始相信它。当听到氦 结 果 时 ， 爱 因 斯 坦 大 赞 “ 巨 大 成就”。\n...\n尽管如此，玻尔原子仅体现了 \n量子论的早期发展，是量子和经典 \n概念的粗糙混合，仅从实验出发构 \n建量子数。“旧量子论”的分歧和困 \n难日积月累。到了 1923年，问题变 \n得越来越尖锐，德国哥廷根大学的 \n玻恩教授不得不说“整个物理体系 \n必须重建”。如何重建？ \n1924 年秋，玻恩的学生海森伯 \n访问丹麦理论物理研究所的玻尔， \n致力于更好地描述量子理论。他们 \n努力工作至第二年春天，但收效甚 \n微。返回哥廷根后，海森伯在德国 \n位于北海的黑尔戈兰群岛度假。当 \n爬过岩石时，他产生一个“疯狂” \n(他对玻恩这么说)的想法来计算原 \n子能级。 \n海森伯决定：既要接受跟经典 \n物理的决裂，还要放弃用传统方式 \n(粒子在空间中运动)描述量子理论 \n的幻想。有别于描述不可观测的电 \n子位置和速度，他寻求“构建可观 \n测量之间关系的量子理论”。电子跃 \n迁时发射光的频率就是可观测量， \n他在矩阵中列出这些频率。矩阵完 \n全描述电子运动，并可通过数学计 \n算预言其他可观测量。 \n这 一 “ 矩 阵 力 \n学”既难懂又难用； \n1926 年，薛定谔提出 \n一种基于波的量子力 \n学 ， 受 到 人 们 的 欢 \n迎。薛定谔的灵感源 \n于法国物理学家德布 \n罗意在 1924年就提出 \n(但基本上被忽视)的 \n建议：正如光波可被 \n视为离散的粒子，电 \n子这样的物质也可类 \n似地描述为波。 \n多数物理学家意 \n识到了薛定谔波动力 \n学在计算过程中的优 \n势。虽然薛定谔证明 \n了矩阵力学和波动力学数学上等 \n价，但好胜心极强的海森伯认为 \n薛定谔波动方程的物理解释“令 \n人不快”。海森伯坚信，这类可视 \n化亚原子世界的任何尝试注定失 \n败。不过，薛定谔的波动图像最 \n终成为了量子力学的标准框架。 \n接下来的三个进展完成了量子 \n革命。1926 年 7 月，玻恩指出薛定 \n谔方程中电子波函数的振幅并非电 \n荷密度的空间分布，而是反映给定 \n位置找到电子的概率——量子力学 \n概率性似乎是天生的。再者，1927 \n年，海森伯揭示不确定性原理：不 \n可能同时准确地知道电子(或其他粒 \n子)的位置和动量。 \n最后，1935 年，爱因斯坦与 \n两个年轻的同事(波多尔斯基和罗 \n森)指出量子理论暗示粒子之间存 \n在非局域性关联。薛定谔将这种 \n粒子间的关联称为纠缠，意味着 \n无法局域地描述量子粒子。爱因 \n斯坦、波多尔斯基和罗森认为这 \n很荒谬；他们本希望以此证明量 \n子力学的不完整性，而实验却证 \n实了量子纠缠。 \n量子革命常被称为范式转变。 \n这是科学史学者库恩提出的一个概 \n念，特指只能通过与现有思想彻底 \n决裂来解决科学危机。库恩说，决 \n裂后产生的新范式如此自然，以至 \n于科学家们无法想象回归旧思想模 \n式的可能性。科学进步的方式都是 \n这样吗？尚存争议。尽管库恩描绘 \n了一幅科学家尽可能维护旧思想的 \n画面，但历史表明：激进的新思想 \n往往不是被抵制，而只是被忽略或 \n视而不见——有时甚至是那些提出 \n新思想的人。 \n从量子革命可见，一开始并不 \n清楚真正的革命性在哪——其实不 \n是量子化，而是量子概率性、非因 \n果性和非局域性。一个世纪后，仍 \n存争论。这一点更重要！\n\n---\n\nTitle: 量子力学\nURL: https://faculty.pku.edu.cn/_resources/group1/M00/00/0D/cxv0BF5l8YeAPyT5ACocNMh5V2Y105.pdf\nPublished: N/A\nAuthor: 曹庆宏\nHighlights:\n曹庆宏 讲义草稿 请勿传᫝ 第 R 章 经典物理失᭸和ᰗ量子论的诞生 ! 我们在此章中简单回顾量子理论的发展，希望借此说明,（R）任何一个物理理论都 是从实验中总结出来的，绝不是凭空从理论上推导出来的；（k）许多重要的科学发 现都是寻找其他事物时的副产品。此外，要想了解一门科学，必须知道它的历史 R。 因为不了解一门科学的历史，就无法透彻地理解它的现状。本章介绍和量子力学诞 生息息相关的实验结果，这些背景知识对于理解量子力学体系的建立具有重要的意义。\n...\n量子力学的建立有两个᭟柱：一ᱟ光（也即辐射）的粒子性；二ᱟ实物粒子的波 动性。光的粒子性ᱟ由普朗克、爱因ᯟ坦、密立根和康普顿等人建立和确认的，而物 质的波动性则ᱟ德布罗意为解释玻尔原子模型中原子轨道稳定性而ᨀ出的。本章分别 介绍光的粒子性，原子稳定性和玻尔模型，以及德布罗意物质波，最后讨论德布罗意 波包和不确定关系。\n...\n但现实生活中，我们怎么样才能制造一个完美的吸᭦者哪？R38N 年基尔霍夫想 到了一个绝妙的想法：“在一个大箱子侧面打一个小洞，这个大箱子就ᱟ一个非常好 的吸᭦者，因为任何穿过小洞进入到箱子中的光都会发生多次折射，最终被箱子吸 ᭦。多次反射后在从小洞中射出的概率非常小。如果我们采用逆向思维，在热炉侧面 开一个小洞，那么这个小洞将发出辐射，所以这个小洞就ᱟ一个非常᧕近完美辐射者 的辐射源。”在基尔霍夫正式ᨀ出了“黑体辐射”一词（R3ek 年）后，“壁炉”就成为 了 RN 世纪下半叶的物理科学前沿之一。实验物理学家按照基尔霍夫的空腔辐射想法 设计各种实验，双眼通红地盯着火炉测量辐射光的能量（频率）与温度的依赖关系。 所有这些努力最终在 9y 年后开花结果——它成为量子力学诞生的᩷篮。\n...\n透射到格栅后屏幕的不同位置。一个᧒ 测器沿着屏幕上下移动来᧒测不同频率区间的辐射光能量。这里所᧿述的仅仅ᱟ实验 ᯩ案的核心所在，真正的实验ᱟ异常复杂的；例如，为了测量非常难测的极低频红外 光谱，维恩必须通过一系列实精巧的验设计将频率略高一点的红外光去除ᦹ。R3Ne 年 维恩又基于热力学普适理论和ᮠ据ᨀ出一个两参ᮠ的经验公式 ρ(ν,T )dν = c1ν 3\n...\n虽然密立根花费 Ry 年ᰦ间来“验证”爱因ᯟ坦光量子假设，但光电᭸应实验也 ᱟ间᧕地᭟持光量子假设。特别ᱟ，光电᭸应仅仅验证了光量子能量量子化。如果电 磁辐射确实具有“粒子”性，那么光量子也应该有动量，并且光量子的能量和动量之 间关系要保证光量子ᱟᰐ质量的。这ᱟ因为所有的实验都告诉我们电磁相互作用ᱟ长 程力，需要相互作用的传᫝子——光量子——没有质量。狭义相对论告诉我们，光量 子的能量和动量为\n...\np2c2 =0；（k）普朗克常ᮠ ᱟ联系光量子的粒子性（E，p⃗）和波动性（ω，⃗k）的标度因子（b+ HBM; 7 +iQ`）。 如果要验证光量子具有“粒子”性，那么我们必须通过实验真正检验到光量子的 动量。这就ᱟ康普顿ᮓ射实验——证实光粒子性的一锤定音工作。RNkk 至 RNkj 年期 间，康普顿将高频的s 射线照射到金属表面，因为s 射线光量子的能量 hν 远远大 于金属的逸出功，所以我们可以将金属内的电子视作为自由粒子。我们也可用如下图 像来解释：“入射光量子的频率非常高、波长非常小，它的“分辨率”也高，从而可以 看到小尺度上的物理对象；当入射光波长非常长ᰦ，入射光“看到”ᮤ个金属中的自 由电子，那么这些电子就在入射光的电磁场作用下振荡并发出辐射，这就ᱟ在上一节 中ᨀ到的金属反光现象”。康普顿ᮓ射在非常短的ᰦ间内完成（ts < 10− 10 秒），ᮤ个 ᮓ射可视作为入射s 射线光量子和自由静止电子之间发生的弹性ᮓ射。ᮤ个ᮓ射过 程都ᱟ通过电磁相互作用发生的，但因为ᮓ射ᰦ间非常短，和这个实验᧒测ᰦ间相比 可以忽略，所以我们可以使用经典力学中的弹性碰ᫎ来计算康普顿ᮓ射的空间分布。 假设ᮓ射过程中能量和动量ᱟ严格守恒的（注意，能动量守恒定律仅仅ᱟ在宏观 物理过程中得到验证），那么入射s 射线的部分能量会传递给静止的电子，从而导致 ᮓ射的s 射线的频率减少、波长增大。电子获得能量越多，反射s 射线的波长就越 大。考虑特殊情况，入射s 射线被完全反射，即反射s 射线运动ᯩ向和入射s 射线 相反，ᮓ射后电子沿着入射s 射线ᯩ向运动。设反射s 射线的频率为 ν′，有动量守 恒可得，ᮓ射后电子动量为\n\npe = hν c\n...\nĜR9f98Ĝ 第R 章 经典物理失᭸和ᰗ量子论的诞生 \nR38j 年， M/2`b M;bi`QK（瑞典的 lTTb H ）首先观测到氢原子光谱。在 R388 \n年至 R3ej 年期间，化学家布森（\"mMb2M）和基尔霍夫做了一系列系统的光谱测量。 \n即便以今天实验水平来看，布森和基尔霍夫的工作都ᱟ高水准的。他们测量了上千种 \n光谱，精度达到了万分之一。他们发现了ᯠ元素：`m#B/mBmK 和 +2bBmK。他们的ᯩ法 \n还被用来发现其他 R8 中ᯠ元素。 \n虽然人们已经利用这些光谱线得到许多重要的科学发现，但没有人᰾白这些原子 \n为什么辐射出这些谱线。这些光谱线意味着原子可能具有内部结构，但当ᰦ人们并不 \n确定原子的存在。R38k 年 aiQF2b ᨀ出，这些光谱有可能ᱟ由于分子（当ᰦ分子含义 \n也包含了原子）的振动引起的。R3d8 年麦克ᯟ韦仔细研究了原子为产生各种光谱必 \n须具有的各种可能的内部运动或振动等，他发现原子内部必须要有非常多的自由度才 \n能够解释那些让人眼花缭乱的光谱。然而，固体比热容的测量结果直᧕否决这种可能 \n性，因为在固体加热ᰦ这些振动模式会吸᭦热量的。 \n毫ᰐ疑问，如果一个给定原子的所有光谱线模式都被分辨出来，那么它就有可能 \n为人们᧒索原子内部结构ᨀ供启示，甚至可以启发人们构造具体的原子模型来解释 \n这些光谱。R3ey 年之后人们越来越重视光谱ᮠ据分析。最重要的发现来自于一个瑞 \n士的女子学校的ᮠ学和拉丁语ᮉ师巴尔默（CQ? MM \" HK2`）。他将注意力集中在氢原 \n子（最轻的原子），因为氢原子看起来最有可能ᱟ原子。在᮷章中，巴尔默写道：“在 \n我看来，与其他任何原子相比，氢原子更有可能打开通往物质深层次结构的窗户”。 \nM;bi`QK 已经测量到9 个可见光谱，其波长分别为\n...\n在 R3Ny 年左右，物理学界有个非常奇怪现象：虽然ᰐ人知晓原子的物理图像， 但绝大部分物理学家都相信原子ᱟ存在的。原子应该不ᱟ传统意义上的微小固体，因 为我们总可以在适当条件下对原子ᯭ力来打碎它或者令其发生特殊的化学反应。随着 电子的发现，人们相信氢原子中应该包含“一个”电子，因为氢原子ᱟ元素周期表中 第一个元素。但人们ᰐ法解释原子的基本性质——它的“永久性”（T2`K M2M+2）。原 子的电中性要求原子内部一定还有未知的正电荷物质。但不幸的ᱟ，电磁相互作用 ——当ᰦ已知的微观世界中唯一的相互作用——ᱟᰐ法得到一个稳定的原子。例如， 仅凭静态电磁力ᱟᰐ法将这些正电荷物质和电子结合在一起并稳定存在。R39k 年ᮠ\n\n---\n\nTitle: 量子力学创立的历史概要——写于第五届索尔维物理会议90年_政经频道_财新网\nURL: https://china.caixin.com/2017-12-15/101185714.html\nPublished: 2017-12-15T00:00:00.000Z\nAuthor: N/A\nHighlights:\n王正行\n\n 2017年12月15日 19:29 \n\n本文扼要叙述了创立量子力学关键的几步：海森伯提出用依赖于两个态的观测量数组代替只描述一个态的物理量，玻恩和约当以及狄拉克分别据此提出正则对易关系，给出量子力学的海森伯表象；薛定谔根据德布罗意波建立波动方程，给出量子力学的薛定谔表象；玻恩提出波函数的统计诠释；狄拉克和约当分别给出量子力学的表象变换理论，统一量子力学的不同表象；海森伯发现测不准关系，给出量子力学的物理基础。在此基础上介绍了第五届索尔维物理会议，和爱因斯坦与玻尔的争论\n...\n文｜王正行（北京大学物理学院退休教授）\n\n 从1925到1927年，在短短两年间，量子力学的套路就基本成形，一直沿用至今。而对量子力学的理解和诠释，在第五届索尔维会议上爱因斯坦和玻尔所引发的激烈争论，却至今仍在发酵，已经演变成一场世纪之争。1927年布鲁塞尔这个时空点已深深刻在历史的坐标轴上，将载入史册，成为物理学乃至整个科学发展转变的里程碑和转折点。这里说的“套路”，主要是指理论的数学结构和运算规则。但下面的行文，除了极少数几个公式，将尽量不用数学表述。\n\n---\n\nTitle: 量子的诞生——从黑体辐射到光电效应 — 大学物理：给非物理专业学生的物理思维教程 | Socratopia Library\nURL: https://www.socratopia.app/library/college-physics-zh/chapter-28\nPublished: N/A\nAuthor: N/A\nHighlights:\n1900 年开尔文说经典物理只剩两朵小乌云，结果这两朵分别长出了相对论和量子物理；这一章我们跟着黑体辐射、普朗克的'绝望假设'、光电效应一路走到德布罗意的物质波。\n...\n# Chapter 28: 量子的诞生——从黑体辐射到光电效应\n...\n我们已经看完了 19 世纪物理学的两大支柱：经典力学（Ch 1-15）和电磁学（Ch 16-23）。上一章看了第一次革命：相对论。本章开始第二次革命：量子物理。\n...\n如果说相对论颠覆的是\"时空是绝对的\" 这一假设，那量子物理颠覆的是世界是确定的 这一更深的预设。在量子层面，物理学不能完全预言未来，只能预言概率。这是 20 世纪物理学最深的转向。\n...\n## 28.1 19 世纪末的\"两朵乌云\"\n...\n## 28.2 黑体辐射：经典物理的尴尬\n...\n## 28.3 普朗克的\"绝望\" 假设\n...\n1900 年德国物理学家普朗克（Max Planck）为了解决紫外灾难，引入了一个绝望 的假设：\n...\n从 $E=nhνE = nh\\nu$ E= nhν 假设到最终公式怎么走？ 两步（细节本课程不展开，但路径要看清）：\n...\n1. 频率 $ν\\nu$ν 的振子按玻尔兹曼分布加权求平均能量。每个允许能级 $En=nhνE_n = nh\\nu$ E n​= nhν 的概率 $Pn∝e−nhν/kBTP_n \\propto e^{-nh\\nu/k_BT}$ P n​∝ e− nhν/ k B​ T（这是 Ch 15 §15.3 玻尔兹曼分布的具体应用：高能态的占据概率被 $e−E/kBTe^{-E/k_BT}$ e− E/ k B​ T 指数压低；同样的图像在 Ch 12 §12.6 麦克斯韦速率分布里也出现过）。把 $⟨E⟩=∑nnhν⋅Pn/∑nPn\\langle E\\rangle = \\sum_n nh\\nu \\cdot P_n / \\sum_n P_n$⟨ E⟩=∑ n​ nhν⋅ P n​/∑ n​ P n​ 算出来（这是个几何级数和），得到 $⟨E⟩=hν/(ehν/kBT−1)\\langle E\\rangle = h\\nu/(e^{h\\nu/k_BT} - 1)$⟨ E⟩= hν/(e hν/ k B​ T− 1)。这是单个振子的平均能量，与经典能量均分定理给出的 $kBTk_B T$ k B​ T 完全不同（在低频极限 $hν≪kBTh\\nu \\ll k_BT$ hν≪ k B​ T 才回到 $kBTk_B T$ k B​ T）。\n...\n2. 乘上每立方米每单位频率间隔的振子模式数：经典电磁理论给出腔内电磁场模式密度 $g(ν)=8πν2/c3g(\\nu) = 8\\pi\\nu^2/c^3$ g(ν)= 8πν 2/ c 3（这是腔内电磁波驻波模式的密度——把腔切成 $λ/2\\lambda/2$λ/2 量级的盒子计数，再乘上每个驻波有 2 种独立偏振方向；$ν2\\nu^2$ν 2 因子来自 3D 空间里\"频率 $≤ν\\le \\nu$≤ν 的模式\" 在波数 $kk$ k 空间内的球壳体积 $∝k2∝ν2\\propto k^2 \\propto \\nu^2$∝ k 2∝ν 2）。每个模式的平均能量乘上模式密度就是能量密度。\n...\n普朗克的最终公式 描述黑体每立方米、每单位频率间隔内的辐射能量密度：\n...\n$u(ν,T)=g(ν)⋅⟨E⟩=8πhν3c3⋅1ehν/kBT−1u(\\nu, T) = g(\\nu) \\cdot \\langle E\\rangle = \\frac{8\\pi h \\nu^3}{c^3} \\cdot \\frac{1}{e^{h\\nu/k_B T} - 1}$ u(ν, T)= g(ν)⋅⟨ E⟩= c 3 8π hν 3​⋅ e hν/ k B​ T− 1 1​\n...\n这条公式是 20 世纪物理\n...\n最重要的公式之一，可以与经典物理的两个失败尝试做对比：\n...\n朗克公式\n...\n\"在两个极限都对\" 而经典物理不行？关键在分母里的\n...\nehν/k\n...\n\\nu/k_BT\n...\n1$ e hν\n...\nk B​ T− 1：高频\n...\nk B​ T）时\n...\n经典连续图像\n...\n这就是\"能量分立\" 在黑体辐射里的物理作用——它在高频区自然给出指数截断，解决了紫外灾难。从这条公式还可以推出斯特藩-玻尔兹曼定律（$P∝T4P \\propto T^4$ P∝ T 4，把 $uu$ u 对所有频率积分）和维恩位移定律（峰值位置 $νmax⁡∝T\\nu_{\\max} \\propto T$ν m a x​∝ T）。普朗克的\"数学技巧\" 不仅解决了一个反常，它自然推出了两条经验定律。这种\"一个公式同时解释多个观察\" 是物理学新理论被接受的标志。\n...\n## 28.4 爱因斯坦的光量子假设\n...\n1905 年（爱因斯坦的\"奇迹年\"，他同时发表了相对论 + 布朗运动 + 光量子三大论文），爱因斯坦把普朗克的假设推进一步：\n...\n## 28.5 光电效应：爱因斯坦获诺奖的工作\n...\n光电效应：金属表面被光照射时会发出电子（叫\"光电子\"）。1887 年赫兹首先观察到（同一个赫兹，证实电磁波的存在）。\n...\n实验观察（详细的 1\n...\n00-1905）：\n...\n- 每个光\n...\n打到金属表面时，整体\n...\nhνh\n...\n一个电子。\n...\n- 这个电子要克服\n...\n功函数\"\n...\nWW$ W\n...\n才能逃出金属。所以发射出来的电子动能\n...\nWE_{\\max}\n...\n​= hν− W\n...\n## 28.6 康普顿效应：光确实是粒子\n...\n（Arthur Compton）做了一个实验，进一步\n...\n## 28.7 德布罗意：粒子也是波\n...\n1924 年法国物理学家德布罗意（Louis de Broglie）在博士论文里提出了一个对称性想法：\n...\n确认（1\n...\n## 28.8 一个统一的图景\n...\n下一章我们看具体的\"量子图像\"：波函数、概率、不确定性原理。这些概念是 20 世纪物理学最深的洞察之一，也是后续量子工程（半导体、激光、量子计算）的物理基础。\n...\n## Chapter Summary\n...\n19 世纪末的\"两朵乌云\" 中，第二朵是黑体辐射的紫外灾难。\n...\n普朗克（19\n...\n3×1\n...\n\\times 10\n...\n3×\n...\n### Think Deeper\n\n---\n\nTitle: 中国科学技术大学：《量子力学》课程教学资源（课件讲义）第一章 量子物理学百年回顾（主讲：肖志广）.pdf_大学文库_中国高校课件下载中心\nURL: http://download.cucdc.com/wenku/94598c0c39ee4c24855da3e8672e6089.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n量子力学简介 19世纪末20世纪初,牛顿力学,热力学统计物理以及电磁理 论对宏观世界的物理描述已经比较完善。 ◎但是,随着人们对微观世界探索的深入,人们发现经典物理学 用来微观世界会遇到许多困难。 人们对经典物理不能处理的黑体辐射,光电效应,原子光谱的 深入研究,建立了描述微观世界粒子运动规律的量子力学。 ◎微观粒子与宏观物体运动一个显著的不同就是概率是微观粒子 运动的内禀属性。 ◎20世纪量子力学建立并运用到其他领域如原子物理,原子核理 论,量子化学,固体理论,量子电子学,超导超流等理论,推 进人们对大自然各方面的认识。 其广泛应用导致了新技术迅猛的发展:半导体技术的应用,新 兴的信息产业 量子力学的应用还有很大的潜力有待我们进一步发掘。 我们首先来回顾一下20世纪初人们建立量子力学的过程\n...\n量子力学简介 19 世纪末 20 世纪初，牛顿力学，热力学统计物理以及电磁理 论对宏观世界的物理描述已经比较完善。 但是，随着人们对微观世界探索的深入，人们发现经典物理学 用来微观世界会遇到许多困难。 人们对经典物理不能处理的黑体辐射，光电效应，原子光谱的 深入研究，建立了描述微观世界粒子运动规律的量子力学。 微观粒子与宏观物体运动一个显著的不同就是概率是微观粒子 运动的内禀属性。 20 世纪量子力学建立并运用到其他领域如原子物理，原子核理 论，量子化学，固体理论，量子电子学，超导超流等理论，推 进人们对大自然各方面的认识。 其广泛应用导致了新技术迅猛的发展：半导体技术的应用，新 兴的信息产业。 量子力学的应用还有很大的潜力有待我们进一步发掘。 我们首先来回顾一下 20 世纪初人们建立量子力学的过程\n...\n宏观世界中的经典物理学： 20 世纪前发展起来的经典物理学 力学 (Mechanics):Newton(1643–1727) 三定律, 万有引力定律。 数学发展：Euler(1707–1783)，Lagrange(1736–1813), Hamilton(1805–1865), Jcobi(1804–1851). 精确描述宏观物体的机械运动：星体的轨道运动, 刚体，弹性 物体，流体流动，波动（水波，声波）等 广泛的应用：机械工程，工业革命\n...\n宏观世界中的经典物理学: 电磁理论 电现象和磁现象产生联系: Oersted和 Faraday 发展: Maxwell,电动力学( Electrodynamics),预言了电 磁波。 Hertz,实验上产生、接收电磁波,验证了 Maxwell的理论 题同图 光学( optIcs): Fresnel,光的波动理论, Hertz发现电磁波后 光波是电磁波的一种。 当时,电流被看成是运动的电荷,与力学产生了联系。电磁波 被认为与机械波类似,传播的介质以太( Aether)\n...\n当时,经典物理学对于宏观世界中物理现象的基本认识: ③物理现象的基本规律是决定论的。 ②能量动量等物理量的变化是连续变化的。例如,热力学的能量 传递,电磁场的能量吸收等。 ③由原子、分子构成的物质在本质上以粒子的形式存在,其运动 本质上是轨道运动。 电磁场本质上是以波动的形式存在和演化\n...\n300\n\n---\n\nTitle: 清华大学：《量子力学》课程教学资源（教案讲义）第零章 量子力学的历史渊源.doc_大学文库_中国高校课件下载中心\nURL: http://m.download.cucdc.com/wenku/7da25df3902c4746acab36bec0492aa7.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n量子力学 (基科41,42班,2006年春) 教材 曾谨言,量子力学教程,科学出版社,2003年第一版 参考书 1) Dirac P A.M., The Principles of Quantum Mechanics, 4th edition, Oxford University Press, 1958 (2)Kramers, H A, Quantum Mechanics, North-Holland Publishing Co, 1957 (3)Schiff L I, Quantum Mechanics, 3rd edition, McGraw-Hill, 1968 4)Landau L D. and Lifshitz E.M., Quantum Mechanics(Non-relativistic Theory), 3rd edition, Pergamon Press, 1977 (5)Cohen-Tannoudji C, Diu B and Laloe F, Quantum Mechanics, Vol. I& ll, John-Wiley sons (6) Sakurai JJ, editor Tuan S F, Modern Quantum Mechanics, The Benjamin/Cummings, 1985 (7)Greiner W, Quantum Mechanics, Springer-Verlag, 1989 (8)Liboff, R L, Introductory Quantum Mechanics, 3d edition, Addison-Wesley, 1998 (9) Griffiths, D.J., Introduction to Quantum Mechanics, 2nd edition, Pearson Prentice Hall, 200 (中文参考书就不列举了) 量子力学是近代物理学的基础。 量子力学改变了人们的物理观 经典物理的绝对性和近代物理的相对性 经典物理的决定性和近代物理的几率性 经典物理的直观性和近代物理的思辨性。 第零章量子力学的历史渊源 在历史上,量子力学的诞生来自三个方面的思想,即 Planck(普朗克)的光量子假说,Bohr(玻尔) 的原子结构模型和 de broglie(德布罗意)的物质波假说 1. Planck的光量子假说 1.1.黑体辐射的能量分布 黑体辐射的特征可以用“空窖辐射”的空间能量密度(单位体积中的辐射场能量)按频率(或波长) 的分布来描写。定义函数p(v)为 p(v)dv=空窖辐射的频率在v→v+dv内的空间能量密度 那么它只与温度有关,而与空腔的体积、形状、构成腔壁的物质种类等等都无关,所以一定是由基本物 理定律所决定的。Wien(维恩)、 Rayleigh(瑞利)和 Jeans(金斯)都曾经对ρ(v)的理论形式进行过 研究并提出了自己的公式,但是都和实验不符合。尤其是,从经典物理理论的角度看来, Rayleigh-Jea 公式是“无懈可击”的,但是它在高频(紫外)端却是发散的,这被称为“紫外灾难”。 提问:根据量纲分析,p(v)dv的经典表达式应该是什么样子?) 这个问题因 Planck提出了光量子假说而得以解决。 Planck假说(1900)是 频率为v的电磁辐射的能量以hv为单位(h是 Planck常数)不连续地变化。hv称为能量子或光 量子。 h的现代测量值( CODATA2002年的推荐值)是 h=66260693(11)×10-34Js 或者 hc a(5/4)meV mm=(5/4)eVum\n...\n- Hertz实验(1914)也证明了原子能量的不连续性 22.Bohr模型(1913 Bohr模型的基本假设: (1)电子在原子中只能沿某些特殊的轨道运动,当电子在这些轨道上时,既不发出也不吸收光辐 射(定态假设)。 (2)当电子由一个定态“跳”(跃迁)到另一个定态时会发出或吸收光辐射,其频率为: E1和E2为跃迁前、后的能量(跃迁假设) (3)电子在原子中的允许轨道满足下面的条件:它的轨道角动量是 h h 的整数倍(量孑化条件)。(在Bohr一开始的工作中假设的是“对应原理( correspondence principle)” 而轨道角动量的量子化是推论) 经典力学加Bohr假设导致氢原子能级为: E k2e+1 (n=1,2,3…) 其中是电子的约化质量,e是电子电荷绝对值, 。∫14,(SD (CGS 从这个表达式可以知道 Rydberg常数是 ukie 4rh'c 这个数值与实验完全符合 23. Sommerfeld(索末菲)量子化条件(1915) Sommerfeld把Bohr的量子化条件推广为:对于周期运动的自由度(q,p) 手pd=m,(m=1,2,3…)\n...\n们还是沿着 de broglie开创的路子引导大家进入量子力学的大门。但是平心而论, Heisenberg对量子力 学的诞生所做的贡献是非常重要的。 3. de broglie的物质波假说 1. de broglie假说(1923) Planck的“光量子假说” h p=h/λ, 或者写为 O,O是园频率=2zv, k,k是波矢量, 是由波动性决定粒子性 de broglie假说:微观粒子也有波动性 EbPh 称为 de broglie关系。是由粒子性决定波动性 它适用于自由粒子和平面浪之间的关系。平面波是 (r, D=Ae-(r-k-r) 代入 de broglie关系成为: P(r, t=Ae-i(Er-pr)n 这称为 de broglie波。可以“证明” de broglie波一定是复数波,但是指数上取正号或负号是一个约定。 对质量为m的非相对论粒子, E 所以 P 所以 de broglie波的波长是 对于电子 150 E 其中E的单位是电子伏特(eV),的单位是埃( angstrom,即10-0m,这是原子的尺度) (提问: de broglie波的相速度是多大?群速度是多大?) 3.2.微观粒子波动性的实验 波动性的体现就是衍射、干涉等等。通过观察这些现象还可以测量波长 Davisson- Germer(戴维孙-革末)电子衍射实验(1927)的结果证实了电子确实有波动性,而且波 长与 de broglie的预言完全一致。 此后,各种不同形式的以及使用不同粒子(电子、原子、分子、原子核、核子等,最近(1999年) 还使用了原子团簇C60)的粒子波动性实验都证实了 de broglie假说 所以,实验证明了在经典物理中被看作是“粒子”的那些微观客体,其实也有波粒二象性。 总之,我们应该说:波粒二象性是微观客体的共性,不论在经典物理中它们被看作是粒子(比如电 子)还是波(比如光辐射)。但是,二者在经典极限下显然有完全不同的表现,所以即使在微观世界中 它们也应该有一些本质的差别。我们以后将会看到:从量子力学的角度看来,这二者的差别在于所服从\n...\n4 们还是沿着 de Broglie 开创的路子引导大家进入量子力学的大门。但是平心而论，Heisenberg 对量子力 学的诞生所做的贡献是非常重要的。 3. de Broglie 的物质波假说 3.1. de Broglie 假说 (1923) Planck 的“光量子假说”    = = / , ,   p h E h 或者写为 E = ,  是园频率 = 2, p k = ,  k 是波矢量， k = 2 / ,  是由波动性决定粒子性。 de Broglie 假说：微观粒子也有波动性，  E  = ,    p k = , 称为 de Broglie 关系。是由粒子性决定波动性。 它适用于自由粒子和平面波之间的关系。平面波是： ( , ) e , i( t k r) r t A    − −   =  代入 de Broglie 关系成为： ( , ) e , i( )/     Et p r r t A − −   = 这称为 de Broglie 波。可以“证明”de Broglie 波一定是复数波，但是指数上取正号或负号是一个约定。 对质量为 m 的非相对论粒子， 2 , 2 p E m = 所以 p mE = 2 , 所以 de Broglie 波的波长是 2 h h p mE  = = . 对于电子， 150 , E   其中 E 的单位是电子伏特（eV），  的单位是埃（Ångström，即 10−10 m，这是原子的尺度）。 （提问：de Broglie 波的相速度是多大？群速度是多大？） 3.2. 微观粒子波动性的实验 波动性的体现就是衍射、干涉等等。通过观察这些现象还可以测量波长。 Davisson-Germer（戴维孙-革末）电子衍射实验（1927）的结果证实了电子确实有波动性，而且波 长与 de Broglie 的预言完全一致。 此后，各种不同形式的以及使用不同粒子（电子、原子、分子、原子核、核子等，最近（1999 年） 还使用了原子团簇 C60）的粒子波动性实验都证实了 de Broglie 假说。 所以，实验证明了在经典物理中被看作是“粒子”的那些微观客体，其实也有波粒二象性。 总之，我们应该说：波粒二象性是微观客体的共性，不论在经典物理中它们被看作是粒子（比如电 子）还是波（比如光辐射）。但是，二者在经典极限下显然有完全不同的表现，所以即使在微观世界中 它们也应该有一些本质的差别。我们以后将会看到：从量子力学的角度看来，这二者的差别在于所服从\n\n---\n\nTitle: 《量子力学》第一章 量子力学的诞生 Quantum Mechanics.ppt_大学文库_中国高校课件下载中心\nURL: http://m.download.cucdc.com/wenku/d8c5a2485b7a419ea4831772fc5d1e82.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n一、经典物理学的困难 二、早期量子论（1900——1924） 三、量子力学的发展历程 四、自由粒子波函数\n...\n第一章量子力学的诞生 经典物理学的困难 早期量子论(19001924) 三、量子力学的发展历程 四、自由粒子浪函数\n...\n第一章 量子力学的诞生 一、经典物理学的困难 二、早期量子论（1900——1924） 三、量子力学的发展历程 四、自由粒子波函数\n...\n、经典物理学的困难 1、20世纪初之前的物理学的成就 a机械运动——牛顿力学 b热运动——热力学和统计物理学 c.电磁现象—麦克斯韦方程组 d光学现象—波动光学\n...\n2、世纪之交实验物理学对理论物理学的挑战 1899年开尔文在欧洲科学家新年聚会的贺词中说: 物理学啃朗的天电上,飘着几朵令人不安的鸟云 迈克尔逊 光电效应 康普顿效应 莫雷实验 氢原子光谱 票体辐射 狭义相对论 量子力学\n...\n(1)迈克耳逊一莫雷实验 十八十九世纪时,人们认为“真空”中 存在着一种无所不在的物体称为“以太”, 光波应该通过以太传播 1887年,阿尔贝特迈克尔逊和爱德华莫 雷在克里夫兰的卡思应用科学学校进行了测量 以太速度的实验。但结果一无所获,从而证明 了以太不存在,说明了光速在真空中的不变性\n...\n室温以上\n...\n,低温时cT)下降,\n...\n(3)黑体辐射 个物体能全部吸 收透射在它上面的辐射 而无反射,这种物体称 为绝对黑体。\n...\n黑体的空腔模型 在一定温度下,当\n...\n辐射 处于平衡时,\n...\n单位面积所发出的辐射能 量与其吸收的辐射能量\n...\n平衡 时辐射能量密度按波长分布的曲线,其形状 和位置只\n...\n黑体的温度\n...\n与空腔\n...\n或形\n...\n维恩(Wien)由热力学的讨论,加上一些特殊 的假设得出一个分布公式,维恩公式: 3-CV/\n...\np,dv=Cve d 即随着温度升高,热辐射峰值向短波高频方向移动。 瑞利(\n...\n)和金斯( Jeans)根据经典电 动力学和统计物理学\n...\n得到一个黑体辐射能量分布 公式,瑞利一金斯公式: &TkT p, dv=Tvd\n...\n= di 2 可以看出这个公式对高频无效,因为此时能 量密度趋于无限大,这就是著名的紫外灾难\n...\n(4)光电效应 光的照射下, 金属中的电子吸收 光能而逸出金属表 G 面的现象称为光电 效应。 爱因斯坦于 1905年提出光量子 (光子)理论,成 功解释光电效应。 光电效应实验装置图\n\n---\n\nTitle: 量子力学建立的历史、表述方式 - 专知\nURL: https://www.zhuanzhiai.com/document/7d43046462977ba2f7ad42917f331d5d\nPublished: 2018-03-01T00:00:00.000Z\nAuthor: N/A\nHighlights:\n量子力学的研究对象是原子、分子这一层次的微观粒子.在这一层次中，电子的量子物理特别重要.因为正是在那些电子的量子轨道得以形成的特殊关节点上，自然界产生了它的原子、原子基团、分子以及有生命的物体.因此，量子力学成为理论物理、固体物理、量子化学的重要理论基础，也是半导体、激光等新技术的理论基础.为了更好地学习这门课程，简单追述一下量子力学建立的历史和量子力学的四种表述方式的各自特点是有必要的.\n...\n1900年，德国物理学家普朗克(Planck)为了解释黑体辐射能量曲线，提出能量的重要概念.他认为：辐射就其能量而言，是不连续的，是一份一份地进行.每份具有能量hν，称为能量子.\n...\n1905年，在瑞士专利局任检查员的爱因斯坦(Einstein)为了解释光电效应，发展了普朗克的能量子的概念.普朗克没有回答一份份的能量是怎样发射的；能量是平均分配到空间，还是向着一个方向发射.爱因斯坦认为，每份能量集中在一起，以光速c向一个方向传播，就像射出的子弹一样，这就是光量子，简称光子.1923年，美国物理学家康普顿(Compton)成功地实现了光子同电子的碰撞.从此，光既是波又是粒子这样一个二象共存的图像开始被人们接受.\n...\n1913年，丹麦青年物理学家玻尔(Bohr)为了解释氢原子的线状光谱，提出了稳定的氢原子模型.他认为电子在原子中不可能沿着经典物理所允许的轨道运动，而只能沿着量子条件所允许的一组特殊轨道运动.玻尔轨道是圆形轨道，后经德国物理学家萨默菲尔德(Sommer field)修改为椭圆轨道，这就是旧量子论.旧量子论虽然成功地解释了氢原子光谱的实验数据，但是对稍为复杂一点的问题就感到束手无策.另外，理论本身也存在逻辑上的矛盾——连续的经典轨道和不连续的量子条件机械地拼凑在一起.\n...\n旧量子论的缺陷，使人们认识到简单地引入量子概念不能把矛盾全部解决.为了把握微观世界，必须对经典物理作彻底改造.\n...\n1923年，在法国巴黎大学理学院读博士研究生的德布罗意(de Broglie)受爱因斯坦相对论思想的启发，思考到当光子的固有质量不为零，情形将怎样?虽然这种带有固有质量的光子的概念不为人们接受，但它却使德布罗意有了一个重要的发现，因为这样的“光子”同物质粒子类似.既然光有二象性，物质粒子为什么没有呢?德布罗意将这种思想于1924年写入了他的博士论文中.他写道：“整个世纪以来，在光学上，比起波动的研究方法来是过于忽略了粒子的研究方法；在物质的理论上，是否发生了相反的错误?是不是我们把粒子的图像想得太多，而过分忽略了波的图像呢?”这就是德布罗意物质波的假说.\n...\n德布罗意的物质波于1927年被美国贝尔实验室的戴维孙(Davisson）和革末（Germer)的意外实验所证实.\n...\n1925年底，德布罗意的物质波虽然还未被实验证实，但由于爱因斯坦的赞词，受到了瑞士苏黎世大学教授薛定谔的关注.在此之前，薛定谔在给库兰特和布尔伯特即将出版的《数学物理方法》一书写书评时，从中学到了本征值.因此，当他接受了德布罗意关于物质粒子(如电子)具有波粒二象性的见解之后，在几个月内，也就是1926年1月，就把他的关于氢原子的波动力学的论文交付出版界.量子力学的另一分支——矩阵力学于1925年7月问世，是由海森堡(Heisenberg)等创立的.年仅二十出头的海森堡早在德国哥廷根大学读书时，就从他的老师玻恩(Born)和萨默菲尔德那里学习了旧量子论.他看到了旧量子论的严重困难，决心自己另起炉灶.\n...\n他发现：一个粒子的运动能用两组量p、q来规定.他把p、q用两个方格表(矩阵)来代替，并且让p×q≠q×p，就能得到光谱上的组合定律和玻尔频率条件.当时，海森堡并不知道他的方格表就是矩阵，但是在他的同学乔丹(Jordan)及老师玻恩的帮助下，很快把他的发现用矩阵论的形式表示出来，成为矩阵力学的最初形式.1925年，海森堡去英国剑桥访问，把自己的发现告诉了和他年龄相仿的狄拉克(Dirac).狄拉克对他的矩阵并不感兴趣，但从他的巨大的方格表中提取了精华——pq≠qp.经过计算，他发现了一个惊人的巧合，那就是根据经典理论算出的泊松括号［q,p］的值，乘以ih与qp-pq的值一样.因此，他定义了算子q、p，并建立了它们的量子泊松括号.由此出发，几乎和薛定谔同时完成了自己对氢原子的独特的解法.\n...\n不到一年，量子理论的三种表述：波动力学、矩阵力学和算子力学(狄拉克的理论，常称为算子力学)相继问世.这三种理论不是互相无关的.1926年3月，薛定谔证明，矩阵力学可以纳入他的波动力学之中，且自认为他的理论也能吞并狄拉克的理论.但到1928年，人们终于公认是狄拉克的理论吞并了一切.薛定谔的理论和海森堡的理论只不过是他的抽象的算子力学的两个表象而已.而且在1928年，狄拉克也完成了他的电子相对论波动方程，并预言了正电子的存在.两年后，美国科学家安德森(Anderson)发现了正电子.这样从1924年到1928年，前后经过四年的时间完成了量子力学的建立工作.\n...\n1927年，海特勒(Heitler)和伦敦(London)首次把量子力学用到氢分子上获得成功，揭开了量子化学的序幕.\n...\n波动力学抓住了微观粒子的波粒二象性这一特殊本质，从内容上对经典力学加以改造；矩阵力学抓住了微观领域的基本现象(如光谱组合原则)，在形式上对经典力学加以改造；而狄拉克的理论主要是凭借着泊松括号来建立他的理论体系，概括性更强.\n...\n量子力学的第四种表述是1947年问世的范曼(Feynman)途径积分，出于美国科学家范曼之手.范曼途径积分在基本粒子的研究上是非常强有力的工具.我们的课程不涉及这方面的内容.《量子力学讲义》是唐敖庆院士留下的宝贵财富和重要的学术资料.出版这份资料作为对唐老的纪念和缅怀.张明瑜、张红星、郑清川、贾然、战久宇参加了《量子力学讲义》的整理和校对工作，在此表示感谢.《量子力学讲义》未经唐老本人审阅，书中存在的问题和不当之处是我们的过失.\n...\n《量子力学讲义》根据唐敖庆院士1978年在全国量子化学研修班的讲稿整理而成。全书共12章，分别讲述薛定谔方程、本征值和本征函数、分立谱、表象理论、量子条件、运动方程、初等应用、微扰理论、碰撞问题、相同粒子体系、辐射理论和电子的相对论方程。\n...\n编辑：安 静）",
+      "title": "Web search: 写几页关于量子力学如何起步的内容",
+      "metadata": {},
+      "time": {
+        "start": 1789528655695,
+        "end": 1789528659509
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.525Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528659525,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a8385641001AoZxQMEjHFoPDK",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838459a001utJEDAufzMhy83",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8513,
+      "output": 61,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8574,
+      "headroom": 30282,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.527Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.528Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.530Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.530Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.531Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.531Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.532Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.532Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.532Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.533Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.566Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8574,
+  "providerTokens": 8574,
+  "estimatedInputTokens": 14329,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8513,
+    "cacheRead": 0,
+    "output": 61
+  },
+  "overflow": false,
+  "headroom": 30282,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.566Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.566Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.571Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:39.572Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.212Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528660212,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a83858f3001QNKLMtBE6gSMIT",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838566e001NVd5ZNgl83so0t",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528660213,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a83858f5001knX9chV0tzSGIY",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838566e001NVd5ZNgl83so0t",
+    "type": "tool",
+    "callID": "call_37f7aa104f7bd1c6",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528660213,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a83858f4001nH5cya6HKJ6acX",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838566e001NVd5ZNgl83so0t",
+    "type": "text",
+    "text": "我来打开 https://psr.pku.edu.cn/rxx/publications/SP/QM100.pdf，读取其中的内容。",
+    "time": {
+      "start": 1789528660213,
+      "end": 1789528660213
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528660213,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a83858f5001knX9chV0tzSGIY",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838566e001NVd5ZNgl83so0t",
+    "type": "tool",
+    "callID": "call_37f7aa104f7bd1c6",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://psr.pku.edu.cn/rxx/publications/SP/QM100.pdf"
+      },
+      "time": {
+        "start": 1789528660213
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528660652,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a83858f5001knX9chV0tzSGIY",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838566e001NVd5ZNgl83so0t",
+    "type": "tool",
+    "callID": "call_37f7aa104f7bd1c6",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://psr.pku.edu.cn/rxx/publications/SP/QM100.pdf"
+      },
+      "error": "Error: Response too large (exceeds 5MB limit)",
+      "time": {
+        "start": 1789528660213,
+        "end": 1789528660649
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528660652,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "message": "Error: Response too large (exceeds 5MB limit)",
+  "error": "Error: Response too large (exceeds 5MB limit)"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528660655,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a8385aad001PKFvv4LR1J7NCt",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a838566e001NVd5ZNgl83so0t",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 28075,
+      "output": 152,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 28227,
+      "headroom": 10629,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.658Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.661Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.661Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.661Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.661Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.662Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.662Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.667Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 28227,
+  "providerTokens": 28227,
+  "estimatedInputTokens": 14355,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 28075,
+    "cacheRead": 0,
+    "output": 152
+  },
+  "overflow": false,
+  "headroom": 10629,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.668Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.668Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.671Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.673Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528660891,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a8385b9a001nuJlQ0DEZ1sOPO",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a8385abc0014JzR6GMwYD4uW0",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528660891,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a8385b9b001r37A1nqxYe9eq4",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a8385abc0014JzR6GMwYD4uW0",
+    "type": "text",
+    "text": "命令失败：Error: Response too large (exceeds 5MB limit)\n\n我在处理此请求时检测到故障。需要我用诊断上下文准备问题报告吗？请回复 `Report issue`。",
+    "time": {
+      "start": 1789528660891,
+      "end": 1789528660891
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.892Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528660892,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "part": {
+    "id": "prt_0a8385b9b002P8dSjWkbTkiFQH",
+    "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+    "messageID": "msg_0a8385abc0014JzR6GMwYD4uW0",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 28186,
+      "output": 102,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 28288,
+      "headroom": 10568,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.892Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.892Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.892Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.892Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.893Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.894Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.894Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.894Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528660895,
+  "sessionID": "ses_f57c7bae5ffeVR1Yeaw6qDTSm1"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.895Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.895Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.beSA9yQpm7",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.895Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.beSA9yQpm7",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.895Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.beSA9yQpm7",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:40.895Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

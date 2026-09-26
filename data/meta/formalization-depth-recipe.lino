@@ -1,0 +1,41 @@
+formalization_depth_meta_recipe
+  record_type meta_recipe
+  topic deep_formalization
+  issue 1138
+  title "Deep requirement formalization"
+  summary "Machine-readable recipe for deep formalization (issue #1138 B4): a document the formalizer does not already know is segmented by script, every surface it cannot ground becomes an explicit need, plan 01's registry lookup satisfies the needs it can from captured trusted sources, a grounded gloss is itself formalized at the next depth up to the declared bound, and what survives is a concept graph with provenance — never a preserved sentence reported as understanding. tests/unit/specification/formalization_depth_meta_algorithm.rs asserts the live source still matches every function and consumer listed here, so this file always describes how deep formalization was actually produced."
+  generalization "To formalize an unfamiliar document deeply, instantiate the six ordered steps below in every registered language: segment the document into sentences and clauses with exact spans, emit one need per unresolved surface, satisfy the needs through the source registry within the declared bounds, ground each retrieved sense as a concept with genus and differentiae, extract an ordered procedure when the text carries one, and project the whole thing into one concept graph whose identity is language-independent. A need no source grounds is reported unsatisfiable with its exact source span; recursion stops at the bound as an explicit report, never a truncated answer."
+  segmenter src/formalization/segment.rs
+  needs src/formalization/needs.rs
+  lookup src/concept_lookup.rs
+  concepts src/formalization/concepts.rs
+  procedures src/formalization/procedures.rs
+  concept_links src/formalization/concept_links.rs
+  consumer src/agentic_coding/formalize.rs
+  consumer src/agentic_coding/formalization_recipe.rs
+  consumer src/coding/concept_discovery.rs
+  consumer src/coding_research_learning.rs
+formalization_depth_step_segment
+  record_type meta_step
+  order 1
+  function sentences
+formalization_depth_step_emit_needs
+  record_type meta_step
+  order 2
+  function emit_needs
+formalization_depth_step_satisfy
+  record_type meta_step
+  order 3
+  function satisfy_needs
+formalization_depth_step_ground_concepts
+  record_type meta_step
+  order 4
+  function concept_from_sense
+formalization_depth_step_extract_procedures
+  record_type meta_step
+  order 5
+  function procedure_from_steps
+formalization_depth_step_project
+  record_type meta_step
+  order 6
+  function formalize_deeply

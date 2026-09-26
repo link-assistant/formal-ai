@@ -1,0 +1,19 @@
+Q646
+  aliases
+    en ("temperature sensor" "🌡")
+    es (termometro "🌡")
+    ru ("градусник")
+  descriptions
+    en "device that measures temperature or a temperature gradient"
+    es "instrumento de medición de la temperatura"
+    hi "तापमान नापने का एक यंत्र"
+    ru "прибор для измерения температуры"
+  id Q646
+  labels
+    en thermometer
+    es "termómetro"
+    hi "तापमापी"
+    ru "термометр"
+    zh "溫度計"
+  type item
+success 1

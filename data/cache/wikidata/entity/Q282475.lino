@@ -1,0 +1,34 @@
+Q282475
+  aliases
+    en ("Kingdom of Kartli and Kakheti" Kartli-Kakheti)
+  descriptions
+    en "Georgian kingdom"
+    es "Reino Georgiano"
+    ru "грузинское государственное образование, созданное в 1762 году"
+    zh "格鲁吉亚的王国"
+  id Q282475
+  labels
+    en "Kingdom of Kartli-Kakheti"
+    es "Reino de Kartli-Kajetia"
+    ru "Картли-Кахетинское царство"
+    zh "卡尔特利-卡赫蒂王国"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Kingdom of Kartli-Kakheti"
+    eswiki
+      site eswiki
+      title "Reino de Kartli-Kajetia"
+    ruwiki
+      site ruwiki
+      title "Картли-Кахетинское царство"
+    zhwiki
+      site zhwiki
+      title "卡爾特利-卡赫蒂王國"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

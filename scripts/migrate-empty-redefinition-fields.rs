@@ -31,7 +31,7 @@
 //! The migration walks the *entire* `data/seed` tree (not one file) and strips
 //! the trailing colon from every `^\s*[A-Za-z0-9_.-]+:\s*$` line. Browser builds
 //! read the canonical seed via `scripts/sync-seed.sh` and
-//! `src/web/seed_loader.js`. The transform is lossless and idempotent.
+//! `js/seed_loader.js`. The transform is lossless and idempotent.
 //!
 //! Run with `rust-script scripts/migrate-empty-redefinition-fields.rs`
 //! (std-only; can also be compiled directly with `rustc`).

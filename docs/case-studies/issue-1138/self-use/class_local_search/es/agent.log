@@ -1,0 +1,2186 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.863Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.863Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Busca la carpeta hive-mind-control-center en mi escritorio. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CNCGU0oFSs",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.863Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CNCGU0oFSs",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.864Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CNCGU0oFSs",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.873Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Busca la carpeta hive-mind-control-center en mi escritorio.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Busca la carpeta hive-mind-control-center en mi escritorio.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.873Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.874Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.874Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.874Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.877Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.878Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CNCGU0oFSs/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.880Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7680,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.880Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.894Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:20:19.898Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.898Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.898Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.898Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.898Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.898Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.898Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.899Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 25,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.899Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:20:19.899Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.903Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.903Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.903Z",
+  "service": "session",
+  "id": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CNCGU0oFSs",
+  "title": "New session - 2026-09-16T03:20:19.903Z",
+  "time": {
+    "created": 1789528819903,
+    "updated": 1789528819903
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.904Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.904Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.904Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.904Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.904Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c53740ffesy100TRVnBYTJ2/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.904Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c53740ffesy100TRVnBYTJ2/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.907Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c53740ffesy100TRVnBYTJ2/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.908Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.911Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.911Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.911Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.912Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.912Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.912Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.912Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.912Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.912Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.912Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.050Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.052Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.053Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.060Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.070Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.070Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.070Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.070Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.510Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528820510,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83acb1c001nDfyHb58Zh2bf2",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ac9540018KsDnSI5feW36O",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.511Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.511Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528820511,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83acb1f001USJ59EVJfsqQ2g",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ac9540018KsDnSI5feW36O",
+    "type": "tool",
+    "callID": "call_979cb4adee7d6743",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.511Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528820511,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83acb1e001pXq4aZ01PrJhYk",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ac9540018KsDnSI5feW36O",
+    "type": "text",
+    "text": "Let me search the web for Busca la carpeta hive-mind-control-center en mi escritorio.",
+    "time": {
+      "start": 1789528820511,
+      "end": 1789528820511
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:20.512Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528820512,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83acb1f001USJ59EVJfsqQ2g",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ac9540018KsDnSI5feW36O",
+    "type": "tool",
+    "callID": "call_979cb4adee7d6743",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Busca la carpeta hive-mind-control-center en mi escritorio"
+      },
+      "time": {
+        "start": 1789528820511
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.086Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528822086,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83acb1f001USJ59EVJfsqQ2g",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ac9540018KsDnSI5feW36O",
+    "type": "tool",
+    "callID": "call_979cb4adee7d6743",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Busca la carpeta hive-mind-control-center en mi escritorio"
+      },
+      "output": "Title: La carpeta Hive – Portal del cliente de soporte\nURL: https://spideroak.support/hc/es/articles/115001892226-La-carpeta-Hive\nPublished: 2025-07-23T00:00:00.000Z\nAuthor: N/A\nHighlights:\nLa carpeta Hive – Portal del cliente de soporte\n...\ndatos con SpiderOak One\n...\nTodo lo que colo\n...\nentre todas las computadoras de\n...\nCuando instalas la aplicación, Hive aparecerá automáticamente en tu escritorio.\n\n---\n\nTitle: Conoce HiveMind - Tu asistente de IA | Hive\nURL: https://hive.com/es/hivemind/\nPublished: 2023-01-01T10:37:26.000Z\nAuthor: N/A\nHighlights:\nConoce HiveMind - Tu asistente de IA | Hive\n\n---\n\nTitle: docs/guides/configuracion.md\nURL: https://github.com/johpaz/hive/blob/master/docs/guides/configuracion.md\nPublished: N/A\nAuthor: N/A\nHighlights:\nHive resuelve su directorio en este orden:\n...\n1. `HIVE_HOME`, si está definido.\n2. `.hive-dev` dentro del directorio actual cuando `HIVE_DEV=true` o `1`.\n3. `~/.hive`.\n...\nDentro se almacenan `.env`, `.auth_token`, HiveDB, logs, workspace, credenciales de canales y artefactos. No copies este directorio a control de versiones.\n...\n| Variable | Uso | Valor por defecto |\n|---|---|---|\n| `HIVE_HOME` | Directorio de datos | `~/.hive` |\n| `HIVE_HOST` | Dirección del gateway | `127.0.0.1` |\n| `HIVE_PORT` | Puerto HTTP/WebSocket | `18790` |\n| `HIVE_AUTH_TOKEN` | Token Bearer y clave de recuperación | generado al arrancar |\n| `HIVE_LOG_LEVEL` | `debug`, `info`, `warn` o `error` | `info` |\n| `HIVE_PUBLIC_URL` | URL pública usada por integraciones | no definida |\n| `HIVE_HARNESS_MAX_CONCURRENCY` | Concurrencia global | `4` |\n| `HIVE_HARNESS_TASK_TIMEOUT_MS` | Límite de una tarea durable | 30 minutos |\n| `HIVE_HARNESS_JOB_MAX_RETRIES` | Reintentos de jobs | `3` |\n\n---\n\nTitle: hivemind/apps/hivemind-desktop at main · hivemind-os/hivemind · GitHub\nURL: https://github.com/hivemind-os/hivemind/tree/main/apps/hivemind-desktop\nPublished: 2026-04-12T20:44:48.000Z\nAuthor: hivemind-os\nHighlights:\nhivemind/apps/hivemind-desktop at main · hivemind-os/hivemind · GitHub\n...\n# hivemind-desktop\n...\n# hivemind-desktop\n...\nCross-platform desktop UI for HiveMind OS, a privacy-aware desktop AI agent. Built with Tauri v2 and SolidJS.\n...\n```\nhivemind-desktop/\n├── package.json          # Frontend deps (solid-js, @tauri-apps/api)\n├── vite.config.ts\n├── tsconfig.json\n├── src/\n│   ├── index.tsx         # Entry point\n│   ├── App.tsx           # Root component\n│   └── styles.css\n└── src-tauri/\n    ├── Cargo.toml        # Tauri + hivemind bridging crates\n    └── src/\n        ├── main.rs       # Tauri window bootstrapping\n        └── lib.rs        # Command handlers (~40 invokable commands)\n\n```\n\n---\n\nTitle: docs/guides/instalacion.md\nURL: https://github.com/johpaz/hive/blob/master/docs/guides/instalacion.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n## App de escritorio\n...\nLa app de escritorio (Windows, macOS, Linux) no requiere Bun, Docker ni Git: es un shell [Tauri](https://tauri.app) que trae el gateway embebido como proceso secundario y lo levanta al abrir la ventana.\n...\nDescarga el instalador de tu sistema desde la [última versión](https://github.com/johpaz/hive/releases/latest):\n...\n| Sistema | Instaladores |\n|---|---|\n| Windows | `Hive Agents_<versión>_x64-setup.exe`, `Hive Agents_<versión>_x64_en-US.msi` |\n| macOS | `Hive Agents_<versión>_x86_64.dmg`, `Hive Agents_<versión>_aarch64.dmg` |\n| Linux | `Hive Agents_<versión>_amd64.deb`, `Hive Agents-<versión>-1.x86_64.rpm`, `Hive-<versión>-linux-x86_64.flatpak` |\n...\n1. Detén Hive con `hive stop`.\n2. Copia el directorio completo indicado por `HIVE_HOME` —por defecto `~/.hive`—.\n3. Instala 1.0.0.\n4. Ejecuta `hive migrate`.\n5. Ejecuta `hive doctor`.\n6. Arranca con `hive start` y revisa agentes, canales y servidores MCP.\n\n---\n\nTitle: @johpaz/hive - npm\nURL: https://www.npmjs.com/package/@johpaz/hive\nPublished: N/A\nAuthor: N/A\nHighlights:\nSQLite (`agents\n...\nmomento, todas las operaciones\n...\nTodos los datos (base de datos, configuración, logs) se guardan en`~/.hive/`:\n...\n```\n~/.hive/                         # Windows: C:\\Users\\TU_USUARIO\\.hive\\\n├── data/\n│   └── hive.db        ← SQLite (agentes, conversaciones, config)\n├── ui/                ← archivos de la interfaz web\n├── logs/\n│   └── gateway.log\n└── gateway.pid\n\n```\n\n---\n\nTitle: GitHub - johpaz/hive at v0.0.25 · GitHub\nURL: https://github.com/johpaz/hive/tree/v0.0.25\nPublished: 2026-03-11T16:50:50.000Z\nAuthor: johpaz\nHighlights:\nTodos los datos (base de datos, configuración, logs) se guardan en`~/.hive/`:\n...\n```\n~/.hive/                         # Windows: C:\\Users\\TU_USUARIO\\.hive\\\n├── data/\n│   └── hive.db        ← SQLite (agentes, conversaciones, config)\n├── ui/                ←\n...\nde la interfaz web\n├── logs/\n│   └──\n...\n.log\n└──\n\n---\n\nTitle: README.md\nURL: https://github.com/johpaz/hive/blob/632c2471/README.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n1. Abre la UI: `http://localhost:18790`\n2. Ve a **Configuración del Agente** (o crea tu agente si es la primera vez)\n3. En el campo **Workspace**, configura el subdirectorio que quieres:\n - `/host/home` — todo tu home\n - `/host/home/Documentos` — solo carpeta Documentos\n - `/host/home/Proyectos` — solo carpeta Proyectos\n...\nEl path se guarda\n...\nSQLite (`agents.workspace`). A\n...\nmomento, todas las operaciones de\n...\na ese directorio por\n...\nTodos los datos (base de datos, configuración, logs) se guardan en `~/.hive/`:\n...\n```\n~/.hive/                         # Windows: C:\\Users\\TU_USUARIO\\.hive\\\n├── data/\n│   └── hive.db        ← SQLite (agentes, conversaciones, config)\n├── ui/                ← archivos de la interfaz web\n├── logs/\n│   └── gateway.log\n└── gateway.pid\n...\nqueda instalado globalmente\n...\npero **todos los datos viven en `~/.hive/`** — agentes, conversaciones, configuración, API keys. Para llevarlos a otro equipo basta con copiar esa",
+      "title": "Web search: Busca la carpeta hive-mind-control-center en mi escritorio",
+      "metadata": {},
+      "time": {
+        "start": 1789528820511,
+        "end": 1789528822085
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528822088,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad1470010YX6AyWBonK0cD",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ac9540018KsDnSI5feW36O",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8555,
+      "output": 164,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8719,
+      "headroom": 30137,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.089Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.089Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.090Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.091Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.091Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.091Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.091Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.091Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.095Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8719,
+  "providerTokens": 8719,
+  "estimatedInputTokens": 1822,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8555,
+    "cacheRead": 0,
+    "output": 164
+  },
+  "overflow": false,
+  "headroom": 30137,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.096Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.098Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.099Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.760Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528822760,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad3e6001rNOzSuFNSX0mra",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad14f0012ccGF93P68naUt",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.760Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528822761,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad3e9001s2C3CIKTPHJxn1",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad14f0012ccGF93P68naUt",
+    "type": "tool",
+    "callID": "call_0b21c8bf5bc25f5b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528822761,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad3e8001Kq7dl7vwcqz1IP",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad14f0012ccGF93P68naUt",
+    "type": "text",
+    "text": "Let me open https://spideroak.support/hc/es/articles/115001892226-La-carpeta-Hive and read what it says.",
+    "time": {
+      "start": 1789528822761,
+      "end": 1789528822761
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:22.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528822761,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad3e9001s2C3CIKTPHJxn1",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad14f0012ccGF93P68naUt",
+    "type": "tool",
+    "callID": "call_0b21c8bf5bc25f5b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://spideroak.support/hc/es/articles/115001892226-La-carpeta-Hive"
+      },
+      "time": {
+        "start": 1789528822761
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.726Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528823727,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad3e9001s2C3CIKTPHJxn1",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad14f0012ccGF93P68naUt",
+    "type": "tool",
+    "callID": "call_0b21c8bf5bc25f5b",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://spideroak.support/hc/es/articles/115001892226-La-carpeta-Hive"
+      },
+      "output": "La carpeta Hive &ndash; Portal del cliente de soporte\n\n  \n\n\n  \n\n\n\n\n\n\n\n\n\n\n  \n    \n    \n  \n\n  \n\n    \n\n\n\n  \n  \n  \n\n  \n\n\n  \n    \n      \n    \n  \n  \n    \n    \n      \n      Return to SpiderOak.com\n      Enviar una solicitud\n    \n\n  \n\n\n\n    \n\n  \n    \n  \n    \n      \n        Portal del cliente de soporte\n      \n    \n  \n    \n      \n        Guía de primeros pasos\n      \n    \n  \n\n\n    \n\n  \n\n  \n    \n      \n        Artículos en esta sección\n        \n          \n            \n              Instalar ONE y crear una cuenta\n            \n          \n            \n              Agregar un nuevo dispositivo a una cuenta ONE\n            \n          \n            \n              Selección de datos para la copia de seguridad\n            \n          \n            \n              Gestión de archivos\n            \n          \n            \n              Sincronizando sus datos\n            \n          \n            \n              Descargar tus archivos con SpiderOak One\n            \n          \n            \n              La carpeta Hive\n            \n          \n            \n              Enviar archivos a otros\n            \n          \n            \n              Plataformas y sistemas operativos compatibles\n            \n          \n            \n              Actualización de SpiderOak One\n            \n          \n        \n        \n      \n    \n\n    \n      \n        \n          La carpeta Hive\n          \n        \n\n        \n          \n            \n              \n            \n            \n          \n          \n            \n              Adam Tervort\n            \n\n            \n              \n                23 de julio de 2025 12:04\n                Actualización\n              \n            \n          \n        \n\n      \n\n      \n        \n          ¿QUÉ ES LA CARPETA HIVE?\nHive es la forma más sencilla de hacer una copia de seguridad de sus datos con SpiderOak One. Todo lo que coloques en la carpeta Hive se respaldará en nuestros servidores y se sincronizará entre todas las computadoras de tu cuenta.\nCuando instalas la aplicación, Hive aparecerá automáticamente en tu escritorio.\n\n¿CÓMO UTILIZO LA CARPETA HIVE?\nArrastra y suelta los archivos que deseas respaldar dentro de Hive. La aplicación comenzará de inmediato a respaldar estos archivos y a mantenerlos sincronizados. Así de simple.\n\nSi ya no deseas que un archivo esté respaldado, muévelo fuera de Hive. La aplicación moverá la copia respaldada a la papelera de elementos eliminados (Deleted Items bin) de ese dispositivo, donde permanecerá hasta que la elimines manualmente.\nPor ejemplo, si mueves una carpeta a tu Hive en tu laptop del trabajo, esa misma carpeta se creará en Hive en tu computadora de escritorio en casa. Si editas un archivo en Hive desde tu computadora de escritorio en casa, esos mismos cambios se reflejarán en el archivo dentro del Hive de tu laptop del trabajo.\nPara mantener la simplicidad, Hive no puede moverse ni cambiar de nombre. En lugar de mover o renombrar Hive, utiliza una Sync, que puede hacer que cualquier carpeta en tu computadora funcione como Hive y puede tener cualquier nombre.\n\n          \n            \n              \n            \n          \n        \n      \n\n      \n        \n          \n  \n    Facebook\n    Twitter\n    LinkedIn\n  \n\n\n          \n        \n\n        \n          ¿Tiene más preguntas? Enviar una solicitud\n        \n       \n        \n          Regresar al inicio\n        \n      \n\n      \n        \n        \n  \n    \n      Artículos relacionados\n    \n    \n      \n        \n          Sincronizando sus datos\n        \n      \n        \n          Instalar ONE y crear una cuenta\n        \n      \n        \n          Gestión de archivos\n        \n      \n        \n          Agregar un nuevo dispositivo a una cuenta ONE\n        \n      \n        \n          Selección de datos para la copia de seguridad\n        \n      \n    \n  \n\n\n      \n \n  \n\n  \n  \n    Portal del cliente de soporte\n\n    \n      \n        \n          \n            Español\n          \n          \n            \n              \n                English (United States)",
+      "title": "https://spideroak.support/hc/es/articles/115001892226-La-carpeta-Hive (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528822761,
+        "end": 1789528823726
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528823727,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad7af001DKoqafVV212Fav",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad14f0012ccGF93P68naUt",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 14460,
+      "output": 207,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 14667,
+      "headroom": 24189,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.728Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.728Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.729Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.729Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.729Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.729Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.729Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.729Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.731Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 14667,
+  "providerTokens": 14667,
+  "estimatedInputTokens": 2521,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 14460,
+    "cacheRead": 0,
+    "output": 207
+  },
+  "overflow": false,
+  "headroom": 24189,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.732Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.733Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.734Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.994Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528823994,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad8ba001qWnFMu0mnFU6sD",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad7b3001SWJAa6F6zFGAzq",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.995Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.995Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528823995,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad8bb0017EwMP4OJ1sp6zz",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad7b3001SWJAa6F6zFGAzq",
+    "type": "tool",
+    "callID": "call_199d37303f9ba947",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.995Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528823995,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad8ba002caviIc8xZbv5J2",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad7b3001SWJAa6F6zFGAzq",
+    "type": "text",
+    "text": "Let me open https://hive.com/es/hivemind/ and read what it says.",
+    "time": {
+      "start": 1789528823995,
+      "end": 1789528823995
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:23.995Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528823995,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad8bb0017EwMP4OJ1sp6zz",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad7b3001SWJAa6F6zFGAzq",
+    "type": "tool",
+    "callID": "call_199d37303f9ba947",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://hive.com/es/hivemind/"
+      },
+      "time": {
+        "start": 1789528823995
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.567Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528825567,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ad8bb0017EwMP4OJ1sp6zz",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad7b3001SWJAa6F6zFGAzq",
+    "type": "tool",
+    "callID": "call_199d37303f9ba947",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://hive.com/es/hivemind/"
+      },
+      "output": "---\ntitle: Buzz AI – Tu asistente ejecutivo 24/7 para flujos de trabajo y contenido\ndescription: Conoce Buzz AI, tu asistente ejecutivo disponible las 24 horas, los 7 días de la semana. Automatiza flujos de trabajo, gestiona proyectos, genera contenido y optimiza tu trabajo, todo en un solo lugar.\npublished: \"Sep 14, 2026, 5:57 PM UTC\"\n---\n\n# Un Buzz, infinitas habilidades.\n\nUna inteligencia persistente para tu espacio de trabajo. Que aporta memoria, contexto y la habilidad adecuada a cada tarea.\n\n[Prueba Buzz](https://auth.hive.com/buzz-ai/?utm_source=hive_website&utm_medium=landing_page&utm_campaign=buzz&utm_content=hero_get_started)\n\n[Ver introducción](https://hive-3.wistia.com/medias/le6dnpn7wi)\n\nPregúntale a Buzz cualquier cosa…\n\nResume las actualizaciones del proyecto de esta semana y redacta un correo electrónico de estado para las partes interesadas\n\n¡Hecho! He revisado 23 acciones en 4 proyectos. Aquí tienes tu resumen de estado:\n\n\\> ✅ 18 completadas · 🔄 3 en curso · ⚠️ 2 en riesgo\\\n\\> He redactado el correo electrónico y lo he adjuntado a tu acción. ¿Quieres que lo envíe?\n\nÚnete a estos equipos de rápido crecimiento\n\nCapacidades\n\n## Todo lo que hace un gran  compañero de equipo. Y más.\n\nBuzz no es un chatbot. Es una IA que entiende tus proyectos, tu gente, tus objetivos y luego pasa a la acción.\n\n¿Dónde guarda marketing los logotipos?\n\nResponde a cualquier pregunta\n\nPregunta por el estado del proyecto, los plazos, los bloqueos o la capacidad del equipo. Buzz conoce tu espacio de trabajo al dedillo.\n\nCrea una presentación de CS\n\nRedactar y editar contenido\n\nCorreos electrónicos, informes de estado, descripciones, agendas de reuniones. Buzz lo escribe, tú lo revisas. Segundos, no horas.\n\nResume mi reunión\n\nResume cualquier cosa\n\nObtén resúmenes instantáneos de acciones, proyectos, notas y conversaciones. No vuelvas a perder el contexto.\n\nCrear acciones a partir de la reunión\n\nAutomatiza flujos de trabajo\n\nConvierte las tareas repetitivas en comandos de una sola línea. Buzz crea acciones y actualiza estados.\n\nRedáctame textos para una página web\n\nHacer una lluvia de ideas contigo\n\n¿Necesitas ideas? Buzz es un socio creativo: conceptos de campaña, planes de proyecto y estrategias para resolver problemas.\n\nHaz que mi correo electrónico suene profesional\n\nGestiona tu correo electrónico\n\nConvierte correos electrónicos en tareas, redacta respuestas, resume hilos. Tu bandeja de entrada, domada por la IA.\n\n[Comenzar](https://auth.hive.com/buzz-ai/?utm_source=hive_website&utm_medium=landing_page&utm_campaign=buzz&utm_content=hero_get_started)\n\nCasos de uso\n\n## Buzz funciona para todos los equipos.\n\nMarketing, producto, ingeniería, operaciones. \\\nBuzz se adapta a tu forma de trabajar.\n\nCómo funciona\n\n## Un sistema. Lo hace funcionar todo.\n\nSi puedes enviar un mensaje a un compañero de trabajo, puedes usar Buzz. \\\nSin configuración, sin formación, sin fricción.\n\n@Buzz resume mi día, 3 mensajes nuevos, 2 reuniones hoy, Solo pregunta\n\nMenciona a Buzz con @mention en cualquier acción, proyecto o chat. O abre Buzz directamente y escribe tu solicitud en un inglés sencillo.\n\nBuzz se pone a trabajar\n\nBuzz interpreta el contexto de tu espacio de trabajo, como acciones, proyectos, notas y conversaciones, y actúa en segundos.\n\nActualización del sistema de diseño\n\nCreate dashboard for stakeholders\n\nOnboarding plan for Acme Inc.\n\nSummarize meeting\n\nHaz que el trabajo siga avanzando\n\nUna vez que el trabajo está claro, Buzz puede impulsarlo sin esperar a otra reunión, otro recordatorio ni otra ronda de gestión manual.\n\n- Prefer promotional emails to be archivedSend weekly summary every fridayCopy should be SEO optimizedEmail language should be professional \n\nBuzz AI memories\n\nMemoria compartida\n\nLas preferencias, las promesas, las decisiones previas y los patrones siguen siendo accesibles, por lo que el trabajo no se reinicia desde cero cada vez que cambia de manos.\n\nConéctate con Salesforce\n\nConectar con el calendario\n\nConectar con GitHub\n\nConecta tus herramientas\n\nBuzz extrae contexto de tus aplicaciones conectadas para que cada respuesta esté respaldada por todo tu ecosistema tecnológico.\n\n[Comenzar](https://auth.hive.com/buzz-ai/?utm_source=hive_website&utm_medium=landing_page&utm_campaign=buzz&utm_content=hero_get_started)\n\nSeguridad\n\n## Cero retención de datos.  Cero entrenamiento del modelo. \n\nLos datos de tu espacio de trabajo nunca se utilizan para entrenar modelos de IA. Nunca. Las conversaciones con Buzz se procesan en tiempo real y nunca se almacenan por proveedores externos de LLM. Más seguro que usar ChatGPT o Gemini directamente.\n\nSOC2, RGPD, CCPA, ISO 27001, Acceso basado en permisos\n\nBuzz respeta los permisos de tu espacio de trabajo. Solo puede acceder a lo que el usuario puede acceder.\n\nRegistro completo de auditoría\n\nCada interacción con Buzz queda registrada y es auditable. Los administradores pueden revisar a qué accedió Buzz, qué generó y qué acciones realizó.\n\nSSO empresarial y controles\n\nSe integra con Okta, Azure AD y proveedores SAML. Los controles de administración centralizados te permiten gestionar el acceso a Buzz en toda tu organización.\n\nCifrado en todas partes\n\nDatos cifrados en reposo y en tránsito. Todas las comunicaciones de Buzz están protegidas con TLS 1.3. Tus conversaciones nunca se transmiten sin protección.\n\n## Deja de gestionar el trabajo. Empieza a terminarlo.\n\nDale a tu equipo un compañero de IA que de verdad cumple.\n\n[Comenzar](./pricing)\n\n[Acerca de](./about)\n\n[Contáctanos](./contact-us)\n\n[Pulsa](./press)\n\n[Carreras](https://wellfound.com/company/hivetechnology/jobs)\n\n[Embajadores](./ambassadors)\n\n[Programa de socios](./partners)\n\n[Accesibilidad](./policy-documents/accessibility-statement)\n\n[Mapa del sitio](./sitemap)\n\n[Download Hive](./download)\n\nCaracterísticas\n\n[Gestión de proyectos](./features)\n\n[Gestión del tiempo](./features/time-tracking)\n\n[Colaboración en equipo](./features#collaborate)\n\n[Automatizaciones](./features/automations)\n\n[Notas de Hive](./features/notes)\n\n[Diagramas de Gantt](./features)\n\n[Tableros Kanban](https://help.hive.com/en/articles/1527962-kanban-board-i-e-status-view)\n\n[Plantillas de proyectos](./templates)\n\nEmpresa\n\n[Gestión de proyectos](./crm)\n\n[Finance](./finance)\n\n[Sidekick](./sidekick)\n\n[AI Proofing](./ai-proofing)\n\nRecursos\n\n[Importar trabajo](./import)\n\n[Registro de cambios](https://hiveteams.canny.io)\n\n[Estado de la plataforma](https://status.hive.com)\n\n[Hoja de ruta del producto](https://hiveteams.canny.io)\n\n[Blog](./blog)\n\n[API](https://developers.hive.com/reference/introduction)\n\n[Resumen de seguridad](./policy-documents/security)\n\n[Política de API de Google](./policy-documents/google-user-data-policy)\n\n[Guía de gestión de proyectos](https://hive.com/blog/project-management-software/)\n\nComparar\n\n[Comparar todo](./compare)\n\n[Alternativa a Asana](./compare/hive-vs-asana)\n\n[Alternativa a Wrike](./compare/hive-vs-wrike)\n\n[Alternativa a Smartsheet](./compare/hive-vs-smartsheet)\n\n[Alternativa a Jira](./compare/hive-vs-jira)\n\n[Alternativa a Monday.com](./compare/hive-vs-monday)\n\n[Alternativa a Trello](./compare/hive-vs-trello)\n\n[Alternativa a Basecamp](./compare/hive-vs-basecamp)\n\n[Alternativa a Workfront](./compare/hive-vs-workfront)\n\n[Términos del servicio](./policy-documents/terms-of-service)\n\n[Política de privacidad](./policy-documents/privacy-policy)\n\n© 2015 - 2025 COLMENA\n",
+      "title": "https://hive.com/es/hivemind/ (text/markdown; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528823995,
+        "end": 1789528825567
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528825568,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83adedf001e1GPZXTnSfAGeA",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ad7b3001SWJAa6F6zFGAzq",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 18555,
+      "output": 127,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 18682,
+      "headroom": 20174,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.568Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.569Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.569Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.569Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.569Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.569Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.569Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.572Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 18682,
+  "providerTokens": 18682,
+  "estimatedInputTokens": 4321,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 18555,
+    "cacheRead": 0,
+    "output": 127
+  },
+  "overflow": false,
+  "headroom": 20174,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.572Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.572Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.573Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.574Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528825828,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83adfe3001XJb1kK8Sp1apra",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83adee40017dp64r1vAwYs7u",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528825828,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83adfe4002xp3ykXPoqDHqiQ",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83adee40017dp64r1vAwYs7u",
+    "type": "tool",
+    "callID": "call_64d39ea89576d4d9",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528825828,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83adfe4001pMI48FyMrAG7Wp",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83adee40017dp64r1vAwYs7u",
+    "type": "text",
+    "text": "Let me open https://github.com/johpaz/hive/blob/master/docs/guides/configuracion.md and read what it says.",
+    "time": {
+      "start": 1789528825828,
+      "end": 1789528825828
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:25.829Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528825829,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83adfe4002xp3ykXPoqDHqiQ",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83adee40017dp64r1vAwYs7u",
+    "type": "tool",
+    "callID": "call_64d39ea89576d4d9",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/johpaz/hive/blob/master/docs/guides/configuracion.md"
+      },
+      "time": {
+        "start": 1789528825828
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528826914,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83adfe4002xp3ykXPoqDHqiQ",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83adee40017dp64r1vAwYs7u",
+    "type": "tool",
+    "callID": "call_64d39ea89576d4d9",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/johpaz/hive/blob/master/docs/guides/configuracion.md"
+      },
+      "output": "hive/docs/guides/configuracion.md at master · johpaz/hive · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n      \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        johpaz\n    \n    /\n    \n      hive\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    16\n\n  \n\n  \n        \n            \n    \n\n          Star\n          54\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n    \n\n\n\n\n\n\n\n\n\n  \n       FilesExpand file treemasterBreadcrumbshive/docs/guides/configuracion.mdCopy pathBlameMore file actionsBlameMore file actions Latest commit HistoryHistoryHistory92 lines (61 loc) · 5.58 KBmasterBreadcrumbshive/docs/guides/configuracion.mdCopy pathTopFile metadata and controlsPreviewCodeBlame92 lines (61 loc) · 5.58 KBRawCopy raw fileDownload raw fileOutlineEdit and raw actionsConfiguración\nDirectorio de datos\nHive resuelve su directorio en este orden:\n\nHIVE_HOME, si está definido.\n.hive-dev dentro del directorio actual cuando HIVE_DEV=true o 1.\n~/.hive.\n\nDentro se almacenan .env, .auth_token, HiveDB, logs, workspace, credenciales de canales y artefactos. No copies este directorio a control de versiones.\nVariables principales\n\n\n\nVariable\nUso\nValor por defecto\n\n\n\n\nHIVE_HOME\nDirectorio de datos\n~/.hive\n\n\nHIVE_HOST\nDirección del gateway\n127.0.0.1\n\n\nHIVE_PORT\nPuerto HTTP/WebSocket\n18790\n\n\nHIVE_AUTH_TOKEN\nToken Bearer y clave de recuperación\ngenerado al arrancar\n\n\nHIVE_LOG_LEVEL\ndebug, info, warn o error\ninfo\n\n\nHIVE_PUBLIC_URL\nURL pública usada por integraciones\nno definida\n\n\nHIVE_HARNESS_MAX_CONCURRENCY\nConcurrencia global\n4\n\n\nHIVE_HARNESS_TASK_TIMEOUT_MS\nLímite de una tarea durable\n30 minutos\n\n\nHIVE_HARNESS_JOB_MAX_RETRIES\nReintentos de jobs\n3\n\n\n\nLas variables pueden colocarse en HIVE_HOME/.env, una por línea. Las variables ya presentes en el proceso tienen prioridad funcional cuando el runtime las consulta.\nHIVE_HOST=127.0.0.1\nHIVE_PORT=18790\nHIVE_LOG_LEVEL=info\nOPENAI_API_KEY=...\nConfiguración persistente\nProveedores, modelos, agentes, bindings, canales, skills, MCP y reglas operativas se administran desde la UI y HiveDB. Para ver la configuración efectiva sin imprimir secretos:\nhive config show\nhive config edit está deshabilitado. Usa el onboarding, la UI, variables de entorno o las APIs administrativas.\nEl onboarding solicita un correo propio y lo guarda en el perfil del usuario. El coordinador lo usa como destinatario predeterminado cuando el usuario dice «envíame», «mándame» o «a mi correo» sin indicar otra dirección. Puede modificarse después desde Configuración → Perfil.\nGuardar el correo no activa autenticación por contraseña. Si el usuario decide habilitarla más adelante, puede hacerlo desde Configuración → Perfil → Acceso y seguridad: Hive reutiliza ese mismo correo y solo solicita crear una contraseña.\nLos especialistas MCP se crean desde la conversación únicamente después de la confirmación del usuario. La asignación queda visible en el loadout del agente y se reutiliza en tareas futuras. Cada especialista conserva un solo servidor; habilitarlo, deshabilitarlo o archivarlo sigue siendo una acción manual.\nWorkspace\nCada agente puede tener un workspace y un scope de lectura/escritura. Las herramientas fs_* resuelven los paths contra ese scope. Los agentes de catálogo reciben scopes por tipo de trabajo: ninguno, workspace completo o recursos concretos como una superficie A2UI.\nModelos\nEl onboarding asigna proveedor y modelo al coordinador y completa agentes sin configuración. Un agente puede definir un override por capacidades; si no lo tiene, hereda el modelo del coordinador. Los cambios explícitos hechos en la UI no son sobrescritos durante un arranque normal.\nRazonamiento visible\nCada turno pide razonamiento y cada proveedor decide cómo cumplirlo: Anthropic con extended thinking, Gemini y Ollama con sus propios campos, y los compatibles con OpenAI leyendo reasoning_content del stream.\nNVIDIA NIM es el caso especial: lo mantiene apagado salvo que se lo pidan por chat_template_kwargs, con una clave distinta por familia de modelo — enable_thinking para GLM, thinking_mode para MiniMax, thinking para Kimi y DeepSeek. Nemotron 3 razona sin pedírselo. Si un modelo rechaza esa clave, la llamada se repite sin ella: se pierde el razonamiento en pantalla, nunca el turno.\nAudio de HiveLive\nLa entrada y la salida se eligen en el panel de sonido de la consola de voz, y también en Ajustes → Pantalla y audio. La lista la reporta el sistema operativo: en Linux son los puertos de tarjeta, los mismos que enseña el menú de sonido del escritorio, así que un altavoz USB o un HDMI que hoy no está activo también aparece — al elegirlo se activa su perfil.\nManos libres\nCon la voz saliendo por un altavoz abierto —un televisor, unos bafles— el micrófono recoge a la colmena y el detector de voz del modelo lo toma por una interrupción: se contesta a sí misma. En el navegador no pasa porque Chrome cancela su propia salida dentro del micrófono; el motor de la app de escritorio en Linux no puede hacerlo, porque su cancelador necesita una referencia de la reproducción que WebAudio no le entrega.\nPor eso existe el modo altavoz, que se enciende solo al elegir una salida al aire: mientras la colmena habla no se le envía micrófono, y su detector se vuelve más exigente para darse por interrumpido. El precio es que en ese rato no se la puede cortar hablando encima; el botón del micrófono sí la corta. Con auriculares no hace falta y se apaga solo.\nFull-duplex real por altavoz\nQuien quiera interrumpir hablando encima con el sonido saliendo por un altavoz necesita cancelación de eco del sistema, no de la aplicación. PipeWire la trae en module-echo-cancel: crea un micrófono virtual ya cancelado que HiveLive listará como uno más.\n# ~/.config/pipewire/pipewire.conf.d/99-echo-cancel.conf\ncontext.modules = [\n  { name = libpipewire-module-echo-cancel\n    args = {\n      capture.props  = { node.name = \"efecto_entrada.eco\"  }\n      source.props   = { node.name = \"eco_cancelado\"       }\n    }\n  }\n]\nDespués de systemctl --user restart pipewire, se elige «eco_cancelado» como micrófono y se apaga el modo altavoz. Hive no toca esa configuración: es del sistema y afecta a todas las aplicaciones.\n      \n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "https://github.com/johpaz/hive/blob/master/docs/guides/configuracion.md (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528825828,
+        "end": 1789528826913
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528826914,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ae422001QMtxyxTde4I3WM",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83adee40017dp64r1vAwYs7u",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 25999,
+      "output": 211,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 26210,
+      "headroom": 12646,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.915Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.916Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.916Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.916Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.919Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 26210,
+  "providerTokens": 26210,
+  "estimatedInputTokens": 6595,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 25999,
+    "cacheRead": 0,
+    "output": 211
+  },
+  "overflow": false,
+  "headroom": 12646,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.920Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.920Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.921Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:26.921Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.212Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528827212,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ae54c001BAZsWGz3kBw16q",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ae427001j9c0ymSfv9hxwk",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528827213,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ae54c002GGRJKINA4j41IN",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ae427001j9c0ymSfv9hxwk",
+    "type": "text",
+    "text": "¿QUÉ ES LA CARPETA HIVE? ¿CÓMO UTILIZO LA CARPETA HIVE? Por ejemplo, si mueves una carpeta a tu Hive en tu laptop del trabajo, esa misma carpeta se creará en Hive en tu computadora de escritorio en casa.\n\nSource: https://spideroak.support/hc/es/articles/115001892226-La-carpeta-Hive\n\n\\> ✅ 18 completadas · 🔄 3 en curso · ⚠️ 2 en riesgo\\ Tu bandeja de entrada, domada por la IA. Datos cifrados en reposo y en tránsito.\n\nSource: https://hive.com/es/hivemind/\n\nhive. Las variables pueden colocarse en HIVE_HOME/. La entrada y la salida se eligen en el panel de sonido de la consola de voz, y también en Ajustes → Pantalla y audio.\n\nSource: https://github.com/johpaz/hive/blob/master/docs/guides/configuracion.md",
+    "time": {
+      "start": 1789528827213,
+      "end": 1789528827213
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528827213,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "part": {
+    "id": "prt_0a83ae54d001pQQc0KAyqvMhnE",
+    "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+    "messageID": "msg_0a83ae427001j9c0ymSfv9hxwk",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 37035,
+      "output": 708,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 37743,
+      "headroom": 1113,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.213Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.215Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.215Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.215Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.215Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.215Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.215Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.216Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.216Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.216Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528827216,
+  "sessionID": "ses_f57c53740ffesy100TRVnBYTJ2"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.216Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.216Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CNCGU0oFSs",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.216Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CNCGU0oFSs",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.216Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CNCGU0oFSs",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:27.216Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 8,
+  "message": "Agent exiting"
+}
+

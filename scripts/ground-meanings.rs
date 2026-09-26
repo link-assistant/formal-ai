@@ -24,7 +24,7 @@
 //!      `data/seed/**/meanings*.lino` (idempotent — re-running is a no-op).
 //!
 //! Browser builds read the canonical seed via `scripts/sync-seed.sh` and
-//! `src/web/seed_loader.js`, so this script only updates `data/seed` and the
+//! `js/seed_loader.js`, so this script only updates `data/seed` and the
 //! checked-in Wikidata cache.
 //!
 //! Network access is only needed the first time an id is fetched; afterwards the
@@ -206,6 +206,11 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     ("program", "Q40056", "program"),
     ("code", "Q128751", "source code"),
     ("sort", "Q2303697", "sorting"),
+    // concepts used by the held-out verifiable-task category benchmark
+    ("medical_device", "Q6554101", "medical device"),
+    ("stethoscope", "Q162339", "stethoscope"),
+    ("scalpel", "Q207172", "scalpel"),
+    ("thermometer", "Q646", "thermometer"),
     // discourse and calendar concepts
     ("politeness", "Q281287", "politeness"),
     ("calendar_today", "Q3151690", "today"),

@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/self_ast.rs
   language rust
   fidelity full_ast
-  byte_len 12892
-  line_count 293
-  content_id source_module_3da8e4a24465ab11
-  symbol_count 22
+  byte_len 15196
+  line_count 347
+  content_id source_module_a27bb3d053ea9607
+  symbol_count 26
   symbols
     static AST_CENSUS_RUNS 32 32
     function ast_census_runs 43 45
@@ -25,83 +25,87 @@ self_ast_census
     function reconstruct_source 237 240
     function reconstruct_source 245 247
     function round_trips 256 258
-    function render_document 262 264
-    function target_census 270 272
-    function target_source 278 280
-    function final_answer 285 293
+    function network_lino 270 272
+    function network_lino 277 279
+    function render_network_source 289 299
+    function render_network_source 305 312
+    function render_document 316 318
+    function target_census 324 326
+    function target_source 332 334
+    function final_answer 339 347
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6133
-    named_node_count 1235
+    total_link_count 7098
+    named_node_count 1447
     distinct_node_kinds 67
     node_kinds
-      arguments 51
+      arguments 61
       array_expression 1
       array_type 1
-      attribute 21
-      attribute_item 21
+      attribute 27
+      attribute_item 27
       binary_expression 11
-      block 18
+      block 23
       boolean_literal 2
-      call_expression 51
-      closure_expression 2
-      closure_parameters 2
+      call_expression 61
+      closure_expression 4
+      closure_parameters 4
       compound_assignment_expr 1
       const_item 6
       continue_expression 1
-      doc_comment 100
-      escape_sequence 10
+      doc_comment 119
+      escape_sequence 13
       expression_statement 10
       field_declaration 7
       field_declaration_list 2
-      field_expression 35
-      field_identifier 50
+      field_expression 41
+      field_identifier 56
       field_initializer 8
       field_initializer_list 3
       field_pattern 2
       for_expression 2
-      function_item 13
+      function_item 17
       function_modifiers 2
-      generic_type 2
-      identifier 246
+      generic_type 4
+      identifier 282
       if_expression 3
       inner_doc_comment_marker 21
       integer_literal 7
       let_condition 1
-      let_declaration 27
+      let_declaration 28
       lifetime 1
-      line_comment 106
-      macro_invocation 18
+      line_comment 125
+      macro_invocation 19
       mutable_specifier 2
-      outer_doc_comment_marker 79
-      parameter 11
-      parameters 13
+      outer_doc_comment_marker 98
+      parameter 15
+      parameters 17
       parenthesized_expression 1
-      primitive_type 26
+      primitive_type 30
       reference_expression 1
-      reference_type 16
-      scoped_identifier 24
+      reference_type 20
+      scoped_identifier 27
       scoped_type_identifier 1
       scoped_use_list 2
       shorthand_field_identifier 2
       shorthand_field_initializer 4
       source_file 1
       static_item 1
-      string_content 47
-      string_literal 41
+      string_content 56
+      string_literal 47
       struct_expression 3
       struct_item 2
       struct_pattern 1
-      token_tree 34
+      token_tree 41
       tuple_pattern 1
       tuple_struct_pattern 1
-      type_arguments 2
-      type_identifier 21
+      type_arguments 4
+      type_identifier 29
       unary_expression 2
       use_as_clause 1
       use_declaration 4
       use_list 2
-      visibility_modifier 24
+      visibility_modifier 28

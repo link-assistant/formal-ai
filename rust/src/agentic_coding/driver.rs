@@ -1,0 +1,517 @@
+//! Offline agentic driver — the in-repo "agentic CLI" that drives the server.
+//!
+//! This is the *client* side of issue #468's loop. The maintainer's framing:
+//! *"our Formal AI system should have enough skills (meta algorithm, rust code) to
+//! actually call all the tools from any agentic CLI, understand errors from tools,
+//! and so on, call bash commands, do web fetch and web search, to actually
+//! complete the task."* An external agentic CLI (link-assistant/agent, gemini-cli,
+//! …) would normally play this role against our OpenAI-compatible server; this
+//! module plays it in-repo so the whole loop runs offline and deterministically in
+//! CI.
+//!
+//! It advertises a tool set, sends a chat request, and whenever the server answers
+//! with `tool_calls` it **executes** each call — `web_search` / `web_fetch`
+//! against the offline [`corpus`], `write_file` / `run_command` against a single
+//! reused, sandboxed [`AgentWorkspace`] — feeds each result back as a `tool`
+//! message, and loops until the server answers with `finish_reason: "stop"`. The
+//! loop is bounded by a hard turn cap, so unbounded reasoning stays a NON-GOAL and
+//! neural inference is never involved.
+
+use std::fmt::Write as _;
+
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+
+use super::corpus;
+use crate::agent::{AgentCommandResult, AgentError, AgentWorkspace, AgentWorkspaceConfig};
+use crate::algorithm_discovery::{
+    discover_algorithms, traces_from_memory_events, AlgorithmCandidate,
+};
+use crate::memory::MemoryStore;
+use crate::protocol::{
+    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, ToolCall,
+};
+use crate::skill_procedure::CompiledProcedure;
+use crate::solver::{SolverConfig, UniversalSolver};
+
+/// The four capabilities every recipe relies on (`web_search` → `web_fetch` →
+/// `write_file` → `run_command`).
+///
+/// `DRIVER_TOOLS` is these plus the translator, which a recipe calls only
+/// when it means to turn the js/ts cycle — so a recipe's executed tools pin
+/// against this list, never against the whole advertised surface.
+pub const CORE_RECIPE_TOOLS: [&str; 4] = ["web_search", "web_fetch", "write_file", "run_command"];
+
+/// The tool set the driver advertises.
+///
+/// [`CORE_RECIPE_TOOLS`] plus the source-tree translator (plan 16 L2g) so the
+/// agent CLI can turn the js/ts cycle mid-session without shelling out.
+pub const DRIVER_TOOLS: [&str; 5] = [
+    "web_search",
+    "web_fetch",
+    "write_file",
+    "run_command",
+    "translate",
+];
+
+/// A hard cap on agentic turns (server round-trips). The recipe needs five; the
+/// cap is generous but finite so the loop can never run away.
+const MAX_TURNS: usize = 12;
+
+/// One executed tool call, recorded for the transcript.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DriverToolStep {
+    /// The tool name the server requested.
+    pub tool: String,
+    /// The JSON-encoded arguments the server requested.
+    pub arguments: String,
+    /// The result the driver fed back as a `tool` message.
+    pub result: String,
+}
+
+/// The outcome of an agentic run.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DriverOutcome {
+    /// The task the driver was asked to solve.
+    pub task: String,
+    /// Every tool call the driver executed, in order.
+    pub steps: Vec<DriverToolStep>,
+    /// The server's final assistant text (the knowledge base inline).
+    pub final_answer: String,
+    /// How many server round-trips the loop took.
+    pub turns: usize,
+    /// Whether the loop stopped at `MAX_TURNS` rather than a final answer.
+    pub hit_turn_cap: bool,
+}
+
+impl DriverOutcome {
+    /// A human-readable transcript of the tool calls and how the loop ended.
+    #[must_use]
+    pub fn transcript(&self) -> String {
+        let mut out = String::new();
+        let _ = writeln!(out, "task: {}", self.task);
+        let _ = writeln!(
+            out,
+            "turns: {} (tool calls: {})",
+            self.turns,
+            self.steps.len()
+        );
+        for (index, step) in self.steps.iter().enumerate() {
+            let _ = writeln!(out, "  [{}] {} {}", index + 1, step.tool, step.arguments);
+            let _ = writeln!(out, "      -> {}", preview(&step.result, 200));
+        }
+        if self.hit_turn_cap {
+            let _ = writeln!(out, "(stopped at the {MAX_TURNS}-turn safety cap)");
+        }
+        out
+    }
+
+    /// A stable, replayable JSON record of the whole agentic session — the task,
+    /// the tools the CLI advertised, every executed tool call with its arguments
+    /// and result, the turn count, and the final answer. This is the "Agent CLI
+    /// session that solved the task" artifact: it is deterministic (no clock, no
+    /// randomness, no network), so committing it to the repo documents exactly how
+    /// Formal AI drove its own CLI to the solution.
+    #[must_use]
+    pub fn session_json(&self) -> Value {
+        json!({
+            "task": self.task,
+            "driver": "formal-ai in-repo agentic CLI",
+            "server": "formal-ai OpenAI-compatible chat completions",
+            "tools_advertised": DRIVER_TOOLS,
+            "turns": self.turns,
+            "hit_turn_cap": self.hit_turn_cap,
+            "steps": self.steps.iter().map(|step| json!({
+                "tool": step.tool,
+                "arguments": serde_json::from_str::<Value>(&step.arguments)
+                    .unwrap_or_else(|_| Value::String(step.arguments.clone())),
+                "result": step.result,
+            })).collect::<Vec<_>>(),
+            "final_answer": self.final_answer,
+        })
+    }
+}
+
+/// Drive the agentic loop for `task` using a default sandbox workspace.
+///
+/// # Errors
+///
+/// Returns an [`AgentError`] if the isolated workspace cannot be created.
+pub fn run_agentic_task(task: &str) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in(task, &AgentWorkspaceConfig::default())
+}
+
+/// Drive the agentic loop for `task` using the given workspace `config`.
+///
+/// # Errors
+///
+/// Returns an [`AgentError`] if the isolated workspace cannot be created.
+pub fn run_agentic_task_in(
+    task: &str,
+    config: &AgentWorkspaceConfig,
+) -> Result<DriverOutcome, AgentError> {
+    // Agent mode is the explicit opt-in the server's tool gate requires; without
+    // it the server refuses every tool. The driver is that isolated execution
+    // environment, so it opts in.
+    let solver = UniversalSolver::new(SolverConfig {
+        agent_mode: true,
+        ..SolverConfig::default()
+    });
+    let tools = tool_definitions(&DRIVER_TOOLS);
+    let mut workspace = AgentWorkspace::for_prompt(task, config)?;
+    let mut messages = vec![ChatMessage::user(task)];
+    let mut steps = Vec::new();
+    let mut turns = 0usize;
+
+    loop {
+        if turns >= MAX_TURNS {
+            return Ok(DriverOutcome {
+                task: task.to_owned(),
+                steps,
+                final_answer: String::new(),
+                turns,
+                hit_turn_cap: true,
+            });
+        }
+        turns += 1;
+
+        let request = ChatCompletionRequest {
+            model: None,
+            messages: messages.clone(),
+            temperature: None,
+            stream: false,
+            tools: tools.clone(),
+            tool_choice: None,
+            functions: Vec::new(),
+            function_call: None,
+            stream_options: None,
+        };
+        let completion = create_chat_completion_with_solver(&request, &solver);
+        let Some(choice) = completion.choices.into_iter().next() else {
+            return Ok(DriverOutcome {
+                task: task.to_owned(),
+                steps,
+                final_answer: String::new(),
+                turns,
+                hit_turn_cap: false,
+            });
+        };
+
+        let requested_tools =
+            choice.finish_reason == "tool_calls" && !choice.message.tool_calls.is_empty();
+        if !requested_tools {
+            return Ok(DriverOutcome {
+                task: task.to_owned(),
+                steps,
+                final_answer: choice.message.content.plain_text(),
+                turns,
+                hit_turn_cap: false,
+            });
+        }
+
+        // Execute the requested tool calls, then append the assistant turn
+        // followed by the `tool` results (order matters: the planner maps each
+        // result's `tool_call_id` back to a *prior* assistant `tool_calls` turn).
+        let assistant = choice.message;
+        let mut results = Vec::with_capacity(assistant.tool_calls.len());
+        for call in &assistant.tool_calls {
+            let (result, failed) = execute_tool_call(call, &mut workspace);
+            steps.push(DriverToolStep {
+                tool: call.function.name.clone(),
+                arguments: call.function.arguments.clone(),
+                result: result.clone(),
+            });
+            let message = if failed {
+                ChatMessage::tool_result_error(call.id.clone(), call.function.name.clone(), result)
+            } else {
+                ChatMessage::tool_result(call.id.clone(), call.function.name.clone(), result)
+            };
+            results.push(message);
+        }
+        messages.push(assistant);
+        messages.extend(results);
+    }
+}
+
+/// Execute one tool call against the offline corpus or the sandbox workspace and
+/// return the textual result to feed back to the server, plus whether the call
+/// failed to produce its output at all (refused, unsupported, or lost) — the
+/// transport fact a real Agent CLI flags with `is_error`.
+fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String, bool) {
+    let arguments: Value = serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
+    match call.function.name.as_str() {
+        "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
+        "web_fetch" => (corpus::web_fetch(arg_str(&arguments, "url")), false),
+        "write_file" => {
+            let path = arg_str(&arguments, "path");
+            let content = arg_str(&arguments, "content");
+            workspace.create_file(path, content);
+            (format!("wrote {} byte(s) to {path}", content.len()), false)
+        }
+        "run_command" => {
+            let command = arg_str(&arguments, "command");
+            if let Some(result) = execute_algorithm_command(command, workspace) {
+                return (result, false);
+            }
+            if let Some(result) = execute_procedure_conformance(command, workspace) {
+                return (result, false);
+            }
+            workspace.run_command(command);
+            workspace.last_command_result().map_or_else(
+                || {
+                    (
+                        format!("run_command produced no result for {command:?}"),
+                        true,
+                    )
+                },
+                |executed| (format_command_result(executed), false),
+            )
+        }
+        // Plan 16 L2g: the same library the CLI's `--write` runs, executed
+        // against the sandbox workspace — the workspace root plays the
+        // repository root, so `js/…` paths are the ones the plan wrote
+        // there. The report text is rendered from the seed the CLI uses,
+        // and a refusal, wrong root or unreadable source is an error result
+        // so the agent sees the failure instead of a silent no-op.
+        "translate" => {
+            let Some(from) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "from"))
+            else {
+                return ("error: translate needs a known from root (js, ts)".to_owned(), true);
+            };
+            let Some(to) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "to"))
+            else {
+                return ("error: translate needs a known to root (js, ts)".to_owned(), true);
+            };
+            let path = arg_str(&arguments, "path");
+            let write = arguments
+                .get("write")
+                .and_then(serde_json::Value::as_bool)
+                .unwrap_or(false);
+            let report = if path.is_empty() {
+                if !write {
+                    return (
+                        "error: a tree translation must set write, or name one path".to_owned(),
+                        true,
+                    );
+                }
+                crate::translate_write::write_tree(from, to, workspace.root())
+            } else if write {
+                crate::translate_write::write_one(from, to, workspace.root(), path)
+            } else {
+                return translate_without_write(from, to, workspace.root(), path);
+            };
+            let (intent, values) = report.intent();
+            let values = values
+                .iter()
+                .map(|(key, value)| (*key, value.as_str()))
+                .collect::<Vec<_>>();
+            let rendered = crate::seed::render_response(intent, "en", &values)
+                .unwrap_or_else(|| intent.to_owned());
+            (rendered, report.is_failure())
+        }
+        other => (format!("error: unsupported tool {other}"), true),
+    }
+}
+
+/// The read-only half of the translate tool: the result text is the rendered
+/// target itself (the CLI's stdout mode), and every honest gap renders from
+/// the same seed intents the write half uses.
+fn translate_without_write(
+    from: crate::meta_translate::SourceRoot,
+    to: crate::meta_translate::SourceRoot,
+    root: &std::path::Path,
+    repo_relative: &str,
+) -> (String, bool) {
+    use crate::meta_translate::TranslationOutcome;
+    let report = match std::fs::read_to_string(root.join(repo_relative)) {
+        Ok(source) => match crate::meta_translate::translate(from, to, repo_relative, &source) {
+            TranslationOutcome::Rendered { target, .. } => return (target, false),
+            TranslationOutcome::Refused { refusals } => crate::translate_write::WriteReport::Refused {
+                items: crate::translate_write::refusal_items(repo_relative, &refusals),
+            },
+            TranslationOutcome::Pending { .. } => {
+                crate::translate_write::WriteReport::UnsupportedLeg { from, to }
+            }
+            TranslationOutcome::Invalid { reason } => crate::translate_write::WriteReport::Invalid {
+                path: repo_relative.to_owned(),
+                reason,
+            },
+        },
+        Err(_) => crate::translate_write::WriteReport::Missing {
+            path: repo_relative.to_owned(),
+        },
+    };
+    let (intent, values) = report.intent();
+    let values = values
+        .iter()
+        .map(|(key, value)| (*key, value.as_str()))
+        .collect::<Vec<_>>();
+    let rendered = crate::seed::render_response(intent, "en", &values)
+        .unwrap_or_else(|| intent.to_owned());
+    (rendered, true)
+}
+
+/// Mirror the public discovery/conformance commands inside the deterministic
+/// in-repo driver. External Agent CLIs invoke the installed binary instead.
+fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Option<String> {
+    let parts = command.split_whitespace().collect::<Vec<_>>();
+    if parts.get(..3) == Some(&["formal-ai", "learn", "algorithms"]) {
+        let from = option_value(&parts, "--from")?;
+        let output = option_value(&parts, "--output")?;
+        if from != super::algorithm_learning::OBSERVATIONS_PATH
+            || output != super::algorithm_learning::DISCOVERY_PATH
+        {
+            return Some(format!(
+                "algorithm_learning_paths_unsupported:{from:?}:{output:?}"
+            ));
+        }
+        let document = match std::fs::read_to_string(workspace.root().join(from)) {
+            Ok(document) => document,
+            Err(error) => return Some(format!("algorithm_observations_read_failed:{error}")),
+        };
+        let mut memory = MemoryStore::new();
+        memory.replace_from_links_notation(&document);
+        let run = discover_algorithms(&traces_from_memory_events(memory.events()));
+        if let Err(error) = std::fs::write(workspace.root().join(output), run.links_notation()) {
+            return Some(format!("algorithm_artifact_write_failed:{error}"));
+        }
+        return Some(format!(
+            "algorithm_learning_complete:candidates={}:validated={}",
+            run.candidates.len(),
+            run.validated_candidates().len()
+        ));
+    }
+    if parts.get(..3) != Some(&["formal-ai", "algorithm", "conformance"]) {
+        return None;
+    }
+    let artifact = option_value(&parts, "--artifact")?;
+    let trigger = option_value(&parts, "--trigger")?;
+    if artifact != super::algorithm_learning::DISCOVERY_PATH {
+        return Some(format!("algorithm_artifact_unsupported:{artifact:?}"));
+    }
+    let document = match std::fs::read_to_string(workspace.root().join(artifact)) {
+        Ok(document) => document,
+        Err(error) => return Some(format!("algorithm_artifact_read_failed:{artifact}:{error}")),
+    };
+    let candidate = match AlgorithmCandidate::from_links_notation(&document) {
+        Ok(candidate) => candidate,
+        Err(error) => return Some(format!("algorithm_artifact_invalid:{error}")),
+    };
+    let mut bindings = std::collections::BTreeMap::new();
+    for (index, part) in parts.iter().enumerate() {
+        if *part != "--binding" {
+            continue;
+        }
+        let Some(binding) = parts.get(index + 1) else {
+            return Some(String::from("algorithm_binding_missing"));
+        };
+        let Some((name, value)) = binding.split_once('=') else {
+            return Some(format!("algorithm_binding_invalid:{binding:?}"));
+        };
+        bindings.insert(name.to_owned(), value.to_owned());
+    }
+    Some(
+        candidate
+            .conformance_links_notation(trigger, &bindings)
+            .unwrap_or_else(|error| format!("algorithm_conformance_failed:{error}")),
+    )
+}
+
+/// Mirror the public `formal-ai procedure conformance` command inside the
+/// in-repo sandbox. External Agent CLI runs the binary; this deterministic
+/// driver invokes the same library path without allowing arbitrary executables.
+fn execute_procedure_conformance(command: &str, workspace: &AgentWorkspace) -> Option<String> {
+    let parts = command.split_whitespace().collect::<Vec<_>>();
+    if parts.get(..3) != Some(&["formal-ai", "procedure", "conformance"]) {
+        return None;
+    }
+    let artifact = option_value(&parts, "--artifact")?;
+    let trigger = option_value(&parts, "--trigger")?;
+    if artifact != super::procedure::COMPILED_PROCEDURE_PATH {
+        return Some(format!("procedure_artifact_unsupported:{artifact:?}"));
+    }
+    let document = match std::fs::read_to_string(workspace.root().join(artifact)) {
+        Ok(document) => document,
+        Err(error) => return Some(format!("procedure_artifact_read_failed:{artifact}:{error}")),
+    };
+    match CompiledProcedure::from_artifact_links_notation(&document) {
+        Ok(procedure) => Some(procedure.conformance_links_notation(trigger)),
+        Err(error) => Some(format!("procedure_artifact_invalid:{error}")),
+    }
+}
+
+fn option_value<'a>(parts: &'a [&str], option: &str) -> Option<&'a str> {
+    let index = parts.iter().position(|part| *part == option)?;
+    parts.get(index + 1).copied()
+}
+
+/// OpenAI-shaped function tool definitions for the advertised tool `names`.
+fn tool_definitions(names: &[&str]) -> Vec<Value> {
+    names
+        .iter()
+        .map(|name| {
+            json!({
+                "type": "function",
+                "function": { "name": name, "description": tool_description(name) },
+            })
+        })
+        .collect()
+}
+
+fn tool_description(name: &str) -> String {
+    match name {
+        "web_search" => "Search the web for sources. Arguments: {\"query\": string}.".to_owned(),
+        "web_fetch" => {
+            "Fetch the text at a URL. Arguments: {\"url\": string}.".to_owned()
+        }
+        "write_file" => {
+            "Write a workspace file. Arguments: {\"path\": string, \"content\": string}.".to_owned()
+        }
+        "run_command" => {
+            "Run an allowlisted command in the workspace. Arguments: {\"command\": string}."
+                .to_owned()
+        }
+        // The translate schema is new with the tool (plan 16 L2g), so it is
+        // seed-grounded from the start (R379); the four older descriptions
+        // are the allowlisted debt this arm retires one entry at a time.
+        "translate" => crate::seed::render_response("translate_tool_schema", "en", &[])
+            .unwrap_or_else(|| "translate_tool_schema".to_owned()),
+        _ => "Tool.".to_owned(),
+    }
+}
+
+/// Render a command result the way an agentic CLI would surface it: stdout on
+/// success, an annotated error otherwise (so the agent can "understand errors").
+fn format_command_result(result: &AgentCommandResult) -> String {
+    if result.timed_out {
+        return format!("command timed out: {}", result.command);
+    }
+    match result.status_code {
+        Some(0) => result.stdout.clone(),
+        Some(code) => format!(
+            "command exited with status {code}\nstdout:\n{}\nstderr:\n{}",
+            result.stdout, result.stderr
+        ),
+        None => format!(
+            "command terminated without an exit status\nstderr:\n{}",
+            result.stderr
+        ),
+    }
+}
+
+fn arg_str<'a>(arguments: &'a Value, key: &str) -> &'a str {
+    arguments
+        .get(key)
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+}
+
+/// Collapse whitespace and truncate `text` to `max` characters for the transcript.
+fn preview(text: &str, max: usize) -> String {
+    let collapsed = text.split_whitespace().collect::<Vec<_>>().join(" ");
+    if collapsed.chars().count() <= max {
+        return collapsed;
+    }
+    let truncated: String = collapsed.chars().take(max).collect();
+    format!("{truncated}…")
+}

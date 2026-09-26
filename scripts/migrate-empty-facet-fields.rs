@@ -23,7 +23,7 @@
 //! This migration collapses every `facet <kind>` block whose children are empty
 //! colon targets into direct `<kind> <target>` subject-predicate lines, across
 //! the *entire* `data/seed` tree (not one file). Browser builds read the
-//! canonical seed via `scripts/sync-seed.sh` and `src/web/seed_loader.js`. The
+//! canonical seed via `scripts/sync-seed.sh` and `js/seed_loader.js`. The
 //! transform is lossless and idempotent.
 //!
 //! Run with `rust-script scripts/migrate-empty-facet-fields.rs` (std-only; can

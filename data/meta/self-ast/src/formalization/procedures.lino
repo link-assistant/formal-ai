@@ -1,0 +1,24 @@
+self_ast_census
+  target src/formalization/procedures.rs
+  language rust
+  fidelity signature
+  byte_len 11034
+  line_count 299
+  content_id source_module_450fc65d5ad1e36d
+  symbol_count 15
+  symbols
+    const CODING_PROCEDURE_HEADER 11 11
+    struct ExtractedProcedure 15 27
+    struct ProcedureStep 30 38
+    function procedure_from_steps 44 50
+    function from_step_records 56 100
+    function to_coding_procedure_source 106 133
+    function to_links_notation 136 177
+    function identity 179 201
+    function step_from_record 204 237
+    function first_role_surface 239 253
+    function standalone 255 264
+    function valid_provenance 266 278
+    function same_source 280 288
+    function step_text 290 295
+    function field 297 299

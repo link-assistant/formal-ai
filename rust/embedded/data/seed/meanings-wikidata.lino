@@ -1,0 +1,378 @@
+meanings
+  wikidata_item_apple
+    grounded-in Q89
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text apple
+      surface
+        text apples
+    lexeme ru
+      surface
+        text яблоко
+      surface
+        text яблоки
+    lexeme hi
+      surface
+        text सेब
+    lexeme zh
+      surface
+        text 苹果
+      surface
+        text 蘋果
+    lexeme es
+      surface
+        text manzana
+  wikidata_item_fruit
+    grounded-in Q3314483
+    defined-by concept
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text fruit
+      surface
+        text fruits
+      surface
+        text "edible fruit"
+    lexeme ru
+      surface
+        text фрукт
+      surface
+        text фрукты
+      surface
+        text плод
+    lexeme hi
+      surface
+        text फल
+    lexeme zh
+      surface
+        text 水果
+      surface
+        text 水果类
+    lexeme es
+      surface
+        text fruta
+  wikidata_item_sorting_algorithm
+    grounded-in Q181593
+    defined-by concept
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text "sorting algorithm"
+      surface
+        text "sorting algorithms"
+      surface
+        text "sort algorithm"
+    lexeme ru
+      surface
+        text "алгоритм сортировки"
+    lexeme hi
+      surface
+        text "सॉर्टिंग एल्गोरिदम"
+    lexeme zh
+      surface
+        text 排序算法
+  wikidata_item_water
+    grounded-in Q283
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text water
+    lexeme ru
+      surface
+        text вода
+    lexeme hi
+      surface
+        text पानी
+    lexeme zh
+      surface
+        text 水
+  wikidata_item_bread
+    grounded-in Q7802
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text bread
+    lexeme ru
+      surface
+        text хлеб
+    lexeme hi
+      surface
+        text रोटी
+    lexeme zh
+      surface
+        text 面包
+      surface
+        text 麵包
+  wikidata_item_carrot
+    grounded-in Q81
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text carrot
+      surface
+        text carrots
+    lexeme ru
+      surface
+        text морковь
+    lexeme hi
+      surface
+        text गाजर
+    lexeme zh
+      surface
+        text 胡萝卜
+      surface
+        text 胡蘿蔔
+  wikidata_item_wikidata
+    grounded-in Q2013
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text Wikidata
+    lexeme ru
+      surface
+        text викидата
+    lexeme hi
+      surface
+        text विकिडेटा
+    lexeme zh
+      surface
+        text 维基数据
+      surface
+        text 維基數據
+  wikidata_item_wikipedia
+    grounded-in Q52
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text Wikipedia
+    lexeme ru
+      surface
+        text википедия
+    lexeme hi
+      surface
+        text विकिपीडिया
+    lexeme zh
+      surface
+        text 维基百科
+      surface
+        text 維基百科
+  wikidata_item_wiktionary
+    grounded-in Q151
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
+        text Wiktionary
+    lexeme ru
+      surface
+        text викисловарь
+    lexeme hi
+      surface
+        text विक्षनरी
+    lexeme zh
+      surface
+        text 维基词典
+      surface
+        text 維基辭典
+  wikidata_property_subclass_of
+    grounded-in P279
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
+        text "subclass of"
+      surface
+        text "is a kind of"
+      surface
+        text "is a type of"
+      surface
+        text "is subclass of"
+      surface
+        text "kind of"
+      surface
+        text "type of"
+    lexeme ru
+      surface
+        text род
+      surface
+        text тип
+    lexeme hi
+      surface
+        text उपवर्ग
+    lexeme zh
+      surface
+        text 子类
+  wikidata_property_instance_of
+    grounded-in P31
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
+        text "instance of"
+      surface
+        text "is a"
+        action wikidata_property_subclass_of
+      surface
+        text "is an"
+        action wikidata_property_subclass_of
+      surface
+        text "is the"
+      surface
+        text "are a"
+        action wikidata_property_subclass_of
+      surface
+        text "are an"
+        action wikidata_property_subclass_of
+    lexeme ru
+      surface
+        text является
+      surface
+        text это
+    lexeme hi
+      surface
+        text है
+    lexeme zh
+      surface
+        text 是
+    lexeme es
+      surface
+        text "es una"
+  wikidata_property_part_of
+    grounded-in P361
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
+        text "part of"
+      surface
+        text "is part of"
+      surface
+        text "belongs to"
+    lexeme ru
+      surface
+        text "является частью"
+      surface
+        text часть
+    lexeme hi
+      surface
+        text "का हिस्सा"
+    lexeme zh
+      surface
+        text 属于
+  wikidata_property_has_part
+    grounded-in P527
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
+        text "has part"
+      surface
+        text "has a part"
+      surface
+        text contains
+      surface
+        text includes
+    lexeme ru
+      surface
+        text содержит
+    lexeme hi
+      surface
+        text "शामिल है"
+    lexeme zh
+      surface
+        text 包含
+  wikidata_property_capital
+    grounded-in P36
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
+        text capital
+      surface
+        text "is the capital of"
+      surface
+        text "is capital of"
+      surface
+        text "capital of"
+    lexeme ru
+      surface
+        text столица
+    lexeme hi
+      surface
+        text राजधानी
+    lexeme zh
+      surface
+        text 首都
+  wikidata_property_named_after
+    grounded-in P138
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
+        text "named after"
+      surface
+        text "is named after"
+    lexeme ru
+      surface
+        text "назван в честь"
+    lexeme hi
+      surface
+        text "के नाम पर"
+    lexeme zh
+      surface
+        text 命名自
+  wikidata_property_translation
+    grounded-in P5972
+    defined-by relation
+    role translation_property
+    lexeme en
+      surface
+        text translation
+      surface
+        text translate
+      surface
+        text translates
+    lexeme ru
+      surface
+        text переведи
+      surface
+        text перевести
+    lexeme hi
+      surface
+        text अनुवाद
+    lexeme zh
+      surface
+        text 翻译
+      surface
+        text 翻譯
+  wikidata_property_item_for_this_sense
+    grounded-in P5137
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
+        text "item for this sense"
+      surface
+        text means
+      surface
+        text "meaning of"
+      surface
+        text "meaning item"
+      surface
+        text "sense item"
+    lexeme ru
+      surface
+        text означает
+    lexeme hi
+      surface
+        text अर्थ
+    lexeme zh
+      surface
+        text 意思

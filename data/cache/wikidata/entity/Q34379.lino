@@ -1,0 +1,17 @@
+Q34379
+  aliases
+    en ("music instrument" instrument "instrument in music" "instrument (music)")
+    hi ("वाद्य यंत्र" "संगीत वाद्य यंत्र")
+    zh ("音樂器材" "樂器")
+  descriptions
+    en "device created or adapted to make musical sounds"
+    hi "संगीतमय ध्वनियाँ बनाने के लिए बनाया या अनुकूलित किया गया उपकरण"
+    ru "предметы, с помощью которых извлекаются различные музыкальные, а также немузыкальные неорганизованные звуки"
+  id Q34379
+  labels
+    en "musical instrument"
+    hi "वाद्य यन्त्र"
+    ru "музыкальный инструмент"
+    zh "乐器"
+  type item
+success 1

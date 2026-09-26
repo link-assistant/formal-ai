@@ -5,13 +5,18 @@
 //! test module was the half that no release run executes. `super::` still names
 //! the script, so the tests read exactly as they did inline.
 
-use super::collect_changelog_with_date;
+use super::{
+    PreparedRelease, collect_changelog_with_date, ensure_prepared_release_tag, prepared_release,
+};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 fn temp_dir(name: &str) -> PathBuf {
-    let nanos = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+    let nanos = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
     let path = std::env::temp_dir().join(format!("version-and-commit-{name}-{nanos}"));
     fs::create_dir_all(&path).unwrap();
     path
@@ -158,9 +163,17 @@ fn repo_with_origin(name: &str) -> (PathBuf, PathBuf) {
     let work = root.join("work");
     git_ok(
         &root,
-        &["init", "--bare", "--initial-branch=main", origin.to_str().unwrap()],
+        &[
+            "init",
+            "--bare",
+            "--initial-branch=main",
+            origin.to_str().unwrap(),
+        ],
     );
-    git_ok(&root, &["clone", origin.to_str().unwrap(), work.to_str().unwrap()]);
+    git_ok(
+        &root,
+        &["clone", origin.to_str().unwrap(), work.to_str().unwrap()],
+    );
     git_ok(&work, &["config", "user.email", "ci@example.com"]);
     git_ok(&work, &["config", "user.name", "CI"]);
     fs::write(work.join("Cargo.toml"), "version = \"0.1.0\"\n").unwrap();
@@ -216,8 +229,15 @@ fn syncs_with_concurrent_release_then_commits_bump_on_top() {
         fs::read_to_string(work.join("Cargo.toml")).unwrap(),
         "version = \"0.2.0\"\n"
     );
-    assert_eq!(fs::read_to_string(work.join("NOTES.md")).unwrap(), "concurrent\n");
-    assert!(super::git(&work, &["status", "--porcelain"]).unwrap().is_empty());
+    assert_eq!(
+        fs::read_to_string(work.join("NOTES.md")).unwrap(),
+        "concurrent\n"
+    );
+    assert!(
+        super::git(&work, &["status", "--porcelain"])
+            .unwrap()
+            .is_empty()
+    );
 }
 
 /// Pins the ordering itself: syncing after the bump is staged is exactly the
@@ -249,5 +269,87 @@ fn does_not_rebase_when_only_ahead_of_remote() {
     // Clean no-op even though HEAD != origin/main.
     super::sync_with_remote(&work, "main").expect("being ahead must not trigger a rebase");
     let log = super::git(&work, &["log", "--format=%s"]).unwrap();
-    assert_eq!(log.lines().collect::<Vec<_>>(), vec!["chore: release v0.2.0", "init"]);
+    assert_eq!(
+        log.lines().collect::<Vec<_>>(),
+        vec!["chore: release v0.2.0", "init"]
+    );
+}
+
+fn seed_prepared_release(name: &str, with_tag: bool) -> (PathBuf, PathBuf) {
+    let (root, work) = repo_with_origin(name);
+    fs::create_dir_all(work.join("changelog.d")).unwrap();
+    fs::write(work.join("CHANGELOG.md"), "## [0.2.0] - 2026-09-17\n").unwrap();
+    fs::write(work.join("Cargo.toml"), "version = \"0.2.0\"\n").unwrap();
+    git_ok(&work, &["add", "-A"]);
+    git_ok(&work, &["commit", "-m", "chore: release v0.2.0"]);
+    if with_tag {
+        git_ok(&work, &["tag", "-a", "v0.2.0", "-m", "Release v0.2.0"]);
+    }
+    (root, work)
+}
+
+#[test]
+fn a_tagged_prepared_release_is_resumed_without_another_bump() {
+    let (_root, work) = seed_prepared_release("resume-tagged", true);
+    assert_eq!(
+        prepared_release(&work, "0.2.0", "v", &work.join("changelog.d")).unwrap(),
+        Some(PreparedRelease::Tagged {
+            version: "0.2.0".to_owned(),
+        })
+    );
+}
+
+#[test]
+fn an_untagged_release_commit_is_resumed_and_asks_for_only_its_missing_tag() {
+    let (_root, work) = seed_prepared_release("resume-untagged", false);
+    assert_eq!(
+        prepared_release(&work, "0.2.0", "v", &work.join("changelog.d")).unwrap(),
+        Some(PreparedRelease::NeedsTag {
+            version: "0.2.0".to_owned(),
+        })
+    );
+}
+
+#[test]
+fn recovery_creates_the_missing_tag_once_then_recognizes_the_tagged_release() {
+    let (_root, work) = seed_prepared_release("resume-create-tag", false);
+    let prepared = prepared_release(&work, "0.2.0", "v", &work.join("changelog.d"))
+        .unwrap()
+        .expect("release commit should be recoverable");
+    ensure_prepared_release_tag(&work, &prepared, "v").unwrap();
+
+    assert_eq!(
+        prepared_release(&work, "0.2.0", "v", &work.join("changelog.d")).unwrap(),
+        Some(PreparedRelease::Tagged {
+            version: "0.2.0".to_owned(),
+        })
+    );
+    assert_eq!(
+        super::git(&work, &["rev-parse", "refs/tags/v0.2.0^{commit}"]).unwrap(),
+        super::git(&work, &["rev-parse", "HEAD"]).unwrap()
+    );
+}
+
+#[test]
+fn fragments_always_request_a_new_release_even_when_the_current_version_is_tagged() {
+    let (_root, work) = seed_prepared_release("resume-has-fragments", true);
+    fs::write(
+        work.join("changelog.d/next.md"),
+        "---\nbump: patch\n---\n\nA new change.\n",
+    )
+    .unwrap();
+    assert_eq!(
+        prepared_release(&work, "0.2.0", "v", &work.join("changelog.d")).unwrap(),
+        None
+    );
+}
+
+#[test]
+fn an_ordinary_untagged_commit_is_not_mistaken_for_a_prepared_release() {
+    let (_root, work) = repo_with_origin("resume-ordinary");
+    fs::create_dir_all(work.join("changelog.d")).unwrap();
+    assert_eq!(
+        prepared_release(&work, "0.1.0", "v", &work.join("changelog.d")).unwrap(),
+        None
+    );
 }

@@ -1,0 +1,37 @@
+Q330756
+  aliases
+    en (TDFR ZDFR)
+    es ("Republica Democrática Federal de Transcaucasia" "República Democratica Federativa de Transcaucasia" "República Federativa Democrática Transcaucásica" "Republica Federativa Democratica de Transcaucasia" "Republica Federal de Transcaucasia" "República Democrática Federativa de Transcaucasia" "República Federal de Transcaucasia" "República Federativa Democratica Transcaucásica" "Federación Transcaucásica" "República Democrática Federal de Transcaucásia" "Republica Democrática Federal de Transcaucásia" "Republica Federativa Democrática Transcaucásica" "Republica Democratica Federativa de Transcaucasia" "República Federativa Democrática de Transcaucasia" "Republica Federativa Democrática de Transcaucasia" "Federacion Transcaucásica" "Republica Democratica Federal de Transcaucasia" "Republica Federativa Democratica Transcaucasica" "Federacion Transcaucasica")
+    ru ("ЗДФР" "Закавказская федерация")
+    zh ("外高加索民主主義聯邦共和國")
+  descriptions
+    en "short-lived South Caucasian state (1918)"
+    es "República desaparecida"
+    ru "государственное образование в Закавказье, провозглашённое в 1918 году"
+    zh "歷史上的國家"
+  id Q330756
+  labels
+    en "Transcaucasian Democratic Federative Republic"
+    es "República Democrática Federal de Transcaucasia"
+    ru "Закавказская демократическая федеративная республика"
+    zh "外高加索民主聯邦共和國"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Transcaucasian Democratic Federative Republic"
+    eswiki
+      site eswiki
+      title "República Democrática Federal de Transcaucasia"
+    ruwiki
+      site ruwiki
+      title "Закавказская демократическая федеративная республика"
+    zhwiki
+      site zhwiki
+      title "外高加索民主聯邦共和國"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

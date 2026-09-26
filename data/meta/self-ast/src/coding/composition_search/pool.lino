@@ -1,0 +1,14 @@
+self_ast_census
+  target src/coding/composition_search/pool.rs
+  language rust
+  fidelity signature
+  byte_len 7966
+  line_count 208
+  content_id source_module_519de4674ab91b5b
+  symbol_count 5
+  symbols
+    struct Expression 9 32
+    function atom_expressions 34 90
+    function discovered_literals 92 172
+    function literal 174 189
+    function quoted_literals 191 208

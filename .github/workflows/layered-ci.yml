@@ -1,0 +1,182 @@
+# The js -> ts -> rust development cycle as CI structure (issue #1138,
+# plan 16 L4; maintainer instruction of 2026-09-21, quoted in the plan).
+#
+# Three tiers, each path-gated on its own folder and ordered by `needs` down
+# the cycle:
+#
+#   js   -- `node --check` over every committed js/**/*.js. Measured green on
+#           the whole 63-file corpus on 2026-09-25, so this tier is a real
+#           parse gate, not ceremony.
+#   ts   -- the js<->ts file-set parity: every .js has its .ts sibling and
+#           the ts tree holds no extras. The fast tier-2 rung; it fails in
+#           seconds before the rust tier spends minutes.
+#   rust -- the plan 16 L3 dogfood gate in CI, not only in the unit suite:
+#           delete ts/**/*.ts, regenerate with
+#           `formal-ai translate --from js --to ts --write`, then
+#           `git diff --exit-code -- ts/`. One diff catches byte drift,
+#           missing and extra files, and a transactional refusal (a refused
+#           regeneration writes nothing, so the tree stays deleted and the
+#           diff is the full red).
+#
+# Carry-forward is GitHub-native: a tier whose paths are untouched reports
+# skipped, never red, so its last green run stands -- "once JavaScript
+# version stabilized, we don't reexecute it CI/CD". A skipped tier below
+# means carried, not ignored.
+#
+# Ordering (the instruction: "fail on ts only if all js checks pass, and
+# fail on rust only if all js and ts checks pass"): the ts job runs only
+# after js is green or carried -- js red means ts reports skipped-by-js, not
+# its own red -- and the rust job is the same over js and ts. `always()` is
+# deliberately absent everywhere: it would let a tier report its own red
+# over a red tier above it.
+#
+# The tier predicates are cumulative downward and never upward, because each
+# tier consumes the one above it: a js change wakes the ts and rust tiers
+# (the ts tree is a function of the js tree -- letting the ts tier sleep
+# through a js change would carry a stale-green tier past the regeneration
+# contract), while a rust-only change lets js and ts stand. data/seed/**
+# wakes every tier: a seed consumed by all three roots must not hide behind
+# an untouched folder. The predicates live in scripts/detect-code-changes.rs
+# beside the other job-gating outputs -- not in workflow-level `paths:`,
+# which cannot express job-to-job gating.
+#
+# The checks that span all layers (the CI/CD Pipeline, Workflows, Security,
+# Links, the Self-development status) stay in their own ungated workflows:
+# the shared tier is every audit whose inputs cross tier boundaries, and
+# release.yml running on every pull request synchronize is that tier by
+# design.
+
+name: Layered CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: Detect tier changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-tier-changes
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    outputs:
+      js-changed: ${{ steps.changes.outputs.js-changed }}
+      ts-changed: ${{ steps.changes.outputs.ts-changed }}
+      rust-changed: ${{ steps.changes.outputs.rust-changed }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Detect tier changes
+        id: changes
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+        run: rust-script scripts/detect-code-changes.rs
+
+  js:
+    name: js tier (node --check over js)
+    needs: [changes]
+    # Only this tier's own predicate and no `always()`: another tier's
+    # folder changing alone must let this tier stand on its last green run.
+    if: needs.changes.outputs.js-changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-js
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Syntax-check every committed js file
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find js -name '*.js' -type f | sort)
+          echo "checking ${#files[@]} js files"
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::the js tier found no js files -- the tier predicate is wrong"
+            exit 1
+          fi
+          for file in "${files[@]}"; do
+            node --check "$file"
+          done
+          echo "all ${#files[@]} js files parse"
+
+  ts:
+    name: ts tier (js<->ts file-set parity)
+    needs: [changes, js]
+    # ts-changed gates the tier; js must be green or carried (skipped by
+    # path). A js failure turns this job into skipped-by-js, never its own
+    # red -- the cycle's enforcement order.
+    if: needs.changes.outputs.ts-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-ts
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: The ts tree covers exactly the js tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The ts tree is generated from js (plan 16 L3): its file set is
+          # the js file set with the extension mapped. Extra or missing .ts
+          # files are drift the regeneration gate in the rust tier would
+          # also catch -- this rung names them in seconds.
+          diff \
+            <(cd js && find . -name '*.js' -type f | sort | sed 's/\.js$/.ts/') \
+            <(cd ts && find . -name '*.ts' -type f | sort) \
+            || {
+              echo "::error::the ts file set drifted from the js file set; regenerate with: formal-ai translate --from js --to ts --write"
+              exit 1
+            }
+          echo "the ts tree mirrors the js tree file for file"
+
+  rust:
+    name: rust tier (dogfood regeneration gate)
+    needs: [changes, js, ts]
+    # rust-changed gates the tier (it includes js/** and ts/** today,
+    # because the dogfood gate binds all three trees); js and ts must each
+    # be green or carried. Either red means skipped-by-cycle, not own red.
+    if: needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-rust
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      # The binary is cached by the digest of the sources it is built from,
+      # so this tier costs one release build per source change, not a
+      # second test suite.
+      - uses: ./.github/actions/formal-ai-binary
+      - name: The committed ts tree is what the translator regenerates
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Delete first: a refused source is a transactional no-write, and
+          # diffing over the stale committed tree would report green. With
+          # the tree deleted, a refusal leaves the deletions in place and
+          # the diff below is the full red.
+          find ts -name '*.ts' -type f -delete
+          rust/target/release/formal-ai translate --from js --to ts --write
+          git diff --exit-code -- ts/
+          echo "the committed ts tree regenerates byte-for-byte from js"

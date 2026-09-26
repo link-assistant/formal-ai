@@ -1,0 +1,26 @@
+self_ast_census
+  target src/formalization/segment.rs
+  language rust
+  fidelity signature
+  byte_len 10373
+  line_count 295
+  content_id source_module_1ec744aa0e0a82c1
+  symbol_count 17
+  symbols
+    struct Segment 35 40
+    enum Script 45 51
+    function slug 56 64
+    function from_slug 66 74
+    struct ScriptPunctuation 79 85
+    function punctuation 87 118
+    static PUNCTUATION 88 88
+    function values 120 128
+    function block 131 137
+    function script_of 141 152
+    function is_terminator 155 159
+    function is_opening 162 166
+    function dominant_script 170 187
+    function sentences 196 229
+    function push_segment 231 244
+    function clauses 253 281
+    function push_clause 283 295

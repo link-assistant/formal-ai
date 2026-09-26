@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=isogram&site=stackoverflow&filter=withbody
+fetched_at=1789533799
+sha256=08dc6cfd704e4c326c205c9d794eb619e1de739b581b08a2cf057c6dfff5f27c

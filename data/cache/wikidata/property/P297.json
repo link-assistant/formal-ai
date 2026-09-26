@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "P297": {
+      "type": "property",
+      "datatype": "external-id",
+      "id": "P297",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ISO 3166-1 alpha-2 code"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ISO 3166-1 alpha-2"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आईएसओ 3166-1 अल्फा-2"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "ISO 3166-1二位字母代码"
+        },
+        "es": {
+          "language": "es",
+          "value": "código ISO 3166-1 de dos letras"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "identifier for a country in two-letter format per ISO 3166-1"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "двухбуквенный код страны или подчинённой территории согласно международному стандарту ISO 3166-1"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आईएसओ 3166-1 के अनुसार देश का दो अक्षर कोड"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "含二位字母的 ISO 3166-1 国家代码"
+        },
+        "es": {
+          "language": "es",
+          "value": "código de país de dos letras asignado por la ISO 3166-1"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "country code ISO 3166-1 alpha-2"
+          },
+          {
+            "language": "en",
+            "value": "two letter code"
+          },
+          {
+            "language": "en",
+            "value": "country code (ISO 3166-1 alpha-2)"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "ISO 3166-1alpha-2"
+          },
+          {
+            "language": "es",
+            "value": "código de país ISO 3166-1 de 2 letras"
+          },
+          {
+            "language": "es",
+            "value": "codigo de pais de dos letras ISO 3166-1"
+          },
+          {
+            "language": "es",
+            "value": "codigo de pais de 2 letras ISO 3166-1"
+          },
+          {
+            "language": "es",
+            "value": "codigo ISO 3166-1 de 2 letras"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

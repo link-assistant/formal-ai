@@ -1,0 +1,36 @@
+Q154667
+  aliases
+    en ("Georgian Empire" Georgia)
+    ru ("Королевство Грузии")
+    zh ("角兒只" "角儿只")
+  descriptions
+    en "medieval state in Eastern Europe"
+    es "monarquía medieval"
+    ru "государство, существовавшее на Кавказе в средние века"
+    zh "历史国家"
+  id Q154667
+  labels
+    en "Kingdom of Georgia"
+    es "Reino de Georgia"
+    ru "Грузинское царство"
+    zh "格鲁吉亚王国"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Kingdom of Georgia"
+    eswiki
+      site eswiki
+      title "Reino de Georgia"
+    ruwiki
+      site ruwiki
+      title "Грузинское царство"
+    zhwiki
+      site zhwiki
+      title "格鲁吉亚王国"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

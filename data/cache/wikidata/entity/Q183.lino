@@ -1,18 +1,68 @@
 Q183
   aliases
-    en ("Federal Republic of Germany")
+    en ("Federal Republic of Germany" DE DEU FRG BRD)
+    es ("República Federal de Alemania")
     ru ("Федеративная Республика Германия" "ФРГ" "Дойчланд")
     zh ("德意志" "德意志联邦" "德意志联邦共和国" "德意志聯邦" "德意志聯邦共和國" "德国")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q183
+              numeric-id 183
+          hash ef7247b704f4ec0a7df39e83306bb388fea17d5f
+          property P17
+          snaktype value
+        rank normal
+    P297
+      entry
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value DE
+          hash e562e1204a566fea7392f14ec20c6a98896c6c00
+          property P297
+          snaktype value
+        rank normal
   descriptions
     en "country in Central Europe"
+    es "país de Europa Occidental"
     hi "मध्य यूरोप का देश"
     ru "государство в Центральной Европе"
     zh "歐洲國家"
   id Q183
   labels
     en Germany
+    es Alemania
     hi "जर्मनी"
     ru "Германия"
     zh "德國"
+  sitelinks
+    enwiki
+      site enwiki
+      title Germany
+    eswiki
+      site eswiki
+      title Alemania
+    hiwiki
+      site hiwiki
+      title "जर्मनी"
+    ruwiki
+      site ruwiki
+      title "Германия"
+    zhwiki
+      site zhwiki
+      title "德国"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

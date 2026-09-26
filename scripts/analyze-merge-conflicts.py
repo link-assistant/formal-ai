@@ -58,9 +58,9 @@ CAUSES: list[tuple[str, "re.Pattern[str]"]] = [
         re.compile(
             r"((^|/)mod\.rs$"
             r"|^src/lib\.rs$"
-            r"|^src/web/formal_ai_worker\.js$"
+            r"|^js/formal_ai_worker\.js$"
             r"|^src/seed/embedded\.rs$"
-            r"|^src/web/seed_loader\.js$"
+            r"|^js/seed_loader\.js$"
             r"|^scripts/hardcoded-language-allowlist\.txt$)"
         ),
     ),
@@ -71,7 +71,7 @@ CAUSES: list[tuple[str, "re.Pattern[str]"]] = [
             r"|NON-GOALS|CONTRIBUTING)\.md$"
         ),
     ),
-    ("sequential-file-name", re.compile(r"^src/web/worker/formal_ai_worker_\d+\.js$")),
+    ("sequential-file-name", re.compile(r"^js/worker/formal_ai_worker_\d+\.js$")),
     ("automation-placeholder", re.compile(r"^\.gitkeep$")),
     ("lockfile-or-manifest", re.compile(r"^(Cargo\.(lock|toml)|package\.json|bun\.lock)$")),
     ("ci-workflow", re.compile(r"^\.github/workflows/")),

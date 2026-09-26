@@ -1,0 +1,165 @@
+repository_command_allowlist
+  record_type "repository_command_allowlist"
+  issue "1138"
+  policy "default_deny"
+  plan "docs/case-studies/issue-1138/plans/03-repository-workspace-protocol.md"
+allow_git_clone
+  record_type "allowed_command"
+  id "git_clone"
+  program "git"
+  subcommand "clone"
+  arguments ("--no-checkout" "{origin}" "{root}")
+  mutating "true"
+  deadline_seconds "900"
+  precondition "The spec names a forty-character base commit."
+  postcondition "A tree exists at the destination and no other directory changed."
+allow_git_checkout
+  record_type "allowed_command"
+  id "git_checkout"
+  program "git"
+  subcommand "checkout"
+  arguments ("--detach" "{commit}")
+  mutating "true"
+  deadline_seconds "300"
+  precondition "The clone exists and the commit is an object name."
+  postcondition "HEAD resolves to exactly the requested commit."
+allow_git_rev_parse
+  record_type "allowed_command"
+  id "git_rev_parse"
+  program "git"
+  subcommand "rev-parse"
+  arguments ("{revision}")
+  mutating "false"
+  deadline_seconds "60"
+  precondition "A git tree exists at the workspace root."
+  postcondition "An object name is printed, or the failure is reported verbatim."
+allow_git_add_intent
+  record_type "allowed_command"
+  id "git_add_intent"
+  program "git"
+  subcommand "add"
+  arguments ("--intent-to-add" "--all")
+  mutating "true"
+  deadline_seconds "120"
+  precondition "The workspace is a clone the protocol owns."
+  postcondition "New files are visible to the diff without their bytes being staged."
+allow_git_add_all
+  record_type "allowed_command"
+  id "git_add_all"
+  program "git"
+  subcommand "add"
+  arguments ("--all")
+  mutating "true"
+  deadline_seconds "120"
+  precondition "The workspace is an isolated clone and the user explicitly requested a commit."
+  postcondition "Exactly the isolated workspace diff is staged."
+allow_git_commit
+  record_type "allowed_command"
+  id "git_commit"
+  program "git"
+  subcommand "commit"
+  arguments ("-m" "{message}")
+  mutating "true"
+  deadline_seconds "120"
+  precondition "The staged isolated-workspace diff passed the protocol and carries all attribution trailers."
+  postcondition "The isolated clone has one attributable commit and the ambient checkout is unchanged."
+allow_git_diff
+  record_type "allowed_command"
+  id "git_diff"
+  program "git"
+  subcommand "diff"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "120"
+  precondition "The workspace is a clone the protocol owns."
+  postcondition "A unified diff that applies to a clean clone at the same base."
+allow_git_apply
+  record_type "allowed_command"
+  id "git_apply"
+  program "git"
+  subcommand "apply"
+  arguments ("{patch}")
+  mutating "true"
+  deadline_seconds "120"
+  precondition "The patch was produced against the same base commit."
+  postcondition "The tree matches the tree the patch was taken from."
+allow_git_status
+  record_type "allowed_command"
+  id "git_status"
+  program "git"
+  subcommand "status"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "60"
+  precondition "A git tree exists at the workspace root."
+  postcondition "The observed state is reported, never assumed."
+allow_git_init
+  record_type "allowed_command"
+  id "git_init"
+  program "git"
+  subcommand "init"
+  arguments ("{rest}")
+  mutating "true"
+  deadline_seconds "60"
+  precondition "The directory is one the protocol created."
+  postcondition "A git tree exists where there was none."
+allow_cargo_test
+  record_type "allowed_command"
+  id "cargo_test"
+  program "cargo"
+  subcommand "test"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "1800"
+  precondition "The tree declares a Cargo manifest."
+  postcondition "Each named test is observed passing or failing; neither is assumed."
+allow_cargo_build
+  record_type "allowed_command"
+  id "cargo_build"
+  program "cargo"
+  subcommand "build"
+  arguments ("{rest}")
+  mutating "true"
+  deadline_seconds "1800"
+  precondition "The tree declares a Cargo manifest."
+  postcondition "The build outcome is observed, including its diagnostics."
+allow_cargo_check
+  record_type "allowed_command"
+  id "cargo_check"
+  program "cargo"
+  subcommand "check"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "900"
+  precondition "The tree declares a Cargo manifest."
+  postcondition "The check outcome is observed, including its diagnostics."
+allow_python_module
+  record_type "allowed_command"
+  id "python_module"
+  program "python3"
+  subcommand "-m"
+  arguments ("{module}" "{rest}")
+  mutating "false"
+  deadline_seconds "1800"
+  precondition "The module is the test runner the tree declares."
+  postcondition "Each named test is observed passing or failing."
+allow_python_inline
+  record_type "allowed_command"
+  id "python_inline"
+  program "python3"
+  subcommand "-c"
+  arguments ("{script}")
+  mutating "false"
+  deadline_seconds "2"
+  precondition "The script is one the protocol composed, never one a prompt supplied."
+  postcondition "The observed output is reported with its exit status."
+allow_npm_test
+  record_type "allowed_command"
+  id "npm_test"
+  program "npm"
+  subcommand "test"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "1800"
+  precondition "The tree declares a package manifest with a test script."
+  postcondition "Each named test is observed passing or failing."

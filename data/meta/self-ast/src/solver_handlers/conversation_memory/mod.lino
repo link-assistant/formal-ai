@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/conversation_memory/mod.rs
   language rust
   fidelity signature
-  byte_len 26859
-  line_count 813
-  content_id source_module_3646a846638d6309
-  symbol_count 45
+  byte_len 27559
+  line_count 829
+  content_id source_module_dbd55a7b1b5f2043
+  symbol_count 46
   symbols
     module conversation_summary 3 3
     module link_query 4 4
@@ -19,36 +19,37 @@ self_ast_census
     enum MemoryRecallDetail 66 69
     struct MemoryQueryExecution 73 76
     function try_conversation_memory 78 102
-    function answer_memory_recall 105 120
-    function recalled_event_indices 123 141
-    function try_recall_name 143 162
-    function try_assistant_name 173 209
-    function render_assistant_name_ack 212 216
-    function render_assistant_name_recall 219 223
-    function try_recall_last_question 225 250
-    function previous_user_request_turn 252 265
-    function is_recall_meta_prompt 267 274
-    function render_previous_user_message 276 283
-    function try_recall_previous_message 293 321
-    function localized_role 324 335
-    function render_previous_message 337 345
-    function render_no_previous_message 347 354
-    function try_conversation_recall 356 385
-    function try_memory_recall 387 427
-    function recognize_recall_query 429 443
-    function recall_term_for_role 445 451
-    function term_from_form 453 463
-    function clean_recall_term 465 479
-    function recall_matches 481 503
-    function memory_recall_matches 505 555
-    function event_in_recall_scope 557 565
-    function memory_event_field_values 567 593
-    function push_memory_field 595 603
-    function memory_field_match 605 619
-    function memory_link_match 621 630
-    function memory_match 632 659
-    function log_fragment 662 667
-    function render_line 669 682
-    function memory_conversation_count 685 693
-    function render_recall_report 695 742
-    function render_memory_recall_report 744 813
+    function conversation_summary_answer 112 118
+    function answer_memory_recall 121 136
+    function recalled_event_indices 139 157
+    function try_recall_name 159 178
+    function try_assistant_name 189 225
+    function render_assistant_name_ack 228 232
+    function render_assistant_name_recall 235 239
+    function try_recall_last_question 241 266
+    function previous_user_request_turn 268 281
+    function is_recall_meta_prompt 283 290
+    function render_previous_user_message 292 299
+    function try_recall_previous_message 309 337
+    function localized_role 340 351
+    function render_previous_message 353 361
+    function render_no_previous_message 363 370
+    function try_conversation_recall 372 401
+    function try_memory_recall 403 443
+    function recognize_recall_query 445 459
+    function recall_term_for_role 461 467
+    function term_from_form 469 479
+    function clean_recall_term 481 495
+    function recall_matches 497 519
+    function memory_recall_matches 521 571
+    function event_in_recall_scope 573 581
+    function memory_event_field_values 583 609
+    function push_memory_field 611 619
+    function memory_field_match 621 635
+    function memory_link_match 637 646
+    function memory_match 648 675
+    function log_fragment 678 683
+    function render_line 685 698
+    function memory_conversation_count 701 709
+    function render_recall_report 711 758
+    function render_memory_recall_report 760 829

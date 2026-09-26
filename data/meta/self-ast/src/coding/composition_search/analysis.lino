@@ -1,0 +1,17 @@
+self_ast_census
+  target src/coding/composition_search/analysis.rs
+  language rust
+  fidelity signature
+  byte_len 11413
+  line_count 311
+  content_id source_module_6ef98fea128a7a4a
+  symbol_count 8
+  symbols
+    function literal_leaves 12 18
+    function iteration_element_types 26 31
+    function parameter_reads 33 38
+    function collect_parameter_names 40 167
+    function walk 45 165
+    function canonical_displacement 176 276
+    function walk 177 272
+    function python_tokens 281 311

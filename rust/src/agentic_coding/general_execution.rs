@@ -1,0 +1,455 @@
+//! Execution state machine for a composed general change plan.
+
+use serde_json::json;
+
+use super::capability_router::shell_command_tool;
+use super::general_planner::{
+    compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
+};
+use super::planner::{
+    plan_one, tool_for, write_arguments, AgenticPlan, Capability,
+};
+use super::progress::Progress;
+use super::tool_result;
+use crate::protocol::ChatMessage;
+
+const EXPECTED_PLACEHOLDER: &str = concat!("{", "expected", "}");
+const OBSERVED_PLACEHOLDER: &str = concat!("{", "observed", "}");
+const PLAN_PLACEHOLDER: &str = concat!("{", "plan", "}");
+const PLAN_PATH_PLACEHOLDER: &str = concat!("{", "plan_path", "}");
+
+pub(super) fn plan_general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+) -> AgenticPlan {
+    general_change_step(messages, tool_names, plan, false)
+}
+
+/// The same state machine entered from a resolved work item. Every step is
+/// identical; only the completion differs — the harness voice instead of the
+/// conversational one — because a user who hands over an issue reference
+/// commissioned an artifact, while a user who types the task asked for a
+/// conversation about a change (issue #1133, the literal-file run).
+pub(super) fn plan_work_item_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+) -> AgenticPlan {
+    general_change_step(messages, tool_names, plan, true)
+}
+
+fn general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+    resolved_from_work_item: bool,
+) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+    // Reading the work item is an attempt to find out whether anything *can* be
+    // executed, not a step the request named. A read that comes back missing or
+    // empty therefore answers that question — the capability is unavailable —
+    // and the run continues to record the reference. Reporting the fetch as the
+    // run's failure would replace the honest terminal state of issue #904 with
+    // a transport message about a URL the user never asked to see.
+    let work_item_unreadable = plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && progress
+            .latest_failure()
+            .is_some_and(|failure| failure.capability == Capability::Fetch || failure.is_work_item_read());
+    if let Some(failure) = progress.latest_failure().filter(|_| !work_item_unreadable) {
+        if failure.capability == Capability::Write {
+            let path = failure.arguments.as_deref().and_then(tool_argument_path);
+            if let (Some(path), Some(read_tool)) =
+                (path.as_deref(), tool_for(tool_names, Capability::Read))
+                && progress.failed_write_count_for(path) == 1 {
+                    return plan_one(read_tool, read_arguments(path));
+                }
+            // The plan event is auxiliary. A write-only client cannot perform
+            // the preferred read-before-retry recovery, but its failure must
+            // not swallow the user's primary literal-file write.
+            if path.as_deref() == Some(PLAN_PATH)
+                && plan.mode == GeneralPlanMode::LiteralFile
+                && tool_for(tool_names, Capability::Read).is_none()
+                && progress.failed_write_count_for(PLAN_PATH) == 1
+                && let Some(write_tool) = tool_for(tool_names, Capability::Write) {
+                    return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
+                }
+            // Recovery is exhausted, but the failed call is not the last word:
+            // run the check the plan itself named so the report can carry the
+            // status the workspace answered with rather than a transport
+            // message alone (issue #916, rung R916-01).
+            if plan.mode != GeneralPlanMode::RepositoryWorkItem
+                && !plan.verification_command.trim().is_empty()
+                && progress.run_count_for(&plan.verification_command) == 0
+                && let Some(run_tool) = shell_command_tool(tool_names) {
+                    return plan_one(
+                        run_tool,
+                        json!({ "command": plan.verification_command }).to_string(),
+                    );
+                }
+            return AgenticPlan::Final(tool_result::render_failure(
+                path.as_deref().unwrap_or("write"),
+                &failure.detail,
+                &plan.goal,
+            ));
+        }
+        // A failed run is reported as the command that failed and the status it
+        // exited with, not as an anonymous "run" step (issues #905 and #908).
+        if failure.capability == Capability::Run
+            && let Some(output) = progress.latest_run_output_for(&plan.verification_command)
+            && let Some(report) = tool_result::failed_verification(
+                std::slice::from_ref(output),
+                &plan.verification_command,
+                &plan.goal,
+            ) {
+                return AgenticPlan::Final(report);
+            }
+        // A client may require an attempted read before creating a missing
+        // file. Whether that read found bytes or reported absence, retry the
+        // original write once; its per-target failure budget remains bounded.
+        let recovering_missing_write = failure.capability == Capability::Read
+            && progress.previous_attempt().is_some_and(|previous| {
+                previous.capability == Capability::Write && !previous.succeeded
+            });
+        if !recovering_missing_write {
+            return AgenticPlan::Final(tool_result::render_failure(
+                capability_label(failure.capability),
+                &failure.detail,
+                &plan.goal,
+            ));
+        }
+    }
+    let recovering_write = progress.last() == Some(Capability::Read)
+        && progress.previous_attempt().is_some_and(|previous| {
+            previous.capability == Capability::Write && !previous.succeeded
+        });
+    if recovering_write
+        && let (Some(tool), Some(arguments)) = (
+            tool_for(tool_names, Capability::Write),
+            progress
+                .previous_attempt()
+                .and_then(|attempt| attempt.arguments.as_deref()),
+        ) {
+            return plan_one(tool, arguments.to_owned());
+        }
+    // A repository work item names an issue, not an artifact. Recording the
+    // reference and stopping is what issue #904 reported: nothing the request
+    // asked for was ever produced. The issue itself is where the artifact is
+    // named, so read it before concluding that nothing can be executed — the
+    // capability is only genuinely unavailable once the fetch has been tried.
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        if let Some(fetched) = repository_work_item_objective(plan, &progress) {
+            if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
+                return step;
+            }
+        } else if let Some(step) = plan_work_item_read(tool_names, &plan.target, &progress)
+        {
+            return step;
+        }
+    }
+    if let Some(tool) = tool_for(tool_names, Capability::Write) {
+        let plan_attempted = progress.attempted_write_for(PLAN_PATH);
+        let plan_written = progress.successful_write_for(PLAN_PATH);
+        if !plan_attempted {
+            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
+        }
+        if plan.mode == GeneralPlanMode::LiteralFile
+            && !progress.successful_write_for(&plan.target)
+            && (plan_written || plan_attempted)
+        {
+            return plan_one(tool, write_arguments(&plan.target, &plan.content));
+        }
+    }
+    if let Some(tool) = shell_command_tool(tool_names) {
+        match plan.mode {
+            GeneralPlanMode::CommandOutput => {
+                if let Some(generation) = plan.steps.get(1).and_then(|step| step.command.as_deref())
+                {
+                    if progress.successful_run_count_for(generation) == 0 {
+                        return plan_one(tool, json!({ "command": generation }).to_string());
+                    }
+                    if progress.successful_run_count_for(&plan.verification_command) == 0 {
+                        return plan_one(
+                            tool,
+                            json!({ "command": plan.verification_command }).to_string(),
+                        );
+                    }
+                }
+            }
+            GeneralPlanMode::LiteralFile
+                if progress.successful_run_count_for(&plan.verification_command) == 0 =>
+            {
+                return plan_one(
+                    tool,
+                    json!({ "command": plan.verification_command }).to_string(),
+                );
+            }
+            // A repository work item names no verification command: the only
+            // file this run writes is the plan record, and reading it back
+            // would verify nothing but the write itself (issue #904).
+            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
+        }
+    }
+    finish_general_change(plan, &progress, resolved_from_work_item)
+}
+
+/// Plan the next step from what the fetched work item actually asks for.
+///
+/// The real corpus decides the shape here. The issues Hive Mind dispatches say
+/// *"implement a Hello World program in Scala"* — a described artifact in a
+/// named language, not literal bytes — so the same coding catalog that answers
+/// that request when a user types it directly answers it here, through the
+/// execution recipe its [`SymbolicAnswer`](crate::solver::SymbolicAnswer)
+/// carries. The literal-file composer follows, for a work item that does spell
+/// out a path and its contents.
+///
+/// Returning [`None`] means the work item named nothing this sandbox can
+/// produce — an unsupported language, or prose with no artifact in it at all —
+/// which keeps `planned_not_executed` truthful rather than inventing an
+/// artifact the issue never asked for.
+fn plan_work_item_execution(
+    objective: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    // The default configuration is the right one: the recipe wanted here is the
+    // same `write_program` answer a user typing this request directly would get,
+    // and the client — not this solver — owns execution. Opting into agent mode
+    // would only add the policy branches that answer *about* agent actions.
+    let mut answer = crate::solver::UniversalSolver::default().solve(objective);
+    // The issue that asks for the program may also ask for the workflow that
+    // runs it (issue #1133, requirement 6 of every Hello World task): the
+    // recipe then carries the workflow as a supporting file, running the same
+    // commands the harness verifies.
+    if let Some(recipe) = answer.execution_recipe.as_mut()
+        && super::ci_workflow::requested_in(objective)
+    {
+        super::ci_workflow::attach(recipe);
+    }
+    if let Some(step) =
+        super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+    {
+        return Some(step);
+    }
+    let executable = compose_general_change_plan(objective)
+        .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
+    Some(plan_work_item_change_step(messages, tool_names, &executable))
+}
+
+/// The step that reads the work item, through whichever client tool reaches it.
+///
+/// GitHub's structured CLI read comes first when the client can run it. Unlike
+/// model-backed `WebFetch` tools, it returns source bytes rather than asking a
+/// nested model to interpret the whole solve request. This keeps the read in
+/// the checkout's credential and prevents a fetched issue from being solved
+/// once inside the fetch tool and then misread as issue text by the outer plan.
+///
+/// A client with no run capability falls back to its fetch tool. That call
+/// carries a data-declared extraction instruction rather than the user's solve
+/// request, so required `prompt` fields cannot recursively execute the task.
+/// A protocol-hosted fetch tool runs server-side, so the fetch itself is the
+/// read and `gh` is never planned ahead of it (issue #904).
+fn plan_work_item_read(
+    tool_names: &[&str],
+    target: &str,
+    progress: &Progress,
+) -> Option<AgenticPlan> {
+    let fetch = tool_for(tool_names, Capability::Fetch);
+    if fetch.is_some_and(super::capability_router::is_hosted_research_tool) {
+        return fetch
+            .filter(|_| !progress.attempted_fetch_of(target))
+            .map(|tool| plan_one(tool, work_item_fetch_arguments(target)));
+    }
+    if !progress.attempted_work_item_read_of(target)
+        && let Some(run) = shell_command_tool(tool_names)
+    {
+        return Some(plan_one(run, json!({ "command": issue_view_command(target) }).to_string()));
+    }
+    if !progress.attempted_fetch_of(target) && let Some(tool) = fetch {
+        return Some(plan_one(tool, work_item_fetch_arguments(target)));
+    }
+    None
+}
+
+fn work_item_fetch_arguments(target: &str) -> String {
+    json!({
+        "url": target,
+        "format": "text",
+        "prompt": super::work_item_steps::fill("issue_fetch_prompt", &[]),
+    })
+    .to_string()
+}
+
+/// The `gh` command that prints a work item as its title followed by its body.
+#[allow(clippy::literal_string_with_formatting_args)]
+pub(super) fn issue_view_command(target: &str) -> String {
+    // `…/owner/repo/pull/7` reads through `gh pr`, everything else through
+    // `gh issue`; the segment before the number says which.
+    let kind = match target.trim_end_matches('/').rsplit('/').nth(1) {
+        Some("pull") => "pr",
+        _ => "issue",
+    };
+    let quoted_target = super::general_planner::shell_quote(target);
+    super::work_item_steps::fill(
+        "issue_view_command",
+        &[("{kind}", kind), ("{target}", &quoted_target)],
+    )
+}
+
+/// The text of the issue this work item names, once the client has fetched it.
+///
+/// Only the page fetched from the plan's own target counts. A repository work
+/// item carries one URL, and answering it with whatever page happened to be
+/// fetched for some other reason this turn would plan against the wrong issue.
+fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
+    progress
+        .fetched_pages
+        .iter()
+        .find(|(url, _)| url == &plan.target)
+        .map(|(_, text)| text.clone())
+        .filter(|text| !text.trim().is_empty())
+}
+
+fn finish_general_change(
+    plan: &GeneralChangePlan,
+    progress: &Progress,
+    resolved_from_work_item: bool,
+) -> AgenticPlan {
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        return AgenticPlan::Final(plan.planned_not_executed_answer());
+    }
+    // The workspace gets the last word over a completion claim: a verification
+    // command that exited non-zero replaces the claim with its own report.
+    if let Some(report) = progress
+        .latest_run_output_for(&plan.verification_command)
+        .and_then(|output| {
+            tool_result::failed_verification(
+                std::slice::from_ref(output),
+                &plan.verification_command,
+                &plan.goal,
+            )
+        })
+    {
+        return AgenticPlan::Final(report);
+    }
+    if progress.successful_run_count_for(&plan.verification_command) == 0 {
+        return AgenticPlan::Final(general_plan_unverified(plan));
+    }
+    if plan.mode == GeneralPlanMode::LiteralFile {
+        let observed = progress
+            .latest_successful_run_output_for(&plan.verification_command)
+            .and_then(tool_result::observed_payload);
+        if observed.as_deref().map(str::trim) != Some(plan.content.trim()) {
+            return AgenticPlan::Final(general_plan_mismatch(
+                plan,
+                observed.as_deref().unwrap_or_default(),
+            ));
+        }
+    }
+    if resolved_from_work_item && plan.mode == GeneralPlanMode::LiteralFile {
+        return AgenticPlan::Final(work_item_completion(plan, progress));
+    }
+    AgenticPlan::Final(general_plan_completed(plan))
+}
+
+/// The completion a resolved work item earns: the harness voice the execution
+/// recipe already uses — the artifact created, the command that verified it,
+/// the output that command produced. A literal file the work item spelled out
+/// is an artifact whose side effects belong to the requesting client, so it is
+/// reported through the same recipe shape a composed program is (issue #1133,
+/// the literal-file run). A task the user typed into the conversation keeps
+/// the seeded conversational claim; its words are pinned by issues #905
+/// and #916.
+fn work_item_completion(plan: &GeneralChangePlan, progress: &Progress) -> String {
+    let recipe = crate::engine::ExecutionRecipe {
+        language: "text".to_owned(),
+        source: plan.content.clone(),
+        path: plan.target.clone(),
+        supporting_files: Vec::new(),
+        commands: vec![plan.verification_command.clone()],
+    };
+    let outputs = progress
+        .latest_successful_run_output_for(&plan.verification_command)
+        .map(|output| vec![output.to_owned()])
+        .unwrap_or_default();
+    recipe.final_answer(&outputs, None)
+}
+
+/// The completion claim is the sentence the issue quotes as the false report,
+/// so it is seeded like every other outcome of this state machine rather than
+/// typed into Rust: the words live in `data/seed/`, and the reply follows the
+/// language the request was written in.
+fn general_plan_completed(plan: &GeneralChangePlan) -> String {
+    let language = crate::language::detect(&plan.goal).slug();
+    let mut answer =
+        crate::seed::localized_response("general_plan_completed", language).unwrap_or_default();
+    answer = answer.replace("{target}", &plan.target);
+    answer = answer.replace("{command}", &plan.verification_command);
+    answer = answer.replace(PLAN_PATH_PLACEHOLDER, PLAN_PATH);
+    answer.replace(
+        PLAN_PLACEHOLDER,
+        &crate::issue_report::fenced_block(
+            crate::issue_report::LINO_FENCE_LANGUAGE,
+            &plan.links_notation(),
+        ),
+    )
+}
+
+fn tool_argument_path(arguments: &str) -> Option<String> {
+    let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
+    ["path", "filePath", "file_path"]
+        .iter()
+        .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
+        .map(str::to_owned)
+}
+
+fn read_arguments(path: &str) -> String {
+    json!({
+        "path": path,
+        "filePath": path,
+        "file_path": path,
+    })
+    .to_string()
+}
+
+const fn capability_label(capability: Capability) -> &'static str {
+    match capability {
+        Capability::Search => "search",
+        Capability::Fetch => "fetch",
+        Capability::Read => "read",
+        Capability::Write => "write",
+        Capability::Edit => "edit",
+        Capability::Run => "run",
+        Capability::Grep => "grep",
+        Capability::Glob => "glob",
+        Capability::ListDir => "list directory",
+        Capability::Todo => "todo",
+        Capability::Subagent => "subagent",
+        Capability::ReadMany => "read many",
+        Capability::MultiEdit => "multi-edit",
+        Capability::AskUser => "ask user",
+    }
+}
+
+fn general_plan_mismatch(plan: &GeneralChangePlan, observed: &str) -> String {
+    let language = crate::language::detect(&plan.goal).slug();
+    let mut answer =
+        crate::seed::localized_response("general_plan_verification_mismatch", language)
+            .unwrap_or_default();
+    answer = answer.replace("{target}", &plan.target);
+    let expected = if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        plan.links_notation()
+    } else {
+        plan.content.clone()
+    };
+    answer = answer.replace(EXPECTED_PLACEHOLDER, expected.trim());
+    answer.replace(OBSERVED_PLACEHOLDER, observed.trim())
+}
+
+fn general_plan_unverified(plan: &GeneralChangePlan) -> String {
+    let language = crate::language::detect(&plan.goal).slug();
+    let mut answer =
+        crate::seed::localized_response("general_plan_unverified", language).unwrap_or_default();
+    answer = answer.replace("{target}", &plan.target);
+    answer.replace("{command}", &plan.verification_command)
+}

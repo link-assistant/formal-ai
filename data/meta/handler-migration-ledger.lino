@@ -1,19 +1,50 @@
 handler_migration_ledger
   issue 699
   batch 3
-  ceilings "issue #1085: the raisable specialized_handler_files_max / try_dispatch_entries_max ceilings were raised twice (2026-08-02, 2026-08-11); the measured, lower-only ceilings now live in data/meta/kernel-ratchet.lino"
+  ceilings "issue #1085: the raisable specialized_handler_files_max / try_dispatch_entries_max ceilings were raised twice (2026-08-02, 2026-08-11); the measured, lower-only ceilings now live in data/meta/debt-ratchet.lino. Corrected by issue #1138 B9, plan 09 leaf 5: this line named a deleted kernel-ratchet path that never existed in the tree; the measures moved to data/meta/debt-ratchet.lino under issue #1126 and this note was not updated, which is where ROADMAP.md:362 took its stale figures from."
+  census "the live registry: the specialized handler-precedence table (data/seed/handler-precedence.lino) followed by the five prelude methods (rust/src/solver_dispatch.rs PRELUDE_METHOD_NAMES), which run on every turn ahead of the table. Counting only the table left five live methods outside this ledger, so the pending count read 40 when it was 45."
   handler conversation_control
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Both turns are role recognition plus a backtick capture rendered through seeded responses; the rule interpreter walks them with no handler-specific Rust."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler agentic_continuation
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses-agentic.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1095: a turn that is only a continuation cue is whole-prompt role equality (the interpreter's `whole` mode) rendered through seeded responses; the agentic planner asks the same rule whether to resume the established task, so no handler-specific Rust decides it."
-    held_out "tests/unit/issue_1095_continuation_cue.rs"
+    held_out "rust/tests/unit/issue_1095_continuation_cue.rs"
+  handler exact_memory_query
+    status pending
+    justification "plan 09 leaf 13: the census now names the browser-only rows of the precedence seed; the memory store lives in the worker, so this handler has no native implementation yet."
+  handler memory_program
+    status pending
+    justification "plan 09 leaf 13: browser-only memory-program interpreter, recorded by the same census correction."
+  handler memory_program_gap
+    status pending
+    justification "plan 09 leaf 13: browser-only gap surfacing over stored memory programs, recorded by the same census correction."
+  handler current_dialogue_fact_checking
+    status pending
+    justification "plan 09 leaf 13: browser-only dialogue fact checking against the worker's memory, recorded by the same census correction."
+  handler link_native_synthesis
+    status pending
+    justification "plan 09 leaf 13: browser-only synthesis over the worker-held link store, recorded by the same census correction."
+  handler historical
+    status pending
+    justification "plan 09 leaf 13: browser-only replay of stored conversation history, recorded by the same census correction."
+  handler write_program_coreference
+    status pending
+    justification "plan 09 leaf 13: browser-only context-bound write-program rewrite, recorded by the same census correction."
+  handler program_blueprint_from_prompt
+    status pending
+    justification "plan 09 leaf 13: browser-only blueprint composition from a bare prompt, recorded by the same census correction."
+  handler write_program_concrete
+    status pending
+    justification "plan 09 leaf 13: browser-only context-bound concrete write-program binding, recorded by the same census correction."
+  handler software_project_request
+    status pending
+    justification "plan 09 leaf 13: browser-only interactive software-project dialogue, recorded by the same census correction."
   handler http_fetch
     status pending
   handler url_navigate
@@ -21,9 +52,9 @@ handler_migration_ledger
   handler github_repository_traffic
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-web-search.lino|data/seed/multilingual-responses.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Four role conjunctions in the detected language and English, seeded reply with the documentation links as rule values."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler document_originality_check
     status pending
   handler web_search
@@ -37,9 +68,9 @@ handler_migration_ledger
   handler docs_method_explanation
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-docs.lino|data/seed/multilingual-responses-policy.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: The scoped pandas explanation is role and word conditions over the prompt with the four-language wording moved from Rust into seed responses."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler procedural_how_to
     status pending
   handler procedural_how_to_followup
@@ -49,6 +80,8 @@ handler_migration_ledger
   handler software_project_followup
     status pending
   handler summarization
+    status pending
+  handler verifiable_task
     status pending
   handler text_manipulation
     status pending
@@ -69,9 +102,9 @@ handler_migration_ledger
   handler capabilities
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Capability queries are role conditions with the assistant-free-time route excluded; the prior-web-search note is a history condition."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler calendar_reasoning
     status pending
   handler calendar_create_event
@@ -85,39 +118,37 @@ handler_migration_ledger
   handler number_constraint_reasoning
     status migrated
     data "data/seed/meanings-number-constraints.lino"
-    primitive "src/number_constraints.rs"
+    primitive "rust/src/number_constraints.rs"
     justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved."
-    held_out "tests/unit/issue_699_handler_migration.rs"
-  handler pattern_inference
-    status pending
+    held_out "rust/tests/unit/issue_699_handler_migration.rs"
   handler program_synthesis
     status migrated
     data "data/seed/coding-idioms.lino|data/seed/multilingual-responses-synthesis.lino"
-    primitive "src/program_skill_gap.rs"
+    primitive "rust/src/program_skill_gap.rs"
     justification "Synthesis already reaches outside the curated catalogue through the blueprint recipes, the cached coding oracle and the seed idiom composer; the migrated part is the dead end, which no longer recites the templates the catalogue happens to hold but names a skill gap from seed wording in en/ru/hi/zh and logs the stable English gap identity as a skill_gap event."
-    held_out "tests/unit/issue_699_handler_migration.rs"
+    held_out "rust/tests/unit/issue_699_handler_migration.rs"
   handler arithmetic
     status "justified-native"
-    primitive "src/calculation.rs"
+    primitive "rust/src/calculation.rs"
     justification "Exact arithmetic evaluation is a compiled host primitive; recognition and operator vocabulary are seed data."
   handler javascript_execution
     status "justified-native"
-    primitive "src/solver_handlers/mod.rs"
+    primitive "rust/src/solver_handlers/mod.rs"
     justification "Sandboxed JavaScript evaluation is a host execution boundary; replacing it with declarative links would not remove the native runtime."
   handler definition_merge
     status migrated
     data "data/seed/language-detection.lino|data/seed/multilingual-responses.lino"
-    primitive "src/definition_merge.rs"
+    primitive "rust/src/definition_merge.rs"
     justification "Fragment deduplication, ordering, and rendering are language-neutral operations; the source-host language mapping moved to the language-detection rules and every rendered label is a seed response with en/ru/hi/zh coverage."
-    held_out "tests/unit/issue_699_handler_migration.rs"
+    held_out "rust/tests/unit/issue_699_handler_migration.rs"
   handler concept_lookup
     status pending
   handler who_is
     status migrated
     data "data/seed/entity-names.lino|data/seed/multilingual-responses.lino"
-    primitive "src/entity_resolution.rs"
+    primitive "rust/src/entity_resolution.rs"
     justification "The fixed table of eight people and their hand-written misspellings is gone; nearest-surface search under a length-scaled edit budget is the only native part, and candidate names come from the entity registry, concept terms and aliases, and fact labels, so no misspelling is stored anywhere."
-    held_out "tests/unit/issue_699_handler_migration.rs"
+    held_out "rust/tests/unit/issue_699_handler_migration.rs"
   handler how_it_works
     status pending
   handler meta_explanation
@@ -143,46 +174,66 @@ handler_migration_ledger
   handler clarification
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A single role condition and the seeded clarification reply."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler punctuation_only_prompt
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A character-set condition over the trimmed prompt; the wording moved from a Rust format string into seed responses."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler ill_formed
     status migrated
     data "data/seed/handler-rules.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A phrase and an unbalanced-parentheses condition answering with the shared unknown response."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler physical_action_question
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-policy.lino|data/seed/multilingual-responses.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A raw role condition with the seeded reply and its Russian fallback expressed as rule data."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler kupi_slona
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-policy.lino|data/seed/multilingual-responses.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A raw role condition with the seeded idiom explanation and its Russian fallback expressed as rule data."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler shell_refusal
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Substring conditions over the normalized prompt with an agent-mode exclusion; the refusal wording moved into seed responses in four languages."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler proof_request
     status pending
   handler opinion_question
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
-    primitive "src/rule_interpreter.rs"
+    primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Fifteen opener prefixes as rule data; the no-opinion wording moved into seed responses in four languages."
-    held_out "tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler incompatible_units
     status pending
+  handler diagnostic
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. Its recognition is the literal marker [diagnostic] in the normalized prompt, which is a cue that belongs in data/seed/cue-lexicon.lino like every other cue."
+  handler nl_tool
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. Natural-language tool requests are recognized in Rust; the tool vocabulary is data the agent surface already declares."
+  handler behavior_rules
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. Rule listing, counting and rendering are domain policy beside the stored rules, not a compiled arm."
+  handler feature_capability
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. What the system can do is the capability registry's own data; asking it should be a query, not a handler."
+  handler playwright_script
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. Script recognition and the guess probability that gates it are declared policy."

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_verifiable_task.js"
+  ceiling 150
+  rationale "Seed-driven browser projection of the shared verifiable-task route. It formalizes a task and records the unavailable execution boundary without adding a second solver or embedding task answers."

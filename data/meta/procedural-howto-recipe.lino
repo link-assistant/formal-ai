@@ -51,8 +51,8 @@ step_mirror_worker
   order "7"
   id "mirror_worker"
   title "Mirror the handler in the JS worker"
-  detail "Reproduce each Rust handler as a JS function in src/web/formal_ai_worker.js so the WASM/browser surface stays in parity (R15). Evidence ordering must match byte-for-byte on the default path."
-  seed_file "src/web/formal_ai_worker.js"
+  detail "Reproduce each Rust handler as a JS function in js/formal_ai_worker.js so the WASM/browser surface stays in parity (R15). Evidence ordering must match byte-for-byte on the default path."
+  seed_file "js/formal_ai_worker.js"
 step_pin_benchmark
   record_type "meta_step"
   order "8"
@@ -196,22 +196,22 @@ parity_try_how_to_procedure
   record_type "meta_parity"
   rust_function "try_how_to_procedure"
   js_function "tryProceduralHowTo"
-  source_file "src/web/formal_ai_worker.js"
+  source_file "js/formal_ai_worker.js"
 parity_try_procedural_how_to_followup
   record_type "meta_parity"
   rust_function "try_procedural_how_to_followup"
   js_function "tryProceduralHowToFollowup"
-  source_file "src/web/formal_ai_worker.js"
+  source_file "js/formal_ai_worker.js"
 parity_extract_elided_procedural_how_to_task
   record_type "meta_parity"
   rust_function "extract_elided_procedural_how_to_task"
   js_function "extractElidedProceduralHowToTask"
-  source_file "src/web/formal_ai_worker.js"
+  source_file "js/formal_ai_worker.js"
 parity_is_procedural_elaboration_request
   record_type "meta_parity"
   rust_function "is_procedural_elaboration_request"
   js_function "isProceduralElaborationRequest"
-  source_file "src/web/formal_ai_worker.js"
+  source_file "js/formal_ai_worker.js"
 service_wikihow
   record_type "meta_external_service"
   source "wikihow"

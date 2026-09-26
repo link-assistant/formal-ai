@@ -12,7 +12,7 @@ issue_932_leaf_image_survey
 issue_932_leaf_language_contract
   record_type "smallest_leaf"
   owner "primary_implementer"
-  artifact "data/meta/box-language-projects.lino|src/box_language_projects.rs"
+  artifact "data/meta/box-language-projects.lino|rust/src/box_language_projects.rs"
   status "complete"
 issue_932_leaf_container_harness
   record_type "smallest_leaf"
@@ -22,10 +22,10 @@ issue_932_leaf_container_harness
 issue_932_leaf_ci_matrix
   record_type "smallest_leaf"
   owner "primary_implementer"
-  artifact ".github/workflows/release.yml|tests/unit/ci-cd/issue_932.rs"
+  artifact ".github/workflows/release.yml|rust/tests/unit/ci-cd/issue_932.rs"
   status "complete"
 issue_932_leaf_routing_and_documentation
   record_type "smallest_leaf"
   owner "primary_implementer"
-  artifact "src/intent_formalization/prompt_relevants.rs|docs/case-studies/issue-932/README.md"
+  artifact "rust/src/intent_formalization/prompt_relevants.rs|docs/case-studies/issue-932/README.md"
   status "complete"

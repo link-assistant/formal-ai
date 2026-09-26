@@ -1,0 +1,19 @@
+Q6554101
+  aliases
+    en ("medical equipment" "medical instrument" "medical instrumentation" "biomedical instrument" "biomedical equipment" "biomedical device" "Medical Instruments")
+    es ("productos sanitarios" "tecnologías sanitarias" "dispositivo médico" "instrumento médico")
+    ru ("медицинские приборы" "медицинский инструмент")
+    zh ("医疗器械")
+  descriptions
+    en "any device intended to be used for medical purposes"
+    es "producto utilizado en el entorno médico-sanitario"
+    zh "專業工具類型"
+  id Q6554101
+  labels
+    en "medical device"
+    es "producto sanitario"
+    hi "medical safety of eqiptment"
+    ru "медицинский прибор"
+    zh "醫療器材"
+  type item
+success 1

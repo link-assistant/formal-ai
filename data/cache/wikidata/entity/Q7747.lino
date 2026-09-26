@@ -1,17 +1,42 @@
 Q7747
   aliases
-    ru ("Владимир Путин" "Путин Владимир Владимирович" "Путин, Владимир Владимирович" "В. В. Путин" "Путин В. В." "Путин" "ВВП")
-    zh ("普京" "普丁" "弗拉基米尔·弗拉基米罗维奇·普京")
+    es ("Vladímir Vladímirovich Putin")
+    hi ("पुतिन")
+    ru ("В. В. Путин" "ВВП" "Путин Владимир Владимирович" "Путин В. В." "Путин, Владимир Владимирович" "Владимир Путин" "Путин")
+    zh ("普京" "弗拉基米尔·弗拉基米罗维奇·普京" "普丁")
   descriptions
-    en "2nd and 4th President of Russia (2000–2008, 2012–present), 7th and 11th Prime Minister of Russia (1999–2000, 2008–2012)"
-    hi "रूस के राष्ट्रपति (1999-2008, 2012-वर्तमान)"
+    en "President of the Russian Federation"
+    es "2.º y 4.º Presidente de la Federación Rusa"
+    hi "रूस के राष्ट्रपति (का. 1999–2008, 2012–)"
     ru "президент России (2000—2008; 2012 по н. в.)"
     zh "俄羅斯總統"
   id Q7747
   labels
     en "Vladimir Putin"
+    es "Vladímir Putin"
     hi "व्लादिमीर पुतिन"
     ru "Владимир Владимирович Путин"
     zh "弗拉基米尔·普京"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Vladimir Putin"
+    eswiki
+      site eswiki
+      title "Vladímir Putin"
+    hiwiki
+      site hiwiki
+      title "व्लादिमीर पुतिन"
+    ruwiki
+      site ruwiki
+      title "Путин, Владимир Владимирович"
+    zhwiki
+      site zhwiki
+      title "弗拉基米尔·普京"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

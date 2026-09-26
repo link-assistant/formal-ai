@@ -1,0 +1,421 @@
+multilingual_responses
+  response response_pattern_sequence_report_en
+    intent pattern_sequence_report
+    language en
+    text "Sequence: {rendered}\n{structure}"
+  response response_pattern_sequence_report_ru
+    intent pattern_sequence_report
+    language ru
+    text "Последовательность: {rendered}\n{structure}"
+  response response_pattern_sequence_report_hi
+    intent pattern_sequence_report
+    language hi
+    text "अनुक्रम: {rendered}\n{structure}"
+  response response_pattern_sequence_report_zh
+    intent pattern_sequence_report
+    language zh
+    text "序列：{rendered}\n{structure}"
+  response response_pattern_sequence_report_es
+    intent pattern_sequence_report
+    language es
+    text "Secuencia: {rendered}\n{structure}"
+  response response_pattern_sequence_count_en
+    intent pattern_sequence_count
+    language en
+    text "Sequence of {length} element(s), {distinct} distinct."
+  response response_pattern_sequence_count_ru
+    intent pattern_sequence_count
+    language ru
+    text "Последовательность из {length} элемента(ов), различных: {distinct}."
+  response response_pattern_sequence_count_hi
+    intent pattern_sequence_count
+    language hi
+    text "{length} तत्व(ों) का अनुक्रम, {distinct} विशिष्ट।"
+  response response_pattern_sequence_count_zh
+    intent pattern_sequence_count
+    language zh
+    text "包含 {length} 个元素的序列，其中 {distinct} 个不同。"
+  response response_pattern_sequence_count_es
+    intent pattern_sequence_count
+    language es
+    text "Secuencia de {length} elementos, {distinct} distintos."
+  response response_pattern_sequence_empty_en
+    intent pattern_sequence_empty
+    language en
+    text "The sequence is empty."
+  response response_pattern_sequence_empty_ru
+    intent pattern_sequence_empty
+    language ru
+    text "Последовательность пуста."
+  response response_pattern_sequence_empty_hi
+    intent pattern_sequence_empty
+    language hi
+    text "अनुक्रम खाली है।"
+  response response_pattern_sequence_empty_zh
+    intent pattern_sequence_empty
+    language zh
+    text "序列为空。"
+  response response_pattern_sequence_empty_es
+    intent pattern_sequence_empty
+    language es
+    text "La secuencia está vacía."
+  response response_pattern_sequence_constant_en
+    intent pattern_sequence_constant
+    language en
+    text "Every element is identical (constant sequence)."
+  response response_pattern_sequence_constant_ru
+    intent pattern_sequence_constant
+    language ru
+    text "Все элементы одинаковы (постоянная последовательность)."
+  response response_pattern_sequence_constant_hi
+    intent pattern_sequence_constant
+    language hi
+    text "प्रत्येक तत्व समान है (स्थिर अनुक्रम)।"
+  response response_pattern_sequence_constant_zh
+    intent pattern_sequence_constant
+    language zh
+    text "每个元素都相同（常量序列）。"
+  response response_pattern_sequence_constant_es
+    intent pattern_sequence_constant
+    language es
+    text "Todos los elementos son idénticos (secuencia constante)."
+  response response_pattern_sequence_repetition_en
+    intent pattern_sequence_repetition
+    language en
+    text "It is a repetition: a block of {period} element(s) repeated {repetitions} times."
+  response response_pattern_sequence_repetition_ru
+    intent pattern_sequence_repetition
+    language ru
+    text "Это повторение: блок из {period} элемента(ов) повторяется {repetitions} раз(а)."
+  response response_pattern_sequence_repetition_hi
+    intent pattern_sequence_repetition
+    language hi
+    text "यह एक पुनरावृत्ति है: {period} तत्व(ों) का खंड {repetitions} बार दोहराया गया।"
+  response response_pattern_sequence_repetition_zh
+    intent pattern_sequence_repetition
+    language zh
+    text "这是一个重复：{period} 个元素的块重复了 {repetitions} 次。"
+  response response_pattern_sequence_repetition_es
+    intent pattern_sequence_repetition
+    language es
+    text "Es una repetición: un bloque de {period} elementos repetido {repetitions} veces."
+  response response_pattern_sequence_periodic_en
+    intent pattern_sequence_periodic
+    language en
+    text "It is periodic with period {period}."
+  response response_pattern_sequence_periodic_ru
+    intent pattern_sequence_periodic
+    language ru
+    text "Оно периодично с периодом {period}."
+  response response_pattern_sequence_periodic_hi
+    intent pattern_sequence_periodic
+    language hi
+    text "यह {period} अवधि के साथ आवर्ती है।"
+  response response_pattern_sequence_periodic_zh
+    intent pattern_sequence_periodic
+    language zh
+    text "它是周期性的，周期为 {period}。"
+  response response_pattern_sequence_periodic_es
+    intent pattern_sequence_periodic
+    language es
+    text "Es periódica con período {period}."
+  response response_pattern_sequence_aperiodic_en
+    intent pattern_sequence_aperiodic
+    language en
+    text "It has no exact repeating period."
+  response response_pattern_sequence_aperiodic_ru
+    intent pattern_sequence_aperiodic
+    language ru
+    text "У него нет точного повторяющегося периода."
+  response response_pattern_sequence_aperiodic_hi
+    intent pattern_sequence_aperiodic
+    language hi
+    text "इसका कोई सटीक दोहराव अवधि नहीं है।"
+  response response_pattern_sequence_aperiodic_zh
+    intent pattern_sequence_aperiodic
+    language zh
+    text "它没有精确的重复周期。"
+  response response_pattern_sequence_aperiodic_es
+    intent pattern_sequence_aperiodic
+    language es
+    text "No tiene un período de repetición exacto."
+  response response_pattern_sequence_palindrome_en
+    intent pattern_sequence_palindrome
+    language en
+    text "It reads the same forwards and backwards (palindrome)."
+  response response_pattern_sequence_palindrome_ru
+    intent pattern_sequence_palindrome
+    language ru
+    text "Читается одинаково слева направо и справа налево (палиндром)."
+  response response_pattern_sequence_palindrome_hi
+    intent pattern_sequence_palindrome
+    language hi
+    text "यह आगे और पीछे दोनों तरह से समान पढ़ा जाता है (पैलिंड्रोम)।"
+  response response_pattern_sequence_palindrome_zh
+    intent pattern_sequence_palindrome
+    language zh
+    text "它正读和反读相同（回文）。"
+  response response_pattern_sequence_palindrome_es
+    intent pattern_sequence_palindrome
+    language es
+    text "Se lee igual hacia adelante y hacia atrás (palíndromo)."
+  response response_pattern_sequence_compression_en
+    intent pattern_sequence_compression
+    language en
+    text "Associative deduplication replaced {pairs} repeated pair(s), compressing to {percent}% of the original length (lossless)."
+  response response_pattern_sequence_compression_ru
+    intent pattern_sequence_compression
+    language ru
+    text "Ассоциативная дедупликация заменила {pairs} повторяющихся пар(ы), сжав до {percent}% исходной длины (без потерь)."
+  response response_pattern_sequence_compression_hi
+    intent pattern_sequence_compression
+    language hi
+    text "साहचर्य डिडुप्लीकेशन ने {pairs} दोहराई गई जोड़ी(यों) को बदला, मूल लंबाई के {percent}% तक संपीड़ित (हानिरहित)।"
+  response response_pattern_sequence_compression_zh
+    intent pattern_sequence_compression
+    language zh
+    text "关联去重替换了 {pairs} 个重复对，压缩到原始长度的 {percent}%（无损）。"
+  response response_pattern_sequence_compression_es
+    intent pattern_sequence_compression
+    language es
+    text "La deduplicación asociativa reemplazó {pairs} pares repetidos, comprimiendo al {percent}% de la longitud original (sin pérdidas)."
+  response response_pattern_sequence_no_compression_en
+    intent pattern_sequence_no_compression
+    language en
+    text "No repeated adjacent pairs to deduplicate."
+  response response_pattern_sequence_no_compression_ru
+    intent pattern_sequence_no_compression
+    language ru
+    text "Нет повторяющихся соседних пар для дедупликации."
+  response response_pattern_sequence_no_compression_hi
+    intent pattern_sequence_no_compression
+    language hi
+    text "डिडुप्लीकेट करने के लिए कोई दोहराई गई आसन्न जोड़ी नहीं।"
+  response response_pattern_sequence_no_compression_zh
+    intent pattern_sequence_no_compression
+    language zh
+    text "没有可去重的重复相邻对。"
+  response response_pattern_sequence_no_compression_es
+    intent pattern_sequence_no_compression
+    language es
+    text "No hay pares adyacentes repetidos para deduplicar."
+  response response_pattern_sequence_next_en
+    intent pattern_sequence_next
+    language en
+    text "Most likely next element: {next}."
+  response response_pattern_sequence_next_ru
+    intent pattern_sequence_next
+    language ru
+    text "Наиболее вероятный следующий элемент: {next}."
+  response response_pattern_sequence_next_hi
+    intent pattern_sequence_next
+    language hi
+    text "सबसे संभावित अगला तत्व: {next}।"
+  response response_pattern_sequence_next_zh
+    intent pattern_sequence_next
+    language zh
+    text "最可能的下一个元素：{next}。"
+  response response_pattern_sequence_next_es
+    intent pattern_sequence_next
+    language es
+    text "Elemento siguiente más probable: {next}."
+  response response_pattern_grid_report_en
+    intent pattern_grid_report
+    language en
+    text "Grid pattern inference.\n{structure}"
+  response response_pattern_grid_report_ru
+    intent pattern_grid_report
+    language ru
+    text "Инференция паттернов сетки.\n{structure}"
+  response response_pattern_grid_report_hi
+    intent pattern_grid_report
+    language hi
+    text "ग्रिड पैटर्न अनुमान।\n{structure}"
+  response response_pattern_grid_report_zh
+    intent pattern_grid_report
+    language zh
+    text "网格模式推断。\n{structure}"
+  response response_pattern_grid_report_es
+    intent pattern_grid_report
+    language es
+    text "Inferencia de patrones de cuadrícula.\n{structure}"
+  response response_pattern_grid_shape_en
+    intent pattern_grid_shape
+    language en
+    text "Grid {rows}x{cols}."
+  response response_pattern_grid_shape_ru
+    intent pattern_grid_shape
+    language ru
+    text "Сетка {rows}x{cols}."
+  response response_pattern_grid_shape_hi
+    intent pattern_grid_shape
+    language hi
+    text "ग्रिड {rows}x{cols}।"
+  response response_pattern_grid_shape_zh
+    intent pattern_grid_shape
+    language zh
+    text "网格 {rows}x{cols}。"
+  response response_pattern_grid_shape_es
+    intent pattern_grid_shape
+    language es
+    text "Cuadrícula {rows}x{cols}."
+  response response_pattern_grid_no_symmetry_en
+    intent pattern_grid_no_symmetry
+    language en
+    text "No symmetry detected."
+  response response_pattern_grid_no_symmetry_ru
+    intent pattern_grid_no_symmetry
+    language ru
+    text "Симметрия не обнаружена."
+  response response_pattern_grid_no_symmetry_hi
+    intent pattern_grid_no_symmetry
+    language hi
+    text "कोई समरूपता नहीं मिली।"
+  response response_pattern_grid_no_symmetry_zh
+    intent pattern_grid_no_symmetry
+    language zh
+    text "未检测到对称性。"
+  response response_pattern_grid_no_symmetry_es
+    intent pattern_grid_no_symmetry
+    language es
+    text "No se detectó ninguna simetría."
+  response response_pattern_grid_symmetry_en
+    intent pattern_grid_symmetry
+    language en
+    text "Symmetric under: {symmetries}."
+  response response_pattern_grid_symmetry_ru
+    intent pattern_grid_symmetry
+    language ru
+    text "Симметрично относительно: {symmetries}."
+  response response_pattern_grid_symmetry_hi
+    intent pattern_grid_symmetry
+    language hi
+    text "इसके अंतर्गत सममित: {symmetries}।"
+  response response_pattern_grid_symmetry_zh
+    intent pattern_grid_symmetry
+    language zh
+    text "对称于：{symmetries}。"
+  response response_pattern_grid_symmetry_es
+    intent pattern_grid_symmetry
+    language es
+    text "Simétrica bajo: {symmetries}."
+  response response_pattern_grid_horizontal_en
+    intent pattern_grid_horizontal
+    language en
+    text "left-right mirror"
+  response response_pattern_grid_horizontal_ru
+    intent pattern_grid_horizontal
+    language ru
+    text "зеркало лево-право"
+  response response_pattern_grid_horizontal_hi
+    intent pattern_grid_horizontal
+    language hi
+    text "बाएँ-दाएँ दर्पण"
+  response response_pattern_grid_horizontal_zh
+    intent pattern_grid_horizontal
+    language zh
+    text "左右镜像"
+  response response_pattern_grid_horizontal_es
+    intent pattern_grid_horizontal
+    language es
+    text "reflejo izquierda-derecha"
+  response response_pattern_grid_vertical_en
+    intent pattern_grid_vertical
+    language en
+    text "top-bottom mirror"
+  response response_pattern_grid_vertical_ru
+    intent pattern_grid_vertical
+    language ru
+    text "зеркало верх-низ"
+  response response_pattern_grid_vertical_hi
+    intent pattern_grid_vertical
+    language hi
+    text "ऊपर-नीचे दर्पण"
+  response response_pattern_grid_vertical_zh
+    intent pattern_grid_vertical
+    language zh
+    text "上下镜像"
+  response response_pattern_grid_vertical_es
+    intent pattern_grid_vertical
+    language es
+    text "reflejo arriba-abajo"
+  response response_pattern_grid_rotation_en
+    intent pattern_grid_rotation
+    language en
+    text "180-degree rotation"
+  response response_pattern_grid_rotation_ru
+    intent pattern_grid_rotation
+    language ru
+    text "поворот на 180 градусов"
+  response response_pattern_grid_rotation_hi
+    intent pattern_grid_rotation
+    language hi
+    text "180-डिग्री घूर्णन"
+  response response_pattern_grid_rotation_zh
+    intent pattern_grid_rotation
+    language zh
+    text "180度旋转"
+  response response_pattern_grid_rotation_es
+    intent pattern_grid_rotation
+    language es
+    text "rotación de 180 grados"
+  response response_pattern_grid_diagonal_en
+    intent pattern_grid_diagonal
+    language en
+    text "main-diagonal reflection"
+  response response_pattern_grid_diagonal_ru
+    intent pattern_grid_diagonal
+    language ru
+    text "отражение по главной диагонали"
+  response response_pattern_grid_diagonal_hi
+    intent pattern_grid_diagonal
+    language hi
+    text "मुख्य-विकर्ण परावर्तन"
+  response response_pattern_grid_diagonal_zh
+    intent pattern_grid_diagonal
+    language zh
+    text "主对角线反射"
+  response response_pattern_grid_diagonal_es
+    intent pattern_grid_diagonal
+    language es
+    text "reflejo en la diagonal principal"
+  response response_pattern_grid_anti_diagonal_en
+    intent pattern_grid_anti_diagonal
+    language en
+    text "anti-diagonal reflection"
+  response response_pattern_grid_anti_diagonal_ru
+    intent pattern_grid_anti_diagonal
+    language ru
+    text "отражение по побочной диагонали"
+  response response_pattern_grid_anti_diagonal_hi
+    intent pattern_grid_anti_diagonal
+    language hi
+    text "प्रति-विकर्ण परावर्तन"
+  response response_pattern_grid_anti_diagonal_zh
+    intent pattern_grid_anti_diagonal
+    language zh
+    text "副对角线反射"
+  response response_pattern_grid_anti_diagonal_es
+    intent pattern_grid_anti_diagonal
+    language es
+    text "reflejo en la diagonal secundaria"
+  response response_algorithm_observation_missing_en
+    intent algorithm_observation_missing
+    language en
+    text "Observation file does not exist: {path}"
+  response response_algorithm_discovery_summary_en
+    intent algorithm_discovery_summary
+    language en
+    text "Algorithm discovery over {traces} trace(s): {candidates} candidate(s), {validated} held-out validated; proposal-only, no algorithm executed."
+  response response_algorithm_invalid_binding_en
+    intent algorithm_invalid_binding
+    language en
+    text "Invalid binding {binding}; expected NAME=VALUE"
+  response response_algorithm_empty_binding_name_en
+    intent algorithm_empty_binding_name
+    language en
+    text "Invalid binding {binding}; name is empty"
+  response response_algorithm_dreaming_applied_en
+    intent algorithm_dreaming_applied
+    language en
+    text "Applied dreaming plan to {path}; removed {removed} event(s), estimated {bytes} byte(s) reclaimable, learned {amendments} meta-algorithm amendment(s), {patterns} recurring pattern(s), and {algorithms} execution-algorithm candidate(s), preserved {failures} failed simulation(s) and {trials} dreaming trial(s)."

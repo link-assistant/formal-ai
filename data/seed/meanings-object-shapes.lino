@@ -1,0 +1,1149 @@
+# `Object-shape surfaces for capability routing (issue #1138 B10, plan 10`
+# `leaves 4-5).`
+#
+# `Most object types are derived with no vocabulary at all: a URL parses, a`
+# `path carries a separator or an extension, a clock time is digits around a`
+# `colon. Two are not derivable from shape alone, and this file grounds them`
+# `so src/capability_routing.rs names roles rather than spellings:`
+#
+# `  * a self surface -- the assistant's own UI, answer or behaviour -- needs`
+# `    the noun for the thing being complained about beside the existing`
+# `    assistant_self_reference role;`
+# `  * a quantity question needs the interrogative that asks for a magnitude,`
+# `    which is a closed class in every language and is what separates`
+# `    "how deep does an oak root go" from "how do oak roots work".`
+meanings
+  self_surface_noun
+    defined-by concept
+    role capability_self_surface_noun
+    lexeme en
+      surface
+        text "panel"
+      surface
+        text "sidebar"
+      surface
+        text "splitter"
+      surface
+        text "button"
+      surface
+        text "window"
+      surface
+        text "widget"
+      surface
+        text "interface"
+      surface
+        text "answer you"
+      surface
+        text "divider"
+      surface
+        text "reply you"
+    lexeme ru
+      surface
+        text "панел"
+      surface
+        text "разделител"
+      surface
+        text "боковую"
+      surface
+        text "кнопк"
+      surface
+        text "окно"
+      surface
+        text "интерфейс"
+      surface
+        text "ответ, который ты"
+    lexeme hi
+      surface
+        text "पैनल"
+      surface
+        text "विभाजक"
+      surface
+        text "बटन"
+      surface
+        text "विंडो"
+      surface
+        text "इंटरफ़ेस"
+    lexeme zh
+      surface
+        text "面板"
+      surface
+        text "分隔条"
+      surface
+        text "侧栏"
+      surface
+        text "按钮"
+      surface
+        text "窗口"
+      surface
+        text "界面"
+    lexeme es
+      surface
+        text "panel"
+      surface
+        text "barra lateral"
+      surface
+        text "divisor"
+      surface
+        text "botón"
+      surface
+        text "ventana"
+      surface
+        text "interfaz"
+  quantity_interrogative
+    defined-by concept
+    role capability_quantity_interrogative
+    lexeme en
+      surface
+        text "how deep"
+      surface
+        text "how far"
+      surface
+        text "how tall"
+      surface
+        text "how high"
+      surface
+        text "how long"
+      surface
+        text "how wide"
+      surface
+        text "how heavy"
+      surface
+        text "how much does"
+      surface
+        text "how many"
+      surface
+        text "what span"
+      surface
+        text "what size"
+      surface
+        text "what depth"
+      surface
+        text "diameter"
+      surface
+        text "how much water"
+      surface
+        text "weigh"
+      surface
+        text "how heavy"
+      surface
+        text "what extension"
+      surface
+        text "what anchura"
+      surface
+        text "how wide"
+      surface
+        text "what is the usual"
+    lexeme ru
+      surface
+        text "насколько глубоко"
+      surface
+        text "насколько далеко"
+      surface
+        text "насколько высок"
+      surface
+        text "насколько длин"
+      surface
+        text "какого размера"
+      surface
+        text "сколько весит"
+      surface
+        text "как глубоко"
+      surface
+        text "сколько примерно"
+      surface
+        text "сколько весит"
+      surface
+        text "сколько воды"
+      surface
+        text "на сколько"
+      surface
+        text "насколько"
+      surface
+        text "какой ширины"
+      surface
+        text "до какой высоты"
+      surface
+        text "на какую глубину"
+      surface
+        text "диаметр"
+    lexeme hi
+      surface
+        text "कितनी गहरी"
+      surface
+        text "कितनी लंबी"
+      surface
+        text "कितना वजन"
+      surface
+        text "कितने"
+      surface
+        text "कितनी दूर"
+      surface
+        text "कितना बड़ा"
+      surface
+        text "कितन"
+    lexeme zh
+      surface
+        text "多深"
+      surface
+        text "多高"
+      surface
+        text "多长"
+      surface
+        text "多远"
+      surface
+        text "多重"
+      surface
+        text "多大"
+      surface
+        text "能扎多"
+      surface
+        text "多少"
+      surface
+        text "多宽"
+      surface
+        text "多长"
+      surface
+        text "多大"
+      surface
+        text "直径"
+    lexeme es
+      surface
+        text "qué profundidad"
+      surface
+        text "qué altura"
+      surface
+        text "cuánto pesa"
+      surface
+        text "cuánto mide"
+      surface
+        text "qué tamaño"
+      surface
+        text "cuán lejos"
+      surface
+        text "cuánto crece"
+      surface
+        text "cuánta agua"
+      surface
+        text "qué extensión"
+      surface
+        text "qué anchura"
+      surface
+        text "qué diámetro"
+      surface
+        text "hasta dónde"
+      surface
+        text "hasta qué"
+      surface
+        text "a qué profundidad"
+  web_scope
+    defined-by concept
+    role capability_web_scope
+    lexeme en
+      surface
+        text "the web"
+      surface
+        text "on the web"
+      surface
+        text "online"
+      surface
+        text "internet"
+      surface
+        text "the net"
+      surface
+        text "google"
+      surface
+        text "in the world"
+      surface
+        text "headlines"
+      surface
+        text "news"
+      surface
+        text "people talking"
+      surface
+        text "worth reading"
+    lexeme ru
+      surface
+        text "интернет"
+      surface
+        text "в сети"
+      surface
+        text "сеть"
+      surface
+        text "сетью"
+      surface
+        text "вебе"
+      surface
+        text "онлайн"
+      surface
+        text "в мире"
+      surface
+        text "загугли"
+      surface
+        text "гугл"
+      surface
+        text "новост"
+      surface
+        text "заголовк"
+      surface
+        text "все говорят"
+      surface
+        text "стоит прочитать"
+    lexeme hi
+      surface
+        text "वेब"
+      surface
+        text "इंटरनेट"
+      surface
+        text "ऑनलाइन"
+      surface
+        text "नेट"
+      surface
+        text "गूगल"
+      surface
+        text "दुनिया"
+      surface
+        text "खबर"
+      surface
+        text "मुख्य खबरें"
+      surface
+        text "पढ़ने लायक"
+    lexeme zh
+      surface
+        text "网络"
+      surface
+        text "互联网"
+      surface
+        text "在线"
+      surface
+        text "上网"
+      surface
+        text "网上"
+      surface
+        text "谷歌"
+      surface
+        text "世界上"
+      surface
+        text "头条"
+      surface
+        text "新闻"
+      surface
+        text "值得一读"
+    lexeme es
+      surface
+        text "la web"
+      surface
+        text "búsqueda web"
+      surface
+        text "web"
+      surface
+        text "internet"
+      surface
+        text "en línea"
+      surface
+        text "la red"
+      surface
+        text "googlea"
+      surface
+        text "el mundo"
+      surface
+        text "titulares"
+      surface
+        text "noticias"
+      surface
+        text "merezca la pena leer"
+  workspace_scope
+    defined-by concept
+    role capability_workspace_scope
+    lexeme en
+      surface
+        text "the code"
+      surface
+        text "codebase"
+      surface
+        text "the repo"
+      surface
+        text "repository"
+      surface
+        text "this project"
+      surface
+        text "locally"
+      surface
+        text "local files"
+      surface
+        text "this machine"
+      surface
+        text "my files"
+    lexeme ru
+      surface
+        text "код"
+      surface
+        text "репозитор"
+      surface
+        text "проект"
+      surface
+        text "локальн"
+      surface
+        text "на этой машине"
+      surface
+        text "моих файл"
+    lexeme hi
+      surface
+        text "कोड"
+      surface
+        text "रिपॉजिटरी"
+      surface
+        text "परियोजना"
+      surface
+        text "प्रोजेक्ट"
+      surface
+        text "स्थानीय"
+      surface
+        text "इस मशीन"
+      surface
+        text "मेरी फ़ाइलों"
+    lexeme zh
+      surface
+        text "代码"
+      surface
+        text "仓库"
+      surface
+        text "项目"
+      surface
+        text "本地"
+      surface
+        text "这台机器"
+      surface
+        text "我的文件"
+    lexeme es
+      surface
+        text "el código"
+      surface
+        text "repositorio"
+      surface
+        text "este proyecto"
+      surface
+        text "local"
+      surface
+        text "esta máquina"
+      surface
+        text "mis archivos"
+  container_scope
+    defined-by concept
+    role capability_container_scope
+    lexeme en
+      surface
+        text "folder"
+      surface
+        text "directory"
+      surface
+        text "directories"
+      surface
+        text "desktop"
+      surface
+        text "home directory"
+      surface
+        text "file"
+      surface
+        text "files"
+      surface
+        text "the path"
+      surface
+        text "path to"
+      surface
+        text "workspace"
+      surface
+        text "computer"
+    lexeme ru
+      surface
+        text "папк"
+      surface
+        text "каталог"
+      surface
+        text "рабочем столе"
+      surface
+        text "рабочий стол"
+      surface
+        text "домашн"
+      surface
+        text "файл"
+      surface
+        text "путь"
+      surface
+        text "машине"
+      surface
+        text "компьютер"
+    lexeme hi
+      surface
+        text "फ़ोल्डर"
+      surface
+        text "निर्देशिका"
+      surface
+        text "डायरेक्टरी"
+      surface
+        text "डेस्कटॉप"
+      surface
+        text "फ़ाइल"
+      surface
+        text "रास्ता"
+      surface
+        text "पथ"
+      surface
+        text "मशीन"
+      surface
+        text "कंप्यूटर"
+    lexeme zh
+      surface
+        text "文件夹"
+      surface
+        text "目录"
+      surface
+        text "桌面"
+      surface
+        text "文件"
+      surface
+        text "路径"
+      surface
+        text "机器"
+      surface
+        text "本机"
+      surface
+        text "电脑"
+    lexeme es
+      surface
+        text "carpeta"
+      surface
+        text "directorio"
+      surface
+        text "escritorio"
+      surface
+        text "archivo"
+      surface
+        text "ruta"
+      surface
+        text "máquina"
+      surface
+        text "ordenador"
+  freshness_live
+    defined-by concept
+    role capability_freshness_live
+    lexeme en
+      surface
+        text "right now"
+      surface
+        text "today"
+      surface
+        text "at the moment"
+      surface
+        text "breaking"
+      surface
+        text "newest"
+      surface
+        text "latest"
+      surface
+        text "since this morning"
+      surface
+        text "since yesterday"
+      surface
+        text "happening"
+      surface
+        text "going on"
+      surface
+        text "up to date"
+      surface
+        text "last few hours"
+      surface
+        text "came out today"
+      surface
+        text "i missed"
+    lexeme ru
+      surface
+        text "сейчас"
+      surface
+        text "сегодня"
+      surface
+        text "прямо сейчас"
+      surface
+        text "последних час"
+      surface
+        text "самого свежего"
+      surface
+        text "с утра"
+      surface
+        text "со вчерашнего"
+      surface
+        text "происходит"
+      surface
+        text "творится"
+      surface
+        text "что нового"
+      surface
+        text "обнови меня"
+      surface
+        text "что вышло"
+    lexeme hi
+      surface
+        text "अभी"
+      surface
+        text "आज"
+      surface
+        text "इस समय"
+      surface
+        text "इस वक्त"
+      surface
+        text "ताज़ा"
+      surface
+        text "सबसे नया"
+      surface
+        text "सुबह से"
+      surface
+        text "कल से"
+      surface
+        text "क्या चल रहा"
+      surface
+        text "अपडेट"
+    lexeme zh
+      surface
+        text "现在"
+      surface
+        text "今天"
+      surface
+        text "此刻"
+      surface
+        text "最新"
+      surface
+        text "最近几个小时"
+      surface
+        text "早上到现在"
+      surface
+        text "从昨天"
+      surface
+        text "正在发生"
+      surface
+        text "更新一下"
+      surface
+        text "今天出了"
+    lexeme es
+      surface
+        text "ahora mismo"
+      surface
+        text "hoy"
+      surface
+        text "en este momento"
+      surface
+        text "lo más reciente"
+      surface
+        text "últimas horas"
+      surface
+        text "desde esta mañana"
+      surface
+        text "desde ayer"
+      surface
+        text "está pasando"
+      surface
+        text "qué ocurre"
+      surface
+        text "actualízame"
+      surface
+        text "ponme al día"
+  clock_reference
+    defined-by concept
+    role capability_clock_reference
+    lexeme en
+      surface
+        text "noon"
+      surface
+        text "midnight"
+      surface
+        text "tonight"
+      surface
+        text "this evening"
+      surface
+        text "o clock"
+      surface
+        text "half an hour"
+      surface
+        text "minutes with"
+    lexeme ru
+      surface
+        text "полдень"
+      surface
+        text "полночь"
+      surface
+        text "вечером"
+      surface
+        text "сегодня вечером"
+      surface
+        text "полчаса"
+      surface
+        text "минут с"
+    lexeme hi
+      surface
+        text "बजे"
+      surface
+        text "आज रात"
+      surface
+        text "दोपहर"
+      surface
+        text "आधा घंटा"
+      surface
+        text "मिनट"
+    lexeme zh
+      surface
+        text "今晚"
+      surface
+        text "中午"
+      surface
+        text "半夜"
+      surface
+        text "今天晚上"
+      surface
+        text "半小时"
+      surface
+        text "分钟"
+    lexeme es
+      surface
+        text "mediodía"
+      surface
+        text "medianoche"
+      surface
+        text "esta noche"
+      surface
+        text "media hora"
+      surface
+        text "minutos con"
+  prior_turn_reference
+    defined-by concept
+    role capability_prior_turn_reference
+    lexeme en
+      surface
+        text "over my head"
+      surface
+        text "another way"
+      surface
+        text "lost me"
+      surface
+        text "follow that"
+      surface
+        text "say that again"
+      surface
+        text "made no sense"
+      surface
+        text "unpack that"
+      surface
+        text "not with you"
+      surface
+        text "run that by me"
+      surface
+        text "what do you mean"
+      surface
+        text "too dense"
+      surface
+        text "a different way"
+      surface
+        text "but simpler"
+      surface
+        text "explaining it"
+    lexeme ru
+      surface
+        text "непонятно"
+      surface
+        text "сказать иначе"
+      surface
+        text "потерял нить"
+      surface
+        text "уловил"
+      surface
+        text "то же самое"
+      surface
+        text "бессмыслиц"
+      surface
+        text "по частям"
+      surface
+        text "не успеваю"
+      surface
+        text "повтори"
+      surface
+        text "имеешь в виду"
+      surface
+        text "слишком сложно"
+      surface
+        text "по другому"
+    lexeme hi
+      surface
+        text "सिर के ऊपर"
+      surface
+        text "दूसरे शब्दों"
+      surface
+        text "पल्ले नहीं"
+      surface
+        text "आसान शब्दों"
+      surface
+        text "बेमतलब"
+      surface
+        text "टुकड़ों में"
+      surface
+        text "साथ नहीं चल"
+      surface
+        text "समझ नहीं पा रहा"
+      surface
+        text "समझ नहीं पा रही"
+      surface
+        text "समझ नहीं पा रहे"
+      surface
+        text "फिर से कहिए"
+      surface
+        text "मतलब ठीक"
+      surface
+        text "बहुत भारी"
+      surface
+        text "और तरीके से"
+    lexeme zh
+      surface
+        text "没跟上"
+      surface
+        text "换个说法"
+      surface
+        text "我没懂"
+      surface
+        text "没听明白"
+      surface
+        text "再简单"
+      surface
+        text "没有意义"
+      surface
+        text "拆开"
+      surface
+        text "跟不上"
+      surface
+        text "再说一遍"
+      surface
+        text "什么意思"
+      surface
+        text "太绕"
+      surface
+        text "换个方式"
+    lexeme es
+      surface
+        text "se me escapó"
+      surface
+        text "de otra forma"
+      surface
+        text "me perdí"
+      surface
+        text "no he seguido"
+      surface
+        text "otra vez"
+      surface
+        text "no tiene sentido"
+      surface
+        text "desglosar"
+      surface
+        text "no te sigo"
+      surface
+        text "repítemelo"
+      surface
+        text "quieres decir"
+      surface
+        text "demasiado denso"
+      surface
+        text "de otra manera"
+  language_reference
+    defined-by concept
+    role capability_language_reference
+    lexeme en
+      surface
+        text "in hindi"
+      surface
+        text "in chinese"
+      surface
+        text "in spanish"
+      surface
+        text "in russian"
+      surface
+        text "in english"
+      surface
+        text "to hindi"
+      surface
+        text "to chinese"
+      surface
+        text "to spanish"
+      surface
+        text "to russian"
+    lexeme ru
+      surface
+        text "по русски"
+      surface
+        text "по китайски"
+      surface
+        text "по испански"
+      surface
+        text "по английски"
+      surface
+        text "русск"
+      surface
+        text "китайск"
+      surface
+        text "испанск"
+      surface
+        text "английск"
+      surface
+        text "хинди"
+    lexeme hi
+      surface
+        text "हिंदी"
+      surface
+        text "चीनी"
+      surface
+        text "स्पेनिश"
+      surface
+        text "रूसी"
+      surface
+        text "अंग्रेज़ी"
+    lexeme zh
+      surface
+        text "印地语"
+      surface
+        text "俄语"
+      surface
+        text "西班牙语"
+      surface
+        text "中文"
+      surface
+        text "英语"
+    lexeme es
+      surface
+        text "hindi"
+      surface
+        text "chino"
+      surface
+        text "ruso"
+      surface
+        text "español"
+      surface
+        text "inglés"
+  content_introducer
+    defined-by concept
+    role capability_content_introducer
+    lexeme en
+      surface
+        text "containing"
+      surface
+        text "with the text"
+      surface
+        text "with the content"
+      surface
+        text "that says"
+      surface
+        text "with content"
+    lexeme ru
+      surface
+        text "с текстом"
+      surface
+        text "с содержимым"
+      surface
+        text "со словами"
+    lexeme hi
+      surface
+        text "सामग्री के साथ"
+      surface
+        text "पाठ के साथ"
+    lexeme zh
+      surface
+        text "内容为"
+      surface
+        text "内容是"
+    lexeme es
+      surface
+        text "con el texto"
+      surface
+        text "con el contenido"
+      surface
+        text "que diga"
+  content_assignment
+    defined-by concept
+    role capability_content_assignment
+    lexeme en
+      surface
+        text " to "
+      surface
+        text " as "
+      surface
+        text " with "
+    lexeme ru
+      surface
+        text " в "
+      surface
+        text " на "
+      surface
+        text " со значением "
+    lexeme hi
+      surface
+        text " में "
+      surface
+        text " के रूप में "
+    lexeme zh
+      surface
+        text "为"
+      surface
+        text "设为"
+      surface
+        text "改为"
+    lexeme es
+      surface
+        text " en "
+      surface
+        text " a "
+      surface
+        text " como "
+  web_host_suffix
+    defined-by concept
+    role capability_web_host_suffix
+    lexeme en
+      surface
+        text "com"
+      surface
+        text "org"
+      surface
+        text "net"
+      surface
+        text "edu"
+      surface
+        text "gov"
+      surface
+        text "info"
+      surface
+        text "biz"
+      surface
+        text "in"
+      surface
+        text "co"
+      surface
+        text "ru"
+      surface
+        text "de"
+      surface
+        text "uk"
+      surface
+        text "fr"
+      surface
+        text "es"
+      surface
+        text "it"
+      surface
+        text "nl"
+      surface
+        text "cn"
+      surface
+        text "jp"
+      surface
+        text "br"
+      surface
+        text "au"
+      surface
+        text "ca"
+      surface
+        text "mx"
+      surface
+        text "ai"
+      surface
+        text "app"
+      surface
+        text "dev"
+      surface
+        text "xyz"
+      surface
+        text "shop"
+      surface
+        text "store"
+      surface
+        text "online"
+      surface
+        text "site"
+  task_list_noun
+    defined-by concept
+    role capability_task_list_noun
+    lexeme en
+      surface
+        text "todo list"
+      surface
+        text "to-do list"
+      surface
+        text "task list"
+      surface
+        text "list of tasks"
+    lexeme ru
+      surface
+        text "список задач"
+      surface
+        text "список дел"
+      surface
+        text "план работ"
+    lexeme hi
+      surface
+        text "कार्य सूची"
+      surface
+        text "टूडू सूची"
+      surface
+        text "कामों की सूची"
+    lexeme zh
+      surface
+        text "待办列表"
+      surface
+        text "待办事项"
+      surface
+        text "任务列表"
+    lexeme es
+      surface
+        text "lista de tareas"
+      surface
+        text "lista de pendientes"
+  delegation_marker
+    defined-by concept
+    role capability_delegation_marker
+    lexeme en
+      surface
+        text "delegate"
+      surface
+        text "subagent"
+      surface
+        text "hand this to"
+      surface
+        text "hand it to"
+    lexeme ru
+      surface
+        text "поручи"
+      surface
+        text "подагент"
+      surface
+        text "делегир"
+      surface
+        text "запусти агент"
+      surface
+        text "вызови агент"
+    lexeme hi
+      surface
+        text "सौंपें"
+      surface
+        text "उपएजेंट"
+      surface
+        text "एजेंट शुरू"
+      surface
+        text "एजेंट को बुलाएँ"
+    lexeme zh
+      surface
+        text "委派"
+      surface
+        text "子代理"
+      surface
+        text "交给代理"
+      surface
+        text "调用代理"
+    lexeme es
+      surface
+        text "delega"
+      surface
+        text "subagente"
+      surface
+        text "pásaselo"
+      surface
+        text "encárgaselo"

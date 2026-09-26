@@ -134,7 +134,7 @@ jobs:
         with:
           check: docker-image
           paths: >-
-            src data build.rs Cargo.toml Cargo.lock Dockerfile docker scripts .github/workflows/release.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock Dockerfile docker scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -280,8 +280,12 @@ jobs:
     name: Lint and Format Check
     runs-on: ubuntu-latest
     # Issue #1076 (D5): 12.7 min worst case was 84.4% of the old 15m cap -- a
-    # deadline, not a backstop. 25 puts it at 50.7% (check-job-headroom.rs).
-    timeout-minutes: 25
+    # deadline, not a backstop. 25 put that at 50.7%, but the gate set has
+    # grown since: run 35806556194 (a0745518a) consumed the whole 25 minutes
+    # and the cap killed it mid-gate in repository_workspace_protocol, which
+    # GitHub reports as cancelled. 45 keeps a measured demand of at least
+    # 25.2 minutes under 56% of the cap (check-job-headroom.rs warns at 70%).
+    timeout-minutes: 45
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-lint
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -329,7 +333,7 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/run-ci-gates.rs --stage rust
       - name: Build Rust→WASM worker
-        run: sh src/web/wasm-worker/build.sh
+        run: sh js/wasm-worker/build.sh
       - name: Run registered gates (stage wasm)
         run: rust-script scripts/run-ci-gates.rs --stage wasm
       - name: Install web bundle dependencies
@@ -337,15 +341,15 @@ jobs:
       - name: Build web vendor bundle
         run: bun run build:web
       - name: Check web bundles are current
-        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/web-search-component.bundle.js src/web/ocr.bundle.js src/web/app.js
+        run: git diff --exit-code -- js/vendor.bundle.js js/web-search-component.bundle.js js/ocr.bundle.js js/app.js
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
+          cache-dependency-path: rust/tests/e2e/package-lock.json
       - name: Install web test dependencies
-        run: npm ci --prefix tests/e2e --no-audit --no-fund
+        run: npm ci --prefix rust/tests/e2e --no-audit --no-fund
       - name: Run registered gates (stage web)
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
@@ -362,9 +366,14 @@ jobs:
     # and the cap is sized to hold the *sum* of one leg's budgets at or under
     # the 70% share `tests/unit/ci-cd/issue_1081.rs` enforces -- the invariant
     # the js pipeline template already carries and this repository only had
-    # half of. Worst measured leg is 2640s of budget plus 362s of unbudgeted
-    # setup against 3900s, so the cap can no longer be what ends the job.
-    timeout-minutes: 65
+    # half of. The specification lane owns a worst budgeted group of 3600s
+    # (two 1800s steps behind one condition), which the old 65-minute cap
+    # held at a 92% share -- the budget, not the cap, was the real deadline.
+    # At 90 minutes the worst groups -- the specification lane, and the full
+    # lane once issue #1138 raised `Run tests` to 2400s -- sit at 66% of the
+    # cap and the pre-raise full lane's 2640s at 49%, so the cap is the
+    # backstop again.
+    timeout-minutes: 90
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -382,6 +391,12 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, test-suite: full }
+          # The specification suite ran only on macOS while the rest of the
+          # matrix ran on ubuntu, so a linux-only failure in it could not turn
+          # any required check red. A third leg closes that blind spot; the
+          # green ledger keys per os and suite, so it starts with no stale
+          # green to honor (issue #1107).
+          - { os: ubuntu-latest, test-suite: specification }
           - { os: macos-15-intel, test-suite: specification }
     steps:
       - uses: actions/checkout@v7
@@ -412,7 +427,7 @@ jobs:
         with:
           check: unit-tests-${{ matrix.os }}-${{ matrix.test-suite }}
           paths: >-
-            src tests data examples build.rs Cargo.toml Cargo.lock scripts .github/workflows/release.yml .github/actions
+            rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
@@ -440,7 +455,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "LiNo data integrity" \
-            cargo test --test unit data_files -- --nocapture
+            cargo test --manifest-path rust/Cargo.toml --test unit data_files -- --nocapture
       - name: sccache counters after the first compiling step
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         run: sccache --show-stats
@@ -453,9 +468,9 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "self-AST census" \
-            cargo test --test unit self_ast_census -- --nocapture
+            cargo test --manifest-path rust/Cargo.toml --test unit self_ast_census -- --nocapture
       # Issue #1055: built once above; this only runs them. The binary comes
-      # too, because `CARGO_BIN_EXE_formal-ai` bakes `target/release/formal-ai`
+      # too, because `CARGO_BIN_EXE_formal-ai` bakes `rust/target/release/formal-ai`
       # into each executable at compile time -- 109 call sites across 36 test
       # files spawn it -- so the path has to exist here as well.
       - name: Download test executables
@@ -474,7 +489,20 @@ jobs:
           # Issue #1081: 961s worst measured over 38 runs was 80.1% of the old
           # 1200s budget -- inside the band the step audit now warns on, and
           # invisible until it was measured.
-          TEST_BUDGET_SECONDS: 1440
+          # Issue #1138: raised from 1440. The L1-era suite outgrew it: the
+          # unit phase measures 1251-1315s and the integration phase ~200s
+          # (389 of its 397 tests inside the 164s window run 35877276920
+          # reached before its kill), so the step demands ~1520s and every
+          # post-L1 attempt that got past the unit phase died at exit 124 --
+          # 253687e0f only looked complete because its three real failures
+          # ended the step at 1344s first. 2400 holds the measured worst at
+          # 63%, and the full lane's sum reaches 3600s, 66.7% of the cap --
+          # still inside the 70% share, now tied with the specification lane.
+          # The 397th integration test -- the benchmark corpus gate -- moved
+          # to its own workflow (benchmark-corpus-gate.yml): run 35893508679
+          # showed it needs more than the 1154s this step had left after the
+          # unit phase, alone; it is skipped via run-prebuilt-tests.sh.
+          TEST_BUDGET_SECONDS: 2400
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           chmod +x dist/tests/*
@@ -503,7 +531,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test build" \
-            cargo test --test unit --all-features --verbose --no-run
+            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose --no-run
       # Renamed with the split, and deliberately. `scripts/check-step-budget-
       # headroom.rs` joins measurements to budgets on the step name, so a name
       # kept across a change of what the step *does* would have the audit
@@ -514,14 +542,19 @@ jobs:
         if: ${{ (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
           # The binary is built above, so this budget bounds execution only.
-          # The fastest observed combined step was 424s *including* its
-          # compile, which is the tightest upper bound the history offers.
-          TEST_BUDGET_SECONDS: 660
+          # The old 660s came from "the fastest observed combined step was 424s
+          # *including* its compile" -- but the suite has since grown to 1145
+          # tests, and every tip since at least 2026-09-21 23:14 was killed at
+          # exit 124 mid-stream (run 35703111768: 508 tests all ok in 662s).
+          # Measured 2026-09-22: the whole suite passes in 341s on a dev
+          # notebook; the CI host's observed pace (508 tests / 662s) puts the
+          # full run at ~1492s. 1800s holds that with ~20% headroom.
+          TEST_BUDGET_SECONDS: 1800
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
-            cargo test --test unit --all-features --verbose specification::
+            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification::
       - name: Run doc tests
         if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
@@ -532,7 +565,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Doc tests" \
-            cargo test --doc --verbose
+            cargo test --manifest-path rust/Cargo.toml --doc --verbose
   macos-core-tests:
     name: macOS Core Tests
     needs: [detect-changes, base]
@@ -583,7 +616,7 @@ jobs:
       # Issue #1055: the binary exists; packaging needs no rebuild.
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
-        run: cargo package --list --allow-dirty
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
       - name: Check crate package size
         run: rust-script scripts/check-crate-package-size.rs
   auto-release:
@@ -668,16 +701,31 @@ jobs:
           FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
         run: |
           rust-script scripts/version-and-commit.rs \
-            --bump-type "${{ steps.bump_type.outputs.bump_type }}"
+            --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
+            --resume-prepared \
+            --branch main
       - name: Get current version
         id: current_version
         if: steps.check.outputs.should_release == 'true'
         run: rust-script scripts/get-version.rs
+      # Re-read publication state after the version command has synchronized
+      # with main. A rerun may have resumed a version prepared by the first
+      # attempt, so the pre-sync `check` output can describe the wrong version.
+      - name: Recheck prepared release state
+        id: prepared
+        if: steps.check.outputs.should_release == 'true'
+        env:
+          HAS_FRAGMENTS: 'false'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: rust-script scripts/check-release-needed.rs
       - name: Build release
         if: steps.check.outputs.should_release == 'true'
-        run: cargo build --release
+        run: cargo build --manifest-path rust/Cargo.toml --release
+      - name: Verify packaged crate archive
+        if: steps.check.outputs.should_release == 'true'
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
       - name: Publish to Crates.io
-        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
+        if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'
         id: publish-crate
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
@@ -686,28 +734,28 @@ jobs:
       - name: Wait for Crate availability on Crates.io
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
       - name: Smoke test the published crate
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
       - name: Free up runner disk space
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/free-runner-disk.sh
       - name: Log in to GitHub Container Registry
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         uses: docker/login-action@v4
@@ -718,14 +766,14 @@ jobs:
       - name: Set up Docker Buildx
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         uses: ./.github/actions/setup-buildx-resilient
       - name: Extract GHCR Docker metadata
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         id: ghcr-meta
@@ -740,7 +788,7 @@ jobs:
       - name: Publish Docker image to GHCR
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
@@ -759,14 +807,14 @@ jobs:
       - name: Verify the published GHCR image is anonymously pullable
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/verify-ghcr-visibility.sh
       - name: Configure Docker Hub publishing
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         id: dockerhub
@@ -805,7 +853,7 @@ jobs:
       - name: Create GitHub Release
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         env:
@@ -887,7 +935,10 @@ jobs:
         run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
       - name: Build release
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
-        run: cargo build --release
+        run: cargo build --manifest-path rust/Cargo.toml --release
+      - name: Verify packaged crate archive
+        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
       - name: Publish to Crates.io
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         id: publish-crate
@@ -1080,97 +1131,19 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
     needs: [detect-changes]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-      - name: Skip when identical inputs already passed
-        id: ledger
-        uses: ./.github/actions/green-ledger
-        with:
-          check: e2e-local
-          paths: >-
-            src data build.rs Cargo.toml Cargo.lock tests/e2e package.json package-lock.json scripts .github/workflows/release.yml .github/actions
-          enabled: ${{ github.ref != 'refs/heads/main' }}
-      - name: Setup Bun
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-          no-cache: true
-      - name: Setup Node.js
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24.x'
-          cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
-      - name: Install web bundle dependencies
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: bun install --frozen-lockfile
-      - name: Build web vendor bundle
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: bun run build:web
-      - name: Install Playwright and dependencies
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: |
-          cd tests/e2e
-          npm ci --no-audit --no-fund
-      - name: Cache Playwright browsers
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        id: playwright-cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-      - name: Install Playwright system dependencies (best effort)
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        timeout-minutes: 6
-        continue-on-error: true
-        run: |
-          cd tests/e2e
-          npx playwright install-deps chromium
-      - name: Install Playwright browsers
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        timeout-minutes: 10
-        run: |
-          cd tests/e2e
-          npx playwright install chromium
-      - name: Sync data/seed into src/web/seed (deployment mirror)
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: scripts/sync-seed.sh
-      - name: Run local e2e tests
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: |
-          cd tests/e2e
-          npx playwright test --config=playwright.local.config.js
-      - name: Upload Playwright report on failure
-        if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report-local
-          path: tests/e2e/playwright-report/
-          retention-days: 7
-      - name: Upload generated /download screenshots
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: download-page-screenshots
-          path: |
-            docs/screenshots/issue-347/
-            src/web/download/assets/app-preview*.png
-          retention-days: 14
-          if-no-files-found: error
+    # Issue #1138 moved the 83 lines of steps behind this call into
+    # `.github/workflows/e2e-local.yml`, returning this file to the 1500-line
+    # warning band; the reasoning is in that file's header. The cap moved with
+    # them, because a caller job declares none.
+    uses: ./.github/workflows/e2e-local.yml
+    permissions:
+      contents: read
   test-agent-cli-e2e:
     name: E2E Tests (agent CLI ↔ formal-ai)
     concurrency:
@@ -1232,7 +1205,7 @@ jobs:
           prefix: artifacts-
       # Issue #1055: one compile per platform; consumers download the results.
       - name: Build binaries and test executables
-        run: cargo test --release --no-run --bins --tests --all-features
+        run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
       - name: Upload formal-ai binaries
@@ -1283,7 +1256,7 @@ jobs:
         with:
           check: box-project-${{ matrix.language }}
           paths: >-
-            src data build.rs Cargo.toml Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
       - name: Free up runner disk space
@@ -1365,11 +1338,11 @@ jobs:
       - uses: ./.github/actions/cache-cargo-registry
         with:
           prefix: docs-
-      - name: Generate Rust API docs (cargo doc)
+      - name: Generate Rust API docs (cargo doc --manifest-path rust/Cargo.toml)
         env:
           RUSTDOCFLAGS: -D warnings
         run: bash scripts/build-rust-api-docs.sh
-      - name: Sync data/seed into src/web/seed (deployment mirror)
+      - name: Sync data/seed into js/seed (deployment mirror)
         run: scripts/sync-seed.sh
       - name: Read formal-ai version from Cargo.toml
         id: formal_ai_version
@@ -1382,15 +1355,15 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
           echo "Detected formal-ai version: ${version}"
       - name: Stamp GitHub Pages artifact
-        run: scripts/stamp-pages-artifact.sh src/web "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
+        run: scripts/stamp-pages-artifact.sh js "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
       - name: Copy Rust API docs into the Pages artifact (/docs/api)
         run: |
-          mkdir -p src/web/docs/api
-          cp -R target/doc/. src/web/docs/api/
+          mkdir -p js/docs/api
+          cp -R target/doc/. js/docs/api/
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: src/web
+          path: js
           include-hidden-files: true
       - name: Deploy Pages artifact
         id: deployment
@@ -1420,29 +1393,29 @@ jobs:
         with:
           node-version: '24.x'
           cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
+          cache-dependency-path: rust/tests/e2e/package-lock.json
       - name: Install Playwright and dependencies
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npm ci --no-audit --no-fund
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('rust/tests/e2e/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
       - name: Install Playwright system dependencies (best effort)
         timeout-minutes: 6
         continue-on-error: true
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npx playwright install-deps chromium
       - name: Install Playwright browsers
         timeout-minutes: 10
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npx playwright install chromium
       - name: Wait for GitHub Pages deployment
         env:
@@ -1450,14 +1423,14 @@ jobs:
         run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-pages.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
       - name: Run GitHub Pages e2e tests
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-pages
-          path: tests/e2e/playwright-report/
+          path: rust/tests/e2e/playwright-report/
           retention-days: 7
   pipeline-status:
     name: Pipeline Status

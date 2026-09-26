@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q1051772": {
+      "type": "item",
+      "id": "Q1051772",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "хордофон"
+        },
+        "en": {
+          "language": "en",
+          "value": "chordophone"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "絃鳴樂器"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कर्ड़ फोन"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "музыкальные инструменты, у которых звучащим элементов является струна"
+        },
+        "en": {
+          "language": "en",
+          "value": "class of musical instruments that makes sound by way of a vibrating string or strings stretched between two points"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संगीत वाघयंत्र जो ध्वनि बनाता है"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "chordophone Instrument"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

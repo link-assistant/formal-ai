@@ -1,0 +1,25 @@
+--- cli error (claude-oauth) ---
+{"name": "ZodError", "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"}
+--- assistant text ---
+Поищу в интернете: Скажи что то на Китайском.
+--- step finish: tool-calls ---
+--- assistant text ---
+Открою https://chineseonline.ru/blog/frazy-na-kitajskom-dlya-turistov и прочитаю содержимое.
+--- step finish: tool-calls ---
+--- assistant text ---
+Открою https://www.50languages.com/ru/learn/phrasebook/zh и прочитаю содержимое.
+--- step finish: tool-calls ---
+--- assistant text ---
+Conversation summary: Скажи что то на Китайском.  Поищу в интернете: Скажи что то на Китайском.
+
+Title: What did we do so
+
+User turns:
+  1. Скажи что то на Китайском
+  2.
+--- step finish: stop ---
+--- assistant text ---
+Continue if you have next steps
+--- assistant text ---
+Nothing is in progress to continue. Tell me the task and I will start it.
+--- step finish: stop ---

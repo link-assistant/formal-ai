@@ -10,14 +10,14 @@ repository files, check the summaries, generalize, take two more, and repeat
 until the result is stable on files nobody optimized for, at a quality bar of at
 least 80%. The pipeline had the recursion, the exact captures and the
 determinism, but nothing sampled random files, nothing iterated, and no metric
-existed to be 80% of. The protocol lives in `src/summarization/validation/`
+existed to be 80% of. The protocol lives in `rust/src/summarization/validation/`
 (`mod.rs` the loop and the reports, `sampling.rs` the draw, `criteria.rs` the
 checks, `baseline.rs` the ratchet),
-the operator surface in `src/cli_summarization.rs`, the committed baseline in
+the operator surface in `rust/src/cli_summarization.rs`, the committed baseline in
 `data/summarization/quality-baseline.lino`, and the analysis in
 `docs/case-studies/issue-893/`. One test per requirement, plus a whole-task test
 that runs the protocol over the real repository, lives in
-`tests/unit/specification/issue_893_summarization_validation.rs`.
+`rust/tests/unit/specification/issue_893_summarization_validation.rs`.
 
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |

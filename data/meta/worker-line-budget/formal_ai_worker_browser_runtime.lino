@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_browser_runtime.js"
+  ceiling 187
+  rationale "Issue #1138 browser capability probing, explicit-click lazy Pyodide loading, and execution evidence; the runtime bytes remain external to the shipped worker budget."

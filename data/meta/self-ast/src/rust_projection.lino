@@ -1,0 +1,47 @@
+self_ast_census
+  target src/rust_projection.rs
+  language rust
+  fidelity signature
+  byte_len 34210
+  line_count 838
+  content_id source_module_2e99827d9925c25f
+  symbol_count 38
+  symbols
+    const REFUSAL_LANGUAGE 25 25
+    const REFUSAL_NOFORM_LANGUAGE 30 30
+    const ANY_TARGET 33 33
+    const RULE_SET_TERM 35 35
+    const RULE_TERM 36 36
+    const MATCH_TERM 37 37
+    const MAX_WALK_DEPTH 38 38
+    enum ProjectionOutcome 43 57
+    function project 65 67
+    function projection_project 70 116
+    function projection_project 119 126
+    module engine 129 835
+    function seeded_detail 143 145
+    struct GrammarProjection 158 164
+    struct Claim 169 173
+    struct Walk 177 182
+    function rule_count 187 189
+    function refusal_count 194 196
+    function is_ruled 200 204
+    function is_refused 209 215
+    function is_noform 220 226
+    function noform_count 231 233
+    function coverage_kinds 242 258
+    function render 265 305
+    function claim_map 313 372
+    function expand_link 375 462
+    function expand_template 465 499
+    function expand_placeholder 502 629
+    function projection_from 638 725
+    function embedded 729 735
+    static EMBEDDED 730 730
+    function content_count 740 750
+    function bound_captures 752 774
+    function root_kind_of_spec 776 787
+    function syntax_kinds 789 796
+    function span_text 798 807
+    function span_of 809 827
+    function unescape_separator 829 834

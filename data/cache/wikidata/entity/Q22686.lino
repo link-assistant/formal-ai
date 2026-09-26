@@ -1,11 +1,11 @@
 Q22686
   aliases
-    en ("POTUS 45" "President Donald Trump" "President Trump" "President Donald J. Trump" "President Donald John Trump" "President Donald J Trump" "@realDonaldTrump" "POTUS 47" "President DJT" DJT)
     hi ("ट्रम्प" "डॉनल्ड ज॰ ट्रम्प")
     ru ("Трамп" "Трамп, Дональд" "Дональд Джон Трамп")
     zh ("唐纳德·特朗普" "杜林普" "當奴·杜林普" "唐納德川普" "唐納川普" "川普" "特朗普" "當勞·特朗普" "唐納德·川普" "唐納德·特朗普" "川普總統" "特朗普總統")
   descriptions
-    en "American businessman and politician (born 1946), President of the United States (2017–2021; since 2025)"
+    en "President of the United States (2017–2021; since 2025)"
+    es "45.º y 47.º presidente de los Estados Unidos"
     hi "संयुक्त राज्य के राष्ट्रपति (2017–2021; 2025 से)"
     ru "президент США (2017–2021 и 2025–н.в.), миллиардер"
     zh "第45、47任美國總統"
@@ -15,5 +15,26 @@ Q22686
     hi "डॉनल्ड ट्रम्प"
     ru "Дональд Трамп"
     zh "唐納·川普"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Donald Trump"
+    eswiki
+      site eswiki
+      title "Donald Trump"
+    hiwiki
+      site hiwiki
+      title "डॉनल्ड ट्रम्प"
+    ruwiki
+      site ruwiki
+      title "Трамп, Дональд"
+    zhwiki
+      site zhwiki
+      title "唐納·川普"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

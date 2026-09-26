@@ -1,0 +1,35 @@
+class_news	en	What's happening in the world right now?
+class_news	ru	Что сейчас происходит в мире?
+class_news	hi	इस समय दुनिया में क्या चल रहा है?
+class_news	zh	现在世界上发生了什么？
+class_news	es	¿Qué está pasando en el mundo ahora mismo?
+class_non_understanding	en	That went over my head.
+class_non_understanding	ru	Это мне непонятно.
+class_non_understanding	hi	यह मेरे सिर के ऊपर से चला गया।
+class_non_understanding	zh	这个我没跟上。
+class_non_understanding	es	Eso se me escapó.
+class_compose	en	Put together a few pages on how quantum mechanics got started.
+class_compose	ru	Составь мне несколько страниц о том, как возникла квантовая механика.
+class_compose	hi	क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।
+class_compose	zh	写几页关于量子力学如何起步的内容。
+class_compose	es	Prepárame unas páginas sobre cómo empezó la mecánica cuántica.
+class_demonstrate	en	Give me a line in Hindi.
+class_demonstrate	ru	Дай фразу на хинди.
+class_demonstrate	hi	मुझे चीनी में एक पंक्ति दीजिए।
+class_demonstrate	zh	用印地语说一句吧。
+class_demonstrate	es	Dime una frase en hindi.
+class_schedule	en	Put me down with Alexander at eight tonight, Tbilisi time.
+class_schedule	ru	Запиши меня к команде в пятницу на 14:00 по Берлину.
+class_schedule	hi	आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए।
+class_schedule	zh	今晚八点第比利斯时间，帮我和亚历山大约一下。
+class_schedule	es	Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis.
+class_measurement	en	How far down do oak roots usually reach?
+class_measurement	ru	Насколько глубоко обычно уходят корни дуба?
+class_measurement	hi	बलूत की जड़ें आमतौर पर कितनी गहरी जाती हैं?
+class_measurement	zh	橡树的根一般能扎多深？
+class_measurement	es	¿Hasta qué profundidad llegan las raíces del roble?
+class_local_search	en	Find hive-mind-control center folder on my desktop
+class_local_search	ru	Найди папку hive-mind-control center на моём рабочем столе
+class_local_search	hi	मेरे डेस्कटॉप पर hive-mind-control-center फ़ोल्डर ढूँढिए।
+class_local_search	zh	在我的桌面上找 hive-mind-control-center 文件夹。
+class_local_search	es	Busca la carpeta hive-mind-control-center en mi escritorio.

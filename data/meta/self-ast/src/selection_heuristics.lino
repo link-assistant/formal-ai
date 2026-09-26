@@ -1,0 +1,73 @@
+self_ast_census
+  target src/selection_heuristics.rs
+  language rust
+  fidelity signature
+  byte_len 22005
+  line_count 603
+  content_id source_module_e89dff10b8944d70
+  symbol_count 64
+  symbols
+    module refutation 23 23
+    module splitting 24 24
+    module triz 25 25
+    enum HeuristicRole 29 33
+    function slug 38 44
+    function from_slug 48 55
+    struct HeuristicMethod 60 69
+    function parameter 74 79
+    function applies_in 84 86
+    function to_links_notation 90 103
+    const STRUCTURAL_FIELDS 107 107
+    const HEURISTIC_RECORD_TYPE 110 110
+    const SELECTION_HEURISTICS_LINO 113 114
+    function catalog_from 121 154
+    function shipped_catalog 160 162
+    struct ActionCost 170 179
+    struct CandidateScore 183 190
+    function satisfies 197 199
+    function to_links_notation 203 215
+    function dimension 221 229
+    const KEY_ORDER_PARAMETER 233 233
+    function key_order 236 242
+    function ranking_key 245 250
+    trait CandidateRanker 254 259
+    function slug 255 255
+    function rank 258 258
+    struct LeastActionRanker 263 263
+    function slug 266 268
+    function rank 270 285
+    trait TaskSplitter 289 294
+    function slug 290 290
+    function split 293 293
+    struct BinarySplit 298 307
+    struct ApproachObservation 315 320
+    struct CombinedApproach 324 332
+    function combine_approaches 342 373
+    function imbalance 379 381
+    function to_links_notation 385 403
+    function balanced_split 415 417
+    struct BalancedSplitter 422 422
+    function slug 425 427
+    function split 429 431
+    enum SplitRefusal 436 442
+    function split_refusal 446 448
+    struct ContradictionLink 452 467
+    enum ContradictionDerivation 471 478
+    enum TrizResolution 482 491
+    enum SeparationAxis 495 500
+    function contradictions_in 505 507
+    struct TrizRanker 512 512
+    function slug 515 517
+    function rank 519 521
+    struct SearchHypothesis 527 534
+    struct Experiment 538 546
+    struct HypothesisSpace 550 556
+    enum SearchVerdict 559 568
+    trait ExperimentChooser 570 575
+    function slug 571 571
+    function next_experiment 574 574
+    struct RefutationSearch 578 578
+    function slug 581 583
+    function next_experiment 585 587
+    function segment_count 592 594
+    function complete_layers 601 603

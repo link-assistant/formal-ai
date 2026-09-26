@@ -4,10 +4,6 @@
       "type": "item",
       "id": "Q7186",
       "labels": {
-        "en": {
-          "language": "en",
-          "value": "Marie Curie"
-        },
         "ru": {
           "language": "ru",
           "value": "Мария Склодовская-Кюри"
@@ -24,7 +20,7 @@
       "descriptions": {
         "en": {
           "language": "en",
-          "value": "Polish-French physicist and chemist (1867–1934)"
+          "value": "Polish-born French physicist and chemist (1867–1934)"
         },
         "ru": {
           "language": "ru",
@@ -37,27 +33,21 @@
         "zh": {
           "language": "zh",
           "value": "波蘭裔法國物理學家、化學家"
+        },
+        "es": {
+          "language": "es",
+          "value": "física y química polaca nacionalizada francesa"
         }
       },
       "aliases": {
-        "en": [
-          {
-            "language": "en",
-            "value": "Marie Sklodowska-Curie"
-          }
-        ],
         "ru": [
-          {
-            "language": "ru",
-            "value": "Склодовская-Кюри, Мария"
-          },
           {
             "language": "ru",
             "value": "Кюри, Мария"
           },
           {
             "language": "ru",
-            "value": "Мари Кюри"
+            "value": "Склодовская"
           },
           {
             "language": "ru",
@@ -65,11 +55,15 @@
           },
           {
             "language": "ru",
+            "value": "Мари Кюри"
+          },
+          {
+            "language": "ru",
             "value": "Кюри-Склодовская, Мария"
           },
           {
             "language": "ru",
-            "value": "Склодовская"
+            "value": "Склодовская-Кюри, Мария"
           },
           {
             "language": "ru",
@@ -85,19 +79,56 @@
         "zh": [
           {
             "language": "zh",
-            "value": "居里夫人"
+            "value": "居禮夫人"
           },
           {
             "language": "zh",
-            "value": "居禮夫人"
+            "value": "居里夫人"
           },
           {
             "language": "zh",
             "value": "瑪麗·居禮"
           }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Marie Curie"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Склодовская-Кюри, Мария"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "मेरी क्युरी"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "玛丽·居里"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Marie Curie"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

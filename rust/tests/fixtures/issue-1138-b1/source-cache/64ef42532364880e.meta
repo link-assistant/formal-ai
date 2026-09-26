@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=%E0%A4%B2%E0%A4%BF%E0%A4%AA%E0%A5%8B%E0%A4%97%E0%A5%8D%E0%A4%B0%E0%A4%BE%E0%A4%AE&site=stackoverflow&filter=withbody
+fetched_at=1789533803
+sha256=da358394d5ec08c3a1e3da97f9798da4b8871eee7274700da82aea777a7c2d59

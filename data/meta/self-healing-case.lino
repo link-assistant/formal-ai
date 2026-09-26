@@ -5,8 +5,8 @@ repair_case
   human_gated "true"
   source_round_trip
     module_path "src/agentic_coding/planner.rs"
-    total_link_count "18809"
-    named_node_count "3764"
+    total_link_count "20298"
+    named_node_count "3939"
     faithful "true"
   failure_trace
     unknown_trace
@@ -30,7 +30,7 @@ repair_case
       id "self_improvement_run_10f7d0dab049048f"
       trace_count "1"
       benchmark_suite "issue_362_multilingual_coding_modification"
-      benchmark_runner "cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture"
+      benchmark_runner "cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture"
       benchmark_passed "4"
       benchmark_failed "0"
       benchmark_minimum_pass_count "4"

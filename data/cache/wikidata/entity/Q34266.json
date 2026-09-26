@@ -1,0 +1,209 @@
+{
+  "entities": {
+    "Q34266": {
+      "type": "item",
+      "id": "Q34266",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Russian Empire"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Российская империя"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रूसी साम्राज्य"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄罗斯帝国"
+        },
+        "es": {
+          "language": "es",
+          "value": "Imperio ruso"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "former empire in Eurasia and North America (1721–1917)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство, существовавшее с 1721 по 1917 год"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄羅斯歷史上最後一個君主制政權"
+        },
+        "es": {
+          "language": "es",
+          "value": "antiguo imperio en Eurasia (1721-1917) y en Norteamérica (1721-1867)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Tsarist Russia"
+          },
+          {
+            "language": "en",
+            "value": "Imperial Russia"
+          },
+          {
+            "language": "en",
+            "value": "Russia"
+          },
+          {
+            "language": "en",
+            "value": "Empire of Russia"
+          },
+          {
+            "language": "en",
+            "value": "Moscovy"
+          },
+          {
+            "language": "en",
+            "value": "Moscovy or Russia"
+          },
+          {
+            "language": "en",
+            "value": "Russia or Moscovy"
+          },
+          {
+            "language": "en",
+            "value": "Rossia"
+          },
+          {
+            "language": "en",
+            "value": "Rusia"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Россия"
+          },
+          {
+            "language": "ru",
+            "value": "Царская Россия"
+          },
+          {
+            "language": "ru",
+            "value": "РИ"
+          },
+          {
+            "language": "ru",
+            "value": "Императорская Россия"
+          },
+          {
+            "language": "ru",
+            "value": "Имперская Россия"
+          },
+          {
+            "language": "ru",
+            "value": "Россия имперского периода"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "帝俄时代"
+          },
+          {
+            "language": "zh",
+            "value": "沙俄帝国"
+          },
+          {
+            "language": "zh",
+            "value": "帝俄"
+          },
+          {
+            "language": "zh",
+            "value": "沙俄"
+          },
+          {
+            "language": "zh",
+            "value": "沙皇俄國"
+          },
+          {
+            "language": "zh",
+            "value": "俄羅斯帝國"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Rusia imperial"
+          },
+          {
+            "language": "es",
+            "value": "Rusia zarista"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Russian Empire"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Российская империя"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "रूसी साम्राज्य"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "俄罗斯帝国"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Imperio ruso"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "e64bc21e5649b2265a5047822c9b3f580989c9eb",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 34266,
+                  "id": "Q34266"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

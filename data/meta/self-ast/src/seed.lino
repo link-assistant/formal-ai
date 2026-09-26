@@ -2,10 +2,10 @@ self_ast_census
   target src/seed.rs
   language rust
   fidelity signature
-  byte_len 35968
-  line_count 912
-  content_id source_module_1140cff5f2285b29
-  symbol_count 65
+  byte_len 36291
+  line_count 919
+  content_id source_module_9b92429f07804bcc
+  symbol_count 66
   symbols
     module agentic_tool_capabilities 24 24
     module brainstorm 25 25
@@ -27,48 +27,49 @@ self_ast_census
     module operation_vocabulary 41 41
     module parser 42 42
     module personas 43 43
-    module projects 44 44
-    module proof_programs 45 45
-    module release_timelines 46 46
-    module roles 47 47
-    module shell_intents 48 48
-    module sources 49 49
-    module summary_topics 50 50
-    module terminal_commands 51 51
-    module tool_resource_scopes 52 52
-    function merged_bundle 153 155
-    function bundle_from_files 163 180
-    function parse_bundle 201 276
-    struct ResponseRecord 280 286
-    function multilingual_responses 290 319
-    function response_for 324 331
-    function response_variant_for 339 358
-    function render_response 362 369
-    function localized_response 382 392
-    function response_values_for 399 401
-    function agent_info 405 418
-    function supported_languages 427 432
-    struct LanguageRule 436 449
-    function language_rules 452 472
-    function language_of_source 479 484
-    struct PromptPattern 488 494
-    struct LocalizedConcept 502 509
-    struct ConceptRecord 532 544
-    function localized_for 550 555
-    function concepts 559 609
-    struct LocalizedContextLabel 613 616
-    struct ContextRecord 622 627
-    function label_for 633 641
-    function matches 646 661
-    function concept_contexts 665 695
-    struct LearningSource 705 710
-    struct LearningSources 715 718
-    function match_directive 736 751
-    function learning_sources 760 790
-    function prompt_patterns 793 812
-    struct EnvironmentRecord 822 834
-    struct MigrationFlow 837 841
-    struct EnvironmentDirectory 844 848
-    function environment_directory 851 895
-    function child_value_alias 897 904
-    function environment_records 910 912
+    module planner_precedence 44 44
+    module projects 45 45
+    module proof_programs 46 46
+    module release_timelines 47 47
+    module roles 48 48
+    module shell_intents 49 49
+    module sources 50 50
+    module summary_topics 51 51
+    module terminal_commands 52 52
+    module tool_resource_scopes 53 53
+    function merged_bundle 160 162
+    function bundle_from_files 170 187
+    function parse_bundle 208 283
+    struct ResponseRecord 287 293
+    function multilingual_responses 297 326
+    function response_for 331 338
+    function response_variant_for 346 365
+    function render_response 369 376
+    function localized_response 389 399
+    function response_values_for 406 408
+    function agent_info 412 425
+    function supported_languages 434 439
+    struct LanguageRule 443 456
+    function language_rules 459 479
+    function language_of_source 486 491
+    struct PromptPattern 495 501
+    struct LocalizedConcept 509 516
+    struct ConceptRecord 539 551
+    function localized_for 557 562
+    function concepts 566 616
+    struct LocalizedContextLabel 620 623
+    struct ContextRecord 629 634
+    function label_for 640 648
+    function matches 653 668
+    function concept_contexts 672 702
+    struct LearningSource 712 717
+    struct LearningSources 722 725
+    function match_directive 743 758
+    function learning_sources 767 797
+    function prompt_patterns 800 819
+    struct EnvironmentRecord 829 841
+    struct MigrationFlow 844 848
+    struct EnvironmentDirectory 851 855
+    function environment_directory 858 902
+    function child_value_alias 904 911
+    function environment_records 917 919

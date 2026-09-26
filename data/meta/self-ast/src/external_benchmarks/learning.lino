@@ -2,14 +2,17 @@ self_ast_census
   target src/external_benchmarks/learning.rs
   language rust
   fidelity signature
-  byte_len 6873
-  line_count 186
-  content_id source_module_e29b2af4fc56f649
-  symbol_count 6
+  byte_len 11219
+  line_count 290
+  content_id source_module_d6e366ee6a8f2d23
+  symbol_count 9
   symbols
     function render_failure_report 21 24
     function failure_memory 26 82
     function observation 84 92
     function field 94 101
     function render_frontier_record 111 163
-    function one_line 169 186
+    function split_frontier_document 175 207
+    function placeholder_frontier_page 212 214
+    function write_frontier_pages 230 267
+    function one_line 273 290

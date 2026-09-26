@@ -77,7 +77,7 @@ jobs:
         with:
           check: macos-core-archive
           paths: >-
-            src tests data examples build.rs Cargo.toml Cargo.lock scripts .github/workflows/macos-core-tests.yml .github/actions
+            rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/macos-core-tests.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -103,7 +103,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/macos-core-tests"
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "macOS test archive build" \
-            cargo nextest archive --lib --bins --tests --all-features \
+            cargo nextest --manifest-path rust/Cargo.toml archive --lib --bins --tests --all-features \
             --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst"
           git rev-parse 'HEAD^{tree}' > "$RUNNER_TEMP/macos-core-tests/tree"
       # Issue #1047: computed once here rather than on each of the eight
@@ -117,7 +117,7 @@ jobs:
           rust-script scripts/plan-test-partition.rs --macos-platform --of 1 \
             > "$RUNNER_TEMP/macos-core-tests/platform.filter"
       # Issue #1081. Two things were wrong with this step and only one of them
-      # was visible. The invisible one: it ran `cargo test` with no execution
+      # was visible. The invisible one: it ran `cargo test --manifest-path rust/Cargo.toml` with no execution
       # budget inside a job that has one, so the only limit on it was the job
       # cap -- and a cap kill reports as `cancelled`, the grey non-signal issue
       # #977 exists to remove. Worst observed here is 205s against a 12s median
@@ -138,7 +138,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "macOS doc tests" \
-            cargo test --doc --verbose
+            cargo test --manifest-path rust/Cargo.toml --doc --verbose
       - name: Upload macOS test archive
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
@@ -285,7 +285,7 @@ jobs:
           PLATFORM=$(cat "$RUNNER_TEMP/macos-core-tests/platform.filter")
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "macOS platform tests" \
-            cargo nextest run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
+            cargo nextest --manifest-path rust/Cargo.toml run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
             --extract-to "$GITHUB_WORKSPACE" \
             --workspace-remap "$GITHUB_WORKSPACE" \
             -E "($PLATFORM) & not (test(data_files::) | test(self_ast_census) | test(specification::))"

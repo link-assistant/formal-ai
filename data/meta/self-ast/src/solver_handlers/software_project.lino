@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/software_project.rs
   language rust
   fidelity signature
-  byte_len 34105
-  line_count 909
-  content_id source_module_782ba7f2c5ab0e99
-  symbol_count 49
+  byte_len 35030
+  line_count 929
+  content_id source_module_861363e8a42bcc8e
+  symbol_count 50
   symbols
     struct ArtifactMatch 21 24
     struct SoftwareProjectMeaning 27 38
@@ -15,44 +15,45 @@ self_ast_census
     function from_slug 68 75
     enum ApprovalState 79 82
     function label 85 90
-    function from_prompt 94 123
-    function canonical_key 125 143
-    function meaning_id 145 147
-    function delivery_mode_label 151 153
-    function domain_label 155 161
-    function meaning_lino 163 218
-    function try_software_project_request 221 258
-    function prior_software_project_meaning 260 268
-    function record_meaning 270 324
-    function artifact_label 335 359
-    function artifact_surface_table 366 377
-    function action_surface_table 384 393
-    function match_action 397 407
-    function match_artifact 411 421
-    function scan_match 428 439
-    function is_start_boundary 441 449
-    function is_end_boundary 451 459
-    function is_word_character 469 471
-    function is_cjk_character 475 482
-    function extract_target 484 499
-    function extract_after_marker 501 522
-    function capitalize_short_target 524 534
-    function requirement_marker_words 540 547
-    function extract_requirements 549 570
-    function derive_subtasks 572 585
-    function requirement_category_label 592 604
-    function classify_requirement 611 628
-    function subtask_title 630 644
-    function detect_delivery_mode 652 657
-    function detect_implementation_language 662 667
-    function implementation_language_from_slug 673 675
-    function approval_gates 677 700
-    function push_unique 702 706
-    function sentence_case 708 715
-    function is_game_unit_tracker 721 725
-    function is_approval_prompt 733 742
-    function reasoning_steps 744 777
-    function plan_steps 779 822
-    function render_plan_response 824 865
-    function render_implementation_response 867 900
-    function lino_string 902 909
+    function software_project_claims 100 108
+    function from_prompt 111 140
+    function canonical_key 142 160
+    function meaning_id 162 164
+    function delivery_mode_label 168 170
+    function domain_label 172 178
+    function meaning_lino 180 235
+    function try_software_project_request 238 276
+    function prior_software_project_meaning 278 286
+    function record_meaning 288 342
+    function artifact_label 353 377
+    function artifact_surface_table 384 395
+    function action_surface_table 402 411
+    function match_action 415 425
+    function match_artifact 429 439
+    function scan_match 446 459
+    function is_start_boundary 461 469
+    function is_end_boundary 471 479
+    function is_word_character 489 491
+    function is_cjk_character 495 502
+    function extract_target 504 519
+    function extract_after_marker 521 542
+    function capitalize_short_target 544 554
+    function requirement_marker_words 560 567
+    function extract_requirements 569 590
+    function derive_subtasks 592 605
+    function requirement_category_label 612 624
+    function classify_requirement 631 648
+    function subtask_title 650 664
+    function detect_delivery_mode 672 677
+    function detect_implementation_language 682 687
+    function implementation_language_from_slug 693 695
+    function approval_gates 697 720
+    function push_unique 722 726
+    function sentence_case 728 735
+    function is_game_unit_tracker 741 745
+    function is_approval_prompt 753 762
+    function reasoning_steps 764 797
+    function plan_steps 799 842
+    function render_plan_response 844 885
+    function render_implementation_response 887 920
+    function lino_string 922 929

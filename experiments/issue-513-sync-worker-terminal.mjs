@@ -5,8 +5,8 @@
 // natural-language triggers (terminal/shell phrases, run verbs, Chinese run
 // verbs, leading shell tokens) that classify a prompt as a terminal command.
 // The Rust solver reads it via `src/seed/terminal_commands.rs`; the JS worker
-// reads the synced `src/web/seed/terminal-commands.lino` deployment copy via
-// `src/web/seed_loader.js`.
+// reads the synced `js/seed/terminal-commands.lino` deployment copy via
+// `js/seed_loader.js`.
 //
 // Run after editing the seed:
 //   node experiments/issue-513-sync-worker-terminal.mjs
@@ -24,14 +24,14 @@ import path from "node:path";
 
 const root = new URL("..", import.meta.url);
 const seedPath = new URL("data/seed/terminal-commands.lino", root);
-const webSeedDirPath = new URL("src/web/seed/", root);
-const webSeedPath = new URL("src/web/seed/terminal-commands.lino", root);
+const webSeedDirPath = new URL("js/seed/", root);
+const webSeedPath = new URL("js/seed/terminal-commands.lino", root);
 // The browser seed inventory. Issue #991 generated it out of `seed_loader.js`,
 // where every branch that added a seed file appended to the same lines, into
 // `data/meta/seed-registry.lino`; `seed-files.js` is the browser projection of
 // that registry and is what the worker now reads the file list from.
-const seedFilesPath = new URL("src/web/seed-files.js", root);
-const workerDirPath = new URL("src/web/worker/", root);
+const seedFilesPath = new URL("js/seed-files.js", root);
+const workerDirPath = new URL("js/worker/", root);
 const workerDir = fileURLToPath(workerDirPath);
 
 const checkOnly = process.argv.includes("--check");
@@ -60,13 +60,13 @@ function workerSource() {
 if (!fs.existsSync(webSeedPath)) {
   if (checkOnly) {
     console.log(
-      "[issue-513] src/web/seed/terminal-commands.lino is not present; scripts/sync-seed.sh creates the generated deployment mirror.",
+      "[issue-513] js/seed/terminal-commands.lino is not present; scripts/sync-seed.sh creates the generated deployment mirror.",
     );
   } else {
     fs.mkdirSync(webSeedDirPath, { recursive: true });
     fs.writeFileSync(webSeedPath, canonicalSeed);
     console.log(
-      "[issue-513] created src/web/seed/terminal-commands.lino from data/seed/terminal-commands.lino.",
+      "[issue-513] created js/seed/terminal-commands.lino from data/seed/terminal-commands.lino.",
     );
   }
 } else {
@@ -74,12 +74,12 @@ if (!fs.existsSync(webSeedPath)) {
   if (webSeed !== canonicalSeed) {
     if (checkOnly) {
       reportFailure(
-        "src/web/seed/terminal-commands.lino is out of sync with data/seed/terminal-commands.lino. Run scripts/sync-seed.sh.",
+        "js/seed/terminal-commands.lino is out of sync with data/seed/terminal-commands.lino. Run scripts/sync-seed.sh.",
       );
     } else {
       fs.writeFileSync(webSeedPath, canonicalSeed);
       console.log(
-        "[issue-513] refreshed src/web/seed/terminal-commands.lino from data/seed/terminal-commands.lino.",
+        "[issue-513] refreshed js/seed/terminal-commands.lino from data/seed/terminal-commands.lino.",
       );
     }
   }
@@ -88,7 +88,7 @@ if (!fs.existsSync(webSeedPath)) {
 const seedFiles = fs.readFileSync(seedFilesPath, "utf8");
 if (!seedFiles.includes('"seed/terminal-commands.lino"')) {
   reportFailure(
-    "src/web/seed-files.js does not list seed/terminal-commands.lino. It is generated from data/meta/seed-registry.lino by `rust-script scripts/generate-seed-registry.rs --write`; register the file there.",
+    "js/seed-files.js does not list seed/terminal-commands.lino. It is generated from data/meta/seed-registry.lino by `rust-script scripts/generate-seed-registry.rs --write`; register the file there.",
   );
 }
 

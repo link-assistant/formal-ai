@@ -43,6 +43,7 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! syn = { version = "2", features = ["full", "visit"] }
 //! walkdir = "2"
 //! ```
 
@@ -51,6 +52,10 @@ use std::fs;
 use std::path::Path;
 #[cfg(not(test))]
 use std::process::exit;
+use syn::parse::Parser;
+use syn::punctuated::Punctuated;
+use syn::visit::{self, Visit};
+use syn::{Expr, ExprMacro, Item, ItemFn, Local, Macro, Pat, Token};
 use walkdir::WalkDir;
 
 /// Relative path of the committed allowlist, from the repository root.
@@ -59,12 +64,13 @@ const ALLOWLIST_PATH: &str = "scripts/tests-as-docs-allowlist.txt";
 
 /// Directory scanned for behavioural tests.
 #[cfg_attr(test, allow(dead_code))]
-const SCAN_DIR: &str = "tests";
+const SCAN_DIR: &str = "rust/tests";
 
 /// `tests/source/` is a checked-in copy of `src/` used by the source-placement
 /// guard, not a test suite of its own.
 #[cfg_attr(test, allow(dead_code))]
-const SKIP_PATH_FRAGMENTS: &[&str] = &["tests/source/", "tests/fixtures/", "tests/e2e/node_modules"];
+const SKIP_PATH_FRAGMENTS: &[&str] =
+    &["tests/source/", "tests/fixtures/", "tests/e2e/node_modules"];
 
 const ALLOWLIST_HEADER: &str = "\
 # Tests-as-docs allowlist (R234-2 burn-down).
@@ -108,130 +114,240 @@ impl Entry {
     }
 }
 
-/// One `#[test] fn` with its body text.
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct TestFunction {
-    name: String,
-    body: String,
-}
-
 #[cfg_attr(test, allow(dead_code))]
 fn normalized_path(path: &Path) -> String {
     path.to_string_lossy()
         .replace(std::path::MAIN_SEPARATOR, "/")
 }
 
-/// Extract every `#[test]`-annotated function together with its body.
-///
-/// Brace counting is deliberately simple: it is a lint over ordinary test code,
-/// not a Rust parser. Braces inside string literals are ignored so a test that
-/// asserts on JSON text does not truncate the body.
-fn test_functions(source: &str) -> Vec<TestFunction> {
-    let bytes: Vec<char> = source.chars().collect();
-    let mut functions = Vec::new();
-    let mut index = 0;
+fn is_test(function: &ItemFn) -> bool {
+    function
+        .attrs
+        .iter()
+        .any(|attribute| attribute.path().is_ident("test"))
+}
 
-    while let Some(found) = source[index..].find("#[test]") {
-        let attribute_at = index + found;
-        let Some(fn_at) = source[attribute_at..].find("fn ") else {
-            break;
-        };
-        let fn_at = attribute_at + fn_at + "fn ".len();
-        let name: String = source[fn_at..]
-            .chars()
-            .take_while(|character| character.is_alphanumeric() || *character == '_')
-            .collect();
-        let Some(open_at) = source[fn_at..].find('{') else {
-            break;
-        };
-        let open_at = fn_at + open_at;
-        let start = source[..open_at].chars().count();
-        let mut depth = 0_usize;
-        let mut position = start;
-        let mut in_string = false;
-        let mut escaped = false;
-        let mut end = bytes.len();
-
-        while position < bytes.len() {
-            let character = bytes[position];
-            if in_string {
-                if escaped {
-                    escaped = false;
-                } else if character == '\\' {
-                    escaped = true;
-                } else if character == '"' {
-                    in_string = false;
-                }
-            } else if character == '"' {
-                in_string = true;
-            } else if character == '{' {
-                depth += 1;
-            } else if character == '}' {
-                depth -= 1;
-                if depth == 0 {
-                    end = position;
-                    break;
-                }
+fn pattern_names(pattern: &Pat, names: &mut BTreeSet<String>) {
+    match pattern {
+        Pat::Ident(identifier) => {
+            names.insert(identifier.ident.to_string());
+        }
+        Pat::Reference(reference) => pattern_names(&reference.pat, names),
+        Pat::Tuple(tuple) => {
+            for element in &tuple.elems {
+                pattern_names(element, names);
             }
-            position += 1;
+        }
+        Pat::TupleStruct(tuple) => {
+            for element in &tuple.elems {
+                pattern_names(element, names);
+            }
+        }
+        Pat::Struct(structure) => {
+            for field in &structure.fields {
+                pattern_names(&field.pat, names);
+            }
+        }
+        Pat::Slice(slice) => {
+            for element in &slice.elems {
+                pattern_names(element, names);
+            }
+        }
+        Pat::Type(typed) => pattern_names(&typed.pat, names),
+        _ => {}
+    }
+}
+
+struct AnswerReference<'a> {
+    aliases: &'a BTreeSet<String>,
+    found: bool,
+}
+
+impl<'ast> Visit<'ast> for AnswerReference<'_> {
+    fn visit_expr_field(&mut self, field: &'ast syn::ExprField) {
+        if matches!(&field.member, syn::Member::Named(name) if name == "answer") {
+            self.found = true;
+            return;
+        }
+        if matches!(field.base.as_ref(), Expr::Field(inner)
+            if matches!(&inner.member, syn::Member::Named(name) if name == "answer"))
+        {
+            // `execution.answer.sources` names a structured search result, not
+            // the user-visible answer text governed by this documentation
+            // gate. A textual answer may be a terminal value or a receiver of
+            // string methods, but it has no Rust fields of its own.
+            return;
+        }
+        visit::visit_expr_field(self, field);
+    }
+
+    fn visit_expr_path(&mut self, path: &'ast syn::ExprPath) {
+        if path.qself.is_none()
+            && path.path.segments.len() == 1
+            && self
+                .aliases
+                .contains(&path.path.segments[0].ident.to_string())
+        {
+            self.found = true;
+            return;
+        }
+        visit::visit_expr_path(self, path);
+    }
+
+    fn visit_expr_macro(&mut self, _expression: &'ast ExprMacro) {
+        // Macro arguments are classified by AnswerAudit. In particular,
+        // formatting-only arguments must not turn an intent assertion into an
+        // answer assertion.
+    }
+}
+
+fn refers_to_answer(expression: &Expr, aliases: &BTreeSet<String>) -> bool {
+    let mut reference = AnswerReference {
+        aliases,
+        found: false,
+    };
+    reference.visit_expr(expression);
+    reference.found
+}
+
+fn exact_membership(expression: &Expr, aliases: &BTreeSet<String>) -> bool {
+    match expression {
+        Expr::MethodCall(call) if call.method == "contains" => {
+            !refers_to_answer(&call.receiver, aliases)
+                && call
+                    .args
+                    .iter()
+                    .any(|argument| refers_to_answer(argument, aliases))
+        }
+        Expr::Paren(parenthesized) => exact_membership(&parenthesized.expr, aliases),
+        Expr::Group(group) => exact_membership(&group.expr, aliases),
+        Expr::Unary(unary) => exact_membership(&unary.expr, aliases),
+        Expr::Binary(binary) => {
+            matches!(binary.op, syn::BinOp::Eq(_))
+                && (refers_to_answer(&binary.left, aliases)
+                    ^ refers_to_answer(&binary.right, aliases))
+        }
+        _ => false,
+    }
+}
+
+#[derive(Default)]
+struct AnswerAudit {
+    aliases: BTreeSet<String>,
+    asserted: bool,
+    exact: bool,
+}
+
+impl AnswerAudit {
+    fn audit_assertion(&mut self, expression: &Macro) {
+        let Some(name) = expression
+            .path
+            .segments
+            .last()
+            .map(|segment| segment.ident.to_string())
+        else {
+            return;
+        };
+        if !matches!(
+            name.as_str(),
+            "assert"
+                | "debug_assert"
+                | "assert_eq"
+                | "debug_assert_eq"
+                | "assert_ne"
+                | "debug_assert_ne"
+        ) {
+            return;
+        }
+        let Ok(arguments) =
+            Punctuated::<Expr, Token![,]>::parse_terminated.parse2(expression.tokens.clone())
+        else {
+            return;
+        };
+        let arguments: Vec<&Expr> = arguments.iter().collect();
+        let Some(first) = arguments.first().copied() else {
+            return;
+        };
+
+        if matches!(name.as_str(), "assert" | "debug_assert") {
+            if refers_to_answer(first, &self.aliases) {
+                self.asserted = true;
+                self.exact |= exact_membership(first, &self.aliases);
+            }
+            return;
         }
 
-        let body: String = bytes[start..end.min(bytes.len())].iter().collect();
-        index = attribute_at + "#[test]".len();
-        if !name.is_empty() {
-            index = index.max(fn_at + name.len());
-            functions.push(TestFunction { name, body });
+        let Some(second) = arguments.get(1).copied() else {
+            return;
+        };
+        let first_is_answer = refers_to_answer(first, &self.aliases);
+        let second_is_answer = refers_to_answer(second, &self.aliases);
+        if first_is_answer || second_is_answer {
+            self.asserted = true;
+            if matches!(name.as_str(), "assert_eq" | "debug_assert_eq") {
+                // Equality documents the answer only when exactly one operand
+                // is the answer and the other is an explicit expectation.
+                // Comparing two dynamic answers proves parity but shows a
+                // reader neither answer; diagnostic arguments are not semantic
+                // operands at all.
+                self.exact |= first_is_answer ^ second_is_answer;
+            }
+        }
+    }
+}
+
+impl<'ast> Visit<'ast> for AnswerAudit {
+    fn visit_local(&mut self, local: &'ast Local) {
+        if let Some(initializer) = &local.init {
+            let answer_value = refers_to_answer(&initializer.expr, &self.aliases);
+            self.visit_expr(&initializer.expr);
+            if answer_value {
+                pattern_names(&local.pat, &mut self.aliases);
+            }
+            if let Some((_else_token, diverge)) = &initializer.diverge {
+                self.visit_expr(diverge);
+            }
         }
     }
 
-    functions
+    fn visit_expr_macro(&mut self, expression: &'ast ExprMacro) {
+        self.audit_assertion(&expression.mac);
+    }
+
+    fn visit_macro(&mut self, expression: &'ast Macro) {
+        self.audit_assertion(expression);
+    }
 }
 
-/// Strip `//` line comments so a commented-out `assert_eq!` never counts as
-/// evidence and prose in a doc comment never triggers the lint.
-fn strip_line_comments(body: &str) -> String {
-    body.lines()
-        .map(|line| match line.find("//") {
-            Some(at) if line[..at].matches('"').count() % 2 == 0 => &line[..at],
-            _ => line,
-        })
-        .collect::<Vec<_>>()
-        .join("\n")
-}
-
-/// Does this test assert on an engine answer at all?
-fn asserts_on_answer(body: &str) -> bool {
-    body.contains(".answer")
-}
-
-/// Does this test show the exact answer text a reader can learn from?
-///
-/// Two accepted forms, both from R234-2: a single exact answer
-/// (`assert_eq!(response.answer, "…")`) or an explicit list of exact
-/// possibilities the answer must be one of.
-fn has_exact_answer_assertion(body: &str) -> bool {
-    body.split("assert_eq!").skip(1).any(|argument| {
-        let head = argument.split(");").next().unwrap_or(argument);
-        head.contains(".answer")
-    }) || body.split(".contains(").skip(1).any(|argument| {
-        let head = argument.split(')').next().unwrap_or(argument);
-        // `EXPECTED.contains(&response.answer …)` — membership of the whole
-        // answer in an explicit list, not `answer.contains("substring")`.
-        head.contains(".answer")
-    })
+fn collect_test_entries(relative_path: &str, items: &[Item], entries: &mut Vec<Entry>) {
+    for item in items {
+        match item {
+            Item::Fn(function) if is_test(function) => {
+                let mut audit = AnswerAudit::default();
+                audit.visit_block(&function.block);
+                if audit.asserted && !audit.exact {
+                    entries.push(Entry {
+                        file: relative_path.to_string(),
+                        test: function.sig.ident.to_string(),
+                    });
+                }
+            }
+            Item::Mod(module) => {
+                if let Some((_brace, items)) = &module.content {
+                    collect_test_entries(relative_path, items, entries);
+                }
+            }
+            _ => {}
+        }
+    }
 }
 
 fn scan_file(relative_path: &str, source: &str) -> Vec<Entry> {
-    test_functions(source)
-        .into_iter()
-        .filter_map(|function| {
-            let body = strip_line_comments(&function.body);
-            (asserts_on_answer(&body) && !has_exact_answer_assertion(&body)).then(|| Entry {
-                file: relative_path.to_string(),
-                test: function.name,
-            })
-        })
-        .collect()
+    let syntax = syn::parse_file(source)
+        .unwrap_or_else(|error| panic!("{relative_path} must parse as Rust: {error}"));
+    let mut entries = Vec::new();
+    collect_test_entries(relative_path, &syntax.items, &mut entries);
+    entries
 }
 
 #[cfg_attr(test, allow(dead_code))]
@@ -345,7 +461,7 @@ fn main() {
 
     if difference.is_clean() {
         println!(
-            "All {} behavioural tests outside the burn-down allowlist show exact answers\n",
+            "All loose-only behavioural tests are tracked in the {}-row burn-down allowlist; every other answer assertion is exact\n",
             found.len()
         );
         exit(0);
@@ -403,7 +519,10 @@ fn assistant_name_answer_is_one_of_the_documented_variations() {
 
     #[test]
     fn exact_answer_assertion_passes() {
-        assert_eq!(scan_file("tests/unit/assistant_name.rs", EXACT_TEST), vec![]);
+        assert_eq!(
+            scan_file("tests/unit/assistant_name.rs", EXACT_TEST),
+            vec![]
+        );
     }
 
     /// "The answer should be one of multiple possibilities" — an explicit list
@@ -428,6 +547,121 @@ fn roles_registry_is_sorted() {
 "#;
 
         assert_eq!(scan_file("tests/unit/roles.rs", source), vec![]);
+    }
+
+    #[test]
+    fn answer_method_calls_and_answer_changed_helpers_are_not_answer_fields() {
+        let source = r#"
+#[test]
+fn route_only() {
+    let response = FormalAiEngine.answer("hello");
+    assert_eq!(response.intent, "greeting");
+}
+
+#[test]
+fn measured_delta() {
+    assert!(delta.answer_changed());
+}
+"#;
+
+        assert_eq!(scan_file("tests/unit/routes.rs", source), vec![]);
+    }
+
+    #[test]
+    fn formatting_arguments_are_not_semantic_assertion_operands() {
+        let source = r#"
+#[test]
+fn route_with_answer_diagnostic() {
+    let response = engine.solve("Find y: 7 * y = 84");
+    assert_eq!(
+        response.intent,
+        "verifiable_task",
+        "unexpected answer: {}",
+        response.answer,
+    );
+}
+"#;
+
+        assert_eq!(scan_file("tests/unit/routes.rs", source), vec![]);
+    }
+
+    #[test]
+    fn answer_reads_without_answer_assertions_are_ignored() {
+        let source = r#"
+#[test]
+fn records_an_answer_for_later_inspection() {
+    let answer = engine.solve("hello").answer;
+    write_fixture(answer);
+    assert!(fixture_exists());
+}
+"#;
+
+        assert_eq!(scan_file("tests/unit/routes.rs", source), vec![]);
+    }
+
+    #[test]
+    fn nested_structured_answer_fields_are_not_user_visible_answer_text() {
+        let source = r#"
+#[test]
+fn checks_ranked_sources() {
+    assert!(execution.answer.sources.iter().all(|source| source.rank > 0));
+}
+"#;
+
+        assert_eq!(scan_file("tests/unit/search.rs", source), vec![]);
+    }
+
+    #[test]
+    fn answer_in_a_diagnostic_does_not_fake_an_exact_answer() {
+        let source = r#"
+#[test]
+fn route_and_loose_answer() {
+    let response = engine.solve("hello");
+    assert!(response.answer.contains("formal"));
+    assert_eq!(response.intent, "greeting", "got {}", response.answer);
+}
+"#;
+
+        assert_eq!(
+            scan_file("tests/unit/routes.rs", source),
+            vec![Entry {
+                file: "tests/unit/routes.rs".to_string(),
+                test: "route_and_loose_answer".to_string(),
+            }]
+        );
+    }
+
+    #[test]
+    fn exact_answer_through_a_local_alias_passes() {
+        let source = r#"
+#[test]
+fn exact_alias() {
+    let answer = engine.solve("hello").answer;
+    assert_eq!(answer.trim(), "I am formal AI.");
+}
+"#;
+
+        assert_eq!(scan_file("tests/unit/answers.rs", source), vec![]);
+    }
+
+    #[test]
+    fn comparing_two_dynamic_answers_does_not_document_either_answer() {
+        let source = r#"
+#[test]
+fn parity_only() {
+    let first = engine.solve("hello").answer;
+    let second = engine.solve("hello again").answer;
+    assert_eq!(first, second);
+}
+"#;
+
+        assert_eq!(
+            scan_file("tests/unit/answers.rs", source),
+            vec![Entry {
+                file: "tests/unit/answers.rs".to_string(),
+                test: "parity_only".to_string(),
+            }]
+        );
     }
 
     #[test]
@@ -466,18 +700,22 @@ fn json_answer_is_exact() {
 
     #[test]
     fn all_test_functions_in_a_file_are_scanned() {
-        let source = format!("{LOOSE_TEST}{EXACT_TEST}");
-
-        let names: Vec<String> = test_functions(&source)
-            .into_iter()
-            .map(|function| function.name)
-            .collect();
-
+        let second = LOOSE_TEST.replace(
+            "reported_russian_name_question_is_answered",
+            "a_second_loose_answer",
+        );
+        let source = format!("{LOOSE_TEST}{second}{EXACT_TEST}");
         assert_eq!(
-            names,
+            scan_file("tests/unit/all.rs", &source),
             vec![
-                "reported_russian_name_question_is_answered".to_string(),
-                "assistant_name_answer_is_shown_verbatim".to_string(),
+                Entry {
+                    file: "tests/unit/all.rs".to_string(),
+                    test: "reported_russian_name_question_is_answered".to_string(),
+                },
+                Entry {
+                    file: "tests/unit/all.rs".to_string(),
+                    test: "a_second_loose_answer".to_string(),
+                },
             ]
         );
     }

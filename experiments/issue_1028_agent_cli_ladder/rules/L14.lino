@@ -1,6 +1,6 @@
 link_edit
   leaf L14
-  path src/world_model_dialog.rs
+  path rust/src/world_model_dialog.rs
   language rust
   rule replace_literal
     old "world_sync_root"

@@ -1,0 +1,48 @@
+Q2630860
+  aliases
+    en ("Seïm" Sejm)
+    es ("Comisariado Transcaucasico")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q15180
+              numeric-id 15180
+          hash 07fa6eb2d1e5f1c75fc204938373173411385a84
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "interim government in Transcaucasia"
+    ru "Временное коалиционное правительство"
+  id Q2630860
+  labels
+    en "Transcaucasian Commissariat"
+    es "Comisariado Transcaucásico"
+    ru "Закавказский комиссариат"
+    zh "外高加索委員部"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Transcaucasian Commissariat"
+    eswiki
+      site eswiki
+      title "Comisariado Transcaucásico"
+    ruwiki
+      site ruwiki
+      title "Закавказский комиссариат"
+    zhwiki
+      site zhwiki
+      title "外高加索委員部"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

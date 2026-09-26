@@ -12,7 +12,7 @@ instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
 Fourteen recipes are grounded today. The **recursive core** (issue #559) is the
-general algorithm every prompt walks; the other twelve encode a topic handler, a
+general algorithm every prompt walks; the other thirteen encode a topic handler, a
 self-directed loop, a reasoning obligation, or a codebase-hygiene procedure on
 top of it:
 
@@ -27,22 +27,39 @@ top of it:
 | [`dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) | #540 | Idle memory maintenance and self-generalization |
 | [`budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) | #662 | Budget-driven search recognition and gated skill proposals |
 | [`links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino) | #664 | Keeping every public surface a links network, not a graph |
-| [`computer-use-recipe.lino`](../data/meta/computer-use-recipe.lino) | #707 | The audited computer-use primitive loop (grounded by `tests/unit/specification/computer_use_meta_algorithm.rs`) |
-| [`grounded-action-recipe.lino`](../data/meta/grounded-action-recipe.lino) | #840 | Grounding requested actions in observed effects (grounded by `tests/unit/specification/grounded_action_meta_algorithm.rs`) |
-| [`draft-portfolio-recipe.lino`](../data/meta/draft-portfolio-recipe.lino) | #704 | The k-draft portfolio loop behind `--draft-count` (grounded by `tests/unit/issue_704.rs`) |
-| [`reasoning-standard-recipe.lino`](../data/meta/reasoning-standard-recipe.lino) | #1073 | The unconditional reasoning-depth audit — seven gates over every request (grounded by `tests/unit/specification/reasoning_standard_meta_algorithm.rs`) |
-| [`coding-discovery-recipe.lino`](../data/meta/coding-discovery-recipe.lino) | #710 continuation | Dynamic coding discovery from licensed parts through bounded verification (grounded by `tests/unit/specification/coding_discovery_meta_algorithm.rs`) |
+| [`computer-use-recipe.lino`](../data/meta/computer-use-recipe.lino) | #707 | The audited computer-use primitive loop (grounded by `rust/tests/unit/specification/computer_use_meta_algorithm.rs`) |
+| [`grounded-action-recipe.lino`](../data/meta/grounded-action-recipe.lino) | #840 | Grounding requested actions in observed effects (grounded by `rust/tests/unit/specification/grounded_action_meta_algorithm.rs`) |
+| [`draft-portfolio-recipe.lino`](../data/meta/draft-portfolio-recipe.lino) | #704 | The k-draft portfolio loop behind `--draft-count` (grounded by `rust/tests/unit/issue_704.rs`) |
+| [`reasoning-standard-recipe.lino`](../data/meta/reasoning-standard-recipe.lino) | #1073 | The unconditional reasoning-depth audit — seven gates over every request (grounded by `rust/tests/unit/specification/reasoning_standard_meta_algorithm.rs`) |
+| [`coding-discovery-recipe.lino`](../data/meta/coding-discovery-recipe.lino) | #710 continuation | Dynamic coding discovery from licensed parts through bounded verification (grounded by `rust/tests/unit/specification/coding_discovery_meta_algorithm.rs`) |
 
 The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
 (cue sets, route/method aliases, repair cases, the self-AST census, …) that the
-recipes and handlers read — they are data, not recipes.
+recipes and handlers read — they are data, not recipes. Four of them are the
+numeric authority for the project's live claims, and prose that quotes a
+number must agree with them: `data/meta/debt-ratchet.lino` (shrink-only
+ceilings on named debt), `data/meta/core-boundary-ledger.lino` (the recursive
+handler sources outside the minimal core), `data/meta/ladder-ratchet.lino`
+(the coding-ladder record), and `data/meta/self-hosting-ledger.lino` (the
+release metric).
+
+The meta language is also the pivot between the three source roots: since
+2026-09-24 (plan 16, R992-R996) translation between any two of rust, js, ts
+and meta is a product, not an aspiration — the library function
+`formal_ai::meta_translate::translate` and the `formal-ai translate`
+subcommand dispatch every direction through the pivot, with `rust → meta`
+live (the self-AST projection behind
+[`data/meta/self-ast/`](../data/meta/self-ast/)) and every unmaterialized leg
+naming the plan-16 leaf that owes it. The full-backend js/ts parity migration
+that turns this into the js-first development cycle is tracked in
+[plan 16](case-studies/issue-1138/plans/16-js-ts-rust-cycle.md).
 
 ## Why a recipe, not just code
 
 The recipe names every part the handler is made of — seed roles, handler
 functions, evidence stages, JS parity targets, the external-service toggle, and
 the benchmark — plus the eight ordered steps that generalise to any topic. A
-test suite, [`tests/unit/specification/meta_algorithm.rs`](../tests/unit/specification/meta_algorithm.rs),
+test suite, [`rust/tests/unit/specification/meta_algorithm.rs`](../rust/tests/unit/specification/meta_algorithm.rs),
 loads the recipe and asserts the **real source still matches** every entry. If
 the recipe and the code drift apart, CI fails. So the recipe is always an
 accurate, executable description of how the code was produced — never stale
@@ -59,7 +76,7 @@ instantiate every step in order:
    language as slot-marked forms (prefix `how to …`, suffix `… по шагам`,
    circumfix `how … works`, or bare). Surfaces are data, not code.
 2. **Expose stable `ROLE_*` constants.** Each meaning role gets a constant in
-   `src/seed/roles/intent.rs`; its string value equals the seed `role`.
+   `rust/src/seed/roles/intent.rs`; its string value equals the seed `role`.
 3. **Recognise by meaning, not by phrase table.** Recognisers query
    `seed::lexicon().meanings_with_role(..)` / `role_word_forms(..)`. No
    per-language phrase list ever lives in Rust (the issue #386 convention).
@@ -78,7 +95,7 @@ instantiate every step in order:
    (opt-out model). The UI reads the toggle; the worker skips the live fetch when
    it is `false`.
 7. **Mirror the handler in the JS worker.** Reproduce each Rust handler as a JS
-   function in `src/web/formal_ai_worker.js` so the WASM/browser surface stays in
+   function in `js/worker/formal_ai_worker.js` so the WASM/browser surface stays in
    parity (R15). Evidence ordering matches byte-for-byte on the default path.
 8. **Pin behaviour with a ratcheted benchmark.** Add a permissive-license slice
    with upstream-derived and held-out cases under `data/benchmarks/`, plus a
@@ -89,8 +106,8 @@ instantiate every step in order:
 | Recipe record | Count | Grounded against |
 | --- | --- | --- |
 | `meta_step` | 8 | ordering 1..8 is contiguous |
-| `meta_role` | 11 | `pub const ROLE_* = "<role>"` in `src/seed/roles/intent.rs` **and** `role <role>` in `data/seed/meanings-how.lino` |
-| `meta_function` | 8 | `fn <name>` in `src/solver_handler_how.rs` |
+| `meta_role` | 11 | `pub const ROLE_* = "<role>"` in `rust/src/seed/roles/intent.rs` **and** `role <role>` in `data/seed/meanings-how.lino` |
+| `meta_function` | 8 | `fn <name>` in `rust/src/solver_handler_how.rs` |
 | `meta_stage` | 6 | each stage literal emitted in the handler; ordering 1..6 contiguous |
 | `meta_parity` | 4 | `fn <rust>` in Rust **and** `function <js>` in the worker |
 | `meta_external_service` | 1 | `source` + `settings_key` in `data/seed/sources-registry.lino` |
@@ -100,7 +117,7 @@ instantiate every step in order:
 
 ```sh
 # Verify the recipe still matches the live source (the grounding suite):
-cargo test --test unit specification::meta_algorithm -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit specification::meta_algorithm -- --nocapture
 ```
 
 ## Generalising to a new topic
@@ -110,7 +127,7 @@ cargo test --test unit specification::meta_algorithm -- --nocapture
 2. Work the eight steps in order, filling in the roles, functions, stages,
    parity targets, services, and benchmark you declared.
 3. Add a grounding test for the new recipe modelled on
-   `tests/unit/specification/meta_algorithm.rs` (or parameterise it over every
+   `rust/tests/unit/specification/meta_algorithm.rs` (or parameterise it over every
    `data/meta/*-recipe.lino`).
 
 Because the recipe is checked against the source, the handler and its recipe can
@@ -126,16 +143,16 @@ that describes the meta algorithm itself, which is why R335 requires it to be
 grounded data rather than prose. It lives at
 [`data/meta/recursive-core-recipe.lino`](../data/meta/recursive-core-recipe.lino)
 and is grounded by
-[`tests/unit/specification/recursive_core_recipe.rs`](../tests/unit/specification/recursive_core_recipe.rs).
+[`rust/tests/unit/specification/recursive_core_recipe.rs`](../rust/tests/unit/specification/recursive_core_recipe.rs).
 
 Two properties make it different from the topic recipes. First, it is
-**executable as data**: `src/recipe_interpreter.rs` parses the `records`
+**executable as data**: `rust/src/recipe_interpreter.rs` parses the `records`
 annotation on every trace-recorded step into an ordered program and runs the
 recorder primitives in the order the data declares, and the proof obligation is
 parity — executing the recipe must reproduce, event for event, the log that
 `meta_core::record_meta_core` produces for the same input across every mode
 combination (R343). Second, it is **self-improving in proposal-only form**:
-`src/meta_self_improvement.rs` reads this recipe against the live pipeline,
+`rust/src/meta_self_improvement.rs` reads this recipe against the live pipeline,
 detects drift between the algorithm-as-data and the algorithm-as-code, and
 proposes the additions and stale-citation removals that reconcile them —
 gated `off` by default, never writing the recipe back, so adoption stays a
@@ -165,18 +182,26 @@ Each step is one `meta_step` record in the recipe:
 12. **Accumulate reusable skills and a curriculum from the outcome** —
     proposal-only, nothing auto-promoted (R342).
 
+#### What none of these loops does yet
+
+No learning loop in this document has yet changed a later answer on its own.
+Every promoted skill, recipe, or method goes through a human
+`--apply --confirm`, and the one adoption proven end to end remains the #701
+opener class. Proposal-only is the design until a run earns otherwise
+(issue #1138 B7).
+
 ### What the recipe records
 
 | Recipe record | Count | Grounded against |
 | --- | --- | --- |
 | `meta_step` | 12 | ordering 1..12 is contiguous; each trace-recorded step names the recorder primitive it drives |
-| `meta_function` | 25 | `fn <name>` in the named source file (`src/meta_frame.rs`, `src/method_registry.rs`, `src/meta_reasoning.rs`, `src/meta_construction.rs`, `src/solution_evidence.rs`, `src/selection.rs`, `src/skill_ledger.rs`, `src/recipe_interpreter.rs`, …) |
+| `meta_function` | 25 | `fn <name>` in the named source file (`rust/src/meta_frame.rs`, `rust/src/method_registry.rs`, `rust/src/meta_reasoning.rs`, `rust/src/meta_construction.rs`, `rust/src/solution_evidence.rs`, `rust/src/selection.rs`, `rust/src/skill_ledger.rs`, `rust/src/recipe_interpreter.rs`, …) |
 
 ### Running it
 
 ```sh
 # Verify the recursive-core recipe still matches the live source:
-cargo test --test unit specification::recursive_core_recipe -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit specification::recursive_core_recipe -- --nocapture
 ```
 
 Because this recipe is checked against the source too — and can be executed to
@@ -193,12 +218,15 @@ framing for issue #468 was that "our Formal AI system should have enough skills
 understand errors from tools, … to actually complete the task." Its recipe lives
 at [`data/meta/agentic-coding-recipe.lino`](../data/meta/agentic-coding-recipe.lino)
 and is grounded by
-[`tests/unit/specification/agentic_meta_algorithm.rs`](../tests/unit/specification/agentic_meta_algorithm.rs).
+[`rust/tests/unit/specification/agentic_meta_algorithm.rs`](../rust/tests/unit/specification/agentic_meta_algorithm.rs).
 
 The loop is a pure, deterministic function of the conversation so far — no
-sampling, no hidden state, no neural inference (a NON-GOAL). Given the messages
-exchanged and the tool names the agentic CLI advertised, the planner decides the
-next step as a small state machine:
+sampling, no hidden state, no neural inference (a NON-GOAL). A step may observe
+that a program it needs is absent; that observation is a need, not an error, and
+the recovery sequence that follows is the same deterministic function of the
+conversation plus the observed exit code. Given the messages exchanged and the
+tool names the agentic CLI advertised, the planner decides the next step as a
+small state machine:
 
 ```text
 web_search → web_fetch → write_file(formalize) → run_command(verify) → final
@@ -209,19 +237,26 @@ capability **and** the CLI advertised a tool providing it, so the planner adapts
 to whatever subset of tools a given CLI exposes. Tool *errors* are observed: a
 fetch result that looks like an error is not trusted as source text, and the
 formalizer falls back to the canonical synopsis so the loop still completes with
-a stable, all-nine-primitive knowledge base.
+a stable, all-nine-primitive knowledge base. The fallback has a cost the
+completion report now states: the answer then describes the canonical tale
+rather than the requested task, and since issue #1138 B4 the report counts the
+needs the formalizer raised against the needs it grounded, so the fallback
+cannot pass as coverage.
 
 ### The eight steps
 
 Each step is one `meta_step` record in the recipe; instantiate them in order to
 make the Formal AI solve a new task in agentic mode:
 
-1. **Recognise the agentic task** from the latest user turn against a small
-   closed keyword set — a non-match yields `None`, so agentic coding stays
-   strictly opt-in and ordinary chat is untouched.
-2. **Pin the canonical plan as named constants** (`SEARCH_QUERY`,
-   `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered
-   literals.
+1. **Recognise the agentic task** by role from the seeded lexicon
+   (`ROLE_AGENT_ACTION_FORMALIZE_VERB`) — a non-match yields `None`, so agentic
+   coding stays strictly opt-in and ordinary chat is untouched.
+2. **Derive the plan from the task's own unresolved needs.** The source text is the
+   one the task quotes or names; the search query is built from the surfaces
+   `ConceptGraph::unresolved()` reports, not from a pinned literal. `KB_PATH`
+   remains a named constant because it is an output path, not a knowledge claim;
+   `SEARCH_QUERY` and `CANONICAL_SOURCE_URL` remain only as the regression
+   fixture's source for the canonical tale.
 3. **Classify advertised tools into capabilities** (`Search`/`Fetch`/`Write`/
    `Run`) by substring, mirroring agentic-CLI naming so any CLI's tool set maps.
 4. **Plan each step as a pure function of history** — the state machine above,
@@ -244,24 +279,119 @@ make the Formal AI solve a new task in agentic mode:
 | Recipe record | Count | Grounded against |
 | --- | --- | --- |
 | `meta_step` | 8 | ordering 1..8 is contiguous; each `seed_file` exists |
-| `meta_constant` | 3 | `pub const <name>: &str` in `src/agentic_coding/formalization_recipe.rs` |
-| `meta_tool` | 4 | `"<tool>"` in `DRIVER_TOOLS`, `Capability::<cap>` in the planner, and the `"<permission>"` / package name in `src/associative_package.rs` |
-| `meta_stage` | 5 | `Step <n>:` markers in `src/agentic_coding/formalization_recipe.rs`; ordering 1..5 contiguous |
+| `meta_constant` | 1 | `pub const <name>: &str` in `rust/src/agentic_coding/formalization_recipe.rs` |
+| `meta_tool` | 4 | `"<tool>"` in `DRIVER_TOOLS`, `Capability::<cap>` in the planner, and the `"<permission>"` / package name in `rust/src/associative_package.rs` |
+| `meta_stage` | 5 | `Step <n>:` markers in `rust/src/agentic_coding/formalization_recipe.rs`; ordering 1..5 contiguous |
 | `meta_function` | 14 | `fn <name>` in the named source file |
-| `meta_primitive` | 9 | each appears in `PRIMITIVE_KINDS` in `src/agentic_coding/formalize.rs`; ordering 1..9 contiguous |
-| `meta_bound` | 1 | `const MAX_TURNS: usize = 12;` in `src/agentic_coding/driver.rs` |
+| `meta_primitive` | 9 | each appears in `PRIMITIVE_KINDS` in `rust/src/agentic_coding/formalize.rs`; ordering 1..9 contiguous |
+| `meta_bound` | 1 | `const MAX_TURNS: usize = 12;` in `rust/src/agentic_coding/driver.rs` |
 | `meta_surface` | 3 | the CLI subcommand, the example, and the integration test each contain their `needle` |
+
+Nine kinds are *declared*; how many are *observed* depends on the document, and the
+report states the observed number (`data/seed/meanings-formalization-report.lino`).
+Since issue #1138 B4 the report also states how many of the needs the formalizer
+raised were grounded, so a document cannot be reported as covered while a need is
+unresolved.
 
 ### Running it
 
 ```sh
 # Verify the agentic recipe still matches the live source:
-cargo test --test unit specification::agentic_meta_algorithm -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit specification::agentic_meta_algorithm -- --nocapture
 ```
 
 Because this recipe is checked against the source too, the agentic loop and its
 recipe can never silently diverge — the loop is itself a reproducible artifact of
 the meta-algorithm.
+
+## The deep-formalization meta-algorithm (issue #1138 B4)
+
+The agentic loop above formalizes a document the nine primitives can reach, but
+issue #1138 B4 asks for depth: every surface, relation and procedure the
+formalizer cannot ground must become an explicit **need** — with its exact source
+span and an origin — and each need must be put to the trusted sources before the
+report may claim coverage. The recipe for that depth pass lives at
+[`data/meta/formalization-depth-recipe.lino`](../data/meta/formalization-depth-recipe.lino)
+and is grounded by
+[`rust/tests/unit/specification/formalization_depth_meta_algorithm.rs`](../rust/tests/unit/specification/formalization_depth_meta_algorithm.rs);
+the agent-process integration probes live in
+[`rust/tests/integration/issue_1138_formalization_agent.rs`](../rust/tests/integration/issue_1138_formalization_agent.rs).
+
+The pass composes six grounded steps
+(`rust/src/formalization/needs.rs`, `rust/src/concept_lookup.rs`,
+`rust/src/formalization/procedures.rs`, `rust/src/formalization/concept_links.rs`):
+
+1. **Segment** the document script-aware, so every segment span selects exactly
+   its own text in every supported script.
+2. **Emit a need** for each surface, relation or procedure the formalizer cannot
+   ground — never silently keep it as a covered primitive.
+3. **Satisfy needs through the issue #1138 B1 registry lookup**, replaying
+   content-addressed captures offline; the retrieved gloss is itself
+   formalized, bounded by a declared concept depth.
+4. **Ground concepts with provenance** — a grounded result is a concept,
+   predicate, entity or procedure link carrying source id, URL, sha256 and
+   license, never a stored sentence.
+5. **Extract procedures** from step-shaped sources into
+   `ExtractedProcedure::to_coding_procedure_source`, which enters the procedure
+   ledger only through the existing bounded execution and named review gate.
+6. **Report honestly** — `formalize_deeply` yields one concept graph whose
+   identity is stable across en, ru, hi, zh and es on the held-out corpus, and
+   the agent answer states `needs_raised` and `needs_grounded` before the
+   knowledge base it shows.
+
+In the agentic loop the pass runs whenever the nine-primitive formalizer raised
+needs; the written knowledge base then carries the concept-graph block, and a
+need no captured source answers is reported unsatisfiable rather than covered.
+The canonical tale raises no needs, so its knowledge base stays byte-identical
+with the shallow pass.
+
+```sh
+# Verify the deep-formalization recipe still matches the live source:
+cargo test --manifest-path rust/Cargo.toml --test unit specification::formalization_depth
+# Verify the loop grounds a held-out requirement through a real agent process:
+cargo test --manifest-path rust/Cargo.toml --test integration issue_1138_formalization_agent
+```
+
+## The prerequisite-discovery meta-algorithm (issue #1138 B6)
+
+`data/meta/prerequisite-recipe.lino` is the executable, reviewable authority for
+turning an observed missing executable into a consent-bounded recovery. It is a
+general procedure over a program, platform, publisher, workspace and observed
+postcondition; compiler names and benchmark cases are inputs rather than Rust
+branches.
+
+1. Bind the failure to the exact prior call; distinguish missing, denied and
+   ordinary nonzero exits (`rust/src/prerequisite/mod.rs`).
+2. Observe the host platform and dependencies instead of inferring them from
+   the requested language (`rust/src/prerequisite/mod.rs`).
+3. Walk registered sources to the publisher authoritative for that program,
+   recording lookalikes and exhaustion (`rust/src/prerequisite/publisher.rs`).
+4. Formalize publisher bytes into typed exact-argv steps plus a mandatory
+   postcondition; retrieved prose is never executed
+   (`rust/src/prerequisite/publisher.rs`).
+5. Require a per-program grant and confine every write to the workspace
+   (`rust/src/prerequisite/install.rs`).
+6. Lower only explicitly permitted process and network capabilities, refusing
+   digest, path or disk violations before execution
+   (`rust/src/prerequisite/install.rs`).
+7. Re-probe, then retry the original step only after the observed postcondition
+   is present (`rust/src/prerequisite/mod.rs`).
+8. Retain the source, content id, probe and observed version in the append-only
+   reconstruction ledger; installed payload bytes remain disposable
+   (`rust/src/prerequisite/ledger.rs`).
+
+| Recipe record | Count | Grounded against |
+| --- | --- | --- |
+| `meta_recipe` | 1 | issue `1138`, topic `prerequisite_discovery` |
+| `meta_step` | 8 | orders 1..8 are contiguous; every `source_file` exists |
+| typed setup step | variable | exact `program` + repeated `argument`; explicit write scope, network need and optional digest |
+| postcondition | 1 per procedure | `ToolchainProbe` for the program the procedure claims to install |
+| evidence | every probe and process | command/argv, exit status and observed-byte hash |
+
+The grounding and forget/rediscover invariant are executable in
+`rust/tests/unit/specification/prerequisite_recipe.rs`; live network or Docker
+availability is recorded separately and never inferred from that structural
+test.
 
 ## The response-language follow-up meta-algorithm (issue #556)
 
@@ -275,7 +405,7 @@ with "all meanings … grounded in external data sources" and "every finest deta
 … tested". Its recipe lives at
 [`data/meta/response-language-followup-recipe.lino`](../data/meta/response-language-followup-recipe.lino)
 and is grounded by
-[`tests/unit/specification/response_language_meta_algorithm.rs`](../tests/unit/specification/response_language_meta_algorithm.rs).
+[`rust/tests/unit/specification/response_language_meta_algorithm.rs`](../rust/tests/unit/specification/response_language_meta_algorithm.rs).
 
 The key move is that a bare turn such as *"I do not understand English, write in
 Russian"* is **not a new question** — it asks the assistant to re-answer the
@@ -323,10 +453,10 @@ add any *re-answer the previous turn under a new constraint* behaviour:
 | Recipe record | Grounded against |
 | --- | --- |
 | `meta_step` | ordering 1..8 is contiguous; each `seed_file` exists |
-| `meta_role` | `pub const <CONST>: &str = "<role>";` in `src/seed/roles/language.rs` and `role <role>` in the seed |
+| `meta_role` | `pub const <CONST>: &str = "<role>";` in `rust/src/seed/roles/language.rs` and `role <role>` in the seed |
 | `meta_grounding` | a cached Wikidata entity at `data/cache/wikidata/entity/Q<id>.lino`, and the Q-id present in the seed |
 | `meta_function` | `fn <name>` in the named source file |
-| `meta_seam` | the forced-language token in both `src/language.rs` and the JS worker |
+| `meta_seam` | the forced-language token in both `rust/src/language.rs` and the JS worker |
 | `meta_parity` | `fn <rust>` in Rust and `function <js>` in the JS worker |
 | `meta_test` | the pinning test file exists and describes what it pins |
 
@@ -334,7 +464,7 @@ add any *re-answer the previous turn under a new constraint* behaviour:
 
 ```sh
 # Verify the response-language recipe still matches the live source:
-cargo test --test unit specification::response_language_meta_algorithm -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit specification::response_language_meta_algorithm -- --nocapture
 ```
 
 Because this recipe is checked against the source too, the response-language
@@ -359,7 +489,7 @@ their original content", and ignoring "any unoriginal content or reposting",
 with "every finest detail … tested". Its recipe lives at
 [`data/meta/document-verification-recipe.lino`](../data/meta/document-verification-recipe.lino)
 and is grounded by
-[`tests/unit/specification/document_verification_meta_algorithm.rs`](../tests/unit/specification/document_verification_meta_algorithm.rs).
+[`rust/tests/unit/specification/document_verification_meta_algorithm.rs`](../rust/tests/unit/specification/document_verification_meta_algorithm.rs).
 
 The key move is that the request is recognised **by meaning, not by phrase**: it
 asks the assistant to verify the attached document. Three seed roles must fire —
@@ -412,9 +542,9 @@ add any *verify the attached content* behaviour:
 | Recipe record | Grounded against |
 | --- | --- |
 | `meta_step` | ordering 1..8 is contiguous; each `seed_file` exists |
-| `meta_role` | `pub const <CONST>: &str = "<role>";` in `src/seed/roles/intent.rs` and `role <role>` in the seed |
+| `meta_role` | `pub const <CONST>: &str = "<role>";` in `rust/src/seed/roles/intent.rs` and `role <role>` in the seed |
 | `meta_grounding` | a cached Wikidata entity at `data/cache/wikidata/entity/Q<id>.lino`, and the Q-id present in the seed |
-| `meta_function` | `fn <name>` in the named source file; the handler is wired into `src/solver_dispatch.rs` |
+| `meta_function` | `fn <name>` in the named source file; the handler is wired into `rust/src/solver_dispatch.rs` |
 | `meta_parity` | `fn <rust>` in Rust and `function <js>` in the JS worker |
 | `meta_external_service` | `source` + `settings_key` in `data/seed/sources-registry.lino` |
 | `meta_test` | the pinning test file exists and describes what it pins |
@@ -423,7 +553,7 @@ add any *verify the attached content* behaviour:
 
 ```sh
 # Verify the document-verification recipe still matches the live source:
-cargo test --test unit specification::document_verification_meta_algorithm -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit specification::document_verification_meta_algorithm -- --nocapture
 ```
 
 Because this recipe is checked against the source too, document verification and
@@ -443,7 +573,7 @@ across assets, years, and every supported language, grounded in external data.
 Its recipe lives at
 [`data/meta/market-price-verification-recipe.lino`](../data/meta/market-price-verification-recipe.lino)
 and is grounded by
-[`tests/unit/specification/market_price_verification_meta_algorithm.rs`](../tests/unit/specification/market_price_verification_meta_algorithm.rs).
+[`rust/tests/unit/specification/market_price_verification_meta_algorithm.rs`](../rust/tests/unit/specification/market_price_verification_meta_algorithm.rs).
 
 The key move is that the check is **data-driven, not example-driven**. A single
 registry,
@@ -508,7 +638,7 @@ add any *is this numeric market claim true?* behaviour:
 
 ```sh
 # Verify the market-price-verification recipe still matches the live source:
-cargo test --test unit specification::market_price_verification_meta_algorithm -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit specification::market_price_verification_meta_algorithm -- --nocapture
 ```
 
 Because this recipe is checked against the source too, the market-price fact
@@ -532,20 +662,26 @@ can forget specifics about test runs, but our general meta algorithm must keep
 changes that allow it to solve all other tasks." Its recipe lives at
 [`data/meta/dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) and is
 grounded by
-[`tests/unit/specification/dreaming_meta_algorithm.rs`](../tests/unit/specification/dreaming_meta_algorithm.rs).
+[`rust/tests/unit/specification/dreaming_meta_algorithm.rs`](../rust/tests/unit/specification/dreaming_meta_algorithm.rs).
 
 The planner starts as one pure function, `plan_memory_dreaming`, in
-[`src/dreaming.rs`](../src/dreaming.rs): it only reads memory and proposes work,
+[`rust/src/dreaming.rs`](../rust/src/dreaming.rs): it only reads memory and proposes work,
 so planning is safe in the background. Learning follows memory links:
 multilingual cue data lifts requirements, candidate tasks are replayed against
 proposed amendments, and recurring structures are mined directly from repeated
 task records. Only exact normalized replay grants coverage. Applied amendments
 are stored as structured `meta_algorithm_amendment` events and read by
-`src/dreaming_application.rs` on later protocol requests, which makes learned
+`rust/src/dreaming_application.rs` on later protocol requests, which makes learned
 rules change future answers. Physical removal additionally requires persisted
-consent and real filesystem pressure measured by `src/storage_policy.rs`.
+consent and real filesystem pressure measured by `rust/src/storage_policy.rs`.
+Issue #705 extends the same idle boundary with a symbolic request-class Markov
+model. It expands the three highest-ranked successors from observed parameters
+and seeded lexical data, probes every member offline, forwards every gap to the
+proposal-only adoption frontier, and prelearns external sources only with fetch
+consent. An append-only ledger preserves the reason for each prediction and
+links later actual requests without inventing a non-zero hit rate.
 
-### The thirteen steps
+### The seventeen steps
 
 Each step is one `meta_step` record in the recipe; instantiate them in order to
 add any *dream about stored experience* behaviour:
@@ -572,6 +708,15 @@ add any *dream about stored experience* behaviour:
     patterns.
 13. **Run while truly idle**, yielding to foreground work and requiring a
     persisted user choice before automatic cleanup.
+14. **Predict the next formal request classes** from append-only first-order
+    transition counts with source-event and probability evidence.
+15. **Expand and probe every predicted class offline** from observed parameters,
+    meaning forms, and operation vocabulary, filing every gap on the adoption
+    frontier.
+16. **Prelearn unresolved classes behind fetch consent**, retaining source URL,
+    capture time, digest, and TTL for exact offline recall.
+17. **Persist the anticipation ledger and later hits**, so every prediction has
+    an inspectable reason and the measured hit rate may honestly remain zero.
 
 ### What the recipe records
 
@@ -586,12 +731,13 @@ add any *dream about stored experience* behaviour:
 
 ```sh
 # Verify the dreaming recipe still matches the live source:
-cargo test --test unit specification::dreaming_meta_algorithm -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit specification::dreaming_meta_algorithm -- --nocapture
 ```
 
 Because this recipe is checked against the source too, the dreaming planner and
-its recipe cannot silently diverge: replay, application, storage, consent, and
-runtime stages are all pinned to the live code.
+its recipe cannot silently diverge: replay, application, storage, consent,
+prediction, prelearning, hit accounting, and runtime stages are all pinned to
+the live code.
 
 ## The links-network terminology meta-algorithm (issue #664)
 
@@ -605,11 +751,11 @@ the thing the project *is*. Issue #664 (E45, under the #651 requirement audit)
 found the architecture already complies but the naming did not. Its recipe lives
 at [`data/meta/links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino)
 and is grounded by
-[`tests/unit/specification/links_network_terminology_meta_algorithm.rs`](../tests/unit/specification/links_network_terminology_meta_algorithm.rs).
+[`rust/tests/unit/specification/links_network_terminology_meta_algorithm.rs`](../rust/tests/unit/specification/links_network_terminology_meta_algorithm.rs).
 
 The key move is that the cleanup is **structural, not word-blocking**: only
 versioned public API route prefixes (`/v1/`, `/api/formal-ai/v1/`) and Rust
-`mod` declarations / `src/**/*.rs` file names are terminology-governed. Internal
+`mod` declarations / `rust/src/**/*.rs` file names are terminology-governed. Internal
 graph-theory identifiers (`substitution_graph`, `GraphNode`, `graphql`,
 `ideographic`) and prose are never touched, because a graph is the correct word
 for an internal graph-theory concept — it is only the *product's public links
@@ -625,15 +771,15 @@ Each step is one `meta_step` record in the recipe; instantiate them in order to
 keep any public surface a links network:
 
 1. **Add the canonical `network` route** — `handle_network_request` in
-   `src/network_endpoint.rs` serves the links-network projection under
+   `rust/src/network_endpoint.rs` serves the links-network projection under
    `/v1/network`, kept in a dedicated links-network module.
 2. **Keep the old route as a deprecated alias** — `into_deprecated_alias` flags
    `/v1/graph` with a `deprecation` header and a successor `link` to the
    canonical route, byte-identical payload otherwise.
-3. **Rename `self_source_graph` → `self_source_links`** in `src/`, updating the
-   `pub mod`/re-exports in `src/lib.rs`.
-4. **Rename `source_graph` → `source_links`** in `src/agentic_coding/`, updating
-   `src/agentic_coding/mod.rs`.
+3. **Rename `self_source_graph` → `self_source_links`** in `rust/src/`, updating the
+   `pub mod`/re-exports in `rust/src/lib.rs`.
+4. **Rename `source_graph` → `source_links`** in `rust/src/agentic_coding/`, updating
+   `rust/src/agentic_coding/mod.rs`.
 5. **Sweep UI strings to "links network view"** across web, desktop, and VS Code,
    preserving the seeded user-facing `graph` concept (issue #161) as a synonym.
 6. **Add the hygiene lint** — `scripts/check-associative-terminology.rs` blocks
@@ -659,7 +805,7 @@ keep any public surface a links network:
 
 ```sh
 # Verify the links-network terminology recipe still matches the live source:
-cargo test --test unit specification::links_network_terminology_meta_algorithm -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit specification::links_network_terminology_meta_algorithm -- --nocapture
 ```
 
 Because this recipe is checked against the source too, the associative
@@ -676,9 +822,9 @@ protocol that materializes a proposal into seed data **only** after it clears it
 benchmark ratchets, and even then only as a `.lino` seed edit written onto a
 branch — never a direct push. Draft pull requests and human review stay the outer
 gate. This section is grounded by
-[`src/promotion.rs`](../src/promotion.rs) and pinned by
-[`tests/unit/issue_656_promotion.rs`](../tests/unit/issue_656_promotion.rs) and
-[`tests/integration/issue_656_improve.rs`](../tests/integration/issue_656_improve.rs).
+[`rust/src/promotion.rs`](../rust/src/promotion.rs) and pinned by
+[`rust/tests/unit/issue_656_promotion.rs`](../rust/tests/unit/issue_656_promotion.rs) and
+[`rust/tests/integration/issue_656_improve.rs`](../rust/tests/integration/issue_656_improve.rs).
 
 The protocol runs through `formal-ai improve --promote`:
 
@@ -688,7 +834,7 @@ The protocol runs through `formal-ai improve --promote`:
    counts. Adoptable learned rules bridge into candidates through
    `promotions_from_learning_run`. Demonstration data is confined to tests and
    examples, never the CLI default.
-2. **Replay one canonical gate batch** — `src/promotion/gates.rs` executes the
+2. **Replay one canonical gate batch** — `rust/src/promotion/gates.rs` executes the
    coding-modification suite (issue #362), industry suite (issue #304), and unit
    specifications from an internal allow-list. Manifest floors and pass-rate
    policy are authoritative. Exit failure blocks every proposal; successful
@@ -737,7 +883,7 @@ formal-ai improve --promote --proposals ./open-promotions.lino \
   --apply --confirm --seed-root ./clean-git-worktree
 
 # Verify the promotion protocol end to end:
-cargo test promotion_protocol
+cargo test --manifest-path rust/Cargo.toml promotion_protocol
 ```
 
 Because proposal input cannot choose its runner, floor, rate, or result, a
@@ -755,7 +901,7 @@ promotion boundary:
 1. **Execute real recipe traces** — `RecipeProgram::execute` produces the same
    append-only `EventLog` used by the live meta core for different problem
    shapes.
-2. **Normalize stable control flow** — `src/method_learning.rs` maps event kinds
+2. **Normalize stable control flow** — `rust/src/method_learning.rs` maps event kinds
    to discovery operations. Event payloads are excluded because they carry
    prompt-specific prose and the current registry serialization.
 3. **Infer, then withhold** — issue #531's sequence compressor uses two support
@@ -781,10 +927,10 @@ replay, and rejection regression live in
 `docs/case-studies/issue-922/`.
 
 ```sh
-cargo run --example issue_922_method_learning
-cargo test --test unit issue_922_method_learning
-cargo test --test unit specification::recursive_core_recipe
-examples/issue-922-method-learning/run.sh
+cargo run --manifest-path rust/Cargo.toml --example issue_922_method_learning
+cargo test --manifest-path rust/Cargo.toml --test unit issue_922_method_learning
+cargo test --manifest-path rust/Cargo.toml --test unit specification::recursive_core_recipe
+rust/examples/issue-922-method-learning/run.sh
 ```
 
 ## The budget-driven search meta-algorithm (issue #662)
@@ -795,15 +941,15 @@ catalogued method. Issue #662 (journey F4) covers the case where neither applies
 search, and evolutionary search according to the available compute budget instead
 of giving up". This is the **budget-driven search** synthesis stage. Deterministic
 reuse and rule reasoning run first in step 7 of the loop; only when they produce no
-candidate does [`src/solver_search.rs`](../src/solver_search.rs)`::try_budget_search`
+candidate does [`rust/src/solver_search.rs`](../rust/src/solver_search.rs)`::try_budget_search`
 activate. It recognises an arithmetic-reachability problem ("combine the numbers …
 to reach TARGET"), derives its operator toolbox from the seed, and evolves candidate
 compositions against the generated equality tests as the fitness function. This
 section is grounded by
 [`data/meta/budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) and
 pinned by
-[`tests/unit/specification/budget_search_meta_algorithm.rs`](../tests/unit/specification/budget_search_meta_algorithm.rs)
-and [`tests/unit/budget_search.rs`](../tests/unit/budget_search.rs).
+[`rust/tests/unit/specification/budget_search_meta_algorithm.rs`](../rust/tests/unit/specification/budget_search_meta_algorithm.rs)
+and [`rust/tests/unit/budget_search.rs`](../rust/tests/unit/budget_search.rs).
 
 ### The nine steps
 
@@ -863,7 +1009,7 @@ FORMAL_AI_COMPUTE_BUDGET=256 formal-ai chat --prompt "…"
 formal-ai chat --compute-budget 256 --prompt "…"
 
 # Verify the budget-search recipe still matches the live source:
-cargo test budget_search
+cargo test --manifest-path rust/Cargo.toml budget_search
 ```
 
 Because recognition is by meaning and the operator toolbox is seed data, the whole
@@ -882,9 +1028,12 @@ the live implementation.
 1. **Recognise** — `task_spec::recognise` converts HumanEval, MBPP, and
    conversational prompt shapes into one language-neutral `CodingTaskSpec`
    before lexical handlers can misroute them.
-2. **Discover** — `concept_discovery::discover` maps each requirement to seeded
-   structural meanings and licensed parts from Python documentation,
-   Wikifunctions, or a previously verified procedure.
+2. **Discover** — `concept_discovery::discover_with_lookup` maps each
+   requirement to seeded structural meanings, licensed parts from Python
+   documentation, Wikifunctions, or a previously verified procedure, and —
+   since issue #1138 B1 — asks the trusted sources what any word outside
+   `data/seed/meanings-coding-structure.lino` means instead of leaving it
+   unresolved; a surface the sources cannot ground becomes an explicit need.
 3. **Compose** — `composition::compose` constructs candidate Python programs
    from those parts without consulting a benchmark case id or entry-point table.
 4. **Verify** — `AgentWorkspace::run_command` executes generated assertions in
@@ -901,6 +1050,6 @@ a generated solution. Live source access is explicit (`benchmark run --online`)
 and offline replay remains deterministic.
 
 ```sh
-cargo test --test unit specification::coding_discovery_meta_algorithm
-cargo test --test unit coding_discovery
+cargo test --manifest-path rust/Cargo.toml --test unit specification::coding_discovery_meta_algorithm
+cargo test --manifest-path rust/Cargo.toml --test unit coding_discovery
 ```

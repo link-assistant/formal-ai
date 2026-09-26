@@ -1,18 +1,187 @@
 Q64
   aliases
     en ("Berlin, Germany" DE-BE)
+    es ("Stadt Berlin" "Ciudad de Berlín" "Berlin, Deutschland" "Berlín, Alemania" DE-BE Berlin)
     hi ("बर्लिन, जर्मनी")
     zh ("柏林市" "柏林州")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q148499
+              numeric-id 148499
+          hash cbecd66e53ccbfe51c6b0bc8cbb5bfd32edfff7b
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q157367
+              numeric-id 157367
+          hash 2912edfbd81c95cdc517af31e8f77ad9ae13a548
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q27306
+              numeric-id 27306
+          hash 103e000b44dd78a79bd677b7cbc02a2eaa6db934
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q150981
+              numeric-id 150981
+          hash a9e553a54f3929abc4751a96d438e772ec3873e4
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q43287
+              numeric-id 43287
+          hash f07e6efb1952c0a8e1aeab32299b781d428cf237
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q41304
+              numeric-id 41304
+          hash 8bcc5ae2d75fae003719baaa6ead1f85aad55a3e
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q7318
+              numeric-id 7318
+          hash 06f100f42eca9d3df6297b1648c73462578ce58a
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q55300
+              numeric-id 55300
+          hash c82feddccef337a70a9cf525991e76dfccf1b1f9
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q16957
+              numeric-id 16957
+          hash 69134fce674a39f3382130caf84f51e58518fb88
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q183
+              numeric-id 183
+          hash ef7247b704f4ec0a7df39e83306bb388fea17d5f
+          property P17
+          snaktype value
+        rank preferred
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q713750
+              numeric-id 713750
+          hash 3912570fabcfa6f9f41e1c53907ee233225c7211
+          property P17
+          snaktype value
+        rank normal
   descriptions
     en "federated state, capital and largest city of Germany"
+    es "estado federado, capital y ciudad más grande de Alemania"
     hi "जर्मनी की राजधानी और सबसे बड़ा शहर"
     ru "крупнейший город и столица Германии"
     zh "德國首都"
   id Q64
   labels
     en Berlin
+    es "Berlín"
     hi "बर्लिन"
     ru "Берлин"
     zh "柏林"
+  sitelinks
+    enwiki
+      site enwiki
+      title Berlin
+    eswiki
+      site eswiki
+      title "Berlín"
+    hiwiki
+      site hiwiki
+      title "बर्लिन"
+    ruwiki
+      site ruwiki
+      title "Берлин"
+    zhwiki
+      site zhwiki
+      title "柏林"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

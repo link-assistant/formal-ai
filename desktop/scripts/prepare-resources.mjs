@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const desktopDir = path.resolve(scriptDir, "..");
 const repoRoot = path.resolve(desktopDir, "..");
-const sourceWeb = path.join(repoRoot, "src", "web");
+const sourceWeb = path.join(repoRoot, "js");
 const sourceSeed = path.join(repoRoot, "data", "seed");
 const outputWeb = path.join(desktopDir, "dist-web");
 const outputSeed = path.join(outputWeb, "seed");
@@ -17,7 +17,7 @@ const outputBrowser = path.join(desktopDir, "browser-runtime");
 // release assets (and the /download page links) always match Cargo.toml, the
 // single source of truth for the formal-ai version.
 function syncDesktopVersion() {
-  const cargoTomlPath = path.join(repoRoot, "Cargo.toml");
+  const cargoTomlPath = path.join(repoRoot, "rust", "Cargo.toml");
   const desktopPackagePath = path.join(desktopDir, "package.json");
   const cargoToml = fs.readFileSync(cargoTomlPath, "utf8");
   const packageSection = cargoToml.split(/^\[/m).find((s) => s.startsWith("package]"));

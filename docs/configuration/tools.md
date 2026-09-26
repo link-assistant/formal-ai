@@ -51,7 +51,7 @@ protocol-native call and retains the returned bytes.
 | Desktop | read/write/edit, grep/glob/list, web search/fetch/capture, todo/plan/task/subagent, memory sync | permission-gated shell/bash, isolated Docker execution |
 | VS Code Node | Desktop-equivalent specialized tools and memory sync | permission-gated bash; Docker when configured |
 | VS Code Web | in-process browser tool set | no process, filesystem, socket, or bash |
-| Telegram | shared symbolic intents and HTML replies | no arbitrary host shell |
+| Telegram | shared symbolic intents, HTML replies, sandboxed `code_execution` | no arbitrary host shell; code execution refuses without a configured permission-bearing backend |
 | Docker | Telegram/API/agent commands plus inner-Docker isolation | container shell and `start-command`, not the host socket |
 
 `data/seed/environments.lino` is the authoritative full per-environment list.
@@ -89,6 +89,9 @@ documentation contract can detect drift:
   twelve isolated computer-use primitives.
 - VS Code: `vscode_webview` followed by the same server, file, web, planning,
   execution, and memory-sync identifiers as Desktop.
-- Telegram: shared reasoning plus `html_replies`.
+- Telegram: shared reasoning plus `html_replies` and sandboxed
+  `code_execution`, which runs network-denied code with a hard deadline on an
+  observed permission-bearing execution backend and refuses when none is
+  configured.
 - Docker: `telegram_polling`, `telegram_webhook`, `start_command`,
   `docker_isolation`, `inner_docker_daemon`, `bundle`, `memory`.

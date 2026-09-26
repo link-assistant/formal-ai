@@ -1,84 +1,57 @@
 #!/usr/bin/env python3
 """Drive total reference-closure to zero by defining every dangling token (issue #398, PR #399).
 
-PR #399 review (comment 4668929105) requires *total* closure: every non-keyword,
-non-quoted value token anywhere in ``data/seed/**.lino`` must resolve to a defined
-meaning, a grounded source id with a cache record, or an override — and the build
-fails the instant one does not. WordNet/Wiktionary grounding (``ground-wordnet.py``,
-``ground-wiktionary.py``) closes the plain-English dictionary words. What remains is
-the *internal* vocabulary: intent names, task names, prompt-pattern ids, source
-kinds, programming-language tags, and similar snake_case / hyphenated identifiers
-that name concepts of this system itself. The reviewer's standard is explicit:
+PR #399 review (comment 4668929105) requires *total* closure: every semantic
+reference anywhere in ``data/seed/**.lino`` must resolve to a defined meaning, a
+grounded source id with a cache record, or an override — and the build fails the
+instant one does not. WordNet/Wiktionary grounding (``ground-wordnet.py``,
+``ground-wiktionary.py``) closes the plain-English dictionary words. What remains
+is the *internal* vocabulary: intent names, task names, source kinds,
+programming-language tags, and similar identifiers that name concepts of this
+system itself. Declaration identities and literal matcher operands are not
+references; their schema classification comes from ``audit-total-closure.py``.
+The reviewer's standard is explicit:
 "Every word used in a description/intent/definition is either a defined meaning, a
 grounded lexeme/sense, or it must be **made** one." This migration *makes* them.
 
 It is a re-runnable migration, preserved in the repo per the review's "use
 automated scripts for mass actions … preserve them" instruction:
 
-  1. Compute the unresolved value tokens over the **base** seed — every
-     ``data/seed/*.lino`` file *except* this script's own generated output
-     (``closure-generated-*.lino``). Reading the base only makes the migration
-     idempotent: the input never changes when the generated files are rewritten,
-     so re-running produces byte-identical output.
+  1. Compute the unresolved value tokens over every ``data/seed/*.lino``
+     file. The ``closure-generated-*.lino`` filter in ``base_files`` is kept as
+     a guard: nothing writes those files any more, and nothing may start.
   2. For each unresolved token, derive a parent meaning from the predicate (head)
      it most often appears under — ``intent`` → the ``intent`` concept, ``task`` →
      ``task``, ``pattern`` → ``pattern``, ``language`` → ``programming_language``,
-     and so on — building a real two-level taxonomy rather than a flat dump. Any
-     parent concept that does not already resolve is defined here too (rooted at
-     ``concept``), so the generated layer is itself closed.
-  3. Emit each token as a first-class meaning nested under ``meanings``:
-     ``defined-by <parent>`` plus an English ``lexeme`` whose surface is the
-     identifier with separators turned to spaces (quoted, so it adds no new
-     tokens). Output is sharded into a fixed set of ``closure-generated-NN.lino``
-     files, each well under the 1500-line data-file limit.
+     and so on — so the work list is a real two-level taxonomy rather than a
+     flat dump, and a parent category that does not resolve either is listed
+     alongside its members.
+  3. Print each token as a line of a grounding work list, under the parent
+     category it would belong to, with the surface a human reader would give it.
 
-Run ``python3 scripts/close-total.py`` then ``python3 scripts/audit-total-closure.py``;
-the unresolved count must be 0.
+This script **writes nothing**. It used to emit
+``data/seed/closure-generated-NN.lino``, and ``audit-total-closure.py`` then
+read those files back as definitions, so the closure metric measured this
+script's own output and reported zero by construction while 17,791 lines of
+English-only glosses no runtime loads stood in for grounding (issue #1138 B9,
+plan 09 leaf 8). A generated gloss is not grounding. The generator may propose
+work; only an authored meanings file the runtime loads may satisfy the gate, and
+``data/meta/closure-audit.lino`` records how much work is left.
 
-Sharding is **content-addressed, not sequential** (PR #965 review). Filling shards
-in sorted order up to a line cap makes every shard depend on the *size* of every
-block before it: two branches that each define one new token rewrite the tail of
-every shard from the insertion point onward, so `data/seed` conflicted in almost
-every pull request. Instead each block is placed by a stable digest of its own
-slug — ``sha256(slug) % SHARD_COUNT`` — over a shard count that is fixed rather
-than derived from the corpus size. A token's shard therefore depends only on the
-token, so adding, removing or reparenting one touches exactly one file and leaves
-the other ``SHARD_COUNT - 1`` byte-identical. Two branches conflict only when
-their new tokens hash to the same shard *and* land adjacent within it.
-
-``SHARD_COUNT`` is deliberately generous: it is the one number whose change
-reshuffles everything, so it is raised rarely and never automatically. Bump it
-(and re-run) only when ``check-file-size`` starts warning on a shard.
+Run ``python3 scripts/close-total.py`` for the work list and
+``python3 scripts/audit-total-closure.py`` for the honest count.
 """
 from __future__ import annotations
 
 import glob
-import hashlib
 import importlib.util
 import os
 import re
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 
 SEED_DIR = Path("data/seed")
 GENERATED_PREFIX = "closure-generated-"
-MAX_LINES = 1400
-
-#: Number of content-addressed shards. Fixed on purpose — see the module docstring.
-#: At ~5 lines per meaning this leaves each shard room for ~280 meanings before it
-#: approaches ``MAX_LINES``; raising it reshuffles every shard exactly once.
-SHARD_COUNT = 16
-
-
-def shard_for(slug: str) -> int:
-    """Return the 1-based shard index that owns ``slug``.
-
-    Keyed on the slug alone so a block's file never depends on what else exists.
-    """
-    digest = hashlib.sha256(slug.encode("utf-8")).digest()
-    return int.from_bytes(digest[:8], "big") % SHARD_COUNT + 1
-
-SLUG = re.compile(r"^[a-z][a-z0-9_-]*$")
 QID = re.compile(r"^[QLP][0-9]+$")
 LANG_CODES = {"en", "ru", "hi", "zh"}
 
@@ -185,48 +158,16 @@ def base_defined_slugs(audit, files: list[str]) -> set[str]:
 
 
 def base_tokens(audit, files: list[str]):
-    """Return (counts, dominant_head) for value tokens in the base files."""
-    counts: Counter[str] = Counter()
-    heads: dict[str, Counter] = defaultdict(Counter)
-    for path in files:
-        lines = Path(path).read_text(encoding="utf-8").split("\n")
-        lex_lang = None
-        for raw in lines:
-            if not raw.strip():
-                continue
-            toks = audit._line_tokens(raw.strip())
-            if not toks:
-                continue
-            head, values = toks[0], toks[1:]
-            if head == "lexeme" and values:
-                lex_lang = values[0]
-            expanded: list[str] = []
-            for value in values:
-                expanded.extend(value.split("+"))
-            for value in expanded:
-                if not SLUG.match(value):
-                    continue
-                if head in {"text", "phrase"} and lex_lang not in (None, "en"):
-                    continue
-                counts[value] += 1
-                heads[value][head] += 1
-    dominant = {t: c.most_common(1)[0][0] for t, c in heads.items()}
+    """Return the canonical audit's counts and dominant predicate per token."""
+    del files  # file filtering is centralized in the canonical inventory
+    counts, dominant, _ = audit.semantic_reference_inventory(
+        ".", include_generated=False
+    )
     return counts, dominant
 
 
 def surface_for(token: str) -> str:
     return token.replace("_", " ").replace("-", " ").strip()
-
-
-def emit_meaning(token: str, parent: str) -> list[str]:
-    lines = [
-        f"  {token}",
-        f"    defined-by {parent}",
-        "    lexeme en",
-        "      surface",
-        f'        text "{surface_for(token)}"',
-    ]
-    return lines
 
 
 def main() -> int:
@@ -277,41 +218,41 @@ def main() -> int:
             continue  # already emitted as a parent
         blocks.append((token, token_parent[token]))
 
-    # Remove any stale generated shards before rewriting.
-    for old in glob.glob(str(SEED_DIR / f"{GENERATED_PREFIX}*.lino")):
-        os.remove(old)
-
-    # Shard into files by a stable digest of each slug, so a block's file is a
-    # function of the block alone. `blocks` is already in a deterministic order
-    # (parents first, then members, each sorted), and bucketing preserves it, so
-    # a new token is inserted at one place in one shard.
-    buckets: dict[int, list[str]] = defaultdict(list)
+    # Issue #1138 B9, plan 09 leaf 8. This script used to write
+    # `data/seed/closure-generated-NN.lino` here, and
+    # `scripts/audit-total-closure.py` then read those files back as
+    # definitions -- so the closure metric measured this script's own output and
+    # reported zero by construction. 17,791 lines of English-only glosses no
+    # runtime loads stood in for grounding, and the generator satisfied the gate
+    # it was supposed to be measured by.
+    #
+    # The generator now *proposes work* and satisfies nothing. It prints the
+    # tokens that resolve to no defined meaning, no grounded source and no
+    # override, grouped by the parent category each would belong under, so the
+    # list can be worked through by grounding tokens in an authored meanings
+    # file the runtime loads. The number it prints is the number
+    # `data/meta/closure-audit.lino` ratchets down.
+    by_parent: dict[str, list[str]] = defaultdict(list)
     for slug, parent in blocks:
-        buckets[shard_for(slug)].extend(emit_meaning(slug, parent))
+        by_parent[parent].append(slug)
 
-    oversized: list[str] = []
-    for shard_idx in range(1, SHARD_COUNT + 1):
-        body = buckets.get(shard_idx, [])
-        path = SEED_DIR / f"{GENERATED_PREFIX}{shard_idx:02d}.lino"
-        # Every shard is written even when empty, so the file set is stable too:
-        # a shard emptying out must not delete a file other branches still edit.
-        path.write_text("meanings\n" + "\n".join(body) + "\n", encoding="utf-8")
-        lines = len(body) + 1
-        print(f"  wrote {path} ({lines} lines)")
-        if lines > MAX_LINES:
-            oversized.append(f"{path.name} ({lines} lines)")
+    print()
+    print("=== grounding work list ===")
+    for parent in sorted(by_parent):
+        members = sorted(by_parent[parent])
+        print(f"{parent} ({len(members)})")
+        for slug in members:
+            print(f"  {slug}    # suggested surface: {surface_for(slug)!r}")
 
-    if oversized:
-        print(
-            "ERROR: shards exceed the "
-            f"{MAX_LINES}-line budget: {', '.join(oversized)}\n"
-            "       raise SHARD_COUNT in scripts/close-total.py and re-run."
-        )
-        return 1
-
+    print()
     print(
-        f"defined {len(parent_defs)} parent categories + "
-        f"{len(blocks) - len(parent_defs)} member meanings"
+        f"{len(unresolved)} unresolved token(s) across {len(by_parent)} proposed "
+        f"parent categories."
+    )
+    print(
+        "Ground them in an authored meanings file the runtime loads. This script "
+        "writes nothing: a generated gloss is not grounding, and the ratchet in "
+        "data/meta/closure-audit.lino measures what is."
     )
     return 0
 

@@ -1,0 +1,27 @@
+# `The obligation-evidence ratchet (issue #1138 B5, plan 05 leaf 16).`
+#
+# `Separate from data/meta/debt-ratchet.lino because plan 05 owns this measure`
+# `and the two ledgers are edited by different work; a shared file is where two`
+# `branches collide over a number neither of them changed.`
+#
+# `Both measures are strictly downward: a commit may lower one, and a commit`
+# `that raises one fails. Both read zero for a structural reason rather than`
+# `because no corpus happened to produce a violation, and both stay, because a`
+# `structure can regress and a number that reads zero for a reason is worth`
+# `keeping honest.`
+obligation_evidence_ratchet
+  record_type "ratchet_ledger"
+  schema_version 1
+  owner "docs/case-studies/issue-1138/plans/05-obligation-execution-evidence.md"
+  measure satisfied_without_record
+    direction "down"
+    value "0"
+    measured_by "tests/unit/specification/obligation_ledger.rs"
+    measured_on "2026-09-16"
+    note "ObligationOutcome::Satisfied has exactly one field and it is an Evidence, so a satisfied obligation carrying no observation is unconstructible rather than merely unobserved. need_ledger_with_execution reads only that variant; need_status_with_observation is the single constructor of NeedStatus::Satisfied for this and other observed domains. need_ledger_with_execution_is_the_only_producer_of_satisfied enforces the single-module boundary by reading every line of src/."
+  measure discarded_clauses
+    direction "down"
+    value "0"
+    measured_by "tests/unit/issue_1138_obligation_evidence.rs"
+    measured_on "2026-09-16"
+    note "ObligationNode::build emits one node per clause the request enumerates and keeps a clause no expectation can be read out of as an Underivable node with its byte span, so the continue that dropped the second clause of a two-clause prompt has no counterpart here. R710-R9 as a structure rather than as a review note."

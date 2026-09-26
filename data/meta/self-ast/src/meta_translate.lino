@@ -1,0 +1,30 @@
+self_ast_census
+  target src/meta_translate.rs
+  language rust
+  fidelity signature
+  byte_len 18965
+  line_count 480
+  content_id source_module_10afa91cf577335d
+  symbol_count 21
+  symbols
+    enum SourceRoot 29 34
+    function parse 40 48
+    function name 52 59
+    enum TranslationOutcome 68 79
+    function pending_leg 95 108
+    function translate 116 204
+    function es_language 206 211
+    function es_grammar_label 215 220
+    function projection_target 222 229
+    function es_render 231 245
+    function directions 250 266
+    struct RootProjection 272 282
+    function root_projections 291 316
+    enum WriteTargetError 320 328
+    function directory 334 341
+    function owned_extension 345 351
+    function write_target 361 389
+    struct SourceTreeRequest 394 398
+    function escapes_root 402 404
+    function source_tree_request 414 456
+    function describe_leg 461 480

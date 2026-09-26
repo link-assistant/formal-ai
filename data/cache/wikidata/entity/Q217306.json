@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Q217306": {
+      "type": "item",
+      "id": "Q217306",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "transposing instrument"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "транспонирующие музыкальные инструменты"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "移调乐器"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "instrument for which music is conventionally written transposed to a different pitch"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "移調樂器"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "transposing musical instrument"
+          },
+          {
+            "language": "en",
+            "value": "transposing instruments"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,281 @@
+meanings
+  web_fetch
+    defined-by method
+    role action
+    precondition "a request names a concrete web resource to retrieve"
+    effect "fetches the named page and grounds the answer in what it returns"
+    unit "not applicable"
+    example "read the page at the named url and answer from it"
+    grounding "data/seed/capability-routing.lino"
+  read_file
+    defined-by method
+    role action
+    precondition "a request names a workspace path to read"
+    effect "returns the file content at the named path"
+    unit "not applicable"
+    example "open the named source file and quote the matched line"
+    grounding "data/seed/capability-routing.lino"
+  write_file
+    defined-by method
+    role action
+    precondition "explicit content is to land at a named workspace path"
+    effect "writes the given content to the named path"
+    unit "not applicable"
+    example "save the drafted note at the named path"
+    grounding "data/seed/capability-routing.lino"
+  list_dir
+    defined-by method
+    role action
+    precondition "a request asks what a folder holds"
+    effect "enumerates the entries of the named directory"
+    unit "not applicable"
+    example "show the files inside the named folder"
+    grounding "data/seed/capability-routing.lino"
+  grep
+    defined-by method
+    role action
+    precondition "a symbol or text is searched for across workspace files"
+    effect "returns the matching lines with their file locations"
+    unit "not applicable"
+    example "find where the named function is defined"
+    grounding "data/seed/capability-routing.lino"
+  calendar_create_event
+    defined-by method
+    role action
+    precondition "an event is placed at a named time"
+    effect "records the event on the calendar at that time"
+    unit "not applicable"
+    example "schedule the meeting at the named hour"
+    grounding "data/seed/capability-routing.lino"
+  concept_measurement_lookup
+    defined-by method
+    role action
+    precondition "a magnitude question names a concept with a measured property"
+    effect "answers with the measured value and its unit"
+    unit "measured quantity"
+    example "how tall does the named animal grow"
+    grounding "data/seed/capability-routing.lino"
+  compose_from_sources
+    defined-by method
+    role action
+    precondition "an extended written piece is requested and retrievable sources exist"
+    effect "composes the piece from the retrieved sources with citations"
+    unit "not applicable"
+    example "write the survey from the gathered references"
+    grounding "data/seed/capability-routing.lino"
+  explain_previous_turn
+    defined-by method
+    role action
+    precondition "the user asks about the assistant preceding answer"
+    effect "re-renders the previous turn instead of searching elsewhere"
+    unit "not applicable"
+    example "explain what you just said in another way"
+    grounding "data/seed/capability-routing.lino"
+  report_issue
+    defined-by method
+    role action
+    precondition "a defect is named on the assistant own surface"
+    effect "records the defect as an issue instead of explaining it away"
+    unit "not applicable"
+    example "file the bug about the broken reply rendering"
+    grounding "data/seed/capability-routing.lino"
+  todo
+    defined-by method
+    role action
+    precondition "work is named as a list of tasks to track"
+    effect "tracks the tasks as a plan with per-item state"
+    unit "not applicable"
+    example "keep the drafted plan of work as tracked tasks"
+    grounding "data/seed/capability-routing.lino"
+  glob
+    defined-by method
+    role action
+    precondition "a wildcard names a set of paths to match"
+    effect "returns the workspace paths the pattern matches"
+    unit "not applicable"
+    example "list the test files matching the starred suffix"
+    grounding "data/seed/capability-routing.lino"
+  read_many
+    defined-by method
+    role action
+    precondition "a batch of named files is requested together"
+    effect "reads every named file in one step"
+    unit "not applicable"
+    example "open all the named modules at once"
+    grounding "data/seed/capability-routing.lino"
+  multi_edit
+    defined-by method
+    role action
+    precondition "the same edit is asked across named files"
+    effect "applies the edit to every named file"
+    unit "not applicable"
+    example "rename the symbol across the named files"
+    grounding "data/seed/capability-routing.lino"
+  subagent
+    defined-by method
+    role action
+    precondition "work is handed to another agent"
+    effect "delegates the task and returns its result"
+    unit "not applicable"
+    example "let another agent run the search and report back"
+    grounding "data/seed/capability-routing.lino"
+  bare_term
+    defined-by concept
+    role action
+    precondition "a request names a term with no local path, url or quoted scope"
+    effect "classifies the object as an unscoped term for routing"
+    unit "not applicable"
+    example "the request names a library with no file or page"
+    grounding "data/seed/capability-routing.lino"
+  path_scope
+    defined-by concept
+    role action
+    precondition "a request names a folder to operate within"
+    effect "classifies the object as a directory scope for routing"
+    unit "not applicable"
+    example "everything under the named folder"
+    grounding "data/seed/capability-routing.lino"
+  quoted_content
+    defined-by concept
+    role action
+    precondition "explicit text is present in the request itself"
+    effect "classifies the object as in-request content for routing"
+    unit "not applicable"
+    example "the request carries the note text in quotes"
+    grounding "data/seed/capability-routing.lino"
+  time_expression
+    defined-by concept
+    role action
+    precondition "the request names a clock or period reference"
+    effect "classifies the object as a time expression for routing"
+    unit "not applicable"
+    example "the request names the last few hours"
+    grounding "data/seed/capability-routing.lino"
+  language_name
+    defined-by concept
+    role action
+    precondition "the request names a natural language"
+    effect "classifies the object as a language for routing"
+    unit "not applicable"
+    example "the request names spanish as the reply language"
+    grounding "data/seed/capability-routing.lino"
+  quantity_question
+    defined-by concept
+    role action
+    precondition "the request asks how much or how many of a property"
+    effect "classifies the object as a magnitude interrogative for routing"
+    unit "not applicable"
+    example "how tall the named tower is"
+    grounding "data/seed/capability-routing.lino"
+  self_surface
+    defined-by concept
+    role action
+    precondition "the object of the request is the assistant own prior output or surface"
+    effect "classifies the object as the assistant own surface for routing"
+    unit "not applicable"
+    example "the reply you just gave me"
+    grounding "data/seed/capability-routing.lino"
+  pattern
+    defined-by concept
+    role action
+    precondition "a wildcard or suffix names what to match rather than one path"
+    effect "classifies the object as a match pattern for routing"
+    unit "not applicable"
+    example "every file ending in the test suffix"
+    grounding "data/seed/capability-routing.lino"
+  path_set
+    defined-by concept
+    role action
+    precondition "several concrete paths are named together"
+    effect "classifies the object as a batch of paths for routing"
+    unit "not applicable"
+    example "these three named modules"
+    grounding "data/seed/capability-routing.lino"
+  task_list
+    defined-by concept
+    role action
+    precondition "the request names work as a set of tasks"
+    effect "classifies the object as tracked tasks for routing"
+    unit "not applicable"
+    example "the plan with its numbered steps"
+    grounding "data/seed/capability-routing.lino"
+  delegation
+    defined-by concept
+    role action
+    precondition "the request hands work to another agent"
+    effect "classifies the object as delegated work for routing"
+    unit "not applicable"
+    example "have another agent handle the search"
+    grounding "data/seed/capability-routing.lino"
+  enumerate
+    defined-by action
+    role action
+    precondition "the act asks for the members of a set"
+    effect "selects the enumeration act in the routing decision"
+    unit "not applicable"
+    example "list what the folder holds"
+    grounding "data/seed/capability-routing.lino"
+  transform
+    defined-by action
+    role action
+    precondition "the act asks to change an object in place"
+    effect "selects the transformation act in the routing decision"
+    unit "not applicable"
+    example "rewrite the named file with the new text"
+    grounding "data/seed/capability-routing.lino"
+  compose
+    defined-by action
+    role action
+    precondition "the act asks to produce a new artifact from parts"
+    effect "selects the composition act in the routing decision"
+    unit "not applicable"
+    example "draft the entry at the named time"
+    grounding "data/seed/capability-routing.lino"
+  demonstrate
+    defined-by action
+    role action
+    precondition "the act asks to be shown an example"
+    effect "selects the demonstration act in the routing decision"
+    unit "not applicable"
+    example "show me the reply in the named language"
+    grounding "data/seed/capability-routing.lino"
+  ask
+    defined-by action
+    role action
+    precondition "no row covers the request triple"
+    effect "asks the user rather than guessing a capability"
+    unit "not applicable"
+    example "the table default when nothing matches"
+    grounding "data/seed/capability-routing.lino"
+  workspace
+    defined-by concept
+    role action
+    precondition "the effect of the request lands inside the local project"
+    effect "classifies the locus as the workspace for routing"
+    unit "not applicable"
+    example "the change stays inside this repository"
+    grounding "data/seed/capability-routing.lino"
+  self
+    defined-by concept
+    role action
+    precondition "the effect of the request lands on the assistant own surface"
+    effect "classifies the locus as the assistant surface for routing"
+    unit "not applicable"
+    example "the defect is in the assistant reply itself"
+    grounding "data/seed/capability-routing.lino"
+  callable
+    defined-by concept
+    role action
+    precondition "a learned program declares a value it applies as a function"
+    effect "marks the value as applicable before the program executes"
+    unit "boolean"
+    example "the learned rule requires an applicable predicate"
+    grounding "src/execution_box/mod.rs"
+  default
+    defined-by concept
+    role action
+    precondition "no declared row matches the routing triple"
+    effect "names the explicit ask every unmatched triple falls back to"
+    unit "not applicable"
+    example "the table ends in the explicit default ask"
+    grounding "data/seed/capability-routing.lino"

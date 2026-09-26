@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 5593
   line_count 140
-  content_id source_module_2dcc622303980932
+  content_id source_module_bf2ddc2abf504f66
   symbol_count 7
   symbols
     const PLAYWRIGHT_DOCS_URL 9 9

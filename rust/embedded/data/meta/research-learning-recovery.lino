@@ -1,0 +1,9 @@
+research_learning_recovery
+  schema "formal-ai.research-learning-recovery.v1"
+  step "inspect_local_state"
+  step "research_external_sources"
+  step "capture_recomputable_evidence"
+  step "propose_version"
+  step "verify_immutable_baseline"
+  step "promote_or_restore_stable"
+  step "recover_and_continue"

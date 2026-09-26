@@ -1,0 +1,223 @@
+relations
+  is_a
+    kind taxonomic
+    inverse subsumes
+    grounding "https://www.w3.org/TR/rdf-schema/#ch_subclassof"
+    lexeme en
+      surface
+        text "is a"
+      surface
+        text "is any"
+      surface
+        text "denotes a"
+    lexeme ru
+      surface
+        text "это"
+      surface
+        text "является"
+    lexeme hi
+      surface
+        text "एक प्रकार है"
+    lexeme zh
+      surface
+        text "是一种"
+    lexeme es
+      surface
+        text "es un"
+      surface
+        text "es una"
+  has_property
+    kind attributive
+    inverse property_of
+    grounding "https://www.w3.org/TR/rdf-schema/#ch_property"
+    lexeme en
+      surface
+        text "that has"
+      surface
+        text "in which"
+      surface
+        text "with no"
+    lexeme ru
+      surface
+        text "в котором"
+      surface
+        text "с повторяющейся"
+    lexeme hi
+      surface
+        text "जिसमें"
+    lexeme zh
+      surface
+        text "含有"
+    lexeme es
+      surface
+        text "que tiene"
+      surface
+        text "en el que"
+  part_of
+    kind meronymic
+    inverse has_part
+    grounding "https://plato.stanford.edu/entries/mereology/"
+    lexeme en
+      surface
+        text "part of"
+      surface
+        text "member of"
+    lexeme ru
+      surface
+        text "часть"
+    lexeme hi
+      surface
+        text "का भाग"
+    lexeme zh
+      surface
+        text "的一部分"
+    lexeme es
+      surface
+        text "parte de"
+  requires
+    kind precondition
+    inverse required_by
+    grounding "https://plato.stanford.edu/entries/necessary-sufficient/"
+    lexeme en
+      surface
+        text "requires"
+      surface
+        text "must have"
+    lexeme ru
+      surface
+        text "требует"
+    lexeme hi
+      surface
+        text "आवश्यक है"
+    lexeme zh
+      surface
+        text "需要"
+    lexeme es
+      surface
+        text "requiere"
+  produces
+    kind production
+    inverse produced_by
+    grounding "https://plato.stanford.edu/entries/causation-metaphysics/"
+    lexeme en
+      surface
+        text "produces"
+      surface
+        text "returns"
+    lexeme ru
+      surface
+        text "возвращает"
+    lexeme hi
+      surface
+        text "देता है"
+    lexeme zh
+      surface
+        text "产生"
+    lexeme es
+      surface
+        text "devuelve"
+  precedes
+    kind ordering
+    inverse follows
+    grounding "https://plato.stanford.edu/entries/time/"
+    lexeme en
+      surface
+        text "then"
+      surface
+        text "before"
+    lexeme ru
+      surface
+        text "затем"
+      surface
+        text "сначала"
+    lexeme hi
+      surface
+        text "फिर"
+      surface
+        text "पहले"
+    lexeme zh
+      surface
+        text "然后"
+      surface
+        text "先"
+    lexeme es
+      surface
+        text "luego"
+      surface
+        text "antes"
+  excludes
+    kind exclusion
+    inverse excluded_by
+    grounding "https://plato.stanford.edu/entries/negation/"
+    lexeme en
+      surface
+        text "never"
+      surface
+        text "without"
+    lexeme ru
+      surface
+        text "никогда"
+      surface
+        text "без"
+    lexeme hi
+      surface
+        text "कभी नहीं"
+      surface
+        text "बिना"
+    lexeme zh
+      surface
+        text "从不"
+      surface
+        text "没有"
+    lexeme es
+      surface
+        text "nunca"
+      surface
+        text "sin"
+  measured_in
+    kind measure
+    inverse measures
+    grounding "https://www.bipm.org/en/measurement-units"
+    lexeme en
+      surface
+        text "measured in"
+      surface
+        text "expressed in"
+    lexeme ru
+      surface
+        text "измеряется в"
+    lexeme hi
+      surface
+        text "में मापा जाता है"
+    lexeme zh
+      surface
+        text "计量单位"
+    lexeme es
+      surface
+        text "medido en"
+determiners
+  lexeme en
+    surface
+      text "a"
+    surface
+      text "an"
+    surface
+      text "the"
+  lexeme ru
+    surface
+      text "один"
+  lexeme hi
+    surface
+      text "एक"
+  lexeme zh
+    surface
+      text "一个"
+  lexeme es
+    surface
+      text "un"
+    surface
+      text "una"
+    surface
+      text "el"
+    surface
+      text "la"

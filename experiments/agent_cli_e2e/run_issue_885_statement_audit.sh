@@ -4,11 +4,11 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8895}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-885/agent-cli-evidence/statement-audit}"
-FIXTURE="$ROOT/examples/issue-885-relative-audit"
+FIXTURE="$ROOT/rust/examples/issue-885-relative-audit"
 REPORT="statement-audit.lino"
 TASK="Fact-check every statement in each Markdown document and the whole workspace, including relative references and dependent probabilities. Use evidence.json as the external evidence capture file and preserve the result in statement-audit.lino."
 

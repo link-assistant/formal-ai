@@ -1,0 +1,35 @@
+self_ast_census
+  target src/coding/composition_search/arguments.rs
+  language rust
+  fidelity signature
+  byte_len 30695
+  line_count 778
+  content_id source_module_e6082b7e0702ce77
+  symbol_count 26
+  symbols
+    function argument_choices 9 149
+    function constant_map_count 157 201
+    function references_parameter 203 213
+    function argument_root_type 216 224
+    function loose_feed 229 240
+    function inferred_expression_type 248 264
+    function type_has_open_variables 269 278
+    function collect_variable_bindings 280 308
+    function apply_variable_bindings 310 329
+    function loose_feeds 333 358
+    function type_key 362 372
+    function diversity_class 386 413
+    function has_computed_argument 421 437
+    function pathological_repeat 445 468
+    function walk 446 465
+    function repeats_a_fragment 471 487
+    function count 472 483
+    function diversify 489 506
+    function enumerate_arguments 508 530
+    function argument_grounded_structures 542 563
+    function binder_circularity 565 580
+    function argument_coherence 582 600
+    function parameter_displacement 609 626
+    function node_contains_parameter 628 711
+    function fragment_coverage 713 721
+    function normalize_pool 723 778

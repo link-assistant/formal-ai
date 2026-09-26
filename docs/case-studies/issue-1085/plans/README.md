@@ -36,12 +36,17 @@ Sub-issues of #1085 that stay open, with the reason:
 | --- | --- |
 | #1087 (E109) frontier queue | six user-prompt issues, each with a four-language paraphrase set; separate work by its own definition |
 | #1088 (E110) evidence out of the repo | needs a second repository; its item 3 (#1072) lands here |
-| #1089 (E111) collapse the gates | a 48 -> 5 test-file consolidation; item 4 (a wall-clock ceiling) is measured here in plan 02 |
-| #1090 (E112) traceability column | 716 rows of manual confirmation |
-| #959 (E107) handler ledger ratchet | already ratcheted by `kernel-ratchet.lino`; the seed migration is E108's D1 |
-| #1101 (E116) docs question in ru/hi/zh | routing rule fix; small, added to plan 04 as a stretch item |
+| #1089 (E111) collapse the gates | a 48 -> 5 test-file consolidation (five `docs_*` entries under `tests/unit/` as of 2026-09-19, the `docs_requirements_suites` ceiling); item 4 (a wall-clock ceiling) is measured here in plan 02 |
+| #1090 (E112) traceability column | manual confirmation rendered from `docs/requirements-traceability.md` (1,083 of 1,146 rows read `not yet confirmed` on 2026-09-19) |
+| #959 (E107) handler ledger ratchet | already ratcheted by `data/meta/debt-ratchet.lino` (renamed from `kernel-ratchet.lino` on 2026-09-12); the seed migration is E108's D1 |
+
+The row for #1101 (E116) was removed on 2026-09-19: it closed on 2026-09-10 by
+PR #1086 together with the rest of this batch.
 
 ## Order of work
+
+Completed: every step below landed in PR #1086, which closed #1085 on
+2026-09-10 (see the closing log at the end of this file).
 
 1. Plan 01 (ladder speed) -- it is the longest CI step and blocks every push.
 2. Plan 02 (green ledger) -- every later push benefits.
@@ -66,3 +71,12 @@ Last successful ladder run (34326451343, 2026-09-09 07:56 -> 09:46, 110 min,
 - The four runs before the current one were all cancelled by
   `cancel-in-progress` (20-68 min each) because pushes arrived faster than the
   ladder finished. Plan 02 makes an unchanged-input push skip it entirely.
+
+## Closing log -- 2026-09-19
+
+PR #1086 merged on 2026-09-10 and closed #1085 the same day; all six steps of
+the order of work landed in it. The counts in the table above are re-derived
+where they moved: the `docs_*` consolidation finished at five entries under
+`tests/unit/`, and the traceability table the #1090 row points at is
+regenerated from the requirement ledger on every rebuild, so its
+manual-confirmation count is read from that file, never quoted from here.

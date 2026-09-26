@@ -1,0 +1,52 @@
+self_ast_census
+  target src/concept_lookup.rs
+  language rust
+  fidelity signature
+  byte_len 30364
+  line_count 820
+  content_id source_module_928dd7ab8ff6f776
+  symbol_count 43
+  symbols
+    struct ConceptSense 31 62
+    function content_id 71 82
+    function to_links_notation 91 116
+    function provenance 120 131
+    enum LookupOutcome 136 146
+    struct SenseExtractor 151 154
+    function new 159 164
+    type Item 168 168
+    function entry_url 170 172
+    function read 174 235
+    function sense_language 244 253
+    struct RawGloss 257 262
+    function read_glosses 265 279
+    function wiktionary_entry 283 312
+    function wordnet_sense 316 337
+    function mediawiki_summary 341 352
+    function wiktionary_extract 378 426
+    function is_wikitext_heading 429 431
+    function is_respelling_of 439 450
+    function wikidata_entity 454 476
+    function projection_glosses 480 485
+    function collect_projection 487 514
+    function string_at 516 518
+    function strings_at 520 525
+    function array_at 527 533
+    function compact 536 538
+    struct RegistrySourceLookup 541 550
+    function new 555 573
+    function outcomes 577 579
+    function consulted 583 585
+    function bounds 589 591
+    function resolve 594 614
+    function lookup 618 635
+    function lookup_surface 640 667
+    function unknown_surfaces 678 693
+    function is_unknown_surface 704 709
+    function unknown_surface_spans 719 763
+    const PAIRS 720 720
+    function outside_quotes 767 791
+    const PAIRS 768 768
+    function has_quoted_span 800 802
+    function seeded_surfaces 805 820
+    static CACHE 806 806

@@ -6,4 +6,4 @@
 ci_gate run_clippy
   stage rust
   description "Clippy is clean across the library, binaries, tests and examples."
-  run "cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features"
+  run "cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings && cargo check --manifest-path rust/Cargo.toml --examples --all-features"

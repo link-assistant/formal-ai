@@ -1,0 +1,133 @@
+computer_use_benchmark
+  license Unlicense
+  source self_authored_for_issue_707
+  provenance "Self-authored deterministic tasks; no GAIA or AgentBench task text is redistributed."
+  completion en "computer_use_complete: verified plan {plan_id} with {steps} steps."
+  completion ru "computer_use_complete: проверен план {plan_id}, шагов: {steps}."
+  completion hi "computer_use_complete: plan {plan_id} के {steps} steps सत्यापित हुए।"
+  completion zh "computer_use_complete：已验证计划 {plan_id}，共 {steps} 个步骤。"
+  missing en "capability_gap: required primitive {primitive} was not advertised for plan {plan_id}, step {step_id}."
+  missing ru "capability_gap: для плана {plan_id}, шага {step_id} не объявлен обязательный примитив {primitive}."
+  missing hi "capability_gap: plan {plan_id} के step {step_id} के लिए आवश्यक primitive {primitive} advertised नहीं है।"
+  missing zh "capability_gap：计划 {plan_id} 的步骤 {step_id} 未声明所需原语 {primitive}。"
+  verification_failed en "computer_use_incomplete: verification failed for plan {plan_id}, step {step_id} ({primitive}); no later effects were scheduled."
+  verification_failed ru "computer_use_incomplete: проверка плана {plan_id}, шага {step_id} ({primitive}) не пройдена; последующие действия не запускались."
+  verification_failed hi "computer_use_incomplete: plan {plan_id} के step {step_id} ({primitive}) का verification विफल हुआ; बाद के effects schedule नहीं किए गए।"
+  verification_failed zh "computer_use_incomplete：计划 {plan_id} 的步骤 {step_id}（{primitive}）验证失败；未安排后续操作。"
+  precondition fs.read "agent mode active; {permission} granted; input exists inside workspace"
+  postcondition fs.read "returned bytes match the reported sha256"
+  precondition fs.write "agent mode active; {permission} granted; all paths are confined to workspace"
+  postcondition fs.write "output file bytes match the reported sha256"
+  precondition fs.list "agent mode active; {permission} granted; input exists inside workspace"
+  postcondition fs.list "entries are sorted and confined"
+  precondition fs.move "agent mode active; {permission} granted; all paths are confined to workspace"
+  postcondition fs.move "source is absent and destination has the source bytes"
+  precondition shell.run "agent mode active; {permission} granted; operation is in the structured allowlist"
+  postcondition shell.run "output file bytes match the reported sha256"
+  precondition http.fetch "agent mode active; {permission} granted; URL is permitted and provenance cache is available"
+  postcondition http.fetch "cached bytes, status, URL, method, and sha256 provenance agree"
+  precondition http.post "agent mode active; {permission} granted; URL is permitted and provenance cache is available"
+  postcondition http.post "cached bytes, status, URL, method, and sha256 provenance agree"
+  precondition dom.query "agent mode active; {permission} granted; input exists inside workspace"
+  postcondition dom.query "saved extraction bytes match the structured result"
+  precondition dom.extract "agent mode active; {permission} granted; input exists inside workspace"
+  postcondition dom.extract "saved extraction bytes match the structured result"
+  precondition archive.pack "agent mode active; {permission} granted; all paths are confined to workspace"
+  postcondition archive.pack "archive digest and sorted entry list agree"
+  precondition archive.unpack "agent mode active; {permission} granted; input exists inside workspace"
+  postcondition archive.unpack "all archive entries are restored under destination"
+  precondition process.status "agent mode active; {permission} granted; all paths are confined to workspace"
+  postcondition process.status "reported process scope is the isolated plan workspace"
+  task active_customers
+    prompt en "Filter active customers into a report"
+    prompt ru "Отфильтруй активных клиентов в отчёт"
+    prompt hi "सक्रिय ग्राहकों को रिपोर्ट में फ़िल्टर करो"
+    prompt zh "筛选活跃客户并生成报告"
+    step fs.write '{"path":"input/customers.csv","content":"name,status\nAda,active\nLin,inactive\nMei,active\n","confirmed":true}'
+    step shell.run '{"operation":"filter_csv","input":"input/customers.csv","output":"reports/active.csv","column":"status","equals":"active","confirmed":true}'
+    step fs.read '{"path":"reports/active.csv"}'
+  task first_open_order
+    prompt en "Fetch the orders and save the first order id"
+    prompt ru "Получи заказы и сохрани идентификатор первого заказа"
+    prompt hi "ऑर्डर लाओ और पहले ऑर्डर की आईडी सहेजो"
+    prompt zh "获取订单并保存第一个订单编号"
+    step http.fetch '{"url":"fixture://orders.json","save_as":"cache/orders.json"}'
+    step dom.extract '{"source":"cache/orders.json","pointer":"/orders/0/id","save_as":"reports/first-order.txt"}'
+    step fs.read '{"path":"reports/first-order.txt"}'
+  task page_title
+    prompt en "Fetch the status page and save its title"
+    prompt ru "Получи страницу статуса и сохрани её заголовок"
+    prompt hi "स्थिति पृष्ठ लाओ और उसका शीर्षक सहेजो"
+    prompt zh "获取状态页面并保存其标题"
+    step http.fetch '{"url":"fixture://status.html","save_as":"cache/status.html"}'
+    step dom.query '{"source":"cache/status.html","selector":"title","save_as":"reports/title.txt"}'
+    step fs.read '{"path":"reports/title.txt"}'
+  task submit_form
+    prompt en "Read the form token and submit the fixture form"
+    prompt ru "Прочитай токен формы и отправь тестовую форму"
+    prompt hi "फ़ॉर्म टोकन पढ़ो और fixture फ़ॉर्म जमा करो"
+    prompt zh "读取表单令牌并提交测试表单"
+    step http.fetch '{"url":"fixture://form.html","save_as":"cache/form.html"}'
+    step dom.query '{"source":"cache/form.html","selector":"#token","save_as":"cache/token.txt"}'
+    step http.post '{"url":"fixture://submit","body":"token=fixture-token","save_as":"reports/submission.json","confirmed":true}'
+    step fs.read '{"path":"reports/submission.json"}'
+  task count_lines
+    prompt en "Count the lines in the notes file"
+    prompt ru "Посчитай строки в файле заметок"
+    prompt hi "नोट्स फ़ाइल की पंक्तियाँ गिनो"
+    prompt zh "统计笔记文件的行数"
+    step fs.write '{"path":"input/notes.txt","content":"alpha\nbeta\ngamma\n","confirmed":true}'
+    step shell.run '{"operation":"count_lines","input":"input/notes.txt","output":"reports/line-count.txt","confirmed":true}'
+    step fs.read '{"path":"reports/line-count.txt"}'
+  task list_and_pack
+    prompt en "List the documents and pack them into an archive"
+    prompt ru "Перечисли документы и упакуй их в архив"
+    prompt hi "दस्तावेज़ सूचीबद्ध करो और उन्हें archive में pack करो"
+    prompt zh "列出文档并将其打包归档"
+    step fs.write '{"path":"docs/a.txt","content":"alpha\n","confirmed":true}'
+    step fs.write '{"path":"docs/b.txt","content":"beta\n","confirmed":true}'
+    step fs.list '{"path":"docs"}'
+    step archive.pack '{"paths":["docs/a.txt","docs/b.txt"],"archive":"out/documents.fai","confirmed":true}'
+  task archive_round_trip
+    prompt en "Pack and unpack a document then verify the restored directory"
+    prompt ru "Упакуй и распакуй документ, затем проверь восстановленный каталог"
+    prompt hi "दस्तावेज़ pack और unpack करके restored directory जाँचो"
+    prompt zh "打包并解包文档，然后验证恢复的目录"
+    step fs.write '{"path":"source/readme.txt","content":"round trip\n","confirmed":true}'
+    step archive.pack '{"paths":["source/readme.txt"],"archive":"out/round-trip.fai","confirmed":true}'
+    step archive.unpack '{"archive":"out/round-trip.fai","destination":"restored","confirmed":true}'
+    step fs.list '{"path":"restored/source"}'
+  task move_note
+    prompt en "Move the inbox note into the processed folder"
+    prompt ru "Перемести заметку из входящих в обработанные"
+    prompt hi "इनबॉक्स नोट को processed folder में move करो"
+    prompt zh "将收件箱笔记移动到已处理文件夹"
+    step fs.write '{"path":"inbox/note.txt","content":"processed\n","confirmed":true}'
+    step fs.move '{"from":"inbox/note.txt","to":"processed/note.txt","confirmed":true}'
+    step fs.list '{"path":"processed"}'
+    step fs.read '{"path":"processed/note.txt"}'
+  task process_report
+    prompt en "Save and verify the isolated process status"
+    prompt ru "Сохрани и проверь статус изолированного процесса"
+    prompt hi "isolated process status सहेजो और जाँचो"
+    prompt zh "保存并验证隔离进程状态"
+    step process.status '{"save_as":"reports/process.json"}'
+    step fs.read '{"path":"reports/process.json"}'
+  task inventory_bundle
+    prompt en "Build a unique inventory category report and archive it"
+    prompt ru "Создай отчёт уникальных категорий инвентаря и заархивируй его"
+    prompt hi "unique inventory category report बनाकर archive करो"
+    prompt zh "生成唯一库存类别报告并归档"
+    step http.fetch '{"url":"fixture://inventory.csv","save_as":"cache/inventory.csv"}'
+    step shell.run '{"operation":"unique_csv","input":"cache/inventory.csv","output":"reports/categories.txt","column":"category","confirmed":true}'
+    step archive.pack '{"paths":["reports/categories.txt"],"archive":"out/inventory.fai","confirmed":true}'
+    step process.status '{"save_as":"reports/process.json"}'
+  capability_gap gui_rendering
+    cue en "Take a screenshot of the rendered page"
+    cue ru "Сделай снимок отрисованной страницы"
+    cue hi "rendered page का screenshot लो"
+    cue zh "截取渲染页面的屏幕截图"
+    response en "capability_gap: gui_rendering requires a rendering or vision tool; no visual result was claimed."
+    response ru "capability_gap: для gui_rendering нужен инструмент рендеринга или зрения; визуальный результат не заявлен."
+    response hi "capability_gap: gui_rendering के लिए rendering या vision tool चाहिए; visual result का दावा नहीं किया गया।"
+    response zh "capability_gap：gui_rendering 需要渲染或视觉工具；未声称已获得视觉结果。"

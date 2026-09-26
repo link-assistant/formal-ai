@@ -1,0 +1,2186 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.612Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.612Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 今晚八点第比利斯时间，帮我和亚历山大约一下。 --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.q6JwphNJmy",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.612Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.q6JwphNJmy",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.612Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.q6JwphNJmy",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.622Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "今晚八点第比利斯时间，帮我和亚历山大约一下。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "今晚八点第比利斯时间，帮我和亚历山大约一下。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.622Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.623Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.624Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.624Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.627Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.628Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.q6JwphNJmy/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.630Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7355,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.630Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.647Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:18:48.652Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.652Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.652Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.652Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.652Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.652Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.652Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.652Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 29,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.653Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:18:48.653Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.657Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.657Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.658Z",
+  "service": "session",
+  "id": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.q6JwphNJmy",
+  "title": "New session - 2026-09-16T03:18:48.658Z",
+  "time": {
+    "created": 1789528728658,
+    "updated": 1789528728658
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.658Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.659Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.659Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c69badffeLVKRoh94QVo0gy/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.659Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c69badffeLVKRoh94QVo0gy/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.661Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57c69badffeLVKRoh94QVo0gy/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.663Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.669Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.670Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.670Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.670Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.670Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.671Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.671Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.671Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.671Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.671Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.810Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.817Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.817Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.826Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.830Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.834Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.834Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.834Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.835Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:49.683Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528729683,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8396851001VFQnlHDX4cWwNZ",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83964ed0018nHqoYlQ4Nwwxa",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:49.683Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:49.684Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528729684,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8396853002x62fuwhNtuAfZX",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83964ed0018nHqoYlQ4Nwwxa",
+    "type": "tool",
+    "callID": "call_709f2603fd832e4a",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:49.684Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528729684,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8396853001JkblIt4B3Q5fsl",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83964ed0018nHqoYlQ4Nwwxa",
+    "type": "text",
+    "text": "我来上网搜索 今晚八点第比利斯时间，帮我和亚历山大约一下。",
+    "time": {
+      "start": 1789528729684,
+      "end": 1789528729684
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:49.684Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528729684,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8396853002x62fuwhNtuAfZX",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83964ed0018nHqoYlQ4Nwwxa",
+    "type": "tool",
+    "callID": "call_709f2603fd832e4a",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "今晚八点第比利斯时间，帮我和亚历山大约一下"
+      },
+      "time": {
+        "start": 1789528729684
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.176Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528731176,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8396853002x62fuwhNtuAfZX",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83964ed0018nHqoYlQ4Nwwxa",
+    "type": "tool",
+    "callID": "call_709f2603fd832e4a",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "今晚八点第比利斯时间，帮我和亚历山大约一下"
+      },
+      "output": "Title: 现在的格鲁吉亚第比利斯时间\nURL: https://time.is/zh/Tbilisi\nPublished: N/A\nAuthor: N/A\nHighlights:\n第比利斯时间\n...\n22:21:36\n...\n2026年6月13日星期六，第24周\n...\n太阳： ↑ 05:24 ↓ 20:38 (15时 14分) - 更多信息 - 将第比利斯时间设为默认 - 关注此位置 \n\n## 第比利斯时区信息\n...\nUTC +4 Georgia Standard Time (GET) 现在 比紐約快 8 小时\n...\n1 1 小时 |\n...\n| --- | --- | --- |\n...\n| − 9 小时 |\n...\n多伦多\n...\n8 小时 | − 8\n...\n8 小\n...\n| − 8 小时 |\n...\n小时 | − 7 小时 |\n...\n− 4 小\n...\n| − 4 小时 |\n...\n| − 3\n...\n时 | − 3 小\n...\n斯堡 |\n...\n2 小时 | − 2 小时 |\n...\n| − 2 小时 |\n...\n2 小时 | − 2\n...\n|\n|\n...\n莫斯科 | −\n...\n小时 | − 1 小时 |\n|\n...\n| − 1\n...\n| − 1\n...\n时 |\n|\n...\n| − 1\n...\n时 | − 1 小时 |\n|\n...\n| 0 | |\n...\n买 | + 1. 5 小时 | |\n| 上海 | + 4 小时 | |\n...\n| 新加坡 | + 4 小时 | |\n...\n| 香港 | + 4 小时 | |\n...\n| 東京 | + 5 小时 | |\n...\n| 悉尼 | + 6 小时 | |\n...\n## 第比利斯的\n...\n出、日落、昼长和太阳时\n...\n- 日出: 05:24\n- 日落: 20:38\n- 昼长: 15时 14分\n- 上中天: 13:01\n- 目前第比利斯时间比真太阳时快 61 分钟。\n\n---\n\nTitle: 世界时钟:: 第比利斯(Tbilisi), 格鲁吉亚(Georgia) - 当前时间🕒\nURL: https://24timezones.com/%E7%AC%AC%E6%AF%94%E5%88%A9%E6%96%AF/%E6%97%B6%E9%97%B4\nPublished: N/A\nAuthor: N/A\nHighlights:\n世界时钟 :: 第比利斯 (Tbilisi), 格鲁吉亚 (Georgia) - 当前时间 🕒\n...\n# 第比利斯 :: 当前时间\n...\n第比利斯\n\n -- -- -- \n\n 宣布第比利斯即将举行的活动时间 \n\n### 当地时间\n\n --:-- +04\n...\n| 标准时区: | UTC/GMT +4小时 |\n| --- | --- |\n| 目前不是夏时制时间 | |\n\n---\n\nTitle: 格鲁吉亚第比利斯时间\nURL: https://m.time.tianqi.com/georgia/\nPublished: N/A\nAuthor: N/A\nHighlights:\n格鲁吉亚第比利斯时间_第比利斯时间现在几点_第比利斯时间与北京时间、时差对照表\n...\n| 2026年07月19日 星期日 12:57:47 | |\n| --- | --- |\n| 所属时区 | UTC/GMT +4 小时 (东四区) |\n| 和北京时间差 | 当前时间 和北京时间 晚-4:00个小时 |\n| 北京时间 | 2026-07-19 16:57:47 |\n| 电话区号 | 国家区号：+995（格鲁吉亚） 地区区号：32 |\n| 经纬度坐标 | 经度：东经 +44°48’ 纬度：北纬 -41°43’ |\n\n---\n\nTitle: 格鲁吉亚第比利斯时间_第比利斯时间现在几点_第比利斯与北京时差\nURL: https://www.55cha.com/asia/georgia/tbilisi.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n格鲁吉亚第比利斯时间_第比利斯时间现在几点_第比利斯与北京时差\n...\n## 当前本地时间在 第比利斯 格鲁吉亚 \n\n2026年09月09日 ,星期三\n...\n20: 13: 21\n...\n## 标准时间 GET \n\n当前正在使用\n\n### 夏令时 DST \n\n当前时区不 实行夏时制\n\n### IANA时区 \n\n Asia/Tbilisi \n\n## 太阳位于 第比利斯 : 今天, 2026年09月09日 \n\n \n\n### 日出 \n\n 06:34 \n\n \n\n### 日落 \n\n 19:21 \n\n2026/09/10 ,星期四\n...\n00: 13: 21\n\n---\n\nTitle: 第比利斯格鲁吉亚 - 时间查询\nURL: https://www.timecha.com/time/asia/georgia/tbilisi.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n当前本地时间在\n...\n第比利斯\n...\n格鲁吉亚\n...\n2026年07月19日 ,星期日\n...\n10:54:17\n...\n**当前正在使用\n|##\nUTC+4\n|\n|###\n夏令时\nDST\n|当前时区不\n实行夏时制|\n|###\nIANA时区\n|Asia/Tbilisi|\n|###\n当前时间比北京时间\n|###\n晚** -4 : 00 **小时\n|\n##\n...\n,星期日\n...\n14:54:17\n\n---\n\nTitle: 格鲁吉亚第比利斯Tbilisi,Georgia 标准时间 - 世界时间\nURL: https://time.bmcx.com/Tbilisi__localtime/\nPublished: N/A\nAuthor: N/A\nHighlights:\n第比利斯 当地时间 - 格鲁吉亚 第比利斯 Tbilisi,Georgia 标准时间\n...\n## 格鲁吉亚 第比利斯 当地时间\n...\n| 地区 | 格鲁吉亚 第比利斯 Tbilisi , Georgia |\n| --- | --- |\n| 时区 | UTC/GMT +4 小时 |\n| 和北京时差 | 晚 4 小时 |\n| 纬度 | 41°43'_北 |\n| 经度 | 44°48'_东 |\n| 世界位置 | |\n\n---\n\nTitle: 目前時間在 第比利斯, 喬治亞 (UTC+04:00) | 時間.tw\nURL: https://xn--kjv466h.tw/%E7%AC%AC%E6%AF%94%E5%88%A9%E6%96%AF/\nPublished: N/A\nAuthor: N/A\nHighlights:\n00)\n...\n# 當前時間在 第比利斯, 喬治亞 🇬🇪\n\n 18:03:25 GMT+4 星期三, 9 9月 2026 全螢幕 ⛶ 顯示 12 小時制 \n\n 緯度/經度： 41.72° N, 44.83° E \n\n人口： 1,100,000\n\n 國家： 🇬🇪 喬治亞 \n\n IANA 時區： Asia/Tbilisi \n\nUTC 偏移量： +04:00 \n\n 時區： GMT+4 \n\n 夏令時間： 否 ❌ \n\n### 第比利斯的禮拜時間 →\n...\n第比利斯（喬治亞）的當地時間為 18:03（Wednesday, September 09, 2026）。第比利斯 採用 Asia/Tbilisi 時區，即 UTC+4 。\n...\n減 ±1\n...\n第比利斯 的\n...\n發生於上方顯示的當地\n...\nTbilisi 時區\n...\n00 時\n...\n由於 第比利斯 位於\n...\n比 UTC 快\n\n---\n\nTitle: Tbilisi to East New York Time Converter\nURL: https://savvytime.com/converter/georgia-tbilisi-to-ny-east-new-york\nPublished: N/A\nAuthor: N/A\nHighlights:\nFor most of the year, Tbilisi is 8 hours ahead of East New York. During seasonal clock changes, Tbilisi is 9 hours ahead of East New York.\n...\nFor most of the year, working hours of 9:00 am to 5:00 pm in Tbilisi correspond to 1:00 am to 9:00 am in East New York. During seasonal clock changes, working hours of 9:00 am to 5:00 pm in Tbilisi correspond to 12:00 am to 8:00 am in East New York.\n...\nGET (Georgia Standard Time) is 9 hours ahead of EST (Eastern Standard Time) 4:00 pm 16:00 in Tbilisi, Georgia is 7:00 am 07:00 in East New York, NY, USA\n...\nTbilisi to East New York call time Best time for a conference call or a meeting is between 5pm-6pm in Tbilisi which corresponds to 8am-9am in East New York\n...\n4:00 pm 16:00 GET (Georgia Standard Time) (Tbilisi, Georgia). Offset UTC +4:00 hours 7:00 am 07:00 EST (Eastern Standard Time) (East New York, NY, USA). Offset UTC -5:00 hours\n...\n4:00 pm 16:00 Tbilisi, Georgia / 7:00 am 07:00 East New York, NY, USA\n...\n| Tbilisi, Georgia | East New York, NY, USA |\n| --- | --- |\n| 12am (midnight) | 3pm |\n| 1am | 4pm |\n| 2am | 5pm |\n| 3am | 6pm |\n| 4am | 7pm |\n| 5am | 8pm |\n| 6am | 9pm |\n| 7am | 10pm |\n| 8am | 11pm |\n| 9am | 12am (midnight) |\n| 10am | 1am |\n| 11am | 2am |\n| 12pm (noon) | 3am |\n| 1pm | 4am |\n| 2pm | 5am |\n| 3pm | 6am |\n| 4pm | 7am |\n| 5pm | 8am |\n| 6pm | 9am |\n| 7pm | 10am |\n| 8pm | 11am |\n| 9pm | 12pm (noon) |\n| 10pm | 1pm |\n| 11pm | 2pm |\n| 00:00 | 15:00 |\n| 01:00 | 16:00 |\n| 02:00 | 17:00 |\n| 03:00 | 18:00 |\n| 04:00 | 19:00 |\n| 05:00 | 20:00 |\n| 06:00 | 21:00 |\n| 07:00 | 22:00 |\n| 08:00 | 23:00 |\n| 09:00 | 00:00 |\n| 10:00 | 01:00 |\n| 11:00 | 02:00 |\n| 12:00 | 03:00 |\n| 13:00 | 04:00 |\n| 14:00 | 05:00 |\n| 15:00 | 06:00 |\n| 16:00 | 07:00 |\n| 17:00 | 08:00 |\n| 18:00 | 09:00 |\n| 19:00 | 10:00 |\n| 20:00 | 11:00 |\n| 21:00 | 12:00 |\n| 22:00 | 13:00 |\n| 23:00 | 14:00 |\n...\n-4:00 hours during Eastern Daylight Time, currently in use. -5:00 hours during Eastern Standard Time.",
+      "title": "Web search: 今晚八点第比利斯时间，帮我和亚历山大约一下",
+      "metadata": {},
+      "time": {
+        "start": 1789528729684,
+        "end": 1789528731174
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.178Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528731178,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8396e290014Z7bt5NqVDwdAd",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83964ed0018nHqoYlQ4Nwwxa",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8518,
+      "output": 71,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8589,
+      "headroom": 30267,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.178Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.178Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.179Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.179Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.179Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.179Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.179Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.179Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.179Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.179Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.182Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8589,
+  "providerTokens": 8589,
+  "estimatedInputTokens": 2669,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8518,
+    "cacheRead": 0,
+    "output": 71
+  },
+  "overflow": false,
+  "headroom": 30267,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.182Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.182Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.184Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.932Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528731932,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839711a001YFYOVcq68lbyTn",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a8396e2e001H2AzV6Ig9fAQD9",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.932Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.932Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528731932,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839711c0023aQZJ0GmCjqueK",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a8396e2e001H2AzV6Ig9fAQD9",
+    "type": "tool",
+    "callID": "call_978b4ea477d169ec",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.932Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528731932,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839711c001oK3vR9Sn1YyvWd",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a8396e2e001H2AzV6Ig9fAQD9",
+    "type": "text",
+    "text": "我来打开 https://time.is/zh/Tbilisi，读取其中的内容。",
+    "time": {
+      "start": 1789528731932,
+      "end": 1789528731932
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:51.932Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528731932,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839711c0023aQZJ0GmCjqueK",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a8396e2e001H2AzV6Ig9fAQD9",
+    "type": "tool",
+    "callID": "call_978b4ea477d169ec",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://time.is/zh/Tbilisi"
+      },
+      "time": {
+        "start": 1789528731932
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528732603,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839711c0023aQZJ0GmCjqueK",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a8396e2e001H2AzV6Ig9fAQD9",
+    "type": "tool",
+    "callID": "call_978b4ea477d169ec",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://time.is/zh/Tbilisi"
+      },
+      "output": "现在的格鲁吉亚第比利斯时间 - Time.is\n\n\n\n\n\n×\n\n\n\nTime.is\n\n\n\n\n\n\n\n\n\n\n\n\n\n现在的第比利斯第比利斯时间&nbsp;&nbsp;07:18:522026年9月16日星期三，第38周International Day for the Preservation of the Ozone Layer太阳： &uarr; 06:40 &darr; 19:11 (12时 30分) - 更多信息 - 将第比利斯时间设为默认 - 关注此位置\n東京12:18北京11:18巴黎05:18倫敦04:18紐約23:18洛杉矶20:18更多\n\n\n\n第比利斯时区信息\nUTC +4\nGeorgia Standard Time (GET)\n始终 比胡志明市慢 3 小时\n\n\n\n\n\n第比利斯夏季与冬季时间一致。第比利斯的 IANA 时区标识符为 Asia/Tbilisi。\n\n\n\n\n时间差与第比利斯相比\n洛杉矶−11 小时−11 小时\n芝加哥−9 小时−9 小时\n多伦多−8 小时−8 小时\n紐約−8 小时−8 小时\n圣保罗−7 小时−7 小时\nUTC−4 小时−4 小时\n拉哥斯−3 小时−3 小时\n倫敦−3 小时−3 小时\n约翰内斯堡−2 小时−2 小时\n巴黎−2 小时−2 小时\n苏黎世−2 小时−2 小时\n莫斯科−1 小时−1 小时\nIstanbul−1 小时−1 小时\n开罗−1 小时−1 小时\n迪拜0\n孟买+1.5 小时\n上海+4 小时\n新加坡+4 小时\n香港+4 小时\n東京+5 小时\n悉尼+6 小时\n\n\n\n\n与其他时区比较\n\n第比利斯的日出、日落、昼长和太阳时\n日出: 06:40日落: 19:11昼长: 12时 30分上中天: 12:56目前第比利斯时间比真太阳时快 56 分钟。\n\n\n\n地图上的第比利斯\n第比利斯是格鲁吉亚的首都。纬度: 41.69. 经度: 44.83人口: 1,049,000\n在 Google 地图中查看第比利斯\n\n\n\n\n\n格鲁吉亚最大的 24 个城市\nKutaisi Marneuli Och'amch'ire Poti Rustavi Samtredia Senaki Stantsiya Novyy Afon Telavi Tkuarchal Ts'khinvali Tsqaltubo Zestaponi Zugdidi 博爾若米 卡斯皮 哈舒里 哥里 奧祖爾蓋蒂 巴统 科布列季 第比利斯 苏呼米, 阿布哈茲 阿哈爾齊赫 \n\n\n\n×\n\n\n\nTime.is - 所有时区的精确时间\n精确时间时间比较您的时区时区夏令时时钟倒计时timer日历极简日历周序号有声时钟移动应用网页小组件时区新闻订阅UTCUnix 时钟Unix 时间转换设置Time.is Ad-free常见问题如何使用 Time.is关于联系广告使用条款隐私协议\n\n\n\n\n\n\nTime.is 以 58 种语言显示所有时区（涵盖超过 7,000,000 个地区）精确的官方原子钟时间。\n\n\nWhat time is it?\n几点了？\nक्या समय हुआ है?\n¿Qué hora es?\nQuelle heure est-il ?\nكم الساعة\nএখন কয়টা বাজে?\nКоторый час?\nQue horas são?\nJam berapa?\nWieviel Uhr ist es?\n今何時ですか？\nSaat kaç?\nஎன்ன நேரம்?\n؟ےہ اوہ تقو ایک\n&gg; more languages",
+      "title": "https://time.is/zh/Tbilisi (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528731932,
+        "end": 1789528732603
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.604Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528732604,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a83973bb00106f3AcSNsOAxhM",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a8396e2e001H2AzV6Ig9fAQD9",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 13873,
+      "output": 100,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 13973,
+      "headroom": 24883,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.604Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.604Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.605Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.605Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.605Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.605Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.605Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.606Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.606Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.606Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.608Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 13973,
+  "providerTokens": 13973,
+  "estimatedInputTokens": 3537,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 13873,
+    "cacheRead": 0,
+    "output": 100
+  },
+  "overflow": false,
+  "headroom": 24883,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.608Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.608Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.609Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:52.610Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.150Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528733150,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a83975dd001DmzRJUvWDRVxAB",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83973c0001hGmsym9LRs9e4c",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.150Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.150Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528733150,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a83975de002HZXpSUT9tTl2jG",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83973c0001hGmsym9LRs9e4c",
+    "type": "tool",
+    "callID": "call_0ca0a39673844307",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.151Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528733151,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a83975de001a5CaRfFWFu9P7V",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83973c0001hGmsym9LRs9e4c",
+    "type": "text",
+    "text": "我来打开 https://24timezones.com/%E7%AC%AC%E6%AF%94%E5%88%A9%E6%96%AF/%E6%97%B6%E9%97%B4，读取其中的内容。",
+    "time": {
+      "start": 1789528733151,
+      "end": 1789528733151
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.151Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528733151,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a83975de002HZXpSUT9tTl2jG",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83973c0001hGmsym9LRs9e4c",
+    "type": "tool",
+    "callID": "call_0ca0a39673844307",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://24timezones.com/%E7%AC%AC%E6%AF%94%E5%88%A9%E6%96%AF/%E6%97%B6%E9%97%B4"
+      },
+      "time": {
+        "start": 1789528733151
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.400Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528733400,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a83975de002HZXpSUT9tTl2jG",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83973c0001hGmsym9LRs9e4c",
+    "type": "tool",
+    "callID": "call_0ca0a39673844307",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://24timezones.com/%E7%AC%AC%E6%AF%94%E5%88%A9%E6%96%AF/%E6%97%B6%E9%97%B4"
+      },
+      "output": "世界时钟 :: 第比利斯 (Tbilisi), 格鲁吉亚 (Georgia) - 当前时间 🕒\n    \n\n    \n    \n    \n    \n    \n                \n                                    \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n            \n    \n\n\n\n\n\n\n\n\n\n\n\n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n\n    \n    \n                    \n                \n                    世界时间\n                \n                \n            \n                    \n                \n                    格鲁吉亚\n                \n                \n            \n                    \n                \n                    第比利斯\n                \n                \n            \n            \n        \n            \n                \n                    24\n                    timezonestz\n                \n                \n                    \n                    \n                        \n                    \n                    \n                    \n                \n                \n                    e.g. 美国, 巴黎, 意大利                \n                \n            \n        \n            \n        \n            \n                \n            \n        \n        世界时间世界时钟城市国家计算时差！时区时区缩写协调世界时 UTC格林尼治标准时间 GMT时间转换器计算时差常比较的时间差:北京和蒙特利尔北京和伦敦北京和洛杉矶中国和马提尼克地图时区地图澳大利亚时区加拿大时区欧洲时区美国时区世界地图发布活动联系我们！        \n                            \n                    \n                        am\n                        pm\n                    \n                    \n                        24\n                    \n\n                    \n    \n                    zh                \n    \n    \n                    \n                                                                                                                            \n                            EN - English                        \n                                                                                                                                                \n                            ES - Español                        \n                                                                                                                                                \n                            PT - Português                        \n                                                                                                                                                \n                            FR - Français                        \n                                                                                                                                                \n                            IT - Italiano                        \n                                                                                                                                                \n                            DE - Deutsch                        \n                                                                                                                                                \n                            PL - Polski                        \n                                                                                                                                                \n                            UK - Українська                        \n                                                                                                                                                \n                            RU - Русский                        \n                                                                                                                                                \n                            JA - 日本語                        \n                                                                                                                                                \n                            NL - Nederlands                        \n                                                                                                                                                \n                            DA - Dansk                        \n                                                \n            \n\n\n\n    \n                    ZH - 中文                \n    \n                第比利斯 :: 当前时间\n    \n        \n            \n                \n                第比利斯\n                \n    \n        --\n        --\n        --\n    \n    ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n\n            \n            \n                                    \n                        宣布第比利斯即将举行的活动时间                    \n                            \n        \n        \n            \n\n\n    \n            \n    目前本地時間 第比利斯(Tbilisi), 格鲁吉亚(Georgia)\n    \n        \n            \n                当地时间\n                \n                    \n                        \n                            --:--\n                            +04                        \n                    \n                \n                &nbsp;\n\n                \n                                    夏令时\n                \n                \n                                            \n                                                                                        今年没有夏时制时间调整                                                    \n                                    \n                &nbsp;\n\n                \n                GMT偏移 - 当地时间与GMT的差别\n                \n                    \n                        \n                            标准时区:\n                            \n                                                                    UTC/GMT +4小时                                                            \n                        \n                        \n                                                            目前不是夏时制时间\n                                                    \n                                            \n                \n\n                                    机场\n                    \n                        \n                            \n                                飞机场\n                                IATA\n                                ICAO\n                                到第比利斯的距离\n                            \n                                                            \n                                    Tbilisi International Airport\n                                    TBS\n                                    UGTB\n                                    10公里\n                                \n                                                    \n                    \n                    &nbsp;\n                                地理坐标\n                \n                    \n                        \n                            纬度:\n                            41&deg; 42' 北\n                        \n                        \n                            经度:\n                            44&deg; 5' 东\n                        \n                                                    \n                                人口:\n                                1049498\n                            \n                                                                    \n                    第比利斯 - 在线地图\n                    \n                    \n                        \n                                                            \n                                                    \n                    \n                                            \n                                                        查询第比利斯附件城市的时间                                : 杜拜, 萨马拉, 巴库, 葉里溫, 马斯喀特, 阿布扎比, 路易港, 圣丹尼斯, 維多利亞                        \n                                    \n                &nbsp;\n            \n                    \n        \n            \n&nbsp;\n    \n&nbsp;\n\n    \n    \n    \n        世界时钟 欧洲时间 澳洲时间 美国时间 加拿大时间 世界时间目录 世界地图 Free Clocks 联系我们\n    \n                在线时钟, 当地时间 - 第比利斯 (Tbilisi), 格鲁吉亚 (Georgia) - 当前时间.    \n    \n        Copyright &copy; 2005 - 2026 24TimeZones.com. 版权所有。",
+      "title": "https://24timezones.com/%E7%AC%AC%E6%AF%94%E5%88%A9%E6%96%AF/%E6%97%B6%E9%97%B4 (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528733151,
+        "end": 1789528733400
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.401Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528733401,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a83976d8001fiAVZu7iVgpATV",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83973c0001hGmsym9LRs9e4c",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 15392,
+      "output": 206,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15598,
+      "headroom": 23258,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.401Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.401Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.401Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.401Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.402Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.402Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.402Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.402Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.403Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.403Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.407Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 15598,
+  "providerTokens": 15598,
+  "estimatedInputTokens": 4417,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 15392,
+    "cacheRead": 0,
+    "output": 206
+  },
+  "overflow": false,
+  "headroom": 23258,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.407Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.407Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.408Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.409Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528733767,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8397846001Ur053njoz8vuA9",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83976df001dYJmw7UNivhFiq",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528733767,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8397847002TDe2PbWwH1eiB8",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83976df001dYJmw7UNivhFiq",
+    "type": "tool",
+    "callID": "call_a58e3a80696a6ade",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528733767,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8397847001GkngofZw48lqEH",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83976df001dYJmw7UNivhFiq",
+    "type": "text",
+    "text": "我来打开 https://m.time.tianqi.com/georgia/，读取其中的内容。",
+    "time": {
+      "start": 1789528733767,
+      "end": 1789528733767
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:53.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528733767,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8397847002TDe2PbWwH1eiB8",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83976df001dYJmw7UNivhFiq",
+    "type": "tool",
+    "callID": "call_a58e3a80696a6ade",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://m.time.tianqi.com/georgia/"
+      },
+      "time": {
+        "start": 1789528733767
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.490Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528744495,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a8397847002TDe2PbWwH1eiB8",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83976df001dYJmw7UNivhFiq",
+    "type": "tool",
+    "callID": "call_a58e3a80696a6ade",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://m.time.tianqi.com/georgia/"
+      },
+      "output": "格鲁吉亚第比利斯时间_第比利斯时间现在几点_第比利斯时间与北京时间、时差对照表\r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n        \r\n            \r\n        \r\n        格鲁吉亚第比利斯时间\r\n         \r\n    \r\n    \r\n\r\n    \r\n    \r\n        \r\n        \r\n            时间首页\r\n            北京时间\r\n            世界时间\r\n            世界时差\r\n            欧洲时间\r\n            北美洲时间\r\n            美国时间\r\n            加拿大时间\r\n        \r\n        ×关闭\r\n    \r\n    \r\n    \r\n        \r\n            \r\n        \r\n        \r\n            \r\n            \r\n            搜索\r\n        \r\n    \r\n    \r\n\r\n    \r\n    \r\n        \r\n            2026年09月16日 星期三 07:18:56\r\n        \r\n        \r\n            所属时区\r\n            \r\n                UTC/GMT +4 小时 (东四区)\r\n                            \r\n        \r\n\r\n        \r\n            和北京时间差\r\n            当前时间 和北京时间\r\n                                晚-4:00个小时\r\n                            \r\n        \r\n        \r\n            北京时间\r\n            \r\n                2026-09-16 11:18:56\r\n            \r\n        \r\n        \r\n            电话区号\r\n            \r\n                国家区号：+995（格鲁吉亚）\r\n                地区区号：32\r\n            \r\n        \r\n        \r\n        \r\n            经纬度坐标\r\n            \r\n                经度：东经 +44°48’\r\n                纬度：北纬 -41°43’\r\n            \r\n        \r\n    \r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n        \r\n    \r\n        热门国家时间查询\r\n        \r\n            \r\n                美国时间\r\n            \r\n            \r\n                加拿大时间\r\n            \r\n            \r\n                英国时间\r\n            \r\n            \r\n                澳大利亚时间\r\n            \r\n            \r\n                荷兰时间\r\n            \r\n            \r\n                德国时间\r\n            \r\n            \r\n                法国时间\r\n            \r\n            \r\n                日本时间\r\n            \r\n            \r\n                韩国时间\r\n            \r\n            \r\n                意大利时间\r\n            \r\n            \r\n                印度时间\r\n            \r\n            \r\n                西班牙时间\r\n            \r\n            \r\n                俄罗斯时间\r\n            \r\n            \r\n                巴西时间\r\n            \r\n            \r\n                波兰时间\r\n            \r\n        \r\n    \r\n    \r\n\r\n    \r\n        \r\n        热点资讯\r\n        \r\n                            \r\n                        \r\n                        \r\n                            中新网评：必胜客，别让消费者举着放大镜吃饭\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            乘客购买卧铺却显示禁止躺卧标识？12306回应\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            西湖边拦阻路人要求对方观看不雅视频！男网红被判七个月\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            老太将遗产全赠干儿子 身后骨灰竟被撒于山野\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            闺蜜为1万中介费诱导其隆胸 女子术后感染致左胸部分切除\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            27岁女生月租1500元住进养老院，院方回应\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            婚礼当天跳河男子已找到 家属：定制婚服上有新郎的名字\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            男子时速105公里撞上横穿高速野猪群\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            重庆女子乘“黄色法拉利”去内蒙古 博主:出租车回头率很高\r\n                            2026-09-16\r\n                        \r\n                    \r\n                            \r\n                        \r\n                        \r\n                            国庆订房遭“强制取消” 价格涨3倍\r\n                            2026-09-16\r\n                        \r\n                    \r\n                    \r\n    \r\n    \r\n    \r\n\r\n    时间资讯\r\n    \r\n            \r\n\r\n\r\n\r\n\r\n\r\n    \r\n\r\n    \r\n    天气预报15天\r\n    旅游攻略\r\n    黄历查询\r\n    生活常识\r\n    美食做法\r\n    女性时尚\r\n    健康养生\r\n    城市文化\r\n\r\n\r\n    \r\n        电脑版   |\r\n        天气网   |\r\n        时间校准网\r\n    \r\n    版权所有 Copyright © 2005-2020\r\n    渝ICP备18012671号-2",
+      "title": "https://m.time.tianqi.com/georgia/ (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528733767,
+        "end": 1789528744490
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.495Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528744495,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839a22f001J3mLKJWhtERgmm",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a83976df001dYJmw7UNivhFiq",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 23465,
+      "output": 116,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 23581,
+      "headroom": 15275,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.496Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.496Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.496Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.496Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.520Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.520Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.523Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 23581,
+  "providerTokens": 23581,
+  "estimatedInputTokens": 5291,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 23465,
+    "cacheRead": 0,
+    "output": 116
+  },
+  "overflow": false,
+  "headroom": 15275,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.523Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.523Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.524Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.524Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.525Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.526Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.527Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:04.528Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.002Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528745002,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839a429001JalzsxE6zH9tGA",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a839a24b001Ox7UYwnQgtZsqw",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.002Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.002Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528745002,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839a42a001TuIvWvDSrZGWdG",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a839a24b001Ox7UYwnQgtZsqw",
+    "type": "text",
+    "text": "第比利斯夏季与冬季时间一致。 第比利斯的日出、日落、昼长和太阳时 日出: 06:40日落: 19:11昼长: 12时 30分上中天: 12:56目前第比利斯时间比真太阳时快 56 分钟。\n\nSource: https://time.is/zh/Tbilisi\n\n世界时钟 欧洲时间 澳洲时间 美国时间 加拿大时间 世界时间目录 世界地图 Free Clocks 联系我们 在线时钟, 当地时间 - 第比利斯 (Tbilisi), 格鲁吉亚 (Georgia) - 当前时间.\n\nSource: https://24timezones.com/%E7%AC%AC%E6%AF%94%E5%88%A9%E6%96%AF/%E6%97%B6%E9%97%B4\n\n格鲁吉亚第比利斯时间_第比利斯时间现在几点_第比利斯时间与北京时间、时差对照表 格鲁吉亚第比利斯时间 澳大利亚时间\n\nSource: https://m.time.tianqi.com/georgia/",
+    "time": {
+      "start": 1789528745002,
+      "end": 1789528745002
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.002Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528745002,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "part": {
+    "id": "prt_0a839a42a0028ptorAf9JpWKiR",
+    "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+    "messageID": "msg_0a839a24b001Ox7UYwnQgtZsqw",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 28133,
+      "output": 429,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 28562,
+      "headroom": 10294,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.003Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.003Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.003Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.003Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.004Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.004Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.004Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.004Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.004Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.005Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.005Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.005Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.005Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528745005,
+  "sessionID": "ses_f57c69badffeLVKRoh94QVo0gy"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.005Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.005Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.q6JwphNJmy",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.006Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.q6JwphNJmy",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.006Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.q6JwphNJmy",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.006Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 17,
+  "message": "Agent exiting"
+}
+

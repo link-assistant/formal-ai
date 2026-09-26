@@ -1,0 +1,23 @@
+P17
+  aliases
+    en ("sovereign state" state land "host country")
+    es (Estado "Estado soberano" "país anfitrión")
+    hi ("संप्रभु राज्य")
+    ru ("страна")
+    zh ("國家" "主权国家" "主權國家")
+  datatype wikibase-item
+  descriptions
+    en "sovereign state that this subject item is in (not to be used for human beings)"
+    es "Estado soberano donde se encuentra este elemento (no usar con humanos)"
+    hi "इस आइटम का संप्रभु राज्य"
+    ru "суверенное государство, связанное с этим элементом"
+    zh "此项目位于的主权国家（不可用于人类）"
+  id P17
+  labels
+    en country
+    es "país"
+    hi "देश"
+    ru "государство"
+    zh "国家"
+  type property
+success 1

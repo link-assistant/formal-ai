@@ -1,0 +1,137 @@
+{
+  "entities": {
+    "Q139319": {
+      "type": "item",
+      "id": "Q139319",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Russian Republic"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Российская республика"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄羅斯共和國"
+        },
+        "es": {
+          "language": "es",
+          "value": "República Rusa"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Sep 1917 – Oct 1917 short-lived republic in Eurasia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство на территории России с 1 сентября 1917 по 6 января 1918 года"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "历史国家"
+        },
+        "es": {
+          "language": "es",
+          "value": "denominación del estado en el territorio de Rusia entre el 1 de septiembre de 1917 y 6 de enero de 1918"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Republic of Russia"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Россия"
+          },
+          {
+            "language": "ru",
+            "value": "Российская Демократическая Федеративная Республика"
+          },
+          {
+            "language": "ru",
+            "value": "РДФР"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "俄罗斯民主联邦共和国"
+          },
+          {
+            "language": "zh",
+            "value": "俄羅斯民主聯邦共和國"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Republica Rusa"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Russian Republic"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Россия при Временном правительстве"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "俄羅斯共和國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "República Rusa"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "2105b57ef845085fc51db4dca6323f8f4bc08d60",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 139319,
+                  "id": "Q139319"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

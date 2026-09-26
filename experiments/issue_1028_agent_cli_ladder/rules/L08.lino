@@ -1,6 +1,6 @@
 link_edit
   leaf L08
-  path src/solver_dispatch.rs
+  path rust/src/solver_dispatch.rs
   language rust
   rule insert_member
     list "CONTEXTUAL_HANDLER_NAMES"

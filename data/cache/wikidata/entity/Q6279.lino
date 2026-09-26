@@ -1,10 +1,12 @@
 Q6279
   aliases
-    en ("POTUS 46" "President Joe Biden" "President Joseph Biden" "President Joseph R. Biden" "Joseph Robinette Biden Jr." "President Joseph Biden Jr." "President Joseph Robinette Biden" "President Joseph R. Biden Jr." "Joe R. Biden" "President Joseph Robinette Biden Jr." "Joe Biden Jr.")
+    en ("Joseph Robinette Biden Jr.")
+    es ("Robin Ware" "Robert L. Peters" "JRB Ware")
     ru ("Байден, Джо" "Джозеф Байден" "Джозеф Робинетт Байден-мл." "Джозеф Робинетт Байден")
     zh ("拜登" "祖·拜登" "小约瑟夫·罗比内特·拜登" "喬·拜登")
   descriptions
     en "46th President of the United States (2021–2025)"
+    es "46.º presidente de los Estados Unidos"
     hi "संयुक्त राज्य अमेरिका के 47 वें राष्ट्रपति"
     ru "46-й президент США (2021—2025), американский политик"
     zh "第46任美國總統"
@@ -14,5 +16,26 @@ Q6279
     hi "जो बाइडेन"
     ru "Джо Байден"
     zh "乔·拜登"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Joe Biden"
+    eswiki
+      site eswiki
+      title "Joe Biden"
+    hiwiki
+      site hiwiki
+      title "जो बाइडन"
+    ruwiki
+      site ruwiki
+      title "Байден, Джо"
+    zhwiki
+      site zhwiki
+      title "乔·拜登"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

@@ -85,12 +85,15 @@ jobs:
     # I/O at all. The host was slower, not the code.
     #
     # So the cap goes back to being a backstop and the step below owns the
-    # deadline: `TEST_BUDGET_SECONDS: 2400` is 40 minutes, above the 33.8-minute
-    # worst case measured across the last twenty-one green runs so an
-    # ordinarily slow runner still passes, and 66% of this 60-minute cap, inside
-    # the 70% share issue #1017 enforces so checkout, the toolchain,
-    # cargo-llvm-cov's install, the ratchet and the uploads all still fit.
-    timeout-minutes: 60
+    # deadline. Issue #1138 raised the pair again: run 36046809360 (tip
+    # 00b8d873e) had 2553 tests finished, no hanger, when the 2400s budget
+    # killed the lane, while the uninstrumented twin lane (`Test / ubuntu /
+    # full`) ran all 2856 in 1235.57s -- the suite outgrew 2400s instrumented.
+    # `TEST_BUDGET_SECONDS: 4200` is 70 minutes, ~1.4x the ~50 minutes that
+    # run projects for the complete lane, and 66.7% of this 105-minute cap,
+    # still inside the 70% share issue #1017 enforces so checkout, the
+    # toolchain, cargo-llvm-cov's install, the ratchet and the uploads fit.
+    timeout-minutes: 105
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -133,7 +136,7 @@ jobs:
         uses: taiki-e/install-action@cargo-llvm-cov
 
       - name: Clean stale coverage artifacts
-        run: cargo llvm-cov clean --workspace
+        run: cargo llvm-cov --manifest-path rust/Cargo.toml clean --workspace
 
       # Issue #1076. Both steps print nothing unless the job-level switch above
       # is on. Switched on, they record CPU steal, load, memory and disk once
@@ -149,17 +152,45 @@ jobs:
           bash scripts/report-runner-capacity.sh --watch 120 "during coverage" &
           echo "CAPACITY_SAMPLER_PID=$!" >> "$GITHUB_ENV"
 
+      # Issue #1138: three unit tests inside the instrumented run shell out to
+      # `rust-script` (the docs_issue_citations snapshot test and both
+      # `docs_status` render-cycle tests). This job installed it only after
+      # the run, for the ratchet step, so on run 36046809360 all three failed
+      # on a missing binary. Install it before the run; the step after the run
+      # no-ops (the installer exits early when the binary is on PATH).
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
       # The step that decides this job's outcome, and the one that was killed.
       # It owns its deadline so an overrun is a `failure` with an ::error
       # annotation naming the budget, never a silent `cancelled`.
+      #
+      # The one test skipped here (issue #1138, plan 10 leaf 10) answers every
+      # committed benchmark prompt — all 1355 of them — through the full
+      # engine. Measured 2026-09-22 on a dev notebook, end to end: 1518s
+      # uninstrumented for the whole sweep. The cost is concentrated in the
+      # coding corpora (coding-discovery-paraphrases 444s/25 prompts,
+      # coding-composition-from-sources 416s/25, industry-suite 356s/13 —
+      # invented-identifier prompts like blorptide() or has_close_elements()
+      # cost 20-151s each) while every other corpus answers in ~0.1s; an
+      # earlier "~150s" note here had measured only those fast corpora.
+      # Instrumented (llvm-cov ~2.5x), the sweep alone is ~63 minutes —
+      # before the ~556s the rest of the suite costs this lane — so it
+      # cannot fit inside the 2400s budget on any host; run 35689478703 had
+      # every other test finished while the sweep was still running at the
+      # kill. The sweep gate is adjudicated uninstrumented in the Test
+      # (ubuntu / full) lane; this lane measures lines, and no honest
+      # budget holds both. (The whole lane with the skip in place measured
+      # 556s on 2026-09-22.)
       - name: Generate code coverage
         env:
-          TEST_BUDGET_SECONDS: 2400
+          TEST_BUDGET_SECONDS: 4200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Instrumented coverage run" \
-            cargo llvm-cov --all-features --lcov --output-path lcov.info
+            cargo llvm-cov --manifest-path rust/Cargo.toml --all-features --lcov --output-path lcov.info \
+              -- --skip no_benchmark_prompt_reaches_the_unknown_opener
 
       # `kill 0` means "every process in my own process group", so a `:-0`
       # default here would make this step kill its own shell whenever the

@@ -7,7 +7,7 @@
 #   experiments/agent_cli_e2e/run_agent_cli.sh
 #
 # Environment knobs:
-#   BIN           Path to the release-mode formal-ai binary (default: target/release/formal-ai)
+#   BIN           Path to the release-mode formal-ai binary (default: rust/target/release/formal-ai)
 #   PORT          Server port (default: 8763)
 #   AGENT         Path to the agent CLI (default: `agent` on PATH)
 #   TASK          The user prompt for the CLI (default: the canonical #538 seed)
@@ -45,7 +45,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8763}"
 AGENT="${AGENT:-agent}"
 # Default TASK is assigned in two steps because bash `${VAR:-default}` still

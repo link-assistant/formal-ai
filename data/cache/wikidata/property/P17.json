@@ -1,0 +1,114 @@
+{
+  "entities": {
+    "P17": {
+      "type": "property",
+      "datatype": "wikibase-item",
+      "id": "P17",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "country"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "देश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "国家"
+        },
+        "es": {
+          "language": "es",
+          "value": "país"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "sovereign state that this subject item is in (not to be used for human beings)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "суверенное государство, связанное с этим элементом"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इस आइटम का संप्रभु राज्य"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "此项目位于的主权国家（不可用于人类）"
+        },
+        "es": {
+          "language": "es",
+          "value": "Estado soberano donde se encuentra este elemento (no usar con humanos)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "sovereign state"
+          },
+          {
+            "language": "en",
+            "value": "state"
+          },
+          {
+            "language": "en",
+            "value": "land"
+          },
+          {
+            "language": "en",
+            "value": "host country"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "страна"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "संप्रभु राज्य"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "國家"
+          },
+          {
+            "language": "zh",
+            "value": "主权国家"
+          },
+          {
+            "language": "zh",
+            "value": "主權國家"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Estado"
+          },
+          {
+            "language": "es",
+            "value": "Estado soberano"
+          },
+          {
+            "language": "es",
+            "value": "país anfitrión"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

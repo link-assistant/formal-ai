@@ -1,0 +1,50 @@
+condition_source_parity
+  purpose "Replay varied positive and negative prompts through every handler rule and promotion condition using both the parsed-seed and projected-link backends. Verdicts are computed by the test, never copied into this fixture."
+  probe conversation_preference
+    prompt "Please do not use `foo` in your replies"
+  probe action_correction
+    prompt "I did not ask you to update that file"
+  probe repository_traffic
+    prompt "Show GitHub repository traffic statistics"
+  probe documentation_method
+    prompt "How does pandas DataFrame.join work"
+  probe capabilities
+    prompt "What else can you do"
+  probe clarification
+    prompt "I do not understand"
+  probe punctuation
+    prompt "???"
+  probe unbalanced_parenthesis
+    prompt "Explain this (unfinished expression"
+  probe physical_action
+    prompt "Did you walk there yesterday"
+  probe elephant
+    prompt "Please buy an elephant"
+  probe shell_refusal
+    prompt "Run `rm -rf /tmp/cache`"
+  probe opinion
+    prompt "What do you think about pineapple"
+  probe continuation
+    prompt "Continue"
+  probe web_search
+    prompt "Search the web for current release notes"
+  probe arithmetic
+    prompt "Calculate 2 plus 2"
+  probe calendar
+    prompt "Create a calendar event tomorrow at 20:00"
+  probe program
+    prompt "Write a Python function that returns its input"
+  probe proof
+    prompt "Prove that the result is correct"
+  probe installation
+    prompt "Install the package into the project"
+  probe decomposition
+    prompt "Break the invoice reconciliation rewrite into sub-tasks"
+  probe path
+    prompt "Read src/lib.rs"
+  probe url
+    prompt "Open https://example.org/docs"
+  probe quoted
+    prompt "Find the quoted section"
+  probe negative_control
+    prompt "A neutral sentence with no requested operation"

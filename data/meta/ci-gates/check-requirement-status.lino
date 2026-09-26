@@ -1,0 +1,4 @@
+ci_gate check_requirement_status
+  stage rust
+  description "The generated status ledger covers the exact assembled requirement set, and an implemented verdict always names an on-disk automated test."
+  run "rust-script scripts/generate-requirement-status.rs && rust-script scripts/check-requirement-status.rs"

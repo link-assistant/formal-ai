@@ -1,0 +1,22 @@
+self_ast_census
+  target src/authoring_loop.rs
+  language rust
+  fidelity signature
+  byte_len 18123
+  line_count 468
+  content_id source_module_80624adfbc7ca0ad
+  symbol_count 13
+  symbols
+    struct AuthoringOutcome 37 48
+    function canonical_pull_request 53 79
+    function unique_scratch 81 88
+    static SEQUENCE 82 82
+    struct Scratch 90 92
+    function new 95 100
+    function drop 104 106
+    function differs 109 116
+    function run_authoring 127 435
+    function contains_bytes 437 444
+    function copy_dir 446 459
+    struct ServerGuard 461 461
+    function drop 464 467

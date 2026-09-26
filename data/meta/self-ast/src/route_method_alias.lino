@@ -2,9 +2,9 @@ self_ast_census
   target src/route_method_alias.rs
   language rust
   fidelity signature
-  byte_len 3170
+  byte_len 3179
   line_count 74
-  content_id source_module_d9cf44b71fcb8405
+  content_id source_module_4a5b9adac808e620
   symbol_count 6
   symbols
     struct RouteMethodAlias 28 35

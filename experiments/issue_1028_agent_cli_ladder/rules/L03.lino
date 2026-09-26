@@ -1,6 +1,6 @@
 link_edit
   leaf L03
-  path src/seed/meanings/parse.rs
+  path rust/src/seed/meanings/parse.rs
   language rust
   rule insert_member
     list "FACET_KINDS"

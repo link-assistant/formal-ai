@@ -1,0 +1,995 @@
+//! Issue #103 prompt-variation matrix.
+//!
+//! For every conversational surface, exercise 5–10 most probable input
+//! variations across the four currently supported languages (English,
+//! Russian, Hindi, Chinese). Helpers are generalised so a new category can
+//! be added in one block instead of one test per language.
+//!
+//! References:
+//! - `docs/case-studies/issue-103/README.md`
+//! - `docs/case-studies/issue-103/raw-data/competitor-test-research.md`
+//!
+//! All issue-103 prompt categories in this file are active regression tests.
+
+use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
+
+fn answer(prompt: &str) -> SymbolicAnswer {
+    FormalAiEngine.answer(prompt)
+}
+
+// Generalised assertion helpers (R132).
+// Each helper takes a slice of prompts and the expected single property to
+// check on every prompt's answer. Helpers preserve the prompt text inside
+// the failure message so the failing variation is obvious in CI logs.
+
+fn assert_intent_for_each(prompts: &[&str], expected_intent: &str) {
+    for prompt in prompts {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, expected_intent,
+            "prompt {prompt:?} should yield intent {expected_intent:?}, got intent={} answer={}",
+            response.intent, response.answer,
+        );
+    }
+}
+
+fn assert_intent_prefix_for_each(prompts: &[&str], expected_prefix: &str) {
+    for prompt in prompts {
+        let response = answer(prompt);
+        assert!(
+            response.intent.starts_with(expected_prefix),
+            "prompt {prompt:?} should yield intent starting with {expected_prefix:?}, got intent={} answer={}",
+            response.intent,
+            response.answer,
+        );
+    }
+}
+
+fn assert_language_for_each(prompts: &[&str], expected_language_tag: &str) {
+    for prompt in prompts {
+        let response = answer(prompt);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == expected_language_tag),
+            "prompt {prompt:?} should record evidence {expected_language_tag:?}, got links={:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+fn assert_answer_contains_for_each(prompts: &[&str], expected_fragments: &[&str]) {
+    for prompt in prompts {
+        let response = answer(prompt);
+        let lower = response.answer.to_lowercase();
+        assert!(
+            expected_fragments
+                .iter()
+                .any(|fragment| lower.contains(&fragment.to_lowercase())),
+            "prompt {prompt:?} answer should contain one of {expected_fragments:?}, got answer={}",
+            response.answer,
+        );
+    }
+}
+
+fn assert_intent_not(prompts: &[&str], forbidden_intent: &str) {
+    for prompt in prompts {
+        let response = answer(prompt);
+        assert_ne!(
+            response.intent, forbidden_intent,
+            "prompt {prompt:?} should not yield intent {forbidden_intent:?}, got answer={}",
+            response.answer,
+        );
+    }
+}
+
+// Greeting matrix: 5+ variations × 4 languages.
+//
+// English, Russian, Hindi, Chinese natural-language greetings (Belebele/
+// XCOPA-style: each language has authentic phrasings, not literal
+// translations).
+
+const ENGLISH_GREETINGS: &[&str] = &["Hi", "Hello", "Hey", "Hello!", "Hi.", "hELLO", "Hi!"];
+
+const RUSSIAN_GREETINGS: &[&str] = &["Привет", "Здравствуйте", "привет!", "Шалом", "Шабат шалом"];
+
+const HINDI_GREETINGS: &[&str] = &["नमस्ते", "नमस्कार", "राम राम", "सलाम", "हाय", "नमस्ते!"];
+
+const CHINESE_GREETINGS: &[&str] = &["你好", "您好", "早上好", "早安", "嗨", "哈喽"];
+
+#[test]
+fn greeting_matrix_is_classified_as_greeting_across_languages() {
+    for prompts in [
+        ENGLISH_GREETINGS,
+        RUSSIAN_GREETINGS,
+        HINDI_GREETINGS,
+        CHINESE_GREETINGS,
+    ] {
+        assert_intent_for_each(prompts, "greeting");
+    }
+}
+
+#[test]
+fn greeting_matrix_records_per_language_evidence() {
+    for (prompts, tag) in [
+        (ENGLISH_GREETINGS, "language:en"),
+        (RUSSIAN_GREETINGS, "language:ru"),
+        (HINDI_GREETINGS, "language:hi"),
+        (CHINESE_GREETINGS, "language:zh"),
+    ] {
+        assert_language_for_each(prompts, tag);
+    }
+}
+
+// Farewell matrix.
+//
+// Farewell prompts are part of the seeded intent-routing rule book but were
+// previously only exercised by the seed test. Pin them here too so a
+// regression in the matcher is caught alongside greetings.
+
+const ENGLISH_FAREWELLS: &[&str] = &["bye", "goodbye", "ciao"];
+
+const RUSSIAN_FAREWELLS: &[&str] = &["пока", "до свидания", "досвидания"];
+
+const HINDI_FAREWELLS: &[&str] = &["अलविदा", "फिर मिलेंगे", "विदा", "बाय", "टाटा"];
+
+const CHINESE_FAREWELLS: &[&str] = &["再见", "拜拜", "回见", "改天见", "后会有期"];
+
+#[test]
+fn farewell_matrix_is_classified_as_farewell_across_languages() {
+    for prompts in [
+        ENGLISH_FAREWELLS,
+        RUSSIAN_FAREWELLS,
+        HINDI_FAREWELLS,
+        CHINESE_FAREWELLS,
+    ] {
+        assert_intent_for_each(prompts, "farewell");
+    }
+}
+
+// Identity matrix.
+//
+// "Who are you?" and its variants are the most frequent identity prompt
+// across MT-Bench, AlpacaEval, and WildBench. We exercise the same set in
+// every supported language.
+
+const ENGLISH_IDENTITY: &[&str] = &[
+    "Who are you?",
+    "what are you",
+    "Tell me about yourself",
+    "Introduce yourself",
+    "Let's get acquainted",
+    "What is formal-ai?",
+    "What is formalai?",
+];
+
+const RUSSIAN_IDENTITY: &[&str] = &[
+    "Кто ты?",
+    "что ты",
+    "Привет. ты кто?",
+    "Привет давай знакомиться!",
+];
+
+const HINDI_IDENTITY: &[&str] = &[
+    "तुम कौन हो?",
+    "आप कौन हैं?",
+    "तू कौन है?",
+    "अपना परिचय दो",
+    "अपने बारे में बताओ",
+    "चलो परिचय करते हैं",
+];
+
+const CHINESE_IDENTITY: &[&str] = &[
+    "你是谁?",
+    "您是谁?",
+    "你是什么?",
+    "介绍一下你自己",
+    "告诉我你自己",
+    "我们认识一下吧",
+];
+
+#[test]
+fn identity_matrix_is_classified_as_identity_across_languages() {
+    for prompts in [
+        ENGLISH_IDENTITY,
+        RUSSIAN_IDENTITY,
+        HINDI_IDENTITY,
+        CHINESE_IDENTITY,
+    ] {
+        assert_intent_for_each(prompts, "identity");
+    }
+}
+
+#[test]
+fn identity_matrix_mentions_formal_ai_in_every_language() {
+    for prompts in [
+        ENGLISH_IDENTITY,
+        RUSSIAN_IDENTITY,
+        HINDI_IDENTITY,
+        CHINESE_IDENTITY,
+    ] {
+        assert_answer_contains_for_each(prompts, &["formal-ai", "formal ai", "formalai"]);
+    }
+}
+
+// Clarification matrix.
+//
+// "I didn't understand" and its variants. Issue #29 added this category.
+
+const ENGLISH_CLARIFICATION: &[&str] = &[
+    "I don't understand",
+    "I didn't understand",
+    "I dont understand",
+    "I am confused",
+    "I'm confused",
+    "What do you mean",
+];
+
+const RUSSIAN_CLARIFICATION: &[&str] = &[
+    "не понял",
+    "не понимаю",
+    "не поняла",
+    "не понятно",
+    "непонятно",
+];
+
+const HINDI_CLARIFICATION: &[&str] = &["समझ नहीं आया", "समझ नहीं आई"];
+
+const CHINESE_CLARIFICATION: &[&str] = &["我不明白", "我不懂", "听不懂"];
+
+#[test]
+fn clarification_matrix_is_classified_as_clarification_across_languages() {
+    for prompts in [
+        ENGLISH_CLARIFICATION,
+        RUSSIAN_CLARIFICATION,
+        HINDI_CLARIFICATION,
+        CHINESE_CLARIFICATION,
+    ] {
+        assert_intent_for_each(prompts, "clarification");
+    }
+}
+
+// Concept lookup matrix.
+//
+// "What is X?" is one of the highest-frequency conversational prompts in
+// MT-Bench, AlpacaEval, and WildBench, and it is the canonical
+// formalization target: each X resolves to a Wikidata Q-id. We exercise
+// the multilingual phrasings of the question for terms that the seed
+// concept table covers (Wikipedia, Rust, doublet).
+
+const ENGLISH_CONCEPT_LOOKUPS: &[&str] = &[
+    "What is Wikipedia?",
+    "Tell me about Wikipedia.",
+    "Define Wikipedia.",
+    "What is Rust?",
+    "What is a doublet?",
+    "What is Links Notation?",
+];
+
+const RUSSIAN_CONCEPT_LOOKUPS: &[&str] = &["Что такое Википедия?", "Что такое Rust?"];
+
+const HINDI_CONCEPT_LOOKUPS: &[&str] = &[
+    "विकिपीडिया क्या है?",
+    "रस्ट क्या है?",
+    "रंग क्या है?",
+    "विकिडेटा क्या है?",
+    "आईआईआर क्या है?",
+];
+
+const CHINESE_CONCEPT_LOOKUPS: &[&str] = &[
+    "维基百科是什么?",
+    "颜色是什么?",
+    "维基数据是什么?",
+    "无限脉冲响应是什么?",
+    "rust语言是什么?",
+];
+
+#[test]
+fn concept_lookup_matrix_is_classified_as_concept_lookup_across_languages() {
+    for prompts in [
+        ENGLISH_CONCEPT_LOOKUPS,
+        RUSSIAN_CONCEPT_LOOKUPS,
+        HINDI_CONCEPT_LOOKUPS,
+        CHINESE_CONCEPT_LOOKUPS,
+    ] {
+        assert_intent_prefix_for_each(prompts, "concept_lookup");
+    }
+}
+
+// Capabilities matrix.
+//
+// Issue #49: "что ты умеешь?" / "what can you do?" must not fall through
+// to unknown. Capability questions show up across every chatbot benchmark
+// (Chatbot Arena's "Open conversation" category, WildBench "About the
+// model").
+
+const ENGLISH_CAPABILITIES: &[&str] = &[
+    "what can you do?",
+    "what can you do",
+    "what you can do?",
+    "what are your capabilities",
+];
+
+const RUSSIAN_CAPABILITIES: &[&str] = &[
+    "что ты умеешь?",
+    "что ты умеешь",
+    "А в чём ты можешь быть полезен",
+    // Issue #49 covered the slang follow-up: "что за дичь?" maps to
+    // capabilities too, as a frustrated form of the same question.
+    "что за дичь?",
+];
+
+const HINDI_CAPABILITIES: &[&str] = &[
+    "आप क्या कर सकते हैं?",
+    "तुम क्या कर सकते हो?",
+    "क्या क्या कर सकते हो?",
+];
+
+const CHINESE_CAPABILITIES: &[&str] =
+    &["你能做什么?", "你会做什么?", "你有什么功能?", "你能干什么?"];
+
+#[test]
+fn capabilities_matrix_is_classified_as_capabilities_across_languages() {
+    for prompts in [
+        ENGLISH_CAPABILITIES,
+        RUSSIAN_CAPABILITIES,
+        HINDI_CAPABILITIES,
+        CHINESE_CAPABILITIES,
+    ] {
+        assert_intent_for_each(prompts, "capabilities");
+    }
+}
+
+#[test]
+fn capabilities_matrix_never_falls_through_to_unknown() {
+    for prompts in [
+        ENGLISH_CAPABILITIES,
+        RUSSIAN_CAPABILITIES,
+        HINDI_CAPABILITIES,
+        CHINESE_CAPABILITIES,
+    ] {
+        assert_intent_not(prompts, "unknown");
+    }
+}
+
+// Parametric write-program code-generation matrix.
+//
+// The hello-world templates cover Rust, Python, JavaScript, Go, C, and
+// TypeScript through one `write_program(language, task)` intent. We re-pin
+// them here as a single block so adding new languages or aliases only
+// requires extending the tuples.
+
+const HELLO_WORLD_VARIATIONS: &[(&str, &str, &str)] = &[
+    // English natural language.
+    ("Write me hello world program in Rust", "rust", "```rust"),
+    ("Write hello world in Python", "python", "```python"),
+    (
+        "Show me hello world in JavaScript",
+        "javascript",
+        "```javascript",
+    ),
+    ("hello world in Go", "go", "```go"),
+    ("hello world in C", "c", "```c"),
+    ("hello world in TypeScript", "typescript", "```typescript"),
+    // English-language aliases.
+    ("hello world in rs", "rust", "```rust"),
+    ("hello world in node", "javascript", "```javascript"),
+    ("hello world in py", "python", "```python"),
+    ("hello world in golang", "go", "```go"),
+    // Russian transliteration (issue #53).
+    ("Напиши хелло ворлд на питоне", "python", "```python"),
+    ("хелло ворлд на джаваскрипт", "javascript", "```javascript"),
+    ("хелло ворлд на расте", "rust", "```rust"),
+];
+
+#[test]
+fn hello_world_matrix_routes_to_parametric_write_program_intent() {
+    for (prompt, expected_language, _expected_fence) in HELLO_WORLD_VARIATIONS {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "prompt {prompt:?} should yield write_program, got intent={} answer={}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .links_notation
+                .contains(&format!("program_parameter:language {expected_language}")),
+            "prompt {prompt:?} should include language={expected_language}, got: {}",
+            response.links_notation
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("program_parameter:task hello_world"),
+            "prompt {prompt:?} should include task=hello_world, got: {}",
+            response.links_notation
+        );
+    }
+}
+
+#[test]
+fn hello_world_matrix_emits_a_code_block_per_language() {
+    for (prompt, expected_language, fence) in HELLO_WORLD_VARIATIONS {
+        let response = answer(prompt);
+        let expected_answer = match (
+            *expected_language,
+            prompt.chars().any(|ch| ('а'..='я').contains(&ch)),
+        ) {
+            ("rust", false) => {
+                "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install the Rust toolchain from https://rustup.rs.\n2. Save the code above to a file named `main.rs`.\n3. Check that it compiles: `rustc main.rs -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
+            }
+            ("python", false) => {
+                "Here is a minimal Python hello world program:\n\n```python\nprint(\"Hello, world!\")\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `python3 -m py_compile main.py`\nRun command: `python3 main.py`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
+            }
+            ("javascript", false) => {
+                "Here is a minimal JavaScript hello world program:\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `node --check main.js`\nRun command: `node main.js`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/.\n2. Save the code above to a file named `main.js`.\n3. Check that it compiles: `node --check main.js`.\n4. Run it: `node main.js`.\n5. Compare the output with the expected output shown above."
+            }
+            ("go", false) => {
+                "Here is a minimal Go hello world program:\n\n```go\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nRun command: `go run main.go`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Go from https://go.dev/dl/.\n2. Save the code above to a file named `main.go`.\n3. Run it: `go run main.go`.\n4. Compare the output with the expected output shown above."
+            }
+            ("c", false) => {
+                "Here is a minimal C hello world program:\n\n```c\n#include <stdio.h>\n\nint main(void) {\n    puts(\"Hello, world!\");\n    return 0;\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `gcc main.c -o main`\nRun command: `./main`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install a C compiler such as GCC from https://gcc.gnu.org/ or your package manager.\n2. Save the code above to a file named `main.c`.\n3. Check that it compiles: `gcc main.c -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
+            }
+            ("typescript", false) => {
+                "Here is a minimal TypeScript hello world program:\n\n```typescript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: not compiled or run in TypeScript compiler is not configured in this repository runtime.\nCheck command: `tsc hello.ts`\nRun command: `node hello.js`\nExpected output after verification:\n```text\nHello, world!\n```\nThe TypeScript seed is returned with this warning until a tsc-backed execution profile is available.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`.\n2. Save the code above to a file named `hello.ts`.\n3. Check that it compiles: `tsc hello.ts`.\n4. Run it: `node hello.js`.\n5. Compare the output with the expected output shown above."
+            }
+            ("python", true) => {
+                "Вот минимальная программа на языке Python (hello world):\n\n```python\nprint(\"Hello, world!\")\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `python3 -m py_compile main.py`\nRun command: `python3 main.py`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Python 3 from https://www.python.org/downloads/.\n2. Сохраните приведённый выше код в файл `main.py`.\n3. Проверьте, что код компилируется: `python3 -m py_compile main.py`.\n4. Запустите программу: `python3 main.py`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+            }
+            ("javascript", true) => {
+                "Вот минимальная программа на языке JavaScript (hello world):\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `node --check main.js`\nRun command: `node main.js`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Node.js from https://nodejs.org/.\n2. Сохраните приведённый выше код в файл `main.js`.\n3. Проверьте, что код компилируется: `node --check main.js`.\n4. Запустите программу: `node main.js`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+            }
+            ("rust", true) => {
+                "Вот минимальная программа на языке Rust (hello world):\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: the Rust toolchain from https://rustup.rs.\n2. Сохраните приведённый выше код в файл `main.rs`.\n3. Проверьте, что код компилируется: `rustc main.rs -o main`.\n4. Запустите программу: `./main`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+            }
+            combination => panic!("missing documented hello-world answer for {combination:?}"),
+        };
+        assert_eq!(response.answer, expected_answer);
+        assert!(
+            response.answer.contains(fence),
+            "prompt {prompt:?} should include {fence} fence, got: {}",
+            response.answer,
+        );
+    }
+}
+
+// Math / calculator matrix (R124 augmentation).
+//
+// `calculator_delegation.rs` already exercises 5-10 prompts per language
+// for calculator-backed math. This matrix adds the highest-frequency
+// "simple arithmetic in natural language" prompts that show up in GSM8K /
+// MT-Bench Math / AlpacaEval-style benchmarks.
+
+const ENGLISH_BASIC_MATH: &[&str] = &[
+    "What is 2 + 2?",
+    "What is 5 * 6?",
+    "What is 100 / 4?",
+    "What is 10 - 3?",
+];
+
+const RUSSIAN_BASIC_MATH: &[&str] = &["Сколько будет 2 + 2?", "Сколько будет два плюс два?"];
+
+#[test]
+fn basic_math_matrix_is_classified_as_calculation() {
+    for prompts in [ENGLISH_BASIC_MATH, RUSSIAN_BASIC_MATH] {
+        assert_intent_for_each(prompts, "calculation");
+    }
+}
+
+// Refusal / safety matrix (MT-Bench / Chatbot Arena overlap).
+//
+// Issue #39 added the policy_inappropriate_content intent. We add a few
+// variations so a regression that re-enables a vulgar prompt is caught
+// here too.
+
+const ENGLISH_REFUSAL: &[&str] = &["suck my dick"];
+
+#[test]
+fn refusal_matrix_routes_to_policy_inappropriate_content() {
+    assert_intent_for_each(ENGLISH_REFUSAL, "policy_inappropriate_content");
+}
+
+// ---------------------------------------------------------------------------
+// Idiom matrix.
+//
+// "Купи слона" (issue #41) and its variations. Idioms in non-English
+// languages are a known weakness of competitor models (Aya, Belebele).
+// ---------------------------------------------------------------------------
+
+const RUSSIAN_IDIOMS: &[&str] = &["Купи слона", "купи слона"];
+
+#[test]
+fn idiom_matrix_routes_to_dedicated_idiom_intent() {
+    assert_intent_for_each(RUSSIAN_IDIOMS, "kupi_slona");
+}
+
+// ---------------------------------------------------------------------------
+// Determinism guarantee for the matrix (R82 corollary).
+//
+// Every matrix prompt must be deterministic. Pin a couple to make sure a
+// regression that introduces non-determinism is caught by the variations
+// suite, not only by the dedicated `chat_surface` tests.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn matrix_answers_are_deterministic_for_identical_prompts() {
+    let sample_prompts = ["Hi", "Привет", "你好", "What is Rust?", "Кто ты?"];
+    for prompt in sample_prompts {
+        let first = answer(prompt);
+        let second = answer(prompt);
+        assert_eq!(
+            first, second,
+            "matrix prompt {prompt:?} should be deterministic"
+        );
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Competitor-derived prompt categories.
+//
+// These prompt shapes are common in MT-Bench, AlpacaEval, WildBench, Aya,
+// and Belebele. They are active tests because issue #103 asks us to adopt
+// the frequent categories as executable behavior.
+// ---------------------------------------------------------------------------
+
+const SUMMARIZATION_PROMPTS: &[&str] = &[
+    "Summarize the Wikipedia article on Rust in one paragraph.",
+    "Give me a one-paragraph summary of formal-ai.",
+    "Can you summarize Rust?",
+    "Summarise the Wikipedia entry for Rust.",
+    "Summary of Wikipedia please.",
+    "Please summarize formal-ai in one paragraph.",
+];
+
+#[test]
+fn summarization_intent_routes_to_summarization_handler() {
+    for prompt in SUMMARIZATION_PROMPTS {
+        let response = answer(prompt);
+        assert!(
+            response.intent.starts_with("summarize"),
+            "prompt {prompt:?} should route to a summarize* intent, got: {}",
+            response.intent,
+        );
+    }
+}
+
+const BRAINSTORMING_PROMPTS: &[&str] = &[
+    "Give me five ideas for an open-source side project.",
+    "Brainstorm ten names for a code review tool.",
+    "Suggest five open-source utilities for developers.",
+    "Brainstorm 5 small tools for link notation.",
+    "Give me 5 ideas for a local-first AI helper.",
+    "Brainstorm ten names for a symbolic assistant.",
+];
+
+#[test]
+fn brainstorming_intent_routes_to_brainstorm_handler() {
+    for prompt in BRAINSTORMING_PROMPTS {
+        let response = answer(prompt);
+        assert!(
+            response.intent.starts_with("brainstorm"),
+            "prompt {prompt:?} should route to a brainstorm* intent, got: {}",
+            response.intent,
+        );
+        let expected_last_number = if prompt.contains("ten") { "10." } else { "5." };
+        let expected_answer = if prompt.contains("ten") {
+            "1. TraceLint\n2. ReviewLink\n3. PatchSignal\n4. DiffAnchor\n5. CodeLedger\n6. SymbolScribe\n7. RuleBeacon\n8. LinkHarbor\n9. TraceForge\n10. PromptLedger"
+        } else {
+            "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs."
+        };
+        assert_eq!(response.answer, expected_answer);
+        assert!(
+            response.answer.contains(expected_last_number),
+            "prompt {prompt:?} should return the requested number of ideas, got: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn web_search_online_variant_routes_to_web_search_handler() {
+    let response = answer("Search online for Genshin Impact");
+    assert_eq!(
+        response.intent, "web_search",
+        "reported search-online phrasing should route to web_search, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.to_lowercase().contains("genshin impact"),
+        "web search response should preserve the query, got {}",
+        response.answer,
+    );
+}
+
+// Issue #426: a verbless "records about a subject" prompt (records / filings /
+// statistics / financials tied to a subject by a topic connective) routed to
+// `unknown` instead of web search. The reported prompt and its multilingual
+// siblings must now reach the `web_search` handler.
+const RECORDS_INFORMATION_PROMPTS: &[&str] = &[
+    "Financical records for boeing after crysis with icas system",
+    "financial records for boeing after the crisis with the icas system",
+    "statistics on tesla after the merger",
+    "финансовые отчёты о boeing после кризиса",
+    "статистика по tesla после слияния",
+    "boeing के बारे में वित्तीय रिकॉर्ड",
+    "tesla के बारे में आंकड़े",
+    "关于波音的财务记录",
+    "关于特斯拉的统计",
+];
+
+#[test]
+fn records_information_prompts_route_to_web_search() {
+    assert_intent_for_each(RECORDS_INFORMATION_PROMPTS, "web_search");
+}
+
+// Promoted project lookup tests live in
+// `project_lookups.rs` so this file stays under the 1000-line cap.
+
+// Fact-lookup matrix: 5-10 input variations per fact across every supported
+// language. Each prompt must route to `fact_lookup`, surface a Wikidata
+// Q-id evidence link, and return the localized summary from the seed.
+const ENGLISH_FACTUAL_PROMPTS: &[&str] = &[
+    "Who wrote The Lord of the Rings?",
+    "Who is the author of The Lord of the Rings?",
+    "When was the Eiffel Tower built?",
+    "What year did construction of the Eiffel Tower start?",
+    "What is the capital of Japan?",
+    "Which city is Japan's capital?",
+    "What is the capital of Russia?",
+    "Which city is Russia's capital?",
+    "Who painted the Mona Lisa?",
+    "Who is the painter of the Mona Lisa?",
+    "What is the speed of light?",
+    "How fast is the speed of light?",
+];
+
+const RUSSIAN_FACTUAL_PROMPTS: &[&str] = &[
+    "Кто написал Властелин колец?",
+    "Кто автор Властелина колец?",
+    "Когда построили Эйфелеву башню?",
+    "Какова столица Японии?",
+    "Какова столица России?",
+    "столица россии",
+    "Кто написал Мону Лизу?",
+    "Чему равна скорость света?",
+];
+
+const HINDI_FACTUAL_PROMPTS: &[&str] = &[
+    "द लॉर्ड ऑफ द रिंग्स किसने लिखी?",
+    "एफिल टॉवर कब बनी?",
+    "जापान की राजधानी क्या है?",
+    "रूस की राजधानी क्या है?",
+    "मोना लिसा किसने बनाई?",
+    "प्रकाश की गति कितनी है?",
+];
+
+const CHINESE_FACTUAL_PROMPTS: &[&str] = &[
+    "魔戒是谁写的?",
+    "埃菲尔铁塔建于何时?",
+    "日本的首都是什么?",
+    "俄罗斯的首都是什么?",
+    "蒙娜丽莎是谁画的?",
+    "光速是多少?",
+];
+
+#[test]
+fn factual_qna_matrix_records_wikidata_anchor() {
+    for prompts in [
+        ENGLISH_FACTUAL_PROMPTS,
+        RUSSIAN_FACTUAL_PROMPTS,
+        HINDI_FACTUAL_PROMPTS,
+        CHINESE_FACTUAL_PROMPTS,
+    ] {
+        for prompt in prompts {
+            let response = answer(prompt);
+            assert_eq!(
+                response.intent, "fact_lookup",
+                "prompt {prompt:?} should route to fact_lookup, got {}",
+                response.intent,
+            );
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link.contains("wikidata") || link.contains('Q')),
+                "prompt {prompt:?} should record a Wikidata anchor, got links: {:?}",
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
+fn factual_qna_matrix_records_per_language_evidence() {
+    for (prompts, tag) in [
+        (ENGLISH_FACTUAL_PROMPTS, "language:en"),
+        (RUSSIAN_FACTUAL_PROMPTS, "language:ru"),
+        (HINDI_FACTUAL_PROMPTS, "language:hi"),
+        (CHINESE_FACTUAL_PROMPTS, "language:zh"),
+    ] {
+        assert_language_for_each(prompts, tag);
+    }
+}
+
+#[test]
+fn russian_capital_russia_prompt_returns_moscow() {
+    let response = answer("столица россии");
+    assert_eq!(
+        response.intent, "fact_lookup",
+        "reported prompt should route to fact_lookup, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert_eq!(response.answer, "Столица России — Москва.");
+    assert!(
+        response.answer.contains("Москва"),
+        "reported prompt should answer in Russian with Moscow, got {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "wikidata:Q159"),
+        "reported prompt should record the Russia Wikidata anchor, got links: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "wikidata:Q649"),
+        "reported prompt should record the Moscow Wikidata anchor, got links: {:?}",
+        response.evidence_links,
+    );
+}
+
+// Issue #127 follow-up: the structured fact-query pipeline pre-warms the
+// cache from `data/seed/facts.lino` records that carry a `relation` field.
+// Every country in the matrix below has a `relation "capital"` seed entry,
+// so every prompt — across English/Russian/Hindi/Chinese — must route to
+// `fact_lookup` and surface the subject Q-ID, the value Q-ID, and the
+// structured `fact_query:*` trace events.
+//
+// (country_label, expected_subject_qid, expected_value_qid, expected_answer_fragment, prompts)
+type CapitalCase = (
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static [&'static str],
+);
+
+const CAPITAL_CASES: &[CapitalCase] = &[
+    (
+        "Russia",
+        "Q159",
+        "Q649",
+        "The capital of Russia is Moscow.",
+        &[
+            "What is the capital of Russia?",
+            "Which city is Russia's capital?",
+            "capital of the Russian Federation",
+        ],
+    ),
+    (
+        "Japan",
+        "Q17",
+        "Q1490",
+        "The capital of Japan is Tokyo.",
+        &[
+            "What is the capital of Japan?",
+            "Which city is Japan's capital?",
+        ],
+    ),
+    (
+        "France",
+        "Q142",
+        "Q90",
+        "The capital of France is Paris.",
+        &[
+            "What is the capital of France?",
+            "What is the capital of the French Republic?",
+        ],
+    ),
+    (
+        "Germany",
+        "Q183",
+        "Q64",
+        "The capital of Germany is Berlin.",
+        &[
+            "What is the capital of Germany?",
+            "What is Germany's capital?",
+        ],
+    ),
+    (
+        "China",
+        "Q148",
+        "Q956",
+        "The capital of China is Beijing.",
+        &[
+            "What is the capital of China?",
+            "Which city is the capital of the People's Republic of China?",
+        ],
+    ),
+    (
+        "India",
+        "Q668",
+        "Q987",
+        "The capital of India is New Delhi.",
+        &[
+            "What is the capital of India?",
+            "Which city is India's capital?",
+        ],
+    ),
+    (
+        "Brazil",
+        "Q155",
+        "Q2844",
+        "The capital of Brazil is Brasília.",
+        &[
+            "What is the capital of Brazil?",
+            "Which city is Brazil's capital?",
+        ],
+    ),
+    (
+        "United States",
+        "Q30",
+        "Q61",
+        "The capital of the United States is Washington, D.C.",
+        &[
+            "What is the capital of the United States?",
+            "What is the capital of the USA?",
+        ],
+    ),
+    (
+        "United Kingdom",
+        "Q145",
+        "Q84",
+        "The capital of the United Kingdom is London.",
+        &[
+            "What is the capital of the United Kingdom?",
+            "What is the capital of the UK?",
+        ],
+    ),
+];
+
+#[test]
+fn capital_matrix_resolves_every_seeded_country() {
+    for (country, subject_qid, value_qid, expected_answer, prompts) in CAPITAL_CASES {
+        for prompt in *prompts {
+            let response = answer(prompt);
+            assert_eq!(
+                response.intent, "fact_lookup",
+                "{country} prompt {prompt:?} should route to fact_lookup, got {}",
+                response.intent,
+            );
+            assert_eq!(response.answer, *expected_answer);
+            assert!(
+                response.answer.contains(country),
+                "{country} prompt {prompt:?} should name the country, got: {}",
+                response.answer,
+            );
+            let subject_link = format!("wikidata:{subject_qid}");
+            let value_link = format!("wikidata:{value_qid}");
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link == &subject_link),
+                "{country} prompt {prompt:?} should record {subject_link}, got: {:?}",
+                response.evidence_links,
+            );
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link == &value_link),
+                "{country} prompt {prompt:?} should record {value_link}, got: {:?}",
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
+fn capital_matrix_records_structured_fact_query_trace() {
+    // The Russian "столица России" trace should include the structured
+    // `fact_query:relation:capital` event and the subject term, so the
+    // browser memory and the Rust solver agree on the reasoning shape.
+    let response = answer("столица россии");
+    let has_relation = response
+        .evidence_links
+        .iter()
+        .any(|link| link == "fact_query:relation:capital");
+    assert!(
+        has_relation,
+        "structured trace should record `fact_query:relation:capital`, got: {:?}",
+        response.evidence_links,
+    );
+    let has_subject = response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("fact_query:subject:"));
+    assert!(
+        has_subject,
+        "structured trace should record `fact_query:subject:*`, got: {:?}",
+        response.evidence_links,
+    );
+    let has_cache_hit = response
+        .evidence_links
+        .iter()
+        .any(|link| link == "fact_query:cache:hit:seed");
+    assert!(
+        has_cache_hit,
+        "structured trace should record a seed cache hit, got: {:?}",
+        response.evidence_links,
+    );
+}
+
+const MULTI_TURN_COREFERENCE_PROMPTS: &[&str] = &[
+    // After a previous "I love Rust." turn, this prompt should resolve "it".
+    "What features make it different from C?",
+    "How is it different from C?",
+    "Why is it safer than C?",
+    "Compare it with C.",
+    "What makes it safer than C?",
+];
+
+#[test]
+fn multi_turn_coreference_resolves_pronoun_against_history() {
+    let solver = UniversalSolver::default();
+    let history = [ConversationTurn::user("I love Rust.")];
+    for prompt in MULTI_TURN_COREFERENCE_PROMPTS {
+        let response = solver.solve_with_history(prompt, &history);
+        assert!(
+            response.intent.starts_with("coreference"),
+            "prompt {prompt:?} should route to coreference*, got: {}",
+            response.intent,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("prior_turn:")),
+            "prompt {prompt:?} should reference a prior_turn evidence link, got: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+const ROLEPLAY_PROMPTS: &[&str] = &[
+    "Pretend you are Albert Einstein and explain relativity to a teenager.",
+    "Act as Albert Einstein and explain relativity simply.",
+    "Roleplay as a teacher explaining relativity.",
+    "Explain like you are Ada Lovelace teaching algorithms.",
+    "Pretend you are a patient teacher and explain time dilation.",
+];
+
+#[test]
+fn roleplay_intent_routes_to_roleplay_handler() {
+    const EXPECTED_ANSWERS: &[&str] = &[
+        "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+        "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+        "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+        "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
+        "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields.",
+    ];
+    for (prompt, expected_answer) in ROLEPLAY_PROMPTS.iter().zip(EXPECTED_ANSWERS) {
+        let response = answer(prompt);
+        assert!(
+            response.intent.starts_with("roleplay"),
+            "prompt {prompt:?} should route to a roleplay* intent, got: {}",
+            response.intent,
+        );
+        assert_eq!(response.answer, *expected_answer);
+        if prompt.contains("Ada Lovelace") {
+            assert!(
+                response.answer.to_lowercase().contains("algorithm"),
+                "prompt {prompt:?} should keep the Ada Lovelace topic grounded in algorithms, got: {}",
+                response.answer,
+            );
+        }
+    }
+}

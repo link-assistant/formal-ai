@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "伊隆·马斯克"
+        },
+        "es": {
+          "language": "es",
+          "value": "Elon Musk"
         }
       },
       "descriptions": {
@@ -32,11 +36,15 @@
         },
         "hi": {
           "language": "hi",
-          "value": "दक्षिण अफ्रीकी-कनाडाई-अमेरिकी व्यापारी (जन्म: 1971)"
+          "value": "अमेरिकी व्यापारी (जन्म 1971)"
         },
         "zh": {
           "language": "zh",
           "value": "美國企業家、投資人，前任美國政府效率部負責人"
+        },
+        "es": {
+          "language": "es",
+          "value": "empresario estadounidense"
         }
       },
       "aliases": {
@@ -110,8 +118,45 @@
             "value": "馬誼郎"
           }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Elon Musk"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Маск, Илон"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "एलन मस्क"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "埃隆·马斯克"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Elon Musk"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

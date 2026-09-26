@@ -14,7 +14,7 @@ other document, gate or requirement contradicts that page, the other one is wron
 system.** We do not solve a task by editing code and data by hand and we do not
 solve it partway and defer the rest to a roadmap. We solve it by **driving Formal
 AI through its own [Agent CLI](https://github.com/link-assistant/agent)** (the
-in-repo agentic driver in `src/agentic_coding/`, running against the
+in-repo agentic driver in `rust/src/agentic_coding/`, running against the
 OpenAI-compatible `formal-ai serve` server), and we get *every* requirement done
 in the same pull request.
 
@@ -68,7 +68,7 @@ Concretely, every change must follow these rules:
    hardcode inputs and expected outputs (that is what a test is *for*), but the
    engine, planner, seed loader, and Agent-CLI-driven recipes never branch on a
    specific concept, phrase, or URL. If the only way to make a green case pass
-   is a match-on-literal in `src/`, extend the general routing table (`concept
+   is a match-on-literal in `rust/src/`, extend the general routing table (`concept
    registry`, `capability classifier`, `plan_chat_step`) so future concepts get
    the same treatment for free.
 8. **Real logs in the case study, not synthesized ones.** When a case study
@@ -108,12 +108,12 @@ Formal AI's output against `claude` and `codex` on the reported request.
 ### Replaying the self-coding loop
 
 ```bash
-cargo build --release --bin formal-ai
-examples/self-coding/run.sh
-cargo test self_coding_session_replays
+cargo build --manifest-path rust/Cargo.toml --release --bin formal-ai
+rust/examples/self-coding/run.sh
+cargo test --manifest-path rust/Cargo.toml self_coding_session_replays
 ```
 
-For a real GitHub issue, run `examples/self-coding/run.sh --live ISSUE_URL`,
+For a real GitHub issue, run `rust/examples/self-coding/run.sh --live ISSUE_URL`,
 which invokes the command below — Hive Mind drives the Agent CLI, which drives
 the local Formal AI server:
 
@@ -271,7 +271,7 @@ Two rules keep that down, and both are measured in
   longer buys them.
 
 - **Do not run a check twice on identical inputs.** `detect-changes` compares
-  the whole pull-request range, so a branch that once touched `src/` used to
+  the whole pull-request range, so a branch that once touched `rust/src/` used to
   re-run every Rust check on every later docs-only push. Eight heavy checks
   now consult `.github/actions/green-ledger`: the content of the check's
   inputs is hashed (the same key `formal-ai-binary` uses), and a marker saved
@@ -280,7 +280,7 @@ Two rules keep that down, and both are measured in
   its body. The marker rides on `actions/cache`, whose post step runs only on
   success, so a failing job can never record itself green; `main` never skips.
   To force a check, edit its workflow file (always part of its inputs) or run
-  it by `workflow_dispatch`. `tests/unit/ci-cd/issue_1107_green_ledger.rs`
+  it by `workflow_dispatch`. `rust/tests/unit/ci-cd/issue_1107_green_ledger.rs`
   pins the contract.
 
 Neither rule may become a silent skip. A job that does not run on a branch is
@@ -314,7 +314,7 @@ iteration has nothing to act on. The container is gone and that cause is
 unrecoverable. The full timeline, root causes, and raw evidence are in
 [`docs/case-studies/issue-973/README.md`](docs/case-studies/issue-973/README.md).
 
-`tests/issue_973_solve_flags.rs` enforces the policy: it scans the guides and
+`rust/tests/issue_973_solve_flags.rs` enforces the policy: it scans the guides and
 scripts this repository publishes and fails when any `solve` invocation drops
 either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and
 `experiments/` is exempt — a past run stays as it happened.
@@ -444,8 +444,13 @@ Removal from a public thread is not approval to retain another copy.
 
 5. **Build the project**
 
+   The repository has three source roots — `rust/` (the crate), `js/` (the
+   hand-iterated web surface) and `ts/` (generated from `js/`); see
+   [docs/source-roots.md](docs/source-roots.md). From the repository root,
+   Cargo commands address the crate through its manifest:
+
    ```bash
-   cargo build
+   cargo build --manifest-path rust/Cargo.toml
    ```
 
 ## Development Workflow
@@ -466,42 +471,104 @@ Removal from a public thread is not approval to retain another copy.
 
    ```bash
    # Format code
-   cargo fmt
+   cargo fmt --manifest-path rust/Cargo.toml
 
    # Lint executable test targets; compile-check examples without linking 100+ binaries
-   cargo clippy --lib --bins --tests --all-features
-   cargo check --examples --all-features
+   cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features
+   cargo check --manifest-path rust/Cargo.toml --examples --all-features
 
    # Check file sizes (requires rust-script)
    rust-script scripts/check-file-size.rs
 
-   # Check for hardcoded natural language in src/ (R379, requires rust-script)
+   # Check for hardcoded natural language in rust/src/ (R379, requires rust-script)
    rust-script scripts/check-hardcoded-language.rs
 
    # Run all checks together
-   cargo fmt --check && cargo clippy --lib --bins --tests --all-features && cargo check --examples --all-features && rust-script scripts/check-file-size.rs && rust-script scripts/check-hardcoded-language.rs
+   cargo fmt --manifest-path rust/Cargo.toml --check && cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features && cargo check --manifest-path rust/Cargo.toml --examples --all-features && rust-script scripts/check-file-size.rs && rust-script scripts/check-hardcoded-language.rs
    ```
 
 4. **Run tests**
 
    ```bash
    # Run all tests
-   cargo test
+   cargo test --manifest-path rust/Cargo.toml
 
    # Run tests with verbose output
-   cargo test --verbose
+   cargo test --manifest-path rust/Cargo.toml --verbose
 
    # Run doc tests
-   cargo test --doc
+   cargo test --manifest-path rust/Cargo.toml --doc
 
    # Run a specific test
-   cargo test test_name
+   cargo test --manifest-path rust/Cargo.toml test_name
 
    # Run the browser unit suite (the site's production JavaScript)
    npm run test:web
    ```
 
    CI caps each test-matrix job at 10 minutes. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
+
+   **Work in bulk; verify selectively.** Draft the whole change set — tests
+   and code together — before running anything, then let it fail in its
+   entirety and fix the failures with as few CI/CD runs as possible.
+   Small-change iteration multiplies CI runs; a batch fixed once is
+   cheaper than ten steps each verified alone. Three rules follow from
+   that:
+
+   - Every plan is drafted in tests and code first. If the drafting is
+     not finished, continue drafting — do not start fixing half a plan.
+   - Run only the specific tests you changed locally (the filter
+     arguments above); rely on CI/CD for everything else. The
+     workstation is a notebook: full suites belong to CI, and
+     sub-agents or helper scripts must never run them locally either.
+   - On long batches, commit at least once every four hours, and push
+     only after re-reading the issue, the pull request, and the diff
+     one more time.
+
+   **The three-root cycle is js-first.** Rust, JavaScript and TypeScript
+   are all full implementation roots — client and backend — kept
+   equivalent through the meta language rather than by shrinking any
+   root out (standing doctrine of 2026-09-24, R992-R996; it supersedes
+   the 2026-08-04 interfacing-only-JavaScript boundary). Because
+   JavaScript executes faster than Rust compiles, author and test a
+   change in `js/` first when the change touches shared logic, then
+   translate outward rather than hand-porting:
+
+   ```bash
+   formal-ai translate --list                  # every direction and its status
+   formal-ai translate --from rust --to meta --input rust/src/module.rs
+   ```
+
+   Translation in any direction goes through the meta pivot
+   (`rust/src/meta_translate.rs`); a leg that is not materialized yet
+   names the plan-16 leaf that owes it
+   ([plan 16](docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md))
+   instead of silently producing nothing. Today only `rust → meta` is
+   live, so the cycle's practical form is still rust-authored; do not
+   claim the closed js-first loop until plan 16 L4 (path-filtered CI)
+   and L5 (CST-equal round trip) land.
+
+   **Delegate to Opus sub-agents only.** Sub-agents are always run on
+   the Opus model; the Fable model must never be used as a sub-agent
+   (project owner directive, 2026-09-15). Keep the agent count low —
+   the workstation is a notebook, and a fleet of agents competes with
+   the build for the same memory.
+
+   **Classify CI failures before touching them.** A branch with
+   tracked, owner-assigned reds (an allowlisted failing test, an
+   evidence gate awaiting a later wave, a rustfmt item already
+   assigned) is not an emergency; fix only failure classes that are
+   new to the branch, and record new standing reds in the owning plan
+   instead of churning the same site twice.
+
+   **Recover requirements from session transcripts.** When auditing
+   that every user directive made it into the requirements, recover
+   the user's messages from the session `.jsonl` transcripts with
+   `experiments/issue_1138_feedback_recovery/collect_user_feedback.py`
+   (it strips harness wrappers, agent reports, and cron echoes) and
+   diff the recovered directives against `docs/requirements/` — new
+   process or architecture notes discovered this way are recorded in
+   this file or the requirements shards, not left in chat history.
 
 5. **Add a changelog fragment**
 
@@ -604,7 +671,28 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
   scripts/cargo-test.sh --test unit issue_907    # one module
   ```
 
-  **macOS runs platform tests, not the whole suite.** No code in `src/` branches
+  **Fast local iteration on one test binary.** The test profile ships with
+  `incremental = false` (`Cargo.toml`) — a deliberate CI choice — so every
+  one-line source edit recompiles the whole crate: measured 2m43s for
+  `cargo test --manifest-path rust/Cargo.toml --test unit --no-run` after `touch rust/src/lib.rs` on the
+  reference notebook (2 jobs, opt-level 2, `debug = 0` already set). Turning
+  incremental compilation back on locally, in its own target directory so
+  the checked-in profile and the shared cache stay untouched:
+
+  ```bash
+  CARGO_TARGET_DIR=/tmp/formal-ai-target-incr \
+  CARGO_PROFILE_TEST_INCREMENTAL=true CARGO_PROFILE_DEV_INCREMENTAL=true \
+  CARGO_BUILD_JOBS=2 cargo test --manifest-path rust/Cargo.toml --offline --test unit -- <filters>
+  ```
+
+  measured **1m11s** for the same touch — a 2.3x faster edit-compile loop —
+  after one 7m05s cold build, with the directory holding ~4.8 GB against
+  ~9.7 GB for the non-incremental one. Keep one directory, not both, when
+  disk is tight, and remember the filters follow `--`
+  (`cargo test --manifest-path rust/Cargo.toml --test unit -- filter_a filter_b`): placed before it, cargo
+  reads them as bin arguments and errors out.
+
+  **macOS runs platform tests, not the whole suite.** No code in `rust/src/` branches
   on macOS versus Linux — all eight conditionals are `cfg(unix)`, true on both —
   so pure Rust logic cannot behave differently there. Every macOS-only failure
   this repository has recorded came from the environment instead: GNU coreutils
@@ -723,6 +811,28 @@ mod tests {
 }
 ```
 
+## Self-maintained dependencies and patches
+
+When a build step, the translator, or a layer check needs a feature a
+self-maintained dependency has not released, the workaround is a
+`[patch]`-style source install — and the debt it creates is tracked where
+debt belongs:
+
+- Every `[patch]` or source-install entry in `Cargo.toml` carries a comment
+  beside it referencing, by URL, the issue that lists what is patched and
+  what blocks using the latest release. The gate
+  `rust/tests/unit/ci-cd/issue_1138_dependency_patches.rs` fails the build when
+  an entry appears without one, and when the lockfile resolves git sources
+  the manifest does not declare.
+- One issue per dependency — not one issue per patch. The issue stays open
+  until the last patch for that dependency is gone.
+- Issues filed against dependencies are written **generally**: state the
+  general case the dependency is missing, not what Formal AI happens to
+  need. The general case moves into the dependency; this repository's own
+  code shrinks. A patch is a bridge, and its issue is the plan to remove
+  it — an untracked patch is invisible debt, because nothing fails when
+  the upstream release lands and nothing ever removes it.
+
 ## Project Conventions (recurring maintainer recommendations)
 
 These conventions recur in almost every issue review. They are collected here so
@@ -732,12 +842,12 @@ agent whose every answer is a projection of an append-only event log, with no
 hardcoded prompt→answer tables.
 
 1. **Mirror parity (Rust ↔ JS worker).** Every reasoning path in the Rust engine
-   (`src/*.rs`) has a twin in the browser worker (`src/web/formal_ai_worker.js`
-   loader plus the `src/web/worker/formal_ai_worker_*.js` shards),
+   (`rust/src/*.rs`) has a twin in the browser worker (`js/worker/formal_ai_worker.js`
+   loader plus the `js/worker/formal_ai_worker_*.js` shards),
    so the CLI, library, HTTP server, Telegram bot, and website all answer the
    same prompt identically. A behavioural change in one **must** be mirrored in
    the other in the same PR. Name and comment the twin so the parity is obvious
-   (e.g. "Mirrors `try_x` in `src/solver_handler_x.rs`").
+   (e.g. "Mirrors `try_x` in `rust/src/solver_handler_x.rs`").
    Mirror parity is the transitional contract while JS worker logic remains:
    under the compiled-logic doctrine (REQUIREMENTS.md R536), prefer absorbing
    the path into the Rust→WASM worker over adding a new JS twin, and never
@@ -757,9 +867,9 @@ hardcoded prompt→answer tables.
      (`seed::response_for(intent, lang)` in Rust, `answerFor(...)` in the
      worker). Code fills placeholders like `{command}`; it does not embed the
      surrounding prose.
-   - **Web front-end (React).** Every string the user sees in `src/web/app.js`
+   - **Web front-end (React).** Every string the user sees in `js/app.js`
      — permission-panel titles, button labels, status words, onboarding copy,
-     system messages — is a catalog entry in `src/web/i18n-catalog.lino`, looked
+     system messages — is a catalog entry in `js/i18n-catalog.lino`, looked
      up at render time via `t("<key>", params)` (the `window.FormalAiI18n`
      engine). Never pass a prose string literal as a child of `h(...)`; route it
      through `t(...)` so it follows the active UI language and fills placeholders
@@ -770,11 +880,11 @@ hardcoded prompt→answer tables.
    natural-language word can be *formalized* back into a meaning. Code only ever
    moves meanings around; the words live in the seed. Add a new cue or answer by
    editing the `.lino` file and declaring the role/intent — not by typing a
-   phrase into `src/*.rs` or `formal_ai_worker.js`.
+   phrase into `rust/src/*.rs` or `formal_ai_worker.js`.
 
    This is enforced by CI, not just convention:
-   - **Total reference-closure gate** (`tests/unit/total_closure.rs` →
-     `scripts/audit-total-closure.py`, run by `cargo test --tests`). Every bare
+   - **Total reference-closure gate** (`rust/tests/unit/total_closure.rs` →
+     `scripts/audit-total-closure.py`, run by `cargo test --manifest-path rust/Cargo.toml --tests`). Every bare
      value token in any `data/seed/*.lino` must resolve to a defined meaning, a
      declared role, a cached dictionary lemma, or a Wikidata id. New vocabulary
      that resolves to nothing fails the build. Ground new tokens by running
@@ -798,27 +908,27 @@ hardcoded prompt→answer tables.
      `node experiments/issue-513-sync-worker-terminal.mjs --check`). Refresh
      the web seed copy with `scripts/sync-seed.sh` or by running the same script
      without `--check`.
-   - **Web-UI hardcoded-string guard (#511).** `npm --prefix tests/e2e run
-     check:web-hardcoded-ui` parses every `h(...)` call in `src/web/app.js` and
+   - **Web-UI hardcoded-string guard (#511).** `npm --prefix rust/tests/e2e run
+     check:web-hardcoded-ui` parses every `h(...)` call in `js/app.js` and
      fails the build when a child argument is a bare prose string literal, so new
-     English text cannot leak into the UI. `npm --prefix tests/e2e run check:i18n`
+     English text cannot leak into the UI. `npm --prefix rust/tests/e2e run check:i18n`
      asserts every required key exists in all four locales and that sample
      interpolations render. When you add a web-UI string: add the key + all four
-     translations in `src/web/i18n-catalog.lino`, register it in `REQUIRED_KEYS`
-     in `tests/e2e/scripts/check-i18n-catalog.mjs`, and render it with `t(...)`.
+     translations in `js/i18n-catalog.lino`, register it in `REQUIRED_KEYS`
+     in `rust/tests/e2e/scripts/check-i18n-catalog.mjs`, and render it with `t(...)`.
 
    See `docs/design/no-hardcoded-natural-language.md` for the full rationale,
    the meanings ↔ naturalization model, and a worked example.
 
 3. **Roles are declared, then generated.** When you add a meaning with a new
-   `role`, declare it as a `ROLE_*` constant in `src/seed/roles/*.rs`, re-export
-   it from `src/seed.rs`, and regenerate the registry with
+   `role`, declare it as a `ROLE_*` constant in `rust/src/seed/roles/*.rs`, re-export
+   it from `rust/src/seed.rs`, and regenerate the registry with
    `python3 scripts/generate-role-registry.py` (keeps `data/seed/roles.lino` in
    lockstep; enforced by `reference_closure` tests).
 
 4. **Supported-language coverage.** New conversational cues should cover the
    project's supported languages (currently en, ru, hi, zh). The
-   `tests/e2e/scripts/check-*.mjs` guards fail a one-language change.
+   `rust/tests/e2e/scripts/check-*.mjs` guards fail a one-language change.
    Translation changes have the stricter issue #526 rule: add or update
    round-trip tests that prove language-to-meta-to-same-language survival and
    every supported language-pair path through the meta language. Code
@@ -837,8 +947,8 @@ hardcoded prompt→answer tables.
    from a reusable task shape, operation meaning, sourced part, or verified
    composition—not from an upstream case id, entry-point name, or copied task
    sentence. When the upstream HumanEval/MBPP payloads are cached, run
-   `cargo test --test unit coding_discovery::no_memorization -- --nocapture`;
-   the gate scans `src/` and `data/seed/` against the downloaded slice. A
+   `cargo test --manifest-path rust/Cargo.toml --test unit coding_discovery::no_memorization -- --nocapture`;
+   the gate scans `rust/src/` and `data/seed/` against the downloaded slice. A
    skipped cache is reported explicitly and is not evidence that the gate
    passed. Generic language/library words need a narrow, reviewed allowlist.
 
@@ -908,15 +1018,15 @@ hardcoded prompt→answer tables.
     their own directories so neither is buried inside the other.
 
 14. **The 1500-line Links Notation cap covers cached data too (issue #960).**
-    `scripts/check-file-size.rs` and `tests/unit/data_files.rs` apply the cap to
+    `scripts/check-file-size.rs` and `rust/tests/unit/data_files.rs` apply the cap to
     every `.lino` file in the repository, `data/cache/wikidata/` included.
     Generated-but-committed is not a reason to be exempt; it is the reason to be
     measured, because the generator is what can breach the cap. When a fetched
     response would exceed it, split it into `<bucket>-partN.lino` the way
-    `examples/refresh_translation_cache.rs` already does.
+    `rust/examples/refresh_translation_cache.rs` already does.
 
 15. **Budget cache buckets: 128 records each (issue #960).**
-    `MAX_SEED_RECORDS_PER_BUCKET` in `src/translation/cache.rs` is enforced, not
+    `MAX_SEED_RECORDS_PER_BUCKET` in `rust/src/translation/cache.rs` is enforced, not
     merely recorded: `scripts/check-cache-budget.rs` fails when a bucket under
     `data/cache/` holds more than 128 records (a record is a file stem, so
     `Q1860.json` and `Q1860.lino` count once). Bucket or trim instead of growing
@@ -962,10 +1072,26 @@ fresh clone is already conflict-proof.
 | --- | --- | --- |
 | a Rust module or test module | append the `mod` line anywhere in the list file; `rust-script scripts/normalize-ordered-lists.rs --write` sorts it | edit the list by hand to keep it sorted — the union driver will reorder it anyway |
 | a CI check | write one file in `data/meta/ci-gates/`, named after the check | add a `- name:`/`- run:` step to `.github/workflows/release.yml` |
-| a `data/seed/*.lino` file | add one `seed <name>` entry to `data/meta/seed-registry.lino` and run `rust-script scripts/generate-seed-registry.rs --write` | edit `src/seed/embedded.rs`, `src/seed/embedded_registry.rs`, `src/web/seed-files.js`, or the loader's file list |
-| a requirement | write `docs/requirements/issue-NNNN-*.md` and run `rust-script scripts/assemble-requirements.rs --write` | append a section to `REQUIREMENTS.md` |
+| a `data/seed/*.lino` file | add one `seed <name>` entry to `data/meta/seed-registry.lino` and run `rust-script scripts/generate-seed-registry.rs --write` | edit `rust/src/seed/embedded.rs`, `rust/src/seed/embedded_registry.rs`, `js/seed-files.js`, or the loader's file list |
+| a requirement | write `docs/requirements/issue-NNNN-*.md` and run `rust-script scripts/assemble-requirements.rs --write`; add one row per new ID to `docs/requirements-traceability.md` with the delivery date, the automated test, and an honest `not yet confirmed` while it is not | append a section to `REQUIREMENTS.md` |
 | a worker module | name the file after its subject (`formal_ai_worker_<subject>.js`) | claim the next free number |
 | generated data | commit it and register its regenerate + verify commands in the policy | leave it un-verified: a union merge of an artifact lands silently |
+
+**Documents that are pinned by tests.**
+
+Dozens of documentation assertions run in CI, and editing a document without its
+pin breaks the build. The mapping, so you know which suite to update:
+
+| Document | Pinned by |
+| --- | --- |
+| `docs/status.md` and the two generated regions in `README.md` and `docs/benchmarks.md` | `rust/tests/unit/docs_status.rs` — regenerate with `rust-script scripts/render-status.rs --write`; never edit the generated bytes by hand |
+| benchmark statements in `docs/benchmarks.md`, `VISION.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `README.md` | `rust/tests/unit/docs_benchmarks.rs` |
+| `REQUIREMENTS.md`, `docs/requirements/*.md`, `docs/requirements-traceability.md`, and the requirement-status ledger | `rust/tests/unit/docs_requirements.rs` and the per-issue modules under `rust/tests/unit/docs_requirements/` |
+| issue citations across the narrative documents | `rust/tests/unit/docs_issue_citations.rs` |
+| `docs/architect-notes/` | `rust/tests/unit/architect_notes.rs` |
+| `docs/meta-algorithm.md` and the per-algorithm specification pages | the modules under `rust/tests/unit/specification/` |
+| cross-cutting `README.md`, `VISION.md`, and `CONTRIBUTING.md` rules | `rust/tests/issue_885_docs.rs`, `rust/tests/issue_973_solve_flags.rs` |
+| a specific issue's requirement shard | the matching `rust/tests/unit/docs_requirements/issue_NNNN.rs` |
 
 **The two rules behind the table.**
 
@@ -1064,10 +1190,14 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 │   └── parity/           # Cross-runtime parity fixtures
 ├── desktop/              # Electron desktop shell
 ├── docs/                 # Case studies, design notes, diagrams, guides
-├── examples/             # Usage examples
+│   ├── requirements-traceability.md  # One delivery row per requirement ID
+│   ├── benchmarks.md     # Every benchmark suite, its license, and honest scores
+│   ├── meta-algorithm.md # The grounded meta-algorithm and its procedures
+│   └── architect-notes/  # Dated notes from the architect, indexed in README.md
+├── rust/examples/             # Usage examples
 ├── experiments/          # Verification harnesses and one-off experiments
 ├── scripts/              # Rust scripts (via rust-script) and installers
-├── src/
+├── rust/src/
 │   ├── lib.rs            # Library entry point
 │   ├── main.rs           # Binary entry point
 │   ├── solver.rs         # UniversalSolver — the 11-step loop
@@ -1078,7 +1208,7 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 │   ├── translation/      # Formalization and translation through meanings
 │   ├── seed/             # Seed loading, lexicon, and role constants
 │   └── web/              # Browser demo: UI, worker/, and wasm-worker/
-├── tests/                # Unit, integration, source-mirror, and e2e tests
+├── rust/tests/                # Unit, integration, source-mirror, and e2e tests
 ├── vscode/               # VS Code extension (desktop and web)
 ├── .gitignore            # Git ignore patterns
 ├── .pre-commit-config.yaml  # Pre-commit hooks

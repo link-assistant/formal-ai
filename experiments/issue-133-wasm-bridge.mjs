@@ -10,7 +10,7 @@
 
 import { readFile } from "node:fs/promises";
 
-const bytes = await readFile(new URL("../src/web/formal_ai_worker.wasm", import.meta.url));
+const bytes = await readFile(new URL("../js/formal_ai_worker.wasm", import.meta.url));
 const module = await WebAssembly.instantiate(bytes, {});
 const wasm = module.instance.exports;
 

@@ -1,0 +1,8 @@
+# One CI gate, one file. The deletability half of plan 02 L18 -- the fragment
+# bootstrap is a runtime seed, so the suite must stay green when the seed is
+# moved aside, and a forgotten fragment must rediscover to the same content id.
+# `rust-script scripts/run-ci-gates.rs --stage rust` runs them.
+ci_gate check_bootstrap_deletability
+  stage rust
+  description "The fragment bootstrap is deletable: an absent seed yields an empty, logged catalog and a forgotten fragment rediscovers to the same content id, all offline."
+  run "cargo test --manifest-path rust/Cargo.toml --test unit coding_discovery::fragment_catalog -- --nocapture"

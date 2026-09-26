@@ -1,0 +1,278 @@
+# Membership taxonomy grounded in Wikidata subclass claims (issue 1138).
+# Every defined-by edge below mirrors the P279 statements of the grounded
+# items, fetched from the live Wikidata API on 2026-09-20.
+# clarinet Q8343 P279 Q217306, flute Q11405 P279 Q173453, violin Q8355 P279
+# Q192096, transposing instrument Q217306 P279 Q34379, wind instrument
+# Q173453 P279 Q659216, aerophone Q659216 P279 Q34379, bowed string
+# instrument Q192096 P279 Q1798603, string instrument Q1798603 P279 Q1051772,
+# chordophone Q1051772 P279 Q34379.
+# The violin moved here from the common-noun import batch so its Wikidata
+# subclass edge lives with its lexemes; every surface stays the one the
+# import cached from Q8355.
+meanings
+  clarinet
+    grounded-in Q8343
+    defined-by transposing-instrument
+    lexeme en
+      surface
+        text clarinet # source Q8343 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text кларнет # source Q8343 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 單簧管 # source Q8343 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text clarinete # source Q8343 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  transposing-instrument
+    grounded-in Q217306
+    defined-by musical-instrument
+    lexeme en
+      surface
+        text "transposing instrument" # source Q217306 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text "транспонирующие музыкальные инструменты" # source Q217306 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 移调乐器 # source Q217306 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text "instrumento transpositor" # source Q217306 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  flute
+    grounded-in Q11405
+    defined-by wind-instrument
+    lexeme en
+      surface
+        text flute # source Q11405 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text флейта # source Q11405 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme hi
+      surface
+        text बांसुरी # source Q11405 labels.hi.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 笛 # source Q11405 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text flauta # source Q11405 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  wind-instrument
+    grounded-in Q173453
+    defined-by aerophone
+    lexeme en
+      surface
+        text "wind instrument" # source Q173453 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text "духовой музыкальный инструмент" # source Q173453 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme hi
+      surface
+        text "हवा उपकरण" # source Q173453 labels.hi.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 管樂器 # source Q173453 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text "instrumento de viento" # source Q173453 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  aerophone
+    grounded-in Q659216
+    defined-by musical-instrument
+    lexeme en
+      surface
+        text aerophone # source Q659216 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text аэрофоны # source Q659216 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme hi
+      surface
+        text एरोफोन # source Q659216 labels.hi.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 氣鳴樂器 # source Q659216 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text aerófono # source Q659216 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  musical-instrument
+    grounded-in Q34379
+    defined-by entity
+    lexeme en
+      surface
+        text "musical instrument" # source Q34379 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text "музыкальный инструмент" # source Q34379 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme hi
+      surface
+        text "वाद्य यन्त्र" # source Q34379 labels.hi.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 乐器 # source Q34379 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text "instrumento musical" # source Q34379 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  violin
+    grounded-in Q8355
+    defined-by entity
+    defined-by bowed-string-instrument
+    lexeme en
+      surface
+        text violin # source Q8355 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text скрипка # source Q8355 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme hi
+      surface
+        text वायलिन # source Q8355 labels.hi.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 小提琴 # source Q8355 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text violín # source Q8355 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  bowed-string-instrument
+    grounded-in Q192096
+    defined-by string-instrument
+    lexeme en
+      surface
+        text "bowed string instrument" # source Q192096 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text "смычковый струнный музыкальный инструмент" # source Q192096 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 弓弦乐器 # source Q192096 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text "instrumento de cuerda frotada" # source Q192096 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  string-instrument
+    grounded-in Q1798603
+    defined-by chordophone
+    lexeme en
+      surface
+        text "string instrument" # source Q1798603 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text "струнный музыкальный инструмент" # source Q1798603 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme hi
+      surface
+        text तंतुवाद्य # source Q1798603 labels.hi.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 弦樂器 # source Q1798603 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text "instrumento de cuerda" # source Q1798603 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+  chordophone
+    grounded-in Q1051772
+    defined-by musical-instrument
+    lexeme en
+      surface
+        text chordophone # source Q1051772 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text хордофон # source Q1051772 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme hi
+      surface
+        text "कर्ड़ फोन" # source Q1051772 labels.hi.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 絃鳴樂器 # source Q1051772 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text cordófono # source Q1051772 labels.es.value
+        part_of_speech noun
+        grammatical_number singular

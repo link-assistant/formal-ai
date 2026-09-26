@@ -1,0 +1,2186 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.791Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.791Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.wkx1nz9H3j",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.791Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.wkx1nz9H3j",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.792Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.wkx1nz9H3j",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.801Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.801Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.802Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.803Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.803Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.809Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.810Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.wkx1nz9H3j/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.812Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 16746,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.813Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.833Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 36,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:19:05.838Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.842Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.842Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.843Z",
+  "service": "session",
+  "id": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.wkx1nz9H3j",
+  "title": "New session - 2026-09-16T03:19:05.843Z",
+  "time": {
+    "created": 1789528745843,
+    "updated": 1789528745843
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.847Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.847Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.847Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 5,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.847Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.847Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c6588cfferO3yEj78YbbgZe/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.847Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c6588cfferO3yEj78YbbgZe/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.850Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c6588cfferO3yEj78YbbgZe/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.853Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.854Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.855Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.855Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.855Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.855Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.855Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.856Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.856Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.856Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:05.856Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.060Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.064Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.064Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.071Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.076Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.080Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.080Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.081Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:06.085Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:07.172Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528747172,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839aca2001RYIHfNMzmfDZD6",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839a84f0015stA7OULKni1rI",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:07.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:07.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528747173,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839aca5001Q95mDIJQmpsPnZ",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839a84f0015stA7OULKni1rI",
+    "type": "tool",
+    "callID": "call_5d2ba1439191f41b",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:07.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528747173,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839aca40012b8LirdMoE0Dmm",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839a84f0015stA7OULKni1rI",
+    "type": "text",
+    "text": "Let me search the web for Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis.",
+    "time": {
+      "start": 1789528747173,
+      "end": 1789528747173
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:07.174Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528747174,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839aca5001Q95mDIJQmpsPnZ",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839a84f0015stA7OULKni1rI",
+    "type": "tool",
+    "callID": "call_5d2ba1439191f41b",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis"
+      },
+      "time": {
+        "start": 1789528747173
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.629Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528750629,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839aca5001Q95mDIJQmpsPnZ",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839a84f0015stA7OULKni1rI",
+    "type": "tool",
+    "callID": "call_5d2ba1439191f41b",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis"
+      },
+      "output": "Title: La hora actual en Tiflis, Georgia es\nURL: https://time.is/es/Tbilisi\nPublished: N/A\nAuthor: N/A\nHighlights:\nLa hora actual en Tiflis, Georgia es\n...\n# La hora actual en Tiflis, Georgia es\n...\n10:36:54 AM\n\n Miércoles, Junio 10, 2026, Semana 24\n...\nGeorgia Standard Time (GET) ahora 8 horas adelantado a Nueva York\n...\n- Salida del Sol: 05:26AM\n...\n- Puesta del Sol: 20:34PM\n- Duración del Día: 15h 9m\n- Mediodia solar: 13:00PM\n- La actual hora local en Tiflis es la de 60 minutos Antes de de la Hora Solar Aparente.\n\n---\n\nTitle: ¿Qué hora es en Tiflis? Hora actual y zonas horarias\nURL: https://hora-en.com/asia/georgia/tiflis/\nPublished: 2026-01-27T17:12:19.000Z\nAuthor: N/A\nHighlights:\nLa hora actual en Tiflis es 17:00:34\n...\nLa fecha es miércoles, 17 de junio de 2026\n...\nZona horaria: Asia/Tbilisi (UTC+4)\n...\nTiflis se encuentra en la zona horaria de Asia/Tbilisi, con un desplazamiento de UTC+4. No obstante, Georgia no observa el horario de verano, por lo que este desplazamiento se mantiene constante durante todo el año. Esto significa que no hay cambios estacionales en la hora, lo que simplifica la planificación de actividades entre regiones.\n...\nEn comparación con España, que tiene un desplazamiento de UTC+1 en horario estándar y UTC+2 durante el horario de verano, Tiflis está tres horas por delante de la península ibérica en invierno y dos horas en verano. Esto implica que, al mediodía en Tiflis, son las 9:00 en Madrid en invierno y las 10:00 en verano. Para contactar a alguien en Tiflis, lo mejor es hacerlo entre las 10:00 y las 18:00 de su horario local, lo que resulta en un rango de 7:00 a 15:00 en España durante el invierno.\n...\nEn esta sección de FAQ, encontrarás\n...\nútil sobre la\n...\nen Tiflis, incluyendo\n...\notras ciudades. Además, ofrecemos\n...\nicos para que puedas planificar tus actividades y comunicaciones de\n...\n⏰ ¿Qué hora es ahora en Tiflis?\n\n---\n\nTitle: Hora actual en Tiflis, Georgia – ‪What Time Is‬ - whattime.is\nURL: https://whattime.is/es/time-in/Georgia/Tiflis\nPublished: N/A\nAuthor: N/A\nHighlights:\n## Hora actual en Tiflis, Georgia\n...\nLa hora en la ciudad de Tiflis\n...\nAñada la ciudad de Tiflis (Georgia) a su listado y utilice la tabla para visualmente comparar su zona horaria con otra zona o el tiempo de otra ciudad.Coloque el ratón sobre las teselas coloreadas de hora para ver las horas de todas las ubicaciones seleccionadas en la columna. Huso horario actual para la ciudad de Tiflis (Georgia) es Asia/Tbilisi, lo que supone una diferencia de GMT+4 con la Hora Media de Greenwich (GMT). El identificador IANA del huso horario para la ciudad de Tiflis, Georgia es \"Asia/Tbilisi\" Actualmente no se cambia al horario de verano.\n...\nAmanecer, ocaso y horas de luz en la ciudad de Tiflis\n...\n7:50:35\n...\nDuración de la noche\n...\nm 4\n\n---\n\nTitle: Hora actual en Tiflis, Georgia\nURL: https://timezone360.com/es/time-in/Georgia/Tiflis\nPublished: N/A\nAuthor: N/A\nHighlights:\n## Hora actual en Tiflis, Georgia\n...\nLa hora en la ciudad de Tiflis\n...\nAñada la ciudad de Tiflis (Georgia) a su listado y utilice la tabla para visualmente comparar su zona horaria con otra zona o el tiempo de otra ciudad.Coloque el ratón sobre las teselas coloreadas de hora para ver las horas de todas las ubicaciones seleccionadas en la columna. Huso horario actual para la ciudad de Tiflis (Georgia) es Asia/Tbilisi, lo que supone una diferencia de GMT+4 con la Hora Media de Greenwich (GMT). El identificador IANA del huso horario para la ciudad de Tiflis, Georgia es \"Asia/Tbilisi\" Actualmente no se cambia al horario de verano.\n...\nAmanecer, ocaso y horas de luz en la ciudad de Tiflis\n...\n7:40:20\n...\nDuración de la noche\n\n---\n\nTitle: Hora en Tiflis | diferencia horaria con Tiflis  [Georgia]\nURL: https://relojmundial.org/tiflis-geo\nPublished: N/A\nAuthor: N/A\nHighlights:\nTiflis\n...\n¿Que hora es en berlín actualmente en Tiflis\n\n 05:28:05 \n\nSábado 22 Agosto 2026, semana 34 (UTC +4)\n...\n### ¿Qué hora es en Tiflis?\n...\nSi te lo perdiste, la hora en Tiflis es 05:28.\n\n---\n\nTitle: Current Time for Tbilisi Georgia\nURL: https://convertit.com/Go/InfoSpain/World_Time/Current_Time.ASP?For=Tbilisi+Georgia\nPublished: N/A\nAuthor: N/A\nHighlights:\nCurrent Time for Tbilisi Georgia\n...\n| Current Local Time:In 24-hour Notation: | Wed., Feb. 18, 2026 06:29:50 P.M. GETWed., Feb. 18, 2026 18:29:50 GET |\n| --- | --- |\n| Local Time Zone: | Asia/Tbilisi |\n| Currently Observing: | Standard Time |\n| Universal Coordinated Time: | Wed., Feb. 18, 2026 14:29:50 UTC/GMT |\n...\n| Tbilisi, Georgia (City) |\n| --- |\n\n---\n\nTitle: Hora local actual en TBILISI, Georgia\nURL: https://www.worldtimeserver.com/hora-exacta-GE.aspx?ciudad=TBILISI\nPublished: N/A\nAuthor: N/A\nHighlights:\n### Que hora es en TBILISI, Georgia?Hora local\n...\n9:54\n...\n#### martes, 3 de marzo de 2026\n...\nHora estándar +0400 UTC\n...\nTiflis\n...\n¿Cuando es 24:00 el próximo\n...\nen TBILISI, Georgia, a qué hora y fecha que será donde usted vive? Utilice nuestro convertidor de zona hor\n...\npara cambiar la hora en TBIL\n...\na la hora local en otro lugar.\n\n---\n\nTitle: Hora exacta en Tiflis, Georgia\nURL: https://dayspedia.com/time/ge/Tbilisi/?lang=es\nPublished: N/A\nAuthor: N/A\nHighlights:\nHora actual en Tiflis, Georgia. Zona horaria local. Diferencia horaria.\n...\n# Hora exacta en Tiflis, Georgia\n...\n- Tiflis es 9 horas por delante de Plano \n- Amanecer 06:11, Atardecer 19:57, Duración del día 13:46\n- Luna 34.1%, Cuarto creciente \n- Hora Estándar De Georgia (GET), UTC+4\n- Wikipedia: Tiflis\n...\naria, hrs..",
+      "title": "Web search: Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis",
+      "metadata": {},
+      "time": {
+        "start": 1789528747173,
+        "end": 1789528750626
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.636Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528750636,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839ba28001F2KgwVeTLQgxMd",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839a84f0015stA7OULKni1rI",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8560,
+      "output": 174,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8734,
+      "headroom": 30122,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.647Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.647Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.657Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.678Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.678Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.689Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8734,
+  "providerTokens": 8734,
+  "estimatedInputTokens": 1664,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8560,
+    "cacheRead": 0,
+    "output": 174
+  },
+  "overflow": false,
+  "headroom": 30122,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.690Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.690Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.707Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:10.711Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:11.413Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528751413,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839bd32001sNGi26nwHWnf66",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839ba61001LyzOKptENX865k",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:11.414Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:11.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528751415,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839bd37001k6MyLweK49gctA",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839ba61001LyzOKptENX865k",
+    "type": "tool",
+    "callID": "call_b6921808ef216368",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:11.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528751415,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839bd36001Jg8weVNndTe615",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839ba61001LyzOKptENX865k",
+    "type": "text",
+    "text": "Let me open https://time.is/es/Tbilisi and read what it says.",
+    "time": {
+      "start": 1789528751415,
+      "end": 1789528751415
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:11.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528751415,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839bd37001k6MyLweK49gctA",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839ba61001LyzOKptENX865k",
+    "type": "tool",
+    "callID": "call_b6921808ef216368",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://time.is/es/Tbilisi"
+      },
+      "time": {
+        "start": 1789528751415
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.030Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528752030,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839bd37001k6MyLweK49gctA",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839ba61001LyzOKptENX865k",
+    "type": "tool",
+    "callID": "call_b6921808ef216368",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://time.is/es/Tbilisi"
+      },
+      "output": "La hora actual en Tiflis, Georgia es - Time.is\n\n\n\n\n\n×\n\n\n\nTime.is\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa hora actual en Tiflis, Georgia es&nbsp;&nbsp;07:19:11AM Miércoles,  Septiembre 16, 2026, Semana 38International Day for the Preservation of the Ozone LayerSol: &uarr; 06:40AM &darr; 19:11PM (12h 30m) - Más información - Usar Tiflis como tu ubicación predeterminada. - Agregar a ubicaciones favoritas.\nTokio12:19PMPekín11:19AMParís05:19AMLondres04:19AMNueva York23:19PMLos Ángeles20:19PMmás\n\n\n\nInformación de zona horaria para Tiflis\nUTC +4\nGeorgia Standard Time (GET)\nsiempre 3 horas detrás de Ciudad Ho Chi Minh\n\n\n\n\n\nTiflis no cambia entre hora de verano y hora de invierno.El identificador de Zona Horaria de IANA para Tiflis es Asia/Tbilisi.\n\n\n\n\nDiferencia de tiempo para Tiflis es:\nLos Ángeles−11 horas−11 horas\nChicago−9 horas−9 horas\nNueva York−8 horas−8 horas\nToronto−8 horas−8 horas\nSão Paulo−7 horas−7 horas\nUTC−4 horas−4 horas\nLagos−3 horas−3 horas\nLondres−3 horas−3 horas\nJohannesburgo−2 horas−2 horas\nParís−2 horas−2 horas\nZúrich−2 horas−2 horas\nCairo−1 horas−1 horas\nEstambul−1 horas−1 horas\nMoscú−1 horas−1 horas\nDubái0\nMumbai+1,5 horas\nHong Kong+4 horas\nShangai+4 horas\nSingapur+4 horas\nTokio+5 horas\nSídney+6 horas\n\n\n\n\nComparar otra zona horaria...\n\nMás información sobre Tiflis:\nSalida del Sol: 06:40AMPuesta del Sol: 19:11PMDuración del Día: 12h 30mMediodia solar: 12:56PMLa actual hora local en Tiflis es la de 56 minutos Antes de de la Hora Solar Aparente.\n\n\n\nTiflis en el mapa:\nTiflis es la capital de Georgia.Latitud: 41,69. Longitud: 44,83Población: 1.049.000\nAbrir Tiflis en Google Maps\n\n\n\n\n\nLas 24 ciudades más grandes de Georgia:\nAjaltsije Batum Bordshomi Gori Jashuri K'obulet'i Kaspi Kutaisi Marneuli Och'amch'ire Ozurgueti Poti Rustavi Samtredia Senaki Stantsiya Novyy Afon Sujumi, Abjasia Telavi Tiflis Tkuarchal Ts'khinvali Tsqaltubo Zestaponi Zugdidi \n\n\n\n×\n\n\n\nTime.is - Hora exacta para cualquier zona horaria.\nHora exactaTiempo aquí y alláSu zona horariaZonas horariasHorario de VeranoRelojCuenta regresivaTimerCalendarioCalendario compactoNúmero de semanaSonidoAplicacionesWidgetsNoticias de la zona horariaBoletín de NoticiasUTCReloj UnixConvertidor de Tiempo UnixPersonalizarTime.is Ad-freePreguntas Frecuentes¿Cómo usar Time.is?Acerca de Time.isContáctanosPublicitarTérminos de uso:Políticas de privacidad\n\n\n\n\n\n\nTime.is muestra la hora exacta de un reloj atómico oficial de cualquier zona horaria (más de 7 millones de lugares) en 58 idiomas.\n\n\nWhat time is it?\n几点了？\nक्या समय हुआ है?\n¿Qué hora es?\nQuelle heure est-il ?\nكم الساعة\nএখন কয়টা বাজে?\nКоторый час?\nQue horas são?\nJam berapa?\nWieviel Uhr ist es?\n今何時ですか？\nSaat kaç?\nஎன்ன நேரம்?\n؟ےہ اوہ تقو ایک\n&gg; more languages",
+      "title": "https://time.is/es/Tbilisi (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528751415,
+        "end": 1789528752029
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.036Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528752036,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839bfa2001PMIS9pm8LAb24F",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839ba61001LyzOKptENX865k",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 14147,
+      "output": 121,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 14268,
+      "headroom": 24588,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.036Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.039Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.045Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.046Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.048Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.048Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.048Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.048Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.049Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.049Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.053Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 14268,
+  "providerTokens": 14268,
+  "estimatedInputTokens": 2528,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 14147,
+    "cacheRead": 0,
+    "output": 121
+  },
+  "overflow": false,
+  "headroom": 24588,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.054Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.054Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.056Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.057Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528752372,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839c0f3001795xtOiP07b0J1",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839bfb5001k4UIMU47uqgnOn",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.373Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528752374,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839c0f5001ttgaI50zG7KCai",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839bfb5001k4UIMU47uqgnOn",
+    "type": "tool",
+    "callID": "call_94458a3e75329307",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528752374,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839c0f4001sr2q8AvMHJlRWK",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839bfb5001k4UIMU47uqgnOn",
+    "type": "text",
+    "text": "Let me open https://hora-en.com/asia/georgia/tiflis/ and read what it says.",
+    "time": {
+      "start": 1789528752374,
+      "end": 1789528752374
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:12.375Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528752375,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839c0f5001ttgaI50zG7KCai",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839bfb5001k4UIMU47uqgnOn",
+    "type": "tool",
+    "callID": "call_94458a3e75329307",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://hora-en.com/asia/georgia/tiflis/"
+      },
+      "time": {
+        "start": 1789528752374
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.959Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528754959,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839c0f5001ttgaI50zG7KCai",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839bfb5001k4UIMU47uqgnOn",
+    "type": "tool",
+    "callID": "call_94458a3e75329307",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://hora-en.com/asia/georgia/tiflis/"
+      },
+      "output": "¿Qué hora es en Tiflis? Hora actual y zonas horarias   \n\nInicioContinenteÁfricaAmérica del NorteAmérica del SurAsiaEuropaOceaníaBlog\n\nBuscar:\n\n\n\n\nmenu\n\n\nMenu                \n\nLuk                \n\nHora actual en Tiflis, Georgia InicioAsiaGeorgiaTiflisLa hora actual en Tiflis es 07:19:13La fecha es miércoles, 16 de septiembre de 2026Zona horaria: Asia/Tbilisi (UTC+4)2 horas después de EspañaLa ubicación geográfica es 41° 41.5&#039; N 44° 50.0&#039; EAmanecer: 06:41, Atardecer: 19:09, Duración del día: 12:27Fase lunar: 18.7% (Luna creciente)Tiflis está en el hemisferio norteEstación actual: Otoño🏙️ Ciudades cercanas🌍 Países cercanosTiflis, ubicada en el este de Georgia, se encuentra en las coordenadas 41.69143, 44.83412, en el valle del río Kura. Como capital del país, Tiflis es un importante centro cultural, político y económico de la región del Cáucaso. La ciudad es conocida por su arquitectura diversa, que combina elementos de influencias europeas y asiáticas, así como por su vibrante vida cultural y artística.Además, Tiflis es famosa por sus aguas termales, que han sido un atractivo desde tiempos antiguos. Tiflis opera en la zona horaria Asia/Tbilisi, lo que la posiciona como un punto de conexión entre Europa y Asia. Su importancia regional se destaca en el ámbito de comercio y transporte, siendo un nodo clave en las rutas que conectan los mercados de ambas regiones.Zona horaria en TiflisTiflis se encuentra en la zona horaria de Asia/Tbilisi, con un desplazamiento de UTC+4. No obstante, Georgia no observa el horario de verano, por lo que este desplazamiento se mantiene constante durante todo el año. Esto significa que no hay cambios estacionales en la hora, lo que simplifica la planificación de actividades entre regiones.En comparación con España, que tiene un desplazamiento de UTC+1 en horario estándar y UTC+2 durante el horario de verano, Tiflis está tres horas por delante de la península ibérica en invierno y dos horas en verano. Esto implica que, al mediodía en Tiflis, son las 9:00 en Madrid en invierno y las 10:00 en verano. Para contactar a alguien en Tiflis, lo mejor es hacerlo entre las 10:00 y las 18:00 de su horario local, lo que resulta en un rango de 7:00 a 15:00 en España durante el invierno.Ciudades cercanas como Yereván, en Armenia, y Bakú, en Azerbaiyán, también comparten el mismo huso horario que Tiflis, por lo que las diferencias horarias con estas ciudades son nulas. Esto facilita la coordinación de actividades en la región del Cáucaso.Atracciones y actividades en TiflisTiflis, la capital de Georgia, es una ciudad reconocida por su rica historia y su diversidad cultural. Situada en el cruce de Europa y Asia, Tiflis ha sido un importante centro comercial y cultural a lo largo de los siglos. Su arquitectura es un reflejo de esta fusión, donde se pueden encontrar edificios de varios estilos, desde iglesias ortodoxas hasta casas de madera con balcones en voladizo en el casco antiguo.La ciudad es famosa por su vibrante escena artística y su hospitalidad, lo que la convierte en un destino atractivo para los visitantes. Entre las atracciones más destacadas se encuentra la fortaleza de Narikala, que ofrece impresionantes vistas de la ciudad, y la catedral de Sameba, una de las más grandes del país. El barrio de Abanotubani, conocido por sus baños de azufre, resalta la tradición de bienestar y relajación de la región.Tiflis también alberga festivales culturales y gastronómicos que celebran la rica herencia de Georgia, haciendo de la ciudad un punto focal para quienes buscan experimentar su historia y su famosa hospitalidad.Información práctica para visitantesTiflis cuenta con un aeropuerto internacional, el Aeropuerto Internacional de Tiflis, que ofrece conexiones directas a varias ciudades europeas y de Asia. Desde el aeropuerto, se puede tomar un taxi o usar el servicio de autobuses, que conecta con el centro de la ciudad. También hay opciones de trenes y autobuses interurbanos que facilitan el acceso desde otras ciudades georgianas, como Batumi y Kutaisi.El clima en Tiflis es continental, con veranos calurosos e inviernos fríos. Las temperaturas en verano pueden superar los 30 grados Celsius, mientras que en invierno pueden bajar por debajo de cero. La mejor época para visitar Tiflis es durante la primavera (de abril a junio) y el otoño (de septiembre a noviembre), cuando el clima es más templado y agradable.Para los visitantes, es recomendable llevar un calzado cómodo, ya que muchas calles son empedradas y se disfrutan mejor a pie. Aprender algunas frases básicas en georgiano puede ser útil, ya que no todos los locales hablan inglés. Además, probar la gastronomía local, como el khachapuri y el khinkali, es una experiencia que no se debe perder.Ciudades cercanas que vale la pena visitarExplorar las ciudades cercanas a Tiflis es una invitación a descubrir una rica tapestria de cultura, historia y tradiciones vibrantes. Cada destino ofrece su propia esencia y belleza, y recorrer la región te permitirá sumergirte en experiencias únicas que enriquecerán tu viaje. ¡No te lo pierdas!🏙️\nTsqnet’iCerca • 11 km🏙️\nKoyoriCerca • 12 km🏙️\nDidi LiloCerca • 12 km🏙️\nZahesiCerca • 16 km🏙️\nRustavi128.249 Habitantes • 19 km🏙️\nMart’q’opiCerca • 19 km🏙️\nMiskhetaCerca • 20 km🏙️\nMarneuliCerca • 23 km🏙️\nDzegviCerca • 26 km🏙️\nSartich’alaCerca • 29 km🏙️\nTamarisiCerca • 29 km🏙️\nGardabaniCerca • 33 km🏙️\nAghaianiCerca • 35 km🏙️\nTetritsqaroCerca • 35 km🏙️\nBolnisiCerca • 36 km🏙️\nManglisiCerca • 37 km🏙️\nShaumianiCerca • 38 km🏙️\nSagarejoCerca • 41 km🏙️\nKaspiCerca • 43 km🏙️\nJvaraCerca • 45 km🏙️\nDushetiCerca • 45 km🏙️\nTianetiCerca • 48 km🏙️\nKazretiCerca • 49 km🏙️\nAkhmetaCerca • 49 km🏙️\nZhinvaliCerca • 49 km🏙️\nSamtavisiCiudad de la región • 50 km🏙️\nSadajloCiudad de la región • 50 km🏙️\nMat’aniCiudad de la región • 52 km🏙️\nAkhalgoriCiudad de la región • 56 km🏙️\nTelaviCiudad de la región • 58 km🏙️\nK’urdghelauriCiudad de la región • 60 km🏙️\nTrialetiCiudad de la región • 63 km🏙️\nTsalkaCiudad de la región • 63 km🏙️\nUplistsikheCiudad de la región • 63 km🏙️\nTs’inandaliCiudad de la región • 65 km🏙️\nDmanisiCiudad de la región • 66 km🏙️\nGoriCiudad de la región • 68 km🏙️\nPasanauriCiudad de la región • 74 km🏙️\nGurjaaniCiudad de la región • 81 km🏙️\nKareliCiudad de la región • 86 km🏙️\nKvareliCiudad de la región • 87 km🏙️\nK’ardenakhiCiudad de la región • 88 km🏙️\nSignagiCiudad de la región • 91 km🏙️\nAgaraCiudad de la región • 92 km🏙️\nGudauriCiudad de la región • 92 km🏙️\nTs’khinvaliCiudad de la región • 93 km🏙️\nTsnoriCiudad de la región • 95 km🏙️\nKhet’aguroviCiudad de la región • 97 km🏙️\nTbetiCiudad de la región • 97 km🏙️\nBagdadiCiudad de la región • 100 km🏙️\nSioniCiudad de la región • 104 km🏙️\nZnaurCiudad de la región • 104 km🏙️\nJashuriCiudad de la región • 108 km🏙️\nJavaCiudad de la región • 108 km🏙️\nStepantsmindaCiudad de la región • 109 km🏙️\nBakurianiCiudad de la región • 109 km🏙️\nDedoplistsqaroCiudad de la región • 109 km🏙️\nGorelovk’aCiudad de la región • 109 km🏙️\nSuramiCiudad de la región • 112 km🏙️\nTsagveriCiudad de la región • 113 km🏙️\nBak’urianis Andezit’iCiudad de la región • 113 km🏙️\nNinotsmindaCiudad de la región • 114 km🏙️\nAkhalkalakiCiudad de la región • 117 km🏙️\nBordshomiCiudad de la región • 120 km🏙️\nLagodekhiCiudad de la región • 120 km🏙️\nKhertvisiCiudad de la región • 131 km🏙️\nAspindzaCiudad de la región • 132 km🏙️\nSachkhereCiudad de la región • 138 km🏙️\nKharagauliCiudad de la región • 140 km🏙️\nChiaturaCiudad de la región • 144 km🏙️\nK’atskhiCiudad de la región • 150 km🏙️\nOniCiudad de la región • 152 km🏙️\nShorapaniCiudad de la región • 152 km🏙️\nAjaltsijeCiudad de la región • 154 km🏙️\nZestaponiCiudad de la región • 156 km🏙️\nValeCiudad de la región • 162 km🏙️\nTerjolaCiudad de la región • 163 km🏙️\nAbastumaniCiudad de la región • 166 km🏙️\nAmbrolauriCiudad de la región • 167 km🏙️\nTqibuliCiudad de la región • 168 km🏙️\nBaghdatiCiudad de la región • 172 km🏙️\nAdigeniCiudad de la región • 177 km🏙️\nKutaisi135.201 Habitantes • 188 km🏙️\nVaniCiudad de la región • 197 km🏙️\nTsqaltuboCiudad de la región • 198 km🏙️\nTsageriCiudad de la región • 201 km🏙️\nDiok’nisiCiudad de la región • 203 km🏙️\nKhuloCiudad de la región • 209 km🏙️\nJoniCiudad de la región • 211 km🏙️\nLentekhiCiudad de la región • 212 km🏙️\nSamtrediaCiudad de la región • 213 km🏙️\nKulaCiudad de la región • 214 km🏙️\nChokhatauriCiudad de la región • 218 km🏙️\nMartviliCiudad de la región • 218 km🏙️\nShuakheviCiudad de la región • 220 km🏙️\nAkhaldabaCiudad de la región • 223 km🏙️\nAbashaCiudad de la región • 225 km🏙️\nMestiaCiudad de la región • 229 km🏙️\nShemokmediCiudad de la región • 231 km🏙️\nNasakiraliCiudad de la región • 232 km🏙️\nLanchkhutiCiudad de la región • 236 km🏙️\nOzurguetiCiudad de la región • 236 km🏙️\nSenakiCiudad de la región • 238 km🏙️\nNaruyaCiudad de la región • 240 km🏙️\nKedaCiudad de la región • 241 km🏙️\nChkhorotsquCiudad de la región • 242 km🏙️\nKveda Chkhorots’q’uCiudad de la región • 242 km🏙️\nLaituriCiudad de la región • 244 km🏙️\nOchkhamuriCiudad de la región • 250 km🏙️\nTsalenjikhaCiudad de la región • 250 km🏙️\nKhobiCiudad de la región • 252 km🏙️\nNarazeniCiudad de la región • 253 km🏙️\nKobuletiCiudad de la región • 254 km🏙️\nUrekiCiudad de la región • 255 km🏙️\nTsikhisdziriCiudad de la región • 256 km🏙️\nJvariCiudad de la región • 256 km🏙️\nChakviCiudad de la región • 257 km🏙️\nMajinyauriCiudad de la región • 261 km🏙️\nZugdidiCiudad de la región • 261 km🏙️\nKhelvachauriCiudad de la región • 263 km Ciudades en diferentes partes de GeorgiaExplora ciudades más grandes distribuidas por todo Georgia.🏛️\nBatum186.949 Habitantes🏛️\nKutaisi135.201 Habitantes🏛️\nSujumiCiudad regional🏛️\nGoriCiudad más pequeña🏛️\nZugdidiCiudad más pequeña🏛️\nTelaviCiudad más pequeña🏛️\nGudauriCiudad más pequeña🏛️\nBolnisiCiudad más pequeña🏛️\nOchamchireCiudad más pequeña🏛️\nTqvarch&#039;eliCiudad más pequeña🏛️\nSarpiCiudad más pequeña Explora países cercanosExplorar la región te brinda la oportunidad de sumergirte en una rica tapestria de culturas, sabores y paisajes. La cercanía de diferentes naciones permite disfrutar de una variedad de experiencias que transforman cada viaje en una aventura única, inspirando un deseo de descubrir más allá de las fronteras.\nArmeniaExplorar país\nAzerbaiyánExplorar país\nIrakExplorar país\nIránExplorar país\nTurquíaExplorar país\nSiriaExplorar país\nLíbanoExplorar país\nIsraelExplorar país\nChipreExplorar país\nMoldaviaExplorar país\nUcraniaExplorar país\nJordaniaExplorar país\nPalestinaExplorar país\nKuwaitExplorar país\nTurkmenistánExplorar país\nBielorrusiaExplorar país\nUzbekistánExplorar país\nArabia SaudíExplorar país\nBulgariaExplorar país\nBahréinExplorar país\nRumaníaExplorar país\nCatarExplorar país\nMacedonia del NorteExplorar país\nHungríaExplorar país Diferencia horaria: Compara Tiflis con reloj mundial en otras ciudadesCiudadPaísDiferencia horariaHora localMahina Polinesia Francesa14 horas17:19:14Mixco Guatemala10 horas21:19:14San Ignacio Belice10 horas21:19:14Choloma Honduras10 horas21:19:14Bahía Montego Jamaica9 horas22:19:14Ambato Ecuador9 horas22:19:14Linden Guyana8 horas23:19:14Lelydorp Surinam7 horas00:19:14Hafnarfjörður Islandia4 horas03:19:14Bizerta Túnez3 horas04:19:14Randers Dinamarca2 horas05:19:14Rotterdam Países Bajos2 horas05:19:14San Pawl il-Baħar Malta2 horas05:19:14Lodz Polonia2 horas05:19:14Yei de Sudán del Sur2 horas05:19:14Kigali Ruanda2 horas05:19:14Burgas Bulgaria1 hora06:19:14Mosul Irak1 hora06:19:14Abovyan ArmeniaMisma hora07:19:14Phra Pradaeng Tailandia+3 horas10:19:14Tofoa-Koloua Tonga+9 horas16:19:14 Preguntas frecuentes sobre la hora en TiflisEn esta sección de FAQ, encontrarás información útil sobre la hora en Tiflis, incluyendo su zona horaria y la diferencia horaria con otras ciudades. Además, ofrecemos consejos prácticos para que puedas planificar tus actividades y comunicaciones de manera efectiva.\n\n⏰\n\n¿Qué hora es ahora en Tiflis?\t\t\t\t\t\t\t\n▼\n\nLa hora en Tiflis es 21:12:19. La ciudad está en la zona horaria Asia/Tbilisi (UTC+04:00).\n\n🌍\n\n¿Qué zona horaria tiene Tiflis?\t\t\t\t\t\t\t\n▼\n\nTiflis usa la zona horaria Asia/Tbilisi con desplazamiento UTC +04:00 (+04).\n\n🌅\n\n¿Cuándo sale y se pone el sol en Tiflis?\t\t\t\t\t\t\t\n▼\n\nHoy el sol sale a las 04:15 y se pone a las 14:10 en Tiflis. La duración del día es de 09:55 horas.\n\n🌙\n\n¿Qué fase lunar hay en Tiflis?\t\t\t\t\t\t\t\n▼\n\nLa fase lunar en Tiflis es actualmente 30.8% (Cuarto creciente).\n\n📍\n\n¿Dónde está ubicada geográficamente Tiflis?\t\t\t\t\t\t\t\n▼\n\nTiflis está ubicada en las coordenadas 41.6914° N, 44.8341° Ø en Georgia. La ciudad está en el hemisferio nordlige.\n\n⏰\n\n¿Cuál es la diferencia horaria entre Tiflis y España?\t\t\t\t\t\t\t\n▼\n\nLa diferencia horaria entre Tiflis y España es de +3 horas. Esto significa que cuando son las 12:00 en España, son las 15:00 en Tiflis. Cuando son las 12:00 en Dinamarca, en Tiflis son las 15:00.\n\n🍂\n\n¿Qué estación es en Tiflis?\t\t\t\t\t\t\t\n▼\n\nActualmente es Invierno en Tiflis. La ciudad está en el hemisferio norte. En invierno, Tiflis experimenta días cortos y fríos, donde las temperaturas pueden descender por debajo de cero, cubriendo la ciudad de un manto de nieve.\n\n☀️\n\n¿Tiflis usa horario de verano?\t\t\t\t\t\t\t\n▼\n\nTiflis no usa horario de verano. La hora se mantiene igual durante todo el año.\n\n📞\n\n¿Cuándo debo llamar a Tiflis desde España?\t\t\t\t\t\t\t\n▼\n\nDesde España, debes llamar a Tiflis teniendo en cuenta que hay una diferencia horaria de +3 horas. Por ejemplo, si en España son las 12:00 del mediodía, en Tiflis serán las 15:00.\n\n🕐\n\n¿Qué debo saber sobre la cultura del tiempo en Tiflis?\t\t\t\t\t\t\t\n▼\n\nEn Tiflis, la jornada laboral típicamente inicia entre las 9:00 y 10:00 y finaliza alrededor de las 18:00. La comida se suele servir entre las 13:00 y 15:00, y es común que las cenas comiencen tarde, alrededor de las 20:00.\n\n🌐\n\n¿Cómo evito el jet lag hacia Tiflis?\t\t\t\t\t\t\t\n▼\n\nPara evitar el jet lag hacia Tiflis, ajusta tu horario de sueño unos días antes de viajar y mantente hidratado durante el vuelo. Además, intenta adaptarte al horario local tan pronto como llegues.\n\n✈️\n\n¿Cuál es el mejor momento para visitar Tiflis?\t\t\t\t\t\t\t\n▼\n\nEl mejor momento para visitar Tiflis es durante la primavera (abril a junio) y el otoño (septiembre a octubre), cuando el clima es más suave y agradable. Durante el verano, la ciudad puede ser calurosa y concurrida por turistas. \nÍndice                    \nocultar                \n1)\nZona horaria en Tiflis\n    \n2)\nAtracciones y actividades en Tiflis\n    \n3)\nInformación práctica para visitantes\n    \n4)\nCiudades cercanas que vale la pena visitar\n    \n5)\nCiudades en diferentes partes de Georgia\n    \n6)\nExplora países cercanos\n    \n7)\nDiferencia horaria: Compara Tiflis con reloj mundial en otras ciudades\n    \n8)\nPreguntas frecuentes sobre la hora en Tiflis\n\nCopyright 2026 - Pilanto ApsInicioSobre nosotros / ContactoBlogMapa del sitioTérminos y condiciones",
+      "title": "https://hora-en.com/asia/georgia/tiflis/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528752374,
+        "end": 1789528754958
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528754960,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839cb0f001LNOvoUG0LCQl40",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839bfb5001k4UIMU47uqgnOn",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 16896,
+      "output": 149,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 17045,
+      "headroom": 21811,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.961Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.961Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.962Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.962Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.965Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.965Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.965Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.965Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.966Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.966Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.973Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 17045,
+  "providerTokens": 17045,
+  "estimatedInputTokens": 7108,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 16896,
+    "cacheRead": 0,
+    "output": 149
+  },
+  "overflow": false,
+  "headroom": 21811,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.974Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.976Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:14.978Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:15.260Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528755260,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839cc3a001U5fonDyivXBhwZ",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839cb1d001fg2sH1R5V2eap1",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:15.260Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:15.260Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528755260,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839cc3c002kTOrU7L0OXkjIE",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839cb1d001fg2sH1R5V2eap1",
+    "type": "tool",
+    "callID": "call_0a280200544050c2",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:15.260Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528755260,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839cc3c0011f11D1iMoFk3se",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839cb1d001fg2sH1R5V2eap1",
+    "type": "text",
+    "text": "Let me open https://whattime.is/es/time-in/Georgia/Tiflis and read what it says.",
+    "time": {
+      "start": 1789528755260,
+      "end": 1789528755260
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:15.261Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528755261,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839cc3c002kTOrU7L0OXkjIE",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839cb1d001fg2sH1R5V2eap1",
+    "type": "tool",
+    "callID": "call_0a280200544050c2",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://whattime.is/es/time-in/Georgia/Tiflis"
+      },
+      "time": {
+        "start": 1789528755260
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.358Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528756358,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839cc3c002kTOrU7L0OXkjIE",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839cb1d001fg2sH1R5V2eap1",
+    "type": "tool",
+    "callID": "call_0a280200544050c2",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://whattime.is/es/time-in/Georgia/Tiflis"
+      },
+      "output": "Hora actual en Tiflis, Georgia – ‪What Time Is‬\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDEDeutsch\nENEnglish\nESEspanol\nFRFrançais\nLVLatviešu\nNONorsk\nRUРусский\nSVSvenska\nUKУкраїнський\n\n\n\nampm\n\n\n\n\n\n\n\n\n\n\n\n\nAl utilizar whattime.is, acepta nuestro uso de cookies para mejorar su experiencia.    \n\n\n\n\n\n\n            \n\n\n\n\nTiflis, Georgia\n\n\n\n\n\n\n\n\n\n\nAñadir las ubicaciones a mi listado    \n\n\nHora actual en Tiflis, Georgia\n\n\n\n\n\n\n\n\n\n&nbsp;\n\n\n\nTiflisGMT+4\nGeorgia    \nTiflis\n\n\n\n\n\n\n\n6\n\n7\n\n8\n\n9\n\n10\n\n11\n\n12\n\n13\n\n14\n\n15\n\n16\n\n17\n\n18\n\n19\n\n20\n\n21\n\n22\n\n23\n\n17 Sep\nJue\n\n1\n\n2\n\n3\n\n4\n\n5\n\n6\n\n7\n\n8\n\n9\n\n10\n\n11\n\n12\n\n13\n\n14\n\n15\n\n16\n        \n\n\n\n&nbsp;\n\n\n\nHo Chi Minh CityGMT+7\nVietnam    \nHo Chi Minh City\n\n\n\n\n\n\n\n9\n\n10\n\n11\n\n12\n\n13\n\n14\n\n15\n\n16\n\n17\n\n18\n\n19\n\n20\n\n21\n\n22\n\n23\n\n17 Sep\nJue\n\n1\n\n2\n\n3\n\n4\n\n5\n\n6\n\n7\n\n8\n\n9\n\n10\n\n11\n\n12\n\n13\n\n14\n\n15\n\n16\n\n17\n\n18\n\n19\n        \n\n\n\n\n\n\nhoras de luz\n\n\nocaso\n\n\noscuridad\n\n\nhora actual\n\n\n\nLa hora en la ciudad de Tiflis\nAñada la ciudad de Tiflis (Georgia) a su listado y utilice la tabla para visualmente comparar su zona horaria con otra zona o el tiempo de otra ciudad.Coloque el ratón sobre las teselas coloreadas de hora para ver las horas de todas las ubicaciones seleccionadas en la columna.        \n\nHuso horario actual para la ciudad de Tiflis (Georgia) es Asia/Tbilisi, lo que supone una diferencia de GMT+4 con la Hora Media de Greenwich (GMT).        \n\nEl identificador IANA del huso horario para la ciudad de Tiflis, Georgia es \"Asia/Tbilisi\"\n\nActualmente no se cambia al horario de verano.            \n\n\n\nPronóstico del tiempo\r\npara Tiflis, Georgia\n\n\n°C°F°K    \n\n\n\n\n\n\n\n\n\n\n\n\nMostrar pronóstico detallado\n\n\n\n\nAmanecer, ocaso y horas de luz en la ciudad de Tiflis\n\n\n\nAmanecer\n\n6:40:37            \n\n\nMediodía solar\n\n12:55:41            \n\n\nOcaso\n\n19:10:45            \n\n\n\nDuración de horas de luz\n12h&nbsp;31m&nbsp;&nbsp;8s\n\n\nDuración de la noche\n11h&nbsp;30m&nbsp;52s\n\n\n\n\n\n\nDiferencia horaria entre la cuidad de Tiflis\n\n\n\n\n\n\n-11 h\nLos Ángeles\n\n\n-11 h\n\n\n\n-8 h\nNueva York\n\n\n-8 h\n\n\n\n-7 h\nSan Pablo\n\n\n-7 h\n\n\n\n-3 h\nLondres\n\n\n-3 h\n\n\n\n-2 h\nParís\n\n\n-2 h\n\n\n\n-1 h\nEstambul\n\n\n-1 h\n\n\n\n-1 h\nMoscú\n\n\n-1 h\n\n\n\n+0 h\nDubái\n\n\n+0 h\n\n\n\n+1.5 h\nBombay\n\n\n+1.5 h\n\n\n\n+3 h\nHo Chi Minh City\n\n\n+3 h\n\n\n\n+4 h\nSingapur\n\n\n+4 h\n\n\n\n+4 h\nShanghái\n\n\n+4 h\n\n\n\n+5 h\nTokio\n\n\n+5 h\n\n\n\n+6 h\nSídney\n\n\n+6 h\n\n\n\n\n\n\n\nTiflis, Georgia en el mapa\n\n\n\n\n\n\n\n\nCopiar el URL\n\n\n\n\n\n\n\n\nFormulario de contacto\n :: \nTérminos y condiciones\n :: \nSobre este servicio\n\n‪© Copyright 2026 ‬‪whattime.is‬‪‬",
+      "title": "https://whattime.is/es/time-in/Georgia/Tiflis (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528755260,
+        "end": 1789528756358
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.358Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528756358,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839d0860015A1uRMP8bjTtAw",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839cb1d001fg2sH1R5V2eap1",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 31692,
+      "output": 159,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 31851,
+      "headroom": 7005,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.359Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.361Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.361Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.361Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.363Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 31851,
+  "providerTokens": 31851,
+  "estimatedInputTokens": 7924,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 31692,
+    "cacheRead": 0,
+    "output": 159
+  },
+  "overflow": false,
+  "headroom": 7005,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.363Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.363Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.365Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.365Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.619Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528756619,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839d18a001FH7DjdPuLb3q1k",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839d08b001BGl6dhDrWBTCJN",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.619Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.619Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528756619,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839d18b001RJEbe8oscbhGtf",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839d08b001BGl6dhDrWBTCJN",
+    "type": "text",
+    "text": "Tiflis no cambia entre hora de verano y hora de invierno.El identificador de Zona Horaria de IANA para Tiflis es Asia/Tbilisi. Salida del Sol: 06:40AMPuesta del Sol: 19:11PMDuración del Día: 12h 30mMediodia solar: 12:56PMLa actual hora local en Tiflis es la de 56 minutos Antes de de la Hora Solar Aparente. Time.is muestra la hora exacta de un reloj atómico oficial de cualquier zona horaria (más de 7 millones de lugares) en 58 idiomas.\n\nSource: https://time.is/es/Tbilisi\n\nEl barrio de Abanotubani, conocido por sus baños de azufre, resalta la tradición de bienestar y relajación de la región.Tiflis también alberga festivales culturales y gastronómicos que celebran la rica herencia de Georgia, haciendo de la ciudad un punto focal para quienes buscan experimentar su historia y su famosa hospitalidad.Información práctica para visitantesTiflis cuenta con un aeropuerto internacional, el Aeropuerto Internacional de Tiflis, que ofrece conexiones directas a varias ciudades europeas y de Asia. La cercanía de diferentes naciones permite disfrutar de una variedad de experiencias que transforman cada viaje en una aventura única, inspirando un deseo de descubrir más allá de las fronteras. En invierno, Tiflis experimenta días cortos y fríos, donde las temperaturas pueden descender por debajo de cero, cubriendo la ciudad de un manto de nieve.\n\nSource: https://hora-en.com/asia/georgia/tiflis/\n\nLa hora en la ciudad de Tiflis Añada la ciudad de Tiflis (Georgia) a su listado y utilice la tabla para visualmente comparar su zona horaria con otra zona o el tiempo de otra ciudad.Coloque el ratón sobre las teselas coloreadas de hora para ver las horas de todas las ubicaciones seleccionadas en la columna. Huso horario actual para la ciudad de Tiflis (Georgia) es Asia/Tbilisi, lo que supone una diferencia de GMT+4 con la Hora Media de Greenwich (GMT).\n\nSource: https://whattime.is/es/time-in/Georgia/Tiflis",
+    "time": {
+      "start": 1789528756619,
+      "end": 1789528756619
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528756620,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "part": {
+    "id": "prt_0a839d18b002gJ8iaFSfAyKiBk",
+    "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+    "messageID": "msg_0a839d08b001BGl6dhDrWBTCJN",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 34201,
+      "output": 1909,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 36110,
+      "headroom": 2746,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.620Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.622Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.622Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.622Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.622Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.622Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.623Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.623Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.623Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.623Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528756623,
+  "sessionID": "ses_f57c6588cfferO3yEj78YbbgZe"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.624Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.624Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.wkx1nz9H3j",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.624Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.wkx1nz9H3j",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.624Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.wkx1nz9H3j",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:16.624Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 11,
+  "message": "Agent exiting"
+}
+

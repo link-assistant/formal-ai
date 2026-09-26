@@ -3,6 +3,8 @@
 # experiments/finalize_import.py; each line is `<slug> <Qid>` and
 # resolves to a committed entity cache record. Feed to
 # `formal-ai import lexemes --concepts <file> --offline`.
+# The violin moved to data/seed/meanings-membership.lino where its
+# Wikidata subclass edge lives with it (issue 1138).
 concepts
   actor Q33999
   anchor Q168432
@@ -200,7 +202,6 @@ concepts
   truth Q7949
   umbrella Q41607
   valley Q39816
-  violin Q8355
   volcano Q8072
   wall Q42948
   war Q198

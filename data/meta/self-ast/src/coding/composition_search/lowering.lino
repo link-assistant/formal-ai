@@ -1,0 +1,18 @@
+self_ast_census
+  target src/coding/composition_search/lowering.rs
+  language rust
+  fidelity signature
+  byte_len 9260
+  line_count 255
+  content_id source_module_fabf3ffd69167476
+  symbol_count 9
+  symbols
+    function program_from_expression 5 25
+    function fold_candidate 27 62
+    function neutral_literal 64 74
+    function annotation_type 76 86
+    function example_parameter_type 98 149
+    function types_may_unify 151 164
+    function types_fit_strictly 170 180
+    function words 182 187
+    function node_depth 189 255

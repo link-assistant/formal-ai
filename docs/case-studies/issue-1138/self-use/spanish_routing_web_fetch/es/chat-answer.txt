@@ -1,0 +1,5 @@
+I detected an unsupported language and am falling back to English. I could not determine `Lee https://example.com y dime qué dice` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.
+
+If reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.
+
+Detecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe del problema con el contexto de diagnóstico? Responde `Report issue`.

@@ -2,10 +2,10 @@ self_ast_census
   target src/language.rs
   language rust
   fidelity signature
-  byte_len 20013
-  line_count 564
-  content_id source_module_c6841b5153662c96
-  symbol_count 52
+  byte_len 21933
+  line_count 607
+  content_id source_module_559899ebd61d7b57
+  symbol_count 55
   symbols
     const LANGUAGE_DETECTION 22 22
     struct Language 31 31
@@ -13,49 +13,52 @@ self_ast_census
     const Russian 38 38
     const Hindi 40 40
     const Chinese 42 42
-    const Unknown 44 44
-    function slug 48 50
-    function from_static_slug 54 56
-    function fmt 60 62
-    module forced_language 76 95
-    static FORCED_LANGUAGE 81 81
-    function replace 84 86
-    function set 88 90
-    function get 92 94
-    module forced_language 98 121
-    struct Slot 102 102
-    static FORCED_LANGUAGE 108 108
-    function replace 110 112
-    function set 114 116
-    function get 118 120
-    function set_forced_language 129 132
-    function from_slug 140 147
-    function registered_languages 151 153
-    function fallback_language 157 159
-    const LANGUAGE_LEDGER 164 164
-    function uses_postpositions 174 187
-    function language_name 192 204
-    function language_for_concept_slug 213 229
-    function surface_matches_language 238 258
-    struct ForcedLanguageGuard 261 263
-    function drop 266 268
-    struct Rule 275 289
-    function unquote 291 296
-    function parse_codepoint 298 303
-    function parse_quoted_list 306 316
-    function parse_rules 318 355
-    function with_rules 362 366
-    static RULES 364 364
-    function with_rules 369 371
-    function fallback_of 373 378
-    function fallback_script_of 380 385
-    function default_language_of 388 394
-    struct ScriptCounts 397 401
-    function of 404 409
-    function bump 411 418
-    function max_excluding 421 428
-    function total 430 432
-    function count_scripts 435 457
-    function marker_language 468 502
-    function detect 513 520
-    function detect_with 522 564
+    const Spanish 46 46
+    const Unknown 48 48
+    function slug 52 54
+    function from_static_slug 58 60
+    function fmt 64 66
+    module forced_language 80 99
+    static FORCED_LANGUAGE 85 85
+    function replace 88 90
+    function set 92 94
+    function get 96 98
+    module forced_language 102 125
+    struct Slot 106 106
+    static FORCED_LANGUAGE 112 112
+    function replace 114 116
+    function set 118 120
+    function get 122 124
+    function set_forced_language 133 136
+    function forced_response_language_slug 144 146
+    function from_slug 154 161
+    function registered_languages 165 167
+    function fallback_language 171 173
+    const LANGUAGE_LEDGER 178 178
+    function uses_postpositions 188 201
+    function language_name 206 218
+    function language_for_concept_slug 227 243
+    function surface_matches_language 252 272
+    struct ForcedLanguageGuard 275 277
+    function drop 280 282
+    struct Rule 289 303
+    function unquote 305 310
+    function parse_codepoint 312 317
+    function parse_quoted_list 320 330
+    function parse_rules 332 369
+    function with_rules 376 380
+    static RULES 378 378
+    function with_rules 383 385
+    function fallback_of 387 392
+    function fallback_script_of 394 399
+    function default_language_of 402 408
+    struct ScriptCounts 411 415
+    function of 418 423
+    function bump 425 432
+    function max_excluding 435 442
+    function total 444 446
+    function count_scripts 449 471
+    function marker_present 479 501
+    function marker_language 512 545
+    function detect 556 563
+    function detect_with 565 607

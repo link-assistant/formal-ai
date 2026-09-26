@@ -1,0 +1,15 @@
+Q659216
+  aliases
+    en ("wind instrument")
+  descriptions
+    en "musical instrument that produces sound from the vibration of a column of air within the instrument itself"
+    hi "एक वायु यंत्र"
+    ru "музыкальные инструменты со звучащим воздушным телом"
+  id Q659216
+  labels
+    en aerophone
+    hi "एरोफोन"
+    ru "аэрофоны"
+    zh "氣鳴樂器"
+  type item
+success 1

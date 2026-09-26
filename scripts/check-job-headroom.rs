@@ -782,7 +782,7 @@ mod tests {
             .find(|job| job.literal_prefix == "Lint and Format Check")
             .expect("release.yml declares Lint and Format Check");
         assert_eq!(lint.workflow, "CI/CD Pipeline");
-        assert_eq!(lint.cap_minutes, Some(25.0));
+        assert_eq!(lint.cap_minutes, Some(45.0));
 
         // A job with no `name:` is known by its id, as the API reports it.
         assert!(

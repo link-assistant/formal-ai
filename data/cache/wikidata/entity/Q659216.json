@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q659216": {
+      "type": "item",
+      "id": "Q659216",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "aerophone"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "аэрофоны"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "氣鳴樂器"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एरोफोन"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "музыкальные инструменты со звучащим воздушным телом"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक वायु यंत्र"
+        },
+        "en": {
+          "language": "en",
+          "value": "musical instrument that produces sound from the vibration of a column of air within the instrument itself"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "wind instrument"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

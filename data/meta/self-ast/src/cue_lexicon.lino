@@ -2,9 +2,9 @@ self_ast_census
   target src/cue_lexicon.rs
   language rust
   fidelity signature
-  byte_len 7078
+  byte_len 7087
   line_count 195
-  content_id source_module_78c8ca569307b05e
+  content_id source_module_4955403d58ae7f11
   symbol_count 16
   symbols
     enum CueMatch 24 32

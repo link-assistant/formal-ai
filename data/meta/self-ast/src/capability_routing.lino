@@ -1,0 +1,44 @@
+self_ast_census
+  target src/capability_routing.rs
+  language rust
+  fidelity signature
+  byte_len 32351
+  line_count 840
+  content_id source_module_56cc7b35cf92e192
+  symbol_count 35
+  symbols
+    module evidence 42 42
+    enum ObjectType 53 89
+    const OBJECT_TYPES 92 92
+    function slug 113 131
+    function from_slug 135 139
+    function rank 158 175
+    enum Act 182 197
+    const ACTS_IN_PRECEDENCE 205 205
+    function slug 220 233
+    function from_slug 237 242
+    function role 245 258
+    enum Locus 263 271
+    function slug 276 284
+    function from_slug 288 298
+    struct RouteRow 303 314
+    enum RoutingOutcome 319 332
+    struct RoutingDecision 341 350
+    function table_routing_enabled 358 366
+    function object_type 371 488
+    function evidences_retrieve_act 500 502
+    function is_response_language_obligation 514 517
+    function acts 525 544
+    function act 548 550
+    function locus_of 558 600
+    function locus 605 609
+    function routing_table 613 615
+    const CAPABILITY_ROUTING_LINO 618 619
+    function routing_table_from 627 659
+    function route 670 672
+    function route_decision 681 708
+    function route_placed 724 738
+    function advertised_provides 746 762
+    function route_with 766 802
+    function readings_for 810 837
+    const DEFAULT_OUTCOME 840 840

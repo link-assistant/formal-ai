@@ -1,0 +1,1813 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.282Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.282Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Prepárame unas páginas sobre cómo empezó la mecánica cuántica. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.bmnrn17twV",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.282Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.bmnrn17twV",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.282Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.bmnrn17twV",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.293Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Prepárame unas páginas sobre cómo empezó la mecánica cuántica.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Prepárame unas páginas sobre cómo empezó la mecánica cuántica.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.293Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.294Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.295Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.295Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.298Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.299Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.bmnrn17twV/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.301Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 5838,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.301Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.316Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:17:41.320Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.320Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.320Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.320Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.320Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.320Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.320Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.320Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 26,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.321Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:17:41.321Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.325Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.325Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.326Z",
+  "service": "session",
+  "id": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.bmnrn17twV",
+  "title": "New session - 2026-09-16T03:17:41.326Z",
+  "time": {
+    "created": 1789528661326,
+    "updated": 1789528661326
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.326Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.327Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.327Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c7a2b1ffeWjZq0INh3Bw0WO/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.327Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c7a2b1ffeWjZq0INh3Bw0WO/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.330Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c7a2b1ffeWjZq0INh3Bw0WO/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.331Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.334Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.335Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.335Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.335Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.335Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.335Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.335Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.335Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.336Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.336Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.497Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.502Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.502Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.512Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.517Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.521Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.521Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.521Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:41.521Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:42.172Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528662172,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a8386098001B193XAax32AB5V",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8385dfd001nSTz9Ii5hPSCIV",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:42.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:42.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528662173,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a838609d001LyDsj3P1IEZNAj",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8385dfd001nSTz9Ii5hPSCIV",
+    "type": "tool",
+    "callID": "call_12f61c3a01342b65",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:42.174Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528662174,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a838609c001BTvGMaplrNNxHK",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8385dfd001nSTz9Ii5hPSCIV",
+    "type": "text",
+    "text": "Let me search the web for Prepárame unas páginas sobre cómo empezó la mecánica cuántica.",
+    "time": {
+      "start": 1789528662173,
+      "end": 1789528662173
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:42.174Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528662174,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a838609d001LyDsj3P1IEZNAj",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8385dfd001nSTz9Ii5hPSCIV",
+    "type": "tool",
+    "callID": "call_12f61c3a01342b65",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Prepárame unas páginas sobre cómo empezó la mecánica cuántica"
+      },
+      "time": {
+        "start": 1789528662174
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.502Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528664502,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a838609d001LyDsj3P1IEZNAj",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8385dfd001nSTz9Ii5hPSCIV",
+    "type": "tool",
+    "callID": "call_12f61c3a01342b65",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Prepárame unas páginas sobre cómo empezó la mecánica cuántica"
+      },
+      "output": "Title: Historia de la mecánica cuántica\nURL: https://es.wikipedia.org/wiki/Historia_de_la_mec%C3%A1nica_cu%C3%A1ntica\nPublished: N/A\nAuthor: N/A\nHighlights:\nEl modelo cuántico del átomo de Niels Bohr desarrollado en 1913, el cual incorporó una explicación a la fórmula de Johannes Rydberg de 1888; la hipótesis cuántica de Max Planck de 1900, esto es, que los radiadores de energía atómica tienen valores de energía discreta (); el modelo de J. J. Thomson en 1904, el postulado de luz cuántica de Albert Einstein en 1905 y el descubrimiento en 1907 del núcleo atómico positivo hecho por Ernest Rutherford.\n...\nLa historia de la mecánica cuántica comienza esencialmente con la introducción de la expresión cuerpo negro por Gustav Kirchhoff en el invierno de 1859-1860, la sugerencia hecha por Ludwig Boltzmann en 1877 sobre que los estados de energía de un sistema físico deberían ser discretos, y la hipótesis cuántica de Max Planck en el 1900, quien decía que cualquier sistema de radiación de energía atómica podía teóricamente ser dividido en un número de elementos de energía discretos , tal que cada uno de estos elementos de energía sea proporcional a la frecuencia , con las que cada uno podía de manera individual irradiar energía, como lo muestra la siguiente fórmula:\n...\nEn 1905, para explicar el efecto fotoeléctrico (1839), esto es, la expulsión de electrones en ciertos materiales debido a la incidencia de luz sobre los mismos, Albert Einstein postuló –basándose en la hipótesis cuántica de Planck– que la luz está compuesta de partículas cuánticas individuales, las que más tarde fueron llamadas fotones (1926).\n...\nEl término «mecánica cuántica» fue usado por primera vez en el escrito de Max Born llamado Zur Quantenmechanik (La Mecánica Cuántica). En los años que siguen, esta base teórica comenzó lentamente a ser aplicada a estructuras, reacciones y enlaces químicos.\n...\nEn 1900 el físico alemán Max Planck introdujo la idea de que la energía estaba «cuantizada», con el fin de derivar una fórmula para la dependencia de la frecuencia observada con la energía emitida por un cuerpo negro. En 1905, Einstein explicó el efecto fotoeléctrico con un postulado sobre que luz –o más específicamente toda la radiación electromagnética– puede ser dividida en un número finito de «cuantos de energía», que son localizados como puntos en el espacio. De la introducción del escrito de cuántica On a heuristic viewpoint concerning the emission and transformation of light (Un punto de vista heurístico relacionado con la emisión y transformación de la luz) de marzo de 1905:\n...\nEsta sentencia ha sido llamada la sentencia más revolucionaria escrita por un físico en el siglo veinte. [1] Estos «cuantos de energía» serían llamados más tarde fotones, un término introducido por Gilbert N. Lewis en 1926. La idea que cada fotón tenía que consistir de energía en términos de cuantos fue un notable logro, ya que eliminó la posibilidad de que la radiación de un cuerpo negro alcanzara energía infinita, lo que se explicó en términos de formas de onda solamente. En 1913, Bohr explicó las líneas espectrales del átomo de hidrógeno, nuevamente utilizando «cuantización», en su escrito On the Constitution of Atoms and Molecules (Sobre la Constitución de Átomos y Moléculas), publicado en julio de 1913.\n...\nEn 1924, el físico francés Louis-Victor de Broglie presenta su teoría de ondas de materia, por la que se indica que las partículas pueden exhibir características de onda y viceversa. Esta teoría fue para una partícula simple y derivada de la teoría especial de la relatividad. Basándose en el planteamiento de Broglie, nació la mecánica cuántica moderna en 1925, cuando los físicos alemanes Werner Heisenberg y Max Born desarrollaron la mecánica matricial y el físico austríaco Erwin Schrödinger inventó la mecánica de ondas y la ecuación de Schrödinger no relativista como una aproximación al caso generalizado de la teoría de Broglie. [2] Schrödinger posteriormente demostró que ambos enfoques eran equivalentes.\n...\nHeisenberg formuló su principio de incertidumbre en 1927, y la interpretación de Copenhague comienza a tomar forma cerca de la misma fecha. A partir de 1927, Paul Dirac comienza el proceso de unificación de la mecánica cuántica con la relatividad especial proponiendo la ecuación de Dirac para el electrón. La ecuación de Dirac alcanza la descripción relativista de la función de onda de un electrón que Schrödinger no pudo obtener. Predice el espín electrónico y ayuda a predecir la existencia del positrón. Fue pionero también en el uso de la teoría del operador, incluyendo la influyente notación Bra-Ket descrito en su famoso libro de 1930. Durante el mismo período, el matemático húngaro John von Neumann formuló la rigurosa base matemática para la mecánica cuántica de la teoría de los operadores lineales en los espacios de Hilbert, descrito en su igualmente famoso libro de 1932. Estos, como muchos otros trabajos del período fundacional aún siguen en pie, y son altamente utilizadas.\n...\nLa siguiente tabla muestra los pasos y personas claves en el desarrollo de la teoría cuántica:\n...\nGustav Kirchhoff\n...\nDeclaró el \"problema del cuerpo negro\": ¿cómo la intensidad de la radiación electromagnética emitida por un cuerpo negro depende de la frecuencia de\n...\nradiación y de la temperatura del cuerpo?\n...\nLudwig Boltzmann\n...\nSugirió que los estados de energía de un sistema físico deberían ser discretos.\n...\nModificó la fórmula de Balmer para incluir las otras series de líneas y producir la fórmula de Rydberg.\n...\nJoseph John Thomson\n...\nMostró que los rayos catódicos (1838) se curvan bajo la influencia de un campo eléctrico y un campo magnético y para explicar esto el sugirió que los rayos catódicos están negativamente cargados de partículas eléctricas subatómicas o corpúsculos\" (electrones), sacados del átomo; y en 1904 propuso el modelo del \" budín de ciruela, en el cual los átomos tienen una masa amorfa (budín) positivamente cargada como un cuerpo empotrado con electrones negativamente cargados (ciruelas) dispersos en su totalidad en la forma de anillos rotando de manera no aleatoria.\n...\nPara explicar la radiación de cuerpo negro, sugirió que la energía electromagnética podría ser emitida sólo en forma cuantizada, esto es, la energía sólo podría ser un múltiplo de una unidad elemental de , donde es la constante de Planck y la frecuencia de la radiación.\n...\nNiels Bohr\n...\nPara explicar la fórmula de Rydberg (1888), la cual modela correctamente el espectro de la emisión de luz del átomo de hidrógeno, postuló la hipótesis sobre que los electrones cargados negativamente giran en torno a un núcleo positivamente cargado en ciertas distancias \"cuánticas\" fijas, y que cada uno de estas \"órbitas esféricas\" tienen una energía específica asociada de tal manera que los movimientos de electrones entre las órbitas requiere emisiones \"cuánticas\" o absorciones de energía.\n...\n- El experimento de la doble rendija de Thomas Young demostró la naturaleza ondulatoria de la luz (c1805).\n...\n- Henri Becquerel descubrió la radiactividad (1896).\n...\n- El experimento del tubo de rayos catódicos de Joseph John Thomson (descubrió el electrón y su carga negativa) (1897).\n...\n- El estudio de la radiación de cuerpo negro entre los años 1850 y 1900, lo cual no podía ser explicado sin los conceptos cuánticos.\n...\n- El efecto fotoeléctrico: Einstein explicó esto en 1905 (por lo cual recibiría el premio Nobel) usando los conceptos de fotones, partículas de luz con energía cuantizada.\n...\n- El experimento de la lámina de oro de Ernest Rutherford refutó el modelo del budín de ciruelas del átomo, el cual sugería que la masa y la carga positiva de los átomos están casi uniformemente distribuidos (1911).\n...\n- Otto Stern y Walter Gerlach dirigieron el experimento de Stern-Gerlach, el cual demostró la naturaleza cuantizada del espín de las partículas.\n\n---\n\nTitle: El duelo intelectual entre Einstein y Bohr: así nació la mecánica cuántica, contada desde los artículos originales, de 1900 a 1927\nURL: https://muyinteresante.okdiario.com/ciencia/einstein-bohr-duelo-mecanica-cuantica-1900-1927.html\nPublished: 2025-03-19T21:50:33.000Z\nAuthor: Eugenio M. Fernández Aguilar\nHighlights:\nLa física cuántica nació de una serie de preguntas que desafiaban la lógica establecida. A principios del siglo XX, la comunidad científica se enfrentaba a fenómenos que la física clásica no podía explicar. Entre ellos, la radiación del cuerpo negro y el efecto fotoeléctrico indicaban que las leyes de la mecánica de Newton y el electromagnetismo de Maxwell no bastaban para describir el mundo microscópico.\n...\nEn este contexto, surgió un intenso debate entre Albert Einstein y Niels Bohr, dos de los físicos más influyentes de la historia. Mientras que Einstein buscaba una descripción determinista de la realidad, Bohr defendía la interpretación probabilística de la mecánica cuántica. Este artículo, basado en el paper The Birth of Quantum Mechanics: A Historical Study Through the Canonical Papers, de Eren Volkan Küçük, nos lleva a través de los descubrimientos clave que dieron forma a la teoría cuántica, examinando los artículos originales que marcaron el rumbo de la física moderna.\n...\n## Planck y el problema de la radiación del cuerpo negro (1900\n...\nEl punto de partida de la teoría cuántica fue el problema de la radiación del cuerpo negro. La ley de Rayleigh-Jeans predecía que la intensidad de la radiación emitida por un cuerpo negro aumentaba indefinidamente a frecuencias altas, lo que implicaba una catástrofe ultravioleta. Sin embargo, las observaciones experimentales mostraban que la radiación se detenía en el rango del ultravioleta.\n...\nEn 1900, Max Planck resolvió el problema en su artículo Über das Gesetz der Energieverteilung im Normalspectrum (Planck, 1901). Propuso que la energía no podía emitirse de manera continua, sino en pequeños paquetes llamados cuantos, cuya energía estaba dada por la ecuación:\n...\ndonde h es la constante de Planck y f la frecuencia de la radiación. Este resultado, aunque inicialmente visto como una herramienta matemática, marcó el inicio de la física cuántica.\n...\nEn 1905, Einstein llevó la idea de Planck un paso más allá. En su artículo Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt (Einstein, 1905), propuso que la luz no solo se emitía en cuantos, sino que estaba compuesta de partículas discretas. Esta hipótesis explicaba el efecto fotoeléctrico, donde los electrones eran expulsados de los metales solo si la luz incidente tenía una frecuencia mínima.\n...\nEinstein argumentó que la energía de estos cuantos de luz (posteriormente llamados fotones) debía ser proporcional a su frecuencia, siguiendo la misma relación descubierta por Planck. Esta idea fue revolucionaria, pues contradecía la visión clásica de la luz como una onda continua.\n...\n## Bohr y la\n...\ndel átomo (1\n...\nEl modelo atómico de Rutherford, propuesto en 1911, describía el átomo como un núcleo cargado positivamente con electrones girando a su alrededor. Sin embargo, según la física clásica, los electrones deberían irradiar energía continuamente y colapsar en el núcleo, lo que hacía inestable este modelo.\n...\nPara solucionar este problema, Niels Bohr propuso en 1913 un modelo cuántico del átomo en su artículo On the Constitution of Atoms and Molecules (Bohr, 1913). Bohr postuló que los electrones solo podían ocupar ciertas órbitas estables y que los saltos entre ellas estaban asociados a la emisión o absorción de fotones. Su teoría explicaba con precisión el espectro del hidrógeno, algo que el modelo clásico no podía hacer.\n...\nBohr también introdujo el principio de correspondencia, según el cual la mecánica cuántica debía coincidir con la física clásica en el límite de números cuánticos grandes.\n...\nEn 1915, Arnold Sommerfeld amplió el modelo de Bohr incorporando relatividad y permitiendo órbitas elípticas en lugar de solo circulares. En su trabajo Zur Theorie der Balmerischen Serie (Sommerfeld, 1915), refinó las ecuaciones para explicar con mayor precisión las líneas espectrales del hidrógeno.\n...\nAdemás, introdujo la constante de estructura fina, que cuantificaba las pequeñas correcciones en los niveles de energía debido a efectos relativistas.\n...\nA pesar de los avances, el modelo atómico cuántico seguía basado en analogías con la física clásica. En 1925, Werner Heisenberg presentó una nueva formulación matemática en su artículo Über quantentheoretische Umdeutung kinematischer und mechanischer Beziehungen (Heisenberg, 1925).\n...\nHeisenberg desarrolló la mecánica matricial, donde las magnitudes físicas como la posición y el momento se representaban mediante matrices, en lugar de valores continuos. Sus ecuaciones eliminaban la idea de trayectorias definidas para los electrones y solo permitían calcular las probabilidades de transición entre estados.\n...\nPoco después, en 1926, Erwin Schrödinger propuso una visión alternativa con su famosa ecuación de onda en Quantisierung als Eigenwertproblem (Schrödinger, 1926). En lugar de matrices, utilizó funciones de onda ψψpara describir los estados cuánticos:\n...\nSchrödinger demostró que su ecuación era matemáticamente equivalente a la mecánica matricial de Heisenberg, lo que llevó a unificar ambas formulaciones en la mecánica cuántica moderna.\n...\nEn 1927, Heisenberg formuló el principio de incertidumbre en Über den anschaulichen Inhalt der quantentheoretischen Kinematik und Mechanik (Heisenberg, 1927). Este principio establece que no es posible conocer simultáneamente con precisión la posición y el momento de una partícula: \n\nEsta idea consolidó la interpretación de Copenhague, desarrollada por Bohr, según la cual el acto de medir afecta la realidad cuántica.\n\n---\n\nTitle: 13.16: El Desarrollo de la Mecánica Cuántica - LibreTexts Español\nURL: https://espanol.libretexts.org/Bookshelves/Fisica/Mecanica_Cuantica/Mec%C3%A1nica_Cu%C3%A1ntica_(Walet)/13%3A_Temas_Diversos_de_Mec%C3%A1nica_Cu%C3%A1ntica/13.16%3A_El_Desarrollo_de_la_Mec%C3%A1nica_Cu%C3%A1ntica\nPublished: 2022-10-30T20:15:27.000Z\nAuthor: N/A\nHighlights:\nTrabajando esencialmente de forma independiente, a mediados de la década de 1920 Heisenberg y Schrödinger crearon una forma completa de Mecánica Cuántica. La forma en que ocurrieron estos dos acontecimientos extraordinarios ha sido ampliamente estudiada; una referencia favorita es Max Jammer, El desarrollo conceptual de la mecánica cuántica (McGraw-Hill 1966).\n...\nEl punto de partida de Heisenberg fue el modelo Bohr del átomo. Este modelo había sido ampliado por Sommerfeld, y para el verano de 1925 muchos físicos habían aprendido a través del ensayo y error a navegar a través de algunos de los pantanos de la física atómica. Esta circunstancia, sin embargo, está muy corta de tener una buena teoría de la física atómica.\n...\nHeisenberg intentó construir tal teoría, e inmediatamente se encontró con dificultades. Estaba intentando hacer una analogía entre la órbita de un electrón alrededor de un núcleo y el problema familiar de un simple péndulo. No obstante, terminó en un “pantano de complicadas ecuaciones matemáticas, sin salida”. (Física y más allá, pág. 60.)\n...\nEntonces Heisenberg recordó un principio del de Einstein: que la teoría decide lo que se puede observar. Heisenberg aplicó esta idea a sus intentos de construir una teoría atómica lanzando cualquier intento de describir directamente las órbitas de los electrones. En cambio restringió las variables en la teoría a los observables, que en este caso son las longitudes de onda y las intensidades de las líneas en los espectros atómicos. Según comentó, “me pareció más adecuado restringirme a estos, tratándolos, por así decirlo, como representantes de las órbitas de electrones”. (op. cit. pg. 63. ) Y a partir de este principio construyó su forma completa de Mecánica Cuántica.\n...\nEn cualquier caso, dado que los observables, las longitudes de onda de los espectros lineales, son discontinuos, la teoría que Heisenberg construyó es igualmente discontinua. Esta formulación de la Mecánica Cuántica se suele llamar Mecánica Matriz; veremos que esto la distingue de la teoría de Schrödinger.\n...\nHeisenberg publicó por primera vez su Matrix Mechanics en 1926 en la revista Zeitschrift der Physick.\n...\nEn 1905 Einstein propuso que la luz, además de su conocida naturaleza como una ola de campos eléctricos y magnéticos, pueda pensarse como una partícula, que ahora llamamos el fotón. En 1923 Louis de Broglie propuso que los objetos parecidos a partículas, como los electrones, también podrían considerarse como algún tipo de onda. En este momento de Broglie era un estudiante de posgrado, y su propuesta formaba parte de su tesis doctoral. Su comité supervisor no sabía qué hacer con esta propuesta descabellada y le preguntó a Schrödinger, quien pronunció que la idea era “¡basura!” El comité fue para Einstein, quien esencialmente dijo que deberían darle al chico su doctorado, ya que “podría haber algo en ello”. Así es como de Broglie obtuvo su doctorado, y en 1926 Davisson y Germer vieron realmente electrones demostrando un patrón de interferencia.\n...\nEn 1926 Schrödinger publicó una serie de artículos dando una forma completa de Mecánica Cuántica; en esta formulación la idea central es la hipótesis de Broglie. Esta formulación, entonces, se llama Mecánica de Ondas. Cuando antes dijimos que podíamos “explicar” el modelo ad hoc de Bohr al darnos cuenta de que las 'órbitas permitidas' de ese modelo corresponden a ondas estacionarias de electrones, estábamos describiendo cómo la Mecánica de Ondas describe la teoría de un átomo.\n...\nEs interesante señalar que el primero de estos trabajos apareció simultáneamente a la primera publicación de Heisenberg. El artículo de Schrödinger estaba en la revista Annelen der Physick, competidora de la revista Zeitschrift que había publicado la obra de Heisenberg.\n...\nEs obvio que Schrödinger cambió de opinión sobre un aspecto de onda a electrones entre 1923 y 1926. Existe cierta controversia sobre cómo Schrödinger llegó realmente a Wave Mechanics, pero en el otoño de 1925, presumiblemente mientras construía su teoría, escribió un ensayo, Seek for the Road, que puede aportar algunas pistas. (Referencia: Mi visión del mundo, (Cambridge, 1964).\n...\nA pesar de su cosmovisión radicalmente diferente, poco después de su publicación se demostró que Matrix Mechanics y Wave Mechanics son matemáticamente idénticas. De hecho, Schrödinger fue una de las personas que hizo la prueba.\n\n---\n\nTitle: 1 Origen de la mecánica cuántica | Introducción a la comunicación y la computación cuántica\nURL: https://www.tsc.uc3m.es/~gvazquez/intro-cuantica/01-intro.html\nPublished: N/A\nAuthor: Gonzalo Vázquez Vilar (Universidad Carlos III de Madrid, gonzalo.vazquez@uc3m.es)\nHighlights:\n# 1 Origen de la mecánica cuántica\n...\nEn torno al año 1900, el Santo Grial en el ámbito de la física era encontrar un modelo preciso de la radiación emitida por un cuerpo negro. Se denomina cuerpo negro a un objeto que no refleja ningún tipo de radiación externa, y que por tanto su emisión en el espectro radioeléctrico se debe unicamente a su temperatura interior. Por observaciones experimentales se conocía que el patrón de emisión de un cuerpo negro dependía únicamente de su temperatura y de las longitudes de onda (o frecuencias) consideradas.\n...\nEn esa época existían varías propuestas para modelar esta radiación. Una de ellas, la ley de de Rayleigh-Jeans, se ajustaba a las observaciones experimentales para frecuencias bajas. Sin embargo, se sabía que esta ley no podía ser correcta, ya que predecía un aumento de la radiación emitida con la frecuencia. Este efecto se conocía como catástrofe ultravioleta, ya que implicaba una emisión de energía infinita para cualquier cuerpo con una temperatura por encima del cero absoluto. Esto desembocaría en un universo calcinado por la radiación de la propia materia que lo compone:\n\n Figura 1.1: Modelo de Rayleigh-Jeans de radiación de un cuerpo negro para bajas frecuencias.\n...\nAdemás, la mejora en la tecnología disponible ofrecía medidas más precisas de la radiación de un cuerpo negro a frecuencias cada vez más altas. Estas observaciones mostraban un descenso en la energía emitida con la frecuencia a partir de un cierto punto, lo que contradecía las predicciones de la ley de Rayleigh-Jeans. A partir de estos datos experimentales y guiado por su intuición, el físico alemán Max Planck desarrolló un modelo matemático que se ajustaba a los datos disponibles (Planck 1901) y que fue validado por múltiples observaciones posteriores. Se puede ver que aunque los dos modelos coinciden para bajas frecuencias, su comportamiento posterior es muy diferente:\n\n Figura 1.2: Radiación de un cuerpo negro. Comparación entre el modelo de Rayleigh-Jeans y la ley de Planck.\n...\nCuriosamente, este modelo matemático se basaba en discretizar las emisiones del cuerpo negro, de forma que cada átomo del mismo podía emitir únicamente paquetes de energía de un determinado tamaño que dependía de la frecuencia y no con un valor arbitrario. Cuestionado sobre este punto, Planck indicó que era una particularidad del modelo matemático y que no tenía relación con la realidad subyacente, afirmación que defendería hasta muchos años después.\n...\nAl mismo tiempo que se producían estos avances, un estudiante desconocido los seguía ávidamente y se planteaba su significado. Se trataba de Albert Einstein, que en 1905 publicaría cuatro artículos científicos que terminarían revolucionando varios campos de la física (por lo que se conoce este año como el año milagroso de Einstein). En uno de estos trabajos, Einstein tomaba el modelo cuántico de Planck y lo llevaba un paso más allá, planteándose qué ocurriría si la discretización de la energía no fuera sólo un artificio matemático del modelo de radiación sino que también aplicaba a la propia radiación electromagnética. Así, fue como Einstein planteó un modelo cuántico para la naturaleza de la luz en el artículo “Sobre un punto de vista heurístico con respecto a la producción y transformación de la luz” (Einstein 1905).\n...\n> La energía de un haz de luz que se propaga desde una fuente puntual no se distribuye de forma continua en el espacio, sino que consiste en un número finito de cuantos de energía localizados en los puntos del espacio, que se mueven sin dividirse y que sólo se pueden producir y absorber como unidades completas.\n...\nEinstein fue así el primer autor en referirse a los fotones como cuantos de energía, y en utilizar este modelo para describir ciertas propiedades de la luz que hasta entonces no tenían ninguna explicación formal. Cuando la luz incide en una superficie metálica, se pueden producir electrones libres. Esto se conoce como efecto fotoeléctrico y es la tecnología utilizada en los paneles fotoleléctricos para producir electricidad. Algunas de las propiedades del efecto fotoeléctrico eran un misterio hasta ese momento:\n...\n- La energía de los electrones liberados es independiente de la intensidad de la luz incidente.\n- Los electrones pueden aparecer tan pronto incide la luz, y no solo al acumularse una cierta energía.\n- No se producen electrones para una frecuencia de onda de la luz por debajo de un umbral, incluso si se aumenta la intensidad de la misma arbitrariamente.\n...\nEstas propiedades, inexplicables si se consideraba la luz como una onda electromagnética, tenían una explicación sencilla si se considera la luz formada por cuantos de energía o fotones. En el modelo cuántico de Einstein, la intensidad de la luz hace referencia al número de fotones que inciden en la superficie, mientras que la frecuencia (o longitud de onda) está relacionada con la cantidad de energía que transporta cada fotón.\n...\nAsí, teniendo en cuenta que cada electrón generado en el efecto fotoeléctrico es el resultado del impacto de un único fotón ya se explica que su energía sea independiente de la intensidad (aunque existe la posibilidad de que dos o más fotones impacten simultaneamente con un electrón, la probabilidad de este evento es extremadamente baja). Los electrones aparecen tan pronto incide la luz porque ésta transporta paquetes de energía y no es necesario que se acumule cierta energía como sería el caso si fuese una onda continua. Por último, para una fuente luminosa con una frecuencia por debajo de cierto umbral, los fotones no transportan suficiente energía como para excitar un electrón. Por tanto, en este caso no se produce el efecto fotoeléctrico, independientemente de la intensidad de la luz incidente.\n...\nGracias a este trabajo y a muchos artículos científicos posteriores, Albert Einstein contribuyó en gran medida al desarrollo de la mecánica cuántica, tal y como la conocemos hoy en día. A pesar de esto, se identifica a menudo a Einstein como un detractor de ésta, ya que nunca acabó de aceptar la naturaleza difusa que impedía modelar un sistema cuántico de forma determinista. De ahí su famosa frase (en referencia a las leyes de la naturaleza):\n...\nVeremos más sobre este punto durante el curso. Para ello, presentaremos un modelo matemático que permite predecir resultados de experimentos con sistemas cuánticos. En este modelo, tal y como propuso Einstein, consideraremos la radiación formada por cuantos de energía. Aunque es útil tener el ejemplo de un fotón y sus propiedades en mente, este modelo permitirá caracterizar otros sistemas con propiedades cuánticas, como pueden ser resonadores superconductores, iones en suspensión o los llamados quantum dots.\n\n---\n\nTitle: Cien años de la Mecánica Cuántica: el nacimiento de la Física cuántica – Blog del Instituto de Matemáticas de la Universidad de Sevilla\nURL: https://institucional.us.es/blogimus/2025/06/cien-anos-de-la-mecanica-cuantica-el-nacimiento-de-la-fisica-cuantica/\nPublished: 2025-06-01T00:00:00.000Z\nAuthor: Renato Alvarez-Nodarse\nHighlights:\nEsta entrada la vamos a dedicar a los cien años de la Mecánica Cuántica, la teoría más desconcertante y revolucionaria que haya existido jamás. La fecha de nacimiento exacta podemos fijarla el 29 de julio de 1925. Ese día en la redacción de la prestigiosa revista alemana Zeitschrift für Physik se recibió un manuscrito remitido por Max Born titulado Über quantentheoretische Umdeutung kinematischer und mechanischer Beziehungen (Sobre una reinterpretación teórica cuántica de las relaciones cinemáticas y mecánicas) cuyo autor era un joven llamado Werner Heisenberg. El resumen del trabajo no podía ser más explícito:\n...\nPara nuestra historia es más que relevante la siguiente anécdota contada por Max Planck, el padre de la Física cuántica y, por tanto, abuelo de la Mecánica cuántica. Cuando Planck comenzaba sus estudios en Múnich en el curso 1874/75 se interesó en la Física y le pidió consejo a su profesor de física, Philipp von Jolly. La respuesta de este fue algo así como « olvídalo«. Así lo contó Planck en 1933:\n...\nVeinte años después en 1894 Planck, que en ese momento ocupaba la cátedra en Berlín que había dejado vacante Kirchhoff, el padre de la Teoría de la radiación del cuerpo negro, se interesó por dicho problema. La solución que presentó Planck en 1900 no era nada conservadora y, de hecho, cambió el curso de la historia de la Física. Pero antes de recordarla vale la pena recordar las famosas nubecillas de Lord Kelvin.\n...\nEl 27 de abril de 1900 Thomson (Lord Kelvin) pronunció una conferencia en la Royal Institution que un año más tarde apareció publicada con el título «Nineteenth-Century Clouds over the Dynamical Theory of Heat and Light» en la Phil. Mag. S. 6. Vol. 2. No. 7. July 1901, págs. 1-4:\n...\nBoltzmann en 1868 (quién generalizó un principio propuesto por John J. Waterston en 1845) y\n...\n¿Ciertamente estaba todo establecido? ¿Ya la humanidad había descubierto todas las leyes de la Física? No hace falta decir que nadie en aquel momento podía imaginar que esas dos nubecillas conducirían a la Teoría de la Relatividad de Einstein (la primera) y a la Mecánica Cuántica (la segunda), teorías que iban a cambiar radicalmente nuestra concepción de los fenómenos naturales y del mundo que nos rodea y que representaron una revolución comparable, en cierta forma, a la Revolución copernicana y a la aparición de los Principia de Newton.\n...\nAntes de esbozar la cronología de acontecimientos que culminó en la Mecánica cuántica conviene enfatizar que Thomson era un destacado físico teórico (e ingeniero) con contribuciones importantes en la Termodinámica, electricidad, entre otras ramas de la Física. Pues bien, la segunda nubecilla de Lord Kelvin tenía que ver con un resultado de Lord Rayleigh que en un artículo aparecido en junio de 1900 había establecido, usando el principio de equipartición de la energía, que la densidad de energía \\(u(\\omega)\\) en función de la frecuencia \\(\\omega\\) era proporcional a \\(\\omega^2\\) lo que implicaba que la energía irradiada por un cuerpo negro debía ser infinita, algo que obviamente contradecía los resultados experimentales establecidos.\n...\nLos detalles de como Planck resolvió el problema del cuerpo negro los describimos en la entrada La segunda nubecilla de Lord Kelvin II así que remitimos a ella al lector. El resumen, en todo caso, es el siguiente: Planck postuló que \\ los cuerpos absorben y emiten energía mediante « quantas» de energía \\(E=\\hbar\\omega\\)}, donde \\(\\hbar\\) era una nueva constante física hasta ese momento desconocida. Eso le permitió a Planck explicar de «primeros principios» la expresión matemática de la energía irradiada por el cuerpo negro. Para ser un conservador Planck había había abierto la caja de Pandora. También hay que decir que Planck siempre consideró que su suposición era justo eso, una suposición y no una certeza. Se tardó un tiempo en descubrir que la naturaleza era mucho más caprichosa que lo que imaginaban los físicos del final de siglo XIX y principios del XX.\n...\nLo que pasó después fue, grosso modo, lo siguientes. En 1905, Einstein explica el efecto fotoeléctrico suponiendo que la propia luz se emite en quantos (hoy llamados fotones, término acuñado por el físico Gilbert N. Lewis en 1926) de energía \\(\\hbar\\omega\\), siendo \\(\\hbar\\) la constante de Planck. Años más tarde, el físico estadounidense Robert Andrews Millikan comprueba experimentalmente la fórmula de Einstein y comprueba que, en efecto, \\(\\hbar\\) es la misma \\(\\hbar\\) de Planck. ¿Casualidad? Para más detalles véase la entrada Einstein y los quanta de luz.\n...\nPero por si esto fuera poco, Arthur H. Compton publicó en 1923 un artículo donde explicaba los resultados de su investigación sobre la difusión de rayos X (ondas electromagnéticas como la luz, pero de muy alta frecuencia), lo que hoy día conocemos como efecto Compton. Compton descubrió, experimentalmente, que si irradiamos con rayos X distintos materiales se observaba un cambio de la longitud de onda (o frecuencia) de los rayos X en función del ángulo de dispersión (ver diagrama), algo inexplicable usando la teoría ondulatoria de la luz, pero que se podía explicar si se asumía que la luz estaba constituida por partículas de con masa cero pero con energía \\(\\hbar\\omega\\) y momento lineal \\(\\hbar\\omega/c\\), respectivamente, que interaccionaban de forma elástica (o sea que se conservaba la energía y el momento).\n...\nEl siguiente paso en la historia se debe al danés Niels Bohr. Los detalles se pueden ver en la entrada Las matemáticas y la estructura atómica II: un danés en la corte del Rey Arturo. Este, intentando describir el espectro del átomo de hidrógeno, postula que el electrón, para que no caiga al núcleo como predice la física clásica, solo puede estar en «ciertas órbitas permitidas» (estables). Para ello impone una condición ad-hoc que no puede justificarse a partir de la mecánica clásica ni de la electrodinámica. La suposición de Bohr era que, de todas las infinitas órbitas posibles, sólo son posibles aquellas para las cuales el momento angular del electrón \\(L=m_evr_n\\), siendo \\(m\\) la masa del electrón, \\(v\\), su velocidad y \\(r_n\\) el radio de la n-ésima órbita estable, fuesen múltiplos enteros de \\(\\hbar\\), i.e. \\(L=m_er_nv=n\\hbar\\), donde \\(\\hbar\\) era la constante de Planck ¿casualidad? Unos cálculos sencillos muestran que, a partir de esta sencilla hipótesis, se puede explicar la inexplicable, hasta ese momento, serie (experimental) de Balmer para el espectro del átomo de hidrógeno:\n...\nEjemplo de tales números cuánticos son el n y m de la fórmula de Balmer. Otro enunciado del mismo se debe a Max Born, quien lo expresó más o menos así:\n...\n> Al proponer un modelo cuántico tenemos que exigirle que, en el caso límite de grandes masas y órbitas de grandes dimensiones, la nueva mecánica (o sea, la cuántica) se convierta en la mecánica clásica.\n...\nAunque al lector le parezca mentira, el Principio de Correspondencia de Bohr realmente ayudó a los físicos a descubrir lo que luego sería la Mecánica cuántica. Fue ese principio el que Heisenberg tuvo todo tiempo en mente y que a la postre le dio la idea que desarrolló en su primer artículo sobre la Mecánica cuántica que mencionamos justo al inicio de esta entrada.\n...\nPara terminar esta primera tenemos que hacer notar que, si bien Planck probó que la cuantización era una hipótesis suficiente para explicar los resultados experimentales (la hoy conocida fórmula de Planck para la radiación del cuerpo negro) y que luego extendió Einstein a la luz, el gran matemático francés Henri Poincaré probó en 1911-12 que era además necesaria, y ya se sabe, las Matemáticas son las Matemáticas. Un teorema es una certeza que es difícil de obviar. En otras palabras, la hipótesis cuántica había llegado para quedarse. $$ \\ $$\n\n---\n\nTitle: La mecánica cuántica: el doble filo de su desarrollo que hoy conmemoramos | Ciencia | EL PAÍS\nURL: https://elpais.com/ciencia/el-hacha-de-piedra/2025-08-07/la-mecanica-cuantica-el-doble-filo-de-su-desarrollo-que-hoy-conmemoramos.html\nPublished: 2025-08-07T10:01:59.000Z\nAuthor: Montero Glez\nHighlights:\nHace unos días se cumplieron cien años del inicio de la revolución cuántica, una manera radical de entender la física, basada en observar el aparente desorden que muestran los electrones en torno al núcleo del átomo. Fue el 9 de julio de 1925, cuando el joven de 23 años Werner Karl Heisenberg le entrega una copia de su trabajo a Max Born, físico y matemático de quien es ayudante en la Universidad de Gotinga. En el citado trabajo, Heisenberg estudia el comportamiento del electrón en cada uno de sus saltos. Con la extraña belleza que trazan las leyes matemáticas, Heisenberg maneja tablas —matrices de Gotinga— donde la órbita de llegada y la de partida se representan en columnas y filas; cada salto del electrón afecta a estas dos órbitas. A partir de ahora, en lugar de predecir certezas, se predicen probabilidades. Con ello, las leyes deterministas se quedan fuera de esta nueva manera de entender la física.\n...\nAsí da comienzo una nueva era científica que proyectará sus claroscuros a través de los años y que llega hasta nuestros días. Porque el doble filo que amenaza la gramática del mundo donde subyace lo impredecible, se lo debemos a la mecánica cuántica. Por un lado, gracias a sus efectos tecnológicos, conseguimos comunicarnos a través de dispositivos móviles; sin ir más lejos, podemos leer este mismo artículo en la otra cara del mundo.\n...\nY aunque mucho de esto se lo debemos en un principio al joven Heisenberg que curioseó en la magia de los saltos del electrón, también queda añadir que la mecánica cuántica se conjugó con la química y la ingeniería para conseguir el poder destructivo de la bomba atómica. Ahí tenemos el otro lado, el filo cortante.\n...\nCon tal planteamiento, los efectos de la aplicación de esta nueva física nos llevan a asimilar la realidad de otra manera, revisando nuestra comprensión de la misma. Porque el mundo se convierte en un lugar inhóspito donde, en cualquier momento, puede tener lugar la catástrofe. Ahora se cumplen ochenta años de aquel día —6 de agosto de 1945— cuando los Estados Unidos lanzaron la bomba Little boy desde el cielo de Hiroshima.\n...\nAhora, tras el espanto, volvamos por un momento a 1925, cuando todavía el mundo del electrón iba y venía en la dimensión inocente de unas páginas escritas de manera “descabellada”, según el propio Heisenberg en la nota al trabajo que entregó a Max Born. Tras leerlo, a Max Born le pareció tan interesante que lo envió a la revista Zeitschrift für Physik. Con ello, los mecanismos del azar se pusieron en marcha.\n...\nYa dijimos que estamos en 1925, un año de claroscuros y morbosidades, de fantasmas y señales de humo para Europa y para el mundo. Fue el año en el que se publicó Mi Lucha, el panfleto de Hitler. También fue el año que Stalin llegó al poder y el año en el que Franco, coronel entonces, se fogueó en el desembarco de Alhucemas; hablamos de un tiempo opresivo y sinsentido que Kafka llevaría hasta los últimos fuegos narrativos con su obra póstuma titulada El proceso, un relato donde la incertidumbre se convierte en pesadilla burocrática. La gramática oculta de la realidad no tardaría en manifestarse.\n\n---\n\nTitle: 18.2: Breve resumen de los orígenes de la teoría cuántica\nURL: https://espanol.libretexts.org/Bookshelves/Fisica/Mecanica_Clasica/Principios_Variacionales_en_Mec%C3%A1nica_Cl%C3%A1sica_(Cline)/18%3A_La_transici%C3%B3n_a_la_f%C3%ADsica_cu%C3%A1ntica/18.02%3A_Breve_resumen_de_los_or%C3%ADgenes_de_la_teor%C3%ADa_cu%C3%A1ntica\nPublished: 2022-10-30T00:00:00.000Z\nAuthor: N/A\nHighlights:\nLa última década del\\(19^{th}\\) siglo vio la culminación de la física clásica. Para 1900 los científicos pensaban que las leyes básicas de la mecánica, el electromagnetismo y la mecánica estadística se entendían y se preocupaban de que la física futura se redujera a confirmar teorías al quinto decimal, con pocos descubrimientos nuevos importantes por hacer. Sin embargo, desarrollos técnicos como fotografía, bombas de vacío, bobina de inducción, etc., llevaron a importantes descubrimientos que revolucionaron la física y derrocaron la mecánica clásica de su trono a principios de\\(20^{th}\\) siglo. Cuadro\\(\\PageIndex{1}\\) resume algunos de los principales hitos previos al desarrollo de la mecánica cuántica.\n...\nMax Planck buscó una explicación de la forma espectral de la radiación electromagnética de cuerpo negro. Encontró una interpolación entre dos teorías contradictorias, una que reproducía el comportamiento de longitud de onda corta y la otra el comportamiento de longitud de onda larga. La interpolación de Planck requirió asumir que la radiación electromagnética no se emitía con un rango continuo de energías, sino que la radiación electromagnética se emite en haces discretos de energía llamados cuantos. En diciembre de 1900 presentó su teoría que reproducía precisamente la distribución espectral medida del cuerpo negro asumiendo que la energía transportada por un solo cuántico debe ser un múltiplo entero de\\(h\\nu \\):\n...\ndonde\\(\\nu\\) es la frecuencia de la radiación electromagnética y la constante de Planck,\\(h = 6.62610^{−34}\\)\\(J \\cdot s\\) fue el parámetro de mejor ajuste de la interpolación. Es decir, Planck asumió que la energía viene en haces discretos de energía iguales a los\\(h\\nu\\) que se llaman cuantos. Al hacer esta suposición extrema, en un acto de desesperación, Planck pudo reproducir el espectro experimental de radiación del cuerpo negro. La suposición de que la energía se intercambiaba en haces insinuó que las leyes clásicas de la física eran inadecuadas en el dominio microscópico. Los físicos de la generación anterior inicialmente se negaron a creer la hipótesis de Planck que subyace a la teoría cuántica. Fueron los físicos de nueva generación, como Einstein, Bohr, Heisenberg, Born, Schrödinger y Dirac, quienes desarrollaron la hipótesis de Planck que conducía a la teoría cuántica revolucionaria.\n...\nEn 1905, Einstein predijo la existencia del fotón, derivó la teoría del calor específico, así como derivando la Teoría de la Relatividad Especial. Es notable darse cuenta de que desarrolló estas tres teorías revolucionarias en un año, cuando solo tenía 26 años. Einstein descubrió una inconsistencia en la derivación de Planck de la distribución espectral del cuerpo negro en el sentido de que asumió que la parte estadística de la energía está cuantificada, mientras que la radiación electromagnética asumió las ecuaciones de Maxwell con energías del oscilador siendo continuas. Planck exigió que la luz de frecuencia\\(\\nu\\) se empaquetara en cuantos cuyas energías fueran múltiplos de\\(h\\nu \\), pero Planck nunca pensó que la luz tendría un comportamiento similar a partículas. Newton creía que la luz involucraba corpúsculos, y Hamilton desarrolló la teoría Hamilton-Jacobi buscando describir la luz en términos de la teoría del corpúsculo. Sin embargo, Maxwell había convencido a los físicos de que la luz era un fenómeno de onda; la interferencia más los efectos de difracción fueron manifestaciones convincentes de las propiedades onduladas de la luz. Para reproducir la predicción de Planck, Einstein tuvo que tratar la radiación de cuerpo negro como si consistiera en un gas de fotones, teniendo cada fotón energía\\(E = h\\nu \\). Este fue un concepto revolucionario que volvió a la teoría corpúscula de la luz de Newton. Einstein se dio cuenta de que había pruebas directas de su hipótesis fotónica, una de las cuales es el efecto fotoeléctrico. Según Einstein, cada fotón tiene una energía\\(E = h\\nu \\), en contraste con el caso clásico donde la energía del fotoelectrón depende de la intensidad de la luz. Einstein predijo que el electrón expulsado tendrá una energía cinética\n...\nMuchos científicos mayores, incluido Planck, aceptaron la teoría de la relatividad de Einstein pero se mostraron escépticos sobre el concepto de fotones, incluso después de que el concepto de fotones de Einstein fuera reivindicado en 1915 por Millikan quien demostró que, como se predijo, la energía del fotoelectrón expulsado dependía de la frecuencia, y no de la intensidad, de la luz. En 1923 Compton's demostró que la radiación electromagnética dispersada por electrones libres obedeció simples leyes de dispersión de dos cuerpos que finalmente convencieron a los muchos escépticos de la existencia del fotón.\n...\nEl experimento de dispersión de Rutherford, realizado en Manchester en 1911, descubrió que el átomo de Au comprendía un núcleo de carga positiva de radio\\(\\approx 10^{−14}\\)\\(m\\) que es mucho más pequeño que el\\(1.35 \\times 10^{−10}\\)\\(m\\) radio del átomo de Au. Estimulado por este descubrimiento, Niels Bohr se unió a Rutherford en Manchester en 1912 donde desarrolló el modelo Bohr del átomo. Esta teoría fue notablemente exitosa a pesar de tener serias inconsistencias y deficiencias. Los supuestos modelo de Bohr fueron:\n...\nPara 1912 Planck, y otros, habían abandonado el concepto de que la teoría cuántica era una rama de la mecánica clásica, y estaban buscando ver si la mecánica clásica era un caso especial de una física cuántica más general, o la física cuántica era una ciencia completamente fuera de la mecánica clásica. También estaban tratando de encontrar una razón consistente y racional de cuantificación para reemplazar el supuesto ad hoc de Bohr.\n...\ny resolver la teoría Hamilton-Jacobi por separación de variables. En 1916 el modelo de Bohr-Sommerfeld resolvió las órbitas clásicas para el átomo de hidrógeno, incluyendo correcciones relativistas como se describe en el ejemplo\\(17.7.1\\). Esta reprodujo la estructura fina observada en los espectros ópticos del hidrógeno. El uso de la transformación canónica a variables de ángulo de acción demostró ser el enfoque ideal para resolver muchos de estos problemas en la mecánica cuántica. En 1921, Stern y Gerlach demostraron la cuantificación del espacio al observar la división de haces atómicos desviados por campos magnéticos no uniformes. Este resultado fue un gran triunfo para la teoría cuántica. Sommerfeld declaró que “con su audaz método experimental, Stern y Gerlach demostraron no solo la existencia de la cuantificación espacial, también demostraron la naturaleza atómica del momento magnético, su origen teórico cuántico y su relación con la estructura atómica de la electricidad”.\n...\nEn su tesis doctoral de 1924, el príncipe Louis de Broglie propuso la hipótesis de la dualidad onda-partícula que fue un desarrollo fundamental en la teoría cuántica. de Broglie utilizó el concepto clásico de un paquete de ondas de materia, análogo a los paquetes de ondas clásicos discutidos en el capítulo\\(3.11\\). Supuso que tanto las velocidades de grupo como de señal de un paquete de ondas de materia deben ser iguales a la velocidad de la partícula correspondiente. Por analogía con la relación de Einstein para el fotón, y utilizando la Teoría de la Relatividad Especial, de Broglie asumió que\n...\ncaracterizar las ondas de materia son puramente clásicas, el contenido físico de tales ondas va más allá de la física clásica. En 1927 C. Davisson y G.P. Thomson observaron independientemente la difracción de electrones confirmando la dualidad onda/partícula para el electrón. Irónicamente, J.J. Thomson descubrió que el electrón era una partícula, mientras que su hijo lo atribuía a una onda electrónica.\n\n---\n\nTitle: HISTORIA DE LA FÍSICA CUÁNTICA\nURL: https://proassetspdlcom.cdnstatics2.com/usuaris/libros_contenido/arxius/60/59941_1_DPSANCHEZRON_HISTORIADELAFISICACUANTICA.pdf\nPublished: N/A\nAuthor: Laura Fabregat Farran\nHighlights:\n## HISTORIA DE LA FÍSICA CUÁNTICA\n\nVolumen 1 El periodo fundacional: origen y desarrollo de la cuantización de Planck (1860-1924)\n...\nJosé Manuel Sánchez Ron se embarca en la narración de la historia completa de la física \ncuántica, la rama que se ocupa de la estructura de la materia y de la radiación, uno de los \ncampos científicos más complejos y trascendentales de la ciencia. Partiendo de sus orígenes \nhasta el bosón de Higgs, cada uno de los volúmenes profundiza en los diferentes periodos, \natendiendo a cada paso de la construcción de la teoría cuántica y a los científicos que \nparticiparon en su elaboración, situándolas en el contexto de los acontecimientos históricos \ny políticos que afectaron su avance. \nEste primer volumen desentraña el período fundacional y reconstruye los orígenes de la \nfísica cuántica. Comenzando por los trabajos en espectroscopía de Bunsen y Kirchhoff hacia \n1860, que condujeron a la introducción por parte de Max Planck en 1900 de la idea de la \ncuantización de la energía. Albert Einstein consolidaría cinco años más tarde esta teoría, y \nen 1924 Rutherford y Bohr desarrollarán los modelos atómicos y, entre otros, Louis de \nBroglie introducirá la dualidad onda-corpúsculo. Todo ello con la Primera Guerra Mundial \ncomo telón de fondo. \nLa publicación en 2025 de los tres volúmenes de la Historia de la física cuántica celebra el \nsiglo de la creación de la mecánica cuántica, uno de los hitos de la segunda revolución de \nla física del siglo XX. Una revolución que cambió el mundo, pues permitió la invención del \ntransistor, pieza fundacional de la Sociedad de la Información, y por ende de la \nGlobalización. \n«Después de haber finalizado este primer volumen de lo que espero será una \nhistoria razonablemente completa de la física cuántica, me reafirmo en mi \nidea inicial: estoy más convenido que nunca de que esa historia constituye el \napartado de mayor dificultad (por número de problemas y participantes \nimplicados, período temporal que abarca, al igual que por la magnitud y \ncarácter de las rupturas conceptuales que involucra con teorías y \nplanteamientos filosóficos y epistemológicos previos) en toda la historia de la \nfísica, y acaso de toda la ciencia\n...\n«En 2001 publiqué Historia de la física cuántica, I: El período fundacional (1860-1926), \ncon una segunda impresión en 2004. El libro básicamente se ocupaba de los desarrollos \nque habían tenido lugar con posterioridad a los trabajos de Bunsen y Kirchhoff, a \ncomienzos de la década de 1860. Éstos condujeron a la introducción de la noción de \n“cuerpo negro” y a los subsiguientes esfuerzos por encontrar la expresión matemática \nque determinara la relación entre su densidad de energía y la longitud de \nonda/frecuencia emitida, investigaciones que finalmente cristalizaron en 1900, cuando \nMax Planck encontró tal ley. Para poder deducir esta sobre una base teórica, tuvo que \nintroducir la noción de “cuanto de energía”, referida a la discontinuidad de la radiación, \nen la que él no creía. A continuación, el libro exponía la larga y compleja historia de la \nbúsqueda de una física compatible con semejante cuantización, tarea protagonizada por \nnumerosos científicos, entre los que destacan Albert Einstein, Ernest Rutherford y Niels \nBohr, lo que finalmente condujo a la formulación de una mecánica cuántica con dos \nversiones, la de Werner Heisenberg y la de Erwin Schrödinger. \nMi intención por entonces era escribir un segundo tomo de la obra, que partiera \nde Paul Dirac y llegase a la formulación de la electrodinámica cuántica. Por diferentes \nrazones, no llegué a cumplir mi objetivo, aunque nunca dejó de estar presente en mi\n...\nmente y en mis pesares, por no haberlo realizado […]. La conmemoración en 2025 del \ncentenario de la publicación de la primera versión de una mecánica cuántica, la de \nHeisenberg, me animó a saldar finalmente esa deuda largamente impagada. \nSin embargo, con el transcurso del tiempo el plan ha sufrido modificaciones. En \nlugar de dos tomos, decidí que esta historia de la física cuántica fuera una trilogía que \nllegase incluso a la propuesta del bosón de Higgs. Este primer volumen coincide con el \npublicado en 2001, con algunos, no muchos, añadidos (el más importante, ocuparme de \nlas aportaciones que hizo la física cuántica anterior a las contribuciones de Dirac a la \nexplicación de la tabla periódica de los elementos). Por otro lado, se ha eliminado el \núltimo apartado, que pasará a formar parte, ampliado, de los tres primeros capítulos de \nla segunda entrega Historia de la física cuántica, II. La creación e interpretación de la \nmecánica cuántica: de Heisenberg al gato de Schrödinger (1925-1935). Esta novedad se \nexplica, al menos, por dos razones. La primera es que la creación de la mecánica cuántica \nconstituye una aportación de tal calibre que merece ser tratada de forma \nindependiente. La segunda, que hacerlo así me permite corregir un error imperdonable: \nhaber marginado la formulación, íntimamente ligada a la de Heisenberg, que Paul Dirac \nintrodujo en 1925, al incluir en la edición anterior sólo las versiones de Heisenberg y \nSchrödinger. Así, el capítulo 4 del segundo tomo estará dedicado a Dirac y a su \nformulación de la mecánica cuántica. \nEl tercer volumen de esta obra se centrará en las físicas nuclear y de altas \nenergías (también conocida como “de partículas elementales”), en la electrodinámica \ncuántica y en la denominada “segunda revolución cuántica”, protagonizada por las \nconsecuencias del entrelazamiento, ya introducida en el tomo 2. \nConsidero que la mecánica cuántica constituye uno de los grandes logros de la \nhumanidad.\n...\nPrólogo a la primera edición (2001) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13 \n1. PREHISTORIA DE LOS CUANTOS: KIRCHHOFF, ESPECTROS Y RADIACIONES. . . . . . . . . . . . . . . .21\n...\n. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .21\n...\nGustav Kirchhoff y la espectroscopia . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23\n...\nKirchhoff y Bunsen (1860) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .29\n...\nKirchhoff y la radiación de un cuerpo negro . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34\n...\nRecepción del descubrimiento de Thomson. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 139\n...\n4. MÁX PLANCK Y LA PRIMERA DISCONTINUIDAD CUÁNTICA . . . . . . . . . . . . . . . . . . . . . . . . . . .145 \nMax Planck . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 145\n...\nEl Instituto Imperial Físico-Técnico . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .153 \nUna nueva ley de radiación: Planck, octubre de 1900 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 160 \nLa deducción de Planck de E = h · υ . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 169 \n«Una suposición puramente formal» . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .173\n...\nNotas biográficas: Max Planck, un hombre de honor . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .185 \n5. ALBERT EINSTEIN Y LA SEGUNDA DISCONTINUIDAD CUÁNTICA . . . . . . . . . . . . . . . . . . . . . . . 195\n...\n7. ERNEST RUTHERFORD: DE LA RADIACTIVIDAD A LOS MODELOS ATÓMICOS . . . . . . . . . . . . .269\n...\n8. NIELS BOHR: LA CUANTIZACIÓN DEL ÁTOMO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .317 \nEl doctor",
+      "title": "Web search: Prepárame unas páginas sobre cómo empezó la mecánica cuántica",
+      "metadata": {},
+      "time": {
+        "start": 1789528662174,
+        "end": 1789528664500
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.504Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528664504,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a83869b7001kkGetV4Ufvc7D8",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8385dfd001nSTz9Ii5hPSCIV",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8558,
+      "output": 170,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8728,
+      "headroom": 30128,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.504Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.505Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.506Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.506Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.506Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.506Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.506Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.506Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.515Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8728,
+  "providerTokens": 8728,
+  "estimatedInputTokens": 13204,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8558,
+    "cacheRead": 0,
+    "output": 170
+  },
+  "overflow": false,
+  "headroom": 30128,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.516Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.516Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.517Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:44.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:45.209Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528665209,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a8386c76001e3wtMfaCTK6Ipg",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83869c3001PrzmhJpcF18caD",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:45.209Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:45.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528665210,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a8386c790025sE5ZYrKiVPcQp",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83869c3001PrzmhJpcF18caD",
+    "type": "tool",
+    "callID": "call_038fca7ade52db8e",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:45.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528665210,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a8386c79001sZPdi9iv8vqnfD",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83869c3001PrzmhJpcF18caD",
+    "type": "text",
+    "text": "Let me open https://es.wikipedia.org/wiki/Historia_de_la_mec%C3%A1nica_cu%C3%A1ntica and read what it says.",
+    "time": {
+      "start": 1789528665210,
+      "end": 1789528665210
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:45.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528665210,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a8386c790025sE5ZYrKiVPcQp",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83869c3001PrzmhJpcF18caD",
+    "type": "tool",
+    "callID": "call_038fca7ade52db8e",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://es.wikipedia.org/wiki/Historia_de_la_mec%C3%A1nica_cu%C3%A1ntica"
+      },
+      "time": {
+        "start": 1789528665210
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.334Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528666334,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a8386c790025sE5ZYrKiVPcQp",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83869c3001PrzmhJpcF18caD",
+    "type": "tool",
+    "callID": "call_038fca7ade52db8e",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://es.wikipedia.org/wiki/Historia_de_la_mec%C3%A1nica_cu%C3%A1ntica"
+      },
+      "output": "Historia de la mecánica cuántica - Wikipedia, la enciclopedia libre\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIr al contenido\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nMenú principal\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tMenú principal\n\tmover a la barra lateral\n\tocultar\n\n\n\t\n\n\t\n\t\tNavegación\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tPortadaPortal de la comunidadActualidadCambios recientesPáginas nuevasPágina aleatoriaAyudaNotificar un errorPáginas especiales\n\t\t\n\t\t\n\t\n\n\n\t\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nBuscar\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tBuscar\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nApariencia\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tDonaciones\n\nCrear una cuenta\n\nAcceder\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nHerramientas personales\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nDonaciones\n\n\n\nCrear una cuenta\n\n\n\nAcceder\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tContenidos\n\tmover a la barra lateral\n\tocultar\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\tInicio\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tDescripción\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tCronología\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tPrimeros experimentos\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tReferencias\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t5\n\t\t\t\tVéase también\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t6\n\t\t\t\tBibliografía\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t7\n\t\t\t\tEnlaces externos\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nCambiar a la tabla de contenidos\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tHistoria de la mecánica cuántica\n\t\t\t\n\n\t\n\t\n\n24 idiomas\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tالعربيةবাংলাCatalàDanskEnglishEsperantoفارسیSuomiFrançaisעבריתMagyar日本語한국어Lietuviųꯃꯤꯇꯩ ꯂꯣꯟਪੰਜਾਬੀپښتوPortuguêsRomânăРусскийසිංහලTürkçeУкраїнська中文\n\t\t\t\n\t\t\tEditar enlaces\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tArtículo\n\nDiscusión\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tespañol\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tLeer\n\nEditar\n\nVer historial\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nHerramientas\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tHerramientas\n\tmover a la barra lateral\n\tocultar\n\n\n\t\n\n\t\n\t\tAcciones\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nLeer\n\n\n\nEditar\n\n\n\nVer historial\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tGeneral\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tLo que enlaza aquíCambios en enlazadasSubir archivoEnlace permanenteInformación de la páginaCitar esta páginaObtener URL acortadoCambiar al analizador antiguo\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tImprimir/exportar\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tCrear un libroDescargar como PDFVersión para imprimir\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tEn otros proyectos\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWikiversidadElemento de Wikidata\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tApariencia\n\tmover a la barra lateral\n\tocultar\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\tDe Wikipedia, la enciclopedia libre\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tEl modelo cuántico del átomo de Niels Bohr desarrollado en 1913, el cual incorporó una explicación a la fórmula de Johannes Rydberg de 1888; la hipótesis cuántica  de Max Planck de 1900, esto es, que los radiadores de energía atómica tienen valores de energía discreta (\n  \n    \n      \n        ϵ\n        =\n        h\n        f\n      \n    \n    {\\displaystyle \\epsilon =hf}\n  \n); el modelo de J. J. Thomson en 1904, el postulado de luz cuántica de Albert Einstein en 1905 y el descubrimiento en 1907 del núcleo atómico positivo hecho por Ernest Rutherford.\n\nLa historia de la mecánica cuántica comienza esencialmente con la introducción de la expresión cuerpo negro por Gustav Kirchhoff en el invierno de 1859-1860, la sugerencia hecha por Ludwig Boltzmann en 1877 sobre que los estados de energía de un sistema físico deberían ser discretos, y la hipótesis cuántica de Max Planck en el 1900, quien decía que cualquier sistema de radiación de energía atómica podía teóricamente ser dividido en un número de elementos de energía discretos \n  \n    \n      \n        E\n        \n      \n    \n    {\\displaystyle E\\,}\n  \n, tal que cada uno de estos elementos de energía sea proporcional a la frecuencia \n  \n    \n      \n        ν\n        \n      \n    \n    {\\displaystyle \\nu \\,}\n  \n, con las que cada uno podía de manera individual irradiar energía,\ncomo lo muestra la siguiente fórmula:\n  \n    \n      \n        E\n        =\n        h\n        ν\n        \n      \n    \n    {\\displaystyle E=h\\nu \\,}\n  \n \n\ndonde \n  \n    \n      \n        h\n        \n      \n    \n    {\\displaystyle h\\,}\n  \n es un valor numérico llamado constante de Planck. \n\nEn 1905, para explicar el efecto fotoeléctrico (1839), esto es, la expulsión de electrones en ciertos materiales debido a la incidencia de luz sobre los mismos, Albert Einstein postuló –basándose en la hipótesis cuántica de Planck– que la luz está compuesta de partículas cuánticas individuales, las que más tarde fueron llamadas fotones (1926). \n\nEl término «mecánica cuántica» fue usado por primera vez en el escrito de Max Born llamado Zur Quantenmechanik (La Mecánica Cuántica). En los años que siguen, esta base teórica comenzó lentamente a ser aplicada a estructuras, reacciones y enlaces químicos.\n\nDescripción[editar]\n\nEn 1900 el físico alemán Max Planck introdujo la idea de que la energía estaba «cuantizada», con el fin de derivar una fórmula para la dependencia de la frecuencia observada con la energía emitida por un cuerpo negro. En 1905, Einstein explicó el efecto fotoeléctrico con un postulado sobre que luz –o más específicamente toda la radiación electromagnética– puede ser dividida en un número finito de «cuantos de energía», que son localizados como puntos en el espacio. De la introducción del escrito de cuántica On a heuristic viewpoint concerning the emission and transformation of light (Un punto de vista heurístico relacionado con la emisión y transformación de la luz) de marzo de 1905:\n\n\n\n \n  \"De acuerdo a las suposiciones a ser contempladas aquí, cuando un rayo de luz se está propagando desde un punto, la energía no está distribuida continuamente sobre espacios cada vez más grandes, pero [sino que] está constituida de un número finito de cuantos de energía que son localizados en puntos en el espacio, moviéndose sin dividirse y pudiendo ser absorbidos o generados sólo en su conjunto.\"\n Albert Einstein\n\n\nEsta sentencia ha sido llamada la sentencia más revolucionaria escrita por un físico en el siglo veinte.[1] Estos «cuantos de energía» serían llamados más tarde fotones, un término introducido por Gilbert N. Lewis en 1926. La idea que cada fotón tenía que consistir de energía en términos de cuantos fue un notable logro, ya que eliminó la posibilidad de que la radiación de un cuerpo negro alcanzara energía infinita, lo que se explicó en términos de formas de onda solamente. En 1913, Bohr explicó las líneas espectrales del átomo de hidrógeno, nuevamente utilizando «cuantización», en su escrito On the Constitution of Atoms and Molecules (Sobre la Constitución de Átomos y Moléculas), publicado en julio de 1913.\n\nEstas teorías, aunque exitosas, fueron estrictamente fenomenológicas: no hay justificación rigurosa para la cuantización (de lado, quizás, para la discusión de Henri Poincaré sobre la teoría de Planck en su artículo de 1912, Sur la théorie des quanta (Sobre la teoría cuántica)). Son conocidas mundialmente como la teoría cuántica antigua.\n\nLa expresión «física cuántica» fue usada por primera vez en The Universe in Light of Modern Physics (El Universo bajo la luz de la Física Moderna), de Max Planck en 1931.\n\nEn 1924, el físico francés Louis-Victor de Broglie presenta su teoría de ondas de materia, por la que se indica que las partículas pueden exhibir características de onda y viceversa. Esta teoría fue para una partícula simple y derivada de la teoría especial de la relatividad. Basándose en el planteamiento de Broglie, nació la mecánica cuántica moderna en 1925, cuando los físicos alemanes Werner Heisenberg y Max Born desarrollaron la mecánica matricial y el físico austríaco Erwin Schrödinger inventó la mecánica de ondas y la ecuación de Schrödinger no relativista como una aproximación al caso generalizado de la teoría de Broglie.[2] Schrödinger posteriormente demostró que ambos enfoques eran equivalentes.\n\nHeisenberg formuló su principio de incertidumbre en 1927, y la interpretación de Copenhague comienza a tomar forma cerca de la misma fecha. A partir de 1927, Paul Dirac comienza el proceso de unificación de la mecánica cuántica con la relatividad especial proponiendo la ecuación de Dirac para el electrón. La ecuación de Dirac alcanza la descripción relativista de la función de onda de un electrón que Schrödinger no pudo obtener. Predice el espín electrónico y ayuda a predecir la existencia del positrón. Fue pionero también en el uso de la teoría del operador, incluyendo la influyente notación Bra-Ket descrito en su famoso libro de 1930. Durante el mismo período, el matemático húngaro John von Neumann formuló la rigurosa base matemática para la mecánica cuántica de la teoría de los operadores lineales en los espacios de Hilbert, descrito en su igualmente famoso libro de 1932. Estos, como muchos otros trabajos del período fundacional aún siguen en pie, y son altamente utilizadas.\n\nEn el campo de la química cuántica fueron pioneros los físicos Walter Heitler y Fritz London, quienes publicaron un estudio de los enlaces covalentes de la molécula de hidrógeno en 1927. La química cuántica fue posteriormente desarrollada por un gran número de científicos, incluyendo el teórico químico norteamericano de Cal Tech Linus Pauling, y a John C. Slater en varias teorías tales como la teoría del orbital molecular o teoría de valencias.\n\nA partir de 1927, se intentó aplicar la mecánica cuántica a los campos en vez de partículas simples, resultando en que fueron conocidas las teorías cuánticas de campo. Los primeros que trabajaron en esta área fueron Dirac, Pauli, Weisskopf y Jordan. Esta área de investigación culminó en la formulación de la electrodinámica cuántica por Feynman, Dyson, Schwinger y Tomonaga durante los 40'. La electrodinámica cuántica es una teoría cuántica de electrones, positrones y campo electromagnético, y sirvió como un modelo para posteriores teorías de campo cuántico. La teoría de la cromodinámica cuántica fue formulada a comienzos de los 60'. La teoría como la conocemos hoy en día fue formulada por Politzer, Gross y Wilczek en 1975. Basándose en el trabajo pionero de Schwinger, Higgs, Goldstone, Glashow, Weinberg y Salam, independientemente mostraron cómo la fuerza nuclear débil y la electrodinámica cuántica podían fusionarse en una sola fuerza electrodébil.\n\nCronología[editar]\nLa siguiente tabla muestra los pasos y personas claves en el desarrollo de la teoría cuántica:\n\nFecha\nPersona\nContribución\n\n1771\nLuigi Galvani\nNotó que los músculos de las ranas muertas se movían ligeramente cuando los golpeaba con un descargador eléctrico, a lo que se refirió como \"electricidad animal\".\n\n1800\nAlessandro Volta\nInventó la pila voltaica o batería, específicamente para refutar la teoría de la electricidad animal de Galvani.\n\n1807\nJohn Dalton\nLa principal aportación de John Dalton fue su teoría atómica la cual fue retomada desde las creadas por Leucipo y Demócrito en la antigüedad. -En 1803 formuló la teoría de que la materia está compuesta de átomos de diferentes masas, que se combinan en proporciones sencillas para formar compuestos.\n\n1838\nMichael Faraday\nUsando la batería de Volta descubrió los rayos catódicos cuando, durante un experimento pasó corriente a través de un tubo de vidrio lleno de un aire enrarecido y notó un extraño arco de luz comenzando en el ánodo (electrodo positivo) y finalizando en el cátodo (electrodo negativo).\n\n1852\nEdward Frankland\nInició la teoría de valencia, proponiendo que cada elemento fuese una específica \"combinación de poder\". Por ejemplo, algunos elementos como el nitrógeno tienden a combinarse con otros tres elementos (e.g. \n  \n    \n      \n        N\n        \n          O\n          \n            3\n          \n        \n      \n    \n    {\\displaystyle NO_{3}}\n  \n), mientras que otros podrían tender a combinarse con cinco (\n  \n    \n      \n        P\n        \n          O\n          \n            5\n          \n        \n      \n    \n    {\\displaystyle PO_{5}}\n  \n), y que cada elemento que se esfuerza por cumplir con su cuota de combinación de poder (valencia) para así satisfacer sus afinidades.\n\n1859\nGustav Kirchhoff\nDeclaró el \"problema del cuerpo negro\": ¿cómo la intensidad de la radiación electromagnética emitida por un cuerpo negro depende de la frecuencia de la radiación y de la temperatura del cuerpo?\n\n1877\nLudwig Boltzmann\nSugirió que los estados de energía de un sistema físico deberían ser discretos.\n\n1879\nWilliam Crookes\nMostró que los rayos catódicos (1838), a diferencia de los rayos de luz, pueden ser doblados en un campo magnético.\n\n1885\nJohann Jakob Balmer\nDescubrió que las cuatro líneas visibles del espectro del hidrógeno podían ser asignadas enteras a una serie.\n\n1888\nJohannes Rydberg\nModificó la fórmula de Balmer para incluir las otras series de líneas y producir la fórmula de Rydberg.\n\n1891\nAlfred Werner\nPropuso una teoría de afinidad y valencia en la cual la afinidad es una emisión de fuerza atractiva del centro del átomo la cual actúa uniformemente desde allí hacia todas las partes de la superficie esférica del átomo central.\n\n1892\nHeinrich Rudolf Hertz\nMostró que los rayos catódicos (1838) podían pasar a través de hojas delgadas de láminas de oro y producir una apreciable luminosidad de los cristales detrás de ellos.\n\n1896\nHenri Becquerel\nDescubrió la \"radiactividad\", un proceso en el cual, debido a la desintegración nuclear, ciertos elementos o isótopos espontáneamente emiten una de las tres entidades energéticas: partículas alfa (carga positiva), partículas beta (carga negativa) y partículas gamma (carga neutral).\n\n1897\nJoseph John Thomson\nMostró que los rayos catódicos (1838) se curvan bajo la influencia de un campo eléctrico y un campo magnético y para explicar esto el sugirió que los rayos catódicos están negativamente cargados de partículas eléctricas subatómicas o corpúsculos\" (electrones), sacados del átomo; y en 1904 propuso el modelo del \"budín de ciruela, en el cual los átomos tienen una masa amorfa (budín) positivamente cargada como un cuerpo empotrado con electrones negativamente cargados (ciruelas) dispersos en su totalidad en la forma de anillos rotando de manera no aleatoria.\n\n1900\nMax Planck\nPara explicar la radiación de cuerpo negro, sugirió que la energía electromagnética podría ser emitida sólo en forma cuantizada, esto es, la energía sólo podría ser un múltiplo de una unidad elemental de \n  \n    \n      \n        E\n        =\n        h\n        f\n      \n    \n    {\\displaystyle E=hf}\n  \n, donde \n  \n    \n      \n        h\n      \n    \n    {\\displaystyle h}\n  \n es la constante de Planck y \n  \n    \n      \n        f\n      \n    \n    {\\displaystyle f}\n  \n la frecuencia de la radiación.\n\n1902\nGilbert N. Lewis\nPara explicar la regla del octeto (1893), desarrolló el modelo del átomo cúbico, en el cual los electrones estaban ubicados en los vértices de un cubo y sugirió que los enlaces simples, dobles y triples se dan cuando dos átomos se mantienen unidos por múltiples pares de electrones (un par por cada enlace) entre ambos átomos (1916).\n\n1904\nRichard Abegg\nNotó la existencia de un patrón en la diferencia numérica entre la máxima valencia positiva de un elemento, como +6 para \n  \n    \n      \n        \n          H\n          \n            2\n          \n        \n        S\n        \n          O\n          \n            4\n          \n        \n      \n    \n    {\\displaystyle H_{2}SO_{4}}\n  \n, y su máxima valencia negativa, como -2 para \n  \n    \n      \n        \n          H\n          \n            2\n          \n        \n        S\n      \n    \n    {\\displaystyle H_{2}S}\n  \n, que tiende a ser de ocho (regla de Abegg).\n\n1905\nAlbert Einstein\nPara explicar el efecto fotoeléctrico, es decir, la emisión de electrones por un material cuando se le ilumina con radiación electromagnética, postuló que la luz está formada por partículas cuánticas individuales (fotones), basándose en la hipótesis cuántica de Planck (1900).\n\n1907\nErnest Rutherford\nPara testear el modelo del budín de ciruelas (1904), él disparó partículas alfa (positivamente cargadas) en una lámina de oro y notó que algunos se devolvían, lo cual demuestra que los átomos tienen un pequeño núcleo atómico cargado positivamente en su centro.\n\n1913\nNiels Bohr\nPara explicar la fórmula de Rydberg (1888), la cual modela correctamente el espectro de la emisión de luz del átomo de hidrógeno, postuló la hipótesis sobre que los electrones cargados negativamente giran en torno a un núcleo positivamente cargado en ciertas distancias \"cuánticas\" fijas, y que cada uno de estas \"órbitas esféricas\" tienen una energía específica asociada de tal manera que los movimientos de electrones entre las órbitas requiere emisiones \"cuánticas\" o absorciones de energía.\n\n1916\nArnold Sommerfeld\nPara describir el efecto Zeeman, esto es, que la absorción atómica o emisión de líneas espectrales cambien cuando la luz en primer lugar brilla a través de un campo magnético, el sugirió que allí podrían haber \"órbitas elípticas\" en los átomos además de las esféricas.\n\n1919\nIrving Langmuir\nBasándose en el trabajo de Lewis (1916), el acuñó el término \"covalencia\" y postuló que los enlaces de coordinación ocurren cuando un par de electrones provienen de distinto átomo.\n\n1922\nStern y Gerlach\nEl experimento de Stern y Gerlach detecta valores discretos de momentos angulares para los átomos en el estado base pasando a través de un campo magnético no homogéneo, conduciendo al descubrimiento del espín del electrón.\n\n1923\nLouis-Victor de Broglie\nPostuló que los electrones en movimiento están asociados a longitudes de onda que están dadas por la constante de Planck \n  \n    \n      \n        h\n      \n    \n    {\\displaystyle h}\n  \n dividida por el momentum de \n  \n    \n      \n        m\n        v\n        =\n        p\n      \n    \n    {\\displaystyle mv=p}\n  \n del electrón: \n  \n    \n      \n        λ\n        =\n        h\n        \n          /\n        \n        m\n        v\n        =\n        h\n        \n          /\n        \n        p\n      \n    \n    {\\displaystyle \\lambda =h/mv=h/p}\n  \n.\n\n1925\nFriedrich Hund\nResumió la \"regla de máxima multiplicidad\", la cual establece que cuando los electrones son agregados sucesivamente a un átomo como muchos niveles u órbitas, son ocupados por separado antes de cualquier emparejamiento de electrones a diferencia de lo que ocurre con el espín, y hace la distinción que los electrones internos en las moléculas permanecen en los orbitales atómicos y sólo los electrones de valencia son necesitados para estar en los orbitales moleculares envueltos en ambos núcleos.\n\n1925\nWolfgang Ernst Pauli\nResumió el \"principio de exclusión de Pauli\", que dice que dos fermiones idénticos no pueden ocupar el mismo estado cuántico de manera simultánea.\n\n1926\nErwin Schrödinger\nUsando el postulado de Broglie sobre las ondas de electrones (1924), desarrolló una \"ecuación de onda\" que representa matemáticamente la distribución de una carga de un electrón distribuido a través del espacio, siendo esféricamente simétrica o prominente en ciertas direcciones, es decir, dirigida a los enlaces de valencia, la cual dio el correcto valor para las líneas espectrales del átomo de hidrógeno.\n\n1927\nWalter Heitler\nUsó la ecuación de onda de Schrödinger (1926) para mostrar cómo dos átomos de hidrógeno se unen en función de ondas, con más, menos y términos de intercambio, para formar un enlace covalente.\n\n1927\nRobert S. Mulliken\nEn 1927 Mulliken trabajó en conjunto con Hund para desarrollar una teoría orbital molecular, donde los electrones son asignados a los estados que se extienden sobre toda la molécula, y en 1932 introdujo muchas nuevas terminologías de orbitales moleculares, como el enlace sigma, enlace pi y enlace delta.\n\n1928\nLinus Pauling\nResumió la naturaleza del enlace químico, usando el modelo de mecánica cuántico del enlace covalente de Heitler (1927) para sentar las bases de la mecánica cuántica para todos los tipos de estructuras y enlaces moleculares, y sugerir que diferentes tipos de enlaces en moléculas pueden ser igualados por el rápido desplazamiento de electrones, un proceso llamado \"resonancia\" (1931), como las resonancias híbridas conteniendo contribuciones de diferentes configuraciones electrónicas posibles.\n\n1929\nJohn Lennard-Jones\nIntrodujo una aproximación de la combinación lineal de orbitales atómicos para el cálculo de orbitales moleculares.\n\n1932\nWerner Heisenberg\nAplicó la teoría de perturbaciones para el problema de los dos electrones y mostró como derivados de la resonancia del intercambio de electrones podía explicar la interacción de intercambio.\n\n1938\nCharles Coulson\nRealizó el primer cálculo preciso de una función de onda de orbitales moleculares con la molécula de hidrógeno.\n\n1951\nRoothaan y Hall\nObtuvieron las ecuaciones de Roothaan-Hall, colocando rigurosos métodos de orbitales moleculares sobre una sólida base.\n\n\nPrimeros experimentos[editar]\n\nEl experimento de la doble rendija de Thomas Young demostró la naturaleza ondulatoria de la luz (c1805).\nHenri Becquerel descubrió la radiactividad (1896).\nEl experimento del tubo de rayos catódicos de Joseph John Thomson (descubrió el electrón y su carga negativa) (1897).\nEl estudio de la radiación de cuerpo negro entre los años 1850 y 1900, lo cual no podía ser explicado sin los conceptos cuánticos.\nEl efecto fotoeléctrico: Einstein explicó esto en 1905 (por lo cual recibiría el premio Nobel) usando los conceptos de fotones, partículas de luz con energía cuantizada.\nEl experimento de la gota de aceite de Robert Andrews Millikan, el cual mostraba que la carga eléctrica ocurre como cuantos (unidades enteras) (1909).\nEl experimento de la lámina de oro de Ernest Rutherford refutó el modelo del budín de ciruelas del átomo, el cual sugería que la masa y la carga positiva de los átomos están casi uniformemente distribuidos (1911).\nOtto Stern y Walter Gerlach dirigieron el experimento de Stern-Gerlach, el cual demostró la naturaleza cuantizada del espín de las partículas.\nClinton Joseph Davisson y Lester Germer demostraron la naturaleza de onda del electrón[3] en el experimento de la difracción de electrones (1927).\nClyde Cowan y Frederick Reines confirman la existencia del neutrino en el experimento del neutrino (1955).\nEl experimento de la doble rendija de Claus Jönsson con electrones.\nEl efecto cuántico de Hall, descubierto por Klaus von Klitzing en 1980. En cuantizó la versión del efecto Hall que permitió la definición de un nuevo estándar práctico para la resistencia eléctrica y para una extremadamente precisa determinación independiente de la constante de estructura fina.\nLa verificación experimental del entrelazamiento cuántico realizada por Alain Aspect en 1982\n\nReferencias[editar]\n\n↑ Folsing, Albrecht (1997). Albert Einstein: A Biography. trans. Ewald Osers, Viking.\n↑ Hanle, P.A. (1977). Erwin Schrodinger's Reaction to Louis de Broglie's Thesis on the Quantum Theory. Isis, Vol. 68, No. 4 (Dec., 1977), pp. 606-609.\n↑ El experimento de Davisson-Germer, el cual demuestra la naturaleza de onda del electrón.\n\n\nVéase también[editar]\n\nCuanto\nHistoria de la física\nHistoria de la termodinámica\nHistoria de la química\n\nBibliografía[editar]\nBohr, Niels (1928). «El Postulado Cuántico y el Desarrollo Reciente de la Teoría Atómica (Complementariedad).». Nature 121: 580-590.  (Texto en español)\nBorn, M.; Jordan, P. (1925). «Hacia la Mecánica Cuántica (Zur Quantenmechanik)». Z. Phys 34: 858-888.  (Texto en español)\nHeinsenberg, Werner (1925). «Sobre una Reinterpretación Teórico-Cuántica de las Relaciones Cinemáticas y Mecánicas (Mecánica Matricial)». Z. Phys 33: 879-893.  (Texto en español)\nHeinsenberg, Werner (1927). «Sobre el Contenido Descriptivo de la Cinemática y la Mecánica Teórico Cuántica (Principio de Incertidumbre)». Z. Phys 43: 172-198.  (Texto en español)\nEl Desarrollo de la Teoría Cuántica Elemental de 1900 a 1927 Herbert Capellmann (2020) Potsdam, Instituto de Física Teórica, RWTH Aachen University\n\nEnlaces externos[editar]\nLas Contribuciones de Einstein a la Teoria Cuantica Norbert Straumann,Instituto de Física Teórica, Universidad de Zurich, Suiza (en español)\nUna historia de la mecánica cuántica Archivado el 28 de octubre de 2019 en Wayback Machine. (en inglés).\nUna breve historia de la mecánica cuántica (en inglés).\nHistoria y cimientos de la física cuántica (en inglés).\nHistoria de la cuántica (enlace roto disponible en Internet Archive; véase el historial, la primera versión y la última).\n\nControl de autoridades\nProyectos Wikimedia\n Datos: Q2358974\n Recursos didácticos: Mecánica cuántica/Historia\n\n\n\n\n Datos: Q2358974\n Recursos didácticos: Mecánica cuántica/Historia\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nObtenido de «https://es.wikipedia.org/w/index.php?title=Historia_de_la_mecánica_cuántica&amp;oldid=166875257»\n\t\t\t\t\tCategorías: Mecánica cuánticaHistoria de la químicaHistoria de la físicaCategoría oculta: Wikipedia:Artículos con enlaces externos rotos\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t Esta página se editó por última vez el 16 abr 2025 a las 02:43.\n\tLa página fue renderizada con Parsoid.\n\tEl texto está disponible bajo la Licencia Creative Commons Atribución-CompartirIgual 4.0; pueden aplicarse cláusulas adicionales. Al usar este sitio aceptas nuestros términos de uso y nuestra política de privacidad.Wikipedia&#174; es una marca registrada de la Fundación Wikimedia, una organización sin ánimo de lucro.\n\n\n\t\t\t\t\n\tPolítica de privacidad\n\tAcerca de Wikipedia\n\tLimitación de responsabilidad\n\tContacto legal y de seguridad\n\tCódigo de conducta\n\tDesarrolladores\n\tEstadísticas\n\tDeclaración de cookies\n\tVersión para móviles\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nBuscar\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tBuscar\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nCambiar a la tabla de contenidos\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tHistoria de la mecánica cuántica\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n24 idiomas\n\t\t\t\n\t\t\t\n\nAñadir tema",
+      "title": "https://es.wikipedia.org/wiki/Historia_de_la_mec%C3%A1nica_cu%C3%A1ntica (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528665210,
+        "end": 1789528666334
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528666335,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a83870df001m6Vv844J1sK0Ij",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83869c3001PrzmhJpcF18caD",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 61975,
+      "output": 213,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 62188,
+      "headroom": -23332,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.336Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.336Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.336Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.337Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.337Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.337Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.337Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.344Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 62188,
+  "providerTokens": 62188,
+  "estimatedInputTokens": 19609,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 61975,
+    "cacheRead": 0,
+    "output": 213
+  },
+  "overflow": true,
+  "headroom": -23332,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.345Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.345Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.345Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.346Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 4,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.346Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.347Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.766Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528666766,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a838728d001pazWNS36EzCSpf",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83870ea001wAo0Arl2oWsoHo",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.766Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.766Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528666767,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a838728e002NQAN8giVn3Qm9B",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83870ea001wAo0Arl2oWsoHo",
+    "type": "text",
+    "text": "Conversation summary: Prepárame unas páginas sobre cómo empezó la mecánica cuántica.\n\nTitle: What did we do so\n\nUser turns:\n  1. Prepárame unas páginas sobre cómo empezó la mecánica cuántica.\n  2.",
+    "time": {
+      "start": 1789528666767,
+      "end": 1789528666767
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528666767,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a838728f001jSv3Xb84al1hJ0",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a83870ea001wAo0Arl2oWsoHo",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 80541,
+      "output": 196,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 80737,
+      "headroom": -41881,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.768Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.768Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.768Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528666768,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a8387290002DrpFtfYS2bGhgo",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8387290001V2hF3MXzWF82E8",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528666768,
+      "end": 1789528666768
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.768Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.769Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.769Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.769Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.769Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.770Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.770Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.770Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.770Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.771Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.771Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.841Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528666841,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a83872d9001iX0KcNZIS54zUZ",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8387291001mQVD4Flfj25HNG",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.841Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528666842,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a83872da001spkJrIl1YOOWzh",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8387291001mQVD4Flfj25HNG",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528666842,
+      "end": 1789528666842
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528666842,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "part": {
+    "id": "prt_0a83872da002fwskOiRqQEAF0K",
+    "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+    "messageID": "msg_0a8387291001mQVD4Flfj25HNG",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8745,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8818,
+      "headroom": 30038,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.843Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.843Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.843Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.844Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.844Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.844Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.844Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528666844,
+  "sessionID": "ses_f57c7a2b1ffeWjZq0INh3Bw0WO"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.845Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.845Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.bmnrn17twV",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.845Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.bmnrn17twV",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.845Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.bmnrn17twV",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:46.845Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

@@ -6,4 +6,4 @@
 ci_gate check_semantic_grounding
   stage rust
   description "Every answer the solver produces is grounded in the seed lexicon rather than hardcoded."
-  run "cargo test --test unit semantic_grounding -- --nocapture"
+  run "cargo test --manifest-path rust/Cargo.toml --test unit semantic_grounding -- --nocapture"

@@ -1,0 +1,121 @@
+{
+  "entities": {
+    "Q55300": {
+      "type": "item",
+      "id": "Q55300",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Soviet occupation zone of Germany"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Советская зона оккупации Германии"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "苏联占领区"
+        },
+        "es": {
+          "language": "es",
+          "value": "Zona de ocupación soviética"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "zone of Soviet occupation in postwar Germany"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "одна из четырёх зон оккупации Германии"
+        },
+        "es": {
+          "language": "es",
+          "value": "área al este de Alemania ocupada por la Unión Soviética desde 1945, al finalizar Segunda Guerra Mundial en Europa"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Sowjetische Besatzungszone"
+          },
+          {
+            "language": "en",
+            "value": "SBZ"
+          },
+          {
+            "language": "en",
+            "value": "Germany (Territory under Allied occupation, 1945-1955 : Russian Zone)‏"
+          },
+          {
+            "language": "en",
+            "value": "Soviet occupation zone in Germany"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Zona de ocupacion sovietica"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Soviet occupation zone in Germany"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Советская зона оккупации Германии"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "德国苏占区"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Zona de ocupación soviética"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "f2f6fba21c8001a26c1da375df42750960ee1d22",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 2415901,
+                  "id": "Q2415901"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

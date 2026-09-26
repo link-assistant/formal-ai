@@ -1,0 +1,392 @@
+# Recognition vocabulary for tasks whose answer has a checkable shape.
+#
+# The runtime names only the semantic roles below. Surface forms and their open
+# slots live here, so adding a language or paraphrase never adds a branch to the
+# recognizer. The ellipsis is the lexicon's language-independent slot marker.
+meanings
+  expectation
+    defined-by concept
+  expectation_count
+    defined-by expectation
+    role verifiable_expectation
+    role verifiable_expectation_count
+    lexeme en
+      surface
+        text "how many … do i have"
+    lexeme ru
+      surface
+        text "сколько у меня …"
+    lexeme hi
+      surface
+        text "मेरे पास कितने … हैं"
+    lexeme zh
+      surface
+        text "我有多少…"
+    lexeme es
+      surface
+        text "cuántos … tengo"
+  expectation_edited_text
+    defined-by expectation
+    role verifiable_expectation
+    role verifiable_expectation_edited_text
+    lexeme en
+      surface
+        text "make this sentence more concise: …"
+    lexeme ru
+      surface
+        text "сделай это предложение короче: …"
+    lexeme hi
+      surface
+        text "इस वाक्य को अधिक संक्षिप्त बनाओ: …"
+    lexeme zh
+      surface
+        text "把这句话改得更简洁：…"
+    lexeme es
+      surface
+        text "haz esta frase más concisa: …"
+  expectation_unknown_value
+    defined-by expectation
+    role verifiable_expectation
+    role verifiable_expectation_unknown
+    lexeme en
+      surface
+        text "find …:"
+    lexeme ru
+      surface
+        text "найди …:"
+    lexeme hi
+      surface
+        text "… ज्ञात करो:"
+    lexeme zh
+      surface
+        text "求 …："
+    lexeme es
+      surface
+        text "halla …:"
+  expectation_numeric
+    defined-by expectation
+    role verifiable_expectation
+    role verifiable_expectation_numeric
+    lexeme en
+      surface
+        text "how many … left"
+      surface
+        text "how many … remain"
+      surface
+        text "how many litres …"
+    lexeme ru
+      surface
+        text "сколько … оста"
+      surface
+        text "сколько литров …"
+    lexeme hi
+      surface
+        text "कितने … बच"
+      surface
+        text "कितने लीटर …"
+    lexeme zh
+      surface
+        text "还剩多少"
+      surface
+        text "多少升"
+    lexeme es
+      surface
+        text "cuántos … quedan"
+      surface
+        text "cuántos litros …"
+  verifiable_entity_separator
+    defined-by relation
+    role verifiable_entity_separator
+    lexeme en
+      surface
+        text and
+    lexeme ru
+      surface
+        text и
+    lexeme hi
+      surface
+        text और
+    lexeme zh
+      surface
+        text 和
+    lexeme es
+      surface
+        text y
+  quantity_determiner
+    defined-by relation
+    role verifiable_quantity_determiner
+    lexeme en
+      surface
+        text a
+      surface
+        text an
+    lexeme hi
+      surface
+        text एक
+    lexeme zh
+      surface
+        text 一
+    lexeme es
+      surface
+        text un
+      surface
+        text una
+  expectation_pattern
+    defined-by expectation
+    role verifiable_expectation
+    role verifiable_expectation_pattern
+    lexeme en
+      surface
+        text pattern
+      surface
+        text sequence
+      surface
+        text palindrome
+      surface
+        text symmetry
+      surface
+        text periodic
+      surface
+        text repeat
+      surface
+        text "what comes next"
+      surface
+        text "next number"
+      surface
+        text "next term"
+      surface
+        text "continue the"
+      surface
+        text "continue this"
+    lexeme ru
+      surface
+        text закономерность
+      surface
+        text последовательность
+      surface
+        text палиндром
+    lexeme hi
+      surface
+        text पैटर्न
+      surface
+        text क्रम
+      surface
+        text पैलिंड्रोम
+    lexeme zh
+      surface
+        text 规律
+      surface
+        text 序列
+      surface
+        text 回文
+    lexeme es
+      surface
+        text patrón
+      surface
+        text secuencia
+      surface
+        text palíndromo
+  quantity_flow_increase
+    defined-by relation
+    role verifiable_quantity_flow_increase
+    grounding "https://en.wikipedia.org/wiki/Word_problem_(mathematics_education)"
+    lexeme en
+      surface
+        text makes
+        action quantity_before
+      surface
+        text holds
+        action quantity_before
+      surface
+        text receives
+        action quantity_before
+    lexeme ru
+      surface
+        text печёт
+        action quantity_before
+      surface
+        text баке
+        action quantity_before
+      surface
+        text получает
+        action quantity_before
+    lexeme hi
+      surface
+        text बनाती
+        action quantity_after
+      surface
+        text टंकी
+        action quantity_before
+      surface
+        text मिलता
+        action quantity_after
+    lexeme zh
+      surface
+        text 做
+        action quantity_before
+      surface
+        text 水箱
+        action quantity_before
+      surface
+        text 收到
+        action quantity_before
+    lexeme es
+      surface
+        text hace
+        action quantity_before
+      surface
+        text contiene
+        action quantity_before
+      surface
+        text recibe
+        action quantity_before
+  quantity_flow_decrease
+    defined-by relation
+    role verifiable_quantity_flow_decrease
+    grounding "https://en.wikipedia.org/wiki/Word_problem_(mathematics_education)"
+    lexeme en
+      surface
+        text sells
+        action quantity_before
+      surface
+        text gives
+        action quantity_before
+      surface
+        text "poured out"
+        action quantity_after
+    lexeme ru
+      surface
+        text продаёт
+        action quantity_before
+      surface
+        text отдаёт
+        action quantity_before
+      surface
+        text вылили
+        action quantity_before
+    lexeme hi
+      surface
+        text बेचती
+        action quantity_after
+      surface
+        text देती
+        action quantity_after
+      surface
+        text "निकाल दिया"
+        action quantity_after
+    lexeme zh
+      surface
+        text 卖出
+        action quantity_before
+      surface
+        text 送给
+        action quantity_before
+      surface
+        text 倒出
+        action quantity_before
+    lexeme es
+      surface
+        text vende
+        action quantity_before
+      surface
+        text "le da"
+        action quantity_before
+      surface
+        text vierten
+        action quantity_before
+  litre_to_millilitre
+    defined-by litre
+    defined-by millilitre
+    role verifiable_unit_conversion
+    grounding "https://www.bipm.org/en/measurement-units/si-prefixes"
+    lexeme en
+      surface
+        text 1000
+  medical_device
+    grounded-in Q6554101
+    defined-by concept
+    lexeme en
+      surface
+        text "medical instrument"
+      surface
+        text "medical instruments"
+    lexeme ru
+      surface
+        text "медицинский инструмент"
+      surface
+        text "медицинских инструментов"
+    lexeme hi
+      surface
+        text "चिकित्सा उपकरण"
+    lexeme zh
+      surface
+        text 医疗器械
+    lexeme es
+      surface
+        text "instrumento médico"
+      surface
+        text "instrumentos médicos"
+  stethoscope
+    grounded-in Q162339
+    defined-by medical_device
+    lexeme en
+      surface
+        text stethoscope
+      surface
+        text stethoscopes
+    lexeme ru
+      surface
+        text стетоскоп
+    lexeme hi
+      surface
+        text स्टेथोस्कोप
+    lexeme zh
+      surface
+        text 听诊器
+    lexeme es
+      surface
+        text estetoscopio
+  scalpel
+    grounded-in Q207172
+    defined-by medical_device
+    lexeme en
+      surface
+        text scalpel
+      surface
+        text scalpels
+    lexeme ru
+      surface
+        text скальпель
+      surface
+        text скальпеля
+    lexeme hi
+      surface
+        text स्कैल्पेल
+    lexeme zh
+      surface
+        text 手术刀
+    lexeme es
+      surface
+        text bisturí
+      surface
+        text bisturís
+  thermometer
+    grounded-in Q646
+    defined-by medical_device
+    lexeme en
+      surface
+        text thermometer
+      surface
+        text thermometers
+    lexeme ru
+      surface
+        text термометр
+    lexeme hi
+      surface
+        text थर्मामीटर
+    lexeme zh
+      surface
+        text 体温计
+    lexeme es
+      surface
+        text termómetro

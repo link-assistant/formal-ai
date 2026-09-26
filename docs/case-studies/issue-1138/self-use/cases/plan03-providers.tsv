@@ -1,0 +1,5 @@
+repo_providers	en	In the repository at commit 74875c1b9b6e36bee9b942343ba295541fdb6997, the list of trusted search providers is missing the encyclopaedia of quotations. Add it, keep the file valid, and run the tests that cover that list.
+repo_providers	ru	В репозитории на коммите 74875c1b9b6e36bee9b942343ba295541fdb6997 в списке доверенных поисковых провайдеров нет энциклопедии цитат. Добавь её, не сломай файл и запусти тесты, которые покрывают этот список.
+repo_providers	hi	कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997 पर मौजूद रिपॉज़िटरी में भरोसेमंद खोज प्रदाताओं की सूची में उद्धरणों का विश्वकोश नहीं है। उसे जोड़ो, फ़ाइल को वैध रखो, और उस सूची को कवर करने वाले परीक्षण चलाओ।
+repo_providers	zh	在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试。
+repo_providers	es	En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista.

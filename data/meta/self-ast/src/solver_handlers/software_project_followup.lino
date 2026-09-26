@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 14729
   line_count 396
-  content_id source_module_dfa774b32e1a7d62
+  content_id source_module_2d33c1dfc0b4efb4
   symbol_count 16
   symbols
     enum FollowUpKind 24 28

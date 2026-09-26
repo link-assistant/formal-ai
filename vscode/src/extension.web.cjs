@@ -2,7 +2,7 @@
 
 // Web extension host — vscode.dev, github.dev, and other browser-based VS Code.
 //
-// Issue #353 (R6 / ROADMAP V5): the same committed `src/web/` chat UI runs in a
+// Issue #353 (R6 / ROADMAP V5): the same committed `js/` chat UI runs in a
 // browser-based VS Code, where the extension executes inside a Web Worker. A
 // browser cannot spawn a process or talk to Docker, so this host is *always*
 // in-process: it advertises a status with no `apiBase`, and the web app falls

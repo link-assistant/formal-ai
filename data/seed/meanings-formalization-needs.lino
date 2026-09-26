@@ -1,0 +1,266 @@
+meanings
+  formalization_unresolved_need
+    defined-by output
+    role output_display_request
+    precondition "A formalization raised a need that no consulted source grounded."
+    effect "Name the surface, its exact source span, its origin, the depth reached and every consulted source outcome; never report the document as covered."
+    unit "count"
+    example "3 of 7 needs grounded; an unfamiliar term is unresolved at depth 2."
+    grounding "src/formalization/concept_links.rs::ConceptGraph::unresolved"
+  response_formalization_unresolved_need_en
+    defined-by formalization_unresolved_need
+    language en
+    role output_display_request
+    precondition "A formalization has an unresolved need."
+    effect "Report the unresolved need and its evidence boundary in English."
+    unit "count"
+    example "3 of 7 needs grounded; “unfamiliar term” unresolved at depth 2."
+    grounding "src/formalization/concept_links.rs::ConceptGraph::unresolved"
+  response_formalization_unresolved_need_ru
+    defined-by formalization_unresolved_need
+    language ru
+    role output_display_request
+    precondition "A formalization has an unresolved need."
+    effect "Report the unresolved need and its evidence boundary in Russian."
+    unit "count"
+    example "Обоснованы 3 из 7 потребностей; «незнакомый термин» не разрешён на глубине 2."
+    grounding "src/formalization/concept_links.rs::ConceptGraph::unresolved"
+  response_formalization_unresolved_need_hi
+    defined-by formalization_unresolved_need
+    language hi
+    role output_display_request
+    precondition "A formalization has an unresolved need."
+    effect "Report the unresolved need and its evidence boundary in Hindi."
+    unit "count"
+    example "7 में से 3 आवश्यकताएँ प्रमाणित हैं; “अपरिचित पद” गहराई 2 पर अनसुलझा है।"
+    grounding "src/formalization/concept_links.rs::ConceptGraph::unresolved"
+  response_formalization_unresolved_need_zh
+    defined-by formalization_unresolved_need
+    language zh
+    role output_display_request
+    precondition "A formalization has an unresolved need."
+    effect "Report the unresolved need and its evidence boundary in Chinese."
+    unit "count"
+    example "7 个需求中有 3 个已获依据；“陌生术语”在深度 2 仍未解决。"
+    grounding "src/formalization/concept_links.rs::ConceptGraph::unresolved"
+  response_formalization_unresolved_need_es
+    defined-by formalization_unresolved_need
+    language es
+    role output_display_request
+    precondition "A formalization has an unresolved need."
+    effect "Report the unresolved need and its evidence boundary in Spanish."
+    unit "count"
+    example "3 de 7 necesidades fundamentadas; «término desconocido» sigue sin resolverse en la profundidad 2."
+    grounding "src/formalization/concept_links.rs::ConceptGraph::unresolved"
+  formalization_grounded_concept
+    defined-by output
+    role output_display_request
+    precondition "A source lookup satisfied a formalization need with licensed captured bytes."
+    effect "Name the surface, source URL, digest and license that grounded the concept."
+    unit "count"
+    example "The concept is grounded by an attributed source digest."
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_grounded_concept_en
+    defined-by formalization_grounded_concept
+    language en
+    role output_display_request
+    precondition "A formalization need has grounded evidence."
+    effect "Report the grounded concept and attribution in English."
+    unit "count"
+    example "The concept is grounded by the cited source, digest and license."
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_grounded_concept_ru
+    defined-by formalization_grounded_concept
+    language ru
+    role output_display_request
+    precondition "A formalization need has grounded evidence."
+    effect "Report the grounded concept and attribution in Russian."
+    unit "count"
+    example "Понятие обосновано указанными источником, хешем и лицензией."
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_grounded_concept_hi
+    defined-by formalization_grounded_concept
+    language hi
+    role output_display_request
+    precondition "A formalization need has grounded evidence."
+    effect "Report the grounded concept and attribution in Hindi."
+    unit "count"
+    example "अवधारणा उद्धृत स्रोत, हैश और लाइसेंस से प्रमाणित है।"
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_grounded_concept_zh
+    defined-by formalization_grounded_concept
+    language zh
+    role output_display_request
+    precondition "A formalization need has grounded evidence."
+    effect "Report the grounded concept and attribution in Chinese."
+    unit "count"
+    example "该概念由所列来源、哈希和许可证提供依据。"
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_grounded_concept_es
+    defined-by formalization_grounded_concept
+    language es
+    role output_display_request
+    precondition "A formalization need has grounded evidence."
+    effect "Report the grounded concept and attribution in Spanish."
+    unit "count"
+    example "El concepto está fundamentado por la fuente, la huella y la licencia citadas."
+    grounding "src/formalization/needs.rs::satisfy"
+  formalization_extracted_procedure
+    defined-by output
+    role output_display_request
+    precondition "A formalization extracted at least two ordered imperative steps from attributed text."
+    effect "Report the ordered steps and attribution while marking execution as unverified."
+    unit "count"
+    example "Three attributed steps were extracted; execution remains unverified."
+    grounding "src/formalization/procedures.rs::ExtractedProcedure::from_step_records"
+  response_formalization_extracted_procedure_en
+    defined-by formalization_extracted_procedure
+    language en
+    role output_display_request
+    precondition "A formalization extracted an ordered procedure."
+    effect "Report the procedure and unverified boundary in English."
+    unit "count"
+    example "Three attributed steps were extracted; execution remains unverified."
+    grounding "src/formalization/procedures.rs::ExtractedProcedure::from_step_records"
+  response_formalization_extracted_procedure_ru
+    defined-by formalization_extracted_procedure
+    language ru
+    role output_display_request
+    precondition "A formalization extracted an ordered procedure."
+    effect "Report the procedure and unverified boundary in Russian."
+    unit "count"
+    example "Извлечены три шага с указанием источника; выполнение не проверено."
+    grounding "src/formalization/procedures.rs::ExtractedProcedure::from_step_records"
+  response_formalization_extracted_procedure_hi
+    defined-by formalization_extracted_procedure
+    language hi
+    role output_display_request
+    precondition "A formalization extracted an ordered procedure."
+    effect "Report the procedure and unverified boundary in Hindi."
+    unit "count"
+    example "स्रोत सहित तीन चरण निकाले गए; निष्पादन सत्यापित नहीं है।"
+    grounding "src/formalization/procedures.rs::ExtractedProcedure::from_step_records"
+  response_formalization_extracted_procedure_zh
+    defined-by formalization_extracted_procedure
+    language zh
+    role output_display_request
+    precondition "A formalization extracted an ordered procedure."
+    effect "Report the procedure and unverified boundary in Chinese."
+    unit "count"
+    example "已提取三个带来源的步骤；执行尚未验证。"
+    grounding "src/formalization/procedures.rs::ExtractedProcedure::from_step_records"
+  response_formalization_extracted_procedure_es
+    defined-by formalization_extracted_procedure
+    language es
+    role output_display_request
+    precondition "A formalization extracted an ordered procedure."
+    effect "Report the procedure and unverified boundary in Spanish."
+    unit "count"
+    example "Se extrajeron tres pasos con atribución; la ejecución no está verificada."
+    grounding "src/formalization/procedures.rs::ExtractedProcedure::from_step_records"
+  formalization_depth_exhausted
+    defined-by output
+    role output_display_request
+    precondition "A recursive gloss raised a need beyond the declared concept-depth bound."
+    effect "Name the reached bound and unresolved surface; never present bounded work as complete."
+    unit "count"
+    example "Depth 2 reached; one recursive need remains unresolved."
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_depth_exhausted_en
+    defined-by formalization_depth_exhausted
+    language en
+    role output_display_request
+    precondition "The declared concept-depth bound was reached."
+    effect "Report the bound and partial coverage in English."
+    unit "count"
+    example "Depth 2 reached; one recursive need remains unresolved."
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_depth_exhausted_ru
+    defined-by formalization_depth_exhausted
+    language ru
+    role output_display_request
+    precondition "The declared concept-depth bound was reached."
+    effect "Report the bound and partial coverage in Russian."
+    unit "count"
+    example "Достигнута глубина 2; одна рекурсивная потребность не разрешена."
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_depth_exhausted_hi
+    defined-by formalization_depth_exhausted
+    language hi
+    role output_display_request
+    precondition "The declared concept-depth bound was reached."
+    effect "Report the bound and partial coverage in Hindi."
+    unit "count"
+    example "गहराई 2 पूरी हुई; एक पुनरावर्ती आवश्यकता अनसुलझी है।"
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_depth_exhausted_zh
+    defined-by formalization_depth_exhausted
+    language zh
+    role output_display_request
+    precondition "The declared concept-depth bound was reached."
+    effect "Report the bound and partial coverage in Chinese."
+    unit "count"
+    example "已达到深度 2；仍有一个递归需求未解决。"
+    grounding "src/formalization/needs.rs::satisfy"
+  response_formalization_depth_exhausted_es
+    defined-by formalization_depth_exhausted
+    language es
+    role output_display_request
+    precondition "The declared concept-depth bound was reached."
+    effect "Report the bound and partial coverage in Spanish."
+    unit "count"
+    example "Se alcanzó la profundidad 2; queda una necesidad recursiva sin resolver."
+    grounding "src/formalization/needs.rs::satisfy"
+  formalization_offline_need
+    defined-by output
+    role output_display_request
+    precondition "Live retrieval is disabled and no committed capture grounds a formalization need."
+    effect "State the offline boundary and every source outcome without inventing evidence."
+    unit "count"
+    example "The need remains unresolved offline because no capture answered it."
+    grounding "src/source_walk.rs::observe_failure"
+  response_formalization_offline_need_en
+    defined-by formalization_offline_need
+    language en
+    role output_display_request
+    precondition "A formalization need has only offline misses."
+    effect "Report the offline evidence boundary in English."
+    unit "count"
+    example "The need remains unresolved offline because no capture answered it."
+    grounding "src/source_walk.rs::observe_failure"
+  response_formalization_offline_need_ru
+    defined-by formalization_offline_need
+    language ru
+    role output_display_request
+    precondition "A formalization need has only offline misses."
+    effect "Report the offline evidence boundary in Russian."
+    unit "count"
+    example "Потребность не разрешена офлайн, потому что сохранённые копии не дали ответа."
+    grounding "src/source_walk.rs::observe_failure"
+  response_formalization_offline_need_hi
+    defined-by formalization_offline_need
+    language hi
+    role output_display_request
+    precondition "A formalization need has only offline misses."
+    effect "Report the offline evidence boundary in Hindi."
+    unit "count"
+    example "ऑफ़लाइन आवश्यकता अनसुलझी है क्योंकि किसी सहेजी प्रति ने उत्तर नहीं दिया।"
+    grounding "src/source_walk.rs::observe_failure"
+  response_formalization_offline_need_zh
+    defined-by formalization_offline_need
+    language zh
+    role output_display_request
+    precondition "A formalization need has only offline misses."
+    effect "Report the offline evidence boundary in Chinese."
+    unit "count"
+    example "该需求离线时仍未解决，因为没有缓存记录作答。"
+    grounding "src/source_walk.rs::observe_failure"
+  response_formalization_offline_need_es
+    defined-by formalization_offline_need
+    language es
+    role output_display_request
+    precondition "A formalization need has only offline misses."
+    effect "Report the offline evidence boundary in Spanish."
+    unit "count"
+    example "La necesidad sigue sin resolverse sin conexión porque ninguna captura respondió."
+    grounding "src/source_walk.rs::observe_failure"

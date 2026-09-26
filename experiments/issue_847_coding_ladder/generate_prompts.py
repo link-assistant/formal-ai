@@ -78,7 +78,7 @@ def add(
 
 
 VERSION_EXPECTATION = {
-    "path": "Cargo.toml",
+    "path": "rust/Cargo.toml",
     "pattern": r'^version\s*=\s*"([^"]+)"',
     "group": 1,
 }
@@ -108,25 +108,25 @@ READS = [
      "tell me every folder listed in the excluded_folders array", "experiments/", "846"),
     ("read_r67", "REQUIREMENTS.md",
      "report the implementation status recorded for requirement R67", "R67", "710"),
-    ("read_providers", "src/solver_handlers/web_requests.rs",
+    ("read_providers", "rust/src/solver_handlers/web_requests.rs",
      "tell me which providers WEB_SEARCH_PROVIDERS lists", "duckduckgo", "840"),
     ("read_intro", "data/seed/agent-info.lino",
      "tell me the value of the issue_report_body_intro field", "agentic", "839"),
-    ("read_version", "Cargo.toml",
+    ("read_version", "rust/Cargo.toml",
      "tell me the version number of this crate", None, None),
     ("read_default_title", "data/seed/agent-info.lino",
      "tell me the value of the issue_report_default_title field", "Formal AI", "839"),
-    ("read_rrf", "src/web_search_core.rs",
+    ("read_rrf", "rust/src/web_search_core.rs",
      "tell me the reciprocal rank fusion constant used", "60", "840"),
-    ("read_modes", "src/summarization/mod.rs",
+    ("read_modes", "rust/src/summarization/mod.rs",
      "list the variants of the SummarizationMode enum", "Topic", "844"),
-    ("read_outcome", "src/proof_engine/types.rs",
+    ("read_outcome", "rust/src/proof_engine/types.rs",
      "list the variants of the ProofOutcome enum", "Proven", "845"),
-    ("read_prior", "src/relative_meta_logic.rs",
+    ("read_prior", "rust/src/relative_meta_logic.rs",
      "tell me the value of ASSUMED_TRUE_PRIOR", "0.6", "845"),
-    ("read_commands", "src/main.rs",
+    ("read_commands", "rust/src/main.rs",
      "list the subcommands of the top-level Command enum", "Serve", None),
-    ("read_context_src", "src/cli_context.rs",
+    ("read_context_src", "rust/src/cli_context.rs",
      "list the variants of the ContextSource enum", "harness", "839"),
 ]
 for name, path, ask, expect, seed in READS:
@@ -173,15 +173,15 @@ ATOMIC_EDITS = [
     ("add_casestudies", "scripts/detect-code-changes.rs",
      'add "docs/case-studies/" to the excluded_folders array',
      "grep -q 'docs/case-studies/' scripts/detect-code-changes.rs", "846"),
-    ("bump_rrf_comment", "src/web_search_core.rs",
+    ("bump_rrf_comment", "rust/src/web_search_core.rs",
      "add a line comment containing the word Cormack above the RRF constant",
-     "grep -qi 'cormack' src/web_search_core.rs", "840"),
+     "grep -qi 'cormack' rust/src/web_search_core.rs", "840"),
     ("seed_field", "data/seed/agent-info.lino",
      "add a new field named issue_report_footer with the value Filed by Formal AI",
      "grep -q 'issue_report_footer' data/seed/agent-info.lino", "839"),
-    ("todo_marker", "src/solver.rs",
+    ("todo_marker", "rust/src/solver.rs",
      "add a line comment containing FABRICATED above the source:http emission in record_external_search",
-     "grep -q 'FABRICATED' src/solver.rs", "843"),
+     "grep -q 'FABRICATED' rust/src/solver.rs", "843"),
     ("gitignore_entry", ".gitignore",
      "add a line ignoring files named scratch.tmp",
      "grep -q 'scratch.tmp' .gitignore", None),
@@ -206,18 +206,18 @@ for name, path, what, verify, seed in ATOMIC_EDITS:
 # this repository actually contains.
 # --------------------------------------------------------------------------
 CREATIONS = [
-    ("rust_fn", "src/si_units.rs",
+    ("rust_fn", "rust/src/si_units.rs",
      "containing a single public Rust function millimetres_to_metres that takes an f64 and returns it divided by 1000.0",
-     "grep -q 'pub fn millimetres_to_metres' src/si_units.rs", "700"),
-    ("rust_const", "src/ladder_probe.rs",
+     "grep -q 'pub fn millimetres_to_metres' rust/src/si_units.rs", "700"),
+    ("rust_const", "rust/src/ladder_probe.rs",
      "containing a single public Rust constant LADDER_PROBE of type &str with the value probe",
-     "grep -q 'LADDER_PROBE' src/ladder_probe.rs", None),
+     "grep -q 'LADDER_PROBE' rust/src/ladder_probe.rs", None),
     ("lino_seed", "data/seed/ladder-probe.lino",
      "containing a Links Notation record with a field named probe whose value is ok",
      "grep -q 'probe' data/seed/ladder-probe.lino", "706"),
-    ("test_file", "tests/unit/ladder_probe.rs",
+    ("test_file", "rust/tests/unit/ladder_probe.rs",
      "containing a single Rust test named ladder_probe_runs that asserts 1 equals 1",
-     "grep -q 'fn ladder_probe_runs' tests/unit/ladder_probe.rs", None),
+     "grep -q 'fn ladder_probe_runs' rust/tests/unit/ladder_probe.rs", None),
     ("script_file", "scripts/ladder-probe.sh",
      "containing a bash script that echoes the word probe",
      "test -f scripts/ladder-probe.sh", None),
@@ -248,22 +248,22 @@ L3 = [
      "by any workflow job. Remove the mjs-changed computation and its set_output call.",
      "! grep -q 'mjs-changed' scripts/detect-code-changes.rs"),
     ("843.remove_fake", "843",
-     "In src/solver.rs, the function record_external_search emits a fabricated source:http "
+     "In rust/src/solver.rs, the function record_external_search emits a fabricated source:http "
      "evidence link pointing at https://example.org with a sha256 of the prompt. Remove that "
      "fabricated source:http and cache_hit emission so no fake provenance is recorded.",
-     "! grep -q 'example.org' src/solver.rs"),
+     "! grep -q 'example.org' rust/src/solver.rs"),
     ("839.title_prefix", "839",
      "In data/seed/agent-info.lino, change the value of issue_report_title_prefix from "
      "'Formal AI: ' to 'Formal AI report: '.",
      "grep -q 'Formal AI report' data/seed/agent-info.lino"),
     ("840.print_quit", "840",
-     "In src/seed/shell_intents.rs, the generated find command uses -print -quit which stops "
+     "In rust/src/seed/shell_intents.rs, the generated find command uses -print -quit which stops "
      "at the first match and hides better ones. Remove the -quit flag.",
-     "! grep -q 'print -quit' src/seed/shell_intents.rs"),
+     "! grep -q 'print -quit' rust/src/seed/shell_intents.rs"),
     ("700.single_fn", "700",
-     "Create a new file src/si_units.rs in this repository containing exactly one public Rust "
+     "Create a new file rust/src/si_units.rs in this repository containing exactly one public Rust "
      "function named millimetres_to_metres that takes an f64 and returns that value divided by 1000.0.",
-     "grep -q 'pub fn millimetres_to_metres' src/si_units.rs"),
+     "grep -q 'pub fn millimetres_to_metres' rust/src/si_units.rs"),
     ("848.readme_row", "848",
      "In experiments/issue_847_coding_ladder/README.txt, append a line recording that the "
      "dataset was extended to more than 128 tasks.",
@@ -277,15 +277,15 @@ for name, seed, prompt, verify in L3:
 # L3 test authoring — the second most common commit type in this repository.
 # --------------------------------------------------------------------------
 TESTS = [
-    ("assert_no_example_org", "tests/unit/ladder_evidence.rs",
-     "asserting that the string example.org does not appear in the file src/solver.rs",
-     "grep -q 'example.org' tests/unit/ladder_evidence.rs", "843"),
-    ("assert_excluded", "tests/unit/ladder_excluded.rs",
+    ("assert_no_example_org", "rust/tests/unit/ladder_evidence.rs",
+     "asserting that the string example.org does not appear in the file rust/src/solver.rs",
+     "grep -q 'example.org' rust/tests/unit/ladder_evidence.rs", "843"),
+    ("assert_excluded", "rust/tests/unit/ladder_excluded.rs",
      "asserting that scripts/detect-code-changes.rs contains the text experiments/",
-     "grep -q 'experiments' tests/unit/ladder_excluded.rs", "846"),
-    ("assert_units", "tests/unit/ladder_units.rs",
+     "grep -q 'experiments' rust/tests/unit/ladder_excluded.rs", "846"),
+    ("assert_units", "rust/tests/unit/ladder_units.rs",
      "asserting that formal_ai::si_units::millimetres_to_metres(1000.0) equals 1.0",
-     "grep -q 'millimetres_to_metres' tests/unit/ladder_units.rs", "700"),
+     "grep -q 'millimetres_to_metres' rust/tests/unit/ladder_units.rs", "700"),
 ]
 for name, path, what, verify, seed in TESTS:
     add(f"test.{name}", 3, seed,
@@ -303,15 +303,15 @@ L2 = [
      "touching only those folders do not run the pipeline.",
      "grep -q 'paths-ignore' .github/workflows/release.yml"),
     ("700.module_and_test", "700",
-     "Create src/si_units.rs with a public Rust function millimetres_to_metres dividing an "
+     "Create rust/src/si_units.rs with a public Rust function millimetres_to_metres dividing an "
      "f64 by 1000.0, and a unit test in the same file asserting millimetres_to_metres(1000.0) "
      "equals 1.0.",
-     "grep -q 'fn millimetres_to_metres' src/si_units.rs && grep -q '#\\[test\\]' src/si_units.rs"),
+     "grep -q 'fn millimetres_to_metres' rust/src/si_units.rs && grep -q '#\\[test\\]' rust/src/si_units.rs"),
     ("843.remove_and_test", "843",
-     "In src/solver.rs remove the fabricated example.org source:http emission, and add a test "
-     "file tests/unit/ladder_no_fake.rs asserting the string example.org does not appear in "
-     "src/solver.rs.",
-     "! grep -q 'example.org' src/solver.rs && test -f tests/unit/ladder_no_fake.rs"),
+     "In rust/src/solver.rs remove the fabricated example.org source:http emission, and add a test "
+     "file rust/tests/unit/ladder_no_fake.rs asserting the string example.org does not appear in "
+     "rust/src/solver.rs.",
+     "! grep -q 'example.org' rust/src/solver.rs && test -f rust/tests/unit/ladder_no_fake.rs"),
     ("839.title_and_seed", "839",
      "Change issue_report_title_prefix in data/seed/agent-info.lino to 'Formal AI report: ' "
      "and add a new field issue_report_footer with the value 'Filed by Formal AI'.",
@@ -351,7 +351,7 @@ DECOMP = [
      "issue 843 and open a pull request.'", "no"),
     ("next_step", 3,
      "What is the single first step to take for this task? Answer in one sentence: 'Remove the "
-     "fabricated example.org evidence link from src/solver.rs.'", "solver.rs"),
+     "fabricated example.org evidence link from rust/src/solver.rs.'", "solver.rs"),
 ]
 for name, level, prompt, expect in DECOMP:
     add(f"decomp.{name}", level, "847", prompt, "true",
@@ -365,19 +365,19 @@ for name, level, prompt, expect in DECOMP:
 # --------------------------------------------------------------------------
 MULTILINGUAL = [
     ("ru_create", "ru",
-     "Создай файл src/ladder_ru.rs с одной публичной функцией на Rust с именем ladder_ru, "
+     "Создай файл rust/src/ladder_ru.rs с одной публичной функцией на Rust с именем ladder_ru, "
      "которая возвращает число 1.",
-     "grep -q 'ladder_ru' src/ladder_ru.rs"),
+     "grep -q 'ladder_ru' rust/src/ladder_ru.rs"),
     ("ru_read", "ru",
      "Прочитай файл scripts/detect-code-changes.rs и скажи, какие папки перечислены в массиве "
      "excluded_folders.", "true"),
     ("zh_create", "zh",
-     "在这个仓库中创建文件 src/ladder_zh.rs，其中包含一个名为 ladder_zh 的公共 Rust 函数，返回数字 1。",
-     "grep -q 'ladder_zh' src/ladder_zh.rs"),
+     "在这个仓库中创建文件 rust/src/ladder_zh.rs，其中包含一个名为 ladder_zh 的公共 Rust 函数，返回数字 1。",
+     "grep -q 'ladder_zh' rust/src/ladder_zh.rs"),
     ("hi_create", "hi",
-     "इस रिपॉजिटरी में src/ladder_hi.rs फ़ाइल बनाएँ जिसमें ladder_hi नाम का एक सार्वजनिक Rust "
+     "इस रिपॉजिटरी में rust/src/ladder_hi.rs फ़ाइल बनाएँ जिसमें ladder_hi नाम का एक सार्वजनिक Rust "
      "फ़ंक्शन हो जो 1 लौटाता है।",
-     "grep -q 'ladder_hi' src/ladder_hi.rs"),
+     "grep -q 'ladder_hi' rust/src/ladder_hi.rs"),
 ]
 for name, lang, prompt, verify in MULTILINGUAL:
     task_expect = "experiments/" if "read" in name else None
@@ -408,16 +408,16 @@ for name, prompt, expect in KNOWLEDGE:
 # Refactor / rename operations — mechanical but multi-site.
 # --------------------------------------------------------------------------
 REFACTORS = [
-    ("rename_const", "src/web_search_core.rs",
+    ("rename_const", "rust/src/web_search_core.rs",
      "rename the constant WEB_SEARCH_RRF_K to WEB_SEARCH_FUSION_K everywhere it appears in this file",
-     "grep -q 'WEB_SEARCH_FUSION_K' src/web_search_core.rs", "840"),
-    ("extract_fn", "src/solver.rs",
+     "grep -q 'WEB_SEARCH_FUSION_K' rust/src/web_search_core.rs", "840"),
+    ("extract_fn", "rust/src/solver.rs",
      "extract the body of record_external_search into a new private function named "
      "record_offline_policy and call it",
-     "grep -q 'record_offline_policy' src/solver.rs", "843"),
-    ("add_doc_comment", "src/cli_context.rs",
+     "grep -q 'record_offline_policy' rust/src/solver.rs", "843"),
+    ("add_doc_comment", "rust/src/cli_context.rs",
      "add a doc comment above the ContextSource enum explaining what each variant selects",
-     "grep -q 'ContextSource' src/cli_context.rs", "839"),
+     "grep -q 'ContextSource' rust/src/cli_context.rs", "839"),
 ]
 for name, path, what, verify, seed in REFACTORS:
     add(f"refactor.{name}", 3, seed,
@@ -431,7 +431,7 @@ for name, path, what, verify, seed in REFACTORS:
 VERIFY_OPS = [
     ("cargo_check", "Run cargo check on this repository and tell me whether it succeeds.", "cargo"),
     ("run_one_test", "Run the unit test suite for this repository and report the result.", "test"),
-    ("count_tests", "How many test functions are in tests/unit/specification/routing_precedence.rs?", None),
+    ("count_tests", "How many test functions are in rust/tests/unit/specification/routing_precedence.rs?", None),
     ("git_status", "Tell me whether the working tree of this repository is clean.", None),
     ("list_changed", "List the files changed in the most recent commit of this repository.", None),
 ]
@@ -450,9 +450,9 @@ MORE_EDITS = [
     ("workflow_comment", ".github/workflows/release.yml",
      "add a YAML comment line containing the text ladder probe near the top of the file",
      "grep -q 'ladder probe' .github/workflows/release.yml", "846"),
-    ("cargo_keyword", "Cargo.toml",
+    ("cargo_keyword", "rust/Cargo.toml",
      "add the keyword symbolic to the keywords list",
-     "grep -q 'symbolic' Cargo.toml", None),
+     "grep -q 'symbolic' rust/Cargo.toml", None),
     ("readme_line", "README.md",
      "append a line containing the text Coding ladder dataset",
      "grep -q 'Coding ladder dataset' README.md", "848"),
@@ -501,22 +501,22 @@ for name, path, what, verify, seed in MORE_EDITS:
 # agents fail differently (they append instead of replacing).
 # --------------------------------------------------------------------------
 REPLACEMENTS = [
-    ("replace_epoch", "src/solver.rs",
+    ("replace_epoch", "rust/src/solver.rs",
      "replace the hard-coded fetched_at value 1970-01-01T00:00:00Z with a call to a function "
      "named current_timestamp",
-     "! grep -q '1970-01-01T00:00:00Z' src/solver.rs", "843"),
-    ("delete_cache_hit", "src/solver.rs",
+     "! grep -q '1970-01-01T00:00:00Z' rust/src/solver.rs", "843"),
+    ("delete_cache_hit", "rust/src/solver.rs",
      "delete the line that appends the cache_hit event in record_external_search",
      "true", "843"),
-    ("replace_prior", "src/relative_meta_logic.rs",
+    ("replace_prior", "rust/src/relative_meta_logic.rs",
      "change the value of ASSUMED_TRUE_PRIOR from 0.6 to 0.5",
-     "grep -q '0.5' src/relative_meta_logic.rs", "845"),
-    ("replace_rrf", "src/web_search_core.rs",
+     "grep -q '0.5' rust/src/relative_meta_logic.rs", "845"),
+    ("replace_rrf", "rust/src/web_search_core.rs",
      "change the reciprocal rank fusion constant from 60 to 50",
-     "grep -q '50' src/web_search_core.rs", "840"),
-    ("rename_file", "src/ladder_probe.rs",
-     "create this file with a constant PROBE, then rename the file to src/ladder_probe2.rs",
-     "test -f src/ladder_probe2.rs", None),
+     "grep -q '50' rust/src/web_search_core.rs", "840"),
+    ("rename_file", "rust/src/ladder_probe.rs",
+     "create this file with a constant PROBE, then rename the file to rust/src/ladder_probe2.rs",
+     "test -f rust/src/ladder_probe2.rs", None),
 ]
 for name, path, what, verify, seed in REPLACEMENTS:
     add(f"replace.{name}", 3, seed,
@@ -528,21 +528,21 @@ for name, path, what, verify, seed in REPLACEMENTS:
 # More test authoring, one per test directory this repository really uses.
 # --------------------------------------------------------------------------
 MORE_TESTS = [
-    ("integration", "tests/integration/ladder_probe.rs",
+    ("integration", "rust/tests/integration/ladder_probe.rs",
      "one Rust test named ladder_integration_probe asserting 2 plus 2 equals 4",
-     "grep -q 'ladder_integration_probe' tests/integration/ladder_probe.rs", None),
-    ("spec", "tests/unit/specification/ladder_probe.rs",
+     "grep -q 'ladder_integration_probe' rust/tests/integration/ladder_probe.rs", None),
+    ("spec", "rust/tests/unit/specification/ladder_probe.rs",
      "one Rust test named ladder_spec_probe asserting the crate version string is not empty",
-     "grep -q 'ladder_spec_probe' tests/unit/specification/ladder_probe.rs", None),
-    ("routing_case", "tests/unit/ladder_routing.rs",
+     "grep -q 'ladder_spec_probe' rust/tests/unit/specification/ladder_probe.rs", None),
+    ("routing_case", "rust/tests/unit/ladder_routing.rs",
      "one Rust test asserting that the phrase Find a folder on my desktop is not routed to web search",
-     "grep -q 'desktop' tests/unit/ladder_routing.rs", "840"),
-    ("report_body", "tests/unit/ladder_report.rs",
+     "grep -q 'desktop' rust/tests/unit/ladder_routing.rs", "840"),
+    ("report_body", "rust/tests/unit/ladder_report.rs",
      "one Rust test asserting that a generated issue body contains a Reproduction section",
-     "grep -qi 'reproduction' tests/unit/ladder_report.rs", "839"),
-    ("dedup_case", "tests/unit/ladder_dedup.rs",
+     "grep -qi 'reproduction' rust/tests/unit/ladder_report.rs", "839"),
+    ("dedup_case", "rust/tests/unit/ladder_dedup.rs",
      "one Rust test asserting that summarizing two identical sentences yields one statement",
-     "grep -q 'ladder_dedup\\|dedup' tests/unit/ladder_dedup.rs", "844"),
+     "grep -q 'ladder_dedup\\|dedup' rust/tests/unit/ladder_dedup.rs", "844"),
 ]
 for name, path, what, verify, seed in MORE_TESTS:
     add(f"test.{name}", 3, seed,
@@ -559,12 +559,12 @@ MORE_LANG = [
      "В файле scripts/detect-code-changes.rs добавь \"dev/log/\" в массив excluded_folders.",
      "grep -q 'dev/log/' scripts/detect-code-changes.rs", None),
     ("ru_test", "ru",
-     "Создай файл теста tests/unit/ladder_ru_test.rs с одним тестом, который проверяет, что 1 равно 1.",
-     "test -f tests/unit/ladder_ru_test.rs", None),
+     "Создай файл теста rust/tests/unit/ladder_ru_test.rs с одним тестом, который проверяет, что 1 равно 1.",
+     "test -f rust/tests/unit/ladder_ru_test.rs", None),
     ("ru_split", "ru",
      "Разбей эту задачу на подзадачи, только нумерованный список: 'Убери поддельные ссылки "
      "source: и добавь настоящую загрузку с кэшем.'", "true", "1."),
-    ("zh_read", "zh", "读取这个仓库中的 Cargo.toml 文件并告诉我版本号。", "true",
+    ("zh_read", "zh", "读取这个仓库中的 rust/Cargo.toml 文件并告诉我版本号。", "true",
      VERSION_EXPECTATION),
     ("zh_edit", "zh", "在这个仓库的 .gitignore 文件中添加一行忽略 ladder.tmp 文件。",
      "grep -q 'ladder.tmp' .gitignore", None),
@@ -588,9 +588,9 @@ for entry in MORE_LANG:
 # --------------------------------------------------------------------------
 MULTIFILE = [
     ("module_and_export", "700",
-     "Create src/ladder_units.rs with a public function metres_to_kilometres dividing an f64 "
-     "by 1000.0, and register the module in src/lib.rs so it is part of the crate.",
-     "test -f src/ladder_units.rs && grep -q 'ladder_units' src/lib.rs"),
+     "Create rust/src/ladder_units.rs with a public function metres_to_kilometres dividing an f64 "
+     "by 1000.0, and register the module in rust/src/lib.rs so it is part of the crate.",
+     "test -f rust/src/ladder_units.rs && grep -q 'ladder_units' rust/src/lib.rs"),
     ("fix_and_changelog", "846",
      "Add \"dev/log/\" to the excluded_folders array in scripts/detect-code-changes.rs and add "
      "a changelog fragment in changelog.d describing the change.",
@@ -600,9 +600,9 @@ MULTIFILE = [
      "mention it in ROADMAP.md.",
      "grep -qi 'coding-task' REQUIREMENTS.md && grep -qi 'coding-task' ROADMAP.md"),
     ("test_and_fix", "840",
-     "Remove the -quit flag from the generated find command in src/seed/shell_intents.rs and "
-     "add a test file tests/unit/ladder_no_quit.rs asserting the flag is gone.",
-     "test -f tests/unit/ladder_no_quit.rs"),
+     "Remove the -quit flag from the generated find command in rust/src/seed/shell_intents.rs and "
+     "add a test file rust/tests/unit/ladder_no_quit.rs asserting the flag is gone.",
+     "test -f rust/tests/unit/ladder_no_quit.rs"),
 ]
 for name, seed, prompt, verify in MULTIFILE:
     add(f"multi.{name}", 2, seed, prompt, verify,
@@ -619,9 +619,9 @@ RECOVERY = [
      "Run cargo check on this repository. If it reports any error, tell me the file and line "
      "of the first one.", "true", None),
     ("fix_syntax", 3, None,
-     "Create src/ladder_broken.rs containing a Rust function with a deliberately missing "
+     "Create rust/src/ladder_broken.rs containing a Rust function with a deliberately missing "
      "closing brace, then fix it so the file parses.",
-     "test -f src/ladder_broken.rs && ! grep -c 'fn ' src/ladder_broken.rs | grep -q '^0$'", None),
+     "test -f rust/src/ladder_broken.rs && ! grep -c 'fn ' rust/src/ladder_broken.rs | grep -q '^0$'", None),
     ("explain_failure", 4, "848",
      "The coding ladder reports that a task failed with 'verify failed (no observable "
      "effect)'. In one sentence, what does that mean about what the agent did?", "true", None),

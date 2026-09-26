@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q8343": {
+      "type": "item",
+      "id": "Q8343",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "clarinet"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кларнет"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "單簧管"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "any unspecified or undetermined member of the clarinet family"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "деревянный духовой музыкальный инструмент"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "木管樂器"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "豎笛"
+          },
+          {
+            "language": "zh",
+            "value": "竖笛"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -23,8 +23,8 @@ Usage: scripts/generate-box-language-corpus.sh [language ...]
 
 With no arguments every language in data/meta/box-language-projects.lino is
 generated. Environment:
-  FORMAL_AI_BIN  path to the formal-ai binary (default: target/release/formal-ai
-                 then target/debug/formal-ai, built on demand)
+  FORMAL_AI_BIN  path to the formal-ai binary (default: rust/target/release/
+                 formal-ai then rust/target/debug/formal-ai, built on demand)
   OUT_DIR        corpus directory (default: target/box-language-corpus)
 EOF
 }
@@ -108,15 +108,16 @@ resolve_binary() {
     return 0
   fi
   local candidate
-  for candidate in "$ROOT/target/release/formal-ai" "$ROOT/target/debug/formal-ai"; do
+  # Plan 16 L1 moved the crate to rust/, so cargo's target tree moved with it.
+  for candidate in "$ROOT/rust/target/release/formal-ai" "$ROOT/rust/target/debug/formal-ai"; do
     if [ -x "$candidate" ]; then
       printf '%s\n' "$candidate"
       return 0
     fi
   done
   printf 'Building formal-ai (release) for the corpus...\n' >&2
-  (cd "$ROOT" && cargo build --release --bin formal-ai >&2)
-  printf '%s\n' "$ROOT/target/release/formal-ai"
+  (cd "$ROOT/rust" && cargo build --release --bin formal-ai >&2)
+  printf '%s\n' "$ROOT/rust/target/release/formal-ai"
 }
 
 # Prints the first fenced block whose opening tag matches the requested fence.

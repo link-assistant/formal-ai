@@ -1,0 +1,37 @@
+selection_heuristics
+  record_type "meta_selector_catalog"
+  schema_version 1
+heuristic_least_action
+  record_type "selection_heuristic"
+  role "rank"
+  order "1"
+  slug "least_action"
+  issue "491"
+  key_order "code_size,steps,candidate_index"
+  correctness_first "true"
+  rationale "Shorter reasoning or code must retain the full required behavior and input range (R491-C2); cost is compared only among candidates that already satisfy every declared check."
+heuristic_resource_least_action
+  record_type "selection_heuristic"
+  role "rank"
+  order "2"
+  slug "least_resources"
+  issue "491"
+  applies_when "execution_measured"
+  key_order "resource_units,steps,code_size,candidate_index"
+  rationale "When an execution record supplied measured resource units (plan 05), rank by work actually done before ranking by artifact size."
+heuristic_balanced_split
+  record_type "selection_heuristic"
+  role "split"
+  order "1"
+  slug "balanced_split"
+  issue "453"
+  key_order "imbalance,left_span_start"
+  rationale "Cut at the boundary that minimizes the imbalance, so a non-leaf work unit has exactly two children and every segment survives on exactly one side (R710-R9)."
+heuristic_refutation_search
+  record_type "selection_heuristic"
+  role "experiment"
+  order "1"
+  slug "refutation_search"
+  issue "802"
+  key_order "worst_case_survivors,attempts_refutation,experiment_id"
+  rationale "Each try should reduce the number of live possibilities ideally in half or less, and a probe that attempts to disprove the leading hypothesis is preferred over one that would only confirm it."

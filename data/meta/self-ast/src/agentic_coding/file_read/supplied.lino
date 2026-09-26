@@ -1,0 +1,93 @@
+self_ast_census
+  target src/agentic_coding/file_read/supplied.rs
+  language rust
+  fidelity full_ast
+  byte_len 6932
+  line_count 171
+  content_id source_module_78f0884b741750b3
+  symbol_count 5
+  symbols
+    function extract_jsonish_value 6 40
+    function supplied_file_answer 56 63
+    function supplied_file_final_answer 80 113
+    function supplied_file_template 121 134
+    function supplied_file_content 144 171
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4429
+    named_node_count 916
+    distinct_node_kinds 70
+    node_kinds
+      arguments 73
+      array_expression 3
+      array_type 3
+      assignment_expression 3
+      attribute 2
+      attribute_item 2
+      binary_expression 9
+      block 19
+      call_expression 73
+      char_literal 5
+      closure_expression 5
+      closure_parameters 5
+      continue_expression 3
+      crate 2
+      doc_comment 43
+      escape_sequence 4
+      expression_statement 20
+      field_expression 57
+      field_identifier 57
+      field_pattern 2
+      for_expression 3
+      function_item 5
+      generic_function 2
+      generic_type 6
+      identifier 192
+      if_expression 6
+      index_expression 4
+      inner_doc_comment_marker 2
+      integer_literal 4
+      let_chain 1
+      let_condition 4
+      let_declaration 19
+      line_comment 43
+      macro_invocation 3
+      match_arm 5
+      match_block 2
+      match_expression 2
+      match_pattern 5
+      mutable_specifier 2
+      or_pattern 2
+      outer_doc_comment_marker 41
+      parameter 14
+      parameters 5
+      primitive_type 13
+      range_expression 4
+      reference_expression 12
+      reference_type 16
+      remaining_field_pattern 1
+      return_expression 4
+      scoped_identifier 14
+      scoped_type_identifier 2
+      scoped_use_list 1
+      shorthand_field_identifier 2
+      source_file 1
+      string_content 10
+      string_literal 12
+      struct_pattern 1
+      super 2
+      token_tree 5
+      try_expression 6
+      tuple_expression 3
+      tuple_pattern 3
+      tuple_struct_pattern 7
+      tuple_type 1
+      type_arguments 8
+      type_identifier 18
+      unary_expression 4
+      use_declaration 1
+      use_list 1
+      visibility_modifier 2

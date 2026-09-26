@@ -1,0 +1,5 @@
+repo_timeout	en	Clone this project at the given commit, find where the default timeout is defined, raise it to sixty seconds, and run only the test that asserts the default.
+repo_timeout	ru	Склонируй проект на указанном коммите, найди, где задан таймаут по умолчанию, подними его до шестидесяти секунд и запусти только тот тест, который проверяет значение по умолчанию.
+repo_timeout	hi	दिए गए कमिट पर इस प्रोजेक्ट को क्लोन करो, पता करो कि डिफ़ॉल्ट टाइमआउट कहाँ परिभाषित है, उसे साठ सेकंड करो, और केवल वही परीक्षण चलाओ जो डिफ़ॉल्ट की जाँच करता है।
+repo_timeout	zh	在给定提交处克隆这个项目，找到默认超时在哪里定义，把它改成六十秒，只运行断言默认值的那个测试。
+repo_timeout	es	Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto.

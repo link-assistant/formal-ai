@@ -2,33 +2,44 @@ self_ast_census
   target src/solver_handlers/research_table.rs
   language rust
   fidelity signature
-  byte_len 18529
-  line_count 485
-  content_id source_module_b71abbb7e38d0d8f
-  symbol_count 25
+  byte_len 18478
+  line_count 540
+  content_id source_module_88c83b3970d80901
+  symbol_count 36
   symbols
-    enum Criterion 18 23
-    function label 26 33
-    function slug 35 42
-    function from_slug 49 57
-    enum ResearchResultStatus 61 66
-    function slug 69 76
-    function try_research_comparison_table 79 122
-    function try_research_result_followup 124 152
-    function is_comparison_table_request 159 164
-    function looks_like_research_prompt 173 182
-    function is_research_result_followup 184 208
-    function classify_prior_research_answer 210 240
-    function render_research_result_followup 242 258
-    function research_prompt_preview 260 268
-    function extract_research_topics 270 294
-    function clean_topic_line 296 304
-    function strip_list_marker 306 324
-    function clean_search_text 326 339
-    function extract_criteria 341 361
-    function append_criteria_from_text 370 378
-    function push_unique 380 384
-    function render_comparison_table 386 410
-    function cell_for 412 477
-    function table_escape 479 481
-    function compact_log_value 483 485
+    const RESEARCH_TABLE_PROCEDURE_LINO 20 21
+    enum Criterion 24 29
+    function slug 32 39
+    function from_slug 46 54
+    enum ResearchResultStatus 58 63
+    function slug 66 73
+    function from_slug 75 83
+    struct LocalizedTableText 87 91
+    struct CriterionText 94 98
+    struct ResearchTableProcedure 101 105
+    function table_text 108 113
+    function criterion_text 115 119
+    function try_research_comparison_table 122 166
+    function try_research_result_followup 168 196
+    function is_comparison_table_request 203 208
+    function looks_like_research_prompt 217 226
+    function is_research_result_followup 228 252
+    function classify_prior_research_answer 254 268
+    function render_research_result_followup 270 286
+    function research_prompt_preview 288 296
+    function extract_research_topics 298 323
+    function clean_topic_line 325 333
+    function strip_list_marker 335 353
+    function clean_search_text 355 368
+    function extract_criteria 370 390
+    function append_criteria_from_text 399 410
+    function push_unique 412 416
+    function render_comparison_table 418 452
+    function localized_value 454 460
+    function research_table_procedure 462 465
+    static CELL 463 463
+    function parse_research_table_procedure 467 510
+    function child_values 512 518
+    function localized_children 520 532
+    function table_escape 534 536
+    function compact_log_value 538 540

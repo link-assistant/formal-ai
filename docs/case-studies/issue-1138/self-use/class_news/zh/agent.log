@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.178Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.178Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 现在世界上发生了什么？ --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Il2g6MJDCf",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.178Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Il2g6MJDCf",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.179Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Il2g6MJDCf",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.187Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "现在世界上发生了什么？",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "现在世界上发生了什么？",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.187Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.188Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.188Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.188Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.191Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.192Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Il2g6MJDCf/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.194Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 5454,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.194Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.206Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:16:01.210Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.210Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.210Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.210Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.210Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.210Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.210Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.210Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 22,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.211Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:16:01.211Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.214Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.214Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.215Z",
+  "service": "session",
+  "id": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Il2g6MJDCf",
+  "title": "New session - 2026-09-16T03:16:01.215Z",
+  "time": {
+    "created": 1789528561215,
+    "updated": 1789528561215
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.215Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.216Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.216Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.216Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.216Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c929c0ffecz8hO4rFzGO029/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.216Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c929c0ffecz8hO4rFzGO029/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.219Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c929c0ffecz8hO4rFzGO029/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.221Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.221Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.222Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.223Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.223Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.224Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.224Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.224Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.224Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.224Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.224Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.224Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.340Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.343Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.344Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.350Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.355Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.359Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.360Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.760Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528561760,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836d85b001tLBts71aacRfZd",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836d6be001rBDLSUngvZc1Mz",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528561762,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836d861001j3doXgiN9IYWe4",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836d6be001rBDLSUngvZc1Mz",
+    "type": "tool",
+    "callID": "call_c13a98e11ba2f2ed",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528561762,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836d860001pSBjAOKNSdgsF9",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836d6be001rBDLSUngvZc1Mz",
+    "type": "text",
+    "text": "我来上网搜索 现在世界上发生了什么。",
+    "time": {
+      "start": 1789528561762,
+      "end": 1789528561762
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:01.763Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528561763,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836d861001j3doXgiN9IYWe4",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836d6be001rBDLSUngvZc1Mz",
+    "type": "tool",
+    "callID": "call_c13a98e11ba2f2ed",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "现在世界上发生了什么"
+      },
+      "time": {
+        "start": 1789528561762
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528563327,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836d861001j3doXgiN9IYWe4",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836d6be001rBDLSUngvZc1Mz",
+    "type": "tool",
+    "callID": "call_c13a98e11ba2f2ed",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "现在世界上发生了什么"
+      },
+      "output": "Title: 在特朗普总统表示俄乌同意停止互袭能源设施第二天，两国发动了新袭击\nURL: https://www.voachinese.com/a/russia-and-ukraine-launched-new-energy-attacks-a-day-after-president-trump-said-they-agreed-to-stop-such-strikes-20260915/8200195.html\nPublished: 2026-09-15T17:18:52.000Z\nAuthor: 美国之音\nHighlights:\n在特朗普总统表示俄乌同意停止互袭能源设施第二天，两国发动了新袭击\n...\n俄罗斯和乌克兰星期二(9月15日)互相袭击了对方的能源设施。一天前，美国总统唐纳德·特朗普(Donald Trump)说，两国已同意停止此类袭击，克里姆林宫则称特朗普的暂停能源袭击的提议“是个非常好的主意”。\n...\n乌克兰官员说，俄罗斯连夜向基辅和其它城市发射了200架无人机，造成两人死亡，并损毁了首都基辅的两座加油站。国家能源公司Natogaz证实了损失。市府官员说，俄罗斯今年袭击了基辅的16座加油站，但没有出现燃料短缺的风险。官员说，基辅有一人死亡，扎波罗热有一人死亡。基辅市长维塔利·克利奇科(Vitali Klitschko)在电报 (Telegram)上说，下午在基辅斯维亚托申斯基(Sviatoshynskyi)区发生的袭击中，又有两人受伤。\n...\n乌克兰总统弗拉基米尔·泽连斯基(Volodymyr Zelenskyy)在电报(Telegram)上说，乌克兰袭击了俄罗斯萨马拉州锡兹兰(Syzran)的一家炼油厂，以及塔甘罗格(Taganrog)州和奥廖尔(Oryol)州的无人机生产设施。\n...\n罗斯托夫州州长尤里\n...\n斯柳萨尔(Yuri Slyusar)在电报(Telegram)上说，塔甘罗格发生火灾，公寓楼、一所学校和属于在线零售商Ozon的一个仓库遭到损坏。\n...\n特朗普星期一在真相社交(Truth Social)上写道,“乌克兰已同意不打击俄罗斯能源目标。俄罗斯也同样同意！” 两国政府均未证实有此类协议。\n...\n克里姆林宫发言人德米特里·佩斯科夫(Dmitry Peskov)星期二对记者说，特朗普的提议“是个非常好的主意”，但还需要更多措施。他说，“必须确保这里的商业航运和航行安全，包括油轮的航行安全。”他并说，应该解除对俄罗斯能源出口的制裁。\n...\n战斗已逐渐蔓延至乌克兰境外，进入北约领土。\n...\n立陶宛国家危机管理中心说，一架北约战斗机在夜间击落了一架进入这个国家领空的无人机——这是立陶宛领空首次发生此类拦截事件。意大利国防部长圭多·克罗塞托(Guido Crosetto)在希奥利艾(Siauliai)空军基地对记者说，这架无人机“很可能来自俄罗斯”。立陶宛国防部长罗伯塔斯·考纳斯(Robertas Kaunas)说，这架无人机可能没有携带炸药，并将对碎片进行检查。\n...\n瓦迪斯瓦\n...\n·科西\n...\n什(W\n...\nKosiniak-\n...\n上说，在周末边境附近发生无人机袭击后，波兰正在加强与乌克兰的边境口岸。\n...\n美国同时重新努力重启谈判。9月5日，特朗普总统的和平特使史蒂夫·威特科夫(Steve Witkoff)和贾里德·库什纳(Jared Kushner)在莫斯科会见了普京，第二天在基辅会见了泽连斯基，这是他们作为谈判代表首次访问乌克兰首都。\n...\n双方在访问期间暂停了对对方首都的袭击，然后又恢复了袭击。中央情报局局长约翰·拉特克利夫(John Ratcliffe)八月下旬访问了莫斯科。俄乌之间2月以来没有举行过直接会谈。\n\n---\n\nTitle: 国际新闻\nURL: https://www.voachinese.com/p/6143.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n#### 美国特使称俄乌和平谈判出现新势头\n...\n美国和平特使史蒂夫·威特科夫(Steve Witkoff)和贾里德·库什纳(Jared Kushner)星期天(9月6日)在基辅会见乌克兰总统弗拉基米尔·泽连斯基(Volodymyr Zelenskiy)后，宣布和平谈判出现新势头；与此同时，特朗普政府正重新推动结束俄罗斯在乌克兰长达四年半的战争。\n...\n#### 伊朗声称袭击了一艘美国船只，但美方称其为“彻头彻尾的谎言”\n...\n#### 美国特使威特科夫和库什纳在莫斯科会晤普京后抵达基辅\n...\n#### 普京会见美国特使，就乌克兰问题展开新一轮和平会谈\n...\n#### 美军在海军舰艇遭导弹瞄准后打击了三艘伊朗油轮\n...\n#### 美国制裁土耳其银行，加强对伊朗的金融施压行动\n...\n#### 美国对古巴实施新的制裁，包括古巴前领导人劳尔·卡斯特罗的孙子\n...\n#### 美乌谈判进行之际，俄罗斯对基辅的战争持续肆虐\n...\n#### 太平洋岛国领导人对中国导弹试验表达关切，瑙鲁异议凸显地区分歧\n...\n#### 也门冲突让人担忧伊朗支持的胡塞武装可能进一步威胁曼德海峡航运\n...\n美国新增650亿桶石油\n...\n#### 乌克兰预计美国谈判代表将在“未来几天”访问莫斯科和基辅\n...\n#### 伊朗军队对科威特发动空袭\n...\n#### 台湾\n...\n北京警告“会有后果”美澳新强调论坛自主决定\n...\n#### 特朗普总统：美军对伊朗雷达和导弹设施发动了“非常猛烈的打击”\n...\n#### 俄罗斯袭击基辅进入第七天，平民伤亡持续增加；乌克兰敦促航空公司避开俄罗斯领空\n...\n#### 美国对伊朗经济施压，是否扩大对华制裁引两党议员关注\n...\n#### 尼泊尔、西藏洪灾一周后，救援人员继续搜寻失踪者\n...\n#### 雪佛龙将在委内瑞拉\n...\n0亿美元；美国能源部长\n...\n加拉加斯\n...\n#### 遭美国打击后，伊朗向该地区国家发动导弹和无人机袭击\n...\n#### 中国欲借上合峰会挑战美国主导秩序，但内部分歧暴露行动力局限\n...\n太平洋岛国领导人\n...\n，瑙鲁异议凸显地区分歧\n...\n#### 伊朗声称袭击了一艘美国船只，但美方称其为“彻头彻尾的谎言”\n...\n#### 美国特使称俄乌和平谈判出现新势头\n...\n#### 美国对古巴实施新的制裁，包括古巴前领导人劳尔·卡斯特罗的孙子\n\n---\n\nTitle: 国际新闻_央视网\nURL: https://news.cctv.com/world/\nPublished: N/A\nAuthor: N/A\nHighlights:\n### 摩根大通最新报告：全球下一轮食品危机或正在形成 \n\n美国金融机构摩根大通日前发布最新报告称，在战争、天气、仓储、水资源和浪费等五大因素持续影响下，全球下一轮食品危机可能正在形成。\n\n---\n\nTitle: Iran war live: Iran’s top diplomat heads to China as war drags on | US-Israel war on Iran News | Al Jazeera\nURL: https://www.aljazeera.com/news/liveblog/2026/9/16/iran-war-live-irans-top-diplomat-heads-to-china-as-war-drags-on\nPublished: 2026-09-16T00:00:00.000Z\nAuthor: Enes Abuomer,Kristina Harazim,Leila Minkara\nHighlights:\nIran war live: Iran’s top diplomat heads to China as war drags on | US-Israel war on Iran News | Al Jazeera\n...\n# Iran war live: Iran’s top diplomat heads to China as war drags on\n...\nSaudi Arabia has stopped oil loadings at the port of Yanbu days after the country paused operations at its East-West pipeline due to drone attacks.\n...\n- Iranian Foreign Minister Abbas Araghchi heads to China to meet his counterpart Wang Yi as Beijing seeks to mediate an end to the war.\n- Saudi Arabia has halted oil loadings at the port of Yanbu following recent Houthi drone attacks, while US Energy Secretary Chris Wright has suggested that he expects the East-West pipeline to resume operations within days.\n\n---\n\nTitle: 国际- BBC News 中文\nURL: https://www.bbc.com/zhongwen/topics/c83plve5vmjt/simp\nPublished: N/A\nAuthor: N/A\nHighlights:\n## 英国制裁约旦河西岸：对以色列关系跌至数十年谷底\n...\n## 习近平与英国新首相安迪·伯纳姆首次通话 基调积极 同时提及黎智英\n...\n## 关税真正会让加拿大人和美国人付出什么代价\n...\n## 朝俄首座跨境公路桥通车 乌克兰团体担心加快军援物流\n...\n## 美军航母全数撤离印太：台湾该担心“空窗期”吗？\n...\n## 定罪战犯“波斯尼亚屠夫”姆拉迪奇去世 塞尔维亚数千人送殡\n...\n## 印尼火山爆发：机场延长关闭，逾34万旅客滞留\n...\n## 邹镇豪连环强奸案：警察报请英国检察官考虑起诉新罪\n...\n## 美国特使在俄乌间穿梭外交：双方分歧未解 泽连斯基预计战事将持续到冬季\n...\n## 欧洲国家接连提走北美黄金储备所为何事\n...\n## 印度洋蔥“政治敏感”得要坐上铁路快车\n...\n## 特朗普取态何以左右福克兰群岛争议\n...\n## 尼泊尔给水力发电押下重注，泥石流把问题彻底暴露\n...\n## 不同版本的世界地图有哪些正确及错误之处？\n...\n## “究竟是谁在批准什么？”：光州双年展台湾复名、中国退展，改名风波背后的角力\n...\n## 视频, 韩国光州双年展: 中国退展，“台湾馆”风波\n...\n什么？,\n...\n全长 3,39\n...\n## 视频, 前线报导：BBC深入尼泊尔隧道和被洪水吞没的小镇, 节目全长 6,57\n...\n## 加拿大新钞首印查尔斯国王肖像，为英国以外首例\n...\n## 福克兰群岛争议升温：阿根廷宣布制裁附近油企，特朗普暗示未必协助英国\n...\n## 亲俄宣传网络内幕：利用乌克兰女性遭强奸的虚假消息，作引流“诱饵”\n\n---\n\nTitle: 国际新闻- 了解国际局势，知晓全球最新动态\nURL: https://www.8world.com/world\nPublished: N/A\nAuthor: N/A\nHighlights:\n### 美国“鳄鱼恶魔岛”拘留中心 79名移民曾被关狭小金属围栏 \n\n 15/09/2026 23:02 \n\n \n\n \n\n 美国“鳄鱼恶魔岛”拘留中心 79名移民曾被关狭小金属围栏 \n\n### 特朗普称俄乌同意停袭能源设施 两国仍持续互相攻击 \n\n 15/09/2026 22:41 \n\n \n\n \n\n 特朗普称俄乌同意停袭能源设施 两国仍持续互相攻击 \n\n### 也门胡塞武装袭击沙特13人受伤 沙特誓言坚决回应袭击 \n\n 15/09/2026 22:06 \n\n 00:52 \n\n \n\n 也门胡塞武装袭击沙特13人受伤 沙特誓言坚决回应袭击 \n\n### 世贸组织警告 全球贸易体系面临80年来最严重冲击 \n\n 15/09/2026 21:21 \n\n \n\n \n\n 世贸组织警告 全球贸易体系面临80年来最严重冲击 \n\n### 网络差惹怒村民 印度技术员被绑在信号塔 \n\n 15/09/2026 21:04 \n\n \n\n \n\n 网络差惹怒村民 印度技术员被绑在信号塔\n...\n仁勋台上\n...\n15/09/2026 20:47 \n\n \n\n \n\n 黄仁勋台上突接特朗普来电 特朗普再称AI威胁论是“骗局” \n\n###\n...\n### 荷兰部分铁路疑似遭人蓄意破坏 列车服务大规模中断 \n\n 15/09/2026 19:11 \n\n 00:28 \n\n \n\n 荷兰部分铁路疑似遭人蓄意破坏 列车服务大规模中断 \n\n### 谷歌前AI研究员警告：人工智能或灭绝人类 时间已所剩无多 \n\n 15/09/2026 17:27 \n\n \n\n \n\n 谷歌前AI研究员警告：人工智能或灭绝人类 时间已所剩无多 \n\n### 报告：美国多项民主指标 跌至半世纪以来最低水平 \n\n 15/09/2026 16:52 \n\n \n\n \n\n 报告：美国多项民主指标 跌至半世纪以来最低水平 \n\n### 伊朗拒绝与美国进行任何谈判 \n\n 15/09/2026 16:31 \n\n \n\n \n\n 伊朗拒绝与美国进行任何谈判 \n\n### 欧盟拟限制15岁以下未成年人使用社媒等平台 \n\n 15/09/2026 16:07 \n\n 00:53 \n\n \n\n 欧盟拟限制15岁以下未成年人使用社媒等平台\n\n---\n\nTitle: 伊朗：一天击落3架MQ-1无人机！3名美军士兵此前被炸死，技术人员揭秘：或是健身软件泄露位置，连以色列核设施也有用户“打卡”\nURL: https://c.m.163.com/news/a/L6U93I2J0530JPVV.html\nPublished: 2026-09-16T00:00:00.000Z\nAuthor: N/A\nHighlights:\n伊朗：一天击落3架MQ-1无人机！3名美军士兵此前被炸死，技术人员揭秘：或是健身软件泄露位置，连以色列核设施也有用户“打卡”\n...\n霍尔木兹海峡仍然不平静。\n...\n当地时间15日，伊朗方面消息称，不久前，第三架美军MQ-1无人机在霍尔木兹海峡上空被拦截并击落。该无人机遭到了伊朗伊斯兰革命卫队航空航天部队防空系统的打击。\n...\n此前报道，伊朗伊斯兰革命卫队15日连续发表声明说，革命卫队航空航天部队当天凌晨在霍尔木兹海峡以西空域拦截并击毁一架MQ-1无人机，随后革命卫队当天在霍尔木兹海峡以东空域拦截并击落一架MQ-1无人机。\n...\n阿曼海事安全中心15日说，此前在霍尔木兹海峡遭袭后机舱起火的油轮“阿尔加亚”号正被拖往阿曼一处港口，目前仍有2人失踪。\n...\n阿曼海事安全中心发表声明说，“阿尔加亚”号在霍尔木兹海峡南岸的阿曼穆桑代姆省东北方向遇袭。阿曼皇家海军已从油轮上疏散23名船员，并协调卫生部门为他们提供必要的医疗救助。声明说，搜救行动仍在继续，目前还有两名船员失踪。\n...\n伊朗伊斯兰革命卫队14日表示，“阿尔加亚”号在试图通过霍尔木兹海峡南部“禁航区域”时，触碰水雷后爆炸起火。\n...\n与美国谈判\n...\n美国国防部监督机构14日公布的一份新报告显示，伊朗战事导致美国在中东地区的军事基地和外交机构遭受重大损失，至少数百栋建筑物和其他设施遭破坏，50多架美军飞机受损或被毁。\n...\n根据报告，伊朗的袭击破坏并摧毁了美国在科威特、巴林、卡塔尔、阿联酋、沙特阿拉伯、伊拉克、阿曼和约旦的基地内的数百栋建筑物和其他设施。其中，美国在该地区的海军后勤枢纽、位于巴林的美国海军基地遭到伊朗无人机和弹道导弹袭击后，美军中央司令部不得不将补给线转移到更远的备用枢纽，包括位于印度洋中部岛屿上的迪戈加西亚军事基地。这使得支持中东地区的行动需要“14至18天的物流周期”。\n...\n报告说，伊朗的军事打击下，美国在伊拉克、科威特、沙特和阿联酋的外交设施遭受约1.84亿美元的损失。2月23日至6月30日期间，多达3500名外交人员离开中东地区。\n...\n报告还说，自伊朗战事爆发以来，已有50多架美军飞机受损或被毁，其中包括4架F-15E战斗机、7架KC-135加油机以及至少30架MQ-9“死神”无人机，战事还“导致战略库存短缺，并暴露出先进武器弹药补给方面的工业基础瓶颈”。\n...\n3名美军遭袭身亡，疑似健身软件泄露营地位置\n...\n美伊战事重新升温，双方都在对彼此的目标进行轰炸。在这样的背景下，英国一家数据团队通过调查发现了美军一处惊人的安全漏洞。\n...\n这个漏洞本身并非新事，早在8年前就曾被披露过。但该调查发现，驻中东美军依然在大量用民用定位软件，泄露驻地轨迹，而这些泄露的坐标很可能已被伊朗精准利用。除了美军，英军等盟军也存在类似问题。\n...\n2017年底，健身软件公司Strava发布了一张全球运动热力图，把各地用户跑步、骑行路线叠在卫星地图上。2018年1月，分析人士顺着图上的亮线，在阿富汗境内描出了美军基地的完整轮廓和人员日常跑步路线；有报道进一步挖出疑似中情局索马里据点、也门“爱国者”防空阵地等敏感设施。\n...\n五角大楼随即连出两道令：当年5月禁止个人设备进入涉密区域，当年8月全面禁止在作战区域使用带定位功能的应用和设备。八年过去，禁令却形同虚设：健身软件Strava的1300多名用户在美国中央司令部辖区内的多国军事基地公开上传了数千条运动记录，且多数使用真实姓名。调查人员本次抓取的1300多个账号里，不少美军士兵的轨迹能精确定位到具体营区、具体时段。\n...\n最刺眼的一处在约旦。穆沃费格萨勒提空军基地76%的跑步轨迹，起点或终点集中在基地东面同一处营房。而在战端重开后，伊朗导弹瞄准的正是这片营房。在今年7月17日伊朗的导弹袭击中，3名美军当场死亡。而在本月8日，伊朗方面再度攻击该军事基地，造成美国多架军机受损。\n...\n在巴林，情况也同样糟糕。一名驻麦纳麦海军设施的美军承包商撤离基地后，Strava轨迹显示他转移到市中心的皇冠假日酒店，开始在酒店院内绕圈跑步。六天后，伊朗发动报复性打击，导弹落在酒店，两名五角大楼雇员受伤。数据团队认为，调查能证明这些数据足以暴露人员位置和作息规律，但伊朗未证实是否使用Strava数据选择打击目标。\n...\n美国官方机构层面上并非没有注意到这个漏洞。美国中央司令部今年6月向国会议员通报，已收到“多份威胁报告，涉及敌对方利用商业位置数据对战区美军实施定向打击或监视”。\n...\n7月28日，中央司令部司令布拉德·库珀将军写下一封内部信。信中警告，伊朗正通过搜索网上“我军官兵在社媒的反应、手机里上传的照片和影像”，近乎实时地评估打击效果。库珀写道：“这种开源情报直接且不可避免的代价，可能要用美国军人和海湾国家平民的生命来衡量。”他还提醒，这种详细的公开信息“会立即给伊朗军队开绿灯，发动第二波更具毁灭性的打击”。有消息人士称，约旦部分驻军已被告知，个人手机可能于近日内被要求上缴。\n...\n中央司令部发言人蒂姆·霍金斯确认了这封内部信件的存在，但把它定性为“行动安全的一般性提醒”，拒绝公布全文。一名不愿具名的美国官员则直接称：“任何声称数据追踪在这些袭击中发挥了重要作用的说法，都与事实不符。”\n...\n同款漏洞并非美军独有。有调查发现，519名英军人员在法斯兰核潜艇基地、塞浦路斯阿克罗蒂里空军基地等敏感设施公开跑步数据；“#StravaLeaks”系列社媒标签识别出数千名法军人员；今年3月，“戴高乐”号航母上一名军官戴着智能手表在甲板跑步，航母实时位置随即被锁定。连以色列迪莫纳核设施内，都有3名Strava用户打过卡。\n\n---\n\nTitle: 即時| 世界新聞網\nURL: https://www.worldjournal.com/wj/cate/breaking\nPublished: N/A\nAuthor: 世界新聞網\nHighlights:\n### 北京押注科技、不急救內需？ 研究：北京「長期布局」恐加劇K型分化\n...\n北京政策研究與顧問機構Trivium China指出，北京面對消費疲弱、房市低迷，仍未推出大規模需求面刺激，反而著眼長期推動先進技術向各產業擴散。這項策略恐使中國「K型」經濟分化延續，並促使國內無法消化的過剩產能持續轉向出口，加劇海外市場競爭。\n\n 2026-08-29 19:14 2026-08-30 07:14\n...\n### 冰島是否重啟入歐談判 公投結果預計30日揭曉\n...\n冰島今天結束一場攸關是否重啟加入歐洲聯盟談判的歷史性公投，晚間隨即開始計票。這場公投牽動當地民眾關切的生活成本、安全、主權及漁業資源控制權。\n\n 2026-08-29 19:09 2026-08-30 07:09\n...\n尼日軍政府稱平息叛變 傳俄軍助奪回首都空軍基地\n...\n西非國家\n...\n向總統府，並一度迫使國家電視台中斷播出。軍政府隨後表示已重新掌控局\n...\n2026-08-29 17:54 2026-08-30 05:54\n...\n### 電訊報：美恐以福克蘭群島主權 施壓英國增國防預算\n...\n6-08-2\n...\n7:24 2026-08-30 05:24\n...\n### 尼泊爾洪災釀682死 外長：需加強研究生態變化\n...\n尼泊爾與中國西藏邊界26日發生致命洪災，造成682人喪生、近3000人失蹤之際，尼泊爾外交部長今天警告，氣候變遷對喜馬拉雅山區的威脅日益加劇。\n\n 2026-08-29 16:31 2026-08-30 04:31\n...\n### 尼日首都激烈交火 叛變軍人試圖突破總統府安全防線\n...\n尼日首都尼阿美多個地區今天清晨傳出持續槍響和爆炸聲，包括在機場和總統府附近。4名消息人士表示，這是叛變士兵發動的攻擊。\n\n 2026-08-29 14:54 2026-08-30 02:54",
+      "title": "Web search: 现在世界上发生了什么",
+      "metadata": {},
+      "time": {
+        "start": 1789528561762,
+        "end": 1789528563325
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.331Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528563331,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836de81001A5Att15oonox65",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836d6be001rBDLSUngvZc1Mz",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8507,
+      "output": 49,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8556,
+      "headroom": 30300,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.333Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.333Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.334Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.334Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.335Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.335Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.355Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8556,
+  "providerTokens": 8556,
+  "estimatedInputTokens": 5919,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8507,
+    "cacheRead": 0,
+    "output": 49
+  },
+  "overflow": false,
+  "headroom": 30300,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.355Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.355Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.360Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:03.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.031Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528564031,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e13c001g6D6Mwfyl3tCyH",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836de9b001ox37WYJHHzbCni",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.031Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.031Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528564031,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e13f0024su0xMjPACk43d",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836de9b001ox37WYJHHzbCni",
+    "type": "tool",
+    "callID": "call_3ce448fe42643946",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.032Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528564032,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e13f001XiVLyckOFS8kNX",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836de9b001ox37WYJHHzbCni",
+    "type": "text",
+    "text": "我来打开 https://www.voachinese.com/a/russia-and-ukraine-launched-new-energy-attacks-a-day-after-president-trump-said-they-agreed-to-stop-such-strikes-20260915/8200195.h…，读取其中的内容。",
+    "time": {
+      "start": 1789528564032,
+      "end": 1789528564032
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.032Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528564032,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e13f0024su0xMjPACk43d",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836de9b001ox37WYJHHzbCni",
+    "type": "tool",
+    "callID": "call_3ce448fe42643946",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.voachinese.com/a/russia-and-ukraine-launched-new-energy-attacks-a-day-after-president-trump-said-they-agreed-to-stop-such-strikes-20260915/8200195.html"
+      },
+      "time": {
+        "start": 1789528564032
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.919Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528564919,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e13f0024su0xMjPACk43d",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836de9b001ox37WYJHHzbCni",
+    "type": "tool",
+    "callID": "call_3ce448fe42643946",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.voachinese.com/a/russia-and-ukraine-launched-new-energy-attacks-a-day-after-president-trump-said-they-agreed-to-stop-such-strikes-20260915/8200195.html"
+      },
+      "output": "&#x5728;&#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8868;&#x793A;&#x4FC4;&#x4E4C;&#x540C;&#x610F;&#x505C;&#x6B62;&#x4E92;&#x88AD;&#x80FD;&#x6E90;&#x8BBE;&#x65BD;&#x7B2C;&#x4E8C;&#x5929;&#xFF0C;&#x4E24;&#x56FD;&#x53D1;&#x52A8;&#x4E86;&#x65B0;&#x88AD;&#x51FB;\r\n            \r\n                \r\n    \r\n\r\n\r\n    \r\n\r\n\r\n\r\n        \r\n\r\n        \r\n        \r\n            \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n                    \r\n\r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n    \r\n    \r\n    \r\n    \r\n\r\n\r\n\r\n        \r\n\r\n            \r\n        \r\n\r\n        \r\n        \r\n            \r\n                &#x65E0;&#x969C;&#x788D;&#x94FE;&#x63A5;\r\n                \r\n                    &#x8DF3;&#x8F6C;&#x5230;&#x5185;&#x5BB9;\r\n                    &#x8DF3;&#x8F6C;&#x5230;&#x5BFC;&#x822A;\r\n                    &#x8DF3;&#x8F6C;&#x5230;&#x68C0;&#x7D22;\r\n                \r\n            \r\n        \r\n    \r\n\r\n\r\n\r\n\r\n\r\n    \r\n            \r\n\r\n\r\n    \r\n        \r\n        \r\n            \r\n            &#x4E0B;&#x4E00;&#x9875;\r\n        \r\n    \r\n    \r\n        \r\n            \r\n            &#x5173;&#x95ED;\r\n        \r\n        \r\n            \r\n            &#x4E0A;&#x4E00;&#x9875;\r\n        \r\n        \r\n            \r\n            &#x4E0B;&#x4E00;&#x9875;\r\n        \r\n    \r\n    \r\n        \r\n            \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                    \r\n                \r\n            \r\n        \r\n    \r\n    \r\n        \r\n            &#x6B64;&#x56FE;&#x7247;&#x5185;&#x5BB9;&#x654F;&#x611F;&#xFF0C;&#x6709;&#x4E9B;&#x4EBA;&#x53EF;&#x80FD;&#x4F1A;&#x89C9;&#x5F97;&#x53CD;&#x611F;&#x6216;&#x4E0D;&#x5B89;&#x3002;\r\n            \r\n                \r\n                    &#x70B9;&#x51FB;&#x663E;&#x793A;\r\n                \r\n            \r\n        \r\n    \r\n\r\n\r\n\r\n    \r\n        Print Options:\r\n        \r\n            \r\n                \r\n                    \r\n                    &#x56FE;&#x7247;\r\n                \r\n                \r\n                    \r\n                    Multimedia\r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                    Embedded Content\r\n                \r\n                \r\n                    \r\n                    &#x8BC4;&#x8BBA;\r\n                \r\n            \r\n        \r\n        \r\n            \r\n                &#x53D6;&#x6D88;\r\n            \r\n            \r\n                &#x6253;&#x5370;\r\n            \r\n        \r\n    \r\n                \r\n\r\n    Link has been copied to clipboard\r\n\r\n            \r\n\r\n\r\n\r\n    \r\n        \r\n            \r\n                \r\n                    \r\n                    \r\n                \r\n                \r\n                    \r\n                        \r\n                            \r\n                                \r\n\r\n        \r\n            &#x4E3B;&#x9875;\r\n        \r\n\r\n        \r\n            &#x7F8E;&#x56FD;\r\n        \r\n\r\n        \r\n            &#x4E2D;&#x56FD;\r\n        \r\n\r\n        \r\n            &#x53F0;&#x6E7E;\r\n        \r\n\r\n        \r\n            &#x6E2F;&#x6FB3;\r\n        \r\n\r\n        \r\n            \r\n                &#x56FD;&#x9645;\r\n                \r\n            \r\n            \r\n                \r\n    &#x6700;&#x65B0;&#x56FD;&#x9645;&#x65B0;&#x95FB;\r\n\r\n    &#x5370;&#x592A;\r\n\r\n    &#x4E2D;&#x4E1C;\r\n\r\n    &#x6B27;&#x6D32;\r\n\r\n    &#x975E;&#x6D32;\r\n\r\n    &#x7F8E;&#x6D32;\r\n\r\n    &#x5168;&#x7403;&#x8BAE;&#x9898;\r\n\r\n            \r\n        \r\n\r\n        \r\n            \r\n                &#x5206;&#x7C7B;&#x65B0;&#x95FB;\r\n                \r\n            \r\n            \r\n                \r\n    &#x7ECF;&#x6D4E;·&#x91D1;&#x878D;·&#x8D38;&#x6613;\r\n\r\n    &#x4EBA;&#x6743;·&#x6CD5;&#x5F8B;·&#x5B97;&#x6559;\r\n\r\n    &#x79D1;&#x6559;·&#x6587;&#x5A31;·&#x4F53;&#x5065;\r\n\r\n    &#x519B;&#x4E8B;\r\n\r\n    &#x52B3;&#x5DE5;\r\n\r\n    &#x73AF;&#x5883;\r\n\r\n            \r\n        \r\n\r\n        \r\n            &#x7F8E;&#x4E2D;&#x5173;&#x7CFB;\r\n        \r\n\r\n        \r\n            \r\n                &#x70ED;&#x70B9;&#x4E13;&#x9898;\r\n                \r\n            \r\n            \r\n                \r\n    &#x767D;&#x5BAB;&#x8981;&#x95FB;\r\n\r\n    &#x56FD;&#x4F1A;&#x62A5;&#x9053;\r\n\r\n    &#x7F8E;&#x4E2D;&#x5173;&#x7CFB;\r\n\r\n    &#x7F8E;&#x56FD;&#x5EFA;&#x56FD;250&#x5468;&#x5E74;\r\n\r\n    &#x57C3;&#x535A;&#x62C9;&#x75AB;&#x60C5;\r\n\r\n    &#x7F8E;&#x56FD;&#x4E4B;&#x97F3;&#x4E13;&#x8BBF;\r\n\r\n    &#x91CD;&#x8981;&#x8BB2;&#x8BDD;&#x4E0E;&#x58F0;&#x660E;\r\n\r\n    &#x53F0;&#x6D77;&#x4E24;&#x5CB8;&#x5173;&#x7CFB;\r\n\r\n    &#x5357;&#x4E2D;&#x56FD;&#x6D77;&#x4E89;&#x7AEF;\r\n\r\n    &#x5173;&#x6CE8;&#x897F;&#x85CF;\r\n\r\n    &#x5173;&#x6CE8;&#x65B0;&#x7586;\r\n\r\n    Gen Z &#x770B;&#x7F8E;&#x56FD;\r\n\r\n            \r\n        \r\n\r\n        \r\n            VOA&#x89C6;&#x9891;\r\n        \r\n\r\n        \r\n            VOA&#x4ECA;&#x65E5;&#x7126;&#x70B9;\r\n        \r\n\r\n        \r\n            &#x4E2D;&#x6587;&#x5E7F;&#x64AD;\r\n        \r\n\r\n\r\n\r\n                            \r\n                        \r\n                        \r\n\r\n\r\n\r\n\r\n                        \r\n                            \r\n                                    &#x5173;&#x6CE8;&#x6211;&#x4EEC;\r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n                            \r\n                            \r\n                                \r\n                                    \r\n                                    &#x5176;&#x4ED6;&#x8BED;&#x8A00;&#x7F51;&#x7AD9;\r\n                                \r\n                            \r\n                    \r\n                \r\n                \r\n                    \r\n                    \r\n                \r\n                \r\n                    \r\n                        \r\n    &#x68C0;&#x7D22;\r\n    \r\n    \r\n        \r\n    \r\n\r\n                    \r\n                \r\n                \r\n                    \r\n                        \r\n                \r\n            \r\n            \r\n                \r\n\r\n    \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n\r\n    \r\n\r\n\r\n\r\n                \r\n\r\n\r\n    \r\n        \r\n            \r\n                &#x76F4;&#x64AD;\r\n            \r\n        \r\n    \r\n    \r\n        \r\n            \r\n                &#x76F4;&#x64AD;\r\n            \r\n            \r\n        \r\n        \r\n    \r\n\r\n\r\n\r\n                \r\n                    \r\n    &#x68C0;&#x7D22;\r\n    \r\n    \r\n        \r\n    \r\n\r\n                \r\n            \r\n            \r\n            \r\n        \r\n    \r\n\r\n    \r\n    \r\n        \r\n            \r\n                \r\n                &#x4E0A;&#x4E00;&#x9875;\r\n            \r\n            \r\n                \r\n                &#x4E0B;&#x4E00;&#x9875;\r\n            \r\n        \r\n        \r\n            VOA&#x5FEB;&#x8BAF;\r\n            \r\n                \r\n                    \r\n                \r\n                \r\n                    \r\n                \r\n            \r\n        \r\n        \r\n            \r\n        \r\n    \r\n\r\n\r\n\r\n    \n        \n            \n                &#x4E2D;&#x56FD;&#x65F6;&#x95F4; 11:16 2026&#x5E74;9&#x6708;16&#x65E5; &#x661F;&#x671F;&#x4E09;\n            \n        \n    \n\r\n        \r\n            \r\n\r\n    \r\n\r\n    \r\n        \r\n            \r\n                \r\n                    \r\n\r\n\r\n\r\n&#x4E4C;&#x514B;&#x5170;&#x5C40;&#x52BF;\r\n\r\n\r\n    \r\n        &#x5728;&#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8868;&#x793A;&#x4FC4;&#x4E4C;&#x540C;&#x610F;&#x505C;&#x6B62;&#x4E92;&#x88AD;&#x80FD;&#x6E90;&#x8BBE;&#x65BD;&#x7B2C;&#x4E8C;&#x5929;&#xFF0C;&#x4E24;&#x56FD;&#x53D1;&#x52A8;&#x4E86;&#x65B0;&#x88AD;&#x51FB;\r\n    \r\n\r\n\r\n\r\n\r\n                \r\n                    \r\n                            \r\n&#x7F8E;&#x56FD;&#x4E4B;&#x97F3;                            \r\n                    \r\n                \r\n        \r\n            \r\n                    \r\n                        2026&#x5E74;9&#x6708;16&#x65E5; 01:18\r\n                    \r\n            \r\n        \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n        \r\n            \r\n    \r\n                \r\n                    \r\n                        &nbsp;\r\n                        \r\n                            &#x5728;&#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8868;&#x793A;&#x4FC4;&#x4E4C;&#x540C;&#x610F;&#x505C;&#x6B62;&#x4E92;&#x88AD;&#x80FD;&#x6E90;&#x8BBE;&#x65BD;&#x7B2C;&#x4E8C;&#x5929;&#xFF0C;&#x4E24;&#x56FD;&#x53D1;&#x52A8;&#x4E86;&#x65B0;&#x88AD;&#x51FB;\r\n                        \r\n                        \r\n                            \r\n                            \r\n                                \r\n                                    &#x5206;&#x4EAB;\r\n                                    \r\n                                        \r\n                                    \r\n            \r\n                    \r\n                            \r\n                                \r\n                                \r\n                                    \r\n                                        &#x590D;&#x5236;&#x94FE;&#x63A5;\r\n                                \r\n                            \r\n                    \r\n                    \r\n        \r\n            \r\n                Facebook\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Twitter\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                WhatsApp\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                WhatsApp\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Telegram\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Line\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Line\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Email\r\n        \r\n                    \r\n\r\n            \r\n                                \r\n                            \r\n                            \r\n                                \r\n                                    \r\n                                    \r\n                                        &#x5206;&#x4EAB;\r\n                                    \r\n                                \r\n                            \r\n                        \r\n                    \r\n                \r\n                \r\n                        \r\n                            \r\n                                &#x5206;&#x4EAB;\r\n                                \r\n                                    \r\n                                \r\n            \r\n                    \r\n                            \r\n                                \r\n                                \r\n                                    \r\n                                        &#x590D;&#x5236;&#x94FE;&#x63A5;\r\n                                \r\n                            \r\n                    \r\n                    \r\n        \r\n            \r\n                Facebook\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Twitter\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                WhatsApp\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                WhatsApp\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Telegram\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Line\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Line\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Email\r\n        \r\n                    \r\n\r\n            \r\n                            \r\n                        \r\n                        \r\n                            \r\n                                \r\n                                \r\n                                    &#x5206;&#x4EAB;\r\n                                \r\n                            \r\n                        \r\n                    \r\n\r\n    \r\n        \r\n        \r\n            &#x8BC4;&#x8BBA;\r\n        \r\n            \r\n                \r\n                    \r\n            \r\n    \r\n\r\n\r\n                \r\n    \r\n\r\n\r\n        \r\n\r\n\r\n\r\n\r\n\r\n    \r\n        \r\n            \r\n\r\n            \r\n                                \r\n        \r\n            \r\n                &#x5728;&#x4E4C;&#x514B;&#x5170;&#x82CF;&#x6885;&#xFF0C;&#x6D88;&#x9632;&#x5458;&#x6B63;&#x5728;&#x4E00;&#x5904;&#x88AB;&#x4FC4;&#x7F57;&#x65AF;&#x519B;&#x4E8B;&#x88AD;&#x51FB;&#x51FB;&#x4E2D;&#x7684;&#x79C1;&#x4EBA;&#x4F4F;&#x5B85;&#x73B0;&#x573A;&#x8FDB;&#x884C;&#x6551;&#x63F4;&#x3002;&#xFF08;2026&#x5E74;9&#x6708;15&#x65E5;&#xFF09;\r\n            \r\n    \r\n\r\n\r\n\r\n\r\n                \r\n            \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n            \r\n                \r\n                    \r\n\r\n    \r\n\r\n俄罗斯和乌克兰星期二(9月15日)互相袭击了对方的能源设施。一天前，美国总统唐纳德·特朗普(Donald Trump)说，两国已同意停止此类袭击，克里姆林宫则称特朗普的暂停能源袭击的提议“是个非常好的主意”。乌克兰官员说，俄罗斯连夜向基辅和其它城市发射了200架无人机，造成两人死亡，并损毁了首都基辅的两座加油站。国家能源公司Natogaz证实了损失。市府官员说，俄罗斯今年袭击了基辅的16座加油站，但没有出现燃料短缺的风险。官员说，基辅有一人死亡，扎波罗热有一人死亡。基辅市长维塔利·克利奇科(Vitali Klitschko)在电报 (Telegram)上说，下午在基辅斯维亚托申斯基(Sviatoshynskyi)区发生的袭击中，又有两人受伤。乌克兰总统弗拉基米尔·泽连斯基(Volodymyr Zelenskyy)在电报(Telegram)上说，乌克兰袭击了俄罗斯萨马拉州锡兹兰(Syzran)的一家炼油厂，以及塔甘罗格(Taganrog)州和奥廖尔(Oryol)州的无人机生产设施。他说，“俄罗斯持续攻击我们的能源领域，常规物流和关键基础设施。我们对此的回应是切实有效的。”罗斯托夫州州长尤里·斯柳萨尔(Yuri Slyusar)在电报(Telegram)上说，塔甘罗格发生火灾，公寓楼、一所学校和属于在线零售商Ozon的一个仓库遭到损坏。特朗普星期一在真相社交(Truth Social)上写道,“乌克兰已同意不打击俄罗斯能源目标。俄罗斯也同样同意！” 两国政府均未证实有此类协议。泽连斯基在星期一晚间的视频讲话中说，如果华盛顿能够确保“俄罗斯真心实意地准备停止这场战争”，基辅“准备好支持局势降级”。他说，目前还没有人看到莫斯科方面真正有意愿结束战争。克里姆林宫发言人德米特里·佩斯科夫(Dmitry Peskov)星期二对记者说，特朗普的提议“是个非常好的主意”，但还需要更多措施。他说，“必须确保这里的商业航运和航行安全，包括油轮的航行安全。”他并说，应该解除对俄罗斯能源出口的制裁。战斗已逐渐蔓延至乌克兰境外，进入北约领土。立陶宛国家危机管理中心说，一架北约战斗机在夜间击落了一架进入这个国家领空的无人机——这是立陶宛领空首次发生此类拦截事件。意大利国防部长圭多·克罗塞托(Guido Crosetto)在希奥利艾(Siauliai)空军基地对记者说，这架无人机“很可能来自俄罗斯”。立陶宛国防部长罗伯塔斯·考纳斯(Robertas Kaunas)说，这架无人机可能没有携带炸药，并将对碎片进行检查。波兰国防部长瓦迪斯瓦夫·科西尼亚克-卡梅什(Wladyslaw Kosiniak-Kamysz)在X上说，在周末边境附近发生无人机袭击后，波兰正在加强与乌克兰的边境口岸。美国同时重新努力重启谈判。9月5日，特朗普总统的和平特使史蒂夫·威特科夫(Steve Witkoff)和贾里德·库什纳(Jared Kushner)在莫斯科会见了普京，第二天在基辅会见了泽连斯基，这是他们作为谈判代表首次访问乌克兰首都。双方在访问期间暂停了对对方首都的袭击，然后又恢复了袭击。中央情报局局长约翰·拉特克利夫(John Ratcliffe)八月下旬访问了莫斯科。俄乌之间2月以来没有举行过直接会谈。\r\n    \r\n\r\n                            \r\n                            \r\n    \r\n                \r\n                    \r\n                        &nbsp;\r\n                        \r\n                            &#x5728;&#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8868;&#x793A;&#x4FC4;&#x4E4C;&#x540C;&#x610F;&#x505C;&#x6B62;&#x4E92;&#x88AD;&#x80FD;&#x6E90;&#x8BBE;&#x65BD;&#x7B2C;&#x4E8C;&#x5929;&#xFF0C;&#x4E24;&#x56FD;&#x53D1;&#x52A8;&#x4E86;&#x65B0;&#x88AD;&#x51FB;\r\n                        \r\n                        \r\n                            \r\n                            \r\n                                \r\n                                    &#x5206;&#x4EAB;\r\n                                    \r\n                                        \r\n                                    \r\n            \r\n                    \r\n                            \r\n                                \r\n                                \r\n                                    \r\n                                        &#x590D;&#x5236;&#x94FE;&#x63A5;\r\n                                \r\n                            \r\n                    \r\n                    \r\n        \r\n            \r\n                Facebook\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Twitter\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                WhatsApp\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                WhatsApp\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Telegram\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Line\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Line\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Email\r\n        \r\n                    \r\n\r\n            \r\n                                \r\n                            \r\n                            \r\n                                \r\n                                    \r\n                                    \r\n                                        &#x5206;&#x4EAB;\r\n                                    \r\n                                \r\n                            \r\n                        \r\n                    \r\n                \r\n                \r\n                        \r\n                            \r\n                                &#x5206;&#x4EAB;\r\n                                \r\n                                    \r\n                                \r\n            \r\n                    \r\n                            \r\n                                \r\n                                \r\n                                    \r\n                                        &#x590D;&#x5236;&#x94FE;&#x63A5;\r\n                                \r\n                            \r\n                    \r\n                    \r\n        \r\n            \r\n                Facebook\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Twitter\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                WhatsApp\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                WhatsApp\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Telegram\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Line\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Line\r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n                Email\r\n        \r\n                    \r\n\r\n            \r\n                            \r\n                        \r\n                        \r\n                            \r\n                                \r\n                                \r\n                                    &#x5206;&#x4EAB;\r\n                                \r\n                            \r\n                        \r\n                    \r\n\r\n    \r\n        \r\n        \r\n            &#x8BC4;&#x8BBA;\r\n        \r\n            \r\n                \r\n                    \r\n            \r\n    \r\n\r\n    \r\n        \r\n                Follow us\r\n            \r\n                \r\n            \r\n            \r\n                            \r\n                \r\n                    \r\n                    Facebook\r\n                \r\n            \r\n\r\n            \r\n                \r\n                    \r\n                    X (Twitter)\r\n                \r\n            \r\n\r\n            \r\n                \r\n                    \r\n                    Youtube\r\n                \r\n            \r\n\r\n            \r\n                \r\n                    \r\n                    Instagram\r\n                \r\n            \r\n\r\n\r\n            \r\n        \r\n    \r\n    \r\n            \r\n            \r\n            \r\n                Follow us\r\n            \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n        &#x6253;&#x5370;\r\n    \r\n\r\n\r\n                \r\n    \r\n\r\n\r\n                            \r\n\r\n        \r\n        \r\n\r\n\r\n    \r\n        This item is part of\r\n        \r\n                \r\n                    \r\n                        &#x7F8E;&#x56FD;\r\n                        \r\n                \r\n                \r\n                    \r\n                        &#x6B27;&#x6D32;\r\n                        \r\n                \r\n                \r\n                    \r\n                        &#x519B;&#x4E8B;\r\n                        \r\n                \r\n                \r\n                    \r\n                        &#x4E4C;&#x514B;&#x5170;&#x5C40;&#x52BF;\r\n                        \r\n                \r\n                \r\n                    \r\n                        &#x6BCF;&#x65E5;&#x8981;&#x95FB;\r\n                        \r\n                \r\n        \r\n    \r\n                        \r\n\r\n    \r\n        &#x76F8;&#x5173;&#x5185;&#x5BB9;\r\n        \r\n            \r\n                \r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8BF4;&#xFF0C;&#x4FC4;&#x4E4C;&#x540C;&#x610F;&#x505C;&#x6B62;&#x88AD;&#x51FB;&#x80FD;&#x6E90;&#x76EE;&#x6807;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8981;&#x6C42;&#x4E4C;&#x514B;&#x5170;&#x505C;&#x6B62;&#x6253;&#x51FB;&#x4FC4;&#x7F57;&#x65AF;&#x67F4;&#x6CB9;&#x8BBE;&#x65BD;&#xFF0C;&#x79F0;&#x88AD;&#x51FB;&#x5BFC;&#x81F4;&#x5168;&#x7403;&#x71C3;&#x6599;&#x77ED;&#x7F3A;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x82F1;&#x56FD;&#x524D;&#x9996;&#x76F8;&#x9C8D;&#x91CC;&#x65AF;·&#x7EA6;&#x7FF0;&#x900A;&#x5728;&#x4E4C;&#x514B;&#x5170;&#x706B;&#x8F66;&#x4E0A;&#x9669;&#x906D;&#x4FC4;&#x7F57;&#x65AF;&#x65E0;&#x4EBA;&#x673A;&#x6697;&#x7B97;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n            \r\n        \r\n    \r\n\r\n\r\n                    \r\n\r\n    \r\n        \r\n            \r\n                &#x8BC4;&#x8BBA;&#x533A;\r\n                \r\n                    &#x5173;&#x95ED;\r\n                \r\n            \r\n            \r\n                \r\n                        \r\n                            \r\n                                \r\n\r\n                \r\n                    &#x5173;&#x95ED;\r\n                \r\n            \r\n        \r\n    \r\n                \r\n            \r\n        \r\n    \r\n    \r\n\r\n\r\n\r\n        \r\n\r\n\r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                        \r\n                                \r\n                                        \r\n                                            &#x5173;&#x6CE8;&#x6211;&#x4EEC;\r\n                                        \r\n                                    \r\n                                        \r\n                                                \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n\r\n                                        \r\n                                    \r\n                                \r\n\r\n    \r\n            \r\n                &#x7F51;&#x4E0A;&#x670D;&#x52A1;\r\n                \r\n                \r\n                \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n    \r\n        &#x8BA2;&#x9605;&#x7535;&#x90AE;&#x65B0;&#x95FB;\r\n    \r\n\r\n    \r\n        &#x7F8E;&#x56FD;&#x4E4B;&#x97F3;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7B80;&#x4ECB;\r\n    \r\n\r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                &#x536B;&#x661F;&#x4FE1;&#x606F;\r\n                \r\n                \r\n                \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n    \r\n        &#x901A;&#x8FC7;&#x536B;&#x661F;&#x6536;&#x770B;VOA&#x536B;&#x89C6;\r\n    \r\n\r\n    \r\n        &#x5982;&#x4F55;&#x6536;&#x542C;VOA&#x77ED;&#x6CE2;&#x5E7F;&#x64AD;\r\n    \r\n\r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                &#x5176;&#x4ED6;&#x4FE1;&#x606F;\r\n                \r\n                \r\n                \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n    \r\n        &#x5173;&#x4E8E;&#x7F8E;&#x56FD;&#x4E4B;&#x97F3;\r\n    \r\n\r\n    \r\n        &#x8054;&#x7CFB;&#x6211;&#x4EEC;\r\n    \r\n\r\n    \r\n        VOA&#x2B;\r\n    \r\n\r\n    \r\n        &#x7F8E;&#x56FD;&#x4E4B;&#x97F3;&#x5BAA;&#x7AE0;\r\n    \r\n\r\n    \r\n        &#x6761;&#x6B3E;&#x53CA;&#x79C1;&#x9690;&#x653F;&#x7B56;\r\n    \r\n\r\n    \r\n        &#x7F8E;&#x56FD;&#x5168;&#x7403;&#x5A92;&#x4F53;&#x603B;&#x7F72;\r\n    \r\n\r\n    \r\n        &#x793E;&#x8BBA;\r\n    \r\n\r\n    \r\n        &#x7F8E;&#x570B;&#x4E4B;&#x97F3;&#x7CB5;&#x8A9E;&#x7DB2;\r\n    \r\n\r\n    \r\n        VOA English\r\n    \r\n\r\n    \r\n        &#xF56;&#xF7C;&#xF51;&#xF0B;&#xF61;&#xF72;&#xF42;\r\n    \r\n\r\n    \r\n        Media Relations\r\n    \r\n\r\n    \r\n        Accessibility\r\n    \r\n\r\n    \r\n        &#x81EA;&#x7531;&#x4E9A;&#x6D32;&#x7F51;&#x7AD9;\r\n    \r\n\r\n                \r\n            \r\n    \r\n                        \r\n                    \r\n                \r\n            \r\n                \r\n                    &#x4E2D;&#x56FD;&#x65F6;&#x95F4;\r\n            \r\n        \r\n    \r\n\r\n\r\n    \r\n\r\n\r\n\r\n            XS\r\n            SM\r\n            MD\r\n            LG",
+      "title": "https://www.voachinese.com/a/russia-and-ukraine-launched-new-energy-attacks-a-day-after-president-trump-said-they-agreed-to-stop-such-strikes-20260915/8200195.html (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528564032,
+        "end": 1789528564917
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528564922,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e4b80017NoaAA0tsNVvC9",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836de9b001ox37WYJHHzbCni",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 17761,
+      "output": 372,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 18133,
+      "headroom": 20723,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.926Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.930Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.930Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.931Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.931Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.932Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.932Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.951Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 18133,
+  "providerTokens": 18133,
+  "estimatedInputTokens": 11523,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 17761,
+    "cacheRead": 0,
+    "output": 372
+  },
+  "overflow": false,
+  "headroom": 20723,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.951Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.951Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.956Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:04.957Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528565123,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e583001JZgl9pxJsdFu65",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e4d7001C39LVLmSbFLwmy",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528565124,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e584001eZ4hRPs2nPpHCs",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e4d7001C39LVLmSbFLwmy",
+    "type": "tool",
+    "callID": "call_80138f63f8d9b2be",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528565124,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e583002fqhsmA7mqcg9aC",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e4d7001C39LVLmSbFLwmy",
+    "type": "text",
+    "text": "我来打开 https://www.voachinese.com/p/6143.html，读取其中的内容。",
+    "time": {
+      "start": 1789528565124,
+      "end": 1789528565124
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528565124,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e584001eZ4hRPs2nPpHCs",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e4d7001C39LVLmSbFLwmy",
+    "type": "tool",
+    "callID": "call_80138f63f8d9b2be",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.voachinese.com/p/6143.html"
+      },
+      "time": {
+        "start": 1789528565124
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.219Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528565219,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e584001eZ4hRPs2nPpHCs",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e4d7001C39LVLmSbFLwmy",
+    "type": "tool",
+    "callID": "call_80138f63f8d9b2be",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.voachinese.com/p/6143.html"
+      },
+      "output": "&#x56FD;&#x9645;&#x65B0;&#x95FB; - &#x7F8E;&#x56FD;&#x4E4B;&#x97F3;&#x4E2D;&#x6587;&#x7F51;\r\n            \r\n            \r\n    \r\n\r\n\r\n    \r\n\r\n\r\n\r\n        \r\n\r\n        \r\n        \r\n            \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n                \r\n                    \r\n    \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n    \r\n    \r\n    \r\n    \r\n\r\n\r\n\r\n        \r\n\r\n            \r\n        \r\n\r\n        \r\n        \r\n            \r\n                &#x65E0;&#x969C;&#x788D;&#x94FE;&#x63A5;\r\n                \r\n                    &#x8DF3;&#x8F6C;&#x5230;&#x5185;&#x5BB9;\r\n                    &#x8DF3;&#x8F6C;&#x5230;&#x5BFC;&#x822A;\r\n                    &#x8DF3;&#x8F6C;&#x5230;&#x68C0;&#x7D22;\r\n                \r\n            \r\n        \r\n    \r\n\r\n\r\n\r\n\r\n\r\n    \r\n            \r\n                \r\n\r\n    Link has been copied to clipboard\r\n\r\n            \r\n\r\n\r\n\r\n    \r\n        \r\n            \r\n                \r\n                    \r\n                    \r\n                \r\n                \r\n                    \r\n                        \r\n                            \r\n                                \r\n\r\n        \r\n            &#x4E3B;&#x9875;\r\n        \r\n\r\n        \r\n            &#x7F8E;&#x56FD;\r\n        \r\n\r\n        \r\n            &#x4E2D;&#x56FD;\r\n        \r\n\r\n        \r\n            &#x53F0;&#x6E7E;\r\n        \r\n\r\n        \r\n            &#x6E2F;&#x6FB3;\r\n        \r\n\r\n        \r\n            \r\n                &#x56FD;&#x9645;\r\n                \r\n            \r\n            \r\n                \r\n    &#x6700;&#x65B0;&#x56FD;&#x9645;&#x65B0;&#x95FB;\r\n\r\n    &#x5370;&#x592A;\r\n\r\n    &#x4E2D;&#x4E1C;\r\n\r\n    &#x6B27;&#x6D32;\r\n\r\n    &#x975E;&#x6D32;\r\n\r\n    &#x7F8E;&#x6D32;\r\n\r\n    &#x5168;&#x7403;&#x8BAE;&#x9898;\r\n\r\n            \r\n        \r\n\r\n        \r\n            \r\n                &#x5206;&#x7C7B;&#x65B0;&#x95FB;\r\n                \r\n            \r\n            \r\n                \r\n    &#x7ECF;&#x6D4E;·&#x91D1;&#x878D;·&#x8D38;&#x6613;\r\n\r\n    &#x4EBA;&#x6743;·&#x6CD5;&#x5F8B;·&#x5B97;&#x6559;\r\n\r\n    &#x79D1;&#x6559;·&#x6587;&#x5A31;·&#x4F53;&#x5065;\r\n\r\n    &#x519B;&#x4E8B;\r\n\r\n    &#x52B3;&#x5DE5;\r\n\r\n    &#x73AF;&#x5883;\r\n\r\n            \r\n        \r\n\r\n        \r\n            &#x7F8E;&#x4E2D;&#x5173;&#x7CFB;\r\n        \r\n\r\n        \r\n            \r\n                &#x70ED;&#x70B9;&#x4E13;&#x9898;\r\n                \r\n            \r\n            \r\n                \r\n    &#x767D;&#x5BAB;&#x8981;&#x95FB;\r\n\r\n    &#x56FD;&#x4F1A;&#x62A5;&#x9053;\r\n\r\n    &#x7F8E;&#x4E2D;&#x5173;&#x7CFB;\r\n\r\n    &#x7F8E;&#x56FD;&#x5EFA;&#x56FD;250&#x5468;&#x5E74;\r\n\r\n    &#x57C3;&#x535A;&#x62C9;&#x75AB;&#x60C5;\r\n\r\n    &#x7F8E;&#x56FD;&#x4E4B;&#x97F3;&#x4E13;&#x8BBF;\r\n\r\n    &#x91CD;&#x8981;&#x8BB2;&#x8BDD;&#x4E0E;&#x58F0;&#x660E;\r\n\r\n    &#x53F0;&#x6D77;&#x4E24;&#x5CB8;&#x5173;&#x7CFB;\r\n\r\n    &#x5357;&#x4E2D;&#x56FD;&#x6D77;&#x4E89;&#x7AEF;\r\n\r\n    &#x5173;&#x6CE8;&#x897F;&#x85CF;\r\n\r\n    &#x5173;&#x6CE8;&#x65B0;&#x7586;\r\n\r\n    Gen Z &#x770B;&#x7F8E;&#x56FD;\r\n\r\n            \r\n        \r\n\r\n        \r\n            VOA&#x89C6;&#x9891;\r\n        \r\n\r\n        \r\n            VOA&#x4ECA;&#x65E5;&#x7126;&#x70B9;\r\n        \r\n\r\n        \r\n            &#x4E2D;&#x6587;&#x5E7F;&#x64AD;\r\n        \r\n\r\n\r\n\r\n                            \r\n                        \r\n                        \r\n\r\n\r\n\r\n\r\n                        \r\n                            \r\n                                    &#x5173;&#x6CE8;&#x6211;&#x4EEC;\r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n            \r\n\r\n                            \r\n                            \r\n                                \r\n                                    \r\n                                    &#x5176;&#x4ED6;&#x8BED;&#x8A00;&#x7F51;&#x7AD9;\r\n                                \r\n                            \r\n                    \r\n                \r\n                \r\n                    \r\n                    \r\n                \r\n                \r\n                    \r\n                        \r\n    &#x68C0;&#x7D22;\r\n    \r\n    \r\n        \r\n    \r\n\r\n                    \r\n                \r\n                \r\n                    \r\n                        \r\n                \r\n            \r\n            \r\n                \r\n\r\n    \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n\r\n    \r\n\r\n\r\n\r\n                \r\n\r\n\r\n    \r\n        \r\n            \r\n                &#x76F4;&#x64AD;\r\n            \r\n        \r\n    \r\n    \r\n        \r\n            \r\n                &#x76F4;&#x64AD;\r\n            \r\n            \r\n        \r\n        \r\n    \r\n\r\n\r\n\r\n                \r\n                    \r\n    &#x68C0;&#x7D22;\r\n    \r\n    \r\n        \r\n    \r\n\r\n                \r\n            \r\n            \r\n            \r\n        \r\n    \r\n\r\n    \r\n    \r\n        \r\n            \r\n                \r\n                &#x4E0A;&#x4E00;&#x9875;\r\n            \r\n            \r\n                \r\n                &#x4E0B;&#x4E00;&#x9875;\r\n            \r\n        \r\n        \r\n            VOA&#x5FEB;&#x8BAF;\r\n            \r\n                \r\n                    \r\n                \r\n                \r\n                    \r\n                \r\n            \r\n        \r\n        \r\n            \r\n        \r\n    \r\n\r\n\r\n\r\n\r\n    \r\n        \r\n            \r\n&#x4E2D;&#x56FD;\r\n&#x7F8E;&#x56FD;\r\n9/11&#x5468;&#x5E74;\r\n&#x7F8E;&#x4E2D;&#x5173;&#x7CFB;\r\n&#x70ED;&#x70B9;&#x89C6;&#x9891;\r\n&#x793E;&#x8BBA;\r\n&#x7F8E;&#x56FD;&#x5EFA;&#x56FD;250&#x5468;&#x5E74;\r\n        \r\n    \r\n    \n        \n            \n                &#x4E2D;&#x56FD;&#x65F6;&#x95F4; 11:15 2026&#x5E74;9&#x6708;16&#x65E5; &#x661F;&#x671F;&#x4E09;\n            \n        \n    \n\r\n        \r\n            \r\n\r\n        \r\n            \r\n                \r\n    \r\n        &#x56FD;&#x9645;&#x65B0;&#x95FB;\r\n    \r\n\r\n            \r\n        \r\n\r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n            \r\n                \r\n                    \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n        \r\n    \r\n\r\n                    \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x8D22;&#x653F;&#x90E8;&#x957F;&#x8D1D;&#x68EE;&#x7279;&#xFF1A;&#x57C3;&#x53CA;&#x94F6;&#x884C;&#x8FEA;&#x62DC;&#x5206;&#x884C;&#x5C06;&#x56E0;&#x53C2;&#x4E0E;&#x4F0A;&#x6717;&#x8D44;&#x91D1;&#x8F6C;&#x79FB;&#x800C;&#x88AB;&#x5173;&#x95ED;&#xA;   &#xA;\r\n        \r\n            &#x7F8E;&#x56FD;&#x8D22;&#x653F;&#x90E8;&#x957F;&#x65AF;&#x79D1;&#x7279;·&#x8D1D;&#x68EE;&#x7279;(Scott Bessent)&#x8BF4;&#xFF0C;&#x57C3;&#x53CA;&#x94F6;&#x884C;(Banque Misr)&#x5728;&#x963F;&#x8054;&#x914B;&#x7684;&#x4E00;&#x5BB6;&#x5206;&#x884C;&#x5C06;&#x5173;&#x95ED;&#xFF0C;&#x8FD9;&#x5BB6;&#x5206;&#x884C;&#x4E4B;&#x524D;&#x53C2;&#x4E0E;&#x4E86;&#x4E0E;&#x4F0A;&#x6717;&#x5F71;&#x5B50;&#x94F6;&#x884C;&#x7F51;&#x7EDC;&#x6709;&#x5173;&#x7684;&#x91D1;&#x878D;&#x4EA4;&#x6613;&#x3002;\r\n                        \r\n                \r\n        \r\n    \r\n\r\n                    \r\n                \r\n            \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n\r\n\r\n    \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x8054;&#x5408;&#x56FD;&#xFF1A;&#x4E5F;&#x95E8;&#x51B2;&#x7A81;&#x5BFC;&#x81F4;12.5&#x4E07;&#x4EBA;&#x6D41;&#x79BB;&#x5931;&#x6240;&#xFF0C;&#x4EBA;&#x6743;&#x7EC4;&#x7EC7;&#x6307;&#x8D23;&#x80E1;&#x585E;&#x6B66;&#x88C5;&#x72AF;&#x6709;&#x6218;&#x4E89;&#x7F6A;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x6B27;&#x6D32;&#x5BFB;&#x6C42;&#x964D;&#x4F4E;&#x5916;&#x56FD;&#x6280;&#x672F;&#x4F9D;&#x8D56; &#x5728;&#x7F8E;&#x4E2D;&#x4E4B;&#x95F4;&#x5BFB;&#x6C42;&#x5E73;&#x8861;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x5728;&#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8868;&#x793A;&#x4FC4;&#x4E4C;&#x540C;&#x610F;&#x505C;&#x6B62;&#x4E92;&#x88AD;&#x80FD;&#x6E90;&#x8BBE;&#x65BD;&#x7B2C;&#x4E8C;&#x5929;&#xFF0C;&#x4E24;&#x56FD;&#x53D1;&#x52A8;&#x4E86;&#x65B0;&#x88AD;&#x51FB;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x7F8E;&#x56FD;&#x5C06;&#x4E00;&#x5BB6;&#x4FC4;&#x7F57;&#x65AF;&#x94F6;&#x884C;&#x5217;&#x5165;&#x5236;&#x88C1;&#x540D;&#x5355;&#xFF0C;&#x6307;&#x63A7;&#x5176;&#x53C2;&#x4E0E;&#x89C4;&#x907F;&#x4F0A;&#x6717;&#x5236;&#x88C1;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            USCC&#x516C;&#x5E03;&#x66F4;&#x65B0;&#x62A5;&#x544A;&#xFF1A;“&#x4E2D;&#x56FD;&#x96F6;&#x90E8;&#x4EF6;&#x662F;&#x4F0A;&#x6717;&#x6218;&#x4E89;&#x673A;&#x5668;&#x7684;&#x539F;&#x6599;”\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x526F;&#x603B;&#x7EDF;&#x4E07;&#x65AF;&#xFF1A;&#x7F8E;&#x56FD;&#x6B63;&#x5C31;“&#x52A8;&#x8361;”&#x7684;&#x4E5F;&#x95E8;&#x5371;&#x673A;&#x4E0E;&#x6C99;&#x7279;&#x963F;&#x62C9;&#x4F2F;&#x3001;&#x963F;&#x8054;&#x914B;&#x548C;&#x80E1;&#x585E;&#x6B66;&#x88C5;&#x8FDB;&#x884C;&#x63A5;&#x89E6;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#xFF1A;&#x4F0A;&#x6717;&#x5E0C;&#x671B;&#x8FBE;&#x6210;&#x534F;&#x8BAE;&#xFF1B;&#x7F8E;&#x65B9;&#x5BF9;&#x8FD9;&#x4E00;&#x6784;&#x60F3;&#x6301;&#x5F00;&#x653E;&#x6001;&#x5EA6;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8BF4;&#xFF0C;&#x4FC4;&#x4E4C;&#x540C;&#x610F;&#x505C;&#x6B62;&#x88AD;&#x51FB;&#x80FD;&#x6E90;&#x76EE;&#x6807;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x5370;&#x5EA6;&#x65A1;&#x65CB;&#x91D1;&#x7816;&#x5CF0;&#x4F1A;&#x50AC;&#x751F;&#x300A;&#x65B0;&#x5FB7;&#x91CC;&#x5BA3;&#x8A00;&#x300B; &#x5370;&#x4E2D;&#x5173;&#x7CFB;&#x56DE;&#x6696;&#x4F46;&#x8FDB;&#x5C55;&#x6709;&#x9650;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x82F1;&#x56FD;&#x524D;&#x9996;&#x76F8;&#x9C8D;&#x91CC;&#x65AF;·&#x7EA6;&#x7FF0;&#x900A;&#x5728;&#x4E4C;&#x514B;&#x5170;&#x706B;&#x8F66;&#x4E0A;&#x9669;&#x906D;&#x4FC4;&#x7F57;&#x65AF;&#x65E0;&#x4EBA;&#x673A;&#x6697;&#x7B97;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8981;&#x6C42;&#x4E4C;&#x514B;&#x5170;&#x505C;&#x6B62;&#x6253;&#x51FB;&#x4FC4;&#x7F57;&#x65AF;&#x67F4;&#x6CB9;&#x8BBE;&#x65BD;&#xFF0C;&#x79F0;&#x88AD;&#x51FB;&#x5BFC;&#x81F4;&#x5168;&#x7403;&#x71C3;&#x6599;&#x77ED;&#x7F3A;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x970D;&#x5C14;&#x6728;&#x5179;&#x6D77;&#x5CE1;&#x4F0A;&#x6717;&#x8D27;&#x8F6E;&#x9047;&#x88AD;&#xFF0C;&#x80E1;&#x585E;&#x6B66;&#x88C5;&#x6269;&#x5927;&#x6218;&#x4E8B;&#xFF0C;&#x52A0;&#x5267;&#x5168;&#x7403;&#x5BF9;&#x77F3;&#x6CB9;&#x65AD;&#x4F9B;&#x7684;&#x5FE7;&#x8651;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x4F0A;&#x62C9;&#x514B;&#x7D27;&#x6025;&#x8C03;&#x67E5;&#x6C99;&#x7279;&#x963F;&#x62C9;&#x4F2F;&#x4E00;&#x6761;&#x5173;&#x952E;&#x8F93;&#x6CB9;&#x7BA1;&#x9053;&#x906D;&#x6E90;&#x81EA;&#x4F0A;&#x62C9;&#x514B;&#x7684;&#x65E0;&#x4EBA;&#x673A;&#x88AD;&#x51FB;&#x4E8B;&#x4EF6;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x91D1;&#x7816;&#x56FD;&#x5BB6;&#x5CF0;&#x4F1A;&#x5BF9;&#x4E2D;&#x4E1C;&#x5C40;&#x52BF;&#x548C;&#x672A;&#x7ECF;&#x8054;&#x5408;&#x56FD;&#x6388;&#x6743;&#x7684;&#x5236;&#x88C1;&#x8868;&#x8FBE;&#x5173;&#x5207;&#xFF0C;&#x83AB;&#x8FEA;&#x5F3A;&#x8C03;&#x4E0D;&#x4F1A;&#x6297;&#x8861;&#x897F;&#x65B9;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n\r\n\r\n    \r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x7279;&#x6717;&#x666E;&#x603B;&#x7EDF;&#x8BF4;&#xFF0C;&#x4ED6;&#x4E50;&#x89C1;&#x7231;&#x5C14;&#x5170;&#x5B9E;&#x73B0;&#x7EDF;&#x4E00;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x65B0;&#x5FB7;&#x91CC;&#x91D1;&#x7816;&#x5CF0;&#x4F1A;&#x770B;&#x4EC0;&#x4E48;&#xFF1F;&#x4E2D;&#x4E1C;&#x51B2;&#x7A81;&#x3001;&#x53BB;&#x7F8E;&#x5143;&#x5316;&#x3001;&#x662F;&#x5426;&#x53CD;&#x7F8E;&#x548C;&#x56DE;&#x6E29;&#x7684;&#x5370;&#x4E2D;&#x5173;&#x7CFB;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x82F1;&#x56FD;&#x60C5;&#x62A5;&#x4E3B;&#x7BA1;&#x8B66;&#x544A;&#x56FD;&#x5BB6;&#x5A01;&#x80C1;&#x4E0A;&#x5347; &#x5BF9;&#x534E;&#x63A5;&#x89E6;&#x5982;&#x4F55;&#x8BBE;&#x9632;&#xFF1F;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x4FC4;&#x7F57;&#x65AF;&#x65E0;&#x4EBA;&#x673A;&#x51FB;&#x4E2D;&#x4E4C;&#x514B;&#x5170;&#x52A0;&#x6CB9;&#x7AD9;&#x548C;&#x6551;&#x62A4;&#x8F66;&#xFF0C;&#x81F4;&#x4E09;&#x4EBA;&#x6B7B;&#x4EA1;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x80E1;&#x585E;&#x6B66;&#x88C5;&#x5728;&#x66FC;&#x5FB7;&#x6D77;&#x5CE1;&#x6CBF;&#x5CB8;&#x653B;&#x57CE;&#x7565;&#x5730;&#x540E;&#xFF0C;&#x7F8E;&#x56FD;&#x52A1;&#x9662;&#x53D1;&#x8A00;&#x4EBA;&#x544A;&#x8BC9;VOA&#xFF1A;&#x7F8E;&#x56FD;&#x6B63;&#x4E0E;&#x5730;&#x533A;&#x76DF;&#x53CB;&#x534F;&#x8C03;&#x4E5F;&#x95E8;&#x548C;&#x7EA2;&#x6D77;&#x5B89;&#x5168;&#x95EE;&#x9898;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x80E1;&#x585E;&#x6B66;&#x88C5;&#x593A;&#x53D6;&#x4E5F;&#x95E8;&#x6574;&#x4E2A;&#x7EA2;&#x6D77;&#x6D77;&#x5CB8;&#x7EBF;&#xFF0C;&#x7F8E;&#x56FD;&#x548C;&#x8054;&#x5408;&#x56FD;&#x6566;&#x4FC3;&#x5176;&#x505C;&#x6B62;&#x8FDB;&#x653B;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x4E5F;&#x95E8;&#x80E1;&#x585E;&#x6B66;&#x88C5;&#x653B;&#x5360;&#x5173;&#x952E;&#x7684;&#x6E2F;&#x53E3;&#x57CE;&#x9547;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n        \r\n                \r\n                        \r\n        \r\n            &#x4FC4;&#x7F57;&#x65AF;&#x7A7A;&#x88AD;&#x9020;&#x6210;&#x4E4C;&#x514B;&#x5170;&#x5E73;&#x6C11;&#x4F24;&#x4EA1;&#xFF0C;&#x6CFD;&#x8FDE;&#x65AF;&#x57FA;&#x5BFB;&#x6C42;&#x52A0;&#x62FF;&#x5927;&#x9632;&#x7A7A;&#x63F4;&#x52A9;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n    \r\n\r\n&#x66F4;&#x591A;&#x62A5;&#x9053;\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n&#x6700;&#x65B0;&#x89C6;&#x9891;\r\n\r\n    \r\n        \r\n\r\n    \r\n        \r\n            \r\n                    \r\n                        \r\n                    \r\n                    \r\n                        \r\n                            \r\n                        \r\n                    \r\n                    \r\n                        \r\n                    \r\n                        \r\n                            \r\n                        \r\n                    \r\n                        \r\n                                \r\n                         \r\n                        \r\n                    \r\n                        \r\n                                \r\n                                            \r\n                                                \r\n                                                &#x5D4C;&#x5165;\r\n                                            \r\n                                            \r\n                                                \r\n                                                &#x5206;&#x4EAB;\r\n                                            \r\n                                    \r\n                                        \r\n                                    \r\n                                \r\n                                \r\n                                        \r\n                                            &#x53F0;&#x6E7E;MQ-9B“&#x6D77;&#x4E0A;&#x536B;&#x58EB;“&#x8BD5;&#x98DE;  &#x5F3A;&#x5316;&#x76D1;&#x63A7;&#x4E2D;&#x56FD;“&#x7070;&#x8272;&#x5730;&#x5E26;”&#x884C;&#x52A8;\r\n                                        \r\n                                \r\n\r\n\r\n                        \r\n                        \r\n                            \r\n                                    \r\n                                        \r\n                                        &#x5D4C;&#x5165;\r\n                                    \r\n                                    \r\n                                        \r\n                                        &#x5206;&#x4EAB;\r\n                                    \r\n                                \r\n                                    \r\n                                \r\n                            \r\n                            \r\n                                \r\n                                    \r\n                                        \r\n                                            \r\n                                                &#x4EE3;&#x7801;&#x5DF2;&#x7ECF;&#x590D;&#x5236;&#x5230;&#x526A;&#x8D34;&#x677F;&#x3002;\r\n                                            \r\n                                            \r\n                                                \r\n                                                \r\n                                            \r\n                                                \r\n                                                \r\n                                                    \r\n                                                        &#x5BBD;&#x5EA6;\r\n                                                        \r\n                                                        px\r\n                                                    \r\n                                                    \r\n                                                        &#x9AD8;&#x5EA6;\r\n                                                        \r\n                                                        px\r\n                                                    \r\n                                                \r\n                                        \r\n                                    \r\n                                \r\n                                \r\n                                    \r\n                                        \r\n                                            \r\n                                                \r\n                \r\n            \r\n                    \r\n        \r\n            \r\n        \r\n                    \r\n                    \r\n        \r\n            \r\n        \r\n                    \r\n\r\n                    \r\n                        \r\n                            \r\n                        \r\n                    \r\n            \r\n                \r\n\r\n\r\n                                            \r\n                                            \r\n                                                \r\n                                                    &#x7F51;&#x5740;&#x5DF2;&#x590D;&#x5236;&#x5230;&#x526A;&#x8D34;&#x677F;\r\n                                                \r\n                                            \r\n                                                \r\n                                                \r\n                                            \r\n                                        \r\n                                    \r\n                                \r\n                            \r\n                        \r\n                    \r\n                        \r\n                            \r\n                                \r\n                            \r\n                        \r\n                        \r\n                            \r\n                        \r\n                    \r\n                    \r\n                        \r\n                            \r\n                                    &#x6CA1;&#x6709;&#x5A92;&#x4F53;&#x53EF;&#x7528;&#x8D44;&#x6E90;\r\n                            \r\n                        \r\n                    \r\n                    \r\n                        \r\n                            \r\n                                \r\n                                    \r\n                                \r\n                                \r\n                                    \r\n                                \r\n                            \r\n                            \r\n                                0:00\r\n                                \r\n                                    0:02:12\r\n                                \r\n                                \r\n                                    \r\n                                        \r\n                                        \r\n                                        \r\n                                        \r\n                                        \r\n                                        \r\n                                            \r\n                                        \r\n                                        \r\n                                            0:00\r\n                                        \r\n                                    \r\n                                \r\n                            \r\n                            \r\n                                \r\n                                    \r\n                                        \r\n                                    \r\n                                    \r\n                                        \r\n                                            \r\n                                            \r\n                                            \r\n                                                \r\n                                                    \r\n                                                \r\n                                            \r\n                                        \r\n                                    \r\n                                \r\n                                \r\n                                    \r\n                                        \r\n                                    \r\n                                    \r\n                                        \r\n                                    \r\n                                    \r\n                                        \r\n                                    \r\n                                \r\n                                    \r\n                                        \r\n                                    \r\n                            \r\n                        \r\n                    \r\n                        \r\n\r\n\r\n        \r\n                \r\n        \r\n&#x53F0;&#x6E7E;MQ-9B“&#x6D77;&#x4E0A;&#x536B;&#x58EB;“&#x8BD5;&#x98DE;  &#x5F3A;&#x5316;&#x76D1;&#x63A7;&#x4E2D;&#x56FD;“&#x7070;&#x8272;&#x5730;&#x5E26;”&#x884C;&#x52A8;        \r\n                \r\n        \r\n    \r\n\r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n\r\n&#x4E9A;&#x592A;&#x65B0;&#x95FB;\r\n\r\n    \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x5370;&#x5EA6;&#x65A1;&#x65CB;&#x91D1;&#x7816;&#x5CF0;&#x4F1A;&#x50AC;&#x751F;&#x300A;&#x65B0;&#x5FB7;&#x91CC;&#x5BA3;&#x8A00;&#x300B; &#x5370;&#x4E2D;&#x5173;&#x7CFB;&#x56DE;&#x6696;&#x4F46;&#x8FDB;&#x5C55;&#x6709;&#x9650;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x91D1;&#x7816;&#x56FD;&#x5BB6;&#x5CF0;&#x4F1A;&#x5BF9;&#x4E2D;&#x4E1C;&#x5C40;&#x52BF;&#x548C;&#x672A;&#x7ECF;&#x8054;&#x5408;&#x56FD;&#x6388;&#x6743;&#x7684;&#x5236;&#x88C1;&#x8868;&#x8FBE;&#x5173;&#x5207;&#xFF0C;&#x83AB;&#x8FEA;&#x5F3A;&#x8C03;&#x4E0D;&#x4F1A;&#x6297;&#x8861;&#x897F;&#x65B9;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n\r\n&#x7F16;&#x8F91;&#x63A8;&#x8350;\r\n\r\n    \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x52B3;&#x5DE5;&#x7EC4;&#x7EC7;&#x5C06;&#x53D1;&#x65B0;&#x62A5;&#x544A;&#xFF0C;&#x62AB;&#x9732;Shein&#x975E;&#x6B63;&#x89C4;&#x5236;&#x8863;&#x4F5C;&#x574A;“&#x6076;&#x52A3;”&#x5DE5;&#x4F5C;&#x72B6;&#x51B5;&#xFF1B;Shein&#x5426;&#x8BA4;&#x76F8;&#x5173;&#x8868;&#x8FF0;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x7F8E;&#x56FD;&#x52A1;&#x9662;&#x8BA4;&#x5B9A;&#x5B66;&#x8005;&#x654F;&#x8F9B;&#x5728;&#x4E2D;&#x56FD;&#x906D;“&#x975E;&#x6CD5;&#x62D8;&#x62BC;”&#xFF0C;“&#x5DF2;&#x5728;&#x6700;&#x9AD8;&#x5C42;&#x7EA7;”&#x4FC3;&#x5317;&#x4EAC;&#x91CA;&#x653E;&#x654F;&#x8F9B;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n&#x4E2D;&#x4E1C;&#x65B0;&#x95FB;\r\n\r\n    \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x8D22;&#x653F;&#x90E8;&#x957F;&#x8D1D;&#x68EE;&#x7279;&#xFF1A;&#x57C3;&#x53CA;&#x94F6;&#x884C;&#x8FEA;&#x62DC;&#x5206;&#x884C;&#x5C06;&#x56E0;&#x53C2;&#x4E0E;&#x4F0A;&#x6717;&#x8D44;&#x91D1;&#x8F6C;&#x79FB;&#x800C;&#x88AB;&#x5173;&#x95ED;&#xA;   &#xA;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n        \r\n            \r\n                \r\n                \r\n            \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n\r\n&#x6B27;&#x6D32;&#x65B0;&#x95FB;\r\n\r\n    \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x6B27;&#x6D32;&#x5BFB;&#x6C42;&#x964D;&#x4F4E;&#x5916;&#x56FD;&#x6280;&#x672F;&#x4F9D;&#x8D56; &#x5728;&#x7F8E;&#x4E2D;&#x4E4B;&#x95F4;&#x5BFB;&#x6C42;&#x5E73;&#x8861;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n        \r\n            \r\n                \r\n                \r\n            \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n\r\n&#x975E;&#x6D32;&#x65B0;&#x95FB;\r\n\r\n    \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x80E1;&#x585E;&#x6B66;&#x88C5;&#x593A;&#x53D6;&#x4E5F;&#x95E8;&#x6574;&#x4E2A;&#x7EA2;&#x6D77;&#x6D77;&#x5CB8;&#x7EBF;&#xFF0C;&#x7F8E;&#x56FD;&#x548C;&#x8054;&#x5408;&#x56FD;&#x6566;&#x4FC3;&#x5176;&#x505C;&#x6B62;&#x8FDB;&#x653B;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n        \r\n            \r\n                \r\n                \r\n            \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n\r\n&#x7F8E;&#x6D32;&#x65B0;&#x95FB;\r\n\r\n    \r\n        \r\n            \r\n                \r\n\r\n    \r\n        \r\n                \r\n                    \r\n                                \r\n                    \r\n                \r\n                \r\n                        \r\n        \r\n            &#x4FC4;&#x7F57;&#x65AF;&#x7A7A;&#x88AD;&#x9020;&#x6210;&#x4E4C;&#x514B;&#x5170;&#x5E73;&#x6C11;&#x4F24;&#x4EA1;&#xFF0C;&#x6CFD;&#x8FDE;&#x65AF;&#x57FA;&#x5BFB;&#x6C42;&#x52A0;&#x62FF;&#x5927;&#x9632;&#x7A7A;&#x63F4;&#x52A9;\r\n        \r\n                        \r\n                \r\n        \r\n    \r\n\r\n                \r\n            \r\n        \r\n        \r\n            \r\n                \r\n                \r\n            \r\n        \r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n        \r\n    \r\n        \r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n        \r\n\r\n    \r\n\r\n    \r\n\r\n    \r\n\r\n\r\n\r\n        \r\n\r\n\r\n\r\n\r\n    \r\n        \r\n                \r\n                    \r\n                        \r\n                                \r\n                                        \r\n                                            &#x5173;&#x6CE8;&#x6211;&#x4EEC;\r\n                                        \r\n                                    \r\n                                        \r\n                                                \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                \r\n            \r\n    \r\n\r\n\r\n                                        \r\n                                    \r\n                                \r\n\r\n    \r\n            \r\n                &#x7F51;&#x4E0A;&#x670D;&#x52A1;\r\n                \r\n                \r\n                \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n    \r\n        &#x8BA2;&#x9605;&#x7535;&#x90AE;&#x65B0;&#x95FB;\r\n    \r\n\r\n    \r\n        &#x7F8E;&#x56FD;&#x4E4B;&#x97F3;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7B80;&#x4ECB;\r\n    \r\n\r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                &#x536B;&#x661F;&#x4FE1;&#x606F;\r\n                \r\n                \r\n                \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n    \r\n        &#x901A;&#x8FC7;&#x536B;&#x661F;&#x6536;&#x770B;VOA&#x536B;&#x89C6;\r\n    \r\n\r\n    \r\n        &#x5982;&#x4F55;&#x6536;&#x542C;VOA&#x77ED;&#x6CE2;&#x5E7F;&#x64AD;\r\n    \r\n\r\n                \r\n            \r\n    \r\n\r\n    \r\n            \r\n                &#x5176;&#x4ED6;&#x4FE1;&#x606F;\r\n                \r\n                \r\n                \r\n                \r\n            \r\n            \r\n                \r\n                    \r\n    \r\n        &#x5173;&#x4E8E;&#x7F8E;&#x56FD;&#x4E4B;&#x97F3;\r\n    \r\n\r\n    \r\n        &#x8054;&#x7CFB;&#x6211;&#x4EEC;\r\n    \r\n\r\n    \r\n        VOA&#x2B;\r\n    \r\n\r\n    \r\n        &#x7F8E;&#x56FD;&#x4E4B;&#x97F3;&#x5BAA;&#x7AE0;\r\n    \r\n\r\n    \r\n        &#x6761;&#x6B3E;&#x53CA;&#x79C1;&#x9690;&#x653F;&#x7B56;\r\n    \r\n\r\n    \r\n        &#x7F8E;&#x56FD;&#x5168;&#x7403;&#x5A92;&#x4F53;&#x603B;&#x7F72;\r\n    \r\n\r\n    \r\n        &#x793E;&#x8BBA;\r\n    \r\n\r\n    \r\n        &#x7F8E;&#x570B;&#x4E4B;&#x97F3;&#x7CB5;&#x8A9E;&#x7DB2;\r\n    \r\n\r\n    \r\n        VOA English\r\n    \r\n\r\n    \r\n        &#xF56;&#xF7C;&#xF51;&#xF0B;&#xF61;&#xF72;&#xF42;\r\n    \r\n\r\n    \r\n        Media Relations\r\n    \r\n\r\n    \r\n        Accessibility\r\n    \r\n\r\n    \r\n        &#x81EA;&#x7531;&#x4E9A;&#x6D32;&#x7F51;&#x7AD9;\r\n    \r\n\r\n                \r\n            \r\n    \r\n                        \r\n                    \r\n                \r\n            \r\n                \r\n                    &#x4E2D;&#x56FD;&#x65F6;&#x95F4;\r\n            \r\n        \r\n    \r\n\r\n\r\n    \r\n\r\n\r\n\r\n            XS\r\n            SM\r\n            MD\r\n            LG",
+      "title": "https://www.voachinese.com/p/6143.html (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528565124,
+        "end": 1789528565218
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.219Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528565219,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e5e3001UHSG6f9W2VMnmp",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e4d7001C39LVLmSbFLwmy",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 43107,
+      "output": 124,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 43231,
+      "headroom": -4375,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.219Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.220Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.222Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.222Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.222Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.222Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.222Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.222Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.234Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 43231,
+  "providerTokens": 43231,
+  "estimatedInputTokens": 20103,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 43107,
+    "cacheRead": 0,
+    "output": 124
+  },
+  "overflow": true,
+  "headroom": -4375,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.235Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.235Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.235Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.236Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.236Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.237Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.237Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.237Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.238Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.630Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528565630,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e77e001F0oE154v9hbr4V",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e5f5001ISDuaGcMgLv7iC",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.631Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.631Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.631Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.631Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528565631,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e77f001HROLQeK4MYbumy",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e5f5001ISDuaGcMgLv7iC",
+    "type": "text",
+    "text": ".  我来上网搜索 现在世界上发生了什么。\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789528565631,
+      "end": 1789528565631
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528565632,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e77f00283ED7KIiSJ6OOr",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e5f5001ISDuaGcMgLv7iC",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 71485,
+      "output": 70,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 71555,
+      "headroom": -32699,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528565632,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e780002cD6xBwH2XVj0DR",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e780001weOjQooBUkHvkk",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528565632,
+      "end": 1789528565632
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.632Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.633Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.633Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.633Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.633Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.634Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.634Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.634Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.634Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.635Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.635Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.693Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528565693,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e7bc001PjnmTZ0BvnPbrG",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e781001SUypMydRNRvjg2",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.693Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.693Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.693Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.693Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528565693,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e7bd002ElU3wF3X2tmvOX",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e781001SUypMydRNRvjg2",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528565693,
+      "end": 1789528565693
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.694Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528565694,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "part": {
+    "id": "prt_0a836e7bd003Y5q6bbHUSrw4Ya",
+    "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+    "messageID": "msg_0a836e781001SUypMydRNRvjg2",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8619,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8692,
+      "headroom": 30164,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.694Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.694Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.694Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.694Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.695Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.695Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.695Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528565695,
+  "sessionID": "ses_f57c929c0ffecz8hO4rFzGO029"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.696Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.696Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Il2g6MJDCf",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.696Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Il2g6MJDCf",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.696Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Il2g6MJDCf",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:05.696Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+

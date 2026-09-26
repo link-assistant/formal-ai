@@ -1,0 +1,90 @@
+{
+  "entities": {
+    "Q282475": {
+      "type": "item",
+      "id": "Q282475",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Kingdom of Kartli-Kakheti"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Картли-Кахетинское царство"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "卡尔特利-卡赫蒂王国"
+        },
+        "es": {
+          "language": "es",
+          "value": "Reino de Kartli-Kajetia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Georgian kingdom"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "грузинское государственное образование, созданное в 1762 году"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "格鲁吉亚的王国"
+        },
+        "es": {
+          "language": "es",
+          "value": "Reino Georgiano"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Kingdom of Kartli and Kakheti"
+          },
+          {
+            "language": "en",
+            "value": "Kartli-Kakheti"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Kingdom of Kartli-Kakheti"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Картли-Кахетинское царство"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "卡爾特利-卡赫蒂王國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Reino de Kartli-Kajetia"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

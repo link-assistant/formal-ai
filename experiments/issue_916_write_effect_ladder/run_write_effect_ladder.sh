@@ -6,7 +6,7 @@
 #   experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh
 #
 # Environment knobs:
-#   BIN       Path to the formal-ai binary (default: target/release/formal-ai)
+#   BIN       Path to the formal-ai binary (default: rust/target/release/formal-ai)
 #   PORT      Server port (default: 8773)
 #   RUNGS     Path to the rung dataset (default: alongside this script)
 #   OUT       Results JSON path (default: <scriptdir>/results.json)
@@ -28,7 +28,7 @@ set -uo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8773}"
 RUNGS="${RUNGS:-$HERE/rungs.json}"
 OUT="${OUT:-$HERE/results.json}"

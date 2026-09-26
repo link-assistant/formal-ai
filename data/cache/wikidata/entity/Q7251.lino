@@ -1,17 +1,41 @@
 Q7251
   aliases
-    en ("Alan M. Turing" "Alan Mathieson Turing" Turing "Alan Mathison Turing")
-    ru ("Тьюринг, Алан" "Тьюринг, Алан Матисон")
-    zh ("圖靈" "艾伦·图灵" "图灵" "阿兰·图灵" "阿兰·麦席森·图灵")
+    en ("Alan Mathieson Turing" Turing "Alan M. Turing" "Alan Mathison Turing")
+    es ("Alan Mathison Turing" "Alan M. Turing")
+    ru ("Тьюринг, Алан Матисон" "Тьюринг, Алан")
+    zh ("阿兰·图灵" "图灵" "圖靈" "阿兰·麦席森·图灵" "艾伦·图灵")
   descriptions
     en "English computer scientist (1912–1954)"
+    es "matemático, filósofo y criptógrafo británico (1912-1954)"
     ru "английский математик, логик, криптограф"
     zh "英國數學家、計算機科學家"
   id Q7251
   labels
     en "Alan Turing"
+    es "Alan Turing"
     hi "एलेन ट्यूरिंग"
     ru "Алан Тьюринг"
     zh "艾倫·圖靈"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Alan Turing"
+    eswiki
+      site eswiki
+      title "Alan Turing"
+    hiwiki
+      site hiwiki
+      title "एलेन ट्यूरिंग"
+    ruwiki
+      site ruwiki
+      title "Тьюринг, Алан"
+    zhwiki
+      site zhwiki
+      title "艾伦·图灵"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

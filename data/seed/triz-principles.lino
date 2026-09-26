@@ -1,0 +1,292 @@
+# `The forty inventive principles and the four separation principles of TRIZ,`
+# `as link data (issue #1138 B12, plan 12 leaf 16; #901).`
+#
+# `#901 asks for contradictions to be links carrying a value on a 0-1 range,`
+# `and for the resolution shapes to be data rather than Rust branches. These`
+# `are those shapes. src/selection_heuristics.rs names no principle: it reads`
+# `an identifier out of this file, which is what makes the catalogue`
+# `forgettable and rediscoverable -- delete it, rediscover it through the`
+# `sources registry's wikipedia source from the article each row names, replay`
+# `offline, and the content hash matches.`
+#
+# `resolves names the criterion pair a principle is classically applied to,`
+# `where one is known; a row with no established pair carries none rather`
+# `than inventing one. The criterion slugs are the ones`
+# `data/seed/meanings-selection-criteria.lino grounds.`
+triz_principles
+  record_type "triz_principle_catalog"
+  schema_version 1
+  source "https://en.wikipedia.org/wiki/TRIZ"
+  license_name "CC BY-SA 4.0"
+  license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+triz_inventive_01
+  record_type "triz_inventive_principle"
+  principle_id "inventive_01_segmentation"
+  ordinal "1"
+  name "Segmentation"
+  resolves "answer_completeness:answer_brevity"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_02
+  record_type "triz_inventive_principle"
+  principle_id "inventive_02_taking_out"
+  ordinal "2"
+  name "Taking out"
+  resolves "answer_completeness:answer_brevity"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_03
+  record_type "triz_inventive_principle"
+  principle_id "inventive_03_local_quality"
+  ordinal "3"
+  name "Local quality"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_04
+  record_type "triz_inventive_principle"
+  principle_id "inventive_04_asymmetry"
+  ordinal "4"
+  name "Asymmetry"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_05
+  record_type "triz_inventive_principle"
+  principle_id "inventive_05_merging"
+  ordinal "5"
+  name "Merging"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_06
+  record_type "triz_inventive_principle"
+  principle_id "inventive_06_universality"
+  ordinal "6"
+  name "Universality"
+  resolves "answer_completeness:resource_economy"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_07
+  record_type "triz_inventive_principle"
+  principle_id "inventive_07_nested_doll"
+  ordinal "7"
+  name "Nested doll"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_08
+  record_type "triz_inventive_principle"
+  principle_id "inventive_08_anti_weight"
+  ordinal "8"
+  name "Anti-weight"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_09
+  record_type "triz_inventive_principle"
+  principle_id "inventive_09_preliminary_anti_action"
+  ordinal "9"
+  name "Preliminary anti-action"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_10
+  record_type "triz_inventive_principle"
+  principle_id "inventive_10_preliminary_action"
+  ordinal "10"
+  name "Preliminary action"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_11
+  record_type "triz_inventive_principle"
+  principle_id "inventive_11_beforehand_cushioning"
+  ordinal "11"
+  name "Beforehand cushioning"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_12
+  record_type "triz_inventive_principle"
+  principle_id "inventive_12_equipotentiality"
+  ordinal "12"
+  name "Equipotentiality"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_13
+  record_type "triz_inventive_principle"
+  principle_id "inventive_13_the_other_way_round"
+  ordinal "13"
+  name "The other way round"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_14
+  record_type "triz_inventive_principle"
+  principle_id "inventive_14_spheroidality"
+  ordinal "14"
+  name "Spheroidality"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_15
+  record_type "triz_inventive_principle"
+  principle_id "inventive_15_dynamics"
+  ordinal "15"
+  name "Dynamics"
+  resolves "answer_brevity:answer_completeness"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_16
+  record_type "triz_inventive_principle"
+  principle_id "inventive_16_partial_or_excessive_action"
+  ordinal "16"
+  name "Partial or excessive action"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_17
+  record_type "triz_inventive_principle"
+  principle_id "inventive_17_another_dimension"
+  ordinal "17"
+  name "Another dimension"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_18
+  record_type "triz_inventive_principle"
+  principle_id "inventive_18_mechanical_vibration"
+  ordinal "18"
+  name "Mechanical vibration"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_19
+  record_type "triz_inventive_principle"
+  principle_id "inventive_19_periodic_action"
+  ordinal "19"
+  name "Periodic action"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_20
+  record_type "triz_inventive_principle"
+  principle_id "inventive_20_continuity_of_useful_action"
+  ordinal "20"
+  name "Continuity of useful action"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_21
+  record_type "triz_inventive_principle"
+  principle_id "inventive_21_skipping"
+  ordinal "21"
+  name "Skipping"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_22
+  record_type "triz_inventive_principle"
+  principle_id "inventive_22_blessing_in_disguise"
+  ordinal "22"
+  name "Blessing in disguise"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_23
+  record_type "triz_inventive_principle"
+  principle_id "inventive_23_feedback"
+  ordinal "23"
+  name "Feedback"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_24
+  record_type "triz_inventive_principle"
+  principle_id "inventive_24_intermediary"
+  ordinal "24"
+  name "Intermediary"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_25
+  record_type "triz_inventive_principle"
+  principle_id "inventive_25_self_service"
+  ordinal "25"
+  name "Self-service"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_26
+  record_type "triz_inventive_principle"
+  principle_id "inventive_26_copying"
+  ordinal "26"
+  name "Copying"
+  resolves "answer_completeness:resource_economy"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_27
+  record_type "triz_inventive_principle"
+  principle_id "inventive_27_cheap_short_living_objects"
+  ordinal "27"
+  name "Cheap short-living objects"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_28
+  record_type "triz_inventive_principle"
+  principle_id "inventive_28_mechanics_substitution"
+  ordinal "28"
+  name "Mechanics substitution"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_29
+  record_type "triz_inventive_principle"
+  principle_id "inventive_29_pneumatics_and_hydraulics"
+  ordinal "29"
+  name "Pneumatics and hydraulics"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_30
+  record_type "triz_inventive_principle"
+  principle_id "inventive_30_flexible_shells_and_thin_films"
+  ordinal "30"
+  name "Flexible shells and thin films"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_31
+  record_type "triz_inventive_principle"
+  principle_id "inventive_31_porous_materials"
+  ordinal "31"
+  name "Porous materials"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_32
+  record_type "triz_inventive_principle"
+  principle_id "inventive_32_colour_changes"
+  ordinal "32"
+  name "Colour changes"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_33
+  record_type "triz_inventive_principle"
+  principle_id "inventive_33_homogeneity"
+  ordinal "33"
+  name "Homogeneity"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_34
+  record_type "triz_inventive_principle"
+  principle_id "inventive_34_discarding_and_recovering"
+  ordinal "34"
+  name "Discarding and recovering"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_35
+  record_type "triz_inventive_principle"
+  principle_id "inventive_35_parameter_changes"
+  ordinal "35"
+  name "Parameter changes"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_36
+  record_type "triz_inventive_principle"
+  principle_id "inventive_36_phase_transitions"
+  ordinal "36"
+  name "Phase transitions"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_37
+  record_type "triz_inventive_principle"
+  principle_id "inventive_37_thermal_expansion"
+  ordinal "37"
+  name "Thermal expansion"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_38
+  record_type "triz_inventive_principle"
+  principle_id "inventive_38_strong_oxidants"
+  ordinal "38"
+  name "Strong oxidants"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_39
+  record_type "triz_inventive_principle"
+  principle_id "inventive_39_inert_atmosphere"
+  ordinal "39"
+  name "Inert atmosphere"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_inventive_40
+  record_type "triz_inventive_principle"
+  principle_id "inventive_40_composite_materials"
+  ordinal "40"
+  name "Composite materials"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_separation_in_time
+  record_type "triz_separation_principle"
+  principle_id "separation_in_time"
+  axis "in_time"
+  name "Separation in time"
+  resolves "answer_brevity:answer_completeness"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_separation_in_space
+  record_type "triz_separation_principle"
+  principle_id "separation_in_space"
+  axis "in_space"
+  name "Separation in space"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_separation_on_condition
+  record_type "triz_separation_principle"
+  principle_id "separation_on_condition"
+  axis "on_condition"
+  name "Separation on condition"
+  resolves "answer_brevity:answer_completeness"
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_separation_between_part_and_whole
+  record_type "triz_separation_principle"
+  principle_id "separation_between_part_and_whole"
+  axis "between_part_and_whole"
+  name "Separation between the part and the whole"
+  source "https://en.wikipedia.org/wiki/TRIZ"

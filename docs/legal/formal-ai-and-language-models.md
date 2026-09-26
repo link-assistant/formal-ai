@@ -50,9 +50,9 @@ themselves establish the same implementation architecture.
 
 ## Verification map
 
-- `src/solver.rs` implements the universal symbolic solver loop.
-- `src/engine.rs` identifies the deterministic, no-neural-inference engine.
-- `src/link_store.rs` provides the native associative store.
+- `rust/src/solver.rs` implements the universal symbolic solver loop.
+- `rust/src/engine.rs` identifies the deterministic, no-neural-inference engine.
+- `rust/src/link_store.rs` provides the native associative store.
 - `data/seed/` contains reviewable Links Notation knowledge and behavior.
 - `data/training/source-registry.json` records that there are no approved
   parameter-updating sources.

@@ -1,0 +1,340 @@
+//! Upstream record -> executable benchmark case (issue #698).
+//!
+//! Each suite keeps its own field names, so this module normalises them into a
+//! single `BenchmarkCase` the runner can drive through the solver. Prompts are
+//! the upstream task text; nothing is rewritten to make a case easier.
+
+use super::manifest::{Grading, SuiteManifest};
+use super::vocabulary;
+use crate::repository_workspace::clone::WorkspaceSpec;
+use crate::repository_workspace::verify::RunCommand;
+
+/// What a produced answer is checked against.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Expectation {
+    /// Run `test_code`, then call `check(entry_point)` on the produced code.
+    PythonUnitTest {
+        test_code: String,
+        entry_point: String,
+    },
+    /// Run `setup` and each assertion against the produced code.
+    PythonAsserts { setup: String, asserts: Vec<String> },
+    /// The gold answer as an upstream string (number, boxed expression, text).
+    Value { expected: String },
+    /// The official SWE-bench harness owns the expected tests and repository
+    /// state for this instance; retain the pinned upstream record so the
+    /// harness never reloads a mutable dataset name.
+    SweBench { record: String },
+}
+
+/// One upstream case, ready to run.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BenchmarkCase {
+    pub id: String,
+    pub prompt: String,
+    pub expectation: Expectation,
+    /// The tree this case is defined against, when its suite supplies one
+    /// (issue #1138, plan 03 L10). Every non-repository suite leaves it `None`.
+    pub repository: Option<WorkspaceSpec>,
+    /// The named tests that must pass, when the suite supplies them.
+    pub tests: Option<RunCommand>,
+}
+
+/// Turn `slice` upstream records into executable cases, preserving upstream
+/// order so a rerun scores the same case set.
+pub fn parse_cases(
+    manifest: &SuiteManifest,
+    records: &[String],
+    slice: usize,
+) -> Result<Vec<BenchmarkCase>, String> {
+    let mut cases = Vec::new();
+    for (index, record) in records.iter().enumerate() {
+        if cases.len() == slice {
+            break;
+        }
+        let value: serde_json::Value = serde_json::from_str(record).map_err(|error| {
+            format!("{}: record {index} is not valid JSON: {error}", manifest.id)
+        })?;
+        cases.push(parse_case(manifest, &value, index)?);
+    }
+    Ok(cases)
+}
+
+fn parse_case(
+    manifest: &SuiteManifest,
+    value: &serde_json::Value,
+    index: usize,
+) -> Result<BenchmarkCase, String> {
+    match manifest.id {
+        "humaneval" => {
+            let task_id = string_field(value, "task_id", manifest, index)?;
+            let prompt = string_field(value, "prompt", manifest, index)?;
+            Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
+                id: task_id,
+                prompt: format!(
+                    "Complete this Python function. Reply with the full implementation in a ```python code block.\n\n{prompt}"
+                ),
+                expectation: Expectation::PythonUnitTest {
+                    test_code: string_field(value, "test", manifest, index)?,
+                    entry_point: string_field(value, "entry_point", manifest, index)?,
+                },
+            })
+        }
+        "mbpp" => {
+            let task_id = number_field(value, "task_id", manifest, index)?;
+            let text = string_field(value, "text", manifest, index)?;
+            let asserts = string_array_field(value, "test_list", manifest, index)?;
+            Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
+                id: format!("MBPP/{task_id}"),
+                prompt: format!(
+                    "{text}\nReply with the Python code in a ```python code block. It must pass these tests:\n{}",
+                    asserts.join("\n"),
+                ),
+                expectation: Expectation::PythonAsserts {
+                    setup: value
+                        .get("test_setup_code")
+                        .and_then(serde_json::Value::as_str)
+                        .unwrap_or_default()
+                        .to_string(),
+                    asserts,
+                },
+            })
+        }
+        "gsm8k" => {
+            let question = string_field(value, "question", manifest, index)?;
+            let answer = string_field(value, "answer", manifest, index)?;
+            let expected = answer
+                .rsplit("####")
+                .next()
+                .unwrap_or_default()
+                .trim()
+                .replace(',', "");
+            Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
+                id: format!("GSM8K/{index}"),
+                prompt: question,
+                expectation: Expectation::Value { expected },
+            })
+        }
+        "math" => {
+            let problem = string_field(value, "problem", manifest, index)?;
+            let unique_id = value
+                .get("unique_id")
+                .and_then(serde_json::Value::as_str)
+                .map_or_else(|| format!("MATH/{index}"), ToString::to_string);
+            Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
+                id: unique_id,
+                prompt: problem,
+                expectation: Expectation::Value {
+                    expected: string_field(value, "answer", manifest, index)?,
+                },
+            })
+        }
+        "object_counting" => Ok(BenchmarkCase {
+            repository: None,
+            tests: None,
+            id: format!("object_counting/{index}"),
+            prompt: string_field(value, "input", manifest, index)?,
+            expectation: Expectation::Value {
+                expected: target_field(value, manifest, index)?,
+            },
+        }),
+        "coedit" => {
+            let id = value
+                .get("_id")
+                .map_or_else(|| index.to_string(), ToString::to_string)
+                .trim_matches('"')
+                .to_string();
+            Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
+                id: format!("CoEdIT/{id}"),
+                prompt: string_field(value, "src", manifest, index)?,
+                expectation: Expectation::Value {
+                    expected: string_field(value, "tgt", manifest, index)?,
+                },
+            })
+        }
+        "egg_math" | "ascent_transitive_closure" => Ok(BenchmarkCase {
+            repository: None,
+            tests: None,
+            id: string_field(value, "id", manifest, index)?,
+            prompt: string_field(value, "prompt", manifest, index)?,
+            expectation: Expectation::Value {
+                expected: string_field(value, "expected", manifest, index)?,
+            },
+        }),
+        "swebench_lite" => {
+            let instance = string_field(value, "instance_id", manifest, index)?;
+            let statement = string_field(value, "problem_statement", manifest, index)?;
+            let repository = string_field(value, "repo", manifest, index)?;
+            let base_commit = string_field(value, "base_commit", manifest, index)?;
+            let mut names = encoded_string_array_field(value, "FAIL_TO_PASS", manifest, index)?;
+            names.extend(encoded_string_array_field(
+                value,
+                "PASS_TO_PASS",
+                manifest,
+                index,
+            )?);
+            let tests = names
+                .iter()
+                .map(|name| format!("\"{}\"", name.replace('"', "\\\"")))
+                .collect::<Vec<_>>()
+                .join(" ");
+            let line =
+                vocabulary::render("external_benchmark_pytest_command", &[("tests", &tests)]);
+            Ok(BenchmarkCase {
+                repository: Some(WorkspaceSpec {
+                    origin: repository,
+                    base_commit,
+                    sparse_paths: Vec::new(),
+                }),
+                tests: Some(RunCommand { line, names }),
+                id: instance,
+                prompt: statement,
+                expectation: Expectation::SweBench {
+                    record: value.to_string(),
+                },
+            })
+        }
+        other => Err(format!("no case parser for suite `{other}`")),
+    }
+}
+
+/// SWE-bench serializes its test-name arrays as JSON strings. Accept a native
+/// array too, because mirrors commonly normalize the same upstream field while
+/// preserving its semantics.
+fn encoded_string_array_field(
+    value: &serde_json::Value,
+    field: &str,
+    manifest: &SuiteManifest,
+    index: usize,
+) -> Result<Vec<String>, String> {
+    let index = index.to_string();
+    let field_value = value.get(field).ok_or_else(|| {
+        vocabulary::render(
+            "external_benchmark_test_field_missing",
+            &[("suite", manifest.id), ("index", &index), ("field", field)],
+        )
+    })?;
+    let entries = if let Some(encoded) = field_value.as_str() {
+        serde_json::from_str::<Vec<String>>(encoded).map_err(|error| {
+            vocabulary::render(
+                "external_benchmark_test_field_invalid_json",
+                &[
+                    ("suite", manifest.id),
+                    ("index", &index),
+                    ("field", field),
+                    ("error", &error.to_string()),
+                ],
+            )
+        })?
+    } else {
+        field_value
+            .as_array()
+            .map(|items| {
+                items
+                    .iter()
+                    .filter_map(|item| item.as_str().map(ToOwned::to_owned))
+                    .collect::<Vec<_>>()
+            })
+            .ok_or_else(|| {
+                vocabulary::render(
+                    "external_benchmark_test_field_not_array",
+                    &[("suite", manifest.id), ("index", &index), ("field", field)],
+                )
+            })?
+    };
+    Ok(entries)
+}
+
+fn string_field(
+    value: &serde_json::Value,
+    field: &str,
+    manifest: &SuiteManifest,
+    index: usize,
+) -> Result<String, String> {
+    value
+        .get(field)
+        .and_then(serde_json::Value::as_str)
+        .map(ToString::to_string)
+        .ok_or_else(|| {
+            format!(
+                "{}: record {index} is missing the string field `{field}`",
+                manifest.id
+            )
+        })
+}
+
+fn number_field(
+    value: &serde_json::Value,
+    field: &str,
+    manifest: &SuiteManifest,
+    index: usize,
+) -> Result<i64, String> {
+    value
+        .get(field)
+        .and_then(serde_json::Value::as_i64)
+        .ok_or_else(|| {
+            format!(
+                "{}: record {index} is missing the numeric field `{field}`",
+                manifest.id
+            )
+        })
+}
+
+fn string_array_field(
+    value: &serde_json::Value,
+    field: &str,
+    manifest: &SuiteManifest,
+    index: usize,
+) -> Result<Vec<String>, String> {
+    value
+        .get(field)
+        .and_then(serde_json::Value::as_array)
+        .map(|entries| {
+            entries
+                .iter()
+                .filter_map(|entry| entry.as_str().map(ToString::to_string))
+                .collect::<Vec<_>>()
+        })
+        .filter(|entries| !entries.is_empty())
+        .ok_or_else(|| {
+            format!(
+                "{}: record {index} is missing the string array `{field}`",
+                manifest.id
+            )
+        })
+}
+
+/// BIG-bench targets are either a string or a single-entry list of strings.
+fn target_field(
+    value: &serde_json::Value,
+    manifest: &SuiteManifest,
+    index: usize,
+) -> Result<String, String> {
+    if let Some(target) = value.get("target").and_then(serde_json::Value::as_str) {
+        return Ok(target.to_string());
+    }
+    value
+        .get("target")
+        .and_then(serde_json::Value::as_array)
+        .and_then(|entries| entries.first())
+        .and_then(serde_json::Value::as_str)
+        .map(ToString::to_string)
+        .ok_or_else(|| format!("{}: record {index} is missing a `target`", manifest.id))
+}
+
+/// The grading mode a suite's expectation implies, used by the runner to pick
+/// a checker and by the ledger to record how a score was produced.
+#[must_use]
+pub const fn grading_for(manifest: &SuiteManifest) -> Grading {
+    manifest.grading
+}

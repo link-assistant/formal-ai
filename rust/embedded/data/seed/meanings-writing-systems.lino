@@ -1,0 +1,161 @@
+meanings
+  writing-system
+    defined-by writing-system
+    denotation relation
+    connotation concept
+    role script_classifier
+    precondition "a written surface is available"
+    effect "classifies the symbol system used by the surface"
+    unit "not applicable"
+    example "a language surface is associated with its writing system"
+    lexeme en
+      surface
+        text writing system
+    lexeme ru
+      surface
+        text система письма
+      surface
+        text письменность
+    lexeme hi
+      surface
+        text लेखन प्रणाली
+      surface
+        text लिपि
+    lexeme zh
+      surface
+        text 书写系统
+      surface
+        text 文字
+    lexeme es
+      surface
+        text sistema de escritura
+      surface
+        text escritura
+  latin
+    defined-by writing-system
+    denotation relation
+    connotation concept
+    role writing_system
+    precondition "a surface uses Latin-script characters"
+    effect "classifies the surface as Latin script"
+    unit "not applicable"
+    example "English and Spanish commonly use Latin script"
+    lexeme en
+      surface
+        text latin
+    lexeme ru
+      surface
+        text латиница
+      surface
+        text латинский алфавит
+    lexeme hi
+      surface
+        text लैटिन लिपि
+      surface
+        text रोमन लिपि
+    lexeme zh
+      surface
+        text 拉丁字母
+      surface
+        text 罗马字母
+    lexeme es
+      surface
+        text alfabeto latino
+      surface
+        text escritura latina
+  cyrillic
+    defined-by writing-system
+    denotation relation
+    connotation concept
+    role writing_system
+    precondition "a surface uses Cyrillic-script characters"
+    effect "classifies the surface as Cyrillic script"
+    unit "not applicable"
+    example "Russian commonly uses Cyrillic script"
+    lexeme en
+      surface
+        text cyrillic
+    lexeme ru
+      surface
+        text кириллица
+      surface
+        text кириллический алфавит
+    lexeme hi
+      surface
+        text सिरिलिक लिपि
+      surface
+        text सिरिलिक वर्णमाला
+    lexeme zh
+      surface
+        text 西里尔字母
+      surface
+        text 斯拉夫字母
+    lexeme es
+      surface
+        text alfabeto cirílico
+      surface
+        text escritura cirílica
+  devanagari
+    defined-by writing-system
+    denotation relation
+    connotation concept
+    role writing_system
+    precondition "a surface uses Devanagari characters"
+    effect "classifies the surface as Devanagari script"
+    unit "not applicable"
+    example "Hindi commonly uses Devanagari script"
+    lexeme en
+      surface
+        text devanagari
+    lexeme ru
+      surface
+        text деванагари
+      surface
+        text письмо деванагари
+    lexeme hi
+      surface
+        text देवनागरी लिपि
+      surface
+        text नागरी
+    lexeme zh
+      surface
+        text 天城文
+      surface
+        text 天城体
+    lexeme es
+      surface
+        text escritura devanagari
+      surface
+        text devanagari
+  han
+    defined-by writing-system
+    denotation relation
+    connotation concept
+    role writing_system
+    precondition "a surface uses Han characters"
+    effect "classifies the surface as Han script"
+    unit "not applicable"
+    example "Chinese commonly uses Han characters"
+    lexeme en
+      surface
+        text han
+    lexeme ru
+      surface
+        text китайское письмо
+      surface
+        text иероглифы
+    lexeme hi
+      surface
+        text चीनी लिपि
+      surface
+        text हान अक्षर
+    lexeme zh
+      surface
+        text 汉字
+      surface
+        text 漢字
+    lexeme es
+      surface
+        text caracteres han
+      surface
+        text caracteres chinos

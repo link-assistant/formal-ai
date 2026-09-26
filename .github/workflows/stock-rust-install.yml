@@ -36,7 +36,7 @@ jobs:
       - name: Reject a system OpenSSL dependency
         run: |
           set -eu
-          cargo tree --locked --prefix none --format '{p}' > /tmp/formal-ai-dependency-tree.txt
+          cargo tree --manifest-path rust/Cargo.toml --locked --prefix none --format '{p}' > /tmp/formal-ai-dependency-tree.txt
           if grep -Eq '^openssl-sys v' /tmp/formal-ai-dependency-tree.txt; then
             echo "openssl-sys unexpectedly remains in the default dependency graph" >&2
             exit 1
@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "$CARGO_INSTALL_ROOT/bin" >> "$GITHUB_PATH"
           export PATH="$CARGO_INSTALL_ROOT/bin:$PATH"
-          cargo install --path . --locked
+          cargo install --path rust --locked
       - name: Verify the installed binary has no OpenSSL runtime link
         run: |
           ldd "$(command -v formal-ai)" | tee /tmp/formal-ai-ldd.txt

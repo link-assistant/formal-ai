@@ -25,7 +25,7 @@ The current implementation covers the surface area requested in issue #1:
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
-**[VISION.md](VISION.md) is the standing guideline: read it before analysing, planning or concluding anything in this repository. Where any other document contradicts it, that document is wrong and must be fixed.** It is kept up to date from the architect's own notes, which are recorded in chronological order in [docs/architect-notes/](docs/architect-notes/). Project direction is tracked alongside it in [GOALS.md](GOALS.md) and [NON-GOALS.md](NON-GOALS.md). The design theses behind its linked transformation model are separated from mathematical and implementation claims in [docs/philosophy.md](docs/philosophy.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+**[VISION.md](VISION.md) is the standing guideline: read it before analysing, planning or concluding anything in this repository. Where any other document contradicts it, that document is wrong and must be fixed.** The mechanically checkable part of that rule is enforced: `scripts/check-issue-citations.rs` (run as the `docs_issue_citations` test) fails a document that cites a closed issue as open, and `rust/tests/unit/docs_benchmarks.rs` fails a benchmark claim that diverges from the committed ledger. It is kept up to date from the architect's own notes, which are recorded in chronological order in [docs/architect-notes/](docs/architect-notes/). Project direction is tracked alongside it in [GOALS.md](GOALS.md) and [NON-GOALS.md](NON-GOALS.md). The design theses behind its linked transformation model are separated from mathematical and implementation claims in [docs/philosophy.md](docs/philosophy.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). Per-delivery traceability rows — which pull request delivered each requirement, which test pins it, and whether it is manually confirmed — live in [docs/requirements-traceability.md](docs/requirements-traceability.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
 
 Legal and provenance guidance starts with [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md). Focused guides explain the [Formal AI/language-model boundary](docs/legal/formal-ai-and-language-models.md), [public-domain dedication of AI-assisted output](docs/legal/public-domain-output.md), [candidate datasets](docs/legal/compatible-datasets.md), and [candidate locally transformable or distillable model families](docs/legal/distillable-models.md). Those dated matrices are source-review queues, not approvals; the machine-readable training registry remains authoritative.
 
@@ -82,10 +82,10 @@ sufficient draft, and compose the drafts back into one solution**:
 ![Universal Problem Solving Algorithm: a problem fans out into tasks, each task into tests, each test into candidate drafts, and the selected drafts compose back into a single solution](docs/assets/universal-problem-solving-algorithm.jpg)
 
 This is not a separate subsystem bolted onto a catalogue of intents — it is the
-main solver path. `src/solver.rs::UniversalSolver` runs the same 11-step loop
+main solver path. `rust/src/solver.rs::UniversalSolver` runs the same 11-step loop
 for every impulse:
 
-| Diagram stage | Loop steps in `src/solver.rs` |
+| Diagram stage | Loop steps in `rust/src/solver.rs` |
 | --- | --- |
 | `Problem` | 1. Impulse, 2. Formalization (Links-Notation intent), 3. Context, 4. History lookup |
 | `decomposition → tasks` | 5. Decomposition into sub-impulses (`record_decomposition`) |
@@ -95,11 +95,12 @@ for every impulse:
 
 Every step appends its own event to the append-only log, so the chat can answer
 "why did you do that?" from the recorded experience. The full algorithm,
-including the reasoning-under-unknowns path (`src/solver_unknown_reasoning.rs`)
-and intent formalization (`src/intent_formalization.rs`), is documented in
+including the reasoning-under-unknowns path (`rust/src/solver_unknown_reasoning.rs`)
+and intent formalization (`rust/src/intent_formalization.rs`), is documented in
 [VISION.md](VISION.md#universal-problem-solving-algorithm) and
 [ARCHITECTURE.md](ARCHITECTURE.md). How much of the vision is built versus still
-planned — including the open industry-benchmark coverage gap — is tracked in
+planned — including the benchmark floors still open (GSM8K, MATH, BIG-bench
+object counting, CoEdIT, and SWE-bench Lite) — is tracked in
 [ROADMAP.md](ROADMAP.md). Every benchmark suite the repository has ever touched
 is catalogued in [docs/benchmarks.md](docs/benchmarks.md), and the grounded
 meta-algorithm that reproduces a topic's Rust handler on demand is described in
@@ -108,19 +109,19 @@ meta-algorithm that reproduces a topic's Rust handler on demand is described in
 ## Quick Start
 
 ```bash
-cargo run -- chat --prompt "Hi"
-cargo run -- chat --prompt "Write me hello world program in Rust" --format chat
-cargo run -- chat --prompt "What is 8% of $50?"
-cargo run -- chat --prompt "Посчитай 1000 рублей в долларах"
-cargo run -- dataset
+cargo run --manifest-path rust/Cargo.toml -- chat --prompt "Hi"
+cargo run --manifest-path rust/Cargo.toml -- chat --prompt "Write me hello world program in Rust" --format chat
+cargo run --manifest-path rust/Cargo.toml -- chat --prompt "What is 8% of $50?"
+cargo run --manifest-path rust/Cargo.toml -- chat --prompt "Посчитай 1000 рублей в долларах"
+cargo run --manifest-path rust/Cargo.toml -- dataset
 rust-script scripts/mine-hive-mind-dataset.rs --plan
-cargo run -- serve --host 127.0.0.1 --port 8080
+cargo run --manifest-path rust/Cargo.toml -- serve --host 127.0.0.1 --port 8080
 npm install --prefix desktop
 npm run desktop:dev
 npm run vscode:test                                                    # VS Code extension node tests
 npm run vscode:dev                                                     # run the extension in a web host (vscode-test-web)
-TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram                       # long polling (default)
-cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080      # webhook server (opt-in)
+TELEGRAM_BOT_TOKEN=123:abc cargo run --manifest-path rust/Cargo.toml -- telegram                       # long polling (default)
+cargo run --manifest-path rust/Cargo.toml -- telegram --mode webhook --host 127.0.0.1 --port 8080      # webhook server (opt-in)
 rust-script scripts/download-datasets.rs
 experiments/verify-hello-world-examples.sh
 ```
@@ -157,7 +158,7 @@ To require bearer authentication on `/api/*` and `/v1/*` routes, set
 bearer token or protocol API-key header:
 
 ```bash
-FORMAL_AI_API_BEARER_TOKEN=local-test-token cargo run -- serve --host 127.0.0.1 --port 8080
+FORMAL_AI_API_BEARER_TOKEN=local-test-token cargo run --manifest-path rust/Cargo.toml -- serve --host 127.0.0.1 --port 8080
 curl -s http://127.0.0.1:8080/api/openai/v1/models \
   -H 'authorization: Bearer local-test-token'
 ```
@@ -217,7 +218,7 @@ curl -s http://127.0.0.1:8080/v1/messages \
 The native CLI also has a visible thinking mode:
 
 ```bash
-cargo run -- chat --thinking --prompt "Hi"
+cargo run --manifest-path rust/Cargo.toml -- chat --thinking --prompt "Hi"
 ```
 
 ## Agentic AI Tools
@@ -227,7 +228,7 @@ loopback in these examples and exposes the same symbolic engine through
 protocol-specific API namespaces:
 
 ```bash
-cargo run -- serve --host 127.0.0.1 --port 8080
+cargo run --manifest-path rust/Cargo.toml -- serve --host 127.0.0.1 --port 8080
 curl -s http://127.0.0.1:8080/health
 curl -s http://127.0.0.1:8080/api/openai/v1/models
 curl -s http://127.0.0.1:8080/api/gemini/v1beta/models
@@ -788,15 +789,15 @@ docker run --rm --privileged formal-ai bash -lc \
   '$ --isolated docker --auto-remove-docker-container -- echo formal-ai-dind-ok'
 ```
 
-The static demo lives in `src/web/index.html`. Serve it from a local web server or GitHub Pages so the WebAssembly worker can be fetched by the browser. The demo starts with a user greeting, renders markdown in messages, previews markdown input, and includes a randomized dialog mode for hello-world prompts across several programming languages. Rust/WASM owns parity-sensitive worker primitives such as prompt normalization, language detection, arithmetic evaluation, stable ids, intent-route matching, unknown-answer variation, and web-search fusion; JavaScript remains responsible for UI state, seed fetching, browser fetch/CORS orchestration, and no-WASM fallbacks. Browser JavaScript dependencies are prebundled with Bun into `src/web/vendor.bundle.js`; run `bun install` once and `bun run build:web` after changing web dependencies. The companion connectivity diagnostics page lives in `src/web/tests/index.html` and is deployed at `/formal-ai/tests/`; it checks direct browser fetches, public knowledge APIs, iframe embeddability, and a configurable local `web-capture` proxy.
+The static demo lives in `js/index.html`. Serve it from a local web server or GitHub Pages so the WebAssembly worker can be fetched by the browser. The demo starts with a user greeting, renders markdown in messages, previews markdown input, and includes a randomized dialog mode for hello-world prompts across several programming languages. Rust/WASM owns parity-sensitive worker primitives such as prompt normalization, language detection, arithmetic evaluation, stable ids, intent-route matching, unknown-answer variation, and web-search fusion; JavaScript remains responsible for UI state, seed fetching, browser fetch/CORS orchestration, and no-WASM fallbacks. Browser JavaScript dependencies are prebundled with Bun into `js/vendor.bundle.js`; run `bun install` once and `bun run build:web` after changing web dependencies. The companion connectivity diagnostics page lives in `js/tests/index.html` and is deployed at `/formal-ai/tests/`; it checks direct browser fetches, public knowledge APIs, iframe embeddability, and a configurable local `web-capture` proxy.
 
 ### Desktop app
 
-The desktop app lives in [`desktop/`](desktop/) and follows the same boundary as the browser and HTTP server. Electron starts a loopback `formal-ai serve` process, serves `src/web/` from a local static server, and loads the existing chat UI with a preload bridge that reports the API, links-network, memory, and permission status.
+The desktop app lives in [`desktop/`](desktop/) and follows the same boundary as the browser and HTTP server. Electron starts a loopback `formal-ai serve` process, serves `js/` from a local static server, and loads the existing chat UI with a preload bridge that reports the API, links-network, memory, and permission status.
 
 ```bash
 npm install --prefix desktop
-cargo build
+cargo build --manifest-path rust/Cargo.toml
 npm run desktop:dev
 npm run desktop:smoke
 ```
@@ -812,7 +813,7 @@ server, desktop shell, dreaming worker, and VS Code desktop host. Set
 Packaging starts from the same shell:
 
 ```bash
-cargo build --release
+cargo build --manifest-path rust/Cargo.toml --release
 npm --prefix desktop run build
 ```
 
@@ -851,8 +852,8 @@ model — is in
 
 The VS Code extension lives in [`vscode/`](vscode/) and embeds the same web chat in a Webview around the same HTTP/web boundary as the browser, the HTTP server, and the desktop shell. It ships **two hosts from one manifest** so the same extension runs on the desktop and in the browser:
 
-- **Desktop / remote (Node) host** — [`src/extension.node.cjs`](vscode/src/extension.node.cjs) reports `shell: "VS Code"`. With the opt-in `formal-ai.server.enabled` setting it starts a loopback `formal-ai serve` process and routes prompt sends through `POST /v1/chat/completions`, just like the desktop shell; it can also drive Docker code execution (`formal-ai.docker.image`). It reuses the desktop tool-router and memory-sync helpers.
-- **Web (Web Worker) host** — [`src/extension.web.cjs`](vscode/src/extension.web.cjs) reports `shell: "VS Code Web"` and runs on `vscode.dev` / `github.dev`. The Web Worker host cannot spawn a process, open a socket, or touch `child_process`/`fs`, so it stays on the in-process WebAssembly symbolic engine — no local server, no Docker — while exposing the same chat, network, memory, and permission surfaces.
+- **Desktop / remote (Node) host** — [`rust/src/extension.node.cjs`](vscode/src/extension.node.cjs) reports `shell: "VS Code"`. With the opt-in `formal-ai.server.enabled` setting it starts a loopback `formal-ai serve` process and routes prompt sends through `POST /v1/chat/completions`, just like the desktop shell; it can also drive Docker code execution (`formal-ai.docker.image`). It reuses the desktop tool-router and memory-sync helpers.
+- **Web (Web Worker) host** — [`rust/src/extension.web.cjs`](vscode/src/extension.web.cjs) reports `shell: "VS Code Web"` and runs on `vscode.dev` / `github.dev`. The Web Worker host cannot spawn a process, open a socket, or touch `child_process`/`fs`, so it stays on the in-process WebAssembly symbolic engine — no local server, no Docker — while exposing the same chat, network, memory, and permission surfaces.
 
 ```bash
 npm run vscode:test     # node:test unit suite + static smoke check (no install needed)
@@ -864,7 +865,7 @@ npm run vscode:package  # produce a .vsix (runs prepare-resources first)
 
 The web app labels both hosts **"VS Code"** in the status line and sidebar, and only routes to the local server when it is genuinely ready (`apiReady && apiBase`); otherwise it falls back to the in-process engine and reads `VS Code - in-process`. The same **Export memory** / **Import memory** controls read and write the full `formal_ai_bundle`; agent mode is off by default and tool calls are permission-gated until the user opts in. Settings (`formal-ai.server.*`, `formal-ai.docker.image`, `formal-ai.tools.allowByDefault`, `formal-ai.agent.defaultOn`) map directly onto that status shape.
 
-Packaging mirrors the desktop flow: `prepare-resources` copies `src/web/` into `vscode/dist-web/` (with the seed mirror at `vscode/dist-web/seed/`) and the desktop `lib/` helpers into `vscode/src/lib/vendor/`; both generated trees are git-ignored. See [docs/vscode/extension.md](docs/vscode/extension.md) for the full architecture, the Webview sandbox reconciliation (CSP nonce, same-origin Worker bootstrap, seed rebasing), and the honest list of what is and isn't verifiable inside the test sandbox.
+Packaging mirrors the desktop flow: `prepare-resources` copies `js/` into `vscode/dist-web/` (with the seed mirror at `vscode/dist-web/seed/`) and the desktop `lib/` helpers into `vscode/src/lib/vendor/`; both generated trees are git-ignored. See [docs/vscode/extension.md](docs/vscode/extension.md) for the full architecture, the Webview sandbox reconciliation (CSP nonce, same-origin Worker bootstrap, seed rebasing), and the honest list of what is and isn't verifiable inside the test sandbox.
 
 ### Full-memory export and import
 
@@ -879,20 +880,20 @@ export back to deterministic `.lino`, and can still be handled by compiling
 with `--no-default-features` when a pure `MemoryStore` projection is needed.
 
 ```bash
-cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
-cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
-cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
-cargo run -- memory show --path memory.lino                              # print every recorded event
-cargo run -- memory query --path memory.lino --prompt "Find Rust in another conversation"
-cargo run -- memory query --path memory.lino --prompt "SELECT id, content FROM memory WHERE kind = 'fact' LIMIT 10"
-cargo run -- memory query --path memory.lino --prompt 'query { memory(first: 10) { id content } }'
-cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
-cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
-cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
-cargo run -- memory purge-deleted --path memory.lino --backup before-purge.lino --confirm
-cargo run -- memory reset --path memory.lino --backup before-reset.lino --confirm
-cargo run -- bundle export --path bundle.lino --memory memory.lino
-cargo run -- bundle import --path bundle.lino --into memory.lino
+cargo run --manifest-path rust/Cargo.toml -- memory export --from memory.lino --path full.lino           # default: full bundle
+cargo run --manifest-path rust/Cargo.toml -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
+cargo run --manifest-path rust/Cargo.toml -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run --manifest-path rust/Cargo.toml -- memory show --path memory.lino                              # print every recorded event
+cargo run --manifest-path rust/Cargo.toml -- memory query --path memory.lino --prompt "Find Rust in another conversation"
+cargo run --manifest-path rust/Cargo.toml -- memory query --path memory.lino --prompt "SELECT id, content FROM memory WHERE kind = 'fact' LIMIT 10"
+cargo run --manifest-path rust/Cargo.toml -- memory query --path memory.lino --prompt 'query { memory(first: 10) { id content } }'
+cargo run --manifest-path rust/Cargo.toml -- memory dream --path memory.lino                             # plan low-priority cleanup
+cargo run --manifest-path rust/Cargo.toml -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
+cargo run --manifest-path rust/Cargo.toml -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
+cargo run --manifest-path rust/Cargo.toml -- memory purge-deleted --path memory.lino --backup before-purge.lino --confirm
+cargo run --manifest-path rust/Cargo.toml -- memory reset --path memory.lino --backup before-reset.lino --confirm
+cargo run --manifest-path rust/Cargo.toml -- bundle export --path bundle.lino --memory memory.lino
+cargo run --manifest-path rust/Cargo.toml -- bundle import --path bundle.lino --into memory.lino
 ```
 
 Exact SQL and GraphQL memory requests share one typed plan, permission model,
@@ -962,8 +963,8 @@ The `formal-ai telegram` subcommand defaults to long polling and keeps the webho
 
 ```bash
 export TELEGRAM_BOT_TOKEN=123:abc
-cargo run -- telegram                                                   # polling by default
-cargo run -- telegram --mode polling \
+cargo run --manifest-path rust/Cargo.toml -- telegram                                                   # polling by default
+cargo run --manifest-path rust/Cargo.toml -- telegram --mode polling \
   --timeout 30 --limit 100 \
   --allowed-updates message,edited_message
 ```
@@ -980,9 +981,9 @@ current Link Foundation Start CLI documents the flag as `--isolated docker`.
 ### Webhook (opt-in)
 
 ```bash
-cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080
+cargo run --manifest-path rust/Cargo.toml -- telegram --mode webhook --host 127.0.0.1 --port 8080
 # or equivalently for backwards compatibility:
-cargo run -- serve --host 127.0.0.1 --port 8080
+cargo run --manifest-path rust/Cargo.toml -- serve --host 127.0.0.1 --port 8080
 
 # Docker override for webhook mode:
 docker run --rm --privileged -p 8080:8080 \
@@ -1021,6 +1022,26 @@ assert_eq!(
 );
 ```
 
+## Measured Today
+
+Curated industry-suite slice: **13/13**, gated by a rising `minimum_pass_count` ratchet; the upstream suites the same solver runs score HumanEval 14/164 on the full slice (`--online`) and MBPP 49/500 cold-offline, with the 2026-09-15 first-20 rows (HumanEval 20/20, MBPP 20/20) kept as regression controls. Every number below is the latest committed row of [`data/benchmarks/external-results.lino`](data/benchmarks/external-results.lino) (latest run of 2026-09-18, solver `0.350.0`), rendered per suite in [docs/status.md](docs/status.md) and explained per slice in [docs/benchmarks.md](docs/benchmarks.md).
+
+| Suite | Slice | Passed / total |
+| --- | ---: | ---: |
+| HumanEval (`--online`, full slice) | 164 | 14 / 164 |
+| MBPP (cold-offline, full slice) | 500 | 49 / 500 |
+| HumanEval (first-20 control) | 20 | 20 / 20 |
+| MBPP (first-20 control, `--online`) | 20 | 20 / 20 |
+| GSM8K | 20 | 2 / 20 |
+| MATH | 20 | 0 / 20 |
+| BIG-bench object counting | 20 | 0 / 20 |
+| CoEdIT | 20 | 0 / 20 |
+| egg rewrite laws | 20 | 20 / 20 |
+| Ascent closure assertions | 5 | 5 / 5 |
+| SWE-bench Lite | 1 | 0 / 1 |
+
+A first-20 score is not a suite score and is never cited without its slice.
+
 ## Self-Development Share
 
 How much of each release the formal-ai model authored is recorded in
@@ -1035,6 +1056,11 @@ are outside both the numerator and the denominator. Earlier versions credited
 trailer-bearing commits produced by hosted models and counted case studies as
 authored work; their rows stay in the ledger as recorded, and the history is
 restated under version 3 beside them. A figure of 0.00% is an honest figure.
+The rendered current figure and its trend are generated from the ledger — never
+typed by hand — into [docs/status.md](docs/status.md) ("Latest self-hosting
+release") and into the status region at the end of this file; today they read
+`v0.350.0` at 171 basis points on the release basis and 389 basis points
+trailing, against a 267-basis-point target.
 
 ## Formal AI as a GitHub Action
 
@@ -1068,7 +1094,7 @@ Seed rules currently cover:
 - URL requests such as `Navigate to github.com`, `fetch example.com`, and `Сделай запрос к google.com`; navigation prompts check CORS-readable frame-policy metadata and render an iframe only when `X-Frame-Options` and CSP `frame-ancestors` do not block embedding, while explicit fetch prompts attempt a browser `fetch()` first and use the same frame-policy check before any embedded fallback
 - web-search, information-search, and implicit research prompts such as `Search the web for Nikola Tesla`, `Найди яблоко в интернете`, `Найди информацию о Rust программировании`, `Rust programming के बारे में जानकारी खोजो`, `查找关于 Rust 编程的信息`, and `What is the most popular dataset for translation quality validation?`; the browser demo queries DuckDuckGo, Internet Archive, Wikipedia, Wikidata, and Wiktionary, then returns reciprocal-rank-fused links
 - merged definition prompts such as `Merge Wikipedia definitions of IIR`, which combine localized definition blocks for the same seed/Wikidata concept, deduplicate repeated facts, and cite every source language; use `--definition-fusion auto`, `FORMAL_AI_DEFINITION_FUSION=auto`, or the browser Settings control to make plain prompts like `What is IIR?` use the same fusion path
-- generic project lookups for GitHub/GitLab/Bitbucket repository URLs plus default-on promotion for matching `link-assistant`, `link-foundation`, and `linksplatform` projects such as `What is Hive Mind?`, `Что такое Hive Mind?`, and `What is link-cli?`; promoted answers are generated from `data/seed/projects.lino` through the deterministic `formalize → summarize → deformalize` pipeline in `src/summarization/` (core stages in `mod.rs`, with `markdown.rs`, `dialog.rs`, `file.rs`, `resource.rs`, `dedup.rs`, and further stage modules), which also drives README ingestion, repository-file summaries with recursive Markdown embedded-grammar formalization, recursive repository-resource summaries that generalize from files to whole folders (`resource.rs`, via the decompose → summarize → compose meta-algorithm loop bounded by the summarization mode ladder), multi-turn dialog summaries, and chat-title generation (see [ARCHITECTURE.md § 7.1](ARCHITECTURE.md#71-project-lookups-and-summarization)); summarization quality is itself measured rather than asserted — `formal-ai summarization criteria | validate | ratchet` samples Git-tracked files with a fixed seed, runs each through the production summarizer, scores it against ten published criteria, and enforces an 80% floor against the committed `data/summarization/quality-baseline.lino` (issue [#893](https://github.com/link-assistant/formal-ai/issues/893); see [docs/case-studies/issue-893/](docs/case-studies/issue-893/README.md))
+- generic project lookups for GitHub/GitLab/Bitbucket repository URLs plus default-on promotion for matching `link-assistant`, `link-foundation`, and `linksplatform` projects such as `What is Hive Mind?`, `Что такое Hive Mind?`, and `What is link-cli?`; promoted answers are generated from `data/seed/projects.lino` through the deterministic `formalize → summarize → deformalize` pipeline in `rust/src/summarization/` (core stages in `mod.rs`, with `markdown.rs`, `dialog.rs`, `file.rs`, `resource.rs`, `dedup.rs`, and further stage modules), which also drives README ingestion, repository-file summaries with recursive Markdown embedded-grammar formalization, recursive repository-resource summaries that generalize from files to whole folders (`resource.rs`, via the decompose → summarize → compose meta-algorithm loop bounded by the summarization mode ladder), multi-turn dialog summaries, and chat-title generation (see [ARCHITECTURE.md § 7.1](ARCHITECTURE.md#71-project-lookups-and-summarization)); summarization quality is itself measured rather than asserted — `formal-ai summarization criteria | validate | ratchet` samples Git-tracked files with a fixed seed, runs each through the production summarizer, scores it against ten published criteria, and enforces an 80% floor against the committed `data/summarization/quality-baseline.lino` (issue [#893](https://github.com/link-assistant/formal-ai/issues/893); see [docs/case-studies/issue-893/](docs/case-studies/issue-893/README.md))
 - behavior-rule inspection and dialog-local rule updates through `List behavior rules` (grouped by topic, each rendered as a `When X then Y` statement), `Show behavior rule unknown`, and the multilingual `When ... then ...` / `When ... do ...` / `When I say ... answer ...` grammar
 - unknown prompts, which return a larger learnable-rule fallback with exact commands for inspecting rules, teaching the current dialog, exporting memory, or reporting a missing built-in rule
 
@@ -1122,7 +1148,7 @@ review actions. It never returns a universal legal verdict.
 
 ```bash
 formal-ai file-legality ./candidate.jpg \
-  --config examples/file-legality/evidence.json \
+  --config rust/examples/file-legality/evidence.json \
   --pretty
 ```
 
@@ -1131,16 +1157,16 @@ registered through the Rust API and fail independently. Confirmed child-safety
 matches are accepted only as authorized-provider receipts: they suppress local
 hash/metadata derivatives, skip ordinary detectors, and require provider
 escalation. See the [issue #835 case study](docs/case-studies/issue-835/) and
-the [synthetic sidecar example](examples/file-legality/).
+the [synthetic sidecar example](rust/examples/file-legality/).
 
 ## Development
 
 ```bash
-cargo fmt --all -- --check
-cargo clippy --lib --bins --tests --all-features
-cargo check --examples --all-features
-cargo test --lib --bins --tests --all-features --verbose
-cargo test --doc --verbose
+cargo fmt --manifest-path rust/Cargo.toml --all -- --check
+cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features
+cargo check --manifest-path rust/Cargo.toml --examples --all-features
+cargo test --manifest-path rust/Cargo.toml --lib --bins --tests --all-features --verbose
+cargo test --manifest-path rust/Cargo.toml --doc --verbose
 rust-script scripts/check-file-size.rs
 ```
 
@@ -1167,3 +1193,7 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as
 ```
 
 See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
+
+<!-- status:begin self-hosting -->
+Latest ledger row: `v0.351.0`; release share `14` basis points, trailing share `43` basis points, target `389` basis points.
+<!-- status:end self-hosting -->

@@ -1,0 +1,13 @@
+frontier_720_news	ru	последние новости
+frontier_721_non_understanding	zh	我不明白
+frontier_722_compose	ru	Привет, напиши мне эссе по квантовой механике
+frontier_724_demonstrate	ru	Скажи что то на Китайском
+frontier_869_schedule	ru	Назначь мне встречу с Александром на 20:00 по Грузии
+frontier_1063_measurement	ru	Какого размера средний корень яблони?
+frontier_447_ui_complaint	ru	интерфейс ужасен.
+spanish_routing_web_fetch	es	Lee https://example.com y dime qué dice.
+spanish_routing_read_file	es	Muéstrame el contenido de 1.txt
+spanish_routing_write_file	es	Escribe hola en 1.txt
+spanish_routing_list_dir	es	Lista los archivos de este directorio
+spanish_routing_web_search	es	Busca en la web qué es la notación de enlaces
+spanish_routing_grep	es	Busca en el código RouteIntent

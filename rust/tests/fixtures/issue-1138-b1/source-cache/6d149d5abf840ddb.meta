@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=lipogram&site=stackoverflow&filter=withbody
+fetched_at=1789533800
+sha256=4de49a90feb74ce9508ac2fd46462d083d9f54e7ff18e17e66031beaf61351b9

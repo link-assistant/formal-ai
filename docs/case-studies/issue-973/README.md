@@ -47,7 +47,7 @@ record, and only the raw dump makes it readable.
 started without `--attach-logs`, so when the rendered reason turned out to be
 useless there was no second source. Nothing in the repository required the flag,
 and the one runnable entry point we publish
-(`examples/self-coding/run.sh --live`) passed `--verbose` but not
+(`rust/examples/self-coding/run.sh --live`) passed `--verbose` but not
 `--attach-logs`.
 
 **RC5 — a rendered reason is a lossy projection.** Even with RC1 fixed, the
@@ -70,8 +70,8 @@ Full upstream case study (timeline, RC1–RC6, raw evidence):
 - Hive Mind already supports both flags; nothing needed building upstream. The
   gap was entirely in *how this repository asks for runs*.
 - The repository's existing convention for holding a process rule to a test is
-  the docs-guard test family (`tests/issue_885_docs.rs`,
-  `tests/unit/ci-cd/issue_846.rs`): read the repository's own text and assert the
+  the docs-guard test family (`rust/tests/issue_885_docs.rs`,
+  `rust/tests/unit/ci-cd/issue_846.rs`): read the repository's own text and assert the
   contract. This case study's fix follows that pattern rather than inventing a
   new mechanism.
 - `scripts/detect-code-changes.rs` already treats `experiments/`, `dev/log/`, and
@@ -80,7 +80,7 @@ Full upstream case study (timeline, RC1–RC6, raw evidence):
 
 ## The fix
 
-1. **`examples/self-coding/run.sh`** — the `--live` entry point now runs
+1. **`rust/examples/self-coding/run.sh`** — the `--live` entry point now runs
    `solve "$2" --tool agent --model formal-ai --attach-logs --verbose`. It
    previously passed `--verbose` alone, which is exactly the configuration that
    produced the unrecoverable failure.
@@ -88,13 +88,13 @@ Full upstream case study (timeline, RC1–RC6, raw evidence):
    with `--attach-logs --verbose`", records the canonical command, why each flag
    is load-bearing and non-substitutable, and why this is a precondition of the
    learning loop rather than a style preference.
-3. **`tests/issue_973_solve_flags.rs`** — the policy is enforced, not just
+3. **`rust/tests/issue_973_solve_flags.rs`** — the policy is enforced, not just
    written down:
    - `the_live_self_coding_entry_point_attaches_logs_and_runs_verbose` pins the
      runnable entry point;
    - `every_published_solve_invocation_carries_both_evidence_flags` scans the
-     guides and scripts the repository publishes (`docs/`, `examples/`,
-     `scripts/`, `.github/`, `src/`, and the root guides), joins shell/markdown
+     guides and scripts the repository publishes (`docs/`, `rust/examples/`,
+     `scripts/`, `.github/`, `rust/src/`, and the root guides), joins shell/markdown
      line continuations so a wrapped command is judged whole, ignores prose such
      as "we do not solve a task by hand", and fails on any invocation missing
      either flag;
@@ -111,7 +111,7 @@ Full upstream case study (timeline, RC1–RC6, raw evidence):
 cargo test --test issue_973_solve_flags
 ```
 
-Reverting either flag in `examples/self-coding/run.sh` or in the CONTRIBUTING
+Reverting either flag in `rust/examples/self-coding/run.sh` or in the CONTRIBUTING
 command turns `every_published_solve_invocation_carries_both_evidence_flags`
 red, naming the file, line, and missing flag.
 

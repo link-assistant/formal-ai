@@ -1,0 +1,117 @@
+multilingual_responses
+  response response_translate_needs_from_to_en
+    intent translate_needs_from_to
+    language en
+    text "translate needs --from and --to (or --list to see every direction)"
+  response response_translate_unknown_from_en
+    intent translate_unknown_from
+    language en
+    text "unknown --from '{from}': expected one of rust, js, ts, or meta"
+  response response_translate_unknown_to_en
+    intent translate_unknown_to
+    language en
+    text "unknown --to '{to}': expected one of rust, js, ts, or meta"
+  response response_translate_same_roots_en
+    intent translate_same_roots
+    language en
+    text "{from} → {to} is not a direction: the roots are the same"
+  response response_translate_pending_en
+    intent translate_pending
+    language en
+    text "translate {from} → {to} is pending: plan 16 {leaf} owes it"
+  response response_translate_pending_docs_en
+    intent translate_pending_docs
+    language en
+    text "translate {from} → {to} is pending: plan 16 {leaf} owes it (docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md)"
+  response response_translate_needs_input_en
+    intent translate_needs_input
+    language en
+    text "translate {from} → {to} reads a source file: pass --input PATH"
+  response response_translate_leg_live_en
+    intent translate_leg_live
+    language en
+    text "{from} → {to}  live"
+  response response_translate_leg_pending_en
+    intent translate_leg_pending
+    language en
+    text "{from} → {to}  pending (plan 16 {leaf})"
+  response response_translate_refused_en
+    intent translate_refused
+    language en
+    text "translate {from} → {to} refused {constructs}: the projection seed does not carry them, so nothing was written"
+  response response_translate_wrote_file_en
+    intent translate_wrote_file
+    language en
+    text "wrote {target} from {source} ({carried} tokens carried)"
+  response response_translate_wrote_en
+    intent translate_wrote
+    language en
+    text "translated {files} files ({tokens} tokens carried); wrote the {to} tree"
+  response response_translate_write_wrong_root_en
+    intent translate_write_wrong_root
+    language en
+    text "{path}: --write maps js/ ↔ ts/ sibling roots; the input must live under the source root"
+  response response_translate_write_unsupported_en
+    intent translate_write_unsupported
+    language en
+    text "writing {from} → {to} is not a tree write this rung maps; only js ↔ ts"
+  response response_translate_write_refused_en
+    intent translate_write_refused
+    language en
+    text "nothing was written; refused: {items}"
+  response response_translate_source_missing_en
+    intent translate_source_missing
+    language en
+    text "{path}: no source file to translate at that path"
+  response response_translate_source_invalid_en
+    intent translate_source_invalid
+    language en
+    text "{path} cannot be normalized into the pivot: {reason}"
+  response response_translate_write_empty_en
+    intent translate_write_empty
+    language en
+    text "the {root} root holds no source files this leg owns, so nothing was written"
+  response response_translate_write_refused_item_en
+    intent translate_write_refused_item
+    language en
+    text "{source}: {constructs}"
+  response response_translate_tool_schema_en
+    intent translate_tool_schema
+    language en
+    text "Translate a source file (or, with no path, the whole tree) between the js and ts roots through the meta pivot; refusals are named, never guessed. Arguments: from js or ts, to js or ts, path string, write boolean."
+  response response_projection_refusal_uncovered_kind_en
+    intent projection_refusal_uncovered_kind
+    language en
+    text "no {target} template and no refusal row"
+  response response_projection_refusal_walk_depth_en
+    intent projection_refusal_walk_depth
+    language en
+    text "projection walk exceeded depth {depth}"
+  response response_projection_refusal_dangling_capture_en
+    intent projection_refusal_dangling_capture
+    language en
+    text "capture bound a link the network does not hold: {link}"
+  response response_projection_refusal_missing_template_en
+    intent projection_refusal_missing_template
+    language en
+    text "rule {rule} matched without a {target} template"
+  response response_projection_refusal_unruled_kind_en
+    intent projection_refusal_unruled_kind
+    language en
+    text "no projection rule and no refusal row for {target}"
+  response response_projection_refusal_no_target_form_en
+    intent projection_refusal_no_target_form
+    language en
+    text "no {target} form for this construct; it is refused rather than guessed"
+  response response_projection_refusal_unknown_placeholder_en
+    intent projection_refusal_unknown_placeholder
+    language en
+    text "template references `{placeholder}`, which is not a placeholder form this walk expands"
+  response response_projection_refusal_variadic_mode_en
+    intent projection_refusal_variadic_mode
+    language en
+    text "variadic mode `{mode}` is not one of text, source"
+  response response_projection_refusal_placeholder_mode_en
+    intent projection_refusal_placeholder_mode
+    language en
+    text "placeholder mode `{mode}` is not one of text, source, term"

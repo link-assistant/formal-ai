@@ -1,0 +1,4 @@
+ci_gate check_condition_source_parity
+  stage rust
+  description "Since plan 09 leaf 40 the projected link store is the only condition backend: every handler rule and promotion condition is evaluated through it over the committed parity probes, and the backend must read the store it is handed rather than the boot projection or the parsed seed tables."
+  run "cargo test --manifest-path rust/Cargo.toml --test unit --all-features issue_1138_store_read_path"

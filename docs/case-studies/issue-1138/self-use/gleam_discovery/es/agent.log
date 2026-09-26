@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.907Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.908Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.3QAwEAxE4Q",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.908Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.3QAwEAxE4Q",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.908Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.3QAwEAxE4Q",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.919Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.919Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.920Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.921Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.921Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.924Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.925Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.3QAwEAxE4Q/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.927Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 8945,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.928Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.943Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 28,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:31:37.948Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.953Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.953Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.954Z",
+  "service": "session",
+  "id": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.3QAwEAxE4Q",
+  "title": "New session - 2026-09-16T03:31:37.954Z",
+  "time": {
+    "created": 1789529497954,
+    "updated": 1789529497954
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.954Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.954Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.954Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.955Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.955Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57bade9dffeojYvWiQ06BB9gE/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.955Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57bade9dffeojYvWiQ06BB9gE/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.958Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57bade9dffeojYvWiQ06BB9gE/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.959Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.962Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.963Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.963Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.963Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.963Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.963Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.963Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.963Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.964Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.964Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.136Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.140Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.141Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.160Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.175Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.175Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.175Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.175Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.726Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529498726,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8452463001wm2aRHN0oj6KFk",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a845221b001udSvhOOWqKI7QA",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.726Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529498727,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8452466002hGjf4G9buHPcJQ",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a845221b001udSvhOOWqKI7QA",
+    "type": "tool",
+    "callID": "call_94cd7f8bd80a3bdb",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529498727,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a845246600181JY3NiRSmQxG6",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a845221b001udSvhOOWqKI7QA",
+    "type": "text",
+    "text": "Let me search the web for La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del p….",
+    "time": {
+      "start": 1789529498727,
+      "end": 1789529498727
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:38.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529498727,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8452466002hGjf4G9buHPcJQ",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a845221b001udSvhOOWqKI7QA",
+    "type": "tool",
+    "callID": "call_94cd7f8bd80a3bdb",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto"
+      },
+      "time": {
+        "start": 1789529498727
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.187Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529501188,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8452466002hGjf4G9buHPcJQ",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a845221b001udSvhOOWqKI7QA",
+    "type": "tool",
+    "callID": "call_94cd7f8bd80a3bdb",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto"
+      },
+      "output": "Title: Docs ejecutables de C++: Instalar C++ | Coddy\nURL: https://coddy.tech/docs/es/cpp/install-cpp\nPublished: 2026-06-05T00:00:00.000Z\nAuthor: N/A\nHighlights:\ninstalas una\n...\ncosa esencial: un compilador de\n...\nEl compilador lee tus archivos `.cpp`, aplica la biblioteca estándar de C++ y\n...\nun ejecutable\n...\ntu CPU ejecuta directamente.\n...\n- GCC: la GNU Compiler Collection. Su front\n...\nen Linux.\n- Cl\n...\nLLVM. Su front end de C++ es `clang++`. Es el predeterminado en macOS.\n- MSVC: el compilador de Microsoft (`cl.exe`), que viene con Visual Studio. La opción nativa en Windows.\n...\nLa vía más sencilla\n...\nla cadena de herramientas GCC gratuita MinGW-w64 mediante el instalador de MSYS2. Tras instalar MSYS2, abre su terminal y ejecuta:\n...\nEso te proporciona `g++`. Luego añade `C:\\msys64\\ucrt64\\bin` a tu PATH para que `g++` funcione desde cualquier terminal. Otra opción es instalar Visual Studio (la edición Community gratuita) con la carga de trabajo \"Desarrollo para el escritorio con C++\" para\n...\nel compilador MSVC y un IDE de una sola vez\n...\nEn Fedora/\n...\nEste es el paso que la gente se salta y luego pierde una hora por ello. Abre una nueva terminal (para que recoja el PATH actualizado) y pídele al compilador su versión:\n...\n```cpp\ng++ --version\n...\nEn macOS el equivalente es `clang++ --version`, y en Windows con MSVC es `cl` (ejecutado desde el \"Developer Command Prompt\"). Si obtienes command not found, el compilador no está instalado o no está en tu PATH; vuelve al paso de instalación de tu plataforma y reabre la terminal.\n...\nEn cuanto `g++ --version` muestre un número, tu máquina puede compilar C++. El mismo programa exacto que compilarás en local también se ejecuta aquí mismo en el navegador, así que puedes verificar la salida antes incluso de tocar una terminal:\n...\nLo que más complica las instalaciones nuevas es el PATH: la lista de carpetas donde tu shell busca programas. Si `g++ --version` funciona desde cualquier directorio, tu PATH incluye la carpeta del compilador y todo está listo. Si solo funciona desde el directorio de instalación, o no funciona en absoluto, la carpeta `bin` del compilador aún no está en tu PATH.\n...\n- En Windows, este es el tropiezo más habitual: tras instalar MinGW-w64, debes añadir manualmente su carpeta `bin` al PATH y abrir una terminal nueva.\n- En macOS y Linux, los gestores de paquetes y las herramientas de Xcode colocan el compilador en el PATH por ti, así que esto rara vez surge.\n...\nSi más adelante una herramienta de compilación o un editor no encuentran tu compilador aunque `g++ --version` funcione en una terminal, casi siempre la causa es un PATH que la app gráfica no heredó; reiniciar la app (o tu máquina) suele solucionarlo.\n...\nYa tienes un compilador funcional y lo has verificado desde la línea de comandos. La próxima página convierte eso en un flujo de trabajo real: escribir un archivo `.cpp`, compilarlo con `g++` (incluidas las opciones `-std` y `-o` que controlan el estándar y el nombre de salida) y ejecutar el ejecutable que produce, además de qué hace en realidad cada paso por debajo.\n...\nNo. C++ necesita un compilador; el IDE es opcional. El compilador (`g++`, `clang++` o el `cl` de MSVC) es lo que convierte tu código fuente en un programa ejecutable; un editor como VS Code o un IDE como Visual Studio solo hacen el flujo de trabajo más cómodo. Instala primero el compilador y añade un editor cuando quieras.\n...\nUsa la cadena de herramientas estándar de tu sistema operativo: GCC (`g++`) en Linux, Clang (`clang++`) en macOS mediante las herramientas de Xcode, y MSVC o MinGW-w64 en Windows. Las tres son gratuitas y admiten C++ moderno (C++17/C++20). Elige una, añádela a tu PATH y podrás compilar todos los ejemplos de este curso.\n...\nAbre una terminal y ejecuta `g++ --version` (o `clang++ --version`). Si ves un número de versión, hay un compilador en tu PATH listo para usar. Si obtienes command not found, el compilador falta o no está en tu PATH; instala la cadena de herramientas para tu plataforma siguiendo las indicaciones de abajo.\n\n---\n\nTitle: Guía completa para instalar el lenguaje de programación C/C++ en Debian 13. | javiercachon.com\nURL: https://javiercachon.com/guia-completa-para-instalar-el-lenguaje-de-programacion-c-c-en-debian-13/\nPublished: 2026-02-14T14:01:12.000Z\nAuthor: Javier Cachón Garrido\nHighlights:\nDebian proporciona el\n...\n```\n$ sudo apt install build-essential\n\n```\n...\nEste paquete instala:\n...\n- gcc (compilador C)\n- g++ (compilador C++)\n- make\n- libc6-dev\n- herramientas fundamentales\n...\nTras esto ya podemos compilar:\n...\n```\n$ gcc archivo.c -o programa\n$ g++ archivo.cpp -o programa\n\n```\n...\n### 6.3 Verificar instalación\n...\n```\n$ gcc --version\ngcc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\n...\n$ g++ --version\ng++ (Debian 14.2.0-19) 14.2.0\n...\n```\nsudo apt install gcc g++ cmake ninja-build binutils pkg-config\n\n---\n\nTitle: Guía Completa: Instalar y Usar GCC en Linux | Librería la Tijera\nURL: https://librerialatijera.com.ar/configurar-libreria-gcc-en-linux/\nPublished: 2025-10-25T00:00:00.000Z\nAuthor: N/A\nHighlights:\nC++, pero\n...\ny por eso no\n...\nAntes de proceder con la instalación, es fundamental verificar si GCC ya está presente en tu sistema. Muchas distribuciones de Linux, especialmente las más recientes, incluyen GCC preinstalado o como parte de los paquetes básicos de desarrollo. Para comprobarlo, abre tu terminal y ejecuta el siguiente comando:\n...\n```\ngcc --version\n...\n, por el contrario, recibes un\n...\nindicando que el comando no se encuentra (`command not found`) o similar, significa que GCC no\n...\ninstalado y deberás proceder con su instalación.\n...\nEn Ubuntu y otras distribuciones basadas en Debian, GCC se incluye dentro del paquete `build-essential`. Este meta-paquete contiene el compilador GNU C, el compilador C++, y otras funciones y herramientas de biblioteca esenciales para la construcción de software. Para instalarlo, abre una terminal y ejecuta el siguiente comando. Se requerirán privilegios de superusuario (root):\n...\nEste comando instalará el compilador GCC. Si también necesitas el compilador C++ (g++), puedes instalarlo con `sudo pacman -S gcc make` o revisar si `gcc` ya lo incluye por defecto. En sistemas basados en Arch como Manjaro, también puedes utilizar la interfaz gráfica de tu tienda de software (por ejemplo, Pamac) para buscar e instalar el paquete `gcc`.\n...\nUna vez que GCC está instalado, es hora de ponerlo a prueba. Crearemos un sencillo programa en C que imprima \"Hola Mundo\" en\n...\n3. Compila el código: En la misma terminal, usa GCC para compilar tu programa. Puedes especificar el nombre del archivo de salida usando la opción `-o`:\n...\n```\ngcc hello.c -o mi_programa\n...\n. Si no\n...\nas `-o`, GCC creará un ejec\n...\npor defecto llamado `a.out\n...\nsistemas Unix/Linux o `a.exe` en Windows.\n...\n4. Ejecuta el programa: Una vez compilado, puedes ejecutar tu programa:\n...\n```\n./mi_programa\n...\n2. Comp\n...\n: En esta fase,\n...\n1` para C\n...\nCuando tus proyectos crecen y constan de múltiples archivos fuente, compilarlos manualmente con GCC se vuelve tedioso y propenso a errores. Aquí es donde entra Make, una utilidad que\n...\niza el proceso de construcción de ejecutables a partir del código fuente. Make utiliza un archivo llamado `makefile` (o `Makefile`), que contiene reglas sobre cómo construir los objetivos.\n...\nSi tu programa no se ejecuta debido a bibliotecas faltantes (ej. \"error while loading shared libraries\"), puedes usar `ldd <nombre_ejecutable>` para ver qué bibliotecas faltan. Asegúrate de que las bibliotecas estén instaladas y que sus rutas estén incluidas en\n...\nvariable de entorno `LD_LIBRARY_PATH` o en la configuración del sistema.\n\n---\n\nTitle: Cómo instalar y utilizar el compilador GCC en un sistema Linux\nURL: https://es.linux-terminal.com/?p=1021\nPublished: N/A\nAuthor: N/A\nHighlights:\nAda, Go\n...\nLa palabra GCC significa Colección de compiladores GNU. El kernel de Linux se basa principalmente en el lenguaje de programación C y orientado a objetos. Antes de instalar el compilador GCC en su sistema Linux, debe verificar si ya está instalado en su sistema o no.\n...\nSi recibe el siguiente mensaje en su shell, no necesita instalarlo. Si no puede encontrar GCC en su máquina, debe instalarlo en su sistema. Esta publicación verá cómo instalar y comenzar con la colección de compiladores GNU en distribuciones de Linux.\n...\nEn Ubuntu y otras distrib\n...\nDebian de Linux, el compil\n...\ncontiene GNU C\n...\n. Puede ejecutar la\n...\n. Debo tener\n...\nAhora podemos compilar el código a través del compilador GCC en nuestro sistema Linux. Ejecute el siguiente comando en el shell de su terminal para compilar el código. Puede darle un nuevo nombre a su código mientras lo compila. Aquí, nombro el archivo compilado como Ubuntupit. Luego usaremos el nombre para ejecutar el código. Podemos ejecutar el código de programación C en nuestro terminal Linux a través del comando de barra diagonal (./) en el shell del terminal.\n...\nEjecute el siguiente comando en el shell de su terminal para ejecutar el archivo compilado a través del compilador GCC en su sistema Linux. Aquí se utiliza el indicador `-o` para indicar el archivo de salida.\n...\n```\n$ cd Desktop/\ngcc hello.c -o UbuntuPIT\n./UbuntuPIT\n\n---\n\nTitle: Gu´ıa de instalaci´on de herramientas para compilaci´on multiplataforma en C\nURL: https://oa.upm.es/92376/1/2025_SDG2_guia_instalacion_2v06.pdf\nPublished: N/A\nAuthor: N/A\nHighlights:\nEs posible que ya tengamos instalado el compilador, bien porque venga por defecto en nuestra distribuci´on de Linux, o porque lo hayamos instalado con anterioridad. No obstante, escribiremos en la terminal los siguientes comandos que utilizan el instalador de paquetes apt uno a uno:\n...\n1 sudo apt update \n2 sudo apt upgrade\n...\n3 sudo apt install gcc gdb make\n...\nComo has observado, hemos\n...\nel proyecto desde Windows, y lo hemos guardado\n...\nen una ruta de nuestro sistema. Lo haremos as´ı siempre porque WSL tiene acceso a\n...\nesa ruta de Windows, pero no al rev´es. \nSiempre que abramos un proyecto de C, haremos lo siguiente.\n...\nLas herramientas de compilaci´on y depuraci´on no las tenemos instaladas en Windows, \nsino en\n...\nsubsistema Ubuntu que hemos instalado con WSL. Es por ello que tenemos \nque conectar VSCode con WSL para que ejecute todo desde all´ı. Se puede hacer de \nhasta tres formas distintas como nos dice la web de VSCode (Developing in WSL). La\n...\nm´as sencilla es:\n...\nVamos a comprobar que el proyecto hello\n...\ncorrectamente. Para ello:\n...\nVamos a necesitar instalar (i) la toolchain de ARM para C, (ii) los drivers para \ncomunicarnos con el programador/ depurador in-circuit ST-LINK/V2, y el software \npara interactuar con el depurador. \nLo primero que necesitamos instalar es la toolchain para la arquitectura ARM (Arm \nGNU Toolchain). La toolchain —t´ıpicamente denominada “el compilador cruzado”— \nes un conjunto de herramientas que contiene, entre otros, el compilador de C, el \nlinker, las librer´ıas y el depurador. La compilaci´on cruzada se encarga de convertir los \nc´odigos fuente de nuestro programa en ficheros binarios capaces de ser ejecutados en \nuna plataforma con arquitectura ARM, que es la arquitectura del microcontrolador \nSTM32F446RE que usaremos. \nLa toolchain que instalaremos se llama “arm-none-eabi”. Los nombres de las toolchains \ntienen t´ıpicamente la forma de: arch [-vendor] [-os] - eabi, donde:\n...\nlos conectores CN7 o CN6 marcados tambi´en en\n...\n2.1b. En tal caso, para poder seguir programando el microcontrolador s´ı necesitaremos conectar el ST-LINK/V2 con cables SWD al conector CN7. Para que nuestro PC pueda comunicarse con ST-LINK/V2 necesitamos un driver, y para que podamos depurar necesitamos un programa que se comunique con el depurador Software (SW) GNU Debugger (GDB) (instalado con la toolchain) y el depurador HW que es el ST-LINK/V2. Dicho programa ser´a OpenOCD. Elija su sistema operativo y vaya a la secci´on adecuada a continuaci´on.\n...\n5. En la esquina inferior derecha de VSCode veremos algo como . Pinche sobre ´el para adaptarlo a su entorno. Esto ajusta las rutas de las librer´ıas del compilador, y su nombre hace referencia a: (i) sistema operativo desde el que se trabaja, (ii) arquitectura de la plataforma destino, que puede ser un ordenador (compilaci´on nativa) o un microcontrolador (compilaci´on cruzada).\n...\nSi est´a en Windows, en este punto, le habr´a fallado. Esto se debe a que tenemos que decirle a Windows (la m´aquina host), que le comparta a WSL el acceso por USB a la placa Nucleo-STM32F446RE (bind). Adem´as, le tendremos que decir a WSL que se conecte a dicha placa (attach). Esto es un proceso que har´a la primera vez o cada vez que cambie de placa. En m´aquinas virtuales como VMWare o VirtualBox esto es algo que tambi´en se hace, pero es algo m´as c´omodo y se hace por interfaz gr´afica. WSL no permite eso de momento. Vaya al Ap´endice C y siga los pasos. Cuando se inicie la depuraci´on, vuelva aqu´ı.\n...\no al hacer\n...\nse carga” el c´odigo en\n...\nplaca. Esto puede deberse\n...\nuna inconsistencia\n...\nSTLINK. Por ejemplo, a veces\n...\ndepuraci´on previa no se termina correctamente y se desconecta la placa sin haberla detenido. Para solucionarlo:\n\n---\n\nTitle: Compilar software desde código fuente en Linux : Kamilinux\nURL: https://kamilinux.com/compilacion-de-software-desde-codigo-fuente/\nPublished: 2026-07-07T16:30:00.000Z\nAuthor: Kami Linux\nHighlights:\nPara compilar software normalmente necesitas un compilador, make y varias utilidades de desarrollo.\n...\n- gcc, el compilador de C.\n- g++, el compilador de C++.\n- make, la herramienta que ejecuta reglas de compilación.\n- Cabeceras y utilidades necesarias para construir paquetes sencillos.\n...\nEl script ./configure revisa el sistema: compilador, librerías, cabeceras, funciones disponibles y opciones de instalación. También prepara los archivos que usará make.\n...\nmake lee un archivo llamado Makefile y ejecuta las reglas necesarias para compilar el programa.\n...\nmake install copia los archivos compilados a su ubicación final: binarios, librerías, manuales, iconos y otros recursos.\n...\nCompilar código fuente implica confiar en ese código. Si descargas un proyecto desconocido y ejecutas scripts como configure, autogen.sh o comandos de instalación, estás ejecutando código en tu máquina.\n...\n- Descarga desde la web oficial o el repositorio oficial.\n- Revisa releases, firmas o checksums si el proyecto los ofrece.\n- Evita ejecutar comandos con sudo salvo en el paso de instalación.\n- No ejecutes scripts aleatorios sin leer la documentación.\n- Prueba primero en una máquina virtual, contenedor o usuario no privilegiado si no confías del todo.\n- No reemplaces librerías críticas del sistema sin necesidad.\n...\nSi solo quieres probar una herramienta, instalar en tu usuario suele ser más seguro:\n...\n```\n./configure --prefix=\"$HOME/.local\"\nmake\nmake install\n...\n1. Leer la documentación del proyecto.\n2. Instalar solo las dependencias necesarias.\n3. Compilar sin sudo.\n4. Instalar en ~/.local si es una prueba.\n5. Usar /usr/local solo si quieres una instalación global manual.\n6. Guardar el directorio de compilación si necesitas desinstalar.\n7. Documentar qué comandos ejecutaste.\n...\nUsa sudo solo cuando realmente necesites instalar en rutas del sistema. Para pruebas, prefiere ~/.local. Y antes de instalar, piensa en la desinstalación: lo que el gestor de paquetes no registra, luego tendrás que gestionarlo tú.\n\n---\n\nTitle: Compilar un programa de C en la línea de comandos | Microsoft Learn\nURL: https://learn.microsoft.com/es-es/cpp/build/walkthrough-compile-a-c-program-on-the-command-line?view=msvc-170\nPublished: N/A\nAuthor: TylerMSFT\nHighlights:\n- MSVC tiene requisitos complejos para que el entorno de línea de comandos busque las herramientas, los encabezados y las bibliotecas que usa. No se puede usar MSVC en una ventana del símbolo del sistema sin formato sin cierta preparación. Necesita una ventana del símbolo del sistema para desarrolladores, que es una ventana normal del símbolo del sistema que tiene configuradas todas las variables de entorno necesarias. Afortunadamente, Visual Studio instala accesos directos para que pueda iniciar símbolos del sistema para desarrolladores con el entorno configurado para compilaciones de línea de comandos. Desafortunadamente, los nombres de los accesos directos del símbolo del sistema para desarrolladores y dónde se encuentran son diferentes en casi todas las versiones de Visual Studio y en versiones diferentes de Windows. La primera tarea del tutorial consiste en encontrar el acceso directo adecuado que se va a usar.\n...\nUn acceso directo del símbolo del sistema para desarrolladores establece automáticamente las rutas de acceso correctas para el compilador y las herramientas, y para los encabezados y las bibliotecas necesarios. Algunos de estos valores son diferentes para cada configuración de compilación. Debe establecer por su cuenta estos valores de entorno si no usa uno de los accesos directos. Para obtener más información, vea Usar el conjunto de herramientas de MSVC desde la línea de comandos. Dado que el entorno de compilación es complejo, se recomienda encarecidamente usar un acceso directo del símbolo del sistema para desarrolladores, en lugar de crear uno propio.\n...\nDespués, compruebe que el símbolo del sistema para desarrolladores está configurado correctamente. En la ventana del símbolo del sistema, escriba`cl`(o`CL`; la distinción entre mayúsculas y minúsculas no importa en el nombre del compilador, pero sí en las opciones del compilador). El resultado deberá ser ahora similar a esto:\n...\nSi recibe un error como 'cl' no se reconoce como un comando interno o externo, programa o archivo por lotes ejecutable, un error C1034 o un error LNK1104 al ejecutar el comando`cl`, significa que no usa un símbolo del sistema para desarrolladores o que hay algún problema con la instalación de Visual Studio. Debe corregir este error para poder continuar.\n...\nSi no encuentra el acceso directo del símbolo del sistema para desarrolladores, o si recibe un mensaje de error al escribir`cl`, es posible que la instalación de Visual Studio tenga un problema. Si usa Visual Studio 2017 o una versión posterior, pruebe a instalar de nuevo la carga de trabajo Desarrollo para el escritorio con C++ en el instalador de Visual Studio. Para obtener más información, consulte Instalación de compatibilidad con C++ en Visual Studio. O bien, vuelva a instalar las herramientas de compilación desde la página de descargas de Visual Studio. No pase a la sección siguiente hasta que el comando`cl` funcione. Para obtener más información sobre cómo instalar y solucionar problemas de Visual Studio, vea Instalación de Visual Studio.\n...\nEn función de la versión de Windows del equipo y de la configuración de seguridad del sistema, es posible que tenga que hacer clic con el botón derecho para abrir el menú contextual del acceso directo del símbolo del sistema para desarrolladores y, después, elegir Ejecutar como administrador para compilar y ejecutar correctamente el programa que se crea siguiendo este tutorial.\n...\nPara compilar el programa, escriba`cl hello.c` en el símbolo del sistema para desarrolladores.\n...\nesta página para buscar el\n...\nde error.\n...\nPara ejecutar el programa, escriba`hello` en el símbolo del sistema.\n\n---\n\nTitle: Instalar GCC desde cero\nURL: https://manualinux.es/gcc.html\nPublished: N/A\nAuthor: Jose Luis Lara Carrascal\nHighlights:\nbuild_16\n...\nld.bf\n...\n| NOTA IMPORTANTE: Siempre hay que colocar las rutas de los directorios, y los de otras versiones que se vayan a compilar, al final de la lista de directorios del archivo ld.so.conf, como se muestra en el ejemplo de arriba, para evitar que las aplicaciones y librerías de la distribución de turno escritas en C++ y Fortran, se enlacen contra las librerías libstdc++.so y libgfortran.so recién instaladas y no contra las del sistema, que por regla general suelen estar en /usr/lib. Esto provocaría que esas aplicaciones dejarían de funcionar al no haber sido compiladas con la versión contra la que se están enlazando. El orden en el que se muestran los directorios es el que sigue el enlazador dinámico ld a la hora de buscar las dependencias requeridas para la ejecución de un binario o librería, tenerlo esto siempre en cuenta, y si alguien quiere experimentar con el tema, que pruebe a hacer todo lo contrario de lo que explico en esta nota. |\n| --- |\n...\nAñadimos la ruta a las librerías en\n...\narchivo /etc/ld.so.conf.\n...\n`include ld\n...\nso.conf.d/*.conf\n...\n/usr/X11R6/lib\n/usr/lib\n/usr/lib/qt3/lib\n/usr/local/lib\n...\n/opt/e1\n...\n/opt/gcc1\n...\n/lib64\n/opt/gcc16/lib\n...\nEn mi caso no aparece el número del compilador porque siempre lo coloco como compilador principal del sistema, es decir, no lo instalo con la opción del sufijo correspondiente. En el caso de que queramos que nuestra flamante versión sea la que utilice el sistema por defecto (cuidado con esto, leerse la sección del RPATH), sólo tenemos que editar los enlaces simbólicos que las distribuciones (no sé si todas) suelen crear a los binarios de sus respectivos compiladores, pongo el ejemplo de Mandriva, pero es perfectamente válido para todas. sobrescribo los enlaces pertinentes en el directorio /usr/bin, en el caso de Mandriva también se puede hacer en /etc/alternatives que es a donde apuntan los que están en /usr/bin.\n...\n| `# ln -sf\n/opt/gcc16/bin/gcc /usr/bin/gcc\n# ln -sf /opt/gcc16/bin/g++ /usr/bin/g++\n# ln -sf /opt/gcc16/bin/cpp /usr/bin\n...\n` |\n| --- |\n...\nAntes de sobres\n...\nahora cuando teclee en\n...\nde terminal, gcc --version, me saldrá la que he instalado. Podemos\n...\ntambién que el binario g++ funciona sin ningún problema.\n...\n~]$ gcc --version\n...\nEn cambio, si no queremos que la versión instalada sea la que usamos por defecto, cada vez que quer\n...\nhacer uso de la misma deberemos de ejecutar las\n...\nde entorno pertinentes, aunque esto no siempre es efectivo con todos los programas y puede que algunas veces tengamos que editar directamente los archivos Makefile, edición que explico en este mismo apartado.\n...\n) Antes de ejecutar el\n...\nescrito en Java (\n...\n), tendremos que\n...\nMakefile que contenga el paquete, y sustit\n...\nCLASSPATH\n...\ncon Java,\n...\nque el resto\n...\nlenguajes\n...\nprogramación soportados por el compil",
+      "title": "Web search: La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto",
+      "metadata": {},
+      "time": {
+        "start": 1789529498727,
+        "end": 1789529501184
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.192Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529501192,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8452e07001usHVBBuA2oe7kn",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a845221b001udSvhOOWqKI7QA",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8664,
+      "output": 376,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9040,
+      "headroom": 29816,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.193Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.193Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.196Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.196Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.197Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.197Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.197Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.198Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.198Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.198Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.205Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 9040,
+  "providerTokens": 9040,
+  "estimatedInputTokens": 5518,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8664,
+    "cacheRead": 0,
+    "output": 376
+  },
+  "overflow": false,
+  "headroom": 29816,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.206Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.212Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.214Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.937Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529501937,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a84530ef001BoN01n1fbY93ts",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8452e16001MzGjSoMO9FwH6y",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.937Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.938Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529501938,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a84530f1002oIcopdekWl9zNi",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8452e16001MzGjSoMO9FwH6y",
+    "type": "tool",
+    "callID": "call_b3390af3016dfc45",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.938Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529501938,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a84530f1001z1rmQiwkmxC9nR",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8452e16001MzGjSoMO9FwH6y",
+    "type": "text",
+    "text": "Let me open https://coddy.tech/docs/es/cpp/install-cpp and read what it says.",
+    "time": {
+      "start": 1789529501938,
+      "end": 1789529501938
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:41.938Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529501938,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a84530f1002oIcopdekWl9zNi",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8452e16001MzGjSoMO9FwH6y",
+    "type": "tool",
+    "callID": "call_b3390af3016dfc45",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://coddy.tech/docs/es/cpp/install-cpp"
+      },
+      "time": {
+        "start": 1789529501938
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.863Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529502863,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a84530f1002oIcopdekWl9zNi",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8452e16001MzGjSoMO9FwH6y",
+    "type": "tool",
+    "callID": "call_b3390af3016dfc45",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://coddy.tech/docs/es/cpp/install-cpp"
+      },
+      "output": "Docs ejecutables de C++: Instalar C++ | CoddyMenuLanguagesSpacesPlaygroundToolsResourcesCompanyEspañolGET STARTEDDocsCatálogoHTML + CSSProbar HTML + CSS en el playgroundJavaScriptAbrir documentación de JavaScriptProbar JavaScript en el playgroundPythonAbrir documentación de PythonProbar Python en el playgroundC++Abrir documentación de C++Probar C++ en el playgroundCProbar C en el playgroundSQLAbrir documentación de SQLProbar SQL en el playgroundCSSC#Probar C# en el playgroundJavaAbrir documentación de JavaProbar Java en el playgroundGOProbar GO en el playgroundPHPProbar PHP en el playgroundRAbrir documentación de RProbar R en el playgroundDartProbar Dart en el playgroundRustProbar Rust en el playgroundLuaProbar Lua en el playgroundRubyProbar Ruby en el playgroundSwiftProbar Swift en el playgroundVerilogAbrir documentación de VerilogProbar Verilog en el playgroundAssemblyProbar Assembly en el playgroundReactAI PromptsTerminalProbar Terminal en el playgroundExcelTypeScriptProbar TypeScript en el playgroundGitDockerLuauProbar Luau en el playgroundNext.jsVer todos los cursos o elige un lenguaje arriba para empezar a aprender.EspaciosProgramaciónEscribe y ejecuta código real en el navegador, desde tu primera línea hasta un proyecto terminado.AjedrezAprende las reglas, las tácticas y las aperturas, tablero a tablero.MatemáticasBetaResuelve ecuaciones movimiento a movimiento y dibuja gráficas a mano, con cada paso comprobado en una pizarra interactiva.RecursosBlogTutoriales, guías e historias del equipo de Coddy.DocsDocumentación de referencia para cada lenguaje soportado.PlaygroundEscribe y ejecuta código en el navegador, sin configuración.Bugsy, el tutor de IALee tu código y tu error, explica y da pistas. Nunca la respuesta.HerramientasUtilidades gratis para desarrolladores - formateadores, conversores y más.Insertar editorAñade un editor de código gratuito y ejecutable a tu propio sitio con un solo iframe.Hojas de ReferenciaTablas de referencia rápida para los lenguajes y herramientas que usas.Comandos de GitCada comando de Git que necesitas, con su sintaxis, opciones y ejemplos.VisualizacionesObserva algoritmos y estructuras de datos paso a paso.CertificacionesObtén certificados compartibles al completar cursos.EmpresaAcerca deConoce qué es Coddy y al equipo detrás de ello.ContactoComunícate con soporte, alianzas o prensa.PrensaLogos, colores de marca, biografías de los fundadores y contacto de prensa.EmpleoVacantes, nuestra misión y cómo es trabajar en Coddy.ProfesoresCoddy para profesores: asigna lecciones, sigue el progreso y califica automáticamente.AfiliadoPromociona Coddy y gana comisiones por referidos.App móvilAprende a programar en iPhone y Android: gratis en ambas tiendas.Coddy BuildCrea apps full-stack con IA: chatea, previsualiza y publica.Ctrl KEMPEZAR A APRENDEREspañol▾Primeros pasos5Qué es C++Instalar C++Compilar C++Sintaxis de C++Comentarios▾Variables y tipos6VariablesTipos de datosPalabra clave autoConstantes y constOperadoresConversión de tipos▾Flujo de control5if-elseswitchbucle forBucles whilefor basado en rango▾Funciones5FuncionesParámetros de funcionesReferenciasSobrecarga de funcionesLambdas▾Punteros y memoria4PunterosReferencias vs punterosMemoria dinámicaPunteros inteligentes▾Cadenas y E/S3CadenasEntrada y salidaFlujos de cadenas▾Contenedores de la STL7Arraysvectormapunordered_mapsetpair y tupleIteradores▾Algoritmos y plantillas de la STL3AlgoritmosOrdenaciónPlantillas▾Clases y objetos9ClasesConstructoresDestructoresHerenciaFunciones virtualesSobrecarga de operadoresEspecificadores de accesoStructsenums▾Errores y depuración3Excepcionestry-catchComportamiento indefinido☰Docs menuDocumentación›C++›Instalar C++Aprende C++Compilador de C++ onlineHoja de Referencia de C++Instalar C++: configura un compilador en Windows, macOS y LinuxCómo instalar un compilador de C++ (GCC, Clang o MSVC), elegir una cadena de herramientas para tu sistema operativo y comprobar que funciona desde la línea de comandos.▶Esta página incluye editores ejecutables: edita, ejecuta y ve el resultado al instante.Por Kevin Spektor, Co-founder &amp; CTOPublicado el Jun 5, 2026Lo que realmente necesitas: un compilador\nEn la página anterior viste que C++ es un lenguaje compilado: tu código fuente se convierte en código máquina nativo antes de ejecutarse. Para hacer eso en tu propia máquina instalas una sola cosa esencial: un compilador de C++. El compilador lee tus archivos .cpp, aplica la biblioteca estándar de C++ y produce un ejecutable que tu CPU ejecuta directamente.\nNo necesitas un IDE pesado para empezar. Un IDE no es más que un editor con herramientas alrededor del mismo compilador que hay debajo. Mucha gente escribe C++ con un simple editor de texto (o VS Code) e invoca el compilador desde una terminal. Instala primero el compilador y añade un editor encima cuando te apetezca.\nTampoco necesitas nada de esto solo para seguir el curso aquí: los bloques de editor de estas páginas se compilan y ejecutan en la nube. Configura un compilador local cuando quieras compilar y ejecutar C++ en tu propio ordenador.\nElige un compilador para tu sistema operativo\nExisten tres compiladores de C++ principales, todos gratuitos y lo bastante modernos para C++17 y C++20:\n\nGCC: la GNU Compiler Collection. Su front end de C++ es g++. Es el predeterminado en Linux.\nClang: el compilador de LLVM. Su front end de C++ es clang++. Es el predeterminado en macOS.\nMSVC: el compilador de Microsoft (cl.exe), que viene con Visual Studio. La opción nativa en Windows.\n\nNo le des demasiadas vueltas. Usa el que sea estándar en tu plataforma: el lenguaje C++ es el mismo en los tres, y todos los ejemplos de este curso compilan en cualquiera de ellos. Las diferencias solo importan cuando llegas a funciones avanzadas y específicas de cada fabricante.\n\nUn detalle de nomenclatura: gcc y g++ ambos forman parte de GCC, pero para C++ invoca siempre g++ (no gcc). g++ enlaza la biblioteca estándar de C++ automáticamente; gcc no lo hace, y obtendrás errores de enlazado confusos.\n\nInstala en tu plataforma\nLa mecánica difiere ligeramente según el sistema operativo. Donde exista un gestor de paquetes, prefiérelo: las actualizaciones se reducen a un solo comando.\nWindows\nLa vía más sencilla es la cadena de herramientas GCC gratuita MinGW-w64 mediante el instalador de MSYS2. Tras instalar MSYS2, abre su terminal y ejecuta:\npacman -S mingw-w64-ucrt-x86_64-gcc\n\nEso te proporciona g++. Luego añade C:\\msys64\\ucrt64\\bin a tu PATH para que g++ funcione desde cualquier terminal. Otra opción es instalar Visual Studio (la edición Community gratuita) con la carga de trabajo &quot;Desarrollo para el escritorio con C++&quot; para obtener el compilador MSVC y un IDE de una sola vez.\nmacOS\nApple distribuye Clang a través de las Command Line Tools. Un solo comando las instala:\nxcode-select --install\n\nEso te proporciona clang++. Si prefieres GCC, instálalo con Homebrew: brew install gcc.\nLinux (Debian/Ubuntu)\nsudo apt update\nsudo apt install g++\n\nEn Fedora/RHEL es sudo dnf install gcc-c++. Estos son comandos de shell, no C++: instalan el compilador a nivel de todo el sistema. Instalar el paquete build-essential en Ubuntu trae g++ junto con make y otras herramientas de compilación de una sola vez.\nComprueba que funcionó\nEste es el paso que la gente se salta y luego pierde una hora por ello. Abre una nueva terminal (para que recoja el PATH actualizado) y pídele al compilador su versión:\ng++ --version\n\nDeberías ver algo como:\ng++ (Ubuntu 13.2.0-4ubuntu3) 13.2.0\nCopyright (C) 2023 Free Software Foundation, Inc.\n\nEn macOS el equivalente es clang++ --version, y en Windows con MSVC es cl (ejecutado desde el &quot;Developer Command Prompt&quot;). Si obtienes command not found, el compilador no está instalado o no está en tu PATH; vuelve al paso de instalación de tu plataforma y reabre la terminal.\nOtra comprobación útil: confirma el estándar predeterminado del compilador. Un GCC o Clang reciente usa de forma predeterminada C++17 o más nuevo, que es lo que estas páginas dan por sentado. Siempre puedes forzar un estándar explícitamente con una opción como -std=c++20, que la próxima página explica en detalle.\nUna prueba rápida en local\nEn cuanto g++ --version muestre un número, tu máquina puede compilar C++. El mismo programa exacto que compilarás en local también se ejecuta aquí mismo en el navegador, así que puedes verificar la salida antes incluso de tocar una terminal:\n#include &lt;iostream&gt;\n\nint main() {\n    std::cout &lt;&lt; &quot;C++ is working!&quot; &lt;&lt; std::endl;\n    std::cout &lt;&lt; &quot;Compiled to standard: &quot; &lt;&lt; __cplusplus &lt;&lt; std::endl;\n    return 0;\n}Master C++ the hands-on wayInteractive lessons, real projects, and instant feedback.START NOW\nLa macro __cplusplus es un número integrado que el compilador define para indicarte qué estándar del lenguaje está usando (por ejemplo, 201703 significa C++17). Todo programa de C++ arranca desde int main(), y std::cout escribe en la consola. En tu propia máquina guardarías esto como main.cpp, lo compilarías y ejecutarías el ejecutable resultante. Ese baile de dos pasos —compilar y luego ejecutar— es exactamente de lo que trata la próxima página.\nUna nota sobre el PATH\nLo que más complica las instalaciones nuevas es el PATH: la lista de carpetas donde tu shell busca programas. Si g++ --version funciona desde cualquier directorio, tu PATH incluye la carpeta del compilador y todo está listo. Si solo funciona desde el directorio de instalación, o no funciona en absoluto, la carpeta bin del compilador aún no está en tu PATH.\n\nEn Windows, este es el tropiezo más habitual: tras instalar MinGW-w64, debes añadir manualmente su carpeta bin al PATH y abrir una terminal nueva.\nEn macOS y Linux, los gestores de paquetes y las herramientas de Xcode colocan el compilador en el PATH por ti, así que esto rara vez surge.\n\nSi más adelante una herramienta de compilación o un editor no encuentran tu compilador aunque g++ --version funcione en una terminal, casi siempre la causa es un PATH que la app gráfica no heredó; reiniciar la app (o tu máquina) suele solucionarlo.\nSiguiente: compilar C++\nYa tienes un compilador funcional y lo has verificado desde la línea de comandos. La próxima página convierte eso en un flujo de trabajo real: escribir un archivo .cpp, compilarlo con g++ (incluidas las opciones -std y -o que controlan el estándar y el nombre de salida) y ejecutar el ejecutable que produce, además de qué hace en realidad cada paso por debajo.AnteriorQué es C++SiguienteCompilar C++Preguntas frecuentes¿Necesito un IDE para empezar a escribir C++?No. C++ necesita un compilador; el IDE es opcional. El compilador (g++, clang++ o el cl de MSVC) es lo que convierte tu código fuente en un programa ejecutable; un editor como VS Code o un IDE como Visual Studio solo hacen el flujo de trabajo más cómodo. Instala primero el compilador y añade un editor cuando quieras.¿Qué compilador de C++ debería instalar?Usa la cadena de herramientas estándar de tu sistema operativo: GCC (g++) en Linux, Clang (clang++) en macOS mediante las herramientas de Xcode, y MSVC o MinGW-w64 en Windows. Las tres son gratuitas y admiten C++ moderno (C++17/C++20). Elige una, añádela a tu PATH y podrás compilar todos los ejemplos de este curso.¿Cómo compruebo si ya tengo un compilador de C++ instalado?Abre una terminal y ejecuta g++ --version (o clang++ --version). Si ves un número de versión, hay un compilador en tu PATH listo para usar. Si obtienes command not found, el compilador falta o no está en tu PATH; instala la cadena de herramientas para tu plataforma siguiendo las indicaciones de abajo.Conceptos relacionadosQué es C++Compilar C++Sintaxis de C++AlgoritmosArraysCadenasTabla de Contenidos▶Tabla de ContenidosLo que realmente necesitas: un compiladorElige un compilador para tu sistema operativoInstala en tu plataformaComprueba que funcionóUna prueba rápida en localUna nota sobre el PATHSiguiente: compilar C++Aprende a programar con CoddyCOMENZAREmpresaInicioAcerca deAfiliadoProfesoresPrensaEmpleoCoddy BuildDescargar enApp StoreDisponible enGoogle PlayRecursosAprende a programarWebs para aprender a programar gratisTodos los cursosApp MóvilBlogCertificacionesReferenciaPlaygroundHerramientasInsertar editorHojas de ReferenciaVisualizacionesComandos de GitEditor de pseudocódigoBugsy, tutor de IASoporteContactoPreguntas FrecuentesLenguajesVer todoPythonJavaScriptTypeScriptReactNext.jsJavaC++C#SQLHTMLCSS CGolangPHPRDartRustLuaLuauExcelGitDockerEspaciosChessMathPlaygroundsPythonJavaScriptJavaTypeScriptC++CC#SQLHTMLGolangPHPRubyRustRCertificacionesVer todoPythonJavaScriptJavaC++C#SQLHTML &amp; CSSGoRustPHPRubySwiftDartCHerramientasVer todoASCII Art GeneratorJSON FormatterSQL FormatterRegex TesterMarkdown EditorBase64 EncoderURL EncoderJWT DecoderDiff Checker Hash GeneratorUUID GeneratorPassword GeneratorCase ConverterColor ConverterCron ExpressionTimestamp ConverterQR Code GeneratorDocumentaciónVer toda la documentaciónPythonJavaScriptJavaC++SQLVerilogBlogÚltimas publicacionesSoftware DevelopmentWeb DevelopmentCoding for BeginnersArtificial IntelligenceReseñas y comparativasVer todoCourseraUdemyCodecademyDataCampLeetCodeBoot.devfreeCodeCampUdemy vs CourseraVisualizacionesVer todoOrdenamientoEstructuras de datosAlgoritmos de grafosBúsquedaCore ConceptsMerge SortQuick SortBubble SortSelection SortBinary SearchBinary Search TreeLinked ListHash TableDepth-First SearchBreadth-First SearchDijkstra&#x27;s AlgorithmComandos de GitVer todoConfiguración e inicioPreparación y commitRamasDeshacer cambiosMerge y rebaseRemotosInspección y limpiezagit rebasegit worktreegit stashgit mergegit resetgit undo commitgit cherry-pickgit rebase vs mergePseudocódigoVer todoCambridge (IGCSE / A-Level)AQA (GCSE / A-level)OCR (Exam Reference Language)Pearson Edexcel (GCSE)Política de Privacidad|Términos|Política de cookies|Mapa del Sitio|AtribucionesIdioma: EnglishEspañolPortuguêsTürkçeFrançaisDeutschРусский日本語한국어العربيةHecho con ❤️ © 2026 Coddy",
+      "title": "https://coddy.tech/docs/es/cpp/install-cpp (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529501938,
+        "end": 1789529502863
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.864Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529502864,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8453490001NsXmrzMGarFwUn",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8452e16001MzGjSoMO9FwH6y",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 31222,
+      "output": 153,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 31375,
+      "headroom": 7481,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.864Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.864Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.866Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.867Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.885Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.885Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.885Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.886Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.889Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.889Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.900Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 31375,
+  "providerTokens": 31375,
+  "estimatedInputTokens": 8909,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 31222,
+    "cacheRead": 0,
+    "output": 153
+  },
+  "overflow": false,
+  "headroom": 7481,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.902Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.902Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.910Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:42.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:43.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529503307,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a845363e001zE4QCJu53NzQye",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84534b4001eIy1GyL7Xcl8La",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:43.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:43.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529503311,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a845364e001Xd5qydn1MkDYvz",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84534b4001eIy1GyL7Xcl8La",
+    "type": "tool",
+    "callID": "call_01fffc1bf8e5848d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:43.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529503311,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a845364b001C7AfxeubVaDI10",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84534b4001eIy1GyL7Xcl8La",
+    "type": "text",
+    "text": "Let me open https://javiercachon.com/guia-completa-para-instalar-el-lenguaje-de-programacion-c-c-en-debian-13/ and read what it says.",
+    "time": {
+      "start": 1789529503311,
+      "end": 1789529503311
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:43.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529503311,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a845364e001Xd5qydn1MkDYvz",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84534b4001eIy1GyL7Xcl8La",
+    "type": "tool",
+    "callID": "call_01fffc1bf8e5848d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://javiercachon.com/guia-completa-para-instalar-el-lenguaje-de-programacion-c-c-en-debian-13/"
+      },
+      "time": {
+        "start": 1789529503311
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.181Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529504181,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a845364e001Xd5qydn1MkDYvz",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84534b4001eIy1GyL7Xcl8La",
+    "type": "tool",
+    "callID": "call_01fffc1bf8e5848d",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://javiercachon.com/guia-completa-para-instalar-el-lenguaje-de-programacion-c-c-en-debian-13/"
+      },
+      "output": "Guía completa para instalar el lenguaje de programación C/C++ en Debian 13. | javiercachon.com\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n        \r\n\r\n\r\n\n\n\n\n\r\n                \n\t\t\t\n\n\t\n\t\n\n\t\n\n\n\n\t\tIr al contenido\n\n\n\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\tHome\nAcerca\nContacto\nBlog\nLibros\nDir\n\n\tCursos\n\tEstudiantes\n\tEscritorio Tutor\n\tEscritorio Descargas\n\n\nApps\nForos\nLogin\n\n\tLogin Tutor\n\tLogin Descargas\n\n\nTienda\nES\nEN\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\tHome\nAcerca\nContacto\nBlog\nLibros\nDir\n\n\tCursos\n\tEstudiantes\n\tEscritorio Tutor\n\tEscritorio Descargas\n\n\nApps\nForos\nLogin\n\n\tLogin Tutor\n\tLogin Descargas\n\n\nTienda\nES\nEN\n\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tAcademia\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\n\n  \n  \n  \n    \n      \n    \n  \n\n  \n  \n    \n    Buscar\n    \n    \n      \n        \n      \n    \n  \n\n\n\n\t\t\n\t\t\n\n\t\n\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\n\n\n\t\t\n\t\t\n\t\t\tInicioSistemasGuía completa para instalar el lenguaje de programación C/C++ en Debian 13.\t\t\n\t\n\t\n\t\n\n\n\t\n\t\n\t\t\n\n\t\t\t\n\t\t\tGuía completa para instalar el lenguaje de programación C/C++ en Debian 13.Por \t\t\t\n\t\t\t\t\n\t\t\t\tJavier Cachón Garrido\t\t\t\n\t\t\t\n\t\t\n\n\t\t /  14 de febrero de 2026 a las 15:01 \t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t Compartir en las redes sociales...\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t Facebook \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t Linkedin \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t WhatsApp \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t SMS \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t Twitter / X \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t Telegram \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\n\t\n\t\n\t\n\n\t\t\n\t\t\n\n\nAnuncio\n\n\n\n\n\n1. Introducción\n\n\n\nEl lenguaje C y su evolución natural, C++, representan uno de los pilares históricos de la ingeniería del software moderna. Hablar de sistemas operativos, compiladores, bases de datos, motores gráficos o software embebido sin mencionar C/C++ resulta prácticamente imposible. Desde el núcleo Linux hasta herramientas de alto rendimiento utilizadas en centros de datos, la influencia de estos lenguajes sigue siendo absoluta.\r\n\r\n  \r\n        \r\n              \r\n        \r\n                    \r\n                          \r\n                              \r\n                        Tabla de contenido\r\n          \r\n          11 minutos leer                      \r\n                                                          \r\n                  \r\n                \r\n                          \r\n                  \r\n      \r\n            \r\n            \r\n        \r\n        \r\n                                                1. Introducción\r\n                    \r\n        \r\n                                                2. ¿Qué es C/C++?\r\n                    \r\n        \r\n                                                2.1 El lenguaje C\r\n                    \r\n        \r\n                                                2.2 El lenguaje C++\r\n                    \r\n        \r\n                                                2.3 Relación entre ambos\r\n                    \r\n        \r\n                                                3. Historia de C y C++\r\n                    \r\n        \r\n                                                3.1 Origen de C\r\n                    \r\n        \r\n                                                3.2 Estandarización\r\n                    \r\n        \r\n                                                3.3 Nacimiento de C++\r\n                    \r\n        \r\n                                                4. Características principales de C/C++\r\n                    \r\n        \r\n                                                4.1 Rendimiento extremo\r\n                    \r\n        \r\n                                                4.2 Control total de memoria\r\n                    \r\n        \r\n                                                4.3 Portabilidad\r\n                    \r\n        \r\n                                                4.4 Paradigmas múltiples (especialmente C++)\r\n                    \r\n        \r\n                                                4.5 Ecosistema maduro\r\n                    \r\n        \r\n                                                5. ¿Por qué elegir C/C++ hoy?\r\n                    \r\n        \r\n                                                5.1 Comprensión real del sistema\r\n                    \r\n        \r\n                                                5.2 Base de otros lenguajes\r\n                    \r\n        \r\n                                                5.3 Alto rendimiento\r\n                    \r\n        \r\n                                                5.4 Software crítico\r\n                    \r\n        \r\n                                                5.5 Compatibilidad con Linux\r\n                    \r\n        \r\n                                                6. Instalación de C/C++ desde repositorios en Debian 13\r\n                    \r\n        \r\n                                                6.2 Instalación básica (metapaquete esencial)\r\n                    \r\n        \r\n                                                6.3 Verificar instalación\r\n                    \r\n        \r\n                                                7. Paquetes opcionales recomendados (entorno completo)\r\n                    \r\n        \r\n                                                7.1 Herramientas de depuración\r\n                    \r\n        \r\n                                                7.2 Analizadores y calidad de código\r\n                    \r\n        \r\n                                                7.3 Compilador alternativo (Clang)\r\n                    \r\n        \r\n                                                7.4 Sistema de construcción moderno\r\n                    \r\n        \r\n                                                7.5 Documentación y manuales\r\n                    \r\n        \r\n                                                7.6 Profiling con perf (herramienta nativa Linux)\r\n                    \r\n        \r\n                                                7.7 IDEs y editores recomendados\r\n                    \r\n        \r\n                                                7.8 Librerías estándar adicionales\r\n                    \r\n        \r\n                                                8. Primer programa en C y C++\r\n                    \r\n        \r\n                                                Ejemplo C\r\n                    \r\n        \r\n                                                Ejemplo C++\r\n                    \r\n        \r\n                                                9. Comparativa rápida: GCC vs Clang\r\n                    \r\n        \r\n                                                10. Arquitectura general de una app gráfica en C/C++\r\n                    \r\n        \r\n                                                10.1 Frameworks gráficos principales (entorno profesional)\r\n                    \r\n        \r\n                                                12. Referencias\r\n                          \r\n          \r\n      \r\n      \r\n    \r\n\n\n\n\nEn el ecosistema GNU/Linux y especialmente en Debian 13, distribución conocida por su estabilidad, coherencia filosófica y rigurosidad técnica disponer de un entorno completo para desarrollar en C y C++ no solo es recomendable, sino casi obligatorio para cualquier profesional que desee comprender cómo funciona realmente el software a bajo nivel.\n\n\n\nC y C++ son lenguajes de programación compilados, potentes y de alto rendimiento, fundamentales en la informática moderna para sistemas operativos, motores de juegos y aplicaciones de alto rendimiento. C es un lenguaje estructurado, mientras que C++ (desarrollado por Bjarne Stroustrup en 1979) es una extensión de C que añade orientación a objetos, convirtiéndolo en un lenguaje multiparadigma. \n\n\n\nEsta guía no se limita a mostrar comandos. Se trata de una explicación narrativa y técnica que permite entender:\n\n\n\n\nQué es C/C++ y por qué sigue siendo esencial.\n\n\n\nSu evolución histórica y su impacto en la informática.\n\n\n\nCaracterísticas clave desde una perspectiva de ingeniería.\n\n\n\nInstalación completa del entorno en Debian 13.\n\n\n\nPaquetes opcionales orientados a productividad, depuración y calidad.\n\n\n\nBuenas prácticas iniciales para empezar con un entorno sólido.\n\n\n\n\nEl objetivo es que, al finalizar, dispongas de un entorno profesional plenamente funcional y comprendas el razonamiento técnico detrás de cada decisión.\n\n\n\n2. ¿Qué es C/C++?\n\n\n\n2.1 El lenguaje C\n\n\n\nC es un lenguaje de programación de propósito general diseñado para ofrecer un equilibrio excepcional entre:\n\n\n\n\nControl directo del hardware\n\n\n\nEficiencia de ejecución\n\n\n\nPortabilidad entre sistemas\n\n\n\n\nSe considera un lenguaje de nivel medio, porque permite:\n\n\n\n\nProgramación cercana al hardware (punteros, manejo manual de memoria)\n\n\n\nAbstracciones suficientes para construir aplicaciones complejas\n\n\n\n\nEl sistema operativo Linux, la mayoría de kernels UNIX, herramientas GNU, bases de datos y miles de librerías fundamentales están escritas en C.\n\n\n\n2.2 El lenguaje C++\n\n\n\nC++ nace como una extensión de C, manteniendo compatibilidad con él mientras añade:\n\n\n\n\nProgramación orientada a objetos\n\n\n\nplantillas (templates)\n\n\n\nProgramación genérica\n\n\n\nManejo avanzado de recursos\n\n\n\nAbstracción de alto nivel sin perder rendimiento\n\n\n\n\nSu filosofía central puede resumirse así:\n\n\n\n\n“No pagar por lo que no se usa”.\n\n\n\n\nEs decir, el programador solo incurre en coste computacional cuando utiliza una característica concreta.\n\n\n\n2.3 Relación entre ambos\n\n\n\nAunque habitualmente se mencionan juntos, es importante comprender:\n\n\n\n\nC ≠ C++\n\n\n\nSon lenguajes distintos.\n\n\n\nComparten sintaxis base.\n\n\n\nSus paradigmas y ecosistemas difieren.\n\n\n\n\nHoy en día, dominar ambos lenguajes otorga una visión integral del desarrollo de software de sistemas.\n\n\n\n3. Historia de C y C++\n\n\n\n3.1 Origen de C\n\n\n\nEl lenguaje C fue creado a principios de los años 70 por Dennis Ritchie en los laboratorios Bell mientras trabajaba en el sistema UNIX.\n\n\n\nAntes de C existían lenguajes como B y BCPL, pero C logró algo revolucionario:\n\n\n\n\nPermitir escribir un sistema operativo portable sin sacrificar velocidad.\n\n\n\n\nLa combinación UNIX + C definió la informática moderna.\n\n\n\n3.2 Estandarización\n\n\n\nCon el paso del tiempo surgieron varias versiones:\n\n\n\n\nC89 / ANSI C\n\n\n\nC99\n\n\n\nC11\n\n\n\nC17\n\n\n\nC23 (más reciente)\n\n\n\n\nCada estándar mejora seguridad, claridad y capacidades modernas.\n\n\n\n3.3 Nacimiento de C++\n\n\n\nEn los años 80, Bjarne Stroustrup extendió C para introducir programación orientada a objetos.\n\n\n\nInicialmente llamado “C with Classes”, evolucionó rápidamente:\n\n\n\n\nC++98 — primer estándar\n\n\n\nC++11 — revolución moderna (auto, smart pointers, move semantics)\n\n\n\nC++14\n\n\n\nC++17\n\n\n\nC++20\n\n\n\nC++23 — tendencia hacia mayor seguridad y expresividad\n\n\n\n\nActualmente C++ se usa en:\n\n\n\n\nMotores de videojuegos\n\n\n\nSistemas financieros de baja latencia\n\n\n\nRenderizado 3D\n\n\n\nSimulación científica\n\n\n\nSistemas críticos\n\n\n\n\n4. Características principales de C/C++\n\n\n\n4.1 Rendimiento extremo\n\n\n\nEl código compilado se transforma casi directamente en instrucciones máquina, permitiendo:\n\n\n\n\nVelocidad máxima\n\n\n\nConsumo mínimo de recursos\n\n\n\n\n4.2 Control total de memoria\n\n\n\n\nPunteros\n\n\n\nAsignación dinámica (malloc, new)\n\n\n\nGestión manual\n\n\n\n\nEsto implica poder, pero también responsabilidad.\n\n\n\n4.3 Portabilidad\n\n\n\nEl mismo código puede compilarse en:\n\n\n\n\nLinux\n\n\n\nBSD\n\n\n\nWindows\n\n\n\nSistemas embebidos\n\n\n\nMicrocontroladores\n\n\n\n\n4.4 Paradigmas múltiples (especialmente C++)\n\n\n\n\nProcedural\n\n\n\nOrientado a objetos\n\n\n\nGenérico\n\n\n\nFuncional (parcialmente)\n\n\n\n\n4.5 Ecosistema maduro\n\n\n\nHerramientas consolidadas:\n\n\n\n\nGCC\n\n\n\nClang\n\n\n\nGDB\n\n\n\nMake\n\n\n\nCMake\n\n\n\n\n5. ¿Por qué elegir C/C++ hoy?\n\n\n\nEn plena era de Python, JavaScript o Rust surge una pregunta legítima: ¿por qué seguir aprendiendo C/C++?\n\n\n\n5.1 Comprensión real del sistema\n\n\n\nAprender C significa entender:\n\n\n\n\nCómo se organiza la memoria\n\n\n\nCómo funcionan el stack y el heap\n\n\n\nQue es realmente un proceso\n\n\n\n\n5.2 Base de otros lenguajes\n\n\n\nMuchos lenguajes modernos heredan conceptos directamente de C:\n\n\n\n\nJava\n\n\n\nGo\n\n\n\nRust\n\n\n\nJavaScript (sintaxis)\n\n\n\n\n5.3 Alto rendimiento\n\n\n\nCuando el rendimiento importa, C/C++ sigue dominando.\n\n\n\n5.4 Software crítico\n\n\n\nSectores donde sigue siendo estándar:\n\n\n\n\naeronáutica\n\n\n\nautomoción\n\n\n\nkernels\n\n\n\nbases de datos\n\n\n\ndrivers\n\n\n\n\n5.5 Compatibilidad con Linux\n\n\n\nGNU/Linux nace ligado a C. El desarrollo nativo resulta natural y eficiente.\n\n\n\n6. Instalación de C/C++ desde repositorios en Debian 13\n\n\n\nDebian ofrece un método limpio y robusto gracias a sus repositorios oficiales.\n\n\n\n6.2 Instalación básica (metapaquete esencial)\n\n\n\nDebian proporciona el metapaquete:\n\n\n\n$ sudo apt install build-essential\n\n\n\n\nEste paquete instala:\n\n\n\n\ngcc (compilador C)\n\n\n\ng++ (compilador C++)\n\n\n\nmake\n\n\n\nlibc6-dev\n\n\n\nherramientas fundamentales\n\n\n\n\nTras esto ya podemos compilar:\n\n\n\n$ gcc archivo.c -o programa\n$ g++ archivo.cpp -o programa\n\n\n\n\n6.3 Verificar instalación\n\n\n\n$ gcc --version\ngcc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n$ g++ --version\ng++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n\n\nDebian 13 incluye versiones modernas y estables del compilador GNU.\n\n\n\n7. Paquetes opcionales recomendados (entorno completo)\n\n\n\nUn entorno profesional nunca se limita al compilador.\n\n\n\nA continuación se muestra una instalación avanzada orientada a productividad real.\n\n\n\n7.1 Herramientas de depuración\n\n\n\n$ sudo apt install gdb\n\n\n\n\nPermite:\n\n\n\n\nInspeccionar memoria\n\n\n\nEjecutar paso a paso\n\n\n\nAnalizar fallos\n\n\n\n\n7.2 Analizadores y calidad de código\n\n\n\n$ sudo apt install valgrind cppcheck\n\n\n\n\nFunciones:\n\n\n\n\nDetectar fugas de memoria\n\n\n\nErrores ocultos\n\n\n\nAnálisis estático\n\n\n\n\n7.3 Compilador alternativo (Clang)\n\n\n\n$ sudo apt install clang clang-tools\n\n\n\n\nVentajas:\n\n\nAnuncio\n\nMejor diagnóstico de errores\n\n\n\nIntegración moderna\n\n\n\nAnálisis avanzado\n\n\n\n\n7.4 Sistema de construcción moderno\n\n\n\nsudo apt install gcc g++ cmake ninja-build binutils pkg-config\n\n\n\n\nHoy CMake domina proyectos C++ profesionales.\n\n\n\n7.5 Documentación y manuales\n\n\n\n$ sudo apt install manpages-dev\n\n\n\n\nAcceso rápido:\n\n\n\n$ man printf\n\n\n\n\n7.6 Profiling con perf (herramienta nativa Linux)\n\n\n\nperf es una joya del ecosistema Linux: permite analizar ejecución real a nivel CPU.\n\n\n\nInstalación:\n\n\n\n$ sudo apt install linux-perf\n\n\n\n\nAnálisis básico\n\n\n\n$ perf stat ./programa\n\n\n\n\nObtendrás:\n\n\n\n\nCiclos CPU\n\n\n\nInstrucciones ejecutadas\n\n\n\nCache misses\n\n\n\nBranch misses\n\n\n\n\n7.7 IDEs y editores recomendados\n\n\n\nOpciones compatibles con Debian:\n\n\n\n\nVisual Studio Code (repositorio externo)\n\n\n\nVim / Neovim\n\n\n\nEmacs\n\n\n\nKDevelop\n\n\n\nCode::Blocks\n\n\n\n\nPara entornos ligeros XFCE, Vim o VSCode son elecciones eficientes.\n\n\n\n7.8 Librerías estándar adicionales\n\n\n\n$ sudo apt install libstdc++-14-dev\n\n\n\n\nIncluye soporte completo para STL.\n\n\n\n8. Primer programa en C y C++\n\n\n\nEjemplo C\n\n\n\n#include &lt;stdio.h&gt;\n\nint main() {\n    printf(\"Hola Debian 13 desde C\\n\");\n    return 0;\n}\n\n\n\n\nCompilar:\n\n\n\n$ gcc hola.c -o hola\n$ ./hola\n\n\n\n\nEjemplo C++\n\n\n\n#include &lt;iostream&gt;\n\nint main() {\n    std::cout &lt;&lt; \"Hola Debian 13 desde C++\" &lt;&lt; std::endl;\n}\n\n\n\n\nCompilar:\n\n\n\n$ g++ hola.cpp -o hola\n$ ./hola\n\n\n\n\n9. Comparativa rápida: GCC vs Clang\n\n\n\nCaracterísticaGCCClangMadurezMuy altaAltaDiagnósticoBuenoExcelenteVelocidad compilaciónBuenaMuy buenaCompatibilidadMáximaExcelente\n\n\n\n10. Arquitectura general de una app gráfica en C/C++\n\n\n\nUna aplicación gráfica se compone normalmente de:\n\n\n\n1️⃣ Core lógico (C/C++)2️⃣ Framework GUI (ventanas, botones, eventos)3️⃣ Backend gráfico (X11 / Wayland / OpenGL / Vulkan)4️⃣ Toolkit de compilación (CMake, GCC, etc.)\n\n\n\nEl flujo sería:\n\n\n\nTu código C/C++\n        ↓\nFramework GUI (Qt / GTK / etc.)\n        ↓\nSistema gráfico Linux\n        ↓\nGPU / CPU\n\n\n\n\n10.1 Frameworks gráficos principales (entorno profesional)\n\n\n\n🟢 10.2 Qt \n\n\n\nQt es actualmente el estándar industrial en C++.\n\n\n\nCaracterísticas:\n\n\n\n\nMultiplataforma real (Linux, Windows, macOS)\n\n\n\nAlto rendimiento\n\n\n\nDiseño moderno\n\n\n\nherramientas visuales (Qt Creator)\n\n\n\nSoporte OpenGL/Vulkan\n\n\n\n\nEjemplos reales:\n\n\n\n\nKDE Plasma\n\n\n\nAutodesk Maya\n\n\n\nVirtualBox (frontend)\n\n\n\n\nDependencias en Debian 13\n\n\n\nInstalación completa:\n\n\n\n$ sudo apt install qt6-base-dev qt6-tools-dev qtcreator cmake\n\n\n\n\nOpcional (componentes avanzados):\n\n\n\n$ sudo apt install qt6-declarative-dev qt6-wayland\n\n\n\n\n🟢 10.3 GTK (ecosistema GNOME)\n\n\n\nGTK está escrito en C y es ampliamente usado en Linux.\n\n\n\nVentajas:\n\n\n\n\nIntegración nativa en Linux\n\n\n\nLigero\n\n\n\nMuy maduro\n\n\n\n\nEjemplos:\n\n\n\n\nGIMP\n\n\n\nGNOME apps\n\n\n\n\nInstalación:\n\n\n\n$ sudo apt install libgtk-4-dev\n\n\n\n\nCompilación típica:\n\n\n\ngcc app.c `pkg-config --cflags --libs gtk4`\n\n\n\n\n🟢 10.4 SDL2 (aplicaciones multimedia y juegos)\n\n\n\nIdeal para:\n\n\n\n\nvideojuegos\n\n\n\ninterfaces custom\n\n\n\nmultimedia\n\n\n\n\nInstalación:\n\n\n\n$ sudo apt install libsdl2-dev\n\n\n\n\n🟢 10.5 wxWidgets\n\n\n\nFramework multiplataforma clásico.\n\n\n\n$ sudo apt install libwxgtk3.2-dev\n\n\n\n\n10.6 ¿Qué framework elegir?\n\n\n\nFrameworkLenguajeUso profesionalQtC++⭐⭐⭐⭐⭐GTKC / C++⭐⭐⭐⭐SDL2C/C++⭐⭐⭐⭐wxWidgetsC++⭐⭐⭐\n\n\n\nRecomendación práctica:\n\n\n\n\nAplicación seria → Qt\n\n\n\nIntegración Linux pura → GTK\n\n\n\nJuego o multimedia → SDL2\n\n\n\n\n10.7 Dependencias base necesarias (stack profesional)\n\n\n\nPara GUI avanzada:\n\n\n\n$ sudo apt install \\\nlibgl1-mesa-dev \\\nmesa-utils \\\nlibx11-dev\n\n\n\n10.8 Diferencia entre app gráfica y app de consola\n\n\n\nAspectoConsolaGUIEntradatecladoeventosSalidatextorender gráficoModelosecuencialevent-drivenComplejidadbajaalta\n\n\n\nLa GUI funciona mediante event loop, no mediante flujo lineal.\n\n\n\n10.9 Aceleración gráfica (nivel ingeniería)\n\n\n\nSi la app requiere alto rendimiento:\n\n\n\nOpenGL\n\n\n\n$ sudo apt install libglu1-mesa-dev\n\n\n\n\nVulkan\n\n\n\n$ sudo apt install libvulkan-dev\n\n\n\n\nQt puede integrarse directamente con ambos\n\n\n\nPara programar aplicaciones gráficas completas en C/C++ y Debian es una plataforma excelente para ello.\n\n\n\nEl stack profesional recomendado sería:\n\n\n\n⭐ C++ + Qt + CMake + GCC/Clang\n\n\n\n11. Conclusión\n\n\n\nInstalar C/C++ en Debian 13 no es únicamente añadir un compilador al sistema. Significa abrir la puerta al desarrollo de software en su forma más fundamental y rigurosa.\n\n\n\nC proporciona comprensión profunda del sistema.C++ añade herramientas modernas sin sacrificar rendimiento.\n\n\n\nDebian, gracias a su filosofía de estabilidad y software libre, constituye una base ideal para:\n\n\n\n\nEnseñanza técnica\n\n\n\nDesarrollo profesional\n\n\n\nInvestigación\n\n\n\nIngeniería de sistemas\n\n\n\n\nLa combinación Debian + GCC + herramientas GNU representa uno de los entornos más sólidos que existen en la industria.\n\n\n\nQuien domina C/C++ no solo aprende a programar; aprende a pensar como lo hacen los sistemas.\n\n\n\n12. Referencias\n\n\n\n\nDocumentación oficial GNU GCC\n\n\n\nEstándares ISO C y C++\n\n\n\nManuales GNU/Linux (man gcc, man g++)\n\n\n\nThe C Programming Language — Kernighan &amp; Ritchie\n\n\n\nThe C++ Programming Language — Bjarne Stroustrup\n\n\n\nDebian Documentation Project\n\n\n\nGNU Project Documentation\n\n\n                    \n                    \n                    \n                  Nuestra puntuación\r\n                           ¡Haz clic para puntuar esta entrada!\r\n                                   \r\n                               (Votos: 0  Promedio: 0)   \n\n\nAnuncio\nMe gusta esto:Me gusta Cargando...Comparte en las redes sociales...\n\n\t\n\t\n\t\n\n\t\n\tDescubre más desde javiercachon.com\n\t\n\n\t\n\tSuscríbete y recibe las últimas entradas en tu correo electrónico.\n\t\n\n\t\n\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tEscribe tu correo electrónico…\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tSuscribirse\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\n\t\n\t\n\t\n\n\n\n\t\t\n\t\t\n\t\t\t\n\n\n\t\n\n\n   Sobre el autor      Javier Cachón Garrido  Javier Cachón Garrido es un experto en informática en la administración de sistemas, el desarrollo de software, apasionado por el código abierto y la educación tecnológica. Como fundador de JavierCachon.com, impulsa la formación en GNU/Linux y software libre, promoviendo el aprendizaje accesible y colaborativo. Su misión es democratizar el conocimiento en TI, ofreciendo recursos gratuitos y de calidad para profesionales y entusiastas del sector.\r\n\r\nActualmente trabaja en la multinacional NTT DATA España como Desarrollador junior con Inteligencia Artificial en Python en entornos Azure Cloud.\r\n\r\nEs un profeta y predicador que evangeliza la tecnología, la informática y telecomunicaciones, acompáñale en su aventura y pasión por los sistemas operativos abiertos GNU/Linux.  \n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t  Email  \n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t   \n\t\t\t\t Anterior  Guía para instalar el lenguaje de programación Rust completo en Debian 13. Siguiente   Guía técnica para instalar y configurar Google Antigravity en Debian 13. \n\t\t  Entradas relacionadas  \t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t \t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tManjaro Linux: la alternativa a Arch Linux más fácil de usar\n\t\t\t\n\t\t\t\t\t\n\t\t\t\tDeja un comentario\t\t\t\n\n\t\t\t / Informática, Sistemas / Por \t\t\t\n\t\t\t\t\n\t\t\t\tJavier Cachón Garrido\t\t\t\n\t\t\t\n\t\t\n\n\t\t /  31 de enero de 2026 a las 15:39  / ArchLinux, Linux, Manjaro\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tAnuncio ¿Qué es Manjaro Linux? Cuando me acerqué por primera vez a Manjaro Linux, tuve la sensación de estar ante una distribución que había entendido&hellip;\t\t\t\n\t\t\t\t\t\n\t\t\t\tLeer más »\n\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t \t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tGIMP: El mejor editor de imágenes gratuito en Debian Linux.\n\t\t\t\n\t\t\t\t\t\n\t\t\t\tDeja un comentario\t\t\t\n\n\t\t\t / Informática, Sistemas / Por \t\t\t\n\t\t\t\t\n\t\t\t\tJavier Cachón Garrido\t\t\t\n\t\t\t\n\t\t\n\n\t\t /  19 de abril de 2024 a las 18:38  / Apps, Debian Linux, Linux, LTS, Ubuntu Linux\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tAnuncio GIMP es un editor de imágenes multiplataforma disponible para GNU/Linux, macOS, Windows y más sistemas operativos. Es software gratuito , puedes cambiar su código&hellip;\t\t\t\n\t\t\t\t\t\n\t\t\t\tLeer más »\n\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t \t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tInstalar Tilix en Fedora Linux 40: Guía Completa.\n\t\t\t\n\t\t\t\t\t\n\t\t\t\tDeja un comentario\t\t\t\n\n\t\t\t / Informática, Sistemas / Por \t\t\t\n\t\t\t\t\n\t\t\t\tJavier Cachón Garrido\t\t\t\n\t\t\t\n\t\t\n\n\t\t /  1 de mayo de 2024 a las 22:48  / Apps, Fedora Linux, Linux\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tAnuncio Tilix es un emulador avanzado de terminal de mosaico GTK3 que sigue las pautas de interfaz humana de (HIG) de GNOME. Este nuevo terminal&hellip;\t\t\t\n\t\t\t\t\t\n\t\t\t\tLeer más »\n\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t \t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tKernel Liquorix: Alternativa Eficiente para Debian y Ubuntu.\n\t\t\t\n\t\t\t\t\t\n\t\t\t\tDeja un comentario\t\t\t\n\n\t\t\t / Informática, Sistemas / Por \t\t\t\n\t\t\t\t\n\t\t\t\tJavier Cachón Garrido\t\t\t\n\t\t\t\n\t\t\n\n\t\t /  3 de abril de 2024 a las 14:50  / Debian Linux, Linux, LTS, Ubuntu Linux\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tAnuncio El kernel es un software que constituye una parte fundamental del sistema operativo, y se define como la parte que se ejecuta en modo&hellip;\t\t\t\n\t\t\t\t\t\n\t\t\t\tLeer más »\n\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t     \r\n    \r\n            \r\n            \r\n            \r\n                \r\n                    0\r\n                    0\r\n                    votos\r\n                Article Rating\r\n                \r\n                \r\n                    \r\n                            \r\n            \r\n                \r\n                                            \r\n                             Suscribirse\r\n                            \r\n                        \r\n                                            \r\n                                                \r\n                             Inicio de sesión                        \r\n                    \r\n                \r\n                                                    \r\n                                                    \r\n                                Notificar de \r\n                                \r\n                                    \r\n                                                                                    nuevo seguimiento de los comentarios\r\n                                                                                                                                nuevas respuestas a mis comentarios\r\n                                                                                \r\n                                \r\n                                                                    \r\n                                        \r\n                                    \r\n                                                                    \r\n                                    \r\n                                \r\n                                                            \r\n                                                \r\n                            \r\n                                        \r\n                                        \r\n                        \r\n                            \r\n                                                                                                        \r\n                                                                            \r\n                                                \r\n                \r\n                Label\r\n                \r\n                \r\n                        \r\n                            \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                {}\r\n                                [+]\r\n                            \r\n                            \r\n        \r\n                    \r\n                                        \r\n                        \r\n                    \r\n                    \r\n                        \r\n                                                        \r\n                        \r\n                                \r\n                    \r\n                        \r\n                                    \r\n                    \r\n                                    \r\n                Name*\r\n                            \r\n                        \r\n                                    \r\n                    \r\n                                    \r\n                Email*\r\n                            \r\n                            \r\n                                            \r\n                        \r\n                                        \r\n                    Website\r\n                                    \r\n                        \r\n                \r\n                    \r\n                                                \r\n                        \r\n                        \r\n                                \r\n                                    \r\n                                    \r\n                                \r\n                            \r\n                    \r\n                            \r\n        \r\n                \r\n                    \r\n        \r\n                            \r\n                                        \r\n                                    \r\n                        \r\n                \r\n                    \r\n                            \r\n                \r\n                                        \r\n                                        \r\n                        \r\n                            \r\n                                                                                                        \r\n                                                                            \r\n                                                \r\n                \r\n                Label\r\n                \r\n                \r\n                        \r\n                            \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                \r\n                                {}\r\n                                [+]\r\n                            \r\n                            \r\n        \r\n                    \r\n                                        \r\n                        \r\n                    \r\n                    \r\n                        \r\n                                                        \r\n                        \r\n                                \r\n                    \r\n                        \r\n                                    \r\n                    \r\n                                    \r\n                Name*\r\n                            \r\n                        \r\n                                    \r\n                    \r\n                                    \r\n                Email*\r\n                            \r\n                            \r\n                                            \r\n                        \r\n                                        \r\n                    Website\r\n                                    \r\n                        \r\n                \r\n                    \r\n                                                \r\n                        \r\n                        \r\n                                \r\n                                    \r\n                                    \r\n                                \r\n                            \r\n                    \r\n                            \r\n        \r\n                \r\n                    \r\n        \r\n                            \r\n                                        \r\n                                    \r\n                        \r\n                \r\n                    \r\n                        \r\n                \r\n                    \r\n                        0 Comments                    \r\n                                        \r\n                    \r\n                                                    \r\n                                                                        Más antigua\r\n                                                                        \r\n                                \r\n                                                                            Más reciente\r\n                                                                                La Mayoría De Los Votaron\r\n                                                                        \r\n                            \r\n                                                \r\n                    \r\n                \r\n                                \r\n                                        \r\n                                            \r\n                \r\n            \r\n                \r\n        \r\n    \r\n    \r\n    \t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\t\t\n\t\tBuscarBuscar\r\n  \r\n\r\nJavier Cachón Garrido\r\n              \r\n\t\r\n\r\nLa Cloud de JC\r\n\r\n\t\r\n\r\n¿Donde estás?javiercachon.com &gt; Blog &gt; Desarrollo &gt; Guía completa para instalar el lenguaje de programación C/C++ en Debian 13.Síguenos\n\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tYouTube  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tGitHub  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tTwitch  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tX  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tInstagram  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tTikTok  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tLinkedIn  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tFacebook  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tWordPress  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tTelegram  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tMastodon  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\tDonar por PayPal:\r\n\r\n\r\nRefrán\t\t\t“UNIX es muy simple, solo que se necesita ser un genio para entender su simplicidad”.\n\n\n\t\t\r\n\r\n\r\nArchivo de entradas de blog\t\tArchivo de entradas de blog\n\t\t\n\t\t\t\n\t\t\tElegir el mes\n\t\t\t\t junio 2026 &nbsp;(4)\n\t mayo 2026 &nbsp;(3)\n\t febrero 2026 &nbsp;(18)\n\t enero 2026 &nbsp;(3)\n\t noviembre 2025 &nbsp;(4)\n\t octubre 2025 &nbsp;(3)\n\t agosto 2025 &nbsp;(2)\n\t julio 2025 &nbsp;(2)\n\t junio 2025 &nbsp;(2)\n\t mayo 2025 &nbsp;(13)\n\t abril 2025 &nbsp;(2)\n\t marzo 2025 &nbsp;(1)\n\t diciembre 2024 &nbsp;(1)\n\t noviembre 2024 &nbsp;(10)\n\t mayo 2024 &nbsp;(15)\n\t abril 2024 &nbsp;(25)\n\t marzo 2024 &nbsp;(2)\n\t enero 2024 &nbsp;(3)\n\t diciembre 2023 &nbsp;(12)\n\n\t\t\n\n\t\t\tNube de CategoríasComercial (6)\nDesarrollo (43)\nDesarrollo Web (21)\nInformática (71)\nJava (9)\nMicrosoft (4)\nOtra (4)\nPolítica y Sindicatos (1)\nSistemas (83)\nSoporte técnico IT (8)\nTelecomunicaciones (3)\nNube de EtiquetasAEAT (2)\nApps (65)\nArchLinux (2)\nBases Datos (1)\nC/C++ (1)\nCCOO (1)\nDebian Linux (77)\nDeclaración de la Renta (1)\ndonaciones (1)\nEspaña (2)\nFedora (2)\nFedora Linux (21)\nFiscalidad (2)\nIA (1)\nIDE (15)\nJava (17)\nLAMP (1)\nLinux (71)\nLinuxMint (1)\nLTS (63)\nManjaro (2)\nModelo 651 (1)\nMX-Linux (24)\nMXLinux (3)\nNetwork (2)\nNttData (1)\nOpenJDK (2)\nOpenSource (2)\nOpenSSH (1)\nOptimus (1)\nOracle (8)\nPython3 (2)\nRust (1)\nSamba (1)\nServidor (1)\nSoftware Libre (1)\nSQL (1)\nTomcat (1)\nUbuntu Linux (34)\nVSC (1)\nWildFly (1)\nWindows (3)\nWordPress (1)\nXFCE (2)\nzRAM (1)\nMi canal Youtube: @javicachon\r\n\r\n\r\n\r\n\r\n\r\nSuscríbete al blog por correo electrónico\n\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\tIntroduce tu correo electrónico para suscribirte a este blog y recibir avisos de nuevas entradas.\n\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tDirección de correo electrónico\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tSuscribir\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\tÚnete a otros 24 suscriptores\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\nEstadísticas del sitio14.426 visitas\n\nEntradas recientes\n\n\n¿Administrar un iPhone o iPad en Debian Linux 13 es posible o incompatible?\nGuía Práctica: Regularización de Donaciones voluntarias a tu blog en España.\nGuía Técnica: Cómo Regularizar Legalmente los Ingresos de PayPal y Stripe ante Hacienda española.\nRegularización Fiscal en el Ecosistema Digital en España: Guía de Supervivencia para Creadores, Instructores y Desarrolladores\nUna nueva etapa en mi vida, un compromiso eterno: Mi llegada a NTT DATA\n\n\n\nComentarios recientes\n\n\nNo hay comentarios que mostrar.\n\r\n\r\n\r\n RSS Feed de Ojosdegato.¿Administrar un iPhone o iPad en Debian Linux 13 es posible o incompatible? 14 de junio de 2026 a las 18:40La relación entre el ecosistema de Apple y el software libre siempre ha sido compleja. Tradicionalmente, Apple ha mantenido una política de jardín vallado (walled garden) con tecnologías de código cerrado y privado priorizando de forma absoluta sus propios sistemas operativos (macOS) y, secundariamente, Windows a través de las versiones oficiales de iTunes. La entrada [&hellip;] Javier Cachón GarridoGuía Práctica: Regularización de Donaciones voluntarias a tu blog en España. 6 de junio de 2026 a las 17:51Cuando un lector, estudiante o usuario de cualquier parte del mundo decide enviar una cantidad económica a través de PayPal de forma puramente altruista para agradecer un tutorial o manual, el ordenamiento jurídico español clasifica esta operación como una donación de bien mueble (dinero) entre particulares. Está sujeta al Impuesto sobre Sucesiones y Donaciones (ISD), [&hellip;] Javier Cachón GarridoGuía Técnica: Cómo Regularizar Legalmente los Ingresos de PayPal y Stripe ante Hacienda española. 6 de junio de 2026 a las 13:32En este artículo técnico voy a desglosar de forma exhaustiva, paso a paso y con total transparencia, el flujo de trabajo fiscal automatizado (nuestro &quot;script de cumplimiento&quot;) para tener el saldo de estas plataformas 100% regularizado ante la Agencia Tributaria (AEAT) antes de transferir un solo céntimo a vuestro banco físico. La entrada Guía Técnica: [&hellip;] Javier Cachón GarridoRegularización Fiscal en el Ecosistema Digital en España: Guía de Supervivencia para Creadores, Instructores y Desarrolladores 4 de junio de 2026 a las 16:57Advertencia seria y directa de un consultor fiscal: Si tienes un blog monetizado, ten cuidado con Hacienda: debes regular tus ganancias desde el primer céntimo de euro. La entrada Regularización Fiscal en el Ecosistema Digital en España: Guía de Supervivencia para Creadores, Instructores y Desarrolladores se publicó primero en javiercachon.com. Javier Cachón GarridoUna nueva etapa en mi vida, un compromiso eterno: Mi llegada a NTT DATA 30 de mayo de 2026 a las 15:13Gracias, NTT DATA, por devolverme la paz, por confiar en mi capacidad tecnológica, por demostrarme que valió la pena todo el esfuerzo invertido en estudiar y por darme el mejor lugar del mundo para trabajar. ¡El futuro es plenamente brillante y lo construiremos juntos!, trabajaré por cumplir los intereses de la empresa, ya sabeis, ¡El [&hellip;] Javier Cachón Garridojaviercachon.com por Javier Cachón Garrido tiene licencia bajo CC BY 4.0\r\n\r\n\r\n\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n                \n                Home\n                \n                Acerca\n                \n                Contacto\n                \n                Blog\n                \n                Libros\n                \n                Dir\n                \n                \n                \n                \n\n\t\n                \n                Cursos\t\n                \n                Estudiantes\t\n                \n                Escritorio Tutor\t\n                \n                Escritorio Descargas\n\n                \n                Apps\n                \n                Foros\n                \n                Login\n                \n                \n                \n                \n\n\t\n                \n                Login Tutor\t\n                \n                Login Descargas\n\n                \n                TiendaESEN\t\t\n\t\t\t\t\n\t\t\t  Email  \t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n                \n                Home\n                \n                Acerca\n                \n                Contacto\n                \n                Blog\n                \n                Libros\n                \n                Dir\n                \n                \n                \n                \n\n\t\n                \n                Cursos\t\n                \n                Estudiantes\t\n                \n                Escritorio Tutor\t\n                \n                Escritorio Descargas\n\n                \n                Apps\n                \n                Foros\n                \n                Login\n                \n                \n                \n                \n\n\t\n                \n                Login Tutor\t\n                \n                Login Descargas\n\n                \n                TiendaESEN\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\n\t\t\n\t\t\t\n\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\tInformación de contacto y mapa.\r\n\r\n    \r\n        \r\n            📌 JavierCachon Academy TIC\r\n            👤 Javier Cachón Garrido\r\n            🏠 Comunidad de Madrid, Vicálvaro.\r\n            📞 +34 717 70 91 51\r\n            ✉️ soporte@javiercachon.com\r\n            🌍 https://javiercachon.com/\r\n            \n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\tEntradas recientes.\n\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t¿Administrar un iPhone o iPad en Debian Linux 13 es posible o incompatible?\n\t\t\t\t\t\t\t\t\t\t\t14 de junio de 2026 a las 20:40\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía Práctica: Regularización de Donaciones voluntarias a tu blog en España.\n\t\t\t\t\t\t\t\t\t\t\t6 de junio de 2026 a las 19:51\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía Técnica: Cómo Regularizar Legalmente los Ingresos de PayPal y Stripe ante Hacienda española.\n\t\t\t\t\t\t\t\t\t\t\t6 de junio de 2026 a las 15:32\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tRegularización Fiscal en el Ecosistema Digital en España: Guía de Supervivencia para Creadores, Instructores y Desarrolladores\n\t\t\t\t\t\t\t\t\t\t\t4 de junio de 2026 a las 18:57\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tUna nueva etapa en mi vida, un compromiso eterno: Mi llegada a NTT DATA\n\t\t\t\t\t\t\t\t\t\t\t30 de mayo de 2026 a las 17:13\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tLa vivienda nos cuesta la vida trabajamos para vivir no para pagar\n\t\t\t\t\t\t\t\t\t\t\t30 de mayo de 2026 a las 14:53\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía Técnica: Cómo migrar de XFCE a Cinnamon en Debian 13 (Trixie) sin reinstalar el sistema operativo.\n\t\t\t\t\t\t\t\t\t\t\t24 de mayo de 2026 a las 12:07\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía técnica completa de la paquetería en Debian, Ubuntu, MX Linux y Linux Mint.\n\t\t\t\t\t\t\t\t\t\t\t17 de febrero de 2026 a las 14:17\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tConfiguración y puesta a punto de MX Linux 25 «Infinity» con escritorio XFCE.\n\t\t\t\t\t\t\t\t\t\t\t16 de febrero de 2026 a las 15:01\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía técnica para instalar y configurar Google Antigravity en Debian 13.\n\t\t\t\t\t\t\t\t\t\t\t15 de febrero de 2026 a las 22:58\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía completa para instalar el lenguaje de programación C/C++ en Debian 13.\n\t\t\t\t\t\t\t\t\t\t\t14 de febrero de 2026 a las 15:01\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía para instalar el lenguaje de programación Rust completo en Debian 13.\n\t\t\t\t\t\t\t\t\t\t\t14 de febrero de 2026 a las 13:08\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía de instalación completa del lenguaje de programación Python en Debian 13 (Trixie)\n\t\t\t\t\t\t\t\t\t\t\t13 de febrero de 2026 a las 21:58\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tEl arte del equilibrio: zRAM de 16 GB y swap de 30 GB física en Debian 13\n\t\t\t\t\t\t\t\t\t\t\t12 de febrero de 2026 a las 14:06\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tTrabajo remoto profesional en Debian 13 XFCE: Remmina, TigerVNC y PuTTY.\n\t\t\t\t\t\t\t\t\t\t\t9 de febrero de 2026 a las 19:31\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tLa tienda GNOME Software en XFCE sobre Debian 13: integración completa con Flatpak y Snap.\n\t\t\t\t\t\t\t\t\t\t\t8 de febrero de 2026 a las 20:05\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tGuía para instalar Debian 13 con XFCE en instalador Calamares paso a paso.\n\t\t\t\t\t\t\t\t\t\t\t8 de febrero de 2026 a las 16:33\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tConfiguración y Puesta a Punto de Debian Linux 13 LTS “Trixie” con escritorio XFCE\n\t\t\t\t\t\t\t\t\t\t\t7 de febrero de 2026 a las 17:58\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tEl Renacimiento del Vídeo en Debian 13: Mi viaje con Haruna\n\t\t\t\t\t\t\t\t\t\t\t7 de febrero de 2026 a las 13:32\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tInstalando Snap en Debian 13 y corrigiendo que la App no aparezca en el menú app de XFCE\n\t\t\t\t\t\t\t\t\t\t\t6 de febrero de 2026 a las 15:09\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\n\n\n\n\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\tLicencia\r\n    \r\n        \r\n    \r\n\r\n\r\n    \r\n    \r\n        Este trabajo tiene licencia CC BY 4.0. Para ver una copia de esta licencia, visita \r\n        CC BY 4.0.\r\n    \r\n\r\n\r\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\tAlojado en:\r\n\r\n    \r\n        \r\n    \r\n    \r\n        javiercachon.com está alojado en Hostinger.\r\n        Hostinger es una plataforma global de hosting con presencia en más de 150 países. Ofrece servicios de alojamiento web, dominios, correo electrónico y herramientas para crear sitios web.\r\n        Es reconocida por su excelente relación calidad-precio y su enfoque en la accesibilidad para emprendedores y pymes.\r\n    \r\n\r\n\r\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\tLicencias GPL:\r\n\r\n    \r\n        \r\n    \r\n    \r\n        GPL | AGPL | LGPL son licencias oficiales de \r\n        javiercachon.com\r\n        de código abierto, software libre y GNU/Linux para poder crear contenido\r\n        con libertad y tranquilidad.\r\n    \r\n\r\n\r\nSíguenos\n\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tYouTube  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tGitHub  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tTwitch  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tX  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tX  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tInstagram  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tTikTok  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tLinkedIn  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tFacebook  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tWordPress  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tTelegram  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tMastodon  \t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\tRegistrador de Dominios.\r\n\r\n    \r\n        \r\n    \r\n    \r\n        javiercachon.com el dominio y SSL está alojado en Namecheap, que es un registrador de nombres de dominio acreditado por la ICANN que ofrece servicios de registro de dominios y alojamiento web.\r\n        Con sede en Phoenix, Arizona (EE. UU.), es un proveedor reconocido por su accesibilidad y precios competitivos, con más de 11 millones de usuarios registrados y 10 millones de dominios administrados.\r\n    \r\n\r\n\r\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\tLegal:Política de privacidad\nPolítica de cookies\nAviso legal\nCondiciones de uso.\nAccesibilidad\nTérminos y condiciones\nMastodon\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\n\n\n\n\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\tCopyright &copy; 2026 | javiercachon.com | Todos los derechos reservados | Creado en Tema Astra para WordPress\n\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\n\n\n\t\n\t\n\n\n\n\n    \n    \n        \n            \n\n                \n                \n                    \n                    \n                        \n                        \n                        \n                        \n                    \n                    \n                        \n                                                            \n                                                        javiercachon.com                        \n                    \n                    \n                        Welcome back\n                        Sign In\n                        \n                        Sign in to access your downloads, manage your account, and continue where you left off.\n                    \n                \n\n                \n                \n\n                    \n                    \n                        \n                    \n\n                    \n                        Login Account\n                        Enter your credentials to access your account\n                    \n\n                    \n                    \n\n                        \n\n                        ID de accesoContraseña\n                        \n                                                \t\t\n\t\t\n                            \n                                \n                                \n                                    \n                                \n                                Recuérdame                            \n                            ¿Has olvidado la contraseña?\n                        \n\n                        \n\n                        \n                            \n                            Sign In                        \n\n                    \n\n                    \n                    \n                                            \n                            Don't have an account?                            Regístrate ahora\n                        \n                    \n                \n\n            \n        \n    \n\n\n\n\n\n            🌐 Traducir »&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;        \r\n            \r\n            \r\n                \r\n                    \r\n                    \r\n                        \r\n                    \r\n                \r\n                \r\n                    \r\n                        \r\n                        Loading...\r\n                    \r\n                \r\n            \r\n        \r\n\r\n        \r\n        \n\t\n                \n                \tScroll al inicio\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\tDescubre más desde javiercachon.com\n\t\t\n\n\t\t\n\t\tSuscríbete ahora para seguir leyendo y obtener acceso al archivo completo.\n\t\t\n\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tEscribe tu correo electrónico…\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tSuscribirse\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\n\t\n\n\t\t\n\t\tSeguir leyendo\n\t\t\n\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\t\twpDiscuzInsert\n\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t¡Hola!\nHaz clic en uno de nuestros representantes a continuación para chatear por Telegram o envíanos un correo electrónico a soporte@javiercachon.com\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\tSoporte\n\t\t\t\tJavier Cachón Garrido\n\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\tPowered by Telegram Button\n\t\t\t\n\t\t\t\n\t\t\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t¡Ayuda!\n\t\t\t\n\t\n\n     \n\n\n\n\n%d",
+      "title": "https://javiercachon.com/guia-completa-para-instalar-el-lenguaje-de-programacion-c-c-en-debian-13/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529503311,
+        "end": 1789529504180
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.182Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529504182,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a84539b6001zjVyvzJvcEBjwP",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84534b4001eIy1GyL7Xcl8La",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 45324,
+      "output": 265,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 45589,
+      "headroom": -6733,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.182Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.185Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.188Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.188Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.188Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.190Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.190Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.214Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 45589,
+  "providerTokens": 45589,
+  "estimatedInputTokens": 17860,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 45324,
+    "cacheRead": 0,
+    "output": 265
+  },
+  "overflow": true,
+  "headroom": -6733,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.215Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.227Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.227Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.232Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.232Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.233Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.233Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.234Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529504756,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8453bf3001B6GbJbh5wUz3lC",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84539e9001ohZ4bYxd2uSvf5",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.758Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.758Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.759Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.760Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529504760,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8453bf6001KDDx8s0V5jG2V7",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84539e9001ohZ4bYxd2uSvf5",
+    "type": "text",
+    "text": "Conversation summary: La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto.  Let me search the web for La compilación de este proyecto necesita un compilador que no está en esta máquina.\n\nTitle: What did we do so\n\nUser turns:\n  1. La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto.\n  2.",
+    "time": {
+      "start": 1789529504759,
+      "end": 1789529504759
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529504761,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8453bf8001QJw0CwiePIclFi",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a84539e9001ohZ4bYxd2uSvf5",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 86841,
+      "output": 519,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 87360,
+      "headroom": -48504,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.763Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.763Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529504763,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8453bfb001XzGhVivnTdZoee",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8453bfa001egoHOHp8H24ZJA",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789529504763,
+      "end": 1789529504763
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.763Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.765Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.765Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.766Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.766Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.770Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.771Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.774Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.774Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.774Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.774Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.843Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529504843,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8453c490019ECScpHMARW3e9",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8453bfd001wjf68Hn93kO2qm",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.844Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.844Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529504845,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8453c4c001XLh45WmikVUI12",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8453bfd001wjf68Hn93kO2qm",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789529504845,
+      "end": 1789529504845
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.846Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529504846,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "part": {
+    "id": "prt_0a8453c4d001zCOrWaCgkdpsVb",
+    "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+    "messageID": "msg_0a8453bfd001wjf68Hn93kO2qm",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 9068,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9141,
+      "headroom": 29715,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.846Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.846Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.847Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.847Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.850Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.850Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.851Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789529504852,
+  "sessionID": "ses_f57bade9dffeojYvWiQ06BB9gE"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.853Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.853Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.3QAwEAxE4Q",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.853Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.3QAwEAxE4Q",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.854Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.3QAwEAxE4Q",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:44.854Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

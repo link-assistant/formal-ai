@@ -1,0 +1,1 @@
+编写 Python 函数 is_isogram(word),当 word 是 isogram 时返回 True。

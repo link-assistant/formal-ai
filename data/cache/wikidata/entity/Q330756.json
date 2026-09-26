@@ -1,0 +1,184 @@
+{
+  "entities": {
+    "Q330756": {
+      "type": "item",
+      "id": "Q330756",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Transcaucasian Democratic Federative Republic"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Закавказская демократическая федеративная республика"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "外高加索民主聯邦共和國"
+        },
+        "es": {
+          "language": "es",
+          "value": "República Democrática Federal de Transcaucasia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "short-lived South Caucasian state (1918)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государственное образование в Закавказье, провозглашённое в 1918 году"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "歷史上的國家"
+        },
+        "es": {
+          "language": "es",
+          "value": "República desaparecida"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "TDFR"
+          },
+          {
+            "language": "en",
+            "value": "ZDFR"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ЗДФР"
+          },
+          {
+            "language": "ru",
+            "value": "Закавказская федерация"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "外高加索民主主義聯邦共和國"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Republica Democrática Federal de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "República Democratica Federativa de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "República Federativa Democrática Transcaucásica"
+          },
+          {
+            "language": "es",
+            "value": "Republica Federativa Democratica de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "Republica Federal de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "República Democrática Federativa de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "República Federal de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "República Federativa Democratica Transcaucásica"
+          },
+          {
+            "language": "es",
+            "value": "Federación Transcaucásica"
+          },
+          {
+            "language": "es",
+            "value": "República Democrática Federal de Transcaucásia"
+          },
+          {
+            "language": "es",
+            "value": "Republica Democrática Federal de Transcaucásia"
+          },
+          {
+            "language": "es",
+            "value": "Republica Federativa Democrática Transcaucásica"
+          },
+          {
+            "language": "es",
+            "value": "Republica Democratica Federativa de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "República Federativa Democrática de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "Republica Federativa Democrática de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "Federacion Transcaucásica"
+          },
+          {
+            "language": "es",
+            "value": "Republica Democratica Federal de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "Republica Federativa Democratica Transcaucasica"
+          },
+          {
+            "language": "es",
+            "value": "Federacion Transcaucasica"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Transcaucasian Democratic Federative Republic"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Закавказская демократическая федеративная республика"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "外高加索民主聯邦共和國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "República Democrática Federal de Transcaucasia"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

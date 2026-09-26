@@ -1,0 +1,17 @@
+mod composition;
+mod composition_search;
+mod concepts;
+mod fragment_catalog;
+mod ir_lowering;
+mod ledger;
+mod multilingual;
+mod no_memorization;
+mod oeis;
+mod procedure_text;
+mod program_ir;
+mod python_docs;
+mod rosetta;
+mod routing;
+mod structural_composition;
+mod task_spec;
+mod wikifunctions;

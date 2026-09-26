@@ -390,7 +390,10 @@ requirements and run the requirements/document/traceability gates.
 Completed 2026-09-15: the delta query found no identifier beyond the already
 audited #1137 boundary. R710-20 and R710-30 moved from `still-broken` to
 `works-now` only after their #991 and #990 production regressions were checked,
-making the current tally 31/0/1/0. The coding rows and vision now publish the
+making the current tally 31/0/1/0. That tally is for R710-01…32 only: the
+2026-09-15 continuation adds R710-R1…R10 to the audit, and R710-R3, R710-R7 and
+R710-R8 record explicitly partial or open residuals, so the audit grew after
+this tally was written. The coding rows and vision now publish the
 committed 20/20 HumanEval and MBPP results with the 20/20 and 18/20 cold-cache
 controls kept distinct. The still-open #1137 CI gap is implemented in this PR:
 the complete PR diff derives an agentic-routing signal that enables the full
@@ -449,9 +452,9 @@ Local proof on the final implementation commit `8e770ded7`:
 - [x] self-hosting metric passes and attributes only Formal-AI-authored lines
 - [x] PR body reports refreshed scores, requirements verdicts, evidence,
       release proof, and exact limitations
-- [ ] normal fast-forward delivery after every CI-derived repair
-- [ ] every required and informational PR workflow finishes without failure
-- [ ] remote head equals local HEAD; PR is mergeable; worktree is clean
+- [x] normal fast-forward delivery after every CI-derived repair <!-- done: PR #888 merged 2026-09-16 as be8fd3174; every workflow green on the final head -->
+- [x] every required and informational PR workflow finishes without failure <!-- done: PR #888 merged 2026-09-16 as be8fd3174; every workflow green on the final head -->
+- [x] remote head equals local HEAD; PR is mergeable; worktree is clean <!-- done: PR #888 merged 2026-09-16 as be8fd3174; every workflow green on the final head -->
 
 Do not stop at “pending” for the final head. A failed job is new evidence and
 re-enters the appropriate leaf. A cancelled superseded run is not evidence
@@ -459,7 +462,11 @@ about the final head.
 
 The strict local metric passed after the append-only retraction: 0.15%, with 58
 of 38,373 behavior-changing lines attributed across three fully evidenced
-Formal AI commits. Documentation, captured evidence, and the retracted claim
+Formal AI commits. That is the *pull-request-range* measurement, taken over
+`origin/main..HEAD` for PR #888; it is not the release figure — the
+`data/meta/self-hosting-ledger.lino` v0.350.0 row reads 171 bp for the release
+window and 389 bp trailing. Both numbers are true and each names its range.
+Documentation, captured evidence, and the retracted claim
 contribute nothing to the numerator.
 
 The first final-head run exposed a clean-runner-only contradiction in the Rust
@@ -510,7 +517,7 @@ Planned implementation and proof, frozen before editing the wrapper:
 - [x] add the negative non-empty-shrink test and keep the final builder status;
 - [x] run the focused retry target, CI/CD source tests, format/diff checks, the
       registered Rust gate, and Actionlint before a normal fast-forward push;
-- [ ] observe every workflow again on the resulting exact head.
+- [x] observe every workflow again on the resulting exact head. <!-- done: PR #888 merged 2026-09-16 as be8fd3174; every workflow green on the final head -->
 
 The requested live Formal AI review failed three times in external Agent
 session `ses_f5b1b2c02ffevk17mDiLUjwH9T`. The task supplied the upstream error

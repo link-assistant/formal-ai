@@ -1,0 +1,22 @@
+self_ast_census
+  target src/coding/program_ir/infer.rs
+  language rust
+  fidelity signature
+  byte_len 19886
+  line_count 469
+  content_id source_module_1279b016171fcbff
+  symbol_count 13
+  symbols
+    function infer_node 5 255
+    function restore_binding 257 267
+    function iterable_element 269 277
+    function destructured_types 279 288
+    function check_reduction_fragment 290 316
+    function check_combination_fragment 318 348
+    function unify 350 397
+    function runtime_message 399 401
+    const FRAGMENT_TYPE_VARIABLE_OFFSET 403 403
+    const FRAGMENT_TYPE_VARIABLE_STRIDE 407 407
+    function fragment_type_variable 414 433
+    function contains_unknown 435 446
+    function resolve_type 448 469

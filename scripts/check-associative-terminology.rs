@@ -71,9 +71,9 @@ const EXCLUDE_PATTERNS: &[&str] = &[
 /// Generated bundles, vendored artifacts, and append-only records we never
 /// author the terminology of by hand.
 const EXCLUDE_FILE_FRAGMENTS: &[&str] = &[
-    "/src/web/app.js",
-    "/src/web/formal_ai_worker",
-    "/src/web/worker/",
+    "/js/app.js",
+    "/js/formal_ai_worker",
+    "/js/worker/",
     "/package-lock.json",
     "/CHANGELOG.md",
     // This lint necessarily embeds graph-named routes/modules as documentation
@@ -514,7 +514,7 @@ mod tests {
         // Semantic Scholar's Graph API is an external citation, not our route —
         // even though it literally contains `/graph/v1/`.
         collect_route_violations(
-            "src/web/tests/connectivity.js",
+            "js/tests/connectivity.js",
             "\"https://api.semanticscholar.org/graph/v1/paper/search?query=formal-ai\"",
             &mut routes,
         );

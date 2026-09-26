@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q207172": {
+      "type": "item",
+      "id": "Q207172",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "scalpel"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "скальпель"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "手术刀"
+        },
+        "es": {
+          "language": "es",
+          "value": "escalpelo"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "sharp bladed instrument used for surgery"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "хирургический инструмент"
+        },
+        "es": {
+          "language": "es",
+          "value": "instrumento quirúrgico"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "lancet"
+          },
+          {
+            "language": "en",
+            "value": "lance"
+          },
+          {
+            "language": "en",
+            "value": "hobby knife"
+          },
+          {
+            "language": "en",
+            "value": "X-Acto knife"
+          },
+          {
+            "language": "en",
+            "value": "surgical lance"
+          },
+          {
+            "language": "en",
+            "value": "surgical knife"
+          },
+          {
+            "language": "en",
+            "value": "bistoury"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ланцет"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "bisturí de diamante"
+          },
+          {
+            "language": "es",
+            "value": "bisturi"
+          },
+          {
+            "language": "es",
+            "value": "bisturi de diamante"
+          },
+          {
+            "language": "es",
+            "value": "bisturí"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -23,7 +23,7 @@ on:
     paths:
       - '**.rs'
       - '**/Cargo.toml'
-      - 'Cargo.lock'
+      - 'rust/Cargo.lock'
       - 'data/seed/**'
       - 'experiments/issue_840_task_ladder/**'
       - '.github/workflows/task-ladder.yml'

@@ -464,7 +464,7 @@ fn baseline_round_trips_without_losing_fields() {
     let path = repo.join("baseline.json");
     let mut source = denominator(61.5, 58.25);
     source.inventory = Some(Inventory {
-        roots: vec!["src/web".to_string()],
+        roots: vec!["js".to_string()],
         extensions: vec!["js".to_string()],
         unmeasured_list: "coverage/unmeasured.txt".to_string(),
     });
@@ -494,14 +494,14 @@ fn an_unknown_baseline_field_is_rejected() {
 
 fn inventory_fixture(name: &str) -> (PathBuf, Inventory) {
     let repo = temp_dir(name);
-    fs::create_dir_all(repo.join("src/web/worker")).unwrap();
-    fs::write(repo.join("src/web/measured.js"), "// measured\n").unwrap();
-    fs::write(repo.join("src/web/worker/mirror.js"), "// mirror\n").unwrap();
-    fs::write(repo.join("src/web/notes.md"), "not code\n").unwrap();
+    fs::create_dir_all(repo.join("js/worker")).unwrap();
+    fs::write(repo.join("js/measured.js"), "// measured\n").unwrap();
+    fs::write(repo.join("js/worker/mirror.js"), "// mirror\n").unwrap();
+    fs::write(repo.join("js/notes.md"), "not code\n").unwrap();
     (
         repo,
         Inventory {
-            roots: vec!["src/web".to_string()],
+            roots: vec!["js".to_string()],
             extensions: vec!["js".to_string()],
             unmeasured_list: "coverage/browser-unmeasured.txt".to_string(),
         },
@@ -511,9 +511,9 @@ fn inventory_fixture(name: &str) -> (PathBuf, Inventory) {
 #[test]
 fn inventory_accepts_measured_and_declared_files() {
     let (repo, inventory) = inventory_fixture("inventory-clean");
-    let measured = BTreeSet::from(["src/web/measured.js".to_string()]);
+    let measured = BTreeSet::from(["js/measured.js".to_string()]);
     let declared = parse_unmeasured_list(
-        "# comment\nsrc/web/worker/mirror.js\tRuns only under the Playwright suite\n",
+        "# comment\njs/worker/mirror.js\tRuns only under the Playwright suite\n",
     );
 
     let report = check_inventory(&repo, &inventory, &[], &measured, &declared);
@@ -524,13 +524,13 @@ fn inventory_accepts_measured_and_declared_files() {
 #[test]
 fn inventory_rejects_a_new_unmeasured_file() {
     let (repo, inventory) = inventory_fixture("inventory-new");
-    let measured = BTreeSet::from(["src/web/measured.js".to_string()]);
+    let measured = BTreeSet::from(["js/measured.js".to_string()]);
 
     let report = check_inventory(&repo, &inventory, &[], &measured, &[]);
 
     assert_eq!(
         report.undeclared,
-        vec!["src/web/worker/mirror.js".to_string()],
+        vec!["js/worker/mirror.js".to_string()],
         "a browser file with neither a test nor a declared reason must fail"
     );
     assert!(!report.is_clean());
@@ -540,11 +540,11 @@ fn inventory_rejects_a_new_unmeasured_file() {
 fn inventory_rejects_stale_and_missing_rows() {
     let (repo, inventory) = inventory_fixture("inventory-stale");
     let measured = BTreeSet::from([
-        "src/web/measured.js".to_string(),
-        "src/web/worker/mirror.js".to_string(),
+        "js/measured.js".to_string(),
+        "js/worker/mirror.js".to_string(),
     ]);
     let declared = parse_unmeasured_list(
-        "src/web/measured.js\tstale row\nsrc/web/worker/mirror.js\tstale row\nsrc/web/gone.js\tdeleted file\n",
+        "js/measured.js\tstale row\njs/worker/mirror.js\tstale row\njs/gone.js\tdeleted file\n",
     );
 
     let report = check_inventory(&repo, &inventory, &[], &measured, &declared);
@@ -552,33 +552,33 @@ fn inventory_rejects_stale_and_missing_rows() {
     assert_eq!(
         report.stale,
         vec![
-            "src/web/measured.js".to_string(),
-            "src/web/worker/mirror.js".to_string()
+            "js/measured.js".to_string(),
+            "js/worker/mirror.js".to_string()
         ],
         "rows for files that are covered now must be pruned"
     );
-    assert_eq!(report.missing, vec!["src/web/gone.js".to_string()]);
+    assert_eq!(report.missing, vec!["js/gone.js".to_string()]);
 }
 
 #[test]
 fn inventory_requires_a_reason_for_every_row() {
     let (repo, inventory) = inventory_fixture("inventory-reason");
-    let measured = BTreeSet::from(["src/web/measured.js".to_string()]);
-    let declared = parse_unmeasured_list("src/web/worker/mirror.js\n");
+    let measured = BTreeSet::from(["js/measured.js".to_string()]);
+    let declared = parse_unmeasured_list("js/worker/mirror.js\n");
 
     let report = check_inventory(&repo, &inventory, &[], &measured, &declared);
 
     assert_eq!(
         report.unexplained,
-        vec!["src/web/worker/mirror.js".to_string()]
+        vec!["js/worker/mirror.js".to_string()]
     );
 }
 
 #[test]
 fn inventory_skips_excluded_prefixes() {
     let (repo, inventory) = inventory_fixture("inventory-exclude");
-    let measured = BTreeSet::from(["src/web/measured.js".to_string()]);
-    let exclude = vec!["src/web/worker/".to_string()];
+    let measured = BTreeSet::from(["js/measured.js".to_string()]);
+    let exclude = vec!["js/worker/".to_string()];
 
     let report = check_inventory(&repo, &inventory, &exclude, &measured, &[]);
 
@@ -592,13 +592,13 @@ fn inventory_skips_excluded_prefixes() {
 fn an_inventory_violation_fails_the_run_and_is_published() {
     let repo = temp_dir("inventory-run");
     fs::create_dir_all(repo.join("coverage")).unwrap();
-    fs::create_dir_all(repo.join("src/web")).unwrap();
-    fs::write(repo.join("src/web/measured.js"), "// measured\n").unwrap();
-    fs::write(repo.join("src/web/unmeasured.js"), "// new file\n").unwrap();
+    fs::create_dir_all(repo.join("js")).unwrap();
+    fs::write(repo.join("js/measured.js"), "// measured\n").unwrap();
+    fs::write(repo.join("js/unmeasured.js"), "// new file\n").unwrap();
     let mut browser = denominator(50.0, 100.0);
-    browser.include = vec!["src/web/".to_string()];
+    browser.include = vec!["js/".to_string()];
     browser.inventory = Some(Inventory {
-        roots: vec!["src/web".to_string()],
+        roots: vec!["js".to_string()],
         extensions: vec!["js".to_string()],
         unmeasured_list: "coverage/browser-unmeasured.txt".to_string(),
     });
@@ -609,7 +609,7 @@ fn an_inventory_violation_fails_the_run_and_is_published() {
     .unwrap();
     fs::write(
         repo.join("coverage/demo.info"),
-        lcov_record("src/web/measured.js", 5, 10, true),
+        lcov_record("js/measured.js", 5, 10, true),
     )
     .unwrap();
     fs::write(repo.join("coverage/browser-unmeasured.txt"), "").unwrap();
@@ -623,11 +623,11 @@ fn an_inventory_violation_fails_the_run_and_is_published() {
     assert!(report.outcomes[0]
         .messages
         .iter()
-        .any(|message| message.contains("src/web/unmeasured.js")));
+        .any(|message| message.contains("js/unmeasured.js")));
     let json: serde_json::Value =
         serde_json::from_str(&fs::read_to_string(repo.join("coverage/summary-demo.json")).unwrap())
             .unwrap();
-    assert_eq!(json["inventory"]["undeclared"][0], "src/web/unmeasured.js");
+    assert_eq!(json["inventory"]["undeclared"][0], "js/unmeasured.js");
 }
 
 // --- Command line -----------------------------------------------------------

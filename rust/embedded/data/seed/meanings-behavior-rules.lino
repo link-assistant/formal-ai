@@ -1,0 +1,293 @@
+meanings
+  behavior_rule
+    defined-by relation
+    defined-by knowledge
+    role rule_listing_subject
+    lexeme en
+      surface
+        text rules
+      surface
+        text "rule list"
+      surface
+        text "rules list"
+    lexeme ru
+      surface
+        text правил
+      surface
+        text правила
+    lexeme hi
+      surface
+        text नियम
+      surface
+        text नियमों
+    lexeme zh
+      surface
+        text 规则
+      surface
+        text 規則
+  rule_enumeration_request
+    defined-by action
+    defined-by inquiry
+    role rule_listing_request
+    lexeme en
+      surface
+        text list
+      surface
+        text show
+      surface
+        text what
+      surface
+        text which
+    lexeme ru
+      surface
+        text список
+      surface
+        text перечисли
+      surface
+        text покажи
+      surface
+        text какие
+    lexeme hi
+      surface
+        text सूची
+      surface
+        text सूचीबद्ध
+      surface
+        text दिखाओ
+      surface
+        text दिखाएं
+      surface
+        text बताओ
+      surface
+        text गिनाओ
+      surface
+        text कौन
+    lexeme zh
+      surface
+        text 列出
+      surface
+        text 显示
+      surface
+        text 顯示
+      surface
+        text 展示
+      surface
+        text 哪些
+      surface
+        text 什么
+  rule_count_request
+    defined-by inquiry
+    defined-by quantity
+    role rule_count_request
+    lexeme en
+      surface
+        text "how many"
+      surface
+        text "number of"
+      surface
+        text count
+    lexeme ru
+      surface
+        text сколько
+      surface
+        text количество
+    lexeme hi
+      surface
+        text कितने
+      surface
+        text संख्या
+    lexeme zh
+      surface
+        text 多少
+      surface
+        text 几条
+      surface
+        text 幾條
+  rule_count_scope
+    defined-by inquiry
+    defined-by quantity
+    role rule_count_scope
+    lexeme en
+      surface
+        text total
+      surface
+        text existing
+      surface
+        text current
+    lexeme ru
+      surface
+        text всего
+      surface
+        text все
+      surface
+        text текущих
+    lexeme hi
+      surface
+        text कुल
+      surface
+        text सभी
+    lexeme zh
+      surface
+        text 总共
+      surface
+        text 總共
+      surface
+        text 总共有
+      surface
+        text 一共
+      surface
+        text 所有
+  rule_brief_request
+    defined-by action
+    defined-by property
+    role rule_brief_request
+    lexeme en
+      surface
+        text brief
+      surface
+        text briefly
+      surface
+        text short
+      surface
+        text concise
+    lexeme ru
+      surface
+        text кратко
+      surface
+        text коротко
+      surface
+        text короче
+      surface
+        text вкратце
+    lexeme hi
+      surface
+        text संक्षेप
+      surface
+        text "संक्षेप में"
+      surface
+        text छोटा
+    lexeme zh
+      surface
+        text 简短
+      surface
+        text 簡短
+      surface
+        text 简要
+      surface
+        text 簡要
+  behavior_domain
+    defined-by self_reference
+    defined-by concept
+    role rule_listing_scope
+    lexeme en
+      surface
+        text behavior
+      surface
+        text behaviour
+    lexeme ru
+      surface
+        text поведения
+    lexeme hi
+      surface
+        text व्यवहार
+    lexeme zh
+      surface
+        text 行为
+      surface
+        text 行為
+  assistant_own_ruleset
+    defined-by self_reference
+    defined-by knowledge
+    role rule_listing_scope
+    lexeme en
+      surface
+        text your
+      surface
+        text own
+      surface
+        text current
+      surface
+        text existing
+    lexeme ru
+      surface
+        text свои
+      surface
+        text своих
+      surface
+        text твои
+      surface
+        text твоих
+      surface
+        text собственные
+      surface
+        text "список правил"
+    lexeme hi
+      surface
+        text अपने
+      surface
+        text तुम्हारे
+      surface
+        text आपके
+      surface
+        text "नियमों की सूची"
+    lexeme zh
+      surface
+        text 你的
+      surface
+        text 您的
+      surface
+        text 自己
+      surface
+        text 规则列表
+      surface
+        text 規則列表
+  behavior_rule_set_phrase
+    defined-by inquiry
+    defined-by knowledge
+    role rule_listing_phrase
+    lexeme en
+      surface
+        text "list behavior rules"
+      surface
+        text "list behaviour rules"
+      surface
+        text "list all behavior rules"
+      surface
+        text "list all behaviour rules"
+      surface
+        text "show behavior rules"
+      surface
+        text "show behaviour rules"
+      surface
+        text "show all behavior rules"
+      surface
+        text "show rules"
+      surface
+        text "what behavior rules"
+      surface
+        text "what behaviour rules"
+      surface
+        text "existing behavior rules"
+    lexeme ru
+      surface
+        text "список правил поведения"
+      surface
+        text "покажи правила поведения"
+      surface
+        text "покажи правила"
+      surface
+        text "какие правила поведения"
+    lexeme hi
+      surface
+        text "व्यवहार के नियम"
+      surface
+        text "व्यवहार नियम सूचीबद्ध करें"
+      surface
+        text "नियम दिखाओ"
+    lexeme zh
+      surface
+        text 行为规则
+      surface
+        text 显示规则
+      surface
+        text 列出行为规则

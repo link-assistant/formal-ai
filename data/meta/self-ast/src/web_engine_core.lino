@@ -2,9 +2,9 @@ self_ast_census
   target src/web_engine_core.rs
   language rust
   fidelity signature
-  byte_len 18291
+  byte_len 18300
   line_count 517
-  content_id source_module_29f91f2816ae9fc8
+  content_id source_module_f6b3b83916ba7e6f
   symbol_count 30
   symbols
     function normalize_prompt 42 60

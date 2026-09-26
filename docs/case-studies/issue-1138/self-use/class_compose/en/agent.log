@@ -1,0 +1,1813 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.789Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.789Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Put together a few pages on how quantum mechanics got started. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SswJRQGxmo",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.789Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SswJRQGxmo",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.789Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SswJRQGxmo",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.798Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Put together a few pages on how quantum mechanics got started.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Put together a few pages on how quantum mechanics got started.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.798Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.799Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.800Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.800Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.803Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.803Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SswJRQGxmo/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.806Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 11186,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.806Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.820Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 25,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:17:15.824Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.828Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.828Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.829Z",
+  "service": "session",
+  "id": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SswJRQGxmo",
+  "title": "New session - 2026-09-16T03:17:15.829Z",
+  "time": {
+    "created": 1789528635829,
+    "updated": 1789528635829
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.829Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.829Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.829Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.830Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.830Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c8064affekz3PpCNcEiJ9hd/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.830Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c8064affekz3PpCNcEiJ9hd/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.832Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57c8064affekz3PpCNcEiJ9hd/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.834Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.835Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.835Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.836Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.837Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.837Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.837Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.838Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.838Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.838Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.838Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.838Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.838Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.980Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.983Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.991Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:15.996Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.001Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.001Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.001Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.001Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528636311,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a837fb95001MS7IbX4MQLfCn4",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a837fa4e001KK27M5VU14wDDI",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528636312,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a837fb97002ZqD63u7fDatG1e",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a837fa4e001KK27M5VU14wDDI",
+    "type": "tool",
+    "callID": "call_5fbc92117b6044a1",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528636312,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a837fb97001XPrW09UqWOx7np",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a837fa4e001KK27M5VU14wDDI",
+    "type": "text",
+    "text": "Let me search the web for Put together a few pages on how quantum mechanics got started.",
+    "time": {
+      "start": 1789528636312,
+      "end": 1789528636312
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:16.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528636312,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a837fb97002ZqD63u7fDatG1e",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a837fa4e001KK27M5VU14wDDI",
+    "type": "tool",
+    "callID": "call_5fbc92117b6044a1",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Put together a few pages on how quantum mechanics got started"
+      },
+      "time": {
+        "start": 1789528636312
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.864Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528637864,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a837fb97002ZqD63u7fDatG1e",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a837fa4e001KK27M5VU14wDDI",
+    "type": "tool",
+    "callID": "call_5fbc92117b6044a1",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Put together a few pages on how quantum mechanics got started"
+      },
+      "output": "Title: History of quantum mechanics\nURL: https://en.wikipedia.org/wiki/History_of_quantum_mechanics\nPublished: 2026-06-11T00:00:00.000Z\nAuthor: N/A\nHighlights:\nThe history of quantum mechanics is a fundamental part of the history of modern physics. The major chapters of this history begin with the emergence of quantum ideas to explain individual phenomena—blackbody radiation, the photoelectric effect, solar emission spectra—an era called the Old or Older quantum theories. [1]\n...\nThe discoveries of the 19th century, both the successes and failures, set the stage for the emergence of quantum mechanics.\n...\nAround the same time, Newton's contemporaries Robert Hooke and Christiaan Huygens, and later Augustin-Jean Fresnel, mathematically refined the wave viewpoint, showing that if light traveled at different speeds in different media, refraction could be easily explained as the medium-dependent propagation of light waves. The resulting Huygens–Fresnel principle was extremely successful at reproducing light's behaviour and was consistent with Thomas Young's discovery of wave interference of light by his double-slit experiment in 1801. [5] The wave view did not immediately displace the ray and particle view, but began to dominate scientific thinking about light in the mid 19th century, since it could explain polarization phenomena that the alternatives could not. [6]\n...\nJames Clerk Maxwell found that he could apply his previously discovered equations, along with a slight modification, to describe self-propagating waves of oscillating electric and magnetic fields. It quickly became apparent that visible light, ultraviolet light, and infrared light were all electromagnetic waves of differing frequency. [1]: 272 This theory became a critical ingredient in the beginning of quantum mechanics.\n...\nQuantum mechanics developed in two distinct phases. The first phase, known as the old quantum theory, began around 1900 with radically new approaches to explanations physical phenomena not understood by classical mechanics of the 1800s. [1] \n\n### Planck introduces quanta to explain black-body radiation\n...\nThe first model that was able to explain the full spectrum of thermal radiation [citation needed] was put forward by Max Planck in 1900. [12] He proposed a mathematical model in which the thermal radiation was in equilibrium with a set of harmonic oscillators. To reproduce the experimental results, he had to assume that each oscillator emitted an integer number of units of energy at its single characteristic frequency, rather than being able to emit any arbitrary amount of energy. In other words, the energy emitted by an oscillator was quantized. According to Planck, the quantum of energy E of a light quantum is proportional to its frequency ν. As an equation is it written: This is now known as the Planck relation and the proportionality constant, h, as the Planck constant. [citation needed]\n...\nIn 1905, Albert Einstein suggested that even though continuous models of light worked extremely well for time-averaged optical phenomena, for instantaneous\n...\nIn 1913, H. M. Hansen asked Niels Bohr about Balmer's formula. Bohr recalled that \"As soon as I saw Balmer's formula, the whole thing was immediately clear to me.\" [25] In \"On the Constitution of Atoms and Molecules\", he proposed a new model of the atom that included quantized electron orbits. In the Bohr model, the hydrogen atom is pictured as a heavy, positively charged nucleus orbited by a light, negatively charged electron. The electron can only exist in certain, discretely separated orbits, labeled by their angular momentum, which is restricted to be an integer multiple of the reduced Planck constant. [26] The electron moves to a higher or lower orbital by absorbing or emitting a photon of corresponding frequency.\n...\nThe model's key success lay in explaining the Rydberg formula for the spectral emission lines of atomic hydrogen by using the transitions of electrons between orbits. [30]: 276 While the Rydberg formula had been known experimentally, it did not gain a theoretical underpinning until the Bohr model was introduced. Not only did the Bohr model explain the reasons for the structure of the Rydberg formula, it also provided a justification for the fundamental physical constants that make up the formula's empirical results.\n...\nIn 1924, Louis de Broglie published a breakthrough hypothesis: matter has wave properties. Building on Einstein's proposal that the photoelectric effect can be described using quantized energy transfers and by Einstein's separate proposal, from special relativity, that mass at rest is equivalent to energy via $\n \n \n \n E\n =\n \n m\n \n 0\n \n \n \n c\n \n 2\n \n \n \n \n {\\displaystyle E=m_{0}c^{2}}\n \n$, de Broglie proposed that matter in motion appears to have an associated wave with wavelength $\n \n \n \n λ\n =\n h\n \n /\n \n p\n \n \n {\\displaystyle \\lambda =h/p}\n \n$ where is the matter momentum from the motion. [38] [39] Requiring his wavelength to encircle an atom, he explained quantization of Bohr's orbits. [1]: 217 Simultaneously this showed that the wave behavior of light was essentially a quantum effect. [1]: 216\n...\nDe Broglie suggested that the allowed electron orbits were those for which the circumference of the orbit would be an integer number of wavelengths. The electron's wavelength, therefore, determines that only Bohr orbits of certain distances from the nucleus are possible. In turn, at any distance from the nucleus smaller than a certain value, it would be impossible to establish an orbit. The minimum possible distance from the nucleus is called the Bohr radius. [40] De Broglie's treatment of the Bohr atom was ultimately unsuccessful, but his hypothesis served as a starting point for Schrödinger's wave equation.\n...\nThe end of the first era of quantum mechanics was triggered by de Broglie's publication of his hypothesis of matter waves [1]: 268 leading to not just one new quantum theory but two. Almost simultaneously, the German physicists Werner Heisenberg, Max Born, and Pascual Jordan [44] [45] developed matrix mechanics and the Austrian physicist Erwin Schrödinger invented wave mechanics. [46] Schrödinger subsequently showed that the two approaches were equivalent.\n...\nIn 1925, Werner Heisenberg attempted to solve one of the problems that the Bohr model left unanswered, explaining the intensities of the different lines in the hydrogen emission spectrum. Through a series of mathematical analogies, he wrote out the quantum-mechanical analog for the classical computation of intensities. [49] Shortly afterward, Heisenberg's colleague Max Born realized that Heisenberg's method of calculating the probabilities for transitions between the different energy levels could best be expressed by using the mathematical concept of matrices.\n...\nIn the first half of 1926, building on de Broglie's hypothesis, Erwin Schrödinger developed the equation that describes the behavior of a quantum-mechanical wave. [52] The mathematical model, called the Schrödinger equation after its creator, is central to quantum mechanics, defines the permitted stationary states of a quantum system, and describes how the quantum state of a physical system changes in time. [53] The wave itself is described by a mathematical function known as a \" wave function\". Schrödinger said that the wave function provides the \"means for predicting the probability of measurement results\". [54]\n...\nIn May 1926, Schrödinger proved that Heisenberg's matrix mechanics and his own wave mechanics made the same predictions about the properties and behavior of the electron; mathematically, the two theories had an underlying common form. Yet the two men disagreed on the interpretation of their mutual theory. For instance, Heisenberg accepted the theoretical prediction of jumps of electrons between orbitals in an atom, [55] but Schrödinger hoped that a theory based on continuous wave-like properties could avoid what he called (as paraphrased by Wilhelm Wien) \"this nonsense about quantum jumps\". [56] In the end, Heisenberg's approach won out, and quantum jumps were confirmed. [57]\n\n---\n\nTitle: 1. The emergence of quantum mechanics — Introduction to quantum mechanics\nURL: https://interactivetextbooks.tudelft.nl/introduction-to-quantum-mechanics/content/introduction.html\nPublished: N/A\nAuthor: N/A\nHighlights:\nSpecial relativity came about because people couldn’t find something they thought was there: the ether filling all of space, providing the medium for electromagnetic waves to propagate in. If there was no ether, such waves, and specifically light, had to be able to propagate in vacuum. Moreover, and much more unsettling, no ether meant that the very axioms on which physics was based were wrong. There is no instantaneous action at a distance, and accelerations are not absolute. A new set of axioms was required, provided by Einstein in his two postulates: that of relativity, and that of the universality of the speed of light [Ide18].\n...\nAround the start of the twentieth century, experimentalists (notably Rutherford, but also many others) had made great progress in revealing the structure of atoms. People knew they had a nucleus in which the positive charge was located, that the type of atom was determined by the number of protons (equal to the number of elementary positive charges) in the nucleus, and that the nucleus was surrounded by orbiting electrons - as many as there are protons for a neutral atom (see Fig. 1.3 a). A shell model for the atom explained a lot of chemistry. In this picture, there are a number of shells around the nucleus in which an electron can exist, with the lowest (known as the K shell) capable of holding two atoms, the next (L and M shell) eight each, the next two eighteen, and so on. Atoms would have a tendency to fill their outer shell, bonding with other atoms and sharing electrons where necessary, so hydrogen needs one electron, oxygen two, carbon four, and helium none. The vacancies in the outer shell then explain why you can have molecular hydrogen (\\(\\mathrm{H}_2\\)), water (\\(\\mathrm{H}_2\\mathrm{O}\\)), methane (\\(\\mathrm{C}\\mathrm{H}_4\\)), and carbon dioxide (\\(\\mathrm{C}\\mathrm{O}_2\\)), each oxygen sharing two electrons with the carbon, and a helium atom would be a molecule all by itself (\\(\\mathrm{He}\\)). The problem, however, was that according to classical mechanics, the orbits of the electrons around the nucleus would be unstable - an orbit closer to the nucleus corresponds to a lower energy state, and thus the orbits would spontaneously decay, releasing energy by the emission of electromagnetic radiation, much like the black body. Classically, there is nothing stopping the electron from dissipating all of its orbital energy in that way - which means that it should rapidly crash into the nucleus. Obviously, and fortunately for us, that is not the case.\n...\nAs it turns out, all three puzzles in the previous section can be solved if you make one specific assumption, but one so counter-intuitive that it took people a long time to take it seriously. The essence of the assumption is that energy is not a continuous quantity, as assumed in classical physics, but a discrete one. We say that energy is quantized, that is, there is a smallest possible amount of energy (a quantum), which cannot be divided into smaller parts.\n...\nThe first person to use this idea was Max Planck, in an attempt to solve the puzzle of the ultraviolet catastrophe. Quantizing the energy of the radiation as it is emitted by a black body, Planck was able to derive an equation for the emission spectrum that fits the data beautifully. However, although Planck assumed that the emitted radiation came in discrete packages, he did not push this idea to the next step: that the energy in any kind of electromagnetic radiation is quantized. That assumption was made by Einstein, in an attempt to solve the second puzzle. Einstein postulated that the energy of electromagnetic radiation is always quantized, and that the amount of energy in a quantum depends on the frequency [3]. He introduced the idea of the energy quantum, carrying an amount of energy given by \\(E_\\mathrm{quantum} = h \\nu\\), where \\(\\nu\\) is the frequency and \\(h\\) is a physical constant known today as Planck’s constant. We call Einstein’s quanta of electromagnetic radiation photons. The existence of photons was initially widely disputed, but the solution of the photo-electric effect puzzle eventually earned Einstein his Nobel prize.\n...\nIf energy is quantized (once again, this means that there exists a smallest, undividable quantum of energy), we could ask the question if the same can be true for other physical quantities, like momentum and angular momentum. To solve the third puzzle, we need to do exactly that. In 1923, Niels Bohr developed a model for the hydrogen atom, based on the assumption that the angular momentum of the single electron orbiting the one-proton nucleus was quantized, and found that his model could predict the emission spectrum of hydrogen, which consists of a collection of very sharply defined frequencies and nothing in between. We’ll look at that model from a slightly different point of view, based on an observation by Louis de Broglie that came two years later. De Broglie’s idea was that if light, which we know as a wave, can exhibit particle-like behavior, maybe objects we know as particles, such as electrons, could exhibit wave-like behavior as well. De Broglie postulated that Einstein’s relation between the energy and frequency of a photon might hold for any particle. Second, De Broglie postulated that, since energy and momentum are related, momentum must be related to a wave property as well. We then have, for any particle / wave:\n\n (1.1)#\\[\\begin{align*} E &= h \\nu = \\hbar \\omega,\\ \\end{align*}\\]\n\n (1.2)#\\[\\begin{align*} p &= h / \\lambda = \\hbar k. \\end{align*}\\]\n...\nBohr mixed classical and quantum physics to arrive at his hydrogen model. He used quantum ideas for discretizing energies, momenta and radii, and classical ones for the electrostatic interaction between electron and proton. The Bohr model works fairly well for hydrogen, but not so well for more complicated atoms, even the next simplest one, helium (with two electrons and a nucleus with two protons and two neutrons). However, it works quite nicely for heavier atoms if they are ionized to the point that they have only one electron left. The only thing that changes is that the nuclear charge becomes \\(Ze\\), with \\(Z\\) the number of protons. For a complete quantum description, we need a quantum set of axioms. One of those is given by De Broglie’s relations, but those are not sufficient; we’ll also need an equivalent of Newton’s second law of motion. Before we can go there, things are going to turn even weirder than they already are.\n\n Fig. 1.4 Visible part of the emission spectrum\n...\n-wave nature, and their properties (such as energy or angular momentum) may be quantized [8]. The third difference is that quantum theory is not deterministic but stochastic: even if you know exactly where a particle is at a given point in time, all you can calculate is the probability of it being at a certain place at a later point in time. Consequently, even if you set up (or ‘prepare’) two systems in exactly the same physical state, and let them evolve over time, a later measurement of a physical property (an ‘observable’, such as position, momentum, or energy) of\n...\nWe do not know why quantum particles behave in a probabilistic manner, but experiments have proven beyond doubt that they do. Quantum particles have a finite chance to ‘roll uphill’, jump over energy barriers (or between discrete orbital states), or interfere with themselves (as we’ve seen in the double-slit experiment with electrons). We’ll encounter specific predictions and tests of these predictions in later sections. For now, we need a new way to describe our particles, as the classical way, specifying the position as a function of time, or \\(x(t)\\), no longer suffices. Instead, we introduce a new object, commonly known as the wave function \\(\\Psi(x, t)\\), which contains all information about our particle. The square of this wave function gives us the probability of finding the particle at a certain place at a given time.\n\n---\n\nTitle: Origins of Quantum Theory\nURL: https://sites.pitt.edu/~jdnorton/teaching/HPS%5F0410/chapters/quantum_theory_origins/index.html\nPublished: N/A\nAuthor: N/A\nHighlights:\nUnlike relativity theory, the birth of quantum theory was slow and required many hands. It emerged in the course of the first quarter of the twentieth century with contributions from many physicists, including Einstein.\n...\nThe other form of matter was wavelike matter. Newton's corpuscular picture was challenged in the early nineteenth century by Thomas Young. He argued for a view that had already been explored in Newton's time, that light is a propagating wave. His view eventually won. By the mid and later nineteenth century, that light consisted of propagating waves had become the dominant view. Its most successful expression was in Maxwell's theory. In it, light just consists of electromagnetic waves, that is, wavelike ripples propagating in electric and magnetic fields.\n...\nWith the demise of the ether theory in the early twentieth century, it became clear that something more interesting was at hand. The matter of light itself somehow came in a form that it could locally cancel other light waves. That sort of interaction was an early indication of the sorts of interactions that would become commonplace in quantum theory.\n...\nThis neat division of matter into particle-like and wave-like would not persist. The story of the coming of quantum theory in the twentieth century is the story of the breakdown of this division. In the sections to come, we shall see how various clues in the observed physical properties of matter showed that this simple division must fail.\n...\nIn 1900, as the newest and latest of the data came in, Max Planck in Berlin was working on understanding the physical processes that led to these distributions of energy. He was well aware of the latest results of his Berlin colleagues, Lummer and Pringsheim, and that no present theory fitted with their latest experimental data. He devised a new account that fitted very well. In his account, heat radiation is a jumble of many frequencies of electromagnetic waves that have come to equilibrium in a cavity. The waves are absorbed and emitted by oscillating charges in the walls of the cavity. That way, the temperature of the walls can be conveyed to the radiation itself. The cavity really just is an oven and it is filling the space inside with heat radiation. This radiation inside the cavity was known as \"cavity radiation.\"\n...\nPlanck found a very simple formula that fitted the latest experimental results very well. His problem was to tell a theoretical story about how that formula came about. After some hesitation, he found such a story. However the essential computation in his story depended upon a very odd assumption. (Debate continues today over whether Planck actually realized how radical this assumption was and how crucial it was to his account.) Planck modelled the heat radiation as coming from energized electric resonators. Ordinary resonators of classical physics are just masses vibrating on springs, as shown in the figure. They can take on a continuous range of energies. Planck's story required that these resonators not be energized over a continuous range of energies. Instead they might take energies of, say, 0, 1, 2, 3, ... units, but nothing in between. Energies of say 1.2 units or 3.7 units were prohibited.\n...\nPlanck's original formula applied to the energy of the resonators. He tried hard to confine the discontinuity it suggested to these resonators and even just to the interaction between radiation and the resonators. Over the next decade, other physicists began to see that the discontinuity could not be confined. Computations analogous to those of Planck from 1900 could be applied to heat radiation directly. They drove to the conclusion that Planck's formula applied directly to heat radiation as well. In each frequency, the energy of heat radiation must come in whole units of h x frequency. That conclusion is hard to reconcile with the idea that heat radiation is purely a wave phenomenon.\n...\nWhile Planck may not have recognized how radical his work of 1900 was, Einstein realized that something very odd was afoot with high frequency light and he did it apparently independently of Planck. In 1905 he argued that we needed to change our basic picture of the constitution of radiation.\n...\n| Einstein's core argument was ingenious. He looked at the observed properties of high frequency light and noticed they were governed in certain aspects by exactly the same laws that govern ordinary gases. By reverse engineering those gas laws, Einstein could show that they depended essentially on gases consisting of very many spatially localized little lumps of matter, their molecules. He supposed that it was no accident that light and gases obeyed the same laws; they did, he urged, because the light really was made of little localized units--called \"quanta\"--of energy. |\n| --- |\n...\nThe analysis of heat radiation and the power of light to generate photoelectrons provided the first clues that this wavelike form of matter was not merely wavelike, but also had particle-like aspects as well. What of the particles that make up matter? What of the electrons that Thomson had found in 1896? The clue that they also had wavelike aspects eventually derived from observations in atomic spectra.\n...\nIn 1913, Niels Bohr reported on his efforts to devise a model of the process of light emission from the atoms of elements that would explain the very particular frequencies emitted. The problem proved to be far harder than one would expect. Then, the best model of an atom was Rutherford's nuclear model. According to it, an atom is like a little solar system. It has a massive, but tiny, positively charged nucleus. That nucleus exerts an attractive force on lighter negatively charged electrons that orbit it, rather like the way the planets orbit the very massive sun.\n...\nBohr's theory of 1913 and its later elaboration gave a wonderfully rich repertoire of methods for accounting for atomic spectra. They depended on a contradictory mix of classical and non-classical notions. By the early 1920s, the limits of this system began to show and theorists also turned to the task of making some coherent sense of this body of theory that soon came to known as \"the old quantum theory.\"\n...\nThe major breakthroughs to the \"new quantum theory\" came in the middle of the 1920s. A number of different theorists found ways of developing coherent theories of the quantum domain; and they all eventually proved to be different versions of the same new theory. Heisenberg, Born and Jordan first developed matrix mechanics. Its basic quantities were infinite tables of numbers -- matrices -- drawn as directly as possible from observed quantities like atomic spectra.\n...\nAnother approach proved equivalent and is easier to picture. It was based on a supposition by de Broglie of 1923 and developed by Schroedinger in 1926. Einstein had shown that a wave phenomenon, light, also had particle like properties. Might the reverse be true also? Might particle like electrons also have wave properties?\n...\nmomentum = h / wavelength\n...\nplucked or bowed\n...\nIn the later part of the 1920s, all these ideas coalesced into what was called the \"new quantum theory,\" to distinguish it from the \"old quantum theory\" of the decades before. There were • matrix based approaches proposed by Heisenberg, Born and Jordan; and • the matter waves of de Broglie and Schoedinger; and • Dirac's classical \"c-numbers\" and quantum \"q-numbers.\"\n...\nIt soon became clear that all these approaches were really just the same theory dressed up in different mathematical clothing. The puzzling properties of light and matter that led to this theory were now essentially resolved. The solution lay in a new conception of the nature of matter. Matter fundamentally is not made of particle OR waves; it consists of a form of matter that, roughly speaking, is both particle AND wave; and this is true both for ordinary matter like protons and electrons, and for radiative matter like light.\n\n---\n\nTitle: The Birth of Quantum Mechanics: A Historical Study Through the Canonical Papers\nURL: https://arxiv.org/html/2503.13630v4\nPublished: N/A\nAuthor: N/A\nHighlights:\nThis paper explores the historical development of the theory of quantum mechanics between 1900 and 1927 by chronological examination of the foundational papers and ideas. Beginning with Planck’s introduction of energy quantisation in blackbody radiation, we follow the emergence of Einstein’s light quanta hypothesis, Bohr’s atomic model, and the statistical implications of indistinguishable particles. Special emphasis is placed on the transition from the Old Quantum Theory to modern quantum mechanics, particularly through Heisenberg’s matrix mechanics and Schrödinger’s wave mechanics. This study aims to provide a structured historical account, offering insights into the conceptual transformations that led to quantum mechanics while making the development accessible to physicists, historians of science, and advanced students interested in the origins of modern quantum theory.\n...\nThe development of quantum physics stands as one of the most profound revolutions in the history of science. Before the advent of quantum theory, classical physics, governed by Newtonian mechanics and Maxwell’s electrodynamics, was considered to provide a complete description of nature. However, towards the late 19th and early 20th centuries, several inconsistencies emerged that could not be resolved within the classical framework. One of the most significant issues was black body radiation, where classical predictions failed to match experimental observations [1, 2, 3, 4]. Another problem was the photoelectric effect, a detailed experimental study of which had been done by Philip Lenard [5], which challenged the classical wave theory of light. After Rutherford suggested his atom model [6], the stability of atoms also posed a major dilemma since, according to classical electrodynamics, accelerating electrons in orbit around the nucleus should continuously emit radiation and spiral into the nucleus, contradicting the observed stability of matter. Another problem was that the spectral lines in atomic emission and absorption spectra exhibited some patterns that classical mechanics could not explain (Jammer, 1989, ch.2.1). These anomalies indicated a fundamental flaw in classical theories, necessitating a new framework for understanding microscopic phenomena. These were, in fact, the cries of a newly arriving revolution in our understanding of the universe. This paper explores the historical development of these theoretical concepts, tracing the key ideas and discoveries that led to the formulation of quantum mechanics until the development of wave mechanics and uncertainty principle.\n...\nIn 1900, Planck proposed a new expression that fit the data better [9]. In the following paper [8], he used statistical mechanics and classical electromagnetism to derive the formula more rigorously, and it was in that paper that he proposed the quantisation of energy states. Planck solved the problem by introducing energy quantisation for the field and leaving out the equipartition theorem. Thereby, oscillations of high frequency had higher energy so that they were harder to excite or, equivalently, far less improbable for the field to shine in. It is important to observe that Planck introduced energy quantisation to be able to perform the calculation, which was concerned with statistical entropy and thus with the possible arrangments of the energies of the oscillators. That, in turn, worked as a cut-off for high frequencies, and UV catastrophe was eliminated.\n...\nThe work of Planck marked the entry of quantum concepts into mainstream physics. The next step of great significance was Einstein’s theory of radiation quanta and the explanation of the photoelectric effect [11], published in the same year as his two other significant works on Brownian motion44 4 This work of Einstein, although not directly related to the development of quantum mechanics, since posed a proof of the existence of atoms, it seemed relevant to study it in an appendix. Therefore, for more information on the paper, see the first appendix., and special relativity. The main problem which led Einstein to the following considerations was the apparent inconsistency of the concepts of discreteness of energy states, whereas the radiation itself was still considered continuous through classical electrodynamics. He also showed that the classical considerations inevitably led to the Rayleigh-Jeans law, without the exponential cutoff, which resulted in the UV-catastrophe presented in the previous section.\n...\nThe next year, Niels Bohr, at the time still a young researcher, published a paper which was concerned primarily with the structure and spectrum of the hydrogen atom. According to the results of Rutherford [6], electrons were scattered around the positively charged nucleus.77 7 It turns out that Rutherford did not really suggest an ”atom model”, yet merely stated that there is a positively charged nucleus, without really touching upon how electrons move about it. For a discussion on the misconception on the atom models, see the discussion of Renstrøm and Bomark (2022) [arXiv:2212.08572]. Yet the laws of classical electrodynamics dictate that in such a system, electrons should radiate all their energy while spiralling down into the nucleus, wherefore there is no classical stable solution for such a system. To get rid of this problem, and taking inspiration from the regularities in the hydrogen spectrum which is made explicit by Balmer’s formula, he applied Planck’s quantization to the orbits and postulated that there are stationary states around the nucleus [18].88 8 Before him, Planck’s postulate had been applied to the oscillation of the electrons in the atom model of J.J. Thomson. See [7], p.75. In these discrete orbitals, the motion of the electron was governed by classical physics, but the transitions between the states were not, but occur as jumps between the discrete orbits. The\n...\nOne of the most consulted principles, the correspondence principle as it is called later, in the Old Quantum Theory, which signifies the state of the theory before the next leap of understanding with primarily Heisenberg, de Broglie, and Schrödinger, was stated in the same paper. According to the results, the ratio of the frequency of revolution of the electron in subsequent orbits converges to $1$ as the orbital number increases. In his later paper in 1918, Bohr stated the principle more explicitly (Bohr, 1918):\n...\nThe lack of a consistent, logically sound framework in the Old Quantum Theory prompted Heisenberg to seek a new foundation for quantum mechanics, one based not on classical analogies (which were primarily concerned with unobservable properties of the systems such as position and velocity) but on directly observable quantities. Instead of these concepts, he insisted on placing at the core of the theory what he called the observable variables like energy and frequency, from which arise the so-called matrix mechanics [23].\n...\nIt was Jordan and Born with whom Heisenberg improved the theory into matrix mechanics [25, 26]. The two profound papers that they published included many results, taking the theory into its full-fledged matrix mechanics form. Starting with the quantum of action principle and by the Fourier expansions of $p$ and $q$ , through a similar calculation to which was just presented, they got the canonical commutation relation.\n...\nThe phenomena of radiation as a wave or particle were still topics of discussion. Some phenomena, like black body radiation and the photoelectric effect, were explained by corpuscular theory, whereas others, like refraction, diffraction, etc., were explained by wave mechanics. It was Louis de Broglie who first introduced the idea of associating waves with particles in the context of quantum theory [32]. It seems like he wasn’t aware of Hamilton’s optical-mechanical analogy, but he was deeply impressed by the works of Marcel Brillouin (Jammer 1989, p.246-247).\n\n---\n\nTitle: The origins of quantum mechanics - Book chapter - IOPscience\nURL: https://iopscience.iop.org/book/mono/978-0-7503-5663-3/chapter/bk978-0-7503-5663-3ch2.pdf\nPublished: 2023-10-01T03:04:25.000Z\nAuthor: N/A\nHighlights:\n# The origins of quantum mechanics\n...\nChapter 2 reviews the early atomic level experimental results that led to the formulation of quantum mechanics: blackbody radiation, the photoelectric effect, electron diffraction, and the Hydrogen spectrum.\n\n---\n\nTitle: Quantum mechanics history - MacTutor History of Mathematics\nURL: https://mathshistory.st-andrews.ac.uk/HistTopics/The_Quantum_age_begins/\nPublished: N/A\nAuthor: N/A\nHighlights:\nIt is hard to realise that the electron was only discovered a little over 100 years ago in 1897. That it was not expected is illustrated by a remark made by J J Thomson, the discoverer of the electron. He said \n\n> I was told long afterwards by a distinguished physicist who had been present at my lecture that he thought I had been pulling their leg.\n\n The neutron was not discovered until 1932 so it is against this background that we trace the beginnings of quantum theory back to 1859. In 1859 Gustav Kirchhoff proved a theorem about blackbody radiation. A blackbody is an object that absorbs all the energy that falls upon it and, because it reflects no light, it would appear black to an observer. A blackbody is also a perfect emitter and Kirchhoff proved that the energy emitted $EE$ E depends only on the temperature $TT$ T and the frequency $vv$ v of the emitted energy, i.e. \n\n$E=J(T,v)E = J(T,v)$ E= J(T, v).\n\n He challenged physicists to find the function $JJ$ J. In 1879 Josef Stefan proposed, on experimental grounds, that the total energy emitted by a hot body was proportional to the fourth power of the temperature. In the generality stated by Stefan this is false. The same conclusion was reached in 1884 by Ludwig Boltzmann for blackbody radiation, this time from theoretical considerations using thermodynamics and Maxwell's electromagnetic theory. The result, now known as the Stefan- Boltzmann law, does not fully answer Kirchhoff's challenge since it does not answer the question for specific wavelengths. In 1896 Wilhelm Wien proposed a solution to the Kirchhoff challenge. However although his solution matches experimental observations closely for small values of the wavelength, it was shown to break down in the far infrared by Rubens and Kurlbaum. Kirchhoff, who had been at Heidelberg, moved to Berlin. Boltzmann was offered his chair in Heidelberg but turned it down. The chair was then offered to Hertz who also declined the offer, so it was offered again, this time to Planck and he accepted. Rubens visited Planck in October 1900 and explained his results to him. Within a few hours of Rubens leaving Planck's house Planck had guessed the correct formula for Kirchhoff's $JJ$ J function. This guess fitted experimental evidence at all wavelengths very well but Planck was not satisfied with this and tried to give a theoretical derivation of the formula. To do this he made the unprecedented step of assuming that the total energy is made up of indistinguishable energy elements - quanta of energy. He wrote \n\n> Experience will prove whether this hypothesis is realised in nature\n...\n. By 1906 Einstein had correctly guessed that energy changes occur in a quantum material oscillator in changes in jumps which are multiples of $ℏv\\hslash v$ℏ v where $ℏ\\hslash$ℏ is Planck's reduced constant and $vv$ v is the frequency. Einstein received the 1921 Nobel Prize for Physics, in 1922, for this work on the photoelectric effect. In 1913 Niels Bohr wrote a revolutionary paper on the hydrogen atom. He discovered the major laws of the spectral lines. This work earned Bohr the 1922 Nobel Prize for Physics. Arthur Compton derived relativistic kinematics for the scattering of a photon (a light quantum) off an electron at rest in 1923. However there were concepts in the new quantum theory which gave major worries to many leading physicists. Einstein, in particular, worried about the element of 'chance' which had entered physics. In fact Rutherford had introduced spontaneous effect when discussing radio-active decay in 1900. In 1924 Einstein wrote:- \n\n> There are\n...\nEinstein had been puzzled by paradox (ii) and Pauli quickly told Bohr that he did not believe his theory. Further experimental work soon ended any resistance to belief in the electron. Other ways had to be found to resolve the paradoxes. Up to this stage quantum theory was set up in Euclidean space and used Cartesian tensors of linear and angular momentum. However quantum theory was about to enter a new era. The year 1924 saw the publication of another fundamental paper. It was written by Satyendra Nath Bose and rejected by a referee for publication. Bose then sent the manuscript to Einstein who immediately saw the importance of Bose's work and arranged for its publication. Bose proposed different states for the photon. He also proposed that there is no conservation of the number of photons. Instead of statistical independence of particles, Bose put particles into cells and talked about statistical independence of cells. Time has shown that Bose was right on all these points. Work was going on at almost the same time as Bose's which was also of fundamental importance. The doctoral thesis of Louis de Broglie was presented which extended the particle-wave duality for light to all particles, in particular to electrons. Schrödinger in 1926 published a paper giving his equation for the hydrogen atom and heralded the birth of wave mechanics. Schrödinger introduced operators associated with each dynamical variable. The year 1926 saw the complete solution of the derivation of Planck's law after 26 years. It was solved by Dirac. Also in 1926 Born abandoned the causality of traditional physics. Speaking of collisions Born wrote \n\n> One does not get an answer to the question, What is the state after collision? but only to the question, How probable is a given effect of the collision? From the standpoint of our quantum mechanics, there is no quantity which causally fixes the effect of a collision in an individual event.\n...\nHeisenberg's work used matrix methods made possible by the work of Cayley on matrices 50 years earlier. In fact 'rival' matrix mechanics deriving from Heisenberg's work and wave mechanics resulting from Schrödinger's work now entered the arena. These were not properly shown to be equivalent until the necessary mathematics was developed by Riesz about 25 years later. Also in 1927 Bohr stated that space-time coordinates and causality are complementary. Pauli realised that spin, one of the states proposed by Bose, corresponded to a new kind of tensor, one not covered by the Ricci and Levi-Civita work of 1901. However the mathematics of this had been anticipated by Eli Cartan who introduced a 'spinor' as part of a much more general investigation in 1913. Dirac, in 1928, gave the first solution of the problem of expressing quantum theory in a form which was invariant under the Lorentz group of transformations of special relativity. He expressed d'Alembert's wave equation in terms of operator algebra. The uncertainty principle was not accepted by everyone. Its most outspoken opponent was Einstein. He devised a challenge to Niels Bohr which he made at a conference which they both attended in 1930. Einstein suggested a box filled with radiation with a clock fitted in one side. The clock is designed to open a shutter and allow one photon to escape. Weigh the box again some time later and the photon energy and its time of escape can both be measured with arbitrary accuracy. Of course this is not meant to be an actual experiment, only a 'thought experiment'. Niels Bohr is reported to have spent an unhappy evening, and Einstein a happy one, after this challenge by Einstein to the uncertainty principle. However Niels Bohr had the final triumph, for the next day he had the solution. The mass is measured by hanging a compensation weight under the box. This is turn imparts a momentum to the box and there is an error in measuring the position. Time, according to relativity, is not absolute and the error in the position of the box translates into an error in measuring the time. Although Einstein was never happy with the uncertainty principle, he was forced, rather grudgingly, to accept it after Bohr's explanation. In 1932 von Neumann put quantum theory on a firm theoretical basis. Some of the earlier work had lacked mathematical rigour, but von Neumann put the whole theory into the setting of operator algebra.\n\n---\n\nTitle: The Tumultuous Birth of Quantum Mechanics - Physics (APS)\nURL: https://physics.aps.org/articles/v18/24\nPublished: 2025-02-04T01:17:07.000Z\nAuthor: N/A\nHighlights:\nThe UN-designated International Year of Quantum Science and Technology recognizes the centenary of the birth of quantum mechanics as a complete theory. In 1925 German physicist Werner Heisenberg developed the first formal mathematical framework for the new physics. His “matrix mechanics” enabled the prediction of the quantum behavior of atoms, such as emission spectra [1]. At the end of the year, Austrian physicist Erwin Schrödinger devised an alternative and ultimately more popular scheme called wave mechanics (published in 1926).\n...\nBut, in fact, quantum mechanics wasn’t created all at once. It took several decades and was a messy, confused process, during most of which the true nature of this revolution was obscure. In some ways it still is. Looking back at the development of quantum theory reveals that the motivations for such a dramatic shift in how we think about the physical world were initially rather flimsy. So it is scarcely surprising that the new ideas—and what they meant—were hotly contested not only within a conservative “old guard” but even among those who proposed them. These ideas only emerged because of the readiness of some of the key players to take bold imaginative leaps beyond what the empirical evidence or rigorous logic seemed strictly to demand.\n...\nThe first intimation of the quantum nature of the physical world could scarcely have been less auspicious. In 1900 German physicist Max Planck, working at the University of Berlin, proposed that the energies of the vibrating atoms in a warm object are quantized, the vibrations being restricted to discrete frequencies like the notes of a musical scale [2].\n...\nThe exception was Albert Einstein, who in 1905 proposed that Planck’s formula for the energy of a vibrational mode E\n...\nEinstein’s hypothesis led to some experimental predictions. Shining light on a metal was known to expel electrons, a phenomenon called the photoelectric effect. Einstein showed that, if these light packets exist, one would expect that the energies of the emitted electrons should depend only on the frequency (and thus the energy) of the light quanta and not on the light’s intensity.\n...\nEinstein went on to apply the quantum hypothesis to the heat capacity of solids [6], consolidating it as a fundamental aspect of the description of matter and energy. But many physicists still saw no reason to doubt the completeness of classical physics. Even at the first Solvay Conference in Brussels in 1911, a meeting of top European physicists on “Radiation and the Quanta,” the quantum hypothesis received a mixed reception, particularly from some of the senior scientists. Planck, however, became a reluctant convert, telling the German Chemical Society that same year that “with this [quantum] hypothesis, the foundation is laid for the construction of a theory that is someday destined to permeate the swift and delicate events of the molecular world with a new light.”\n...\nA big shift came in 1913, when Danish physicist Niels Bohr, working in the lab of Ernest Rutherford at the University of Manchester in the UK, showed how the quantum hypothesis could rationalize Rutherford’s new model of the atom as a sort of miniature solar system. According to classical physics, this atom would be unstable, as the circulating, charged electrons would be predicted to radiate away energy and spiral into the nucleus. Bohr’s theory avoided this instability by quantum fiat, suggesting that the energies of the electrons were confined to quantized values and, therefore, could not change by arbitrary amounts [7]. Only when they absorbed or emitted photons of an energy h\n...\nAll the same, Bohr’s quantum atom typifies this nascent phase of quantum theory in being an ungainly and ad hoc mixture of quantum and classical notions, structured around ideas such as quantum numbers that were largely empirically motivated. Discrepancies and difficulties with this “old quantum theory” began to accumulate. By 1923 these problems were so acute that Max Born of the University of Göttingen in Germany felt compelled to say that “the whole system of concepts of physics must be reconstructed from the ground up.” But how?\n...\nIn the fall of 1924, Heisenberg, a brilliant and ambitious student of Born’s, visited Bohr at the Institute for Theoretical Physics in Denmark to work on formulating a better quantum theory. They labored away until the following spring with much frustration but little success. After returning to Göttingen, Heisenberg took a summer vacation on the archipelago of Helgoland, Germany, in the North Sea. There, while clambering over the rocks, he worked out a “crazy” theory (in his words to Born) for calculating the electron energy levels of atoms [1]. (A conference in June will celebrate Helgoland as the birthplace of quantum mechanics a century ago.)\n...\nHeisenberg decided that it was necessary not just to accept a break with classical physics but to relinquish any hope of having a quantum theory that could be visualized in conventional terms, with particles moving in space. Rather than describing, say, the unobservable positions and velocities of electrons, he sought “a basis for theoretical quantum mechanics founded exclusively upon relationships between quantities that in principle are observable.” Observable quantities included the frequencies of light emitted as electrons make transitions. He tabulated those frequencies in matrices that completely described the motions of the electrons and could be mathematically manipulated to make predictions about other observables.\n...\nThis “matrix mechanics” was hard to understand and to use, which was why many researchers welcomed the alternative, wave-based quantum mechanics presented by Schrödinger in 1926 [8, 9]. Schrödinger was inspired by the (hitherto largely ignored) suggestion made by French physicist Louis de Broglie in 1924 that, just as wavy light could be reimagined as discrete particles, so, too, might particulate matter have a wave-like description [10].\n...\nMany physicists recognized the practical advantages of Schrödinger’s wave mechanics for making calculations. But although Schrödinger showed that matrix and wave mechanics were mathematically equivalent, the hypercompetitive Heisenberg found Schrödinger’s physical interpretation of his wave equation “disgusting.” Heisenberg was convinced that any attempt to visualize the subatomic world in this way was doomed. Nevertheless, Schrödinger’s wave picture eventually became the standard conceptual framework for quantum mechanics.\n...\nThree further developments helped to complete the quantum revolution. First came Born’s recognition in July 1926 that the amplitude of the electron wave function in Schrödinger’s equation did not predict the spatial distribution of charge density but rather the probability of finding an electron in a particular place—quantum mechanics seemed to be inherently probabilistic [11]. Then, in 1927 Heisenberg unveiled his uncertainty principle: the impossibility of knowing exactly and simultaneously certain combinations of properties, such as the position and momentum of an electron or another quantum entity [12].\n...\nFinally, in 1935 Einstein, along with younger colleagues, Russian American Boris Podolsky and American Israeli Nathan Rosen, showed that the theory seemed to imply the existence of nonclassical and nonlocal correlations between quantum particles [13] (see Special Feature: What’s Wrong with Quantum Mechanics?). This interparticle connection, which Schrödinger called entanglement, would mean that a quantum particle may not be wholly described by properties localized on the particle itself. Einstein, Podolsky, and Rosen intended their paper as a demonstration of the incompleteness of quantum mechanics, since they assumed such interdependence of particle properties was absurd—but experiments have verified it.\n\n---\n\nTitle: Chapter 1: History and Background - Quantum Mechanics I\nURL: https://paulskrzypczyk.github.io/qm-lecture-notes/background\nPublished: N/A\nAuthor: N/A\nHighlights:\nQuantum mechanics constitutes a huge departure from classical physics and completely alters the view we have of how the universe functions. In order to understand where quantum mechanics came from, and why it was necessary to replace classical physics by it, in this first section we briefly describe some of the key phenomena that arose, roughly around the turn of the last century, that classical physics was simply unable to give a satisfactory explanation of. The list here will be neither comprehensive nor in chronological order, but is meant just to provide a short account of the main difficulties faced by classical physics, for which a new physical theory was ultimately necessary. We will also discuss at the same time some of the early ideas and insights which would eventually develop into the theory that we now call quantum mechanics. The goal of this section is to set the scene and provide the a small amount of context for the following sections, where we will begin our exploration of quantum mechanics.\n...\nEinstein was able to provide an explanation for the photoelectric effect by postulating that classical electromagnetism does not in fact completely describe the properties of light. He said that we need to assume moreover that light is quantized in small `packets’ known as photons. Einstein postulated that a photon of wavelength λ and frequency ff has energy\n...\nas the Einstein\n...\nWith this postulate\n...\nis the energy of the photon E=hfE = h f.\n...\nof this energy will\n...\nliberate the electron from the surface\n...\nϕ. The remaining energy is then converted into the kinetic energy\n...\nthe freed electron.\n...\nAtoms also provided big challenges for classical physics, from two completely different perspectives: The observation of spectral lines, and their stability.\n...\nIn order to explain the existence of spectral lines from the perspective of classical physics, the small number of allowed frequencies of the emitted light must arise from some characteristic vibrations within the atom. But what could these characteristic vibrations be? Moreover, where does the intricate relation between the allowed wavelengths come from? Classical physics seems to provide no satisfactory answer to these questions, and therefore the existence of spectral lines was a mystery.\n...\nA second problem concerns the stability of the atom. Once the nucleus and the electron had been discovered, one possible model for an atom was the `solar system’ model, of a positively charged nucleus at the centre, around which the electron orbits.\n...\nClassical electromagnetism says however that accelerating charges emit radiation, and that this radiation carries away with it energy. The electron, which is undergoing circular motion, is accelerating constantly, and should therefore emit radiation and lose energy. Ultimately the electron should therefore spiral into the nucleus as it loses its energy and slows down. Atoms in vacuum are however observed to be very stable, surviving almost indefinitely -- much longer than the timescale over which the electron should lose all its energy and spiral into the nucleus. No satisfactory way of accounting for the stability of atoms from such a classical model was ever found.\n...\nBohr was able to provide partial answers to both of these problems by postulating that angular momentum of the electron is quantised. In particular, Bohr postulated that much like the energy of a photon is quantised, so too is the angular momentum LL of an electron in orbit around a nucleus. Bohr postulated that an elementary quanta of orbital angular momentum is the Reduced Plank constant\n...\nUnder this assumption, Bohr was able to give a stable model for an atom. In particular, electrons do not radiate continuously as classical electromagnetism predicts, but lose angular momentum and energy in finite, quantised amounts, by emitting photons. This radiation continues until the electron has reached the minimum angular momentum of ℏ\\hbar, after which it no longer radiates, and orbits the nucleus in a stable fashion. Bohr found that the radii and energies of the allowed orbits are\n...\nthis model. When an electron `\n...\numps’ from one orbit to\n...\n, its energy changes, and the\n...\ncarries away this energy\n...\nIn particular,\n...\nit jumps from the orbit with energy EnE_n to\n...\none with energy EmE_m, then\n...\nmust carry away\n...\nenergy ΔE=Em−En\\Delta E = E_m - E_n. However, Einstein already told us that\n...\nphoton with energy ΔE\\Delta E\n...\nfrequency f=ΔE/hf = \\Delta E/h and wavelength λ=hc/ΔE\\lambda = hc/\\Delta E\n...\nThe constant out the front exactly matches the experimentally observed Rydberg constant, and thus reproduced the spectral lines of Hydrogen. In fact, this prediction of the Bohr model led to the search, and subsequent discovery of new lines outside the visible part of the electromagnetic spectrum, which had previously not been observed.\n...\nEinstein postulated that electromagnetic radiation was in fact comprised of ‘packets’ which he called photons, which can roughly be thought of as particles. De Broglie postulated that matter might conversely behave like a wave. When electromagnetic radiation has energy EE, its momentum is p=E/cp = E/c. Using the Einstein formula for the energy of the photon, E=hf=hc/λE = hf = hc/\\lambda, we see that\n...\nDe Broglie postulated that this formula holds universally\n...\nand prescribed that\n...\nAt first sight this seems strange, but it can be readily seen that the wavelengths for ‘‘everyday’’ objects are so small that they would be imperceptible. However, for elementary particles, in conditions which could be formed in the laboratory at that time, in principle this wavelength should have been observable. Two-slit experiments were subsequently carried out, and interference effects, at the wavelength predicted by de Broglie, were observed, indicating that indeed matter can exhibit wave-like properties too.\n...\nHowever, this raised a huge number of questions. Were particles really waves? How does this fit with the conclusion of the photoelectric effect, that waves are in fact particles? There were numerous other phenomena that couldn’t be explained -- subtle aspects of black-body radiation, the way x-rays scatter off solids, the so-called Compton effect. Everything pointed towards the need for a radical re-thinking of the physical world. Quantum mechanics was invented to answer these questions, and in the next section we will start of exploration of the basic aspects of this new theory.",
+      "title": "Web search: Put together a few pages on how quantum mechanics got started",
+      "metadata": {},
+      "time": {
+        "start": 1789528636312,
+        "end": 1789528637863
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.866Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528637866,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a83801a9001s5M2YEnSWbGkr4",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a837fa4e001KK27M5VU14wDDI",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8558,
+      "output": 170,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8728,
+      "headroom": 30128,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.867Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.868Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.868Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.868Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.868Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.868Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.868Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.876Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8728,
+  "providerTokens": 8728,
+  "estimatedInputTokens": 11535,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8558,
+    "cacheRead": 0,
+    "output": 170
+  },
+  "overflow": false,
+  "headroom": 30128,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.876Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.876Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.878Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:17.879Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:18.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528638505,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a8380427001A2mPqqFw92w3xS",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83801b4001VrIozy7X0tHGgQ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:18.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:18.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528638505,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a8380429002o2NWw6IMMXbi9S",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83801b4001VrIozy7X0tHGgQ",
+    "type": "tool",
+    "callID": "call_4b1a91aa7ee454d5",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:18.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528638505,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a8380429001wtVZWW1heuvs6G",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83801b4001VrIozy7X0tHGgQ",
+    "type": "text",
+    "text": "Let me open https://sites.pitt.edu/~jdnorton/teaching/HPS%5F0410/chapters/quantum_theory_origins/index.html and read what it says.",
+    "time": {
+      "start": 1789528638505,
+      "end": 1789528638505
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:18.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528638505,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a8380429002o2NWw6IMMXbi9S",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83801b4001VrIozy7X0tHGgQ",
+    "type": "tool",
+    "callID": "call_4b1a91aa7ee454d5",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://sites.pitt.edu/~jdnorton/teaching/HPS%5F0410/chapters/quantum_theory_origins/index.html"
+      },
+      "time": {
+        "start": 1789528638505
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.517Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528641518,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a8380429002o2NWw6IMMXbi9S",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83801b4001VrIozy7X0tHGgQ",
+    "type": "tool",
+    "callID": "call_4b1a91aa7ee454d5",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://sites.pitt.edu/~jdnorton/teaching/HPS%5F0410/chapters/quantum_theory_origins/index.html"
+      },
+      "output": "Origins of Quantum Theory\n    \n    \n    \n    \n      \n        \n          HPS 0410\n          Einstein for Everyone\n          \n          \n        \n      \n    \n    \n    \n    Back\nto\n        main course page\n    Origins of Quantum Theory\n    John\n        D. Norton\n      Department of History and Philosophy of Science\n      University of Pittsburgh\n    \n      \n        In a Nutshell\n        Theories of Matter at the End of the Nineteenth\n            Century\n\t\t  \n\t\t \n            The Newtonian Corpuscular Legacy\n            Interference Effects Reveal that Light is a Wave\n\t\t\t Thomas Young's Two-Slit Experiment\n\t\t\t The Division Fails\n         \n\t\t  \n\t\t  \n\t\t  \n        Max Planck and the Problem of Black Body Radiation\n          \n            Heat Radiation\n            Planck's Analysis of 1900\n          \n        \n        Albert Einstein and the Light Quantum\n          \n            The Proposal\n            Photoelectric Effect\n            \"...very revolutionary\"\n            Wave-Particle Duality\n          \n        \n        Niels Bohr and Atomic Spectra\n          \n            Atomic Spectra\n            Failure of Rutherford's Nuclear Model\n            Bohr's Theory\n          \n        \n        de Broglie and Schroedinger's Matter Waves\n          \n            Matter Waves\n            Discreteness of Atom Electron Energies\n          \n        \n        The New Quantum Theory \n        What you should know\n      \n    \n    Background Reading: J. P. McEvoy, Introducing Quantum\n        Theory. Totem. This book covers very similar ground to this chapter,\n      but in greater detail. Read as much as you like!\n    In a Nutshell\n    Each of the theories we have dealt with so\n        far show us how classical theories break down when we proceed to\n      realms remote from common experience. Classical Newtonian physics fails\n      when we have systems that travel very fast, or we journey into very strong\n      gravity, or we consider cosmic expanses of space. \n    \n      \n        \n          \n            Special relativity prevails in domains\n              of very high speeds.\n          \n          \n        \n        \n          \n            General relativity prevails in domains\n              of very strong gravitation.\n          \n          \n        \n        \n          \n            Relativistic&nbsp; cosmology prevails\n              over enormous distances\n          \n          \n        \n      \n    \n    Classical Newtonian physics also breaks down when we\n      consider very small systems, such as individual atoms and the particles\n      from which they are made. Quantum theory gives us our best account of\n      nature in the very small. The standard\n      quantum theory we shall consider here makes no changes to the ideas of\n      space and time of relativity theory. Most standard quantum theories are\n      formulated within spaces and times that conform to Einstein's special\n      theory of relativity or even just to Newton's account. While some versions\n      of quantum theory are set within in the spacetimes of general relativity,\n      a complete adaptation of quantum theory and Einstein's general theory of\n      relativity remains beyond our grasp.\n    \n       \n      \n      http://en.wikipedia.org/wiki/File:Atom_diagram.png\n    Quantum theory is a theory of matter;\n      or more precisely it is a theory of the small components that comprise\n      familiar matter. The ordinary matter of tables and chairs, omelettes and\n      elephants is made up of particles, like electrons, protons and neutrons.\n      Quantum theory provides us our best account of these particles. It also\n      provides us with an account of matter in the form of radiation, such as\n      light. It is commonly known that light somehow consists both of light\n      waves and also particle-like photons. The notion of these photons comes\n      from quantum theory (and from Einstein directly, who first introduced them\n      in 1905 as \"light quanta\").\n    The central novelty of quantum\n        theory lies in the description of the state of these particles.\n      It turns out that this state does not coincide perfectly with any state we\n      are familiar with from classical physics. In some ways, the particles of\n      quantum theory are like little tiny points of matter, as the name\n      \"particle\" suggests. In others, they are like little bundles of waves. A\n      full account requires us to see that fundamental particles have properties\n      of both at the same time. There is no easy way to visualize this necessary\n      combination; indeed there may be no fully admissible image at all. The\n      problem of arriving at it remains a challenge today. That problem,\n      however, has proved to be no obstacle to the theory itself. Modern quantum\n      theory has enjoyed enormous empirical success, accounting for a huge array\n      of phenomena and making striking predictions.\n    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n      Katsushika Hokusai's Great Wave off\n        Kanagawa: A classic artwork that has passed into the public domain.\n    \n      \n        \n          It is possible to describe the basic posits of\n            quantum theory compactly. However these posits are very likely to\n            appear arbitrary and even a little bewildering on first\n            acquaintance. What is needed is some understanding of why those\n            posits were chosen and what problems they are intended to solve. The\n            best way to arrive at this understanding is to review\nthe\n              historical developments in the course of the first quarter\n            of the twentieth century that led to quantum theory. For in that\n            historical development one can see a naturally growing sequence of\n            problems and solutions that eventually issues in the modern theory.\n          It is interesting to reflect on why\n              this historical approach is the one now chosen, but it was\n            not used for the exposition here of special and general relativity.\n            The reason is that the basic phenomena to which those theories apply\n            are already somewhat familiar; or it takes very little to introduce\n            those phenomena. We all can imagine things moving very fast, for\n            example, and it takes only a little more to imagine that somehow we\n            cannot accelerated even fast moving things through the speed of\n            light.\n            \n            Matters are different with quantum theory. The phenomena that\n            control the theory are generally unfamiliar.\n            Those outside physics rarely have a conception of Ehrenfest's\n            \"catastrophe in the ultraviolet\" for heat radiation; or the odd\n            dependency of the photoelectric effect on frequency; or why the\n            discreteness of the lines of an emission spectrum is classically\n            worrisome. The historical approach familiarizes us with these\n            classically puzzling phenomena. Then, when the resolution emerges as\n            quantum theory, its design and role are immediately apparent.\n        \n      \n    \n    Unlike relativity theory, the birth of quantum theory was\n      slow and required many hands. It emerged in\n      the course of the first quarter of the twentieth century with\n      contributions from many physicists, including Einstein. \n    Theories of Matter at the End of the\n      Nineteenth Century\n    At the end of the nineteenth century, matter was\n      understood to come in two forms.\n    \n      \n        \n          One was particles,\n            localized lumps of stuff that flew about like little bullets. The\n            best investigated of the fundamental particles was the electron.\n            Thomson had found in 1896 that the cathode rays found in cathode ray\n            tubes--the precursor of old fashioned glass TV tubes--were deflected\n            by electric and magnetic fields just as if they were tiny little\n            lumps of electrically charged matter. Atoms, a bound collection of\n            various particles, were also particulate in character. \n          \n        \n      \n    \n    \n      http://en.wikipedia.org/wiki/File:Crookes-maltese-tube.jpg\n\t  The picture shows a shadow of a Maltese cross produced when cathode rays--apparently moving in straight lines like particles--pass over a Maltese cross shaped barrier in a cathode ray tube.\n    The Newtonian Corpuscular Legacy\n    That light also was just the propagation of little corpuscles was the view bequeathed to physicists by the ultimate authority of the seventeenth and eighteenth century. His celebrated treatise on light of 1704, Opticks, developed an extended account of optical phenomena as resulting from the motion of little light corpuscles. His account coincides largely with what we might now call &quot;ray optics.&quot; When allowed to move freely, these corpuscles travel in straight lines. Here, for example, is how Newton described the simple phenomenon of the reflection of images from mirrors.\n    \n\t  \n  \n    The other form of matter was wavelike matter. Newton's corpuscular picture was challenged in the early nineteenth century by Thomas Young. He argued for a view that had already been explored in Newton's time, that light is a propagating wave. His view eventually won. By the mid and later nineteenth century, that light consisted of propagating waves had become the dominant view. Its most successful expression was in Maxwell's theory. In it, light just consists of electromagnetic waves, that is, wavelike ripples propagating in electric and magnetic fields.\n    Interference Effects Reveal that Light is a Wave\n  \n  \n        \n          The most celebrated interference effect arises in\n            the two slit experiment. Waves of light\n            (depicted as parallel wavefronts moving up the screen) strike a\n            barrier with two holes in it. Secondary waves radiate out from the\n            two slits and interfere with each other, forming the characteristic\n            cross hatching pattern of interference. These are the same patterns\n            seen on the surface of a calm pond in the ripples cast off by two\n            pebbles dropped in the water. \n          \n        \n  \n  \n    \n    \n      \n        \n          \n          The essential thing in these interference\n            experiments is the way the waves combine. The patterns arise because\n            the waves can add up two ways.\n            \n            In constructive interference, the\n            phases of the waves are such that they add to form a combined wave\n            of greater amplitude. The figure shows the greatest possible effect\n            of constructive interference. All the parts of the two waves line up\n            to interfere constructively everywhere.\n        \n      \n    \n    \n      \n        \n          In destructive interference,\n            the phases are such that the waves subtract to cancel out. The\n            figure shows the greatest possible effect of destructive\n            interference. All parts of the two waves line up in such a way as to\n            interfere destructively everywhere.\n            \n            In ordinary cases of interference, such as the two slit experiments,\n            both destructive and constructive interference happen in different\n            parts of the region where the waves intersect. That leads to the\n            complicated interference patterns seen.\n          \n        \n      \n    \n    Interference effects are readily understandable\n        if one thinks of a wave as some sort of displacement in a medium.\n      A water wave in the ocean, for example, consists of peaks and troughs\n      where the sea water is displaced above and below the mean sealevel. If two\n      waves meet and both peaks coincide, the result is a peak with their\n      combined height. That is constructive interference. If a peak and trough\n      coincide, then the two can cancel out. That is destructive interference.\n    In the nineteenth century, Maxwell found that that\n      explanation of interference so compelling, that he thought it provided\n      good evidence for an ether. Light, he urged,\n      must be a displacement in something if it is to have peaks and troughs\n      that can cancel out. That something, the carrier of the light wave, is the\n      ether. If light were made up of corpuscles, it seemed impossible that one\n      could combine two corpuscles and have them annihilate.\n    \n      Manipulated form of http://en.wikipedia.org/wiki/File:Ripple_-_in_rail.jpg\n    Thomas Young's Two-Slit Experiment\n    Young reported the decisive interference effects early in the nineteenth century through his two slit experiment, described above. Here is how he portrayed it in his 1807, expansive text book that covered a huge range of topics in what we would now call physics.\n    \n    \n    \n    The Division Fails\n    With the demise of the ether theory in the early twentieth century, it became clear that\n      something more interesting was at hand. The matter\n        of light itself somehow came in a form that it could locally\n      cancel other light waves. That sort of interaction was an early indication\n      of the sorts of interactions that would become commonplace in quantum\n      theory.\n    This neat division of matter into particle-like and\n      wave-like would not persist. The story of the coming of quantum theory in the twentieth century is\n      the story of the breakdown of this division.\n      In the sections to come, we shall see how various clues in the observed\n      physical properties of matter showed that this simple division must fail.\n    \n      \n        \n          \n          \n          Ordinary matter\n            Gases, liquids, solids\n          Radiative matter\n            Light, radio waves, heat radiation\n        \n        \n          View at the end of\n            the nineteenth century\n          Particles\n          Waves\n        \n        \n          Clue that this was too simple\n          Discreteness of atomic spectra (and\n              more)\n          Thermal properties of heat radiation (and\n              more)\n        \n        \n          View with the completion\n            of quantum theory\n          Both wave and particle properties\n          Both wave and particle properties\n        \n      \n    \n\t  \n    Max Planck and the Problem of Black Body\n      Radiation\n    \n    Heat Radiation\n    The first clue that radiation might also have\n      particle-like properties came in 1900. It came in apparently innocuous\n      work on heat radiation. This sort of radiation is familiar to everyone. It\n      is the radiation that warms our hands in\n      front of fire, that burns the toast and that provides the intense glare of\n      a furnace. Physicists had been measuring how much energy is found in each\n      of the different frequencies (i.e. colors) that comprise heat radiation.\n      That distribution varies with the temperature of the radiation. As a body\n      that emits radiation passes from red to orange to white heat, the\n      frequencies with the greatest energy change correspondingly.\n    \n      Public domain image from\nhttp://www.public-domain-image.com/full-image/miscellaneous-public-domain-images-pictures/fire-flames-pictures/fire-close-up-texture.jpg-royalty-free-stock-image.html\n    \n      \n        \n          The information about how much energy came in the\n            various parts of the spectrum of colors could be plotted on a graph.\n            Here is one of the graphs plotted by Otto Lummer und Ernst\n            Pringsheim, the leading experimenters from the time. The big peak in\n            the curve corresponds to the location in the spectrum of most of the\n            energy of the radiation and thus determines its color.\n            \n            What Lummer and Pringsheim are showing here is that data they have\n            found is not fitted well by the curves of the best current theories.\n          \n            Figure from Otto Lummer und Ernst\n              Pringsheim, \"Über die Strahlung des schwarzen Körpers für lange\n              Wellen,\" Verhandlungen der Deutschen Physikalischen\n                Gesellschaft. 2, (1900) 163-180. \n        \n      \n    \n    &nbsp;\n    In 1900, as the newest and latest of the data came in, Max\n      Planck in Berlin was working on understanding the physical processes that\n      led to these distributions of energy. He was well aware of the latest\n      results of his Berlin colleagues, Lummer and Pringsheim, and that no\n      present theory fitted with their latest experimental data. He devised a\n      new account that fitted very well. In his account, heat radiation is a\n      jumble of many frequencies of electromagnetic waves that have come to\n      equilibrium in a cavity. The waves are absorbed and emitted by oscillating\n      charges in the walls of the cavity. That way, the temperature of the walls\n      can be conveyed to the radiation itself. The cavity really just is an oven\n      and it is filling the space inside with heat radiation. This radiation\n      inside the cavity was known as \"cavity radiation.\"\n      \n    If a tiny window was opened in the walls of the cavity,\n      the radiation released would also have the temperature of the cavity. Some\n      clever thermodynamic arguments showed that it had exactly the same\n      composition as radiation re-emitted by a body at that same temperature if\n      that body had the special property that it absorbed perfectly all\n      radiation that fell on it, before re-radiating it. Such bodies are called\n      \"black\"; so that form of radiation is known as \"black\n        body radiation.\"\n    Planck's Analysis of 1900\n    \n      \n        \n          \n            Planck found a very simple formula that fitted the latest\n              experimental results very well. His problem was to tell a\n              theoretical story about how that formula came about. After some\n              hesitation, he found such a story. However the essential\n              computation in his story depended upon a very\n                odd assumption. (Debate continues today over whether\n              Planck actually realized how radical this assumption was and how\n              crucial it was to his account.) Planck modelled the heat radiation\n              as coming from energized electric resonators. \n              \n              Ordinary resonators of classical physics are just masses vibrating\n              on springs, as shown in the figure. They can take on a continuous\n              range of energies.\n              \n              Planck's story required that these resonators not be energized\n              over a continuous range of energies. Instead they might take\n              energies of, say, 0, 1, 2, 3, ... units, but nothing\n                in between. Energies of say 1.2 units or 3.7 units were\n              prohibited.\n            ...\n              \n              oooo\n              \n              ooo\n              \n              oo\n              \n              o\n          \n          \n          \n        \n      \n    \n    Deciding what those units were proved to be important. The\n      units of energy were tied to the resonant frequency of the resonator. They\n      were given by Planck's formula:\n    Energy = h\n        x frequency\n    That means that the allowed energies are (h x frequency),\n      twice (h x frequency), thrice (h x frequency), and so on.\n    The letter h stands for a new\n        constant of nature introduced by Planck and now called \"Planck's\n      constant.\" This new constant plays the same of role in quantum theory that\n      the speed of light plays in relativity theory; it tells us when quantum\n      effects will be important. The number is very small, suggesting that\n      quantum effects are to be expected in the small; for example, for ordinary\n      frequencies, units of energy given by Planck's formula will be very small,\n      so we will not notice the granularity it requires when we look at the\n      larger energies of systems ordinary experience. (h = 6.62 x 10-27\n      erg seconds.)\n    Planck's original formula applied to the energy of the\n      resonators. He tried hard to confine the discontinuity it suggested to\n      these resonators and even just to the interaction between radiation and\n      the resonators. Over the next decade, other physicists began to see that\n      the discontinuity could not be confined. Computations analogous to those\n      of Planck from 1900 could be applied to heat\n        radiation directly. They drove to the conclusion that Planck's\n      formula applied directly to heat radiation as well. In each frequency, the\n      energy of heat radiation must come in whole units of h x frequency. That\n      conclusion is hard to reconcile with the idea that heat radiation is\n      purely a wave phenomenon.\n    Albert Einstein and the Light Quantum\n    \n    The Proposal\n    While Planck may not have recognized how radical his work\n      of 1900 was, Einstein realized that something very odd was afoot with high\n        frequency light and he did it apparently independently of Planck.\n      In 1905 he argued that we needed to change our basic picture of the\n      constitution of radiation.\n    High frequency light behaves in certain circumstances as\n      it if were made up of spatially localized bundles\n      of energy using (once the notation is adjusted) Planck's formula to give\n      the amount of energy in each bundle. This was a startling reversal. It\n      seems, at first glance, that we are cast back in time to Newton's old\n      theory that light consists of a rain of corpuscles.\n      \n      The energy of each corpuscle, Einstein argued, is equal to h x (frequency\n      of light).\n    \n    \n      \n        \n          \n          The traditional picture inherited from the great\n            achievements of nineteenth century physics was that light is a\n            propagating wave.\n        \n      \n    \n    \n    \n      \n        \n          What Einstein now urged was that high frequency\n            light sometimes behaved as if it were made up of spatially localized\n            bundles of energy. Planck's formula gave the amount of energy in\n            each bundle. So once again light was said to consist of a shower\n              of corpuscles, each corpuscle now with energy equal to h x\n            (frequency of light). \n          \n        \n      \n    \n    While this seems like a return to a Newtonian particle\n      view, the return was not and could not be\n      complete. For the wave-based notion of frequency was part of Einstein's\n      hypothesis. And whatever else may come, the experiments on the\n      interference of light remained.\n    \n      \n        \n          \n          \n          Einstein's core argument\n            was ingenious. He looked at the observed properties of high\n            frequency light and noticed they were governed in certain aspects by\n            exactly the same laws that govern ordinary gases. By reverse\n            engineering those gas laws, Einstein could show that they depended\n            essentially on gases consisting of very many spatially localized\n            little lumps of matter, their molecules. He supposed that it was no\n            accident that light and gases obeyed the same laws; they did, he\n            urged, because the light really was made of little localized\n            units--called \"quanta\"--of energy.\n        \n      \n    \n     For a more detailed account of Einstein's core argument,\n      see the chapter \"Atoms and the\n        Quantum,\" Section 7, \"The\n        Light Quantum Paper: Einstein's Astonishing Idea.\"\n      \n      For a short video of me explaining Einstein's ingenious argument, go to:\n    \"Einstein's Astonishing Idea\" on YouTube\n      or Vimeo\n      \n      \n      \n      \n      which is a part of the \"Instant\n        HPS\" series of short videos\n      \n      \n    The word \"quantum\" (plural\n      \"quanta\") was then just used as a label for a unit of some quantity. In\n      1905 talk of a light quantum would be understood to be nothing more than\n      talk of a \"light unit.\"\n    Photoelectric Effect\n    \n      \n        \n          \n          The best known part of Einstein's 1905 paper on\n            the light quantum was an observation made towards the end of the\n            paper. Einstein had been following experiments on the so-called \"photoelectric\n              effect.\" In it, light is used to kick electrons out of an\n            electrically charged cathode. According to the wave theory of light,\n            the intensity of the light ought to determine if the light can\n            generate these \"photoelectrons.\" For more intense light has more\n            energy and energy is what is needed to liberate the electrons held\n            in the cathode's surface.\n          \n        \n      \n    \n    It is easy to diminish the intensity\n      of light. We can, for example, just move the light source far away so that\n      the light energy it emits is spread over a great area. The expectation\n      from the wave theory is that this dimmed light will lose its ability to\n      liberate photoelectrons.\n    Experiment had shown, however, that the intensity\n        did not matter to the ability of light to produce photoelectrons.\n      All that mattered was the frequency of the light. If light was of low\n      frequency, it could not generate photoelectrons, even if the light were\n      very intense. If the light had a high frequency it could produce\n      photoelectrons, even if the light was of very low intensity.\n    This, Einstein observed triumphantly, is just what one\n      would expect if light energy were localized in quanta with energy given by\n      Planck's formula. All one had to assume was that a\n        single quanta was all that was needed to generate each\n      photoelectron.\n    \n      \n        \n          If the light was of low\n              frequency, its individual quanta would be of low energy, so\n            no one quanta would be energetic enough to knock electrons out of\n            the cathode. Increasing the intensity of the light did nothing more\n            than increasing the number of light quanta showering on the cathode,\n            all them too weak in energy to liberate a photoelectron.\n            \n            If the light was of high frequency,\n            then each light quantum was individually energetic enough to\n            liberate a single photoelectron. The intensity of the light did not\n            matter. Low intensity meant that there were not many light quanta\n            incident on the cathode. But since only one light quantum is needed\n            to liberate just one photoelectron, the effect would be there for\n            high frequency light, no matter how weak the intensity of the light.\n          \n        \n      \n    \n    About fifteen years later in 1921, Einstein won the Nobel\n        prize. His work on the photoelectric effect attracted special\n      mention in the award. The citation read \"for his services to Theoretical\n      Physics, and especially for his discovery of the law of the photoelectric\n      effect.\"\n    \"...very revolutionary\"\n    Einstein's light quantum hypothesis was audacious.\n      It was even beyond audacious.\n    His other works of 1905 served to complete the physics of\n      the nineteenth century. Taken together they comprise what is not routinely\n      called Einstein's\n      \n      \"Annus Mirabilis\"\n      \n      his \"miraculous year.\"\n    Einstein's doctoral dissertation and his paper on Brownian\n      motion helped establish the reality atoms.\n      That advanced the research of Maxwell, Boltzmann and others from the\n      nineteenth century in statistical physics. They had sought to show that\n      the observable thermal properties of matter could be recovered from\n      statistical analysis of the behavior of very many constituent molecules or\n      other components.\n    Encoded within the electrodynamics of Maxwell and Lorentz\n      was a new kinematics of space and time.\n      Einstein's work on the special theory of relativity extracted and\n      displayed it. \n    Einstein's proposal of the light quantum, however, mounted\n        a direct challenge to the major achievement of the\n      Maxwell-Lorentz tradition: the discovery that light was merely a wave\n      propagating in the electromagnetic field.\n    \n      \n        \n          \n          \n          \n          \n        \n      \n    \n    Did Einstein recognize this distinctive audacity of his\n      light quantum hypothesis?\n    These sorts of questions are rarely answered easily.\n      However in this case, we have clear evidence that Einstein recognized the\n      audacity of the proposal. In May 1905, Einstein wrote a memorable letter\n      to his friend Conrad Habicht. It assessed the\n      remarkable collection of papers he was writing in 1905.\n    &nbsp; \n      Conrad Habicht\n    Einstein's description of the special relativity paper is\n      reserved. He merely says that the kinematic part of the paper \"will surely\n      interest you.\" However the light quantum paper, he assures Habicht, is \"very\n        revolutionary.\" No other of the papers of 1905 mentioned in the\n      letter is described this way.\n    The letter is so striking that it is worth seeing in full.\n      Here is a facsimile of the first page.\n    \n    \n      \n        https://commons.wikimedia.org/wiki/File:Die_Echte_Rotzunge_oder_Limande...IMG_2717ВЕ.jpg\n      The text reads in translation:\n      Bern,\n        Thursday [18 or 25 May 1905]\n        \n        Dear Habicht,\n        \n        Such a solemn air of silence has descended between us that I almost feel\n        as if I am committing a sacrilege when I break it now with some\n        inconsequential babble. But is this not always the fate of the exalted\n        ones of this world?\n        \n        So, what are you up to, you frozen whale, you smoked, dried, canned\n        piece of soul, [German, Seele = soul, not\n          sole (fish)] or whatever else I would like to hurl at your\n        head, filled as I am with 70% anger and 30% pity! You have only the\n        latter 30% to thank for my not having sent you a can full of minced\n        onions and garlic after you so cravenly did not show up on Easter. But\n        why have you still not sent me your dissertation? Don't you know that I\n        am one of the 1 1/2 fellows who would read it with interest and\n        pleasure, you wretched man? I promise you four papers in return, \n        \n        the first of which I might send you soon, since I will soon get the\n        complimentary reprints. The paper deals with radiation and the energy\n        properties of light and is very revolutionary, as you will see if you\n        send me your work first.\n        \n        The second paper is a determination of the true sizes of atoms from the\n        diffusion and the viscosity of dilute solutions of neutral substances.\n        \n        The third proves that, on the assumption of the molecular theory of\n        heat, bodies on the order of magnitude 1/1000 mm, suspended in liquids,\n        must already perform an observable random motion that is produced by\n        thermal motion; in fact, physiologists have observed (unexplained)\n        motions of suspended small, inanimate, bodies, which motions they\n        designate as \"Brownian molecular motion.\"\n        \n        The fourth paper is only a rough draft at this point, and is an\n        electrodynamics of moving bodies which employs a modification of the\n        theory of space and time; the purely kinematic part of this paper will\n        surely interest you.\n        \n        Solo gives private lessons the same as before, and cannot bring himself\n        to sit for the exam; I feel very sorry for him, for he leads a sad\n        existence. He also looks quite exhausted. But I don't think it's\n        possible to steer him to more bearable living conditions-you know how he\n        is! \n        \n        Greetings from your A.E.\n        \n        My wife and the dickey bird, who is now 1 year old, send you their best\n        regards. Send me your paper soon!\n    \n    Translation from Einstein Papers,\n      Vol. 5, Doc. 27.\n    \n    Wave-Particle Duality\n    If this corpuscular view of light is so successful, do we\n      need the wave view at all? In 1909, Einstein showed that the properties of heat radiation could only be successfully\n      explained if we used both the wave and particle\n      view. \n    To arrive at this conclusion, he considered thermal fluctuations. They arise in any thermal system, where the thermal system consists of very many component systems that have come to some sort of equilibrium:\n    • If we think of an ordinary body surrounded by air, there are slight fluctuations in the pressure of the air when more and less molecules collide with the body at any moment.\n      \n      • If we think of a body surrounded by a complicated system of waves, there is a similar effect. We might imagine a boat tossed on stormy seas. One wave after another crashes into the boat and tosses it about. The effect varies over time.\n     \n    https://commons.wikimedia.org/wiki/File:VilhelmBille_boats_at_sea.jpeg \n    Einstein imagined a mirror within a bath of heat radiation. If the heat radiation consists of corpuscle-like quanta, then fluctuations would arise in the motion of the mirror from the impact of the light quanta, analogously to the fluctuations dues to gas molecule collisions. If the heat radiation consists of waves, then irregularities in the waves would also lead to fluctuations in the motion of the mirror, analogous to the tossing of a boat on stormy seas. Which would be the case for heat radiation?\n   Einstein was able to use general arguments in the statistical mechanics of thermal systems to determine the magnitude of the fluctuations in the motion of the mirror. He recovered a striking result: the full observed effect came from the sum of two terms, one a\n  particle term, the other a wave term. Both wave and particle fluctuation processes were present.\n    \n      \n        \n          \n            fluctuations in heat\n              radiation\n            =\n            term dues to the\n              wavelike character of heat radiation\n            +\n            term due to the\n              particle like character of heat radiation\n          \n        \n      \n    \n    The need for both is sometimes called \"wave-particle\n      duality.\" Something like this is needed, for, whatever else our accounts\n      of light must do, they still must accommodate Thomas Young's observations\n      from the early 19th century of interference phenomena in light.\n     \n    Many of you will want to use the word \"photon\"\n      interchangeably with Einstein's \"light quantum.\" There is probably not\n      much harm in doing that as long as you realize that the word \"photon\"\n      comes from a later era in quantum theory. It was introduced by G. N. Lewis\n      in 1926, 21 eventful years later.\n    When we use the word photon, the natural presumption is\n      that we are referring to the entity that derives from the completed\n      quantum theory of the 1920s and 1930s. When Einstein proposed his light\n      quanta, not even an Einstein could anticipate quite how radically the\n      emerging quantum theory would diverge from classical ideas. Einstein's\n      proposal of 1905 was quite restricted; he\n      posited that the energy of high frequency light was spatially localized\n      into the little lumps he called light quanta. He could not then know how\n      things would transpire for low frequency light. And his proposal of 1905\n      did not say anything about the momentum of the light quanta. That light\n      quanta also carry momentum was inferred later.\n    Niels Bohr and Atomic Spectra\n    \n    Atomic Spectra\n    The analysis of heat radiation and the power of light to\n      generate photoelectrons provided the first clues that this wavelike form\n      of matter was not merely wavelike, but also had particle-like aspects as\n      well. What of the particles that make up matter? What of the electrons\n      that Thomson had found in 1896? The clue that they also had wavelike\n      aspects eventually derived from observations in atomic spectra.\n    If gases are energized by heating or passing an electric\n      discharge through them, they emit light. The\n      orange sodium vapor lamps or bright white mercury vapor lamps used in\n      parking lots employ this mechanism in its simplest form. The reverse\n      process also occurs. Gases will absorb light--that is how they can block\n      transmission of light.\n    \n      http://en.wikipedia.org/wiki/File:Gase-in-Entladungsroehren.jpg\n    \n      http://en.wikipedia.org/wiki/File:Edelgase_in_Entladungsroehren.jpg\n    One might expect that such emissions (and absorptions)\n      contain all frequencies (colors)--a perfect rainbow--even if the intensity\n      of light across the spectrum might vary. They do not. Gases are very\n      selective in the frequencies they emit and absorb. They will emit and\n      absorb only a few very particular frequencies.\n      The frequencies emitted form what is called the atomic emission spectrum\n      of the element; and those absorbed form the absorption spectrum. The\n      frequencies in them are distinctive: they can be used as a characteristic\n      signature for identifying an otherwise unknown gas. \n    \n      \n        \n          Here is the emission spectrum of hydrogen\n            gas. The light emitted by excited hydrogen has been spread out into\n            its component frequencies by passing it through a prism or\n            diffraction grating. The light then darkens a photographic emulsion\n            in different places according to its frequency.The series of lines\n            shown is the so-called \"Balmer series\" that appears in the visible\n            and near visible frequencies of light. (Wavelengths are shown in\n            units of Angstroms.) Image from\n              Gerhard Herzberg, Atomic Spectra and Atomic Structure.\n              Prentice-Hall, 1937.\n          \n        \n      \n    \n    Failure of Rutherford's Nuclear Model\n    In 1913, Niels Bohr reported on his efforts to devise a\n      model of the process of light emission from the atoms of elements that\n      would explain the very particular frequencies emitted. The problem proved\n      to be far harder than one would expect. Then, the best model of an atom\n      was Rutherford's nuclear model. According to\n      it, an atom is like a little solar system. It has a massive, but tiny,\n      positively charged nucleus. That nucleus exerts an attractive force on\n      lighter negatively charged electrons that orbit it, rather like the way\n      the planets orbit the very massive sun.\n    \n      \n        \n          In the Rutherford model, exciting a gas by\n            passing high voltage electricity through it would energize the\n            electrons, which could then move farther away from the attractive\n            pull of the nucleus. When they fell back towards the nucleus, the\n            energy they gained would be lost as light energy; that emitted light\n            forms the emission spectrum.\n            \n            The first difficulty was that, as they\n            fell back to the nucleus, they would pass through a continuous range\n            of orbital frequencies and thus emit a continuous range of\n            frequencies of light. There was no way to limit the emitted light to\n            just a few special frequencies.\n            \n            The second difficulty was more serious.\n            Nothing stops the emission of energy by the electrons through this\n            process of light emission. They would continue to do it until they\n            crashed into the nucleus. According to classical electrodynamics,\n            this would happen very quickly. It was not clear that Rutherford's\n            model allowed matter made of atoms to exist at all. \n          \n        \n      \n    \n    Bohr's Theory\n    \n      \n        \n          \n          Bohr solved both\n            problems with a proposal of breath-taking audacity. Classical\n            electrodynamics was quite clear: an electron orbiting the nucleus is\n            accelerating and therefore must radiate energy. It would be like a\n            little radio transmitter, broadcasting electromagnetic waves. In the\n            process, it must lose energy, fall deeper into the attractive pull\n            of the nucleus and eventually crash into it nucleus.\n            \n            Bohr simply posited that this was not true. Rather, he asserted that\n            there are stable orbits arrayed around\n            the nucleus in which an electron could orbit indefinitely without\n            losing any energy.\n          \n        \n      \n    \n    \n      \n        \n          Next, Bohr supposed that electrons can jump up\n            and down between these allowed orbits. If an electron\n              is to jump up, away from the nucleus to a higher energy\n            orbit, it needs to gain energy. That enables it overcome the pull of\n            the atom's positively charged nucleus and climb away from it. The\n            electron gets that extra energy from light falling on the atom. The\n            energy of the light is transferred to the electron, which can then\n            jump up to a higher energy orbit. The incident light must deliver\n            exactly the right amount of energy to make up the difference between\n            the energy of the orbit left behind and the one to which the\n            electron jumps.\n            \n            In addition Bohr assumed that the amount of energy drawn from the\n            exciting light conforms with Planck's formula: the energy is just h\n              times its frequency.\n            \n            The outcome is that light only of a very specific frequency can\n            excite the jumps between two specific orbits. For some specified\n            jump, the frequency of the light has to be tuned\n              precisely so that h times the frequency exactly matches the\n            energy needed to complete the jump.\n          \n        \n      \n    \n    \n      \n        \n          \n          Bohr's theory also allows for the reverse\n            process. Once an electron has jumped up to a higher energy orbit, it\n            will not stay there. It will jump back down\n            to a lower energy orbit. In the process, it will re-emit the energy\n            it gained in jumping up in the form of light of a definite\n            frequency. Once again, the energy of the light emitted will conform\n            to Planck's formula and be equal to h times its frequency.\n            \n            As a result, when an electron jumps down between two orbits, it\n            emits light of a definite frequency\n            that is characteristic of exactly that jump.\n        \n      \n    \n    Eventually, these quantities of light energy that the atom\n      absorbs and emits came to be identified with\n        Einstein's light quanta. In 1913, however, Bohr was cautious. He\n      did not say that a light quantum is emitted. He simply spoke of\n      \n      \"the emission of a homogeneous radiation, for which the relation\n      between the frequency and the amount of energy emitted is the one given by\n      Planck's theory.\"\n      \n      This avoidance of Einstein's quantum was no accident. Bohr was a fierce\n        opponent of Einstein's notion and only relented in his opposition\n      when new developments in the 1920s compelled the acceptance of Einstein's\n      notion. \n    Having made those assumptions, Bohr could read off the\n      oddest result from the observed atomic spectra. Since only very few\n      frequencies of light were present, it followed that only very few jumps\n      were possible, so that only very few orbits were\n        permitted for the electron. It was as though our sun allowed a\n      planet to orbit where Venus is and where the Earth is; but it prohibited\n      any planet in between.\n    All that remained was to figure out just which of the many\n      possible orbits are found in this favored set of stable orbits. That was\n      relatively easy to do. The observed spectra gave a complete catalog\n        of the energy differences between these allowed, stable orbits.\n      Each line in the observed spectra resulted from electrons jumping between\n      two specific orbits. It is a numerical exercise to determine precisely\n      which those few orbits are. The calculation was not so different from this\n      exercise in geography. If we are given the distances between every pair of\n      cities in a country, we can use those data to figure out where on the map\n      each city is found. Atomic spectra gave Bohr the energetic distances\n      between his allowed orbits. From those data he could determine the\n      energies and thus locations of those allowed orbits.\n    \n    \n      \n        \n          When Bohr did that, he found a very simple way to\n            summarize just which of the orbits were allowed. They were those\n            whose orbital angular momentum came in units\n            h/2π. Just as Planck's relation told us that radiant energy comes in\n            whole units of h x frequency, Bohr now found that orbiting electrons\n            always must have whole units of angular momentum: one h/2π, two\n            h/2π, three h/2π and nothing in between.\n          We have seen that the ordinary (linear) momentum\n            of a body is just its mass times its velocity. Angular momentum is\n            an analogous quantity that plays an important role in the dynamics\n            of rotating or orbiting systems. For a small mass like a classical\n            electron orbiting a nucleus, it is defined as the electron's mass x\n            radius of orbit x angular speed of electron.\n        \n      \n    \n    Angular\n        momentum\n        = one h/2π, two h/2π, three h/2π, . . .  \n    \n    Bohr's theory was puzzling, even maddening. Just as with\n      Einstein's hypothesis of the light quantum, it seemed to require that\n      classical physical notions both hold and fail at the same time. That was\n      not a comfortable situation. Those discomforts were eclipsed by a brighter\n      fact. Bohr's theory worked, and it worked very well.\n      Observational spectroscopy was providing theorists with an expansive\n      catalog of spectra of many substances under many different conditions.\n      Starting from Bohr's theory, physicists were able to develop an\n      increasingly rich and successful account of them. While it was clear that\n      something was not right, in the face of these successes, it was tempting\n      to postpone asking too pointedly how this goose could keep laying golden\n      eggs.\n    \n      \n        \n          The central result of Bohr's theory of 1913 was\n            that the angular momentum of orbiting electrons came in full\n            multiples -- quanta -- of h/2π. In the years immediately following,\n            that simple condition was expanded into a broader condition that a\n            quantity known as \"action\" came only in whole multiples for physical\n            systems that returned periodically to the same initial condition. As\n            a result the term \"quantum of action\"\n            entered the physicists' vocabulary. \n          This sidebar should contain a brief sentence that\n            gives you a useful idea of the physical quantity \"action.\" Alas,\n            I've been unable to figure out what that sentence might be. It\n            probably doesn't help too much if I tell you that the trajectories\n            of bodies obeying classical physical laws can be picked out as those\n            that render extremal the action added up along the trajectories. Did\n            that help? I didn't think it would.\n        \n      \n    \n    de Broglie and Schroedinger's Matter\n      Waves\n    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n    Matter Waves\n    Bohr's theory of 1913 and its later elaboration gave a\n      wonderfully rich repertoire of methods for accounting for atomic spectra.\n      They depended on a contradictory mix of classical and non-classical\n      notions. By the early 1920s, the limits of this system began to show and\n      theorists also turned to the task of making some coherent sense of this\n      body of theory that soon came to known as \"the old\n        quantum theory.\"\n    The major breakthroughs to the \"new\n        quantum theory\" came in the middle of the 1920s. A number of\n      different theorists found ways of developing coherent theories of the\n      quantum domain; and they all eventually proved to be different versions of\n      the same new theory. Heisenberg, Born and Jordan first developed matrix\n      mechanics. Its basic quantities were infinite tables of numbers --\n      matrices -- drawn as directly as possible from observed quantities like\n      atomic spectra.\n    Another approach proved equivalent and is easier to\n      picture. It was based on a supposition by de Broglie\n      of 1923 and developed by Schroedinger in 1926. Einstein had shown that a\n      wave phenomenon, light, also had particle like properties. Might the\n      reverse be true also? Might particle like electrons also have wave\n      properties? \n    The hypothesis answered yes. It associated a wave of a\n      particular wavelength with a particle of some definite momentum.\n    \n    \n    \n      Here is de Broglie's formula that tells us which wavelength goes with\n      which momentum:\n     momentum\n        = h / wavelength \n    Notice how similar it is to Planck's formula which relates\n      energy and frequency. Here is Planck's formula again:\n    energy = h\n        x frequency\n    The two together form the foundation of the matter\n        wave approach. They tell us how to assign a wave of some definite\n      frequency and wavelength to a particle of some given energy and momentum.\n    \n    Here's a way to see the two\n      equations in even more similar form. For a periodic process we can write\n      frequency = 1/period, where \"period\" is the time needed for the process to\n      recur. Then Planck's formula becomes\n      energy = h / period.\n      Now the equations relate momentum to a length (the wavelength) and energy\n      to a time (the period).\n    Discreteness of Atom Electron Energies\n    The beauty of the matter wave hypothesis is that it explained\n        naturally why only very particular energy states are admissible\n      for electrons bound in atoms. The reason that only few energy states are\n      admissible for these electrons derives directly from the fundamental\n      differences between particles and waves. We can see these differences by\n      considering a very simple case, a particle/wave trapped in a box.\n      \n      To keep things as simple as possible, we will imagine that the particle\n      can only move in one spatial dimension; it\n      finds itself in a one-dimensional box. \n    \n    \n      \n        \n          \n          To begin, imagine an ordinary, classical particle\n            confined to a box. It bounces back and forth between the walls.\n            Classical physics allows it to move at any speed. As a result it can\n            have a continuous range of different\n            energies.\n        \n      \n    \n    \n    \n    \n      \n        \n          Now imagine instead that we are confining a wave\n            to the same box. The stable waves that can persist within the box\n            are so called \"standing waves.\"\n            \n            Anyone who plays a stringed instrument\n            is familiar with them. When a string is plucked or bowed, the base\n            note results from a standing wave whose half-wavelength is the\n            length of the string. There are overtones also formed that give the\n            richness of the sound. These are smaller standing waves, whose\n            wavelengths equal the length of the string, 2/3 that length, half\n            that length, and so on. The essential condition is that a wave can\n            form as long as it has nodes--the points of no displacement--at\n            either end of the string.\n            \n            The matter waves that can form within the box have the same\n            structure as these tones and overtones. They have wavelengths of\n            once, 1/2, 1/3, ... , times the double width of the box. (We\n              use the double width since standing waves have nodes at each half\n              wavelength.) Each of these waves turns out to have a\n            different energy that depends on the wavelength of the standing\n            wave. Thus only very few definite energies\n            are permitted for the waves trapped in the box; the many\n            intermediate energies between them are not allowed.\n          \n        \n      \n    \n    \n      https://commons.wikimedia.org/wiki/File:Bowed_violin_string_in_slow_motion.gif\n        This file is licensed under the Creative Commons Attribution 3.0\n        Unported license.\n    What of de\n        Broglie's relation, momentum = h/wavelength? Are we to say that\n      the standing waves in the box have momenta proportional to h/2, h, (3/2)h,\n      2h, ... etc. corresponding to the above allowed wavelengths. Well--almost.\n      The standing wave with wavelength equal to the width of box could be\n      associated with a particle moving to the right with momentum = h/(width of\n      box) and one moving to the left with momentum h/(width of box). But a\n      standing wave is propagating neither to the right nor to the left.\n      \n      To get the wave to stand still, we form the superposition of these two\n      waves. Superposition allows us to have a wave that is moving both to the\n      left and right at the same time, and thus goes nowhere. The animation\n      shows two waves propagating in opposite directions. They are\n      superposed--\"added up\"--to form a standing wave.\n      \n      See the next chapter for more on superposition.\n    The situation for an electron in a hydrogen\n        atom is essentially the same. The electric attraction of the\n      positively charged nucleus forms a prison that traps the electron, just as\n      the box above traps the wave. The wave in the box may persist only in a\n      few energy states. Correspondingly an electron-wave trapped in a hydrogen\n      atom may persist only in a few definite energy states. These turn out to\n      the be the energies of the stable orbits of Bohr's theory.\n    \n      \n      \n      \n      http://commons.wikimedia.org/wiki/File:Single_electron_orbitals_s.jpg\n      http://commons.wikimedia.org/wiki/File:Single_electron_orbitals_p1.jpg\n      http://commons.wikimedia.org/wiki/File:Single_electron_orbitals_d.jpg\n      http://commons.wikimedia.org/wiki/File:Single_electron_orbitals_f.jpg\n    While those energies survive, what\n        does not survive from Bohr's theory is the idea of the electron\n      as a spatially localized particle orbiting the nucleus in a classical\n      circular or elliptical orbit, but nonetheless violating classical\n      electrodynamics by not radiating. The space around the atom's nucleus is\n      filled with a standing wave of the electron. Classical electrodynamic\n      theory no longer directly applies; the earlier contradiction with that\n      theory has evaporated.\n    The New Quantum Theory \n    In the later part of the 1920s, all these ideas coalesced\n        into what was called the \"new quantum theory,\" to distinguish it\n      from the \"old quantum theory\" of the decades before. There were\n      \n      • matrix based approaches proposed by Heisenberg, Born and Jordan; and\n      \n      • the matter waves of de Broglie and Schoedinger; and\n      \n      • Dirac's classical \"c-numbers\" and quantum \"q-numbers.\" \n      \n    \n    \n      A matrix from Born and Jordan's paper on the\n        new quantum mechanics of 1925.\n    It soon became clear that all these approaches were really\n      just the same theory dressed up in different\n      mathematical clothing. The puzzling properties of light and matter that\n      led to this theory were now essentially resolved. The solution lay in a\n      new conception of the nature of matter. Matter fundamentally is not made\n      of particle OR waves; it consists of a form of matter that, roughly\n      speaking, is both particle AND wave; and this is true both for ordinary\n      matter like protons and electrons, and for radiative matter like light.\n    This new synthesis, however, left a\n        legacy of enduring problems.\n    \n      \n        \n          \n          First, the new theory introduced an element of probability\n            that was unknown in classical physics. There are many processes for\n            whose outcomes the theory can only give probabilities. Will this\n            radioactive atom decay now or later? The best the theory can offer\n            are probabilities. This circumstance proved deeply troubling to many\n            thinkers of the era, including Einstein. They found it repugnant to\n            think that the fundamental laws of the universe might be\n            probabilistic and described the difficulty as a breakdown of\n            \"causality.\" There were deeper problems.\n        \n      \n    \n    \n      \n        \n          Second, the new quantum theory worked very well\n            for small particles. However it was far less clear how it should be\n            applied to macroscopic bodies. Tables,\n            chairs, houses and elephants do not obviously manifest a combination\n            of wave and particle-like properties. Yet the theory said that they\n            must. We will see in the next chapter how that problem continues to\n            vex us today.\n          \n        \n      \n    \n    What you should know\n    \n      What theories of matter looked like at the end of the nineteenth\n        century.\n      How Planck's analysis of heat radiation generated a problem for\n        classical physics.\n      What is contained in Einstein's 1905 proposal of the light quantum.\n      How Bohr used atomic spectra to infer to a new and strange model of\n        the atom.\n      How the proposal of matter waves started to make sense of Bohr's\n        proposal.\n    \n    Copyright John D. Norton. April 2001; March 16,\n      August 22, November 23, 2008; April 7, 2010; April 6, 2013, April 6, 2015;\n      April 10, 14, 2017. November 19, 2018. November 9, 2020. February 6, March\n      6, April 11, 2022. November 15, 2023. April 4, 2024",
+      "title": "https://sites.pitt.edu/~jdnorton/teaching/HPS%5F0410/chapters/quantum_theory_origins/index.html (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528638505,
+        "end": 1789528641517
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528641518,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a8380fee001BjxYUQreglUOAX",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83801b4001VrIozy7X0tHGgQ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 64705,
+      "output": 259,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 64964,
+      "headroom": -26108,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.519Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.520Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.520Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.520Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.520Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.520Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.520Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.528Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 64964,
+  "providerTokens": 64964,
+  "estimatedInputTokens": 23463,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 64705,
+    "cacheRead": 0,
+    "output": 259
+  },
+  "overflow": true,
+  "headroom": -26108,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.528Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.529Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.529Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.530Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.530Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.530Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 4,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.530Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.530Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.531Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.951Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528641951,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a838119e001LLbf16SNOvXUAW",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a8380ffa0011qgWGF1ijJf7PV",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.951Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.951Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.952Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.952Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528641952,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a838119f002nP5iuH6eq5r9cA",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a8380ffa0011qgWGF1ijJf7PV",
+    "type": "text",
+    "text": "Conversation summary: Put together a few pages on how quantum mechanics got started.\n\nTitle: What did we do so\n\nUser turns:\n  1. Put together a few pages on how quantum mechanics got started.\n  2.",
+    "time": {
+      "start": 1789528641952,
+      "end": 1789528641952
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.952Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528641952,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a83811a0001yo0JEsAY3RB51Z",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a8380ffa0011qgWGF1ijJf7PV",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 116074,
+      "output": 196,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 116270,
+      "headroom": -77414,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.952Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.952Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.953Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.953Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.953Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528641953,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a83811a1002eS6XG8jHwrcSU6",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83811a1001fsE9G9Zu8f7Tp4",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528641953,
+      "end": 1789528641953
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.953Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.953Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.954Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.954Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.954Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.954Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.954Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.954Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.954Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.955Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:21.955Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.019Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528642019,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a83811e3001u2rk1rl3eEzkRr",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83811a2001MGAMcaU7qzGdnt",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.019Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.019Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.020Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.020Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528642020,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a83811e4001B5JQT7QPSCkadx",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83811a2001MGAMcaU7qzGdnt",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528642020,
+      "end": 1789528642020
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.020Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528642020,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "part": {
+    "id": "prt_0a83811e4002k8QaTcsyi0Rddg",
+    "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+    "messageID": "msg_0a83811a2001MGAMcaU7qzGdnt",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8745,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8818,
+      "headroom": 30038,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.020Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.020Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.020Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.020Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.021Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.021Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.022Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.022Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.022Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528642022,
+  "sessionID": "ses_f57c8064affekz3PpCNcEiJ9hd"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.022Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.022Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SswJRQGxmo",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.022Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SswJRQGxmo",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.023Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SswJRQGxmo",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:22.023Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

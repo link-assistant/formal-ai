@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.253Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.253Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Dime una frase en hindi. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NPv271Jv9O",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.254Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NPv271Jv9O",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.254Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NPv271Jv9O",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.264Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Dime una frase en hindi.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Dime una frase en hindi.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.264Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.265Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.266Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.266Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.269Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.269Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NPv271Jv9O/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.272Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7751,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.272Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.287Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:18:20.291Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.291Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.291Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.291Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.292Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.292Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.292Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.292Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 27,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.292Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:18:20.292Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.296Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.296Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.297Z",
+  "service": "session",
+  "id": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NPv271Jv9O",
+  "title": "New session - 2026-09-16T03:18:20.297Z",
+  "time": {
+    "created": 1789528700297,
+    "updated": 1789528700297
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.298Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.298Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.298Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c70a76ffekBL8JWgjWMCZVn/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.298Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c70a76ffekBL8JWgjWMCZVn/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.301Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c70a76ffekBL8JWgjWMCZVn/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.303Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.303Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.304Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.305Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.306Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.306Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.306Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.307Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.307Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.307Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.307Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.307Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.307Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.466Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.468Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.469Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.478Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.483Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.487Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.487Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.487Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:20.492Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:21.029Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528701029,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a838f86000144uA2RRMO4Lm0G",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a838f633001NtH8h55hJVdrR6",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:21.030Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:21.031Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528701031,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a838f866002dcjxui0qpJqM52",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a838f633001NtH8h55hJVdrR6",
+    "type": "tool",
+    "callID": "call_a7fae7bb28b7b763",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:21.031Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528701031,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a838f866001QRuXI8Pxsy7lKw",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a838f633001NtH8h55hJVdrR6",
+    "type": "text",
+    "text": "Let me search the web for Dime una frase en hindi.",
+    "time": {
+      "start": 1789528701031,
+      "end": 1789528701031
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:21.032Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528701032,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a838f866002dcjxui0qpJqM52",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a838f633001NtH8h55hJVdrR6",
+    "type": "tool",
+    "callID": "call_a7fae7bb28b7b763",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Dime una frase en hindi"
+      },
+      "time": {
+        "start": 1789528701032
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.911Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528704911,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a838f866002dcjxui0qpJqM52",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a838f633001NtH8h55hJVdrR6",
+    "type": "tool",
+    "callID": "call_a7fae7bb28b7b763",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Dime una frase en hindi"
+      },
+      "output": "Title: 30 frases y expresiones de viaje clave en hindi\nURL: https://preply.com/es/blog/frases-de-viaje-en-hindi/\nPublished: 2026-05-04T00:00:00.000Z\nAuthor: N/A\nHighlights:\nAprender frases útiles en hindi antes de aterrizar en la India te permitirá transformar la confusión inicial en una comunicación eficaz. Hemos seleccionado cuidadosamente 30 expresiones para cubrir situaciones esenciales, desde saludar con respeto hasta moverte por mercados bulliciosos o pedir comida callejera. Para facilitarte el estudio, las hemos organizado en cinco categorías: saludos y cortesía, moverse por la ciudad, comer y beber, compras y regateo y seguridad.\n...\nEstas 30 frases te permiten orientarte en las ciudades, conectar con la gente y resolver situaciones cotidianas con\n...\n, desde saludos para mostrar\n...\n, expresiones para moverte, vocabulario para comer bien, frases para regatear\n...\njusticia y expresiones de seguridad\n...\ntu tranquilidad.\n...\n## Saludos y cortesía al llegar\n...\n1. नमस्ते (namaste, hola)\n2. धन्यवाद (dhanyavād, gracias)\n3. कृपया (kripya, por favor)\n4. हां (hā̃, sí)\n5. नहीं (nahī̃, no)\n6. माफ़ कीजिए (maaf kījiye, disculpa/perdón)\n...\n7. क्या आपको अंग्रेज़ी आती है? (kya āpkō angrēzī ātī hai?, ¿hablas inglés?)\n8. यह कहाँ है? (yah kahā̃ hai?, ¿dónde está esto?)\n9. बाएँ (bāẽ, izquierda)\n10. दाएँ (dāẽ, derecha)\n11. सीधे (sīdhē, recto)\n12. मुझे रेलवे स्टेशन ले चलिए (mujhē rēlve sṭēshan lē chaliye, llévame a la estación de tren)\n...\n13. पानी (pānī, agua)\n14. मैं शाकाहारी खाना चाहता हूँ (main śākāhārī khānā chahta hoon, quiero comida vegetariana)\n15. मिर्च कम डालें (mirch kam ḍālẽ, menos picante, por favor)\n16. बिल, कृपया (bil, kripya, la cuenta, por favor)\n17. क्या यह शाकाहारी है? (kyā yah śākāhārī hai?, ¿esto es vegetariano?)\n18. वाईफाई पासवर्ड क्या है? (wifi pāsvard kyā hai?, ¿cuál es la contraseña del wifi?)\n...\n19. कितना है? (kitnā hai, ¿cuánto cuesta?)\n20. सस्ता कर दीजिए (sastā kar dījiye, hágalo más barato, por favor)\n21. मुझे यह नहीं चाहिए (mujhē yah nahī̃ chāhiye, no quiero esto)\n22. टिकट कहाँ मिलेंगे? (ṭikaṭ kahā̃ milẽgē?, ¿dónde puedo conseguir billetes?)\n23. यह कितना दूर है? (yah kitnā dūr hai, ¿a qué distancia está?)\n24. मुझे हिंदी नहीं आती (mujhē hindī nahī̃ ātī, no entiendo/sé hindi)\n...\n25. मुझे मदद चाहिए (mujhē madad chāhiye, necesito ayuda)\n26. पुलिस स्टेशन कहाँ है? (pulis sṭēshan kahā̃ hai?, ¿dónde está la comisaría?)\n27. डॉक्टर कहाँ है? (ḍākṭar kahā̃ hai?, ¿dónde hay un médico?)\n28. क्या यह सुरक्षित है? (kyā yah surakṣit hai?, ¿es seguro?)\n29. शुभ यात्रा (śubh yātrā, buen viaje)\n30. मेरा नाम ____ है (merā nām ____ hai, me llamo ____)\n...\nviaje en hindi en\n...\n### Compra un billete de tren con tres frases clave\n...\nTú: «टिकट कहाँ मिलेंगे?» (ṭikaṭ kahā̃ milẽgē?, ¿dónde puedo conseguir billetes?)\n...\nEmpleado: «काउंटर नंबर तीन पर.» (en el mostrador número tres)\n...\nTú: «धन्यवाद.» (dhanyavād, gracias)\n...\nTú: «क्या यह शाकाहारी है?» (kyā yah śākāhārī hai?, ¿esto es vegetariano?)\n...\nVendedor: «हां, बिल्कुल.» (sí, por supuesto)\n...\nTú: «मिर्च कम डालें, कृपया.» (mirch kam ḍālẽ, kripya, menos picante, por favor)\n...\nkripya)\n...\nहै? (\n...\n«मुझे रेलवे स्टेशन\n...\n» (mujhē r\n...\naliye,\n...\nla estación de tren)\n...\nConductor: «ठीक है.» (\n...\nTurista: «धन्यवाद» (dhanyavād, gracias)\n\n---\n\nTitle: Cómo formar frases sencillas en hindi\nURL: https://www.linguashop.com/frases-sencillas-hindi\nPublished: N/A\nAuthor: N/A\nHighlights:\nEn una frase en hindi que utiliza el verbo ' ser', el verbo se pone al final de la frase. En el singular, el verbo ' ser' es ' hei'. En el plural, el verbo ' ser' es ' hêi'.\n...\nSēb hara hē. La manzana es verde.\n...\nSēb gol hē. La manzana es redonda.\n...\nSēb bara hē. La manzana es grande.\n...\nSēb ača hē. La manzana es buena.\n...\nSēb lāl hē. La manzana es roja.\n...\nYa has aprendido mucho en los pasos 1 a 9 y nos gustaría ayudarte a aprender aún más con este paso adicional. Aprende las frases Yē ek kitab hē, Yē ek kursi hē y Yē ek darvaza hē (Esto es un libro, Esto es una silla, Esto es una puerta). Luego aprende las frases y (La puerta es grande, La puerta es pequeña). Y luego aprende las frases y (Las puertas son grandes, Las puertas son pequeñas). Toma todo lo que has aprendido hasta ahora y luego enséñate solo algunas palabras nuevas cada semana. ¡Pruébalo tú mismo!\n\n---\n\nTitle: Frases en hindi - ¡Clases de hindi gratis!\nURL: https://www.linguashop.com/cuentos-hindi\nPublished: N/A\nAuthor: N/A\nHighlights:\nmę hu yo\n...\nmę čalta hû yo escribo\n...\nMę admi ko\n...\nanta hû Yo conozco al hombre\n...\nhû yo\n...\n## Palabras y frases básicas en hindi\n...\nAprende a desenvolverte en hindi con estas útiles palabras y frases. Comenzaremos a aprender algunas frases básicas en hindi que puedes usar para la comunicación diaria.\n\n---\n\nTitle: Como aprender hindi - ¡Pruébalo gratis!\nURL: https://www.linguashop.com/hablar-hindi\nPublished: N/A\nAuthor: N/A\nHighlights:\n## Palabras y frases básicas en hindi\n...\nAprende a desenvolverte en hindi con estas útiles palabras y frases. Comenzaremos a aprender algunas frases básicas en hindi que puedes usar para la comunicación diaria.\n...\nBahar tand hē. Hace frío.\n...\nDin sāf hē. Hay sol.\n...\nBahar garm hē. Hace calor.\n...\nBahar badal hē. Está nublado.\n...\nlos pronombres\n...\nen hindi. Los pronombres en hindi\n...\nmę bahí\n...\ntūm bahí (yo también, tú también).\n\n---\n\nTitle: Aprender hindi rapidamente - ¡Pruébalo gratis!\nURL: https://www.linguashop.com/aprender-hindi\nPublished: N/A\nAuthor: N/A\nHighlights:\n## Palabras y frases básicas en hindi\n...\nAprende a desenvolverte en hindi con estas útiles palabras y frases. Comenzaremos a aprender algunas frases básicas en hindi que puedes usar para la comunicación diaria.\n...\nyē darvaza esta puerta\n...\nyē mēz esta mesa\n...\nHay docenas de saludos que puedes aprender en hindi. Sin embargo, imagina cuánto esfuerzo tomaría aprenderlos todos. Y aprender todos ellos también llevaría mucho tiempo. Sería mucho mejor concentrarte en solo tres saludos en hindi para comenzar. Por ejemplo, aprende Namaskar, Al-vida y Bād mē milte hę (hola, adiós, nos vemos luego). Aprende estos tres saludos en hindi Namaskar, Al-vida y Bād mē milte hę de memoria, aprende a pronunciarlos correctamente y luego continúa con el Paso 2 (pronombres hindi).\n\n---\n\nTitle: Diccionario hindi-español - ¡Descárgalo gratis!\nURL: https://www.linguashop.com/diccionario-hindi\nPublished: N/A\nAuthor: N/A\nHighlights:\ndiccionario hindi contiene las 5000 palabras más usadas en hindi que son esenciales para la comunicación cotidiana. Junto con el significado de la palabra, el diccionario también proporcionará ejemplos de uso.\n...\nMę ghar\n...\n## Palabras y frases básicas en hindi\n...\nAprende a desenvolverte en hindi con estas útiles palabras y frases. Las siguientes frases te ayudarán a saludar a las personas en hindi, presentarte en hindi y también mantener una conversación en hindi después de conocer a alguien.\n...\nMujhe tūmkī yād ātī hē. Te extraño.\n...\nMujhe tūmkī āvašyakata hē. Te necesito.\n...\nMę tūmhē pasand karti hų. Me gustas.\n...\nMę tūmase pyār karata hu. Te quiero.\n...\nEn los pasos anteriores, aprendiste sobre los saludos hindi, los sustantivos hindi, los adjetivos hindi y los verbos hindi. En este paso, destacamos el uso de pronombres posesivos en hindi. Aprenderás frases como mera ghar, meri kitab y mera mēz (mi casa, mi libro, mi mesa). También aprenderás tūmhara ghar, tūmhari kitab y tūmhara mēz (tu casa, tu libro, tu mesa). Verás una lección fácil de seguir que incluye numerosos ejemplos útiles tanto en hindi como en español. Para comenzar con el paso 1, simplemente haz clic en el símbolo del tacómetro de 9 pasos.\n\n---\n\nTitle: Gramática hindi - ¡Descárgalo gratis!\nURL: https://www.linguashop.com/gramatica-hindi\nPublished: N/A\nAuthor: N/A\nHighlights:\n## Palabras y frases básicas en hindi\n...\nAprende a desenvolverte en hindi con estas útiles palabras y frases. Las siguientes frases te ayudarán a saludar a las personas en hindi, presentarte en hindi y también mantener una conversación en hindi después de conocer a alguien.\n...\nEn los pasos anteriores, aprendiste mucho sobre saludos hindi, sustantivos hindi y adjetivos hindi. En este paso, discutimos el aprendizaje de los verbos en hindi. Aprenderás verbos en hindi como pasand karta hona (gustar) para que puedas formar frases como Mę yē ghar pasand karta hų (Me gusta esta casa) y Mę yē pustak pasand karta hų (Me gusta este libro). Verás una lección fácil de seguir que incluye numerosos ejemplos útiles tanto en hindi como en español. Para comenzar con el paso 1, simplemente haz clic en el símbolo del tacómetro de 9 pasos. O puedes avanzar al paso 9, haciendo clic en el botón Próximo paso (pronombres posesivos hindi).\n...\nMás de 20 páginas de ejercicios en hindi para ayudarte a aprender las palabras y frases más importantes del idioma. Sugerimos imprimir el libro de ejercicios en hindi y hacer los ejercicios con un lápiz o un bolígrafo. Este método de aprendizaje confiable es una opción refrescante en esta era digital.\n\n---\n\nTitle: Cómo conjugar un verbo en hindi\nURL: https://www.linguashop.com/verbos-hindi\nPublished: N/A\nAuthor: N/A\nHighlights:\nLos verbos se utilizan para describir acciones. Una característica interesante de hindi es que conjuga sus verbos de manera diferente para hombres y mujeres. Los verbos en hindi pueden usar el verbo ' ser' como verbo auxiliar. Para la primera persona del singular, la mayoría de los verbos en hindi usan la terminación '-ta' con hombres y la terminación '-ti' con mujeres.\n...\nmę čhorhta hû yo me voy\n...\nmerē pās hē yo tengo\n...\nmę āta hû yo vengo\n...\nmę zinda rehta hû yo vivo\n...\nmę jāta hû yo voy\n...\n## Palabras\n...\nAprende a desenvolverte en hindi con estas útiles palabras y frases. Comenzaremos a aprender algunas frases básicas en hindi que puedes usar para la comunicación diaria.\n...\nMujhe tūmkī yād ātī hē. Te echo de menos.\n...\nMę tūmase pyār karata hu. Te quiero.\n...\nMę tūmhē pasand karti hų. Me gustas.\n...\nMujhe tūmkī āvašyakata hē. Te necesito.\n...\nse utilizan para describir acciones. Hay\n...\nde verbos que\n...\naprender en hindi\n...\nverbos en hindi\n...\nverbos hindi\n...\nand karta hona\n...\nsustantivos\n...\ndarvaza\n...\nsilla, puerta\n...\na usar cada verbo con cada sustantivo (quiero el libro, tú ves la silla, a ellos les gusta\n...\npuerta, etc.). Puedes desplazarte hasta la parte superior\n...\npara ver una\n...\nlección sobre los verbos en hindi que\n...\nčahana y pas\n...\n(pronombres posesivos hindi)",
+      "title": "Web search: Dime una frase en hindi",
+      "metadata": {},
+      "time": {
+        "start": 1789528701032,
+        "end": 1789528704910
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528704913,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390791001sUwcE0S3SDkkZE",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a838f633001NtH8h55hJVdrR6",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8520,
+      "output": 94,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8614,
+      "headroom": 30242,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.915Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.915Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.916Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.916Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.922Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8614,
+  "providerTokens": 8614,
+  "estimatedInputTokens": 2975,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8520,
+    "cacheRead": 0,
+    "output": 94
+  },
+  "overflow": false,
+  "headroom": 30242,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.922Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.924Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:24.925Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:25.722Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528705722,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390ab80014SVCbZzsQEYL5T",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a839079a0018KuVJv9BB0EViS",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:25.723Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:25.724Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528705724,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390abb002MfPN4TK2dh1S7g",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a839079a0018KuVJv9BB0EViS",
+    "type": "tool",
+    "callID": "call_e231edd4b7558d5e",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:25.724Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528705724,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390abb001UE8iPl4Qr0DBgH",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a839079a0018KuVJv9BB0EViS",
+    "type": "text",
+    "text": "Let me open https://preply.com/es/blog/frases-de-viaje-en-hindi/ and read what it says.",
+    "time": {
+      "start": 1789528705724,
+      "end": 1789528705724
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:25.724Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528705724,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390abb002MfPN4TK2dh1S7g",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a839079a0018KuVJv9BB0EViS",
+    "type": "tool",
+    "callID": "call_e231edd4b7558d5e",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://preply.com/es/blog/frases-de-viaje-en-hindi/"
+      },
+      "time": {
+        "start": 1789528705724
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.237Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528706238,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390abb002MfPN4TK2dh1S7g",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a839079a0018KuVJv9BB0EViS",
+    "type": "tool",
+    "callID": "call_e231edd4b7558d5e",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://preply.com/es/blog/frases-de-viaje-en-hindi/"
+      },
+      "output": "30 frases y expresiones de viaje clave en hindi\n\n\t\n\t\n\t\n\t\n\n\t\n\n\t\n\t\n\t\n\t\n\t\n\n\t\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\n\t\t\t\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\n\t\n\t\t\n\t\t\n\n\t\n\t\n\n\t\t\t\t\t\t\n\n\n\t\n\t\t\n\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\tBlog\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\tProgreso real\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\tArtículos para empresas\n\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tEncuentra profesores\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n    \n            \n                            Español\n                        \n                                    English\n                            \n        \n    \n\t\t\t\t\t\t\t\t\t    \n    \n    \n        \n    \n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tAprender hindi online\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tCategorías de aprendizaje\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tConsejos y recursos de hindi\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tGramática en hindi\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tPronunciación del hindi\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tVocabulario en hindi\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t        \n                        \n                            Cursos de hindi\n            \n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t        \n            \n        \n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t        \n            \n        \n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tAcerca de Preply\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\n\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tEncuentra profesores\n\t\t\t\t\t\n\n\t\t\t\n\t\t\n\n\t\t\n\t\t\t\n\n\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\tBlog\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tRecursos para idiomas\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tArtículos para empresas\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t    \n    \n    \n        \n    \n\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t        \n    \n        Quiero\n        \n                            Aprender inglés\n                            Aprender alemán\n                            Aprender español\n                            Aprender italiano\n                            Aprender francés\n                            Aprender polaco\n                            Aprender portugués\n                            Aprender aficiones\n                            Aprender afrikaans\n                            Aprender albanés\n                            Aprender amhárico\n                            Aprender armenio\n                            Aprender arte y música\n                            Aprender azerbaiyano\n                            Aprender bengalí\n                            Aprender bielorruso\n                            Aprender birmano\n                            Aprender bosnio\n                            Aprender búlgaro\n                            Aprender canarés\n                            Aprender cantonés\n                            Aprender catalán\n                            Aprender cebuano\n                            Aprender checo\n                            Aprender chino\n                            Aprender ciencias\n                            Aprender ciencias sociales\n                            Aprender cingalés\n                            Aprender coreano\n                            Aprender criollo\n                            Aprender croata\n                            Aprender danés\n                            Aprender eslovaco\n                            Aprender esloveno\n                            Aprender esperanto\n                            Aprender estonio\n                            Aprender euskera\n                            Aprender farsi\n                            Aprender finlandés\n                            Aprender galés\n                            Aprender georgiano\n                            Aprender griego\n                            Aprender guyaratí\n                            Aprender hawaiano\n                            Aprender hebreo\n                            Aprender hindi\n                            Aprender húngaro\n                            Aprender igbo\n                            Aprender indonesio\n                            Aprender irlandés\n                            Aprender islandés\n                            Aprender japonés\n                            Aprender jemer\n                            Aprender kazajo\n                            Aprender kinyarwanda\n                            Aprender kurdo\n                            Aprender lao\n                            Aprender latín\n                            Aprender lengua de signos\n                            Aprender leton\n                            Aprender lituano\n                            Aprender luganda\n                            Aprender luxemburgués\n                            Aprender macedonio\n                            Aprender malayalam\n                            Aprender malayo\n                            Aprender maltés\n                            Aprender maori\n                            Aprender maratí\n                            Aprender matemáticas\n                            Aprender mongol\n                            Aprender neerlandés\n                            Aprender negocios\n                            Aprender noruego\n                            Aprender panyabí\n                            Aprender pastún\n                            Aprender quechua\n                            Aprender quichua\n                            Aprender rumano\n                            Aprender ruso\n                            Aprender serbio\n                            Aprender somalí\n                            Aprender suajili\n                            Aprender sueco\n                            Aprender tagalo\n                            Aprender tailandés\n                            Aprender tamazight\n                            Aprender tamil\n                            Aprender tecnología\n                            Aprender telugu\n                            Aprender tibetano\n                            Aprender turco\n                            Aprender tártaro de crimea\n                            Aprender ucrainiano\n                            Aprender urdu\n                            Aprender uzbeko\n                            Aprender vietnamita\n                            Aprender xhosa\n                            Aprender yidis\n                            Aprender yoruba\n                            Aprender Árabe\n                            Explore Acerca de Preply\n                            Explore Aprendizaje de idiomas\n                            Explore Clases particulares\n                            Explore Idioma y cultura\n                    \n    \n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tAprender hindi online\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tCategorías de aprendizaje\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tConsejos y recursos de hindi\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tGramática en hindi\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tPronunciación del hindi\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tVocabulario en hindi\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t        \n                        \n                            Cursos de hindi\n            \n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t        \n            \n        \n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t        \n            \n        \n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tAcerca de Preply\n\n\t\t\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t    \n        \n        \n        \n            \n                \n            4.8\n        \n            Descarga la app de Preply\n        \n        Descargar\n    \n\n\t\t\t\n\t\t\n\n\t\n\n\t\n\t\t\t\t\t\t\n\t\t\t\n            \n\n    \n\t\t\t\n                \n\n    \n\n\t\n\n\n\n\t\t\t\n\t\n\t\t\t\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\tCentro de aprendizaje de Preply\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tAprender hindi online\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tVocabulario en hindi\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t30 frases y expresiones de viaje clave en hindi\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t30 frases y expresiones de viaje clave en hindi\n\t\t\t\t\t\t\t\t\t\t\t\t\tPrepárate para tu viaje con 30 frases y expresiones en hindi. Aprende su uso real, pronunciación y escritura para moverte con soltura. \n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n            \n        \n\t\n\t\tRedactado originariamente por Prakash S.\n\t\n\t\n\t\tTraducido y revisado por el equipo de Preply\n\t\n\n                                Actualizado el 4 de mayo de 2026\n                                \n            \n                \n            \n            Tiempo de lectura: 8 min\n        \n            \n    \n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\n\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tTabla de contenido\n\t\t\t\t\t\t\t\t\t¿Cuáles son las frases esenciales de viaje en hindi?Consejos de pronunciación para ganar confianzaDominar las vocales largas y los finales nasalesConsonantes retroflejas Saludos y cortesía al llegarMoverse por la ciudadComer y beber sin estrésCompras, regateo y dineroSeguridad y pedir ayudaPractica las frases de viaje en hindi con ejerciciosEmpareja las frasesDiálogo de taxi para completarLas frases de viaje en hindi en la vida realCompra un billete de tren con tres frases clavePide comida callejera como un localComienza a hablar con PreplyRespuestas a los ejercicios Respuestas para emparejar frasesRespuestas al diálogo de taxi para completarPreguntas frecuentes sobre las frases de viaje en hindi¿Es útil el hindi fuera del norte de la India?¿Cómo puedo mostrar respeto al hablar hindi con personas mayores?¿Está bien mezclar hindi e inglés cuando viajas?¿Cuál es la mejor forma de practicar la pronunciación del hindi antes de viajar?\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tTabla de contenido\n\t\t\t\t\t\t\t\t¿Cuáles son las frases esenciales de viaje en hindi?Consejos de pronunciación para ganar confianzaDominar las vocales largas y los finales nasalesConsonantes retroflejas Saludos y cortesía al llegarMoverse por la ciudadComer y beber sin estrésCompras, regateo y dineroSeguridad y pedir ayudaPractica las frases de viaje en hindi con ejerciciosEmpareja las frasesDiálogo de taxi para completarLas frases de viaje en hindi en la vida realCompra un billete de tren con tres frases clavePide comida callejera como un localComienza a hablar con PreplyRespuestas a los ejercicios Respuestas para emparejar frasesRespuestas al diálogo de taxi para completarPreguntas frecuentes sobre las frases de viaje en hindi¿Es útil el hindi fuera del norte de la India?¿Cómo puedo mostrar respeto al hablar hindi con personas mayores?¿Está bien mezclar hindi e inglés cuando viajas?¿Cuál es la mejor forma de practicar la pronunciación del hindi antes de viajar?\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\n                        Aprender frases útiles en hindi antes de aterrizar en la India te permitirá transformar la confusión inicial en una comunicación eficaz. Hemos seleccionado cuidadosamente 30 expresiones para cubrir situaciones esenciales, desde saludar con respeto hasta moverte por mercados bulliciosos o pedir comida callejera. Para facilitarte el estudio, las hemos organizado en cinco categorías: saludos y cortesía, moverse por la ciudad, comer y beber, compras y regateo y seguridad.\nCada frase incluye su escritura en devánagari y la transliteración en cursiva para orientar tu pronunciación. \n¿Cuáles son las frases esenciales de viaje en hindi?\nEstas 30 frases te permiten orientarte en las ciudades, conectar con la gente y resolver situaciones cotidianas con seguridad, desde saludos para mostrar respeto, expresiones para moverte, vocabulario para comer bien, frases para regatear con justicia y expresiones de seguridad para tu tranquilidad.\nEl hindi formal funciona mejor con desconocidos, personas mayores y personal de servicios, mientras que las versiones informales crean cercanía con gente joven o en entornos relajados. \nConsejos de pronunciación para ganar confianza\nPronunciar bien el hindi te abre muchas puertas y demuestra respeto por la cultura local. Estos tres consejos te ayudarán a sonar más natural y a que te entiendan mejor:\n\n\nLa “ā” larga suena como una a abierta, parecida a la de “casa” o “papa”, pero más larga\n\n\nLas retroflejas “ṭ” y “ḍ” se hacen con la lengua curvada hacia atrás\n\n\nLa tilde nasal “ं” añade una n suave a la vocal anterior\n\n\nDominar las vocales largas y los finales nasales\nEl sonido “ā” largo es frecuente en hindi y aporta una cualidad fluida característica al habla. Cuando veas “ं”, añade un matiz nasal suave al final de la vocal, como un ligero tarareo que hace tu hindi más auténtico.\nConsonantes retroflejas \nLas retroflejas “ṭ” y “ḍ” se articulan curvando la lengua hacia el paladar. No busques la perfección desde el primer día: la gente te entenderá aunque no sea exacta, y con práctica irás incorporando estos sonidos característicos de forma natural.\nSaludos y cortesía al llegar\nComienza cada interacción con respeto y verás cómo la gente en India responde con calidez a tu esfuerzo:\n\n\nनमस्ते (namaste, hola)\n\n\nधन्यवाद (dhanyavād, gracias)\n\n\nकृपया (kripya, por favor)\n\n\nहां (hā̃, sí)\n\n\nनहीं (nahī̃, no)\n\n\nमाफ़ कीजिए (maaf kījiye, disculpa/perdón)\n\n\nRecuerda juntar las palmas a la altura del pecho al decir नमस्ते (namaste): este gesto muestra respeto y se aprecia en todas las regiones de la India. Para ir más allá de estas seis frases, explora más saludos y fórmulas de cortesía en hindi.\nMoverse por la ciudad\nEstas frases en hindi te ayudarán a usar taxis, metro y caminar por calles concurridas con seguridad:\n\n\nक्या आपको अंग्रेज़ी आती है? (kya āpkō angrēzī ātī hai?, ¿hablas inglés?)\n\n\nयह कहाँ है? (yah kahā̃ hai?, ¿dónde está esto?)\n\n\nबाएँ (bāẽ, izquierda)\n\n\nदाएँ (dāẽ, derecha)\n\n\nसीधे (sīdhē, recto)\n\n\nमुझे रेलवे स्टेशन ले चलिए (mujhē rēlve sṭēshan lē chaliye, llévame a la estación de tren)\n\n\nEn muchas ciudades se usan puntos de referencia como templos, mercados o edificios conocidos más que los números de calle, así que reconocer estos lugares de referencia facilita mucho la orientación.\nComer y beber sin estrés\nLa gastronomía es clave en India, y estas frases te ayudan a expresar preferencias dietéticas: \n\n\nपानी (pānī, agua)\n\n\nमैं शाकाहारी खाना चाहता हूँ (main śākāhārī khānā chahta hoon, quiero comida vegetariana)\n\n\nमिर्च कम डालें (mirch kam ḍālẽ, menos picante, por favor)\n\n\nबिल, कृपया (bil, kripya, la cuenta, por favor)\n\n\nक्या यह शाकाहारी है? (kyā yah śākāhārī hai?, ¿esto es vegetariano?)\n\n\nवाईफाई पासवर्ड क्या है? (wifi pāsvard kyā hai?, ¿cuál es la contraseña del wifi?)\n\n\nPide siempre agua embotellada y come en locales concurridos con alta rotación de platos: este consejo de higiene te ayudará a evitar malestares estomacales durante el viaje.\nCompras, regateo y dinero\nAntes de regatear, repasa los números en hindi para entender los precios y las cantidades con soltura.\n\n\nकितना है? (kitnā hai, ¿cuánto cuesta?)\n\n\nसस्ता कर दीजिए (sastā kar dījiye, hágalo más barato, por favor)\n\n\nमुझे यह नहीं चाहिए (mujhē yah nahī̃ chāhiye, no quiero esto)\n\n\nटिकट कहाँ मिलेंगे? (ṭikaṭ kahā̃ milẽgē?, ¿dónde puedo conseguir billetes?)\n\n\nयह कितना दूर है? (yah kitnā dūr hai, ¿a qué distancia está?)\n\n\nमुझे हिंदी नहीं आती (mujhē hindī nahī̃ ātī, no entiendo/sé hindi)\n\n\nEstas frases funcionan mejor con una sonrisa y un interés genuino por la conversación. Empieza ofreciendo aproximadamente la mitad del precio solicitado y negocia desde ahí: recuerda que el regateo es un intercambio cultural amistoso, no una confrontación.\nSeguridad y pedir ayuda\nEstas frases para emergencias te aseguran poder pedir asistencia cuando haga falta:\n\n\nमुझे मदद चाहिए (mujhē madad chāhiye, necesito ayuda)\n\n\nपुलिस स्टेशन कहाँ है? (pulis sṭēshan kahā̃ hai?, ¿dónde está la comisaría?)\n\n\nडॉक्टर कहाँ है? (ḍākṭar kahā̃ hai?, ¿dónde hay un médico?)\n\n\nक्या यह सुरक्षित है? (kyā yah surakṣit hai?, ¿es seguro?)\n\n\nशुभ यात्रा (śubh yātrā, buen viaje)\n\n\nमेरा नाम ____ है (merā nām ____ hai, me llamo ____)\n\n\nLleva los contactos de emergencia por escrito en inglés e hindi, y pide ayuda a la policía o al personal del hotel cuando lo necesites. Confía en tu instinto sobre lugares y situaciones: si algo no te da buena espina, usa estas frases para pedir ayuda y muévete a un lugar más seguro.\nPractica las frases de viaje en hindi con ejercicios\nLa práctica ayuda a memorizar estas frases para usarlas en conversaciones reales.\nEmpareja las frases\nEmpareja cada frase en español con su equivalente en hindi:\na) Hágalo más barato, por favor\nb) Necesito ayuda\nc) Izquierda\nd) La cuenta, por favor\ne) ¿Hablas inglés?\n1. मुझे मदद चाहिए (mujhē madad chāhiye)\n2. आपको अंग्रेज़ी आती है? (āpkō angrēzī ātī hai?)\n3. बाएँ (bāẽ)\n4. बिल, कृपया (bil, kripya)\n5. सस्ता कर दीजिए (sastā kar dījiye)\nDiálogo de taxi para completar\nCompleta esta conversación de taxi usando las frases de las listas:\nTurista: «____» (hola)\nConductor: «नमस्ते! कहाँ जाना है?» (¡hola! ¿adónde quieres ir?)\nTurista: «____» (llévame a la estación de tren)\nConductor: «ठीक है.» (de acuerdo)\nTurista: «____» (gracias)\nLas frases de viaje en hindi en la vida real\nVer estas frases en su contexto te ayuda a entender cómo fluyen en una conversación natural. Estos ejemplos muestran cuándo y cómo utilizar tu nuevo vocabulario con seguridad.\nCompra un billete de tren con tres frases clave\nTú: «टिकट कहाँ मिलेंगे?» (ṭikaṭ kahā̃ milẽgē?, ¿dónde puedo conseguir billetes?)\nEmpleado: «काउंटर नंबर तीन पर.» (en el mostrador número tres)\nTú: «धन्यवाद.» (dhanyavād, gracias)\nPide comida callejera como un local\nTú: «क्या यह शाकाहारी है?» (kyā yah śākāhārī hai?, ¿esto es vegetariano?)\nVendedor: «हां, बिल्कुल.» (sí, por supuesto)\nTú: «मिर्च कम डालें, कृपया.» (mirch kam ḍālẽ, kripya, menos picante, por favor)\nComienza a hablar con Preply\nEstas 30 frases te ofrecen una base sólida para que tu experiencia en la India sea mejor: pasarás de ser un turista convencional a un viajero mucho más autónomo. Al participar en conversaciones reales, más allá de las peticiones básicas, lograrás conectar con la cultura local de una forma que un simple listado de frases no puede ofrecer.\nPreply es una plataforma global que te conecta con más de 100 000 profesores expertos y combina clases personalizadas con herramientas de IA, como Puntos clave de la clase, Ejercicios diarios y Práctica de conversación. Según el Estudio de Eficiencia 2025 de Preply, los estudiantes de inglés progresaron 3 veces más rápido que las expectativas del sector; además, el 94 % informó sobre una mejora en su fluidez y el 91 % dijo tener más seguridad al hablar tras más de 24 clases.\nExplora nuestras clases de hindi online y aprende con un profesor nativo que te ayude a pulir la pronunciación, a entender matices culturales y a ganar confianza para conversaciones que van más allá de pedir comida o indicaciones.\nRespuestas a los ejercicios \nRespuestas para emparejar frases\n\n\na5: Hágalo más barato, por favor = सस्ता कर दीजिए (sastā kar dījiye)\n\n\nb1: Necesito ayuda = मुझे मदद चाहिए (mujhē madad chāhiye)\n\n\nc3: Izquierda = बाएँ (bāẽ)\n\n\nd4: La cuenta, por favor = बिल, कृपया (bil, kripya)\n\n\ne2: ¿Hablas inglés? = आपको अंग्रेज़ी आती है? (āpkō angrēzī ātī hai?)\n\n\nRespuestas al diálogo de taxi para completar\nTurista: «नमस्ते» (namaste, hola)\nConductor: «नमस्ते! कहाँ जाना है?» (¡hola! ¿adónde quieres ir?)\nTurista: «मुझे रेलवे स्टेशन ले चलिए» (mujhē rēlve sṭēshan lē chaliye, llévame a la estación de tren)\nConductor: «ठीक है.» (de acuerdo)\nTurista: «धन्यवाद» (dhanyavād, gracias)\nPreguntas frecuentes sobre las frases de viaje en hindi\n¿Es útil el hindi fuera del norte de la India?\nAunque en el sur se hablan otras lenguas, el hindi se entiende ampliamente en zonas turísticas, en hoteles y en centros de transporte de todo el país, por lo que estas frases resultan útiles en muchos lugares.\n¿Cómo puedo mostrar respeto al hablar hindi con personas mayores?\nUsa el formal आप (āp, tú) en lugar de तुम (tum, tú) con personas mayores o con autoridad e incluye कृपया (kripya, por favor) al hacer peticiones.\n¿Está bien mezclar hindi e inglés cuando viajas?\nSí, esta práctica llamada Hinglish es común en áreas urbanas y se entiende como una mezcla de hindi e inglés, parecida al espanglish, y la gente suele valorar cualquier esfuerzo por usar palabras en hindi.\n¿Cuál es la mejor forma de practicar la pronunciación del hindi antes de viajar?\nPracticar con hablantes nativos en Preply ofrece correcciones inmediatas que te ayudan a sonar más natural en conversaciones reales.\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\n\t\t\t\t\t    \n    \n        \n            Aprende más rápido con tu profesor de Preply\n            ¡Mejora más rápido con un profesor particular que se adapte a tu presupuesto y horario!\n            \n            \n            \n                                    Más profesores\n                            \n        \n    \n\n    \n\t\t\t\n\t\t\t\t\t\t\t\n    Comparte este artículo:\n    \n        \n            Facebook\n        \n        \n            X (Twitter)\n        \n        \n            Linkedin\n        \n        \n            Reddit\n        \n\n            \n\n\t\t\t\n\t\t\t\n            \n    \n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tArtículo siguiente\n\t\t\t\t\t\t\t\n    \n                    \n            \n    \n        \n                            Vocabulario en hindi\n                                    \n                                \n                                4 de mayo de 2026\n            \n        \n        15 frases de jerga en hindi imprescindibles\n\n                    Domina 15 frases clave de jerga en hindi. Aprende qué significan, cómo pronunciarlas y cuándo usarlas con ejemplos reales.\n            \n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tArtículo anterior\n\t\t\t\t\t\t\t\n    \n                    \n            \n    \n        \n                            Vocabulario en hindi\n                                    \n                                \n                                4 de mayo de 2026\n            \n        \n        Las estaciones en hindi: nombres y significado\n\n                    Aprende las estaciones del año en hindi y descubre los seis \"ritu\". Incluye su pronunciación y ejemplos prácticos para usarlos con naturalidad.\n            \n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\n\t\n\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t                \n    \n                    \n                \n            \n                \n            Encuentra tu profesor\n            Elige tu profesor favorito para tomar clases\n                            \n                                            \n                            \n                                                                Navegar\n                            \n                        \n                                    \n                    \n    \n\t\t\t\t\t                \n\n    \n                    \n                \n            \n                \n            Select your classes\n            Find lessons that match your level and goals\n                            \n                                            \n                            \n                                                                Seleccionar\n                            \n                        \n                                    \n                    \n    \n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tArtículos relacionados\n\t\t\t\t\t\n\t\t\t\t\tMás artículos\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n    \n                    \n            \n    \n        \n                            Vocabulario en hindi\n                                    \n                                \n                                3 de febrero de 2026\n            \n        \n        Colores en hindi: lista completa de vocabulario con pronunciación\n\n                    Colores en hindi: vocabulario con pronunciación y transliteración. Tabla, reglas de concordancia y ejercicios prácticos. Aprende y úsalo hoy.\n            \n\t\t\t\t\t\t\t\t\t\t\t\n    \n                    \n            \n    \n        \n                            Vocabulario en hindi\n                                    \n                                \n                                4 de mayo de 2026\n            \n        \n        Sinónimos en hindi: significados para ampliar tu vocabulario\n\n                    Domina los sinónimos en hindi con explicaciones detalladas de sus significados y ejemplos reales. Incluye ejercicios para practicar.\n            \n\t\t\t\t\t\t\t\t\t\t\t\n    \n                    \n            \n    \n        \n                            Vocabulario en hindi\n                                    \n                                \n                                3 de febrero de 2026\n            \n        \n        Días de la semana en hindi: guía de pronunciación para principiantes\n\n                    Días de la semana en hindi: pronunciación, significado y ejercicios con ejemplos en devanagari y transliteración para principiantes.\n            \n\t\t\t\t\t\t\t\t\t\t\t\n    \n                    \n            \n    \n        \n                            Vocabulario en hindi\n                                    \n                                \n                                27 de mayo de 2026\n            \n        \n        Vocabulario del aeropuerto en hindi: palabras y frases útiles\n\n                    Aprende el vocabulario del aeropuerto en hindi. Descubre palabras y frases con su transliteración y ejemplos para la facturación, la seguridad y más.\n            \n\t\t\t\t\t\t\t\t\t\t\t\n    \n                    \n            \n    \n        \n                            Vocabulario en hindi\n                                    \n                                \n                                4 de mayo de 2026\n            \n        \n        Títulos y fórmulas de cortesía cotidianas en hindi\n\n                    Aprende a usar los títulos honoríficos y los pronombres de cortesía en hindi. Incluye ejemplos, ejercicios y escenarios de uso real.\n            \n\t\t\t\t\t\t\t\t\t\t\t\n    \n                    \n            \n    \n        \n                            Pronunciación del hindi\n                                    \n                                \n                                27 de mayo de 2026\n            \n        \n        15 heterónimos en hindi: con significados y pronunciación\n\n                    Explora los heterónimos en hindi con su significado, pronunciación y uso en situaciones reales. Incluye 15 ejemplos comunes para hablar con precisión.\n            \n\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\t\t\t\t\t\t\n\n\n    \n        \n\n                                            \n                    \n                    \n                        SOBRE NOSOTROS\n                        \n                                                                                                \n                                                                                    \n                                                Quiénes somos\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                ¿Cómo funciona?\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Reseñas sobre Preply\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Preply app\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Centro de investigación de idiomas\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Conviértete en un profesor en línea\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Trabajos de tutoría en línea\n                                            \n                                                                            \n                                                                                                                                                                                            \n                                                                                    \n                                                Progreso real\n                                            \n                                                                            \n                                                                                    \n                    \n                    \n                                            \n                    \n                    \n                        PROFESORES PRIVADOS\n                        \n                                                                                                \n                                                                                    \n                                                Clases de inglés online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de español online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de francés online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de alemán online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de chino online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de italiano online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de japonés online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de portugués online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de matemáticas online\n                                            \n                                                                            \n                                                                                    \n                    \n                    \n                                            \n                    \n                    \n                        CURSOS ONLINE\n                        \n                                                                                                \n                                                                                    \n                                                Cursos de inglés online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Cursos de español online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Cursos de alemán online\n                                            \n                                                                            \n                                                                                    \n                    \n                    \n                                            \n                    \n                    \n                        RECURSOS PARA EL APRENDIZAJE\n                        \n                                                                                                \n                                                                                    \n                                                Aprender inglés online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Aprender alemán online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Aprender francés online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Aprende portugués online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Aprende italiano online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Aprender ruso online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Aprender español online\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Aprender otros idiomas\n                                            \n                                                                            \n                                                                                    \n                    \n                    \n                                            \n                    \n                    \n                        PARA ESTUDIANTES\n                        \n                                                                                                \n                                                                                    \n                                                Preguntas y respuestas\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Descuentos Preply\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Descuento para estudiantes\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Test de nivel de inglés\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Test de vocabulario inglés\n                                            \n                                                                            \n                                                                                    \n                    \n                    \n                                            \n                    \n                    \n                        PARA EMPRESAS\n                        \n                                                                                                \n                                                                                    \n                                                Cursos de idiomas para empresas\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Cursos de inglés para empresas\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Cursos de español para empresas\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Cursos de alemán para empresas\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Cursos de francés para empresas\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Mejores cursos de idiomas para empresas\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Test de nivel de inglés para empresas\n                                            \n                                                                            \n                                                                                    \n                    \n                    \n                                            \n                    \n                    \n                        ARTÍCULOS RECOMENDADOS\n                        \n                                                                                                \n                                                                                    \n                                                Aplicaciones para aprender inglés\n                                            \n                                                                            \n                                                                                                                                \n                                                                                    \n                                                Clases de ingles online para niños\n                                            \n                                                                            \n                                                                                                                                                \n                    \n                    \n            \n            \n                \n    \n    \n        \n                            English\n                            Español\n                    \n    \n            \n\n        \n        \n            \n                                    Ayuda\n                    \n                        \n                            \n                                ¿Necesitas ayuda?\n                            \n                        \n                    \n                            \n\n            \n                                    Contactos\n                    \n                        EE. UU.\r\n1309 Beacon Street, Suite 300, Brookline, MA, 02446\n                    \n                            \n\n            \n                Preply social\n                \n                                            Facebook\n                                                                Instagram\n                                                                Youtube\n                                                                LinkedIn\n                                                                TikTok\n                                    \n            \n\n            \n                                \n                                \n                                    Apps\n                    \n                        \n                            \n                        \n                        \n                            \n                        \n                    \n                            \n        \n\n        \n            \n                &copy; 2012-2026 Preply Inc.\n            \n            \n                \n                    \n                        \n                            Condiciones de Uso\n                        \n                        \n                            Politicas de Privacidad\n                        \n                        \n                            Política sobre cookies",
+      "title": "https://preply.com/es/blog/frases-de-viaje-en-hindi/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528705724,
+        "end": 1789528706236
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.239Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528706239,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390cbe0011V12bSlYqczETs",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a839079a0018KuVJv9BB0EViS",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 18988,
+      "output": 173,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 19161,
+      "headroom": 19695,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.240Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.240Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.241Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.243Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.244Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.244Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.254Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 19161,
+  "providerTokens": 19161,
+  "estimatedInputTokens": 8961,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 18988,
+    "cacheRead": 0,
+    "output": 173
+  },
+  "overflow": false,
+  "headroom": 19695,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.255Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.255Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.256Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.257Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.669Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528706669,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390e6c001ZS77GSyhhtdRZF",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8390cce001s0SS1BcFPN3a0S",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.669Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.669Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528706669,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390e6d0021wLlEQMfkyRQtE",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8390cce001s0SS1BcFPN3a0S",
+    "type": "tool",
+    "callID": "call_948697ca678b6935",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.670Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528706670,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390e6d001l59geF4gq4oz4H",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8390cce001s0SS1BcFPN3a0S",
+    "type": "text",
+    "text": "Let me open https://www.linguashop.com/frases-sencillas-hindi and read what it says.",
+    "time": {
+      "start": 1789528706669,
+      "end": 1789528706669
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:26.670Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528706670,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390e6d0021wLlEQMfkyRQtE",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8390cce001s0SS1BcFPN3a0S",
+    "type": "tool",
+    "callID": "call_948697ca678b6935",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.linguashop.com/frases-sencillas-hindi"
+      },
+      "time": {
+        "start": 1789528706670
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.646Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528707646,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8390e6d0021wLlEQMfkyRQtE",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8390cce001s0SS1BcFPN3a0S",
+    "type": "tool",
+    "callID": "call_948697ca678b6935",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.linguashop.com/frases-sencillas-hindi"
+      },
+      "output": "Cómo formar frases sencillas en hindi Toggle navigation Elige un idiomaMás cursos de hindi        Cómo formar frases sencillas en hindi ¡Has venido al lugar correcto! Desplázate hacia abajo y ve las breves lecciones de hindi con ejemplos útiles. La casa es grande, el libro es viejo ... facilitamos la formación de oraciones simples en hindi.Añadir al carritoDime más       Frases simples en hindiEn una frase en hindi que utiliza el verbo 'ser', el verbo se pone al final de la frase. En el singular, el verbo 'ser' es 'hei'. En el plural, el verbo 'ser' es 'hêi'.EjemplosOratę quš hę.Las mujeres son felices. Oratę burhī hę.Las mujeres son viejas. Oratę javān hę.Las mujeres son jóvenes. Oratę udās hę.Las mujeres están tristes. Oratę kubsurat hę.Las mujeres son bonitas.     25 / 39Ve otra lección de hindi aquíSiguiente lección de hindi        Acerca del hindiHindi lo habla aproximadamente 40% de la población de la India. Si estás planeando viajar, aprender hindi sería una excelente manera de aprovechar al máximo tu viaje.PDF completo    Palabras y frases básicas en hindiAprende a desenvolverte en hindi con estas útiles palabras y frases. Comenzaremos a aprender algunas frases básicas en hindi que puedes usar para la comunicación diaria.Šub pravatBuenos días Šub prahariBuenas tardes Šub sandhyaBuenas tardes Šub ratriBuenas noches     Šub pravat! Más frases en hindi         ¡Enséñame! HindiAprende hindi de forma fácil, divertida y rápida. Si eres un principiante o ya sabes algunas frases en hindi, ¡te sorprenderás! de lo rápido que aprendes.Añadir al carritoDime más      Puedes aprender hindi en solo 9 sencillos pasos.Si deseas pasar de un principiante a un hindi fluido en un período de tiempo razonable, necesitarás un método de estudio comprobado y una dedicación diaria. Nuestra guía de aprendizaje de hindi de nueve pasos te mostrará cómo aprender hindi por tí mismo de una manera estructurada y efectiva. Los pasos a continuación te llevarán a través de la progresión de las habilidades necesarias para aprender a hablar, leer y comprender el hindi.    Paso 10 : frases-sencillas-hindiYa has aprendido mucho en los pasos 1 a 9 y nos gustaría ayudarte a aprender aún más con este paso adicional. Aprende las frases Yē ek kitab hē, Yē ek kursi hē y Yē ek darvaza hē (Esto es un libro, Esto es una silla, Esto es una puerta). Luego aprende las frases  y  (La puerta es grande, La puerta es pequeña). Y luego aprende las frases  y  (Las puertas son grandes, Las puertas son pequeñas).  Toma todo lo que has aprendido hasta ahora y luego enséñate solo algunas palabras nuevas cada semana. ¡Pruébalo tú mismo! Próximo paso:Aprende hindi ahora      Escuchar y aprender HindiEmpieza a aprender hindi hoy. Descarga los archivos de audio en hindi y español mientras corres, haces ejercicio, viajas, cocinas o duermes. Los archivos mp3 se pueden copiar en tu teléfono inteligente o tu iPad (a través de iTunes).Añadir al carritoDime más      Estamos para ayudarte.La atención al cliente es el objetivo esencial de nuestro negocio. Cualquiera que sea la pregunta que tengas, siempre puedes contar con nuestra ayuda.  Comprometidos con la calidad.Nos esforzamos para que este sitio esté libre de errores en 18 idiomas. Si encuentras un error, simplemente presiona el símbolo ✓ y actualizaremos el sitio... y te enviaremos algo gratis también.  Dedicados a tu éxito.Llevamos más de 15 años ayudando a las personas a aprender idiomas. Te sorprenderás de lo rápido que aprenderás a desenvolverte en hindi con los cursos de LinguaShop.    LinguaShopGraf-Moy-Str. 5a85356 FreisingAlemania POLÍTICAS Y ADMINISTRACIÓNTérminos y CondicionesPolítica de privacidadAviso legal EMPRESACarreras profesionalesSobre nosotrosBlog APOYOConsiga ayudaContáctanosEnviar una corrección Ofrecemos cursos de idiomas para aprender más de 90 idiomas !Elige un idioma",
+      "title": "https://www.linguashop.com/frases-sencillas-hindi (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528706670,
+        "end": 1789528707644
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.648Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528707648,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a839123f001gPHYJOkkO6sPIJ",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8390cce001s0SS1BcFPN3a0S",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 66484,
+      "output": 167,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 66651,
+      "headroom": -27795,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.650Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.651Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.651Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.657Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.658Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.658Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.665Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 66651,
+  "providerTokens": 66651,
+  "estimatedInputTokens": 9910,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 66484,
+    "cacheRead": 0,
+    "output": 167
+  },
+  "overflow": true,
+  "headroom": -27795,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.668Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.668Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.671Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.671Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.672Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.672Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.673Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:27.675Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528708156,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a839143b001Jhkqplk6Asp57p",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a83912580018FJQEWP6v37iK8",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.157Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.157Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.158Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.158Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528708158,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a839143e001HZ6g1yqRTIJQtf",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a83912580018FJQEWP6v37iK8",
+    "type": "text",
+    "text": "Conversation summary: Dime una frase en hindi.  Let me search the web for Dime una frase en hindi.\n\nTitle: What did we do so\n\nUser turns:\n  1. Dime una frase en hindi.\n  2.",
+    "time": {
+      "start": 1789528708158,
+      "end": 1789528708158
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.158Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528708158,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a839143e002i2vZr7dt03hiPu",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a83912580018FJQEWP6v37iK8",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 62659,
+      "output": 172,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 62831,
+      "headroom": -23975,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.159Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.159Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528708160,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8391440002CzJiAut0QNzs2P",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a83914400011vsj6IruyCuWud",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528708160,
+      "end": 1789528708160
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.160Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.161Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.161Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.161Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.161Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.162Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.162Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.163Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.163Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528708243,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8391493001Xho4m09W7IT6hy",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8391441001Mrph5NETNX0IWZ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528708244,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8391493003z7wZNn18YdZLMN",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8391441001Mrph5NETNX0IWZ",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528708244,
+      "end": 1789528708244
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528708244,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "part": {
+    "id": "prt_0a8391494001HnMBWmrv2IQiDP",
+    "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+    "messageID": "msg_0a8391441001Mrph5NETNX0IWZ",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8721,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8794,
+      "headroom": 30062,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.244Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.245Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.245Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.246Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.246Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.246Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528708246,
+  "sessionID": "ses_f57c70a76ffekBL8JWgjWMCZVn"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.246Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.246Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NPv271Jv9O",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.246Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NPv271Jv9O",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.246Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NPv271Jv9O",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.246Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 8,
+  "message": "Agent exiting"
+}
+

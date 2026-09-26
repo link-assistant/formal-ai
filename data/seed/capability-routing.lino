@@ -1,0 +1,364 @@
+capability_routing
+  issue 1138
+  routing_enabled true
+  routing_note "Plan 10 leaf 9 wired the table ahead of the cue-phrase path behind this field, and leaf 11 flipped it on. Setting it to false returns routing to data/seed/agentic-tool-capabilities.lino cue matching, which is how the two are compared without a Rust edit."
+  purpose "Capability is a function of the object in the request, the act asked for, and where the effect lands. Verbs select the act; they never select the capability. A triple with no row asks rather than guesses."
+  route
+    object url
+    act retrieve
+    locus web
+    capability web_fetch
+    because "issue 745: a concrete URL is unambiguous whatever the verb"
+  route
+    object url
+    act learn
+    locus web
+    capability learn_from_source
+    because "issue 499: a learning directive about a declared source teaches the engine, it does not fetch the URL once"
+  route
+    object path
+    act retrieve
+    locus workspace
+    capability read_file
+  route
+    object bare_term
+    act retrieve
+    locus workspace
+    capability grep
+    fallback shell
+    because "issue 758: code navigation must never reach web_search"
+  route
+    object bare_term
+    act retrieve
+    locus web
+    capability web_search
+  route
+    object path_scope
+    act enumerate
+    locus workspace
+    capability list_dir
+    fallback shell
+  route
+    object time_expression
+    act schedule
+    locus dialogue
+    capability calendar_create_event
+  route
+    object language_name
+    act demonstrate
+    locus dialogue
+    capability response_language_demonstration
+  route
+    object quantity_question
+    act retrieve
+    locus web
+    capability concept_measurement_lookup
+  route
+    object self_surface
+    act record
+    locus self
+    capability report_issue
+  route
+    object url
+    act enumerate
+    locus web
+    capability web_fetch
+    because "issue 745: listing what a page holds is still fetching that page"
+  route
+    object url
+    act explain
+    locus web
+    capability web_fetch
+    because "issue 745: explaining a page begins by retrieving it"
+  route
+    object url
+    act transform
+    locus web
+    capability web_fetch
+    because "issue 745: a page cannot be rewritten before it is fetched"
+  route
+    object url
+    act compose
+    locus web
+    capability web_fetch
+    because "issue 745: composing from a named page fetches that page first"
+  route
+    object path
+    act enumerate
+    locus workspace
+    capability read_file
+    fallback shell
+    because "issue 745: listing the contents of a file is reading that file"
+  route
+    object path
+    act explain
+    locus workspace
+    capability read_file
+    fallback shell
+    because "issue 745: explaining a named file begins by reading it"
+  route
+    object path
+    act compose
+    locus workspace
+    capability write_file
+    fallback shell
+    because "issue 745: composing content at a named path writes that file"
+  route
+    object path
+    act transform
+    locus workspace
+    capability write_file
+    fallback shell
+    because "issue 745: rewriting a named file writes that file"
+  route
+    object quoted_content
+    act compose
+    locus workspace
+    capability write_file
+    fallback shell
+    because "issue 745: explicit content landing in the workspace is a write"
+  route
+    object path_scope
+    act retrieve
+    locus workspace
+    capability list_dir
+    fallback shell
+    because "issue 1138: locating a named folder is a directory listing, never a web search"
+  route
+    object path_scope
+    act explain
+    locus workspace
+    capability list_dir
+    fallback shell
+    because "issue 1138: describing what a folder holds is a directory listing"
+  route
+    object bare_term
+    act compose
+    locus web
+    capability compose_from_sources
+    because "issue 722: an extended written piece is composed from retrieved sources, not written blind and not saved to a file nobody asked for"
+  route
+    object bare_term
+    act explain
+    locus web
+    capability web_search
+    because "issue 1138: explaining a term nothing local scopes begins with a search"
+  route
+    object bare_term
+    act enumerate
+    locus web
+    capability web_search
+    because "issue 1138: enumerating what the open web holds is a search"
+  route
+    object bare_term
+    act demonstrate
+    locus web
+    capability web_search
+    because "issue 1138: a demonstration of a term nothing local scopes begins with a search"
+  route
+    object bare_term
+    act transform
+    locus web
+    capability web_search
+    because "issue 1138: transforming a term nothing local scopes begins with a search"
+  route
+    object bare_term
+    act enumerate
+    locus workspace
+    capability grep
+    fallback shell
+    because "issue 758: code navigation must never reach web_search, whichever act it names"
+  route
+    object bare_term
+    act explain
+    locus workspace
+    capability grep
+    fallback shell
+    because "issue 758: explaining a symbol is answered from the workspace that defines it"
+  route
+    object quantity_question
+    act explain
+    locus web
+    capability concept_measurement_lookup
+    fallback web_search
+    because "issue 1063: a magnitude question is answered from a measured property with a unit"
+  route
+    object quantity_question
+    act enumerate
+    locus web
+    capability concept_measurement_lookup
+    fallback web_search
+    because "issue 1063: enumerating magnitudes is still a measurement lookup"
+  route
+    object time_expression
+    act record
+    locus dialogue
+    capability calendar_create_event
+    because "issue 869: placing an event in time is a calendar entry however it is worded"
+  route
+    object time_expression
+    act compose
+    locus dialogue
+    capability calendar_create_event
+    because "issue 869: composing an entry at a named time is a calendar entry"
+  route
+    object relative_period
+    act retrieve
+    locus dialogue
+    capability web_search
+    because "issue 1138 news_07: a summary of a recent period, with links, is a digest of fresh web events, not a silent unknown"
+  route
+    object language_name
+    act retrieve
+    locus dialogue
+    capability response_language_demonstration
+    because "issue 724: the object is a language and the effect lands in the reply, so the reply is given in that language rather than searched for"
+  route
+    object language_name
+    act compose
+    locus dialogue
+    capability response_language_demonstration
+    because "issue 724: writing a line in a named language is answering in it"
+  route
+    object language_name
+    act explain
+    locus dialogue
+    capability response_language_demonstration
+    because "issue 724: explaining in a named language is answering in it"
+  route
+    object language_name
+    act transform
+    locus dialogue
+    capability response_language_demonstration
+    because "issue 724: switching to a named language is answering in it"
+  route
+    object language_name
+    act enumerate
+    locus dialogue
+    capability response_language_demonstration
+    because "issue 724: listing something in a named language is answering in it"
+  route
+    object self_surface
+    act explain
+    locus dialogue
+    capability explain_previous_turn
+    because "issue 721: the object is the previous turn and the effect lands in the dialogue, so the previous turn is re-rendered rather than searched for"
+  route
+    object self_surface
+    act retrieve
+    locus dialogue
+    capability explain_previous_turn
+    because "issue 721: asking again for what was just said is a re-render"
+  route
+    object self_surface
+    act transform
+    locus dialogue
+    capability explain_previous_turn
+    because "issue 721: asking for the same thing put differently is a re-render"
+  route
+    object self_surface
+    act enumerate
+    locus dialogue
+    capability explain_previous_turn
+    because "issue 721: asking for the previous turn broken into parts is a re-render"
+  route
+    object self_surface
+    act compose
+    locus dialogue
+    capability explain_previous_turn
+    because "issue 721: asking for the previous turn written out again is a re-render"
+  route
+    object self_surface
+    act demonstrate
+    locus dialogue
+    capability explain_previous_turn
+    because "issue 721: asking to be shown the previous turn again is a re-render"
+  route
+    object self_surface
+    act explain
+    locus self
+    capability report_issue
+    because "issue 447: a complaint about the assistant own surface is recorded, not explained away"
+  route
+    object self_surface
+    act transform
+    locus self
+    capability report_issue
+    because "issue 447: asking for the assistant own surface to be changed is a report"
+  route
+    object self_surface
+    act retrieve
+    locus self
+    capability report_issue
+    because "issue 447: naming a defect in the assistant own surface is a report"
+  route
+    object pattern
+    act enumerate
+    locus workspace
+    capability glob
+    fallback shell
+    because "issue 758: a wildcard names a pattern to match, never one file to read"
+  route
+    object pattern
+    act retrieve
+    locus workspace
+    capability glob
+    fallback shell
+    because "issue 758: locating what a pattern names is still a glob, whatever the verb"
+  route
+    object path_set
+    act retrieve
+    locus workspace
+    capability read_many
+    fallback shell
+    because "issue 758: a batch of named files is one read-many step, not a web search"
+  route
+    object path_set
+    act transform
+    locus workspace
+    capability multi_edit
+    fallback shell
+    because "issue 758: the same edit across named files is a multi-edit, not a rewrite of one"
+  route
+    object task_list
+    act retrieve
+    locus dialogue
+    capability todo
+    because "issue 758: a named task list is tracked as a plan whatever the verb"
+  route
+    object task_list
+    act record
+    locus dialogue
+    capability todo
+    because "issue 758: recording tasks is the todo capability's own subject"
+  route
+    object task_list
+    act compose
+    locus dialogue
+    capability todo
+    because "issue 758: drafting a plan of work is a todo entry, not an essay"
+  route
+    object task_list
+    act enumerate
+    locus dialogue
+    capability todo
+    because "issue 758: listing the tracked tasks is a todo read"
+  route
+    object delegation
+    act retrieve
+    locus dialogue
+    capability subagent
+    because "issue 758: handing work to another agent is delegation, not a search for it"
+  route
+    object delegation
+    act transform
+    locus dialogue
+    capability subagent
+    because "issue 758: passing a task to an agent transforms its executor, not its subject"
+  route
+    object delegation
+    act record
+    locus dialogue
+    capability subagent
+    because "issue 758: assigning a task to an agent is recorded as delegation"
+  default ask

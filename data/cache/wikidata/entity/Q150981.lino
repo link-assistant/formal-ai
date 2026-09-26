@@ -1,0 +1,36 @@
+Q150981
+  aliases
+    es ("Federacion Alemana del Norte" "Federación del Norte de Alemania" "Federacion del Norte de Alemania" "Confederación de Alemania del Norte" "Federación Alemana del Norte" "Confederación Germana del Norte" "Confederacion de Alemania del Norte" "Confederacion Alemana del Norte" "Confederacion Germana del Norte")
+    ru ("Северо-Германский Союз")
+    zh ("北德意志联邦" "北日耳曼邦聯" "北德意志邦联")
+  descriptions
+    en "historical federal state in today's Northern Germany (1867–1871)"
+    es "antiguo país del centro de Europa (1867–1871)"
+    ru "объединение германских государств во главе с Пруссией (1867-1871)"
+    zh "1867-1871年间位于德意志北部的联邦制组织"
+  id Q150981
+  labels
+    en "North German Confederation"
+    es "Confederación Alemana del Norte"
+    ru "Северогерманский союз"
+    zh "北德意志邦聯"
+  sitelinks
+    enwiki
+      site enwiki
+      title "North German Confederation"
+    eswiki
+      site eswiki
+      title "Confederación Alemana del Norte"
+    ruwiki
+      site ruwiki
+      title "Северогерманский союз"
+    zhwiki
+      site zhwiki
+      title "北德意志邦聯"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

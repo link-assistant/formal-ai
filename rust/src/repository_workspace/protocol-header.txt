@@ -1,0 +1,4 @@
+repository_workspace_protocol
+  record_type "meta_recipe"
+  issue "1138"
+  topic "repository_workspace"

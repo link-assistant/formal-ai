@@ -6,4 +6,4 @@
 ci_gate check_language_test_coverage
   stage web
   description "Every registered language is exercised by the end-to-end suite."
-  run "npm run --prefix tests/e2e check:language-test-coverage"
+  run "npm run --prefix rust/tests/e2e check:language-test-coverage"

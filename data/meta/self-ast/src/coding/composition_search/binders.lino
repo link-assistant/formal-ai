@@ -1,0 +1,16 @@
+self_ast_census
+  target src/coding/composition_search/binders.rs
+  language rust
+  fidelity signature
+  byte_len 29702
+  line_count 713
+  content_id source_module_e12e70de86968a06
+  symbol_count 7
+  symbols
+    function checked_recursive_programs 12 22
+    function lowered_candidate_is_closed 29 62
+    function collect_bindings_until 64 82
+    function fragment_binder_slots 92 192
+    function conditional_payload_slots 205 265
+    function loop_variable_applies 277 571
+    function pair_loop_variable_applies 581 713

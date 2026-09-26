@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/learning_report/context_hierarchy_learning.rs
   language rust
   fidelity full_ast
-  byte_len 1571
+  byte_len 1580
   line_count 43
-  content_id source_module_8ee2056e61a75ec0
+  content_id source_module_7e53a6332adbd6d7
   symbol_count 7
   symbols
     const CONTEXT_HIERARCHY_LEARNING_PATH 12 12

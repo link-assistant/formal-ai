@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/learning_report/hardcoded_language_learning.rs
   language rust
   fidelity full_ast
-  byte_len 1089
+  byte_len 1098
   line_count 36
-  content_id source_module_e5ac3463e6ab1441
+  content_id source_module_486d0b1ed67ea64c
   symbol_count 7
   symbols
     const HARDCODED_LANGUAGE_LEARNING_PATH 5 5

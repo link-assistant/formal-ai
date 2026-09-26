@@ -2,24 +2,24 @@ self_ast_census
   target src/solver_handlers/conversation_memory/memory_write.rs
   language rust
   fidelity signature
-  byte_len 12052
-  line_count 294
-  content_id source_module_4d0d1e802862e04d
+  byte_len 12015
+  line_count 293
+  content_id source_module_6736938d371d73b5
   symbol_count 16
   symbols
     function try_memory_write 17 50
     enum MemoryWriteRequest 53 56
     function memory_event 59 98
-    function answer 100 123
-    function intent 125 130
-    function response_link 132 137
-    function log_value 139 146
-    function recognize_memory_write 149 154
-    function recognize_memory_append 165 183
-    function recognize_memory_substitution 196 209
-    function surface_span 216 236
-    function best_surface_span 242 256
-    function strip_first_surface 260 267
-    function split_once_surface 271 274
-    function collapse_ws 276 278
-    function clean_memory_write_text 280 294
+    function answer 100 121
+    function intent 123 128
+    function response_link 130 135
+    function log_value 137 144
+    function recognize_memory_write 147 152
+    function recognize_memory_append 163 182
+    function recognize_memory_substitution 195 208
+    function surface_span 215 235
+    function best_surface_span 241 255
+    function strip_first_surface 259 266
+    function split_once_surface 270 273
+    function collapse_ws 275 277
+    function clean_memory_write_text 279 293

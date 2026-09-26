@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_concept_lookup.js"
+  ceiling 194
+  rationale "Issue #1138 registry-driven concept lookup mirror with bounded capture, provenance, and opt-outs."

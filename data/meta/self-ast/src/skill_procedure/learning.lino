@@ -2,9 +2,9 @@ self_ast_census
   target src/skill_procedure/learning.rs
   language rust
   fidelity signature
-  byte_len 25245
-  line_count 707
-  content_id source_module_8faa4a3848ccb159
+  byte_len 25210
+  line_count 706
+  content_id source_module_941a16fc04c6dafe
   symbol_count 35
   symbols
     struct ProcedureLearningProposal 16 21
@@ -40,5 +40,5 @@ self_ast_census
     function push_observation 663 678
     function required_child 680 690
     function parse_usize 692 696
-    function default_capability_ledger 698 707
+    function default_capability_ledger 698 706
     static LEDGER 699 699

@@ -2,31 +2,32 @@ self_ast_census
   target src/recipe_interpreter.rs
   language rust
   fidelity signature
-  byte_len 17744
-  line_count 449
-  content_id source_module_00d5b186a18047a6
-  symbol_count 23
+  byte_len 19886
+  line_count 491
+  content_id source_module_0a6e96321f5b8920
+  symbol_count 24
   symbols
-    const RECIPE_LINO 43 43
-    struct RecipeStep 47 60
-    function is_executable 65 67
-    struct RecipeProgram 72 75
-    function from_lino 80 84
-    function from_repo 88 90
-    function step_count 94 96
-    function recorder_sequence 103 108
-    function execute 124 167
-    function reproduces_pipeline 177 204
-    function to_links_notation 209 236
-    struct ExecutionTrace 241 248
-    struct ExecutionContext 252 263
-    function run_recorder 269 354
-    function require_problem_frame 356 360
-    function require_work_unit_root 362 366
-    function require_need_ledger 368 372
-    function require_method_registry 374 378
-    function require_solution_evidence 380 384
-    function dependency_error 388 390
-    function parse_steps 394 413
-    function step_from_block 417 434
-    function field_value 438 449
+    const RECIPE_LINO 44 44
+    struct RecipeStep 48 61
+    function is_executable 66 68
+    struct RecipeProgram 73 76
+    function from_lino 81 85
+    function from_repo 89 91
+    function step_count 95 97
+    function recorder_sequence 104 109
+    function execute 125 170
+    function reproduces_pipeline 180 207
+    function to_links_notation 212 239
+    struct ExecutionTrace 244 251
+    struct ExecutionContext 255 270
+    function run_recorder 276 383
+    function require_problem_frame 385 389
+    function require_work_unit_root 391 395
+    function require_need_ledger 397 401
+    function require_method_registry 403 408
+    function require_obligation_ledger 416 420
+    function require_solution_evidence 422 426
+    function dependency_error 430 432
+    function parse_steps 436 455
+    function step_from_block 459 476
+    function field_value 480 491

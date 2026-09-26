@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Synchronise the canonical Links Notation seed (`data/seed/*.lino`) into the
-# static web demo (`src/web/seed/`). The web copy is a deploy artefact: the
+# static web demo (`js/seed/`). The web copy is a deploy artefact: the
 # canonical source of truth is `data/seed/`, shared by the Rust solver, CLI,
 # Telegram bot, HTTP server, and the browser worker.
 #
@@ -8,14 +8,14 @@
 # GitHub Pages artefact is uploaded.
 #
 # Usage:
-#   scripts/sync-seed.sh         # copy data/seed/*.lino → src/web/seed/
+#   scripts/sync-seed.sh         # copy data/seed/*.lino → js/seed/
 #   scripts/sync-seed.sh --check # exit 1 if the two trees diverge
 
 set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SRC_DIR="$ROOT_DIR/data/seed"
-DEST_DIR="$ROOT_DIR/src/web/seed"
+DEST_DIR="$ROOT_DIR/js/seed"
 
 mode="copy"
 if [[ "${1-}" == "--check" ]]; then

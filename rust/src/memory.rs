@@ -1,0 +1,687 @@
+//! Portable Links Notation memory log shared across every interface.
+//!
+//! The browser demo persists its conversation memory under `IndexedDB` as a
+//! `demo_memory` Links Notation document (see `js/memory.js`). The CLI
+//! and the HTTP server reuse the **exact same wire format** so a user can
+//! migrate their agent's memory between surfaces with a single `.lino`
+//! file:
+//!
+//! ```text
+//! demo_memory
+//!   event "id1"
+//!     role "user"
+//!     content "Hi"
+//!     sentAt "2026-05-15T12:00:00.000Z"
+//!   event "id2"
+//!     role "assistant"
+//!     intent "greeting"
+//!     content "Hi, how may I help you?"
+//!     sentAt "2026-05-15T12:00:01.000Z"
+//! ```
+//!
+//! The store is append-only for normal writes. Destructive paths are explicit
+//! user-initiated maintenance operations: purge already-deleted conversations
+//! or reset the dynamic event log after the caller has handled confirmation /
+//! backup. Older logs without the optional `kind`/`tool`/`inputs`/`outputs`
+//! fields still parse as plain user/assistant turns, so the format is
+//! forward-compatible.
+//!
+//! Full-memory bundles (`formal_ai_bundle`) — seed files + UI preferences +
+//! environment metadata + the entire event log in a single document — live in
+//! the [`bundle`] submodule. They are the default shape every "export memory"
+//! surface now writes (see issue #18 / R109).
+//!
+//! See [`super::seed`] for the static knowledge surface that pairs with this
+//! dynamic memory log, and `VISION.md` (Single-File Reproducibility) for the
+//! reasoning behind the unified format.
+
+use std::collections::BTreeSet;
+use std::fs;
+use std::io;
+use std::path::Path;
+
+pub mod bundle;
+pub mod upgrade;
+
+pub use bundle::{
+    BundleInfo, ParsedBundle, export_bundle, export_full_memory, extract_memory_from_bundle,
+    import_full_memory, seed_cache_events, suggest_migrations,
+};
+pub use upgrade::{
+    MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION, MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
+    MemoryMigrationReceipt, MemoryMigrationState, MemoryUpgradeError, MemoryUpgradeStatus,
+    TARGET_MEMORY_SCHEMA_VERSION, migrate_memory, migrate_memory_with_pre_commit,
+    preflight_memory_upgrade,
+};
+
+pub(crate) const ROOT_HEADER: &str = "demo_memory";
+pub(crate) const BUNDLE_HEADER: &str = "formal_ai_bundle";
+
+/// One recorded turn / step / tool invocation.
+///
+/// All fields are optional so the same record shape covers user/assistant
+/// messages, internal reasoning steps, and tool invocations without
+/// branching the schema.
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct MemoryEvent {
+    pub id: String,
+    pub kind: Option<String>,
+    pub role: Option<String>,
+    pub intent: Option<String>,
+    pub tool: Option<String>,
+    pub inputs: Option<String>,
+    pub outputs: Option<String>,
+    pub content: Option<String>,
+    pub sent_at: Option<String>,
+    pub demo_label: Option<String>,
+    pub conversation_id: Option<String>,
+    pub conversation_title: Option<String>,
+    pub evidence: Vec<String>,
+    /// Forward-compatible event fields this binary does not yet understand.
+    ///
+    /// Keeping their key/value pairs means a read followed by a write cannot
+    /// erase metadata produced by a future binary. The explicit schema
+    /// migration also transforms the original bytes directly, so ordering and
+    /// spelling survive that transaction byte-for-byte.
+    pub unknown_fields: Vec<(String, String)>,
+    /// How many times this event has been read back (recalled) so far.
+    ///
+    /// Issue #494 asks that usage be *counted on access*, not inferred from
+    /// citations: recall paths call [`MemoryStore::record_access`], and the
+    /// dreaming planner adds this count to the citation count so
+    /// frequently-read data is not evicted as "unused".
+    pub access_count: u64,
+    /// How many durable writes have created or changed this event.
+    ///
+    /// The first persistence is write one. Explicit substitutions and repeated
+    /// stable-id assertions increment the count, allowing the dreaming retention
+    /// policy to protect frequently changed knowledge as well as frequently read
+    /// knowledge (issue #686).
+    pub write_count: u64,
+}
+
+impl MemoryEvent {
+    #[must_use]
+    pub fn user(content: impl Into<String>) -> Self {
+        Self {
+            role: Some(String::from("user")),
+            content: Some(content.into()),
+            ..Self::default()
+        }
+    }
+
+    #[must_use]
+    pub fn assistant(content: impl Into<String>) -> Self {
+        Self {
+            role: Some(String::from("assistant")),
+            content: Some(content.into()),
+            ..Self::default()
+        }
+    }
+}
+
+/// Memory log for dynamic events. Normal writes append records; explicit purge
+/// and reset methods exist for irreversible user-requested cleanup.
+#[derive(Debug, Clone)]
+pub struct MemoryStore {
+    events: Vec<MemoryEvent>,
+    schema_version: u32,
+}
+
+impl Default for MemoryStore {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl MemoryStore {
+    #[must_use]
+    pub const fn new() -> Self {
+        Self {
+            events: Vec::new(),
+            schema_version: TARGET_MEMORY_SCHEMA_VERSION,
+        }
+    }
+
+    /// Build a store from an existing list. Useful for tests and for the
+    /// `from_links_notation` factory below.
+    #[must_use]
+    pub fn from_events(mut events: Vec<MemoryEvent>) -> Self {
+        for event in &mut events {
+            initialize_write_count(event);
+        }
+        Self {
+            events,
+            schema_version: TARGET_MEMORY_SCHEMA_VERSION,
+        }
+    }
+
+    pub fn append(&mut self, mut event: MemoryEvent) {
+        initialize_write_count(&mut event);
+        self.events.push(event);
+    }
+
+    /// Append every event from `other` to this store. Returns the number of
+    /// events appended.
+    pub fn import(&mut self, other: &[MemoryEvent]) -> usize {
+        let initial = self.events.len();
+        self.events.extend(other.iter().cloned().map(|mut event| {
+            initialize_write_count(&mut event);
+            event
+        }));
+        self.events.len() - initial
+    }
+
+    /// Permanently remove all events that belong to conversations already
+    /// marked with a `conversation_deleted` event.
+    pub fn purge_deleted_conversations(&mut self) -> usize {
+        let deleted_ids: BTreeSet<String> = self
+            .events
+            .iter()
+            .filter(|event| event.kind.as_deref() == Some("conversation_deleted"))
+            .filter_map(|event| event.conversation_id.as_deref())
+            .map(ToOwned::to_owned)
+            .collect();
+        if deleted_ids.is_empty() {
+            return 0;
+        }
+        let initial = self.events.len();
+        self.events.retain(|event| {
+            event
+                .conversation_id
+                .as_deref()
+                .is_none_or(|id| !deleted_ids.contains(id))
+        });
+        initial - self.events.len()
+    }
+
+    /// Permanently remove all events attributed to a single conversation id.
+    pub fn purge_conversation(&mut self, conversation_id: &str) -> usize {
+        if conversation_id.is_empty() {
+            return 0;
+        }
+        let initial = self.events.len();
+        self.events
+            .retain(|event| event.conversation_id.as_deref() != Some(conversation_id));
+        initial - self.events.len()
+    }
+
+    /// Clear every dynamic memory event while keeping the static seed intact.
+    pub fn reset(&mut self) -> usize {
+        let initial = self.events.len();
+        self.events.clear();
+        initial
+    }
+
+    #[must_use]
+    pub fn events(&self) -> &[MemoryEvent] {
+        &self.events
+    }
+
+    /// Mutable event access for the bounded memory-program interpreter.
+    ///
+    /// The interpreter is the only general mutation path: callers receive
+    /// compiled, permission-tagged primitives rather than direct access to the
+    /// vector, preserving the append-only retraction policy for deletes.
+    pub(crate) fn events_mut(&mut self) -> &mut [MemoryEvent] {
+        &mut self.events
+    }
+
+    /// Count one read access on each event at `indices` (issue #494: usage is
+    /// counted on access, not inferred from citations alone). Out-of-range
+    /// indices are ignored. Returns how many events were actually counted.
+    pub fn record_access(&mut self, indices: &[usize]) -> usize {
+        let mut counted = 0;
+        for &index in indices {
+            if let Some(event) = self.events.get_mut(index) {
+                event.access_count = event.access_count.saturating_add(1);
+                counted += 1;
+            }
+        }
+        counted
+    }
+
+    /// Rewrite every textual field of every stored event, replacing each
+    /// occurrence of `old` with `new`. This is the *write* half of the
+    /// natural-language substitution primitive (issue #529): a recall reads the
+    /// associative memory, a substitution transforms it in place — together they
+    /// give the user full, link-cli-style read+write control over memory through
+    /// ordinary language.
+    ///
+    /// Returns the total number of textual occurrences replaced across the
+    /// store. Structural keys are never touched: only the value-bearing fields
+    /// (`content`, `inputs`, `outputs`, `conversation_title`, `demo_label`) and
+    /// free-form `evidence` entries are rewritten, so a substitution can never
+    /// corrupt the document shape.
+    pub fn apply_substitution(&mut self, old: &str, new: &str) -> usize {
+        if old.is_empty() {
+            return 0;
+        }
+        let mut replacements = 0;
+        for event in &mut self.events {
+            let before = replacements;
+            for value in [
+                &mut event.content,
+                &mut event.inputs,
+                &mut event.outputs,
+                &mut event.conversation_title,
+                &mut event.demo_label,
+            ]
+            .into_iter()
+            .flatten()
+            {
+                replacements += replace_counting(value, old, new);
+            }
+            for entry in &mut event.evidence {
+                replacements += replace_counting(entry, old, new);
+            }
+            if replacements > before {
+                initialize_write_count(event);
+                event.write_count = event.write_count.saturating_add(1);
+            }
+        }
+        replacements
+    }
+
+    #[must_use]
+    pub const fn len(&self) -> usize {
+        self.events.len()
+    }
+
+    #[must_use]
+    pub const fn is_empty(&self) -> bool {
+        self.events.is_empty()
+    }
+
+    /// Render the entire memory log as a portable `demo_memory` Links
+    /// Notation document.
+    #[must_use]
+    pub fn export_links_notation(&self) -> String {
+        export_links_notation_with_schema(&self.events, self.schema_version)
+    }
+
+    /// Parse a `demo_memory` document and replace the store's contents.
+    pub fn replace_from_links_notation(&mut self, text: &str) {
+        self.schema_version = upgrade::schema_version_for_loaded_document(text)
+            .unwrap_or(TARGET_MEMORY_SCHEMA_VERSION);
+        self.events = parse_links_notation(text);
+    }
+
+    /// Append every event parsed from a `demo_memory` document. Returns the
+    /// number of events appended.
+    pub fn import_links_notation(&mut self, text: &str) -> usize {
+        let parsed = parse_links_notation(text);
+        self.import(&parsed)
+    }
+
+    /// Load events from a file on disk. Missing file yields an empty store.
+    pub fn load_from_file<P: AsRef<Path>>(path: P) -> io::Result<Self> {
+        let path = path.as_ref();
+        if !path.exists() {
+            return Ok(Self::new());
+        }
+        let text = fs::read_to_string(path)?;
+        let schema_version = if text.is_empty() || text.starts_with(ROOT_HEADER) {
+            let status = upgrade::inspect_memory_text(&text, true);
+            if !status.compatible {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    status
+                        .refusal_reason
+                        .unwrap_or_else(|| String::from("memory schema is incompatible")),
+                ));
+            }
+            status
+                .detected_schema_version
+                .unwrap_or(TARGET_MEMORY_SCHEMA_VERSION)
+        } else {
+            // Full `formal_ai_bundle` imports are not persisted memory logs and
+            // therefore do not participate in the demo_memory schema contract.
+            TARGET_MEMORY_SCHEMA_VERSION
+        };
+        let mut store = Self::from_events(import_full_memory(&text).events);
+        store.schema_version = schema_version;
+        Ok(store)
+    }
+
+    /// Persist the full store back to a file on disk. Creates parent
+    /// directories as needed. The write is atomic (temp file + rename) and
+    /// serialized against other writers via an advisory lock — see
+    /// [`write_locked_atomic`].
+    pub fn save_to_file<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+        write_locked_atomic(path.as_ref(), &self.export_links_notation())
+    }
+}
+
+/// Write `contents` to `path` atomically while holding an exclusive advisory
+/// lock on `{path}.lock`.
+///
+/// The foreground server and the background dreaming thread share one memory
+/// log (issue #540 §6): the lock keeps their read-modify-write cycles from
+/// interleaving, and the temp-file + rename step guarantees a reader never
+/// observes a torn, half-written document even if the process dies mid-write.
+///
+/// # Errors
+/// Returns an [`io::Error`] when the lock file, temp file, or rename fails.
+pub fn write_locked_atomic(path: &Path, contents: &str) -> io::Result<()> {
+    use fs2::FileExt as _;
+    if let Some(parent) = path.parent()
+        && !parent.as_os_str().is_empty()
+    {
+        fs::create_dir_all(parent)?;
+    }
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("memory.lino");
+    let lock_path = path.with_file_name(format!("{file_name}.lock"));
+    let lock_file = fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .write(true)
+        .open(&lock_path)?;
+    lock_file.lock_exclusive()?;
+    let temp_path = path.with_file_name(format!("{file_name}.tmp.{}", std::process::id()));
+    let result = fs::write(&temp_path, contents).and_then(|()| fs::rename(&temp_path, path));
+    if result.is_err() {
+        let _ = fs::remove_file(&temp_path);
+    }
+    let _ = fs2::FileExt::unlock(&lock_file);
+    result
+}
+
+/// Replace every occurrence of `old` with `new` inside `value`, rewriting it in
+/// place and returning the number of replacements made.
+fn replace_counting(value: &mut String, old: &str, new: &str) -> usize {
+    if old.is_empty() || !value.contains(old) {
+        return 0;
+    }
+    let count = value.matches(old).count();
+    *value = value.replace(old, new);
+    count
+}
+
+const fn initialize_write_count(event: &mut MemoryEvent) {
+    if event.write_count == 0 {
+        event.write_count = 1;
+    }
+}
+
+/// Serialize a slice of events as a `demo_memory` Links Notation document.
+#[must_use]
+pub fn export_links_notation(events: &[MemoryEvent]) -> String {
+    let mut out = String::from(ROOT_HEADER);
+    out.push('\n');
+    for event in events {
+        format_event_into(event, &mut out);
+    }
+    out
+}
+
+/// Serialize events using an explicit persisted-memory schema.
+///
+/// Schema 1 is the released, unversioned `demo_memory` shape. Schema 2 adds a
+/// root-level marker which older binaries safely ignore. This is crate-visible
+/// so file-backed stores can retain the schema they opened and avoid silently
+/// migrating on startup or on the first request.
+#[must_use]
+pub(crate) fn export_links_notation_with_schema(
+    events: &[MemoryEvent],
+    schema_version: u32,
+) -> String {
+    let mut out = String::from(ROOT_HEADER);
+    out.push('\n');
+    if schema_version >= 2 {
+        out.push_str("  ");
+        out.push_str("schema_version");
+        out.push_str(" \"");
+        out.push_str(&schema_version.to_string());
+        out.push_str("\"\n");
+    }
+    for event in events {
+        format_event_into(event, &mut out);
+    }
+    out
+}
+
+pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
+    out.push_str("  event \"");
+    out.push_str(&escape_value(&event.id));
+    out.push_str("\"\n");
+    let pairs: [(&str, Option<&str>); 11] = [
+        ("kind", event.kind.as_deref()),
+        ("role", event.role.as_deref()),
+        ("intent", event.intent.as_deref()),
+        ("tool", event.tool.as_deref()),
+        ("inputs", event.inputs.as_deref()),
+        ("outputs", event.outputs.as_deref()),
+        ("content", event.content.as_deref()),
+        ("sentAt", event.sent_at.as_deref()),
+        ("demoLabel", event.demo_label.as_deref()),
+        ("conversationId", event.conversation_id.as_deref()),
+        ("conversationTitle", event.conversation_title.as_deref()),
+    ];
+    for (key, value) in pairs {
+        let Some(value) = value else { continue };
+        if value.is_empty() {
+            continue;
+        }
+        out.push_str("    ");
+        out.push_str(key);
+        out.push_str(" \"");
+        out.push_str(&escape_value(value));
+        out.push_str("\"\n");
+    }
+    if !event.evidence.is_empty() {
+        let joined = event.evidence.join("|");
+        out.push_str("    evidence \"");
+        out.push_str(&escape_value(&joined));
+        out.push_str("\"\n");
+    }
+    for (key, value) in &event.unknown_fields {
+        if key.is_empty() || value.is_empty() {
+            continue;
+        }
+        out.push_str("    ");
+        out.push_str(key);
+        out.push_str(" \"");
+        out.push_str(&escape_value(value));
+        out.push_str("\"\n");
+    }
+    if event.access_count > 0 {
+        out.push_str("    accessCount \"");
+        out.push_str(&event.access_count.to_string());
+        out.push_str("\"\n");
+    }
+    out.push_str("    writeCount \"");
+    out.push_str(&event.write_count.max(1).to_string());
+    out.push_str("\"\n");
+}
+
+/// Parse a `demo_memory` Links Notation document into events.
+///
+/// The parser is lenient: a missing or differently-named header yields an
+/// empty list (no panic), and unknown field names are retained so a future
+/// producer's metadata survives an ordinary read/write cycle.
+#[must_use]
+pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
+    let mut events = Vec::new();
+    let mut current: Option<MemoryEvent> = None;
+    let mut saw_header = false;
+    for line in text.lines() {
+        let trimmed = line.trim_end();
+        if trimmed.is_empty() {
+            continue;
+        }
+        let indent = line.chars().take_while(|c| *c == ' ').count();
+        let content = &line[indent..];
+        if indent == 0 {
+            if content == ROOT_HEADER {
+                saw_header = true;
+            }
+            continue;
+        }
+        if !saw_header {
+            continue;
+        }
+        if indent == 2 {
+            if let Some(name) = content.strip_prefix("event ") {
+                if let Some(existing) = current.take() {
+                    events.push(existing);
+                }
+                let id = parse_quoted(name).unwrap_or_default();
+                current = Some(MemoryEvent {
+                    id,
+                    ..MemoryEvent::default()
+                });
+            }
+            continue;
+        }
+        if indent == 4 {
+            let Some(current) = current.as_mut() else {
+                continue;
+            };
+            let Some((key, rest)) = split_first_token(content) else {
+                continue;
+            };
+            let Some(value) = parse_quoted(rest) else {
+                continue;
+            };
+            match key {
+                "kind" => current.kind = Some(value),
+                "role" => current.role = Some(value),
+                "intent" => current.intent = Some(value),
+                "tool" => current.tool = Some(value),
+                "inputs" => current.inputs = Some(value),
+                "outputs" => current.outputs = Some(value),
+                "content" => current.content = Some(value),
+                "sentAt" => current.sent_at = Some(value),
+                "demoLabel" => current.demo_label = Some(value),
+                "conversationId" => current.conversation_id = Some(value),
+                "conversationTitle" => current.conversation_title = Some(value),
+                "accessCount" => current.access_count = value.parse().unwrap_or(0),
+                "writeCount" => current.write_count = value.parse().unwrap_or(1).max(1),
+                "evidence" => {
+                    current.evidence = value
+                        .split('|')
+                        .filter(|s| !s.is_empty())
+                        .map(ToOwned::to_owned)
+                        .collect();
+                }
+                _ => current.unknown_fields.push((key.to_owned(), value)),
+            }
+        }
+    }
+    if let Some(existing) = current.take() {
+        events.push(existing);
+    }
+    for event in &mut events {
+        initialize_write_count(event);
+    }
+    events
+}
+
+pub(crate) fn escape_value(value: &str) -> String {
+    value
+        .replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r")
+        .replace('\t', "\\t")
+}
+
+fn unescape_value(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    let mut chars = value.chars();
+    while let Some(ch) = chars.next() {
+        if ch == '\\' {
+            if let Some(next) = chars.next() {
+                match next {
+                    'n' => out.push('\n'),
+                    'r' => out.push('\r'),
+                    't' => out.push('\t'),
+                    '\\' => out.push('\\'),
+                    '"' => out.push('"'),
+                    other => out.push(other),
+                }
+            }
+        } else {
+            out.push(ch);
+        }
+    }
+    out
+}
+
+pub(crate) fn parse_quoted(rest: &str) -> Option<String> {
+    let trimmed = rest.trim_start();
+    let bytes = trimmed.as_bytes();
+    if bytes.first() != Some(&b'"') {
+        return None;
+    }
+    let mut i = 1;
+    while i < bytes.len() {
+        match bytes[i] {
+            b'\\' => i += 2,
+            b'"' => return Some(unescape_value(&trimmed[1..i])),
+            _ => i += 1,
+        }
+    }
+    None
+}
+
+pub(crate) fn split_first_token(content: &str) -> Option<(&str, &str)> {
+    let trimmed = content.trim_start();
+    let mut split = trimmed.splitn(2, ' ');
+    let head = split.next()?;
+    let tail = split.next().unwrap_or("");
+    Some((head, tail))
+}
+
+/// A tiny deterministic ISO-8601 stamp that does not pull in `chrono`. The
+/// browser side records `new Date().toISOString()`; for the CLI we emit a
+/// fixed-precision UTC string built from the system clock.
+#[allow(clippy::cast_possible_wrap)]
+#[must_use]
+pub fn isoformat_now() -> String {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default();
+    let secs = now.as_secs() as i64;
+    let millis = now.subsec_millis();
+    format_iso8601(secs, millis)
+}
+
+#[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+fn format_iso8601(secs_since_epoch: i64, millis: u32) -> String {
+    // Convert seconds since epoch to UTC components without external deps.
+    let days = secs_since_epoch.div_euclid(86_400);
+    let time = secs_since_epoch.rem_euclid(86_400);
+    let hours = (time / 3_600) as u32;
+    let minutes = ((time % 3_600) / 60) as u32;
+    let seconds = (time % 60) as u32;
+    let (year, month, day) = days_to_date(days);
+    format!("{year:04}-{month:02}-{day:02}T{hours:02}:{minutes:02}:{seconds:02}.{millis:03}Z")
+}
+
+#[allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss
+)]
+const fn days_to_date(days: i64) -> (i32, u32, u32) {
+    // Algorithm adapted from civil-from-days (Howard Hinnant, public domain).
+    let z = days + 719_468;
+    let era = if z >= 0 { z } else { z - 146_096 } / 146_097;
+    let doe = (z - era * 146_097) as u64; // [0, 146096]
+    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365; // [0, 399]
+    let mut y = yoe as i64 + era * 400;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100); // [0, 365]
+    let mp = (5 * doy + 2) / 153; // [0, 11]
+    let d = doy - (153 * mp + 2) / 5 + 1; // [1, 31]
+    let m = if mp < 10 { mp + 3 } else { mp - 9 }; // [1, 12]
+    if m <= 2 {
+        y += 1;
+    }
+    (y as i32, m as u32, d as u32)
+}

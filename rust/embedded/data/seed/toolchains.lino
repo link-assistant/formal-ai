@@ -1,0 +1,149 @@
+toolchains
+  record_type "toolchain_registry"
+  issue "1138"
+  bottleneck "B6"
+  plan "docs/case-studies/issue-1138/plans/06-prerequisite-discovery.md"
+toolchain_rust
+  record_type "toolchain_probe"
+  program "rustc"
+  language "rust"
+  argv ("--version")
+  requires ()
+  setup_hint "the Rust toolchain from https://rustup.rs"
+  environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
+toolchain_python
+  record_type "toolchain_probe"
+  program "python3"
+  language "python"
+  argv ("--version")
+  requires ()
+  setup_hint "Python 3 from https://www.python.org/downloads/"
+  environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
+toolchain_javascript
+  record_type "toolchain_probe"
+  program "node"
+  language "javascript"
+  argv ("--version")
+  requires ()
+  setup_hint "Node.js from https://nodejs.org/"
+  environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
+toolchain_typescript
+  record_type "toolchain_probe"
+  program "tsc"
+  language "typescript"
+  argv ("--version")
+  requires ("node")
+  setup_hint "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`"
+  environment "TypeScript compiler is not configured in this repository runtime"
+  execution_status "unavailable"
+toolchain_go
+  record_type "toolchain_probe"
+  program "go"
+  language "go"
+  argv ("version")
+  requires ()
+  setup_hint "Go from https://go.dev/dl/"
+  environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
+toolchain_c
+  record_type "toolchain_probe"
+  program "gcc"
+  language "c"
+  argv ("--version")
+  requires ()
+  setup_hint "a C compiler such as GCC from https://gcc.gnu.org/ or your package manager"
+  environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
+toolchain_cpp
+  record_type "toolchain_probe"
+  program "g++"
+  language "cpp"
+  argv ("--version")
+  requires ()
+  setup_hint "a C++ compiler such as g++ from https://gcc.gnu.org/ or your package manager"
+  environment "C++ toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
+toolchain_java
+  record_type "toolchain_probe"
+  program "javac"
+  language "java"
+  argv ("-version")
+  requires ("java")
+  setup_hint "a JDK from https://adoptium.net/"
+  environment "Java toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
+toolchain_jdk_runtime
+  record_type "toolchain_probe"
+  program "java"
+  language "java_runtime"
+  argv ("-version")
+  requires ()
+  setup_hint "a JDK from https://adoptium.net/"
+  environment "Java runtime, probed rather than declared"
+  execution_status "not_probed"
+toolchain_csharp
+  record_type "toolchain_probe"
+  program "dotnet"
+  language "csharp"
+  argv ("--version")
+  requires ()
+  setup_hint "the .NET SDK from https://dotnet.microsoft.com/download"
+  environment "C# / dotnet toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
+toolchain_ruby
+  record_type "toolchain_probe"
+  program "ruby"
+  language "ruby"
+  argv ("--version")
+  requires ()
+  setup_hint "Ruby from https://www.ruby-lang.org/en/downloads/"
+  environment "Ruby interpreter is not configured in this repository runtime"
+  execution_status "unavailable"
+toolchain_scala
+  record_type "toolchain_probe"
+  program "scalac"
+  language "scala"
+  argv ("-version")
+  requires ("java")
+  setup_hint "Scala from https://www.scala-lang.org/download/ (a JDK is required as well)"
+  environment "Scala toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
+toolchain_kotlin
+  record_type "toolchain_probe"
+  program "kotlinc"
+  language "kotlin"
+  argv ("-version")
+  requires ("java")
+  setup_hint "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)"
+  environment "Kotlin toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
+toolchain_php
+  record_type "toolchain_probe"
+  program "php"
+  language "php"
+  argv ("--version")
+  requires ()
+  setup_hint "PHP from https://www.php.net/downloads"
+  environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
+toolchain_laravel
+  record_type "toolchain_probe"
+  program "php"
+  language "laravel"
+  argv ("--version")
+  requires ("composer")
+  setup_hint "a Laravel application from https://laravel.com/docs/installation (`composer create-project laravel/laravel my-app`, which brings PHP and Composer with it)"
+  environment "issue-1021 local Laravel verification harness (experiments/issue-1021-laravel/run.sh)"
+  execution_status "verified"
+toolchain_docker
+  record_type "toolchain_probe"
+  program "docker"
+  language "container_runtime"
+  argv ("info")
+  requires ()
+  setup_hint "Docker from https://docs.docker.com/get-docker/"
+  environment "the container runtime the execution box needs"
+  execution_status "not_probed"

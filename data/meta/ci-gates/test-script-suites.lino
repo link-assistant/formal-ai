@@ -5,7 +5,7 @@
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
 #
 # Issue #1081. `scripts/*.rs` are rust-script programs with their own
-# dependency manifests, so `cargo test` never builds them. Four of them carried
+# dependency manifests, so `cargo test --manifest-path rust/Cargo.toml` never builds them. Four of them carried
 # 23 passing test cases that no job executed -- a suite nobody runs is a false
 # negative wearing a green tick. This gate runs exactly the suites the other
 # two mechanisms miss; `scripts/test-scripts.sh --list` names them.

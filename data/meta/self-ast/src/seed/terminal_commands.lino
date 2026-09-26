@@ -2,9 +2,9 @@ self_ast_census
   target src/seed/terminal_commands.rs
   language rust
   fidelity signature
-  byte_len 4111
+  byte_len 4101
   line_count 91
-  content_id source_module_90cd61f76c0bde14
+  content_id source_module_717d62d1ddf82daa
   symbol_count 4
   symbols
     struct TerminalCommandVocabulary 22 40

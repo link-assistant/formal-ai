@@ -2,15 +2,27 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-1028/agent-tree-run}"
 TREE_DEPTH="${TREE_DEPTH:-5}"
 NODE_FILTER="${NODE_FILTER:-}"
 BASE_PORT="${BASE_PORT:-8870}"
 VERIFY_NODE="$ROOT/experiments/issue_1028_agent_cli_ladder/verify-node.sh"
+AUTHORED_RULES="${AUTHORED_RULES:-enabled}"
 
-[[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai" >&2; exit 2; }
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --no-authored-rules) AUTHORED_RULES=disabled; shift ;;
+    *) echo "unknown option: $1" >&2; exit 2 ;;
+  esac
+done
+case "$AUTHORED_RULES" in
+  enabled|disabled) ;;
+  *) echo "AUTHORED_RULES must be enabled or disabled" >&2; exit 2 ;;
+esac
+
+[[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai --manifest-path rust/Cargo.toml" >&2; exit 2; }
 command -v "$AGENT" >/dev/null || { echo "Agent CLI not installed" >&2; exit 2; }
 command -v git >/dev/null || { echo "git is required" >&2; exit 2; }
 command -v curl >/dev/null || { echo "curl is required" >&2; exit 2; }
@@ -74,8 +86,20 @@ git -C "$WORK" sparse-checkout init --no-cone >/dev/null
 # the node, which the harness scored as the leaf's own `failing_leaf_tests`
 # rather than as the harness's breakage -- a false verdict about Formal AI.
 # `docs/assets/` holds only images no source reads.
-git -C "$WORK" sparse-checkout set --no-cone '/*' '!/dev/' \
-  '/dev/log/issues/702/pulls/818/agent-cli/' '!/docs/assets/' >/dev/null
+sparse_paths=('/*' '!/dev/' '/dev/log/issues/702/pulls/818/agent-cli/' '!/docs/assets/')
+if [[ "$AUTHORED_RULES" == disabled ]]; then
+  # These 32 documents and leaves.tsv contain exact leaf-to-edit mappings. The
+  # harness reads its oracle from ROOT before invoking the agent, while the
+  # repository worktree presented to the agent omits both forms of the answer.
+  # Sparse exclusion keeps the worktree clean, unlike deleting tracked files
+  # after checkout, so the unchanged diff judge remains identical in both
+  # modes.
+  sparse_paths+=(
+    '!/experiments/issue_1028_agent_cli_ladder/rules/'
+    '!/experiments/issue_1028_agent_cli_ladder/leaves.tsv'
+  )
+fi
+git -C "$WORK" sparse-checkout set --no-cone "${sparse_paths[@]}" >/dev/null
 git -C "$WORK" checkout -q --detach "$BASE_SHA"
 git -C "$WORK" config user.email agent-ladder@example.invalid
 git -C "$WORK" config user.name agent-ladder
@@ -478,18 +502,23 @@ cat > "$OUT/ladder-result.lino" <<EOF
 ladder_result
   requested_depth "$TREE_DEPTH"
   node_filter "${NODE_FILTER:-none}"
+  authored_rules_enabled "$([[ "$AUTHORED_RULES" == enabled ]] && echo true || echo false)"
   selected_nodes "$selected_count"
   failures "$failed"
   deepest_passing_level "$deepest"
   leaf_nodes_selected "$leaf_nodes_selected"
   leaf_nodes_passing "$leaf_nodes_passing"
 EOF
+if [[ "$AUTHORED_RULES" == disabled ]]; then
+  printf '  leaf_nodes_passing_without_authored_rules "%s"\n' \
+    "$leaf_nodes_passing" >> "$OUT/ladder-result.lino"
+fi
 python3 - "$OUT" "$TREE_DEPTH" "${NODE_FILTER:-none}" "$selected_count" "$failed" "$deepest" \
-  "$leaf_nodes_passing" "$leaf_nodes_selected" <<'PY'
+  "$leaf_nodes_passing" "$leaf_nodes_selected" "$AUTHORED_RULES" <<'PY'
 import sys
 from pathlib import Path
 out = Path(sys.argv[1])
-depth, node_filter, selected, failed, deepest, leaf_passing, leaf_selected = sys.argv[2:9]
+depth, node_filter, selected, failed, deepest, leaf_passing, leaf_selected, authored_rules = sys.argv[2:10]
 rows = []
 for line in (out / 'run.log').read_text().splitlines():
     parts = line.split('\t')
@@ -513,6 +542,7 @@ table = '\n'.join(rows) if rows else '| - | - | no node ran | - | - | - |'
 - failures: {failed}
 - deepest level whose nodes all passed: {deepest}
 - leaf nodes passing: {leaf_passing} of {leaf_selected}
+- authored per-leaf rules: {authored_rules}
 
 | node | verdict | detail | compile | unit tests | diff lines |
 | --- | --- | --- | --- | --- | --- |
@@ -524,10 +554,12 @@ Each selected node runs in a fresh temporary repository copy against the real
 `@link-assistant/agent` CLI and a local `formal-ai serve --agent-mode`.
 
 Every leaf is *change-shaped*: a member insertion, a literal replacement or an
-identifier rename in a tracked source (the committed `leaves.tsv`, each also a
-link-edit rule under `rules/`). PASS requires the worktree to show exactly that
-one file modified, the marker absent from `HEAD`, the anchor still present, the
-file formatting, `cargo check --lib` compiling it, and `cargo test --test unit`
+identifier rename in a tracked source. The harness keeps the committed
+`leaves.tsv` as its verifier oracle; when authored rules are disabled, both
+that oracle and the corresponding `rules/` mappings are excluded from the
+agent's sparse worktree. PASS requires the worktree to show exactly one file
+modified, the marker absent from `HEAD`, the anchor still present, the file
+formatting, `cargo check --lib` compiling it, and `cargo test --test unit`
 passing for its module (issue #1085 D4). A depth-4 composite must compose both
 verified child effects and both children's diffs must apply to one tree and
 compile. Depth 3 and above are *requirement-shaped*: the prompt lists behaviour

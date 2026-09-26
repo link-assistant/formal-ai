@@ -2,63 +2,64 @@ self_ast_census
   target src/promotion.rs
   language rust
   fidelity signature
-  byte_len 32101
-  line_count 880
-  content_id source_module_3b97ba279eb7d7e0
-  symbol_count 55
+  byte_len 32248
+  line_count 882
+  content_id source_module_10ca84d5a0af172d
+  symbol_count 56
   symbols
-    module gates 37 37
-    module materialize 38 38
-    const CODING_MODIFICATION_SUITE_LINO 42 43
-    const INDUSTRY_SUITE_LINO 44 44
-    const LEARNED_PROGRAM_RULES_SEED_FILE 47 47
-    struct PromotionRatchet 56 73
-    function new 78 95
-    function coding_modification 100 107
-    function industry 112 119
-    function unit_specs 124 134
-    function from_manifest 136 149
-    function clears 153 163
-    function status_slug 167 169
-    function evidence_link 175 186
-    struct SeedEdit 191 197
-    function new 202 207
-    enum PromotionOutcome 212 217
-    function slug 222 227
-    struct PromotionProposal 232 243
-    function new 248 266
-    function passes_all_gates 272 274
-    function failing_gates 278 280
-    function outcome 284 290
-    struct PromotionRecord 295 300
-    struct PromotionBranchPlan 308 314
-    struct PromotionRun 318 323
-    function evaluate 328 345
-    function promoted 349 354
-    function rejected 358 363
-    function branch_plan 367 389
-    function links_notation 393 420
-    function memory_events 427 442
-    struct AppliedSeedEdit 447 454
-    struct PromotionApplyOutcome 458 469
-    function promotions_from_learning_run 478 490
-    function demonstration_promotion_run 498 500
-    function demonstration_promotion_proposals 504 545
-    function learned_program_rule_lino 550 559
-    function proposal_event 561 573
-    function evidence_event 575 596
-    function decision_event 598 617
-    function applied_event 619 634
-    function rejection_event 639 663
-    function render_promotion_proposals 671 688
-    function parse_promotion_proposals 701 763
-    struct DraftProposal 766 772
-    function finish 775 790
-    struct DraftGate 794 796
-    function finish 799 809
-    function manifest_field 814 825
-    function split_field 827 830
-    function unquote 832 857
-    function quote 859 866
-    function push_field 868 873
-    function write_count 875 880
+    module draft_pull_request 37 37
+    module gates 38 38
+    module materialize 39 39
+    const CODING_MODIFICATION_SUITE_LINO 44 45
+    const INDUSTRY_SUITE_LINO 46 46
+    const LEARNED_PROGRAM_RULES_SEED_FILE 49 49
+    struct PromotionRatchet 58 75
+    function new 80 97
+    function coding_modification 102 109
+    function industry 114 121
+    function unit_specs 126 136
+    function from_manifest 138 151
+    function clears 155 165
+    function status_slug 169 171
+    function evidence_link 177 188
+    struct SeedEdit 193 199
+    function new 204 209
+    enum PromotionOutcome 214 219
+    function slug 224 229
+    struct PromotionProposal 234 245
+    function new 250 268
+    function passes_all_gates 274 276
+    function failing_gates 280 282
+    function outcome 286 292
+    struct PromotionRecord 297 302
+    struct PromotionBranchPlan 310 316
+    struct PromotionRun 320 325
+    function evaluate 330 347
+    function promoted 351 356
+    function rejected 360 365
+    function branch_plan 369 391
+    function links_notation 395 422
+    function memory_events 429 444
+    struct AppliedSeedEdit 449 456
+    struct PromotionApplyOutcome 460 471
+    function promotions_from_learning_run 480 492
+    function demonstration_promotion_run 500 502
+    function demonstration_promotion_proposals 506 547
+    function learned_program_rule_lino 552 561
+    function proposal_event 563 575
+    function evidence_event 577 598
+    function decision_event 600 619
+    function applied_event 621 636
+    function rejection_event 641 665
+    function render_promotion_proposals 673 690
+    function parse_promotion_proposals 703 765
+    struct DraftProposal 768 774
+    function finish 777 792
+    struct DraftGate 796 798
+    function finish 801 811
+    function manifest_field 816 827
+    function split_field 829 832
+    function unquote 834 859
+    function quote 861 868
+    function push_field 870 875
+    function write_count 877 882

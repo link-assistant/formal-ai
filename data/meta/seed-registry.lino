@@ -1,6 +1,6 @@
 # The one inventory of `data/seed/*.lino`, shared by every production path.
 #
-# Issue #991 moved it here. `src/seed/embedded.rs` and `src/web/seed_loader.js`
+# Issue #991 moved it here. `src/seed/embedded.rs` and `js/seed_loader.js`
 # each held this inventory as a hand-ordered list, and between them needed 41
 # manual conflict resolutions -- two branches adding a seed file always appended
 # to the same lines. Both files are now generated from this one, which is
@@ -29,8 +29,12 @@ seed_registry
     web true
   seed agentic-tool-capabilities
     bundle true
+  seed approved-lessons
+    bundle true
   seed brainstorm-seeds
     bundle true
+    web true
+  seed browser-handler-precedence
     web true
   seed caller-context
     bundle true
@@ -38,9 +42,13 @@ seed_registry
     bundle true
   seed client-integrations
     bundle true
+  seed coding-guidance
+    bundle true
   seed coding-idioms
     bundle true
     web true
+  seed command-outcome
+    bundle true
   seed computer-use-tasks
     bundle true
   seed concept-contexts
@@ -71,12 +79,21 @@ seed_registry
   seed formal-language-projections
     bundle true
     web true
+  seed formalization-relations
+    bundle true
+    web true
+  seed grammar-projection-rules
+    bundle true
   seed greetings
     bundle true
     web true
+  seed handler-family-methods
+    bundle true
   seed handler-precedence
     bundle true
     web true
+  seed handler-promotions
+    bundle true
   seed handler-rules
     bundle true
   seed hello-world-programs
@@ -94,10 +111,14 @@ seed_registry
   seed language-detection
     bundle true
     web true
+  seed language-projection
+    bundle true
   seed languages
     bundle true
     web true
   seed learned-methods
+    bundle true
+  seed learned-program-rules
     bundle true
   seed learned-request-openers
     bundle true
@@ -109,6 +130,10 @@ seed_registry
     bundle true
     web true
   seed meanings
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-acts
     bundle true
     lexicon meaning
     web true
@@ -132,11 +157,19 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-coding-config
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-coding-request
     bundle true
     lexicon meaning
     web true
   seed meanings-coding-structure
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-coding-structure-2
     bundle true
     lexicon meaning
     web true
@@ -147,6 +180,10 @@ seed_registry
   seed meanings-computer-use
     bundle true
     lexicon meaning
+  seed meanings-concept-lookup
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-conversation
     bundle true
     lexicon meaning
@@ -183,6 +220,14 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-formalization-needs
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-formalization-relations
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-formalization-report
     bundle true
     lexicon meaning
@@ -195,6 +240,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-language-projection
+    bundle true
+    lexicon meaning
   seed meanings-lexical-meta
     bundle true
     lexicon meaning
@@ -219,6 +267,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-membership
+    bundle true
+    lexicon meaning
   seed meanings-meta
     bundle true
     lexicon meaning
@@ -228,6 +279,10 @@ seed_registry
     lexicon meaning
     web true
   seed meanings-number-constraints
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-object-shapes
     bundle true
     lexicon meaning
     web true
@@ -251,12 +306,23 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-repository-workflow
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-research-table
     bundle true
     lexicon meaning
     web true
+  seed meanings-routing-vocabulary
+    bundle true
+    lexicon meaning
   seed meanings-search
     lexicon meaning
+  seed meanings-selection-criteria
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-semantic-meta
     bundle true
     lexicon meaning
@@ -289,11 +355,19 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-translate-cycle
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-translation
     bundle true
     lexicon meaning
     web true
   seed meanings-units
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-verifiable-task
     bundle true
     lexicon meaning
     web true
@@ -321,9 +395,15 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-writing-systems
+    bundle true
+    lexicon meaning
+    web true
   seed memory-programs
     bundle true
     web true
+  seed method-execution
+    bundle true
   seed model-aliases
     bundle true
   seed multilingual-responses
@@ -345,6 +425,10 @@ seed_registry
   seed multilingual-responses-client-config
     bundle true
     lexicon response
+  seed multilingual-responses-concept-lookup
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-decomposition
     bundle true
     lexicon response
@@ -353,6 +437,9 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-external-benchmark
+    bundle true
+    lexicon response
   seed multilingual-responses-issue-710
     bundle true
     lexicon response
@@ -366,6 +453,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-orchestration
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-parity
     bundle true
     lexicon response
     web true
@@ -405,15 +496,22 @@ seed_registry
   seed multilingual-responses-thinking-narrative
     bundle true
     lexicon response
+  seed multilingual-responses-translate
+    bundle true
+    lexicon response
   seed numeric-list-operations
     bundle true
     web true
+  seed obligation-mismatch
+    bundle true
   seed operation-vocabulary
     bundle true
     web true
   seed personas
     bundle true
     web true
+  seed planner-precedence
+    bundle true
   seed program-cst-grammars
     bundle true
   seed program-plan-rules
@@ -432,9 +530,18 @@ seed_registry
     bundle true
   seed release-timelines
     bundle true
+  seed repository-command-allowlist
+    bundle true
+  seed research-table-procedure
+    bundle true
   seed self-improvement-loop
     bundle true
     web true
+  seed sentence-punctuation
+    bundle true
+    web true
+  seed setup-publishers
+    bundle true
   seed shell-intents
     bundle true
     web true
@@ -449,14 +556,21 @@ seed_registry
     web true
   seed tool-resource-scopes
     bundle true
+  seed toolchains
+    bundle true
   seed tools
     bundle true
     web true
+  seed triz-principles
+    bundle true
   seed unknown-openers
     web true
-  unregistered closure-generated-*
-    owner "python3 scripts/close-total.py"
-    reason "Derived from the other seed files by the total-closure pass, so embedding a snapshot of them would embed the same statements twice."
+  unregistered capability-routing
+    owner "src/capability_routing.rs"
+    reason "Wave T skeleton for issue 1138 plan 10 leaf 8: the decision table is read from disk by the routing module and its tests. Leaf 8 moves it into the bundle and regenerates the embedded registry."
+  unregistered coding-composition-fragments
+    owner "src/coding/fragment_catalog.rs"
+    reason "The composition fragment catalog reads these fragments from the seed directory, and the web worker feeds them to the program-ir checker through its own seed list."
   unregistered coding-discovery-runtime
     owner "src/coding/python_render.rs"
     reason "Coding discovery embeds these executable structural templates only in the Python renderer that interprets them."

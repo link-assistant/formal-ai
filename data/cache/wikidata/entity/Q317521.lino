@@ -5,14 +5,37 @@ Q317521
     zh ("艾伦·马斯克" "马斯克" "马一龙" "伊隆·馬斯克" "穆斯克" "馬斯克" "伊隆·穆斯克" "埃隆·马斯克" "馬誼郎")
   descriptions
     en "American businessman (born 1971)"
-    hi "दक्षिण अफ्रीकी-कनाडाई-अमेरिकी व्यापारी (जन्म: 1971)"
+    es "empresario estadounidense"
+    hi "अमेरिकी व्यापारी (जन्म 1971)"
     ru "американский предприниматель и политик"
     zh "美國企業家、投資人，前任美國政府效率部負責人"
   id Q317521
   labels
     en "Elon Musk"
+    es "Elon Musk"
     hi "एलन मस्क"
     ru "Илон Маск"
     zh "伊隆·马斯克"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Elon Musk"
+    eswiki
+      site eswiki
+      title "Elon Musk"
+    hiwiki
+      site hiwiki
+      title "एलन मस्क"
+    ruwiki
+      site ruwiki
+      title "Маск, Илон"
+    zhwiki
+      site zhwiki
+      title "埃隆·马斯克"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

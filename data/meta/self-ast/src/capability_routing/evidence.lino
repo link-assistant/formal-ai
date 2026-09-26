@@ -1,0 +1,34 @@
+self_ast_census
+  target src/capability_routing/evidence.rs
+  language rust
+  fidelity signature
+  byte_len 17102
+  line_count 410
+  content_id source_module_137fa0170dfe4058
+  symbol_count 25
+  symbols
+    function evidences 22 25
+    function evidence_strength 36 44
+    function is_url 47 52
+    function is_path 62 78
+    function trim_pattern_token 86 105
+    function is_pattern_token 117 129
+    function path_token_count 132 137
+    function looks_like_qualified_member 141 155
+    function is_web_host_suffix 159 164
+    function has_clock_time 167 175
+    function has_quoted_span 178 195
+    function has_explicit_content 203 205
+    function has_container_scope 211 220
+    function has_workspace_scope 225 227
+    function has_web_scope 232 234
+    function names_open_web 244 246
+    function is_freshness_live 251 253
+    function is_self_surface 256 260
+    function is_bare_clarification 271 278
+    function is_prior_turn_reference 288 290
+    function explicit_content 299 336
+    function assigned_content 345 360
+    function quoted_span 363 381
+    function first_path 385 397
+    function first_url 401 410

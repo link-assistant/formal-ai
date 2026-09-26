@@ -2,9 +2,9 @@ self_ast_census
   target src/self_explanation.rs
   language rust
   fidelity signature
-  byte_len 13911
+  byte_len 13941
   line_count 326
-  content_id source_module_63e0dac82b827118
+  content_id source_module_ee2fed7c40f36fcc
   symbol_count 19
   symbols
     enum CitationKind 38 45

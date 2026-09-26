@@ -27,7 +27,7 @@ repos:
       # without linking them, which is all a lint pass needs.
       - id: cargo-clippy
         name: cargo clippy
-        entry: bash -c 'cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features'
+        entry: bash -c 'cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings && cargo check --manifest-path rust/Cargo.toml --examples --all-features'
         language: system
         types: [rust]
         pass_filenames: false

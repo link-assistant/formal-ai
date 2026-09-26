@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991 convention). Added by issue #1138 B9,
+# plan 09 leaf 37 — a repeated answer is a memo, not a fact.
+ci_gate check_seed_answer_duplicates
+  stage rust
+  description "No byte-identical answer value appears more than once in data/seed/**/*.lino: trigger rows point at the canonical reply through response_link, so a wording is fixed in one place and never drifts between copies."
+  run "rust-script --test scripts/check-seed-answer-duplicates.rs && rust-script scripts/check-seed-answer-duplicates.rs"

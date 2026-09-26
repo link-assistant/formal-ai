@@ -1,0 +1,232 @@
+{
+  "entities": {
+    "Q15180": {
+      "type": "item",
+      "id": "Q15180",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Soviet Union"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "СССР"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सोवियत संघ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蘇聯"
+        },
+        "es": {
+          "language": "es",
+          "value": "Unión Soviética"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "former country in Eurasia (1922–1991)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство в северной Евразии, существовавшее с 1922 по 1991 год"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पूर्वी यूरोप और उत्तरी एशिया में संघीय समाजवादी राज्य (1922-1991)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "前東歐及北亞國家（1922–1991）"
+        },
+        "es": {
+          "language": "es",
+          "value": "país federal de Europa y Asia que existió entre 1922 y 1991"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Union of Soviet Socialist Republics"
+          },
+          {
+            "language": "en",
+            "value": "USSR"
+          },
+          {
+            "language": "en",
+            "value": "U.S.S.R."
+          },
+          {
+            "language": "en",
+            "value": "the Soviet Union"
+          },
+          {
+            "language": "en",
+            "value": "the Soviets"
+          },
+          {
+            "language": "en",
+            "value": "CCCP"
+          },
+          {
+            "language": "en",
+            "value": "SU"
+          },
+          {
+            "language": "en",
+            "value": "the USSR"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Союз Советских Социалистических Республик"
+          },
+          {
+            "language": "ru",
+            "value": "Советский Союз"
+          },
+          {
+            "language": "ru",
+            "value": "Союз ССР"
+          },
+          {
+            "language": "ru",
+            "value": "С.С.С.Р."
+          },
+          {
+            "language": "ru",
+            "value": "Страна Советов"
+          },
+          {
+            "language": "ru",
+            "value": "Союз"
+          },
+          {
+            "language": "ru",
+            "value": "ссср"
+          },
+          {
+            "language": "ru",
+            "value": "Советы"
+          },
+          {
+            "language": "ru",
+            "value": "ССР"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "蘇維埃社會主義共和國聯邦"
+          },
+          {
+            "language": "zh",
+            "value": "蘇維埃社會主義共和國聯盟"
+          },
+          {
+            "language": "zh",
+            "value": "蘇維埃社會主義國家聯盟"
+          },
+          {
+            "language": "zh",
+            "value": "前蘇聯"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Unión de Repúblicas Socialistas Soviéticas"
+          },
+          {
+            "language": "es",
+            "value": "Union Sovietica"
+          },
+          {
+            "language": "es",
+            "value": "Union de Republicas Socialistas Sovieticas"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Soviet Union"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Союз Советских Социалистических Республик"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "सोवियत संघ"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "苏联"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Unión Soviética"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "07fa6eb2d1e5f1c75fc204938373173411385a84",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 15180,
+                  "id": "Q15180"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ],
+        "P297": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P297",
+              "hash": "a6ae4a3087998fbf4fc3592231baae042103fd1f",
+              "datavalue": {
+                "value": "SU",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

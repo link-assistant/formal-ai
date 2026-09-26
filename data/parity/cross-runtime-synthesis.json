@@ -30,16 +30,13 @@
   {
     "id": "e34_object_counting_filtered_category",
     "prompt": "I have a clarinet, a spoon, a violin, and a flute. How many musical instruments do I have?",
-    "expectedIntent": "object_counting",
+    "expectedIntent": "verifiable_task",
     "expectedAnswerFragments": ["3"],
     "forbiddenAnswerFragments": ["4"],
-    "expectedEvidencePrefixes": [
-      "sub_result:",
-      "composition:category:",
-      "composition:count:",
-      "trace:"
-    ],
-    "expectedTraceFragments": ["category=musical instruments", "matched=clarinet|violin|flute"]
+    "expectedEvidencePrefixes": ["verifiable_task:executed:"],
+    "expectedTraceFragments": ["verifiable_task:membership_source", "seed:https://www.wikidata.org/wiki/Q34379"],
+    "browserExpectedAnswerFragments": ["no executor for the derived program"],
+    "browserExpectedEvidencePrefixes": ["verifiable_task:recognised:"]
   },
   {
     "id": "e34_program_synthesis_unseen_count_vowels",

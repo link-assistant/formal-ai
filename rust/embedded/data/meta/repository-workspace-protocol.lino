@@ -1,0 +1,94 @@
+repository_workspace_protocol
+  record_type "meta_recipe"
+  issue "1138"
+  topic "repository_workspace"
+repository_step_clone
+  record_type "meta_step"
+  order "1"
+  id "clone"
+  detail "Materialise the tree at the exact base commit the task names. A branch is a moving target and is refused before anything is created."
+  precondition "The spec names a forty-character object name and an origin."
+  postcondition "HEAD in the clone resolves to exactly that commit, and nothing outside the clone changed."
+  source_file "src/repository_workspace/clone.rs"
+repository_step_locate
+  record_type "meta_step"
+  order "2"
+  id "locate"
+  detail "Resolve the files and declarations the requirement names, in the language it was written in. A tie is ambiguity and resolves to nothing, with both candidates reported."
+  precondition "A tree exists at the base commit and the requirement is carried verbatim."
+  postcondition "Either a located set with the mechanism that found it, or nothing at all with the candidates named."
+  source_file "src/repository_workspace/locate.rs"
+repository_step_read
+  record_type "meta_step"
+  order "3"
+  id "read"
+  detail "Read the located bytes, so the edit is made against what the file actually holds rather than against what the requirement assumed."
+  precondition "At least one location resolved."
+  postcondition "The prior bytes of every file about to change are retained."
+  source_file "src/repository_workspace/mod.rs"
+repository_step_edit
+  record_type "meta_step"
+  order "4"
+  id "edit"
+  detail "Apply the change inside the workspace only. The ambient checkout is byte-identical afterwards, whatever the requirement asked for."
+  precondition "The prior bytes were read and retained."
+  postcondition "The edited bytes are observed on disk and recorded as an observation."
+  source_file "src/repository_workspace/edit.rs"
+repository_step_verify
+  record_type "meta_step"
+  order "5"
+  id "verify"
+  detail "Run the named tests. A missing runner is a prerequisite, not a failure; a deadline reached reports both numbers; neither is a pass."
+  precondition "The edit was applied and the tests the task names are known."
+  postcondition "Each named test is observed passing or failing, or the reason it did not run is named."
+  source_file "src/repository_workspace/verify.rs"
+repository_step_diff
+  record_type "meta_step"
+  order "6"
+  id "diff"
+  detail "Produce the unified diff the task is judged by. It has to apply to a clean clone at the same base commit, or it is not a deliverable."
+  precondition "The tree holds the edit and the verification was attempted."
+  postcondition "A diff that round-trips through git apply, or an empty diff honestly reporting that nothing changed."
+  source_file "src/repository_workspace/diff.rs"
+repository_template obligation_write_observation
+  record_type "runtime_template"
+  text "write {path}"
+repository_template solve_model_not_authoring_path
+  record_type "runtime_template"
+  text "model `{model}` is not a Formal AI authoring path"
+repository_template solve_workspace_error
+  record_type "runtime_template"
+  text "repository workspace: {error}"
+repository_template solve_session_metadata
+  record_type "runtime_template"
+  text "formal-ai session {session}\nformal-ai model {model}\n"
+repository_template solve_evidence_not_utf8
+  record_type "runtime_template"
+  text "evidence `{name}` is not UTF-8 and cannot be committed: {error}"
+repository_template solve_unsupported_issue_url
+  record_type "runtime_template"
+  text "unsupported issue URL `{issue_url}`"
+repository_template solve_issue_payload_not_json
+  record_type "runtime_template"
+  text "GitHub issue payload is not JSON: {error}"
+repository_template solve_issue_url_mismatch
+  record_type "runtime_template"
+  text "GitHub issue payload URL `{observed_url}` does not match `{issue_url}`"
+repository_template solve_stage_error
+  record_type "runtime_template"
+  text "stage isolated workspace: {error}"
+repository_template solve_commit_error
+  record_type "runtime_template"
+  text "commit isolated workspace: {error}"
+repository_template solve_commit_message
+  record_type "runtime_template"
+  text "feat: solve repository requirement\n\nFormal-AI-Session: {session}\nFormal-AI-Model: {model}\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}\n"
+repository_template workspace_census_error
+  record_type "runtime_template"
+  text "workspace census: {error}"
+repository_template workspace_base_commit_mismatch
+  record_type "runtime_template"
+  text "base commit {expected} was not observed (HEAD={observed})"
+repository_template promotion_proposals_read_error
+  record_type "runtime_template"
+  text "could not read promotion proposals from {path}: {error}"

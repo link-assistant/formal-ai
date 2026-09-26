@@ -1,0 +1,444 @@
+# Response-intent meanings for the plan 16 translate CLI diagnostics
+# (issue #1138). Each slug grounds one multilingual-responses-translate
+# intent so the honest closure audit counts it as defined, not owed.
+meanings
+  translate_needs_from_to
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command ran without both roots"
+    effect "the missing root options are requested"
+    unit "not applicable"
+    example "translate needs --from and --to (or --list to see every direction)"
+    lexeme en
+      surface
+        text "translate needs from and to"
+    lexeme ru
+      surface
+        text "переводу нужны источник и цель"
+    lexeme hi
+      surface
+        text "अनुवाद को स्रोत और लक्ष्य चाहिए"
+    lexeme zh
+      surface
+        text "翻译需要源和目标"
+    lexeme es
+      surface
+        text "traducir necesita origen y destino"
+  translate_unknown_from
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command received an unknown source root"
+    effect "the accepted source root spellings are listed"
+    unit "not applicable"
+    example "unknown --from 'rust2': expected one of rust, js, ts, or meta"
+    lexeme en
+      surface
+        text "translate unknown source root"
+    lexeme ru
+      surface
+        text "неизвестный исходный корень перевода"
+    lexeme hi
+      surface
+        text "अनुवाद का अज्ञात स्रोत मूल"
+    lexeme zh
+      surface
+        text "翻译的未知源根"
+    lexeme es
+      surface
+        text "raíz de origen desconocida de traducción"
+  translate_unknown_to
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command received an unknown target root"
+    effect "the accepted target root spellings are listed"
+    unit "not applicable"
+    example "unknown --to 'wasm': expected one of rust, js, ts, or meta"
+    lexeme en
+      surface
+        text "translate unknown target root"
+    lexeme ru
+      surface
+        text "неизвестный целевой корень перевода"
+    lexeme hi
+      surface
+        text "अनुवाद का अज्ञात लक्ष्य मूल"
+    lexeme zh
+      surface
+        text "翻译的未知目标根"
+    lexeme es
+      surface
+        text "raíz de destino desconocida de traducción"
+  translate_same_roots
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command named the same source and target root"
+    effect "the non-direction is refused without invoking a leg"
+    unit "not applicable"
+    example "rust → rust is not a direction: the roots are the same"
+    lexeme en
+      surface
+        text "translate same roots refusal"
+    lexeme ru
+      surface
+        text "отказ перевода при совпадающих корнях"
+    lexeme hi
+      surface
+        text "समान मूलों पर अनुवाद से इनकार"
+    lexeme zh
+      surface
+        text "相同根时拒绝翻译"
+    lexeme es
+      surface
+        text "rechazo de traducción con raíces iguales"
+  translate_pending
+    defined-by answer
+    role localized_response_template
+    precondition "a requested direction is registered but not materialized"
+    effect "the plan-16 leaf that owes the leg is named"
+    unit "not applicable"
+    example "rust → js  pending (plan 16 L8)"
+    lexeme en
+      surface
+        text "translate pending leg"
+    lexeme ru
+      surface
+        text "ожидающее звено перевода"
+    lexeme hi
+      surface
+        text "अनुवाद का लंबित चरण"
+    lexeme zh
+      surface
+        text "翻译的待完成环节"
+    lexeme es
+      surface
+        text "etapa de traducción pendiente"
+  translate_pending_docs
+    defined-by answer
+    role localized_response_template
+    precondition "a pending direction is asked about in documentation mode"
+    effect "the plan-16 leaf that owes the leg is named for the docs page"
+    unit "not applicable"
+    example "see docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md"
+    lexeme en
+      surface
+        text "translate pending docs pointer"
+    lexeme ru
+      surface
+        text "указатель на документацию ожидающего звена перевода"
+    lexeme hi
+      surface
+        text "लंबित अनुवाद चरण का दस्तावेज़ संकेत"
+    lexeme zh
+      surface
+        text "翻译待完成环节的文档指引"
+    lexeme es
+      surface
+        text "indicador de documentación de la etapa pendiente de traducción"
+  translate_needs_input
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command ran with no input text or file"
+    effect "the missing input is requested"
+    unit "not applicable"
+    example "translate needs input text or --input"
+    lexeme en
+      surface
+        text "translate needs input"
+    lexeme ru
+      surface
+        text "переводу нужен входной текст"
+    lexeme hi
+      surface
+        text "अनुवाद को इनपुट चाहिए"
+    lexeme zh
+      surface
+        text "翻译需要输入"
+    lexeme es
+      surface
+        text "traducir necesita entrada"
+  translate_leg_live
+    defined-by answer
+    role localized_response_template
+    precondition "a requested direction is materialized"
+    effect "the leg is reported as live"
+    unit "not applicable"
+    example "rust → meta  live"
+    lexeme en
+      surface
+        text "translate leg live report"
+    lexeme ru
+      surface
+        text "отчёт о действующем звене перевода"
+    lexeme hi
+      surface
+        text "अनुवाद चरण सक्रिय रिपोर्ट"
+    lexeme zh
+      surface
+        text "翻译环节可用报告"
+    lexeme es
+      surface
+        text "informe de etapa de traducción activa"
+  translate_leg_pending
+    defined-by answer
+    role localized_response_template
+    precondition "a requested leg inside a live direction is not materialized"
+    effect "the plan-16 leaf that owes the leg is named with its leaf number"
+    unit "not applicable"
+    example "rust → js  pending (plan 16 L8)"
+    lexeme en
+      surface
+        text "translate leg pending report"
+    lexeme ru
+      surface
+        text "отчёт об ожидающем звене перевода"
+    lexeme hi
+      surface
+        text "अनुवाद चरण लंबित रिपोर्ट"
+    lexeme zh
+      surface
+        text "翻译环节待完成报告"
+    lexeme es
+      surface
+        text "informe de etapa de traducción pendiente"
+  translate_refused
+    defined-by answer
+    role localized_response_template
+    precondition "a projection seed refuses a construct the target root does not accept"
+    effect "the refused constructs are named and nothing is written"
+    unit "not applicable"
+    example "translate ts → js refused interface_declaration: the projection seed does not carry it, so nothing was written"
+    lexeme en
+      surface
+        text "translate refusal report"
+    lexeme ru
+      surface
+        text "отчёт об отказе перевода"
+    lexeme hi
+      surface
+        text "अनुवाद से इनकार रिपोर्ट"
+    lexeme zh
+      surface
+        text "翻译拒绝报告"
+    lexeme es
+      surface
+        text "informe de rechazo de traducción"
+  translate_wrote_file
+    defined-by answer
+    role localized_response_template
+    precondition "the write mode translated one mapped file and wrote its sibling-root target"
+    effect "the written pair and the carried token count are reported"
+    unit "not applicable"
+    example "wrote ts/greeting.ts from js/greeting.js (57 tokens carried)"
+    lexeme en
+      surface
+        text "one translated file written"
+    lexeme ru
+      surface
+        text "один переведённый файл записан"
+    lexeme hi
+      surface
+        text "एक अनुवादित फ़ाइल लिखी गई"
+    lexeme zh
+      surface
+        text "已写入一个翻译文件"
+    lexeme es
+      surface
+        text "un archivo traducido escrito"
+  translate_wrote
+    defined-by answer
+    role localized_response_template
+    precondition "the write mode translated the whole source tree into the sibling root"
+    effect "the file count, carried token total, and target root are reported"
+    unit "not applicable"
+    example "translated 63 files (12045 tokens carried); wrote the ts tree"
+    lexeme en
+      surface
+        text "translated tree written"
+    lexeme ru
+      surface
+        text "переведённое дерево записано"
+    lexeme hi
+      surface
+        text "अनुवादित ट्री लिखा गया"
+    lexeme zh
+      surface
+        text "已写入翻译后的树"
+    lexeme es
+      surface
+        text "árbol traducido escrito"
+  translate_write_wrong_root
+    defined-by answer
+    role localized_response_template
+    precondition "the write mode received a path the sibling-root mapping does not own"
+    effect "the path is refused and the accepted mapping is stated"
+    unit "not applicable"
+    example "src/app.js: --write maps js/ ↔ ts/ sibling roots; the input must live under the source root"
+    lexeme en
+      surface
+        text "write path outside the sibling roots"
+    lexeme ru
+      surface
+        text "путь записи вне корней-близнецов"
+    lexeme hi
+      surface
+        text "लेखन पथ जुड़वाँ मूलों के बाहर"
+    lexeme zh
+      surface
+        text "写入路径在孪生根之外"
+    lexeme es
+      surface
+        text "ruta de escritura fuera de las raíces hermanas"
+  translate_write_unsupported
+    defined-by answer
+    role localized_response_template
+    precondition "the write mode was asked for a leg whose target is not a committed sibling tree"
+    effect "the leg is refused and the only mapped write directions are named"
+    unit "not applicable"
+    example "writing js → meta is not a tree write this rung maps; only js ↔ ts"
+    lexeme en
+      surface
+        text "unsupported write direction"
+    lexeme ru
+      surface
+        text "неподдерживаемое направление записи"
+    lexeme hi
+      surface
+        text "असमर्थित लेखन दिशा"
+    lexeme zh
+      surface
+        text "不支持的写入方向"
+    lexeme es
+      surface
+        text "dirección de escritura no admitida"
+  translate_write_refused
+    defined-by answer
+    role localized_response_template
+    precondition "a tree or file write met a construct the projection seed refuses"
+    effect "every refused file and construct is named and nothing was written"
+    unit "not applicable"
+    example "nothing was written; refused: js/app.js: interface declaration"
+    lexeme en
+      surface
+        text "write refused by the projection seed"
+    lexeme ru
+      surface
+        text "запись отклонена правилами проекции"
+    lexeme hi
+      surface
+        text "प्रोजेक्शन नियमों ने लेखन से इनकार किया"
+    lexeme zh
+      surface
+        text "投影规则拒绝了写入"
+    lexeme es
+      surface
+        text "escritura rechazada por las reglas de proyección"
+  translate_source_missing
+    defined-by answer
+    role localized_response_template
+    precondition "a source file named for translation is not there to read"
+    effect "the missing path is reported without writing anything"
+    unit "not applicable"
+    example "js/nope.js: no source file to translate at that path"
+    lexeme en
+      surface
+        text "source file missing"
+    lexeme ru
+      surface
+        text "исходный файл отсутствует"
+    lexeme hi
+      surface
+        text "स्रोत फ़ाइल अनुपस्थित"
+    lexeme zh
+      surface
+        text "源文件缺失"
+    lexeme es
+      surface
+        text "falta el archivo fuente"
+  translate_source_invalid
+    defined-by answer
+    role localized_response_template
+    precondition "a source file could not be normalized into the pivot"
+    effect "the path and the tokenizer's reason are reported without writing"
+    unit "not applicable"
+    example "js/broken.js: unterminated template literal"
+    lexeme en
+      surface
+        text "source file cannot be normalized"
+    lexeme ru
+      surface
+        text "исходный файл не нормализуется"
+    lexeme hi
+      surface
+        text "स्रोत फ़ाइल सामान्य नहीं होती"
+    lexeme zh
+      surface
+        text "源文件无法规范化"
+    lexeme es
+      surface
+        text "el archivo fuente no se puede normalizar"
+  translate_write_empty
+    defined-by answer
+    role localized_response_template
+    precondition "a tree write found no owned source files under the source root"
+    effect "the empty root is reported without writing anything"
+    unit "not applicable"
+    example "the ts root holds no .ts files to translate"
+    lexeme en
+      surface
+        text "no owned files under the source root"
+    lexeme ru
+      surface
+        text "под исходным корнем нет принадлежащих файлов"
+    lexeme hi
+      surface
+        text "स्रोत मूल के अंतर्गत कोई स्वामित्व फ़ाइल नहीं"
+    lexeme zh
+      surface
+        text "源根下没有所属文件"
+    lexeme es
+      surface
+        text "sin archivos propios bajo la raíz de origen"
+  translate_write_refused_item
+    defined-by answer
+    role localized_response_template
+    precondition "one source file was refused by the projection seed"
+    effect "the file and its named constructs are reported as the refused item"
+    unit "not applicable"
+    example "ts/typed.ts: interface_declaration"
+    lexeme en
+      surface
+        text "one refused file named with its constructs"
+    lexeme ru
+      surface
+        text "один отклонённый файл назван со своими конструкциями"
+    lexeme hi
+      surface
+        text "एक अस्वीकृत फ़ाइल अपनी संरचनाओं के साथ नामित"
+    lexeme zh
+      surface
+        text "一个被拒文件连同其构造被点名"
+    lexeme es
+      surface
+        text "un archivo rechazado nombrado con sus construcciones"
+  translate_tool_schema
+    defined-by answer
+    role localized_response_template
+    precondition "the agent advertised the translate tool"
+    effect "the tool's arguments schema is stated for the calling client"
+    unit "not applicable"
+    example "translate tool schema"
+    lexeme en
+      surface
+        text "translate tool schema"
+    lexeme ru
+      surface
+        text "схема инструмента перевода"
+    lexeme hi
+      surface
+        text "अनुवाद उपकरण स्कीमा"
+    lexeme zh
+      surface
+        text "翻译工具模式"
+    lexeme es
+      surface
+        text "esquema de la herramienta de traducción"

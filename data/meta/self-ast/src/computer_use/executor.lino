@@ -2,9 +2,9 @@ self_ast_census
   target src/computer_use/executor.rs
   language rust
   fidelity signature
-  byte_len 33257
+  byte_len 33302
   line_count 903
-  content_id source_module_693c1d594280d3b3
+  content_id source_module_15052555defed4da
   symbol_count 51
   symbols
     static SESSION_SEQUENCE 18 18

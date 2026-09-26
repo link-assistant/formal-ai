@@ -13,4 +13,4 @@
 Do not call a task hard, complex, ambitious or difficult, and do not decline one
 on those grounds. Split it in two, split the halves, and continue until each leaf
 is directly solvable. Splitting is itself a task (issue #847), and the descent is
-already the stated shape of the meta algorithm (`src/meta_core.rs`, R19).
+already the stated shape of the meta algorithm (`rust/src/meta_core.rs`, R19).

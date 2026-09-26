@@ -1,0 +1,12 @@
+self_ast_census
+  target src/cli_coding.rs
+  language rust
+  fidelity signature
+  byte_len 2244
+  line_count 65
+  content_id source_module_b384c20a8d00186d
+  symbol_count 3
+  symbols
+    struct CodingArgs 10 13
+    enum CodingAction 16 33
+    function run_coding 35 65

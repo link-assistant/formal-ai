@@ -47,6 +47,12 @@ struct ListFile {
     /// Directory whose modules this list must declare, when the list is an
     /// exact mirror of a directory's contents.
     declares_directory: Option<String>,
+    /// Module stems present in `declares_directory` that the list deliberately
+    /// does not declare yet: a plan drafted as tests before its leaf lands
+    /// (issue #1138's draft-first discipline). The mirror stays exact for
+    /// everything else, so registering a red test early can never be forced by
+    /// this gate.
+    inert: Vec<String>,
 }
 
 // ---------------------------------------------------------------------------
@@ -106,6 +112,7 @@ fn parse_registry(source: &str) -> Vec<ListFile> {
                         path: String::new(),
                         list_kind: kind,
                         declares_directory: None,
+                        inert: Vec::new(),
                     });
                 }
             }
@@ -117,6 +124,11 @@ fn parse_registry(source: &str) -> Vec<ListFile> {
             (6, "declares_directory") => {
                 if let Some(file) = current.as_mut() {
                     file.declares_directory = Some(unquote(value));
+                }
+            }
+            (6, "inert") => {
+                if let Some(file) = current.as_mut() {
+                    file.inert.push(unquote(value));
                 }
             }
             _ => {}
@@ -492,7 +504,9 @@ fn js_modules_in(dir: &Path) -> Vec<String> {
         let Some(name) = path.file_name().and_then(|name| name.to_str()) else {
             continue;
         };
-        if name.ends_with(".js") {
+        // `formal_ai_worker.js` is the entry point that loads this list, not
+        // a module in it: listing it would make the entry import itself.
+        if name.ends_with(".js") && name != "formal_ai_worker.js" {
             names.push(name.to_string());
         }
     }
@@ -524,6 +538,11 @@ fn canonical_content(root: &Path, file: &ListFile, current: &str) -> Result<Stri
                 {
                     expected.retain(|name| name != own_stem);
                 }
+                // A module the registry marks inert is a draft awaiting its
+                // leaf, not drift: the declaration list stays canonical
+                // without it, and the day the leaf lands the registry entry
+                // goes away and the mirror becomes exact again.
+                expected.retain(|name| !file.inert.contains(name));
                 let declared = declared_modules(&normalized);
                 let missing: Vec<&String> =
                     expected.iter().filter(|name| !declared.contains(name)).collect();
@@ -820,6 +839,7 @@ mod tests {
             path: "src/lib.rs".to_string(),
             list_kind: "rust_declarations".to_string(),
             declares_directory: None,
+            inert: Vec::new(),
         };
 
         assert_eq!(process(&root, &file, false), Outcome::Stale);
@@ -842,6 +862,7 @@ mod tests {
             path: "tests/unit/mod.rs".to_string(),
             list_kind: "rust_declarations".to_string(),
             declares_directory: Some("tests/unit".to_string()),
+            inert: Vec::new(),
         };
 
         assert_eq!(module_sources(&root.join("tests/unit")), ["alpha", "beta", "specification"]);
@@ -853,25 +874,60 @@ mod tests {
     }
 
     #[test]
+    fn a_module_the_registry_marks_inert_is_a_draft_not_drift() {
+        // Plan 16 leaf L1 is drafted as tests before the layout exists, so its
+        // file sits in tests/unit/ unregistered. The mirror must stay exact for
+        // every compiled module without forcing the draft to be registered —
+        // registering it early would only land a red test in CI.
+        let root = temp_dir("inert");
+        write(&root, "tests/unit/alpha.rs", "// alpha\n");
+        write(
+            &root,
+            "tests/unit/issue_1138_three_source_roots.rs",
+            "// inert draft\n",
+        );
+        write(&root, "tests/unit/mod.rs", "mod alpha;\n");
+        let file = ListFile {
+            path: "tests/unit/mod.rs".to_string(),
+            list_kind: "rust_declarations".to_string(),
+            declares_directory: Some("tests/unit".to_string()),
+            inert: vec!["issue_1138_three_source_roots".to_string()],
+        };
+
+        assert_eq!(process(&root, &file, false), Outcome::Unchanged);
+
+        // The exemption is per module, not per file: a second unregistered
+        // module is still drift.
+        write(&root, "tests/unit/beta.rs", "// beta\n");
+        let Outcome::Failed(error) = process(&root, &file, false) else {
+            panic!("an undeclared module outside the inert list must fail");
+        };
+        assert!(error.contains("beta"), "{error}");
+        assert!(!error.contains("three_source_roots"), "{error}");
+    }
+
+    #[test]
     fn the_worker_list_is_regenerated_from_the_directory_it_mirrors() {
         let root = temp_dir("worker");
-        write(&root, "src/web/worker/formal_ai_worker_00.js", "// zero\n");
-        write(&root, "src/web/worker/how_to_guide.js", "// guide\n");
-        write(&root, "src/web/worker/notes.md", "not a module\n");
-        write(&root, "src/web/worker-modules.js", "self.FORMAL_AI_WORKER_MODULES = [];\n");
+        write(&root, "js/worker/formal_ai_worker.js", "// entry\n");
+        write(&root, "js/worker/formal_ai_worker_00.js", "// zero\n");
+        write(&root, "js/worker/how_to_guide.js", "// guide\n");
+        write(&root, "js/worker/notes.md", "not a module\n");
+        write(&root, "js/worker-modules.js", "self.FORMAL_AI_WORKER_MODULES = [];\n");
         let file = ListFile {
-            path: "src/web/worker-modules.js".to_string(),
+            path: "js/worker-modules.js".to_string(),
             list_kind: "js_module_list".to_string(),
-            declares_directory: Some("src/web/worker".to_string()),
+            declares_directory: Some("js/worker".to_string()),
+            inert: Vec::new(),
         };
 
         assert_eq!(
-            js_modules_in(&root.join("src/web/worker")),
+            js_modules_in(&root.join("js/worker")),
             ["formal_ai_worker_00.js", "how_to_guide.js"],
-            "only JavaScript modules are listed"
+            "only JavaScript modules are listed, and the entry point that loads the list is not a module in it"
         );
         assert_eq!(process(&root, &file, true), Outcome::Rewritten);
-        let rendered = fs::read_to_string(root.join("src/web/worker-modules.js")).unwrap();
+        let rendered = fs::read_to_string(root.join("js/worker-modules.js")).unwrap();
         assert!(rendered.contains("\"worker/formal_ai_worker_00.js\""));
         assert!(rendered.contains("\"worker/how_to_guide.js\""));
         assert!(!rendered.contains("notes.md"));
@@ -881,7 +937,7 @@ mod tests {
     #[test]
     fn the_worker_list_is_rendered_from_the_directory_contents() {
         let rendered = render_js_module_list(
-            "src/web/worker",
+            "js/worker",
             &["formal_ai_worker_00.js".to_string(), "how_to_guide.js".to_string()],
         );
         assert!(rendered.contains("self.FORMAL_AI_WORKER_MODULES = Object.freeze(["));

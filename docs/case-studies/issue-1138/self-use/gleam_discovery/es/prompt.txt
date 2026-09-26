@@ -1,0 +1,1 @@
+La compilación de este proyecto necesita un compilador que no está en esta máquina. Averigua cuál, consíguelo y luego ejecuta el propio comando de pruebas del proyecto.

@@ -1,0 +1,2186 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.052Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.053Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 运行这个并准确告诉我它打印了什么：print(sum(range(1, 11))) --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.0kqb9tGdVH",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.053Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.0kqb9tGdVH",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.053Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.0kqb9tGdVH",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.062Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "运行这个并准确告诉我它打印了什么：print(sum(range(1, 11)))",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "运行这个并准确告诉我它打印了什么：print(sum(range(1, 11)))",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.062Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.063Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.064Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.064Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.067Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.067Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.0kqb9tGdVH/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.076Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7717,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.076Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.090Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:29:04.094Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.094Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.094Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.094Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.094Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.094Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.094Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.095Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 32,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.095Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:29:04.095Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.099Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.099Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.100Z",
+  "service": "session",
+  "id": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.0kqb9tGdVH",
+  "title": "New session - 2026-09-16T03:29:04.100Z",
+  "time": {
+    "created": 1789529344100,
+    "updated": 1789529344100
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.100Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.100Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.100Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.100Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.101Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57bd379bffe2g2CgSwBVwxwDl/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.101Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57bd379bffe2g2CgSwBVwxwDl/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.103Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57bd379bffe2g2CgSwBVwxwDl/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.105Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.106Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.106Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.108Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.108Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.108Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.109Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.109Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.109Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.109Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.109Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.109Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.109Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.251Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.255Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.255Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.266Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.272Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.301Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.302Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.302Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.973Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529344973,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842cbc9001ohCmtR75X1fGlk",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842c8fe001xDuwmg6hYh1k5H",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.973Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529344974,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842cbcd002KdOgyOOtjhlB8L",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842c8fe001xDuwmg6hYh1k5H",
+    "type": "tool",
+    "callID": "call_577967bb584bffc1",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529344974,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842cbcd001RtjSYX2N83q665",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842c8fe001xDuwmg6hYh1k5H",
+    "type": "text",
+    "text": "我来上网搜索 运行这个并准确告诉我它打印了什么：print(sum(range(1, 11)))。",
+    "time": {
+      "start": 1789529344974,
+      "end": 1789529344974
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:04.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529344974,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842cbcd002KdOgyOOtjhlB8L",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842c8fe001xDuwmg6hYh1k5H",
+    "type": "tool",
+    "callID": "call_577967bb584bffc1",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "运行这个并准确告诉我它打印了什么：print(sum(range(1, 11)))"
+      },
+      "time": {
+        "start": 1789529344974
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.635Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529346635,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842cbcd002KdOgyOOtjhlB8L",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842c8fe001xDuwmg6hYh1k5H",
+    "type": "tool",
+    "callID": "call_577967bb584bffc1",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "运行这个并准确告诉我它打印了什么：print(sum(range(1, 11)))"
+      },
+      "output": "Title: Python sum() 函数 | 菜鸟教程\nURL: https://www.runoob.com/python3/python3-func-sum.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n## 实例\n\n # 对列表求和 numbers = [1, 2, 3, 4, 5] result = sum(numbers) print(result) # 输出: 15 # 对元组求和 result = sum((10, 20, 30)) print(result) # 输出: 60 # 对集合求和 result = sum({ 1, 2, 3}) print(result) # 输出: 6 # 对range求和 result = sum(range(1, 101)) print(result) # 输出: 5050（1到100的和） # 空列表 result = sum([]) print(result) # 输出: 0 \n\n运行结果预期:\n\n```\n15\n60\n6\n5050\n0\n\n```\n\n---\n\nTitle: Python sum() 函数 | 菜鸟教程\nURL: http://www.runoob.com/python/python-func-sum.html\nPublished: N/A\nAuthor: N/A\nHighlights:\nsum() 方法对序列进行求和计算。\n...\n```\nsum(iterable[, start])\n\n```\n...\n- iterable -- 可迭代对象，如：列表、元组、集合。 \n- start -- 指定相加的参数，如果没有设置这个值，默认为0。 \n\n###\n...\n返回计算结果。\n...\n## 实例\n\n 以下展示了使用 sum 函数的实例： \n\n>>> sum([0, 1, 2]) 3 >>> sum((2, 3, 4), 1) # 元组计算总和后再加 1 10 >>> sum([0, 1, 2, 3, 4], 2) # 列表计算总和后再加 2 12\n...\n```\nimport numpy as np\n...\na = np.array([[1,2],[3,4]])\n...\n# 按行相加，并且保持其二维特性\nprint(np.sum(a, axis=1, keepdims=True))\n...\n# 按行相加，不保持其二维特性\nprint(np.sum(a, axis=1))\n```\n...\n([3, 7\n...\n2. #0\n\n prometheus\n\n zjg***@163.com\n\n 158\n\n sum() 也可以用于列表的展开，效果相当于各子列表相加\n...\n```\nlst = [[1, 2], [3, 4]]\nprint(sum(lst, [])) \n#[1, 2, 3, 4]\n```\n...\n注意此处 sum() 函数的第二个参数不能省略，因为省略默认为 0，0 和列表不能相加会出错。\n\n---\n\nTitle: 内置函数 — Python 3.14.0 文档 - Python 文档\nURL: https://docs.pythonlang.cn/3/library/functions.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n— set、frozenset。\n\n有关其他容器，请参阅内置的 frozenset、 list、 tuple和 dict类，以及 collections模块。\n\nsetattr(object, name, value, /)¶\n\n这是`getattr()`的对应函数。参数是一个对象、一个字符串和一个任意值。该字符串可以命名一个现有属性或一个新属性。该函数将值赋给该属性，前提是对象允许。例如，`setattr(x, 'foobar', 123)`等同于`x.foobar = 123`。\n\n除非对象选择强制执行此操作（例如在自定义__getattribute__()中或通过__slots__），否则 name 不需要是名称（标识符和关键字）中定义的 Python 标识符。名称不是标识符的属性将无法使用点表示法访问，但可以通过`getattr()`等访问。\n\n备注\n\n由于私有名称重整在编译时发生，因此必须手动重整私有属性（具有两个前导下划线的属性）的名称才能使用`setattr()`设置它。\n\nclass slice(stop, /)¶ class slice(start, stop, step=None, /)\n\n返回一个切片对象，表示由`range(start, stop, step)`指定的索引集。start 和 step 参数默认为`None`。\n\n切片对象具有只读数据属性`start`、`stop`和`step`，它们仅返回参数值（或其默认值）。它们没有其他明确的功能；但是，它们被 NumPy 和其他第三方包使用。\n\nstart¶ stop¶ step¶\n\n当使用扩展索引语法时也会生成切片对象。例如：`a[start:stop:step]`或`a[start:stop, i]`。有关返回迭代器的替代版本，请参阅 itertools.islice()。\n\n3.12 版本发生变更: 切片对象现在是可哈希的（前提是`start`、`stop`和`step`都是可哈希的）。\n\nsorted(iterable, /, *, key=None, reverse=False)¶\n\n从 iterable 中的项返回一个新的已排序列表。\n\n有两个可选参数，必须指定为关键字参数。\n\nkey 指定一个接受一个参数的函数，用于从 iterable 中的每个元素中提取比较键（例如，`key=str.lower`）。默认值为`None`（直接比较元素）。\n\nreverse 是一个布尔值。如果设置为`True`，则列表元素将按每个比较被反转的方式排序。\n\n使用 functools.cmp_to_key()将旧式的 cmp 函数转换为 key 函数。\n\n内置的`sorted()`函数保证是稳定的。如果排序保证不改变比较相等的元素的相对顺序，则它是稳定的——这对于多次排序很有帮助（例如，按部门排序，然后按工资等级排序）。\n\n排序算法仅使用项目之间的`<`比较。虽然定义__lt__()方法足以进行排序，但 PEP 8建议实现所有六个富比较。这将有助于在使用相同数据和依赖不同底层方法的其他排序工具（例如`max()`）时避免错误。实现所有六个比较还有助于避免混合类型比较的混淆，因为混合类型比较可以调用反射的__gt__()方法。\n\n有关排序示例和简短的排序教程，请参阅排序技术。\n\n@staticmethod¶\n\n将方法转换为静态方法。\n\n静态方法不接收隐式的第一个参数。要声明静态方法，请使用此惯用法\n\n```\nclass C:\n    @staticmethod\n    def f(arg1, arg2, argN): ...\n\n```\n\n`@staticmethod`形式是一个函数装饰器——有关详细信息，请参见函数定义。\n\n静态方法可以在类上调用（例如`C.f()`）或在实例上调用（例如`C().f()`）。此外，静态方法描述符也是可调用的，因此可以在类定义中使用（例如`f()`）。\n\nPython 中的静态方法与 Java 或 C++ 中的静态方法类似。另外，请参阅`classmethod()`，它是一个变体，可用于创建替代类构造函数。\n\n与所有装饰器一样，也可以将`staticmethod`作为普通函数调用并对其结果进行处理。在某些情况下，您需要从类体中引用函数并希望避免自动转换为实例方法时，需要这样做。对于这些情况，请使用此惯用法\n\n```\ndef regular_function():\n    ...\n\nclass C:\n    method = staticmethod(regular_function)\n\n```\n\n有关静态方法的更多信息，请参见标准类型层次结构。\n\n3.10 版本发生变更: 静态方法现在继承方法属性（__module__、__name__、__qualname__、__doc__和__annotations__），拥有一个新的`__wrapped__`属性，并且现在可以作为普通函数调用。\n\nclass str(*, encoding='utf-8', errors='strict') class str(object) class str(object, encoding, errors='strict') class str(object, *, errors)\n\n返回 object 的 str版本。有关详细信息，请参阅 str()。\n\n`str`是内置的字符串类。有关字符串的通用信息，请参阅文本序列类型 — str。\n\nsum(iterable, /, start=0)¶\n\n从左到右将 start 和 iterable 的项目相加，并返回总和。iterable 的项目通常是数字，并且起始值不允许是字符串。\n\n对于某些用例，`sum()`有很好的替代方案。连接字符串序列的首选、快速方法是调用`''.join(sequence)`。要以扩展精度添加浮点值，请参阅 math.fsum()。要连接一系列可迭代对象，请考虑使用 itertools.chain()。\n\n3.8 版本发生变更: start 参数可以指定为关键字参数。\n\n3.12 版本发生变更: 浮点数求和改为使用在大多数构建中提供更高精度和更好可交换性的算法。\n\n3.14 版本发生变更: 添加了复数求和的专门化，使用与浮点数求和相同的算法。\n\nclass super¶ class super(type, object_or_type=None, /)\n\n返回一个代理对象，该对象将方法调用委托给 type 的父类或兄弟类。这对于访问在类中被覆盖的继承方法很有用。\n\nobject_or_type 决定要搜索的方法解析顺序。搜索从 type 右侧的类开始。\n\n例如，如果 object_or_type 的__mro__是`D -> B -> C -> A -> object`，并且 type 的值是`B`，那么`super()`会搜索`C -> A -> object`。\n\n对应于 object_or_type 的类的__mro__属性列出了`getattr()`和`super()`使用的方法解析搜索顺序。该属性是动态的，并且可以在继承层次结构更新时更改。\n\n如果省略第二个参数，则返回的超对象是未绑定的。如果第二个参数是一个对象，则`isinstance(obj, type)`必须为 True。如果第二个参数是一个类型，则`issubclass(type2, type)`必须为 True（这对于类方法很有用）。\n\n在类的普通方法中直接调用时，两个参数都可以省略（“零参数`super()`”）。在这种情况下，type 将是封闭类，obj 将是紧邻封闭函数的第一个参数（通常是`self`）。（这意味着零参数`super()`在嵌套函数（包括生成器表达式，它们隐式创建嵌套函数）中将无法按预期工作。）\n\nsuper 有两种典型的用例。在单一继承的类层次结构中，super 可以用于在不明确命名父类的情况下引用它们，从而使代码更易于维护。这种用法与 super 在其他编程语言中的用法非常相似。\n\n第二种用例是在动态执行环境中支持协作多重继承。此用例是 Python 独有的，在静态编译语言或仅支持单一继承的语言中找不到。这使得实现“菱形图”成为可能，其中多个基类实现相同的方法。良好的设计要求此类实现（在所有情况下）具有相同的调用签名（因为调用顺序在运行时确定，因为该顺序适应类层次结构中的更改，并且因为该顺序可以包括在运行时之前未知的兄弟类）。\n\n对于这两种用例，典型的超类调用如下所示\n\n```\nclass C(B):\n    def method(self, arg):\n        super().method(arg)    # This does the same thing as:\n                               # super(C, self).method(arg)\n\n```\n\n除了方法查找，`super()`也适用于属性查找。一个可能的用例是在父类或兄弟类中调用描述符。\n\n\n---\n\nTitle: Sum up all the integers in range() - python - Stack Overflow\nURL: https://stackoverflow.com/questions/20455977/sum-up-all-the-integers-in-range\nPublished: 2013-12-08T00:00:00.000Z\nAuthor: N/A\nHighlights:\nI need to write a program that sums up all the integers which can be divided by 3 in the range of 100 to 2000. I'm not even sure where to start, so far I've got this tiny piece of code written which isn't correct.\n...\nfor x in range(100, 2001, 3):\n print(x+x)\n...\nUse generator expression and sum function here:\n...\nres = sum(x for x in range(100, 2001) if x % 3 == 0)\n...\nSince you know the first number in this\n...\nthat is divisible by 3 is 102\n...\ndo the following:\n...\nSolution:\n\n>>> sum(range(102, 2001, 3))\n664650\n...\ndef sum_range_divisible(start, end, divisor):\n while start % divisor != 0:\n start += 1\n return sum(range(start, end, divisor))\n...\n>>> sum_range_divisible(100, 2001, 3)\n664650\n...\nu_0 = 102\n...\nu_{n-1} = 1998\n...\nn = (1998 - 102) / 3 + 1 = 633\n...\nSo, the sum is (633 * (102 + 1998)) / 2 = 664650.\n...\nAs a general Python function with the usual range arguments start, stop, step:\n\ndef arithmetic_series(start, stop, step):\n number_of_terms = (stop - start) // step\n sum_of_extrema = start + (stop - step)\n return number_of_terms * sum_of_extrema // 2\n...\nIn your case, the call would be:\n...\narithmetic_series(102, 2001, 3)\n...\nThere is a sum function \n\n>>> sum(filter(lambda x: x % 3 == 0, range(100, 2000)))\n664650\n...\nBut this is better:\n\n>>> sum(x for x in range(100, 2000) if x % 3 == 0)\n664650\n\n---\n\nTitle: 从新手到高手：全面掌握 Python sum() 函数及其高性能替代方案\nURL: https://runebook.dev/zh/docs/python/library/functions/sum\nPublished: 2025-12-19T00:00:00.000Z\nAuthor: N/A\nHighlights:\n简单来说，`sum()` 的作用是对一个“可迭代\n...\n”（比如列表、元组、集合）里的数值进行求和。\n...\n基本语法 `sum(iterable, start=0)`\n...\n想求和的数据。\n...\n`start` 起始值，默认是 `0`。\n...\n# 推荐做法\n...\nresult = \"\".join(words)\nprint(result)  # 输出: HelloWorldPython\n\n---\n\nTitle: Python 练习实例45 | 菜鸟教程\nURL: https://www.runoob.com/python/python-exercise-example45.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n#!/usr/bin/python # -*- coding: UTF-8 -*- tmp = 0 for i in range(1, 101): tmp += i print (' The sum is %d' % tmp)\n...\n结果为：\n...\n```\nThe sum is 5050\n\n```\n...\n100例\n...\n使用 sum() 函数：\n\n```\n>>> print sum(range(1,101))\n5050\n```\n\n---\n\nTitle: 內建函式 — Python 3.10.20 說明文件\nURL: https://docs.python.org/zh-tw/3.10/library/functions.html\nPublished: N/A\nAuthor: N/A\nHighlights:\nools.cmp_to_key()可将老式的 cmp 函数转换为 key 函数。\n\n内置的`sorted()`确保是稳定的。 如果一个排序确保不会改变比较结果相等的元素的相对顺序就称其为稳定的 --- 这有利于进行多重排序（例如先按部门、再按薪级排序）。\n\n排序算法只使用`<`在项目之间比较。 虽然定义一个__lt__()方法就足以进行排序，但 PEP 8建议实现所有六个富比较。 这将有助于避免在与其他排序工具（如`max()`）使用相同的数据时出现错误，这些工具依赖于不同的底层方法。实现所有六个比较也有助于避免混合类型比较的混乱，因为混合类型比较可以调用反射到__gt__()的方法。\n\n有关排序示例和简要排序教程，请参阅如何排序。\n\n`@``staticmethod`¶\n\n将方法转换为静态方法。\n\n静态方法不会接收隐式的第一个参数。要声明一个静态方法，请使用此语法\n\n```\nclass C:\n    @staticmethod\n    def f(arg1, arg2, ...): ...\n\n```\n\n`@staticmethod`語法是一個函式 decorator- 參見函式定義中的詳細介紹。\n\n静态方法既可以由类中调用（如`C.f()`），也可以由实例中调用（如``C().f()`）。此外，还可以作为普通的函数进行调用（如`f()`）。\n\nPython 的静态方法与 Java 或 C++ 类似。另请参阅`classmethod()`，可用于创建另一种类构造函数。\n\n像所有装饰器一样，也可以像常规函数一样调用`staticmethod`，并对其结果执行某些操作。比如某些情况下需要从类主体引用函数并且您希望避免自动转换为实例方法。对于这些情况，请使用此语法:\n\n```\ndef regular_function():\n    ...\n\nclass C:\n    method = staticmethod(regular_function)\n\n```\n\n關於 static method 的更多資訊，請參考标准类型层级结构。\n\n3.10 版更變: 静态方法继承了方法的多个属性（`__module__`、`__name__`、`__qualname__`、`__doc__`和`__annotations__`），还拥有一个新的`__wrapped__`属性，并且现在还可以作为普通函数进行调用。\n\nclass`str`(object='') class`str`(object=b'', encoding='utf-8', errors='strict')\n\n返回一个 str版本的 object 。有关详细信息，请参阅 str()。\n\n`str`是内置字符串 class。更多关于字符串的信息查看文本序列类型 --- str。\n\n`sum`(iterable, /, start=0)¶\n\n从 start 开始自左向右对 iterable 的项求和并返回总计值。 iterable 的项通常为数字，而 start 值则不允许为字符串。\n\n对某些用例来说，存在`sum()`的更好替代。 拼接字符串序列的更好更快方式是调用`''.join(sequence)`。 要以扩展精度对浮点值求和，请参阅 math.fsum()。 要拼接一系列可迭代对象，请考虑使用 itertools.chain()。\n\n3.8 版更變: start 參數可被指定為關鍵字引數。\n\nclass`super`([type[, object-or-type]])¶\n\n返回一个代理对象，它会将方法调用委托给 type 的父类或兄弟类。 这对于访问已在类中被重写的继承方法很有用。\n\nobject-or-type 确定用于搜索的 method resolution order。 搜索会从 type 之后的类开始。\n\n举例来说，如果 object-or-type 的__mro__为`D -> B -> C -> A -> object`并且 type 的值为`B`，则`super()`将会搜索`C -> A -> object`。\n\nobject-or-type 的__mro__属性列出了`getattr()`和`super()`所共同使用的方法解析搜索顺序。 该属性是动态的，可以在任何继承层级结构发生更新的时候被改变。\n\n如果省略第二个参数，则返回的超类对象是未绑定的。 如果第二个参数为一个对象，则`isinstance(obj, type)`必须为真值。 如果第二个参数为一个类型，则`issubclass(type2, type)`必须为真值（这适用于类方法）。\n\nsuper 有两个典型用例。 在具有单继承的类层级结构中，super 可用来引用父类而不必显式地指定它们的名称，从而令代码更易维护。 这种用法与其他编程语言中 super 的用法非常相似。\n\n第二个用例是在动态执行环境中支持协作多重继承。 此用例为 Python 所独有而不存在于静态编码语言或仅支持单继承的语言当中。 这使用实现“菱形图”成为可能，即有多个基类实现相同的方法。 好的设计强制要求这样的方法在每个情况下都具有相同的调用签名（因为调用顺序是在运行时确定的，也因为这个顺序要适应类层级结构的更改，还因为这个顺序可能包括在运行时之前未知的兄弟类）。\n\n对于以上两个用例，典型的超类调用看起来是这样的:\n\n```\nclass C(B):\n    def method(self, arg):\n        super().method(arg)    # This does the same thing as:\n                               # super(C, self).method(arg)\n\n```\n\n除了方法查找之外，`super()`也可用于属性查找。 一个可能的应用场合是在上级或同级类中调用描述器。\n\n请注意`super()`是作为显式加点属性查找的绑定过程的一部分来实现的，例如`super().__getitem__(name)`。 它做到这一点是通过实现自己的`__getattribute__()`方法，这样就能以可预测的顺序搜索类，并且支持协作多重继承。 对应地，`super()`在像`super()[name]`这样使用语句或操作符进行隐式查找时则未被定义。\n\n还要注意的是，除了零个参数的形式以外，`super()`并不限于在方法内部使用。 两个参数的形式明确指定参数并进行相应的引用。 零个参数的形式仅适用于类定义内部，因为编译器需要填入必要的细节以正确地检索到被定义的类，还需要让普通方法访问当前实例。\n\n对于有关如何使用`super()`来如何设计协作类的实用建议，请参阅使用 super() 的指南。\n\nclass`tuple`([iterable])\n\n虽然被称为函数，但 tuple实际上是一个不可变的序列类型，参见在元组与序列类型 --- list, tuple, range中的文档说明。\n\nclass`type`(object)¶ class`type`(name, bases, dict, **kwds)\n\n传入一个参数时，返回 object 的类型。 返回值是一个 type 对象，通常与 object.__class__所返回的对象相同。\n\n推荐使用`isinstance()`内置函数来检测对象的类型，因为它会考虑子类的情况。\n\n传入三个参数时，返回一个新的 type 对象。 这在本质上是 class语句的一种动态形式，name 字符串即类名并会成为__name__属性；bases 元组包含基类并会成为__bases__属性；如果为空则会添加所有类的终极基类`object`。 dict 字典包含类主体的属性和方法定义；它在成为__dict__属性之前可能会被拷贝或包装。 下面两条语句会创建相同的`type`对象:\n\n```\n>>> class X:\n...     a = 1\n...\n>>> X = type('X', (), dict(a=1))\n\n```\n\n另請參閱类型对象。\n\n提供给三参数形式的关键字参数会被传递给适当的元类机制 (通常为__init_subclass__())，相当于类定义中关键字 (除了 metaclass) 的行为方式。\n\n另請參閱自定义类创建。\n\n3.6 版更變:`type`的子类如果未重载`type.__new__`，将不再能使用一个参数的形式来获取对象的类型。\n\n`vars`([object])¶\n\n返回模块、类、实例或任何其它具有__dict__属性的对象的__dict__属性。\n\n模块和实例这样的对象具有可更新的__dict__属性；但是，其它对象的__dict__属性可能会设为限制写入（例如，类会使用 types.MappingProxyType来防止直接更新字典）。\n\n不带参数时，`vars()`的行为类似`locals()`。 请注意，locals 字典仅对于读取起作用，因为对 locals 字典的更新会被忽略。\n\n如果指定了一个对象但它没有__dict__属性（例如，当它所属的类定义了__slots__属性时）则会引发 TypeError异常。\n\n`zip`(*iterables, strict=False)¶\n\n在多个迭代器上并行迭代，从每个迭代器返回一个数据项组成元组。\n\n例如：\n\n```\n>>> for item in zip([1, 2, 3], ['sugar', 'spice', 'everything nice']):\n...\n\n---\n\nTitle: Python range() Function Explained with Examples - PYnative\nURL: https://pynative.com/python-range-function/\nPublished: 2022-03-17T00:00:00.000Z\nAuthor: Vishal\nHighlights:\nHow do you sum a range() in Python?\n...\nUse bulit-in function sum(). For example, `sum(range(10)`",
+      "title": "Web search: 运行这个并准确告诉我它打印了什么：print(sum(range(1, 11)))",
+      "metadata": {},
+      "time": {
+        "start": 1789529344974,
+        "end": 1789529346632
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.640Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529346640,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842d24e0013zTSV3KFuXAqCo",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842c8fe001xDuwmg6hYh1k5H",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8537,
+      "output": 111,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8648,
+      "headroom": 30208,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.642Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.642Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.644Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.644Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.645Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.645Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.646Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.646Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.646Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.647Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.659Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8648,
+  "providerTokens": 8648,
+  "estimatedInputTokens": 5605,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8537,
+    "cacheRead": 0,
+    "output": 111
+  },
+  "overflow": false,
+  "headroom": 30208,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.659Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.659Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.664Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:06.666Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:07.768Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529347768,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842d6b4001InZF8gMP1ya6PC",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842d263001hO8fF8OTyAyF2g",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:07.769Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:07.769Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529347769,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842d6b9001cOgyV25xBF7hCh",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842d263001hO8fF8OTyAyF2g",
+    "type": "tool",
+    "callID": "call_73860bb4d54a7665",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:07.770Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529347770,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842d6b8001vW3cpPqXSW38vK",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842d263001hO8fF8OTyAyF2g",
+    "type": "text",
+    "text": "我来打开 https://www.runoob.com/python3/python3-func-sum.html，读取其中的内容。",
+    "time": {
+      "start": 1789529347770,
+      "end": 1789529347770
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:07.770Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529347770,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842d6b9001cOgyV25xBF7hCh",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842d263001hO8fF8OTyAyF2g",
+    "type": "tool",
+    "callID": "call_73860bb4d54a7665",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.runoob.com/python3/python3-func-sum.html"
+      },
+      "time": {
+        "start": 1789529347770
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529348620,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842d6b9001cOgyV25xBF7hCh",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842d263001hO8fF8OTyAyF2g",
+    "type": "tool",
+    "callID": "call_73860bb4d54a7665",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.runoob.com/python3/python3-func-sum.html"
+      },
+      "output": "Python sum() 函数 | 菜鸟教程\n\n  \n  \n\n  \n  \n  \n\n  \n  \n\n\n\n\n  \n  \n\n\n\n\n\n\n\n\n\n  \n    \n      \n    \n  \n\n  \n    \n      菜鸟教程 -- 学的不仅是技术，更是梦想！\n    \n\n        \n      \n        \n      \n    \n    \n    \n      \n        \n          \n        \n      \n    \n  \n\n\n\n\n  \n    \n\n      \n      \n        首页\n        HTML\n        JavaScript\n        CSS\n        Vue\n        React\n        Python3\n        Java\n        C\n        C++\n        C#\n        AI\n        Go\n        SQL\n        Linux\n        VS Code\n        Bootstrap\n        Git\n        本地书签\n\n        \n        \n          \n            \n          \n          \n            \n          \n        \n      \n\n      \n      \n        首页\n        HTML\n        CSS\n        JS\n        本地书签\n        搜索\n\n        \n        \n          \n            \n          \n          \n            \n          \n        \n      \n\n    \n  \n\n\n\n\n  \n    \n\n      \n        Vue3 教程 \n        Vue2 教程 \n      \n\n      \n        Bootstrap3 \n        Bootstrap4 \n        Bootstrap5 \n      \n\n      \n        机器学习 \n        PyTorch \n        TensorFlow \n        Sklearn \n        NLP \n        AI Agent \n        Ollama \n        Coding Plan \n      \n\n    \n  \n\n\n\t\n\t\n\t\n\n\n\t\n\t \n\tPython 3 教程\n\n\t\n\t\n\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 教程\t\t\t\n\t\t\t Python3 简介 \r\n Python3 环境搭建\r\n Python3 Pycharm\r\n\r\n Python3 VScode \r\n\r\n\r\n Python3 基础语法 \r\n Python3 基本数据类型 \r\n Python3 数据类型转换 \r\n\t\t\t\n\t\t\tPython3 解释器\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 注释\t\t\t\n\t\t\t Python3 运算符 \t\t\t\n\t\t\tPython3 数字(Number)\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 字符串\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 列表\t\t\t\n\t\t\t Python3 元组 \r\n Python3 字典\r\n Python3 集合\t\t\t\n\t\t\tPython3 条件控制\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 循环语句\t\t\t\n\t\t\t Python3 编程第一步\r\n Python3 推导式 \r\n Python3 迭代器与生成器\r\n Python3 with\t\t\t\n\t\t\tPython3 函数\t\t\t\n\t\t\t Python3 lambda \r\n Python3 装饰器 \t\t\t\n\t\t\tPython3 数据结构\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 模块\t\t\t\n\t\t\tPython  __name__ \t\t\t\n\t\t\tPython3 输入和输出\t\t\t\n\t\t\t Python3 File \r\n Python3 OS \t\t\t\n\t\t\tPython3 错误和异常\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 面向对象\t\t\t\n\t\t\t Python3 命名空间/作用域\r\nPython 虚拟环境的创建 \r\nPython 类型注解\t\t\t\n\t\t\tPython3 标准库概览\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 实例\t\t\t\n\t\t\t Python 测验 \r\nPython3 高级教程\t\t\t\n\t\t\tPython3 正则表达式\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 CGI编程\t\t\t\n\t\t\tPython3 MySQL(mysql-connector)\t\t\t\n\t\t\tPython3 MySQL(PyMySQL)\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 网络编程\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 SMTP发送邮件\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 多线程\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 XML 解析\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 JSON\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 日期和时间\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 内置函数\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 MongoDB\t\t\t\n\t\t\t Python3 urllib\t\t\t\n\t\t\tPython uWSGI  安装配置\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 pip\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython3 operator\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython math\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython requests\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython random\t\t\t\n\t\t\tPython OpenAI\t\t\t\n\t\t\tPython 有用的资源\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython AI 绘画\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython statistics\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython hashlib\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 量化\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython pyecharts\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython selenium 库\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 爬虫\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython Scrapy 库\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython Markdown\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython sys 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython Pickle 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython subprocess 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython queue 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython StringIO 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython logging 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython datetime 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython re 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython csv 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython threading 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython asyncio 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython PyQt\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython for 循环\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython while 循环\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\n\t\n\t\t\n\t\n\t\n\t\t\n\t\t\n\t\t\t  Python isinstance() 函数 \n\t\t\t Python issubclass() 函数 \n\t\t\n\n\n\n\n\n\n\n\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\tPython sum() 函数\r\n Python3 内置函数\r\n\r\nsum() 是 Python 中用于对可迭代对象中的元素求和的内置函数。\r\nsum() 是 Python 中最常用的数学函数之一，可以快速计算列表、元组、集合等可迭代对象中所有元素的总和。\r\n单词释义： sum 意为\"求和\"，计算一系列数值的总和。\r\n\r\n基本语法与参数\r\n语法格式\r\n\r\nsum(iterable, start)\r\n\r\n\r\n参数说明\r\n\r\n参数 iterable：\r\n类型： 可迭代对象（列表、元组、集合等）\r\n描述： 要进行求和的可迭代对象。\r\n\r\n\r\n参数 start（可选）：\r\n类型： 数值\r\n描述： 起始值，默认为 0。求和结果会加上这个值。\r\n\r\n\r\n\r\n函数说明\r\n\r\n返回值： 返回求和结果（整数或浮点数）。\r\n要求： 可迭代对象中的元素必须是数值类型（int、float）。\r\n\r\n\r\n实例\r\n示例 1：基础用法\r\n\r\n\r\n实例\r\n\n# 对列表求和\nnumbers = &#91;1, 2, 3, 4, 5&#93;\nresult = sum&#40;numbers&#41;\nprint&#40;result&#41; &nbsp;# 输出: 15\n\n# 对元组求和\nresult = sum&#40;&#40;10, 20, 30&#41;&#41;\nprint&#40;result&#41; &nbsp;# 输出: 60\n\n# 对集合求和\nresult = sum&#40;&#123;1, 2, 3&#125;&#41;\nprint&#40;result&#41; &nbsp;# 输出: 6\n\n# 对range求和\nresult = sum&#40;range&#40;1, 101&#41;&#41;\nprint&#40;result&#41; &nbsp;# 输出: 5050（1到100的和）\n\n# 空列表\nresult = sum&#40;&#91;&#93;&#41;\nprint&#40;result&#41; &nbsp;# 输出: 0\n\r\n\r\n\r\n运行结果预期:\r\n15\r\n60\r\n6\r\n5050\r\n0\r\n\r\n代码解析:\r\n\r\n支持列表、元组、集合、range 等各种可迭代对象。\r\n空迭代对象的和默认为 0。\r\n\r\n示例 2：使用 start 参数\r\n\r\n\r\n实例\r\n\n# 设置起始值\nnumbers = &#91;1, 2, 3&#93;\n\n# 默认 start=0\nresult = sum&#40;numbers&#41;\nprint&#40;result&#41; &nbsp;# 输出: 6\n\n# 设置 start=10\nresult = sum&#40;numbers, 10&#41;\nprint&#40;result&#41; &nbsp;# 输出: 16（6 + 10）\n\n# 负数起始值\nresult = sum&#40;numbers, -10&#41;\nprint&#40;result&#41; &nbsp;# 输出: -4（6 + -10）\n\n# 计算累积和时很有用\nscores = &#91;90, 85, 95&#93;\nbonus = 5\ntotal = sum&#40;scores, bonus&#41;\nprint&#40;total&#41; &nbsp;# 输出: 275（90+85+95+5）\n\r\n\r\n\r\n运行结果预期:\r\n6\r\n16\r\n-4\r\n275\r\n\r\n代码解析:\r\n\r\nstart 参数会在求和结果后再加上这个值。\r\n常用于给总分添加基础分或加分。\r\n\r\n示例 3：实际应用\r\n\r\n\r\n实例\r\n\n# 计算平均值\nnumbers = &#91;10, 20, 30, 40, 50&#93;\naverage = sum&#40;numbers&#41; / len&#40;numbers&#41;\nprint&#40;f&quot;平均值: {average}&quot;&#41; &nbsp;# 输出: 平均值: 30.0\n\n# 计算条件求和\ndata = &#91;1, 2, 3, 4, 5, 6, 7, 8, 9, 10&#93;\n# 计算偶数的和\neven_sum = sum&#40;x for x in data if x % 2 == 0&#41;\nprint&#40;f&quot;偶数之和: {even_sum}&quot;&#41; &nbsp;# 输出: 偶数之和: 30\n\n# 字典求和（对值求和）\nprices = &#123;'apple': 5, 'banana': 3, 'orange': 8&#125;\ntotal_price = sum&#40;prices.values&#40;&#41;&#41;\nprint&#40;f&quot;总价: {total_price}&quot;&#41; &nbsp;# 输出: 总价: 16\n\n# 计算 1-100 中能被 3 或 5 整除的数的和\nresult = sum&#40;x for x in range&#40;1, 100&#41; if x % 3 == 0 or x % 5 == 0&#41;\nprint&#40;result&#41; &nbsp;# 输出: 2318\n\r\n\r\n\r\n运行结果预期:\r\n平均值: 30.0\r\n偶数之和: 30\r\n总价: 16\r\n2318\r\n\r\nsum() 是处理数值数据最基本的工具之一，配合列表推导式可以实现复杂的条件求和。\r\n\r\n Python3 内置函数\t\t\t\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\n\n\n\n    \n\t  AI 思考中...\n    \n\n\n\t\t\n\t\t\n\t\t\t  Python isinstance() 函数 \n\t\t\t Python issubclass() 函数 \n\t\t\n\n\n\t\t\n\t\t\n\t\t\n\n\n\n\n\r\n \r\n\t\t \r\n\t 点我分享笔记\r\n\t\r\n\t\r\n\t\t\r\n\t\r\n\t\t\r\n\t\t\t\r\n\t\t\t\t\t\t\t\t取消\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t\n\n\r\n\t\t\t\t\t 分享笔记\r\n\t\t\t\t\r\n\t\t\t\r\n\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t \r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t昵称昵称 (必填)\r\n\t\t\t\t\t\t\t邮箱邮箱 (必填)\r\n\t\t\t\t\t\t\t引用地址引用地址\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\t\t\r\n\r\n\t\r\n\t\r\n\r\n\r\n\r\n\r\n\r\n        \r\n              分类导航\r\n        \r\n    \r\n        \r\n        \r\n             Python / 数据科学Python 教程Python2.x 教程FastAPI 教程Flask 教程Django 教程NumPy 教程Pandas 教程SciPy 教程Matplotlib 教程Dash 教程Jupyter Notebook 教程Pillow 教程量化交易R 教程Julia 教程 AI / 智能开发AI Agent（智能体）AI（人工智能）Codex 教程Vibe Coding 教程Claude CodeOpenCodeSkills（技能）Ollama 教程Hermes AgentDeepSeek HarnessPi AgentAI 数学基础TensorFlow 教程PyTorch 教程Scikit-learn 教程机器 教程LangChain自然语言处理 NLPOpenCV 教程Selenium 教程Playwright 教程 前端开发HTML 教程HTML5 教程CSS 教程CSS3 教程JavaScript 教程HTML DOM 教程TypeScript 教程AJAX 教程JSON 教程Tailwind CSS 教程Bootstrap4 教程Bootstrap5 教程Foundation 教程Vue.js 教程Vue3 教程React 教程Next.js 教程AngularJS 教程Angular 教程jQuery 教程jQuery UI 教程jQuery EasyUI 教程ECharts 教程Chart.js 教程Highcharts 教程Google 地图 教程SVG 教程Font Awesome 教程 后端开发Node.js 教程Electron 教程PHP 教程Java 教程Go 教程Rust 教程C# 教程Servlet 教程JSP 教程ASP 教程AppML 教程VBScript 教程Swagger 教程RESTful API 教程Docker 教程Linux 教程ZooKeeper 教程 数据库SQL 教程MySQL 教程PostgreSQL 教程SQLite 教程MongoDB 教程Redis 教程Memcached 教程 移动开发Android 教程Flutter 教程Ionic 教程jQuery Mobile 教程Swift 教程Kotlin 教程 DevOps / 工程化Git 教程SVN 教程CMake 教程Maven 教程VS Code 教程Obsidian 教程PyCharm 教程Eclipse 教程Markdown 教程LaTeX 教程 编程语言C 教程C++ 教程Zig 教程Scala 教程Ruby 教程Perl 教程Lua 教程Dart 教程汇编语言 教程Verilog 教程 计算机基础计算机组成原理数据结构与算法C 语言数据结构与算法设计模式Python 设计模式正则表达式HTTP 教程TCP/IP 教程网络协议W3C 教程 XML / Web ServiceXML 教程DTD 教程XML DOM 教程XSLT 教程XPath 教程XQuery 教程XLink 教程XPointer 教程XML Schema 教程XSL-FO 教程Web Service 教程WSDL 教程SOAP 教程RSS 教程RDF 教程 .NETASP.NET 教程MVC 教程Razor 教程Web Forms 教程Web Pages 教程PowerShell 教程 网站建设网站建设指南浏览器信息网站主机教程网站品质            \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n        \r\n            Advertisement\r\n        \r\n        \r\n\r\n\r\n\r\n\r\n    \r\n        \r\n            \r\n                \r\n            \r\n            Trae\r\n        \r\n        \r\n            AI 原生开发环境，让编程更高效。\r\n        \r\n    \r\n\r\n    \r\n        \r\n            \r\n                \r\n            \r\n            MonkeyCode\r\n        \r\n        \r\n            在线 Vibe Coding，用想法驱动开发。\r\n        \r\n    \r\n\r\n\r\n\r\n\r\n \r\n\n   \n    \n     \n      \n       在线实例\n      \n      \n       &middot;HTML 实例\n      \n      \n       &middot;CSS 实例\n      \n      \n       &middot;JavaScript 实例\n      \n      \n       &middot;Ajax 实例\n      \n       \n       &middot;jQuery 实例\n      \n      \n       &middot;XML 实例\n      \n      \n       &middot;Java 实例\n      \n     \n     \n     \n      \n      字符集&工具\n      \n      \n       &middot; HTML 字符集设置\n      \n      \n       &middot; HTML ASCII 字符集\n      \n     \n       &middot; JS 混淆/加密\n       \n      \n       &middot; PNG/JPEG 图片压缩\n      \n      \n       &middot; HTML 拾色器\n      \n      \n       &middot; JSON 格式化工具\n      \n      \n       &middot; 随机数生成器\n      \n     \n     \n      \n       最新更新\n      \n                  \n              &middot;\n              \n                AI 3D (Blender)              \n            \n                      \n              &middot;\n              \n                Swift 版本新特性              \n            \n                      \n              &middot;\n              \n                Swift 编码规范              \n            \n                      \n              &middot;\n              \n                Swift 与 Object...              \n            \n                      \n              &middot;\n              \n                Swift Package M...              \n            \n                      \n              &middot;\n              \n                Swift Sendable ...              \n            \n                      \n              &middot;\n              \n                Swift actor 与...              \n            \n               \n     \n      \n       站点信息\n      \n      \n       &middot;\n       意见反馈\n       \n      \n       &middot;\n      免责声明\n       \n      \n       &middot;\n       关于我们\n       \n       \n       &middot;\n       写给初学者\n       \n      \n       &middot; 文章归档\n      \n    \n     \n    \n     \n      \n        \n         关注微信\n        \n      \n      \n      \n       \n     \n     \n    \n   \n   \n     Copyright &copy; 2013-2026    菜鸟教程&nbsp;\n    runoob.com All Rights Reserved. 备案号：闽ICP备15012807号-1",
+      "title": "https://www.runoob.com/python3/python3-func-sum.html (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529347770,
+        "end": 1789529348615
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.623Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529348623,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842da0d001y4Ncs63rdZ7QeX",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842d263001hO8fF8OTyAyF2g",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 20503,
+      "output": 152,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 20655,
+      "headroom": 18201,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.624Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.625Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.627Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.627Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.631Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.631Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.631Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.633Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.633Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.645Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 20655,
+  "providerTokens": 20655,
+  "estimatedInputTokens": 8953,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 20503,
+    "cacheRead": 0,
+    "output": 152
+  },
+  "overflow": false,
+  "headroom": 18201,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.646Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.646Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.648Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:08.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:09.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529349074,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842dbd0001aP7uyyReIOvrxc",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842da25001BWlCKh9ubZX8MI",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:09.074Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:09.074Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529349074,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842dbd2002nqdlV82wwmAmtc",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842da25001BWlCKh9ubZX8MI",
+    "type": "tool",
+    "callID": "call_a95473fa089f58ec",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:09.074Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529349074,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842dbd2001wYQA0Bg4FgTPxG",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842da25001BWlCKh9ubZX8MI",
+    "type": "text",
+    "text": "我来打开 http://www.runoob.com/python/python-func-sum.html，读取其中的内容。",
+    "time": {
+      "start": 1789529349074,
+      "end": 1789529349074
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:09.074Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529349074,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842dbd2002nqdlV82wwmAmtc",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842da25001BWlCKh9ubZX8MI",
+    "type": "tool",
+    "callID": "call_a95473fa089f58ec",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "http://www.runoob.com/python/python-func-sum.html"
+      },
+      "time": {
+        "start": 1789529349074
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.354Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529350354,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842dbd2002nqdlV82wwmAmtc",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842da25001BWlCKh9ubZX8MI",
+    "type": "tool",
+    "callID": "call_a95473fa089f58ec",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "http://www.runoob.com/python/python-func-sum.html"
+      },
+      "output": "Python sum() 函数 | 菜鸟教程\n\n  \n  \n\n  \n  \n  \n\n  \n  \n\n\n\n\n  \n  \n\n\n\n\n\n\n\n\n\n  \n    \n      \n    \n  \n\n  \n    \n      菜鸟教程 -- 学的不仅是技术，更是梦想！\n    \n\n        \n      \n        \n      \n    \n    \n    \n      \n        \n          \n        \n      \n    \n  \n\n\n\n\n  \n    \n\n      \n      \n        首页\n        HTML\n        JavaScript\n        CSS\n        Vue\n        React\n        Python3\n        Java\n        C\n        C++\n        C#\n        AI\n        Go\n        SQL\n        Linux\n        VS Code\n        Bootstrap\n        Git\n        本地书签\n\n        \n        \n          \n            \n          \n          \n            \n          \n        \n      \n\n      \n      \n        首页\n        HTML\n        CSS\n        JS\n        本地书签\n        搜索\n\n        \n        \n          \n            \n          \n          \n            \n          \n        \n      \n\n    \n  \n\n\n\n\n  \n    \n\n      \n        Vue3 教程 \n        Vue2 教程 \n      \n\n      \n        Bootstrap3 \n        Bootstrap4 \n        Bootstrap5 \n      \n\n      \n        机器学习 \n        PyTorch \n        TensorFlow \n        Sklearn \n        NLP \n        AI Agent \n        Ollama \n        Coding Plan \n      \n\n    \n  \n\n\n\t\n\t\n\t\n\n\n\t\n\t \n\tPython 基础教程\n\n\t\n\t\n\t\t\n\t\t\t\t\t\t\n\t\t\tPython 基础教程\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 简介\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 环境搭建\t\t\t\n\t\t\t Python 中文编码 \r\n Python VS Code \t\t\t\n\t\t\tPython 基础语法\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 变量类型\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 运算符\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 条件语句\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 循环语句\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython While 循环语句\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython for 循环语句\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 循环嵌套\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython break 语句\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython continue  语句\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython pass 语句\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython Number(数字)\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 字符串\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 列表(List)\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 元组\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 字典(Dictionary)\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 日期和时间\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 函数\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 模块\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 文件I/O\t\t\t\n\t\t\tPython File 方法\t\t\t\n\t\t\tPython 异常处理\t\t\t\n\t\t\tPython OS 文件/目录方法\r\nPython 内置函数\r\nPython 高级教程\t\t\t\n\t\t\tPython 面向对象\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 正则表达式\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython CGI 编程\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython MySQL\t\t\t\n\t\t\t Python 网络编程 \t\t\t\n\t\t\tPython SMTP\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython 多线程\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython XML 解析\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython GUI 编程(Tkinter)\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython2.x 与 3​​.x 版本区别\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython IDE\t\t\t\n\t\t\t\t\t\t\n\t\t\tPython JSON\t\t\t\n\t\t\tPython AI 绘画\t\t\t\t\t\t\n\t\t\tPython 100例\t\t\t\n\t\t\t Python 测验 \t\n\t\t\n\t\t\n\n\t\n\t\t\n\t\n\t\n\t\t\n\t\t\n\t\t\t  Python type() 函数 \n\t\t\t Python basestring() 函数 \n\t\t\n\n\n\n\n\n\n\n\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\tPython  sum() 函数\r\n Python 内置函数\r\n\r\n描述\r\nsum() 方法对序列进行求和计算。\r\n\r\n语法\r\n以下是 sum() 方法的语法:\r\n\r\nsum(iterable[, start])\r\n\r\n\r\n参数\r\n\r\n\r\niterable -- 可迭代对象，如：列表、元组、集合。\r\n\r\n\r\nstart -- 指定相加的参数，如果没有设置这个值，默认为0。\r\n\r\n\r\n\r\n返回值\r\n返回计算结果。\r\n\r\n实例\r\n\r\n以下展示了使用 sum 函数的实例：\r\n\r\n\r\n\r\n\r\n\r\n&gt;&gt;&gt;sum([0,1,2])  \n3  \n&gt;&gt;&gt; sum((2, 3, 4), 1)        # 元组计算总和后再加 1\n10\n&gt;&gt;&gt; sum([0,1,2,3,4], 2)      # 列表计算总和后再加 2\n12\r\n\r\n\r\n\r\n\r\n Python 内置函数\t\t\t\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\n\n\n\n    \n\t  AI 思考中...\n    \n\n\n\t\t\n\t\t\n\t\t\t  Python type() 函数 \n\t\t\t Python basestring() 函数 \n\t\t\n\n\n\t\t\n\t\t\n\t\t\n\n\n\n\n\r\n\r\n\t\r\n    \r\n\t\t    \t\r\n    \t    \r\n    2  篇笔记\r\n\t  写笔记\r\n    \r\n\r\n\r\n\r\n\t\r\n\t\t#0&nbsp;&nbsp;&nbsp;htl666&nbsp;&nbsp;190***[email&#160;protected] 405import numpy as np\r\n\r\na = np.array([[1,2],[3,4]])\r\n\r\n# 按行相加，并且保持其二维特性\r\nprint(np.sum(a, axis=1, keepdims=True))\r\n\r\n# 按行相加，不保持其二维特性\r\nprint(np.sum(a, axis=1))\r\n\r\n输出：\r\n\r\narray([[3], [7]])\r\narray([3, 7])htl666&nbsp;&nbsp;&nbsp;htl666&nbsp;&nbsp;190***[email&#160;protected]7年前 (2019-08-28)\n#0&nbsp;&nbsp;&nbsp;prometheus&nbsp;&nbsp;zjg***@163.com 158\r\nsum() 也可以用于列表的展开，效果相当于各子列表相加\r\n\r\nlst = [[1, 2], [3, 4]]\r\nprint(sum(lst, [])) \r\n#[1, 2, 3, 4]\r\n注意此处 sum() 函数的第二个参数不能省略，因为省略默认为 0，0 和列表不能相加会出错。prometheus&nbsp;&nbsp;&nbsp;prometheus&nbsp;&nbsp;zjg***@163.com4年前 (2022-08-24)\n\t\r\n\t\r\n\t\t\t\r\n\r\n \r\n\t\t \r\n\t 点我分享笔记\r\n\t\r\n\t\r\n\t\t\r\n\t\r\n\t\t\r\n\t\t\t\r\n\t\t\t\t\t\t\t\t取消\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t\n\n\r\n\t\t\t\t\t 分享笔记\r\n\t\t\t\t\r\n\t\t\t\r\n\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t \r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t昵称昵称 (必填)\r\n\t\t\t\t\t\t\t邮箱邮箱 (必填)\r\n\t\t\t\t\t\t\t引用地址引用地址\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\t\t\r\n\r\n\t\r\n\t\r\n\r\n\r\n\r\n\r\n\r\n        \r\n              分类导航\r\n        \r\n    \r\n        \r\n        \r\n             Python / 数据科学Python 教程Python2.x 教程FastAPI 教程Flask 教程Django 教程NumPy 教程Pandas 教程SciPy 教程Matplotlib 教程Dash 教程Jupyter Notebook 教程Pillow 教程量化交易R 教程Julia 教程 AI / 智能开发AI Agent（智能体）AI（人工智能）Codex 教程Vibe Coding 教程Claude CodeOpenCodeSkills（技能）Ollama 教程Hermes AgentDeepSeek HarnessPi AgentAI 数学基础TensorFlow 教程PyTorch 教程Scikit-learn 教程机器 教程LangChain自然语言处理 NLPOpenCV 教程Selenium 教程Playwright 教程 前端开发HTML 教程HTML5 教程CSS 教程CSS3 教程JavaScript 教程HTML DOM 教程TypeScript 教程AJAX 教程JSON 教程Tailwind CSS 教程Bootstrap4 教程Bootstrap5 教程Foundation 教程Vue.js 教程Vue3 教程React 教程Next.js 教程AngularJS 教程Angular 教程jQuery 教程jQuery UI 教程jQuery EasyUI 教程ECharts 教程Chart.js 教程Highcharts 教程Google 地图 教程SVG 教程Font Awesome 教程 后端开发Node.js 教程Electron 教程PHP 教程Java 教程Go 教程Rust 教程C# 教程Servlet 教程JSP 教程ASP 教程AppML 教程VBScript 教程Swagger 教程RESTful API 教程Docker 教程Linux 教程ZooKeeper 教程 数据库SQL 教程MySQL 教程PostgreSQL 教程SQLite 教程MongoDB 教程Redis 教程Memcached 教程 移动开发Android 教程Flutter 教程Ionic 教程jQuery Mobile 教程Swift 教程Kotlin 教程 DevOps / 工程化Git 教程SVN 教程CMake 教程Maven 教程VS Code 教程Obsidian 教程PyCharm 教程Eclipse 教程Markdown 教程LaTeX 教程 编程语言C 教程C++ 教程Zig 教程Scala 教程Ruby 教程Perl 教程Lua 教程Dart 教程汇编语言 教程Verilog 教程 计算机基础计算机组成原理数据结构与算法C 语言数据结构与算法设计模式Python 设计模式正则表达式HTTP 教程TCP/IP 教程网络协议W3C 教程 XML / Web ServiceXML 教程DTD 教程XML DOM 教程XSLT 教程XPath 教程XQuery 教程XLink 教程XPointer 教程XML Schema 教程XSL-FO 教程Web Service 教程WSDL 教程SOAP 教程RSS 教程RDF 教程 .NETASP.NET 教程MVC 教程Razor 教程Web Forms 教程Web Pages 教程PowerShell 教程 网站建设网站建设指南浏览器信息网站主机教程网站品质            \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n        \r\n            Advertisement\r\n        \r\n        \r\n\r\n\r\n\r\n\r\n    \r\n        \r\n            \r\n                \r\n            \r\n            Trae\r\n        \r\n        \r\n            AI 原生开发环境，让编程更高效。\r\n        \r\n    \r\n\r\n    \r\n        \r\n            \r\n                \r\n            \r\n            MonkeyCode\r\n        \r\n        \r\n            在线 Vibe Coding，用想法驱动开发。\r\n        \r\n    \r\n\r\n\r\n\r\n\r\n \r\n\n   \n    \n     \n      \n       在线实例\n      \n      \n       &middot;HTML 实例\n      \n      \n       &middot;CSS 实例\n      \n      \n       &middot;JavaScript 实例\n      \n      \n       &middot;Ajax 实例\n      \n       \n       &middot;jQuery 实例\n      \n      \n       &middot;XML 实例\n      \n      \n       &middot;Java 实例\n      \n     \n     \n     \n      \n      字符集&工具\n      \n      \n       &middot; HTML 字符集设置\n      \n      \n       &middot; HTML ASCII 字符集\n      \n     \n       &middot; JS 混淆/加密\n       \n      \n       &middot; PNG/JPEG 图片压缩\n      \n      \n       &middot; HTML 拾色器\n      \n      \n       &middot; JSON 格式化工具\n      \n      \n       &middot; 随机数生成器\n      \n     \n     \n      \n       最新更新\n      \n                  \n              &middot;\n              \n                AI 3D (Blender)              \n            \n                      \n              &middot;\n              \n                Swift 版本新特性              \n            \n                      \n              &middot;\n              \n                Swift 编码规范              \n            \n                      \n              &middot;\n              \n                Swift 与 Object...              \n            \n                      \n              &middot;\n              \n                Swift Package M...              \n            \n                      \n              &middot;\n              \n                Swift Sendable ...              \n            \n                      \n              &middot;\n              \n                Swift actor 与...              \n            \n               \n     \n      \n       站点信息\n      \n      \n       &middot;\n       意见反馈\n       \n      \n       &middot;\n      免责声明\n       \n      \n       &middot;\n       关于我们\n       \n       \n       &middot;\n       写给初学者\n       \n      \n       &middot; 文章归档\n      \n    \n     \n    \n     \n      \n        \n         关注微信\n        \n      \n      \n      \n       \n     \n     \n    \n   \n   \n     Copyright &copy; 2013-2026    菜鸟教程&nbsp;\n    runoob.com All Rights Reserved. 备案号：闽ICP备15012807号-1",
+      "title": "http://www.runoob.com/python/python-func-sum.html (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529349074,
+        "end": 1789529350352
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529350356,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e0d3001GFNBAUTAB1E3z7",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842da25001BWlCKh9ubZX8MI",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 30506,
+      "output": 146,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 30652,
+      "headroom": 8204,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.358Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.361Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.367Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.368Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.368Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.369Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.376Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 30652,
+  "providerTokens": 30652,
+  "estimatedInputTokens": 11331,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 30506,
+    "cacheRead": 0,
+    "output": 146
+  },
+  "overflow": false,
+  "headroom": 8204,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.376Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.376Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.379Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529350732,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e24b001YeCmqQ9PlDqMFj",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e0e8001woVDxWrCZPkpDO",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529350732,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e24c002vhZO13qX7Vab9t",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e0e8001woVDxWrCZPkpDO",
+    "type": "tool",
+    "callID": "call_b22c3ef1e61f15dd",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.733Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529350733,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e24c001qjgFH9KpI1ujss",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e0e8001woVDxWrCZPkpDO",
+    "type": "text",
+    "text": "我来打开 https://docs.pythonlang.cn/3/library/functions.html，读取其中的内容。",
+    "time": {
+      "start": 1789529350732,
+      "end": 1789529350732
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:10.733Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529350733,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e24c002vhZO13qX7Vab9t",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e0e8001woVDxWrCZPkpDO",
+    "type": "tool",
+    "callID": "call_b22c3ef1e61f15dd",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://docs.pythonlang.cn/3/library/functions.html"
+      },
+      "time": {
+        "start": 1789529350733
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.337Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529352338,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e24c002vhZO13qX7Vab9t",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e0e8001woVDxWrCZPkpDO",
+    "type": "tool",
+    "callID": "call_b22c3ef1e61f15dd",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://docs.pythonlang.cn/3/library/functions.html"
+      },
+      "output": "内置函数 — Python 3.14.0 文档 - Python 文档\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n      \n      \n      \n    \n\n    \n    \n    \n            \n\n  \n\n\n    \n    \n        \n            \n        \n        \n            \n                \n            \n            \n            \n                \n                    \n                \n                \n                \n            \n        \n    \n    \n        \n            \n            \n主题\n        自动\n        浅色\n        深色\n    \n\n  \n    上一主题\n    引言\n  \n  \n    下一主题\n    内置常量\n  \n  \n    本页\n    \n      报告 Bug\n      \n        显示源码\n      \n    \n  \n        \n    \n\n\n  \n    \n      导航\n      \n        \n          索引\n        \n          模块 |\n        \n          下一页 |\n        \n          上一页 |\n\n          \n          Python »\n          \n            \n            \n          \n          \n              \n          \n    \n      3.14.0 文档 »\n\n          Python 标准库 »\n        内置函数\n                \n                    \n\n    \n        \n          \n          \n        \n    \n                     |\n                \n            \n主题\n        自动\n        浅色\n        深色\n    \n |\n            \n      \n        \n\n    \n      \n        \n          \n            \n  \n内置函数¶\nPython 解释器内置了许多始终可用的函数和类型。它们在此处按字母顺序列出。\n\n\n内置函数\n\n\n\n\nA\nabs()\naiter()\nall()\nanext()\nany()\nascii()\n\nB\nbin()\nbool()\nbreakpoint()\nbytearray()\nbytes()\n\nC\ncallable()\nchr()\nclassmethod()\ncompile()\ncomplex()\n\nD\ndelattr()\ndict()\ndir()\ndivmod()\n\n\n\n\nE\nenumerate()\neval()\nexec()\n\nF\nfilter()\nfloat()\nformat()\nfrozenset()\n\nG\ngetattr()\nglobals()\n\nH\nhasattr()\nhash()\nhelp()\nhex()\n\nI\nid()\ninput()\nint()\nisinstance()\nissubclass()\niter()\n\n\n\nL\nlen()\nlist()\nlocals()\n\nM\nmap()\nmax()\nmemoryview()\nmin()\n\nN\nnext()\n\nO\nobject()\noct()\nopen()\nord()\n\nP\npow()\nprint()\nproperty()\n\n\n\n\n\n\n\nR\nrange()\nrepr()\nreversed()\nround()\n\nS\nset()\nsetattr()\nslice()\nsorted()\nstaticmethod()\nstr()\nsum()\nsuper()\n\nT\ntuple()\ntype()\n\nV\nvars()\n\nZ\nzip()\n\n_\n__import__()\n\n\n\n\n\n\n\nabs(number, /)¶\n返回一个数的绝对值。参数可以是整数、浮点数，或实现了 __abs__() 的对象。如果参数是复数，则返回其模。\n\n\n\n\naiter(async_iterable, /)¶\n返回一个异步迭代器，用于异步可迭代对象。等价于调用 x.__aiter__()。\n注意：与 iter() 不同，aiter() 没有双参数变体。\n\n在 3.10 版本加入。\n\n\n\n\n\nall(iterable, /)¶\n如果 iterable 的所有元素都为真（或者如果 iterable 为空），则返回 True。等价于\ndef all(iterable):\n    for element in iterable:\n        if not element:\n            return False\n    return True\n\n\n\n\n\n\n可等待 anext(async_iterator, /)¶\n\n可等待 anext(async_iterator, default, /)\n当被 await 时，返回给定异步迭代器的下一个项，如果给定 default 且迭代器已耗尽，则返回 default。\n这是内置函数 next() 的异步变体，行为类似。\n它调用 async_iterator 的 __anext__() 方法，返回一个可等待对象。await 它会返回迭代器的下一个值。如果给定了 default，则在迭代器耗尽时返回它，否则会引发 StopAsyncIteration。\n\n在 3.10 版本加入。\n\n\n\n\n\nany(iterable, /)¶\n如果 iterable 的任何元素为真，则返回 True。如果 iterable 为空，则返回 False。等价于\ndef any(iterable):\n    for element in iterable:\n        if element:\n            return True\n    return False\n\n\n\n\n\n\nascii(object, /)¶\n与 repr() 类似，返回一个包含对象可打印表示的字符串，但使用 \\x、\\u 或 \\U 转义序列转义 repr() 返回的字符串中的非 ASCII 字符。这会生成一个类似于 Python 2 中 repr() 返回的字符串。\n\n\n\n\nbin(integer, /)¶\n将整数转换为以“0b”为前缀的二进制字符串。结果是有效的 Python 表达式。如果 integer 不是 Python int 对象，它必须定义一个返回整数的 __index__() 方法。一些例子\n&gt;&gt;&gt; bin(3)\n'0b11'\n&gt;&gt;&gt; bin(-10)\n'-0b1010'\n\n\n无论是否需要前缀“0b”，都可以使用以下任何一种方式。\n&gt;&gt;&gt; format(14, '#b'), format(14, 'b')\n('0b1110', '1110')\n&gt;&gt;&gt; f'{14:#b}', f'{14:b}'\n('0b1110', '1110')\n\n\n有关更多信息，请参阅 format()。\n\n\n\n\nclass bool(object=False, /)¶\n返回一个布尔值，即 True 或 False。参数使用标准真值测试过程进行转换。如果参数为假或省略，则返回 False；否则，返回 True。bool 类是 int 的子类（参见数字类型 — int、float、complex）。它不能进一步子类化。它唯一的实例是 False 和 True（参见布尔类型 - bool）。\n\n版本 3.7 中的改变: 参数现在仅限位置。\n\n\n\n\n\nbreakpoint(*args, **kws)¶\n此函数会将您带入调用位置的调试器。具体来说，它会调用 sys.breakpointhook()，直接传递 args 和 kws。默认情况下，sys.breakpointhook() 调用 pdb.set_trace()，不期望任何参数。在这种情况下，它纯粹是一个方便函数，因此您不必显式导入 pdb 或输入太多代码即可进入调试器。但是，sys.breakpointhook() 可以设置为其他函数，breakpoint() 将自动调用该函数，从而允许您进入选择的调试器。如果 sys.breakpointhook() 不可访问，此函数将引发 RuntimeError。\n默认情况下，breakpoint() 的行为可以通过 PYTHONBREAKPOINT 环境变量进行更改。有关使用详细信息，请参阅 sys.breakpointhook()。\n请注意，如果 sys.breakpointhook() 已被替换，则无法保证这一点。\n引发 审计事件 builtins.breakpoint，参数为 breakpointhook。\n\n在 3.7 版本加入。\n\n\n\n\n\nclass bytearray(source=b'')\n\nclass bytearray(source, encoding, errors='strict')\n返回一个新的字节数组。bytearray 类是 0 <= x < 256 范围内整数的可变序列。它拥有大多数常用的可变序列方法（在可变序列类型中描述），以及 bytes 类型拥有的方法，参见字节和字节数组操作。\n可选的 source 参数可以用于以几种不同的方式初始化数组\n\n如果它是 string，您还必须提供 encoding (以及可选的 errors) 参数；bytearray() 然后使用 str.encode() 将字符串转换为字节。\n如果它是一个 integer，数组将具有该大小并用空字节初始化。\n如果它是一个符合缓冲区接口的对象，则对象的只读缓冲区将用于初始化字节数组。\n如果它是一个 iterable，它必须是一个 0 <= x < 256 范围内整数的迭代器，这些整数用作数组的初始内容。\n\n没有参数时，会创建一个大小为 0 的数组。\n另请参阅 二进制序列类型 — bytes, bytearray, memoryview 和 Bytearray 对象。\n\n\n\n\nclass bytes(source=b'')\n\nclass bytes(source, encoding, errors='strict')\n返回一个新的“bytes”对象，它是一个 0 <= x < 256 范围内整数的不可变序列。bytes 是 bytearray 的不可变版本——它具有相同的非变异方法以及相同的索引和切片行为。\n因此，构造函数参数的解释与 bytearray() 相同。\n字节对象也可以通过字面量创建，参见字符串和字节字面量。\n另请参阅 二进制序列类型 — bytes, bytearray, memoryview、字节对象 和 字节和字节数组操作。\n\n\n\n\ncallable(object, /)¶\n如果 object 参数看起来是可调用的，则返回 True，否则返回 False。如果此函数返回 True，则调用仍可能失败，但如果返回 False，则调用 object 永远不会成功。请注意，类是可调用的（调用类会返回一个新实例）；如果实例的类具有 __call__() 方法，则实例是可调用的。\n\n在 3.2 版本加入: 此函数最初在 Python 3.0 中被移除，然后又在 Python 3.2 中重新引入。\n\n\n\n\n\nchr(codepoint, /)¶\n返回表示具有指定 Unicode 码点的字符的字符串。例如，chr(97) 返回字符串 'a'，而 chr(8364) 返回字符串 '€'。这与 ord() 相反。\n参数的有效范围是 0 到 1,114,111 (十六进制为 0x10FFFF)。如果超出该范围，将引发 ValueError。\n\n\n\n\n@classmethod¶\n将一个方法转换为类方法。\n类方法将类作为隐式第一个参数接收，就像实例方法接收实例一样。要声明一个类方法，请使用以下惯用语\nclass C:\n    @classmethod\n    def f(cls, arg1, arg2): ...\n\n\n@classmethod 形式是一个函数装饰器——详见函数定义。\n类方法可以在类上调用（例如 C.f()），也可以在实例上调用（例如 C().f()）。实例除了其类之外被忽略。如果为派生类调用类方法，则派生类对象作为隐式第一个参数传递。\n类方法不同于 C++ 或 Java 的静态方法。如果您想要那些，请参阅本节中的 staticmethod()。有关类方法的更多信息，请参阅 标准类型层级结构。\n\n版本 3.9 中的改变: 类方法现在可以包装其他描述符，例如 property()。\n\n\n版本 3.10 中的改变: 类方法现在继承方法属性（__module__、__name__、__qualname__、__doc__ 和 __annotations__）并具有新的 __wrapped__ 属性。\n\n\n自 3.11 版本弃用，在 3.13 版本移除: 类方法不再能包装其他描述符，例如 property()。\n\n\n\n\n\ncompile(source, filename, mode, flags=0, dont_inherit=False, optimize=-1)¶\n将 source 编译成代码对象或 AST 对象。代码对象可以通过 exec() 或 eval() 执行。source 可以是普通字符串、字节字符串或 AST 对象。有关如何使用 AST 对象的信息，请参阅 ast 模块文档。\nfilename 参数应给出代码的来源文件；如果不是从文件中读取，则传递一些可识别的值（通常使用 '&lt;string&gt;'）。\nmode 参数指定要编译的代码类型；如果 source 包含一系列语句，则可以是 'exec'；如果它包含单个表达式，则可以是 'eval'；如果它包含单个交互式语句，则可以是 'single'（在后一种情况下，求值结果不为 None 的表达式语句将被打印出来）。\n可选参数 flags 和 dont_inherit 控制应激活哪些编译器选项以及应允许哪些未来特性。如果两者都不存在（或都为零），则代码使用影响调用 compile() 的代码的相同标志进行编译。如果给定了 flags 参数而未给定 dont_inherit（或为零），则 flags 参数指定的编译器选项和未来语句将用于此外仍将使用的那些。如果 dont_inherit 是非零整数，则 flags 参数就是它——周围代码中的标志（未来特性和编译器选项）将被忽略。\n编译器选项和未来语句由位指定，可以通过按位或运算符组合以指定多个选项。指定给定未来特性所需的位域可以作为 compiler_flag 属性在 __future__ 模块的 _Feature 实例上找到。编译器标志可以在 ast 模块中找到，前缀为 PyCF_。\n参数 optimize 指定编译器的优化级别；默认值 -1 选择由 -O 选项给出的解释器优化级别。显式级别为 0 (无优化；__debug__ 为真)，1 (断言被移除，__debug__ 为假) 或 2 (文档字符串也被移除)。\n如果编译后的源代码无效，此函数会引发 SyntaxError，如果源代码包含空字节，则会引发 ValueError。\n如果您想将 Python 代码解析为其 AST 表示，请参阅 ast.parse()。\n引发 审计事件 compile，参数为 source 和 filename。此事件也可能由隐式编译引发。\n\n\n备注\n在 'single' 或 'eval' 模式下编译多行代码字符串时，输入必须至少以一个换行符终止。这是为了方便 code 模块检测不完整和完整的语句。\n\n\n警告\n由于 Python AST 编译器中的堆栈深度限制，当编译成 AST 对象时，使用足够大/复杂的字符串可能会使 Python 解释器崩溃。\n\n\n版本 3.2 中的改变: 允许使用 Windows 和 Mac 换行符。此外，'exec' 模式下的输入不再需要以换行符结尾。添加了 optimize 参数。\n\n\n版本 3.5 中的改变: 以前，当在 source 中遇到空字节时，会引发 TypeError。\n\n\n在 3.8 版本加入: 现在可以将 ast.PyCF_ALLOW_TOP_LEVEL_AWAIT 作为标志传递，以启用对顶层 await、async for 和 async with 的支持。\n\n\n\n\n\nclass complex(number=0, /)¶\n\nclass complex(string, /)\n\nclass complex(real=0, imag=0)\n将单个字符串或数字转换为复数，或从实部和虚部创建复数。\n示例：\n&gt;&gt;&gt; complex('+1.23')\n(1.23+0j)\n&gt;&gt;&gt; complex('-4.5j')\n-4.5j\n&gt;&gt;&gt; complex('-1.23+4.5j')\n(-1.23+4.5j)\n&gt;&gt;&gt; complex('\\t( -1.23+4.5J )\\n')\n(-1.23+4.5j)\n&gt;&gt;&gt; complex('-Infinity+NaNj')\n(-inf+nanj)\n&gt;&gt;&gt; complex(1.23)\n(1.23+0j)\n&gt;&gt;&gt; complex(imag=-4.5)\n-4.5j\n&gt;&gt;&gt; complex(-1.23, 4.5)\n(-1.23+4.5j)\n\n\n如果参数是字符串，它必须包含实部（格式与 float() 相同）或虚部（格式相同但带有 'j' 或 'J' 后缀），或者同时包含实部和虚部（在这种情况下虚部的符号是强制性的）。字符串可以可选地被空格和圆括号 '(' 和 ')' 包围，这些都将被忽略。字符串不能在 '+'、'-'、'j' 或 'J' 后缀和十进制数之间包含空格。例如，complex('1+2j') 是可以的，但 complex('1 + 2j') 会引发 ValueError。更准确地说，在去除括号和前导和尾随空格字符后，输入必须符合以下语法中的 complexvalue 产生式规则\ncomplexvalue: floatvalue |\n              floatvalue (\"j\" | \"J\") |\n              floatvalue sign absfloatvalue (\"j\" | \"J\")\n\n如果参数是数字，则构造函数充当数值转换，类似于 int 和 float。对于一般的 Python 对象 x，complex(x) 会委托给 x.__complex__()。如果未定义 __complex__()，则会回退到 __float__()。如果未定义 __float__()，则会回退到 __index__()。\n如果提供了两个参数或使用了关键字参数，则每个参数可以是任何数字类型（包括复数）。如果两个参数都是实数，则返回一个复数，其实部为 real，虚部为 imag。如果两个参数都是复数，则返回一个复数，其实部为 real.real-imag.imag，虚部为 real.imag+imag.real。如果其中一个参数是实数，则在上述表达式中仅使用其实部。\n另请参阅 complex.from_number()，它只接受单个数字参数。\n如果所有参数都省略，则返回 0j。\n复数类型在数字类型 — int、float、complex中描述。\n\n版本 3.6 中的改变: 允许使用下划线对数字进行分组，如代码字面量所示。\n\n\n版本 3.8 中的改变: 如果未定义 __complex__() 和 __float__()，则回退到 __index__()。\n\n\n自 3.14 版本弃用: 将复数作为 real 或 imag 参数传递现已弃用；它应该只作为单个位置参数传递。\n\n\n\n\n\ndelattr(object, name, /)¶\n这是 setattr() 的一个亲戚。参数是一个对象和一个字符串。字符串必须是对象属性之一的名称。该函数删除命名属性，前提是对象允许。例如，delattr(x, 'foobar') 等价于 del x.foobar。name 不需要是 Python 标识符（参见 setattr()）。\n\n\n\n\nclass dict(**kwargs)\n\nclass dict(mapping, /, **kwargs)\n\nclass dict(iterable, /, **kwargs)\n创建一个新字典。dict 对象是字典类。有关此类的文档，请参阅 dict 和 映射类型 — dict。\n对于其他容器，请参阅内置的 list、set 和 tuple 类，以及 collections 模块。\n\n\n\n\ndir()¶\n\ndir(object, /)\n不带参数时，返回当前局部作用域中的名称列表。带参数时，尝试返回该对象的有效属性列表。\n如果对象有一个名为 __dir__() 的方法，则将调用此方法，并且它必须返回属性列表。这允许实现自定义 __getattr__() 或 __getattribute__() 函数的对象自定义 dir() 报告其属性的方式。\n如果对象未提供 __dir__()，则该函数会尽力从对象的 __dict__ 属性（如果已定义）及其类型对象中收集信息。生成的列表不一定完整，并且当对象具有自定义 __getattr__() 时可能不准确。\n默认的 dir() 机制对不同类型的对象表现不同，因为它试图提供最相关的而非完整的信息\n\n如果对象是模块对象，则列表包含模块属性的名称。\n如果对象是类型或类对象，则列表包含其属性的名称，以及递归地包含其基类属性的名称。\n否则，列表包含对象的属性名称、其类的属性名称，以及递归地包含其类的基类的属性名称。\n\n结果列表按字母顺序排序。例如\n&gt;&gt;&gt; import struct\n&gt;&gt;&gt; dir()   # show the names in the module namespace\n['__builtins__', '__name__', 'struct']\n&gt;&gt;&gt; dir(struct)   # show the names in the struct module\n['Struct', '__all__', '__builtins__', '__cached__', '__doc__', '__file__',\n '__initializing__', '__loader__', '__name__', '__package__',\n '_clearcache', 'calcsize', 'error', 'pack', 'pack_into',\n 'unpack', 'unpack_from']\n&gt;&gt;&gt; class Shape:\n...     def __dir__(self):\n...         return ['area', 'perimeter', 'location']\n...\n&gt;&gt;&gt; s = Shape()\n&gt;&gt;&gt; dir(s)\n['area', 'location', 'perimeter']\n\n\n\n备注\n因为 dir() 主要作为交互式提示符下的便利功能提供，所以它试图提供一组有趣的名称，而不是试图提供一组严格或一致定义的名称，并且其详细行为可能会在不同版本中发生变化。例如，当参数是一个类时，元类属性不在结果列表中。\n\n\n\n\n\ndivmod(a, b, /)¶\n接受两个（非复数）数字作为参数，并返回一对数字，包含它们使用整数除法时的商和余数。对于混合操作数类型，适用二进制算术运算符的规则。对于整数，结果与 (a // b, a % b) 相同。对于浮点数，结果是 (q, a % b)，其中 q 通常是 math.floor(a / b)，但也可能比这小 1。无论如何，如果 a % b 非零，则它与 b 符号相同，并且 0 &lt;= abs(a % b) &lt; abs(b)，q * b + a % b 非常接近 a。\n\n\n\n\nenumerate(iterable, start=0)¶\n返回一个 enumerate 对象。iterable 必须是一个序列、一个迭代器或支持迭代的其他对象。enumerate() 返回的迭代器的 __next__() 方法返回一个元组，其中包含一个计数（从 start 开始，默认为 0）以及从 iterable 迭代获得的值。\n&gt;&gt;&gt; seasons = ['Spring', 'Summer', 'Fall', 'Winter']\n&gt;&gt;&gt; list(enumerate(seasons))\n[(0, 'Spring'), (1, 'Summer'), (2, 'Fall'), (3, 'Winter')]\n&gt;&gt;&gt; list(enumerate(seasons, start=1))\n[(1, 'Spring'), (2, 'Summer'), (3, 'Fall'), (4, 'Winter')]\n\n\n等价于：\ndef enumerate(iterable, start=0):\n    n = start\n    for elem in iterable:\n        yield n, elem\n        n += 1\n\n\n\n\n\n\neval(source, /, globals=None, locals=None)¶\n\n参数:\n\nsource (str | 代码对象) – 一个 Python 表达式。\nglobals (dict | None) – 全局命名空间（默认值：None）。\nlocals (映射 | None) – 局部命名空间（默认值：None）。\n\n\n返回:\n已求值表达式的结果。\n\n引发:\n语法错误将作为异常报告。\n\n\n\n警告\n此函数执行任意代码。使用用户提供的输入调用它可能会导致安全漏洞。\n\nexpression 参数将被解析并作为 Python 表达式（技术上讲，是一个条件列表）进行求值，其中 globals 和 locals 映射用作全局和局部命名空间。如果 globals 字典存在并且不包含键 __builtins__ 的值，则在解析 expression 之前，会在该键下插入对内置模块 builtins 的字典的引用。这样，您就可以通过在将自己的 __builtins__ 字典传递给 eval() 之前插入它来控制可用于执行代码的内置函数。如果省略 locals 映射，则默认为 globals 字典。如果两个映射都省略，则表达式将在调用 eval() 的环境中以 globals 和 locals 执行。请注意，eval() 只有在封闭环境中的嵌套作用域（非局部变量）已被调用 eval() 的作用域引用时（例如通过 nonlocal 语句）才能访问它们。\n示例\n&gt;&gt;&gt; x = 1\n&gt;&gt;&gt; eval('x+1')\n2\n\n\n此函数也可以用于执行任意代码对象（例如由 compile() 创建的代码对象）。在这种情况下，传递一个代码对象而不是字符串。如果代码对象已编译，并将 'exec' 作为 mode 参数，则 eval() 的返回值将是 None。\n提示：exec() 函数支持动态执行语句。globals() 和 locals() 函数分别返回当前全局和局部字典，这对于传递给 eval() 或 exec() 使用可能很有用。\n如果给定的源是一个字符串，则前导和尾随的空格和制表符将被去除。\n请参阅 ast.literal_eval()，以获取一个可以安全地求值仅包含字面量的表达式字符串的函数。\n引发一个审计事件 exec，以代码对象作为参数。也可能会引发代码编译事件。\n\n\n版本 3.13 中的改变: globals 和 locals 参数现在可以作为关键字参数传递。\n\n\n版本 3.13 中的改变: 默认 locals 命名空间的语义已根据内置函数 locals() 的描述进行调整。\n\n\n\n\n\nexec(source, /, globals=None, locals=None, *, closure=None)¶\n\n警告\n此函数执行任意代码。使用用户提供的输入调用它可能会导致安全漏洞。\n\n此函数支持 Python 代码的动态执行。source 必须是字符串或代码对象。如果是字符串，则该字符串被解析为一组 Python 语句，然后执行（除非发生语法错误）。[1] 如果是代码对象，则直接执行。在所有情况下，执行的代码都应作为文件输入有效（请参阅参考手册中的文件输入一节）。请注意，即使在传递给 exec() 函数的代码上下文中，nonlocal、yield 和 return 语句也不能在函数定义之外使用。返回值为 None。\n在所有情况下，如果省略可选部分，代码将在当前作用域中执行。如果仅提供 globals，它必须是一个字典（而不是字典的子类），将用于全局变量和局部变量。如果提供了 globals 和 locals，它们将分别用于全局变量和局部变量。如果提供，locals 可以是任何映射对象。请记住，在模块级别，全局变量和局部变量是同一个字典。\n\n备注\n当 exec 将两个独立的对象作为 globals 和 locals 获取时，代码将像嵌入在类定义中一样执行。这意味着在执行的代码中定义的函数和类将无法访问在顶层分配的变量（因为“顶层”变量在类定义中被视为类变量）。\n\n如果 globals 字典不包含键 __builtins__ 的值，则在该键下插入对内置模块 builtins 的字典的引用。这样，您就可以通过在将自己的 __builtins__ 字典传递给 exec() 之前插入它来控制可用于执行代码的内置函数。\nclosure 参数指定了一个闭包——一个 cellvars 元组。它仅在 object 是一个包含自由（闭包）变量的代码对象时有效。元组的长度必须与代码对象的 co_freevars 属性的长度完全匹配。\n引发一个审计事件 exec，以代码对象作为参数。也可能会引发代码编译事件。\n\n\n备注\n内置函数 globals() 和 locals() 分别返回当前全局和局部命名空间，这对于作为 exec() 的第二和第三个参数使用可能很有用。\n\n\n备注\n默认的 locals 行为如下面函数 locals() 所述。如果您需要在函数 exec() 返回后查看代码对 locals 的影响，请传递一个显式的 locals 字典。\n\n\n版本 3.11 中的改变: 增加了 closure 参数。\n\n\n版本 3.13 中的改变: globals 和 locals 参数现在可以作为关键字参数传递。\n\n\n版本 3.13 中的改变: 默认 locals 命名空间的语义已根据内置函数 locals() 的描述进行调整。\n\n\n\n\n\nfilter(function, iterable, /)¶\n从 iterable 中为 function 为真的元素构造一个迭代器。iterable 可以是序列、支持迭代的容器或迭代器。如果 function 为 None，则假定为恒等函数，即移除 iterable 中所有为假的元素。\n注意，如果 function 不是 None，则 filter(function, iterable) 等价于生成器表达式 (item for item in iterable if function(item))；如果 function 为 None，则等价于 (item for item in iterable if item)。\n请参阅 itertools.filterfalse() 以获取返回 iterable 中 function 为假的元素的互补函数。\n\n\n\n\nclass float(number=0.0, /)¶\n\nclass float(string, /)\n返回由数字或字符串构造的浮点数。\n示例：\n&gt;&gt;&gt; float('+1.23')\n1.23\n&gt;&gt;&gt; float('   -12345\\n')\n-12345.0\n&gt;&gt;&gt; float('1e-003')\n0.001\n&gt;&gt;&gt; float('+1E6')\n1000000.0\n&gt;&gt;&gt; float('-Infinity')\n-inf\n\n\n如果参数是字符串，它应该包含一个十进制数，可选地前面带有一个符号，并且可选地嵌入在空格中。可选符号可以是 '+' 或 '-'；'+' 符号对产生的值没有影响。参数也可以是一个表示 NaN（非数字）或正负无穷大的字符串。更准确地说，在去除前导和尾随空格字符后，输入必须符合以下语法中的 floatvalue 产生式规则\nsign:          \"+\" | \"-\"\ninfinity:      \"Infinity\" | \"inf\"\nnan:           \"nan\"\ndigit:         &lt;a Unicode decimal digit, i.e. characters in Unicode general category Nd&gt;\ndigitpart:     digit ([\"_\"] digit)*\nnumber:        [digitpart] \".\" digitpart | digitpart [\".\"]\nexponent:      (\"e\" | \"E\") [sign] digitpart\nfloatnumber:   number [exponent]\nabsfloatvalue: floatnumber | infinity | nan\nfloatvalue:    [sign] absfloatvalue\n\n大小写不敏感，因此，例如，“inf”、“Inf”、“INFINITY”和“iNfINity”都是正无穷大的可接受拼写。\n否则，如果参数是整数或浮点数，则返回具有相同值（在 Python 的浮点精度范围内）的浮点数。如果参数超出 Python 浮点数的范围，则会引发 OverflowError。\n对于一个普通的 Python 对象 x，float(x) 会委托给 x.__float__()。如果 __float__() 未定义，则会回退到 __index__()。\n另请参阅 float.from_number()，它只接受数字参数。\n如果没有给出参数，则返回 0.0。\n浮点类型在 数字类型 — int、float、complex 中描述。\n\n版本 3.6 中的改变: 允许使用下划线对数字进行分组，如代码字面量所示。\n\n\n版本 3.7 中的改变: 参数现在仅限位置。\n\n\n3.8 版本新增: 如果 __float__() 未定义，则回退到 __index__()。\n\n\n\n\n\nformat(value, format_spec='', /)¶\n根据 format_spec 控制将 value 转换为“格式化”表示形式。format_spec 的解释将取决于 value 参数的类型；但是，大多数内置类型都使用标准格式化语法：格式规范迷你语言。\n默认的 format_spec 是一个空字符串，通常与调用 str(value) 具有相同的效果。\n对 format(value, format_spec) 的调用会被转换为 type(value).__format__(value, format_spec)，这会绕过实例字典来查找值的 __format__() 方法。如果方法查找到达 object> 并且 format_spec 非空，或者 format_spec 或返回值不是字符串，则会引发 TypeError 异常。\n\n3.4 版本新增: 如果 format_spec 不是空字符串，则 object().__format__(format_spec) 会引发 TypeError。\n\n\n\n\n\nclass frozenset(iterable=(), /)\n返回一个新的 frozenset 对象，可选地从 iterable 中获取元素。frozenset 是一个内置类。有关此类的文档，请参阅 frozenset 和 集合类型 — set、frozenset。\n对于其他容器，请参阅内置的 set、list、tuple> 和 dict> 类，以及 collections 模块。\n\n\n\n\ngetattr(object, name, /)¶\n\ngetattr(object, name, default, /)\n返回 object 的命名属性的值。name 必须是一个字符串。如果该字符串是对象某个属性的名称，则结果是该属性的值。例如，getattr(x, 'foobar') 等价于 x.foobar。如果命名属性不存在，则如果提供了 default，则返回 default，否则引发 AttributeError。name 不需要是 Python 标识符（参见 setattr()）。\n\n备注\n由于 私有名称修饰 在编译时发生，因此必须手动修饰私有属性（具有两个前导下划线的属性）的名称才能使用 getattr() 检索它。\n\n\n\n\n\nglobals()¶\n返回实现当前模块命名空间的字典。对于函数内的代码，这在函数定义时设置，并且无论函数在哪里调用都保持不变。\n\n\n\n\nhasattr(object, name, /)¶\n参数是一个对象和一个字符串。如果字符串是对象某个属性的名称，则结果为 True，否则为 False。（这是通过调用 getattr(object, name) 并查看它是否引发 AttributeError> 来实现的。）\n\n\n\n\nhash(object, /)¶\n返回对象的哈希值（如果它有的话）。哈希值是整数。它们用于在字典查找期间快速比较字典键。比较相等的数值具有相同的哈希值（即使它们是不同类型，例如 1 和 1.0）。\n\n备注\n对于具有自定义 __hash__() 方法的对象，请注意 hash() 会根据主机机器的位宽截断返回值。\n\n\n\n\n\nhelp()¶\n\nhelp(request)\n调用内置帮助系统。（此函数用于交互式使用。）如果没有给出参数，则交互式帮助系统会在解释器控制台启动。如果参数是字符串，则会将该字符串视为模块、函数、类、方法、关键字或文档主题的名称，并在控制台上打印帮助页面。如果参数是任何其他类型的对象，则会生成该对象的帮助页面。\n请注意，如果在调用 help() 时，函数的参数列表中出现斜杠（/），这意味着斜杠之前的参数是仅限位置的。更多信息请参阅 关于仅限位置参数的 FAQ 条目。\n此函数由 site 模块添加到内置命名空间。\n\n3.4 版本新增: pydoc 和 inspect 的更改意味着可调用对象的报告签名现在更加全面和一致。\n\n\n\n\n\nhex(integer, /)¶\n将整数转换为以“0x”为前缀的小写十六进制字符串。如果 integer 不是 Python int 对象，它必须定义一个返回整数的 __index__() 方法。一些示例\n&gt;&gt;&gt; hex(255)\n'0xff'\n&gt;&gt;&gt; hex(-42)\n'-0x2a'\n\n\n如果你想将整数转换为带或不带前缀的大写或小写十六进制字符串，你可以使用以下任一方式\n&gt;&gt;&gt; '%#x' % 255, '%x' % 255, '%X' % 255\n('0xff', 'ff', 'FF')\n&gt;&gt;&gt; format(255, '#x'), format(255, 'x'), format(255, 'X')\n('0xff', 'ff', 'FF')\n&gt;&gt;&gt; f'{255:#x}', f'{255:x}', f'{255:X}'\n('0xff', 'ff', 'FF')\n\n\n有关更多信息，请参阅 format()。\n另请参阅 int()，它用于将十六进制字符串转换为基数为 16 的整数。\n\n备注\n要获取浮点数的十六进制字符串表示，请使用 float.hex() 方法。\n\n\n\n\n\nid(object, /)¶\n返回对象的“身份”。这是一个整数，保证在对象的生命周期内是唯一的且常量。两个生命周期不重叠的对象可能具有相同的 id() 值。\n\nCPython 实现细节: 这是对象在内存中的地址。\n\n引发 审计事件 builtins.id，参数为 id。\n\n\n\n\ninput()¶\n\ninput(prompt, /)\n如果存在 prompt 参数，它会写入标准输出，不带尾随换行符。然后函数从输入中读取一行，将其转换为字符串（去除尾随换行符），并返回。当读取到 EOF 时，会引发 EOFError。示例\n&gt;&gt;&gt; s = input('--&gt; ')\n--&gt; Monty Python's Flying Circus\n&gt;&gt;&gt; s\n\"Monty Python's Flying Circus\"\n\n\n如果加载了 readline 模块，则 input() 将使用它来提供复杂的行编辑和历史记录功能。\n在读取输入之前，引发 审计事件 builtins.input，参数为 prompt。\n\n成功读取输入后，引发 审计事件 builtins.input/result，并附带结果。\n\n\n\n\n\nclass int(number=0, /)¶\n\nclass int(string, /, base=10)\n返回从数字或字符串构造的整数对象，如果没有给出参数则返回 0。\n示例：\n&gt;&gt;&gt; int(123.45)\n123\n&gt;&gt;&gt; int('123')\n123\n&gt;&gt;&gt; int('   -12_345\\n')\n-12345\n&gt;&gt;&gt; int('FACE', 16)\n64206\n&gt;&gt;&gt; int('0xface', 0)\n64206\n&gt;&gt;&gt; int('01110011', base=2)\n115\n\n\n如果参数定义了 __int__()，则 int(x) 返回 x.__int__()。如果参数定义了 __index__()，则返回 x.__index__()。对于浮点数，这会向零截断。\n如果参数不是数字或者给出了 base，那么它必须是表示基数 base 中的整数的字符串、bytes 或 bytearray 实例。可选地，字符串可以前面带有 + 或 -（之间没有空格），可以有前导零，可以被空格包围，并且可以在数字之间散布单个下划线。\n基数 n 整数字符串包含数字，每个数字代表从 0 到 n-1 的值。值 0–9 可以由任何 Unicode 十进制数字表示。值 10–35 可以由 a 到 z（或 A 到 Z）表示。默认的 base 是 10。允许的基数是 0 和 2–36。基数 2、8 和 16 字符串可以可选地以 0b/0B、0o/0O 或 0x/0X 为前缀，就像代码中的整数字面量一样。对于基数 0，字符串的解释方式类似于 代码中的整数字面量，实际基数由前缀确定为 2、8、10 或 16。基数 0 也不允许前导零：int('010', 0) 是非法的，而 int('010') 和 int('010', 8) 是合法的。\n整数类型在 数字类型 — int、float、complex 中描述。\n\n3.4 版本新增: 如果 base 不是 int 的实例，并且 base 对象具有 base.__index__ 方法，则调用该方法以获取基数的整数。以前的版本使用 base.__int__ 而不是 base.__index__。\n\n\n版本 3.6 中的改变: 允许使用下划线对数字进行分组，如代码字面量所示。\n\n\n3.7 版本新增: 第一个参数现在是仅限位置的。\n\n\n3.8 版本新增: 如果 __int__() 未定义，则回退到 __index__()。\n\n\n3.11 版本新增: int 字符串输入和字符串表示可以限制，以帮助避免拒绝服务攻击。当在将字符串转换为 int 或将 int 转换为字符串时超出限制时，会引发 ValueError。请参阅 整数字符串转换长度限制 文档。\n\n\n3.14 版本新增: int() 不再委托给 __trunc__() 方法。\n\n\n\n\n\nisinstance(object, classinfo, /)¶\n如果 object 参数是 classinfo 参数的实例，或是其（直接、间接或 虚拟）子类的实例，则返回 True。如果 object 不是给定类型的对象，则函数始终返回 False。如果 classinfo 是类型对象（或递归地，其他此类元组）的元组，或者是多个类型的 联合类型，则如果 object 是其中任何一个类型的实例，则返回 True。如果 classinfo 不是类型或类型元组以及此类元组，则会引发 TypeError 异常。如果早期检查成功，则对于无效类型可能不会引发 TypeError。\n\n3.10 版本新增: classinfo 可以是 联合类型。\n\n\n\n\n\nissubclass(class, classinfo, /)¶\n如果 class 是 classinfo 的子类（直接、间接或 虚拟），则返回 True。一个类被认为是其自身的子类。classinfo 可以是类对象元组（或递归地，其他此类元组）或 联合类型，在这种情况下，如果 class 是 classinfo 中任何条目的子类，则返回 True。在任何其他情况下，会引发 TypeError 异常。\n\n3.10 版本新增: classinfo 可以是 联合类型。\n\n\n\n\n\niter(iterable, /)¶\n\niter(callable, sentinel, /)\n返回一个 迭代器 对象。第一个参数的解释因第二个参数的存在与否而有很大不同。如果没有第二个参数，则单个参数必须是支持 可迭代 协议（__iter__() 方法）的集合对象，或者必须支持序列协议（从 0 开始的整数参数的 __getitem__() 方法）。如果它不支持这些协议中的任何一个，则会引发 TypeError。如果给出第二个参数 sentinel，则第一个参数必须是可调用对象。在这种情况下创建的迭代器将在每次调用其 __next__() 方法时调用 callable 而不带参数；如果返回的值等于 sentinel，则会引发 StopIteration，否则将返回该值。\n另请参见 迭代器类型。\niter() 第二种形式的一个有用应用是构建块读取器。例如，从二进制数据库文件中读取固定宽度的块直到文件末尾\nfrom functools import partial\nwith open('mydata.db', 'rb') as f:\n    for block in iter(partial(f.read, 64), b''):\n        process_block(block)\n\n\n\n\n\n\nlen(object, /)¶\n返回对象的长度（项目数）。参数可以是序列（如字符串、字节、元组、列表或范围）或集合（如字典、集合或冻结集合）。\n\nCPython 实现细节: len 在长度大于 sys.maxsize 时（例如 range(2 ** 100)）引发 OverflowError。\n\n\n\n\n\nclass list(iterable=(), /)\nlist 实际上是一个可变序列类型，而不是一个函数，如 列表 和 序列类型 — list、tuple、range 中所述。\n\n\n\n\nlocals()¶\n返回一个映射对象，表示当前局部符号表，其中变量名作为键，其当前绑定的引用作为值。\n在模块作用域中，以及在使用 exec() 或 eval() 并只传递一个命名空间时，此函数返回与 globals() 相同的命名空间。\n在类作用域中，它返回将传递给元类构造函数的命名空间。\n当使用 exec() 或 eval() 并单独传递局部和全局参数时，它返回传递给函数调用的局部命名空间。\n在上述所有情况下，在给定执行帧中每次调用 locals() 都将返回 相同 的映射对象。通过 locals() 返回的映射对象所做的更改将作为已赋值、重新赋值或删除的局部变量可见，并且赋值、重新赋值或删除局部变量将立即影响返回的映射对象的内容。\n在 优化作用域 中（包括函数、生成器和协程），每次调用 locals() 都会返回一个新字典，其中包含函数局部变量和任何非局部单元格引用的当前绑定。在这种情况下，通过返回的字典进行的名称绑定更改 不会 写回相应的局部变量或非局部单元格引用，并且赋值、重新赋值或删除局部变量和非局部单元格引用 不会 影响先前返回的字典的内容。\n在函数、生成器或协程中，将 locals() 作为推导式的一部分调用，等同于在包含作用域中调用它，不同之处在于推导式初始化的迭代变量将包含在内。在其他作用域中，它的行为就像推导式作为嵌套函数运行一样。\n将 locals() 作为生成器表达式的一部分调用，等同于在嵌套生成器函数中调用它。\n\n3.12 版本新增: locals() 在推导式中的行为已按照 PEP 709 中的描述进行了更新。\n\n\n3.13 版本新增: 作为 PEP 667 的一部分，修改此函数返回的映射对象的语义现已定义。在 优化作用域 中的行为现已如上所述。除了定义之外，在其他作用域中的行为与以前的版本保持不变。\n\n\n\n\n\nmap(function, iterable, /, *iterables, strict=False)¶\n返回一个迭代器，它将 function 应用于 iterable 的每个项目，并生成结果。如果传递了额外的 iterables 参数，function 必须接受相同数量的参数，并并行应用于所有可迭代对象的项目。对于多个可迭代对象，当最短的可迭代对象耗尽时，迭代器停止。如果 strict 为 True 并且其中一个可迭代对象在其他可迭代对象之前耗尽，则会引发 ValueError。对于函数输入已排列成参数元组的情况，请参阅 itertools.starmap()。\n\n3.14 版本新增: 添加了 strict 参数。\n\n\n\n\n\nmax(iterable, /, *, key=None)¶\n\nmax(iterable, /, *, default, key=None)\n\nmax(arg1, arg2, /, *args, key=None)\n返回可迭代对象中的最大项，或两个或更多参数中的最大值。\n如果提供了一个位置参数，它应该是一个 可迭代对象。返回可迭代对象中最大的项。如果提供了两个或更多位置参数，则返回位置参数中最大的项。\n有两个可选的仅限关键字参数。key 参数指定一个单参数排序函数，类似于 list.sort() 所使用的那种。default 参数指定当提供的可迭代对象为空时要返回的对象。如果可迭代对象为空且未提供 default，则会引发 ValueError。\n如果有多个项目是最大的，函数返回遇到的第一个。这与其它保持排序稳定性的工具一致，例如 sorted(iterable, key=keyfunc, reverse=True)[0] 和 heapq.nlargest(1, iterable, key=keyfunc)。\n\n3.4 版本新增: 添加了 default 仅限关键字参数。\n\n\n3.8 版本新增: key 可以是 None。\n\n\n\n\n\nclass memoryview(object)\n返回从给定参数创建的“内存视图”对象。有关更多信息，请参阅 内存视图。\n\n\n\n\nmin(iterable, /, *, key=None)¶\n\nmin(iterable, /, *, default, key=None)\n\nmin(arg1, arg2, /, *args, key=None)\n返回可迭代对象中的最小项，或两个或更多参数中的最小值。\n如果提供了一个位置参数，它应该是一个 可迭代对象。返回可迭代对象中最小的项。如果提供了两个或更多位置参数，则返回位置参数中最小的项。\n有两个可选的仅限关键字参数。key 参数指定一个单参数排序函数，类似于 list.sort() 所使用的那种。default 参数指定当提供的可迭代对象为空时要返回的对象。如果可迭代对象为空且未提供 default，则会引发 ValueError。\n如果有多个项目是最小的，函数返回遇到的第一个。这与其它保持排序稳定性的工具一致，例如 sorted(iterable, key=keyfunc)[0] 和 heapq.nsmallest(1, iterable, key=keyfunc)。\n\n3.4 版本新增: 添加了 default 仅限关键字参数。\n\n\n3.8 版本新增: key 可以是 None。\n\n\n\n\n\nnext(iterator, /)¶\n\nnext(iterator, default, /)\n通过调用 __next__() 方法从 迭代器 中检索下一项。如果给定了 default，则在迭代器耗尽时返回 default，否则引发 StopIteration。\n\n\n\n\nclass object¶\n这是所有其他类的终极基类。它具有所有 Python 类实例共有的方法。当调用构造函数时，它会返回一个新的无特征对象。构造函数不接受任何参数。\n\n备注\nobject 实例 不 具有 __dict__ 属性，因此你不能为 object 的实例分配任意属性。\n\n\n\n\n\noct(integer, /)¶\n将整数转换为以“0o”为前缀的八进制字符串。结果是有效的 Python 表达式。如果 integer 不是 Python int 对象，它必须定义一个返回整数的 __index__() 方法。例如\n&gt;&gt;&gt; oct(8)\n'0o10'\n&gt;&gt;&gt; oct(-56)\n'-0o70'\n\n\n如果你想将整数转换为带或不带前缀“0o”的八进制字符串，你可以使用以下任一方式。\n&gt;&gt;&gt; '%#o' % 10, '%o' % 10\n('0o12', '12')\n&gt;&gt;&gt; format(10, '#o'), format(10, 'o')\n('0o12', '12')\n&gt;&gt;&gt; f'{10:#o}', f'{10:o}'\n('0o12', '12')\n\n\n有关更多信息，请参阅 format()。\n\n\n\n\nopen(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None)¶\n打开 file 并返回相应的 文件对象。如果文件无法打开，则会引发 OSError。有关如何使用此函数的更多示例，请参阅 读写文件。\nfile 是一个 类路径对象，给出要打开文件的路径名（绝对路径或相对于当前工作目录的路径），或者是包装文件的整数文件描述符。（如果给出了文件描述符，则在关闭返回的 I/O 对象时关闭它，除非 closefd 设置为 False。）\nmode 是一个可选字符串，用于指定文件打开的模式。它默认为 'r'，表示以文本模式读取。其他常见值包括 'w' 用于写入（如果文件已存在则截断文件）、'x' 用于独占创建，以及 'a' 用于追加（在 某些 Unix 系统上，这意味着 所有 写入都追加到文件末尾，无论当前查找位置如何）。在文本模式下，如果未指定 encoding，则使用的编码是平台相关的：调用 locale.getencoding() 以获取当前区域设置编码。（为了读写原始字节，请使用二进制模式并省略 encoding。）可用模式包括\n\n\n字符\n含义\n\n\n\n'r'\n以读模式打开（默认）\n\n'w'\n以写模式打开，首先截断文件\n\n'x'\n以独占创建模式打开，如果文件已存在则失败\n\n'a'\n以写入模式打开，如果文件存在则追加到文件末尾\n\n'b'\n二进制模式\n\n't'\n文本模式（默认）\n\n'+'\n以更新模式打开（读写）\n\n\n\n默认模式为 'r' (以文本模式读取，与 'rt' 同义)。模式 'w+' 和 'w+b' 打开并截断文件。模式 'r+' 和 'r+b' 打开文件时不截断。\n如 概述 中所述，Python 区分二进制 I/O 和文本 I/O。以二进制模式打开的文件（包括 mode 参数中的 'b'）返回的内容为 bytes 对象，不进行任何解码。在文本模式下（默认模式，或当 mode 参数中包含 't' 时），文件内容作为 str 返回，字节首先使用平台相关的编码进行解码，或者如果给出 encoding 则使用指定的编码进行解码。\n\n备注\nPython 不依赖于底层操作系统对文本文件的概念；所有处理都由 Python 自己完成，因此是平台独立的。\n\nbuffering 是一个可选整数，用于设置缓冲策略。传递 0 关闭缓冲（仅允许在二进制模式下），传递 1 选择行缓冲（仅在文本模式下写入时可用），传递大于 1 的整数表示固定大小块缓冲区的字节大小。请注意，以这种方式指定缓冲区大小适用于二进制缓冲 I/O，但 TextIOWrapper（即，以 mode='r+' 打开的文件）会有另一个缓冲。要禁用 TextIOWrapper 中的缓冲，请考虑对 io.TextIOWrapper.reconfigure() 使用 write_through 标志。如果没有给出 buffering 参数，默认缓冲策略如下\n\n二进制文件以固定大小的块进行缓冲；当设备块大小可用时，缓冲区大小为 max(min(blocksize, 8 MiB), DEFAULT_BUFFER_SIZE)。在大多数系统上，缓冲区通常为 128 千字节。\n“交互式”文本文件（isatty() 返回 True 的文件）使用行缓冲。其他文本文件使用上述二进制文件的策略。\n\nencoding 是用于解码或编码文件的编码名称。这应该只在文本模式下使用。默认编码是平台相关的（locale.getencoding() 返回的任何内容），但可以使用 Python 支持的任何 文本编码。有关支持的编码列表，请参阅 codecs 模块。\nerrors 是一个可选字符串，指定如何处理编码和解码错误——这不能在二进制模式下使用。有多种标准错误处理程序可用（列在 错误处理程序 下），尽管任何已通过 codecs.register_error() 注册的错误处理程序名称也是有效的。标准名称包括\n\n'strict' 在编码错误时引发 ValueError 异常。默认值 None 具有相同的效果。\n'ignore' 忽略错误。请注意，忽略编码错误可能导致数据丢失。\n'replace' 导致在数据格式错误的地方插入一个替换标记（例如 '?'）。\n'surrogateescape' 将任何不正确的字节表示为 U+DC80 到 U+DCFF 范围内的低位替代码点。当写入数据时使用 surrogateescape 错误处理程序时，这些替代码点将再次转换回相同的字节。这对于处理未知编码的文件很有用。\n'xmlcharrefreplace' 仅在写入文件时支持。编码不支持的字符将替换为相应的 XML 字符引用 &amp;#nnn;。\n'backslashreplace' 将格式错误的数据替换为 Python 的反斜杠转义序列。\n'namereplace'（同样仅在写入时支持）将不支持的字符替换为 \\N{...} 转义序列。\n\nnewline 决定如何解析流中的换行符。它可以是 None、''、'\\n'、'\\r' 和 '\\r\\n'。它的工作方式如下\n\n从流中读取输入时，如果 newline 为 None，则启用通用换行符模式。输入中的行可以以 '\\n'、'\\r' 或 '\\r\\n' 结尾，并且这些在返回给调用者之前会转换为 '\\n'。如果为 ''，则启用通用换行符模式，但行尾会未经转换地返回给调用者。如果它具有任何其他合法值，则输入行仅由给定字符串终止，并且行尾会未经转换地返回给调用者。\n当向流写入输出时，如果 newline 为 None，则写入的任何 '\\n' 字符都会转换为系统默认的行分隔符 os.linesep。如果 newline 为 '' 或 '\\n'，则不进行转换。如果 newline 是任何其他合法值，则写入的任何 '\\n' 字符都会转换为给定字符串。\n\n如果 closefd 为 False 且给出了文件描述符而非文件名，则在文件关闭时，底层文件描述符将保持打开状态。如果给出了文件名，closefd 必须为 True（默认值）；否则，将引发错误。\n可以通过将可调用对象作为 opener 传递来使用自定义的打开器。然后通过使用 (file, flags) 调用 opener 来获取文件对象的底层文件描述符。opener 必须返回一个打开的文件描述符（将 os.open 作为 opener 传递会导致类似于传递 None 的功能）。\n新创建的文件是 不可继承的。\n以下示例使用 os.open() 函数的 dir_fd 参数来打开相对于给定目录的文件\n&gt;&gt;&gt; import os\n&gt;&gt;&gt; dir_fd = os.open('somedir', os.O_RDONLY)\n&gt;&gt;&gt; def opener(path, flags):\n...     return os.open(path, flags, dir_fd=dir_fd)\n...\n&gt;&gt;&gt; with open('spamspam.txt', 'w', opener=opener) as f:\n...     print('This will be written to somedir/spamspam.txt', file=f)\n...\n&gt;&gt;&gt; os.close(dir_fd)  # don't leak a file descriptor\n\n\nopen() 函数返回的 文件对象 类型取决于模式。当 open() 用于以文本模式（'w'、'r'、'wt'、'rt' 等）打开文件时，它返回 io.TextIOBase 的子类（具体是 io.TextIOWrapper）。当用于以二进制模式且带缓冲打开文件时，返回的类是 io.BufferedIOBase 的子类。具体类有所不同：在读取二进制模式下，它返回一个 io.BufferedReader；在写入二进制和追加二进制模式下，它返回一个 io.BufferedWriter，在读/写模式下，它返回一个 io.BufferedRandom。当禁用缓冲时，返回原始流，它是 io.RawIOBase 的子类 io.FileIO。\n另请参阅文件处理模块，例如 fileinput、io（其中声明了 open()）、os、os.path、tempfile 和 shutil。\n引发 审计事件 open，参数为 path、mode、flags。\nmode 和 flags 参数可能已根据原始调用进行了修改或推断。\n\n3.3 版本中的变化\n\n添加了 opener 参数。\n添加了 'x' 模式。\nIOError 以前会被引发，现在它是 OSError 的别名。\n现在，如果文件以独占创建模式 ('x') 打开时已存在，则会引发 FileExistsError。\n\n\n\n3.4 版本中的变化\n\n文件现在不可继承。\n\n\n\n3.5 版本中的变化\n\n如果系统调用被中断并且信号处理程序没有引发异常，则函数现在会重试系统调用，而不是引发 InterruptedError 异常（有关原因，请参阅 PEP 475）。\n添加了 'namereplace' 错误处理程序。\n\n\n\n3.6 版本中的变化\n\n添加了对实现 os.PathLike 的对象的支持。\n在 Windows 上，打开控制台缓冲区可能会返回 io.RawIOBase 的子类，而不是 io.FileIO。\n\n\n\n3.11 版本中的变化: 'U' 模式已移除。\n\n\n\n\n\nord(character, /)¶\n返回字符的序数值。\n如果参数是一个单字符字符串，则返回该字符的 Unicode 码点。例如，ord('a') 返回整数 97，ord('€')（欧元符号）返回 8364。这与 chr() 相反。\n如果参数是长度为 1 的 bytes 或 bytearray 对象，则返回其单个字节值。例如，ord(b'a') 返回整数 97。\n\n\n\n\npow(base, exp, mod=None)¶\n返回 base 的 exp 次幂；如果存在 mod，则返回 base 的 exp 次幂，然后取模 mod（比 pow(base, exp) % mod 更高效）。两参数形式 pow(base, exp) 等价于使用幂运算符：base**exp。\n当参数是内置数值类型且包含混合操作数类型时，适用于二进制算术运算符的强制转换规则。对于 int 操作数，结果类型与操作数类型相同（强制转换后），除非第二个参数为负；在这种情况下，所有参数都将转换为浮点数并返回浮点数结果。例如，pow(10, 2) 返回 100，但 pow(10, -2) 返回 0.01。对于 int 或 float 类型的负基数和非整数指数，将返回复数结果。例如，pow(-9, 0.5) 返回一个接近 3j 的值。然而，对于 int 或 float 类型的负基数和整数指数，将返回浮点数结果。例如，pow(-9, 2.0) 返回 81.0。\n对于 int 操作数 base 和 exp，如果 mod 存在，mod 也必须是整数类型且 mod 必须为非零。如果 mod 存在且 exp 为负，则 base 必须与 mod 互质。在这种情况下，返回 pow(inv_base, -exp, mod)，其中 inv_base 是 base 模 mod 的逆。\n这是一个计算 38 模 97 的逆的示例\n&gt;&gt;&gt; pow(38, -1, mod=97)\n23\n&gt;&gt;&gt; 23 * 38 % 97 == 1\nTrue\n\n\n\n3.8 版本发生变更: 对于 int 操作数，pow 的三参数形式现在允许第二个参数为负数，从而可以计算模逆。\n\n\n3.8 版本发生变更: 允许关键字参数。以前只支持位置参数。\n\n\n\n\n\nprint(*objects, sep=' ', end='\\n', file=None, flush=False)¶\n将 objects 打印到文本流 file，由 sep 分隔并以 end 结尾。如果存在 sep、end、file 和 flush，则必须将其作为关键字参数给出。\n所有非关键字参数都将像 str() 一样转换为字符串，并写入流中，由 sep 分隔并以 end 结尾。sep 和 end 都必须是字符串；它们也可以是 None，这意味着使用默认值。如果没有给出 objects，print() 将只写入 end。\nfile 参数必须是一个具有 write(string) 方法的对象；如果它不存在或为 None，则将使用 sys.stdout。由于打印的参数被转换为文本字符串，因此 print() 不能与二进制模式的文件对象一起使用。对于这些对象，请改用 file.write(...)。\n输出缓冲通常由 file 决定。但是，如果 flush 为 True，则流将被强制刷新。\n\n3.3 版本发生变更: 添加了 flush 关键字参数。\n\n\n\n\n\nclass property(fget=None, fset=None, fdel=None, doc=None)¶\n返回一个属性。\nfget 是用于获取属性值的函数。fset 是用于设置属性值的函数。fdel 是用于删除属性值的函数。doc 为属性创建文档字符串。\n典型用法是定义一个托管属性 x\nclass C:\n    def __init__(self):\n        self._x = None\n\n    def getx(self):\n        return self._x\n\n    def setx(self, value):\n        self._x = value\n\n    def delx(self):\n        del self._x\n\n    x = property(getx, setx, delx, \"I'm the 'x' property.\")\n\n\n如果 c 是 C 的实例，c.x 将调用 getter，c.x = value 将调用 setter，del c.x 将调用 deleter。\n如果给出 doc，它将成为属性的文档字符串。否则，该属性将复制 fget 的文档字符串（如果存在）。这使得使用 property() 作为装饰器可以轻松创建只读属性\nclass Parrot:\n    def __init__(self):\n        self._voltage = 100000\n\n    @property\n    def voltage(self):\n        \"\"\"Get the current voltage.\"\"\"\n        return self._voltage\n\n\n@property 装饰器将 voltage() 方法转换为同名只读属性的“getter”，并将其文档字符串设置为“Get the current voltage.”\n\n\n@getter¶\n\n\n\n\n@setter¶\n\n\n\n\n@deleter¶\nproperty 对象具有 getter、setter 和 deleter 方法，可用作装饰器，它们会创建属性的副本，并将相应的访问器函数设置为被装饰的函数。这最好通过示例解释\nclass C:\n    def __init__(self):\n        self._x = None\n\n    @property\n    def x(self):\n        \"\"\"I'm the 'x' property.\"\"\"\n        return self._x\n\n    @x.setter\n    def x(self, value):\n        self._x = value\n\n    @x.deleter\n    def x(self):\n        del self._x\n\n\n此代码与第一个示例完全等效。请务必为附加函数提供与原始属性相同的名称（在本例中为 x）。\n返回的属性对象还具有与构造函数参数对应的属性 fget、fset 和 fdel。\n\n\n\n3.5 版本发生变更: 属性对象的文档字符串现在是可写入的。\n\n\n\n__name__¶\n保存属性名称的属性。属性的名称可以在运行时更改。\n\n在 3.13 版本加入。\n\n\n\n\n\n\n\nclass range(stop, /)\n\nclass range(start, stop, step=1, /)\nrange 实际上不是一个函数，而是一个不可变序列类型，如 区间 和 序列类型 — list、tuple、range 中所述。\n\n\n\n\nrepr(object, /)¶\n返回一个包含对象可打印表示形式的字符串。对于许多类型，此函数会尝试返回一个字符串，该字符串在传递给 eval() 时将生成具有相同值的对象；否则，表示形式是一个用尖括号括起来的字符串，其中包含对象的类型名称以及通常包括对象名称和地址的其他信息。类可以通过定义 __repr__() 方法来控制此函数为其实例返回的内容。如果无法访问 sys.displayhook()，此函数将引发 RuntimeError。\n这个类有一个自定义表示形式，可以进行评估\nclass Person:\n   def __init__(self, name, age):\n      self.name = name\n      self.age = age\n\n   def __repr__(self):\n      return f\"Person('{self.name}', {self.age})\"\n\n\n\n\n\n\nreversed(object, /)¶\n返回一个逆向迭代器。参数必须是具有 __reversed__() 方法或支持序列协议（__len__() 方法和从 0 开始的整数参数的 __getitem__() 方法）的对象。\n\n\n\n\nround(number, ndigits=None)¶\n返回 number 在小数点后精确到 ndigits 位的四舍五入值。如果 ndigits 被省略或为 None，它将返回最接近其输入的整数。\n对于支持 round() 的内置类型，值将四舍五入到最接近 10 的幂减去 ndigits 的倍数；如果两个倍数同样接近，则向偶数方向四舍五入（例如，round(0.5) 和 round(-0.5) 都是 0，round(1.5) 是 2）。任何整数值对于 ndigits 都是有效的（正数、零或负数）。如果 ndigits 被省略或为 None，则返回值为整数。否则，返回值的类型与 number 相同。\n对于一般的 Python 对象 number，round 会委托给 number.__round__。\n\n备注\nround() 对于浮点数的行为可能会令人惊讶：例如，round(2.675, 2) 给出 2.67 而不是预期的 2.68。这不是一个 bug：这是因为大多数十进制分数不能精确地表示为浮点数。有关更多信息，请参阅 浮点数算术：问题和限制。\n\n\n\n\n\nclass set(iterable=(), /)\n返回一个新的 set 对象，可选地包含来自 iterable 的元素。set 是一个内置类。有关此类的文档，请参阅 set 和 集合类型 — set、frozenset。\n有关其他容器，请参阅内置的 frozenset、list、tuple 和 dict 类，以及 collections 模块。\n\n\n\n\nsetattr(object, name, value, /)¶\n这是 getattr() 的对应函数。参数是一个对象、一个字符串和一个任意值。该字符串可以命名一个现有属性或一个新属性。该函数将值赋给该属性，前提是对象允许。例如，setattr(x, 'foobar', 123) 等同于 x.foobar = 123。\n除非对象选择强制执行此操作（例如在自定义 __getattribute__() 中或通过 __slots__），否则 name 不需要是 名称（标识符和关键字） 中定义的 Python 标识符。名称不是标识符的属性将无法使用点表示法访问，但可以通过 getattr() 等访问。\n\n备注\n由于 私有名称重整 在编译时发生，因此必须手动重整私有属性（具有两个前导下划线的属性）的名称才能使用 setattr() 设置它。\n\n\n\n\n\nclass slice(stop, /)¶\n\nclass slice(start, stop, step=None, /)\n返回一个 切片 对象，表示由 range(start, stop, step) 指定的索引集。start 和 step 参数默认为 None。\n切片对象具有只读数据属性 start、stop 和 step，它们仅返回参数值（或其默认值）。它们没有其他明确的功能；但是，它们被 NumPy 和其他第三方包使用。\n\n\nstart¶\n\n\n\n\nstop¶\n\n\n\n\nstep¶\n\n\n当使用扩展索引语法时也会生成切片对象。例如：a[start:stop:step] 或 a[start:stop, i]。有关返回 迭代器 的替代版本，请参阅 itertools.islice()。\n\n3.12 版本发生变更: 切片对象现在是可哈希的（前提是 start、stop 和 step 都是可哈希的）。\n\n\n\n\n\nsorted(iterable, /, *, key=None, reverse=False)¶\n从 iterable 中的项返回一个新的已排序列表。\n有两个可选参数，必须指定为关键字参数。\nkey 指定一个接受一个参数的函数，用于从 iterable 中的每个元素中提取比较键（例如，key=str.lower）。默认值为 None（直接比较元素）。\nreverse 是一个布尔值。如果设置为 True，则列表元素将按每个比较被反转的方式排序。\n使用 functools.cmp_to_key() 将旧式的 cmp 函数转换为 key 函数。\n内置的 sorted() 函数保证是稳定的。如果排序保证不改变比较相等的元素的相对顺序，则它是稳定的——这对于多次排序很有帮助（例如，按部门排序，然后按工资等级排序）。\n排序算法仅使用项目之间的 &lt; 比较。虽然定义 __lt__() 方法足以进行排序，但 PEP 8 建议实现所有六个富比较。这将有助于在使用相同数据和依赖不同底层方法的其他排序工具（例如 max()）时避免错误。实现所有六个比较还有助于避免混合类型比较的混淆，因为混合类型比较可以调用反射的 __gt__() 方法。\n有关排序示例和简短的排序教程，请参阅排序技术。\n\n\n\n\n@staticmethod¶\n将方法转换为静态方法。\n静态方法不接收隐式的第一个参数。要声明静态方法，请使用此惯用法\nclass C:\n    @staticmethod\n    def f(arg1, arg2, argN): ...\n\n\n@staticmethod 形式是一个函数装饰器——有关详细信息，请参见函数定义。\n静态方法可以在类上调用（例如 C.f()）或在实例上调用（例如 C().f()）。此外，静态方法描述符也是可调用的，因此可以在类定义中使用（例如 f()）。\nPython 中的静态方法与 Java 或 C++ 中的静态方法类似。另外，请参阅 classmethod()，它是一个变体，可用于创建替代类构造函数。\n与所有装饰器一样，也可以将 staticmethod 作为普通函数调用并对其结果进行处理。在某些情况下，您需要从类体中引用函数并希望避免自动转换为实例方法时，需要这样做。对于这些情况，请使用此惯用法\ndef regular_function():\n    ...\n\nclass C:\n    method = staticmethod(regular_function)\n\n\n有关静态方法的更多信息，请参见 标准类型层次结构。\n\n3.10 版本发生变更: 静态方法现在继承方法属性（__module__、__name__、__qualname__、__doc__ 和 __annotations__），拥有一个新的 __wrapped__ 属性，并且现在可以作为普通函数调用。\n\n\n\n\n\nclass str(*, encoding='utf-8', errors='strict')\n\nclass str(object)\n\nclass str(object, encoding, errors='strict')\n\nclass str(object, *, errors)\n返回 object 的 str 版本。有关详细信息，请参阅 str()。\nstr 是内置的字符串类。有关字符串的通用信息，请参阅文本序列类型 — str。\n\n\n\n\nsum(iterable, /, start=0)¶\n从左到右将 start 和 iterable 的项目相加，并返回总和。iterable 的项目通常是数字，并且起始值不允许是字符串。\n对于某些用例，sum() 有很好的替代方案。连接字符串序列的首选、快速方法是调用 ''.join(sequence)。要以扩展精度添加浮点值，请参阅 math.fsum()。要连接一系列可迭代对象，请考虑使用 itertools.chain()。\n\n3.8 版本发生变更: start 参数可以指定为关键字参数。\n\n\n3.12 版本发生变更: 浮点数求和改为使用在大多数构建中提供更高精度和更好可交换性的算法。\n\n\n3.14 版本发生变更: 添加了复数求和的专门化，使用与浮点数求和相同的算法。\n\n\n\n\n\nclass super¶\n\nclass super(type, object_or_type=None, /)\n返回一个代理对象，该对象将方法调用委托给 type 的父类或兄弟类。这对于访问在类中被覆盖的继承方法很有用。\nobject_or_type 决定要搜索的方法解析顺序。搜索从 type 右侧的类开始。\n例如，如果 object_or_type 的 __mro__ 是 D -&gt; B -&gt; C -&gt; A -&gt; object，并且 type 的值是 B，那么 super() 会搜索 C -&gt; A -&gt; object。\n对应于 object_or_type 的类的 __mro__ 属性列出了 getattr() 和 super() 使用的方法解析搜索顺序。该属性是动态的，并且可以在继承层次结构更新时更改。\n如果省略第二个参数，则返回的超对象是未绑定的。如果第二个参数是一个对象，则 isinstance(obj, type) 必须为 True。如果第二个参数是一个类型，则 issubclass(type2, type) 必须为 True（这对于类方法很有用）。\n在类的普通方法中直接调用时，两个参数都可以省略（“零参数 super()”）。在这种情况下，type 将是封闭类，obj 将是紧邻封闭函数的第一个参数（通常是 self）。（这意味着零参数 super() 在嵌套函数（包括生成器表达式，它们隐式创建嵌套函数）中将无法按预期工作。）\nsuper 有两种典型的用例。在单一继承的类层次结构中，super 可以用于在不明确命名父类的情况下引用它们，从而使代码更易于维护。这种用法与 super 在其他编程语言中的用法非常相似。\n第二种用例是在动态执行环境中支持协作多重继承。此用例是 Python 独有的，在静态编译语言或仅支持单一继承的语言中找不到。这使得实现“菱形图”成为可能，其中多个基类实现相同的方法。良好的设计要求此类实现（在所有情况下）具有相同的调用签名（因为调用顺序在运行时确定，因为该顺序适应类层次结构中的更改，并且因为该顺序可以包括在运行时之前未知的兄弟类）。\n对于这两种用例，典型的超类调用如下所示\nclass C(B):\n    def method(self, arg):\n        super().method(arg)    # This does the same thing as:\n                               # super(C, self).method(arg)\n\n\n除了方法查找，super() 也适用于属性查找。一个可能的用例是在父类或兄弟类中调用描述符。\n请注意，super() 作为显式点属性查找（例如 super().__getitem__(name)）的绑定过程的一部分实现。它通过实现自己的 __getattribute__() 方法来以可预测的顺序搜索类，从而支持协作多重继承。因此，super() 对于使用语句或运算符（例如 super()[name]）进行的隐式查找是未定义的。\n另请注意，除了零参数形式外，super() 并不限于在方法内部使用。两参数形式精确指定参数并进行适当的引用。零参数形式仅在类定义内部有效，因为编译器会填写必要的详细信息以正确检索正在定义的类，以及访问普通方法的当前实例。\n有关如何使用 super() 设计协作类的实用建议，请参阅 guide to using super()。\n\n3.14 版本发生变更: super 对象现在是pickleable 和copyable。\n\n\n\n\n\nclass tuple(iterable=(), /)\ntuple 实际上不是一个函数，而是一个不可变序列类型，如 元组 和 序列类型 — list、tuple、range 中所述。\n\n\n\n\nclass type(object, /)¶\n\nclass type(name, bases, dict, /, **kwargs)\n使用一个参数时，返回 object 的类型。返回值是一个类型对象，通常与 object.__class__ 返回的对象相同。\n建议使用内置函数 isinstance() 来测试对象的类型，因为它会考虑子类。\n使用三个参数时，返回一个新的类型对象。这本质上是 class 语句的动态形式。name 字符串是类名，并成为 __name__ 属性。bases 元组包含基类，并成为 __bases__ 属性；如果为空，则添加 object，即所有类的最终基类。dict 字典包含类体的属性和方法定义；它可以在成为 __dict__ 属性之前被复制或包装。以下两个语句创建相同的 type 对象\n&gt;&gt;&gt; class X:\n...     a = 1\n...\n&gt;&gt;&gt; X = type('X', (), dict(a=1))\n\n\n参见\n\n关于类属性和方法的文档.\n类型对象\n\n提供给三参数形式的关键字参数以与类定义中的关键字（除了 metaclass）相同的方式传递给适当的元类机制（通常是 __init_subclass__()）。\n另请参阅 自定义类的创建。\n\n3.6 版本发生变更: 不重写 type.__new__ 的 type 子类不能再使用单参数形式获取对象的类型。\n\n\n\n\n\nvars()¶\n\nvars(object, /)\n返回模块、类、实例或任何其他具有 __dict__ 属性的对象的 __dict__ 属性。\n模块和实例等对象具有可更新的 __dict__ 属性；但是，其他对象可能对其 __dict__ 属性有写入限制（例如，类使用 types.MappingProxyType 来防止直接字典更新）。\n如果没有参数，vars() 的行为与 locals() 类似。\n如果指定了一个对象但它没有 __dict__ 属性（例如，如果它的类定义了 __slots__ 属性），则会引发 TypeError 异常。\n\n3.13 版本发生变更: 不带参数调用此函数的结果已更新，如内置函数 locals() 所述。\n\n\n\n\n\nzip(*iterables, strict=False)¶\n并行迭代多个可迭代对象，生成包含每个对象中一个元素的元组。\n示例\n&gt;&gt;&gt; for item in zip([1, 2, 3], ['sugar', 'spice', 'everything nice']):\n...     print(item)\n...\n(1, 'sugar')\n(2, 'spice')\n(3, 'everything nice')\n\n\n更正式地讲：zip() 返回一个元组迭代器，其中第 i 个元组包含每个参数可迭代对象的第 i 个元素。\n另一种理解 zip() 的方式是它将行转换为列，将列转换为行。这类似于转置矩阵。\nzip() 是惰性的：元素直到可迭代对象被迭代才会被处理，例如通过 for 循环或包装在 list 中。\n需要考虑的一点是，传递给 zip() 的可迭代对象可能具有不同的长度；有时是设计使然，有时是由于准备这些可迭代对象的代码中的 bug。Python 提供了三种不同的方法来处理这个问题\n\n默认情况下，zip() 在最短的可迭代对象耗尽时停止。它将忽略较长可迭代对象中剩余的项目，将结果截断为最短可迭代对象的长度\n&gt;&gt;&gt; list(zip(range(3), ['fee', 'fi', 'fo', 'fum']))\n[(0, 'fee'), (1, 'fi'), (2, 'fo')]\n\n\n\nzip() 通常用于假定可迭代对象长度相等的情况。在这种情况下，建议使用 strict=True 选项。它的输出与常规 zip() 相同\n&gt;&gt;&gt; list(zip(('a', 'b', 'c'), (1, 2, 3), strict=True))\n[('a', 1), ('b', 2), ('c', 3)]\n\n\n与默认行为不同，如果一个可迭代对象在其他对象之前耗尽，它会引发 ValueError。\n&gt;&gt;&gt; for item in zip(range(3), ['fee', 'fi', 'fo', 'fum'], strict=True):\n...     print(item)\n...\n(0, 'fee')\n(1, 'fi')\n(2, 'fo')\nTraceback (most recent call last):\n  ...\nValueError: zip() argument 2 is longer than argument 1\n\n\n如果没有 strict=True 参数，任何导致可迭代对象长度不同的错误都将被静默，可能在程序的另一部分表现为难以找到的错误。\n\n较短的可迭代对象可以用一个常量值填充，使所有可迭代对象具有相同的长度。这通过 itertools.zip_longest() 完成。\n\n极端情况：只有一个可迭代参数时，zip() 返回一个由 1 元组组成的迭代器。没有参数时，它返回一个空迭代器。\n提示和技巧\n\n可迭代对象的从左到右评估顺序是有保证的。这使得使用 zip(*[iter(s)]*n, strict=True) 将数据系列聚类为 n 长度组的惯用法成为可能。这会重复 相同 迭代器 n 次，以便每个输出元组都包含对迭代器的 n 次调用的结果。这具有将输入分成 n 长度块的效果。\nzip() 结合 * 运算符可用于解压列表\n&gt;&gt;&gt; x = [1, 2, 3]\n&gt;&gt;&gt; y = [4, 5, 6]\n&gt;&gt;&gt; list(zip(x, y))\n[(1, 4), (2, 5), (3, 6)]\n&gt;&gt;&gt; x2, y2 = zip(*zip(x, y))\n&gt;&gt;&gt; x == list(x2) and y == list(y2)\nTrue\n\n\n\n\n\n3.10 版本发生变更: 添加了 strict 参数。\n\n\n\n\n\n__import__(name, globals=None, locals=None, fromlist=(), level=0)¶\n\n备注\n这是一个高级函数，在日常 Python 编程中不需要，不像 importlib.import_module()。\n\n此函数由 import 语句调用。可以通过替换它（通过导入 builtins 模块并赋值给 builtins.__import__）来改变 import 语句的语义，但强烈不建议这样做，因为使用导入钩子（参见 PEP 302）通常更简单，并且不会导致代码假定使用默认导入实现的问题。也建议不要直接使用 __import__()，而应使用 importlib.import_module()。\n此函数导入模块 name，可能使用给定的 globals 和 locals 来确定如何在包上下文中解释该名称。fromlist 给出应从 name 指定的模块中导入的对象或子模块的名称。标准实现根本不使用其 locals 参数，并且仅使用其 globals 来确定 import 语句的包上下文。\nlevel 指定是使用绝对导入还是相对导入。0（默认值）表示只执行绝对导入。level 的正值表示相对于调用 __import__() 的模块所在目录的父目录数（有关详细信息，请参阅 PEP 328）。\n当 name 变量的形式为 package.module 时，通常返回的是顶级包（第一个点之前的名称），而不是由 name 命名的模块。但是，当给定非空的 fromlist 参数时，返回由 name 命名的模块。\n例如，语句 import spam 产生类似于以下代码的字节码\nspam = __import__('spam', globals(), locals(), [], 0)\n\n\n语句 import spam.ham 导致此调用\nspam = __import__('spam.ham', globals(), locals(), [], 0)\n\n\n请注意，__import__() 如何在此处返回顶级模块，因为这是由 import 语句绑定到名称的对象。\n另一方面，语句 from spam.ham import eggs, sausage as saus 导致\n_temp = __import__('spam.ham', globals(), locals(), ['eggs', 'sausage'], 0)\neggs = _temp.eggs\nsaus = _temp.sausage\n\n\n在这里，spam.ham 模块是从 __import__() 返回的。从这个对象中，要导入的名称被检索并分配给它们各自的名称。\n如果您只是想按名称导入模块（可能在包中），请使用 importlib.import_module()。\n\n3.3 版本发生变更: 不再支持 level 的负值（这也将默认值更改为 0）。\n\n\n3.9 版本发生变更: 当使用命令行选项 -E 或 -I 时，环境变量 PYTHONCASEOK 现在被忽略。\n\n\n\n脚注\n\n\n[1]\n请注意，解析器只接受 Unix 风格的行尾约定。如果您从文件读取代码，请确保使用换行符转换模式来转换 Windows 或 Mac 风格的换行符。\n\n\n\n\n\n            \n          \n        \n      \n      \n        \n  \n    上一主题\n    引言\n  \n  \n    下一主题\n    内置常量\n  \n  \n    本页\n    \n      报告 Bug\n      \n        显示源码\n      \n    \n  \n        \n\n«\n\n\n      \n      \n      \n    \n      导航\n      \n        \n          索引\n        \n          模块 |\n        \n          下一页 |\n        \n          上一页 |\n\n          \n          Python »\n          \n            \n            \n          \n          \n              \n          \n    \n      3.14.0 文档 »\n\n          Python 标准库 »\n        内置函数\n                \n                    \n\n    \n        \n          \n          \n        \n    \n                     |\n                \n            \n主题\n        自动\n        浅色\n        深色\n    \n |\n            \n      \n      \n    © 版权所有 2001 Python Software Foundation。本页面根据 Python 软件基金会许可协议第 2 版进行许可。文档中的示例、配方和其他代码还根据零条款 BSD 许可证进行许可。更多信息请参见历史和许可证。\n    \n    \n    Python 软件基金会是一家非营利性公司。 请捐款。\n    最后更新于 2025 年 10 月 17 日 (06:18 UTC)。 发现错误？使用 Sphinx 8.2.3 创建。",
+      "title": "https://docs.pythonlang.cn/3/library/functions.html (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529350733,
+        "end": 1789529352336
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529352339,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e892001OEFKasTwfP0Dz0",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e0e8001woVDxWrCZPkpDO",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 38350,
+      "output": 150,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 38500,
+      "headroom": 356,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.341Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.341Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.344Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.350Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.350Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.376Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 38500,
+  "providerTokens": 38500,
+  "estimatedInputTokens": 30619,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 38350,
+    "cacheRead": 0,
+    "output": 150
+  },
+  "overflow": false,
+  "headroom": 356,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.377Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.377Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.380Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.648Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529352649,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e9c8001mUoYVlqHNHrkAm",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e8b8001pcJQJrU7oFGJbx",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529352649,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e9c9001l3O0Kj6VamxLyN",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e8b8001pcJQJrU7oFGJbx",
+    "type": "text",
+    "text": "sum() 是 Python 中用于对可迭代对象中的元素求和的内置函数。 start 参数会在求和结果后再加上这个值。 sum() 是处理数值数据最基本的工具之一，配合列表推导式可以实现复杂的条件求和。\n\nSource: https://www.runoob.com/python3/python3-func-sum.html\n\nsum() 方法对序列进行求和计算。 iterable -- 可迭代对象，如：列表、元组、集合。 start -- 指定相加的参数，如果没有设置这个值，默认为0。\n\nSource: http://www.runoob.com/python/python-func-sum.html\n\n版本 3.10 中的改变: 类方法现在继承方法属性（__module__、__name__、__qualname__、__doc__ 和 __annotations__）并具有新的 __wrapped__ 属性。 mode 参数指定要编译的代码类型；如果 source 包含一系列语句，则可以是 'exec'；如果它包含单个表达式，则可以是 'eval'；如果它包含单个交互式语句，则可以是 'single'（在后一种情况下，求值结果不为 None 的表达式语句将被打印出来）。 3.10 版本发生变更: 静态方法现在继承方法属性（__module__、__name__、__qualname__、__doc__ 和 __annotations__），拥有一个新的 __wrapped__ 属性，并且现在可以作为普通函数调用。\n\nSource: https://docs.pythonlang.cn/3/library/functions.html",
+    "time": {
+      "start": 1789529352649,
+      "end": 1789529352649
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529352649,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "part": {
+    "id": "prt_0a842e9c9002kZ2vF9GiDKKObZ",
+    "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+    "messageID": "msg_0a842e8b8001pcJQJrU7oFGJbx",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 78965,
+      "output": 731,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 79696,
+      "headroom": -40840,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.650Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.650Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.651Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.651Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.651Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.651Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.651Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.652Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.652Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789529352652,
+  "sessionID": "ses_f57bd379bffe2g2CgSwBVwxwDl"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.653Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.653Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.0kqb9tGdVH",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.653Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.0kqb9tGdVH",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.653Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.0kqb9tGdVH",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:29:12.653Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 9,
+  "message": "Agent exiting"
+}
+

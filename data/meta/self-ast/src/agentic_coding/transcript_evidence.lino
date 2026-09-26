@@ -1,0 +1,80 @@
+self_ast_census
+  target src/agentic_coding/transcript_evidence.rs
+  language rust
+  fidelity full_ast
+  byte_len 3882
+  line_count 103
+  content_id source_module_91e751563af49b5b
+  symbol_count 4
+  symbols
+    const NAMING_KEYS 24 24
+    function records 37 59
+    function command_for 63 81
+    function preceding_call 85 103
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2372
+    named_node_count 480
+    distinct_node_kinds 58
+    node_kinds
+      arguments 32
+      array_expression 1
+      array_type 4
+      attribute 1
+      attribute_item 1
+      binary_expression 1
+      block 12
+      call_expression 32
+      char_literal 1
+      closure_expression 4
+      closure_parameters 4
+      const_item 1
+      continue_expression 3
+      crate 2
+      doc_comment 24
+      expression_statement 15
+      field_expression 34
+      field_identifier 34
+      for_expression 3
+      function_item 3
+      generic_function 1
+      generic_type 3
+      identifier 98
+      if_expression 5
+      index_expression 1
+      inner_doc_comment_marker 14
+      integer_literal 1
+      let_chain 1
+      let_condition 4
+      let_declaration 8
+      line_comment 28
+      mutable_specifier 2
+      outer_doc_comment_marker 10
+      parameter 7
+      parameters 3
+      primitive_type 3
+      range_expression 1
+      reference_expression 5
+      reference_type 6
+      return_expression 1
+      scoped_identifier 11
+      scoped_type_identifier 1
+      scoped_use_list 1
+      source_file 1
+      string_content 9
+      string_literal 9
+      super 1
+      try_expression 1
+      tuple_expression 1
+      tuple_pattern 3
+      tuple_struct_pattern 5
+      tuple_type 1
+      type_arguments 4
+      type_identifier 13
+      unary_expression 1
+      use_declaration 2
+      use_list 1
+      visibility_modifier 1

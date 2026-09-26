@@ -2,28 +2,29 @@ self_ast_census
   target src/program_plan.rs
   language rust
   fidelity signature
-  byte_len 12408
-  line_count 308
-  content_id source_module_96d8d6e4deb099c7
-  symbol_count 20
+  byte_len 13122
+  line_count 320
+  content_id source_module_21e2296ce7a9df9a
+  symbol_count 21
   symbols
     const TASK_NODE 46 46
     const MODIFIER_NODE 48 48
     const PROGRAM_PLAN_RULES_LINO 51 51
-    function rules 58 72
-    static RULES 59 59
-    function derive_inverse_rules 86 134
-    function modifier_slugs 143 155
-    static MODIFIER_SLUGS 144 144
-    struct ProgramPlan 160 171
-    function was_modified 176 178
-    function links_notation 183 202
-    function compiler_input_tsv 206 216
-    function compile 220 225
-    function compile_with_rules 228 240
-    enum ProgramPlanCompilationError 245 248
-    function fmt 251 258
-    function lower 266 268
-    function lower_with_rules 275 293
-    function resolve_task 298 300
-    function resolved_task_from_graph 302 308
+    const LEARNED_PROGRAM_RULES_LINO 54 55
+    function rules 62 84
+    static RULES 63 63
+    function derive_inverse_rules 98 146
+    function modifier_slugs 155 167
+    static MODIFIER_SLUGS 156 156
+    struct ProgramPlan 172 183
+    function was_modified 188 190
+    function links_notation 195 214
+    function compiler_input_tsv 218 228
+    function compile 232 237
+    function compile_with_rules 240 252
+    enum ProgramPlanCompilationError 257 260
+    function fmt 263 270
+    function lower 278 280
+    function lower_with_rules 287 305
+    function resolve_task 310 312
+    function resolved_task_from_graph 314 320

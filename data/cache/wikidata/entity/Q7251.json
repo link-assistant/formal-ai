@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "艾倫·圖靈"
+        },
+        "es": {
+          "language": "es",
+          "value": "Alan Turing"
         }
       },
       "descriptions": {
@@ -33,14 +37,14 @@
         "zh": {
           "language": "zh",
           "value": "英國數學家、計算機科學家"
+        },
+        "es": {
+          "language": "es",
+          "value": "matemático, filósofo y criptógrafo británico (1912-1954)"
         }
       },
       "aliases": {
         "en": [
-          {
-            "language": "en",
-            "value": "Alan M. Turing"
-          },
           {
             "language": "en",
             "value": "Alan Mathieson Turing"
@@ -51,27 +55,27 @@
           },
           {
             "language": "en",
+            "value": "Alan M. Turing"
+          },
+          {
+            "language": "en",
             "value": "Alan Mathison Turing"
           }
         ],
         "ru": [
           {
             "language": "ru",
-            "value": "Тьюринг, Алан"
+            "value": "Тьюринг, Алан Матисон"
           },
           {
             "language": "ru",
-            "value": "Тьюринг, Алан Матисон"
+            "value": "Тьюринг, Алан"
           }
         ],
         "zh": [
           {
             "language": "zh",
-            "value": "圖靈"
-          },
-          {
-            "language": "zh",
-            "value": "艾伦·图灵"
+            "value": "阿兰·图灵"
           },
           {
             "language": "zh",
@@ -79,15 +83,66 @@
           },
           {
             "language": "zh",
-            "value": "阿兰·图灵"
+            "value": "圖靈"
           },
           {
             "language": "zh",
             "value": "阿兰·麦席森·图灵"
+          },
+          {
+            "language": "zh",
+            "value": "艾伦·图灵"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Alan Mathison Turing"
+          },
+          {
+            "language": "es",
+            "value": "Alan M. Turing"
           }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Alan Turing"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Тьюринг, Алан"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "एलेन ट्यूरिंग"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "艾伦·图灵"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Alan Turing"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

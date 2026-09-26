@@ -1,0 +1,89 @@
+market_price_references
+  asset ETH
+    label Ethereum
+    grounded-in Q16783523
+    quote-currency USDT
+    lexeme en
+      surface
+        text "$ETH"
+      surface
+        text "ethereum"
+      surface
+        text "etherium"
+      surface
+        text "eth"
+    lexeme ru
+      surface
+        text "эфириум"
+      surface
+        text "эфир"
+    lexeme hi
+      surface
+        text "एथेरियम"
+    lexeme zh
+      surface
+        text "以太坊"
+    reference 2021
+      source-id "binance_ethusdt_1d_2021"
+      source-label "Binance ETHUSDT daily klines"
+      source-url "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1609459200000&endTime=1640995199999&limit=1000"
+      observed-min-price 714.29
+      observed-min-date 2021-01-01
+      observed-max-price 4868.00
+      observed-max-date 2021-11-10
+    reference 2022
+      source-id "binance_ethusdt_1d_2022"
+      source-label "Binance ETHUSDT daily klines"
+      source-url "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1640995200000&endTime=1672531199999&limit=1000"
+      observed-min-price 881.56
+      observed-min-date 2022-06-18
+      observed-max-price 3900.73
+      observed-max-date 2022-01-04
+    reference 2023
+      source-id "binance_ethusdt_1d_2023"
+      source-label "Binance ETHUSDT daily klines"
+      source-url "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1672531200000&endTime=1704067199999&limit=1000"
+      observed-min-price 1190.57
+      observed-min-date 2023-01-01
+      observed-max-price 2445.80
+      observed-max-date 2023-12-28
+    reference 2024
+      source-id "binance_ethusdt_1d_2024"
+      source-label "Binance ETHUSDT daily klines"
+      source-url "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1704067200000&endTime=1735689599999&limit=1000"
+      observed-min-price 2100.00
+      observed-min-date 2024-01-03
+      observed-max-price 4107.80
+      observed-max-date 2024-12-16
+  asset BTC
+    label Bitcoin
+    grounded-in Q131723
+    quote-currency USDT
+    lexeme en
+      surface
+        text "$BTC"
+      surface
+        text "bitcoin"
+      surface
+        text "btc"
+    lexeme ru
+      surface
+        text "биткоин"
+      surface
+        text "биткойн"
+    lexeme hi
+      surface
+        text "बिटकॉइन"
+    lexeme zh
+      surface
+        text "比特币"
+      surface
+        text "比特幣"
+    reference 2024
+      source-id "binance_btcusdt_1d_2024"
+      source-label "Binance BTCUSDT daily klines"
+      source-url "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1704067200000&endTime=1735689599999&limit=1000"
+      observed-min-price 38555.00
+      observed-min-date 2024-01-23
+      observed-max-price 108353.00
+      observed-max-date 2024-12-17

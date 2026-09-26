@@ -9,7 +9,7 @@
 // means the host wiring stays thin and the policy is unit-testable.
 //
 // The web app drives every desktop affordance off this status object via
-// `normalizeDesktopStatus(status)` in `src/web/app.js`: it only routes chat to
+// `normalizeDesktopStatus(status)` in `js/app.js`: it only routes chat to
 // the local server when both `apiReady` and `apiBase` are set, and otherwise
 // stays on the in-process symbolic engine. So an in-process surface is simply a
 // status with an empty `apiBase`.

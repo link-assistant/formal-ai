@@ -1,0 +1,41 @@
+Q43287
+  aliases
+    en ("German Reich" "Imperial Germany" "Second Reich" "German Empire (1871-1918)")
+    es ("Imperio de Alemania" "Monarquía en Alemania" "II Reich" "Segundo Reich" "Segundo Imperio Aleman" "II Imperio Alemán" "Monarquia en Alemania" "Segundo Imperio Alemán" "Kaiserlich Deutsches Reich" Kaiserreich "Imperio Alemán" "Reich Alemán")
+    ru ("Второй Рейх" "Немецкая монархия" "II Рейх" "Кайзеровская Германия" "Германия")
+    zh ("德意志帝国" "德意志第二帝國")
+  descriptions
+    en "German nation-state in Central Europe from 1871 to 1918"
+    es "país de Europa (1871-1918)"
+    ru "германское государство в 1871–1918 годы"
+    zh "1871年普鲁士王國建立的德意志第二帝國"
+  id Q43287
+  labels
+    en "German Empire"
+    es "Imperio alemán"
+    hi "जर्मन साम्राज्य"
+    ru "Германская империя"
+    zh "德意志帝國"
+  sitelinks
+    enwiki
+      site enwiki
+      title "German Empire"
+    eswiki
+      site eswiki
+      title "Imperio alemán"
+    hiwiki
+      site hiwiki
+      title "जर्मन साम्राज्य"
+    ruwiki
+      site ruwiki
+      title "Германская империя"
+    zhwiki
+      site zhwiki
+      title "德意志帝國"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

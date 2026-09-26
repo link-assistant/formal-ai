@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-artifact_dir="${1:-src/web}"
+artifact_dir="${1:-js}"
 asset_version="${2:-${FORMAL_AI_ASSET_VERSION:-}}"
 expected_sha="${3:-${GITHUB_SHA:-$asset_version}}"
 formal_ai_version="${4:-${FORMAL_AI_VERSION:-}}"
@@ -17,7 +17,7 @@ if [[ -z "$expected_sha" ]]; then
 fi
 
 # Derive the formal-ai release version from Cargo.toml when it is not passed
-# explicitly. Issue #72: without this step `src/web/index.html` keeps the
+# explicitly. Issue #72: without this step `js/index.html` keeps the
 # `__FORMAL_AI_VERSION__` placeholder (or the historical hardcoded `0.16.0`),
 # so the deployed GitHub Pages site advertises a stale version and every
 # issue report quotes the wrong number.

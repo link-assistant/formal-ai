@@ -1,0 +1,16 @@
+link_edit_rules
+  issue 1085
+  purpose "The three edit shapes the Agent ladder's 32 leaves use, as substitutions over the meta-language links network of the target file: which grammar node kinds each shape may touch is data here, not a Rust literal."
+  engine meta_language
+  pipeline "parse -> select links by kind and text -> apply_edit on their byte ranges -> reconstruct_text -> rustfmt -> cargo check -> cargo test"
+  rule insert_member
+    anchor_kind identifier
+    list_kind array_expression
+    element_kind string_literal
+  rule replace_literal
+    node_kind string_literal
+    node_kind raw_string_literal
+  rule rename_identifier
+    node_kind identifier
+    node_kind field_identifier
+    node_kind type_identifier

@@ -38,7 +38,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8819}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-819/self-hosting-evidence}"
@@ -96,7 +96,7 @@ cp "$work/.formal-ai/general-change-plan.lino" "$OUT/general-change-plan.lino" 2
 # generated closure. Prefer a prebuilt example binary; fall back to `cargo run` so a
 # clean checkout reproduces it. The per-shard summary goes to stderr.
 rm -f "$OUT"/whole-repository-projection*.lino
-EXAMPLE_BIN="$ROOT/target/release/examples/project_source_links_sharded"
+EXAMPLE_BIN="$ROOT/rust/target/release/examples/project_source_links_sharded"
 if [[ -x "$EXAMPLE_BIN" ]]; then
   "$EXAMPLE_BIN" "$OUT" 2>"$OUT/whole-repository-projection.summary.log"
 else

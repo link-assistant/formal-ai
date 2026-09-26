@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_21.js"
-  ceiling 692
-  rationale "Relative-meta-logic mirror of `src/relative_meta_logic.rs` and `src/statement_verification.rs`."
+  ceiling 829
+  rationale "Relative-meta-logic mirror of `rust/src/relative_meta_logic.rs` and `rust/src/statement_verification.rs`. Ceiling moved 692 to 829 with the terminal parity mirror arms that keep shell task recognition in the browser."

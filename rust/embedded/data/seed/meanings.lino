@@ -1,0 +1,894 @@
+meanings
+  result
+    defined-by output
+    role program_artifact
+    lexeme en
+      surface
+        text result
+      surface
+        text results
+    lexeme ru
+      surface
+        text результат
+      surface
+        text результата
+      surface
+        text результаты
+      surface
+        text результатов
+    lexeme hi
+      surface
+        text परिणाम
+      surface
+        text परिणामों
+      surface
+        text नतीजा
+      surface
+        text नतीजे
+    lexeme zh
+      surface
+        text 结果
+    lexeme es
+      surface
+        text resultado
+      surface
+        text resultados
+  output
+    defined-by result
+    defined-by program
+    role program_artifact
+    lexeme en
+      surface
+        text output
+    lexeme ru
+      surface
+        text вывод
+    lexeme hi
+      surface
+        text आउटपुट
+    lexeme zh
+      surface
+        text 输出
+  program
+    grounded-in Q40056
+    defined-by code
+    defined-by entity
+    role program_artifact
+    role program_kind
+    role program_genus
+    lexeme en
+      surface
+        text program
+      surface
+        text programme
+    lexeme ru
+      surface
+        text программа
+      surface
+        text программу
+      surface
+        text программе
+      surface
+        text программы
+      surface
+        text программку
+    lexeme hi
+      surface
+        text प्रोग्राम
+    lexeme zh
+      surface
+        text 程序
+    lexeme es
+      surface
+        text programa
+  script
+    defined-by program
+    defined-by code
+    role program_artifact
+    role program_kind
+    role script_or_code_artifact
+    lexeme en
+      surface
+        text script
+    lexeme ru
+      surface
+        text скрипт
+    lexeme hi
+      surface
+        text स्क्रिप्ट
+    lexeme zh
+      surface
+        text 脚本
+    lexeme es
+      surface
+        text guion
+  code
+    grounded-in Q128751
+    defined-by program
+    role program_artifact
+    role program_kind
+    role script_or_code_artifact
+    lexeme en
+      surface
+        text code
+    lexeme ru
+      surface
+        text код
+      surface
+        text кода
+      surface
+        text коде
+      surface
+        text кодом
+    lexeme hi
+      surface
+        text कोड
+    lexeme zh
+      surface
+        text 代码
+    lexeme es
+      surface
+        text código
+      surface
+        text codigo
+  hello_world
+    defined-by program
+    defined-by code
+    role hello_world_reference
+    lexeme en
+      surface
+        text "hello world"
+    lexeme ru
+      surface
+        text "привет мир"
+      surface
+        text "хелло ворлд"
+    lexeme hi
+      surface
+        text "नमस्ते दुनिया"
+      surface
+        text "हैलो वर्ल्ड"
+    lexeme zh
+      surface
+        text 你好世界
+      surface
+        text 你好，世界
+  program_modification_reference
+    defined-by reference
+    role program_modification_reference
+    precondition "a program-modification request refers to an earlier artifact"
+    effect "the referenced program artifact is selected for modification"
+    unit "not applicable"
+    example "change it"
+    lexeme en
+      surface
+        text it
+      surface
+        text that
+    lexeme ru
+      surface
+        text это
+      surface
+        text его
+      surface
+        text её
+    lexeme hi
+      surface
+        text इसे
+      surface
+        text उसको
+    lexeme zh
+      surface
+        text 它
+      surface
+        text 这个
+    lexeme es
+      surface
+        text lo
+      surface
+        text eso
+  sort
+    grounded-in Q2303697
+    defined-by order
+    defined-by action
+    role program_artifact
+    role program_modification
+    lexeme en
+      surface
+        text sort
+      surface
+        text sorts
+      surface
+        text sorting
+      surface
+        text sorted
+    lexeme ru
+      surface
+        text сортировка
+      surface
+        text сортировку
+      surface
+        text сортировки
+      surface
+        text сортировке
+      surface
+        text сортировкой
+      surface
+        text сортировать
+      surface
+        text отсортируй
+      surface
+        text отсортируйте
+      surface
+        text отсортировать
+    lexeme hi
+      surface
+        text सॉर्ट
+      surface
+        text क्रमबद्ध
+    lexeme zh
+      surface
+        text 排序
+    lexeme es
+      surface
+        text ordena
+      surface
+        text ordenar
+      surface
+        text ordenado
+  order
+    defined-by sort
+    role program_artifact
+    role program_modification
+    lexeme en
+      surface
+        text order
+      surface
+        text ordering
+      surface
+        text reorder
+    lexeme ru
+      surface
+        text порядок
+      surface
+        text упорядочи
+    lexeme hi
+      surface
+        text क्रम
+    lexeme zh
+      surface
+        text 顺序
+    lexeme es
+      surface
+        text orden
+  reverse
+    defined-by order
+    role program_modification
+    lexeme en
+      surface
+        text reverse
+      surface
+        text reversed
+    lexeme ru
+      surface
+        text обратный
+      surface
+        text обратном
+      surface
+        text обратную
+      surface
+        text обратного
+    lexeme hi
+      surface
+        text उल्टा
+      surface
+        text उल्टे
+    lexeme zh
+      surface
+        text 反向
+      surface
+        text 相反
+      surface
+        text 倒序
+    lexeme es
+      surface
+        text inverso
+      surface
+        text inversa
+  cancel
+    defined-by reverse
+    defined-by modify
+    role program_modification
+    lexeme en
+      surface
+        text cancel
+      surface
+        text undo
+      surface
+        text remove
+      surface
+        text revert
+    lexeme ru
+      surface
+        text отмени
+      surface
+        text отмените
+      surface
+        text отменить
+      surface
+        text убери
+      surface
+        text уберите
+      surface
+        text убрать
+    lexeme hi
+      surface
+        text रद्द
+      surface
+        text हटाओ
+      surface
+        text हटाएं
+      surface
+        text हटा
+    lexeme zh
+      surface
+        text 取消
+      surface
+        text 撤销
+      surface
+        text 去掉
+      surface
+        text 去除
+  modify
+    defined-by update
+    defined-by action
+    role program_modification
+    lexeme en
+      surface
+        text change
+      surface
+        text modify
+      surface
+        text alter
+    lexeme ru
+      surface
+        text измени
+      surface
+        text изменить
+      surface
+        text измените
+    lexeme hi
+      surface
+        text बदलें
+      surface
+        text बदलो
+    lexeme zh
+      surface
+        text 修改
+      surface
+        text 改
+    lexeme es
+      surface
+        text cambia
+      surface
+        text cambiar
+      surface
+        text modifica
+  update
+    defined-by modify
+    role program_modification
+    lexeme en
+      surface
+        text update
+    lexeme ru
+      surface
+        text обнови
+      surface
+        text обновить
+      surface
+        text обновите
+    lexeme hi
+      surface
+        text अपडेट
+    lexeme zh
+      surface
+        text 更新
+  make
+    defined-by program
+    defined-by output
+    role program_modification
+    role program_request
+    role software_authoring_action
+    lexeme en
+      surface
+        text make
+    lexeme ru
+      surface
+        text сделай
+      surface
+        text сделайте
+      surface
+        text сделать
+    lexeme hi
+      surface
+        text बनाओ
+      surface
+        text बनाएं
+    lexeme zh
+      surface
+        text 制作
+  function
+    defined-by code
+    defined-by program
+    role program_artifact
+    role program_kind
+    lexeme en
+      surface
+        text function
+      surface
+        text func
+    lexeme ru
+      surface
+        text функция
+      surface
+        text функцию
+      surface
+        text функцией
+    lexeme hi
+      surface
+        text फ़ंक्शन
+      surface
+        text फंक्शन
+    lexeme zh
+      surface
+        text 函数
+  class
+    defined-by code
+    defined-by program
+    role program_artifact
+    role program_kind
+    lexeme en
+      surface
+        text class
+    lexeme ru
+      surface
+        text класс
+      surface
+        text класса
+    lexeme hi
+      surface
+        text क्लास
+    lexeme zh
+      surface
+        text 类
+  write
+    defined-by code
+    defined-by program
+    role program_request
+    role software_authoring_action
+    role script_authoring_verb
+    lexeme en
+      surface
+        text write
+    lexeme ru
+      surface
+        text напиши
+      surface
+        text напишите
+      surface
+        text написать
+    lexeme hi
+      surface
+        text लिखो
+      surface
+        text लिखें
+    lexeme zh
+      surface
+        text 编写
+      surface
+        text 写
+    lexeme es
+      surface
+        text escribe
+      surface
+        text escribir
+      surface
+        text escríbeme
+  request
+    defined-by program
+    defined-by code
+    role script_authoring_verb
+    lexeme en
+      surface
+        text need
+      surface
+        text want
+      surface
+        text "give me"
+    lexeme ru
+      surface
+        text нужен
+      surface
+        text нужна
+      surface
+        text нужно
+      surface
+        text дай
+      surface
+        text дайте
+    lexeme hi
+      surface
+        text चाहिए
+      surface
+        text "मुझे दो"
+    lexeme zh
+      surface
+        text 需要
+      surface
+        text 给我
+    lexeme es
+      surface
+        text necesito
+      surface
+        text quiero
+      surface
+        text dame
+  request_function_word
+    defined-by concept
+    role request_function_word
+    lexeme en
+      surface
+        text i
+      surface
+        text me
+      surface
+        text my
+      surface
+        text we
+      surface
+        text us
+      surface
+        text our
+      surface
+        text you
+      surface
+        text a
+      surface
+        text an
+      surface
+        text the
+      surface
+        text some
+      surface
+        text any
+      surface
+        text this
+      surface
+        text that
+      surface
+        text these
+      surface
+        text those
+      surface
+        text it
+      surface
+        text please
+      surface
+        text to
+      surface
+        text for
+      surface
+        text of
+      surface
+        text in
+      surface
+        text on
+      surface
+        text with
+      surface
+        text and
+      surface
+        text or
+      surface
+        text just
+      surface
+        text now
+      surface
+        text here
+    lexeme ru
+      surface
+        text я
+      surface
+        text мне
+      surface
+        text меня
+      surface
+        text мой
+      surface
+        text моя
+      surface
+        text мои
+      surface
+        text мы
+      surface
+        text нам
+      surface
+        text нас
+      surface
+        text наш
+      surface
+        text вы
+      surface
+        text вам
+      surface
+        text это
+      surface
+        text этот
+      surface
+        text этого
+      surface
+        text эта
+      surface
+        text эти
+      surface
+        text тот
+      surface
+        text пожалуйста
+      surface
+        text и
+      surface
+        text или
+      surface
+        text в
+      surface
+        text во
+      surface
+        text к
+      surface
+        text ко
+      surface
+        text для
+      surface
+        text из
+      surface
+        text на
+      surface
+        text с
+      surface
+        text со
+      surface
+        text просто
+      surface
+        text сейчас
+      surface
+        text здесь
+    lexeme hi
+      surface
+        text मुझे
+      surface
+        text मैं
+      surface
+        text मेरा
+      surface
+        text मेरी
+      surface
+        text हम
+      surface
+        text हमें
+      surface
+        text हमारा
+      surface
+        text आप
+      surface
+        text यह
+      surface
+        text वह
+      surface
+        text ये
+      surface
+        text वे
+      surface
+        text कृपया
+      surface
+        text को
+      surface
+        text के
+      surface
+        text का
+      surface
+        text की
+      surface
+        text में
+      surface
+        text से
+      surface
+        text और
+      surface
+        text या
+      surface
+        text बस
+      surface
+        text अभी
+      surface
+        text यहाँ
+    lexeme zh
+      surface
+        text 我们
+      surface
+        text 我的
+      surface
+        text 我
+      surface
+        text 你
+      surface
+        text 这个
+      surface
+        text 那个
+      surface
+        text 这里
+      surface
+        text 这
+      surface
+        text 那
+      surface
+        text 请
+      surface
+        text 的
+      surface
+        text 和
+      surface
+        text 或
+      surface
+        text 给
+      surface
+        text 一些
+      surface
+        text 就
+      surface
+        text 现在
+    lexeme es
+      surface
+        text yo
+      surface
+        text me
+      surface
+        text mi
+      surface
+        text mis
+      surface
+        text nosotros
+      surface
+        text nos
+      surface
+        text nuestro
+      surface
+        text usted
+      surface
+        text un
+      surface
+        text una
+      surface
+        text unos
+      surface
+        text unas
+      surface
+        text el
+      surface
+        text la
+      surface
+        text los
+      surface
+        text las
+      surface
+        text algo
+      surface
+        text esto
+      surface
+        text este
+      surface
+        text esta
+      surface
+        text eso
+      surface
+        text ese
+      surface
+        text "por favor"
+      surface
+        text de
+      surface
+        text para
+      surface
+        text en
+      surface
+        text con
+      surface
+        text y
+      surface
+        text o
+      surface
+        text ya
+      surface
+        text aquí
+  create
+    defined-by make
+    defined-by program
+    role program_request
+    role software_authoring_action
+    lexeme en
+      surface
+        text create
+    lexeme ru
+      surface
+        text создай
+      surface
+        text создайте
+    lexeme hi
+      surface
+        text बनाओ
+      surface
+        text बनाएं
+    lexeme zh
+      surface
+        text 创建
+  show
+    defined-by output
+    defined-by result
+    role program_request
+    lexeme en
+      surface
+        text show
+    lexeme ru
+      surface
+        text покажи
+      surface
+        text покажите
+    lexeme hi
+      surface
+        text दिखाओ
+      surface
+        text दिखाएं
+    lexeme zh
+      surface
+        text 显示
+  generate
+    defined-by output
+    defined-by program
+    role program_request
+    role software_authoring_action
+    lexeme en
+      surface
+        text generate
+    lexeme ru
+      surface
+        text сгенерируй
+      surface
+        text сгенерируйте
+    lexeme hi
+      surface
+        text उत्पन्न
+      surface
+        text जनरेट
+    lexeme zh
+      surface
+        text 生成
+  build
+    defined-by make
+    defined-by program
+    role program_request
+    role software_authoring_action
+    lexeme en
+      surface
+        text build
+    lexeme ru
+      surface
+        text построй
+      surface
+        text собери
+    lexeme hi
+      surface
+        text बनाओ
+      surface
+        text बनाएं
+    lexeme zh
+      surface
+        text 构建

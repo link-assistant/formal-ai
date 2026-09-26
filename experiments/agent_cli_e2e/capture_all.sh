@@ -24,7 +24,7 @@ cd "$ROOT" || exit 1
 RUN="experiments/agent_cli_e2e/run_agent_cli.sh"
 COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
 BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)"
-FA_VERSION="$("$ROOT/target/release/formal-ai" --version 2>/dev/null || echo 'formal-ai ?')"
+FA_VERSION="$("$ROOT/rust/target/release/formal-ai" --version 2>/dev/null || echo 'formal-ai ?')"
 AGENT_VERSION="$(agent --version 2>/dev/null || echo '?')"
 
 echo "# Real Agent CLI ↔ formal-ai E2E — live multi-recipe run"

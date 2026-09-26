@@ -1,0 +1,617 @@
+meanings
+  mechanism_inquiry
+    defined-by inquiry
+    defined-by action
+    role mechanism_inquiry
+    lexeme en
+      surface
+        text "how it works"
+      surface
+        text "how does it work"
+      surface
+        text "how does …"
+      surface
+        text "how do …"
+      surface
+        text "how did …"
+      surface
+        text "how is …"
+      surface
+        text "how … works"
+      surface
+        text "how … work"
+    lexeme ru
+      surface
+        text "как это работает"
+      surface
+        text "как оно работает"
+      surface
+        text "как устроен …"
+      surface
+        text "как устроена …"
+      surface
+        text "как устроено …"
+      surface
+        text "как устроены …"
+      surface
+        text "как работает …"
+      surface
+        text "как работают …"
+      surface
+        text "как … работает"
+      surface
+        text "как … работают"
+      surface
+        text "… как работает"
+      surface
+        text "… как работают"
+    lexeme hi
+      surface
+        text "यह कैसे काम करता है"
+      surface
+        text "यह कैसे काम करती है"
+      surface
+        text "यह कैसे काम करता"
+      surface
+        text "… कैसे काम करता है"
+      surface
+        text "… कैसे काम करती है"
+      surface
+        text "… कैसे काम करते हैं"
+      surface
+        text "… कैसे काम करता"
+      surface
+        text "… कैसे काम करती"
+      surface
+        text "… कैसे काम करते"
+    lexeme zh
+      surface
+        text 这是如何工作的
+      surface
+        text 这是怎么工作的
+      surface
+        text 这个如何工作
+      surface
+        text 它如何工作
+      surface
+        text 它是如何工作的
+      surface
+        text 它怎么工作
+      surface
+        text "… 是如何工作的"
+      surface
+        text …是如何工作的
+      surface
+        text "… 是怎么工作的"
+      surface
+        text …是怎么工作的
+      surface
+        text "… 如何工作"
+      surface
+        text …如何工作
+      surface
+        text "… 怎么工作"
+      surface
+        text …怎么工作
+      surface
+        text "… 的工作原理是什么"
+      surface
+        text …的工作原理是什么
+  procedural_request
+    defined-by inquiry
+    defined-by action
+    role procedural_request
+    lexeme en
+      surface
+        text "please tell me how to …"
+      surface
+        text "please show me how to …"
+      surface
+        text "tell me how to …"
+      surface
+        text "show me how to …"
+      surface
+        text "what are the steps to …"
+      surface
+        text "what steps do i need to …"
+      surface
+        text "what steps do we need to …"
+      surface
+        text "how should i …"
+      surface
+        text "how should we …"
+      surface
+        text "how could i …"
+      surface
+        text "how could we …"
+      surface
+        text "how would i …"
+      surface
+        text "how would we …"
+      surface
+        text "how can i …"
+      surface
+        text "how can we …"
+      surface
+        text "how do i …"
+      surface
+        text "how do we …"
+      surface
+        text "how to do …"
+        action do
+      surface
+        text "how to …"
+    lexeme ru
+      surface
+        text "как сделать …"
+        action do
+      surface
+        text "как делать …"
+        action do
+      surface
+        text "как выполнить …"
+        action perform
+      surface
+        text "как реализовать …"
+        action implement
+      surface
+        text "как создать …"
+        action create
+      surface
+        text "как написать …"
+        action write
+    lexeme hi
+      surface
+        text "कैसे करें …"
+        action do
+      surface
+        text "कैसे करे …"
+        action do
+      surface
+        text "कैसे लागू करें …"
+        action implement
+      surface
+        text "कैसे बनाएं …"
+        action create
+      surface
+        text "कैसे बनाएँ …"
+        action create
+      surface
+        text "कैसे लिखें …"
+        action write
+    lexeme zh
+      surface
+        text "如何做 …"
+        action do
+      surface
+        text "怎么做 …"
+        action do
+      surface
+        text "如何实现 …"
+        action implement
+      surface
+        text "怎么实现 …"
+        action implement
+      surface
+        text "如何创建 …"
+        action create
+      surface
+        text "怎么创建 …"
+        action create
+      surface
+        text "如何写 …"
+        action write
+      surface
+        text "怎么写 …"
+        action write
+  procedural_request_elided_lead
+    defined-by inquiry
+    defined-by procedural_request
+    role procedural_request_elided_lead
+    lexeme en
+      surface
+        text "how …"
+    lexeme ru
+      surface
+        text "как …"
+    lexeme hi
+      surface
+        text "कैसे …"
+    lexeme zh
+      surface
+        text 如何…
+      surface
+        text 怎么…
+  procedural_action_order
+    defined-by action
+    defined-by procedural_request
+    role procedural_action_verb
+    lexeme en
+      surface
+        text order
+  procedural_action_install
+    defined-by action
+    defined-by procedural_request
+    role procedural_action_verb
+    lexeme en
+      surface
+        text install
+        action install
+    lexeme ru
+      surface
+        text установить
+        action install
+      surface
+        text устанавливать
+        action install
+    lexeme hi
+      surface
+        text "इंस्टॉल करें"
+        action install
+      surface
+        text "स्थापित करें"
+        action install
+    lexeme zh
+      surface
+        text 安装
+        action install
+  connect
+    defined-by action
+    defined-by procedural_request
+    role procedural_action_verb
+    lexeme en
+      surface
+        text connect
+        action connect
+    lexeme ru
+      surface
+        text подключить
+        action connect
+      surface
+        text подключать
+        action connect
+    lexeme hi
+      surface
+        text "कनेक्ट करें"
+        action connect
+      surface
+        text जोड़ें
+        action connect
+    lexeme zh
+      surface
+        text 连接
+        action connect
+  mechanism_predicate
+    defined-by action
+    defined-by mechanism_inquiry
+    role mechanism_predicate
+    lexeme en
+      surface
+        text "… work"
+      surface
+        text "… works"
+      surface
+        text "… structured"
+      surface
+        text "… organized"
+      surface
+        text "… organised"
+      surface
+        text "… built"
+    lexeme ru
+      surface
+        text "… работает"
+      surface
+        text "… устроен"
+    lexeme hi
+      surface
+        text "… काम करता है"
+      surface
+        text "… बना है"
+    lexeme zh
+      surface
+        text …工作
+      surface
+        text …构建
+  detail_modifier
+    defined-by property
+    defined-by mechanism_inquiry
+    role detail_modifier
+    lexeme en
+      surface
+        text "… in detail"
+      surface
+        text "… internally"
+      surface
+        text "… exactly"
+      surface
+        text "… please"
+    lexeme ru
+      surface
+        text "… подробнее"
+      surface
+        text "… подробно"
+      surface
+        text "… пожалуйста"
+    lexeme hi
+      surface
+        text "… विस्तार से"
+      surface
+        text "… कृपया"
+    lexeme zh
+      surface
+        text …详细
+      surface
+        text …请
+  non_referential_subject
+    defined-by entity
+    defined-by mechanism_inquiry
+    role non_referential_subject
+    lexeme en
+      surface
+        text it
+      surface
+        text this
+      surface
+        text that
+      surface
+        text you
+      surface
+        text yourself
+      surface
+        text does
+      surface
+        text do
+      surface
+        text "does …"
+      surface
+        text "do …"
+      surface
+        text "to …"
+      surface
+        text "you …"
+    lexeme ru
+      surface
+        text это
+      surface
+        text оно
+      surface
+        text он
+      surface
+        text она
+      surface
+        text они
+      surface
+        text ты
+      surface
+        text вы
+    lexeme hi
+      surface
+        text यह
+      surface
+        text ये
+    lexeme zh
+      surface
+        text 这
+      surface
+        text 这个
+      surface
+        text 它
+  procedural_task_modifier
+    defined-by property
+    defined-by procedural_request
+    role procedural_task_modifier
+    lexeme en
+      surface
+        text "… step by step"
+      surface
+        text "… in steps"
+      surface
+        text "… with steps"
+      surface
+        text "… for me"
+      surface
+        text "… please"
+    lexeme ru
+      surface
+        text "… напиши по шагам"
+      surface
+        text "… по шагам"
+      surface
+        text "… пошагово"
+      surface
+        text "… пожалуйста"
+    lexeme hi
+      surface
+        text "… चरणों में लिखो"
+      surface
+        text "… चरणों में बताओ"
+      surface
+        text "… कदम दर कदम"
+      surface
+        text "… कृपया"
+    lexeme zh
+      surface
+        text "… 按步骤写"
+      surface
+        text "… 按步骤说明"
+      surface
+        text "… 一步一步写"
+      surface
+        text "… 请"
+  procedural_elaboration
+    defined-by inquiry
+    defined-by procedural_request
+    role procedural_elaboration
+    lexeme en
+      surface
+        text "specific instructions"
+      surface
+        text "specific steps"
+      surface
+        text "detailed instructions"
+      surface
+        text "detailed steps"
+      surface
+        text "exact steps"
+      surface
+        text "exact instructions"
+      surface
+        text "the steps"
+      surface
+        text "step by step"
+      surface
+        text "step-by-step"
+      surface
+        text "more specific"
+      surface
+        text "more detail"
+      surface
+        text "more details"
+      surface
+        text "in detail"
+      surface
+        text "elaborate"
+    lexeme ru
+      surface
+        text "конкретные инструкции"
+      surface
+        text "конкретные шаги"
+      surface
+        text "подробные инструкции"
+      surface
+        text "подробные шаги"
+      surface
+        text "точные шаги"
+      surface
+        text "пошагово"
+      surface
+        text "по шагам"
+      surface
+        text "поподробнее"
+      surface
+        text "подробнее"
+      surface
+        text "более конкретно"
+      surface
+        text "конкретнее"
+    lexeme hi
+      surface
+        text "विशिष्ट निर्देश"
+      surface
+        text "विस्तृत निर्देश"
+      surface
+        text "विस्तृत चरण"
+      surface
+        text "सटीक चरण"
+      surface
+        text "चरण दर चरण"
+      surface
+        text "कदम दर कदम"
+      surface
+        text "अधिक विस्तार"
+      surface
+        text "और विस्तार"
+    lexeme zh
+      surface
+        text 具体说明
+      surface
+        text 具体步骤
+      surface
+        text 详细步骤
+      surface
+        text 详细说明
+      surface
+        text 确切步骤
+      surface
+        text 一步一步
+      surface
+        text 更具体
+      surface
+        text 更详细
+  common_typo
+    defined-by relation
+    role common_typo
+    lexeme en
+      surface
+        text dirven
+        action driven
+    lexeme ru
+      surface
+        text руский
+        action русский
+    lexeme hi
+      surface
+        text वेबसाईट
+        action वेबसाइट
+    lexeme zh
+      surface
+        text 登陆
+        action 登录
+  topic_scan_stop_word
+    defined-by concept
+    role topic_scan_stop_word
+    lexeme en
+      surface
+        text i
+      surface
+        text the
+      surface
+        text a
+      surface
+        text an
+      surface
+        text in
+      surface
+        text to
+      surface
+        text for
+      surface
+        text of
+      surface
+        text and
+      surface
+        text or
+      surface
+        text source
+    lexeme ru
+      surface
+        text и
+      surface
+        text или
+      surface
+        text в
+      surface
+        text к
+      surface
+        text для
+      surface
+        text из
+      surface
+        text источник
+    lexeme hi
+      surface
+        text और
+      surface
+        text या
+      surface
+        text में
+      surface
+        text को
+      surface
+        text के
+      surface
+        text का
+      surface
+        text स्रोत
+    lexeme zh
+      surface
+        text 和
+      surface
+        text 或
+      surface
+        text 在
+      surface
+        text 的
+      surface
+        text 来源

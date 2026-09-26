@@ -63,5 +63,5 @@ Only an `approved` source is copied into the canonical registry. Translate the
 review into every required `source-registry.json` field, then run:
 
 ```bash
-cargo test --test unit docs_requirements_issue_834
+cargo test --manifest-path rust/Cargo.toml --test unit docs_requirements_issue_834
 ```

@@ -1,4 +1,4 @@
 ci_gate check_debt_ratchet
   stage rust
-  description "Named debt only shrinks: four measured ceilings in data/meta/debt-ratchet.lino may be lowered by a pull request and never raised. No release depends on any of them."
-  run "rust-script --test scripts/check-debt-ratchet.rs && rust-script scripts/check-debt-ratchet.rs"
+  description "Named debt only shrinks: every measured ceiling in data/meta/debt-ratchet.lino is compared strictly in both directions, so a value above its ceiling is new debt and a value below it is debt already removed whose ceiling was not lowered in the same commit. A ceiling may be lowered by a pull request and never raised. No release depends on any of them."
+  run "rust-script --test scripts/check-debt-ratchet.rs && rust-script scripts/check-debt-ratchet.rs --base origin/main"

@@ -1,0 +1,51 @@
+Q148499
+  aliases
+    en ("the House of Brandenburg")
+    es ("Margrave de Brandeburgo" "Electorado de Brandeburgo")
+    ru ("Бранденбургское курфюршество" "Бранденбургская марка" "Курфюршество Бранденбург" "Марка Бранденбург")
+    zh ("勃兰登堡边境领" "马克勃兰登堡" "勃兰登堡侯爵" "勃兰登堡地区" "勃兰登堡藩侯国")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q12548
+              numeric-id 12548
+          hash 1a3215f93c2ae7d06f17c76aa960547bbd849ffb
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "Holy Roman Empire principality (1157–1806)"
+    es "antiguo principado del Sacro Imperio Romano Germánico"
+    ru "историческое государство на территории современной Германии, входившее в Священную Римскую империю (1157—1806)"
+  id Q148499
+  labels
+    en "Margraviate of Brandenburg"
+    es "Margraviato de Brandeburgo"
+    ru "маркграфство Бранденбург"
+    zh "勃蘭登堡侯國"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Margraviate of Brandenburg"
+    eswiki
+      site eswiki
+      title "Margraviato de Brandeburgo"
+    ruwiki
+      site ruwiki
+      title "Маркграфство Брандербург"
+    zhwiki
+      site zhwiki
+      title "勃蘭登堡侯國"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

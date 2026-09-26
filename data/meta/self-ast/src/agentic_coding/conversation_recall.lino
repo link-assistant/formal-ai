@@ -2,54 +2,68 @@ self_ast_census
   target src/agentic_coding/conversation_recall.rs
   language rust
   fidelity full_ast
-  byte_len 993
-  line_count 20
-  content_id source_module_b8b0c1356cc73fd2
-  symbol_count 1
+  byte_len 4491
+  line_count 91
+  content_id source_module_969743f85c5baa85
+  symbol_count 2
   symbols
-    function recall_answer_for 13 20
+    enum SharedSolverStep 36 44
+    function plan_shared_solver_step 46 91
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 505
-    named_node_count 98
-    distinct_node_kinds 36
+    total_link_count 1696
+    named_node_count 374
+    distinct_node_kinds 49
     node_kinds
-      arguments 5
-      array_type 1
-      binary_expression 1
-      block 2
-      call_expression 5
-      crate 2
-      doc_comment 8
-      expression_statement 2
-      field_expression 5
-      field_identifier 5
+      arguments 17
+      array_type 2
+      block 8
+      call_expression 17
+      crate 3
+      doc_comment 32
+      else_clause 2
+      enum_item 1
+      enum_variant 3
+      enum_variant_list 1
+      escape_sequence 14
+      expression_statement 5
+      field_expression 9
+      field_identifier 9
       function_item 1
-      generic_type 1
-      identifier 18
-      if_expression 1
-      inner_doc_comment_marker 7
+      identifier 74
+      if_expression 3
+      inner_doc_comment_marker 10
+      let_chain 1
+      let_condition 1
       let_declaration 2
-      line_comment 8
-      outer_doc_comment_marker 1
-      parameter 1
+      line_comment 38
+      macro_invocation 1
+      match_arm 4
+      match_block 1
+      match_expression 1
+      match_pattern 4
+      or_pattern 1
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 22
+      parameter 2
       parameters 1
-      parenthesized_expression 1
-      reference_expression 2
-      reference_type 1
+      primitive_type 1
+      reference_expression 5
+      reference_type 3
       return_expression 1
-      scoped_identifier 2
+      scoped_identifier 19
       scoped_use_list 1
       source_file 1
-      string_content 1
-      string_literal 1
-      super 1
+      string_content 21
+      string_literal 7
+      super 5
+      token_tree 6
       tuple_pattern 1
-      type_arguments 1
-      type_identifier 3
-      use_declaration 2
+      tuple_struct_pattern 1
+      type_identifier 4
+      use_declaration 4
       use_list 1
-      visibility_modifier 1
+      visibility_modifier 2

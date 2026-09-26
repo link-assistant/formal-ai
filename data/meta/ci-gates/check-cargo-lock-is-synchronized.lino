@@ -6,4 +6,4 @@
 ci_gate check_cargo_lock_is_synchronized
   stage rust
   description "Cargo.lock matches Cargo.toml, so a release build resolves the versions that were tested."
-  run "cargo metadata --locked --format-version 1 > /dev/null"
+  run "cargo metadata --manifest-path rust/Cargo.toml --locked --format-version 1 > /dev/null"

@@ -12,7 +12,7 @@ const payload = [
     'fruit of the apple tree', '', 'en', 'wikidata#1', '1', 'alternate'],
 ].map((row) => row.map((value) => encodeURIComponent(value)).join('\t')).join('\n');
 
-WebAssembly.instantiate(fs.readFileSync('src/web/formal_ai_worker.wasm')).then(({ instance }) => {
+WebAssembly.instantiate(fs.readFileSync('js/formal_ai_worker.wasm')).then(({ instance }) => {
   const wasm = instance.exports;
   const input = new TextEncoder().encode(payload);
   new Uint8Array(wasm.memory.buffer, wasm.input_ptr(), input.length).set(input);

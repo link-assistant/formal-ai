@@ -1,19 +1,39 @@
 Q7186
   aliases
-    en ("Marie Sklodowska-Curie")
     hi ("मारिया सलोमीया स्कोलोडोव्स्का")
-    ru ("Склодовская-Кюри, Мария" "Кюри, Мария" "Мари Кюри" "Мария Кюри" "Кюри-Склодовская, Мария" "Склодовская" "Мария Саломея Склодовская")
-    zh ("居里夫人" "居禮夫人" "瑪麗·居禮")
+    ru ("Кюри, Мария" "Склодовская" "Мария Кюри" "Мари Кюри" "Кюри-Склодовская, Мария" "Склодовская-Кюри, Мария" "Мария Саломея Склодовская")
+    zh ("居禮夫人" "居里夫人" "瑪麗·居禮")
   descriptions
-    en "Polish-French physicist and chemist (1867–1934)"
+    en "Polish-born French physicist and chemist (1867–1934)"
+    es "física y química polaca nacionalizada francesa"
     hi "पोलिश-फ्रांसीसी भौतिक विज्ञानी और केमिस्ट"
     ru "французско-польский физик и химик (1867—1934)"
     zh "波蘭裔法國物理學家、化學家"
   id Q7186
   labels
-    en "Marie Curie"
     hi "मेरी क्युरी"
     ru "Мария Склодовская-Кюри"
     zh "玛丽·居里"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Marie Curie"
+    eswiki
+      site eswiki
+      title "Marie Curie"
+    hiwiki
+      site hiwiki
+      title "मेरी क्युरी"
+    ruwiki
+      site ruwiki
+      title "Склодовская-Кюри, Мария"
+    zhwiki
+      site zhwiki
+      title "玛丽·居里"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

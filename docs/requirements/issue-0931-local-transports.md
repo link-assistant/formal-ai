@@ -5,7 +5,7 @@ the referenced maintainer comment on issue #107.
 
 | ID | Requirement | Status and evidence |
 | --- | --- | --- |
-| R931-1 | Serve the HTTP/OpenAI-compatible request and response shape over WebSocket, bound to localhost by default. | Implemented by `formal-ai serve --ws`, `src/local_transport.rs`, and transport-parity integration tests. |
+| R931-1 | Serve the HTTP/OpenAI-compatible request and response shape over WebSocket, bound to localhost by default. | Implemented by `formal-ai serve --ws`, `rust/src/local_transport.rs`, and transport-parity integration tests. |
 | R931-2 | Serve the same API over a local-first WebRTC data channel with peer-to-peer access and no central relay. | Implemented with host-only ICE, loopback offer/answer signaling, no STUN/TURN configuration, and a real data-channel smoke test. |
 | R931-3 | Use one CLI binary as WebSocket/WebRTC server and client. | Implemented by `formal-ai serve --ws|--webrtc` and `formal-ai connect --transport websocket|webrtc`; tested as subprocesses. |
 | R931-4 | Reuse the permission and memory model rather than creating storage. | Both transports call `handle_api_request_with_headers`; tests prove authentication failures and memory writes. |

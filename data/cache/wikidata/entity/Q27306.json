@@ -1,0 +1,147 @@
+{
+  "entities": {
+    "Q27306": {
+      "type": "item",
+      "id": "Q27306",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Kingdom of Prussia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Королевство Пруссия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रशा राज्य"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "普魯士王國"
+        },
+        "es": {
+          "language": "es",
+          "value": "Reino de Prusia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "former European state (1701–1918), part of the German Empire after 1871"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "королевство в Европе, существовавшее в 1701-1918 годах; с 1871 года - часть Германской империи"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "歐洲國家（1701－1918年）"
+        },
+        "es": {
+          "language": "es",
+          "value": "antiguo Estado europeo (1701-1918), integrante del Imperio alemán desde 1871"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Пруссия"
+          },
+          {
+            "language": "ru",
+            "value": "Прусское королевство"
+          },
+          {
+            "language": "ru",
+            "value": "Пруссия (королевство)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "普鲁士王国"
+          },
+          {
+            "language": "zh",
+            "value": "大布路斯國"
+          },
+          {
+            "language": "zh",
+            "value": "大布國"
+          },
+          {
+            "language": "zh",
+            "value": "布國"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Prusia"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Kingdom of Prussia"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Пруссия (королевство)"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "प्रशा राज्य"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "普魯士王國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Reino de Prusia"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "f07e6efb1952c0a8e1aeab32299b781d428cf237",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 43287,
+                  "id": "Q43287"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

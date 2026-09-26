@@ -1,0 +1,2489 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.150Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.150Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Является ли фраза «quick brown fox» липограммой на букву e? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xguE7aKuJI",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.150Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xguE7aKuJI",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.151Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xguE7aKuJI",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.159Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Является ли фраза «quick brown fox» липограммой на букву e?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Является ли фраза «quick brown fox» липограммой на букву e?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.159Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.160Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.161Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.161Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.163Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.164Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xguE7aKuJI/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.166Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 4268,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.166Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.179Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 21,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T02:47:23.181Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.186Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.186Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.186Z",
+  "service": "session",
+  "id": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xguE7aKuJI",
+  "title": "New session - 2026-09-16T02:47:23.186Z",
+  "time": {
+    "created": 1789526843186,
+    "updated": 1789526843186
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.187Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.187Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.187Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.187Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.187Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57e360cdffe5x21HKXQWyLX4T/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.187Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57e360cdffe5x21HKXQWyLX4T/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.190Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57e360cdffe5x21HKXQWyLX4T/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.191Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.192Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.192Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.194Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.194Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.194Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.195Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.195Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.195Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.195Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.195Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.195Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.195Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.312Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.316Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.325Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.329Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.333Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.333Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.333Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.333Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.733Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526843733,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81ca151001u6zLXNUBF955wV",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81c9fb3001h9eqzxI2Xmo4lD",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.734Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.735Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526843735,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81ca1560015twmFvGFZKrOYt",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81c9fb3001h9eqzxI2Xmo4lD",
+    "type": "tool",
+    "callID": "call_fa7bdf5f7c34ed5e",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.735Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526843735,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81ca1550018HKe4RpfsCl3Kj",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81c9fb3001h9eqzxI2Xmo4lD",
+    "type": "text",
+    "text": "Поищу в интернете: Является ли фраза «quick brown fox» липограммой на букву e.",
+    "time": {
+      "start": 1789526843735,
+      "end": 1789526843735
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:23.735Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526843735,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81ca1560015twmFvGFZKrOYt",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81c9fb3001h9eqzxI2Xmo4lD",
+    "type": "tool",
+    "callID": "call_fa7bdf5f7c34ed5e",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Является ли фраза «quick brown fox» липограммой на букву e"
+      },
+      "time": {
+        "start": 1789526843735
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.037Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526847038,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81ca1560015twmFvGFZKrOYt",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81c9fb3001h9eqzxI2Xmo4lD",
+    "type": "tool",
+    "callID": "call_fa7bdf5f7c34ed5e",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Является ли фраза «quick brown fox» липограммой на букву e"
+      },
+      "output": "Title: Липограмма\nURL: https://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D0%BF%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0\nPublished: N/A\nAuthor: N/A\nHighlights:\nВо французской литературе в начале XX века липограммы стали популярны благодаря группе «УЛИПО», особенно её участникам Ж. Переку и Р. Кено. Так, Перек создал варианты-липограммы множества сонетов Бодлера и Малларме, а также написал 300-страничный роман фр. La disparition без использования буквы « e» (из-за особенностей французского языка воздержание от наиболее частотной буквы «e» считается «трудным», липограммы без других букв — «простые») [2]. В русском переводе Валерия Кислова роман озаглавлен «Исчезание», и в нём отсутствует буква «о», одна из наиболее часто употребляемых русских букв.\n...\nСюжет романа Марка Данна «Элла Минноу Пи» [3] включает запреты на использование всё большего числа букв по мере того, как падают буквы с монумента создателю панграммы англ. The quick brown fox jumps over the lazy dog; текст романа, соответственно, написан с применением постепенно уменьшающейся части алфавита («прогрессирующая липограмма», см. также Треугольник Шанина).\n\n---\n\nTitle: The quick brown fox jumps over the lazy dog\nURL: https://ru.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog\nPublished: 2025-11-15T14:01:48.000Z\nAuthor: N/A\nHighlights:\nThe quick brown fox jumps over the lazy dog (сангл.— «Шустрая бурая лисица прыгает через ленивого пса») —английскаяфраза-панграмма, содержащая все буквыалфавита. Первоначально использовалась для проверки работоспособностипишущих машинокителетайпов, сейчас же чаще применяется для отображенияшрифтови провероккомпьютерных клавиатур. Несмотря на то, что известно несколько схожих панграмм, эта получила наибольшее распространение в связи со своей краткостью и достаточной осмысленностью.\n...\nНасколько известно, впервые эта фраза появилась в журнале The Michigan School Moderator, ориентированном на\n...\nтелей. 14 марта 1885 года там вышла статья, озаглавленная «Интересные заметки», в которой и говорилось об этой «шустрой лисе». Тогда, правда, фраза начиналась с неопределённого\n...\nля a, лишь позднее она приняла нынешний вид с определённым артиклем the. Вскоре эта фраза стала появляться в пособиях по работе с пишущими машинками истенографии: Illustrative Shorthand (1888) Линды Бронсон, How to Become Expert in Typewriting: A Complete Instructor Designed Especially for the Remington Typewriter (1890\n...\nHand-book\n...\n1892).\n...\nзапоминаемость этой фразы отметил Pitman’\n...\nJournal. Употребление The quick brown fox jumps over the lazy dog для практических упражнений по подаче сигналов предложил юнымскаутамоснователь этого движенияРоберт Баден-Пауэллв своей книге «Скаутинг для мальчиков» (1908). Первым сообщением, переданным в 1963 году поГорячей линии Вашингтон — Москва, стало THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG’S BACK 1234567890. Русские ответили поэтическим описанием московского заката, а позднее удивлённо спрашивали у своих американских коллег, что значила та их странная фраза?\n...\nФраза The quick brown fox jumps over the lazy dog используется вкриптографиикак стандартный тест для шифромашин и шифроалгоритмов. В Microsoft Office 2003, Microsoft Office 2007, Microsoft Wordи PowerPoint 2007есть специальные команды для мгновенного набора этой фразы.\n\n---\n\nTitle: ASHTRAY.RU - Т.Бонч-Осмоловская. Курс лекций по комбинаторной литературе\nURL: https://ashtray.ru/main/texts/bonch_course/l12-1.htm\nPublished: N/A\nAuthor: N/A\nHighlights:\nДля текста, состоящего хотя бы из нескольких слов, имеет смысл рассматривать еще одно формальное буквенное ограничение – липограмму.\n...\nНазвание метода происходит от греческого «leipo» – пропускать, и ограничение заключается в отсутствии по воле автора одной или нескольких букв в тексте: если множество букв в липограмме Lg есть {L}, то существует такая буква l из алфавита [L], которая не входит в это множество:\n...\nЛипограмма – одно из самых незаметных для читателя формальных ограничений, особенно если речь идет о небольшом тексте. С другой стороны, некоторые липограммы возникают «непреднамеренно», не по осознанному желанию автора, и обнаруживаются в тексте только исследователем-липограммистом.\n...\nв то время\n...\nнепреднамеренными и законом\n...\nОдна из самых крупных липограмм на английском языке – опубликованный в 1939 году роман американского моряка Эрнеста Винсента Райта «Гэтсби: история в 50 000 слов без буквы е» (Ernest Vincent Wright, «Gadsby»). По словам автора, роман «был написан, когда из пишущей машинки вынули букву Е, чтобы ее нельзя было случайно напечатать. Многие пытались найти эту букву в тексте, но безуспешно!». В английском языке это значит отказ от he, she, her, they, them; глаголов в прошедшем времени replied, answered, asked; -ed; а также чисел между шестью и тридцатью. Райт не использовал их даже в численной форме, равно как и сокращений Mr и Mrs, в которых Е слышна при прочтении. «Моя книга может пригодиться английским школьникам, - писал Райт, - обучающимся основам сочинений».\n...\nпограмма крупных\n...\n. Наиболее известная крупная\n...\nСамая известная английская панграмма:\n...\nThe quick brown fox jumps over lazy dog, (быстрый коричневый лис прыгает через ленивого пса, англ., 32 буквы).\n...\nбуквы алфави\n\n---\n\nTitle: СРАВНЕНИЕ ЧАСТОТ ВСТРЕЧАЕМОСТИ БУКВ В АНГЛИЙСКИХ ТЕКСТАХ И ЛИПОГРАММАХ\nURL: https://doi.org/10.18372/2410-7840.13.2000\nPublished: 2011-03-15T00:00:00.000Z\nAuthor: Б.В. Быстрова, О.В. Сарсадских\nHighlights:\n, и \"Гимн Деметре\", от которой сохранилась первая строчка: Dhmhara melpw Koran te Klnmenoi alocon. В III веке н.э. римский поэт Нестор Ларандский переписал \"Илиаду\", избавившись в первой песне от буквы \"альфа\", во второй -от \"бета\", в третьей от \"гамма\", и так до конца алфавита и поэмы. Два века спустя Трифиодор Сицилийский (Tryphiodorus), грек из Египта, завершил тенденцию, применив ту же процедуру к Одиссее. Однако от этих модифиций поэм также ничего не сохранилось. Несмотря на это, Нестор и Трифиодор по сей день являются наиболее известными липограммистами. Первая удостоверенная липограмма составлена латинским грамматиком Фабиусом Планиадесом Фулгентиусом (Fabius Planiades Fulgentius, VI век н.э.), который написал «De Aetatibus Mundi & Hominus», работу из 23 глав, в которой первая глава не содержит буквы \"а\", вторая -\"b\", и т.д. Позже, в середине XI века, Пьер де Рига выполнил стихотворный перевод Библии, снабдив каждую песнь небольшим резюме, в которых также отсутствовали буквы по алфавиту: первое резюме было написано без \"а\", второе -без \"b\", и т.д. Работа имела значительный успех, и сегодня существует 250 манускриптов с этим текстом. Другая липограммическая традиция писать без буквы \"r\" (с XVII века до наших дней), была особенно распространена в Германии и Италии. С XVIII века липограмма переходит в поэзию (Брокс, Готтлиб Вильгельм Бурманн, Кемпнер (1803)), а также в прозу (Франц Риттлер (1813), Леопольд Колбе (1816), Кристиан Вейс (1878), Пауль фон Шонтан (1883)). В Италии в рамках той же традиции были написаны: сказка Риккобони, речи Луиджи Казолини и поэма в 1700 строк Орацио Фиделе (заменяющего Амура на Купидона и Венеру на Синтию). К этому далеко не полному списку можно добавить примеры из русской поэзии: стихотворения Г.Р. Державина \"Соловей во сне\", \"Бабочка\", \"Свобода\", \"Тишина\" сознательно написаны без буквы \"р\", а небольшое стихотворение Д. Бурлюка так и озаглавлено: Без \"р\" и \"с\" [10] . Одна из самых крупных липограмм на английском языкеопубликованный в 1939 году роман американского моряка Эрнеста Винсента Райта \"Гэдсби\": история в 50 000 слов без буквы \"е\" (Ernest Vincent Wright, \"Gadsby\") [1] . По словам автора, роман \"был написан,\n...\nОтметим, что отчасти существует определенное взаимоотношение между традиционной криптографией и романом Жоржа Перека \"A Void\". Как было уже упомянуто, роман является примером липограммы на букву \"е\" -использование этой буквы сознательно избегается автором на протяжении всего романа. В то время как Жорж Перек трудился над созданием своего произведения, главным образом для достижения признания в определенных творческих кругах, связь с криптографией оказалась более чем очевидной. Отбрасывая букву \"е\", Перек возился с принципами теории вероятности и относительности, которые лежат в основе теории информации. Никто не предполагал, что отсутствие лишь одной буквы \"е\" на протяжении всего 300-страничного романа существенно влияет на общепринятые подходы частотного анализа, основанные на среднестатистических данных. Исходя из этого если бы все липограммы были зашифрованы с помощью моноалфавитной подстановки, то попытка использовать частотный анализ для их дешифрования была бы загнана в тупик из-за существенного перераспределения частот встречаемости букв.\n...\n. В табл. 2 представлены те же данные, но в порядке убывания для наглядной демонстрации влияния отсутствия одной буквы на изменение частоты использования остальных букв алфавита.Данные, приведенные в табл. 1 и в табл. 2 можно использовать для построения гистограмм. Таблица 1 | Таблица 2 Частота (в процентном отношении) и количество используемых букв. | Частота (в процентном отношении) использования букв в порядке убывания. Частота букв в английских текстах | Количество и частота букв в произведении \"Гэдсби\" | Частота букв в английских текстах | Частота букв в произведении \"Гэдсби\" \"a\" | 8,167% | 23218 | 10,960% | \"e\" | 12,702% | \"a\" | 10,960% \"b\" | 1,492% | 4541 | 2,144% | \"t\" | 9,056% | \"o\" | 10,424% \"c\" | 2,782% | 5645 | 2,664% | \"a\" | 8,167% | \"i\" | 8,810% \"d\" | 4,253% | 8728 | 4,120% | \"o\" | 7,507% | \"n\" | 8,604% \"e\" | 12,702% | 0 | 0 | \"i\" | 6,966% | \"t\" | 8,498% \"f\" | 2,228% | 4562 | 2,154% | \"n\" | 6,749% | \"s\" | 6,973% \"g\" | 2,015% | 7644 | 3,609% | \"s\" | 6,327% | \"l\" | 5,316% \"h\" | 6,094% | 10398 | 4,909% | \"h\" | 6,094% | \"h\" | 4,909% \"i\" | 6,966% | 18663 | 8,810% | \"r\" | 5,987% | \"r\" | 4,765% \"j\" | 0,153% | 487 | 0,230% | \"d\" | 4,253% | \"u\" | 4,160% \"k\" | 0,772% | 2498 | 1,179% | \"l\" | 4,025% | \"d\" | 4,120% \"l\" | 4,025% | 11261 | 5,316% | \"c\" | 2,782% | \"g\" | 3,609% \"m\" | 2,406% | 4399 | 2,077% | \"u\" | 2,758% | \"y\" | 3,178% \"n\" | 6,749% | 18227 | 8,604% | \"m\" | 2,406% | \"w\" | 2,799% \"o\" | 7,507% | 22081 | 10,424% | \"w\" | 2,360% | \"c\" | 2,664% \"p\" | 1,929% | 4038 | 1,906% | \"f\" | 2,228% | \"f\" | 2,154% \"q\" | 0,095% | 109 | 0,052% | \"g\" | 2,015% | \"b\" | 2,144% \"r\" | 5,987% | 10094 | 4,765% | \"y\" | 1,974% | \"m\" | 2,077% \"s\" | 6,327% | 14771 | 6,973% | \"p\" | 1,929% | \"p\" | 1,906% \"t\" | 9,056% | 18002 | 8,498% | \"b\" | 1,492% | \"k\" | 1,179% \"u\" | 2,758% | 8813 | 4,160% | \"v\" | 0,978% | \"v\" | 0,314%\n\n---\n\nTitle: Липограмма\nURL: https://alphapedia.ru/w/Lipogram\nPublished: N/A\nAuthor: N/A\nHighlights:\nA липограмма (изДревнегреческий: λειπογράμματος, leipográmmatos, \"исключая letter \") является разновидностьюограниченного письмаилисловарной игры, состоящей из написания абзацев или более длинных произведений, в которых избегается конкретная буква или группа букв. Расширенные древнегреческие тексты, избегающие буквысигма, являются самыми ранними примерами липограмм.\n...\nНаписание липограммы может быть тривиальной задачей, если избегать необычных букв, таких как Z, J, Qили X, но гораздо сложнее избежатьобычных букв, таких как E, T, или Aванглийском языке, поскольку автор должен опустить многие обычные слова. Составить грамматически значимые и плавные липограммы бывает сложно. Идентификация липограмм также может быть проблематичной, поскольку всегда существует вероятность того, что данный фрагмент письма на любом языке может быть непреднамеренно липограмматическим. Например, стихотворениеПоВоронне содержит Z, но нет никаких доказательств того, что это было намеренно.\n...\nОдним из самых замечательных примеров липограммы является романЭрнеста Винсента РайтаГэдсби(1939), в котором содержится более 50 000 слов, но нет ни одной буквы E. Самостоятельное правило Райта запрещало такие распространенные английские слова, как and he, множественное число, оканчивающееся на -es, прошедшее время, заканчивающееся на -ed, и даже аббревиатуры, такие как Mr. (поскольку это сокращенно Мистер) или Роб (Роберт). Тем не менее повествование идет довольно гладко, и книга получила высокую оценку критиков за ее литературные достоинства.\n...\nИнтерес к липограммам был возрожден романомЖоржа Перека La Disparition (1969) (откровенно вдохновленным Гэдсби Райта) и его английским переводом A Void, написаннымГилбертом Адэром. В обеих работах отсутствует буква E, которая является наиболее распространенной буквой вфранцузском, а также в английском языке. В переводе наиспанскийвместо этого опускается буква A, вторая по распространенности буква в этом языке. Впоследствии Перек написал (1972) роман, в котором не используются гласные, за исключением Э. Перек был членом Oulipo, группы французских авторов, принявших в своей работе множество ограничений. La Disparition на сегодняшний день является самой длинной из существующих липограмм.\n...\nПанграмматическая липограмма или липограмматическаяпанграммаиспользует все буквы алфавита, кроме одной. Пример без буквы E:\n...\nОбратите внимание, что th e выше также является обычной липограммой, в которой пропущены буквы A, E, I и U.\n...\nКнигаЭлла Минноу ПиМарка Данна(2001) описана как «прогрессивно липограмматическая эпистолярная басня»: сюжет повествования касается маленькой страны который начинает запрещать использование различных букв, поскольку плитки каждой буквы падают со статуи. Поскольку каждая буква в рассказе объявлена ​​вне закона, она (по большей части) больше не используется в тексте романа. Однако это не является чисто липограмматическим, потому что запрещенные буквы действительно появляются в тексте время от времени (персонажи наказываются изгнанием за их использование) и когда сюжет требует поиска предложенийпанграм, все двадцать шесть букв явно используются. Кроме того, в конце текста автор начинает использовать буквы, служащиеомофонамидля пропущенных букв (то есть PH вместо F, G вместо C), что некоторые могут утверждать, что это обман. В начале каждой главы появляется алфавит вместе с предложением: «Быстрая коричневая лиса перепрыгивает через ленивую собаку». По мере того как буквы удаляются из рассказа, изменяется алфавит и предложение.\n...\n, в этой тишине \". В следующих стихах используются только гласные A, E, I и O и согласные C, D, F, H, L, M, N, R, S, T и W, взятые из этого\n...\nEunoia, книга канадского писателя Кристиана Бёка (2001) является липограмматической. В названии каждая гласная используется один раз. Каждая из пяти глав этой книги - это липограмма. В первой главе этой книги используются только слова, содержащие гласную «А», и никаких других гласных. Во второй главе используются только слова без гласных, кроме «E» и т. Д.\n...\nВФранцииДж. Р. Ронден представил премьеру «Пьеса без А» (Пьеса без А) в 1816 году.Жак Арагонаписал в 1853 году версию своего путешествия autour du monde. (Путешествие вокруг света), но без буквы a.Жорж Перекопубликовал в 1969 году «La Disparition», роман без буквы e, наиболее часто используемой буквы французского алфавита. Его опубликованный перевод на английский язык, A Void, написанныйГилбертом Адэром, получилПриз Скотта Монкриффав 1995 году.\n\n---\n\nTitle: Панграмма | WikiSort.ru - Не сортированное\nURL: https://unsorted.wikisort.ru/page/%D0%9F%D0%B0%D0%BD%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0\nPublished: N/A\nAuthor: N/A\nHighlights:\nПопулярный текстангл. The quick brown fox jumps over the lazy dog был известен уже к 1885 году. В 1920-х годах Ансон Элби (англ. Anson D. Elby) приводит 37 англоязычных панграмм [5].\n...\nЛингвисты традиционно выделяют осмысленные фразы-панграммы, в которых все буквы алфавита встречаются ровно один раз [3]. Поскольку такие панграммы в некоторых языках очень трудно составить, обычно допускаются отклонения от этого идеала: повторения некоторых букв, использование сокращений, замена в соответствии с древнеримской традицией букв J и U на I и V. Без таких вольностей смысл идеальных панграмм в английском языке трудно понять, например,англ. Veldt jynx grim\n...\nwaqf zho buck (26-буквенная панграмма изкниги рекордов Гиннеса [6]) описывает маловероятную ситуацию, когдавертишейкаизвелдакарабкается по быку-хайнаку, принадлежащемувакуфу(пуристы также указывают на другой недостаток этой фразы, кроме очевид\n...\nгеографических нестыковок: отсутствие необходимыхартиклей [6]).\n...\nThe quick brown fox jumps over the lazy dog.\n\n- Шустрая бурая лисица прыгает через ленивого пса.\n...\nПанграмма The quick brown fox… и поиски более короткой панграммы лежат в основе сюжета романаМарка Данна«Элла Минноу Пи» [8]. Поиск успешно завершается с нахождениемангл. Pack my box with five dozen liquor jugs.\n...\n- Липограмма— литературный приём, когда в тексте не используется какая-то одна буква.\n- Lorem ipsum\n\n---\n\nTitle: Зачем прыгает быстрая коричневая лиса, или Панграммы в английском языке / forpes.ru\nURL: https://www.forpes.ru/post/130944\nPublished: N/A\nAuthor: N/A\nHighlights:\n«The quick brown fox jumps over the lazy dog» — эту фразу на английском знают почти все, кто так или иначе имеет отношение к компьютеру.\n...\nЭто небольшое предложение, которое содержит все буквы английского языка. Лингвисты называют его «панграмма». Сегодня мы расскажем, для чего изначально стали придумывать такие конструкции, кому они могут быть полезны в наши дни и еще познакомимся с известными и не очень панграммами. Ведь кроме лисы там есть еще много чего интересного. Поехали.\n...\nВ английском языке всего 26 букв. Но встречаются они неравномерно. К примеру, самыми частыми можно считать буквы «e» и «а» — из всего алфавита они встречаются в 11% и 8,5% случаях. А самые редкие «j» и «q» — в тексте их всего по 0,19%.\n...\nБуквы встречаются с разной частотой, во многих текстах редких букв вообще нет. Поэтому в узких кругах лингвистов стало популярным следующее развлечение: написать предложение или фразу, которое включает полностью все буквы алфавита.\n...\nНо разбирать\n...\nКому интересно\n...\nИ еще пару слов об известнейшей панграмме «The quick brown fox jumps over the lazy dog». Она появилась в 1885 году в региональном журнале для педагогов « The Michigan School Moderator».\n...\nвали исключительно как раз\n...\nНо оказалось, что «The quick brown fox jumps over the lazy dog» — это нечто большее.\n...\nВ 90-х годах XIX века ее взяли на вооружение производители печатных машинок. Панграмма появилась сразу в ряде инструкций как тестовая фраза для проверки машинок. Вместо написания всех знаков подряд, нужно набрать простую и запоминающуюся фразу — и сразу будет видно, если какая-то буква не работает.\n...\nЗатем фразу про лису взял Роберт Баден-Пауэлл и добавил ее в руководство «Скаутинг для мальчиков». Автор предлагал использовать ее для тренировки подачи сигналов. Книга была продана общим тиражом в 150 млн экземпляров и именно она сделала панграмму известной.\n...\nВ 1963 году фраза «The quick brown fox jumps over the lazy dog» стала первым переданным сообщением на прямой линии связи Вашингтон-Москва. И уже этот факт сделал фразу популярной для самых разнообразных тестов.\n...\nС ее помощью проверяли: принтеры, литеры на типографиях, красоту почерка, компьютерные клавиатуры.\n...\nСегодня она считается стандартной фразой для визуальной оценки компьютерных шрифтов. \n\nК примеру, на этом сайте все шрифты сразу представлены так:\n...\nА еще часто «The quick brown fox jumps over the lazy dog» используют в криптографии, чтобы протестировать процесс шифровки текста или других данных.\n\n---\n\nTitle: The Quick Brown Fox…\nURL: https://www.englishclub.com/efl/jo/curiosities/the-quick-brown-fox/\nPublished: N/A\nAuthor: N/A\nHighlights:\nWhat is special about the following sentence? The quick brown fox jumps over the lazy dog. This sentence contains all 26 letters of the English alphabet and is (was?) used by typists to test their keyboards. Such a sentence is called a “pangram”. You may also like: Student Motivation\n...\nThe quick brown fox jumps over the lazy dog.\n...\nThis sentence contains all 26 letters of the English alphabet and is (was?) used by typists to test their keyboards. Such a sentence is called a “pangram”.",
+      "title": "Web search: Является ли фраза «quick brown fox» липограммой на букву e",
+      "metadata": {},
+      "time": {
+        "start": 1789526843735,
+        "end": 1789526847032
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.046Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526847046,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cae42001YKxvtVxgeIZQEm",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81c9fb3001h9eqzxI2Xmo4lD",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8555,
+      "output": 157,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8712,
+      "headroom": 30144,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.048Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.049Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.051Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.051Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.053Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.053Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.053Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.054Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.055Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.055Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.076Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8712,
+  "providerTokens": 8712,
+  "estimatedInputTokens": 6229,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8555,
+    "cacheRead": 0,
+    "output": 157
+  },
+  "overflow": false,
+  "headroom": 30144,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.077Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.082Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.084Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.731Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526847731,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb0f0001C88VwUy1hxVSnF",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cae64001l1GEq2DMj9S73Q",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526847732,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb0f4001K2b4pADSf171ok",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cae64001l1GEq2DMj9S73Q",
+    "type": "tool",
+    "callID": "call_3d5ad17cb356cdb8",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526847732,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb0f30011IF5USawcXEoG4",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cae64001l1GEq2DMj9S73Q",
+    "type": "text",
+    "text": "Открою https://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D0%BF%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0 и прочитаю содержимое.",
+    "time": {
+      "start": 1789526847732,
+      "end": 1789526847732
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:27.733Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526847733,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb0f4001K2b4pADSf171ok",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cae64001l1GEq2DMj9S73Q",
+    "type": "tool",
+    "callID": "call_3d5ad17cb356cdb8",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D0%BF%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0"
+      },
+      "time": {
+        "start": 1789526847732
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.303Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526848303,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb0f4001K2b4pADSf171ok",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cae64001l1GEq2DMj9S73Q",
+    "type": "tool",
+    "callID": "call_3d5ad17cb356cdb8",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D0%BF%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0"
+      },
+      "output": "Липограмма — Википедия\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nПерейти к содержанию\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nГлавное меню\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tГлавное меню\n\tпереместить в боковую панель\n\tскрыть\n\n\n\t\n\n\t\n\t\tНавигация\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tЗаглавная страницаСодержаниеИзбранные статьиСлучайная статьяТекущие события\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tУчастие\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСообщить об ошибкеКак править статьиСообществоФорумСправкаСвежие правкиНовые страницыСлужебные страницы\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tНа других языках\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tالعربيةБеларуская (тарашкевіца)БеларускаяবাংলাCatalàČeštinaDanskDeutschΕλληνικάEnglishEsperantoEspañolEuskaraفارسیSuomiFrançaisGalegoMagyarՀայերենIdoItaliano한국어NederlandsPolskiPortuguêsSlovenščinaСрпски / srpskiTürkçeУкраїнська中文\n\t\t\n\t\tПравить ссылки\n\t\n\n\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nПоиск\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tНайти\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nВнешний вид\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tПожертвовать\n\nСоздать учётную запись\n\nВойти\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nПерсональные инструменты\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nПожертвовать\n\n\n\nСоздать учётную запись\n\n\n\nВойти\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tСодержание\n\tпереместить в боковую панель\n\tскрыть\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\tНачало\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tПримечания\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tЛитература\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nОтобразить/Скрыть содержание\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tЛипограмма\n\t\t\t\n\n\t\n\t\n\n30 языков\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tالعربيةБеларуская (тарашкевіца)БеларускаяবাংলাCatalàČeštinaDanskDeutschΕλληνικάEnglishEsperantoEspañolEuskaraفارسیSuomiFrançaisGalegoMagyarՀայերենIdoItaliano한국어NederlandsPolskiPortuguêsSlovenščinaСрпски / srpskiTürkçeУкраїнська中文\n\t\t\t\n\t\t\tПравить ссылки\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tСтатья\n\nОбсуждение\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tрусский\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tЧитать\n\nТекущая версия\n\nПравить\n\nПравить код\n\nИстория\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nИнструменты\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tИнструменты\n\tпереместить в боковую панель\n\tскрыть\n\n\n\t\n\n\t\n\t\tДействия\n\t\n\t\n\t\t\n\t\t\n\t\t\tЧитать\n\nТекущая версия\n\n\n\nПравить\n\n\n\nПравить код\n\n\n\nИстория\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tОсновное\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСсылки сюдаСвязанные правкиПостоянная ссылкаСведения о страницеЦитировать страницуПолучить сокращённый URLПереключиться на устаревший парсер\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tПечать/экспорт\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСкачать как PDFВерсия для печати\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tВ других проектах\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tВикискладЭлемент Викиданных\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tВнешний вид\n\tпереместить в боковую панель\n\tскрыть\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\tМатериал из Википедии — свободной энциклопедии\n\t\t\t\t\t\n\t\t\t\t\tТекущая версия страницы пока не проверялась опытными участниками и может значительно отличаться от версии, проверенной 9 ноября 2023 года; проверки требуют 4 правки.\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tЛипограмма (от др.-греч. λειπογράμματος, «пренебрегать буквой») — литературный приём, заключающийся в написании текста без использования в словах какой-то одной буквы.\nИстория такого рода произведений начинается в древней Греции; уже в VI веке до нашей эры Лас Гермионский создал гимн Деметре, не используя букву σ, так как затруднялся произносить соответствующий звук.\n\n\n\n\nВ Викитеке есть полный текст\n\nДержавинского «Соловья во сне»\n\n\n\nПо-русски липограммы писали Гавриил Державин и Сергей Довлатов. Державин создал десять стихотворений без использования буквы «р» как доказательство «изобилия и мягкости» русского языка: «Виша» (1799), «Шуточное желание» (1802), «Анакреон в собрании» (1791), «Кузнечик» (1802), «Соловей во сне» (1797), «Желание» (1797), «Песнь Баярда» (1799), «Бабочка» (1802), «Тишина» (1801)[1].\n\nВо французской литературе в начале XX века липограммы стали популярны благодаря группе «УЛИПО», особенно её участникам Ж. Переку и Р. Кено. Так, Перек создал варианты-липограммы множества сонетов Бодлера и Малларме, а также написал 300-страничный роман фр. La disparition без использования буквы «e» (из-за особенностей французского языка воздержание от наиболее частотной буквы «e» считается «трудным», липограммы без других букв — «простые»)[2]. В русском переводе Валерия Кислова роман озаглавлен «Исчезание», и в нём отсутствует буква «о», одна из наиболее часто употребляемых русских букв.\n\nСюжет романа Марка Данна «Элла Минноу Пи»[3] включает запреты на использование всё большего числа букв по мере того, как падают буквы с монумента создателю панграммы англ. The quick brown fox jumps over the lazy dog; текст романа, соответственно, написан с применением постепенно уменьшающейся части алфавита («прогрессирующая липограмма», см. также Треугольник Шанина).\n\nПримечания[править | править код]\n\n↑ Хамидуллина, Вера Петровна. Специфика проявления новаторства Г. Р. Державина в русском стихосложении в творчестве современных авторов Архивная копия от 17 февраля 2017 на Wayback Machine. // Г. Р. Державин и диалектика культур. Материалы III Международной научно-практической конференции (Казань, 11-13 декабря 2014 г.)\n↑ И. В. Смущинская. Фигуры слова как элемент современного дискурса Архивная копия от 28 апреля 2022 на Wayback Machine // Стиль і переклад. — 2015. — Вип. 1. — С. 272—286. (рус.)\n↑ Malin, Irving. Ella Minnow Pea: A Novel In Letters (англ.) // Review Of Contemporary Fiction. — 2003. — Vol. 23, no. 2. — P. 153.\n\n\nЛитература[править | править код]\nЛипограмма // Литературная энциклопедия терминов и понятий / Под ред. А. Н. Николюкина. — Институт научной информации по общественным наукам РАН: Интелвак, 2001. — Стб. 449—450. — 1596 с. — ISBN 5-93264-026-X.\nЛипограмма (недоступная ссылка с 14 июня 2016 [3746 дней]). // Российский гуманитарный энциклопедический словарь: В 3 т. — М.: Гуманит. изд. центр ВЛАДОС: Филол. фак. С.-Петерб. гос. ун-та, 2002.\n\nВ другом языковом разделе есть более полная статья Lipogram (англ.). Вы можете помочь проекту, расширив текущую статью с помощью перевода\nСсылки на внешние ресурсы   Словари и энциклопедии\nБольшая каталанская\nBritannica (онлайн)\nDe Agostini\nTreccani\n\nВ библиографических каталогах\nJ9U: 987007549937705171\nLCCN: sh2009000759\n\n\nЭто заготовка статьи о литературе. Помогите Википедии, дополнив её.\n\n\n\n\n\n\n\n\n\n\n\nИсточник — https://ru.wikipedia.org/w/index.php?title=Липограмма&amp;oldid=149960285\n\t\t\t\t\tКатегории: Литературные приёмыСтилистикаСкрытые категории: Википедия:Ссылка на Викитеку непосредственно в статьеВикипедия:Статьи с нерабочими ссылками с июня 2016Википедия:Запросы на перевод с английскогоНезавершённые статьи о литературеСтраницы, использующие волшебные ссылки ISBN\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t Страница в последний раз была отредактирована 15 ноября 2025 года в 13:42.\n\tСтраница была сгенерирована с помощью Parsoid.\n\tТекст доступен по лицензии Creative Commons «С указанием авторства — С сохранением условий» (CC BY-SA); в отдельных случаях могут действовать дополнительные условия.\nПодробнее см. Условия использования.\nWikipedia®&#160;— зарегистрированный товарный знак некоммерческой организации «Фонд Викимедиа» (Wikimedia Foundation, Inc.)\n\n\n\t\t\t\t\n\tПолитика конфиденциальности\n\tОписание Википедии\n\tОтказ от ответственности\n\tСвяжитесь с нами\n\tКонтакты по вопросам права и безопасности\n\tКодекс поведения\n\tРазработчики\n\tСтатистика\n\tЗаявление о куки\n\tМобильная версия\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nПоиск\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tНайти\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nОтобразить/Скрыть содержание\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tЛипограмма\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n30 языков\n\t\t\t\n\t\t\t\n\nДобавить тему",
+      "title": "https://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D0%BF%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0 (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789526847732,
+        "end": 1789526848302
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.305Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526848305,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb3300012k4KldYb1mCdMU",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cae64001l1GEq2DMj9S73Q",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 28653,
+      "output": 244,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 28897,
+      "headroom": 9959,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.311Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.314Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.315Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.315Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.326Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 28897,
+  "providerTokens": 28897,
+  "estimatedInputTokens": 8729,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 28653,
+    "cacheRead": 0,
+    "output": 244
+  },
+  "overflow": false,
+  "headroom": 9959,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.326Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.329Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.330Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.551Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526848552,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb427001ZD73daX8YIuog2",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb3460014OrNI6mZLcyqSA",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.552Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.552Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526848552,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb428002RauiMgKS3KvMD4",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb3460014OrNI6mZLcyqSA",
+    "type": "tool",
+    "callID": "call_534b477ecfa46903",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.552Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526848552,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb428001ohYTUbgQ9UsaxD",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb3460014OrNI6mZLcyqSA",
+    "type": "text",
+    "text": "Открою https://ru.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog и прочитаю содержимое.",
+    "time": {
+      "start": 1789526848552,
+      "end": 1789526848552
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:28.553Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526848553,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb428002RauiMgKS3KvMD4",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb3460014OrNI6mZLcyqSA",
+    "type": "tool",
+    "callID": "call_534b477ecfa46903",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://ru.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog"
+      },
+      "time": {
+        "start": 1789526848552
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.618Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526849618,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb428002RauiMgKS3KvMD4",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb3460014OrNI6mZLcyqSA",
+    "type": "tool",
+    "callID": "call_534b477ecfa46903",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://ru.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog"
+      },
+      "output": "The quick brown fox jumps over the lazy dog — Википедия\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nПерейти к содержанию\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nГлавное меню\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tГлавное меню\n\tпереместить в боковую панель\n\tскрыть\n\n\n\t\n\n\t\n\t\tНавигация\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tЗаглавная страницаСодержаниеИзбранные статьиСлучайная статьяТекущие события\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tУчастие\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСообщить об ошибкеКак править статьиСообществоФорумСправкаСвежие правкиНовые страницыСлужебные страницы\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tНа других языках\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tالعربيةAzərbaycancaDeutschEnglishEspañolفارسیFrançaisՀայերենBahasa IndonesiaItaliano日本語한국어नेपालीPortuguêsSimple EnglishУкраїнськаTiếng Việt吴语閩南語 / Bân-lâm-gí粵語中文\n\t\t\n\t\tПравить ссылки\n\t\n\n\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nПоиск\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tНайти\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nВнешний вид\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tПожертвовать\n\nСоздать учётную запись\n\nВойти\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nПерсональные инструменты\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nПожертвовать\n\n\n\nСоздать учётную запись\n\n\n\nВойти\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tСодержание\n\tпереместить в боковую панель\n\tскрыть\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\tНачало\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tИстория\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tВ культуре\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tПримечания\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tСсылки\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nОтобразить/Скрыть содержание\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tThe quick brown fox jumps over the lazy dog\n\t\t\t\n\n\t\n\t\n\n21 язык\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tالعربيةAzərbaycancaDeutschEnglishEspañolفارسیFrançaisՀայերենBahasa IndonesiaItaliano日本語한국어नेपालीPortuguêsSimple EnglishУкраїнськаTiếng Việt吴语閩南語 / Bân-lâm-gí粵語中文\n\t\t\t\n\t\t\tПравить ссылки\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tСтатья\n\nОбсуждение\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tрусский\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tЧитать\n\nПравить\n\nПравить код\n\nИстория\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nИнструменты\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tИнструменты\n\tпереместить в боковую панель\n\tскрыть\n\n\n\t\n\n\t\n\t\tДействия\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nЧитать\n\n\n\nПравить\n\n\n\nПравить код\n\n\n\nИстория\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tОсновное\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСсылки сюдаСвязанные правкиПостоянная ссылкаСведения о страницеЦитировать страницуПолучить сокращённый URLПереключиться на устаревший парсер\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tПечать/экспорт\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСкачать как PDFВерсия для печати\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tВ других проектах\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tВикискладЭлемент Викиданных\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tВнешний вид\n\tпереместить в боковую панель\n\tскрыть\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\tМатериал из Википедии — свободной энциклопедии\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tРасширенный вариант фразы на наборной верстатке. Для улучшения читаемости фото приведено в зеркальном отображении\nФраза в KDE Font Viewer\nФраза разными шрифтами. OpenOffice.org Writer\nThe quick brown fox jumps over the lazy dog (с англ. — «Шустрая бурая лисица прыгает через ленивого пса») — английская фраза-панграмма, содержащая все буквы алфавита. Первоначально использовалась для проверки работоспособности пишущих машинок и телетайпов[1], сейчас же чаще применяется для отображения шрифтов[2][3] и проверок компьютерных клавиатур. Несмотря на то, что известно несколько схожих панграмм, эта получила наибольшее распространение в связи со своей краткостью и достаточной осмысленностью.\n\nИстория[править | править код]\nНасколько известно, впервые эта фраза появилась в журнале The Michigan School Moderator, ориентированном на учителей. 14 марта 1885 года там вышла статья, озаглавленная «Интересные заметки», в которой и говорилось об этой «шустрой лисе». Тогда, правда, фраза начиналась с неопределённого артикля a, лишь позднее она приняла нынешний вид с определённым артиклем the. Вскоре эта фраза стала появляться в пособиях по работе с пишущими машинками и стенографии[4]: Illustrative Shorthand (1888) Линды Бронсон, How to Become Expert in Typewriting: A Complete Instructor Designed Especially for the Remington Typewriter (1890)[5], Typewriting Instructor and Stenographer’s Hand-book (1892). В 1903 году лёгкую запоминаемость этой фразы отметил Pitman’s Phonetic Journal. Употребление The quick brown fox jumps over the lazy dog для практических упражнений по подаче сигналов предложил юным скаутам основатель этого движения Роберт Баден-Пауэлл в своей книге «Скаутинг для мальчиков» (1908)[6]. Первым сообщением, переданным в 1963 году по Горячей линии Вашингтон — Москва, стало THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG’S BACK 1234567890. Русские ответили поэтическим описанием московского заката[7], а позднее удивлённо спрашивали у своих американских коллег, что значила та их странная фраза?[8]\n\nФраза The quick brown fox jumps over the lazy dog используется в криптографии как стандартный тест для шифромашин и шифроалгоритмов. В Microsoft Office 2003, Microsoft Office 2007[9], Microsoft Word[10] и PowerPoint 2007[11] есть специальные команды для мгновенного набора этой фразы.\n\nВ культуре[править | править код]\nВ переводе на русский язык книги Артура Кларка «Космическая одиссея 2001» присутствует стишок: «Тёмно-рыжая лиса прыг через лентяя-пса». При всей эффектности внешней формы эта рифмовка никак не связана по смыслу с контекстом. Можно отметить это дискурсивное несоответствие и, взглянув на первоисточник, обнаружить, что в основе этого фрагмента книги лежит искусственно сконструированная, не рифмованная фраза Quick brown fox jumps over the lazy dog, вариативно используемая с детерминативами The или What[12].\n\nСоседняя фраза — «Дует на море циклон, попадает на Цейлон» — фраза из мюзикла «Моя прекрасная леди», шибболет для кокни (диалекта английского), «The rain in Spain stays mainly in the plain».\n\nФраза The quick brown fox jumps over the lazy dog играет заметную роль в липограмматической повести Марка Данна «Элла Минноу Пи» (2001)[13].\n\nВ компьютерной игре Fez есть «розеттский камень», перед которым лисица прыгает через собаку. Поскольку язык, использующийся там, — шифр простой замены, догадавшийся о смысле камня легко расшифрует все последующие надписи.\n\nВ первом эпизоде сериала «Электрические сны Филипа К. Дика» персонаж вновь и вновь повторяет эту фразу, чтобы не дать телепату прочитать свои мысли.\n\nПримечания[править | править код]\n\n↑ Jean-Maurice-Émile Baudot Архивная копия от 9 апреля 2016 на Wayback Machine (англ.) на сайте wvegter.hivemind.net\n↑ Styles Example Архивная копия от 26 августа 2014 на Wayback Machine (англ.) на сайте wvegter.hivemind.net\n↑ TCPDF Example 055 Архивная копия от 11 сентября 2015 на Wayback Machine (англ.) на сайте tcpdf.org\n↑ The quick brown fox jumps over the lazy dog Архивная копия от 31 декабря 2014 на Wayback Machine (англ.) на сайте 10fastfingers.com\n↑ How to Become Expert in Typewriting: A Complete Instructor Designed Especially for the Remington Typewriter (1890) стр. 12\n↑ «Скаутинг для мальчиков» (1908) Архивная копия от 11 июня 2014 на Wayback Machine глава Campfire Yarn № 7 «Signals and Commands», стр. 59—65\n↑ Washington-Moscow Hotline — History Архивная копия от 6 марта 2016 на Wayback Machine (англ.) на сайте cryptomuseum.com\n↑ Раск, Дин. «As I Saw It: A Secretary of State’s Memoirs» (англ.). — Лондон: I.B. Tauris, 1991. — P. 225.\n↑ MS Office Easter Egg!!! Архивная копия от 13 января 2015 на Wayback Machine (англ.) на сайте elakiri.com\n↑ Random Text Generator, Create Random Text; Microsoft Word Tips &amp; Tricks Архивная копия от 13 января 2015 на Wayback Machine (англ.) на сайте softwarepro.com\n↑ Lorem Ipsum and other random filler text in Word 2007, PowerPoint 2007 and Excel 2007 Архивная копия от 13 января 2015 на Wayback Machine (англ.) на сайте TheNewPaperclip.com\n↑ Сборник материалов Петербургской фантастической ассамблеи 2017. — Санкт-Петербург, 2018. — 178. — С. 57. — ISBN 978-5-94432-125-1. (рус.) Архивная копия от 29 января 2023 на Wayback Machine\n↑ Ella Minnow Pea Архивная копия от 31 декабря 2014 на Wayback Machine (англ.) на сайте goodreads.com\n\n\nСсылки[править | править код]\nПорядок и связь слов в английском предложении (рус.) на сайте StudyEnglishNow.ru\n\nСтандартные тестовые объектыДвумерная графика\nЛена\nСтандартное тестовое изображение\nМира\nТелевизионная настроечная таблица\nТрёхмерная графика\nCornell Box\nStanford Bunny\nStanford Dragon\nЧайник из Юты\nMP3-аудио\nTom's Diner\nПрограммирование\nHello, world!\nA+B\nСжатие данных\nCalgary Corpus\nCanterbury Corpus\nТекстовые элементы\nПанграммы\nLorem ipsum\nThe quick brown fox jumps over the lazy dog\nБорьба с вирусами\nEICAR\nДомен\nexample\nОптимизация\nЛокальные методы\nфункция Розенброка\n\n\n\n\n\n\n\n\n\n\n\n\n\nИсточник — https://ru.wikipedia.org/w/index.php?title=The_quick_brown_fox_jumps_over_the_lazy_dog&amp;oldid=154690364\n\t\t\t\t\tКатегории: ТипографикаАнглийские фразыПанграммыСкрытая категория: Страницы, использующие волшебные ссылки ISBN\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t Страница в последний раз была отредактирована 26 августа 2026 года в 06:13.\n\tСтраница была сгенерирована с помощью Parsoid.\n\tТекст доступен по лицензии Creative Commons «С указанием авторства — С сохранением условий» (CC BY-SA); в отдельных случаях могут действовать дополнительные условия.\nПодробнее см. Условия использования.\nWikipedia®&#160;— зарегистрированный товарный знак некоммерческой организации «Фонд Викимедиа» (Wikimedia Foundation, Inc.)\n\n\n\t\t\t\t\n\tПолитика конфиденциальности\n\tОписание Википедии\n\tОтказ от ответственности\n\tСвяжитесь с нами\n\tКонтакты по вопросам права и безопасности\n\tКодекс поведения\n\tРазработчики\n\tСтатистика\n\tЗаявление о куки\n\tМобильная версия\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nПоиск\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tНайти\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nОтобразить/Скрыть содержание\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tThe quick brown fox jumps over the lazy dog\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n21 язык\n\t\t\t\n\t\t\t\n\nДобавить тему",
+      "title": "https://ru.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789526848552,
+        "end": 1789526849617
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.618Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526849618,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb852001CWpO0sR2l8haUK",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb3460014OrNI6mZLcyqSA",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 36772,
+      "output": 210,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 36982,
+      "headroom": 1874,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.618Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.619Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.619Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.619Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.620Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.621Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.621Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.625Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 36982,
+  "providerTokens": 36982,
+  "estimatedInputTokens": 11779,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 36772,
+    "cacheRead": 0,
+    "output": 210
+  },
+  "overflow": false,
+  "headroom": 1874,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.626Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.626Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.627Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.628Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526849867,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb94a00183CsFfdE8We5Jc",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb859001kc3nK5IkP9GS5P",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526849867,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb94b002RQ8uTP9ePr8vPY",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb859001kc3nK5IkP9GS5P",
+    "type": "tool",
+    "callID": "call_2b0185aa94b0397c",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526849867,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb94b001RlyIefKnesmHIt",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb859001kc3nK5IkP9GS5P",
+    "type": "text",
+    "text": "Открою https://ashtray.ru/main/texts/bonch_course/l12-1.htm и прочитаю содержимое.",
+    "time": {
+      "start": 1789526849867,
+      "end": 1789526849867
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:29.868Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526849868,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb94b002RQ8uTP9ePr8vPY",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb859001kc3nK5IkP9GS5P",
+    "type": "tool",
+    "callID": "call_2b0185aa94b0397c",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://ashtray.ru/main/texts/bonch_course/l12-1.htm"
+      },
+      "time": {
+        "start": 1789526849868
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.288Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526851288,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cb94b002RQ8uTP9ePr8vPY",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb859001kc3nK5IkP9GS5P",
+    "type": "tool",
+    "callID": "call_2b0185aa94b0397c",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://ashtray.ru/main/texts/bonch_course/l12-1.htm"
+      },
+      "output": "ASHTRAY.RU - �.����-�����������. ���� ������ �� ������������� ����������\r\n\r\n\r\n\r\n\r\n\r\n\r\n \r\n  ������� ����-�����������\r\n  ���� \r\n    ������ �� ������������� ����������\r\n  &nbsp;12. \r\n    �������: ����������� ��������. �����������, ����������. ��������� � ������������������ \r\n    ���������. �������������������� � \r\n    ����������������� ������������� �.������.\r\n\r\n\r\n\r\n�\r\n\r\n������� �� ����� �������� � �������������, ���������\r\n�� ������� ������������ �������� � ����������� ��������� ������ �\r\n������; � ����� ������������, ��������� �� ������������ ������� �� ������������\r\n������� � ������� ���������� �������. \r\n\r\n������� ����� ����������� ��������� ����������� � �����������,\r\n���������� � ���������.\r\n\r\n&nbsp;\r\n\r\n����������� � �����������. ���������\r\n��������� ���������� ����� ����\r\n���������� ������ ��� ������ ������, ������� ��� ������ �����. � �����\r\n����������� ��������� �����������, �����,\r\n� ������� ������ ����� ������� ����� ����������: ��� ������� ����� �,\r\n�������������� ����� �, ������ ����� ���� � �� ��.\r\n\r\n&quot; � &Icirc; �, l1=const.\r\n\r\n\r\n����������� ��������, �� ������� ����, �� ������ ��\r\n������ ������ ����� (II-III �. �.�.): �O Tite, tute, Tati, tibi tanta, tyranne, tulisti!� (� ��� �����, �����, �������, ���� ������ ��!,\r\n���. �.�����������). \r\n\r\n\r\n\r\n\r\n\r\n&nbsp;\r\n\r\n����������� �������� ���������� ����������� ������\r\n����������� � �������� ��������� ������ � �����, ������ ����������������� �\r\n����������� ������. \r\n\r\n����������� ���� �������� ������� � ����������\r\n������, � ������� ������ ���� ���������� ���������, � ��������� ���������\r\n������ � ����� ������ ������������ ��������� ����� � ����� ��������� �����.\r\n\r\n������ ����� ������ ������ ����� � ����������������\r\n������ ���� ������ ������� ����������, �� �������� � ������������� �������\r\n��������� (����� �������) ������ ���� �����: \r\n\r\n������ �� ������ ���� ��� ������:\r\n\r\n������� �������� � ����� ����,\r\n\r\n� ������ ���� � ������ �������,\r\n\r\n��� ����� ������� ������ �� ������.\r\n\r\n\r\n\r\n\r\n\r\n(�� ������������� ����, ���. �.�.����)\r\n\r\n&nbsp;\r\n\r\n\r\n\r\n���� ������� ����������� ������ ������ ����� ������� ���������� � ���� ��\r\n���� ������� ����������, �� ����� ����������� ��� ����� ��� ����� � �����: \r\n\r\n������ ��� ��������, �������� ������\r\n\r\n����� ��������� ����\r\n� ������� ������.\r\n\r\n������ ����� � ������\r\n������ ����,\r\n\r\n�� ����� ���� � ������� ����,\r\n\r\n���� ��� �������� ��� ��������\r\n\r\n����� ������ � ��\r\n����� �������\r\n\r\n������� �������. ����� ������ ����,\r\n\r\n� �������� ������� ���������� ����.\r\n\r\n����������������������� (��\r\n���������������� ����������, ��������� �������, 1935 �.)\r\n\r\n�\r\n\r\n����������������������� ... � ��������\r\n��������,\r\n\r\n��� ���� ����� ������� ������ ��� �������,\r\n\r\n���������� � ����������\r\n��� ���� ������� �����.\r\n\r\n��� � ����� ��� ��� ����\r\n����� ��������,\r\n\r\n�������� �������, � ������\r\n���� ���������,\r\n\r\n������, �����\r\n��������, �������� � ���� ���������. \r\n\r\n(�� �������� ����� �����������, ���. �.�.����)\r\n\r\n\r\n\r\n&nbsp;\r\n\r\n� ���� ������� ����������� (��� �������� �����������)\r\n���������������� �� ����� ����� ��� ����������� ����� ������������� �����.\r\n\r\n\r\n\r\n�����������\r\n������ ���������������, � ������� �����������, ���������� ������� �������\r\n������ (����������) � ��������� � ������� ������ (�������� ���������)\r\n������������� ������������� ������ (������ �����������).\r\n\r\n������ ������������ �� ������ ������ ����������� �� ������ ��������� ���\r\n��� �������������, � ������ ����� ����� ������, ��� ��������. � ����� �����\r\n������� ���������, � ���������� ������������� �����������, ��������, ���\r\n��������� �.�.�������-���������, ������������ �� ��������� ���������� �����\r\n����������� ������� (����������� - ����������� ��������), ����������� ��������\r\n� ������� �����. ������� ����������� � �������� ��������� ������ ����� �����\r\n����� �������, �.�������� �������� ��������� ����������� ������������:� \r\n\r\n1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ����������� ����� ������ ������� ������ �������\r\n����� � ��������� � ������ ����� �������� ������� ������� �����\r\n\r\n2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; � ������ ����� ������������ �������� ���������\r\n������� ������ (�������, �����)\r\n\r\n3)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; �� ���� ������ ��� ����� ��������� �� �������\r\n������ (������� ������, �����)\r\n\r\n�� ��� ����\r\n����� ��������� ������������� ����, ��-��������, ���������������� �������. ���,\r\n���� (�����) �����, ���� ����� ������, ���� ������� �� ����� ��������� �\r\n������, �� ������� �� �������� ������ ������ ������ ��������:\r\n\r\n����������� ������ ������ ������\r\n\r\n\r\n����������� ��� �� �� ����\r\n�\r\n\r\n����������� � ������ �������\r\n\r\n����������� ���� �������� ������.\r\n\r\n����������� ������ ����� ����,\r\n\r\n����������� ����� ���� ������.\r\n\r\n����������� ����� ���� ��������\r\n\r\n����������� � ������ ����� �����!\r\n\r\n����������������������� (���.�.�������)\r\n\r\n(����� ������ �������� �����������,\r\n�������� � ��������). \r\n\r\n�\r\n���� �������, ������� ������ ������ ���� ������� �� ����� ���, ��� �� ���\r\n�����, ����� �������, �������� �������, ������ ��� �������� ����, � ����� ��\r\n������, ��������, ��� �� ����� ������ � �������� � �������. ������ � �����\r\n������ �� ������ ������, �������� �� ����, � ������ ��������� ����:\r\n\r\n����������� ������ �-�� ����� � \r\n\r\n����������� ������ ��� � ����.\r\n\r\n����������� ������ ������� ����,\r\n\r\n����������� ���� ��� �� ������.\r\n\r\n����������� ����� ����� �����\r\n\r\n����������� ����� ������, ����.\r\n\r\n����������� ������� ����� ��������,\r\n\r\n����������� �����, ����� � ������.\r\n\r\n����������������������� (���.�.�������)\r\n\r\n����� ���� ������� � �������, ������ ����� �\r\n�����. ������� ���������� �������� �������, �� �� ������. ����� ������ ���\r\n������� ��� � ��� �� ����.\r\n\r\n��� ���������, ������������� �������,\r\n��������� � ������ ��������� ������� ����� � ���������������� �� ���������, �\r\n���� �� ������ ��� �������� ��������� �������, ������������, ��� �����������\r\n��� ������. \r\n\r\n������������ ������������� ������ ����� ��\r\n���. � XVI ����, ��������������� ���� ������������ � ������ � ����� ���� ������\r\n� ������� �������:\r\n\r\n������� � ���� ������ ����\r\n����������,\r\n\r\n����������������������� � ����\r\n�� ���������� ������� �����,\r\n\r\n����������������������� �� ����\r\n�� ��� ������ � ������ ������.\r\n\r\n����������������������� �� ������\r\n����� ������� ��������,\r\n\r\n����������������������� ���������\r\n� ��������� ���� ���� �����\r\n\r\n� ������ ���� �� ���������\r\n�����\r\n\r\n������ ����� ��������� �� �������\r\n�����...\r\n\r\n����������������������������������������������� (���.\r\n�.���������)\r\n\r\n� � ����� ����������, � XIX ���� � ��������, ����������� �.������, ������\r\n������������� ��������� ����������� ��������� ����, ������� �������� � �����\r\n������ �� ���������������� ������ ���������������� ���������� ������.\r\n\r\n\r\n\r\n����� �������������� ����� ������ ������ �����\r\n��������� ������ ���� � � ������ �� ������ ���� ������ �����, ��������� ��� �\r\n����� ����� ���������� � ����� � ��� �� �����:\r\n\r\n����������� In Xanadu did Kubla Khan\r\n\r\n����������� A stately pleasure-dome decree:\r\n\r\n����������� Where Alph, the sacred river,\r\nran\r\n\r\n����������� Through\r\ncaverns measureless to man\r\n\r\n����������� Down to a sunless sea.\r\n\r\n(� ������ ������ �������������� // ������ ��������\r\n����� ���, // ��� ���� �����, ����� ���������, // ������ ���� ����� ����������,\r\n������, // ������� � ������ �����. ���.�.���������)\r\n\r\n&nbsp;\r\n\r\n\r\n\r\n� ��������� ������ ����� ��� ����������� ��� ��\r\n�����������, ��� �����, ��� ���������� ����������� ���������� ��� ��������,\r\n������������� � �����������, ��� �� � ����� � ����������� �������� �.���������.\r\n\r\n����� �������, ����� ��������, ��� ��������� �������� ���������� ��������� ������� ��������� �\r\n������������� ����� ������ �������� �������� ������� � ���������������\r\n��������� ������.\r\n\r\n\r\n\r\n&nbsp;\r\n\r\n� ������� ���������� ����������� ������� ��� �\r\n������ ������ � ����� �������: ���������� �� ����� ��������� ������� ����� �����������.\r\n\r\n����������� ��� �����, �������������� ��������\r\n�������, ����������� ������������ ������: �e caddi come corpo morto cade� (�����), �pour qui sont ces serpents qui sufflent sur vos t&ecirc;tes� (�����), ����� ����������\r\n� ������ / ������ ������� � ��������, �������� �������� ������� � ����� �������\r\n������� (�.������), �� ����� ������ ���������� ����� (�.��������).\r\n\r\n������� ����������� �� ����������� � ����������\r\n���������� ����������� � ���, � �� ���������, �������� ����� ���������� � �����\r\n� ��� �� ����� (��� ������ �����, � �� �����, ��� ������� � �������� ����� �\r\n������ ������, ��������� ������), � ����� ������, ��� ����� �������� ����������\r\n� ����� �����, ������, � �������� ����������� ������, ��� �� ������ �����,\r\n������ �����. ��� ���� � �������-����������� ������ ����������� ���������\r\n����������� (��������, ��������� �������, � �.�.) �� �������\r\n�������������������.\r\n\r\n����� ����������� ��������� �� �����������������\r\n���������� � ���������� ��������, ��� ��� ���� � ��������� � ���������������\r\n������, ��� � ������� ������ ���������, ��������. \r\n\r\n���� �������� ������� �����������: �������\r\n���������� ����������� �������� ������� ������� ��������� ������ �����������\r\n�����!�. ��������� ����������� ���������� � ��������� ������� �.�.����: �����\r\n�������� ����� ��������, ������ ������� � ����� ���������. ������ ������� �\r\n������� ��������.\r\n\r\n\r\n\r\n\r\n\r\n���� ����� �������� ������ �� ����� ����� �� ����\r\n(1658-1732), ������ ����������� ��������� (l�abbe de Court �Varietes ingenieuses�,\r\n1725), �����, ���������� ������������, ���������� �� ����� ���� ������������\r\n�����������. ����� ���: ������������ ������������, ����� �� ���� �����,� �������, ���������,� � �����������: �Mazarin, ministre malade, meditait meme moribond malicieusement mille maltotes� (��������, ������� �������, ��� ������ ����������\r\n������ ��������, ��.). \r\n\r\n\r\n\r\n����������� ���� ����������� � ���������� �������� ������, ��� � ���������\r\n������ � ���� ������� ���������� �� ���������:\r\n\r\nMinerva � like\r\nmajestic Mary moves.\r\n\r\nLaw, Latin, Liberty, learned Lucy\r\nloves.\r\n\r\nEliza�s elegance each\r\neye espies.\r\n\r\nSerenely silent\r\nSusan�s smiles surprise.\r\n\r\nFrom fops, fools,\r\nflattery, fairest Fanny flies. \r\n\r\n(�������������, ��� �������, �������� ����. /\r\n�����, ������, �������, ��� ��� ����� ������ ����. / ������������ ����� �������\r\n������. / ������ ������� �������� ����������� ������. / �� �����, �������,\r\n�����, ����������������� ����� ����������.)\r\n\r\n&nbsp;\r\n\r\n\r\n\r\n� ����� � ����� ������� ������, ��� ������������,\r\n����������:\r\n\r\nPeter Piper picked a peck of pickled peppers, (�����-�������� ������� �����\r\n������������ ������, ����.); She sells sea shells by the seashore, (��� ������� ������� ��������\r\n�� ���������, ����.), Let lovely lilacs line Lee�s lonely lane,\r\n(������� ���� ���� ����� ������ �������� �������� ��� ��, ����.).\r\n\r\nThree witches watch three Swatch watches. Which witch\r\nwatches which Swatch watch? (��� ������ ������� �� ���� Swatch. ����� ������ ������� ��\r\n����� ����?, ����.)\r\n\r\n&nbsp;\r\n\r\n����� ��� � � ������� �������������: \r\n\r\n����� ������ ���� �\r\n��������; ������ ��� ������� � �����, ����� ����� ��� � ����; ����� ��� ������,\r\n�� �� ��������; ��� ������ ����� ����, ������ ����, ������ ����; ������ �����\r\n����, ���� ������� ������, ������ ������ ����; ������� ����������� � ���������,\r\n� ��������� ������ �� �����; ��� ������� ���� ���� �����, ��� ����� ������, ���\r\n���. \r\n\r\n&nbsp;\r\n\r\n������ ���������������� ���������� ������ (� �\r\n�������� ���������) ������ �����, ���������� � ����� ���������� ���������\r\n��������� ������ � ���������, ������� �� ������ � ������� ��������� ������.\r\n���������� ��������� ���� ���� ��� ��������� �������� ���������� ���������� �\r\n���� ������ �.�����: ������ � �����\r\n������ �����. � ����� ������ ��� ����� �������� �������������� �������� n-����������: ����������� n-��\r\n����� ������� ����� (������ �.������).\r\n\r\n&nbsp;\r\n\r\n��� ���������� ������� ������������ ��\r\n������������������� ����� �� �������� � ����������� ������������� ���\r\n��������: ��� ������� ����� �, �������������� �������� R,\r\n������ ����� ���� � �� ��.\r\n\r\n&quot; � &Icirc; R, l1=const. \r\n\r\n\r\n\r\n�������������-�����������, ��� � ������ ������������, ���������� ��\r\n������������ ������������, ���������� ���������� �������� ����������. ������ ����������� ����������� �� R � ������ �����. � ���� � ������������������ �������������-����������� �� f �Amoureux transy sans espoir� (���������� ������ ����������): \r\n\r\nFausse Fortune, fragile, fantastique,\r\n\r\nFolle, fumeuse, folliant, follatique,\r\n\r\nFavorisant follastres follement,\r\n\r\nFurieuse femme\r\nfuribondicque������� \r\n\r\nFaisant fr&eacute;mir f&eacute;lonneux fortifique,\r\n\r\nFortifiant faintifz folz\r\nfaulsement,\r\n\r\nFeu flamboyant\r\nfouldroiant fi&egrave;rement,\r\n\r\nF&eacute;licit&eacute; faillant fi&egrave;rement,\r\n\r\nFerme fiert&eacute;, f&acirc;cheuse falcifique,\r\n\r\nFan&eacute;e fleur, flaillible\r\nfaillement,\r\n\r\nFacile fin, frauduleux\r\nfondement,\r\n\r\nDe toy se plainst la\r\ntotale fabrique.\r\n\r\n(������ �������, �������, �����������,\r\n/ ������������, �����������, ���������, ����������, / ����� ������������������\r\n������ �������, / �������� ������� �����������, / ������������ ����������� ����\r\n�����������, /� ����������� ����������\r\n������������ ������������, / ����� �������� ����������� ������, / ����������\r\n��������� �����, / ��������� ��������,�\r\n�������� ������, /� �������\r\n������, �������� ���������, / ���� �������� ��� �� �����.)\r\n\r\n\r\n\r\n&nbsp;\r\n\r\n�.������ �������� ������� �������������������\r\n������������ �������� � ����� ���� � ������������� ����������������\r\n���������, ���������, ���������� �Complementary considerations concerning chess� �\r\n�Felicitous flight of fancy�, � ����� ������������������� ������������� ���� (Hood),\r\n�������������� ��������� �������������� �������� ������:\r\n\r\n\r\n\r\nAll Fume and Fret,\r\n\r\nFuss, Fidget, Fancy, Fever, Funking, Fright,\r\n\r\nFerment, Fault-fearing, Faintness � more F�s\r\nyet:\r\n\r\nFlushed, Frigid, Flurried,\r\nFlinching, Fitful, Flat,\r\n\r\nAdd Famished, Fuddled, and Fatigued to that;\r\n\r\n(Funeral, Fate-Foreboding.� (���\r\n����������� � ��������, / �����, �������, ����������, ���������, ����������,\r\n������, / ��������, ������ �������, �������� � � ��� ������ �: / ������������,\r\n��������, ��������������, �������������, ����������, ����������, / ������\r\n�����������, ����������, � ������� �� �����; / ����������, �� ������ �������\r\n������������.)\r\n\r\n&nbsp;\r\n\r\n\r\n\r\n��� �� �����, � ������ ������������ ����������\r\n����������� ��������� �����������, � ����� ��������������� ���� ���������� �\r\n���� �����. ����� ���������� ����� ���� ������� ������������������.\r\n\r\n�� ����������� ����� ���������� �����������\r\n����������� ����� ���������� ��� ����� ���������. �������� ���� �������\r\n��������� ������������������� ���������� �� ������ ����� z,�� �Z'ai nom Z&eacute;non�:\r\n\r\nAu zenith un zeste de\r\nzephyr faisait zezayuer le zodiaque.\r\n\r\nDans la zone zoologique,\r\nun bon zig, zigzaguait l'ouvrier zingueur, zyeutant les z&egrave;bres mais\r\nzigouillant plut&ocirc;t les zibelines. \r\n\r\nZut, suis-je\r\nd&eacute;j&agrave; &agrave; Zwijndrecht, &agrave; Zna&iuml;m ou &agrave;\r\nZwevegem, &agrave; Zwicken ou sur le Zuyderzee, Zermatt ou &agrave; Zurich.\r\n\r\nZ&eacute;lateur de Zoroastre,\r\nj'ai le poil des chevaux zains. \r\n\r\nMais ayant jou&eacute;\r\nau zanzibar un zazou m'a zest&eacute; les parties z&eacute;nithales selon une\r\nm&eacute;thode z&eacute;t&eacute;tique. Aussi c'est entre le zist et le zest\r\nque j'ose zozotter : z&eacute;ro. Mais z&eacute;ro zoniforme, z&eacute;ro zoospor&eacute;,\r\nz&eacute;ro zoophagique. Et pas de zizanie entre les zouaves &agrave; propos de\r\nzizis-hein ? z&eacute;ro.\r\n\r\n(� ������ ������� ������ ������� �� ���������\r\n�������. \r\n\r\n� ������������� ���� ������� ������, ���������\r\n�������� �������-���������, ������ �� ����, �� ����� ���������� �������.\r\n\r\n����! ��� � ��� � ����������, � ������ ��� �\r\n��������, � ������� ��� �� ���������, �������� ��� � ������.\r\n\r\n������������� ���������, � ���� ���� �����\r\n����������� �������.\r\n\r\n�� ����� � �����, ���� � ���� ���� ������� �����\r\n�������� ������������� ������. ����� ����� �� ��, �� ��, ��� � ���� ��������:\r\n����. �� ���� �������������, ���� ��������, ���� ���������. � ������� ��������\r\n����� ������� �� ������ ������ ������? ����. ��.)\r\n\r\n&nbsp;\r\n\r\n������������������� ������ ��������� � �������, ���\r\n���� � ���������� ��������� ��� ������� �� �������, ������������� � ������\r\n�����, � �������� ����������� ����������� ������� ������. ������\r\n����������������� ����� �� �������� �� ���������, � � ������� �������, �������\r\n� ��������� �������� �.�������� (1694), ����������� ��������� �������������, �\r\n������� ������� ����������� ��������� ���������, �������� ������� ���������� ��\r\n�������� �����, �������������� �� ������������ �� �������� (�������). ���,\r\n����� � � �.�������� ������������ ����������� ����, ��������, ���������, �����,\r\n����, �����, �������, ������, ������ (������) � ��������, � ���������������\r\n������������� ������: \r\n\r\n���� ��� ����� ����� �� �������, \r\n\r\n� ������ ����� ��� ����� �� ������. \r\n\r\n���� ���� � �����, ������� �� ����, \r\n\r\n����, �������� � ����� ���� ���. \r\n\r\n� ��������� ����, ������ ������, \r\n\r\n����� ��������, ������ ��������. \r\n\r\n������� �� ����, � � ���� ������, \r\n\r\n� ������ � �����, � ����� �������. \r\n\r\n������ ������ ����� ��������, \r\n\r\n������� ������, ����� � ���� �����!\r\n\r\n&nbsp;\r\n\r\n��������� � ���� ����� � ������� �������������\r\n�������� ������������� �� ������������ ������������ ����� � � ������� �����,\r\n������� ������������ ��������� ������������ ����� �û � �������. ���� ���\r\n������������� � �� �������� ����������� ������������, �� ������ �������������\r\n������ �� ��������� ������� ��� �������������� � ����������� ������������\r\n(������ �.��������): \r\n\r\n�������� ������, ������������ �����, \r\n\r\n� ���� � ���������, ��� ����� �� �����. \r\n\r\n� �����, ��� �����, ��� ����������� �����, \r\n\r\n� ������, � ������, � ���� �� �����. \r\n\r\n������ ������, �������� ������,\r\n\r\n������� ������ �� ������ �������,\r\n\r\n������� ������ �� ������� ������, \r\n\r\n��������� � �����, �������� �������, \r\n\r\n������ ������ � ������� �������, \r\n\r\n���������, ������, ����� � �������.\r\n\r\n������ ���������, ������, ����, �����, \r\n\r\n�������� �����, ������������, ������, \r\n\r\n� ��� ������ ������ � �����, �� �� ������, \r\n\r\n������, ������, ������ � ����� ��������, \r\n\r\n�����, �������, ������, ����, �����, \r\n\r\n����� ������, � ����� �������, \r\n\r\n��������� ����� � ������������� ����, \r\n\r\n�������, ������, ����� ��� ���� �����, \r\n\r\n�� ��� ������ ���, � ��� ��� �� ����: \r\n\r\n�������, ��� ���� �� � ��� ������ �������?\r\n\r\n&nbsp;\r\n\r\n\r\n\r\n�� ������ �������������� ���� ����� ���������\r\n������������� � �������� �����������, �������������� � ������������. ���,\r\n��������� ����������� �������������:\r\n\r\n���������������� ���� ��������\r\n\r\n�����.\r\n�������. ������ �����.\r\n\r\n���������\r\n������� ����.\r\n\r\n������ ����. � ����� ������\r\n\r\n������ ����� ������ ����\r\n\r\n&nbsp;\r\n\r\n������ ������ ����� �������,\r\n\r\n���� ��������, ���� ������,\r\n\r\n������ �����, ������ � �����,\r\n\r\n���� ������� ���� ������.\r\n\r\n&nbsp;\r\n\r\n������ ��������, ������ �����,\r\n\r\n��������� ���� ����.\r\n\r\n����� ������� �������, \r\n\r\n����� ������� ������ ����.\r\n\r\n&nbsp;\r\n\r\n���� �����. ���� �������.\r\n\r\n������ ����. ���� ������.\r\n\r\n���� �������� ����� �������.\r\n\r\n���� ���� � ������ ���. ������������ (1894)\r\n\r\n���� \r\n\r\n� \r\n\r\n���� �\r\n������� �����, � ����� ���,\r\n\r\n������ �����, ������ ���,\r\n\r\n� ������ �������, ��������, �����,\r\n\r\n����� �����, ����� ����\r\n\r\n������ �������, ��� ������� ���,\r\n\r\n����� ������, � ����� ����������,\r\n\r\n� ������� ����� ������ �����, - \r\n\r\n� ���, ����, ����������, ������������������ (1897)\r\n\r\n�\r\n\r\n������� ����������� �����\r\n����� � ������� ������ ����������� �.�������:\r\n\r\n&nbsp;\r\n\r\n��� ����\r\n\r\n������������������ ��������\r\n\r\n���\r\n����� ���, ��� �����,\r\n\r\n������ ��������� ����,\r\n\r\n������� ������ �������,\r\n\r\n��� ����� ���, ��� �����,\r\n\r\n�������������� ��������� ����� ������ ���� �������������� ��� ����� ���� ��������������������� ��� ����� ���, ��� �����,�������������� ������ ��������� ����!\r\n\r\n������������������������������������������ (1914)\r\n\r\n����������������������������� \r\n\r\n�����\r\n\r\n������������������������������ (����� � ����������)\r\n\r\n����� � ������� ��������, ������\r\n���������� ��������� �����,\r\n\r\n������ ������ ������� ������, ������� ��������� ����,\r\n\r\n�������� ������ �������,\r\n������ ������� ���������,\r\n\r\n������ ���� ����������� ������, - ����� ������ ��������!\r\n\r\n����� ������ �� ��������, ������� ������� �� �������,�������������� ��������� ��������� ����, ������� ������� �������,������ � ������� ����, ������ ���� ��������!�������������� ����� �� ������� ����, ��������� ����� ������,����� ���������, ���������� �������� ���������, ������������������� �����, ������, ������, ��������� ������ ��������!\r\n\r\n(1918)\r\n\r\n����-�����������\r\n����� ������ ����� ���������� ������������������� �������������: \r\n\r\n����\r\n\r\n������������������������������ ������� ���� ����� ��������������������������������������� ����� ����� ���������������������������������� ������ ����� ������� ������������������������������������� ������ ����������������������������������� �������� ������� ���������������������������������������� ������� ������ ��������� ��������������������������������� �������� ����������� ����������������������������������� ����������� ������� ���������������������������������� ����� �������� ������ ���� ����������������������������������� ������� ������ ���� ���� ������������������������������������� ��� �������� ��� ���� ��������������������������������� ������ ������ ���� ����.�������������� (1911)&nbsp;� ������� �� ����������� ������� ������������� ������� ��� ������������ ��������������� �������� ����������� � �����.&nbsp;\r\n\r\n� ����������� �������\r\n���������� �������� ��������� ���������� �� �����������. ���, �.���������\r\n����������� �����������: \r\n\r\n������� ���� ��� �����.\r\n�������� \r\n\r\n����� ���� ����������,\r\n������ �������. \r\n\r\n������ ���������, ����\r\n������������ \r\n\r\n�������� ���� � ���� �������\r\n������� (1960, �����). \r\n\r\n&nbsp;\r\n\r\n�.���� ��������\r\n�������������: \r\n\r\n������\r\n����� ������ �������\r\n\r\n������\r\n������ ������� ��������\r\n\r\n������\r\n������� ���� �������\r\n\r\n����\r\n������� ����� �������\r\n\r\n�����\r\n������� ������� ���������\r\n\r\n�������\r\n������ ������ ��������\r\n\r\n������\r\n������� ������� ������\r\n\r\n������\r\n����� ������ �������. \r\n\r\n&nbsp;\r\n\r\n���\r\n������������ ���������� (��-�����, ��-�����, ��-�����, ��-�����) �����������\r\n�.������������: \r\n\r\n����������������������������������������������� �-����\r\n\r\n�������� ����� ��������� �������,\r\n\r\n�������� ����� ��������� ���������,\r\n\r\n�������� ����� ��������� �������,\r\n\r\n������ �������� ��������� �������\r\n\r\n������ ����� ��������� ���������,\r\n\r\n�������� ����� ��������� �������, \r\n\r\n������ ������ �������� ����� �����\r\n\r\n����� ������ ������������ �����,\r\n\r\n������\r\n���������, ���������� ������\r\n\r\n&nbsp;\r\n\r\n�-����\r\n\r\n����� �������, ����� ������ ��������!..\r\n\r\n�������� ������, ������ ��������!..\r\n\r\n�������� ����� ������, �������\r\n\r\n��������!.. ����������� �����!\r\n\r\n�������� ����� ������ � �����\r\n\r\n��������� �������� �������������\r\n\r\n������ ������! ������ �������� �����!..\r\n\r\n��������������; ������������ ����� �����������!\r\n\r\n&nbsp;\r\n\r\n����� ���! ����� ����� �����!\r\n\r\n������ �����! ������ ����! ������ �����!..\r\n\r\n����������� �������� ����!\r\n\r\n��������� ����������� ��������!..\r\n\r\n&nbsp;\r\n\r\n��� �������, ��� �����, ��� ����,\r\n\r\n��� ��������� �����, ��� �������\r\n\r\n��� ������ � ��� ������, ���������!..\r\n\r\n������ ����������� ��������!\r\n\r\n&nbsp;\r\n\r\n������� � ������ ������� ���������:� \r\n\r\n������������! �������! ���� ����� �����!..�\r\n\r\n�� ��������: ���� ��������,\r\n\r\n����� ��������,\r\n\r\n����� ��������\r\n\r\n������ �����,\r\n\r\n������� �����,\r\n\r\n����������� �����,\r\n\r\n����� �������������\r\n\r\n������������, �������������,\r\n\r\n�������������, �������������\r\n\r\n�����, �����!.. ���������� �����������!\r\n\r\n��������� �����\r\n\r\n�������, ������ ����� ��������!..\r\n\r\n������ ��������!..\r\n\r\n������� �������� ������! �������.\r\n\r\n&nbsp;\r\n\r\n����������\r\n�������� ���������� ���������������� ������������ ����������, �������� �����\r\n��������. ������������ ������ �.�������, ������������: \r\n\r\n������\r\n�������� ������ �������� ������ ������ �������� ���� �������. ���� ���������\r\n����� ����� ��������. ���� ������� ���������� �����������, ����������,\r\n��������. ������� ��������, ����������� ��������, �������� ������. ����� �����\r\n���������������� �������: ������ �� ����� ��������. ������ �����������,\r\n�����������, ������ �����, ����� ����, ����� �����, ���������, ���������,\r\n������� ��������, �����, ������� �������. ��� ��������, ������ ������������\r\n�������. ����������� �������������� - ��� ���� ����, ������, ������, �����\r\n������. ������ ��� ������ ����, �������� ������, ������� ������ ������,\r\n������������ �������� ��������-����������� ��������. �� ����� ����������� � ���������,\r\n��������� � ��������, ����������������.\r\n\r\n&nbsp;\r\n\r\n�����������\r\n�� ����� � �� 224 ���� ���������� ����� ������ ������������ �������������\r\n�.�������. ����� ������� �� ������ �����, ��� ���������. ���� �� ���:\r\n\r\n����������� ����� ���������.\r\n\r\n�������\r\n����������. �����������: ���������, �����, �����. ������: ����, ���������\r\n�����, ������. ������: ������, �����, �������. ��������: �����.\r\n\r\n�����������:\r\n������! ������, �������� ����, ������������ ���������. (��������) ��� ��.\r\n����-��� � �������. (��������) \r\n\r\n������:\r\n���-���!\r\n\r\n������:\r\n��� �����!\r\n\r\n��������\r\n������, ����� ��������, ������� ������������.\r\n\r\n�����������:\r\n������ ��������� �������� �������� ������? ������ �������������!\r\n\r\n������:\r\n�����. ��������.\r\n\r\n������:\r\n������ ����.\r\n\r\n�����������:\r\n���?? ����� � ����??!! �����???!!!� �������!\r\n\r\n�������:\r\n����?\r\n\r\n�����������:\r\n���� �����������, ������ ����������! ������ ����� � ������ ������.\r\n\r\n��������:\r\n���������, ��������! ��� ������ ������� � ������ ���������. ��� ������.\r\n\r\n&nbsp;\r\n\r\n����� ���������� ����������� ������� ������������ ���� ���� ��������\r\nXVI ����, ����� � 1530 ���� ����������� ������\r\n��������� ������� ������������������� ����� �Pugna porcorum� (������ ������) � ����������� �� ���������\r\n����� �, � � 1576 ���� �������� ���� � ����� � 1200 ����� �Christus Crucifixus� (��������\r\n��������) � ����������� �� ����� �. � ��� ����� �����, ������������� �Canum cum cattis certamen�, ������ ����� �����\r\n���������� � �.\r\n\r\n\r\n\r\n&nbsp;\r\n\r\n��� ������, ���������� ���� �� �� ���������� ����,\r\n����� ����� ������������� ��� ���� ���������� ��������� ����������� � ����������. \r\n\r\n�������� ������ ���������� �� ���������� �leipo� �\r\n����������, � ����������� ����������� � ���������� �� ���� ������ ����� ���\r\n���������� ���� � ������: ���� ��������� ���� � ���������� Lg ���� {L},\r\n�� ���������� ����� ����� l ��\r\n�������� [L],\r\n������� �� ������ � ��� ���������:\r\n\r\n����������������������� $ l, �.�. l &Iuml; {L}\r\n\r\n&nbsp;\r\n\r\n\r\n\r\n���������� � ���� �� �����\r\n���������� ��� �������� ���������� �����������, �������� ���� ���� ���� �\r\n��������� ������. � ������ �������, ��������� ���������� ���������\r\n����������������, �� �� ����������� ������� ������, � �������������� � ������\r\n������ ��������������-��������������. \r\n\r\n� ���������� ����� ����� �������� ������� � ���������� �������� ������, ���\r\n�� ������� ��� �������������, � �� ����� ��� ��� ������� �������� �������\r\n���������� ����� ������ ����������������� � �������������. \r\n\r\n\r\n\r\n�������\r\n��������� ��� ���������� ���� �������� � VI ���� �� �.�., ����� �����\r\n����������� (��������, ��������� � ������ ���� �������� ������� ������) �������\r\n��� ����� ����� (s) ���� � ����������, ��\r\n������� �� ����������� ������, � ����� �������, �� ������� ����������� ������\r\n�������:�� \r\n\r\nDhmhara melpw Koran te Klnmenoia alocon \r\n\r\n������, ������ ������, ����� ���������� �� �����,\r\n������� ����������� ����� ���� ��� ������. \r\n\r\n� III ���� �.�. ������� ����\r\n������ ���������� ��������� ������, ����������� � ������ ����� �� �����\r\n������, �� ������ � �� �����, � ������� �� ������, � ��� �� ����� �������� �\r\n�����. \r\n\r\n��� ���� ������ ��������� ����������� (Tryphiodirus), ���� �� ������, �������� ���������, �������� �� �� ��������� �\r\n�������. ������ �� ���� ���������������� ���� ����� ������ �� �����������.\r\n�������� �� ���, ������ � ��������� �� ��� ���� �������� �������� ����������\r\n���������������.\r\n\r\n�����, � �������� XI ����, ���� �� ���� ��������\r\n������������ ������� ������, ������� ������ ����� ��������� ������, � �������\r\n����� ������������� ����� �� ��������: ������ ������ ���� �������� ��� ��,\r\n������ � ��� �b�, � �.�. ������ ����� ������������ �����, � �������\r\n���������� 250 ������������ � ���� �������.\r\n\r\n� ������������������� ����������� ������� �� ��� ����������\r\n�����, � �������, ����������� ���������������\r\n��������������� � �������������.\r\n\r\n���������� ����� ������������������ �������� ������\r\n��� ����� r (� XVII ���� �� ����� ����). ���\r\n�������� ���� �������� �������������� � �������� � ������. ��������� ������\r\n���������� ������ � �������������� ������� c, m, o, l, �� ���������� ����� r\r\n�������� �������� ������� ������������, ��� ��������� (� �������� ����������)\r\n������������ ����� (er, der, dieser, jener, wicher�). ���, ��� r � ��� s,\r\n���������� ��������� ��� ������������� ������������ �� ������ ������ ��������\r\n��������� (Adreas Prolaeus Pomeranus\r\n�Xenium�, 1616), ��������� ������� ���������� ���� (Janus Caecilius Frey) � ������. \r\n\r\n�.����� ������������ ���������� (��� ����� ��) �\r\n��������� � �������� ������������ ������ ����� ���� �����, � ����� ���������\r\n����� ������ ����� �������, ��� � �������������: ������ ��� � (1816). \r\n\r\n���� �� ����� ������� ��������� �� ���������� �����\r\n� �������������� � 1939 ���� ����� ������������� ������ ������� �������� �����\r\n�������: ������� � 50 000 ���� ��� ����� � (Ernest Vincent Wright, �Gadsby�). �� ������ ������, �����\r\n���� �������, ����� �� ������� ������� ������ ����� �, ����� �� ������ ����\r\n�������� ����������. ������ �������� ����� ��� ����� � ������, �� ����������!�.\r\n� ���������� ����� ��� ������ ����� �� he, she, her, they, them; �������� � ���������\r\n������� replied, answered, asked; -ed; � ����� ����� ����� ������\r\n� ���������. ���� �� ����������� �� ���� � ��������� �����, ����� ��� �\r\n���������� Mr � Mrs, � ������� � ������ ���\r\n���������. ���� ����� ����� ����������� ���������� ����������, - ����� ����, -\r\n����������� ������� ���������. \r\n\r\n\r\n\r\n� 1957 ���� ������� ��������� ������� ������� (James Thurber) �The Wonderful O�, ������������� ������ ��� �����, � ���, ��� ���������, ����� �������\r\n����, �����, ����������� ����� �, ����� �� � ������� ���. \r\n\r\n��������-���������� ��� ����� � � ��� ���� �, �, z\r\n�������� �.���� � ������ ����� �����.\r\n\r\n\r\n\r\n� ����� ������ ����� �������� ������� �� �������\r\n������ � ������������� ��� ����� ��� �.���������\r\n�������� �� ���:\r\n\r\n� �� ����� ���� �������,\r\n\r\n������ ���� ����, �������, - \r\n\r\n���� � ����� ��� �������� \r\n\r\n������ ��� ���� ����: \r\n\r\n�� ������, �� ���������, \r\n\r\n�� ������, �� ��������� \r\n\r\n� ����� �������� ��, - \r\n\r\n� � �������� ������� \r\n\r\n�����, ������, �����, ������ \r\n\r\n��������� ������� ���.\r\n\r\n����������������������������������� (1797)\r\n\r\n�������� ��������� �������� ����������, ����� ���\r\n����������� ������ �������������, ���������� ��� ����� ��, �� ��� ������, ��\r\n�������������� �������� � �������� �������� �����.\r\n\r\n��������, ��������� ����������� ��������\r\n������������ ��������� ��� �������������, � ����, �� ���������� (1819), �\r\n������� ��� �� ����� (�������� ������) ����� ��. \r\n\r\n� ������ �� ���� �.������ � �������� ������� ���� ��������\r\n��������� �������������-���������, \r\n\r\n���� � � �. ��.55�: \r\n\r\n���� ���� ������ \r\n\r\n� ����� ���\r\n\r\n��� ���� ����\r\n\r\n��� ����� \r\n\r\n����� � ������ ����\r\n\r\n������ \r\n\r\n���� ������� ��� ���� \r\n\r\n��� ����� ������\r\n\r\n���� ����\r\n\r\n&nbsp;\r\n\r\n���� ��\r\n\r\n���� ������� \r\n\r\n�������� \r\n\r\n������� ������ ��� ���� �����\r\n\r\n����������������������� (1913).\r\n\r\n\r\n������������ �������� ������ ���������� (��� �����\r\n��) ������� ���� ��������. �� �������� ����� ������������ ���������������� ���\r\n���������, ��� ����� ����� ��������, ��������, ��� ����� �������� � �����������\r\n������� (���. ��: ��������� �������� ����������, ������������� � ����������\r\n������. �.: ������ ���, 2002. �. 226):\r\n\r\n�� ������ ��������� � ����� ����?\r\n\r\n����������� ������ ��������� ����?\r\n\r\n��� �����, ����� ������ ��� ����������?\r\n\r\n������������� ������� �����-�������\r\n\r\n&nbsp;\r\n\r\n� 1836 ����, ����� ����� ������ �������-����, ������\r\n���� ����������, ��������� � ����� (Henry Richard Vassall-Rox �Keepsake�, 1836) ������������� �Eve�s Legende�, � ������� ���������� ������ ������� ��,\r\n���������� ������� ��������������. ������������ ���������� �����������\r\n�����������, � ������� ������������ ������� �������������� �����-������������ ������:\r\n�� ��������� ����, ������������ ������� ����� ����� [V],\r\n� ������ ������ �v ������ ���� � ������ ����\r\n����� v. \r\n\r\n�� ����� ����� �������� � ������������� �������\r\n�������, � ������� �� ����������� ����������, ���������������� ��� ������� � ��\r\n�����: abracadabrants (14 ����, ������ �), enchev&ecirc;trements (15 ����,\r\n������ �), distinctifs, indistincts, instinctifs (�� 11 ����,\r\n������ i), confondrons, confondront, confrontons, coordonnons, corroborons, corromprons, corrompront, morfondrons, morfondront (�� 11 ����, ������ �), cumulus, putschs, summums, surplus, tumulus (�� 7 ����, ������ u), � ���� lynx, thym (�� 4 �����, ������ y).\r\n\r\n\r\n\r\n���������\r\n���������������� ������������� �� ����� A, E, I, O, U �������� �.�.������. ����� ��� � ������������ ��������� �The approach of evening� � ����������\r\n������������� � ������-�������� ����� �The Russo-Turkish war�,\r\n������������� �� I � A, ��������������. �������,\r\n��� � �������� ���������������� ������������� ����� ������� ����� �����\r\n�������.\r\n\r\nI.\r\n\r\nIdling, I sit in this mild twilight\r\ndim,\r\n\r\nWhilst birds, in wild, swift\r\nvigils, circling skim.\r\n\r\nLight winds in sighing sink, till,\r\nrising bright,\r\n\r\nNight�s Virgin Pilgrim swims in\r\nvivid light!\r\n\r\n(��������, � ���� � ���� ������ ������� ��������, / ����\r\n����� � ����� ��������� ������ �������� ������, �������. / ���� ����� ��\r\n��������� ������, ���� �� ��������� ����, / ������ �������� ���������� ������ �\r\n�������� �����!)\r\n\r\n&nbsp;\r\n\r\n������������\r\n�� ����������� ����� �� ���� ����� ������� � ������ ����������� ����-�������\r\n������� (Marie-Christine Plassard):\r\n\r\nP&egrave;re\r\nMerle perch&eacute; serre \r\n\r\nentre le bec\r\nle bretzel ;\r\n\r\nM&egrave;re\r\nFennec est pr&eacute;sente : \r\n\r\n- Eh, Merle,\r\nR&eacute;v&eacute;rences ! \r\n\r\njette cette\r\nM&egrave;re Fennec.\r\n\r\nP&egrave;re\r\nMerle se penche et � \r\n\r\nle bretzel\r\ndescend entre \r\n\r\nles dents de\r\nM&egrave;re Fennec.\r\n\r\nP&egrave;re\r\nMerle bl&ecirc;me et bern&eacute; peste ; \r\n\r\nM&egrave;re\r\nFennec se d&eacute;lecte et rentre chez elle.\r\n\r\n(������ �����, ������� �� �����, ������ � �����\r\n��������, / ������ ����� ����������: / - ��, �����, ��� ��������! / ������� ���\r\n������ �����. / ������ ����� ��������� �... / �������� ������ ����� / � ����\r\n������ �����. / ������� � �����������, ������ ����� ��������; / ������ �����\r\n�������� � ������������ � ����.)\r\n\r\n\r\n\r\n&nbsp;\r\n\r\n����� ������������� ������� �������������� ����� ��\r\n���� � ����� ��������, ���������� ������������� �����������������, � ������ ��\r\n������� ��������� ������ ���� ��� ������� (������� λ, ������ Ż, ����� Ȼ,\r\n����� � ޻, �������� ۻ, ���. �� ) (��������� �������� ����������,\r\n������������� � ���������� ������. �.: ������ ���, 2002. ��.228-230): \r\n\r\n����������������������� ������\r\n�λ\r\n\r\n������� ��������, �������,\r\n\r\n��� ���� � ���� �������.\r\n\r\n�������, ���� �� ������.\r\n\r\n�������, ���� ������ ���.\r\n\r\n�������, ���, ���������.\r\n\r\n����� �������, ������.\r\n\r\n��� ������ � �� ������.\r\n\r\n��� ����� � �� ����� � ����.\r\n\r\n����� ����� ��������,\r\n\r\n����� �������� �����.\r\n\r\n������� ��, ����� ��, ������ ��,\r\n\r\n������ �� � � ����� �������.\r\n\r\n����� � ����� ��������,\r\n\r\n������ ����� ����.\r\n\r\n�, ������� ����! �������!\r\n\r\n�� ������ ���� � ���!\r\n\r\n������� ����� ������,\r\n\r\n������������ �����.\r\n\r\n�� ����� ������ �����.\r\n\r\n������� ����� ������.\r\n\r\n&nbsp;\r\n\r\n����������� ����\r\n�Ȼ\r\n\r\n���� �������� � ����� ����� ���,\r\n\r\n��� ����� ����� ���� � ������ �����.\r\n\r\n�� ������ ���-�����, �� �����, �� ������,\r\n\r\n�� ������ �����.\r\n\r\n����� ������, ��������� � �������,\r\n\r\n������, ��������� ����,\r\n\r\n������� ������,\r\n\r\n� ����� �����, ����\r\n\r\n�������� ���������\r\n\r\n���� ��������. ���, ��������\r\n\r\n��� ����������� ����� ��� ���������������� �\r\n������������� � ������������� ���������� (����� », ����� л, ���� ̻, �����,\r\n������ ˻):\r\n\r\n����������������������� ���\r\n�̻\r\n\r\n����������� ��\r\n����� ����\r\n\r\n� ����� �����\r\n\r\n���� ���, ����!\r\n\r\n����� ��� ���\r\n\r\n��� ����� � ���,\r\n\r\n� ��� ��� � ����.\r\n\r\n&nbsp;\r\n\r\n������� ������ ���������� � ����� ������������ ������ ������� � ������ ��\r\n������������ ���� �� ����������. ��� ���������� �������� � ��� ����� b, d, f, g, h, j, k, l, p, q, t, y, ���\r\n��������� � �, �, �, � �� ������ � �, �, �, �, �, �, � �� ������. ���\r\n����������� ����� ������������ �������: ��� ������� �� �������� ������, ���\r\n����������� ������� � ����� �������� ������. \r\n\r\n�� ����������� ����� ����� ������� �����,\r\n��������������� ����� �����������, ��� ���������� ��������� concurrencerons (�����������). \r\n\r\n&nbsp;\r\n\r\n\r\n\r\n���������� ������� ����. �������� ��������� ������� ���������� � ����������\r\n������� � �������������� � 1969 ���� ����� �La Disparition� (������), � ������� ��\r\n���������� 26 ���� (�� ����� ���� ��������, ��� ����� �����, ���������������\r\n������������� �����) � 312 ������� �� ���� �� ������������ ����� ��. � �����\r\n������ �� ����������� �� ������, ����� ���������������� � �����, ����� ��.\r\n���������� ����� ��������� ���������, ��� ��������� �������, ����������� �����,\r\n���������� �� �������� �������� �� ��� ��� �����������. \r\n\r\n\r\n\r\n�\r\n\r\n����������, ��� ������������, ���������� �����, ������������ �� ���� ����\r\n��������, ��� ����� ��������� ����������������. ����� �, ������� ������� ��\r\n��������� ���� {L}, �������� ����������, ���� ��� ��������� ���������\r\n� ���������� ���� ���� ��������: \r\n\r\n����������������������� {L}= Al\r\n\r\n�� ��������\r\n��� ����:\r\n\r\n����������������������� &Ntilde; (L) = &Ntilde; &THORN; min \r\n\r\n������� ������������ ��������� ���������� ��\r\n��������� � ��� ������ � ��� ������������� ����, ��� ��������� �����������.\r\n���� ����� � �������� � ����, �� �������\r\n������������ ��������� �������� ��������� ���������� ���� � ������ ���������, &Ntilde;, � �: ���������������������� \r\n\r\n����������������������� S = &Ntilde; � A\r\n\r\n� ����������� ��������� ���������� ���� ��������� �\r\n������ ���� ��������. �\r\n\r\n��������� ��������� �� ����������� ����� ��������\r\n���������� �����������:\r\n\r\nPortez ce vieux whisky au jude blond qui fume, (�������� ���� ����� �������������� �����, ������� �����, ��., 37 ����).\r\n\r\n������ ����������� ���������:\r\n\r\nVOYEZ LE BRICK\r\nG&Eacute;ANT QUE J'EXAMINE PR&Egrave;S DU WHARF\r\n(���������� �� ���� ���������� �������, ������� � ������ ����� ��������,� ��.,\r\n39 ����).\r\n\r\nVIF PDG MENTOR, EXHIBEZ LA\r\n SQUAW JOCKEY (��������� ��������\r\n�������, �������� ���� �����,� ��., 30 ����).\r\n\r\n����� ��������� ���������� ���������:\r\n\r\nThe quick brown fox jumps over lazy dog, (������� ���������� ��� ������� ����� �������� ���, ����., 32 �����).\r\n\r\n� �����: \r\n\r\nQuick wafting zephyrs vex bold Jim, (������ ��������� ������� ��������� ��������� �����, ����., 29 ����)\r\n\r\nWaltz, nymph, for quick jigs vex Bud, (���������, �����, ���\r\n������� ����� ���������� ��������, ����.,\r\n28 ����)\r\n\r\nJohn P. Brady, give me a black walnut box of quite a small size, (���� �.�����, ����� ���\r\n������ �������� ���� ����� ���������� �������, ����., 48 ����)\r\n\r\n��������� ��������� �������������� � ������ ��\r\n�������� ������ �� �������� �������:\r\n\r\nPACK MY BOX WITH FIVE DOZEN LIQUOR JUGS,\r\n(����� � ��� ������ ���� ����� �������� ��������, ����., 32 �����).\r\n\r\n&nbsp;\r\n\r\n��� ��������� ������ �������, ������� ���������\r\n������� ����� ���� ����, ������� ����� � ��� ������������ ��������� ���� ���������� �������: phlegms, fyrd, wuz, qvint, jackbox , �� �� ������� ��������� �� ���\r\n�������� �����. \r\n\r\n�� ������� ����� ���������� �����, � ������ �������\r\n������ ����� ��� ����� ��������. ��� ����� �������������� ��� �������� ������\r\n����������� �������� �������: � ����� ��� ���-��� ������, ��, �� ���������\r\n��������� (43 �����, ��� � � �), �����\r\n��� ���� ������ ����������� ������� � ����� ��� (44 �����, ��� �, � �\r\n�). \r\n\r\n������ ����� �� ������� ����� ����� �������� ������������. �� ������������ ��������\r\n����������� � ������ �������� ������ � ������������ ����������� ���\r\n������������ �������� �������� �������� � ��� ����, � ���������� ��������� �\r\n���� ��� ����� �������� � ������ �����������:\r\n\r\n� � ��������� ���� �������\r\n���. (25 ����,\r\n�.�������)\r\n\r\n������ ���� ����, ���� ����\r\n� ����. (27\r\n����. �.������)\r\n\r\n��! ��������� ���������\r\n��� �����. (29\r\n����, �.�������)\r\n\r\n���� ��� ����! ���� � ���\r\n���� ����� ���!\r\n(32 �����, �.��������)\r\n\r\n- ����, ����� �����, -\r\n�������� ���, - ���� ����. (33 �����, �.�����).\r\n\r\n&nbsp;\r\n\r\n�� ����������� ������������ ��������� �\r\n������������� ���� ���������� ��������� ������������������\r\n���������, ��� ������������, � ������� ������������ ���, ����� �����, �����\r\n��������: ��������� ���� ����������������� ��������� LP ���� ����� {LLP}, ��� ���������� ������������ ����� l, ������� �� ������ � ���\r\n��������� {L}:\r\n\r\n����������������������� $ l, �.�. {LLP} = Al - l� \r\n\r\n�����, ��� ����� ������������������ ���������\r\n���������� ��������������� ��������� � ��� ��������� � ������� �����������, �\r\n��� ���������� � � ������� ����������.� \r\n\r\n����������������������� &Ntilde; (LLP) = &Ntilde; &THORN; min-max\r\n\r\n�������� ��������� ������������������ ��������� ���\r\n����� ���������������� ����� �������� � �:\r\n\r\n\r\n\r\nA jovial swain may rack his brain?\r\n\r\nAnd tax his fancy�s might?\r\n\r\nTo quiz in vain, for �tis most plain?\r\n\r\n���� That\r\nwhat I say is right.\r\n\r\n(����� �� ��������������\r\n������ ��������� ���� ��? / � �������� ���� ������ �����������? / ��������\r\n�����������, ��� ��� ����� �������? / ��� ���, ��� � ������, ���������, ����.)\r\n\r\n\r\n\r\n&nbsp;\r\n\r\nQuixotic boys who looks\r\nfor joys\r\n\r\nQuixotic hazards run.\r\n\r\nA lass annoying with\r\ntrivial toys\r\n\r\nOpposing man for fun.\r\n\r\n(����������� ��������, ��� ���� �������� / �������� ����������� ������������\r\n/ ����������� ������� � ���������� ��������� / �������������� ������� ���� ������,\r\n����.)\r\n\r\n&nbsp;\r\n\r\n\r\n\r\n\r\n\r\n��������������������\r\n� ����������������� ������������� �.������. ������������ �� �������� �����������\r\n��������� ���������, �������������� ����� ����� ����, ������� ����� ������ �\r\n�������� � ������� ���������� �������, ���� ����� � ����� ���������� ��������\r\n�����, ������� �� ������ ���������������������\r\n�������������������. \r\n\r\n����� �������� ����������� ���� �������� � ���������\r\n�� � �������� 11 &acute; 11 ����� �������, ���\r\n������ ������� ���������� ������������� ���� ����. ����� ��� ����� ������������\r\n� ���� ������� ������������������ �� ��� �������� ����� �����, ������� ���\r\n����������� �������� ����� �������, ������ ���������� � ��., ������������� ���\r\n��������� �������������. \r\n\r\n\r\n\r\n�����\r\n��������������������� �������������\r\n�.����� ���������� 176 (!). ��������:\r\n\r\n������ S A T I N O R B L E U\r\n\r\n������ T R O U B L E S A I N\r\n\r\n������ R I T E N O U S B A L���������������������� Satin, or bleu, trouble\r\nsain.\r\n\r\n������ B U T I\r\nO N S L A R E���������������������� Rite:\r\nnous balbutions la r&eacute;alit&eacute;.\r\n\r\n������ A L I T E N O U S B R���������������������� Nous br&ucirc;lons\r\n\r\n������ U L O N S A B R I T E���������������������� Abrite la brune toison,\r\nbrutalise\r\n\r\n������ L A B R U N E T O I S���������������������� le b&acirc;ton suri,\r\nablutions errantes&nbsp;:\r\n\r\n������ O N\r\nB R U T A L I S E���������������������������������������������������������� oubli...\r\n\r\n������ L E B A T O N S U R I\r\n\r\nA B L U T I O N S E R\r\n\r\nR A N T E S O U B L I\r\n\r\n(�����, ����� ������, �������� ����������.\r\n\r\n�����: �� ��������� ����������.\r\n\r\n�� ����\r\n\r\n����� ������ ������, �������\r\n\r\n��������� �����, �������� ��������:\r\n\r\n������... (��.))\r\n\r\n&nbsp;\r\n\r\nA B O L I U N T R E S\r\n\r\nA R T N U L O S E B I\r\n\r\nB E L O T S U R I N A����������������������� Aboli, un tr&egrave;s art nul ose\r\n\r\nN I T E L O U R S B A�� �������������������� bibelot\r\ns&ucirc;r, inanite (l�ours-babil:\r\n\r\nB I L U N R A T E S O ���������������������� un rat&eacute;�) sonore\r\n\r\nN O R E S A U T L I B����������������������� \r\n\r\nE R A N T S I L B O U����������������������������������� Saut lib&eacute;rant s&iacute;l\r\nboute\r\n\r\nT E L A B U S N O I R����������������������������������� l�abus noir ou le brisant\r\n\r\nO U L E B R I S A N T����������������������������������� trublion &agrave; sens:\r\n\r\nT R U B L I O N A S E����������������������������������������������� Art &eacute;bloui!\r\n\r\nN S A R T E B L O U I\r\n\r\n����������� (��������, ������� ���������\r\n����� �� �������\r\n\r\n����������� �������� ���������� ���������,\r\n��������� (�������-������:\r\n\r\n����������� ���������) ����������\r\n\r\n����������������������� ������ �� �������, ��\r\n��������\r\n\r\n����������������������� ������ ����������������\r\n� ��������� ����\r\n\r\n����������������������� ���������:\r\n\r\n������������������������������ ���������� ���������! (��.))\r\n\r\n&nbsp;\r\n\r\n������ C A N E S O U R I T��� L\r\n\r\n������ E C R I\r\nT A S O N L��� U������������������� &ccedil;a ne sourit l�&eacute;crit &agrave; son\r\n\r\n������ T R I N C L O U E A��� S������������������� lutrin\r\nclou&eacute;, astre au clos\r\n\r\n������ T R E A U C L O S N�� I�������������������� ni\r\ncourt asile, ni trac; un\r\n\r\n������ C O U R T A S I L E � ���N����������������� soleil (conteurs &acirc;cres\r\nau loin\r\n\r\nI T R A C U N S O L��� E������������������� Titans)\r\n: le couru nacr&eacute; stilo,\r\n\r\nI L C O N T E U R S��� A ������������������������������������������ l�usine\r\n&agrave; troc.\r\n\r\nC R E S A U L O I N��� T ������������������������������������������ \r\n\r\nI T A N S L E C O U��� R������������������������������������������� \r\n\r\n\r\nU N A C R E S T I L��� O\r\n\r\n� \r\n\r\nL U S I N E A T R O��� C\r\n\r\n(������ �� ������ ����� � ���\r\n\r\n����������� �������� ������, ������ �� �������\r\n\r\n����������� �� �����, ��� ������; ����\r\n\r\n����������� ������ (����������� ���������� �����\r\n�� \r\n\r\n����������� �������): ������ ������������� ����,\r\n\r\n����������������������������������� ��������� �������, (��.))\r\n\r\n&nbsp;\r\n\r\n������ ���� �.������\r\n����������� � ������������� � ������������� ������ 11 �������� ����������������\r\n���� ������������ ����� (ulcerations) � ����������� �� �����\r\n������������ � ������ ������. ��� ����������� ����� ������� ����������������� ��������������: \r\n\r\nC R\r\nU + A S T I O N L E\r\n\r\n+� U R E S T L O I N C A\r\n\r\nC U� I T O N R A S E L +\r\n\r\nI� E R C L O S T A N U +\r\n\r\nI� T E L A R C O U S + N\r\n\r\nC +\r\nR O N E T U� L I� A S \r\n\r\nL A\r\nC O U R� I N +� E S T\r\n\r\nR U\r\nS� T�\r\nI� + L E A S O N\r\n\r\n+� L A S C O U R T N� I E\r\n\r\nR� E C U L A T O N +� I S\r\n\r\nT� O�\r\nI� R E + L A N C S U\r\n\r\nR� L A N U�\r\nI T E� C + O S\r\n\r\nCru bastion, le mur est loin: ca cuit, on rase l�hier clos, ta nudite,\r\nl�arc ou, syncrone, tu lias la cour indestructible a son glas court nie, recu\r\nla. \r\n\r\nTon histoire: blanc sur la nuit, echos.\r\n\r\n(��������, ���\r\n�������, �����, ������. ��� ��������: �� ���� ��������� ����-�� ���������\r\n�����, ���� ������, ����, ��� ��, ��������� ���������� ������������� ���� �\r\n�������, ��������������� ���������� ������, ����������. ���� �������: ����� ��\r\n���� ����, ����������� ����, ��.).\r\n\r\n  &nbsp;\r\n  ������ \r\n    1 ������ 2 ������ 3 ������ \r\n    4 ������ 5 ������ 6 ������ \r\n    7 ������ 8 ������ 9 ������ \r\n    10 ������ 11 ������ 12 ������ 13 ������ \r\n    14\r\n\r\n&nbsp;\r\n\r\n&nbsp;",
+      "title": "https://ashtray.ru/main/texts/bonch_course/l12-1.htm (text/html)",
+      "metadata": {},
+      "time": {
+        "start": 1789526849868,
+        "end": 1789526851287
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.290Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526851290,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cbed9001YfoSu2pK7mKhJB",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cb859001kc3nK5IkP9GS5P",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 47179,
+      "output": 168,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 47347,
+      "headroom": -8491,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.290Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.291Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.292Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.293Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.296Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.296Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.296Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.321Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 47347,
+  "providerTokens": 47347,
+  "estimatedInputTokens": 26083,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 47179,
+    "cacheRead": 0,
+    "output": 168
+  },
+  "overflow": true,
+  "headroom": -8491,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.322Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.323Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.323Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.327Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.327Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.328Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.328Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.328Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.329Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.836Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526851836,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cc0fc001oi8WtZ8lNmREzq",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cbf00001QFhdZDPH5tMtxC",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.837Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.837Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.837Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526851838,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cc0fd001x05HmlUcVUebd5",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cbf00001QFhdZDPH5tMtxC",
+    "type": "text",
+    "text": "Поищу в интернете: Является ли фраза «quick brown fox» липограммой на букву e.\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789526851837,
+      "end": 1789526851837
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526851838,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cc0fe001ZGfi17eFgfDVv2",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cbf00001QFhdZDPH5tMtxC",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 86831,
+      "output": 127,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 86958,
+      "headroom": -48102,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.839Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.839Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526851839,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cc0ff001dmFFt6KSYbVA13",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cc0fe002dBaBKKuUP9gGZi",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789526851839,
+      "end": 1789526851839
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.839Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.840Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.840Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.840Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.840Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.841Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.842Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.843Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.843Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526851894,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cc1360012pKPIH0NvtNSKN",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cc100001pmcZwBGUhT0fXs",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526851895,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cc137001QTxl18EdaZKsOD",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cc100001pmcZwBGUhT0fXs",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789526851895,
+      "end": 1789526851895
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526851895,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "part": {
+    "id": "prt_0a81cc137002JU1qoQ8kxZgxeg",
+    "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+    "messageID": "msg_0a81cc100001pmcZwBGUhT0fXs",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8676,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8749,
+      "headroom": 30107,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.896Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.896Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.897Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.897Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.897Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.897Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789526851897,
+  "sessionID": "ses_f57e360cdffe5x21HKXQWyLX4T"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.898Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.898Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xguE7aKuJI",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.898Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xguE7aKuJI",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.898Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xguE7aKuJI",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:31.898Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 9,
+  "message": "Agent exiting"
+}
+

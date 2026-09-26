@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Q1798603": {
+      "type": "item",
+      "id": "Q1798603",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "струнный музыкальный инструмент"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "弦樂器"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तंतुवाद्य"
+        },
+        "en": {
+          "language": "en",
+          "value": "string instrument"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "musical instrument that generates tones by one or more strings stretched between two points"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "инструмент, у которого звучит струна"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भारतीय संगीत में उन यंत्रों कों कहा जाता है जिनमें तार का प्रयोग हुआ है"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "弦乐器"
+          },
+          {
+            "language": "zh",
+            "value": "絃樂"
+          },
+          {
+            "language": "zh",
+            "value": "弦樂"
+          },
+          {
+            "language": "zh",
+            "value": "弦鳴樂器"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "струнные инструменты"
+          },
+          {
+            "language": "ru",
+            "value": "струнный инструмент"
+          },
+          {
+            "language": "ru",
+            "value": "струнные"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "तंतुवाद्यों"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "stringed instrument"
+          },
+          {
+            "language": "en",
+            "value": "string musical instrument"
+          },
+          {
+            "language": "en",
+            "value": "stringed instruments"
+          },
+          {
+            "language": "en",
+            "value": "chordophone"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,42 @@
+self_ast_census
+  target src/solver_handlers/verifiable_task.rs
+  language rust
+  fidelity signature
+  byte_len 26792
+  line_count 795
+  content_id source_module_b0a97f5f2a69cfb4
+  symbol_count 33
+  symbols
+    const FLOW_INCREASE 23 23
+    const FLOW_DECREASE 24 24
+    const QUANTITY_DETERMINER 25 25
+    const UNIT_CONVERSION 26 26
+    struct VerifiedAnswer 30 38
+    function try_verifiable_task 41 52
+    function try_verifiable_task_with_online 55 167
+    function gap_answer 169 199
+    function derive_candidates 201 211
+    function derive_unknown 213 256
+    function derive_numeric 258 304
+    function derive_count 306 384
+    function flow_signs 386 414
+    struct FlowCue 416 420
+    function flow_cues 422 441
+    function role_offsets 443 461
+    struct UnitScale 464 467
+    function conversion_scale 469 513
+    function unit_slug 515 524
+    function source_for 526 530
+    function signed_expression 532 534
+    function expression_ir 536 552
+    function execute_candidates 556 631
+    function canonical_answer_value 633 655
+    function output_has_shape 657 668
+    function append_round_trip_checks 670 698
+    function append_unit_check 700 715
+    enum AnswerAgreement 718 723
+    function same_answer 725 733
+    function derivations_are_disjoint 735 741
+    function classify_agreement 744 766
+    function evidence_check_slug 768 780
+    function symbolic_check 782 794

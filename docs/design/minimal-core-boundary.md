@@ -44,7 +44,7 @@ Deleting a handler is preferred when no behavior depends on it.
 ## Handler burn-down ratchet
 
 [`data/meta/core-boundary-ledger.lino`](../../data/meta/core-boundary-ledger.lino)
-is the complete recursive census of `src/solver_handlers/**/*.rs`. Each row has
+is the complete recursive census of `rust/src/solver_handlers/**/*.rs`. Each row has
 one audited disposition:
 
 - `migrate`: compiled domain knowledge must move to seed rules; the current file

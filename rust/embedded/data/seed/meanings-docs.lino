@@ -1,0 +1,65 @@
+meanings
+  explanation_request
+    defined-by inquiry
+    defined-by action
+    role explanation_request_lead
+    lexeme en
+      surface
+        text "how …"
+      surface
+        text " how "
+      surface
+        text "explain …"
+      surface
+        text "describe …"
+      surface
+        text "what does …"
+      surface
+        text "what is …"
+      surface
+        text "tell me about …"
+      surface
+        text "how to use …"
+    lexeme ru
+      surface
+        text "как …"
+      surface
+        text " как "
+      surface
+        text "объясни …"
+      surface
+        text "расскажи …"
+      surface
+        text "что такое …"
+    lexeme hi
+      surface
+        text "कैसे काम"
+      surface
+        text समझाओ…
+      surface
+        text "क्या है …"
+    lexeme zh
+      surface
+        text 如何工作
+      surface
+        text 怎么工作
+      surface
+        text 解释…
+      surface
+        text 是什么
+  code_method
+    defined-by action
+    defined-by concept
+    role code_method_noun
+    lexeme en
+      surface
+        text method
+    lexeme ru
+      surface
+        text метод
+    lexeme hi
+      surface
+        text विधि
+    lexeme zh
+      surface
+        text 方法

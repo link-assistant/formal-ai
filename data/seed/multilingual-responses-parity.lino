@@ -1,0 +1,519 @@
+# Five-language parity completions split from multilingual-responses.lino.
+# This shard is loaded through the shared seed registry on every surface.
+multilingual_responses
+  response response_agentic_report_target_question_es
+    intent agentic_report_target_question
+    language es
+    text "¿Qué quieres informar? Selecciona una o más opciones."
+  response response_agentic_report_target_options_es
+    intent agentic_report_target_options
+    language es
+    text ("Registro del agente" "Exportar el registro completo del cliente agéntico." "Registro del servidor" "Exportar el registro correspondiente del servidor Formal AI." "Incidencia de GitHub" "Crear una incidencia con el contexto completo." "Informar a Formal AI" "Guardar el informe para que esta instancia pueda aprender.")
+  response response_agentic_report_contents_question_es
+    intent agentic_report_contents_question
+    language es
+    text "¿Qué contexto debe incluir la incidencia de GitHub?"
+  response response_agentic_report_contents_options_es
+    intent agentic_report_contents_options
+    language es
+    text ("Ambos registros" "Incluir los registros del agente y del servidor; adjuntar una vista previa recortada y enlazar el contexto completo si es demasiado grande." "Registro del agente" "Incluir solo la conversación completa del agente." "Registro del servidor" "Incluir solo el registro completo del servidor correspondiente.")
+  response response_agentic_report_exported_es
+    intent agentic_report_exported
+    language es
+    text "Se exportó el contexto del informe."
+  response response_mcp_instructions_es
+    intent mcp_instructions
+    language es
+    text "Llama a formal_ai_chat para cada solicitud del usuario y devuelve su respuesta al usuario."
+  response response_mcp_tool_description_es
+    intent mcp_tool_description
+    language es
+    text "Pide al servidor local de razonamiento de Formal AI que responda a la solicitud del usuario."
+  response response_mcp_prompt_description_es
+    intent mcp_prompt_description
+    language es
+    text "La solicitud completa del usuario que se debe responder."
+  response response_greeting_es
+    intent greeting
+    language es
+    text "¡Hola! ¿En qué puedo ayudarte?"
+  response response_wellbeing_es
+    intent wellbeing
+    language es
+    text "Estoy muy bien, ¡gracias por preguntar! Estoy listo para ayudar; ¿qué te gustaría hacer?"
+  response response_farewell_es
+    intent farewell
+    language es
+    text "¡Adiós! Puedes volver cuando quieras."
+  response response_test_status_es
+    intent test_status
+    language es
+    text "La prueba se superó. Estoy aquí."
+  response response_courtesy_response_es
+    intent courtesy_response
+    language es
+    text "Me alegra saberlo. ¿Qué te gustaría hacer ahora?"
+  response response_identity_es
+    intent identity
+    language es
+    text "Soy formal-ai, una implementación de IA simbólica determinista que responde a partir de reglas locales en Links Notation y formatos de API compatibles con OpenAI. En esta demostración no realizo inferencia neuronal."
+  response response_assistant_name_es
+    intent assistant_name
+    language es
+    text "Soy Formal AI y actualmente no tengo nombre. Puedes ponerme el nombre que prefieras."
+  response response_meta_explanation_es
+    intent meta_explanation
+    language es
+    text "Trabajo comparando tu solicitud con reglas deterministas de Links Notation almacenadas en memoria. Cada regla asigna un patrón reconocido a una respuesta fija. Cuando ninguna regla coincide, informo intent: unknown. No hay inferencia neuronal: cada respuesta se puede rastrear por completo hasta una regla simbólica."
+  response response_inappropriate_content_es
+    intent inappropriate_content
+    language es
+    text "Ese mensaje contiene contenido inapropiado. Mantén una conversación respetuosa."
+  response response_clarification_es
+    intent clarification
+    language es
+    text "Lamento la confusión. Soy formal-ai, una IA simbólica determinista. Puedo responder saludos, preguntas de identidad, consultas de conceptos (¿qué es X?), operaciones aritméticas y programas Hello World. Si quieres preguntar algo específico, prueba una de esas opciones o añade un hecho en Links Notation."
+  response response_capabilities_es
+    intent capabilities
+    language es
+    text "Soy formal-ai, una IA simbólica determinista. Esto es lo que puedo hacer:\n\n- **Saludos**: responder a «Hola» y expresiones similares.\n- **Hello World**: generar programas en Rust, Python, JavaScript, Go, C y más lenguajes.\n- **Búsqueda web**: buscar en internet mediante DuckDuckGo, Wikipedia y Wikidata cuando estén disponibles.\n- **Consulta de conceptos**: explicar términos; prueba «¿Qué es Wikipedia?».\n- **Aritmética**: evaluar expresiones; prueba «¿Cuánto es 2 + 2?».\n- **Traducción**: traducir frases entre idiomas.\n- **Memoria**: recordar el contexto de la sesión actual.\n- **Reglas de comportamiento**: envía `List behavior rules` para ver las reglas de enrutamiento integradas y `Show behavior rule unknown` para leer una en Links Notation.\n- **Enseñar este diálogo**: envía «When I say `your prompt`, answer `your answer`» para añadir una regla local a la conversación actual.\n- **Hechos sobre mí**: envía `List all facts you know about yourself` para ver lo que sé sobre mí.\n- **Informar de una regla ausente**: usa el botón **Report issue** de la barra superior; los mensajes sobre solicitudes desconocidas incluyen un enlace a la traza de diagnóstico para los mantenedores.\n- **Ajustes y acciones**: configura los diagnósticos, el modo de demostración, el modo Agente, el tema, el idioma, el estilo del chat y la importación o exportación de memoria desde los mensajes.\n\nFunciono con reglas simbólicas locales, sin inferencia de redes neuronales."
+  response response_capabilities_more_es
+    intent capabilities_more
+    language es
+    text "Además de la capacidad ya comentada, también puedo:\n\n- **Aritmética**: evaluar expresiones como `2 + 2`.\n- **Traducción**: traducir frases cortas entre los idiomas compatibles.\n- **Consulta de conceptos**: explicar términos como `What is Wikipedia?`.\n- **Hello World**: generar pequeños programas en Rust, Python, JavaScript, Go, C y más lenguajes.\n- **Memoria de conversación**: usar mensajes anteriores de la sesión actual.\n- **Reglas de comportamiento**: mostrar las reglas integradas con `List behavior rules` y `Show behavior rule unknown`.\n- **Ajustes y acciones**: configurar los diagnósticos, el modo de demostración, el modo Agente, el tema, el idioma, el estilo del chat y la importación o exportación de memoria."
+  response response_unknown_es
+    intent unknown
+    language es
+    text "Todavía no sé cómo responder a eso. Aún no puedo responderlo a partir de las reglas locales de enlaces. Para revisar lo que puedo hacer, envía `List behavior rules` y luego `Show behavior rule unknown`. Para enseñar una respuesta a este diálogo, envía: When I say `your prompt`, answer `your answer`. Si después de esas comprobaciones sigue haciendo falta un hecho semilla compartido o una regla de enlaces en Links Notation, usa Report issue con la traza de razonamiento, o exporta la memoria para conservar una regla local del diálogo."
+  response response_unknown_reasoning_question_es
+    intent unknown_reasoning_question
+    language es
+    text "No pude determinar `{focus}` a partir de la memoria local de Links Notation, el conocimiento público en caché ni la caché de fuentes, y no puedo inferir una respuesta verificada. ¿Qué fuente o hecho ausente debo usar?\n\nSi el razonamiento sigue sin resolverlo y hace falta un hecho semilla compartido o una regla de enlaces en Links Notation, usa Report issue con la traza. Para conservar una regla local del diálogo, exporta la memoria o enséñala con `When I say ... answer ...`; revisa las rutas con `List behavior rules` y `Show behavior rule unknown`."
+  response response_unknown_reasoning_trace_es
+    intent unknown_reasoning_trace
+    language es
+    text "No pude determinar `{focus}` a partir de la memoria local de Links Notation, el conocimiento público en caché ni la caché de fuentes, y no puedo inferir una respuesta verificada. Registré en la traza los intentos fallidos de recopilación.\n\nSi el razonamiento sigue sin resolverlo y hace falta un hecho semilla compartido o una regla de enlaces en Links Notation, usa Report issue con la traza. Para conservar una regla local del diálogo, exporta la memoria o enséñala con `When I say ... answer ...`; revisa las rutas con `List behavior rules` y `Show behavior rule unknown`."
+  response response_concept_lookup_in_context_es
+    intent concept_lookup_in_context
+    language es
+    text "En el contexto de «{context}» ({context_label}), {term} ({category}) significa: {summary}\n\nFuente: {source} ({source_kind})."
+  response response_concept_lookup_in_context_no_alias_es
+    intent concept_lookup_in_context_no_alias
+    language es
+    text "En el contexto de {context_label}, {term} ({category}) significa: {summary}\n\nFuente: {source} ({source_kind})."
+  response response_physical_action_question_es
+    intent physical_action_question
+    language es
+    text "No. No tengo un cuerpo físico."
+  response response_kupi_slona_es
+    intent kupi_slona
+    language es
+    text "«Compra un elefante» es un conocido juego verbal infantil ruso. Respondas lo que respondas, la réplica es: todos dicen eso, ¡pero tú compra un elefante! La respuesta ganadora tradicional es: todos tienen un elefante, pero yo no."
+  response response_agent_suggestion_es
+    intent agent_suggestion
+    language es
+    text 'Parece que quieres ejecutar un comando de terminal: `{command}`.\n\nLa ejecución de comandos de shell requiere el modo Agente. En el modo Chat solo razono sobre tu solicitud y no ejecuto comandos.\n\n¿Quieres cambiar al modo Agente y conceder la capacidad `shell` para que pueda ejecutar `{command}`? Usa el selector de modo de la barra de herramientas y elige "Agent" (o "Full Auto" para ejecutar comandos automáticamente).'
+  response response_agent_suggestion_active_es
+    intent agent_suggestion_active
+    language es
+    text "Parece que quieres ejecutar un comando de terminal: `{command}`.\n\nEl modo Agente está activo. Si se ha concedido la capacidad `shell`, puedo ejecutar `{command}`. De lo contrario, concede la capacidad `shell` en los ajustes."
+  response response_github_repository_traffic_es
+    intent github_repository_traffic
+    language es
+    text "En parte. Para un repositorio de GitHub como {repository}, GitHub puede mostrar tráfico agregado a las personas con acceso de push o escritura: visualizaciones, visitantes únicos, clones, sitios de referencia y contenido popular durante el periodo reciente. No muestra la identidad de cada visitante. Consulta GitHub Insights > Traffic o los endpoints REST de tráfico: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_document_originality_check_sample_present_es
+    intent document_originality_check_sample_present
+    language es
+    text "Se reconoció una comprobación de originalidad y plagio para `{target}`.\n\nFlujo de trabajo: leer el texto proporcionado, seleccionar pasajes estables, ejecutar búsquedas web exactas de esos pasajes y comparar las fuentes encontradas con el documento para detectar solapamientos, citas y reutilización sospechosa. No afirmaré un porcentaje de originalidad hasta encontrar y comparar las fuentes coincidentes.\n\nMuestra de texto del cliente: presente."
+  response response_document_originality_check_sample_missing_es
+    intent document_originality_check_sample_missing
+    language es
+    text "Se reconoció una comprobación de originalidad y plagio para `{target}`.\n\nFlujo de trabajo: leer el texto proporcionado, seleccionar pasajes estables, ejecutar búsquedas web exactas de esos pasajes y comparar las fuentes encontradas con el documento para detectar solapamientos, citas y reutilización sospechosa. No afirmaré un porcentaje de originalidad hasta encontrar y comparar las fuentes coincidentes.\n\nMuestra de texto del cliente: leída del archivo adjunto."
+  response response_learn_from_source_es
+    intent learn_from_source
+    language es
+    text "Gracias; me estás indicando una fuente de datos de la que puedo aprender."
+  response response_tool_result_completed_es
+    intent tool_result_completed
+    language es
+    text "El comando `{tool}` se completó. Salida:\n\n```{format}\n{payload}\n```"
+  response response_tool_result_failed_es
+    intent tool_result_failed
+    language es
+    text "El comando falló: {error}"
+  response response_tool_result_empty_list_es
+    intent tool_result_empty_list
+    language es
+    text "Esta carpeta está vacía."
+  response response_tool_result_empty_search_es
+    intent tool_result_empty_search
+    language es
+    text "No se encontraron coincidencias."
+  response response_tool_result_empty_local_path_search_es
+    intent tool_result_empty_local_path_search
+    language es
+    text "No se encontró ningún archivo ni carpeta coincidente en la ubicación solicitada. Comprueba el nombre o pídeme que busque en una ubicación más amplia."
+  response response_tool_result_empty_generic_es
+    intent tool_result_empty_generic
+    language es
+    text "El comando se completó correctamente sin producir salida."
+  response response_lexeme_import_refused_batch_es
+    intent lexeme_import_refused_batch
+    language es
+    text "se rechazaron {count} concepto(s); los fragmentos existentes no se modificaron; eventos: {events}"
+  response response_lexeme_import_duplicate_slug_es
+    intent lexeme_import_duplicate_slug
+    language es
+    text "slug duplicado (también {other})"
+  response response_lexeme_import_duplicate_qid_es
+    intent lexeme_import_duplicate_qid
+    language es
+    text "qid duplicado (también {other})"
+  response response_lexeme_import_cache_unreadable_es
+    intent lexeme_import_cache_unreadable
+    language es
+    text "no se puede leer la caché {path}: {error}"
+  response response_lexeme_import_cache_invalid_json_es
+    intent lexeme_import_cache_invalid_json
+    language es
+    text "la caché {path} contiene JSON no válido: {error}"
+  response response_lexeme_import_cache_miss_offline_es
+    intent lexeme_import_cache_miss_offline
+    language es
+    text "no hay entrada de caché para {qid} y el modo sin conexión está activo (define FORMAL_AI_LIVE_API para llenarla)"
+  response response_lexeme_import_cache_budget_reached_es
+    intent lexeme_import_cache_budget_reached
+    language es
+    text "se alcanzó el límite de caché {budget} ({cached}); se omite {qid} para respetar la política de caché acotada"
+  response response_lexeme_import_qid_absent_from_cache_es
+    intent lexeme_import_qid_absent_from_cache
+    language es
+    text "{qid} no está en la caché"
+  response response_lexeme_import_no_labels_in_cache_es
+    intent lexeme_import_no_labels_in_cache
+    language es
+    text "{qid} no tiene etiquetas en la caché"
+  response response_lexeme_import_missing_cached_label_es
+    intent lexeme_import_missing_cached_label
+    language es
+    text "falta la etiqueta {language} de {qid} en la caché"
+  response response_lexeme_import_no_clean_alias_es
+    intent lexeme_import_no_clean_alias
+    language es
+    text "la etiqueta {language} `{label}` de {qid} no coincide con la escritura de su idioma y no existe un alias válido"
+  response response_lexeme_import_fetch_failed_es
+    intent lexeme_import_fetch_failed
+    language es
+    text "falló la obtención de {qid}: {error}"
+  response response_lexeme_import_fetch_invalid_json_es
+    intent lexeme_import_fetch_invalid_json
+    language es
+    text "la obtención de {qid} devolvió JSON no válido: {error}"
+  response response_lexeme_import_cannot_create_es
+    intent lexeme_import_cannot_create
+    language es
+    text "no se puede crear {path}: {error}"
+  response response_lexeme_import_reparse_failed_es
+    intent lexeme_import_reparse_failed
+    language es
+    text "falló el nuevo análisis de {qid} recortado: {error}"
+  response response_lexeme_import_cannot_write_json_es
+    intent lexeme_import_cannot_write_json
+    language es
+    text "no se puede escribir {qid}.json: {error}"
+  response response_lexeme_import_cannot_write_lino_es
+    intent lexeme_import_cannot_write_lino
+    language es
+    text "no se puede escribir {qid}.lino: {error}"
+  response response_lexeme_import_qid_absent_from_fetch_es
+    intent lexeme_import_qid_absent_from_fetch
+    language es
+    text "{qid} no aparece en el documento obtenido"
+  response response_lexeme_import_invalid_qid_es
+    intent lexeme_import_invalid_qid
+    language es
+    text "{qid} no es un identificador de elemento de Wikidata"
+  response response_lexeme_import_invalid_slug_es
+    intent lexeme_import_invalid_slug
+    language es
+    text "el slug `{slug}` no es un identificador simple"
+  response response_lexeme_import_missing_label_es
+    intent lexeme_import_missing_label
+    language es
+    text "falta la etiqueta {language}"
+  response response_lexeme_import_invalid_surface_es
+    intent lexeme_import_invalid_surface
+    language es
+    text "la etiqueta {language} `{surface}` no es un único token válido"
+  response response_lexeme_import_missing_provenance_es
+    intent lexeme_import_missing_provenance
+    language es
+    text "falta la procedencia de la fuente {language}"
+  response response_lexeme_import_invalid_provenance_es
+    intent lexeme_import_invalid_provenance
+    language es
+    text "la procedencia de la fuente {language} no identifica un campo compatible en {qid}"
+  response response_lexeme_import_block_parse_failed_es
+    intent lexeme_import_block_parse_failed
+    language es
+    text "no se pudo analizar el bloque generado para {slug}"
+  response response_lexeme_import_grounding_lost_es
+    intent lexeme_import_grounding_lost
+    language es
+    text "{slug} perdió su fundamentación durante el análisis"
+  response response_lexeme_import_wrong_genus_es
+    intent lexeme_import_wrong_genus
+    language es
+    text "{slug} no está definido por {defined_by}"
+  response response_lexeme_import_lexeme_lost_es
+    intent lexeme_import_lexeme_lost
+    language es
+    text "{slug} perdió su lexema {language}"
+  response response_lexeme_import_surface_missing_es
+    intent lexeme_import_surface_missing
+    language es
+    text "el lexema {language} de {slug} no tiene ninguna superficie"
+  response response_lexeme_import_surface_changed_es
+    intent lexeme_import_surface_changed
+    language es
+    text "la superficie {language} de {slug} cambió durante el análisis"
+  response response_lexeme_import_denotation_lost_es
+    intent lexeme_import_denotation_lost
+    language es
+    text "la superficie {language} de {slug} ya no denota su significado"
+  response response_lexeme_import_part_of_speech_lost_es
+    intent lexeme_import_part_of_speech_lost
+    language es
+    text "la superficie {language} de {slug} perdió su part_of_speech"
+  response response_lexeme_import_number_lost_es
+    intent lexeme_import_number_lost
+    language es
+    text "la superficie {language} de {slug} perdió su grammatical_number"
+  response response_lexeme_import_cannot_stage_es
+    intent lexeme_import_cannot_stage
+    language es
+    text "no se puede preparar {path}: {error}"
+  response response_lexeme_import_cannot_install_es
+    intent lexeme_import_cannot_install
+    language es
+    text "no se puede instalar {file}: {error}"
+  response response_lexeme_import_cannot_list_es
+    intent lexeme_import_cannot_list
+    language es
+    text "no se puede enumerar {path}: {error}"
+  response response_lexeme_import_cannot_inspect_es
+    intent lexeme_import_cannot_inspect
+    language es
+    text "no se puede inspeccionar la salida: {error}"
+  response response_lexeme_import_cannot_remove_stale_es
+    intent lexeme_import_cannot_remove_stale
+    language es
+    text "no se puede eliminar el archivo obsoleto {file}: {error}"
+  response response_requirement_contradiction_es
+    intent requirement_contradiction
+    language es
+    text "Advertencia: dos de tus requisitos se contradicen.\n- Afirmación 1 (peso {prior_weight}): «{prior}»\n- Afirmación 2 (peso {current_weight}): «{current}»\nImponen exigencias opuestas sobre el mismo sujeto ({subject}), por lo que no pueden cumplirse a la vez.\nResolución propuesta: conserva una y retira la otra enviando un requisito que la sustituya. La red de requisitos es de solo adición, por lo que la retirada registra un evento nuevo sin borrar el historial. Como alternativa, separa los significados o limita cada requisito a un contexto distinto."
+  response response_shared_dialog_capture_parse_failed_es
+    intent shared_dialog_capture_parse_failed
+    language es
+    text "no se pudo analizar el JSON de shared-dialog de web-capture: {error}"
+  response response_shared_dialog_capture_unsupported_es
+    intent shared_dialog_capture_unsupported
+    language es
+    text "el proveedor web-capture {provider} informó {reason}: {message}"
+  response response_budget_search_solution_es
+    intent budget_search_solution
+    language es
+    text "Encontrado mediante búsqueda con presupuesto: {expression} = {target}.\nNinguna parte ni regla reutilizable coincidió, así que el solucionador combinó los números dados con los operadores permitidos y puntuó cada candidato frente a las pruebas de igualdad generadas como función de aptitud.\nPresupuesto de búsqueda: {budget} evaluaciones de candidatos; se encontró una composición satisfactoria tras {evaluations} evaluaciones.\nRuta de búsqueda: {trace_id}"
+  response response_statement_audit_invalid_json_ru
+    intent statement_audit_invalid_json
+    language ru
+    text "недопустимый JSON доказательств: {error}"
+  response response_statement_audit_invalid_json_hi
+    intent statement_audit_invalid_json
+    language hi
+    text "अमान्य साक्ष्य JSON: {error}"
+  response response_statement_audit_invalid_json_zh
+    intent statement_audit_invalid_json
+    language zh
+    text "无效的证据 JSON：{error}"
+  response response_statement_audit_invalid_json_es
+    intent statement_audit_invalid_json
+    language es
+    text "JSON de evidencia no válido: {error}"
+  response response_statement_audit_capture_field_ru
+    intent statement_audit_capture_field
+    language ru
+    text "снимок {index}, поле {field}: {detail}"
+  response response_statement_audit_capture_field_hi
+    intent statement_audit_capture_field
+    language hi
+    text "कैप्चर {index} का फ़ील्ड {field}: {detail}"
+  response response_statement_audit_capture_field_zh
+    intent statement_audit_capture_field
+    language zh
+    text "捕获 {index} 的字段 {field}：{detail}"
+  response response_statement_audit_capture_field_es
+    intent statement_audit_capture_field
+    language es
+    text "captura {index}, campo {field}: {detail}"
+  response response_statement_audit_nonempty_ru
+    intent statement_audit_nonempty
+    language ru
+    text "не должно быть пустым"
+  response response_statement_audit_nonempty_hi
+    intent statement_audit_nonempty
+    language hi
+    text "खाली नहीं होना चाहिए"
+  response response_statement_audit_nonempty_zh
+    intent statement_audit_nonempty
+    language zh
+    text "不得为空"
+  response response_statement_audit_nonempty_es
+    intent statement_audit_nonempty
+    language es
+    text "no debe estar vacío"
+  response response_statement_audit_strength_range_ru
+    intent statement_audit_strength_range
+    language ru
+    text "должно находиться между 0 и 1"
+  response response_statement_audit_strength_range_hi
+    intent statement_audit_strength_range
+    language hi
+    text "0 और 1 के बीच होना चाहिए"
+  response response_statement_audit_strength_range_zh
+    intent statement_audit_strength_range
+    language zh
+    text "必须在 0 到 1 之间"
+  response response_statement_audit_strength_range_es
+    intent statement_audit_strength_range
+    language es
+    text "debe estar entre 0 y 1"
+  response response_statement_audit_selector_exclusive_ru
+    intent statement_audit_selector_exclusive
+    language ru
+    text "следует использовать поля statement или claim, но не оба одновременно"
+  response response_statement_audit_selector_exclusive_hi
+    intent statement_audit_selector_exclusive
+    language hi
+    text "statement या claim फ़ील्ड में से किसी एक का उपयोग होना चाहिए, दोनों का नहीं"
+  response response_statement_audit_selector_exclusive_zh
+    intent statement_audit_selector_exclusive
+    language zh
+    text "必须使用 statement 字段或 claim 字段，不能同时使用两者"
+  response response_statement_audit_selector_exclusive_es
+    intent statement_audit_selector_exclusive
+    language es
+    text "debe usar los campos statement o claim, pero no ambos"
+  response response_statement_audit_claim_subject_ru
+    intent statement_audit_claim_subject
+    language ru
+    text "для claim требуется subject"
+  response response_statement_audit_claim_subject_hi
+    intent statement_audit_claim_subject
+    language hi
+    text "claim के लिए subject आवश्यक है"
+  response response_statement_audit_claim_subject_zh
+    intent statement_audit_claim_subject
+    language zh
+    text "claim 需要 subject"
+  response response_statement_audit_claim_subject_es
+    intent statement_audit_claim_subject
+    language es
+    text "claim requiere subject"
+  response response_statement_audit_claim_predicate_ru
+    intent statement_audit_claim_predicate
+    language ru
+    text "для claim требуется predicate"
+  response response_statement_audit_claim_predicate_hi
+    intent statement_audit_claim_predicate
+    language hi
+    text "claim के लिए predicate आवश्यक है"
+  response response_statement_audit_claim_predicate_zh
+    intent statement_audit_claim_predicate
+    language zh
+    text "claim 需要 predicate"
+  response response_statement_audit_claim_predicate_es
+    intent statement_audit_claim_predicate
+    language es
+    text "claim requiere predicate"
+  response response_statement_audit_selector_required_ru
+    intent statement_audit_selector_required
+    language ru
+    text "требуется statement либо subject и predicate"
+  response response_statement_audit_selector_required_hi
+    intent statement_audit_selector_required
+    language hi
+    text "statement या subject और predicate आवश्यक हैं"
+  response response_statement_audit_selector_required_zh
+    intent statement_audit_selector_required
+    language zh
+    text "需要 statement，或者同时需要 subject 和 predicate"
+  response response_statement_audit_selector_required_es
+    intent statement_audit_selector_required
+    language es
+    text "requiere statement o bien subject y predicate"
+  response response_statement_audit_unknown_tier_ru
+    intent statement_audit_unknown_tier
+    language ru
+    text "содержит неизвестный уровень источника"
+  response response_statement_audit_unknown_tier_hi
+    intent statement_audit_unknown_tier
+    language hi
+    text "एक अज्ञात स्रोत स्तर शामिल है"
+  response response_statement_audit_unknown_tier_zh
+    intent statement_audit_unknown_tier
+    language zh
+    text "包含未知的来源层级"
+  response response_statement_audit_unknown_tier_es
+    intent statement_audit_unknown_tier
+    language es
+    text "contiene un nivel de fuente desconocido"
+  response response_statement_audit_unknown_stance_ru
+    intent statement_audit_unknown_stance
+    language ru
+    text "содержит неизвестную позицию"
+  response response_statement_audit_unknown_stance_hi
+    intent statement_audit_unknown_stance
+    language hi
+    text "एक अज्ञात रुख शामिल है"
+  response response_statement_audit_unknown_stance_zh
+    intent statement_audit_unknown_stance
+    language zh
+    text "包含未知立场"
+  response response_statement_audit_unknown_stance_es
+    intent statement_audit_unknown_stance
+    language es
+    text "contiene una postura desconocida"
+  response response_statement_audit_invalid_temperature_ru
+    intent statement_audit_invalid_temperature
+    language ru
+    text "недопустимая температура: {error}"
+  response response_statement_audit_invalid_temperature_hi
+    intent statement_audit_invalid_temperature
+    language hi
+    text "अमान्य तापमान: {error}"
+  response response_statement_audit_invalid_temperature_zh
+    intent statement_audit_invalid_temperature
+    language zh
+    text "无效的温度：{error}"
+  response response_statement_audit_invalid_temperature_es
+    intent statement_audit_invalid_temperature
+    language es
+    text "temperatura no válida: {error}"
+  response response_statement_audit_temperature_range_ru
+    intent statement_audit_temperature_range
+    language ru
+    text "температура должна быть конечной и больше нуля"
+  response response_statement_audit_temperature_range_hi
+    intent statement_audit_temperature_range
+    language hi
+    text "तापमान सीमित और शून्य से अधिक होना चाहिए"
+  response response_statement_audit_temperature_range_zh
+    intent statement_audit_temperature_range
+    language zh
+    text "温度必须是有限数且大于零"
+  response response_statement_audit_temperature_range_es
+    intent statement_audit_temperature_range
+    language es
+    text "la temperatura debe ser finita y mayor que cero"

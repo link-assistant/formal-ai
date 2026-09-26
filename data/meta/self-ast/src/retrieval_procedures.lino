@@ -1,0 +1,14 @@
+self_ast_census
+  target src/retrieval_procedures.rs
+  language rust
+  fidelity signature
+  byte_len 7475
+  line_count 199
+  content_id source_module_8ada0a0817355062
+  symbol_count 5
+  symbols
+    function try_network_query 21 79
+    function try_source_refresh 81 106
+    function try_learn_from_source 119 145
+    function learning_source_summary 152 171
+    function try_source_conflict 173 199

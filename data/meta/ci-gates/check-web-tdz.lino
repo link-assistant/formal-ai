@@ -6,4 +6,4 @@
 ci_gate check_web_tdz
   stage web
   description "The web app has no hook ordering bug that would throw a temporal-dead-zone error."
-  run "npm run --prefix tests/e2e check:web-tdz"
+  run "npm run --prefix rust/tests/e2e check:web-tdz"

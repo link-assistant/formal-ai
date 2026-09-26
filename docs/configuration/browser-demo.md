@@ -1,10 +1,10 @@
 # Browser demo setup
 
-Use the deployed GitHub Pages demo or serve `src/web/` over HTTP so its
+Use the deployed GitHub Pages demo or serve `js/` over HTTP so its
 WebAssembly worker can load. Do not open `index.html` directly as a `file:` URL.
 
 ```bash
-python3 -m http.server 8000 --directory src/web
+python3 -m http.server 8000 --directory js
 ```
 
 The browser demo is fully in-process: JavaScript owns UI/browser integration

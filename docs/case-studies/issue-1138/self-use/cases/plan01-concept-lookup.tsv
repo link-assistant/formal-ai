@@ -1,0 +1,10 @@
+isogram	en	Write a Python function is_isogram(word) that returns True when the word is an isogram.
+isogram	ru	Напиши функцию Python is_isogram(word), которая возвращает True, если слово — изограмма.
+isogram	hi	Python फ़ंक्शन is_isogram(word) लिखें जो True लौटाए यदि शब्द एक आइसोग्राम है।
+isogram	zh	编写 Python 函数 is_isogram(word),当 word 是 isogram 时返回 True。
+isogram	es	Escribe la función Python is_isogram(word) que devuelva True cuando la palabra sea un isograma.
+lipogram	en	Is the sentence "quick brown fox" a lipogram in e?
+lipogram	ru	Является ли фраза «quick brown fox» липограммой на букву e?
+lipogram	hi	क्या वाक्य "quick brown fox" e का लिपोग्राम है?
+lipogram	zh	句子 "quick brown fox" 是不是关于字母 e 的 lipogram?
+lipogram	es	¿La frase "quick brown fox" es un lipograma en e?

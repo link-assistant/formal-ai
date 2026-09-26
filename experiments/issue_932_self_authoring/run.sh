@@ -18,17 +18,17 @@ box_image_survey
   issue "932"
   registry "docker.io"
   namespace "konard"
-  surveyed_at "2026-08-14T12:16:42Z"
+  surveyed_at "2026-09-23T08:37:08Z"
   pinned_tag "2.4.0"
   evidence "docs/case-studies/issue-932/raw-data/box-image-tags.log"
 box_image_published
   record_type "box_image_availability"
   published "true"
-  repositories ("box" "box-rust" "box-python" "box-js" "box-go" "box-java" "box-ruby")
+  repositories ("box" "box-rust" "box-python" "box-js" "box-go" "box-java" "box-ruby" "box-kotlin")
 box_image_missing
   record_type "box_image_availability"
   published "false"
-  repositories ("box-c" "box-cpp" "box-csharp" "box-dotnet")'
+  repositories ("box-c" "box-cpp" "box-csharp" "box-dotnet" "box-scala")'
 
 TASK="$TASK" \
 EXPECT_FILE="box-image-survey.lino" \

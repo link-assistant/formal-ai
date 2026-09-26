@@ -1,0 +1,57 @@
+Q41304
+  aliases
+    en ("German Reich" "Weimar Germany" Germany "German Republic" "Republic of Germany" "German People's State")
+    es ("Alemania de Weimar" "Republica de Weimar" "Régimen de Weimar" "Regimen de Weimar")
+    ru ("Веймаровская республика" "Ваймарская республика" "Веймарская Германия" "Германское государство" "Германский рейх" "Германия" "Германская республика")
+    zh ("威瑪共和國" "威瑪共和" "魏瑪共和" "德意志帝國共和時期")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q1206012
+              numeric-id 1206012
+          hash 5b925ba516864377a76a45a5078658f219efc784
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "Germany in the years 1918/1919–1933"
+    es "denominación historiografíca del régimen político en Alemania de 1918 a 1933"
+    hi "जर्मनी देश 1919 से 1933 तक"
+    ru "германское государство в 1918/1919–1933 годах"
+    zh "1918年至1933年的德国"
+  id Q41304
+  labels
+    en "Weimar Republic"
+    es "República de Weimar"
+    hi "वाइमर गणराज्य"
+    ru "Веймарская республика"
+    zh "魏瑪共和国"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Weimar Republic"
+    eswiki
+      site eswiki
+      title "República de Weimar"
+    hiwiki
+      site hiwiki
+      title "वाइमर गणराज्य"
+    ruwiki
+      site ruwiki
+      title "Веймарская республика"
+    zhwiki
+      site zhwiki
+      title "魏瑪共和國"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

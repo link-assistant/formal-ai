@@ -2,7 +2,7 @@
 //! Enforce the shipped size budget for the Rust→WASM worker.
 //!
 //! Issue #658 (E39 / R380) absorbs the JavaScript worker logic into the
-//! Rust→WASM worker (`src/web/wasm-worker` → `src/web/formal_ai_worker.wasm`).
+//! Rust→WASM worker (`js/wasm-worker` → `js/formal_ai_worker.wasm`).
 //! As logic migrates in, the `.wasm` grows; the GitHub Pages demo fetches this
 //! asset on load, so it must stay small enough for an offline-identical, fast
 //! first paint. This script keeps the shipped binary under an agreed ceiling.
@@ -22,7 +22,7 @@ use std::path::{Path, PathBuf};
 use std::process::exit;
 
 #[cfg(not(test))]
-const WASM_PATH: &str = "src/web/formal_ai_worker.wasm";
+const WASM_PATH: &str = "js/formal_ai_worker.wasm";
 
 /// Hard ceiling for the shipped worker binary. ~5× the current size, leaving
 /// room for the remaining JS→WASM migration while keeping the demo download
@@ -71,7 +71,7 @@ fn main() {
     let Ok(metadata) = std::fs::metadata(&path) else {
         println!("::error::Shipped worker binary not found at {WASM_PATH}.");
         println!(
-            "Build it with `sh src/web/wasm-worker/build.sh` and commit the result.\n"
+            "Build it with `sh js/wasm-worker/build.sh` and commit the result.\n"
         );
         exit(1);
     };

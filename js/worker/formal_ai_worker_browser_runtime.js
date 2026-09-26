@@ -1,0 +1,187 @@
+// Browser execution is a probed, opt-in capability (#670, #1138 B6).
+//
+// Pyodide is deliberately not bundled with the Formal AI worker. The worker's
+// committed WASM binary remains inside its own 512 KiB budget; Python is fetched
+// only after a user clicks the size-labelled control in the app. The pinned URL
+// is the official deployment URL documented by pyodide.org.
+
+const BROWSER_PYTHON_RUNTIME = Object.freeze({
+  id: "pyodide",
+  language: "python",
+  version: "314.0.7",
+  indexUrl: "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/",
+  loader: "pyodide.js",
+  // A disclosed transfer estimate, not a worker budget. Runtime assets vary by
+  // content encoding, so the UI says "about" and never presents this as exact.
+  downloadBytes: 20 * 1024 * 1024,
+  source: "https://pyodide.org/en/stable/usage/downloading-and-deploying.html",
+});
+
+let browserPythonRuntime = null;
+let browserPythonLoad = null;
+
+function browserRuntimeSize(runtime) {
+  const bytes = Number(runtime && runtime.downloadBytes) || 0;
+  return `${Math.ceil(bytes / (1024 * 1024))} MB`;
+}
+
+function browserExecutionProbe(language) {
+  const requested = String(language || "").toLowerCase();
+  if (requested !== BROWSER_PYTHON_RUNTIME.language) {
+    return Object.freeze({
+      status: "unavailable",
+      language: requested,
+      runtime: "",
+      downloadBytes: 0,
+      source: "",
+    });
+  }
+  if (browserPythonRuntime) {
+    return Object.freeze({
+      status: "ready",
+      language: requested,
+      runtime: BROWSER_PYTHON_RUNTIME.id,
+      downloadBytes: BROWSER_PYTHON_RUNTIME.downloadBytes,
+      source: BROWSER_PYTHON_RUNTIME.source,
+    });
+  }
+  const canLoad = typeof WebAssembly === "object" &&
+    typeof fetch === "function" &&
+    typeof importScripts === "function";
+  return Object.freeze({
+    status: canLoad ? "available_to_download" : "unavailable",
+    language: requested,
+    runtime: canLoad ? BROWSER_PYTHON_RUNTIME.id : "",
+    downloadBytes: canLoad ? BROWSER_PYTHON_RUNTIME.downloadBytes : 0,
+    source: canLoad ? BROWSER_PYTHON_RUNTIME.source : "",
+  });
+}
+
+function browserRuntimeMessage(language) {
+  const probe = browserExecutionProbe("python");
+  const intent = probe.status === "ready"
+    ? "browser_runtime_ready"
+    : "browser_runtime_downloadable";
+  return answerFor(intent, language || "en").replace(
+    "{size}",
+    browserRuntimeSize(BROWSER_PYTHON_RUNTIME),
+  );
+}
+
+async function loadBrowserPythonRuntime(loader) {
+  if (browserPythonRuntime) return browserPythonRuntime;
+  if (browserPythonLoad) return browserPythonLoad;
+  browserPythonLoad = (async () => {
+    const provided = typeof loader === "function" ? loader : null;
+    if (provided) {
+      browserPythonRuntime = await provided(BROWSER_PYTHON_RUNTIME);
+      return browserPythonRuntime;
+    }
+    importScripts(`${BROWSER_PYTHON_RUNTIME.indexUrl}${BROWSER_PYTHON_RUNTIME.loader}`);
+    if (typeof loadPyodide !== "function") {
+      throw new Error("the official Pyodide loader did not expose loadPyodide");
+    }
+    browserPythonRuntime = await loadPyodide({
+      indexURL: BROWSER_PYTHON_RUNTIME.indexUrl,
+    });
+    return browserPythonRuntime;
+  })();
+  try {
+    return await browserPythonLoad;
+  } catch (error) {
+    browserPythonLoad = null;
+    throw error;
+  }
+}
+
+function browserCodeRequest(prompt) {
+  const language = detectLanguage(prompt);
+  const markerText = String(answerFor("code_execution_request_markers", language) || "");
+  const markers = self.FormalAiSeed && typeof self.FormalAiSeed.splitRefList === "function"
+    ? self.FormalAiSeed.splitRefList(markerText)
+    : markerText.split("|");
+  const normalizedMarkers = markers
+    .map((marker) => marker.trim().toLowerCase())
+    .filter(Boolean);
+  const normalized = String(prompt || "").toLowerCase();
+  if (!normalizedMarkers.some((marker) => normalized.includes(marker))) return null;
+  let code = "";
+  const fence = String(prompt || "").match(/```(?:python|py)?\s*([\s\S]*?)```/iu);
+  if (fence) code = fence[1].trim();
+  if (!code) {
+    const separator = Math.max(String(prompt).lastIndexOf(":"), String(prompt).lastIndexOf("："));
+    if (separator >= 0) code = String(prompt).slice(separator + 1).trim();
+  }
+  if (!code || !code.includes("(")) return null;
+  return { language, code };
+}
+
+async function executeBrowserCodeRequest(prompt) {
+  const request = browserCodeRequest(prompt);
+  if (!request) return null;
+  const probe = browserExecutionProbe("python");
+  if (probe.status !== "ready") {
+    return {
+      intent: "browser_code_execution_refused",
+      content: browserRuntimeMessage(request.language),
+      confidence: 1,
+      evidence: [
+        `execution_runtime:${probe.status}:${probe.runtime || "none"}`,
+        `runtime_source:${probe.source || "none"}`,
+      ],
+      runtimeOffer: probe.status === "available_to_download" ? {
+        runtime: probe.runtime,
+        downloadBytes: probe.downloadBytes,
+        source: probe.source,
+      } : null,
+      steps: [],
+      toolCalls: [],
+    };
+  }
+
+  const output = [];
+  if (typeof browserPythonRuntime.setStdout === "function") {
+    browserPythonRuntime.setStdout({ batched: (line) => output.push(String(line)) });
+  }
+  if (typeof browserPythonRuntime.setStderr === "function") {
+    browserPythonRuntime.setStderr({ batched: (line) => output.push(String(line)) });
+  }
+  const started = Date.now();
+  try {
+    const result = await browserPythonRuntime.runPythonAsync(request.code);
+    if (result !== undefined && result !== null && output.length === 0) output.push(String(result));
+  } catch (error) {
+    output.push(String(error && error.message || error));
+    return {
+      intent: "browser_code_execution_failed",
+      content: String(answerFor("code_execution_failed", request.language))
+        .replace("{backend}", "browser_runtime:pyodide")
+        .replace("{log}", output.join("\n")),
+      confidence: 1,
+      evidence: ["execution_runtime:pyodide", "execution_exit:error"],
+      steps: [],
+      toolCalls: [],
+    };
+  }
+  const elapsed = Date.now() - started;
+  const observed = output.join("\n");
+  const content = String(answerFor("code_execution_observed", request.language))
+    .replace("{backend}", "browser_runtime:pyodide")
+    .replace("{exit}", "0")
+    .replace("{elapsed_ms}", String(elapsed))
+    .replace("{deadline_ms}", "600000")
+    .replace("{output}", observed)
+    .replace("{evidence}", `browser_pyodide_exit_0_${observed.length}`);
+  return {
+    intent: "browser_code_execution",
+    content,
+    confidence: 1,
+    evidence: [
+      "execution_runtime:pyodide",
+      "execution_exit:0",
+      `execution_output_bytes:${new TextEncoder().encode(observed).length}`,
+    ],
+    steps: [],
+    toolCalls: [],
+  };
+}

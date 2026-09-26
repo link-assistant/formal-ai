@@ -9,7 +9,7 @@ TASK="Discover a reusable algorithm from these execution observations, preserve 
 
 $(<"$OBSERVATIONS")"
 
-PATH="$ROOT/target/release:$PATH" \
+PATH="$ROOT/rust/target/release:$PATH" \
 TASK="$TASK" \
 EXPECT_FILE="discovered-algorithms.lino" \
 EXPECT_TEXT='status "held_out_validated"' \

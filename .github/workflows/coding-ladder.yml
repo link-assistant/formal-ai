@@ -1,0 +1,81 @@
+name: Coding Ladder
+
+# Issue #848's 130 real coding tasks are deliberately isolated from the main
+# test/release graph. The expensive measurement runs weekly, on dispatch, and
+# when its own contract changes on a pull request. A push to main also measures
+# relevant engine changes without adding 130 authoring attempts to every PR.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.rs'
+      - '**/Cargo.toml'
+      - 'rust/Cargo.lock'
+      - 'data/seed/**'
+      - 'data/meta/repository-workspace-protocol.lino'
+      - 'data/meta/ladder-ratchet.lino'
+      - 'experiments/issue_847_coding_ladder/**'
+      - 'scripts/check-coding-ladder.rs'
+      - '.github/actions/formal-ai-binary/**'
+      - '.github/workflows/coding-ladder.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'rust/src/cli_solve.rs'
+      - 'rust/src/repository_workspace/**'
+      - 'data/meta/repository-workspace-protocol.lino'
+      - 'data/meta/ladder-ratchet.lino'
+      - 'data/meta/ci-gates/coding-ladder.lino'
+      - 'experiments/issue_847_coding_ladder/**'
+      - 'scripts/check-coding-ladder.rs'
+      - '.github/workflows/coding-ladder.yml'
+  schedule:
+    - cron: '17 5 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coding-ladder-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  coding-ladder:
+    name: 130-task coding ladder
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/formal-ai-binary
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      - name: Measure all 130 coding tasks
+        env:
+          OUT: ${{ runner.temp }}/coding-ladder-results.json
+        run: |
+          set -euo pipefail
+          bash experiments/issue_847_coding_ladder/run_coding_ladder.sh \
+            | tee "${{ runner.temp }}/coding-ladder.log"
+
+      - name: Enforce the recorded floor
+        env:
+          OUT: ${{ runner.temp }}/coding-ladder-results.json
+        run: rust-script scripts/check-coding-ladder.rs --result "$OUT"
+
+      - name: Retain the measured evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coding-ladder-results
+          path: |
+            ${{ runner.temp }}/coding-ladder-results.json
+            ${{ runner.temp }}/coding-ladder.log
+          if-no-files-found: warn
+          retention-days: 14

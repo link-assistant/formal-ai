@@ -2,7 +2,7 @@
 //! Enforce the UI-glue line budget for the split JavaScript worker.
 //!
 //! Issue #658 (E39 / R380) migrates the remaining solver logic out of
-//! `src/web/worker/*.js` and into the Rust→WASM worker, leaving JavaScript
+//! `js/worker/*.js` and into the Rust→WASM worker, leaving JavaScript
 //! responsible only for UI/glue (message plumbing, seed fetching, IndexedDB).
 //! This script is the ratchet that keeps the mirror from silently regrowing.
 //!
@@ -34,7 +34,7 @@ use std::path::{Path, PathBuf};
 #[cfg_attr(test, allow(dead_code))]
 const TARGET_TOTAL_LINES: usize = 3_000;
 
-const WORKER_DIR: &str = "src/web/worker";
+const WORKER_DIR: &str = "js/worker";
 const BUDGET_DIR: &str = "data/meta/worker-line-budget";
 
 #[derive(Debug, PartialEq, Eq)]
@@ -113,7 +113,7 @@ fn relative_path(path: &Path, cwd: &Path) -> String {
         .replace(std::path::MAIN_SEPARATOR, "/")
 }
 
-/// Collect the `*.js` files under `src/web/worker`, sorted by path, with their
+/// Collect the `*.js` files under `js/worker`, sorted by path, with their
 /// `str::lines().count()` line totals.
 fn collect_worker_files(cwd: &Path) -> Vec<WorkerFile> {
     let dir = worker_dir(cwd);
@@ -234,7 +234,7 @@ fn budget_failures(
             )),
             Some(budget) if file.lines > budget.ceiling => failures.push(format!(
                 "{} grew to {} lines, past its recorded ceiling of {}. Move logic into the \
-                 Rust→WASM worker (src/web/wasm-worker) instead of growing the mirror, or \
+                 Rust→WASM worker (js/wasm-worker) instead of growing the mirror, or \
                  re-baseline this one module with `--write` and explain the growth in \
                  {BUDGET_DIR}/{}",
                 file.path,
@@ -447,7 +447,7 @@ mod tests {
 
         let files = collect_worker_files(&repo);
         assert_eq!(files.len(), 2);
-        assert_eq!(files[0].path, "src/web/worker/formal_ai_worker_00.js");
+        assert_eq!(files[0].path, "js/worker/formal_ai_worker_00.js");
         assert_eq!(files[0].lines, 12);
         assert_eq!(files[1].lines, 8);
         assert_eq!(total_lines(&files), 20);

@@ -1,0 +1,18 @@
+Q1798603
+  aliases
+    en ("stringed instrument" "string musical instrument" "stringed instruments" chordophone)
+    hi ("तंतुवाद्यों")
+    ru ("струнные инструменты" "струнный инструмент" "струнные")
+    zh ("弦乐器" "絃樂" "弦樂" "弦鳴樂器")
+  descriptions
+    en "musical instrument that generates tones by one or more strings stretched between two points"
+    hi "भारतीय संगीत में उन यंत्रों कों कहा जाता है जिनमें तार का प्रयोग हुआ है"
+    ru "инструмент, у которого звучит струна"
+  id Q1798603
+  labels
+    en "string instrument"
+    hi "तंतुवाद्य"
+    ru "струнный музыкальный инструмент"
+    zh "弦樂器"
+  type item
+success 1

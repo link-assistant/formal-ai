@@ -6,6 +6,7 @@ seed_metadata_schema
   gap_data_prefix "data/meta/seed-metadata-gaps-"
   unit_not_applicable "not applicable"
   complete_source "data/seed/meanings-coding-catalog.lino"
+  complete_source "data/seed/meanings-coding-config.lino"
   complete_source "data/seed/meanings-coding-tasks.lino"
   required_field role
     value_kind "meaning reference or stable role identifier"

@@ -1,0 +1,1846 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.060Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.064Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l00Z2nARbM",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.065Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l00Z2nARbM",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.065Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l00Z2nARbM",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.075Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.075Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.076Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.077Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.077Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.080Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.081Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l00Z2nARbM/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.083Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7563,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.083Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.101Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 30,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:33:01.106Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.111Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.111Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.112Z",
+  "service": "session",
+  "id": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l00Z2nARbM",
+  "title": "New session - 2026-09-16T03:33:01.112Z",
+  "time": {
+    "created": 1789529581112,
+    "updated": 1789529581112
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.112Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.112Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.112Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.113Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.113Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57b999c7ffetxARdCahS0qA7K/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.113Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57b999c7ffetxARdCahS0qA7K/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.116Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57b999c7ffetxARdCahS0qA7K/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.124Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.126Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.126Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.126Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.127Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.127Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.127Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.127Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.127Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.127Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.288Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.292Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.293Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.301Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.310Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.943Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529581943,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8466972001SaT4GlnQcyUTv8",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84666ec001RMMvQ4Ha4qV1tS",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.944Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.945Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529581945,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8466978001z0PTKRMhFj04NM",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84666ec001RMMvQ4Ha4qV1tS",
+    "type": "tool",
+    "callID": "call_944c2b60331a076b",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.945Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529581945,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8466977001Hl1jtFD8dmAZBV",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84666ec001RMMvQ4Ha4qV1tS",
+    "type": "text",
+    "text": "Let me search the web for En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. A….",
+    "time": {
+      "start": 1789529581945,
+      "end": 1789529581945
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:01.946Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529581946,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8466978001z0PTKRMhFj04NM",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84666ec001RMMvQ4Ha4qV1tS",
+    "type": "tool",
+    "callID": "call_944c2b60331a076b",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista"
+      },
+      "time": {
+        "start": 1789529581945
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.337Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529584338,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8466978001z0PTKRMhFj04NM",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84666ec001RMMvQ4Ha4qV1tS",
+    "type": "tool",
+    "callID": "call_944c2b60331a076b",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista"
+      },
+      "output": "Title: i18n/i18n/es/search-engines.md at 8d66ee326eced923bc4768476d601da959dc6db5 - i18n - Privacy Guides\nURL: https://code.privacyguides.dev/privacyguides/i18n/src/commit/8d66ee326eced923bc4768476d601da959dc6db5/i18n/es/search-engines.md\nPublished: N/A\nAuthor: privacyguides\nHighlights:\n## Proveedores Recomendados\n...\n| Proveedor | Índice de Búsqueda | Servicio Oculto Tor | Logs / Política de Privacidad | País de Operación |\n| --- | --- | --- | --- | --- |\n| Brave Search | Independiente | :material-check:{ .pg-green } | Anónimo 1 | Estados Unidos |\n| DuckDuckGo | Bing | :material-check:{ .pg-green } | Anónimo 2 | Estados Unidos |\n| Startpage | Google y Bing | :material-check:{ .pg-green } | Anónimo 3 | Países Bajos |\n...\nPor favor, tenga en cuenta que no estamos afiliados con ninguno de los proyectos que recomendamos. Además de nuestros criterios estándar, hemos desarrollado un conjunto claro de requisitos que nos permiten ofrecer recomendaciones objetivas. Sugerimos que usted se familiarice con esta lista, antes de decidir utilizar un proyecto y realizar su propia investigación para asegurarse de que es la elección ideal para usted.\n...\nNuestro criterio del mejor caso representa lo que nos gustaría ver del proyecto perfecto en esta categoría. Es posible que nuestras recomendaciones no incluyan todas o algunas de estas funciones, pero las que sí las incluyan pueden estar mejor clasificadas que otras en esta página.\n...\n1. Brave Search recopila métricas de uso agregadas, que incluyen el sistema operativo y el agente de usuario. Sin embargo, no recopilan PII. Para servir resultados locales anónimos, las direcciones IP se procesan temporalmente, pero no se conservan. https://search.brave.com/help/privacy-policy ↩︎\n...\n2. DuckDuckGo registra sus bús\n...\npara mejorar el producto, pero no su dirección IP ni ninguna otra información personal. https://duckduckgo.com/privacy ↩\n...\n3. Startpage registra detalles como el sistema operativo, el\n...\nde usuario y el idioma. No registra su dirección IP,\n...\nde búsqueda u otra información personal. https://startpage.com/en/privacy-policy ↩\n\n---\n\nTitle: Módulo:Citas/Whitelist\nURL: https://es.wikipedia.org/wiki/M%C3%B3dulo:Citas/Whitelist\nPublished: N/A\nAuthor: N/A\nHighlights:\n--  Argumentos permitidos en español no numerados. Algunos de ellos también se usan en inglés.\n    ['1']            = true,\n    ['agencia']      = true,\n    ['ampersand']    = true,\n    ['año']          = true,\n    ['año-original'] = true,\n    ['añoacceso']    = true,\n    ['apellido']     = true,\n    ['apellidos']    = true,\n    ['apellido-editor']= true,        \n    ['apellidos-editor']= true,    \n    ['artículo']     = true,\n    ['autor']        = true,\n    ['autores']      = true,    \n    ['bibcode']      = true,\n    ['BIBCODE']      = true,    \n    ['capítulo']     = true,    \n    ['capítulo-trad']= true,\n    ['cita']         = true,\n    ['cita-trad']    = true,\n    ['ciudad']       = true,    \n    ['colección']    = true, -- Inexistente en la plantilla original. Añadido como sinónimo de serie.\n    ['conferencia']  = true,        \n    ['diccionario']  = true,    \n    ['doi']          = true,\n    ['DOI']          = true,    \n    ['edición']      = true,    \n    ['editor']       = true,    \n    ['editorial']    = true,\n    ['eissn']        = true,\n\t['EISSN']        = true,\n    ['en']           = true,    \n    ['enciclopedia'] = true,    \n    ['enlace-autor'] = true,\n    ['enlaceautor']  = true,    \n    ['enlaceeditor']  = true,\n    ['enlace-editor']= true,  \n    ['enlace-pasaje'] = true,\n\t['entrevistador'] = true,\t\t\t\t\t--cite interview    \n    ['extra']        = true, -- Inexistente en la plantilla original\n    ['fecha']        = true,\n    ['fecha-acceso']  = true,\n    ['fecha-doi-roto']= true,        \n    ['fechaprofano']  = true,                \n    ['fecha-publicación']= true,\n    ['fecharesumen'] = true,            \n    ['fecha-resumen']= true,        \n    ['fechaacceso']  = true,\n    ['fechaarchivo'] = true,\n    ['formato']      = true,\n    ['fuenteresumen']= true,    \n    ['fuenteprofano']= true,        \n    ['grado']        = true,    -- Para tesis\n    ['hdl']          = true,\n\t['HDL']          = true,\n\t['hdl-access']   = true,\n    ['id']           = true,\n    ['ID']           = true,    \n    ['idioma']       = true,\n    ['isbn']         = true,\n    ['ISBN']         = true,\n    ['isbn13']       = true,\n    ['ISBN13']       = true,\n    ['issn']         = true,\n    ['ISSN']         = true,    \n    ['localización'] = true,\n    ['lugar']        = true,\n    ['lugar-publicación']= true,    \n    ['máscaraautor'] = true,\n    ['máscara-autor']= true,\n    ['medio']        = true,\n    ['nombre']       = true,\n    ['nombre-editor']= true,    \n    ['nombres']      = true,   \n    ['número']       = true,  \n    ['número-autores']= true,\n    ['número-editores']= true,\n    ['obra']          = true,    \n    ['oclc']          = true,\n    ['OCLC']          = true,\n    ['ol']            = true,\n    ['OL']            = true,    \n    ['otros']         = true,    \n    ['página']        = true,\n    ['páginas']       = true,\n    ['pasaje']        = true,\n    ['periódico']     = true,    \n    ['persona']       = true,\n    ['personas']      = true,\n    ['publicación']   = true,        \n    ['pub-periódica'] = true,\n    ['puntofinal']    = true,\n    ['registro']\t  = true,\n    ['requiereregistro']  = true,    \n    ['requiere-registro']  = true,    \n    ['resumen']       = true,        \n    ['resumenprofano']= true,        \n    ['revista']       = true,    \n    ['s2cid']         = true,\n    ['separador']     = true,    \n    ['separador-autores']= true,    \n    ['separador-nombres']= true,        \n    ['serie']        = true,\n    ['sined']        = true, -- Inexistente en la plantilla original    \n    ['sinpp']        = true,\n    ['sitio web']     = true,\n    ['sitioweb']     = true,\n    ['suscripción']  = true,    \n    ['temporada']  = true,    \n    ['tiempo']       = true,\n    ['tipo']         = true,    \n\t['título']       = true,\n\t['títulolibro']  = true,\t\n    ['trad-título']  = true,\n    ['título_trad']   = true,\n    ['títulotrad']   = true,\n\t['título-trad']  = true,\n\t['traductor']    = true,\n\t['traductores']  = true,\n    ['ubicación']    = true,\t\n    ['ubicación-publicación']= true,    \n    ['url']          = true,\n    ['URL']          = true,\t\n\t['urlarchivo']   = true,\n\t['url-acceso']   = true,\n    ['url-capítulo'] = true,\n    ['urlcapítulo']  = true,\n    ['urlconferencia']  = true,    \n    ['urlmuerta']    = true,\n    ['url-pasaje']   = true,\n\t['versión']      = true,\n\t['volumen']      = true,\n\t['wikidata']     = true,\n...\n'] = true,\n    ['editor-mask'] = true,\n    ['editor-name-separator'] = true,\n    ['editors'] = true,\n    ['editor-separator'] = true,\n    ['EditorSurname'] = true,\n    ['embargo'] = true,\n    ['Embargo'] = true,\n    ['encyclopaedia'] = true,\n    ['encyclopedia'] = true,\n    ['entry'] = true,\n    ['episodelink'] = true,\n    ['event'] = true,\n    ['eventurl'] = true,\n    ['first'] = true,\n    ['format'] = true,\n    ['given'] = true,\n    ['host'] = true,\n    ['ignoreisbnerror'] = true,\n    ['ignore-isbn-error'] = true,\n    ['in'] = true,\n    ['inset'] = true,\n    ['institution'] = true,\n\t['interviewer'] = true,\t\t\t\t\t--cite interview\n    ['issue'] = true,\n    ['jfm'] = true,\n    ['JFM'] = true,\n    ['journal'] = true,\n    ['jstor'] = true,\n    ['JSTOR'] = true,\n    ['language'] = true,\n    ['last'] = true,\n    ['lastauthoramp'] = true,\n    ['laydate'] = true,\n    ['laysource'] = true,\n    ['laysummary'] = true,\n    ['layurl'] = true,\n    ['lccn'] = true,\n    ['LCCN'] = true,\n    ['location'] = true,\n    ['magazine'] = true,\n    ['medium'] = true,\n    ['minutes'] = true,\n    ['month'] = false,\n    ['mr'] = true,\n    ['MR'] = true,\n    ['name-separator'] = true,\n    ['network'] = true,\n    ['newspaper'] = true,\n    ['nocat'] = true,\n    ['nopp'] = true,\n    ['notestitle'] = false,\t\t\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of chapter used by old cite AV media notes\n    ['notracking'] = true,\n    ['no-tracking'] = true,\n    ['number'] = true,\n    ['origyear'] = true,\n    ['osti'] = true,\n    ['OSTI'] = true,\n    ['others'] = true,\n    ['p'] = true,\n    ['page'] = true,\n    ['pages'] = true,\n    ['people'] = true,\n    ['periodical'] = true,\n    ['place'] = true,\n    ['pmc'] = true,\n    ['PMC'] = true,\n    ['pmid'] = true,\n    ['PMID'] = true,\n    ['postscript'] = true,\n    ['pp'] = true,\n    ['PPPrefix'] = true,\n    ['PPrefix'] = true,\n\t['program']=true,\t\t\t\t-- cite interview\n    ['publicationdate'] = true,\n    ['publication-date'] = true,\n    ['publicationplace'] = true,\n    ['publication-place'] = true,\n    ['publisher'] = true,\n    ['publisherid'] = false,\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of others used by old cite AV media notes and old cite DVD-notes\n    ['quotation'] = true,\n    ['quote'] = true,\n    ['ref'] = true,\n    ['Ref'] = true,\n    ['registration'] = true,\n    ['rfc'] = true,\n    ['RFC'] = true,\n    ['scale'] = true,\n    ['season'] = true,\n    ['section'] = true,\n    ['sectionurl'] = true,\n    ['separator'] = true,\n    ['series'] = true,\n    ['serieslink'] = true,\n    ['seriesno'] = true,\n    ['seriesnumber'] = true,\n    ['series-separator'] = true,\n    ['ssrn'] = true,\n    ['SSRN'] = true,\n    ['station'] = true,\n    ['subject'] = true,\n    ['subjectlink'] = true,\n    ['subscription'] = true,\n    ['surname'] = true,\n    ['template doc demo'] = true,\n    ['time'] = true,\n    ['timecaption'] = true,\n    ['title'] = true,\n    ['titlelink'] = true,\n    ['titleyear'] = false,\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of origyear used by old cite DVD-notes\n    ['trans_chapter'] = true,\n    ['trans-chapter'] = true,\n    ['transcript'] = true,\n    ['transcripturl'] = true,\n    ['transcript-url'] = true,\n    ['trans_quote'] = true,\n    ['trans-quote'] = true,\n    ['trans_title'] = true,\n    ['trans-title'] = true,\n    ['type'] = true,\n    ['url-access'] = true,\n    ['version'] = true,\n    ['via'] = true,\n    ['volume'] = true,\n    ['website'] = true,\n    ['work'] = true,\n    ['year'] = true,\n    ['zbl'] = true,\n    ['ZBL'] = true,\n\n---\n\nTitle: Módulo:Citas/Whitelist - Wikiquote\nURL: https://es.wikiquote.org/wiki/M%C3%B3dulo:Citas/Whitelist\nPublished: N/A\nAuthor: N/A\nHighlights:\n--  Argumentos permitidos en español no numerados. Algunos de ellos también se usan en inglés.\n    ['1']            = true,\n    ['agencia']      = true,\n    ['ampersand']    = true,\n    ['año']          = true,\n    ['año-original'] = true,\n    ['añoacceso']    = true,\n    ['apellido']     = true,\n    ['apellidos']    = true,\n    ['apellido-editor']= true,        \n    ['apellidos-editor']= true,    \n    ['artículo']     = true,\n    ['autor']        = true,\n    ['autores']      = true,    \n    ['bibcode']      = true,\n    ['BIBCODE']      = true,    \n    ['capítulo']     = true,    \n    ['capítulo-trad']= true,\n    ['cita']         = true,\n    ['ciudad']       = true,    \n    ['colección']    = true, -- Inexistente en la plantilla original. Añadido como sinónimo de serie.\n    ['conferencia']  = true,        \n    ['diccionario']  = true,    \n    ['doi']          = true,\n    ['DOI']          = true,    \n    ['edición']      = true,    \n    ['editor']       = true,    \n    ['editorial']    = true,\n    ['en']           = true,    \n    ['enciclopedia'] = true,    \n    ['enlace-autor'] = true,\n    ['enlaceautor']  = true,    \n    ['enlaceeditor']  = true,\n    ['enlace-editor']= true,  \n    ['enlace-pasaje'] = true,\n\t['entrevistador'] = true,\t\t\t\t\t--cite interview    \n    ['extra']        = true, -- Inexistente en la plantilla original\n    ['fecha']        = true,\n    ['fecha-acceso']  = true,\n    ['fecha-doi-roto']= true,        \n    ['fechaprofano']  = true,                \n    ['fecha-publicación']= true,\n    ['fecharesumen'] = true,            \n    ['fecha-resumen']= true,        \n    ['fechaacceso']  = true,\n    ['fechaarchivo'] = true,\n    ['formato']      = true,\n    ['fuenteresumen']= true,    \n    ['fuenteprofano']= true,        \n    ['grado']        = true,    -- Para tesis\n    ['id']           = true,\n    ['ID']           = true,    \n    ['idioma']       = true,\n    ['isbn']         = true,\n    ['ISBN']         = true,\n    ['isbn13']       = true,\n    ['ISBN13']       = true,\n    ['issn']         = true,\n    ['ISSN']         = true,    \n    ['localización'] = true,\n    ['lugar']        = true,\n    ['lugar-publicación']= true,    \n    ['máscaraautor'] = true,\n    ['máscara-autor']= true,\n    ['medio']        = true,\n    ['nombre']       = true,\n    ['nombre-editor']= true,    \n    ['nombres']      = true,   \n    ['número']       = true,  \n    ['número-autores']= true,\n    ['número-editores']= true,\n    ['obra']          = true,    \n    ['oclc']          = true,\n    ['OCLC']          = true,\n    ['ol']            = true,\n    ['OL']            = true,    \n    ['otros']         = true,    \n    ['página']        = true,\n    ['páginas']       = true,\n    ['pasaje']        = true,\n    ['periódico']     = true,    \n    ['persona']       = true,\n    ['personas']      = true,\n    ['publicación']   = true,        \n    ['pub-periódica'] = true,\n    ['puntofinal']    = true,\n    ['registro']\t  = true,\n    ['requiereregistro']  = true,    \n    ['requiere-registro']  = true,    \n    ['resumen']       = true,        \n    ['resumenprofano']= true,        \n    ['revista']       = true,    \n    ['separador']     = true,    \n    ['separador-autores']= true,    \n    ['separador-nombres']= true,        \n    ['serie']        = true,\n    ['sined']        = true, -- Inexistente en la plantilla original    \n    ['sinpp']        = true,\n    ['sitio web']     = true,\n    ['sitioweb']     = true,\n    ['suscripción']  = true,    \n    ['temporada']  = true,    \n    ['tiempo']       = true,\n    ['tipo']         = true,    \n\t['título']       = true,\n\t['títulolibro']  = true,\t\n    ['trad-título']  = true,\n    ['título_trad']   = true,\n    ['títulotrad']   = true,\n\t['título-trad']  = true,\n\t['traductor']    = true,\n\t['traductores']  = true,\n    ['ubicación']    = true,\t\n    ['ubicación-publicación']= true,    \n    ['url']          = true,\n    ['URL']          = true,\t\n\t['urlarchivo']   = true,\n    ['url-capítulo'] = true,\n    ['urlcapítulo']  = true,\n    ['urlconferencia']  = true,    \n    ['urlmuerta']    = true,\n    ['url-pasaje']   = true,\n\t['versión']      = true,\n\t['volumen']      = true,\n\t['wikidata']     = true,\n...\n= true,\n    ['docket'] = true,\n    ['DoiBroken'] = true,\n    ['doi_brokendate'] = true,\n    ['doi_inactivedate'] = true,\n    ['edition'] = true,\n    ['Editor'] = true,\n    ['editor-first'] = true,\n    ['editorformat'] = true,\n    ['editor-format'] = true,\n    ['EditorGiven'] = true,\n    ['editor-last'] = true,\n    ['editorlink'] = true,\n    ['editor-link'] = true,\n    ['editormask'] = true,\n    ['editor-mask'] = true,\n    ['editor-name-separator'] = true,\n    ['editors'] = true,\n    ['editor-separator'] = true,\n    ['EditorSurname'] = true,\n    ['embargo'] = true,\n    ['Embargo'] = true,\n    ['encyclopaedia'] = true,\n    ['encyclopedia'] = true,\n    ['entry'] = true,\n    ['episodelink'] = true,\n    ['event'] = true,\n    ['eventurl'] = true,\n    ['first'] = true,\n    ['format'] = true,\n    ['given'] = true,\n    ['host'] = true,\n    ['ignoreisbnerror'] = true,\n    ['ignore-isbn-error'] = true,\n    ['in'] = true,\n    ['inset'] = true,\n    ['institution'] = true,\n\t['interviewer'] = true,\t\t\t\t\t--cite interview\n    ['issue'] = true,\n    ['jfm'] = true,\n    ['JFM'] = true,\n    ['journal'] = true,\n    ['jstor'] = true,\n    ['JSTOR'] = true,\n    ['language'] = true,\n    ['last'] = true,\n    ['lastauthoramp'] = true,\n    ['laydate'] = true,\n    ['laysource'] = true,\n    ['laysummary'] = true,\n    ['layurl'] = true,\n    ['lccn'] = true,\n    ['LCCN'] = true,\n    ['location'] = true,\n    ['magazine'] = true,\n    ['medium'] = true,\n    ['minutes'] = true,\n    ['month'] = false,\n    ['mr'] = true,\n    ['MR'] = true,\n    ['name-separator'] = true,\n    ['network'] = true,\n    ['newspaper'] = true,\n    ['nocat'] = true,\n    ['nopp'] = true,\n    ['notestitle'] = false,\t\t\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of chapter used by old cite AV media notes\n    ['notracking'] = true,\n    ['no-tracking'] = true,\n    ['number'] = true,\n    ['origyear'] = true,\n    ['osti'] = true,\n    ['OSTI'] = true,\n    ['others'] = true,\n    ['p'] = true,\n    ['page'] = true,\n    ['pages'] = true,\n    ['people'] = true,\n    ['periodical'] = true,\n    ['place'] = true,\n    ['pmc'] = true,\n    ['PMC'] = true,\n    ['pmid'] = true,\n    ['PMID'] = true,\n    ['postscript'] = true,\n    ['pp'] = true,\n    ['PPPrefix'] = true,\n    ['PPrefix'] = true,\n\t['program']=true,\t\t\t\t-- cite interview\n    ['publicationdate'] = true,\n    ['publication-date'] = true,\n    ['publicationplace'] = true,\n    ['publication-place'] = true,\n    ['publisher'] = true,\n    ['publisherid'] = false,\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of others used by old cite AV media notes and old cite DVD-notes\n    ['quotation'] = true,\n    ['quote'] = true,\n    ['ref'] = true,\n    ['Ref'] = true,\n    ['registration'] = true,\n    ['rfc'] = true,\n    ['RFC'] = true,\n    ['scale'] = true,\n    ['season'] = true,\n    ['section'] = true,\n    ['sectionurl'] = true,\n    ['separator'] = true,\n    ['series'] = true,\n    ['serieslink'] = true,\n    ['seriesno'] = true,\n    ['seriesnumber'] = true,\n    ['series-separator'] = true,\n    ['ssrn'] = true,\n    ['SSRN'] = true,\n    ['station'] = true,\n    ['subject'] = true,\n    ['subjectlink'] = true,\n    ['subscription'] = true,\n    ['surname'] = true,\n    ['template doc demo'] = true,\n    ['time'] = true,\n    ['timecaption'] = true,\n    ['title'] = true,\n    ['titlelink'] = true,\n    ['titleyear'] = false,\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of origyear used by old cite DVD-notes\n    ['trans_chapter'] = true,\n    ['trans-chapter'] = true,\n    ['transcript'] = true,\n    ['transcripturl'] = true,\n    ['transcript-url'] = true,\n    ['trans_title'] = true,\n    ['trans-title'] = true,\n    ['type'] = true,\n    ['url-access'] = true,\n    ['version'] = true,\n    ['via'] = true,\n    ['volume'] = true,\n\n---\n\nTitle: Módulo:Citas/Whitelist - Wikisource\nURL: https://es.wikisource.org/wiki/M%C3%B3dulo:Citas/Whitelist\nPublished: N/A\nAuthor: N/A\nHighlights:\n--  Argumentos permitidos en español no numerados. Algunos de ellos también se usan en inglés.\n    ['1']            = true,\n    ['agencia']      = true,\n    ['ampersand']    = true,\n    ['año']          = true,\n    ['año-original'] = true,\n    ['añoacceso']    = true,\n    ['apellido']     = true,\n    ['apellidos']    = true,\n    ['apellido-editor']= true,        \n    ['apellidos-editor']= true,    \n    ['artículo']     = true,\n    ['autor']        = true,\n    ['autores']      = true,    \n    ['bibcode']      = true,\n    ['BIBCODE']      = true,    \n    ['capítulo']     = true,    \n    ['capítulo-trad']= true,\n    ['cita']         = true,\n    ['ciudad']       = true,    \n    ['colección']    = true, -- Inexistente en la plantilla original. Añadido como sinónimo de serie.\n    ['conferencia']  = true,        \n    ['diccionario']  = true,    \n    ['doi']          = true,\n    ['DOI']          = true,    \n    ['edición']      = true,    \n    ['editor']       = true,    \n    ['editorial']    = true,\n    ['en']           = true,    \n    ['enciclopedia'] = true,    \n    ['enlace-autor'] = true,\n    ['enlaceautor']  = true,    \n    ['enlaceeditor']  = true,\n    ['enlace-editor']= true,  \n\t['entrevistador'] = true,\t\t\t\t\t--cite interview    \n    ['extra']        = true, -- Inexistente en la plantilla original\n    ['fecha']        = true,\n    ['fecha-acceso']  = true,\n    ['fecha-doi-roto']= true,        \n    ['fechaprofano']  = true,                \n    ['fecha-publicación']= true,\n    ['fecharesumen'] = true,            \n    ['fecha-resumen']= true,        \n    ['fechaacceso']  = true,\n    ['fechaarchivo'] = true,\n    ['formato']      = true,\n    ['fuenteresumen']= true,    \n    ['fuenteprofano']= true,        \n    ['grado']        = true,    -- Para tesis\n    ['id']           = true,\n    ['ID']           = true,    \n    ['idioma']       = true,\n    ['isbn']         = true,\n    ['ISBN']         = true,\n    ['isbn13']       = true,\n    ['ISBN13']       = true,\n    ['issn']         = true,\n    ['ISSN']         = true,    \n    ['localización'] = true,\n    ['lugar']        = true,\n    ['lugar-publicación']= true,    \n    ['máscaraautor'] = true,\n    ['máscara-autor']= true,\n    ['medio']        = true,\n    ['nombre']       = true,\n    ['nombre-editor']= true,    \n    ['nombres']      = true,   \n    ['número']       = true,  \n    ['número-autores']= true,\n    ['número-editores']= true,\n    ['obra']          = true,    \n    ['oclc']          = true,\n    ['OCLC']          = true,\n    ['ol']            = true,\n    ['OL']            = true,    \n    ['otros']         = true,    \n    ['página']        = true,\n    ['páginas']       = true,    \n    ['periódico']     = true,    \n    ['persona']       = true,\n    ['personas']      = true,\n    ['publicación']   = true,        \n    ['pub-periódica'] = true,\n    ['puntofinal']    = true,    \n    ['requiereregistro']  = true,    \n    ['requiere-registro']  = true,    \n    ['resumen']       = true,        \n    ['resumenprofano']= true,        \n    ['revista']       = true,    \n    ['separador']     = true,    \n    ['separador-autores']= true,    \n    ['separador-nombres']= true,        \n    ['serie']        = true,\n    ['sined']        = true, -- Inexistente en la plantilla original    \n    ['sinpp']        = true,\n    ['sitio web']     = true,\n    ['sitioweb']     = true,\n    ['suscripción']  = true,    \n    ['temporada']  = true,    \n    ['tiempo']       = true,\n    ['tipo']         = true,    \n\t['título']       = true,\n\t['títulolibro']  = true,\t\n    ['trad-título']  = true,\n    ['título_trad']   = true,\n    ['títulotrad']   = true,\n\t['título-trad']  = true,\n\t['traductor']    = true,\n\t['traductores']  = true,\n    ['ubicación']    = true,\t\n    ['ubicación-publicación']= true,    \n    ['url']          = true,\n    ['URL']          = true,\t\n\t['urlarchivo']   = true,\n    ['url-capítulo'] = true,\n    ['urlcapítulo']  = true,\n    ['urlconferencia']  = true,    \n    ['urlmuerta'] = true,    \n\t['versión']      = true,\n\t['volumen']      = true,\n...\n'] = true,\n    ['displayeditors'] = true,\n    ['display-editors'] = true,\n    ['docket'] = true,\n    ['DoiBroken'] = true,\n    ['doi_brokendate'] = true,\n    ['doi_inactivedate'] = true,\n    ['edition'] = true,\n    ['Editor'] = true,\n    ['editor-first'] = true,\n    ['editorformat'] = true,\n    ['editor-format'] = true,\n    ['EditorGiven'] = true,\n    ['editor-last'] = true,\n    ['editorlink'] = true,\n    ['editor-link'] = true,\n    ['editormask'] = true,\n    ['editor-mask'] = true,\n    ['editor-name-separator'] = true,\n    ['editors'] = true,\n    ['editor-separator'] = true,\n    ['EditorSurname'] = true,\n    ['embargo'] = true,\n    ['Embargo'] = true,\n    ['encyclopaedia'] = true,\n    ['encyclopedia'] = true,\n    ['entry'] = true,\n    ['episodelink'] = true,\n    ['event'] = true,\n    ['eventurl'] = true,\n    ['first'] = true,\n    ['format'] = true,\n    ['given'] = true,\n    ['host'] = true,\n    ['ignoreisbnerror'] = true,\n    ['ignore-isbn-error'] = true,\n    ['in'] = true,\n    ['inset'] = true,\n    ['institution'] = true,\n\t['interviewer'] = true,\t\t\t\t\t--cite interview\n    ['issue'] = true,\n    ['jfm'] = true,\n    ['JFM'] = true,\n    ['journal'] = true,\n    ['jstor'] = true,\n    ['JSTOR'] = true,\n    ['language'] = true,\n    ['last'] = true,\n    ['lastauthoramp'] = true,\n    ['laydate'] = true,\n    ['laysource'] = true,\n    ['laysummary'] = true,\n    ['layurl'] = true,\n    ['lccn'] = true,\n    ['LCCN'] = true,\n    ['location'] = true,\n    ['magazine'] = true,\n    ['medium'] = true,\n    ['minutes'] = true,\n    ['month'] = false,\n    ['mr'] = true,\n    ['MR'] = true,\n    ['name-separator'] = true,\n    ['network'] = true,\n    ['newspaper'] = true,\n    ['nocat'] = true,\n    ['nopp'] = true,\n    ['notestitle'] = false,\t\t\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of chapter used by old cite AV media notes\n    ['notracking'] = true,\n    ['no-tracking'] = true,\n    ['number'] = true,\n    ['origyear'] = true,\n    ['osti'] = true,\n    ['OSTI'] = true,\n    ['others'] = true,\n    ['p'] = true,\n    ['page'] = true,\n    ['pages'] = true,\n    ['people'] = true,\n    ['periodical'] = true,\n    ['place'] = true,\n    ['pmc'] = true,\n    ['PMC'] = true,\n    ['pmid'] = true,\n    ['PMID'] = true,\n    ['postscript'] = true,\n    ['pp'] = true,\n    ['PPPrefix'] = true,\n    ['PPrefix'] = true,\n\t['program']=true,\t\t\t\t-- cite interview\n    ['publicationdate'] = true,\n    ['publication-date'] = true,\n    ['publicationplace'] = true,\n    ['publication-place'] = true,\n    ['publisher'] = true,\n    ['publisherid'] = false,\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of others used by old cite AV media notes and old cite DVD-notes\n    ['quotation'] = true,\n    ['quote'] = true,\n    ['ref'] = true,\n    ['Ref'] = true,\n    ['registration'] = true,\n    ['rfc'] = true,\n    ['RFC'] = true,\n    ['scale'] = true,\n    ['season'] = true,\n    ['section'] = true,\n    ['sectionurl'] = true,\n    ['separator'] = true,\n    ['series'] = true,\n    ['serieslink'] = true,\n    ['seriesno'] = true,\n    ['seriesnumber'] = true,\n    ['series-separator'] = true,\n    ['ssrn'] = true,\n    ['SSRN'] = true,\n    ['station'] = true,\n    ['subject'] = true,\n    ['subjectlink'] = true,\n    ['subscription'] = true,\n    ['surname'] = true,\n    ['template doc demo'] = true,\n    ['time'] = true,\n    ['timecaption'] = true,\n    ['title'] = true,\n    ['titlelink'] = true,\n    ['titleyear'] = false,\t\t\t-- deprecated; set to nil after 1 October 2014; a unique alias of origyear used by old cite DVD-notes\n    ['trans_chapter'] = true,\n    ['trans-chapter'] = true,\n    ['transcript'] = true,\n    ['transcripturl'] = true,\n    ['transcript-url'] = true,\n    ['trans_title'] = true,\n    ['trans-title'] = true,\n    ['type'] = true,\n    ['version'] = true,\n    ['via'] = true,\n    ['volume'] = true,\n    ['website'] = true,\n    ['work'] = true,\n    ['year'] = true,\n    ['zbl'] = true,\n   \n\n---\n\nTitle: CONTRIBUTING.es.md at 418c97bcfada4ce8c0c8a55d9f16c5c565e7e79b · danweis07/Fiducia\nURL: https://github.com/danweis07/Fiducia/blob/418c97bcfada4ce8c0c8a55d9f16c5c565e7e79b/CONTRIBUTING.es.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n1. **Haz un fork del repositorio** y crea una rama desde `main`\n2. **Nombra tu rama** usando la convención: `feature/descripcion-corta`, `fix/descripcion-corta`, o `chore/descripcion-corta`\n3. **Realiza tus cambios** — mantén los PRs enfocados en una sola preocupación\n4. **Valida antes de hacer push:**\n   ```bash\n   npm run validate    # typecheck + lint + test + build\n   ```\n...\n5. **Abre un pull request** contra `main`\n...\n- Mantén los PRs pequeños y enfocados. Una característica o corrección por PR.\n- Escribe un título y descripción claros. Explica _qué_ cambió y _por qué_.\n- Incluye capturas de pantalla para cambios en la UI.\n- Agrega o actualiza pruebas para nueva funcionalidad.\n- Asegúrate de que el CI pase (lint, typecheck, pruebas unitarias, compilación).\n- Los PRs requieren al menos una revisión aprobatoria antes de fusionar.\n...\nPrimitivas de\n...\n- **Formato** — ESLint aplica el estilo. Ejecuta `npm run lint:fix` para corrección automática.\n- **Pruebas** — Vitest para pruebas unitarias, Playwright para E2E. Coloca las pruebas unitarias en directorios `__tests__/` o junto al archivo como `*.test.ts(x)`.\n\n---\n\nTitle: Módulo:Citas/Configuración - Wikisource\nURL: https://es.wikisource.org/wiki/M%C3%B3dulo:Citas/Configuraci%C3%B3n\nPublished: N/A\nAuthor: N/A\nHighlights:\n', 'p',\n...\n'},\n    ['Pages'] = {'páginas', 'pp', 'pages'},\n    ['Periodical'] = {'publicación', 'pub-periódica', 'periódico', 'revista', 'obra', 'journal', 'newspaper', 'magazine', 'work',\n        'website', 'sitioweb', 'sitio web', 'periodical', 'enciclopedia', 'encyclopedia', 'encyclopaedia', 'diccionario', 'dictionary'},\n    ['Place'] = {'lugar', 'localización', 'ubicación', 'ciudad', 'place', 'location'},\n    ['PPrefix'] = 'PPrefix',\n    ['PPPrefix'] = 'PPPrefix',\n\n---\n\nTitle: Cómo analizar las fuentes que ChatGPT usa en búsquedas web\nURL: https://yel-martinez-portfolio.com/fuentes-y-el-json-que-chatgpt-utiliza-en-una-busqueda-web/\nPublished: 2025-06-18T00:00:00.000Z\nAuthor: Yel Martínez\nHighlights:\nArray con todas las URLs obtenidas en la búsqueda externa. Incluye `url`, `title` y `snippet` para cada resultado. Es el universo total de fuentes antes de cualquier filtrado.\n\n sources_footnotes Fuentes\n...\nadas en la respuesta \n\nLas\n...\nArray con las URLs que ChatGPT consideró suficientemente relevantes y fiables para citar explícitamente en su respuesta. Es el subconjunto más valioso para análisis de autoridad.\n\n supporting_websites Sitios de apoyo secundarios \n\nFuentes consultadas no citadas directamente\n...\nURLs usadas para contextualizar la respuesta pero no citadas como fuentes principales. Útil para entender qué contenidos influyen en la respuesta sin aparecer explícitamente.\n...\nsafe_urls URLs\n...\nAprobadas\n...\nfiltros de seguridad\n...\nURLs que superaron los filtros de seguridad del sistema. La mayoría de `search_results` debería estar aquí. Las URLs ausentes de este campo pero presentes en los resultados pueden haber sido descartadas por razones de contenido.\n...\nURLs que el sistema bloqueó por razones de seguridad o que resultaron inaccesibles durante la búsqueda. Analizar este campo ayuda a identificar patrones de bloqueo y qué tipos de dominios evita ChatGPT.\n...\nEntender los criterios de selección permite optimizar contenido propio para que aparezca en `sources_footnotes` — no en `blocked_urls` ni ignorado en `search_results`.\n...\nSeñales que ChatGPT asocia con autoridad: menciones en medios de referencia, backlinks de calidad, participación en comunidades expertas y consistencia de marca a lo largo del tiempo. No se trata de métricas de dominio — se trata de si el sitio es reconocido como referente en su área.\n...\nEl contenido debe responder directamente a la intención de búsqueda, con profundidad suficiente y actualización reciente. ChatGPT tiende a realizar búsquedas con long-tail queries específicas — el contenido genérico raramente aparece en `sources_footnotes`.\n...\nPeec AI están especial\n...\nen rastrear la presencia de dominios en\n...\nrespuestas de modelos de lenguaje. Combinadas con el análisis manual del JSON, permiten hacer seguimiento\n...\nla visibilidad en\n...\nquedas orientadas a la intención del usuario,\n...\nbúsquedas genéricas. El contenido que responde con precisión\n...\npreguntas concretas tiene más\n...\nde aparecer en `sources_footnotes`\n...\nel contenido de cobertura amplia sin profundidad.\n...\nEn pipelines de extracción de datos, aplicar los mismos criterios que usa ChatGPT: descartar fuentes sin fecha de actualización reciente, priorizar dominios con presencia editorial verificable y eliminar URLs que aparecen consistentemente en `blocked_urls`.\n...\nUn campo `sources_footnotes` no es una garantía de exactitud — es una señal de que ChatGPT consideró esa fuente relevante. Siempre verificar la información en la fuente original antes de incorporarla a un análisis o decisión.\n...\nEl JSON puede contener duplicados entre `search_results` y `safe_urls`, o URLs con parámetros de tracking que apuntan al mismo contenido. Normalizar las URLs y eliminar duplicados antes del análisis evita sesgos en los resultados.\n\n---\n\nTitle: Fuentes alucinadas: cuando los agentes inventan fuentes | Agent Patterns\nURL: https://www.agentpatterns.tech/es/failures/hallucinated-sources\nPublished: 2026-03-12T00:00:00.000Z\nAuthor: N/A\nHighlights:\n| Métrica | Señal de fuentes alucinadas | Qué hacer |\n| --- | --- | --- |\n| `citation_validity_rate` | baja la proporción de citas validadas | introducir verificación fail-closed por `source_id` |\n| `unfetched_source_rate` | muchas URL unfetched en respuestas | prohibir URL-citations sin evidence snapshot |\n| `source_404_rate` | parte de las fuentes no abre | verificar estado y URL canónica durante fetch |\n| `claim_without_citation_rate` | claims sin vínculo a fuente | añadir claim-level coverage check |\n| `citation_stop_reason_rate` | `citations:invalid` frecuente en runtime | revisar calidad de retrieval y policy de tools |\n...\n1. todas las fuentes pasan por evidence store (snapshot + hash + timestamp);\n2. el modelo devuelve citas solo como `source_id`, no URLs arbitrarias;\n3. citation verifier comprueba que todos los `source_id` existen, fueron fetched y están permitidos por policy;\n4. si la verificación falla, runtime devuelve stop reason y safe fallback.\n...\nEste es un guard básico. En producción suele ampliarse con claim-level coverage check, allowlist para citation tools y stop reason separado para URL unfetched. `verify_citations(...)` se llama antes del render final, para que el usuario no vea fuentes inválidas.\n...\nTool Execution Layer se ocupa del fetch de evidence: estado de respuesta, normalización de URL, snapshots y hash. Si esta capa no guarda pruebas, las citas no pueden verificarse de forma fiable.\n...\n- Las citas se devuelven con source_id, no con URLs arbitrarias\n- Evidence snapshots incluyen URL, timestamp y hash\n- Un snippet sin fetch no se considera evidencia\n- Hay verificación de cobertura de claims en respuestas críticas\n- Hay fail-closed o fallback controlado para citations\n- Los logs incluyen run_id, source_id y stop reason\n- Hay retention policy para evidence snapshots\n- Hay alertas para citation_validity y unfetched_source\n...\nQ: ¿Los search results pueden usarse como evidencia? A: Normalmente no. Search solo da candidatos. La evidencia es solo lo que se fetch y se guarda como snapshot.\n...\nQ: ¿Es obligatorio guardar el texto completo de la fuente? A: No siempre. Mínimo para auditoría: URL, timestamp, hash y `source_id` estable. El texto completo se añade cuando hace falta replay o citas exactas.\n...\nQ: ¿Qué mostrar al usuario cuando las citas son invál\n...\n? A: Stop reason explícita, qué ya se verificó, y siguiente paso seguro: respuesta partial sin fuentes no verificadas o rerun con verificación.",
+      "title": "Web search: En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista",
+      "metadata": {},
+      "time": {
+        "start": 1789529581945,
+        "end": 1789529584333
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529584344,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a84672d50018iGeB6sl1XrD8b",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84666ec001RMMvQ4Ha4qV1tS",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8732,
+      "output": 444,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9176,
+      "headroom": 29680,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.347Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.349Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.350Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.356Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.357Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.358Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.358Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.371Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 9176,
+  "providerTokens": 9176,
+  "estimatedInputTokens": 9953,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8732,
+    "cacheRead": 0,
+    "output": 444
+  },
+  "overflow": false,
+  "headroom": 29680,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.371Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.372Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.377Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:04.379Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:05.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529585077,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a84675b10011hCQ8BNKqDV2Ui",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84672f30012xwiNXthrmSzK2",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:05.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:05.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529585078,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a84675b6001JCA2DUYYh7RAZu",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84672f30012xwiNXthrmSzK2",
+    "type": "tool",
+    "callID": "call_da3c7ef6be94aabb",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:05.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529585078,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a84675b5001rr2I360NpSNEEU",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84672f30012xwiNXthrmSzK2",
+    "type": "text",
+    "text": "Let me open https://code.privacyguides.dev/privacyguides/i18n/src/commit/8d66ee326eced923bc4768476d601da959dc6db5/i18n/es/search-engines.md and read what it says.",
+    "time": {
+      "start": 1789529585078,
+      "end": 1789529585078
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:05.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529585078,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a84675b6001JCA2DUYYh7RAZu",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84672f30012xwiNXthrmSzK2",
+    "type": "tool",
+    "callID": "call_da3c7ef6be94aabb",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://code.privacyguides.dev/privacyguides/i18n/src/commit/8d66ee326eced923bc4768476d601da959dc6db5/i18n/es/search-engines.md"
+      },
+      "time": {
+        "start": 1789529585078
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.832Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529589832,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a84675b6001JCA2DUYYh7RAZu",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84672f30012xwiNXthrmSzK2",
+    "type": "tool",
+    "callID": "call_da3c7ef6be94aabb",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://code.privacyguides.dev/privacyguides/i18n/src/commit/8d66ee326eced923bc4768476d601da959dc6db5/i18n/es/search-engines.md"
+      },
+      "output": "i18n/i18n/es/search-engines.md at 8d66ee326eced923bc4768476d601da959dc6db5 - i18n - Privacy Guides\n\t\n\t\n\t\n\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\t\n\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\n\t\t\n\t\n\n\n\n\t\n\n\n\t\n\n\t\n\n\t\n\t\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\n\t\t\n\t\t\n\t\t\t\n\n\t\t\t\n\t\t\n\n\t\t\n\t\t\n\t\t\tExplore\n\t\t\n\n\t\t\n\n\t\t\n\t\t\tHelp\n\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tSign In\n\t\t\t\n\t\t\n\t\n\n\t\n\t\n\n\n\n\n\n\t\t\n\n\n\n\n\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\tprivacyguides/i18n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\t\n\t\n\t\t\n\t\tWatch\n\t\n\t\n\t\t1\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\t\n\t\n\t\t\n\t\tStar\n\t\n\t\n\t\t0\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\tFork\n\t\n\t\n\t\t0\n\t\n\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\n\t\t\n\t\t\n\t\t\t\n\t\t\t\tmirror of\n\t\t\t\thttps://github.com/privacyguides/i18n.git\n\t\t\t\tsynced 2026-09-16 02:45:38 +00:00\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t Code\n\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t Activity\n\t\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\t\n\n\n\t\n\t\t\n\n\t\t\n\n\t\t\n\n\n\n\n\t\t\n\t\t\t\n\t\n\t\t\n\t\t\t\n\t\t\n\t\tFiles\n\t\n\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\n\n\n\n\n\t\n\t\n\t\t\n\t\n\n\n\t\n\n\t\n\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t8d66ee326eced923bc4768476d601da959dc6db5\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\n\t\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\ti18n/i18n/es/search-engines.md\n\t\t\t\t\t\n\t\n\t\n\n\t\n\t\tT\n\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\t\n\n\tCrowdin Bot\n\n\t81e81f91c4\n\n\t\n\n\n\t\n\t\n\t\tNew Crowdin translations by GitHub Action\n\t\t\n\t\n\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t2025-06-02 16:39:55 +00:00\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\n\t\n\t\n\t\t\n\t\t\t11 KiB\n\t\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tRaw\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tBlame\n\t\t\t\t\t\n\t\t\t\t\tHistory\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t meta_title, title, icon, description, cover, global\n\n\nmeta_title\ntitle\nicon\ndescription\ncover\nglobal\n\n\n\n\nMotores de Búsqueda Recomendados: Alternativas Anónimas a Google - Privacy Guides\nMotores de Búsqueda\nmaterial/search-web\nMotores de búsqueda respetuosos con la privacidad que no construyen un perfil publicitario basado en sus búsquedas.\nsearch-engines.webp\n\n\n\n\nrandomize-element\n\n\ntable tbody\n\n\n\n\n\n\n\n\n\n\n\nProtege contra la(s) siguiente(s) amenaza(s):\n\n:material-account-cash: Capitalismo de Vigilancia{.pg-brown}\n\nUtilice un motor de búsqueda que no construya un perfil publicitario basado en sus búsquedas.\nProveedores Recomendados\nEstas recomendaciones no recogen información de identificación personal (IIP), de acuerdo con la política de privacidad de cada servicio. No hay garantías de que estas políticas de privacidad se respeten.\nConsidere usar una VPN o Tor si su modelo de amenaza requiere ocultar su dirección IP al proveedor de búsquedas.\n\n\n\nProveedor\nÍndice de Búsqueda\nServicio Oculto Tor\nLogs / Política de Privacidad\nPaís de Operación\n\n\n\n\nBrave Search\nIndependiente\n:material-check:{ .pg-green }\nAnónimo1 \nEstados Unidos\n\n\nDuckDuckGo\nBing\n:material-check:{ .pg-green }\nAnónimo2 \nEstados Unidos\n\n\nStartpage\nGoogle y Bing\n:material-check:{ .pg-green }\nAnónimo3 \nPaíses Bajos\n\n\n\nBrave Search\n\n{ align=right }\nBrave Search es un motor de búsqueda desarrollado por Brave. El índice está optimizado en comparación con Google Search y, por lo tanto, puede proporcionar resultados más precisos contextualmente en comparación con otras alternativas.\nBrave Search incluye funciones exclusivas como Discusiones, que destaca los resultados centrados en la conversación, como los mensajes de los foros.\n:octicons-home-16: Página Principal{ .md-button .md-button--primary }\n:simple-torbrowser:{ .card-link title=&#34;Servicio Onion&#34; }\n:octicons-eye-16:{ .card-link title=&#34;Política de Privacidad&#34; }\n:octicons-info-16:{ .card-link title=Documentación}\n\nTenga en cuenta que si utiliza Brave Search mientras está conectado a una cuenta Premium, puede que sea más fácil para Brave correlacionar las consultas con usuarios específicos.\nLe recomendamos que desactive las Estadísticas de uso anónimas, ya que están activadas por defecto y pueden desactivarse en la configuración.\nDuckDuckGo\n\n{ align=right }\nDuckDuckGo es uno de los buscadores privados más populares. Entre las funciones de búsqueda de DuckDuckGo destacan bangs y una variedad de respuestas instantáneas. El motor de búsqueda utiliza numerosas fuentes distintas de Bing para las respuestas instantáneas y otros resultados no primarios.\nDuckDuckGo es el motor de búsqueda predeterminado de Tor Browser y es una de las pocas opciones disponibles en el navegador Safari de Apple.\n:octicons-home-16: Página Principal{ .md-button .md-button--primary }\n:simple-torbrowser:{ .card-link title=&#34;Servicio Onion&#34; }\n:octicons-eye-16:{ .card-link title=&#34;Política de Privacidad&#34; }\n:octicons-info-16:{ .card-link title=Documentación}\n\nDuckDuckGo ofrece otras dos versiones de su motor de búsqueda y ninguna de ellas requiere JavaScript. Sin embargo, estas versiones carecen de funciones. Estas versiones también pueden usarse junto con su dirección oculta Tor añadiendo /lite o /html para la versión respectiva.\nStartpage\n\n{ align=right }\n{ align=right }\nStartpage es un motor de búsqueda privado. Una de las características exclusivas de Startpage es la Vista Anónima, que se esfuerza por normalizar la actividad de los usuarios para dificultar su identificación exclusiva. Esta función puede ser útil para ocultar algunas propiedades de la red y el navegador. A diferencia de lo que sugiere su nombre, no se debe confiar en esta función para mantener el anonimato. Si busca anonimato, utilice Tor Browser en su lugar.\n:octicons-home-16: Página Principal{ .md-button .md-button--primary }\n:simple-torbrowser:{ .card-link title=&#34;Servicio Onion&#34; }\n:octicons-eye-16:{ .card-link title=&#34;Política de Privacidad&#34; }\n:octicons-info-16:{ .card-link title=Documentación}\n\nEl accionista mayoritario de Startpage es System1, una empresa de tecnología publicitaria. No creemos que eso sea un problema, ya que tienen una política de privacidad claramente separada. El equipo de Privacy Guides se puso en contacto con Startpage en 2020 para aclarar cualquier duda sobre la considerable inversión de System1 en el servicio, y quedamos satisfechos con las respuestas que recibimos.\nStartpage anteriormente ponía limitaciones a los usuarios de VPN y Tor, pero recientemente crearon un servicio oculto Tor oficial, y desde abril de 2024 ya no hemos notado bloqueos adicionales para los usuarios de Tor o VPN.\nMetabuscadores\nUn metabuscador agrega los resultados de otros motores de búsqueda, como los recomendados anteriormente, sin almacenar ninguna información por sí mismo.\nSearXNG\n\n{ align=right }\nSearXNG es un metabuscador autoalojable de código abierto. Es una bifurcación de SearX mantenida activamente.\n:octicons-home-16: Página Principal{ .md-button .md-button--primary }\n:octicons-server-16:{ .card-link title=&#34;Instancias Públicas&#34;}\n:octicons-code-16:{ .card-link title=&#34;Código Fuente&#34; }\n\nSearXNG es un proxy entre usted y los motores de búsqueda desde los que se agrega. Sus consultas seguirán siendo enviadas a los motores de búsqueda de los que SearXNG obtiene sus resultados.\nAl autoalojarse, es importante que otras personas utilicen su instancia para que las consultas se integren. Debe tener cuidado con dónde y cómo aloja SearXNG, ya que las personas que busquen contenidos ilegales en su instancia podrían atraer la atención no deseada de las autoridades.\nCuando utilice una instancia de SearXNG, asegúrese de leer su política de privacidad. Dado que las instancias de SearXNG pueden ser modificadas por sus propietarios, no reflejan necesariamente su política de privacidad. Algunas instancias se ejecutan como un servicio oculto de Tor, lo que puede garantizar cierta privacidad siempre y cuando sus consultas de búsqueda no contengan PII.\nCriterios\nPor favor, tenga en cuenta que no estamos afiliados con ninguno de los proyectos que recomendamos. Además de nuestros criterios estándar, hemos desarrollado un conjunto claro de requisitos que nos permiten ofrecer recomendaciones objetivas. Sugerimos que usted se familiarice con esta lista, antes de decidir utilizar un proyecto y realizar su propia investigación para asegurarse de que es la elección ideal para usted.\nRequisitos Mínimos\n\nNo debe recopilar IIP según su política de privacidad.\nNo debe exigir a los usuarios que creen una cuenta con ellos.\n\nMejor Caso\nNuestro criterio del mejor caso representa lo que nos gustaría ver del proyecto perfecto en esta categoría. Es posible que nuestras recomendaciones no incluyan todas o algunas de estas funciones, pero las que sí las incluyan pueden estar mejor clasificadas que otras en esta página.\n\nDebe estar basado en software de código abierto.\nNo debería bloquear las direcciones IP del nodo de salida de Tor.\n\n\n\n\n\nBrave Search recopila métricas de uso agregadas, que incluyen el sistema operativo y el agente de usuario. Sin embargo, no recopilan PII. Para servir resultados locales anónimos, las direcciones IP se procesan temporalmente, pero no se conservan. https://search.brave.com/help/privacy-policy ↩︎\n\n\nDuckDuckGo registra sus búsquedas para mejorar el producto, pero no su dirección IP ni ninguna otra información personal. https://duckduckgo.com/privacy ↩︎\n\n\nStartpage registra detalles como el sistema operativo, el agente de usuario y el idioma. No registra su dirección IP, consultas de búsqueda u otra información personal. https://startpage.com/en/privacy-policy ↩︎\n\n\n\n\n\t\t\t\n\t\t\n\n\t\t\n\t\t\t\n\t\t\tView Git Blame\n\t\t\tCopy Permalink\n\t\t\n\t\n\n\n\n\n\t\t\t\n\t\t\n\t\n\n\n\n\t\t\n\t\n\t\n\t\n\t\n\t\t\n\t\t\tPowered by Gitea\n\t\t\n\t\t\n\t\t\t\n\t\t\tVersion:\n\t\t\t\n\t\t\t\t1.27.3\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\tPage: 3695ms\n\t\t\t\tTemplate: 2ms\n\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t Auto \n\t\t\t\n\t\t\n\t\t\n\t\t\t English\n\t\t\t\n\t\t\t\tBahasa Indonesia\n\t\t\t\tDeutsch\n\t\t\t\tEnglish\n\t\t\t\tEspañol\n\t\t\t\tFrançais\n\t\t\t\tGaeilge\n\t\t\t\tItaliano\n\t\t\t\tLatviešu\n\t\t\t\tMagyar nyelv\n\t\t\t\tNederlands\n\t\t\t\tPolski\n\t\t\t\tPortuguês de Portugal\n\t\t\t\tPortuguês do Brasil\n\t\t\t\tSuomi\n\t\t\t\tSvenska\n\t\t\t\tTürkçe\n\t\t\t\tČeština\n\t\t\t\tΕλληνικά\n\t\t\t\tБългарски\n\t\t\t\tРусский\n\t\t\t\tУкраїнська\n\t\t\t\tفارسی\n\t\t\t\tമലയാളം\n\t\t\t\t日本語\n\t\t\t\t简体中文\n\t\t\t\t繁體中文（台灣）\n\t\t\t\t繁體中文（香港）\n\t\t\t\t한국어\n\t\t\t\t\n\t\t\n\t\tLicenses\n\t\tAPI",
+      "title": "https://code.privacyguides.dev/privacyguides/i18n/src/commit/8d66ee326eced923bc4768476d601da959dc6db5/i18n/es/search-engines.md (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529585078,
+        "end": 1789529589831
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.834Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529589834,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8468849001qB08E63F8haf4K",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a84672f30012xwiNXthrmSzK2",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 43363,
+      "output": 323,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 43686,
+      "headroom": -4830,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.835Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.835Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.838Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.841Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.841Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.843Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.843Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.854Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 43686,
+  "providerTokens": 43686,
+  "estimatedInputTokens": 12443,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 43363,
+    "cacheRead": 0,
+    "output": 323
+  },
+  "overflow": true,
+  "headroom": -4830,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.856Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.858Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.858Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.863Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.863Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.864Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 4,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.865Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.865Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:09.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529590306,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8468a21001k63MBjGGHZs8ld",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a8468868001qkEK7rrrIs1w3e",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529590308,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8468a23001NSCGldDVpEuWgT",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a8468868001qkEK7rrrIs1w3e",
+    "type": "text",
+    "text": "Conversation summary: En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista.  Let me search the web for En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas.\n\nTitle: What did we do so\n\nUser turns:\n  1. En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista.\n  2.",
+    "time": {
+      "start": 1789529590308,
+      "end": 1789529590308
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529590308,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8468a24001yuq2vKglgkvGc9",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a8468868001qkEK7rrrIs1w3e",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 45711,
+      "output": 730,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 46441,
+      "headroom": -7585,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529590310,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8468a26002Np7GBKv9UTjgTN",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a8468a26001elFTLr3n29B99M",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789529590310,
+      "end": 1789529590310
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.310Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.311Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.311Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.312Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.312Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.314Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.378Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529590378,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8468a690015cNhLkbh18UC0B",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a8468a28001HnrpKqKB1ChcA8",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.378Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.378Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.379Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.379Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529590379,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8468a6a0021CWZj4QXicHqNi",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a8468a28001HnrpKqKB1ChcA8",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789529590379,
+      "end": 1789529590379
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.379Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529590379,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "part": {
+    "id": "prt_0a8468a6b001VyqUD02WEtM2cb",
+    "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+    "messageID": "msg_0a8468a28001HnrpKqKB1ChcA8",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 9279,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9352,
+      "headroom": 29504,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.379Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.379Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.380Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.380Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.380Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.380Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.381Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789529590381,
+  "sessionID": "ses_f57b999c7ffetxARdCahS0qA7K"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.382Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.382Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.382Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.382Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.382Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l00Z2nARbM",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.382Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l00Z2nARbM",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.382Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l00Z2nARbM",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:10.382Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 10,
+  "message": "Agent exiting"
+}
+

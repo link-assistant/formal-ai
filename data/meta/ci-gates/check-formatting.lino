@@ -6,4 +6,4 @@
 ci_gate check_formatting
   stage rust
   description "rustfmt owns the layout of every Rust file, so no review spends time on it."
-  run "cargo fmt --all -- --check"
+  run "cargo fmt --manifest-path rust/Cargo.toml --all -- --check"

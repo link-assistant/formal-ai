@@ -1,0 +1,234 @@
+meanings
+  causal_interrogative
+    defined-by inquiry
+    role causal_interrogative
+    lexeme en
+      surface
+        text why
+    lexeme ru
+      surface
+        text почему
+    lexeme hi
+      surface
+        text क्यों
+    lexeme zh
+      surface
+        text 为什么
+  prior_answer_reference
+    defined-by answer
+    role prior_answer_reference
+    lexeme en
+      surface
+        text answer
+      surface
+        text solution
+    lexeme ru
+      surface
+        text ответ
+      surface
+        text решение
+    lexeme hi
+      surface
+        text जवाब
+      surface
+        text उत्तर
+      surface
+        text समाधान
+    lexeme zh
+      surface
+        text 回答
+      surface
+        text 解决方案
+  answer_rationale_inquiry
+    defined-by causal_interrogative
+    defined-by prior_answer_reference
+    defined-by inquiry
+    role answer_rationale_lead
+    lexeme en
+      surface
+        text "why …"
+      surface
+        text "why did you answer"
+    lexeme ru
+      surface
+        text "почему …"
+      surface
+        text "почему ты ответил"
+      surface
+        text "почему ты так ответил"
+      surface
+        text "почему вы ответили"
+    lexeme hi
+      surface
+        text "ऐसा जवाब क्यों दिया"
+    lexeme zh
+      surface
+        text 为什么这样回答
+  assistant_self_reference
+    defined-by assistant
+    defined-by self_reference
+    role assistant_self_reference
+    lexeme en
+      surface
+        text you
+      surface
+        text your
+      surface
+        text "formal ai"
+    lexeme ru
+      surface
+        text ты
+      surface
+        text теб
+      surface
+        text твоя
+      surface
+        text твой
+      surface
+        text тво
+      surface
+        text вы
+    lexeme hi
+      surface
+        text आप
+      surface
+        text तुम
+    lexeme zh
+      surface
+        text 你
+      surface
+        text 您
+  assistant_mechanism_inquiry
+    defined-by mechanism_inquiry
+    defined-by assistant
+    role assistant_mechanism_inquiry
+    lexeme en
+      surface
+        text "how do you work"
+      surface
+        text "how does this work"
+      surface
+        text "how does it work"
+      surface
+        text "show me how you work"
+      surface
+        text "explain how you work"
+    lexeme ru
+      surface
+        text "как ты работаешь"
+      surface
+        text "покажи как ты работаешь"
+      surface
+        text "расскажи как ты работаешь"
+      surface
+        text "объясни как ты работаешь"
+      surface
+        text "как ты устроен"
+      surface
+        text "покажи как ты устроен"
+      surface
+        text "какая у тебя модель окружающего мира"
+      surface
+        text "модель окружающего мира"
+      surface
+        text "идея твоей разработки"
+      surface
+        text "идея твоего проекта"
+      surface
+        text "зачем тебя разработ"
+    lexeme hi
+      surface
+        text "तुम कैसे काम करते हो"
+      surface
+        text "आप कैसे काम करते हैं"
+    lexeme zh
+      surface
+        text 你是怎么工作的
+      surface
+        text 你怎么运作
+  operating_principle
+    defined-by concept
+    defined-by action
+    role operating_principle
+    lexeme en
+      surface
+        text "operating principle"
+    lexeme ru
+      surface
+        text "принцип работы"
+    lexeme hi
+      surface
+        text "कार्य सिद्धांत"
+    lexeme zh
+      surface
+        text 工作原理
+  architecture_concept
+    defined-by concept
+    defined-by assistant
+    role architecture_concept
+    lexeme en
+      surface
+        text llm
+      surface
+        text "large language model"
+      surface
+        text "language model"
+      surface
+        text "openai api"
+      surface
+        text openai
+      surface
+        text "neural inference"
+      surface
+        text "neural network"
+      surface
+        text "links notation rules"
+      surface
+        text "local rules"
+      surface
+        text "world model"
+      surface
+        text "model of the world"
+    lexeme ru
+      surface
+        text бям
+      surface
+        text "языковая модель"
+      surface
+        text "языковой моделью"
+      surface
+        text нейросет
+      surface
+        text нейрон
+      surface
+        text "локальных правил"
+      surface
+        text "локальных правилах"
+      surface
+        text "область знаний"
+      surface
+        text "модель окружающего мира"
+      surface
+        text "модель мира"
+      surface
+        text "принцип работы"
+      surface
+        text "идея твоей разработки"
+      surface
+        text "идея твоего проекта"
+      surface
+        text "зачем тебя разработ"
+      surface
+        text ссылк
+    lexeme hi
+      surface
+        text न्यूरल
+      surface
+        text "भाषा मॉडल"
+    lexeme zh
+      surface
+        text 神经
+      surface
+        text 語言模型
+      surface
+        text 语言模型

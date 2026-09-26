@@ -1,6 +1,6 @@
 link_edit
   leaf L07
-  path src/engine_responses.rs
+  path rust/src/engine_responses.rs
   language rust
   rule insert_member
     list "GREETING_EXAMPLES"

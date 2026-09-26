@@ -34,14 +34,23 @@ run_step() {
 
 run_step "ordered lists (src/lib.rs, tests/*/mod.rs, worker module list)" \
   rust-script scripts/normalize-ordered-lists.rs --write
-run_step "seed inventory (src/seed/embedded_registry.rs, src/web/seed-files.js)" \
+run_step "seed inventory (src/seed/embedded_registry.rs, js/seed-files.js)" \
   rust-script scripts/generate-seed-registry.rs --write
-run_step "trusted-source recurrence cache (src/web/source-cache/wikifunctions-recurrences.lino)" \
-  cargo run --quiet --example generate_recurrence_source_cache -- --write
+run_step "trusted-source recurrence cache (js/source-cache/wikifunctions-recurrences.lino)" \
+  cargo run --manifest-path rust/Cargo.toml --quiet --example generate_recurrence_source_cache -- --write
 run_step "requirements document (REQUIREMENTS.md)" \
   rust-script scripts/assemble-requirements.rs --write
-run_step "total closure (data/seed/closure-generated-*.lino)" \
-  python3 scripts/close-total.py
+run_step "requirement status ledger (data/meta/requirement-status-ledger/)" \
+  rust-script scripts/generate-requirement-status.rs --write
+run_step "status surfaces (docs/status.md, docs/benchmarks.md, README.md)" \
+  rust-script scripts/render-status.rs --write
+# Issue #1138 B9, plan 09 leaf 8: `python3 scripts/close-total.py` used to run
+# here and write `data/seed/closure-generated-*.lino`, which
+# `scripts/audit-total-closure.py` then read back as definitions -- so the
+# closure metric measured this pipeline's own output. The script now prints a
+# grounding work list and writes nothing, so it is not a derived artifact and
+# has no step here. The honest number it reports is ratcheted by
+# `data/meta/closure-audit.lino`.
 run_step "seed metadata gaps (data/meta/seed-metadata-gaps-*.lino)" \
   rust-script scripts/audit-seed-metadata.rs --write
 run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt)" \
@@ -49,9 +58,9 @@ run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt
 # Format every generated Rust source before deriving byte-sensitive AST and
 # planner fixtures from it. Running rustfmt after those projections can make a
 # successful regeneration leave its own outputs stale.
-run_step "formatting" cargo fmt
+run_step "formatting" cargo fmt --manifest-path rust/Cargo.toml
 run_step "self-AST census (data/meta/self-ast/)" \
-  cargo run --quiet --example regenerate_self_ast_census
+  cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_self_ast_census
 # The reviewed proposal document is derived from the live learner: its candidate
 # id and seed edit are content-addressed over the recursive-core trace, so any
 # new pipeline stage makes it stale (issue #1073 added the thirteenth). The
@@ -59,14 +68,19 @@ run_step "self-AST census (data/meta/self-ast/)" \
 # decisions. `data/seed/learned-methods.lino` is deliberately NOT here: adopting
 # a method requires a human-confirmed promotion run, which is the trust boundary
 # issue #922 exists to hold.
-run_step "reviewed method proposals (examples/issue-922-method-learning/open-proposals.lino)" \
-  cargo run --quiet --example regenerate_issue_922_open_proposals
+run_step "reviewed method proposals (rust/examples/issue-922-method-learning/open-proposals.lino)" \
+  cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_issue_922_open_proposals
 # These three are derived from src/agentic_coding/planner.rs, so any edit to the
 # planner -- including one a formatter makes -- leaves them stale. They were
 # missing from this list, and the only thing that noticed was a test failure
 # several minutes into the suite.
 run_step "planner fixtures (data/meta/self-ast.lino, data/meta/self-healing-case.lino, docs/case-studies/issue-538/agent-cli-session-self-ast.json)" \
-  cargo run --quiet --example regenerate_planner_fixtures
+  cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_planner_fixtures
+# Last, because earlier steps rewrite data/ and docs/ files the mirror copies:
+# every producer runs before the mirror is refreshed. The committed
+# rust/embedded/ tree is what the published crate ships (issue #1138).
+run_step "package-data mirror (rust/embedded/)" \
+  rust-script scripts/mirror-package-data.rs --write
 
 echo ""
 if [ "$CHECK_ONLY" -eq 1 ]; then

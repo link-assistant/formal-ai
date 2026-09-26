@@ -1,6 +1,6 @@
 link_edit
   leaf L29
-  path src/conversation_context.rs
+  path rust/src/conversation_context.rs
   language rust
   rule rename_identifier
     old "DIALOG_LOG_DIRECTORY_ENV"

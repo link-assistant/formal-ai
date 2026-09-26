@@ -1,0 +1,49 @@
+multilingual_responses
+  response response_summarization_evidence_summary_en
+    intent summarization_evidence_summary
+    language en
+    text "asserted by {asserted} of {total} sources{denied}"
+  response response_summarization_evidence_summary_ru
+    intent summarization_evidence_summary
+    language ru
+    text "подтверждено {asserted} из {total} источников{denied}"
+  response response_summarization_evidence_summary_hi
+    intent summarization_evidence_summary
+    language hi
+    text "{total} में से {asserted} स्रोतों द्वारा प्रमाणित{denied}"
+  response response_summarization_evidence_summary_zh
+    intent summarization_evidence_summary
+    language zh
+    text "由 {total} 个来源中的 {asserted} 个断言{denied}"
+  response response_summarization_evidence_denied_en
+    intent summarization_evidence_denied
+    language en
+    text ", denied by {denied}"
+  response response_summarization_evidence_denied_ru
+    intent summarization_evidence_denied
+    language ru
+    text ", опровергнуто источниками: {denied}"
+  response response_summarization_evidence_denied_hi
+    intent summarization_evidence_denied
+    language hi
+    text ", {denied} द्वारा अस्वीकृत"
+  response response_summarization_evidence_denied_zh
+    intent summarization_evidence_denied
+    language zh
+    text "，被 {denied} 个来源否认"
+  response response_summarization_disputed_statement_en
+    intent summarization_disputed_statement
+    language en
+    text "{statement} (disputed: {evidence})"
+  response response_summarization_disputed_statement_ru
+    intent summarization_disputed_statement
+    language ru
+    text "{statement} (спорно: {evidence})"
+  response response_summarization_disputed_statement_hi
+    intent summarization_disputed_statement
+    language hi
+    text "{statement} (विवादित: {evidence})"
+  response response_summarization_disputed_statement_zh
+    intent summarization_disputed_statement
+    language zh
+    text "{statement}（有争议：{evidence}）"

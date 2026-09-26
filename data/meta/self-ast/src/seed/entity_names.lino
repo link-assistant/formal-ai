@@ -2,14 +2,14 @@ self_ast_census
   target src/seed/entity_names.rs
   language rust
   fidelity signature
-  byte_len 2975
-  line_count 79
-  content_id source_module_72be6832f53fa919
+  byte_len 3454
+  line_count 89
+  content_id source_module_fa6db16be09f33e9
   symbol_count 6
   symbols
-    struct EntityName 21 29
-    function entity_names 33 36
-    static REGISTRY 34 34
-    function parse_entity_names 38 50
-    function parse_entity 52 58
-    function parse_surfaces 64 79
+    struct EntityName 21 34
+    function entity_names 38 41
+    static REGISTRY 39 39
+    function parse_entity_names 43 55
+    function parse_entity 57 68
+    function parse_surfaces 74 89

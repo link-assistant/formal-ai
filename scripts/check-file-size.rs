@@ -102,8 +102,8 @@ fn is_worker_js_path(path: &Path) -> bool {
         .extension()
         .and_then(|extension| extension.to_str())
         .is_some_and(|extension| extension.eq_ignore_ascii_case("js"));
-    path_str.ends_with("src/web/formal_ai_worker.js")
-        || (path_str.contains("/src/web/worker/") && has_js_extension)
+    path_str.ends_with("js/formal_ai_worker.js")
+        || (path_str.contains("/js/worker/") && has_js_extension)
 }
 
 /// Only workflows this repository owns are measured. `docs/case-studies/**`
@@ -579,7 +579,7 @@ mod tests {
     #[test]
     fn check_directory_enforces_split_worker_js_limit() {
         let repo = temp_dir("worker-js-thresholds");
-        let worker_dir = repo.join("src/web/worker");
+        let worker_dir = repo.join("js/worker");
         fs::create_dir_all(&worker_dir).unwrap();
         write_js_file_with_lines(
             &worker_dir.join("formal_ai_worker_00.js"),
@@ -591,7 +591,7 @@ mod tests {
         assert_eq!(
             result.violations,
             vec![Finding {
-                file: "src/web/worker/formal_ai_worker_00.js".to_string(),
+                file: "js/worker/formal_ai_worker_00.js".to_string(),
                 lines: WORKER_JS_LIMIT.max_lines + 1,
                 max_lines: WORKER_JS_LIMIT.max_lines,
                 warn_lines: WORKER_JS_LIMIT.warn_lines,
@@ -603,7 +603,7 @@ mod tests {
     #[test]
     fn check_directory_does_not_apply_worker_limit_to_legacy_js() {
         let repo = temp_dir("legacy-js-thresholds");
-        let app_dir = repo.join("src/web/app");
+        let app_dir = repo.join("js/app");
         fs::create_dir_all(&app_dir).unwrap();
         write_js_file_with_lines(&app_dir.join("main.js"), WORKER_JS_LIMIT.max_lines + 1);
 
@@ -616,7 +616,7 @@ mod tests {
     #[test]
     fn check_directory_rejects_embedded_worker_lino_data() {
         let repo = temp_dir("embedded-worker-lino");
-        let worker_dir = repo.join("src/web/worker");
+        let worker_dir = repo.join("js/worker");
         fs::create_dir_all(&worker_dir).unwrap();
         fs::write(
             worker_dir.join("formal_ai_worker_00.js"),
@@ -629,7 +629,7 @@ mod tests {
         assert_eq!(
             result.embedded_data_violations,
             vec![EmbeddedDataFinding {
-                file: "src/web/worker/formal_ai_worker_00.js".to_string(),
+                file: "js/worker/formal_ai_worker_00.js".to_string(),
                 line: 1,
                 message: "Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.".to_string(),
             }]

@@ -1,0 +1,59 @@
+self_ast_census
+  target src/repository_workspace/mod.rs
+  language rust
+  fidelity signature
+  byte_len 34648
+  line_count 876
+  content_id source_module_be64639c4915584c
+  symbol_count 50
+  symbols
+    module clone 12 12
+    module diff 13 13
+    module edit 14 14
+    module locate 15 15
+    module outcome 16 16
+    module verify 17 17
+    module world_model 18 18
+    const ALLOWLIST_LINO 53 54
+    const RECORD_ALLOWED 57 57
+    const PROTOCOL_LINO 61 62
+    const RECORD_STEP 65 65
+    const PROTOCOL_HEADER 69 69
+    enum WorkspaceError 73 106
+    function fmt 109 132
+    struct RepositoryWorkspace 139 145
+    function open 152 159
+    function adopt 166 177
+    function root 181 183
+    function spec 187 189
+    function base_commit 193 195
+    function source_files 201 206
+    function read 212 218
+    function write 224 241
+    function diff 247 253
+    function baseline 258 260
+    struct ProtocolStep 266 275
+    struct RepositoryTask 279 286
+    struct ProtocolOutcome 290 306
+    struct WorkspaceProtocol 311 313
+    function render_protocol_template 318 320
+    function render_protocol_template_from 325 340
+    function load 345 347
+    function parse 351 365
+    function source_files 369 376
+    function steps 380 382
+    function execute 389 609
+    function regenerate_document 614 651
+    function protocol_ledger 654 676
+    function record_step_observation 678 716
+    struct AllowedCommand 720 735
+    function command_allowlist 740 755
+    const DEFAULT_DEADLINE_SECONDS 758 758
+    function deadline_seconds 767 780
+    function optional 783 789
+    const GIT_GLOBAL_FLAGS 797 797
+    const GLOBAL_FLAG_PROGRAM 800 800
+    function subcommand_of 804 813
+    function allows 823 833
+    function shape_matches 838 853
+    function collect_files 856 876

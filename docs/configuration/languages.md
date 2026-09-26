@@ -25,6 +25,6 @@ new route or response exists in only one language.
 
 ```bash
 rust-script scripts/check-hardcoded-language.rs
-node tests/e2e/scripts/check-multilingual-intent-coverage.mjs
-node tests/e2e/scripts/check-language-change-parity.mjs
+node rust/tests/e2e/scripts/check-multilingual-intent-coverage.mjs
+node rust/tests/e2e/scripts/check-language-change-parity.mjs
 ```

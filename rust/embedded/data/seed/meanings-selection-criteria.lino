@@ -1,0 +1,123 @@
+# `Selection-criterion surfaces for issue 1138 B12, plan 12 leaf 15 (#901).`
+# `A technical contradiction is between two criteria, and the point on the`
+# `0-1 range is counted from the requirement's own clauses: each clause that`
+# `demands a criterion is one vote for it. The surfaces that make such a`
+# `demand recognisable live here, in seed data, so`
+# `src/selection_heuristics/triz.rs names only the two language-independent`
+# `roles below and no spelling appears in Rust.`
+# `The forms are stems, read through mentions_role_raw, because a demand is`
+# `inflected in every language the corpus covers: "shortest"/"short",`
+# `"короткий"/"короче", "छोटा", "最短", "corta"/"corto".`
+meanings
+  selection_criterion_brevity
+    defined-by concept
+    role selection_criterion_brevity_cue
+    lexeme en
+      surface
+        text "shortest"
+      surface
+        text "shorter"
+      surface
+        text "short"
+      surface
+        text "concise"
+      surface
+        text "brief"
+      surface
+        text "terse"
+    lexeme ru
+      surface
+        text "корот"
+      surface
+        text "кратк"
+      surface
+        text "сжат"
+      surface
+        text "лаконич"
+    lexeme hi
+      surface
+        text "छोट"
+      surface
+        text "संक्षिप्त"
+      surface
+        text "संक्षेप"
+    lexeme zh
+      surface
+        text "最短"
+      surface
+        text "简短"
+      surface
+        text "简洁"
+      surface
+        text "精简"
+    lexeme es
+      surface
+        text "corta"
+      surface
+        text "corto"
+      surface
+        text "breve"
+      surface
+        text "conciso"
+      surface
+        text "concisa"
+  selection_criterion_completeness
+    defined-by concept
+    role selection_criterion_completeness_cue
+    lexeme en
+      surface
+        text "complete"
+      surface
+        text "completeness"
+      surface
+        text "cover"
+      surface
+        text "covers"
+      surface
+        text "exhaustive"
+      surface
+        text "every case"
+      surface
+        text "all cases"
+    lexeme ru
+      surface
+        text "полнот"
+      surface
+        text "полност"
+      surface
+        text "покрыва"
+      surface
+        text "охватыва"
+      surface
+        text "исчерпыва"
+    lexeme hi
+      surface
+        text "पूर्ण"
+      surface
+        text "कवर"
+      surface
+        text "समग्र"
+      surface
+        text "हर मामले"
+    lexeme zh
+      surface
+        text "完整"
+      surface
+        text "覆盖"
+      surface
+        text "全面"
+      surface
+        text "详尽"
+    lexeme es
+      surface
+        text "exhaustiv"
+      surface
+        text "complet"
+      surface
+        text "cubra"
+      surface
+        text "cubre"
+      surface
+        text "cubrir"
+      surface
+        text "todos los casos"

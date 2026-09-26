@@ -16,9 +16,9 @@ clarifying question.
 
 Keep:
 
-- The symbolic substitution engine in `src/substitution.rs`. It already parses
+- The symbolic substitution engine in `rust/src/substitution.rs`. It already parses
   link-pattern rules, applies them to a graph, and emits an inspectable trace.
-- The program-plan lowering surface in `src/program_plan.rs`. `lower` should
+- The program-plan lowering surface in `rust/src/program_plan.rs`. `lower` should
   continue to accept a base task and modifiers, seed a graph, and apply
   substitution rules to a fixpoint.
 - Seeded rules in `data/seed/program-plan-rules.lino`. A hand-reviewed seed is
@@ -32,7 +32,7 @@ Keep:
 Replace:
 
 - The hard-coded `PROGRAM_MODIFIERS` allowlist in
-  `src/intent_formalization.rs`. It should become data-driven operation and
+  `rust/src/intent_formalization.rs`. It should become data-driven operation and
   modifier recognition sourced from seed data. **(Done — issue #358 removed the
   allowlist; modifier recognition now reads `data/seed/operation-vocabulary.lino`
   and `data/seed/program-plan-rules.lino`. The name survives in this document as
@@ -270,7 +270,7 @@ synthesis decision:
 - seed-rule lookup result,
 - constructed candidate rule,
 - TDD verification fixture and result,
-- final substitution trace from `src/substitution.rs`.
+- final substitution trace from `rust/src/substitution.rs`.
 
 The trace should be emitted as Links Notation so it can be exported with memory
 and reused by the self-improvement work later in the roadmap.

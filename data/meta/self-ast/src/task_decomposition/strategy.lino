@@ -2,28 +2,28 @@ self_ast_census
   target src/task_decomposition/strategy.rs
   language rust
   fidelity signature
-  byte_len 9276
-  line_count 253
-  content_id source_module_c50d9722026bcba2
+  byte_len 9298
+  line_count 254
+  content_id source_module_ede039c6a48a24a6
   symbol_count 20
   symbols
     const STRATEGIES_LINO 11 12
-    const CONTRACT_LINO 13 13
-    const TASK_PLACEHOLDER 14 14
-    struct TaskDecompositionContract 17 22
-    struct TaskStrategyStage 25 29
-    struct TaskDecompositionStrategy 32 36
-    struct PlannedTaskStage 39 44
-    struct ShippedStrategyApproval 47 54
-    function strategies 57 60
-    static REGISTRY 58 58
-    function contract 63 66
-    static CONTRACT 64 64
-    function shipped_approvals 69 106
-    function plans_for 109 128
-    function missing_operation_contract 131 143
-    function concrete_target 146 168
-    function parse_strategies 170 207
-    function parse_contract 209 231
-    function localized_stage_text 233 237
-    function is_repository_work_item 239 253
+    const CONTRACT_LINO 13 14
+    const TASK_PLACEHOLDER 15 15
+    struct TaskDecompositionContract 18 23
+    struct TaskStrategyStage 26 30
+    struct TaskDecompositionStrategy 33 37
+    struct PlannedTaskStage 40 45
+    struct ShippedStrategyApproval 48 55
+    function strategies 58 61
+    static REGISTRY 59 59
+    function contract 64 67
+    static CONTRACT 65 65
+    function shipped_approvals 70 107
+    function plans_for 110 129
+    function missing_operation_contract 132 144
+    function concrete_target 147 169
+    function parse_strategies 171 208
+    function parse_contract 210 232
+    function localized_stage_text 234 238
+    function is_repository_work_item 240 254

@@ -31,7 +31,7 @@ backslash escapes; commit with `git commit -F`.
 - [x] L0.2 E2E slowdown measured, fixed, regression test added
 - [x] L0.3 the two immutable 2026-08-01 attribution claims are withdrawn with
       `Formal-AI-Retract`; branch delivered by normal fast-forward push
-- [ ] L0.4 CI green on the pushed head (all workflows)
+- [x] L0.4 CI green on the pushed head (all workflows) <!-- done: PR #888 merged 2026-09-16 as be8fd3174 with every workflow green -->
 
 ## L1 — The ratchet reads history correctly
 
@@ -359,4 +359,4 @@ turned into a shell command; the license line is present.
 - [x] PR body: summary, before/after numbers (upstream local measurements,
       curated slice, ladder unchanged), `Fixes #710`, `Closes #862`, `Closes
       #863`, partial note on #1071, links to the plans
-- [ ] one CI wait; every workflow green; then stop
+- [x] one CI wait; every workflow green; then stop <!-- done: PR #888 merged 2026-09-16 as be8fd3174 with every workflow green -->

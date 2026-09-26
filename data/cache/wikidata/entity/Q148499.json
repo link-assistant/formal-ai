@@ -1,0 +1,153 @@
+{
+  "entities": {
+    "Q148499": {
+      "type": "item",
+      "id": "Q148499",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Margraviate of Brandenburg"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "маркграфство Бранденбург"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "勃蘭登堡侯國"
+        },
+        "es": {
+          "language": "es",
+          "value": "Margraviato de Brandeburgo"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Holy Roman Empire principality (1157–1806)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "историческое государство на территории современной Германии, входившее в Священную Римскую империю (1157—1806)"
+        },
+        "es": {
+          "language": "es",
+          "value": "antiguo principado del Sacro Imperio Romano Germánico"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "the House of Brandenburg"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Бранденбургское курфюршество"
+          },
+          {
+            "language": "ru",
+            "value": "Бранденбургская марка"
+          },
+          {
+            "language": "ru",
+            "value": "Курфюршество Бранденбург"
+          },
+          {
+            "language": "ru",
+            "value": "Марка Бранденбург"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "勃兰登堡边境领"
+          },
+          {
+            "language": "zh",
+            "value": "马克勃兰登堡"
+          },
+          {
+            "language": "zh",
+            "value": "勃兰登堡侯爵"
+          },
+          {
+            "language": "zh",
+            "value": "勃兰登堡地区"
+          },
+          {
+            "language": "zh",
+            "value": "勃兰登堡藩侯国"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Margrave de Brandeburgo"
+          },
+          {
+            "language": "es",
+            "value": "Electorado de Brandeburgo"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Margraviate of Brandenburg"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Маркграфство Брандербург"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "勃蘭登堡侯國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Margraviato de Brandeburgo"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "1a3215f93c2ae7d06f17c76aa960547bbd849ffb",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 12548,
+                  "id": "Q12548"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

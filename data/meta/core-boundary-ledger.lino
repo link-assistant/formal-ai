@@ -1,231 +1,276 @@
 core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
-  source_file_count_max 45
-  source_lines_max 18466
-  outside_core_file_count_max 45
-  outside_core_lines_max 18466
-  source src/solver_handlers/agent_workspace.rs
+  source_file_count_max 53
+  source_lines_max 20933
+  outside_core_file_count_max 51
+  outside_core_lines_max 20002
+  note "Issue #1138 B9, plan 09 leaf 1 corrected the four handlers outside rust/src/solver_handlers. Plan 08 promoted the generic verifiable-task interpreter; the URL parsing split adds one recursively counted source but its structural parser reads language evidence from seed roles, so it is promoted core machinery rather than migration debt. Plan 09 leaf 17 registered the M2 retrieval interpreter as a component beside the census. Plan 09 leaf 18 retired the concept-lookup orchestration into rust/src/concepts.rs and the network, refresh, learn and conflict procedures into rust/src/retrieval_procedures.rs, lowering the dispatcher module and the two line ceilings by the same 350 lines. The leaf 18 landing then rebased the census on the committed tree: the verifiable-task interpreter that plan 08 promoted landed at 834 lines, not the 750 first recorded, because its derive family (flow signs, role offsets, unit conversion) that lowers seed-declared expectations into ProgramIr candidates grew past the early estimate; the dispatcher module settled at 582 lines after the 350-line retirement, and seven lines left the reviewed core outside the census, so both ceilings track the honest counts. Re-measured 2026-09-20 after the issue #1021 routing fix (e4f0b3ac4) and plan 09 leaf 41 (12aa51b29) landed with the ledger unrefreshed: solver_handler_how.rs gained the honest-gap and mutating-request precedence arms, solver_handler_units.rs and solver_handlers/pattern_inference.rs grew their seed-driven rules, for 72 net lines; both ceilings now record the measured 20439 and 19456 rather than the stale 20367 and 19384.Re-measured 2026-09-21 for the plan 16 L1 three-source-roots move; the crate sits under rust/ and every ledger path moved with it, the calendar-create split and the previously unledgered policy_gates.rs raise source_file_count_max to 53, eleven baselines re-record the measured tree, and ledgering the two previously uncounted rows raises both line ceilings to 20787 and 19857 with outside_core_file_count_max at 51.Re-measured 2026-09-22 after the recognition and routing batches landed with the ledger unrefreshed: calendar_create.rs gained the elliptical arm and clock-hour role of the entity-grounded hours work, conversation_summary.rs gained empty-history ownership so a summarize request never falls through ownerless, and software_project.rs gained its routing retirement, for 39 net lines; both ceilings record the measured 20826 and 19896.Re-measured 2026-09-22 after the specification-red batch (bb43dbe90) landed with the ledger unrefreshed: conversation_summary.rs gained the courtesy-frame guard that strips every courtesy and directive surface before an unknown fallback (164 to 194 lines), solver_unknown_reasoning.rs gained the bare-term escape and the merge-arm-decline gate, and solver_helpers gained the shared miss_names_consulted_sources helper, for 27 net lines; outside_core_lines_max records the measured 19923. The batch J clippy sweep (5e1cc2f3d) then reflowed two ledgered rows after that measure, calendar_create.rs losing three redundant lines and verifiable_task.rs gaining one, so source_lines_max records the measured 20854.Re-measured 2026-09-22 after the G4 recall-answer batch (a5db54c57) landed with the ledger unrefreshed; conversation_memory/mod.rs gained the seeded summary-answer arm that answers a summary request from the recorded conversation instead of routing it away (813 to 829 lines), and web_search_intent.rs shed two cue lines in the personal-facts paydown (902 to 900 lines), for 14 net lines; both ceilings record the measured 20868 and 19937.Re-measured 2026-09-25 for the plan 16 L2g landing (70a18ddf4): the new translate_write.rs std half (write_one and the transactional write_tree the CLI and the agent driver share), the source_tree_request recognizer in meta_translate.rs, and the translate_source_tree solver family in solver_handlers/mod.rs (586 to 651 lines) grew the tree by 65 net lines; both ceilings record the measured 20933 and 20002."
+  component retrieval_method_interpreter
+    file rust/src/retrieval_method.rs
+    kind "Generic interpreter"
+    reason "One retrieval procedure over data/seed/sources-registry.lino: resolve the prompt's unknown subject from the lexicon, consult the sources the registry declares for the need, read the capture cache or fetch, and render with provenance from the seed template. It embeds no domain vocabulary, no canned answer and no routing rule, so it passes the promotion test as a generic interpreter, not a handler; the M2 migration leaves retire the retrieval handlers into it."
+  source rust/src/solver_handler_how.rs
+    disposition migrate
+    baseline_lines 930
+    data_target "how-to request recognition and guide rendering rules"
+    reason "How-to cue vocabulary, source ordering and rendered prose are domain knowledge over the sources registry. Re-measured 2026-09-20: the issue #1021 routing fix (e4f0b3ac4) added the honest-gap and mutating-request precedence arms, growing the landed file from 884 to 930 lines with the ledger unrefreshed."
+  source rust/src/solver_handler_how_synthesis.rs
+    disposition migrate
+    baseline_lines 135
+    data_target "how-to synthesis bounds and outcome rules"
+    reason "Which sources a synthesis consults and how its outcome reads are declared policy, not a compiled branch."
+  source rust/src/solver_handler_oracle.rs
+    disposition migrate
+    baseline_lines 127
+    data_target "coding oracle lookup rules"
+    reason "Which oracle snapshot answers which request is a seed table over the embedded snapshots."
+  source rust/src/solver_handler_units.rs
+    disposition migrate
+    baseline_lines 214
+    data_target "unit conversion request rules"
+    reason "Unit vocabulary and conversion phrasing are seed data over one arithmetic primitive. Re-measured 2026-09-20: the issue #1021 routing fix (e4f0b3ac4) extended the seed-driven rules by twelve lines with the ledger unrefreshed."
+  source rust/src/solver_handlers/agent_workspace.rs
     disposition migrate
     baseline_lines 128
     data_target "agent workspace requests and planning rules"
     reason "Workspace request vocabulary and project policy are domain knowledge."
-  source src/solver_handlers/behavior_rule_followups.rs
+  source rust/src/solver_handlers/behavior_rule_followups.rs
     disposition migrate
     baseline_lines 102
     data_target "behavior-rule follow-up rules"
     reason "Follow-up recognition and response selection are seed-defined policy."
-  source src/solver_handlers/behavior_rule_matching.rs
+  source rust/src/solver_handlers/behavior_rule_matching.rs
     disposition migrate
     baseline_lines 93
     data_target "behavior-rule matching rules"
     reason "Rule vocabulary and matching policy belong beside the stored rules."
-  source src/solver_handlers/behavior_rules.rs
+  source rust/src/solver_handlers/behavior_rules.rs
     disposition migrate
-    baseline_lines 951
+    baseline_lines 961
     data_target "behavior-rule query and rendering rules"
     reason "Listing, counting, and rendering stored behavior rules are domain policy."
-  source src/solver_handlers/benchmark_prompts.rs
+  source rust/src/solver_handlers/benchmark_prompts.rs
     disposition migrate
-    baseline_lines 543
+    baseline_lines 607
     data_target "benchmark prompt concepts and responses"
     reason "Benchmark-specific prompts and answers are examples in seed data."
-  source src/solver_handlers/calculator_rate.rs
+  source rust/src/solver_handlers/calculator_rate.rs
     disposition migrate
-    baseline_lines 126
+    baseline_lines 124
     data_target "exchange-rate interpretation rules"
     reason "Financial intent and rate vocabulary are domain knowledge."
-  source src/solver_handlers/calendar.rs
+  source rust/src/solver_handlers/calendar.rs
     disposition migrate
-    baseline_lines 976
+    baseline_lines 486
     data_target "calendar reasoning rules"
     reason "Date intent, recurrence policy, and calendar rendering are domain knowledge."
-  source src/solver_handlers/calendar_ics.rs
+  source rust/src/solver_handlers/calendar_create.rs
+    disposition migrate
+    baseline_lines 623
+    data_target "calendar event creation rules"
+    reason "Split from calendar.rs so both stay under the 1000-line file gate; the routed create entry and event-creation recognition are domain knowledge over meanings-calendar.lino. Re-measured 2026-09-22: the entity-grounded hours batch added the elliptical arm and the clock-hour role, growing the landed file from 612 to 626 lines. Re-measured again after the batch J clippy sweep (5e1cc2f3d) removed three redundant lines."
+  source rust/src/solver_handlers/calendar_ics.rs
     disposition migrate
     baseline_lines 198
     data_target "calendar serialization recipes"
     reason "Calendar artifact construction can be expressed as a data recipe over a host writer."
-  source src/solver_handlers/compound_interest.rs
+  source rust/src/solver_handlers/compound_interest.rs
     disposition migrate
-    baseline_lines 557
+    baseline_lines 558
     data_target "finance formulas, roles, and examples"
     reason "Compound-interest recognition and explanatory policy are domain knowledge."
-  source src/solver_handlers/conversation_memory/conversation_summary.rs
+  source rust/src/solver_handlers/conversation_memory/conversation_summary.rs
     disposition migrate
-    baseline_lines 156
+    baseline_lines 194
     data_target "conversation-summary selection rules"
-    reason "Summary cues and presentation policy belong in data over generic memory queries."
-  source src/solver_handlers/conversation_memory/link_query.rs
+    reason "Summary cues and presentation policy belong in data over generic memory queries. Re-measured 2026-09-22: empty-history ownership landed here so a summarize request over no turns is still owned, growing the file from 156 to 164 lines. Re-measured again the same day: the courtesy-frame guard landed here (strip every courtesy and directive surface longest-first and require an empty remainder before the unknown fallback answers), growing the file from 164 to 194 lines."
+  source rust/src/solver_handlers/conversation_memory/link_query.rs
     disposition migrate
     baseline_lines 126
     data_target "link-query routing and rendering rules"
     reason "This mixed route contains response prose and query presentation; only its dedicated parser and executor modules are core interpreters."
-  source src/solver_handlers/conversation_memory/memory_write.rs
+  source rust/src/solver_handlers/conversation_memory/memory_write.rs
     disposition migrate
-    baseline_lines 294
+    baseline_lines 293
     data_target "memory-write routing and localized response rules"
     reason "This mixed route contains localized prose, event policy, and natural-language write behavior despite seed-driven recognition."
-  source src/solver_handlers/conversation_memory/mod.rs
+  source rust/src/solver_handlers/conversation_memory/mod.rs
     disposition migrate
-    baseline_lines 813
+    baseline_lines 829
     data_target "conversation-memory routing and rendering rules"
     reason "This mixed dispatcher contains recall policy and prose, so it does not pass the promotion test."
-  source src/solver_handlers/conversation_memory/program_query.rs
+  source rust/src/solver_handlers/conversation_memory/program_query.rs
     disposition migrate
     baseline_lines 269
     data_target "memory-query routing, precedence, and response rules"
     reason "This mixed dispatcher owns handler precedence and natural-language routing around dedicated interpreters."
-  source src/solver_handlers/curated_project_fetch.rs
+  source rust/src/solver_handlers/curated_project_fetch.rs
     disposition migrate
     baseline_lines 54
     data_target "curated project catalog rules"
     reason "Project selection and lookup vocabulary belong with the project catalog."
-  source src/solver_handlers/document_originality.rs
+  source rust/src/solver_handlers/document_originality.rs
     disposition migrate
     baseline_lines 350
     data_target "document originality rules"
     reason "Originality criteria and explanation policy are domain knowledge."
-  source src/solver_handlers/document_request.rs
+  source rust/src/solver_handlers/document_request.rs
     disposition migrate
     baseline_lines 645
     data_target "document request and generation recipes"
     reason "Document kinds, plan selection, and prose templates belong in seed recipes."
-  source src/solver_handlers/fact_checking.rs
+  source rust/src/solver_handlers/fact_checking.rs
     disposition migrate
     baseline_lines 109
     data_target "fact-check workflow rules"
     reason "Fact-check intent and workflow selection are data-defined policy."
-  source src/solver_handlers/feature_capability.rs
+  source rust/src/solver_handlers/feature_capability.rs
     disposition migrate
-    baseline_lines 650
+    baseline_lines 656
     data_target "feature capability concepts and responses"
     reason "Capability vocabulary and claims must remain auditable seed facts."
-  source src/solver_handlers/installation_conversion.rs
+  source rust/src/solver_handlers/installation_conversion.rs
     disposition migrate
-    baseline_lines 866
+    baseline_lines 887
     data_target "installation conversion recipes"
     reason "Package-manager and platform conversion policy is domain knowledge."
-  source src/solver_handlers/meta_explanation.rs
+  source rust/src/solver_handlers/meta_explanation.rs
     disposition migrate
     baseline_lines 324
     data_target "self-explanation concepts and responses"
     reason "Descriptions of the meta algorithm belong in inspectable seed knowledge."
-  source src/solver_handlers/mod.rs
+  source rust/src/solver_handlers/mod.rs
     disposition migrate
-    baseline_lines 941
+    baseline_lines 651
     data_target "handler routing, response, and domain rules"
-    reason "This mixed dispatcher embeds specialized behavior and must be split before any primitive is promoted."
-  source src/solver_handlers/natural_language_tools.rs
+    reason "This mixed dispatcher embeds specialized behavior and must be split before any primitive is promoted. Re-measured 2026-09-25 for plan 16 L2g: the translate_source_tree solver family (read the named js or ts source, render the target or the named gap, write nothing) grew the landed file from 586 to 651 lines with the ledger unrefreshed."
+  source rust/src/solver_handlers/natural_language_tools.rs
     disposition migrate
-    baseline_lines 334
+    baseline_lines 378
     data_target "natural-language tool invocation rules"
     reason "Tool names, request cues, and argument policy belong in seed data."
-  source src/solver_handlers/numeric_list/codegen.rs
+  source rust/src/solver_handlers/numeric_list/codegen.rs
     disposition migrate
-    baseline_lines 521
+    baseline_lines 520
     data_target "numeric-list code-generation recipes"
     reason "Language-specific program templates are data executed by a generic recipe interpreter."
-  source src/solver_handlers/numeric_list/mod.rs
+  source rust/src/solver_handlers/numeric_list/mod.rs
     disposition migrate
-    baseline_lines 853
+    baseline_lines 855
     data_target "numeric-list operation rules"
     reason "List operation vocabulary, routing, and explanation are domain knowledge."
-  source src/solver_handlers/pattern_inference.rs
+  source rust/src/solver_handlers/pattern_inference.rs
     disposition migrate
-    baseline_lines 359
+    baseline_lines 346
     data_target "pattern inference rules and examples"
-    reason "Pattern families and explanatory examples belong in problem-solving data."
-  source src/solver_handlers/playwright_script.rs
+    reason "Pattern families and explanatory examples belong in problem-solving data. Re-measured 2026-09-20: plan 09 leaf 41 (12aa51b29) grew the seed-driven rule matching by fourteen lines with the ledger unrefreshed."
+  source rust/src/solver_handlers/policy_gates.rs
+    disposition migrate
+    baseline_lines 153
+    data_target "policy refusal and confirmation rules"
+    reason "Pre-existing gap: extracted from solver.rs by the plan 09 migration ratchet and never ledgered until this census re-ran the walk. Refusal and confirmation surfaces are policy data, not compiled dispatch."
+  source rust/src/solver_handlers/playwright_script.rs
     disposition migrate
     baseline_lines 140
     data_target "browser automation generation recipes"
     reason "Playwright task templates are data over a host browser surface."
-  source src/solver_handlers/procedure_rules.rs
+  source rust/src/solver_handlers/procedure_rules.rs
     disposition migrate
     baseline_lines 112
     data_target "procedure interpretation rules"
     reason "Procedure vocabulary and step-selection policy belong in seed data."
-  source src/solver_handlers/program_blueprint.rs
+  source rust/src/solver_handlers/program_blueprint.rs
     disposition migrate
     baseline_lines 98
     data_target "program blueprint recipes"
     reason "Blueprint selection is coding-domain policy interpreted by generic construction machinery."
-  source src/solver_handlers/program_synthesis.rs
+  source rust/src/solver_handlers/program_synthesis.rs
     disposition migrate
     baseline_lines 143
     data_target "coding-task discovery, structural meanings, and localized synthesis labels"
     reason "The handler now only orchestrates specification, discovery, composition, verification, and rendering; task bodies were removed and the baseline ratcheted from 531 lines."
-  source src/solver_handlers/research_table.rs
+  source rust/src/solver_handlers/research_table.rs
     disposition migrate
-    baseline_lines 485
+    baseline_lines 540
     data_target "research comparison workflow rules"
     reason "Research criteria, table policy, and rendering are problem-domain knowledge."
-  source src/solver_handlers/response_language_followup.rs
+  source rust/src/solver_handlers/response_language_followup.rs
     disposition migrate
     baseline_lines 122
     data_target "response-language follow-up rules"
     reason "Language-change cues and response policy belong in multilingual seed data."
-  source src/solver_handlers/self_awareness.rs
+  source rust/src/solver_handlers/self_awareness.rs
     disposition migrate
-    baseline_lines 550
+    baseline_lines 556
     data_target "self-knowledge facts and explanation rules"
     reason "Capability and architecture claims must remain auditable data rather than compiled assertions."
-  source src/solver_handlers/shell_command_transform.rs
+  source rust/src/solver_handlers/shell_command_transform.rs
     disposition migrate
     baseline_lines 269
     data_target "shell transformation recipes"
     reason "Command transformation policy and shell idioms are data over a process surface."
-  source src/solver_handlers/software_project.rs
+  source rust/src/solver_handlers/software_project.rs
     disposition migrate
-    baseline_lines 909
+    baseline_lines 929
     data_target "software-project planning recipes"
-    reason "Project structure, framework choices, and planning policy are coding-domain knowledge."
-  source src/solver_handlers/software_project_code.rs
+    reason "Project structure, framework choices, and planning policy are coding-domain knowledge. Re-measured 2026-09-22: the post-L1 routing fix grew the landed file from 912 to 929 lines with the ledger unrefreshed."
+  source rust/src/solver_handlers/software_project_code.rs
     disposition migrate
     baseline_lines 224
     data_target "software-project code recipes"
     reason "Generated project content belongs in executable data recipes."
-  source src/solver_handlers/software_project_followup.rs
+  source rust/src/solver_handlers/software_project_followup.rs
     disposition migrate
     baseline_lines 396
     data_target "software-project follow-up rules"
     reason "Follow-up state transitions and project vocabulary are domain policy."
-  source src/solver_handlers/task_decomposition.rs
+  source rust/src/solver_handlers/task_decomposition.rs
     disposition migrate
-    baseline_lines 243
+    baseline_lines 246
     data_target "task decomposition methods and examples"
     reason "Decomposition heuristics and examples are problem-solving metadata."
-  source src/solver_handlers/text_edit_ops.rs
+  source rust/src/solver_handlers/text_edit_ops.rs
     disposition migrate
     baseline_lines 328
     data_target "text-edit operation rules"
     reason "Edit request vocabulary and operation selection belong in seed data."
-  source src/solver_handlers/text_manipulation.rs
+  source rust/src/solver_handlers/text_manipulation.rs
     disposition migrate
-    baseline_lines 823
+    baseline_lines 833
     data_target "text transformation rules"
     reason "Transformation names, parsing policy, and rendering are domain knowledge."
-  source src/solver_handlers/user_intent.rs
+  source rust/src/solver_handlers/user_intent.rs
     disposition migrate
     baseline_lines 236
     data_target "user intent concepts and routing rules"
     reason "Intent classification is seed knowledge consumed by the meta algorithm."
-  source src/solver_handlers/web_requests.rs
+  source rust/src/solver_handlers/verifiable_task.rs
+    disposition promote
+    baseline_lines 795
+    core_component verifiable_task_interpreter
+    reason "Generic interpreter of seed-declared expectations: composes shared IR, executes it in the bounded workspace, and records observed checks without storing domain answers. The baseline tracks the re-measured 794 lines: the derive family that lowers seed expectations into ProgramIr candidates (flow signs, role offsets, unit conversion) grew past the early 750 estimate while staying seed-driven. Re-measured 2026-09-22 after the batch J clippy sweep (5e1cc2f3d) added one line."
+  source rust/src/solver_handlers/web_requests.rs
     disposition migrate
-    baseline_lines 992
+    baseline_lines 819
     data_target "web request workflow rules"
     reason "URL intent, provider policy, and response prose are data over a network surface."
-  source src/solver_handlers/web_requests/live_search.rs
+  source rust/src/solver_handlers/web_requests/live_search.rs
     disposition migrate
     baseline_lines 87
     data_target "live-search provider rules"
     reason "Search-provider selection and result policy belong in data over a network surface."
-  source src/solver_handlers/web_search_intent.rs
+  source rust/src/solver_handlers/web_requests/url_parse.rs
+    disposition promote
+    baseline_lines 136
+    core_component seed_driven_url_interpreter
+    reason "The module is generic structural machinery: URL syntax is parsed once and language-specific fetch/navigation evidence comes from role word forms in seed data."
+  source rust/src/solver_handlers/web_search_intent.rs
     disposition migrate
-    baseline_lines 872
+    baseline_lines 900
     data_target "web-search intent and query rules"
     reason "Search cues, query rewriting, and provider policy are domain knowledge."
-  source src/solver_handlers/world_state.rs
+  source rust/src/solver_handlers/world_state.rs
     disposition migrate
     baseline_lines 99
     data_target "world-state query rules"

@@ -4,19 +4,30 @@
 import { readdirSync, readFileSync } from "node:fs";
 import vm from "node:vm";
 
+// The worker bootstraps itself through web-root-relative `importScripts`
+// (seed inventory, seed loader, optional search bundle, generated module
+// list, then every module), so the harness loads the real entry file the
+// same way instead of concatenating the directory — the loading order is
+// the worker's own, wherever the entry file sits (issue #1138's ./js move).
 const root = new URL("..", import.meta.url);
-const workerDirectory = new URL("src/web/worker/", root);
-const workerSource = readdirSync(workerDirectory)
-  .filter((entry) => entry.endsWith(".js"))
-  .sort()
-  .map((entry) => readFileSync(new URL(entry, workerDirectory), "utf8"))
-  .join("\n");
+const webRoot = new URL("js/", root);
 
 const sandbox = {
   self: {},
   console,
   postMessage() {},
+  importScripts(...urls) {
+    for (const url of urls) {
+      const path = String(url).split("?")[0].replace(/^\//, "");
+      const source = readFileSync(new URL(path, webRoot), "utf8");
+      vm.runInContext(source, context, { filename: path });
+    }
+  },
   fetch: () => Promise.reject(new Error("offline")),
+  location: {
+    href: new URL("worker/formal_ai_worker.js", webRoot).href,
+    search: "",
+  },
   TextEncoder,
   TextDecoder,
   WebAssembly,
@@ -29,7 +40,11 @@ const sandbox = {
 sandbox.self = sandbox;
 sandbox.globalThis = sandbox;
 const context = vm.createContext(sandbox);
-vm.runInContext(workerSource, context, { filename: "formal-ai-worker.js" });
+vm.runInContext(
+  readFileSync(new URL("worker/formal_ai_worker.js", webRoot), "utf8"),
+  context,
+  { filename: "formal_ai_worker.js" },
+);
 
 const rawSeed = {};
 for (const entry of readdirSync(new URL("data/seed/", root), { withFileTypes: true })) {

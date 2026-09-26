@@ -15,8 +15,8 @@ The repository ships two independent bodies of production code:
 
 | Denominator | What it counts | How it is measured |
 | --- | --- | --- |
-| `rust` | The Rust workspace under `src/` | `cargo llvm-cov --all-features --lcov` |
-| `browser` | The browser JavaScript under `src/web/` | `node --test --experimental-test-coverage --test-reporter=lcov` |
+| `rust` | The Rust workspace under `rust/src/` | `cargo llvm-cov --all-features --lcov` |
+| `browser` | The browser JavaScript under `js/` | `node --test --experimental-test-coverage --test-reporter=lcov` |
 
 They are ratcheted separately and are never combined into one figure. A Rust
 line and a browser line are not the same unit of risk, and averaging them
@@ -26,30 +26,30 @@ while the shipped product got worse. Two honest numbers beat one dishonest one.
 
 ### How browser code is measured honestly
 
-The site's JavaScript is not instrumented as a bundle. `src/web/app.js`,
-`src/web/vendor.bundle.js`, `src/web/ocr.bundle.js` and
-`src/web/web-search-component.bundle.js` are build output; measuring minified
+The site's JavaScript is not instrumented as a bundle. `js/app.js`,
+`js/vendor.bundle.js`, `js/ocr.bundle.js` and
+`js/web-search-component.bundle.js` are build output; measuring minified
 output would report coverage of a file no human maintains, and would count
 vendored dependencies as project code. They are excluded from the denominator
 and their sources are measured instead.
 
-The rest of `src/web/` is measured as the browser sees it. The page scripts
+The rest of `js/` is measured as the browser sees it. The page scripts
 (`preferences.js`, `i18n.js`, `syntax-highlight.js`, `memory.js`,
 `seed_loader.js`, `site-chrome.js`, the per-page configs) and the 24-module
-worker mirror (`src/web/worker/formal_ai_worker_*.js`) are loaded into a
-`node:vm` sandbox by `tests/web/support/browser-runtime.mjs`. Passing each
+worker mirror (`js/worker/formal_ai_worker_*.js`) are loaded into a
+`node:vm` sandbox by `rust/tests/web/support/browser-runtime.mjs`. Passing each
 script's real absolute path as the `vm.Script` `filename` makes V8 attribute
 coverage to that repository path, so the LCOV report names the same files the
 browser downloads. The worker is booted through its real entry point,
-`src/web/formal_ai_worker.js`, with the canonical `data/seed/*.lino` corpus
+`js/worker/formal_ai_worker.js`, with the canonical `data/seed/*.lino` corpus
 served behind `fetch` — the same files the dev server mirrors into
-`src/web/seed/`. The answers those tests assert are therefore the answers the
+`js/seed/`. The answers those tests assert are therefore the answers the
 deployed site gives.
 
 ### The unmeasured-file inventory
 
 Excluding a file from the denominator is how a coverage number becomes a lie, so
-`src/web/` is checked for completeness. Every `.js`/`.jsx` file under it must be
+`js/` is checked for completeness. Every `.js`/`.jsx` file under it must be
 either measured or listed in `coverage/browser-unmeasured.txt` as a
 `path<TAB>reason` row. Modeled on `scripts/hardcoded-language-allowlist.txt`,
 the list is a ratchet in its own right — the gate fails when a file is neither

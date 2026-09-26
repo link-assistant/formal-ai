@@ -64,7 +64,7 @@ use walkdir::WalkDir;
 const MAX_RECORDS_PER_BUCKET: usize = 128;
 
 /// Path of the library constant this script enforces.
-const CACHE_CONSTANT_PATH: &str = "src/translation/cache.rs";
+const CACHE_CONSTANT_PATH: &str = "rust/src/translation/cache.rs";
 
 /// Buckets whose size is dictated by the total reference-closure gate rather
 /// than by a caching policy decision. Each entry states why it cannot simply be
@@ -85,7 +85,13 @@ const CLOSURE_DRIVEN_BUCKETS: &[ExemptBucket] = &[
 ];
 
 /// Directories scanned for references to cached records.
-const REFERENCE_ROOTS: &[&str] = &["data/seed", "data/cache", "data/overrides", "src"];
+const REFERENCE_ROOTS: &[&str] = &[
+    "data/seed",
+    "data/cache",
+    "data/overrides",
+    "rust/src",
+    "js/source-cache",
+];
 
 /// File extensions scanned for references.
 const REFERENCE_EXTENSIONS: &[&str] = &["lino", "rs", "json", "rq"];
@@ -538,7 +544,7 @@ mod tests {
             .and_then(Path::parent)
             .expect("script lives in <repo>/scripts");
         let source = fs::read_to_string(repository_root.join(CACHE_CONSTANT_PATH))
-            .expect("src/translation/cache.rs should be readable");
+            .expect("rust/src/translation/cache.rs should be readable");
 
         assert_eq!(library_cap(&source), Some(MAX_RECORDS_PER_BUCKET));
     }

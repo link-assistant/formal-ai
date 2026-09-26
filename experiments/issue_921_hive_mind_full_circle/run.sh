@@ -8,7 +8,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-BIN="${BIN:-${ROOT}/target/release/formal-ai}"
+BIN="${BIN:-${ROOT}/rust/target/release/formal-ai}"
 OUT="${1:-${OUT:-/tmp/formal-ai-issue-921-evidence}}"
 PORT="${PORT:-8921}"
 ISSUE_URL="https://github.com/link-assistant/formal-ai/issues/921"

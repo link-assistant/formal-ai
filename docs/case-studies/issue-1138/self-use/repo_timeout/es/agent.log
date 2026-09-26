@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.308Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.309Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.iMjUuflnz2",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.309Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.iMjUuflnz2",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.309Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.iMjUuflnz2",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.318Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.318Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.319Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.320Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.320Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.322Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.323Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.iMjUuflnz2/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.325Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 663,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.325Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.339Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 24,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:33:33.343Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.347Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.347Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.348Z",
+  "service": "session",
+  "id": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.iMjUuflnz2",
+  "title": "New session - 2026-09-16T03:33:33.348Z",
+  "time": {
+    "created": 1789529613348,
+    "updated": 1789529613348
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.348Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.348Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.348Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.349Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.349Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57b91bdbffeE39C8hVkPUzuwf/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.349Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57b91bdbffeE39C8hVkPUzuwf/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.351Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57b91bdbffeE39C8hVkPUzuwf/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.354Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.354Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.355Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.356Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.356Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.356Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.356Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.357Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.357Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.357Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.357Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.357Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.497Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.501Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.501Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.508Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.514Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.518Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:33.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:34.059Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529614059,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846e6e8001vdcXsZLTqVXBde",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846e4bc00194FidqeFdjuVvd",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:34.060Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:34.060Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529614060,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846e6ec001kps7u0jwFm7e13",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846e4bc00194FidqeFdjuVvd",
+    "type": "tool",
+    "callID": "call_4cfe85223b74ea83",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:34.060Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529614060,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846e6eb0010aClSycCbYYCZ2",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846e4bc00194FidqeFdjuVvd",
+    "type": "text",
+    "text": "Let me search the web for Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comp….",
+    "time": {
+      "start": 1789529614060,
+      "end": 1789529614060
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:34.061Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529614061,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846e6ec001kps7u0jwFm7e13",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846e4bc00194FidqeFdjuVvd",
+    "type": "tool",
+    "callID": "call_4cfe85223b74ea83",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto"
+      },
+      "time": {
+        "start": 1789529614060
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529616207,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846e6ec001kps7u0jwFm7e13",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846e4bc00194FidqeFdjuVvd",
+    "type": "tool",
+    "callID": "call_4cfe85223b74ea83",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto"
+      },
+      "output": "Title: Configuración de Vitest | Documentación Vitest 2\nURL: https://www.getbook.com/es/book/vitest-2/config/\nPublished: N/A\nAuthor: N/A\nHighlights:\n### testTimeout ​\n...\n- Type:`number`\n- Default:`5_000` en Node.js, `15_000` si `browser.enabled` es `true`\n- CLI:`--test-timeout=5000`, `--testTimeout=5000`\n...\nTiempo de espera predeterminado de una prueba en milisegundos\n\n---\n\nTitle: chore: Extend the default test duration deadline to 15 seconds · 06ecf49 · schemathesis/schemathesis\nURL: https://github.com/schemathesis/schemathesis/commit/06ecf49b40e27bc711250befe11de852673083a4\nPublished: 2021-05-23T11:21:26.000Z\nAuthor: Stranger6667\nHighlights:\n```diff\n@@ -13,6 +13,7 @@ Changelog\n - Use different exception classes for ``not_a_server_error`` and ``status_code_conformance`` checks. It improves the variance of found errors.\n - All network requests (not WSGI) now have the default timeout of 10 seconds. If the response is time-outing, Schemathesis will report it as a failure.\n   It also solves the case when the tested app hangs. `#1164`_\n...\n+- The default test duration deadline is extended to 15 seconds.\n \n `3.6.11`_ - 2021-05-20\n ----------------------\n...\n```diff\n@@ -11,7 +11,7 @@\n \n USER_AGENT = f\"schemathesis/{__version__}\"\n # Maximum test running time\n-DEFAULT_DEADLINE = 500  # pragma: no mutate\n+DEFAULT_DEADLINE = 15000  # pragma: no mutate\n DEFAULT_RESPONSE_TIMEOUT = 10000  # pragma: no mutate\n DEFAULT_STATEFUL_RECURSION_LIMIT = 5  # pragma: no mutate\n RECURSIVE_REFERENCE_ERROR_MESSAGE = (\n...\n```diff\n@@ -605,9 +605,9 @@ def test_connection_timeout(cli, server, schema_url, workers):\n @pytest.mark.operations(\"success\", \"slow\")\n @pytest.mark.parametrize(\"workers\", (1, 2))\n def test_default_hypothesis_settings(cli, cli_args, workers):\n-    # When there is a slow operation and if it is faster than 500ms\n+    # When there is a slow operation and if it is faster than 15s\n     result = cli.run(*cli_args, f\"--workers={workers}\")\n-    # Then the tests should pass, because of default 500ms deadline\n+    # Then the tests should pass, because of default 15s deadline\n     assert result.exit_code == ExitCode.OK, result.stdout\n     lines = result.stdout.split(\"\\n\")\n     if workers == 1:\n...\n### test/test_pytest.py\n...\n```diff\n@@ -125,12 +125,12 @@ def test_default_hypothesis_deadline(testdir):\n         f\"\"\"\n @schema.parametrize()\n def test_a(case):\n-    assert settings().deadline.microseconds == {DEFAULT_DEADLINE} * 1000\n+    assert settings().deadline.total_seconds() == {DEFAULT_DEADLINE} / 1000\n \n @schema.parametrize()\n @settings(max_examples=5)\n def test_b(case):\n-    assert settings().deadline.microseconds == {DEFAULT_DEADLINE} * 1000\n+    assert settings().deadline.total_seconds() == {DEFAULT_DEADLINE} / 1000\n \n @schema.parametrize()\n @settings(max_examples=5, deadline=100)\n\n---\n\nTitle: javascript - ¿Cuál es la mejor manera de establecer automáticamente el tiempo de espera de jest al depurar pruebas?\nURL: https://es.javascript-typescript.com/?p=17804\nPublished: N/A\nAuthor: N/A\nHighlights:\ndepurador\n...\nrecorrer las pruebas paso\n...\nMe gustaría configurar mi proyecto\n...\nde las pruebas\n...\njson para cambiar\n...\nSi se utiliza `create-react-app`, el `setupFilesAfterEnv` está configurado en `src\\setupTests.ts`.\n...\nEste es el punto de entrada antes de que se ejecuten/depuren las pruebas y si puedes detectar que estás en un modo DEBUG, entonces puedes establecer un nuevo tiempo de espera.\n...\n```\nif (process.env.DEBUG === 'jest') {\n  jest.setTimeout(5 * 60 * 1000);\n}\n\n```\n...\nEn VS Code, puedes agregar la configuración de `launch.json` como se documenta con `\"DEBUG\": \"jest\"` añadido al `env`.\n...\n```\n{\n  \"name\": \"Debug CRA Tests\",\n  \"type\": \"node\",\n  \"request\": \"launch\",\n  \"runtimeExecutable\": \"${workspaceRoot}/node_modules/.bin/react-app-rewired\",\n  \"args\": [\"test\", \"--runInBand\", \"--no-cache\", \"--watchAll=false\"],\n  \"cwd\": \"${workspaceRoot}\",\n  \"protocol\": \"inspector\",\n  \"console\": \"integratedTerminal\",\n  \"internalConsoleOptions\": \"neverOpen\",\n  \"env\": {\n    \"CI\": \"true\",\n    \"DEBUG\": \"jest\"\n  },\n  \"disableOptimisticBPs\": true\n}\n...\nSi no quieres modificar el `launch.json`, también podrías detectar que estás en modo de depuración buscando la variable de entorno `VSCODE_INSPECTOR_OPTIONS`.\n...\n```\n  if (process.env.VSCODE_INSPECTOR_OPTIONS) {\n    jest.setTimeout(60 * 1000 * 5); // 5 minutes\n  }\n\n```\n...\nNota: Esto solo funciona para depuración en VS Code. Si su equipo está usando una combinación de editores, establecer una bandera de depuración más genérica es la solución correcta.\n\n---\n\nTitle: tiny-test-fw: Increase default expect timeout to 10 seconds · 6bd58beac5 - esp-idf - brunner.ninja Code\nURL: https://code.brunner.ninja/espressif/esp-idf/commit/6bd58beac507e1bb288dffe4ec0adb11d7e57a69\nPublished: N/A\nAuthor: espressif\nHighlights:\ntiny-test-fw: Increase default expect timeout to 10 seconds · 6bd58beac5 - esp-idf - brunner.ninja Code\n...\n### tiny-test-fw: Increase default expect timeout to 10 seconds\n...\n| `@@ -259,7 +259,7 @@ class BaseDUT(object):` |\n| --- |\n| ` :param kwargs: extra args for DUT to create ports\n...\n| ` \"\"\"\n` |\n| ` DEFAULT_EXPECT_TIMEOUT = 5\n...\n` |\n| ` DEFAULT_EXPECT_TIMEOUT = 10\n` |\n| ` MAX_EXPECT_FAILURES_TO_SAVED = 10\n` |\n| ` LOG_THREAD = _LogThread()\n\n---\n\nTitle: Interfaz de Línea de Comandos - Guía | Documentación Vitest 0\nURL: https://www.getbook.com/es/book/vitest-0/guide/cli\nPublished: N/A\nAuthor: N/A\nHighlights:\nVitest en el directorio actual. Entrará automáticamente en modo de observación en\n...\nentorno de desarrollo y en modo de ejecución en CI.\n...\n| Opciones |\n| --- |\n| `-v, --version` | Muestra el número de versión. |\n| `-r, --root ` | Define el directorio raíz del proyecto. |\n| `-c, --config ` | Ruta al archivo de configuración. |\n| `-u, --update` | Actualiza las instantáneas (snapshots). |\n| `-w, --watch` | Activa el modo de observación inteligente e instantáneo. |\n| `-t, --testNamePattern ` | Ejecuta las pruebas cuyos nombres completos coincidan con el patrón especificado. |\n| `--dir ` | Directorio base para buscar los archivos de prueba. |\n...\n`--run` | Desactiva el modo de observación. |\n...\n| `--mode` | Anula el modo de Vite (por defecto:`test`). |\n...\n| `--mode ` | Anula el modo de Vite (por defecto:`test`). |\n...\n| `--browser [options]` | Ejecuta las pruebas en el navegador(por defecto:`false`). |\n...\n| `--environment ` | Entorno del ejecutor (Runner environment) (por defecto:`node`). |\n...\n]` | Ejec\n...\n: false).\n...\nEjecuta las pruebas solo en los archivos modificados. Si no se proporciona ningún valor, ejecutará las pruebas contra los cambios no confirmados (incluidos los cambios preparados y no preparados).\n\n---\n\nTitle: wait.rs - source\nURL: https://docs.rs/aprender-test-lib/latest/src/jugar_probar/wait.rs.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n21/// Default timeout for wait operations (30 seconds)\n22pub const DEFAULT_WAIT_TIMEOUT_MS: u64 = 30_000;\n...\n56\n...\n57    #[must\n...\n58    pub const\n...\n_timeout_ms(&self) -> u64 {\n...\n59        match self {\n...\n60            Self::\n...\n61            Self::\n...\n62            Self::\n...\nidle can take\n...\n63\n...\n84#[derive(Debug, Clone)]\n...\n85pub struct WaitOptions {\n86    ///\n...\n87\n...\n_ms: u6\n...\n94impl Default for WaitOptions {\n95    fn default() -> Self {\n96        Self {\n97            timeout_ms: DEFAULT_WAIT_TIMEOUT_MS,\n98            poll_interval_ms: DEFAULT_POLL_INTERVAL_MS,\n99            wait_until: LoadState::Load,\n100        }\n101    }\n\n---\n\nTitle: donmatthiuz/Proyecto_TiempoEspera\nURL: https://github.com/cor22982/Proyecto_TiempoEspera\nPublished: 2024-02-13T21:04:25.000Z\nAuthor: N/A\nHighlights:\n[![Run Deploy Netlify](https://github.com/cor22982/Proyecto_TiempoEspera/actions/workflows/deploy_demon.yml/badge.svg)](https://github.com/cor22982/Proyecto_TiempoEspera/actions/workflows/deploy_demon.yml) [![Run Frontend Test](https://github.com/cor22982/Proyecto_TiempoEspera/actions/workflows/test_frontend.yml/badge.svg)](https://github.com/cor22982/Proyecto_TiempoEspera/actions/workflows/test_frontend.yml) [![Run Backend Test](https://github.com/cor22982/Proyecto_TiempoEspera/actions/workflows/test_backend.yml/badge.svg)](https://github.com/cor22982/Proyecto_TiempoEspera/actions/workflows/test_backend.yml) [![Run Test Frontend and Backend](https://github.com/cor22982/Proyecto_TiempoEspera/actions/workflows/test.yml/badge.svg)](https://github.com/cor22982/Proyecto_TiempoEspera/actions/workflows/test.yml)\n...\nEn el contexto de la vida diaria, la asistencia a instituciones públicas a menudo se ve obstaculizada por la incertidumbre en cuanto al tiempo de espera. Este proyecto aborda el desafío común de la falta de información sobre la duración de las colas, proporcionando a los ciudadanos una herramienta para gestionar eficientemente su tiempo y reducir el estrés asociado con la espera.\n...\n1. Implementar estrategias efectivas para informar a los usuarios sobre los tiempos de espera en instituciones públicas.\n2. Ayudar a las personas a determinar el mejor momento para asistir a ciertos lugares y planificar eficientemente su tiempo.\n...\nInvestigaremos la duración de las esperas en instituciones públicas, cómo las personas calculan el tiempo de espera y por qué se producen demoras. Nos centraremos en los tiempos de fila en Guatemala y los lugares donde se experimenta mayor tiempo de espera.\n...\nUn sistema que utiliza el análisis del comportamiento previo para identificar automáticamente el momento y lugar más conveniente para realizar trámites. Facilita la comunicación entre quienes ya están en la institución y quienes planean visitarla, ofreciendo una lista de documentos necesarios y recomendaciones sobre el momento adecuado.\n...\nInstituciones Públicas\n...\nUn sistema que genera comprobantes con detalles cruciales como la hora y el lugar del trámite. Estos comprobantes actúan como \"permisos\" que permiten a los empleados gestionar plazos justos con sus superiores, considerando la incertidumbre temporal. Facilita una gestión más efectiva y equitativa del tiempo laboral.\n\n---\n\nTitle: Pruebas de conectores\nURL: https://support.ptc.com/help/thingworx/flow/r9/es/flow/flow/ConnectorDevelopmentSDK/TestingConnectors.html\nPublished: N/A\nAuthor: N/A\nHighlights:\nEl tiempo de espera de la operación. La opción --timeout permite especificar un tiempo de espera en milisegundos (30.000 ms por defecto). Esta opción garantiza que el código finalizará dentro del tiempo especificado y que capturará los errores, como la omisión de invocación de llamadas.\n...\n[por defecto: 30000]\n...\nEl tiempo de espera de la operación. La opción --timeout permite especificar un tiempo de espera en milisegundos (30.000 ms por defecto). Esta opción garantiza que el código finalizará dentro del tiempo especificado y que capturará los errores, como la omisión de invocación de llamadas.\n...\n[por defecto: 30000]\n...\nEl tiempo de espera de la operación. La opción --timeout permite especificar un tiempo de espera en milisegundos (30.000 ms por defecto). Esta opción garantiza que el código finalizará dentro del tiempo especificado y que capturará los errores, como la omisión de invocación de llamadas\n...\nEl tiempo de espera de la operación. La opción --timeout permite especificar un tiempo de espera en milisegundos (30.000 ms por defecto). Esta opción garantiza que el código finalizará dentro del tiempo especificado y que capturará los errores, como la omisión de invocación de llamadas.\n...\nEl tiempo de espera de la operación. La opción --timeout permite especificar un tiempo de espera en milisegundos (30.000 ms por defecto). Esta opción garantiza que el código finalizará dentro del tiempo especificado y que capturará los errores, como la omisión de invocación de llamadas.",
+      "title": "Web search: Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto",
+      "metadata": {},
+      "time": {
+        "start": 1789529614060,
+        "end": 1789529616204
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.209Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529616209,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846ef50001wU6fOs87pGeCIS",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846e4bc00194FidqeFdjuVvd",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8684,
+      "output": 396,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9080,
+      "headroom": 29776,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.211Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.211Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.211Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.211Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.211Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.211Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.211Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.212Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.214Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 9080,
+  "providerTokens": 9080,
+  "estimatedInputTokens": 3119,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8684,
+    "cacheRead": 0,
+    "output": 396
+  },
+  "overflow": false,
+  "headroom": 29776,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.215Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.215Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.217Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.218Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.982Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529616982,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f255001WwRJ9dkIYtvvRg",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846ef560013wg2eDFCeZvAuE",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.982Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.982Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529616982,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f2560027MQMyMwy0vXZmW",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846ef560013wg2eDFCeZvAuE",
+    "type": "tool",
+    "callID": "call_0f53b7a38d466a61",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529616983,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f256001Foohv90ZqM3N6N",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846ef560013wg2eDFCeZvAuE",
+    "type": "text",
+    "text": "Let me open https://www.getbook.com/es/book/vitest-2/config/ and read what it says.",
+    "time": {
+      "start": 1789529616983,
+      "end": 1789529616983
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:36.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529616983,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f2560027MQMyMwy0vXZmW",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846ef560013wg2eDFCeZvAuE",
+    "type": "tool",
+    "callID": "call_0f53b7a38d466a61",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.getbook.com/es/book/vitest-2/config/"
+      },
+      "time": {
+        "start": 1789529616983
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.683Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529617684,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f2560027MQMyMwy0vXZmW",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846ef560013wg2eDFCeZvAuE",
+    "type": "tool",
+    "callID": "call_0f53b7a38d466a61",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.getbook.com/es/book/vitest-2/config/"
+      },
+      "output": "Configuración de Vitest | Documentación Vitest 2\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    Skip to contentVitest 2BuscarK Main Navigation GuíaAPIConfiguraciónModo NavegadorAvanzado2.1.93.2.02.1.91.6.10.34.6EspañolEnglish简体中文繁體中文FrançaisРусскийPortuguês – BrasilDeutsch日本語한국어ItalianoPolskiTürkçečeštinamagyarEspañolEnglish简体中文繁體中文FrançaisРусскийPortuguês – BrasilDeutsch日本語한국어ItalianoPolskiTürkçečeštinamagyarAparienciaMenúVolver arriba Sidebar Navigation Administración del archivo de configuración de VitestConfiguración de VitestEn esta páginaConfiguración de Vitest ​Para crear un archivo de configuración de Vitest, consulta la guía. Asegúrate de comprender cómo se resuelve la configuración de Vitest antes de continuar.WARNINGTodas las opciones enumeradas aquí se encuentran dentro de la propiedad test en la configuración:tsexport default defineConfig({\n  test: {\n    exclude: [],\n  },\n});TIPAdemás de las siguientes opciones, también puedes usar cualquier opción de configuración de Vite. Por ejemplo, define para definir variables globales, o resolve.alias para definir alias.Todas las opciones de configuración que no son compatibles dentro de un proyecto de espacio de trabajo tienen el símbolo * junto a ellas.include ​Tipo: string[]Por defecto: [&#39;**/*.{test,spec}.?(c|m)[jt]s?(x)&#39;]CLI: vitest [...include], vitest **/*.test.jsLista de patrones glob que coinciden con tus archivos de prueba.NOTAAl usar cobertura, Vitest agrega automáticamente los patrones include de los archivos de prueba a los patrones exclude predeterminados de la cobertura. Consulte coverage.exclude.exclude ​Tipo: string[]Por defecto: [&#39;**/node_modules/**&#39;, &#39;**/dist/**&#39;, &#39;**/cypress/**&#39;, &#39;**/.{idea,git,cache,output,temp}/**&#39;, &#39;**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*&#39;]CLI: vitest --exclude &quot;**/excluded-file&quot;Lista de patrones glob que se deben excluir de tus archivos de prueba.WARNINGEsta opción no afecta a la cobertura. Si necesitas eliminar ciertos archivos del informe de cobertura, usa coverage.exclude.Esta es la única opción que no anula tu configuración si la proporcionas con un flag de la CLI. Todos los patrones glob agregados a través del flag --exclude se añadirán a la opción exclude de la configuración.includeSource ​Tipo: string[]Por defecto: []Incluye patrones glob para archivos de prueba en el código fuente.Cuando se define, Vitest ejecutará todos los archivos que coincidan con import.meta.vitest dentro de ellos.server ​Tipo: { sourcemap?, deps?, ... }Opciones del servidor Vite-Node.server.sourcemap ​Tipo: &#39;inline&#39; | booleanPor defecto: &#39;inline&#39;Inyecta el mapa de origen en línea en los módulos.server.debug ​Tipo: { dumpModules?, loadDumppedModules? }Opciones del depurador de Vite-Node.server.debug.dumpModules ​Tipo: boolean | stringGuarda el módulo transformado en el sistema de archivos. Pasar una cadena lo guardará en la ruta especificada.server.debug.loadDumppedModules ​Tipo: booleanCarga el módulo guardado desde el sistema de archivos si existe. Útil para depurar modificando el resultado guardado en el sistema de archivos.server.deps ​Tipo: { external?, inline?, ... }Gestión de la resolución de dependencias.server.deps.external ​Tipo: (string | RegExp)[]Por defecto: [/\\/node_modules\\//]Externalizar significa que Vite pasará el paquete directamente a Node. Las dependencias externalizadas no se procesarán con los transformadores y resolutores de Vite, por lo que no admiten HMR al recargar. Por defecto, todos los paquetes dentro de node_modules están externalizados.Estas opciones aceptan nombres de paquetes tal como aparecen en node_modules o como se especifican en deps.moduleDirectories. Por ejemplo, el paquete @company/some-name ubicado dentro de packages/some-name debe especificarse como some-name, y packages debe incluirse en deps.moduleDirectories. En esencia, Vitest siempre comprueba la ruta del archivo, no el nombre del paquete.Si se usa una expresión regular, Vitest la aplica a la ruta del archivo, no al nombre del paquete.server.deps.inline ​Tipo: (string | RegExp)[] | truePor defecto: []Vite incluirá los módulos. Esto podría ser útil para manejar paquetes que envían archivos .js en formato ESM (que Node no puede manejar).Si es true, todas las dependencias se incluirán. Todas las dependencias especificadas en ssr.noExternal se incluirán por defecto.server.deps.fallbackCJS ​Tipo booleanPor defecto: falseCuando una dependencia es un paquete ESM válido, intenta determinar la versión CJS basándose en la ruta. Esto puede ser útil si una dependencia tiene un archivo ESM incorrecto.Esto podría causar una inconsistencia si un paquete tiene una lógica diferente en los modos ESM y CJS.server.deps.cacheDir ​Tipo stringPor defecto: &#39;node_modules/.vite&#39;Directorio para guardar archivos de caché.deps ​Tipo: { optimizer?, ... }Gestión de la resolución de dependencias.deps.optimizer ​Tipo: { ssr?, web? }Ver también: Opciones de optimización de dependenciasActiva la optimización de dependencias. Si tienes muchas pruebas, esto podría mejorar su rendimiento.Cuando Vitest encuentra una biblioteca externa listada en include, la agrupará en un único archivo usando esbuild y la importará como un módulo completo. Esto es beneficioso por varias razones:Importar paquetes con un gran número de importaciones es costoso. Al agruparlos en un archivo, podemos ahorrar mucho tiempo.Importar bibliotecas de UI es costoso porque no están diseñadas para ejecutarse dentro de Node.js.Tu configuración de alias ahora se aplica a los paquetes agrupados.El código de tus pruebas se ejecuta de forma más similar a como se ejecuta en el navegador.Ten en cuenta que solo los paquetes en la opción deps.optimizer?.[mode].include se agrupan (algunos plugins completan esto automáticamente, como Svelte). Puedes encontrar más información sobre las opciones disponibles en la documentación de Vite (Vitest no admite las opciones disable y noDiscovery). Por defecto, Vitest usa optimizer.web para los entornos jsdom y happy-dom, y optimizer.ssr para los entornos node y edge, pero es configurable mediante transformMode.Estas opciones también heredan tu configuración de optimizeDeps (para web, Vitest extenderá optimizeDeps, para ssr - ssr.optimizeDeps). Si redefines la opción include/exclude en deps.optimizer, extenderá tu optimizeDeps al ejecutar las pruebas. Vitest elimina automáticamente las mismas opciones de include, si están listadas en exclude.TIPNo podrás editar tu código de node_modules para la depuración, ya que el código se encuentra en tu directorio cacheDir o test.cache.dir. Si quieres depurar con sentencias console.log, edítalo directamente o fuerza la reagrupación con la opción deps.optimizer?.[mode].force.deps.optimizer.{mode}.enabled ​Tipo: booleanPor defecto: falseActiva la optimización de dependencias.deps.web ​Tipo: { transformAssets?, ... }Opciones que se aplican a los archivos externos cuando el modo de transformación se establece en web. Por defecto, jsdom y happy-dom usan el modo web, mientras que los entornos node y edge usan el modo de transformación ssr, por lo que estas opciones no afectarán a los archivos dentro de esos entornos.Por lo general, los archivos dentro de node_modules se externalizan, pero estas opciones también afectan a los archivos en server.deps.external.deps.web.transformAssets ​Tipo: booleanPor defecto: trueDetermina si Vitest debe procesar los archivos de recursos (como .png, .svg, .jpg, etc.) y resolverlos como lo hace Vite en el navegador.Este módulo tendrá una exportación por defecto que será la ruta al recurso, a menos que se especifique una consulta.WARNINGPor el momento, esta opción solo funciona con los pools vmThreads y vmForks.deps.web.transformCss ​Tipo: booleanPor defecto: trueDetermina si Vitest debe procesar los archivos CSS (como .css, .scss, .sass, etc.) y resolverlos como lo hace Vite en el navegador.Si los archivos CSS están desactivados mediante la opción css, esta opción simplemente evitará que se muestren los errores ERR_UNKNOWN_FILE_EXTENSION.WARNINGPor el momento, esta opción solo funciona con los pools vmThreads y vmForks.deps.web.transformGlobPattern ​Tipo: RegExp | RegExp[]Por defecto: []Patrón de expresión regular para coincidir con los archivos externos que deben transformarse.Por defecto, los archivos dentro de node_modules se externalizan y no se transforman, a menos que sea CSS o un recurso, y la opción correspondiente no esté deshabilitada.WARNINGPor el momento, esta opción solo funciona con los pools vmThreads y vmForks.deps.interopDefault ​Tipo: booleanPor defecto: trueInterpreta la exportación por defecto de los módulos CJS como exportaciones con nombre. Algunas dependencias solo incluyen módulos CJS y no utilizan exportaciones con nombre que Node.js puede analizar estáticamente cuando se importa un paquete utilizando la sintaxis import en lugar de require. Al importar tales dependencias en el entorno Node usando exportaciones con nombre, verás este error:import { read } from &#39;fs-jetpack&#39;;\n         ^^^^\nSyntaxError: Named export &#39;read&#39; not found. The requested module &#39;fs-jetpack&#39; is a CommonJS module, which may not support all module.exports as named exports.\nCommonJS modules can always be imported via the default export.Vitest no realiza análisis estático y no puede detectar el error antes de ejecutar el código, por lo que es probable que veas este error al ejecutar las pruebas si esta función está desactivada:TypeError: createAsyncThunk is not a function\nTypeError: default is not a functionPor defecto, Vitest asume que estás utilizando un bundler para evitar este problema y no mostrará el error, pero puedes desactivar este comportamiento manualmente si tu código no se procesa.deps.moduleDirectories ​Tipo: string[]Por defecto: [&#39;node_modules&#39;]Lista de directorios que deben tratarse como directorios de módulos. Esta opción de configuración afecta al comportamiento de vi.mock: cuando no se proporciona una función factory y la ruta del módulo que estás simulando coincide con uno de los valores de moduleDirectories, Vitest intentará resolver la simulación buscando una carpeta __mocks__ en la raíz del proyecto.Esta opción también afectará si un archivo debe tratarse como un módulo al externalizar dependencias. Por defecto, Vitest importa módulos externos con Node.js nativo omitiendo el paso de transformación de Vite.Definir esta opción sobrescribirá el valor predeterminado. Si quieres seguir buscando paquetes en node_modules, inclúyelo junto con las demás opciones:tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    deps: {\n      moduleDirectories: [&#39;node_modules&#39;, path.resolve(&#39;../../packages&#39;)],\n    },\n  },\n});runner ​Tipo: VitestRunnerConstructorPor defecto: node, al ejecutar pruebas, o benchmark, al ejecutar benchmarksRuta a un runner de pruebas personalizado. Esta es una característica avanzada y se recomienda usarla con runners de bibliotecas personalizadas. Puedes leer más sobre esto en la documentación.benchmark ​Tipo: { include?, exclude?, ... }Opciones que se utilizan al ejecutar vitest bench.benchmark.include ​Tipo: string[]Por defecto: [&#39;**/*.{bench,benchmark}.?(c|m)[jt]s?(x)&#39;]Patrones glob para incluir archivos de prueba de benchmarks.benchmark.exclude ​Tipo: string[]Por defecto: [&#39;node_modules&#39;, &#39;dist&#39;, &#39;.idea&#39;, &#39;.git&#39;, &#39;.cache&#39;]Patrones glob para excluir archivos de prueba de benchmarks.benchmark.includeSource ​Tipo: string[]Por defecto: []Incluye patrones glob para archivos de prueba de benchmark en el código fuente. Esta opción es similar a includeSource.Cuando se define, Vitest ejecutará todos los archivos que coincidan con import.meta.vitest dentro de ellos.benchmark.reporters ​Tipo: Arrayable&lt;BenchmarkBuiltinReporters | Reporter&gt;Por defecto: &#39;default&#39;Reporter personalizado para la salida. Puede contener uno o más nombres de informes integrados, instancias de reporters y/o rutas a reporters personalizados.benchmark.outputFile ​Obsoleto en favor de benchmark.outputJson.benchmark.outputJson ​Tipo: string | undefinedPor defecto: undefinedUna ruta de archivo para almacenar el resultado del benchmark, que se podrá utilizar más adelante con la opción --compare.Por ejemplo:sh# guarda el resultado de la rama principal\ngit checkout main\nvitest bench --outputJson main.json\n\n# cambia una rama y compara con la principal\ngit checkout feature\nvitest bench --compare main.jsonbenchmark.compare ​Tipo: string | undefinedPor defecto: undefinedUna ruta de archivo a un resultado de benchmark anterior para comparar con las ejecuciones actuales.alias ​Tipo: Record&lt;string, string&gt; | Array&lt;{ find: string | RegExp, replacement: string, customResolver?: ResolverFunction | ResolverObject }&gt;Define alias personalizados para su uso dentro de las pruebas. Se fusionarán con los alias de resolve.alias.WARNINGVitest utiliza primitivas Vite SSR para ejecutar las pruebas, lo que implica ciertas limitaciones.Los alias solo afectan a los módulos importados directamente con la palabra clave import desde un módulo incluido (todo el código fuente se incluye por defecto).Vitest no admite alias de llamadas require.Si estás definiendo un alias para una dependencia externa (por ejemplo, react -&gt; preact), es posible que quieras definir el alias directamente en los paquetes de node_modules para que funcione también con las dependencias externalizadas. Tanto Yarn como pnpm admiten alias a través del prefijo npm:.globals ​Tipo: booleanPor defecto: falseCLI: --globals, --globals=falsePor defecto, vitest no proporciona APIs globales para fomentar la claridad. Si prefieres utilizar las APIs de forma global como en Jest, puedes pasar la opción --globals a la CLI o añadir globals: true en la configuración.ts// vitest.config.ts\nimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    globals: true,\n  },\n});Para que TypeScript reconozca las APIs globales, añade vitest/globals al campo types en tu tsconfig.json.json// tsconfig.json\n{\n  &quot;compilerOptions&quot;: {\n    &quot;types&quot;: [&quot;vitest/globals&quot;]\n  }\n}Si ya estás utilizando unplugin-auto-import en tu proyecto, puedes usarlo directamente para importar automáticamente estas APIs.ts// vitest.config.ts\nimport { defineConfig } from &#39;vitest/config&#39;;\nimport AutoImport from &#39;unplugin-auto-import/vite&#39;;\n\nexport default defineConfig({\n  plugins: [\n    AutoImport({\n      imports: [&#39;vitest&#39;],\n      dts: true, // genera el archivo de declaración TypeScript\n    }),\n  ],\n});environment ​Tipo: &#39;node&#39; | &#39;jsdom&#39; | &#39;happy-dom&#39; | &#39;edge-runtime&#39; | stringValor predeterminado: &#39;node&#39;CLI: --environment=&lt;env&gt;Define el entorno que se utilizará para las pruebas. El entorno predeterminado en Vitest es Node.js. Si estás desarrollando una aplicación web, puedes usar un entorno de navegador como jsdom o happy-dom. Para funciones edge, puedes usar el entorno edge-runtime.TIPTambién puedes usar el Modo Navegador para ejecutar pruebas de integración o unitarias en el navegador sin necesidad de simular el entorno.Puedes especificar un entorno diferente para todas las pruebas de un archivo agregando un bloque de comentarios @vitest-environment en la parte superior del archivo:Estilo Docblock:js/**\n * @vitest-environment jsdom\n */\n\ntest(&#39;use jsdom in this test file&#39;, () =&gt; {\n  const element = document.createElement(&#39;div&#39;);\n  expect(element).not.toBeNull();\n});Estilo de comentario:js// @vitest-environment happy-dom\n\ntest(&#39;use happy-dom in this test file&#39;, () =&gt; {\n  const element = document.createElement(&#39;div&#39;);\n  expect(element).not.toBeNull();\n});Para compatibilidad con Jest, también se reconoce @jest-environment:js/**\n * @jest-environment jsdom\n */\n\ntest(&#39;use jsdom in this test file&#39;, () =&gt; {\n  const element = document.createElement(&#39;div&#39;);\n  expect(element).not.toBeNull();\n});Si ejecutas Vitest con la opción --isolate=false, las pruebas se ejecutarán en este orden: node, jsdom, happy-dom, edge-runtime, custom environments (entornos personalizados). Esto significa que las pruebas con el mismo entorno se agrupan y se ejecutan secuencialmente.A partir de la versión 0.23.0, también puedes definir un entorno personalizado. Cuando se utiliza un entorno no predefinido, Vitest intentará cargar el paquete vitest-environment-${name}. Este paquete debe exportar un objeto con la estructura de Environment:tsimport type { Environment } from &#39;vitest&#39;;\n\nexport default &lt;Environment&gt;{\n  name: &#39;custom&#39;,\n  transformMode: &#39;ssr&#39;,\n  setup() {\n    // configuración personalizada\n    return {\n      teardown() {\n        // se llama después de que se hayan ejecutado todas las pruebas con este entorno\n      },\n    };\n  },\n};Vitest también expone builtinEnvironments a través del punto de entrada vitest/environments, en caso de que solo quieras extenderlo. Puedes leer más sobre la extensión de entornos en nuestra guía.TIPEl entorno jsdom expone la variable global jsdom igual a la instancia actual de JSDOM. Si quieres que TypeScript lo reconozca, puedes añadir vitest/jsdom a tu tsconfig.json cuando uses este entorno:json{\n  &quot;compilerOptions&quot;: {\n    &quot;types&quot;: [&quot;vitest/jsdom&quot;]\n  }\n}environmentOptions ​Tipo: Record&lt;&#39;jsdom&#39; | string, unknown&gt;Valor predeterminado: {}Estas opciones se pasan al método setup del environment actual. De forma predeterminada, solo puedes configurar las opciones de JSDOM si lo estás utilizando como tu entorno de prueba.environmentMatchGlobs ​Tipo: [string, EnvironmentName][]Valor predeterminado: []Asigna automáticamente el entorno según patrones glob. Se utilizará la primera coincidencia.Por ejemplo:tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    environmentMatchGlobs: [\n      // todas las pruebas en tests/dom se ejecutarán en jsdom\n      [&#39;tests/dom/**&#39;, &#39;jsdom&#39;],\n      // todas las pruebas en tests/ con .edge.test.ts se ejecutarán en edge-runtime\n      [&#39;**/*.edge.test.ts&#39;, &#39;edge-runtime&#39;],\n      // ...\n    ],\n  },\n});poolMatchGlobs ​Tipo: [string, &#39;threads&#39; | &#39;forks&#39; | &#39;vmThreads&#39; | &#39;vmForks&#39; | &#39;typescript&#39;][]Valor predeterminado: []Asigna automáticamente el grupo (pool) en el que se ejecutarán las pruebas según patrones glob. Se utilizará la primera coincidencia.Por ejemplo:tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    poolMatchGlobs: [\n      // todas las pruebas en el directorio &quot;worker-specific&quot; se ejecutarán dentro de un worker como si habilitara `--pool=threads` para ellas,\n      [&#39;**/tests/worker-specific/**&#39;, &#39;threads&#39;],\n      // ejecuta todas las pruebas en el directorio &quot;browser&quot; en un navegador real\n      [&#39;**/tests/browser/**&#39;, &#39;browser&#39;],\n      // todas las demás pruebas se ejecutarán según las opciones &quot;browser.enabled&quot; y &quot;threads&quot;, si no especificaste otros globs\n      // ...\n    ],\n  },\n});update* ​Tipo: booleanValor predeterminado: falseCLI: -u, --update, --update=falseActualiza los archivos de instantáneas (snapshots). Esto actualizará todas las instantáneas modificadas y eliminará las obsoletas.watch* ​Tipo: booleanValor predeterminado: !process.env.CICLI: -w, --watch, --watch=falseActiva el modo de observación (watch mode).root ​Tipo: stringCLI: -r &lt;ruta&gt;, --root=&lt;ruta&gt;Directorio raíz del proyecto.dir ​Tipo: stringCLI: --dir=&lt;path&gt;Por defecto: igual que rootDirectorio base para escanear archivos de prueba. Puedes especificar esta opción para acelerar el descubrimiento de pruebas si tu raíz cubre todo el proyecto.reporters* ​Tipo: Reporter | Reporter[]Valor predeterminado: &#39;default&#39;CLI: --reporter=&lt;nombre&gt;, --reporter=&lt;nombre1&gt; --reporter=&lt;nombre2&gt;Reportes personalizados para la salida. Los reporters pueden ser una instancia de Reporter, una cadena para seleccionar reporters integrados o una ruta a una implementación personalizada (por ejemplo, &#39;./path/to/reporter.ts&#39;, &#39;@scope/reporter&#39;).outputFile* ​Tipo: string | Record&lt;string, string&gt;CLI: --outputFile=&lt;ruta&gt;, --outputFile.json=./rutaGuarda los resultados de las pruebas en un archivo cuando se especifica la opción --reporter=json, --reporter=html o --reporter=junit. Al proporcionar un objeto en lugar de una cadena, puedes definir salidas individuales cuando uses varios reporters.pool* ​Tipo: &#39;threads&#39; | &#39;forks&#39; | &#39;vmThreads&#39; | &#39;vmForks&#39;Valor predeterminado: &#39;forks&#39;CLI: --pool=threadsGrupo (pool) utilizado para ejecutar las pruebas.threads* ​Activa el multihilo utilizando tinypool (una bifurcación ligera de Piscina). Cuando se utilizan hilos, no se pueden utilizar las API relacionadas con el proceso, como process.chdir(). Algunas bibliotecas escritas en lenguajes nativos, como Prisma, bcrypt y canvas, tienen problemas al ejecutarse en varios hilos y provocan fallos de segmentación. En estos casos, se recomienda utilizar el grupo forks en su lugar.forks* ​Similar al grupo threads, pero utiliza child_process en lugar de worker_threads a través de tinypool. La comunicación entre las pruebas y el proceso principal no es tan rápida como con el grupo threads. Las API relacionadas con el proceso, como process.chdir(), están disponibles en el grupo forks.vmThreads* ​Ejecuta las pruebas utilizando contexto VM (dentro de un entorno sandbox) en un grupo threads.Esto acelera la ejecución de las pruebas, pero el módulo VM es inestable cuando se ejecuta código ESM. Tus pruebas pueden tener fugas de memoria; para evitarlo, considera editar manualmente el valor de poolOptions.vmThreads.memoryLimit.WARNINGEjecutar código en un sandbox tiene algunas ventajas (pruebas más rápidas), pero también conlleva una serie de desventajas.Los globales dentro de los módulos nativos, como (fs, path, etc.), difieren de los globales presentes en tu entorno de prueba. Como resultado, cualquier error lanzado por estos módulos nativos hará referencia a un constructor de Error diferente en comparación con el que se usa en tu código:tstry {\n  fs.writeFileSync(&#39;/doesnt exist&#39;);\n} catch (err) {\n  console.log(err instanceof Error); // false\n}La importación de módulos ES los almacena en caché indefinidamente, lo que introduce fugas de memoria si tienes muchos contextos (archivos de prueba). No hay ninguna API en Node.js que borre esa caché.El acceso a los globales tarda más en un entorno sandbox.Ten en cuenta estos problemas al usar esta opción. El equipo de Vitest no puede solucionar ninguno de estos problemas.vmForks* ​Similar al grupo vmThreads, pero utiliza child_process en lugar de worker_threads a través de tinypool. La comunicación entre las pruebas y el proceso principal no es tan rápida como con el grupo vmThreads. Las API relacionadas con el proceso, como process.chdir(), están disponibles en el grupo vmForks. Ten en cuenta que este grupo tiene los mismos inconvenientes que se enumeran en vmThreads.poolOptions* ​Tipo: Record&lt;&#39;threads&#39; | &#39;forks&#39; | &#39;vmThreads&#39; | &#39;vmForks&#39;, {}&gt;Valor predeterminado: {}poolOptions.threads ​Opciones relacionadas con los hilos del grupo threads.tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    poolOptions: {\n      threads: {\n        // Opciones relacionadas con hilos aquí\n      },\n    },\n  },\n});poolOptions.threads.maxThreads* ​Tipo: number | stringPredeterminado: CPUs disponiblesNúmero o porcentaje máximo de hilos. También puede utilizar la variable de entorno VITEST_MAX_THREADS.poolOptions.threads.minThreads* ​Tipo: number | stringPredeterminado: CPUs disponiblesNúmero o porcentaje mínimo de hilos. También puede utilizar la variable de entorno VITEST_MIN_THREADS.poolOptions.threads.singleThread ​Tipo: booleanValor predeterminado: falseEjecuta todas las pruebas con el mismo entorno en un único hilo de trabajo. Esto deshabilitará el aislamiento de módulos incorporado (tu código fuente o el código en línea se volverá a evaluar para cada prueba), pero puede mejorar el rendimiento de las pruebas.WARNINGAunque esta opción forzará la ejecución de las pruebas una tras otra, es diferente de --runInBand de Jest. Vitest utiliza procesos worker no solo para ejecutar pruebas en paralelo, sino también para proporcionar aislamiento. Al deshabilitar esta opción, las pruebas se ejecutarán secuencialmente, pero en el mismo contexto global, por lo que deberás proporcionar el aislamiento tú mismo.Esto podría causar problemas si confías en el estado global (como suelen hacer los frameworks frontend) o si tu código depende de que el entorno se defina por separado para cada prueba. Pero puede acelerar tus pruebas (hasta 3 veces más rápido) si no dependen del estado global o pueden evitarlo fácilmente.poolOptions.threads.useAtomics* ​Tipo: booleanValor predeterminado: falseUsa Atomics para sincronizar hilos.Esto puede mejorar el rendimiento en algunos casos, pero podría causar un fallo de segmentación en versiones anteriores de Node.js.poolOptions.threads.isolate ​Tipo: booleanValor predeterminado: trueAísla el entorno de cada archivo de prueba.poolOptions.threads.execArgv* ​Tipo: string[]Valor predeterminado: []Pasa argumentos adicionales a node a los hilos. Consulta API de línea de comandos | Node.js para obtener más información.WARNINGTen cuidado al usarla, ya que algunas opciones pueden bloquear el worker, por ejemplo, --prof, --title. Consulta https://github.com/nodejs/node/issues/41103.poolOptions.forks ​Opciones relacionadas con los forks del grupo forks.tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    poolOptions: {\n      forks: {\n        // Opciones relacionadas con forks aquí\n      },\n    },\n  },\n});poolOptions.forks.maxForks* ​Tipo: number | stringPor defecto: CPUs disponiblesNúmero máximo o porcentaje de workers.poolOptions.forks.minForks* ​Tipo: number | stringPor defecto: CPUs disponiblesNúmero mínimo o porcentaje de workers.poolOptions.forks.isolate ​Tipo: booleanValor predeterminado: trueAísla el entorno de cada archivo de prueba.poolOptions.forks.singleFork ​Tipo: booleanValor predeterminado: falseEjecuta todas las pruebas con el mismo entorno en un único proceso hijo. Esto deshabilitará el aislamiento de módulos incorporado (tu código fuente o el código en línea se volverá a evaluar para cada prueba), pero puede mejorar el rendimiento de las pruebas.WARNINGAunque esta opción forzará la ejecución de las pruebas una tras otra, es diferente de --runInBand de Jest. Vitest utiliza procesos hijos no solo para ejecutar pruebas en paralelo, sino también para proporcionar aislamiento. Al deshabilitar esta opción, las pruebas se ejecutarán secuencialmente, pero en el mismo contexto global, por lo que deberás proporcionar el aislamiento tú mismo.Esto podría causar problemas si confías en el estado global (como suelen hacer los frameworks frontend) o si tu código depende de que el entorno se defina por separado para cada prueba. Pero puede acelerar tus pruebas (hasta 3 veces más rápido) si no dependen del estado global o pueden evitarlo fácilmente.poolOptions.forks.execArgv* ​Tipo: string[]Valor predeterminado: []Pasa argumentos adicionales al proceso node a los procesos hijos. Consulta API de línea de comandos | Node.js para obtener más información.WARNINGTen cuidado al usarla, ya que algunas opciones pueden bloquear el worker, por ejemplo, --prof, --title. Consulta https://github.com/nodejs/node/issues/41103.poolOptions.vmThreads ​Opciones relacionadas con los hilos VM del grupo vmThreads.tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    poolOptions: {\n      vmThreads: {\n        // Opciones relacionadas con hilos VM aquí\n      },\n    },\n  },\n});poolOptions.vmThreads.maxThreads* ​Tipo: number | stringPor defecto: CPUs disponiblesNúmero máximo o porcentaje de hilos. También puede usar la variable de entorno VITEST_MAX_THREADS.poolOptions.vmThreads.minThreads* ​Tipo: number | stringPor defecto: CPUs disponiblesNúmero mínimo o porcentaje de hilos. También puede usar la variable de entorno VITEST_MIN_THREADS.poolOptions.vmThreads.memoryLimit* ​Tipo: string | numberValor predeterminado: 1 / CPU CoresEspecifica el límite de memoria para los procesos worker antes de que se reciclen. Este valor depende en gran medida de tu entorno, por lo que es mejor especificarlo manualmente en lugar de confiar en el valor predeterminado. La forma en que se calcula este valor se describe en poolOptions.vmThreads.memoryLimitTIPLa implementación se basa en workerIdleMemoryLimit de Jest.El límite se puede especificar de diferentes maneras y, en cualquier caso, se usa Math.floor para convertirlo en un valor entero:&lt;= 1: se supone que el valor es un porcentaje de la memoria del sistema. Entonces, 0.5 establece el límite de memoria del worker en la mitad de la memoria total del sistema.\\&gt; 1: se supone que es un valor de byte fijo. Según la regla anterior, si quisieras un valor de 1 byte (no se recomienda), podrías usar 1.1.Con unidades 50%: como arriba, un porcentaje de la memoria total del sistema100KB, 65MB, etc.: con unidades para denotar un límite de memoria fijo. K / KB: Kilobytes (x1000)KiB: Kibibytes (×1024)M / MB: MegabytesMiB: MebibytesG / GB: GigabytesGiB: GibibytesWARNINGEl límite de memoria basado en porcentaje puede no funcionar en los procesos worker de Linux CircleCI debido a que se informa una memoria del sistema incorrecta.poolOptions.vmThreads.useAtomics* ​Tipo: booleanValor predeterminado: falseUsa Atomics para sincronizar hilos.Esto puede mejorar el rendimiento en algunos casos, pero podría causar un fallo de segmentación en versiones anteriores de Node.js.poolOptions.vmThreads.execArgv* ​Tipo: string[]Valor predeterminado: []Pasa argumentos adicionales al proceso node al contexto de la VM. Consulta API de línea de comandos | Node.js para obtener más información.WARNINGTen cuidado al usarla, ya que algunas opciones pueden bloquear el worker, por ejemplo, --prof, --title. Consulta https://github.com/nodejs/node/issues/41103.poolOptions.vmForks ​Opciones relacionadas con los forks VM del grupo vmForks.tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    poolOptions: {\n      vmForks: {\n        // Opciones relacionadas con forks VM aquí\n      },\n    },\n  },\n});poolOptions.vmForks.maxForks* ​Tipo: number | stringPor defecto: CPUs disponiblesNúmero máximo o porcentaje de subprocesos. También puede usar la variable de entorno VITEST_MAX_FORKS.poolOptions.vmForks.minForks* ​Tipo: number | stringPor defecto: CPUs disponiblesNúmero mínimo o porcentaje de subprocesos. También puede usar la variable de entorno VITEST_MIN_FORKS.poolOptions.vmForks.memoryLimit* ​Tipo: string | numberValor predeterminado: 1 / CPU CoresEspecifica el límite de memoria para los procesos worker antes de que se reciclen. Este valor depende en gran medida de tu entorno, por lo que es mejor especificarlo manualmente en lugar de confiar en el valor predeterminado. La forma en que se calcula este valor se describe en poolOptions.vmThreads.memoryLimitpoolOptions.vmForks.execArgv* ​Tipo: string[]Valor predeterminado: []Pasa argumentos adicionales al proceso node al contexto de la VM. Consulta API de línea de comandos | Node.js para obtener más información.WARNINGTen cuidado al usarla, ya que algunas opciones pueden bloquear el worker, por ejemplo, --prof, --title. Consulta https://github.com/nodejs/node/issues/41103.fileParallelism* ​Tipo: booleanValor por defecto: trueCLI: --no-file-parallelism, --fileParallelism=falseIndica si todos los archivos de prueba deben ejecutarse en paralelo. Si se establece en false, las opciones maxWorkers y minWorkers se forzarán a 1.TIPEsta opción no afecta a las pruebas que se ejecutan dentro del mismo archivo. Para ejecutarlas en paralelo, utiliza la opción concurrent en describe o mediante una configuración.maxWorkers* ​Type: number | stringNúmero máximo de workers para ejecutar pruebas. poolOptions.{threads,vmThreads}.maxThreads/poolOptions.forks.maxForks tiene mayor prioridad.minWorkers* ​Type: number | stringNúmero mínimo o porcentaje de workers para ejecutar pruebas. poolOptions.{threads,vmThreads}.minThreads/poolOptions.forks.minForks tiene mayor prioridad.testTimeout ​Type: numberDefault: 5_000 en Node.js, 15_000 si browser.enabled es trueCLI: --test-timeout=5000, --testTimeout=5000Tiempo de espera predeterminado de una prueba en milisegundoshookTimeout ​Type: numberDefault: 10_000 en Node.js, 30_000 si browser.enabled es trueCLI: --hook-timeout=10000, --hookTimeout=10000Tiempo de espera predeterminado de un hook en milisegundosteardownTimeout* ​Tipo: numberValor por defecto: 10000CLI: --teardown-timeout=5000, --teardownTimeout=5000Tiempo máximo de espera para el proceso de finalización cuando Vitest se cierra, en milisegundos.silent* ​Tipo: booleanValor por defecto: falseCLI: --silent, --silent=falseSuprime la salida de la consola durante la ejecución de las pruebas.setupFiles ​Tipo: string | string[]Ruta a los archivos de configuración. Estos archivos se ejecutarán antes de cada archivo de prueba.INFOLa edición de un archivo de configuración activará automáticamente la repetición de todas las pruebas.Puedes usar process.env.VITEST_POOL_ID (string similar a un entero) dentro de estos archivos para distinguir entre los diferentes workers.TIPTen en cuenta que si estás ejecutando Vitest con la opción --isolate=false, este archivo de configuración se ejecutará varias veces en el mismo ámbito global. Esto significa que estarás accediendo al mismo objeto global antes de cada prueba, así que asegúrate de no repetir acciones innecesarias.Por ejemplo, puedes depender de una variable global:tsimport { config } from &#39;@some-testing-lib&#39;;\n\nif (!globalThis.defined) {\n  config.plugins = [myCoolPlugin];\n  computeHeavyThing();\n  globalThis.defined = true;\n}\n\n// hooks are reset before each suite\nafterEach(() =&gt; {\n  cleanup();\n});\n\nglobalThis.resetBeforeEachTest = true;provide 2.1.0+ ​Tipo: Partial&lt;ProvidedContext&gt;Define valores a los que se puede acceder dentro de tus pruebas usando el método inject.vitest.config.jsmy.test.jstsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    provide: {\n      API_KEY: &#39;123&#39;,\n    },\n  },\n});tsimport { expect, inject, test } from &#39;vitest&#39;;\n\ntest(&#39;api key is defined&#39;, () =&gt; {\n  expect(inject(&#39;API_KEY&#39;)).toBe(&#39;123&#39;);\n});WARNINGLas propiedades deben ser cadenas de texto y los valores deben ser serializables porque este objeto se transferirá entre diferentes procesos.TIPSi estás usando TypeScript, necesitarás aumentar el tipo ProvidedContext para un acceso seguro a tipos:ts// vitest.shims.d.ts\n\ndeclare module &#39;vitest&#39; {\n  export interface ProvidedContext {\n    API_KEY: string;\n  }\n}\n\n// mark this file as a module so augmentation works correctly\nexport {};globalSetup ​Tipo: string | string[]Ruta a los archivos de configuración global, relativa a la raíz del proyecto.Un archivo de configuración global puede exportar funciones nombradas setup y teardown o una función default que devuelve una función de finalización (ejemplo).INFOEs posible tener múltiples archivos globalSetup. Las funciones setup y teardown se ejecutan secuencialmente, con las funciones teardown ejecutándose en orden inverso.WARNINGEl setup global solo se ejecuta si hay al menos una prueba en ejecución. Esto significa que el setup global puede comenzar a ejecutarse en modo watch después de que se cambie el archivo de prueba (el archivo de prueba esperará a que termine el setup global antes de ejecutarse).Ten en cuenta que el setup global se está ejecutando en un ámbito global diferente, por lo que tus pruebas no tienen acceso a las variables definidas aquí. Sin embargo, puedes pasar datos serializables a las pruebas a través del método provide:globalSetup.jsglobalSetup.tsexample.test.jsjsexport default function setup({ provide }) {\n  provide(&#39;wsPort&#39;, 3000);\n}tsimport type { GlobalSetupContext } from &#39;vitest/node&#39;;\n\nexport default function setup({ provide }: GlobalSetupContext) {\n  provide(&#39;wsPort&#39;, 3000);\n}\n\ndeclare module &#39;vitest&#39; {\n  export interface ProvidedContext {\n    wsPort: number;\n  }\n}tsimport { inject } from &#39;vitest&#39;;\n\ninject(&#39;wsPort&#39;) === 3000;forceRerunTriggers* ​Tipo: string[]Valor por defecto: [&#39;**/package.json/**&#39;, &#39;**/vitest.config.*/**&#39;, &#39;**/vite.config.*/**&#39;]Patrón glob de rutas de archivo que activarán la repetición de toda la suite de pruebas. Cuando se combina con el argumento --changed, ejecutará toda la suite de pruebas si el trigger se encuentra en el diff de git.Útil si estás probando llamadas a comandos CLI, porque Vite no puede construir un gráfico de módulos:tstest(&#39;execute a script&#39;, async () =&gt; {\n  // Vitest cannot rerun this test, if content of `dist/index.js` changes\n  await execa(&#39;node&#39;, [&#39;dist/index.js&#39;]);\n});TIPAsegúrate de que tus archivos no estén excluidos por server.watch.ignored.coverage* ​Puedes utilizar v8, istanbul o una solución de cobertura personalizada para la recolección de cobertura.Puedes proporcionar opciones de cobertura a la CLI utilizando la notación de puntos:shnpx vitest --coverage.enabled --coverage.provider=istanbul --coverage.allWARNINGSi estás utilizando opciones de cobertura con la notación de puntos, no olvides especificar --coverage.enabled. No proporciones una única opción --coverage en ese caso.coverage.provider ​Tipo: &#39;v8&#39; | &#39;istanbul&#39; | &#39;custom&#39;Valor por defecto: &#39;v8&#39;CLI: --coverage.provider=&lt;provider&gt;Utiliza provider para seleccionar la herramienta para la recolección de cobertura.coverage.enabled ​Tipo: booleanValor por defecto: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.enabled, --coverage.enabled=falseHabilita la recolección de cobertura. Se puede sobrescribir utilizando la opción CLI --coverage.coverage.include ​Tipo: string[]Valor por defecto: [&#39;**&#39;]Disponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.include=&lt;path&gt;, --coverage.include=&lt;path1&gt; --coverage.include=&lt;path2&gt;Lista de archivos incluidos en el cálculo de la cobertura, especificados mediante patrones glob.coverage.extension ​Tipo: string | string[]Valor por defecto: [&#39;.js&#39;, &#39;.cjs&#39;, &#39;.mjs&#39;, &#39;.ts&#39;, &#39;.mts&#39;, &#39;.tsx&#39;, &#39;.jsx&#39;, &#39;.vue&#39;, &#39;.svelte&#39;, &#39;.marko&#39;, &#39;.astro&#39;]Disponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.extension=&lt;extension&gt;, --coverage.extension=&lt;extension1&gt; --coverage.extension=&lt;extension2&gt;coverage.exclude ​Tipo: string[]Valor por defecto:js[\n  &#39;coverage/**&#39;,\n  &#39;dist/**&#39;,\n  &#39;**/node_modules/**&#39;,\n  &#39;**/[.]**&#39;,\n  &#39;packages/*/test?(s)/**&#39;,\n  &#39;**/*.d.ts&#39;,\n  &#39;**/virtual:*&#39;,\n  &#39;**/__x00__*&#39;,\n  &#39;**/\\x00*&#39;,\n  &#39;cypress/**&#39;,\n  &#39;test?(s)/**&#39;,\n  &#39;test?(-*).?(c|m)[jt]s?(x)&#39;,\n  &#39;**/*{.,-}{test,spec,bench,benchmark}?(-d).?(c|m)[jt]s?(x)&#39;,\n  &#39;**/__tests__/**&#39;,\n  &#39;**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*&#39;,\n  &#39;**/vitest.{workspace,projects}.[jt]s?(on)&#39;,\n  &#39;**/.{eslint,mocha,prettier}rc.{?(c|m)js,yml}&#39;,\n];Disponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.exclude=&lt;path&gt;, --coverage.exclude=&lt;path1&gt; --coverage.exclude=&lt;path2&gt;Lista de archivos excluidos del cálculo de la cobertura, especificados mediante patrones glob.Esta opción anula todos los valores por defecto. Para extender los valores por defecto agregando nuevos patrones a ignorar, haz lo siguiente:tsimport { coverageConfigDefaults, defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    coverage: {\n      exclude: [&#39;**/custom-pattern/**&#39;, ...coverageConfigDefaults.exclude],\n    },\n  },\n});NOTAVitest añade automáticamente los patrones include de los archivos de prueba al valor predeterminado de coverage.exclude.coverage.all ​Tipo: booleanValor por defecto: trueDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.all, --coverage.all=falseIndica si se deben incluir todos los archivos, incluso los no probados, en el informe de cobertura.coverage.clean ​Tipo: booleanValor por defecto: trueDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.clean, --coverage.clean=falseElimina los resultados de cobertura anteriores antes de ejecutar las pruebas.coverage.cleanOnRerun ​Tipo: booleanValor por defecto: trueDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.cleanOnRerun, --coverage.cleanOnRerun=falseLimpiar el informe de cobertura al volver a ejecutar en modo vigilancia. Establecer en false para preservar los resultados de cobertura de la ejecución anterior en modo vigilancia.coverage.reportsDirectory ​Tipo: stringValor por defecto: &#39;./coverage&#39;Disponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.reportsDirectory=&lt;path&gt;WARNINGVitest eliminará este directorio antes de ejecutar las pruebas si coverage.clean está habilitado (valor por defecto).Directorio donde se guardará el informe de cobertura.Para previsualizar el informe de cobertura en la salida del reporter HTML, esta opción debe establecerse como un subdirectorio del directorio del informe HTML (por ejemplo, ./html/coverage).coverage.reporter ​Tipo: string | string[] | [string, {}][]Valor por defecto: [&#39;text&#39;, &#39;html&#39;, &#39;clover&#39;, &#39;json&#39;]Disponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.reporter=&lt;reporter&gt;, --coverage.reporter=&lt;reporter1&gt; --coverage.reporter=&lt;reporter2&gt;Reporters de cobertura que se utilizarán. Consulta la documentación de istanbul para obtener una lista detallada de todos los reporters. Consulta @types/istanbul-reporter para obtener detalles sobre las opciones específicas del reporter.El reporter puede definirse de tres maneras diferentes:Un solo reporter: { reporter: &#39;html&#39; }Múltiples reporters sin opciones: { reporter: [&#39;html&#39;, &#39;json&#39;] }Uno o varios reporters con opciones: ts{\n  reporter: [\n    [&#39;lcov&#39;, { projectRoot: &#39;./src&#39; }],\n    [&#39;json&#39;, { file: &#39;coverage.json&#39; }],\n    [&#39;text&#39;],\n  ];\n}También puedes pasar reporteros de cobertura personalizados. Consulta Guía - Reportero de cobertura personalizado para obtener más información.ts{\n  reporter: [\n    // Specify reporter using name of the NPM package\n    &#39;@vitest/custom-coverage-reporter&#39;,\n    [&#39;@vitest/custom-coverage-reporter&#39;, { someOption: true }],\n\n    // Specify reporter using local path\n    &#39;/absolute/path/to/custom-reporter.cjs&#39;,\n    [&#39;/absolute/path/to/custom-reporter.cjs&#39;, { someOption: true }],\n  ];\n}Puedes verificar tu informe de cobertura en la interfaz de usuario de Vitest: consulta Cobertura de la interfaz de usuario de Vitest para obtener más detalles.coverage.reportOnFailure ​Tipo: booleanValor por defecto: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.reportOnFailure, --coverage.reportOnFailure=falseGenera un informe de cobertura incluso cuando las pruebas fallan.coverage.allowExternal ​Tipo: booleanValor por defecto: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.allowExternal, --coverage.allowExternal=falseRecopila la cobertura de archivos fuera del directorio raíz del proyecto.coverage.excludeAfterRemap 2.1.0+ ​Tipo: booleanValor por defecto: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.excludeAfterRemap, --coverage.excludeAfterRemap=falseAplicar exclusiones de nuevo después de que la cobertura se haya reasignado a las fuentes originales. Esto es útil cuando tus archivos fuente son transpilados y pueden contener source maps de archivos no fuente.Usa esta opción cuando veas archivos que aparecen en el informe aunque coincidan con tus patrones coverage.exclude.coverage.skipFull ​Tipo: booleanValor por defecto: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.skipFull, --coverage.skipFull=falseNo muestra los archivos con una cobertura del 100% de declaraciones, ramas y funciones.coverage.thresholds ​Opciones para los umbrales de cobertura.coverage.thresholds.lines ​Tipo: numberDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.thresholds.lines=&lt;number&gt;Umbral global para líneas. Consulta la documentación de istanbul para obtener más información.coverage.thresholds.functions ​Tipo: numberDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.thresholds.functions=&lt;number&gt;Umbral global para funciones. Consulta la documentación de istanbul para obtener más información.coverage.thresholds.branches ​Tipo: numberDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.thresholds.branches=&lt;number&gt;Umbral global para ramas. Consulta la documentación de istanbul para obtener más información.coverage.thresholds.statements ​Tipo: numberDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.thresholds.statements=&lt;number&gt;Umbral global para declaraciones. Consulta la documentación de istanbul para obtener más información.coverage.thresholds.perFile ​Tipo: booleanValor por defecto: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.thresholds.perFile, --coverage.thresholds.perFile=falseVerifica los umbrales por archivo.coverage.thresholds.autoUpdate ​Tipo: booleanValor por defecto: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.thresholds.autoUpdate=&lt;boolean&gt;Actualiza todos los valores de umbral lines, functions, branches y statements en el archivo de configuración cuando la cobertura actual supera los umbrales configurados. Esta opción ayuda a mantener los umbrales actualizados a medida que se mejora la cobertura.coverage.thresholds.100 ​Tipo: booleanValor por defecto: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.thresholds.100, --coverage.thresholds.100=falseEstablece los umbrales globales en 100. Atajo para --coverage.thresholds.lines 100 --coverage.thresholds.functions 100 --coverage.thresholds.branches 100 --coverage.thresholds.statements 100.coverage.thresholds[glob-pattern] ​Tipo: { statements?: number functions?: number branches?: number lines?: number }Valor por defecto: undefinedDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;Establece los umbrales para los archivos que coinciden con el patrón glob.NOTAVitest cuenta todos los archivos, incluidos los cubiertos por patrones glob, en los umbrales de cobertura globales. Esto es diferente del comportamiento de Jest.ts{\n  coverage: {\n    thresholds: {\n      // Thresholds for all files\n      functions: 95,\n      branches: 70,\n\n      // Thresholds for matching glob pattern\n      &#39;src/utils/**.ts&#39;: {\n        statements: 95,\n        functions: 90,\n        branches: 85,\n        lines: 80,\n      },\n\n      // Files matching this pattern will only have lines thresholds set.\n      // Global thresholds are not inherited.\n      &#39;**/math.ts&#39;: {\n        lines: 100,\n      }\n    }\n  }\n}coverage.thresholds[glob-pattern].100 2.1.0+ ​Tipo: booleanPredeterminado: falseDisponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;Establece umbrales al 100 para los archivos que coinciden con el patrón glob.ts{\n  coverage: {\n    thresholds: {\n      // Umbrales para todos los archivos\n      functions: 95,\n      branches: 70,\n\n      // Umbrales para archivos que coinciden con el patrón glob\n      &#39;src/utils/**.ts&#39;: { 100: true },\n      &#39;**/math.ts&#39;: { 100: true }\n    }\n  }\n}coverage.ignoreEmptyLines ​Tipo: booleanValor por defecto: true (false en v1)Disponible para proveedores: &#39;v8&#39;CLI: --coverage.ignoreEmptyLines=&lt;boolean&gt;Ignora las líneas vacías, los comentarios y otro código que no es de tiempo de ejecución, como los tipos de TypeScript.Esta opción solo funciona si el compilador utilizado elimina los comentarios y otro código que no es de tiempo de ejecución del código transpilado. De forma predeterminada, Vite utiliza ESBuild, que elimina los comentarios y los tipos de Typescript de los archivos .ts, .tsx y .jsx.Si también deseas aplicar ESBuild a otros archivos, defínelos en las opciones esbuild:tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  esbuild: {\n    // Transpile all files with ESBuild to remove comments from code coverage.\n    // Required for `test.coverage.ignoreEmptyLines` to work:\n    include: [&#39;**/*.js&#39;, &#39;**/*.jsx&#39;, &#39;**/*.mjs&#39;, &#39;**/*.ts&#39;, &#39;**/*.tsx&#39;],\n  },\n  test: {\n    coverage: {\n      provider: &#39;v8&#39;,\n      ignoreEmptyLines: true,\n    },\n  },\n});coverage.ignoreClassMethods ​Tipo: string[]Valor por defecto: []Disponible para proveedores: &#39;istanbul&#39;CLI: --coverage.ignoreClassMethods=&lt;method&gt;Establece la matriz de nombres de métodos de clase que se ignorarán para la cobertura. Consulta la documentación de istanbul para obtener más información.coverage.watermarks ​Tipo:ts{\n  statements?: [number, number],\n  functions?: [number, number],\n  branches?: [number, number],\n  lines?: [number, number]\n}Valor por defecto:ts{\n  statements: [50, 80],\n  functions: [50, 80],\n  branches: [50, 80],\n  lines: [50, 80]\n}Disponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.watermarks.statements=50,80, --coverage.watermarks.branches=50,80Niveles de referencia para declaraciones, líneas, ramas y funciones. Consulta la documentación de istanbul para obtener más información.coverage.processingConcurrency ​Tipo: numberValor por defecto: Math.min(20, os.availableParallelism?.() ?? os.cpus().length)Disponible para proveedores: &#39;v8&#39; | &#39;istanbul&#39;CLI: --coverage.processingConcurrency=&lt;number&gt;Límite de concurrencia utilizado al procesar los resultados de la cobertura.coverage.customProviderModule ​Tipo: stringDisponible para proveedores: &#39;custom&#39;CLI: --coverage.customProviderModule=&lt;path or module name&gt;Especifica el nombre del módulo o la ruta al módulo de proveedor de cobertura personalizado. Consulta Guía - Proveedor de Cobertura Personalizado para obtener más información.testNamePattern* ​Tipo: string | RegExpCLI: -t &lt;pattern&gt;, --testNamePattern=&lt;pattern&gt;, --test-name-pattern=&lt;pattern&gt;Ejecuta las pruebas cuyos nombres completos coincidan con el patrón especificado. Si se añade OnlyRunThis a esta propiedad, se omitirán las pruebas que no contengan la palabra OnlyRunThis en su nombre.jsimport { expect, test } from &#39;vitest&#39;;\n\n// se ejecuta\ntest(&#39;OnlyRunThis&#39;, () =&gt; {\n  expect(true).toBe(true);\n});\n\n// se omite\ntest(&#39;doNotRun&#39;, () =&gt; {\n  expect(true).toBe(true);\n});open* ​Tipo: booleanPredeterminado: !process.env.CICLI: --open, --open=falseAbre la interfaz de usuario de Vitest (en desarrollo).api ​Tipo: boolean | numberPredeterminado: falseCLI: --api, --api.port, --api.host, --api.strictPortActiva un servidor que escucha en un puerto y sirve la API de Vitest. Cuando se establece en true, el puerto predeterminado es 51204.browser ​Tipo: { enabled?, name?, provider?, headless?, api? }Predeterminado: { enabled: false, headless: process.env.CI, api: 63315 }CLI: --browser, --browser=&lt;name&gt;, --browser.name=chrome --browser.headlessEjecuta las pruebas de Vitest en un navegador. Por defecto, se utiliza WebdriverIO para ejecutar las pruebas, pero se puede configurar con la opción browser.provider.NOTAPara más información sobre las pruebas en un navegador real, consulte la página de la guía.WARNINGEsta es una característica experimental. Los cambios importantes podrían no seguir SemVer, por lo que se recomienda fijar la versión de Vitest al usarla.browser.enabled ​Tipo: booleanPredeterminado: falseCLI: --browser, --browser.enabled=falseHabilita la ejecución de todas las pruebas dentro de un navegador. Se puede anular con la opción poolMatchGlobs.browser.name ​Tipo: stringCLI: --browser=safariEjecuta todas las pruebas en un navegador específico. Las opciones posibles varían según el proveedor:webdriverio: firefox, chrome, edge, safariplaywright: firefox, webkit, chromiumcustom: cualquier cadena que se pasará al proveedorbrowser.headless ​Tipo: booleanPredeterminado: process.env.CICLI: --browser.headless, --browser.headless=falseEjecuta el navegador en modo headless (sin interfaz gráfica). Si Vitest se ejecuta en un entorno de CI (Integración Continua), esta opción se habilita por defecto.browser.isolate ​Tipo: booleanPredeterminado: trueCLI: --browser.isolate, --browser.isolate=falseEjecuta cada prueba en un iframe separado.browser.testerHtmlPath ​Tipo: stringPor defecto: @vitest/browser/tester.htmlVersión: Desde Vitest 2.1.4Una ruta al punto de entrada HTML. Puede ser relativa a la raíz del proyecto. Este archivo se procesará con el hook transformIndexHtml.browser.api ​Tipo: number | { port?, strictPort?, host? }Por defecto: 63315CLI: --browser.api=63315, --browser.api.port=1234, --browser.api.host=example.comConfigura las opciones para el servidor Vite que sirve código en el navegador. No afecta la opción test.api. Por defecto, Vitest asigna el puerto 63315 para evitar conflictos con el servidor de desarrollo, lo que le permite ejecutar ambos en paralelo.browser.provider ​Tipo: &#39;webdriverio&#39; | &#39;playwright&#39; | &#39;preview&#39; | stringPor defecto: &#39;preview&#39;CLI: --browser.provider=playwrightRuta a un proveedor que se utilizará al ejecutar pruebas en el navegador. Vitest proporciona tres proveedores: preview (por defecto), webdriverio y playwright. Los proveedores personalizados deben exportarse utilizando la exportación default y tener esta forma:tsexport interface BrowserProvider {\n  name: string;\n  getSupportedBrowsers: () =&gt; readonly string[];\n  initialize: (\n    ctx: Vitest,\n    options: { browser: string; options?: BrowserProviderOptions }\n  ) =&gt; Awaitable&lt;void&gt;;\n  openPage: (url: string) =&gt; Awaitable&lt;void&gt;;\n  close: () =&gt; Awaitable&lt;void&gt;;\n}WARNINGEsta es una API avanzada para autores de librerías. Si solo necesita ejecutar pruebas en un navegador, use la opción browser.browser.providerOptions ​Tipo: BrowserProviderOptionsOpciones que se pasarán al proveedor al llamar a provider.initialize.tsexport default defineConfig({\n  test: {\n    browser: {\n      providerOptions: {\n        launch: {\n          devtools: true,\n        },\n      },\n    },\n  },\n});TIPPara mejorar la seguridad de tipos al usar proveedores integrados, puede añadir uno de estos tipos (correspondiente al proveedor que esté utilizando) al campo compilerOptions.types en su archivo tsconfig.json.json{\n  &quot;compilerOptions&quot;: {\n    &quot;types&quot;: [\n      &quot;@vitest/browser/providers/webdriverio&quot;,\n      &quot;@vitest/browser/providers/playwright&quot;\n    ]\n  }\n}browser.ui ​Tipo: booleanPredeterminado: !isCICLI: --browser.ui=falseIndica si la interfaz de usuario de Vitest debe inyectarse en la página. Por defecto, inyecta un iframe de la interfaz de usuario durante el desarrollo.browser.viewport ​Tipo: { width, height }Predeterminado: 414x896Viewport predeterminado del iframe.browser.locators ​Opciones para los localizadores del navegador integrados.browser.locators.testIdAttribute ​Tipo: stringPredeterminado: data-testidAtributo utilizado para encontrar elementos con el localizador getByTestId.browser.screenshotDirectory ​Tipo: stringPredeterminado: __snapshots__ en el directorio del archivo de pruebaRuta al directorio de instantáneas relativo a la root.browser.screenshotFailures ​Tipo: booleanPredeterminado: !browser.ui¿Debe Vitest tomar instantáneas si la prueba falla?browser.orchestratorScripts ​Tipo: BrowserScript[]Predeterminado: []Scripts personalizados que se deben inyectar en el HTML del orquestador antes de que se inicien los iframes de prueba. Este documento HTML solo configura los iframes y en realidad no importa tu código.El src y el content del script serán procesados por los plugins de Vite. El script debe proporcionarse en la siguiente estructura:tsexport interface BrowserScript {\n  /**\n   * Si se proporciona &quot;content&quot; y el tipo es &quot;module&quot;, este será su identificador.\n   *\n   * Si está utilizando TypeScript, puede agregar la extensión `.ts` aquí, por ejemplo.\n   * @default `injected-${index}.js`\n   */\n  id?: string;\n  /**\n   * Contenido de JavaScript que se inyectará. Esta cadena es procesada por los plugins de Vite si el tipo es &quot;module&quot;.\n   *\n   * Puede usar `id` para darle a Vite una pista sobre la extensión del archivo.\n   */\n  content?: string;\n  /**\n   * Ruta al script. Este valor es resuelto por Vite, por lo que puede ser un módulo de nodo o una ruta de archivo.\n   */\n  src?: string;\n  /**\n   * Si el script debe cargarse de manera asíncrona.\n   */\n  async?: boolean;\n  /**\n   * Tipo de script.\n   * @default &#39;module&#39;\n   */\n  type?: string;\n}browser.testerScripts ​Tipo: BrowserScript[]Predeterminado: []Scripts personalizados que se inyectarán en el HTML del probador antes de que se inicie el entorno de pruebas. Esto es útil para inyectar polyfills requeridos para la implementación del navegador Vitest. Se recomienda usar setupFiles en la mayoría de los casos en lugar de esta opción.El src y el content del script serán procesados por los plugins de Vite.browser.commands ​Tipo: Record&lt;string, BrowserCommand&gt;Predeterminado: { readFile, writeFile, ... }Comandos personalizados que se pueden importar durante las pruebas del navegador desde @vitest/browser/commands.clearMocks ​Tipo: booleanPredeterminado: falseLlama a .mockClear() en todos los espías antes de cada prueba. Esto borra el historial de simulacros, pero no restablece su implementación a la predeterminada.mockReset ​Tipo: booleanPredeterminado: falseLlama a .mockReset() en todos los espías antes de cada prueba. Esto borra el historial de simulacros y restablece su implementación a una función vacía (que devuelve undefined).restoreMocks ​Tipo: booleanPredeterminado: falseLlama a .mockRestore() en todos los espías antes de cada prueba. Esto borra el historial de simulacros y restablece su implementación a la original.unstubEnvs ​Tipo: booleanPredeterminado: falseLlama a vi.unstubAllEnvs antes de cada prueba.unstubGlobals ​Tipo: booleanPredeterminado: falseLlama a vi.unstubAllGlobals antes de cada prueba.testTransformMode ​Tipo: { web?, ssr? }Determina el método de transformación para todos los módulos importados dentro de una prueba que coincida con el patrón glob. De forma predeterminada, se basa en el entorno. Por ejemplo, las pruebas con el entorno JSDOM procesarán todos los archivos con el indicador ssr: false y las pruebas con el entorno Node procesarán todos los módulos con ssr: true.testTransformMode.ssr ​Tipo: string[]Predeterminado: []Utiliza la canalización de transformación SSR para todos los módulos dentro de las pruebas especificadas. Los plugins de Vite recibirán el indicador ssr: true al procesar esos archivos.testTransformMode.web ​Tipo: string[]Predeterminado: []Realiza primero una canalización de transformación normal (dirigida al navegador) y luego realiza una reescritura SSR para ejecutar el código en Node. Los plugins de Vite recibirán el indicador ssr: false al procesar esos archivos.snapshotFormat* ​Tipo: PrettyFormatOptionsOpciones de formato para las pruebas de instantáneas. Estas opciones se pasan a pretty-format.TIPTenga en cuenta que se ignorará el campo plugins en este objeto.Si necesita extender el serializador de instantáneas a través de plugins de pretty-format, utilice la API expect.addSnapshotSerializer o la opción snapshotSerializers.snapshotSerializers* ​Tipo: string[]Predeterminado: []Una lista de rutas a módulos serializadores de instantáneas para pruebas de instantáneas. Es útil si desea agregar serializadores de instantáneas personalizados. Consulte Serializador personalizado para obtener más información.resolveSnapshotPath* ​Tipo: (testPath: string, snapExtension: string) =&gt; stringPredeterminado: almacena los archivos de instantáneas en el directorio __snapshots__Anula la ruta de instantánea predeterminada. Por ejemplo, para almacenar instantáneas junto a los archivos de prueba:tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    resolveSnapshotPath: (testPath, snapExtension) =&gt; testPath + snapExtension,\n  },\n});allowOnly ​Tipo: booleanPredeterminado: !process.env.CICLI: --allowOnly, --allowOnly=falsePermite la ejecución de pruebas y suites marcadas como &#39;only&#39;.dangerouslyIgnoreUnhandledErrors* ​Tipo: booleanPredeterminado: falseCLI: --dangerouslyIgnoreUnhandledErrors --dangerouslyIgnoreUnhandledErrors=falseIgnora cualquier error no controlado que ocurra.passWithNoTests* ​Tipo: booleanPredeterminado: falseCLI: --passWithNoTests, --passWithNoTests=falseVitest no fallará si no se encuentran pruebas.logHeapUsage ​Tipo: booleanPredeterminado: falseCLI: --logHeapUsage, --logHeapUsage=falseMuestra el uso de la memoria después de cada prueba. Útil para depurar fugas de memoria.css ​Tipo: boolean | { include?, exclude?, modules? }Configura si se debe procesar el CSS. Cuando se excluye, los archivos CSS se sustituirán por cadenas vacías para evitar su procesamiento posterior. Los módulos CSS devolverán un proxy para no afectar al tiempo de ejecución.css.include ​Tipo: RegExp | RegExp[]Predeterminado: []Patrón RegExp para archivos que deben devolver CSS real y que serán procesados por la canalización de Vite.TIPPara procesar todos los archivos CSS, use /.+/.css.exclude ​Tipo: RegExp | RegExp[]Predeterminado: []Patrón RegExp para archivos que devolverán un archivo CSS vacío.css.modules ​Tipo: { classNameStrategy? }Predeterminado: {}css.modules.classNameStrategy ​Tipo: &#39;stable&#39; | &#39;scoped&#39; | &#39;non-scoped&#39;Predeterminado: &#39;stable&#39;Si decide procesar archivos CSS, puede configurar si los nombres de clase dentro de los módulos CSS deben tener un ámbito (scope) limitado. Puede elegir una de las siguientes opciones:stable: los nombres de clase se generarán como _${name}_${hashedFilename}, lo que implica que la clase generada permanecerá invariable si el contenido CSS se modifica, pero cambiará si se modifica el nombre del archivo o si el archivo se traslada a otra carpeta. Esta configuración resulta útil al utilizar la función de instantáneas.scoped: los nombres de clase se generarán de la forma habitual, respetando el método css.modules.generateScopedName, si está definido y el procesamiento de CSS está habilitado. De forma predeterminada, el nombre de archivo se generará como _${name}_${hash}, donde el hash incluye tanto el nombre como el contenido del archivo.non-scoped: los nombres de clase no tendrán un ámbito (scope) limitado.WARNINGDe forma predeterminada, Vitest exporta un proxy, omitiendo el procesamiento de módulos CSS. Si depende de las propiedades CSS en sus clases, debe habilitar el procesamiento de CSS mediante la opción include.maxConcurrency ​Tipo: numberPredeterminado: 5CLI: --max-concurrency=10, --maxConcurrency=10Cantidad de pruebas marcadas con test.concurrent que pueden ejecutarse simultáneamente.Las pruebas que excedan este límite se pondrán en cola y se ejecutarán cuando haya disponibilidad.cache* ​Tipo: falseCLI: --no-cache, --cache=falseDesactiva la caché con esta opción. Actualmente, Vitest guarda en caché los resultados para priorizar la ejecución de pruebas largas o las que han fallado.El directorio de caché está controlado por la opción cacheDir de Vite:tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  cacheDir: &#39;custom-folder/.vitest&#39;,\n});Puede limitar el directorio solo para Vitest utilizando process.env.VITEST:tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  cacheDir: process.env.VITEST ? &#39;custom-folder/.vitest&#39; : undefined,\n});sequence ​Tipo: { sequencer?, shuffle?, seed?, hooks?, setupFiles? }Opciones para definir el orden de ejecución de las pruebas.Puede pasar opciones de secuencia a la CLI usando la notación de puntos:shnpx vitest --sequence.shuffle --sequence.seed=1000sequence.sequencer* ​Tipo: TestSequencerConstructorPredeterminado: BaseSequencerUna clase personalizada que define métodos para la división en fragmentos y el ordenamiento de las pruebas. Puede extender BaseSequencer desde vitest/node si solo necesita redefinir uno de los métodos sort o shard, pero ambos deben existir.La división en fragmentos ocurre antes del ordenamiento, y solo si se proporciona la opción --shard.sequence.shuffle ​Tipo: boolean | { files?, tests? }Predeterminado: falseCLI: --sequence.shuffle, --sequence.shuffle=falseHabilite esta opción, o use el argumento de la CLI --sequence.shuffle, si desea que los archivos y las pruebas se ejecuten de forma aleatoria.Vitest normalmente usa la caché para ordenar las pruebas, de modo que las pruebas de larga duración comiencen antes; esto acelera la ejecución de las pruebas. Al ejecutar archivos y pruebas en orden aleatorio, se pierde esta optimización de rendimiento, aunque puede ser útil para detectar pruebas que dependen accidentalmente de una ejecución anterior.sequence.shuffle.files ​Tipo: booleanPredeterminado: falseCLI: --sequence.shuffle.files, --sequence.shuffle.files=falseIndica si se deben aleatorizar los archivos. Tenga en cuenta que las pruebas de larga duración no comenzarán antes si habilita esta opción.sequence.shuffle.tests ​Tipo: booleanPredeterminado: falseCLI: --sequence.shuffle.tests, --sequence.shuffle.tests=falseIndica si se deben aleatorizar las pruebas.sequence.concurrent ​Tipo: booleanPredeterminado: falseCLI: --sequence.concurrent, --sequence.concurrent=falseHabilite esta opción, o use el argumento de la CLI --sequence.concurrent, si desea que las pruebas se ejecuten en paralelo.sequence.seed* ​Tipo: numberPredeterminado: Date.now()CLI: --sequence.seed=1000Define la semilla para el orden aleatorio, si las pruebas se ejecutan en orden aleatorio.sequence.hooks ​Tipo: &#39;stack&#39; | &#39;list&#39; | &#39;parallel&#39;Predeterminado: &#39;parallel&#39;CLI: --sequence.hooks=&lt;value&gt;Define el orden de ejecución de los hooks.stack ordenará los hooks &quot;after&quot; en orden inverso, y los hooks &quot;before&quot; se ejecutarán en el orden en que se definieron.list ordenará todos los hooks en el orden en que se definen.parallel ejecutará todos los hooks en paralelo como un único grupo (los hooks en las suites principales seguirán ejecutándose antes que los hooks de la suite actual).TIPEsta opción no afecta a onTestFinished. Siempre se llama en orden inverso.sequence.setupFiles ​Tipo: &#39;list&#39; | &#39;parallel&#39;Predeterminado: &#39;parallel&#39;CLI: --sequence.setupFiles=&lt;value&gt;Cambia el orden en que se ejecutan los archivos de configuración.list ejecutará los archivos de configuración en el orden en que se definen.parallel ejecutará los archivos de configuración en paralelo.typecheck ​Opciones para configurar el entorno de prueba de verificación de tipos.typecheck.enabled ​Tipo: booleanPredeterminado: falseCLI: --typecheck, --typecheck.enabledActiva la verificación de tipos además de las pruebas normales.typecheck.only ​Tipo: booleanPredeterminado: falseCLI: --typecheck.onlyEjecuta solo las pruebas de verificación de tipos, siempre y cuando la verificación de tipos esté habilitada. Cuando se usa la CLI, esta opción habilitará automáticamente la verificación de tipos.typecheck.checker ​Tipo: &#39;tsc&#39; | &#39;vue-tsc&#39; | stringPredeterminado: tscEspecifica qué herramienta usar para la verificación de tipos. Vitest generará un proceso con ciertos parámetros para facilitar el análisis, dependiendo del tipo. El verificador debe generar resultados con el mismo formato que tsc.Necesita tener un paquete instalado para usar el verificador de tipos:tsc requiere el paquete typescriptvue-tsc requiere el paquete vue-tscTambién puede pasar una ruta a un binario personalizado o un nombre de comando que produzca la misma salida que tsc --noEmit --pretty false.typecheck.include ​Tipo: string[]Predeterminado: [&#39;**/*.{test,spec}-d.?(c|m)[jt]s?(x)&#39;]Patrón glob para identificar archivos de prueba.typecheck.exclude ​Tipo: string[]Predeterminado: [&#39;**/node_modules/**&#39;, &#39;**/dist/**&#39;, &#39;**/cypress/**&#39;, &#39;**/.{idea,git,cache,output,temp}/**&#39;]Patrón glob para los archivos que no deben tratarse como archivos de prueba.typecheck.allowJs ​Tipo: booleanPredeterminado: falseVerifica los archivos JS que tienen el comentario @ts-check. Si lo tiene habilitado en tsconfig, esto no lo sobrescribirá.typecheck.ignoreSourceErrors ​Tipo: booleanPredeterminado: falseEvita que la ejecución falle si Vitest encuentra errores fuera de los archivos de prueba. Esto no mostrará ningún error que no sea de prueba.De forma predeterminada, si Vitest encuentra un error de origen, fallará el conjunto de pruebas.typecheck.tsconfig ​Tipo: stringPredeterminado: intenta encontrar el tsconfig.json más cercanoRuta al tsconfig personalizado, relativa a la raíz del proyecto.slowTestThreshold* ​Tipo: numberPredeterminado: 300CLI: --slow-test-threshold=&lt;number&gt;, --slowTestThreshold=&lt;number&gt;El número de milisegundos después del cual un test o suite se considera lento y se informa como tal en los resultados.chaiConfig ​Tipo: { includeStack?, showDiff?, truncateThreshold? }Predeterminado: { includeStack: false, showDiff: true, truncateThreshold: 40 }Equivalente a la configuración de Chai.chaiConfig.includeStack ​Tipo: booleanPredeterminado: falseDetermina si el stack trace se incluye en los mensajes de error de Assertion. El valor predeterminado de false suprime el seguimiento de la pila en el mensaje de error.chaiConfig.showDiff ​Tipo: booleanPredeterminado: trueInfluye en si la bandera showDiff debe incluirse o no en los AssertionErrors lanzados. false siempre será false; true será verdadero cuando la aserción haya solicitado que se muestre una diferencia.chaiConfig.truncateThreshold ​Tipo: numberPredeterminado: 40Establece el umbral de longitud para los valores reales y esperados en los errores de aserción. Si se excede este umbral, por ejemplo, para estructuras de datos grandes, el valor se reemplaza con algo como [ Array(3) ] o { Object (prop1, prop2) }. Configúrelo en 0 para desactivar el truncamiento por completo.Esta opción de configuración afecta el truncamiento de valores en los títulos de test.each y dentro del mensaje de error de aserción.bail ​Tipo: numberPredeterminado: 0CLI: --bail=&lt;value&gt;Interrumpe la ejecución después de que falle una cierta cantidad de pruebas.De forma predeterminada, Vitest ejecutará todos sus casos de prueba, incluso si algunos de ellos fallan. Esto puede no ser deseado en las compilaciones de CI, donde solo se busca que sean 100% exitosas, y se prefiere detener la ejecución de las pruebas lo antes posible al ocurrir fallas. La opción bail se puede usar para acelerar las ejecuciones de CI al evitar que se ejecuten más pruebas cuando se han producido fallas.retry ​Tipo: numberPredeterminado: 0CLI: --retry=&lt;value&gt;Reintenta la prueba una cierta cantidad de veces al fallar.onConsoleLog* ​Tipo: (log: string, type: &#39;stdout&#39; | &#39;stderr&#39;) =&gt; boolean | voidControlador personalizado para console.log durante las pruebas. Si devuelve false, Vitest no imprimirá el registro en la consola.Puede ser útil para filtrar los registros de bibliotecas de terceros.tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    onConsoleLog(log: string, type: &#39;stdout&#39; | &#39;stderr&#39;): boolean | void {\n      return !(log === &#39;message from third party library&#39; &amp;&amp; type === &#39;stdout&#39;);\n    },\n  },\n});onStackTrace* ​Tipo: (error: Error, frame: ParsedStack) =&gt; boolean | voidFiltra cada frame de los stack traces al manejar errores. El primer argumento, error, es un objeto con las mismas propiedades que un Error estándar, pero no es una instancia real.Puede ser útil para filtrar los frames del stack trace de bibliotecas de terceros.tsimport type { ParsedStack } from &#39;vitest&#39;;\nimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    onStackTrace(error: Error, { file }: ParsedStack): boolean | void {\n      // Si encontramos un ReferenceError, muestra todo el stack.\n      if (error.name === &#39;ReferenceError&#39;) return;\n\n      // Rechaza todos los frames de bibliotecas de terceros.\n      if (file.includes(&#39;node_modules&#39;)) return false;\n    },\n  },\n});diff ​Tipo: stringCLI: --diff=&lt;value&gt;Ruta al archivo de configuración para generar diferencias visuales. Útil si desea personalizar la visualización de diff.vitest.diff.tsvitest.config.jstsimport type { DiffOptions } from &#39;vitest&#39;;\nimport c from &#39;tinyrainbow&#39;;\n\nexport default {\n  aIndicator: c.bold(&#39;--&#39;),\n  bIndicator: c.bold(&#39;++&#39;),\n  omitAnnotationLines: true,\n} satisfies DiffOptions;tsimport { defineConfig } from &#39;vitest/config&#39;;\n\nexport default defineConfig({\n  test: {\n    diff: &#39;./vitest.diff.ts&#39;,\n  },\n});diff.truncateThreshold ​Tipo: numberPredeterminado: 0Longitud máxima para mostrar diferencias. Las diferencias por encima de este umbral se truncarán. El truncamiento no tendrá efecto con el valor predeterminado 0.diff.truncateAnnotation ​Tipo: stringPredeterminado: &#39;... Diff result is truncated&#39;Mensaje que aparece al truncar diferencias.diff.truncateAnnotationColor ​Tipo: DiffOptionsColor = (arg: string) =&gt; stringPredeterminado: noColor = (string: string): string =&gt; stringColor de la anotación de truncamiento, el valor predeterminado es la salida sin color.fakeTimers ​Tipo: FakeTimerInstallOptsOpciones que Vitest pasará a @sinon/fake-timers cuando se use vi.useFakeTimers().fakeTimers.now ​Tipo: number | DatePredeterminado: Date.now()Configura temporizadores simulados usando el timestamp Unix indicado.fakeTimers.toFake ​Tipo: (&#39;setTimeout&#39; | &#39;clearTimeout&#39; | &#39;setImmediate&#39; | &#39;clearImmediate&#39; | &#39;setInterval&#39; | &#39;clearInterval&#39; | &#39;Date&#39; | &#39;nextTick&#39; | &#39;hrtime&#39; | &#39;requestAnimationFrame&#39; | &#39;cancelAnimationFrame&#39; | &#39;requestIdleCallback&#39; | &#39;cancelIdleCallback&#39; | &#39;performance&#39; | &#39;queueMicrotask&#39;)[]Predeterminado: [&#39;setTimeout&#39;, &#39;clearTimeout&#39;, &#39;setImmediate&#39;, &#39;clearImmediate&#39;, &#39;setInterval&#39;, &#39;clearInterval&#39;, &#39;Date&#39;]Lista de APIs y métodos globales a simular.Para simular solo setTimeout() y nextTick(), especifique esta propiedad como [&#39;setTimeout&#39;, &#39;nextTick&#39;].La simulación de nextTick no es compatible al ejecutar Vitest dentro de node:child_process usando --pool=forks. NodeJS usa process.nextTick internamente en node:child_process y se bloquea cuando se simula. La simulación de nextTick es compatible cuando se ejecuta Vitest con --pool=threads.fakeTimers.loopLimit ​Tipo: numberPredeterminado: 10_000El número máximo de temporizadores que se ejecutarán al llamar a vi.runAllTimers().fakeTimers.shouldAdvanceTime ​Tipo: booleanPredeterminado: falseIndica a @sinonjs/fake-timers que avance el tiempo simulado automáticamente basándose en los cambios del tiempo real del sistema (por ejemplo, el tiempo simulado se incrementará en 20 ms por cada cambio de 20 ms en el tiempo real).fakeTimers.advanceTimeDelta ​Tipo: numberPredeterminado: 20Relevante solo cuando se usa con shouldAdvanceTime: true. Incrementa el tiempo simulado en advanceTimeDelta ms por cada cambio de advanceTimeDelta ms en el tiempo real del sistema.fakeTimers.shouldClearNativeTimers ​Tipo: booleanPor defecto: trueIndica a los temporizadores falsos que borren los temporizadores &quot;nativos&quot; (es decir, los no falsos) delegando a sus respectivos manejadores. Cuando está deshabilitado, puede generar un comportamiento potencialmente inesperado si existían temporizadores antes de iniciar la sesión de temporizadores falsos.workspace* ​Tipo: stringCLI: --workspace=./file.jsPredeterminado: vitest.{workspace,projects}.{js,ts,json} cerca del archivo de configuración o la raízRuta a un archivo de configuración de espacio de trabajo relativo a root.isolate ​Tipo: booleanPredeterminado: trueCLI: --no-isolate, --isolate=falseEjecuta las pruebas en aislamiento. Esta opción no tiene ningún efecto en los pools vmThreads y vmForks.Desactivar esto puede mejorar el rendimiento si su código no depende de efectos secundarios (algo común en proyectos con entorno node).TIPPuede deshabilitar el aislamiento para pools específicos mediante la propiedad poolOptions.includeTaskLocation ​Tipo: booleanPredeterminado: falseIndica si la propiedad location debe incluirse cuando la API de Vitest recibe tareas en reporters. Si tiene muchas pruebas, esto podría causar una pequeña regresión en el rendimiento.La propiedad location tiene valores column y line que corresponden a la posición de test o describe en el archivo original.Esta opción se habilitará automáticamente si no la desactiva explícitamente y está ejecutando Vitest con:Vitest UIo utilizando el Modo navegador sin modo headlesso utilizando el Informador HTMLTIPEsta opción no tiene ningún efecto si no usa código personalizado que dependa de esto.snapshotEnvironment ​Tipo: stringRuta a una implementación personalizada del entorno de instantáneas. Esto es útil si ejecuta sus pruebas en un entorno que no es compatible con las API de Node.js. Esta opción no tiene ningún efecto en un ejecutor de navegador.Este objeto debe implementar la interfaz SnapshotEnvironment y se utiliza para resolver y leer/escribir archivos de instantáneas:tsexport interface SnapshotEnvironment {\n  getVersion: () =&gt; string;\n  getHeader: () =&gt; string;\n  resolvePath: (filepath: string) =&gt; Promise&lt;string&gt;;\n  resolveRawPath: (testPath: string, rawPath: string) =&gt; Promise&lt;string&gt;;\n  saveSnapshotFile: (filepath: string, snapshot: string) =&gt; Promise&lt;void&gt;;\n  readSnapshotFile: (filepath: string) =&gt; Promise&lt;string | null&gt;;\n  removeSnapshotFile: (filepath: string) =&gt; Promise&lt;void&gt;;\n}Puede extender el VitestSnapshotEnvironment predeterminado desde el punto de entrada vitest/snapshot si necesita sobrescribir solo una parte de la API.WARNINGEsta es una opción de bajo nivel y debe usarse solo para casos avanzados en los que no tiene acceso a las API predeterminadas de Node.js.Si solo necesita configurar la función de instantáneas, use las opciones snapshotFormat o resolveSnapshotPath.env ​Tipo: Partial&lt;NodeJS.ProcessEnv&gt;Variables de entorno disponibles en process.env y import.meta.env durante las pruebas. Estas variables no estarán disponibles en el proceso principal (en globalSetup, por ejemplo).expect ​Tipo: ExpectOptionsexpect.requireAssertions ​Tipo: booleanValor predeterminado: falseIgual que llamar a expect.hasAssertions() al inicio de cada prueba. Esto asegura que ninguna prueba pase accidentalmente.TIPEsto solo funciona con el expect de Vitest. Si usas aserciones assert o .should, no se contarán y tu prueba fallará debido a la falta de aserciones expect.Puedes cambiar el valor de esto llamando a vi.setConfig({ expect: { requireAssertions: false } }). La configuración se aplicará a cada llamada expect subsiguiente hasta que se llame a vi.resetConfig manualmente.expect.poll ​Opciones de configuración global para expect.poll. Son las mismas opciones que puedes pasar a expect.poll(condition, options).expect.poll.interval ​Tipo: numberValor predeterminado: 50Intervalo de sondeo en milisegundosexpect.poll.timeout ​Tipo: numberValor predeterminado: 1000Tiempo de espera de sondeo en milisegundosprintConsoleTrace ​Tipo: booleanValor predeterminado: falseImprime siempre los rastros de la consola al llamar a cualquier método console. Esto es útil para la depuración.PagerAnteriorAdministración del archivo de configuración de VitestPublicado bajo la licencia MIT.Copyright (c) 2021-Present Vitest Teamhttps://v2.vitest.dev/config/Publicado bajo la licencia MIT.Copyright (c) 2021-Present Vitest Team",
+      "title": "https://www.getbook.com/es/book/vitest-2/config/ (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529616983,
+        "end": 1789529617683
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529617685,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f514001CvKRXkaRvYgVUS",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846ef560013wg2eDFCeZvAuE",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 20606,
+      "output": 165,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 20771,
+      "headroom": 18085,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.687Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.688Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.688Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.688Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.688Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.688Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.688Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.699Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 20771,
+  "providerTokens": 20771,
+  "estimatedInputTokens": 22699,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 20606,
+    "cacheRead": 0,
+    "output": 165
+  },
+  "overflow": false,
+  "headroom": 18085,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.699Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.699Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.700Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:37.702Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:38.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529618175,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f6f60011bc3m2roISye7P",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846f523001vxeYx5RrzxOlvb",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:38.176Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:38.177Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529618177,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f700001ULavnqGPv7uQDp",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846f523001vxeYx5RrzxOlvb",
+    "type": "tool",
+    "callID": "call_346492599a022d9f",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:38.177Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529618177,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f6ff001e8IMzdmPk7uUHB",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846f523001vxeYx5RrzxOlvb",
+    "type": "text",
+    "text": "Let me open https://github.com/schemathesis/schemathesis/commit/06ecf49b40e27bc711250befe11de852673083a4 and read what it says.",
+    "time": {
+      "start": 1789529618177,
+      "end": 1789529618177
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:38.177Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529618177,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f700001ULavnqGPv7uQDp",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846f523001vxeYx5RrzxOlvb",
+    "type": "tool",
+    "callID": "call_346492599a022d9f",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/schemathesis/schemathesis/commit/06ecf49b40e27bc711250befe11de852673083a4"
+      },
+      "time": {
+        "start": 1789529618177
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.389Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529619389,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846f700001ULavnqGPv7uQDp",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846f523001vxeYx5RrzxOlvb",
+    "type": "tool",
+    "callID": "call_346492599a022d9f",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/schemathesis/schemathesis/commit/06ecf49b40e27bc711250befe11de852673083a4"
+      },
+      "output": "chore: Extend the default test duration deadline to 15 seconds · schemathesis/schemathesis@06ecf49 · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n    \n\n      \n  \n  \n    \n  \n    \n      \n\n              Uh oh!\n\n              There was an error while loading. Please reload this page.\n\n\n  \n  \n\n\n    \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        schemathesis\n    \n    /\n    \n      schemathesis\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n        \n          \n  \n  \n    \n  \n    \n      \n\n              Uh oh!\n\n              There was an error while loading. Please reload this page.\n\n\n  \n  \n\n        \n\n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    224\n\n  \n\n  \n        \n            \n    \n\n          Star\n          3.6k\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          5\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          2\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Discussions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Discussions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n    \n\n\n\n\n\n\n\n\n\n  \n    Commit 06ecf49Browse filesBrowse the repository at this point in the historyBrowse filesStranger6667committedchore: Extend the default test duration deadline to 15 seconds1 parent 6dd1586 commit 06ecf49Copy full SHA for 06ecf495 files changed+8-8Lines changed: 8 additions &amp; 8 deletionsFile treeExpand file treeCollapse file treeOpen diff view settingsFilter optionsdocschangelog.rstsrc/schemathesisconstants.pymodels.pytestclitest_commands.pytest_pytest.pyExpand file treeCollapse file treeOpen diff view settingsCollapse file‎docs/changelog.rst‎Copy file name to clipboardExpand all lines: docs/changelog.rst+1Lines changed: 1 addition &amp; 0 deletionsDisplay the source diffDisplay the rich diffOriginal file line numberDiff line numberDiff line change@@ -13,6 +13,7 @@ Changelog1313- Use different exception classes for ``not_a_server_error`` and ``status_code_conformance`` checks. It improves the variance of found errors.1414- All network requests (not WSGI) now have the default timeout of 10 seconds. If the response is time-outing, Schemathesis will report it as a failure.1515  It also solves the case when the tested app hangs. `#1164`_16+- The default test duration deadline is extended to 15 seconds.16171718`3.6.11`_ - 2021-05-201819----------------------Collapse file‎src/schemathesis/constants.py‎Copy file name to clipboardExpand all lines: src/schemathesis/constants.py+1-1Lines changed: 1 addition &amp; 1 deletionOriginal file line numberDiff line numberDiff line change@@ -11,7 +11,7 @@11111212USER_AGENT = f&quot;schemathesis/{__version__}&quot;1313# Maximum test running time14-DEFAULT_DEADLINE = 500  # pragma: no mutate14+DEFAULT_DEADLINE = 15000  # pragma: no mutate1515DEFAULT_RESPONSE_TIMEOUT = 10000  # pragma: no mutate1616DEFAULT_STATEFUL_RECURSION_LIMIT = 5  # pragma: no mutate1717RECURSIVE_REFERENCE_ERROR_MESSAGE = (Collapse file‎src/schemathesis/models.py‎Copy file name to clipboardExpand all lines: src/schemathesis/models.py+2-3Lines changed: 2 additions &amp; 3 deletionsOriginal file line numberDiff line numberDiff line change@@ -35,7 +35,7 @@3535from hypothesis import strategies as st3636from starlette.testclient import TestClient as ASGIClient373738-from . import serializers38+from . import failures, serializers3939from .constants import (4040    DEFAULT_RESPONSE_TIMEOUT,4141    SERIALIZERS_SUGGESTION_MESSAGE,@@ -51,7 +51,6 @@5151    get_grouped_exception,5252    get_timeout_error,5353)54-from .failures import ResponseTimeout5554from .hooks import GLOBAL_HOOK_DISPATCHER, HookContext, HookDispatcher5655from .parameters import Parameter, ParameterSet, PayloadAlternatives5756from .serializers import Serializer, SerializerContext@@ -312,7 +311,7 @@ def call(312311            code_message = self._get_code_message(self.operation.schema.code_sample_style, exc.request)313312            raise get_timeout_error(timeout)(314313                f&quot;\\n\\n1. Response timed out after {timeout:.2f}ms\\n\\n----------\\n\\n{code_message}&quot;,315-                context=ResponseTimeout(timeout=timeout),314+                context=failures.ResponseTimeout(timeout=timeout),316315            ) from None317316        if close_session:318317            session.close()Collapse file‎test/cli/test_commands.py‎Copy file name to clipboardExpand all lines: test/cli/test_commands.py+2-2Lines changed: 2 additions &amp; 2 deletionsOriginal file line numberDiff line numberDiff line change@@ -605,9 +605,9 @@ def test_connection_timeout(cli, server, schema_url, workers):605605@pytest.mark.operations(&quot;success&quot;, &quot;slow&quot;)606606@pytest.mark.parametrize(&quot;workers&quot;, (1, 2))607607def test_default_hypothesis_settings(cli, cli_args, workers):608-    # When there is a slow operation and if it is faster than 500ms608+    # When there is a slow operation and if it is faster than 15s609609    result = cli.run(*cli_args, f&quot;--workers={workers}&quot;)610-    # Then the tests should pass, because of default 500ms deadline610+    # Then the tests should pass, because of default 15s deadline611611    assert result.exit_code == ExitCode.OK, result.stdout612612    lines = result.stdout.split(&quot;\\n&quot;)613613    if workers == 1:Collapse file‎test/test_pytest.py‎Copy file name to clipboardExpand all lines: test/test_pytest.py+2-2Lines changed: 2 additions &amp; 2 deletionsOriginal file line numberDiff line numberDiff line change@@ -125,12 +125,12 @@ def test_default_hypothesis_deadline(testdir):125125        f&quot;&quot;&quot;126126@schema.parametrize()127127def test_a(case):128-    assert settings().deadline.microseconds == {DEFAULT_DEADLINE} * 1000128+    assert settings().deadline.total_seconds() == {DEFAULT_DEADLINE} / 1000129129130130@schema.parametrize()131131@settings(max_examples=5)132132def test_b(case):133-    assert settings().deadline.microseconds == {DEFAULT_DEADLINE} * 1000133+    assert settings().deadline.total_seconds() == {DEFAULT_DEADLINE} / 1000134134135135@schema.parametrize()136136@settings(max_examples=5, deadline=100)0 commit commentsComments0 (0)  \n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "https://github.com/schemathesis/schemathesis/commit/06ecf49b40e27bc711250befe11de852673083a4 (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529618177,
+        "end": 1789529619388
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.390Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529619390,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846fbbd001p3VHR7IylXyG04",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846f523001vxeYx5RrzxOlvb",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 102093,
+      "output": 253,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 102346,
+      "headroom": -63490,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.390Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.390Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.390Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.390Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.391Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.391Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.392Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.392Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.392Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.392Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.398Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 102346,
+  "providerTokens": 102346,
+  "estimatedInputTokens": 25016,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 102093,
+    "cacheRead": 0,
+    "output": 253
+  },
+  "overflow": true,
+  "headroom": -63490,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.399Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.399Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.399Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.400Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.400Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.400Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.401Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.401Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.402Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.837Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529619837,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846fd7d001Kg9dagXHX7qoXC",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846fbc9001ubhs3D8L5El4Tt",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.838Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529619838,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846fd7e001hk5l6N55bW1oI1",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846fbc9001ubhs3D8L5El4Tt",
+    "type": "text",
+    "text": "Conversation summary: Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto.  Let me search the web for Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comp…\n\nTitle: What did we do so\n\nUser turns:\n  1. Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto.\n  2.",
+    "time": {
+      "start": 1789529619838,
+      "end": 1789529619838
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.839Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529619839,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846fd7e0025Ip2Y6H4MoS6d8",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846fbc9001ubhs3D8L5El4Tt",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 105311,
+      "output": 637,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 105948,
+      "headroom": -67092,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.839Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.839Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.839Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.839Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.840Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529619840,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846fd7f002ibxGBfUfp5Y5gO",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846fd7f001rKdmx3DFxddHSR",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789529619839,
+      "end": 1789529619839
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.840Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.840Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.840Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.840Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.840Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.841Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.841Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.841Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.841Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.842Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529619893,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846fdb5001Bw65rK1PTc7LA4",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846fd80001GQrGi2AMjTGt4g",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529619894,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846fdb6001FPT0Dt6nBLmLH2",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846fd80001GQrGi2AMjTGt4g",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789529619894,
+      "end": 1789529619894
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529619894,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "part": {
+    "id": "prt_0a846fdb6002Kr3VNGmEA1PXTa",
+    "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+    "messageID": "msg_0a846fd80001GQrGi2AMjTGt4g",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 9186,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9259,
+      "headroom": 29597,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.894Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.895Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.895Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.896Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.896Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.896Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789529619896,
+  "sessionID": "ses_f57b91bdbffeE39C8hVkPUzuwf"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.896Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.896Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.iMjUuflnz2",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.896Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.iMjUuflnz2",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.896Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.iMjUuflnz2",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:39.896Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

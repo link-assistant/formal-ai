@@ -1,18 +1,42 @@
 Q7259
   aliases
-    en ("Lady Ada" "Augusta Ada Byron" "Augusta Ada King, Countess of Lovelace" "Ada Byron")
+    en ("Lady Ada" "Augusta Ada King, Countess of Lovelace" "Ada Byron")
+    es ("Augusta Ada King" "Lady Ada" "Ada King" "Augusta Ada King-Noel" "Lovelace, Ada" "Ada Byron Lovelance")
     ru ("Лавлейс, Ада" "Лавлейс, Августа Ада")
     zh ("爱达·勒芙蕾丝")
   descriptions
     en "English mathematician (1815–1852)"
+    es "matemática y escritora británica, la primera persona programadora de la historia y emprendedora"
     hi "अंग्रेज़ी गणितज्ञ व कंप्यूटर प्रोग्रामिंग के प्रथम अन्वेषक।"
     ru "английский математик"
     zh "英国数学家"
   id Q7259
   labels
     en "Ada Lovelace"
+    es "Ada Lovelace"
     hi "एडा लवलेस"
     ru "Ада Лавлейс"
     zh "愛達·勒芙蕾絲"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Ada Lovelace"
+    eswiki
+      site eswiki
+      title "Ada Lovelace"
+    hiwiki
+      site hiwiki
+      title "एडा लवलेस"
+    ruwiki
+      site ruwiki
+      title "Лавлейс, Ада"
+    zhwiki
+      site zhwiki
+      title "愛達·勒芙蕾絲"
   type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
 success 1

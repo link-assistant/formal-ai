@@ -1,0 +1,201 @@
+meanings
+  rust_to_meta
+    defined-by relation
+    role projection_route
+    precondition "a rust source document is parsed into the self-ast census dialect"
+    effect "renders the module's link network as a census document"
+    unit "not applicable"
+    example "project the owned module into its census serialization"
+    grounding "data/seed/language-projection.lino"
+  js_to_meta
+    defined-by relation
+    role projection_route
+    precondition "a javascript source document is tokenized into the es pivot"
+    effect "renders the token tree as a meta document"
+    unit "not applicable"
+    example "carry the script's token tree into the pivot"
+    grounding "data/seed/language-projection.lino"
+  ts_to_meta
+    defined-by relation
+    role projection_route
+    precondition "a typescript source document is tokenized into the es pivot"
+    effect "renders the token tree as a meta document"
+    unit "not applicable"
+    example "carry the typed module's token tree into the pivot"
+    grounding "data/seed/language-projection.lino"
+  meta_to_js
+    defined-by relation
+    role projection_route
+    precondition "a meta token-tree document names javascript as its target"
+    effect "re-emits the token tree as javascript source text"
+    unit "not applicable"
+    example "render the pivot document back out as a script"
+    grounding "data/seed/language-projection.lino"
+  meta_to_ts
+    defined-by relation
+    role projection_route
+    precondition "a meta token-tree document names typescript as its target"
+    effect "re-emits the token tree as typescript source text"
+    unit "not applicable"
+    example "render the pivot document back out as a typed module"
+    grounding "data/seed/language-projection.lino"
+  js_to_ts
+    defined-by relation
+    role projection_route
+    precondition "a javascript document crosses to typescript through the pivot"
+    effect "round-trips the token tree and re-emits it as typescript"
+    unit "not applicable"
+    example "retype the script by way of the token-tree pivot"
+    grounding "data/seed/language-projection.lino"
+  ts_to_js
+    defined-by relation
+    role projection_route
+    precondition "a typescript document crosses to javascript through the pivot"
+    effect "round-trips the token tree and re-emits it as javascript"
+    unit "not applicable"
+    example "strip the types by way of the token-tree pivot"
+    grounding "data/seed/language-projection.lino"
+  meta_to_rust
+    defined-by relation
+    role projection_route
+    precondition "a meta document in the network serialization dialect names rust as its target"
+    effect "reconstructs the rust source text byte-for-byte from the network"
+    unit "not applicable"
+    example "render the network document back out as a rust module"
+    grounding "data/seed/language-projection.lino"
+  rust_to_js
+    defined-by relation
+    role projection_route
+    precondition "a rust source document names javascript as its target"
+    effect "renders the module through the grammar projection rules"
+    unit "not applicable"
+    example "project the owned function out as a script"
+    grounding "data/seed/language-projection.lino"
+  rust_to_ts
+    defined-by relation
+    role projection_route
+    precondition "a rust source document names typescript as its target"
+    effect "renders the module through the grammar projection rules"
+    unit "not applicable"
+    example "project the owned function out as a typed module"
+    grounding "data/seed/language-projection.lino"
+  js_to_rust
+    defined-by relation
+    role projection_route
+    precondition "a javascript source document names rust as its target"
+    effect "renders the script through the grammar projection rules"
+    unit "not applicable"
+    example "project the script out as a rust module"
+    grounding "data/seed/language-projection.lino"
+  ts_to_rust
+    defined-by relation
+    role projection_route
+    precondition "a typescript source document names rust as its target"
+    effect "renders the typed module through the grammar projection rules"
+    unit "not applicable"
+    example "project the typed module out as a rust module"
+    grounding "data/seed/language-projection.lino"
+  signature
+    defined-by concept
+    role projection_fidelity
+    precondition "a projection row states the fidelity its pivot carries"
+    effect "declares that the leg carries only the signature dialect of the meta root"
+    unit "not applicable"
+    example "the census leg carries the signature dialect"
+    grounding "data/seed/language-projection.lino"
+  token_tree
+    defined-by concept
+    role projection_fidelity
+    precondition "a projection row states the fidelity its pivot carries"
+    effect "declares that the leg carries the token-tree dialect of the meta root"
+    unit "not applicable"
+    example "the es legs carry the token-tree dialect"
+    grounding "data/seed/language-projection.lino"
+  live
+    defined-by concept
+    role projection_fidelity
+    precondition "a projection row states whether its leg is delivered"
+    effect "declares that the leg renders today through the public translate surface"
+    unit "not applicable"
+    example "the pivot legs are marked live"
+    grounding "data/seed/language-projection.lino"
+  owed_by
+    defined-by concept
+    role projection_fidelity
+    precondition "a projection row states whether its leg is delivered"
+    effect "declares that a named plan leaf still owes the leg"
+    unit "not applicable"
+    example "the rust-to-es grammar legs were owed by the L8 leaf until the type-position tail closed"
+    grounding "data/seed/language-projection.lino"
+  projection_refusal_uncovered_kind
+    defined-by relation
+    role projection_refusal
+    precondition "a grammar projection walk meets a link kind no rule row covers"
+    effect "answers with the seeded refusal that names the uncovered kind"
+    unit "not applicable"
+    example "the walk refuses a kind no template renders"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_walk_depth
+    defined-by relation
+    role projection_refusal
+    precondition "a grammar projection walk descends past its depth bound"
+    effect "answers with the seeded refusal that names the depth reached"
+    unit "not applicable"
+    example "the walk refuses a nest deeper than the bound allows"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_dangling_capture
+    defined-by relation
+    role projection_refusal
+    precondition "a projection rule captures a link the network no longer holds"
+    effect "answers with the seeded refusal that names the dangling link"
+    unit "not applicable"
+    example "the walk refuses a capture whose link was consumed"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_missing_template
+    defined-by relation
+    role projection_refusal
+    precondition "a rule row matched a walk whose target carries no template for it"
+    effect "answers with the seeded refusal that names the rule and target"
+    unit "not applicable"
+    example "the walk refuses a rule that renders no template for the target"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_unruled_kind
+    defined-by relation
+    role projection_refusal
+    precondition "a grammar projection walk ends with links no rule row claimed"
+    effect "answers with the seeded refusal that names the target without a row"
+    unit "not applicable"
+    example "the walk refuses a kind the seed lists no rule for"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_no_target_form
+    defined-by relation
+    role projection_refusal
+    precondition "a grammar projection walk meets a kind declared to have no spelling in the target"
+    effect "answers with the seeded refusal that names the target with no form for it"
+    unit "not applicable"
+    example "the walk refuses an object literal crossing into rust"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_unknown_placeholder
+    defined-by relation
+    role projection_refusal
+    precondition "a template names a placeholder form the walk does not expand"
+    effect "answers with the seeded refusal that names the placeholder"
+    unit "not applicable"
+    example "the walk refuses a placeholder no form renders"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_variadic_mode
+    defined-by relation
+    role projection_refusal
+    precondition "a variadic template names a mode other than text or source"
+    effect "answers with the seeded refusal that names the mode"
+    unit "not applicable"
+    example "the walk refuses a variadic mode it cannot join with"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_placeholder_mode
+    defined-by relation
+    role projection_refusal
+    precondition "a placeholder template names a mode other than text, source, or term"
+    effect "answers with the seeded refusal that names the mode"
+    unit "not applicable"
+    example "the walk refuses a placeholder mode it cannot render"
+    grounding "data/seed/multilingual-responses-translate.lino"

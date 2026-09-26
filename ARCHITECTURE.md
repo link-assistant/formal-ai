@@ -8,7 +8,9 @@ contributors who want to understand the full pipeline without having to
 triangulate between five other files.
 
 Issue [#103](https://github.com/link-assistant/formal-ai/issues/103) names
-this document as the single source of truth for the design and asks for the
+this document as the single source of truth for the design — the structure and
+wiring recorded here; status lives in `ROADMAP.md`, per-requirement status in
+`REQUIREMENTS.md`, and numbers in the ledgers — and asks for the
 following ideas to be explicit:
 
 - last input + previous messages + memory + user data form the system context;
@@ -45,9 +47,9 @@ The runtime computes an answer from four kinds of input:
 
 1. **Last input message** — the raw text the user just sent.
 2. **Previous messages** — the in-process conversation turns, expressed as
-   `ConversationTurn { role, text }` (see `src/solver.rs`).
-3. **Memory** — the append-only event log (see `src/memory.rs`,
-   `src/event_log.rs`) plus the seed dataset under `data/seed/`.
+   `ConversationTurn { role, text }` (see `rust/src/solver.rs`).
+3. **Memory** — the append-only event log (see `rust/src/memory.rs`,
+   `rust/src/event_log.rs`) plus the seed dataset under `data/seed/`.
 4. **User data** — language preference, surface (chat / agent / CLI /
    Telegram / HTTP / browser), session preferences, and the
    `SolverConfig` knobs.
@@ -147,15 +149,16 @@ following Rust modules:
 
 | Step | Module | Status |
 | --- | --- | --- |
-| 1. Input | `src/engine.rs::FormalAiEngine::answer` and `solve_with_history` in `src/solver.rs` | Implemented |
-| 2. Translate to Links Notation | `EventLog::append("impulse", …)` in `src/event_log.rs` | Implemented |
-| 3. Record in memory | `MemoryStore::append` in `src/memory.rs` | Implemented |
-| 4. Formalization | `src/concepts.rs` plus `src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented |
-| 5. Temperature interpretation selection | `src/translation/selection.rs`, `src/probability.rs`, plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
-| 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
+| 1. Input | `rust/src/engine.rs::FormalAiEngine::answer` and `solve_with_history` in `rust/src/solver.rs` | Implemented |
+| 2. Translate to Links Notation | `EventLog::append("impulse", …)` in `rust/src/event_log.rs` | Implemented |
+| 3. Record in memory | `MemoryStore::append` in `rust/src/memory.rs` | Implemented |
+| 4. Formalization | `rust/src/concepts.rs` plus `rust/src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented for surface-form anchoring and, since issue #1138 B4, concept-graph formalization whose unresolved surfaces become explicit needs |
+| 4b. Coding-discovery grounding | `rust/src/coding/concept_discovery.rs::discover_with_lookup` over `rust/src/concept_lookup.rs` and the trusted sources in `data/seed/sources-registry.lino` | Implemented (issue #1138 B1/B4): needs are grounded by live lookup when the run is online, reported unresolved with their source span otherwise |
+| 5. Temperature interpretation selection | `rust/src/translation/selection.rs`, `rust/src/probability.rs`, plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `rust/src/solver.rs` | Implemented |
+| 6. Universal solver | `UniversalSolver` in `rust/src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
-| 8. Render user-facing answer | `SymbolicAnswer` projection in `src/engine.rs` | Implemented |
-| 9. Natural-language skill compilation | `src/skill_compiler.rs` plus the `behavior_rules` replay bridge, and `src/skill_procedure.rs` plus `src/solver_handlers/procedure_rules.rs` for freely phrased procedures | Implemented for deterministic trigger/response skill packages and for multi-step procedures stated in ordinary prose |
+| 8. Render user-facing answer | `SymbolicAnswer` projection in `rust/src/engine.rs` | Implemented |
+| 9. Natural-language skill compilation | `rust/src/skill_compiler.rs` plus the `behavior_rules` replay bridge, and `rust/src/skill_procedure.rs` plus `rust/src/solver_handlers/procedure_rules.rs` for freely phrased procedures | Implemented for deterministic trigger/response skill packages and for multi-step procedures stated in ordinary prose |
 
 The pipeline runs the same way for every prompt — greetings, identity,
 concept lookup, math, code generation, idioms, refusals, agent actions —
@@ -170,18 +173,18 @@ in `data/seed/handler-precedence.lino` as an ordered list of bare handler-name
 rows, each optionally carrying a trailing `#` guard note (issue #663, "Data Is
 The Interface"; the name is the row head, so the seed's meaning-closure audit,
 which grounds only *value* tokens, leaves the precedence table alone).
-`src/solver_dispatch.rs` keeps only
+`rust/src/solver_dispatch.rs` keeps only
 the executable function pointers (`HANDLER_FUNCTIONS`, which must stay Rust) and
 `specialized_handlers()` joins the two — asserting at load time that the seed is
 an exact permutation of the registry, so a seed edit can never silently drop or
 duplicate a handler. Reordering two rows in the seed changes routing (proven by
 `cargo test routing_precedence_from_seed`); the shipped seed preserves today's
-behaviour. `MethodRegistry::from_dispatch` (`src/method_registry.rs`) surfaces
+behaviour. `MethodRegistry::from_dispatch` (`rust/src/method_registry.rs`) surfaces
 this seed-ordered table as the `Specialized` method surface, and
 `meta_method_dispatch::try_dispatch` consumes it. The browser worker mirrors the
-seed through `src/web/seed_loader.js`; because it names its handlers differently
+seed through `js/seed_loader.js`; because it names its handlers differently
 and runs its async fetch handlers in a later phase, full order-parity is
-impossible, so `tests/fixtures/routing-parity.lino` pins the *shared* precedence
+impossible, so `rust/tests/fixtures/routing-parity.lino` pins the *shared* precedence
 invariants both surfaces must honour (checked by the routing-parity test).
 
 The precedence is also something Formal AI re-derives *itself*, through its own
@@ -190,9 +193,9 @@ http_fetch-first, incompatible_units-last) is a persisted associative links
 network (`data/meta/issue-663-handler-precedence-learning.lino`) that the
 `handler_precedence_learning` report ranks into a human-review-gated proposal.
 The report is one row in the `REPORTS` table
-(`src/agentic_coding/learning_report.rs`) — data-routed, not a planner branch —
+(`rust/src/agentic_coding/learning_report.rs`) — data-routed, not a planner branch —
 and its committed evidence is byte-for-byte reproducible by the in-process
-renderer (`tests/unit/issue_663_handler_precedence_learning.rs`), so the tool,
+renderer (`rust/tests/unit/issue_663_handler_precedence_learning.rs`), so the tool,
 not a hand-edit, is the author. See `docs/case-studies/issue-663/`.
 
 ---
@@ -238,7 +241,7 @@ Memory has three layers:
 
 ### 4.1 Local in-process event log
 
-Implemented today by `src/event_log.rs` and `src/memory.rs`. Normal writes are
+Implemented today by `rust/src/event_log.rs` and `rust/src/memory.rs`. Normal writes are
 content-addressed (FNV-1a 64-bit) and appended. The log is exposed through
 `SymbolicAnswer::evidence_links` (short, user-visible) and
 `SymbolicAnswer::links_notation` (full trace).
@@ -255,7 +258,7 @@ full-bundle `--backup` before modifying the memory file.
 
 ### 4.2 Dreaming maintenance planner
 
-Issue #540 adds `src/dreaming.rs`, a default-on, low-priority maintenance
+Issue #540 adds `rust/src/dreaming.rs`, a default-on, low-priority maintenance
 planner over the same `MemoryEvent` projection. Dreaming reads memory and emits
 an inspectable plan; it does not mutate memory unless the caller explicitly
 uses `formal-ai memory dream --apply --confirm`, with the same optional
@@ -285,19 +288,27 @@ frequent topics, `requirement_statement` reads multilingual cues from
 structures directly from records. Proposed `MetaAlgorithmAmendment` values are
 replayed against discovered candidate tasks; only an exact normalized replay
 may mark a specific as covered. Applied amendments are retained as structured
-`meta_algorithm_amendment` events, and `src/dreaming_application.rs` reads those
+`meta_algorithm_amendment` events, and `rust/src/dreaming_application.rs` reads those
 events on later OpenAI-compatible requests so the learned rule changes similar
 future answers without being repeated. Under pressure, only replay-verified
 specifics can be forgotten via `ForgetCoveredSpecific`.
 
-`src/storage_policy.rs` measures actual filesystem capacity/free bytes and the
+`rust/src/storage_policy.rs` measures actual filesystem capacity/free bytes and the
 next incoming write. Automatic removal requires a persisted `.auto-free-space`
 choice; both CLI and Electron can ask, and Electron warns when larger storage is
-still required. `src/dreaming_runtime.rs` runs the same learning loop in the
+still required. `rust/src/dreaming_runtime.rs` runs the same learning loop in the
 core server, guarded by foreground activity, while Electron additionally uses
 system-idle detection and lowest practical cross-platform process priority.
-The thirteen-stage recipe in `data/meta/dreaming-recipe.lino` is pinned to all
-of these live source modules.
+After that foreground guard, issue #705's `rust/src/anticipation.rs` derives
+first-order transitions over formal `IntentClass` values, ranks the top three,
+expands them through observed parameters plus seeded meanings and operations,
+and probes every variant offline. Unknown and failed probes enter the shared
+proposal-only learning frontier one-for-one. Source prelearning is fetch-consent
+gated and retains URL, digest, capture time, and TTL; ordinary solving keeps
+precedence, then an exact unexpired alias may answer offline. `memory_sync`
+appends a `prediction_hit` link when a later actual request matches, while the
+ledger truthfully reports zero until that occurs. The seventeen-stage recipe in
+`data/meta/dreaming-recipe.lino` is pinned to all of these live source modules.
 
 The Electron desktop shell starts `desktop/lib/dreaming.cjs` by default as a
 plan-only background task. It waits before its first run, repeats infrequently,
@@ -308,7 +319,7 @@ platforms. Operators can disable that scheduler with
 ### 4.3 Research, learning, and stable recovery
 
 Issue #873 joins the existing unknown trace, exact source captures, promotion
-gates, and agent orchestration behind `src/research_learning.rs`. Online inputs
+gates, and agent orchestration behind `rust/src/research_learning.rs`. Online inputs
 that exhaust specialized and memory routes become grounded research tasks;
 offline mode remains an explicit no-network boundary. The cycle's ordered
 phases are reviewable data in `data/meta/research-learning-recovery.lino`.
@@ -341,7 +352,7 @@ tools.
 
 The native backend embeds the `link-cli` library and mirrors each `MemoryEvent`
 into its file-mapped `doublets-rs` links network using the
-`Type -> SubType -> Value` reduction in `src/link_store.rs`. Every mutation is
+`Type -> SubType -> Value` reduction in `rust/src/link_store.rs`. Every mutation is
 wrapped by `GenericTransactionsDecorator`; its fsynced transition-log sidecar
 commits or rolls back the complete event projection and recovers interrupted
 writes when the database reopens. The HTTP server owns a binary `.links`
@@ -357,7 +368,7 @@ documents are rejected before the store is mutated. Exporting the native store
 writes the same stable `.lino` event log that the CLI, HTTP, Telegram, and
 browser surfaces use for portability.
 
-Browser storage remains compatible with `doublets-web`: `src/web/memory.js`
+Browser storage remains compatible with `doublets-web`: `js/memory.js`
 uses IndexedDB for the event object store, reports `doublets-web` when a
 browser doublets implementation is available, and otherwise keeps the
 `indexeddb-lino-mirror` fallback. The browser and native stores therefore
@@ -388,7 +399,7 @@ Implemented migration surface:
 
 When the local memory does not contain enough evidence to satisfy a prompt,
 the solver follows the **source cache protocol** (see
-`tests/unit/specification/source_cache.rs`):
+`rust/tests/unit/specification/source_cache.rs`):
 
 - check the local `source_cache` for an entry under
   `source:wikipedia:<lang>:<slug>` (or `source:wikidata:<P|Q-id>` / 
@@ -408,9 +419,9 @@ cache."
 Structured factual prompts — "what is the capital of France?", "столица
 Германии", "भारत की राजधानी", "中国的首都" — are answered by a dedicated
 reasoning pipeline that combines the seed cache with live Wikidata calls.
-The pipeline is implemented in `src/web/formal_ai_worker.js` as
+The pipeline is implemented in `js/worker/formal_ai_worker.js` as
 `parseFactQuestion` + `tryFactQuery` and mirrored in Rust as
-`src/solver_handlers/benchmark_prompts.rs::try_fact_lookup` (the offline
+`rust/src/solver_handlers/benchmark_prompts.rs::try_fact_lookup` (the offline
 solver uses the seed exclusively; the browser worker reaches the live API
 on cache miss).
 
@@ -480,13 +491,13 @@ per phrase. Selection happens in step 6.
 
 The current implementation has two cooperating formalization layers:
 
-- `src/concepts.rs` handles seed concept lookup through explicit aliases and
+- `rust/src/concepts.rs` handles seed concept lookup through explicit aliases and
   context hints.
-- `src/translation/formalization.rs` handles arbitrary prompt fragments with
+- `rust/src/translation/formalization.rs` handles arbitrary prompt fragments with
   a deterministic multilingual label table, concept-seed Q-id reuse, scored
   Wikidata P/Q anchors, and explicit Wikipedia/Wiktionary/raw fallbacks.
 
-`src/solver.rs` records the selected formalization as `formalization:*`
+`rust/src/solver.rs` records the selected formalization as `formalization:*`
 events before local search, including typed links such as
 `formalization:predicate_p:wikidata:P31`,
 `formalization:subject_q:wikidata:Q89`, and
@@ -507,7 +518,7 @@ P(c_i) = exp(score_i / T) / Σ exp(score_j / T)
 - `T = 0`  → deterministic; the highest-scored candidate always wins.
 - `T = 1`  → maximum configured exploration across the scored candidates.
 
-The temperature is sourced from `SolverConfig`. `src/translation/selection.rs`
+The temperature is sourced from `SolverConfig`. `rust/src/translation/selection.rs`
 normalizes 0..1000 formalization scores to 0.0..1.0, applies a stable
 softmax, and uses a content-hash-seeded draw whenever the solver must guess
 under ambiguity. This keeps the same prompt + same config deterministic.
@@ -521,7 +532,7 @@ If the top-two probabilities are within ε (configurable through
 - otherwise, emits a clarifying-question intent (the smallest question that
   separates the candidates) and stops the pipeline until the user replies.
 
-The seeded-from-impulse-hash draw in `src/translation/selection.rs` keeps
+The seeded-from-impulse-hash draw in `rust/src/translation/selection.rs` keeps
 guessing deterministic per prompt, so the same input + same config produces the
 same answer.
 
@@ -530,7 +541,7 @@ same answer.
 ## 6.1 Symbolic Probability Evidence
 
 Issue #279 adds a narrow probabilistic layer without changing the project's
-non-neural boundary. `src/probability.rs` stores evidence as ordinary
+non-neural boundary. `rust/src/probability.rs` stores evidence as ordinary
 append-only records:
 
 ```text
@@ -634,7 +645,7 @@ in. The full analysis is archived in `docs/case-studies/issue-449/`.
 
 The solver follows the universal loop documented in `VISION.md` (Section
 "Universal Problem-Solving Algorithm"). The implementation is in
-`src/solver.rs`:
+`rust/src/solver.rs`:
 
 1. **Impulse** — an `impulse` event is appended through `EventLog::append`.
 2. **Formalization** — alias resolution plus P/Q-id lookup with fallbacks.
@@ -668,7 +679,7 @@ units, preconditions, and effects belong in data.
 
 The complete rationale and promotion test live in
 `docs/design/minimal-core-boundary.md`. The source-level ledger recursively
-covers `src/solver_handlers/**/*.rs`; `scripts/check-minimal-core-boundary.rs`
+covers `rust/src/solver_handlers/**/*.rs`; `scripts/check-minimal-core-boundary.rs`
 rejects unreviewed files, expanded migration debt, or stale lowered baselines.
 This is a burn-down boundary, not a claim that mixed handlers are already core.
 
@@ -685,8 +696,8 @@ The pipeline has three pieces:
    repository, primary language, weighted statements, English/Russian
    localisations, topic label, and aliases for each project. The seed file is
    embedded at compile time and parsed once per process via
-   `src/seed/projects.rs::projects_registry()`.
-2. **Formalize → summarize → deformalize pipeline.** `src/summarization/mod.rs`
+   `rust/src/seed/projects.rs::projects_registry()`.
+2. **Formalize → summarize → deformalize pipeline.** `rust/src/summarization/mod.rs`
    exposes a deterministic three-stage pipeline. `formalize` (or
    `Statement::from_seed`) turns free-form prose or curated statements into a
    homogeneous `Vec<Statement>` with a `StatementKind` (identity, purpose,
@@ -698,7 +709,7 @@ The pipeline has three pieces:
    `example`) are dropped from compressed answers; `Expand` mode appends
    Natural Semantic Metalanguage paraphrases. `deformalize` joins the
    surviving statements back into a single block of prose.
-3. **Handler integration.** The solver dispatch table in `src/solver.rs`
+3. **Handler integration.** The solver dispatch table in `rust/src/solver.rs`
    still lets `concept_lookup` answer seed concepts such as Links Notation
    first. Immediately after a concept miss, `project_lookup` handles promoted
    project aliases such as Hive Mind or link-cli, explicit GitHub/GitLab/
@@ -734,7 +745,7 @@ The same pipeline also drives four additional surfaces:
   summaries follow the same modes and caps as project, README, and dialog
   summaries.
 - **Repository-resource summaries (files and folders).**
-  `src/summarization/resource.rs` generalizes file summarization to any
+  `rust/src/summarization/resource.rs` generalizes file summarization to any
   repository resource so the solution is not file-specialized. A caller builds a
   filesystem-free `RepositoryEntry` tree (`RepositoryEntry::file` /
   `RepositoryEntry::directory`); `formalize_repository_resource` then dispatches
@@ -753,7 +764,7 @@ The same pipeline also drives four additional surfaces:
   kind) for inspectable evidence, and `summarize_repository_resource` is the
   general entry point that subsumes `summarize_repository_file` for file inputs.
 - **Summarization quality protocol (seeded sampling + 80% ratchet).**
-  `src/summarization/validation/` answers the part of issue #563 that a
+  `rust/src/summarization/validation/` answers the part of issue #563 that a
   summarizer alone cannot: *is the summarizer any good on files nobody
   optimized for?* `SamplingProtocol` fixes a seed, two files per iteration, an
   iteration bound and a stability window, and permutes the corpus with a seeded
@@ -781,7 +792,7 @@ The same pipeline also drives four additional surfaces:
   = 80` is the published floor, `ratchet_violations` enforces it together with
   monotonicity against the committed baseline
   `data/summarization/quality-baseline.lino`, and `formal-ai summarization
-  criteria | validate | ratchet` (`src/cli_summarization.rs`) is the operator
+  criteria | validate | ratchet` (`rust/src/cli_summarization.rs`) is the operator
   surface. The embedded-grammar criterion grades against its own independent
   CommonMark fence scanner, so the summarizer never grades itself.
 - **Dialog summarization.** `DialogTurn { role, text }` and
@@ -790,7 +801,7 @@ The same pipeline also drives four additional surfaces:
   lot. `summarize_dialog(turns, &config)` runs the result through
   `summarize` / `deformalize`, and `generate_chat_title(turns, language)`
   wraps it in `SummarizationMode::Topic`. `try_summarize_conversation` in
-  `src/solver_handlers/conversation_memory/conversation_summary.rs` now collects `prior_turn:user` and
+  `rust/src/solver_handlers/conversation_memory/conversation_summary.rs` now collects `prior_turn:user` and
   `prior_turn:assistant` events into `DialogTurn`s, calls `summarize_dialog`
   in `Standard` mode, and logs `summarization:mode`,
   `summarization:language`, and `chat_title` evidence alongside the
@@ -803,7 +814,7 @@ The same pipeline also drives four additional surfaces:
   `summarization:language` so the path from URL → curated record → summary
   is fully visible.
 
-The shared `DEFAULT_MAX_STATEMENTS = 30` constant in `src/summarization/mod.rs`
+The shared `DEFAULT_MAX_STATEMENTS = 30` constant in `rust/src/summarization/mod.rs`
 documents the default cap on retained statements; any caller can raise or
 lower it with `SummarizationConfig::with_max_statements`.
 
@@ -877,7 +888,7 @@ then crosses that boundary and returns the named source/support files plus an
 verified plan, while direct library callers can compile any parsed rule set via
 `compile_substitution_rules` and compare its output with the interpreter.
 
-`src/skill_compiler.rs` implements the deterministic compiler subset. The
+`rust/src/skill_compiler.rs` implements the deterministic compiler subset. The
 legacy `When ... answer ...` form still lowers into a `CompiledSkillPackage`
 with a trigger rule, a deterministic compiled handler, an E1-style
 `LinkRecord` projection, and a Links Notation export. The structured subset
@@ -891,7 +902,7 @@ explicit `Permission` records for package/tool capabilities such as
 before falling back to behavior-rule re-derivation; a replay appends
 `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the trace.
 
-`src/skill_procedure.rs` covers the prose that falls outside that typed shape
+`rust/src/skill_procedure.rs` covers the prose that falls outside that typed shape
 (E55, issue #674). It reuses `intent_formalization::ordered_requirement_spans`
 to decompose a request such as "when I paste a link, fetch its title, translate
 it to Russian, save both, and reply with the translation", then maps each
@@ -910,14 +921,14 @@ conversation prose, and the Agent planner writes and reads back the same bytes
 before claiming success.
 
 A clause with no vocabulary entry compiles nothing at all:
-`src/solver_handlers/procedure_rules.rs` answers with the named gap, appends a
+`rust/src/solver_handlers/procedure_rules.rs` answers with the named gap, appends a
 `skill_gap` event, and emits a review-only learning proposal rather than
 dropping the step. A proposal can add multilingual aliases to the durable
 capability ledger only for an existing typed operation, after a green
 regression gate and explicit human approval; it cannot silently authorize a new
 side effect.
 
-`src/associative_package.rs` is the R65 package boundary. It models
+`rust/src/associative_package.rs` is the R65 package boundary. It models
 Deep.Foundation-inspired packages in the local doublet architecture with
 package metadata, dependency links, handler records, trigger records, and
 explicit permission grants. A package can be exported/imported as Links
@@ -984,26 +995,26 @@ match_source_formatting(target, source)
      and terminal punctuation
 ```
 
-The pipeline lives under `src/translation/`:
+The pipeline lives under `rust/src/translation/`:
 
-- `src/translation/http.rs` — `HttpClient` trait. The default
+- `rust/src/translation/http.rs` — `HttpClient` trait. The default
   transport shells out to `curl` so the crate has no TLS dependency.
-- `src/translation/cache.rs` — `CachedHttpClient` persists raw
+- `rust/src/translation/cache.rs` — `CachedHttpClient` persists raw
   response bodies under `data/translation-cache/<fnv1a>.body` with a
   sibling `.url` file. Online mode is gated by `FORMAL_AI_LIVE_API`;
   offline mode reads only from the committed cache, so every test
   runs deterministically.
-- `src/translation/wiktionary.rs` — parses `{{t|...}}` / `{{t+|...}}`
+- `rust/src/translation/wiktionary.rs` — parses `{{t|...}}` / `{{t+|...}}`
   / `{{tt|...}}` / `{{перев-блок|...}}` / `{{翻譯-頂}}...{{翻譯-底}}`
   templates and splits polysemous entries by `{{trans-top|gloss}}`
   blocks.
-- `src/translation/wikidata.rs` — runs the canonical lexeme join
+- `rust/src/translation/wikidata.rs` — runs the canonical lexeme join
   (`ontolex:sense` / `wdt:P5137`) so two surfaces share a stable
   `meaning:` id regardless of which language we observe first.
-- `src/translation/meaning.rs` — `MeaningId` selector.
-- `src/translation/pipeline.rs` —
+- `rust/src/translation/meaning.rs` — `MeaningId` selector.
+- `rust/src/translation/pipeline.rs` —
   `TranslationPipeline::translate(surface, source, target)`.
-- `src/translation/formatting.rs` — `match_source_formatting` keeps
+- `rust/src/translation/formatting.rs` — `match_source_formatting` keeps
   lowercase phrases lowercase, capitalizes targets when the source
   fragment is capitalized, and only emits a terminal `? ! .` (or the
   Chinese full-width equivalents `？ ！ ．`) when the source carried
@@ -1038,7 +1049,7 @@ language-to-meta-to-same-language survival for every supported natural language
 and a directed pair round trip across en, ru, hi, and zh. Code translation uses
 the same shape and the same anti-`N * N` rule: `translate_program` never matches
 on a `(source, target)` pair. It formalizes source code into a language-neutral
-`CodeMeaning` (`src/solver_helpers/code.rs::formalize_code_meaning`) and renders that
+`CodeMeaning` (`rust/src/solver_helpers/code.rs::formalize_code_meaning`) and renders that
 meaning into the target (`render_code_meaning`), so adding a language is one
 formalizer plus one renderer, not a new pair. Because the source language never
 enters the formalizer, any pair — including ones with no hardcoded arm, such as
@@ -1046,7 +1057,7 @@ Python -> JavaScript — shares one meaning, and Rust <-> JavaScript returns to 
 same `meaning:` link.
 
 Issue #890 extends that meta-language path from simple functions to formal
-proofs. `FormalProof` (`src/proof_program.rs`) owns interval bounds, inclusive
+proofs. `FormalProof` (`rust/src/proof_program.rs`) owns interval bounds, inclusive
 flags, satisfiability, and the integer witness without owning any prose or
 program syntax. The number-constraint solver emits its canonical statement;
 `formalize_code_meaning` recovers `CodeMeaning::FormalProof`, and
@@ -1058,12 +1069,12 @@ witness at runtime before printing it. This keeps the architecture at
 one proof formalizer plus one data-defined projection per target, never one
 implementation per natural-language/programming-language pair. The browser
 compiles the same presentation-independent core into
-`src/web/wasm-worker/src/proof_translation_worker.rs`; JavaScript only extracts
+`js/wasm-worker/src/proof_translation_worker.rs`; JavaScript only extracts
 the quoted statement and target before crossing the WASM boundary. Worker 13
 supplies the script-aware target-language alias match used by Chinese requests.
 
 Issue #917 makes formal languages first-class projections of the same semantic
-layer. `src/translation/formal_statement.rs` formalizes a natural statement as
+layer. `rust/src/translation/formal_statement.rs` formalizes a natural statement as
 a Wikidata-grounded predicate plus role-qualified subject and object meanings,
 then renders that value through `data/seed/formal-language-projections.lino`.
 The catalog owns formal aliases and statement templates as well as each natural
@@ -1073,7 +1084,7 @@ pair. The inverse lookup uses both Wikidata ID and semantic role because one
 identifier can legitimately ground multiple lexicon meanings.
 
 The browser compiles the corresponding catalog interpreter into
-`src/web/wasm-worker/src/formal_statement_worker.rs` and loads the same
+`js/wasm-worker/src/formal_statement_worker.rs` and loads the same
 projection and Wikidata seed files. JavaScript only recognizes the translation
 request and crosses the WASM boundary. Both surfaces expose the stable meaning
 `statement:P31(Q89,Q3314483)`, so the issue #526 round-trip contract now covers
@@ -1103,7 +1114,7 @@ independent of GitHub Actions' detached checkout shape. A matching local
 fetching or changing the candidate commit.
 
 The Rust pipeline is the canonical implementation. The browser worker
-(`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
+(`js/worker/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
 directly because of browser CORS restrictions, so it keeps a small
 offline phrase table as a CORS-safe fallback for the GitHub Pages
 demo. The fallback returns the same `[<lang>] <surface>` placeholder
@@ -1141,7 +1152,7 @@ session. The knobs:
 
 The same prompt + same config produces the same answer. Random choices are
 seeded from the impulse content hash. The defaults live in
-`SolverConfig::default` in `src/solver.rs`; the trace-verbosity knobs
+`SolverConfig::default` in `rust/src/solver.rs`; the trace-verbosity knobs
 (`recursion_mode`, `selection_mode`, `skill_mode`) change neither routing nor
 the answer.
 
@@ -1162,7 +1173,7 @@ Every event written by the pipeline carries:
   projects;
 - a `payload` that varies by kind (Links Notation snippet).
 
-The in-process `Event` struct (`src/event_log.rs`) is deliberately minimal —
+The in-process `Event` struct (`rust/src/event_log.rs`) is deliberately minimal —
 `id`, `kind`, `payload`. Nesting depth, language, and surface are carried by
 the payload and the surrounding trace rather than by dedicated fields.
 
@@ -1194,7 +1205,7 @@ The same `FormalAiEngine` answers prompts in every surface:
   desktop and CLI configs; the older `/v1/graph` alias still resolves but is
   flagged deprecated in favor of `/v1/network`.
 - **Desktop shell** — `desktop/main.cjs` starts the same local
-  `formal-ai serve` API on loopback, serves the existing `src/web` chat, and
+  `formal-ai serve` API on loopback, serves the existing `js` chat, and
   exposes a preload bridge for API, links-network, full-memory, and permission
   status.
 - **Telegram bot** — `POST /telegram/webhook` (webhook) or
@@ -1237,10 +1248,10 @@ The same `FormalAiEngine` answers prompts in every surface:
   web/`vscode.dev` host runs the in-process WASM engine. Marketplace and Open
   VSX publication is tracked by issue
   [#666](https://github.com/link-assistant/formal-ai/issues/666).
-- **Browser demo** — `src/web/formal_ai_worker.js` (a small loader shim) plus
+- **Browser demo** — `js/worker/formal_ai_worker.js` (a small loader shim) plus
   the solver logic it `importScripts`-loads from
-  `src/web/worker/formal_ai_worker_00.js` … `_23.js`, alongside the WebAssembly
-  worker built from `src/web/wasm-worker/src/lib.rs`.
+  `js/worker/formal_ai_worker_00.js` … `_23.js`, alongside the WebAssembly
+  worker built from `js/wasm-worker/src/lib.rs`.
 
 Rust/WASM owns deterministic domain primitives that must match the native
 solver byte-for-byte: prompt normalization, language detection, arithmetic
@@ -1251,26 +1262,30 @@ state, seed-file fetch/parsing, network/CORS orchestration, DOM integration,
 and compatibility fallbacks when WASM cannot be instantiated.
 
 **The browser boundary is not yet narrow, and this is the honest current
-state.** The WASM worker crate (`src/web/wasm-worker/src/`) is roughly 1,700 lines,
-while `src/web/worker/*.js` still carries roughly 27,700 lines of solver logic
-mirroring the ~90,000-line Rust core — the cross-runtime parity (E34) and
+state.** The WASM worker crate (`js/wasm-worker/src/`) is 2,156 lines,
+while `js/worker/` still carries the mirrored solver logic in 35
+JavaScript modules, every one under a shrink-only ceiling recorded in
+`data/meta/worker-line-budget/` (the 35 ceilings sum to 30,179 lines as of
+this writing) and enforced by `scripts/check-worker-line-budget.rs` toward a
+3,000-line end-state target — the cross-runtime parity (E34) and
 issue #349/#408 handlers were mirrored into JavaScript rather than absorbed
 into WASM. Pillar 18 ("Rust-to-WebAssembly parity with JavaScript reserved for
-UI/glue") therefore describes the target, not today's split. Absorbing the
-remaining worker logic into Rust→WASM — after which the JavaScript surface is
-capped and lint-enforced as UI/glue — is tracked by issue
-[#658](https://github.com/link-assistant/formal-ai/issues/658) (R380), and is
-the blocker for the npm-published engine in issue
+UI/glue") therefore describes the target, not today's split. The
+WASM-absorption epic [#658](https://github.com/link-assistant/formal-ai/issues/658)
+closed on 2026-07-18 (PR #691); what carries the absorption now is the
+shrink-only ratchet toward that end-state target, which in turn unblocks the
+npm-published engine in issue
 [#665](https://github.com/link-assistant/formal-ai/issues/665).
 
 **Standing principle (2026-08-04, R536).** JavaScript is interfacing glue
 and JSX (React) UI only. All logic is compiled Rust: native in the CLI,
 server, and desktop-managed processes; Rust→WASM in the web app. The same
 WASM web engine is reused — not reimplemented — by the desktop shell and
-the VS Code hosts. The remaining `src/web/worker/*.js` solver logic is a
+the VS Code hosts. The remaining `js/worker/*.js` solver logic is a
 transitional mirror under the shrink-only ratchet
-`scripts/check-worker-line-budget.rs`; it may only move into Rust→WASM
-(issue #658, R380), never grow.
+`scripts/check-worker-line-budget.rs`; it may only move into Rust→WASM,
+never grow, and the checker's 3,000-line `TARGET_TOTAL_LINES` is the end
+state.
 
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts
@@ -1283,7 +1298,7 @@ links-network route, and uses the browser memory import/export path for
 ## 14. GitHub Evidence Collection
 
 Issue #115 adds the first concrete operator workflow for turning external
-development traces into local, reviewable memory. `src/github_logs.rs` builds
+development traces into local, reviewable memory. `rust/src/github_logs.rs` builds
 deterministic GitHub CLI capture plans and can execute them into a case-study
 directory. `scripts/mine-hive-mind-dataset.rs` wraps that command with the
 focused Hive Mind defaults used by the issue #115 case study.
@@ -1308,7 +1323,7 @@ and run logs instead of undocumented anecdotes.
 
 ## 15. Testing Architecture
 
-Tests live under `tests/unit/specification/` and follow three patterns:
+Tests live under `rust/tests/unit/specification/` and follow three patterns:
 
 1. **Active test** — pins a current implementation behavior. Always green on CI.
 2. **Tracked requirement test** — `#[ignore = "tracked requirement: ..."]`. Documents a failing
@@ -1319,37 +1334,42 @@ Tests live under `tests/unit/specification/` and follow three patterns:
    external-file catalogs the cleanest upgrade is `datatest-stable` + YAML.
 
 The test module split is intentional: each surface or capability gets its
-own file under `tests/unit/specification/`, so a contributor adding a new category
+own file under `rust/tests/unit/specification/`, so a contributor adding a new category
 adds one file (or extends one matrix) without touching the rest.
 
 ---
 
-## 16. Open Questions
+## 16. Audit History And Current Gaps
 
 The original issue #244 architecture questions, the E1-E20 follow-up batches,
 and the reasoning batch E21-E27 are merged (PRs #305-#311). Every message is now
-formalized into a Links-Notation intent before routing (`src/intent_formalization.rs`),
-unmatched prompts run a reasoning-under-unknowns loop (`src/solver_unknown_reasoning.rs`)
+formalized into a Links-Notation intent before routing (`rust/src/intent_formalization.rs`),
+unmatched prompts run a reasoning-under-unknowns loop (`rust/src/solver_unknown_reasoning.rs`)
 instead of a canned opener, per-language program intents collapse into a parametric
-`SelectedRule::WriteProgram`, substitution rules run over link CRUD (`src/substitution.rs`),
+`SelectedRule::WriteProgram`, substitution rules run over link CRUD (`rust/src/substitution.rs`),
 natural language can query memory / call APIs / execute code under the permission
-model (`src/solver_handlers/`), a bounded isolated agent runs allowlisted commands
-(`src/agent.rs`), and a permissive industry benchmark slice is imported
+model (`rust/src/solver_handlers/`), a bounded isolated agent runs allowlisted commands
+(`rust/src/agent.rs`), and a permissive industry benchmark slice is imported
 (`data/benchmarks/industry-suite.lino`).
 
 The 2026-05-27 audit (issue #244, fourth pass) found that the largest remaining
 gap was the **generality of the synthesis step**. That gap is now closed: the
 synthesis batch **E28-E32** ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317))
 is merged (PRs #319-#323). The universal 11-step loop is still the main path for
-every prompt (`src/solver.rs::solve_with_history_probability_store_and_intent_cache`),
+every prompt (`rust/src/solver.rs::solve_with_history_probability_store_and_intent_cache`),
 but the synthesis step (`record_candidates`) now **derives** answers by composing
 decomposed sub-results over the links network instead of returning a seed keyed
 on the prompt: arithmetic/word-problem and counting answers are computed, Python
 functions are synthesized from spec + tests and verified in the bounded agent
-workspace (`src/solver_handlers/program_synthesis.rs`), text manipulation is
+workspace (`rust/src/solver_handlers/program_synthesis.rs`), text manipulation is
 generalized over arbitrary input, and the imported benchmark suite grew to a
 10-case slice that passed **10/10** with a `minimum_pass_count` ratchet (13 cases / 13-floor today — see `data/benchmarks/industry-suite.lino`)
-(`tests/unit/specification/benchmarks.rs`).
+(`rust/tests/unit/specification/benchmarks.rs`). The upstream rows of the same
+suites are HumanEval 14/164 on the full slice (`--online`, 2026-09-17) and
+MBPP 49/500 cold-offline (2026-09-18), with the 2026-09-15 first-20 rows
+(HumanEval 20/20, MBPP 20/20) kept as regression controls; `docs/status.md`
+renders every upstream suite row from the external-results ledger, and
+`docs/benchmarks.md` publishes the honest current numbers per slice.
 
 The 2026-05-29 audit (issue #244, fifth pass) found the next gap is **parity**,
 per the PR #245 feedback ("all Rust and JavaScript logic are in sync", "all
@@ -1357,48 +1377,60 @@ languages are supported equally"). The sixth-pass audit (also 2026-05-29) record
 that the parity batch is **now closed and merged**:
 
 1. **Universal multilingual operation vocabulary (E33, [#326](https://github.com/link-assistant/formal-ai/issues/326), PR #328).**
-   `src/solver_handlers/text_manipulation.rs` no longer triggers on English
+   `rust/src/solver_handlers/text_manipulation.rs` no longer triggers on English
    literals. Every operation is recognised by canonicalising the prompt against
    one shared data-driven vocabulary (`data/seed/operation-vocabulary.lino`) that
    lists each operation's surface forms per supported language (`en|ru|hi|zh`),
    mirroring how `intent-routing.lino` already works — general, not per-handler
    literals. Adding a surface form or a whole language is a seed-data edit, not a
    code change. The Rust core loads it via `seed::operation_vocabulary()`; the
-   browser worker loads the same file via `src/web/seed_loader.js`.
+   browser worker loads the same file via `js/seed_loader.js`.
 2. **Cross-runtime parity (E34, [#327](https://github.com/link-assistant/formal-ai/issues/327), PR #329).**
-   The JavaScript browser worker (`src/web/formal_ai_worker.js`) now routes
+   The JavaScript browser worker (`js/worker/formal_ai_worker.js`) now routes
    synthesis prompts through `tryLinkNativeSynthesis`, `tryProgramSynthesis`, and
    `tryTextManipulation`, deriving the same synthesis/numeric/program/text answers
    as the Rust core, verified by the shared fixture
    `data/parity/cross-runtime-synthesis.json`, the Rust test
    `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and
-   `tests/e2e/tests/issue-327.spec.js`. Mirrors the E19 [#282](https://github.com/link-assistant/formal-ai/issues/282)
+   `rust/tests/e2e/tests/issue-327.spec.js`. Mirrors the E19 [#282](https://github.com/link-assistant/formal-ai/issues/282)
    browser-worker parity precedent; WebAssembly stays the bridge for shared
    primitives and JavaScript stays UI/glue per pillar 18.
 
 With E1-E34 all merged, no vision-planning epic remains open **for issue #244
-specifically**. That statement does not mean planning is finished: two later
-batches are open, and `ROADMAP.md` tracks their requirement-level status
-(done / partial / not done):
+specifically**. That statement does not mean planning is finished: the later
+batches **E37-E55** ([#656](https://github.com/link-assistant/formal-ai/issues/656)-[#674](https://github.com/link-assistant/formal-ai/issues/674),
+from the issue [#651](https://github.com/link-assistant/formal-ai/issues/651)
+gap analysis) and **E56-E68** ([#698](https://github.com/link-assistant/formal-ai/issues/698)-[#710](https://github.com/link-assistant/formal-ai/issues/710),
+from the 2026-07-14 audit) are closed, as is the E69-E77 planning batch
+([#916](https://github.com/link-assistant/formal-ai/issues/916)-[#924](https://github.com/link-assistant/formal-ai/issues/924),
+delivered by PRs #966, #984, #986, #992, and
+[#1003](https://github.com/link-assistant/formal-ai/pull/1003)-[#1007](https://github.com/link-assistant/formal-ai/pull/1007)); `ROADMAP.md` records their requirement-level
+status and the later E78-E117 items per issue, and planning continues through
+the live open set:
 
-- **E37-E55** ([#656](https://github.com/link-assistant/formal-ai/issues/656)-[#674](https://github.com/link-assistant/formal-ai/issues/674)),
-  created from the issue [#651](https://github.com/link-assistant/formal-ai/issues/651)
-  gap analysis.
-- **E56-E68** ([#698](https://github.com/link-assistant/formal-ai/issues/698)-[#710](https://github.com/link-assistant/formal-ai/issues/710)),
-  created from the 2026-07-14 audit of every closed issue and merged PR.
+- The #559 handler-migration mandate and its ratchet
+  ([#959](https://github.com/link-assistant/formal-ai/issues/959), tracked in
+  `data/meta/core-boundary-ledger.lino`).
+- Benchmark-frontier learning
+  ([#1087](https://github.com/link-assistant/formal-ai/issues/1087)),
+  requirement-derived editing
+  ([#1088](https://github.com/link-assistant/formal-ai/issues/1088)), gate
+  collapse ([#1089](https://github.com/link-assistant/formal-ai/issues/1089)),
+  and traceability
+  ([#1090](https://github.com/link-assistant/formal-ai/issues/1090)) — the
+  follow-ups #1085 left open.
+- Dynamic coding discovery ([#710](https://github.com/link-assistant/formal-ai/issues/710),
+  PR #888 merged, plans 06/07 active) and anticipatory learning
+  ([#705](https://github.com/link-assistant/formal-ai/issues/705)).
+- Delivery breadth: PWA/npm
+  ([#665](https://github.com/link-assistant/formal-ai/issues/665)),
+  Marketplace ([#666](https://github.com/link-assistant/formal-ai/issues/666)),
+  debugger ([#667](https://github.com/link-assistant/formal-ai/issues/667)),
+  shareable packages ([#668](https://github.com/link-assistant/formal-ai/issues/668)),
+  cloud sync ([#669](https://github.com/link-assistant/formal-ai/issues/669)),
+  WebVM ([#670](https://github.com/link-assistant/formal-ai/issues/670)).
 
-The largest architectural gaps those batches own are: the #559 mandate to
-retire the specialized handlers in favour of memory + the meta algorithm
-([#663](https://github.com/link-assistant/formal-ai/issues/663),
-[#699](https://github.com/link-assistant/formal-ai/issues/699)), real upstream
-benchmark execution ([#698](https://github.com/link-assistant/formal-ai/issues/698)),
-absorbing the JavaScript worker into WASM
-([#658](https://github.com/link-assistant/formal-ai/issues/658)), symbolic
-world-model behaviors ([#702](https://github.com/link-assistant/formal-ai/issues/702)),
-and driving external agent CLIs as an orchestrator
-([#703](https://github.com/link-assistant/formal-ai/issues/703)).
-
-Issue #703's controller is rooted at `src/orchestration/`. A deny-by-default
+Issue #703's controller is rooted at `rust/src/orchestration/`. A deny-by-default
 workspace capability gates every run; the seed client registry supplies six
 structured editing and native-resume contracts; an explicitly supplied custom
 argv requires an independent executable grant even when it borrows a registered
@@ -1416,8 +1448,8 @@ A later issue #349 roadmap closed the concrete program-modification gap that the
 parity batch exposed in a user dialog: after an active program artifact exists,
 bare follow-ups such as "sort the results in reverse order" are rewritten
 against conversation history, decomposed into program modifiers, lowered through
-`src/program_plan.rs`, and traced through default-off diagnostics. The #349 flow
-is guarded by `tests/integration/issue_349_reverse_sort.rs`, the browser-worker
+`rust/src/program_plan.rs`, and traced through default-off diagnostics. The #349 flow
+is guarded by `rust/tests/integration/issue_349_reverse_sort.rs`, the browser-worker
 parity harness `experiments/issue-361-cross-runtime-parity.mjs`, the
 coding-modification benchmark ratchet, and the self-improvement specs.
 
@@ -1425,19 +1457,20 @@ Issue #408 text/code editing path extends that active-artifact behavior to
 literal user edits such as "replace Hello World with Bye world". The solver
 extracts the prior assistant artifact from conversation history when the prompt
 omits an explicit input, applies deterministic text operations from
-`src/solver_handlers/text_manipulation.rs`, and mirrors the supported operations
-in `src/web/formal_ai_worker.js`. The issue #408 benchmark matrix uses
+`rust/src/solver_handlers/text_manipulation.rs`, and mirrors the supported operations
+in `js/worker/formal_ai_worker.js`. The issue #408 benchmark matrix uses
 self-authored benchmark-family examples plus
 `data/benchmarks/text-manipulation-suite.lino`, which records 48 researched
 sources and drives 30 deterministic local variations per source through a
-1,440/1,440 pass-count ratchet. The benchmark gate reports per-source totals:
+1,440/1,440 pass-count ratchet — while the upstream instructed-editing
+analogue, CoEdIT, scores 0/20. The benchmark gate reports per-source totals:
 each source has a 3-check repository-local 10% floor and must pass the stronger
 30/30 local ratchet.
 
 Arbitrary natural-language programming beyond the trigger/response subset of
-`src/skill_compiler.rs` is closed by E55 (issue #674): the shared intent
+`rust/src/skill_compiler.rs` is closed by E55 (issue #674): the shared intent
 formalizer decomposes freely phrased procedures into ordered source-grounded
-requirements; `src/skill_procedure.rs` lowers all of them into typed operations,
+requirements; `rust/src/skill_procedure.rs` lowers all of them into typed operations,
 persists an integrity-checked executable artifact, and interprets it through a
 permissioned host. Canonical slugs give equivalent en/ru/hi/zh procedures one
 set of skill links. Unknown steps produce a named gap and an inert,
@@ -1459,7 +1492,7 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R558, plus per-issue blocks such as R499-1…R499-8 and R914-1…R914-15).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R558, plus per-issue blocks such as R499-1…R499-8, R914-1…R914-15, R1021-1…R1021-32, R1085-1…R1085-17, R1137-1…R1137-3, R710-01…R710-32, R710-D1…R710-D17, and R1138-B1…R1138-B12).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
 - [`link-foundation/link-cli`](https://github.com/link-foundation/link-cli) — default native transactional storage library.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — physical doublet store embedded by link-cli.
@@ -1487,12 +1520,12 @@ the table in Section 2 and link the new module.
   and the [DPLL algorithm](https://en.wikipedia.org/wiki/DPLL_algorithm) — the
   decision procedure the propositional engine delegates to for claims wider than
   the truth-table limit. The in-house, dependency-free DPLL search lives in
-  `src/proof_engine/decision/sat.rs`; wide claims are
+  `rust/src/proof_engine/decision/sat.rs`; wide claims are
   [Tseitin-encoded](https://en.wikipedia.org/wiki/Tseytin_transformation) to CNF
-  in `src/proof_engine/decision/boolean.rs` before being handed to it.
+  in `rust/src/proof_engine/decision/boolean.rs` before being handed to it.
 - Issue #923 widens the same decision boundary with bounded equality saturation
-  in `src/proof_engine/decision/equality.rs` and a bounded, function-free
-  Datalog least-fixed-point evaluator in `src/proof_engine/decision/rules.rs`.
+  in `rust/src/proof_engine/decision/equality.rs` and a bounded, function-free
+  Datalog least-fixed-point evaluator in `rust/src/proof_engine/decision/rules.rs`.
   Equality uses the optional MIT-licensed `egg` dependency behind the default
   `equality-saturation` feature; an exhausted e-graph search remains
   inconclusive rather than being reported as a disproof. Rule programs carry
@@ -1510,14 +1543,14 @@ the table in Section 2 and link the new module.
   planning, [truth-maintenance systems](https://en.wikipedia.org/wiki/Reason_maintenance)
   JTMS/ATMS, and [AGM belief revision](https://en.wikipedia.org/wiki/Belief_revision))
   and onto [relative-meta-logic](https://github.com/link-foundation/relative-meta-logic),
-  whose kernel already lives in `src/relative_meta_logic.rs`. Statement
+  whose kernel already lives in `rust/src/relative_meta_logic.rs`. Statement
   dependency edges and the change-driven recalculation cascade reuse
   `SubstitutionGraph::apply_rules`; the concept-by-concept status is in
   `docs/case-studies/issue-649/world-model-mapping.md`.
 
 ### Usage-weighted associative persistence (issue #686)
 
-- `src/associative_persistence.rs` keeps a **persistent** version of
+- `rust/src/associative_persistence.rs` keeps a **persistent** version of
   **meta-language expressions** saved in an **associative links network**: an
   `AssociativeMemory` stores each expression as a content-addressed node (via
   `stable_id`, so one meaning is one node) in an embedded `SubstitutionGraph`,
@@ -1536,7 +1569,7 @@ the table in Section 2 and link the new module.
   [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality)),
   and the concept-by-concept status is in
   `docs/case-studies/issue-686/persistence-mapping.md`. It generalizes the
-  read-count LFU precursor already present in `src/dreaming.rs` (`usage_counts`) and
+  read-count LFU precursor already present in `rust/src/dreaming.rs` (`usage_counts`) and
   bridges to the issue #649 world model via `AssociativeMemory::from_context`.
 
 ## Formal AI self-development release loop

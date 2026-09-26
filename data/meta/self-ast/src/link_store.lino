@@ -2,9 +2,9 @@ self_ast_census
   target src/link_store.rs
   language rust
   fidelity signature
-  byte_len 37458
+  byte_len 37453
   line_count 977
-  content_id source_module_78324fc0a2a4bd13
+  content_id source_module_de01c0f2abfab089
   symbol_count 76
   symbols
     struct DoubletLink 26 30

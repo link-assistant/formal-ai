@@ -1,0 +1,33 @@
+self_ast_census
+  target src/prerequisite/install.rs
+  language rust
+  fidelity signature
+  byte_len 16472
+  line_count 445
+  content_id source_module_75e12d0483b4c6b0
+  symbol_count 24
+  symbols
+    const WORKSPACE_TOOLCHAIN_DIR 21 21
+    const REQUIRES_BYTES_KEY 25 25
+    const FORBIDDEN_ESCALATION 29 29
+    struct WorkspaceToolchain 33 44
+    struct ProcessCapability 52 57
+    function new 62 70
+    enum InstallGrant 75 99
+    function root 104 109
+    function allows 113 120
+    function allows_execution 124 132
+    function allows_network 136 144
+    struct SetupStepObservation 149 160
+    trait SetupExecutor 164 173
+    function execute 166 172
+    struct ProcessSetupExecutor 175 175
+    function execute 178 198
+    function available_bytes 206 218
+    function required_bytes 221 228
+    function install_scoped 238 245
+    function install_scoped_observed 250 256
+    function prefix_for 258 266
+    function write_scope 268 283
+    function resolve_arguments 285 291
+    function install_scoped_with_executor 297 445

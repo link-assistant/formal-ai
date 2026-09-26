@@ -2,117 +2,124 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 17219
-  line_count 429
-  content_id source_module_3a07cb290fffd4db
-  symbol_count 32
+  byte_len 20735
+  line_count 504
+  content_id source_module_247df7ab313c3351
+  symbol_count 38
   symbols
     struct ToolAttempt 15 22
-    function is_work_item_read 27 34
-    struct Progress 38 56
-    function scan 59 158
-    function attempted_fetch_of 167 176
-    function latest_failure_of_tool 179 184
-    function identical_failures_of 188 205
-    function done 208 210
-    function count 212 217
-    function successful_count 220 225
-    function latest_successful_output 228 234
-    function successful_read_output_for 241 251
-    function attempted_write_for 253 261
-    function successful_write_for 263 272
-    function successful_write_content_for 279 287
-    function last 295 297
-    function latest_failure 301 303
-    function previous_attempt 305 307
-    function failed_write_count_for 311 323
-    function fetch_result 325 327
-    function search_result 329 331
-    function argument_path 334 340
-    function argument_content 342 348
-    function write_matches 352 356
-    function argument_targets 358 364
-    function result_capability 369 376
-    function result_tool_call 378 385
-    function fetch_call_url 387 389
-    function argument_url 391 398
-    function command_argument 400 406
-    function is_issue_view_command 408 413
-    function issue_view_url 417 429
+    function is_work_item_read 28 35
+    struct Progress 39 64
+    function scan 67 169
+    function attempted_fetch_of 178 187
+    function attempted_work_item_read_of 190 194
+    function latest_failure_of_tool 197 202
+    function identical_failures_of 206 223
+    function done 226 228
+    function count 230 235
+    function latest_successful_output 238 244
+    function latest_successful_arguments 248 254
+    function latest_success_unstalled 261 272
+    function run_count_for 275 280
+    function successful_run_count_for 283 288
+    function latest_successful_run_output_for 291 296
+    function latest_run_output_for 299 304
+    function successful_read_output_for 311 321
+    function attempted_write_for 323 331
+    function successful_write_for 333 342
+    function successful_write_content_for 349 357
+    function last 365 367
+    function latest_failure 371 373
+    function previous_attempt 375 377
+    function failed_write_count_for 381 393
+    function search_result 395 397
+    function argument_path 400 406
+    function argument_content 408 414
+    function write_matches 418 422
+    function argument_targets 424 430
+    function result_capability 435 442
+    function result_tool_call 444 451
+    function fetch_call_url 453 455
+    function argument_url 457 464
+    function command_argument 466 472
+    function run_attempt_matches 474 481
+    function is_issue_view_command 483 488
+    function issue_view_url 492 504
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 12042
-    named_node_count 2530
-    distinct_node_kinds 68
+    total_link_count 13888
+    named_node_count 2911
+    distinct_node_kinds 69
     node_kinds
-      arguments 214
+      arguments 241
       array_expression 2
       array_type 3
-      assignment_expression 4
+      assignment_expression 3
       attribute 1
       attribute_item 1
-      binary_expression 51
-      block 55
-      call_expression 214
-      closure_expression 39
-      closure_parameters 39
+      binary_expression 61
+      block 64
+      boolean_literal 1
+      call_expression 241
+      closure_expression 47
+      closure_parameters 47
       continue_expression 2
       crate 5
       declaration_list 2
-      doc_comment 59
-      expression_statement 33
+      doc_comment 78
+      expression_statement 34
       field_declaration 15
       field_declaration_list 2
-      field_expression 234
-      field_identifier 251
+      field_expression 273
+      field_identifier 290
       field_initializer 2
       field_initializer_list 2
       for_expression 1
-      function_item 30
-      generic_type 29
-      identifier 474
-      if_expression 14
+      function_item 36
+      generic_type 31
+      identifier 537
+      if_expression 15
       impl_item 2
-      index_expression 3
+      index_expression 4
       inner_doc_comment_marker 7
-      integer_literal 4
+      integer_literal 3
       let_chain 3
-      let_condition 8
-      let_declaration 29
-      line_comment 66
+      let_condition 9
+      let_declaration 30
+      line_comment 88
       macro_invocation 2
       mutable_specifier 12
-      outer_doc_comment_marker 52
-      parameter 29
-      parameters 30
-      parenthesized_expression 4
-      primitive_type 37
-      range_expression 1
-      reference_expression 14
-      reference_type 31
-      return_expression 4
-      scoped_identifier 62
+      outer_doc_comment_marker 71
+      parameter 37
+      parameters 36
+      parenthesized_expression 6
+      primitive_type 48
+      range_expression 2
+      reference_expression 16
+      reference_type 40
+      return_expression 5
+      scoped_identifier 66
       scoped_type_identifier 7
-      self 39
-      self_parameter 18
+      self 50
+      self_parameter 23
       shorthand_field_initializer 13
       source_file 1
-      string_content 19
-      string_literal 19
+      string_content 18
+      string_literal 18
       struct_expression 2
       struct_item 2
-      super 42
+      super 47
       token_tree 6
       try_expression 8
-      tuple_expression 2
-      tuple_pattern 1
-      tuple_struct_pattern 10
-      tuple_type 1
-      type_arguments 29
-      type_identifier 77
-      unary_expression 18
+      tuple_expression 3
+      tuple_pattern 2
+      tuple_struct_pattern 12
+      tuple_type 2
+      type_arguments 31
+      type_identifier 83
+      unary_expression 17
       use_declaration 3
-      visibility_modifier 35
+      visibility_modifier 39

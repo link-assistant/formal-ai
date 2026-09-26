@@ -1,0 +1,319 @@
+meanings
+  concept_lookup_unresolved
+    defined-by output
+    role output_display_request
+    precondition "A concept lookup completed and no consulted source produced a sense."
+    effect "Name the surface and every consulted source outcome without inventing a meaning."
+    unit "count"
+    example "No consulted source defined the surface."
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_unresolved_en
+    defined-by concept_lookup_unresolved
+    language en
+    role output_display_request
+    precondition "A concept lookup completed and no consulted source produced a sense."
+    effect "Report the unresolved surface and consulted outcomes in English."
+    unit "count"
+    example "No consulted source defined the surface."
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_unresolved_ru
+    defined-by concept_lookup_unresolved
+    language ru
+    role output_display_request
+    precondition "A concept lookup completed and no consulted source produced a sense."
+    effect "Report the unresolved surface and consulted outcomes in Russian."
+    unit "count"
+    example "Ни один источник не определил поверхность."
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_unresolved_hi
+    defined-by concept_lookup_unresolved
+    language hi
+    role output_display_request
+    precondition "A concept lookup completed and no consulted source produced a sense."
+    effect "Report the unresolved surface and consulted outcomes in Hindi."
+    unit "count"
+    example "किसी स्रोत ने सतह को परिभाषित नहीं किया।"
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_unresolved_zh
+    defined-by concept_lookup_unresolved
+    language zh
+    role output_display_request
+    precondition "A concept lookup completed and no consulted source produced a sense."
+    effect "Report the unresolved surface and consulted outcomes in Chinese."
+    unit "count"
+    example "没有来源定义该词。"
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_unresolved_es
+    defined-by concept_lookup_unresolved
+    language es
+    role output_display_request
+    precondition "A concept lookup completed and no consulted source produced a sense."
+    effect "Report the unresolved surface and consulted outcomes in Spanish."
+    unit "count"
+    example "Ninguna fuente definió el término."
+    grounding "src/concept_lookup.rs::lookup_surface"
+  concept_lookup_resolved
+    defined-by output
+    role output_display_request
+    precondition "A concept lookup produced a licensed sense from captured source bytes."
+    effect "Quote the gloss and attribute its URL, digest and license."
+    unit "count"
+    example "The surface is defined with an attributed source digest."
+    grounding "src/solver_unknown_reasoning.rs::answer_from_retrieved_senses"
+  response_concept_lookup_resolved_en
+    defined-by concept_lookup_resolved
+    language en
+    role output_display_request
+    precondition "A concept lookup produced a licensed sense from captured source bytes."
+    effect "Quote and attribute the sense in English."
+    unit "count"
+    example "The surface is defined with an attributed source digest."
+    grounding "src/solver_unknown_reasoning.rs::answer_from_retrieved_senses"
+  response_concept_lookup_resolved_ru
+    defined-by concept_lookup_resolved
+    language ru
+    role output_display_request
+    precondition "A concept lookup produced a licensed sense from captured source bytes."
+    effect "Quote and attribute the sense in Russian."
+    unit "count"
+    example "Значение приведено с источником и хешем."
+    grounding "src/solver_unknown_reasoning.rs::answer_from_retrieved_senses"
+  response_concept_lookup_resolved_hi
+    defined-by concept_lookup_resolved
+    language hi
+    role output_display_request
+    precondition "A concept lookup produced a licensed sense from captured source bytes."
+    effect "Quote and attribute the sense in Hindi."
+    unit "count"
+    example "अर्थ स्रोत और हैश के साथ दिया गया है।"
+    grounding "src/solver_unknown_reasoning.rs::answer_from_retrieved_senses"
+  response_concept_lookup_resolved_zh
+    defined-by concept_lookup_resolved
+    language zh
+    role output_display_request
+    precondition "A concept lookup produced a licensed sense from captured source bytes."
+    effect "Quote and attribute the sense in Chinese."
+    unit "count"
+    example "释义附有来源和哈希。"
+    grounding "src/solver_unknown_reasoning.rs::answer_from_retrieved_senses"
+  response_concept_lookup_resolved_es
+    defined-by concept_lookup_resolved
+    language es
+    role output_display_request
+    precondition "A concept lookup produced a licensed sense from captured source bytes."
+    effect "Quote and attribute the sense in Spanish."
+    unit "count"
+    example "La definición incluye la fuente y su huella."
+    grounding "src/solver_unknown_reasoning.rs::answer_from_retrieved_senses"
+  concept_lookup_sources_heading
+    defined-by output
+    role output_display_request
+    precondition "A concept lookup answer lists its consulted or contributing sources."
+    effect "Introduce the source list in the response language."
+    unit "count"
+    example "Sources:"
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_sources_heading_en
+    defined-by concept_lookup_sources_heading
+    language en
+    role output_display_request
+    precondition "A concept lookup answer lists sources."
+    effect "Introduce the source list in English."
+    unit "count"
+    example "Sources:"
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_sources_heading_ru
+    defined-by concept_lookup_sources_heading
+    language ru
+    role output_display_request
+    precondition "A concept lookup answer lists sources."
+    effect "Introduce the source list in Russian."
+    unit "count"
+    example "Источники:"
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_sources_heading_hi
+    defined-by concept_lookup_sources_heading
+    language hi
+    role output_display_request
+    precondition "A concept lookup answer lists sources."
+    effect "Introduce the source list in Hindi."
+    unit "count"
+    example "स्रोत:"
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_sources_heading_zh
+    defined-by concept_lookup_sources_heading
+    language zh
+    role output_display_request
+    precondition "A concept lookup answer lists sources."
+    effect "Introduce the source list in Chinese."
+    unit "count"
+    example "来源："
+    grounding "src/concept_lookup.rs::lookup_surface"
+  response_concept_lookup_sources_heading_es
+    defined-by concept_lookup_sources_heading
+    language es
+    role output_display_request
+    precondition "A concept lookup answer lists sources."
+    effect "Introduce the source list in Spanish."
+    unit "count"
+    example "Fuentes:"
+    grounding "src/concept_lookup.rs::lookup_surface"
+  concept_lookup_citation
+    defined-by output
+    role output_display_request
+    precondition "A retrieved concept sense has source, license and digest provenance."
+    effect "Render one complete source citation without dropping provenance."
+    unit "count"
+    example "Source URL, license and sha256 digest."
+    grounding "src/concept_lookup.rs::ConceptSense::to_links_notation"
+  response_concept_lookup_citation_en
+    defined-by concept_lookup_citation
+    language en
+    role output_display_request
+    precondition "A retrieved concept sense has provenance."
+    effect "Render the citation in English."
+    unit "count"
+    example "Source URL, license and sha256 digest."
+    grounding "src/concept_lookup.rs::ConceptSense::to_links_notation"
+  response_concept_lookup_citation_ru
+    defined-by concept_lookup_citation
+    language ru
+    role output_display_request
+    precondition "A retrieved concept sense has provenance."
+    effect "Render the citation in Russian."
+    unit "count"
+    example "URL источника, лицензия и sha256."
+    grounding "src/concept_lookup.rs::ConceptSense::to_links_notation"
+  response_concept_lookup_citation_hi
+    defined-by concept_lookup_citation
+    language hi
+    role output_display_request
+    precondition "A retrieved concept sense has provenance."
+    effect "Render the citation in Hindi."
+    unit "count"
+    example "स्रोत URL, लाइसेंस और sha256।"
+    grounding "src/concept_lookup.rs::ConceptSense::to_links_notation"
+  response_concept_lookup_citation_zh
+    defined-by concept_lookup_citation
+    language zh
+    role output_display_request
+    precondition "A retrieved concept sense has provenance."
+    effect "Render the citation in Chinese."
+    unit "count"
+    example "来源网址、许可证和 sha256。"
+    grounding "src/concept_lookup.rs::ConceptSense::to_links_notation"
+  response_concept_lookup_citation_es
+    defined-by concept_lookup_citation
+    language es
+    role output_display_request
+    precondition "A retrieved concept sense has provenance."
+    effect "Render the citation in Spanish."
+    unit "count"
+    example "URL de la fuente, licencia y sha256."
+    grounding "src/concept_lookup.rs::ConceptSense::to_links_notation"
+  concept_lookup_offline_miss
+    defined-by output
+    role output_display_request
+    precondition "Live retrieval is disabled and no capture exists for the concept surface."
+    effect "State the offline boundary and name the sources that lacked captures."
+    unit "count"
+    example "The lookup was not attempted because no cached capture exists."
+    grounding "src/source_walk.rs::observe_failure"
+  response_concept_lookup_offline_miss_en
+    defined-by concept_lookup_offline_miss
+    language en
+    role output_display_request
+    precondition "The concept lookup has only offline cache misses."
+    effect "State the offline boundary in English."
+    unit "count"
+    example "No cached capture was available."
+    grounding "src/source_walk.rs::observe_failure"
+  response_concept_lookup_offline_miss_ru
+    defined-by concept_lookup_offline_miss
+    language ru
+    role output_display_request
+    precondition "The concept lookup has only offline cache misses."
+    effect "State the offline boundary in Russian."
+    unit "count"
+    example "Сохранённая копия недоступна."
+    grounding "src/source_walk.rs::observe_failure"
+  response_concept_lookup_offline_miss_hi
+    defined-by concept_lookup_offline_miss
+    language hi
+    role output_display_request
+    precondition "The concept lookup has only offline cache misses."
+    effect "State the offline boundary in Hindi."
+    unit "count"
+    example "सहेजी हुई प्रति उपलब्ध नहीं है।"
+    grounding "src/source_walk.rs::observe_failure"
+  response_concept_lookup_offline_miss_zh
+    defined-by concept_lookup_offline_miss
+    language zh
+    role output_display_request
+    precondition "The concept lookup has only offline cache misses."
+    effect "State the offline boundary in Chinese."
+    unit "count"
+    example "没有可用的缓存记录。"
+    grounding "src/source_walk.rs::observe_failure"
+  response_concept_lookup_offline_miss_es
+    defined-by concept_lookup_offline_miss
+    language es
+    role output_display_request
+    precondition "The concept lookup has only offline cache misses."
+    effect "State the offline boundary in Spanish."
+    unit "count"
+    example "No había una captura guardada."
+    grounding "src/source_walk.rs::observe_failure"
+  concept_lookup_disabled
+    defined-by output
+    role output_display_request
+    precondition "A registry source is disabled by its declared settings key."
+    effect "Name the skipped source and setting without contacting it."
+    unit "count"
+    example "The source was not consulted because its setting is disabled."
+    grounding "src/source_walk.rs::skipped_sources"
+  response_concept_lookup_disabled_en
+    defined-by concept_lookup_disabled
+    language en
+    role output_display_request
+    precondition "A concept source is disabled."
+    effect "Name the skipped source and setting in English."
+    unit "count"
+    example "The source was not consulted."
+    grounding "src/source_walk.rs::skipped_sources"
+  response_concept_lookup_disabled_ru
+    defined-by concept_lookup_disabled
+    language ru
+    role output_display_request
+    precondition "A concept source is disabled."
+    effect "Name the skipped source and setting in Russian."
+    unit "count"
+    example "Источник не проверялся."
+    grounding "src/source_walk.rs::skipped_sources"
+  response_concept_lookup_disabled_hi
+    defined-by concept_lookup_disabled
+    language hi
+    role output_display_request
+    precondition "A concept source is disabled."
+    effect "Name the skipped source and setting in Hindi."
+    unit "count"
+    example "स्रोत की जाँच नहीं की गई।"
+    grounding "src/source_walk.rs::skipped_sources"
+  response_concept_lookup_disabled_zh
+    defined-by concept_lookup_disabled
+    language zh
+    role output_display_request
+    precondition "A concept source is disabled."
+    effect "Name the skipped source and setting in Chinese."
+    unit "count"
+    example "未查阅该来源。"
+    grounding "src/source_walk.rs::skipped_sources"
+  response_concept_lookup_disabled_es
+    defined-by concept_lookup_disabled
+    language es
+    role output_display_request
+    precondition "A concept source is disabled."
+    effect "Name the skipped source and setting in Spanish."
+    unit "count"
+    example "No se consultó la fuente."
+    grounding "src/source_walk.rs::skipped_sources"

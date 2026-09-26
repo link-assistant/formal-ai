@@ -1,0 +1,2156 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.248Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.248Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Give me a line in Hindi. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QGMSwssrBy",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.249Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QGMSwssrBy",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.249Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QGMSwssrBy",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.259Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Give me a line in Hindi.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Give me a line in Hindi.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.259Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.260Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.261Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.261Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.264Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.264Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QGMSwssrBy/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.267Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 5643,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.267Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.280Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:17:47.284Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 25,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:17:47.285Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.290Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.290Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.290Z",
+  "service": "session",
+  "id": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QGMSwssrBy",
+  "title": "New session - 2026-09-16T03:17:47.290Z",
+  "time": {
+    "created": 1789528667290,
+    "updated": 1789528667290
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.291Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.291Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.291Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.291Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.291Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c78b65ffePg8U0cCui4jvzm/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.291Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c78b65ffePg8U0cCui4jvzm/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.294Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c78b65ffePg8U0cCui4jvzm/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.298Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.299Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.299Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.299Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.299Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.299Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.299Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.299Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.300Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.300Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.460Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.462Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.463Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.471Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.477Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.482Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.482Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.482Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.482Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528667923,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a83877100019QnB70TIxqRT6X",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8387545001imKsks4o5eEEEG",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528667924,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8387713002NlKrViJufK99M1",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8387545001imKsks4o5eEEEG",
+    "type": "tool",
+    "callID": "call_2af035513a4aaacf",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528667924,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8387713001bdE6aNdJdRuN6W",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8387545001imKsks4o5eEEEG",
+    "type": "text",
+    "text": "Let me search the web for Give me a line in Hindi.",
+    "time": {
+      "start": 1789528667924,
+      "end": 1789528667924
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:47.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528667924,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8387713002NlKrViJufK99M1",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8387545001imKsks4o5eEEEG",
+    "type": "tool",
+    "callID": "call_2af035513a4aaacf",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Give me a line in Hindi"
+      },
+      "time": {
+        "start": 1789528667924
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.699Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528670699,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8387713002NlKrViJufK99M1",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8387545001imKsks4o5eEEEG",
+    "type": "tool",
+    "callID": "call_2af035513a4aaacf",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Give me a line in Hindi"
+      },
+      "output": "Title: One Line Status in Hindi: 80 Short Lines for WhatsApp | Lovely\nURL: https://www.lovelydesign.in/blog/one-line-status-in-hindi\nPublished: 2026-09-05T00:00:00.000Z\nAuthor: Lovely\nHighlights:\n# One Line Status in Hindi: 80 Short Lines for WhatsApp\n...\n80 original one line status in Hindi and roman, grouped by who will actually read it — everyone, one person, or the one who will know. Tap to copy.\n...\n80 original one-line status lines in Hindi and roman, grouped by who is going to read them rather than by mood: lines for everyone, lines aimed at one person, and lines for the one person who will know instantly that it is about them. That third group is the actual reason most people post a one-liner, and almost no page names it. Tap any line to copy — Devanagari comes with it where it exists.\n...\nThe banks below are sorted that way. Length rules apply throughout: under roughly 60 roman characters shows fully, under 32 works on the big coloured-background font, and Devanagari takes more visual width for the same idea — so roman for the box, Devanagari for the message. WhatsApp status shayari goes deeper on that measurement if you want it.\n...\n## For everyone — no address, no explanation (20)\n...\nDin nikla. Bas itna kaafi hai.दिन निकला। बस इतना काफ़ी है।\n...\nKam bolo, theek bolo.कम बोलो, ठीक बोलो।\n...\nJo chal raha hai, chalne do.जो चल रहा है, चलने दो।\n...\nAaj ka kaam aaj.आज का काम आज।\n...\nThak gaya hoon, ruka nahi hoon.थक गया हूँ, रुका नहीं हूँ।\n...\nShaant rehna bhi mehnat hai.शांत रहना भी मेहनत है।\n...\nJaldi ka koi inaam nahi.जल्दी का कोई इनाम नहीं।\n...\nAcha waqt bhi waqt hi hai.अच्छा वक़्त भी वक़्त ही है।\n...\nHar sawaal ka jawab aaj nahi.हर सवाल का जवाब आज नहीं।\n...\nChalna hai, daudna zaroori nahi\n...\nचलना है, दौड़ना ज़रूरी नहीं।\n...\nJo mila, woh thoda nahi tha.जो मिला, वो थोड़ा नहीं था।\n...\nKaam bolega, main nahi.काम बोलेगा, मैं नहीं।\n...\nNeend poori, baaki sab theek.नींद पूरी, बाक़ी सब ठीक।\n...\nRoz thoda, hamesha ke liye.रोज़ थोड़ा, हमेशा के लिए।\n...\nGalti maani, aage badh gaya.ग़लती मानी, आगे बढ़ गया।\n...\nBheed mein bhi apna raasta.भीड़ में भी अपना रास्ता।\n...\nShukriya, bina shart.शुक्रिया, बिना शर्त।\n...\nKal par chhoda, bhoola nahi.कल पर छोड़ा, भूला नहीं।\n...\nMushkil hai, namumkin nahi.मुश्किल है, नामुमकिन नहीं।\n...\nSaans lo. Baaki baad mein.साँस लो। बाक़ी बाद में।\n...\n## For one person — a direction, no name (18)\n...\nKuch log din theek kar dete hain.कुछ लोग दिन ठीक कर देते हैं।\n...\nEk message poora hafta badal deta hai.एक मैसेज पूरा हफ़्ता बदल देता है।\n...\nJinki aadat ho jaaye, unhein batana chahiye\n...\nहो जाए, उन्हें बताना चाहिए।\n...\nAaj ek shukriya baaki hai.आज एक शुक्रिया बाक़ी है।\n...\n## For the one who will know (16)\n...\nJise pata hai, use bata\n...\nउसे बता नहीं रहा।\n...\n## Devanagari one-liners (14)\n...\nKhamoshi bhi ek bhasha hai, bas seekhni padti hai.ख़ामोशी भी एक भाषा है, बस सीखनी पड़ती है।\n...\n## Under 30 characters — for the coloured background (12)\n...\nChalte raho.\n...\nAaj sirf shukriya.\n...\n, saaf\n...\n### What makes a good one line status in Hindi?\n...\nOne idea, no explanation, and no\n...\npping up the first. A one-liner\n...\nfinishes it and feels something\n\n---\n\nTitle: 207+ वन लाइन कोट्स | One Line Quotes 2026\nURL: https://hindiiquotes.com/one-line/\nPublished: 2026-05-26T00:00:00.000Z\nAuthor: asharrprivate\nHighlights:\nकभी-कभी जो बात हम घंटों में नहीं कह पाते, वो एक लाइन में कह दी जाती है। बस एक वाक्य, और दिल तक पहुँच जाता है। यही ताकत होती है एक अच्छे one line quotes in hindi (वन लाइन कोट्स इन हिंदी) की। चाहे WhatsApp status लगाना हो, किसी दोस्त को motivate करना हो, या बस खुद को याद दिलाना हो कि ज़िंदगी खूबसूरत है, एक सही लाइन सब काम कर देती है। यहाँ हमने अलग-अलग मूड, रिश्ते, और मौकों के लिए बेहतरीन एक लाइन के विचार इकट्ठा किए हैं। छात्र हों, नौकरीपेशा हों, प्रेमी हों या माँ-बाप, इस लेख में हर किसी के लिए कुछ न कुछ ज़रूर है। बस पढ़ते जाइए, जो दिल को छुए, उसे कॉपी करके शेयर कर दीजिए।\n...\nएक लाइन कोट्स हिंदी\n...\nके हर रंग को एक लाइन में समेटना आसान\n...\n, लेकिन कुछ शब्द होते हैं जो सीधे\n...\nजाते हैं। ये quotes उन्हीं पलों\n...\nकुछ कहना हो, लेकिन बहुत कम शब्दों में। hindiiqu\n...\n.com पर और भी\n...\nबेहतरीन विचार मिलेंगे जो आपके हर\n...\nसे match करते हैं।\n...\nजो टूट जाता है, वो सोना होता है — जो नहीं टूटता, वो पत्थर। 💎\n...\nZindagi ne diya kya, ye sochne se behtar hai — tune diya kya, yahi soch.\n...\nहर सुबह एक नई शुरुआत है, बस नज़रिया बदलने की ज़रूरत है।\n...\nWaqt badalta hai, log badal jaate hain, par apni aadat mat badalna — sach bolne ki.\n...\nजो मिला, उसमें खुश रहो। जो नहीं मिला, उसके लिए मेहनत करो। यही ज़िंदगी है।\n...\nSukoon wahan milta hai jahan expectations nahi hoti. 🌿\n...\nगिरना बुरा नहीं, रुक जाना बुरा है।\n...\nLog yaad nahi rakhte tum kya karte the, log yaad rakhte hain — tum kaisa mehsoos karate the.\n...\nसपने वो नहीं जो नींद में आएँ, सपने वो हैं जो नींद उड़ा दें। इसलिए जागते रहो। ✨\n...\nTeri muskaan meri sabse badi daulat hai.\n...\nजहाँ इरादा पक्का हो, वहाँ रास्ता खुद निकल आता है।\n...\nHaar ke baad jo uthta hai, duniya use hi\n...\nhai. 🔥\n...\nज़िंदगी किताब की तरह है — हर दिन एक नया पन्ना। 📖\n...\nAndheron se daro mat, taare andheron mein hi chamakte hain.\n...\nWaqt ek baar hi milta hai, baar baar nahi aata — isliye socho mat, karo.\n...\nएक लाइन कोट्स\n...\nएक लाइन कोट्स\n...\nएक लाइन कोट्स\n\n---\n\nTitle: Hindi Diwas Best Lines,'मानव जब जोर लगाता है, पत्थर पानी बन जाता है', हिंदी की 10 दमदार पंक्तियां, मुश्किल घड़ी में देती हैं ताकत - manav jab jor lagata hai pathar pani ban jata hai poem rashmirathi 10 powerful lines by ramdhari singh dinkar - Gk update News - Navbharat Times\nURL: https://navbharattimes.indiatimes.com/education/gk-update/manav-jab-jor-lagata-hai-pathar-pani-ban-jata-hai-poem-rashmirathi-10-powerful-lines-by-ramdhari-singh-dinkar/articleshow/123827690.cms\nPublished: 2025-09-11T09:33:39.000Z\nAuthor: N/A\nHighlights:\n1. जब नाश मनुज पर छाता है, पहले विवेक मर जाता है।2. याचना नहीं, अब रण होगा, जीवन जय या कि मरण होगा।3. है कौन विघ्न ऐसा जग में, टिक सके वीर नर के मग में, खम ठोंक ठेलता है जब नर, पर्वत के जाते पांव उखड़।4. मानव जब जोर लगाता है, पत्थर पानी बन जाता है।5. सच है विपत्ति जब आती है, कायर को ही दहलाती है। सूरमा नहीं विचलित होते, क्षण एक नहीं धीरज खोते।7.सौभाग्य न सब दिन सोता है, देखें आगे क्या होता है।8 लेकिन, नौका तट छोड़ चली, कुछ पता नहीं, किस ओर चली। यह बीच नदी की धारा है, सूझता न कूल-किनारा है। ले लील भले यह धार मुझे, लौटना नहीं स्वीकार मुझे।9. तेजस्वी सम्मान खोजते नहीं गोत्र बतलाके, पाते हैं जग से प्रशस्ति अपना करतब दिखलाके।10. मित्रता बड़ा अनमोल रतन, कब इसे तोल सकता है धन, धरती की तो है क्या बिसात, आ जाय अगर वैकुण्ठ हाथ।हालांकि, वीर रस के हिंदी छंद, काव्य रचनाएं सिर्फ यहीं खत्म नहीं होते। भारत में कई वीर रस के कवि हुए हैं, जिन्होंने अपनी कलम से ऐसी रचनाएं की हैं जो दम तोड़ते इंसान में भी जान फूंक दे।\n\n---\n\nTitle: Hindi Pickup Lines: 12 Flirty Lines\nURL: https://trykaiwa.com/blog/hindi-pickup-lines-flirty-2026\nPublished: 2026-05-31T00:00:00.000Z\nAuthor: Kaiwa\nHighlights:\n| Line | Reading (romanization) | Meaning | Vibe |\n| --- | --- | --- | --- |\n| तुम्हारी आँखों में खो गया हूँ | tumhari aankhon mein kho gaya hoon | \"I'm lost in your eyes.\" | filmy / cheesy |\n| क्या तुम जादूगर हो? | kya tum jaadugar ho | \"Are you a magician? Everything else disappears.\" | playful cheesy |\n...\n| तुम बहुत खूबसूरत हो | tum bahut khoobsurat ho | \"You are very beautiful.\" | warm compliment |\n...\n| तुम्हारी smile बहुत प्यारी है | tumhari smile bahut pyaari hai | \"Your smile is really lovely.\" (Hinglish) | sincere |\n| Coffee पे चलें? | coffee pe chalein | \"Shall we go for a coffee?\" (Hinglish) | smooth, real |\n...\n| तुमसे बात करके अच्छा लगा | tumse baat karke achha laga | \"It felt nice talking to you.\" | sincere |\n...\n| क्या हम पहले मिले हैं? | kya hum pehle mile hain | \"Have we met before?\" | playful opener |\n...\n| तुम्हारी हँसी बहुत अच्छी है | tumhari hansi bahut achhi hai | \"Your laugh is really wonderful.\" | sweet |\n...\n| तुम्हारा नंबर मिल सकता है? | tumhara number mil sakta hai | \"Can I get your number?\" | direct |\n...\n| फिर मिलते हैं? | phir milte hain | \"Shall we meet again?\" | the real ask |\n...\n| तुम छुप-छुप के मेरे ख्यालों में आती हो | tum chhup-chhup ke mere khayaalon mein aati ho | \"You keep sneaking into my thoughts.\" | shayari-style |\n...\n| तुम्हारे साथ time अच्छा बीतता है | tumhare saath time achha beetta hai | \"Time passes nicely with you.\" (Hinglish) | warm |\n...\nThe breakdown: With someone you've just met, sincerity beats spectacle — and Hinglish makes it feel natural. A specific compliment like \"तुम्हारी smile बहुत प्यारी है\" (\"your smile is really lovely\") feels genuine. \"Coffee पे चलें?\" (\"shall we go for a coffee?\") is warm and low-pressure. And \"फिर मिलते हैं?\" (\"shall we meet again?\") is the honest ask once there's a spark.\n...\n1 What is a common flirty line in Hindi? \n\nA classic playful one is 'tum bahut khoobsurat ho' (you are very beautiful). Filmy lines like 'tumhari aankhon mein kho gaya hoon' (I'm lost in your eyes) are romantic and cheesy. In real life most people flirt in Hinglish, so a simple 'tumhari smile bahut pyaari hai' (your smile is really lovely) feels natural.\n\n---\n\nTitle: मैं भारत की बेटी आपकी अपनी हिंदी हूं.., देखें हिंदी दिवस की शुभकामना शायरी, कोट्स, संदेश और तस्वीरें  | Times Now Navbharat\nURL: https://www.timesnowhindi.com/lifestyle/happy-hindi-diwas-2025-ki-hardik-shubhkamnaye-wishes-images-status-quotes-vishaw-hindi-diwas-par-sandesh-or-meesages-hindi-mein-liveblog-152793157\nPublished: 2025-09-16T03:54:54.000Z\nAuthor: N/A\nHighlights:\nभारत मां के भाल पर सजी स्वर्णिम बिंदी हूं, मैं भारत की बेटी आपकी अपनी हिंदी हूं। हिंदी दिवस की शुभकामनाएं। संस्कृत और हिंदवी से उपजी हिंदी भाषा एक सूत्र में पूरे देश को पिरोती है। हिंदी के लिए महात्मा गांधी ने कहा था कि हृदय की कोई भाषा नहीं है। हृदय-हृदय से बात करता है। और हिंदी हृदय की भाषा है। इसी भाषा के सम्मान में हर साल हिंदी दिवस मनाया जाता है। यहां से अपनों को भेजें हिंदी दिवस की शुभकामनाएं: भाषा नहीं भावों की अभिव्यक्ति है हिंदी, हर हिंदुस्तानी की शक्ति है हिंदी। हिंदी दिवस की शुभकामनाएं!\n...\nदेशभर में आज हिंदी दिवस मनाया जा रहा है। साल 1949 में 14 सितंबर को संविधान सभा ने हिंदी को भारत की राजभाषा घोषित किया था। हिंदी भाषा आज जिस मुकाम पर है उसे देख हर हिंदुस्तानी गर्व करता है। दरअसल यही हिंदी है जो पूरी दुनिया में उसकी पहचान है। ना सिर्फ पहचान बल्कि हिंदी भाषा हम हिंदुस्तानियों की समृद्ध संस्कृति की भी पहचान है। हिंदी भाषा की कई रचनाओं ने पूरी दुनिया शोहरत हासिल की है। इसी भाषा को समर्पित हिंदी दिवस के इस खास मौके को और भी यादगार बनाना चाहते हैं तो आप अपनों को हिंदी दिवस की हार्दिक शुभकामनाएं भेज सकते हैं। हिंदी दिवस की बधाई भेजने में हम आपकी मदद कर रहे हैं। यहां देखें हिंदी दिवस की शुभकामना शायरी, कोट्स, संदेश, फोटोज, स्टेटस हिंदी में: Happy Hindi Diwas 2025 Wishes Shayari National Hindi Day 2025 Quotes in Hindi 1. हिंदी में बातें करना, है सच्ची अपनी पहचान,हमारी जान, हमारी शान, हिंदी से है हिन्दुस्तान!हिंदी दिवस की हार्दिक शुभकामनाएं2. हिंदी जीवन का आधार है,हमें अपनी मातृभाषा से बहुत प्यार है।हिंदी में बसे हमारे संस्कार हैं,आप सभी को हिंदी में मेरा नमस्कार है।हिंदी दिवस की शुभकामनाएं3. हिंदी हमारी शान है, हिंदी से हिन्दुस्तान है,देश की भाषा हिंदी है, हम सबका अभिमान है।हिंदी दिवस 2025 की हार्दिक शुभकामनाएं4. मां की लोरी है हिंदी,पापा की डांट है हिंदी।हिंदी भाषा नहीं जीवन का अंग है,हिंदी हर पल हमारे संग है।हिंदी दिवस की शुभकामनाएं5. हर दिल में बसे है हिंदी, हर जुबां पर ये नाम,हिंदी से ही रोशन होगा, अपना देश, अपना धाम।हिंदी दिवस की हार्दिक शुभकामनाएं\n...\nमां की लोरी है हिंदी,पापा की डांट है हिंदी।हिंदी भाषा नहीं जीवन का अंग है,हिंदी हर पल हमारे संग है।हिंदी दिवस की शुभकामनाएं\n...\nभारत मां के भाल पर सजी स्वर्णिम बिंदी हूं,मैं भारत की बेटी आपकी अपनी हिंदी हूं।हिंदी दिवस की शुभकामनाएं\n...\nमैंने गाकर दुख अपनाएकभी न मेरे मन को भाया,जब दुख मेरे ऊपर आया,मेरा दुख अपने ऊपर ले कोई मुझे बचाए!मैंने गाकर दुख अपनाए!कभी न मेरे मन को भाया,जब-जब मुझको गया रुलाया,कोई मेरी अश्रु धार में अपने अश्रु मिलाए!मैंने गाकर दुख अपनाए!पर न दबा यह इच्छा पाता,मृत्यु-सेज पर कोई आता,कहता सिर पर हाथ फिराता-’ज्ञात मुझे है, दुख जीवन में तुमने बहुत उठाये!मैंने गाकर दुख अपनाए!\n\n---\n\nTitle: 152+ Hindi Rizz Pickup Lines 😎🔥2026[updated]\nURL: https://bestrizzlins.com/hindi-rizz-pickup-lines/\nPublished: 2025-12-27T00:00:00.000Z\nAuthor: Sophia Bennett\nHighlights:\n## Funny Hindi Rizz Pickup Lines\n...\n- Tu to WiFi lagti hai, bina tune kaam hi nahi hota\n- Meri battery 1 percent pe hai, par tujhe dekh ke phir se charge ho gayi\n- Tu mil jaye to Zomato bhi bol de boss delivery done\n- Tu itni cute hai ki Google bhi bole seekh raha hoon\n- Shayad tu alarm hai, kyunki mujhe roz tere khayalon se uthna padta hai\n- Tere face pe filter nahi, factory settings lagti hain\n- Tu to traffic signal hai, kyunki main ruk ke bas tujhe hi dekh raha hoon\n- Meri life ek reel hai, tu sound ho\n- Tu milti rahe to Monday bhi festival lagta\n- Tu itni sweet hai ki dentist bhi darte honge\n- Tu halki si smile kare to sari dikkat logout ho jaye\n- Tu to AC hai, garmi me bhi thandak laye\n- Tu aa jaye to meri life buffering se HD ho jaye\n...\n## Smooth Hindi Rizz One Liners\n...\n- Tere bina din halka sa adhura lagta hai\n- Teri vibe ka koi substitute nahi\n- Main sach bolu, tu hi sabse soothing notification hai\n- Tera naam sun ke bhi smile aajati hai\n- Teri energy mere mood ko reset kar deti hai\n- Tu saamne ho to world instantly pretty lagta\n- Tere saath time slow ho jata hai, par acha wala slow\n- Tere baare me sochna bhi comfort jaisa lagta\n- Tu simple nahi, soothing ho\n- Meri calm playlist bhi tere saamne fail ho jaye\n- Tu koi moment nahi, poora vibe lagti hai\n- Tere bina chat flat lagti hai\n- Tera ek hi text aur din balanced\n...\n## Short and Sweet Hindi Rizz Lines\n...\n- Tu cute hai, bas itna kaafi hai\n- Tu aaj zyada pretty lag rahi hai\n- Tera smile calm lagta hai\n- Tu glow karti rehti hai\n- Main bas tujhe dekh ke thik ho jata hoon\n- Tu soft ho… achhe wale soft\n- Tera vibe rare hai\n- Tu ajeeb tarah se perfect hai\n- Bas rehna mere nazdeek\n- Tu wholesome lagti hai\n- Tu simple par stunning ho\n- Teri presence peaceful hai\n- Tu bas tu hi rehna\n...\n- Teri story dekh ke mann bolta hai swipe into your day\n- Tere\n...\nse zyada smooth to tera vibe hai\n...\ndekhi aur mann ne bola bookmark kar lo\n...\ntu nahi,\n...\nboost tu karte ho\n...\nmain follow kar chuka hoon\n...\n- Tu jo\n...\nkarti hai, mere\n...\nvan mil jata\n...\n- Aaj ki\n...\nhota inspired by\n...\ndekhi aur\n...\nne bol diya\n...\n- Tujhe like karna meri daily\n...\n- Teri selfie ka glow mujhe bhi reflect ho raha hai\n...\n- Teri post me peace bhi hai aur\n...\nne tujhe\n...\ndeclare kar diya\n...\n- Teri stories ka notification mere liye festival hai\n...\n- Teri aankhon me calm sea jaisa feel aata\n- Tujhe dekh ke lagta hai universe ne extra detailing ki hai\n- Meri nazrein tere paas rukna pasand karti hain\n- Tu chalti nahi, glide karti hai\n- Teri presence ek soft background score jaisi lagti hai\n- Tera face dekhte hi scene pretty ho jata\n- Tu mujhe unnecessarily happy kar deti hai\n- Tera vibe direct heart pe land karta\n- Tu dikhti nahi, chamakti hai\n- Tu aayi nahi, poora ambience change hua\n- Tujhe dekhna therapeutic jaisa lagta hai\n- Tu dhyan khinchti nahi, hold karti ho\n- Tere paas aate hi time warm lagta\n...\nsudhar diya\n...\nMere feed ka sab\n...\n, tu hi\n...\njaisa lagta\n...\n- Tu hi reason hai\n...\n- Tera presence\n...\n- Teri smile me soft warmth hai\n- Tu genuinely\n...\nlagti hai\n...\n- Tera nature calm and kind jaisa hai\n- Tu pure comfort jaisi lagti hai\n...\n- Teri presence workday better bana deti hai\n- Tu peaceful\n...\nlaati ho\n...\n- Tujhe sunna\n...\n- Tu truly\n...\nlagti ho\n...\nti hai\n- Tu\n...\n- Teri ba\n...\nhain\n- Tu naturally\n...\nti ho\n- Tera attitude soft sunshine jaisa\n...\nHindi Rizz Quotes to Impress\n...\n- Main seedha bolu, tu seriously distracting ho\n- Main try nahi kar raha, bas genuinely interested hoon\n- Agar rizz crime hota to main tujhe dekhkar wanted ho jata\n- Main guess nahi karta, mujhe tu pasand ho\n- Tu attractive hai in a dangerous way\n...\n- Mujhe lagta hai hum dono achche lagte\n- Main casual nahi, real ho\n- Tu mujhe everyday better lagti ja rahi hai\n- Main hesitate nahi kar raha, tu worth it lagti hai\n- Tu woh vibe hai jo ignore hoti hi nahi\n- Main risk le raha hoon, tu sun le\n- Tere liye effort karna easy lagta\n- Tu genuinely fascinating ho\n...\n## Hindi Rizz Pickup Lines for DMs and Chats\n...\n- Tera online aana mere mood ka green signal hai\n- Main bas ek hi baat kehna chahta hoon, tu interesting ho\n- Aaj chat karein? Mera vibe ready hai\n- Tera reply mere liye bonus round hota hai\n- Tu late-night chat ka best part ho\n- Aaj tera tone extra sweet lag raha hai\n- Main text karna nahi chah raha tha, par tu resist nahi hoti\n- Tu message kar de, main pura attention mode ho jata\n- Tere saath chat karte hi time slide ho jata\n- Main tere replies ka permanent fan ho gaya hoon\n- Tu online ho aur meri smile auto-on\n- Teri typing dots cute lagti hain\n- Tu hi reason hai main notifications on rakhta hoon\n...\n- Tu cute ho, par mujhe ignore mat karna\n- Main pasand aaun ya confuse kar du\n- Tu smart ho, par mujhe handle kar paogi?\n...\n- Main itna bhi easy nahi, par tu exception lagti ho\n- Tu shine karti ho, main stare karta hoon\n...\n- Deal pakki, tu blush karegi\n- Main charming nahi bol raha, bas confident hoon\n...\n- Tu overthink karegi, par main still like karunga\n- Meri vibe dangerous nahi, addictive hai\n- Tu long story ho, par main interested reader\n- Main casual lagta hoon, par intention clear hai\n- Tu sassy ho, mujhe pasand aaya\n- Main boring nahi, bas limited edition hoon\n...\n- Tu to glitch lagti hai, perfect beyond logic\n- Main tujhe dekh kar future ka thumbnail bana leta hoon\n- Teri vibe playlist worthy hai\n- Tu normal nahi, premium edition lagti ho\n- Main tere saath hoon to world soft focus ho jata\n- Tu bhi weird, main bhi weird, match confirmed\n- Teri\n...\nko copyright kar\n...\n- Tu hi meri calm mode activation key ho\n- Main soch raha hoon, tu kaise itni perfect ho sakti\n- Tu mujhe unexpectedly happy kar deti ho\n- Tu real life plot twist ho\n- Main destiny me trust nahi karta, par tu exception ho\n- Tu andekhi charm ho\n...\nRizz Lines\n...\nho aur mujhe softness pasand\n- Aaj tera vibe extra bright lag raha hai\n- Tu effortlessly\n...\nlagti ho\n- Tere saath convo warm ho jata\n- Tu calming ho, even on a bad day\n- Main janta hoon tu rare\n...\n- Tera presence comfortable hai\n...\n- Tu subtle sparkle\n...\n- Tujhe dekh kar din better lagta\n- Tu good energy\n...\n- Tere saath har mood soft ho jaye\n...\n- Tu genuinely pretty lagti ho aaj\n- Main tere vibe ka loyal fan hoon\n...\nHere’s\n...\nlast one for the road\n...\nTu aayi nahi, mera mood hi upgrade ho gaya\n\n---\n\nTitle: Lines in Hindi\nURL: https://www.pinterest.com/ideas/lines-in-hindi/896106393166/\nPublished: N/A\nAuthor: N/A\nHighlights:\n# Lines in hindi\n...\n[## Lines In Hindi\n...\n[## One Liners In Hindi\n\n---\n\nTitle: Happy Hindi Diwas 2025 Poems (हिंदी दिवस कविता): Kumar Vishwas Hindi Diwas Poem Koi Deewana Kehta Hai Koi Pagal Samajhta hai Hindi diwas Kavita | Times Now Navbharat\nURL: https://www.timesnowhindi.com/education/happy-hindi-diwas-2024-poems-kumar-vishwas-hindi-diwas-poem-koi-deewana-kehta-hai-koi-pagal-samajhta-hai-hindi-diwas-kavita-article-113312514\nPublished: 2025-09-11T00:00:00.000Z\nAuthor: N/A\nHighlights:\nकोई दीवाना कहता है, कोई पागल समझता है !\n...\nमगर धरती की बेचैनी को बस बादल समझता है !!\n...\nमैं तुझसे दूर कैसा हूँ, तू मुझसे दूर कैसी है !\n...\nये तेरा दिल समझता है या मेरा दिल समझता है !!\n...\nमोहब्बत एक अहसासों की पावन सी कहानी है !\n...\nकभी कबिरा दीवाना था कभी मीरा दीवानी है !!\n...\nयहाँ सब लोग कहते हैं, मेरी आंखों में आँसू हैं !\n...\nजो तू समझे तो मोती है, जो ना समझे तो पानी है !!\n...\nसमंदर पीर का अन्दर है, लेकिन रो नहीं सकता !\n...\nयह आँसू प्यार का मोती है, इसको खो नहीं सकता !!\n...\nमेरी चाहत को दुल्हन तू बना लेना, मगर सुन ले !\n...\nजो मेरा हो नहीं पाया, वो तेरा हो नहीं सकता !!\n...\nमैं किस्से को हकीक़त में बदल बैठा तो हंगामा!!",
+      "title": "Web search: Give me a line in Hindi",
+      "metadata": {},
+      "time": {
+        "start": 1789528667924,
+        "end": 1789528670693
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528670707,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a83881f00013whU0PhxVm9jvj",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8387545001imKsks4o5eEEEG",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8520,
+      "output": 94,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8614,
+      "headroom": 30242,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.708Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.709Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.716Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.716Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.717Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.717Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.717Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.717Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.718Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.718Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.737Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8614,
+  "providerTokens": 8614,
+  "estimatedInputTokens": 6084,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8520,
+    "cacheRead": 0,
+    "output": 94
+  },
+  "overflow": false,
+  "headroom": 30242,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.737Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.737Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.741Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:50.742Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:51.387Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528671387,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388498001bnPvGyQ2pmlFxE",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83882110016DQIIAhhS7WDgL",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:51.388Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:51.389Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528671389,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a838849c002P8OFcJSpTHldSK",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83882110016DQIIAhhS7WDgL",
+    "type": "tool",
+    "callID": "call_d1191529738ede9e",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:51.389Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528671389,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a838849c001nwKUu1sluImwjd",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83882110016DQIIAhhS7WDgL",
+    "type": "text",
+    "text": "Let me open https://www.lovelydesign.in/blog/one-line-status-in-hindi and read what it says.",
+    "time": {
+      "start": 1789528671389,
+      "end": 1789528671389
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:51.389Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528671389,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a838849c002P8OFcJSpTHldSK",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83882110016DQIIAhhS7WDgL",
+    "type": "tool",
+    "callID": "call_d1191529738ede9e",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.lovelydesign.in/blog/one-line-status-in-hindi"
+      },
+      "time": {
+        "start": 1789528671389
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.020Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528672021,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a838849c002P8OFcJSpTHldSK",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83882110016DQIIAhhS7WDgL",
+    "type": "tool",
+    "callID": "call_d1191529738ede9e",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.lovelydesign.in/blog/one-line-status-in-hindi"
+      },
+      "output": "One Line Status in Hindi: 80 Short Lines for WhatsApp | LovelyTemplatesExploreAll templatesAm SorryBirthday WishI Miss YouOur JourneyOur Little WorldCreate now →ResourcesBlogFAQHow it worksWhy LovelyCompanyAboutOur storyContactCollabTermsPrivacyRefundsPersonalized interactive love pages — so the thing you want to say finally looks as beautiful as it feels.© 2026 Lovely Design·Built with  so people love each other a little louder.Back to blogcommunication·5 September 2026·9 min readOne Line Status in Hindi: 80 Short Lines for WhatsApp80 original one line status in Hindi and roman, grouped by who will actually read it — everyone, one person, or the one who will know. Tap to copy.shayarihindiwhatsappmessagescommunicationFor the lines you keep deletingThings I Never Said₹49A scrollable drafts folder — scratched-out chat drafts left visible, polaroids with thought bubbles, a real 2 AM voice memo, and a &#x27;send for real&#x27; finale.See the templateReady in ~10 minutes · shares as a private link on WhatsApp\nTL;DR\n80 original one-line status lines in Hindi and roman, grouped by who is going to read them rather than by mood: lines for everyone, lines aimed at one person, and lines for the one person who will know instantly that it is about them. That third group is the actual reason most people post a one-liner, and almost no page names it. Tap any line to copy — Devanagari comes with it where it exists.\nThree audiences, not one\nSearch results for one-line status hand you a wall of five hundred lines sorted by nothing. But a one-liner is not chosen by mood. It is chosen by who you can live with reading it.\nThere are exactly three answers.\nEveryone. Your boss, your cousin, the guy who fixed your bike. These lines carry a feeling and no address. Nobody messages you afterwards asking if you are okay.\nOne person, and you do not mind the room noticing. Warmer, slightly pointed, still safe. It has a direction but no name.\nOne person who will know it is about them. This is the interesting group, and it is the one everybody actually writes for. The craft is making it read as a general mood to ninety-eight contacts and as a specific message to one. A line that fails at this becomes a complaint everyone can see, and it costs you more than posting nothing.\nThe banks below are sorted that way. Length rules apply throughout: under roughly 60 roman characters shows fully, under 32 works on the big coloured-background font, and Devanagari takes more visual width for the same idea — so roman for the box, Devanagari for the message. WhatsApp status shayari goes deeper on that measurement if you want it.\nFor everyone — no address, no explanation (20)\nDin nikla. Bas itna kaafi hai.दिन निकला। बस इतना काफ़ी है।\nKam bolo, theek bolo.कम बोलो, ठीक बोलो।\nJo chal raha hai, chalne do.जो चल रहा है, चलने दो।\nAaj ka kaam aaj.आज का काम आज।\nThak gaya hoon, ruka nahi hoon.थक गया हूँ, रुका नहीं हूँ।\nShaant rehna bhi mehnat hai.शांत रहना भी मेहनत है।\nJaldi ka koi inaam nahi.जल्दी का कोई इनाम नहीं।\nAcha waqt bhi waqt hi hai.अच्छा वक़्त भी वक़्त ही है।\nHar sawaal ka jawab aaj nahi.हर सवाल का जवाब आज नहीं।\nChalna hai, daudna zaroori nahi.चलना है, दौड़ना ज़रूरी नहीं।\nJo mila, woh thoda nahi tha.जो मिला, वो थोड़ा नहीं था।\nKaam bolega, main nahi.काम बोलेगा, मैं नहीं।\nNeend poori, baaki sab theek.नींद पूरी, बाक़ी सब ठीक।\nRoz thoda, hamesha ke liye.रोज़ थोड़ा, हमेशा के लिए।\nGalti maani, aage badh gaya.ग़लती मानी, आगे बढ़ गया।\nBheed mein bhi apna raasta.भीड़ में भी अपना रास्ता।\nShukriya, bina shart.शुक्रिया, बिना शर्त।\nKal par chhoda, bhoola nahi.कल पर छोड़ा, भूला नहीं।\nMushkil hai, namumkin nahi.मुश्किल है, नामुमकिन नहीं।\nSaans lo. Baaki baad mein.साँस लो। बाक़ी बाद में।\nFor one person — a direction, no name (18)\nThese have someone in mind. The room will feel it and will not be able to prove it. If that one person is a partner, the romantic status bank is love status in Hindi for WhatsApp.\nKuch log din theek kar dete hain.कुछ लोग दिन ठीक कर देते हैं।\nEk message poora hafta badal deta hai.एक मैसेज पूरा हफ़्ता बदल देता है।\nJinki aadat ho jaaye, unhein batana chahiye.जिनकी आदत हो जाए, उन्हें बताना चाहिए।\nSaath chalne wale kam hote hain.साथ चलने वाले कम होते हैं।\nKuch naam bina wajah ache lagte hain.कुछ नाम बिना वजह अच्छे लगते हैं।\nJo poochh leta hai, woh bahut kuch kar deta hai.जो पूछ लेता है, वो बहुत कुछ कर देता है।\nDoori badhi, keemat bhi.दूरी बढ़ी, कीमत भी।\nKuch baatein sirf ek ke saath hoti hain.कुछ बातें सिर्फ़ एक के साथ होती हैं।\nJinhein samjhana na pade, wahi apne hain.जिन्हें समझाना न पड़े, वही अपने हैं।\nAaj ek shukriya baaki hai.आज एक शुक्रिया बाक़ी है।\nAche log der se milte hain, isliye rukna.अच्छे लोग देर से मिलते हैं, इसलिए रुकना।\nJinse baat karke halka lage, woh dawa hain.जिनसे बात करके हल्का लगे, वो दवा हैं।\nHar bheed mein ek chehra dhoondhna aadat hai.हर भीड़ में एक चेहरा ढूँढना आदत है।\nKuch rishte bina shart chalte hain.कुछ रिश्ते बिना शर्त चलते हैं।\nJo bina poochhe ruk jaaye, wahi sahi hai.जो बिना पूछे रुक जाए, वही सही है।\nEk insaan ki maujoodgi bhi kaafi hai.एक इंसान की मौजूदगी भी काफ़ी है।\nJinhein farq padta hai, woh kam bolte hain.जिन्हें फ़र्क़ पड़ता है, वो कम बोलते हैं।\nMeri achi aadatein kisi ki den hain.मेरी अच्छी आदतें किसी की देन हैं।\nFor the one who will know (16)\nThe whole point of the genre. Read by everyone as a mood, read by one person as a message. Post exactly one of these at a time.\nJise pata hai, use bata nahi raha.जिसे पता है, उसे बता नहीं रहा।\nYeh line aam hai. Wajah nahi.ये लाइन आम है। वजह नहीं।\nEk naam hai jo type nahi ho raha.एक नाम है जो टाइप नहीं हो रहा।\nPadh liya na? Bas itna hi tha.पढ़ लिया न? बस इतना ही था।\nChaubees ghante, phir khud hi chala jaayega.चौबीस घंटे, फिर ख़ुद ही चला जाएगा।\nOnline dono hain. Shuruaat koi nahi karta.ऑनलाइन दोनों हैं। शुरुआत कोई नहीं करता।\nMain theek hoon — tumne poochha nahi tha.मैं ठीक हूँ — तुमने पूछा नहीं था।\nKuch log status se haal poochhte hain.कुछ लोग स्टेटस से हाल पूछते हैं।\nJawab taiyaar hai. Sawaal ka intezaar hai.जवाब तैयार है। सवाल का इंतज़ार है।\nYeh tumhare baare mein nahi hai. Theek hai, hai.ये तुम्हारे बारे में नहीं है। ठीक है, है।\nPehla akshar likha, phir mita diya.पहला अक्षर लिखा, फिर मिटा दिया।\nDarwaaza khula hai. Dastak apni.दरवाज़ा खुला है। दस्तक अपनी।\nMaine number nahi hataya. Bas lagaya nahi.मैंने नंबर नहीं हटाया। बस लगाया नहीं।\nJo dekh raha hai, samajh bhi raha hai.जो देख रहा है, समझ भी रहा है।\nEk haan se bahut kuch theek ho sakta hai.एक &#x27;हाँ&#x27; से बहुत कुछ ठीक हो सकता है।\nKeh doon? Ya aise hi rehne doon?कह दूँ? या ऐसे ही रहने दूँ?\nDevanagari one-liners (14)\nFor messages, captions and cards — where the whole line will definitely be seen and the script is the point.\nKhamoshi bhi ek bhasha hai, bas seekhni padti hai.ख़ामोशी भी एक भाषा है, बस सीखनी पड़ती है।\nJo apna hota hai, use saabit nahi karna padta.जो अपना होता है, उसे साबित नहीं करना पड़ता।\nMan bhaari ho toh chalna shuru kar do.मन भारी हो तो चलना शुरू कर दो।\nJinhein jaana tha woh gaye, jinhein rukna tha woh ruke.जिन्हें जाना था वो गए, जिन्हें रुकना था वो रुके।\nAcha insaan hona trend nahi hai, aadat hai.अच्छा इंसान होना ट्रेंड नहीं है, आदत है।\nHar din jeetna zaroori nahi, haazir rehna zaroori hai.हर दिन जीतना ज़रूरी नहीं, हाज़िर रहना ज़रूरी है।\nJo beet gaya woh sabak hai, bojh nahi.जो बीत गया वो सबक़ है, बोझ नहीं।\nKisi ka din bana dena chhota kaam nahi hai.किसी का दिन बना देना छोटा काम नहीं है।\nUmmeed rakhna kamzori nahi, himmat hai.उम्मीद रखना कमज़ोरी नहीं, हिम्मत है।\nJinse ummeed na rakho, woh kabhi niraash nahi karte.जिनसे उम्मीद न रखो, वो कभी निराश नहीं करते।\nGalti maan lena haar nahi, shuruaat hai.ग़लती मान लेना हार नहीं, शुरुआत है।\nJo sun leta hai, use bolna nahi padta.जो सुन लेता है, उसे बोलना नहीं पड़ता।\nRaasta lamba hai, isliye saath zaroori hai.रास्ता लंबा है, इसलिए साथ ज़रूरी है।\nThoda rukna bhi safar ka hissa hai.थोड़ा रुकना भी सफ़र का हिस्सा है।\nUnder 30 characters — for the coloured background (12)\nThe coloured-background status uses a much larger font. Anything longer than these wraps and loses its punch.\nChalte raho.\nAaj sirf shukriya.\nKam log, saaf baat.\nThoda ruk gaya hoon.\nSab theek. Sach mein.\nBaaki kal dekhenge.\nNaam nahi lunga.\nEk call door hoon.\nJawab pending hai.\nAadat hai, shauk nahi.\nGhar yaad aa raha hai.\nSunn raha hoon.\nThe one-liner trap\nThree ways a good short line goes wrong, all of them about audience rather than words.\n\nThe line that is actually a question. If you are posting a status because you want one particular person to reply, you have chosen the least reliable way to ask. WhatsApp will not tell you whether they read it and thought about it or read it and scrolled.\nThe line that keeps score. Anything shaped like nobody cares is a public bill. Everyone reads it, one person feels accused, and neither result is what you wanted.\nThe line posted four times this week. One-liners are cheap to write and expensive to repeat. Four in a week reads as a phase and stops carrying any weight at all.\n\nIf you want the practical version of getting a line into the box properly — the coloured background, the fonts, why some Devanagari renders badly on older Androids — how to put shayari on your WhatsApp status is the step-by-step, and WhatsApp About in Hindi covers the permanent field, which needs different lines entirely.\nWhen one line is not the format\nSometimes the reason a line will not come out right is that it is not a line. It is a whole thing you have been shortening for weeks so it fits somewhere it was never going to fit.\nThat is what Lovely&#x27;s Things I Never Said at ₹49 is for: a scrollable drafts folder where the versions you deleted stay visible on purpose — the crossed-out chat drafts, polaroids with the thought you were actually having, a real 2 AM voice memo in your own voice, and a finale that sends it all for real. About twelve minutes to build, opens from a link, no account on their side, and you can put a password on it if it is for exactly one set of eyes. When the thing you keep hinting at is warm rather than heavy, Reasons Why I Love You at ₹49 does the same job as twelve flip cards instead.\n&quot;Every one-liner I have ever written was a paragraph I gave up on,&quot; says Ganesh, Lovely&#x27;s founder. &quot;Sometimes the right move is to stop giving up on it.&quot;\nMake it yours: the one edit\nSwap one general noun for one specific one. That is the entire technique.\nBefore: Kuch log din theek kar dete hain.\r\nAfter: Kuch log 11 baje ka voice note bhej kar din theek kar dete hain.\nThe second is four words longer and still fits the box, and it can only have been written by you. The rule holds everywhere: not chai but the tapri outside your gate, not sheher but Nagpur, not raat but 2 baje. Never the full name — an initial does the same work and does not turn your status into a screenshot.\nDo it once per line. Two specific details in one one-liner and it stops being a one-liner.\nFrequently asked questions\nWhat makes a good one line status in Hindi?\nOne idea, no explanation, and no second sentence propping up the first. A one-liner works when the reader finishes it and feels something before they finish reading it. If your line needs a follow-up line to make sense, it is a message, not a status.\nShould a one line status be in Devanagari or roman?\nRoman is the safer default for the status box — it renders identically on every phone and takes less horizontal room per idea, so it survives the truncation. Devanagari is the better choice for a message, a card, or a caption where the whole line will definitely be seen.\nIs it strange to post a status meant for one specific person?\nNo — it is the single most common reason anyone posts a one-liner at all. It only goes wrong when the line reads as an accusation instead of a mood. Write it so a stranger reads a feeling and the one person reads a message, and it lands both ways.\nHow short should a one line status be?\nUnder about 60 roman characters if you want it to show fully without a tap, and under about 32 if you are using the coloured background with its much larger font. Both limits are far tighter than the 700 characters WhatsApp technically allows.\nHow do I stop a one-liner reading like a forward?\nPut one true detail in it. Not a name — a place, a time, an object. The line stops being a quote the moment it contains something only your life contains, and that swap takes about four seconds.\n\nRelated reading\n\nWhatsApp Status Shayari: 75 Hindi Lines That Fit the Box\nWhatsApp About in Hindi: 70 Short Lines Under 139 Characters\nHow to Put Shayari on Your WhatsApp Status (Without an App)\nThings I Never Said — a drafts-folder confession page, ₹49\nReasons Why I Love You — flip cards and a heart-jar bar, ₹49\nLast updated 10 September 2026LThe Lovely TeamEditorialLovely&#x27;s editorial team. A small Indian crew building tools for non-coders to make beautiful interactive love pages in five minutes — started by a founder who kept seeing the gap between people who wanted these pages and people who could build them.About Lovely →Related guidescomparisonShayari, Sher, Ghazal, Nazm: What&#x27;s Actually DifferentShayari, sher, ghazal and nazm are not synonyms. Correct definitions, one clear example of each, and why what you send on WhatsApp is a sher, not a ghazal.comparisonShayari Image or Shayari Link: Which One Gets ReadAn honest comparison of sending shayari as an image or as a link — what each does well, where both fail, and the rule that decides it in five seconds.communicationKhubsurati Par Shayari: 60 Lines to Compliment Her Properly60 original khubsurati par shayari in Hindi and Hinglish — compliments for a woman you actually know, with specifics that beat chand jaisi. Tap to copy.Ready to make one?Pick a Lovely template and ship your page in five minutes.Browse templates",
+      "title": "https://www.lovelydesign.in/blog/one-line-status-in-hindi (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528671389,
+        "end": 1789528672018
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.023Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528672023,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388716001MRs6IS2Mdu7iqS",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83882110016DQIIAhhS7WDgL",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 28135,
+      "output": 183,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 28318,
+      "headroom": 10538,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.029Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.029Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.031Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.031Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.031Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.032Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.032Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.033Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.040Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 28318,
+  "providerTokens": 28318,
+  "estimatedInputTokens": 9822,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 28135,
+    "cacheRead": 0,
+    "output": 183
+  },
+  "overflow": false,
+  "headroom": 10538,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.041Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.041Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.043Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.044Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.274Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528672274,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a83888110011oucLe7tKRTJrQ",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83887290010VWw7iTjOBVHN5",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.274Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.275Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528672275,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388812002wsPZTu7dR1Aqhj",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83887290010VWw7iTjOBVHN5",
+    "type": "tool",
+    "callID": "call_86a3df2f535382ce",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.275Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528672275,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388812001ziJF5M1ISRQnlf",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83887290010VWw7iTjOBVHN5",
+    "type": "text",
+    "text": "Let me open https://hindiiquotes.com/one-line/ and read what it says.",
+    "time": {
+      "start": 1789528672275,
+      "end": 1789528672275
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:52.275Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528672275,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388812002wsPZTu7dR1Aqhj",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83887290010VWw7iTjOBVHN5",
+    "type": "tool",
+    "callID": "call_86a3df2f535382ce",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://hindiiquotes.com/one-line/"
+      },
+      "time": {
+        "start": 1789528672275
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.430Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528673431,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388812002wsPZTu7dR1Aqhj",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83887290010VWw7iTjOBVHN5",
+    "type": "tool",
+    "callID": "call_86a3df2f535382ce",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://hindiiquotes.com/one-line/"
+      },
+      "error": "Error: Request failed with status code: 404",
+      "time": {
+        "start": 1789528672275,
+        "end": 1789528673427
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528673431,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "Error: Request failed with status code: 404",
+  "error": "Error: Request failed with status code: 404"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528673434,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388c98001QpTfKX6Ka8LAbd",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a83887290010VWw7iTjOBVHN5",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 41944,
+      "output": 137,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 42081,
+      "headroom": -3225,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.435Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.435Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.437Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.440Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.441Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.441Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.447Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 42081,
+  "providerTokens": 42081,
+  "estimatedInputTokens": 9841,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 41944,
+    "cacheRead": 0,
+    "output": 137
+  },
+  "overflow": true,
+  "headroom": -3225,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.448Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.449Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.449Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.451Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.451Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.451Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.452Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.452Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.454Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.969Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528673969,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388eb0001B6WAEE4vKC2PHb",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8388cac001cGsimEtRAVuDru",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.970Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.970Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.970Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.970Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528673970,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388eb2001KYm0id2Z06QUdX",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8388cac001cGsimEtRAVuDru",
+    "type": "text",
+    "text": "Conversation summary: Give me a line in Hindi.  Let me search the web for Give me a line in Hindi.\n\nTitle: What did we do so\n\nUser turns:\n  1. Give me a line in Hindi.\n  2.",
+    "time": {
+      "start": 1789528673970,
+      "end": 1789528673970
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.971Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528673971,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388eb300194CD37npIvCTUH",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8388cac001cGsimEtRAVuDru",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 34294,
+      "output": 172,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 34466,
+      "headroom": 4390,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.971Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.971Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.971Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.971Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.972Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528673972,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388eb3003WJJvVo0iESX2K3",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8388eb30022p8ZrXXI4OfBm1",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528673971,
+      "end": 1789528673971
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.972Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.972Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.972Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.973Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.973Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.973Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.973Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.974Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.975Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:53.975Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.052Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528674052,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388f03001Qmj2oRj5xpb8JU",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8388eb4001nY2kioCY0ABNhJ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.052Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.052Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.052Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.053Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528674053,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388f04002tmybPNYl00qMeD",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8388eb4001nY2kioCY0ABNhJ",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528674053,
+      "end": 1789528674053
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.053Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528674053,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "part": {
+    "id": "prt_0a8388f05001oTwXBLs6jlmSfl",
+    "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+    "messageID": "msg_0a8388eb4001nY2kioCY0ABNhJ",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8721,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8794,
+      "headroom": 30062,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.053Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.053Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.054Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.054Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.055Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.055Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.055Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528674055,
+  "sessionID": "ses_f57c78b65ffePg8U0cCui4jvzm"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.056Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.056Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QGMSwssrBy",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.056Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QGMSwssrBy",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.056Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QGMSwssrBy",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:54.056Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

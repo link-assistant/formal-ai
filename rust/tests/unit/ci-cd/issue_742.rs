@@ -1,0 +1,95 @@
+//! Regression coverage for issue #742's documentation publishing contract.
+
+use std::fs;
+
+use toml_edit::DocumentMut;
+
+use super::workflow_fixtures::ci_surface;
+
+fn manifest() -> String {
+    fs::read_to_string(format!("{}/Cargo.toml", env!("CARGO_MANIFEST_DIR")))
+        .expect("Cargo.toml should be readable")
+}
+
+fn release_workflow() -> String {
+    fs::read_to_string(format!(
+        "{}/../.github/workflows/release.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("release workflow should be readable")
+}
+
+#[test]
+fn docs_rs_profile_excludes_the_broken_lindera_build_script() {
+    let manifest = manifest();
+    let document = manifest
+        .parse::<DocumentMut>()
+        .expect("Cargo.toml should be valid TOML");
+    let meta_language = &document["dependencies"]["meta-language"];
+
+    assert!(
+        meta_language["optional"].as_bool() == Some(true),
+        "the transitive lindera build script can only be avoided when meta-language is optional"
+    );
+    assert!(
+        manifest.contains(
+            "default = [\"doublets-native\", \"equality-saturation\", \"meta-language\"]"
+        )
+    );
+    assert!(manifest.contains("[package.metadata.docs.rs]"));
+    assert!(manifest.contains("no-default-features = true"));
+}
+
+#[test]
+fn pull_requests_validate_the_same_dependency_profile_docs_rs_uses() {
+    // Registered as `data/meta/ci-gates/check-docs-rs-dependency-profile.lino`
+    // since issue #991; the gate's `env` is what sets `DOCS_RS`.
+    let workflow = ci_surface();
+
+    assert!(workflow.contains("DOCS_RS: 1"));
+    assert!(workflow.contains(
+        "cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features"
+    ));
+}
+
+#[test]
+fn generated_api_docs_are_published_below_the_site_docs_route() {
+    let workflow = release_workflow();
+
+    assert!(workflow.contains("mkdir -p js/docs/api"));
+    assert!(workflow.contains("cp -R target/doc/. js/docs/api/"));
+    assert!(workflow.contains("uses: actions/upload-pages-artifact@v5"));
+    assert!(workflow.contains("path: js"));
+    assert!(workflow.contains("uses: actions/deploy-pages@v5"));
+}
+
+#[test]
+fn whole_docs_task_is_fail_closed_from_validation_through_deployment() {
+    let manifest = manifest();
+    // The gate is spliced in at the lint step that runs its stage, so the
+    // offsets below still order validation, packaging and deployment the way
+    // the run does.
+    let workflow = ci_surface();
+
+    let validate = workflow
+        .find("cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features")
+        .expect("missing docs.rs-compatible validation");
+    let build = workflow
+        .find("  build:\n")
+        .expect("missing package build job");
+    let deploy = workflow
+        .find("  deploy-pages:\n")
+        .expect("missing Pages deployment job");
+
+    assert!(manifest.contains("no-default-features = true"));
+    assert!(
+        validate < build,
+        "documentation must be validated before release packaging"
+    );
+    assert!(
+        build < deploy,
+        "Pages deployment must wait for the verified package build"
+    );
+    assert!(workflow.contains("needs.build.result == 'success'"));
+    assert!(workflow.contains("needs.deploy-pages.result == 'success'"));
+}

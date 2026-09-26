@@ -1,0 +1,38 @@
+self_ast_census
+  target src/coding/program_ir.rs
+  language rust
+  fidelity signature
+  byte_len 31823
+  line_count 899
+  content_id source_module_ecfa517256db8842
+  symbol_count 29
+  symbols
+    module infer 19 19
+    module parse 22 22
+    enum ReuseMode 30 35
+    enum IrType 39 57
+    enum IrNode 61 140
+    struct ProgramIr 144 153
+    function action_cost 158 160
+    function type_check 164 176
+    function composition_notation 187 189
+    function to_links_notation 193 225
+    function from_links_notation 229 276
+    function content_id 280 285
+    struct ElaborationBounds 289 292
+    function elaborate 296 358
+    function inferred_parameters 360 375
+    function type_from_annotation 377 387
+    function argument_for 389 400
+    function neutral_literal 402 413
+    function fragment_overlap 415 420
+    function normalized_words 422 427
+    function reuse_slug 429 434
+    function node_cost 436 485
+    function node_depth 487 553
+    function push_type 555 592
+    function fragment_spine 599 729
+    function push_node 731 858
+    function push_child_node 860 863
+    function node_variant 865 880
+    function type_slug 884 899

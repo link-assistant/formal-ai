@@ -2,73 +2,73 @@ self_ast_census
   target src/agentic_coding/file_read/exact.rs
   language rust
   fidelity full_ast
-  byte_len 5565
-  line_count 148
-  content_id source_module_61d9680b1b18c9eb
+  byte_len 6709
+  line_count 176
+  content_id source_module_d61b227f7382fc85
   symbol_count 2
   symbols
-    function plan_direct_file_reads 18 119
-    function exact_line_key 125 148
+    function plan_direct_file_reads 18 147
+    function exact_line_key 153 176
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3862
-    named_node_count 788
+    total_link_count 4811
+    named_node_count 980
     distinct_node_kinds 56
     node_kinds
-      arguments 84
+      arguments 106
       array_type 2
-      binary_expression 10
-      block 17
-      call_expression 84
+      binary_expression 12
+      block 22
+      call_expression 106
       char_literal 3
-      closure_expression 12
-      closure_parameters 12
+      closure_expression 14
+      closure_parameters 14
       continue_expression 2
       crate 2
       doc_comment 11
-      expression_statement 24
-      field_expression 56
-      field_identifier 62
-      field_initializer 6
-      field_initializer_list 3
-      for_expression 1
+      expression_statement 33
+      field_expression 68
+      field_identifier 76
+      field_initializer 8
+      field_initializer_list 4
+      for_expression 2
       function_item 2
-      generic_type 3
-      identifier 194
-      if_expression 10
+      generic_type 4
+      identifier 255
+      if_expression 14
       inner_doc_comment_marker 1
       integer_literal 2
-      let_chain 4
-      let_condition 9
-      let_declaration 10
+      let_chain 5
+      let_condition 12
+      let_declaration 13
       line_comment 15
       macro_invocation 2
-      mutable_specifier 1
+      mutable_specifier 2
       outer_doc_comment_marker 10
-      parameter 7
+      parameter 8
       parameters 2
       parenthesized_expression 1
-      primitive_type 4
-      reference_expression 7
-      reference_type 7
-      return_expression 7
-      scoped_identifier 24
+      primitive_type 5
+      reference_expression 12
+      reference_type 8
+      return_expression 10
+      scoped_identifier 29
       scoped_use_list 1
       source_file 1
       string_content 7
       string_literal 7
-      struct_expression 3
+      struct_expression 4
       super 10
       token_tree 6
       try_expression 2
-      tuple_expression 3
+      tuple_expression 4
       tuple_pattern 2
-      tuple_struct_pattern 9
-      type_arguments 3
-      type_identifier 11
+      tuple_struct_pattern 12
+      type_arguments 4
+      type_identifier 13
       unary_expression 3
       unit_expression 1
       use_declaration 3

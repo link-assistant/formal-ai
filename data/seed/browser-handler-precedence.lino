@@ -1,0 +1,111 @@
+# Ordered synchronous browser-handler bindings.
+#
+# The browser worker used to repeat this inventory as an array literal in
+# js/worker/formal_ai_worker_dispatch.js.  Keeping the binding name,
+# arguments and result guards here makes one Links Notation document the
+# authority for both membership and first-match-wins order.  Child node names
+# are executable symbols rather than natural-language meaning references.
+browser_handler_precedence
+  handler tryExactMemoryQuery
+    argument_prompt
+    argument_memoryEvents
+  handler tryMemoryProgram
+    argument_prompt
+    argument_memoryEvents
+    argument_language
+  handler tryMemoryWrite
+    argument_prompt
+    argument_normalized
+    argument_memory
+  handler tryMemoryProgramGap
+    argument_prompt
+    argument_language
+  handler tryCurrentDialogueFactChecking
+    argument_prompt
+    argument_normalized
+    argument_language
+    argument_history
+  handler tryLinkNativeSynthesis
+    argument_prompt
+    argument_normalized
+  handler tryHistorical
+    argument_prompt
+    argument_history
+  handler tryResearchComparisonTable
+    argument_prompt
+    argument_normalized
+    argument_history
+  handler tryResearchResultFollowup
+    argument_prompt
+    argument_normalized
+    argument_history
+  handler tryBrainstormingRequest
+    argument_prompt
+    argument_normalized
+  handler tryRoleplayRequest
+    argument_prompt
+    argument_normalized
+  handler tryKupiSlona
+    argument_prompt
+    argument_normalized
+  handler tryCalendarReasoning
+    argument_prompt
+    argument_normalized
+    argument_userContext
+  handler tryProofRequest
+    argument_prompt
+    argument_normalized
+    argument_language
+  handler tryVerifiableTask
+    argument_prompt
+  handler tryIncompatibleUnits
+    argument_prompt
+    argument_normalized
+  handler tryPlaywrightScript
+    argument_prompt
+    argument_preferences
+    argument_language
+  handler tryWriteProgramCoreference
+    context_binding_writeProgram
+    result_intent_write_program
+    evidence_kind_write_program_coreference_rewrite
+  handler tryProgramBlueprintFromPrompt
+    argument_prompt
+    argument_responseLanguage
+    argument_preferences.blueprintComposition
+  handler tryTextManipulation
+    argument_prompt
+    argument_normalized
+    argument_history
+  handler tryNumericList
+    argument_prompt
+    argument_history
+  handler tryProgramSynthesis
+    argument_prompt
+    argument_normalized
+  handler tryCompoundInterest
+    argument_prompt
+    argument_normalized
+    argument_history
+  handler tryArithmetic
+    argument_prompt
+  handler tryJavaScriptExecution
+    argument_prompt
+  handler tryInstallationConversion
+    argument_prompt
+    argument_normalized
+  handler tryWriteProgramConcrete
+    context_binding_writeProgram
+    result_intent_write_program
+  handler tryDefinitionMerge
+    context_binding_definitionMerge
+  handler trySoftwareProjectFollowup
+    argument_prompt
+    argument_history
+  handler tryConceptLookup
+    argument_prompt
+  handler tryWriteProgram
+    context_binding_writeProgram
+  handler trySoftwareProjectRequest
+    argument_prompt
+    argument_history

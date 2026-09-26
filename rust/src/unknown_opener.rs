@@ -1,0 +1,83 @@
+//! Deterministic opener variation for the unknown-intent fallback (issue #144).
+//!
+//! The chat surface should not return the same dead-end sentence for every
+//! unknown prompt. This module picks an opener for the language from a small,
+//! deterministic pool driven by the prompt's stable hash so a given prompt
+//! always picks the same opener but different prompts can pick different ones.
+//!
+//! Issue #706: neither the pools nor the localized seed texts are enumerated in
+//! Rust any more. The pools live in `data/seed/unknown-openers.lino` and the
+//! texts in the multilingual response seeds, so a new language is a data edit.
+
+use crate::Language;
+use crate::engine::{unknown_answer, unknown_language_fallback_answer};
+use crate::web_engine_core::{
+    select_unknown_opener, unknown_opener_sentence_separators, unknown_openers_for,
+};
+
+/// Replace the leading opener of the cached seed answer with a deterministic
+/// variation. The seed answer is split on the first sentence terminator so
+/// the structured teaching instructions remain identical across variations.
+fn unknown_answer_with_variation(prompt: &str, language: &str, seed_text: &str) -> String {
+    let opener = select_unknown_opener(prompt, language);
+    let body = strip_leading_opener(seed_text, &unknown_openers_for(language));
+    if body.is_empty() {
+        return String::from(opener);
+    }
+    // CJK scripts carry sentence separation with 。 terminators and no
+    // inter-sentence space; joining with " " would inject one ("。 我") into a
+    // script that never uses one.
+    let opener_tail = opener
+        .chars()
+        .next_back()
+        .map(String::from)
+        .unwrap_or_default();
+    let body_head = body.chars().next().map(String::from).unwrap_or_default();
+    let separator =
+        if crate::coding::contains_cjk(&opener_tail) || crate::coding::contains_cjk(&body_head) {
+            ""
+        } else {
+            " "
+        };
+    format!("{opener}{separator}{body}")
+}
+
+fn strip_leading_opener(text: &str, openers: &[&str]) -> String {
+    let trimmed = text.trim_start();
+    for known in openers {
+        if let Some(rest) = trimmed.strip_prefix(known) {
+            return rest.trim_start().to_owned();
+        }
+    }
+    // Fallback: split on the first sentence boundary so the structured
+    // instructions stay intact even when the seed opener drifts. The
+    // separators are seed data so a new script can register its own.
+    for separator in unknown_opener_sentence_separators() {
+        if let Some(idx) = trimmed.find(separator) {
+            let start = idx + separator.len();
+            return trimmed[start..].trim_start().to_owned();
+        }
+    }
+    trimmed.to_owned()
+}
+
+/// Public variation selector for the English unknown answer. The Rust side
+/// uses this when no language-aware variant is needed; the worker mirrors the
+/// behaviour in JavaScript.
+#[must_use]
+pub fn unknown_answer_variation_for(prompt: &str) -> String {
+    unknown_answer_with_variation(prompt, "en", unknown_answer())
+}
+
+#[must_use]
+pub fn language_aware_unknown_answer(prompt: &str, language: Language) -> String {
+    let slug = language.slug();
+    // Issue #706: a language the registry knows but the seed has no localized
+    // `unknown` text for is a gap, not an English prompt. Both it and
+    // `Language::Unknown` get the explicit "I cannot answer in your language"
+    // text rather than a silent English substitution.
+    let Some(seed_text) = crate::seed::response_for("unknown", slug) else {
+        return String::from(unknown_language_fallback_answer());
+    };
+    unknown_answer_with_variation(prompt, slug, &seed_text)
+}
