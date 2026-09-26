@@ -1171,6 +1171,15 @@ old guard encoded the debt ("no row may claim rust renders es source
 text live"); its replacement asserts the closed state (rust→es rows
 live at token_tree, and no row anywhere owes a leaf).
 
+Two follow-ups the first CI run on the commit forced, both mechanical:
+the rule table had outgrown the 1000-line file-size gate (the generator
+split into a directory example — `main.rs` plus a pure-data `rules.rs`
+carrying `RULE_ROWS`; the regenerated seed is byte-identical), and the
+`meta_translate.rs` edit needed its self-AST census regenerated
+(`data/meta/self-ast/src/meta_translate.lino` was stale). The cheap
+gate list runs before every commit, as plan 14 says — the file-size
+gate was skipped that once and CI caught it.
+
 ## Risks
 
 1. **The restructure churns every path.** Mitigation: L1 lands as one commit
