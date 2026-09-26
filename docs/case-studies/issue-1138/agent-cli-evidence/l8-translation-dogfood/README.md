@@ -55,3 +55,8 @@ widens a gate or relaxes a check. Session transcripts and full logs remain
 private at `/tmp/formal-ai-1138-evidence.twjioD`,
 `/tmp/formal-ai-1138-evidence2.x86huk` and
 `/tmp/formal-ai-1138-evidence3.DhxLxO` on the authoring machine.
+
+This evidence rides in pull request
+[#1140](https://github.com/link-assistant/formal-ai/pull/1140), whose
+attributed commit names it, so the cycle `v0.351.0..` carries one merged
+Formal AI-authored pull request.
