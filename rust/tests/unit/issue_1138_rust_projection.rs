@@ -321,11 +321,11 @@ fn grammar_projection_corpus_ratchet() {
     use formal_ai::rust_projection::projection_from;
 
     // Pins, tightened to the measured counts as the authored table grows.
-    // The js/ts -> rust legs sit at zero: every remaining kind is either
-    // ruled, spliced, or declared no-form (the honest refusal that names
-    // the construct), so those directions meet the live-flip criterion.
-    const RUST_TO_JAVASCRIPT_REMAINING: usize = 30;
-    const RUST_TO_TYPESCRIPT_REMAINING: usize = 30;
+    // All four legs sit at zero: every remaining kind is either ruled,
+    // spliced, or declared no-form (the honest refusal that names the
+    // construct), so every direction meets the live-flip criterion.
+    const RUST_TO_JAVASCRIPT_REMAINING: usize = 0;
+    const RUST_TO_TYPESCRIPT_REMAINING: usize = 0;
     const JAVASCRIPT_TO_RUST_REMAINING: usize = 0;
     const TYPESCRIPT_TO_RUST_REMAINING: usize = 0;
 
@@ -367,7 +367,8 @@ fn grammar_projection_tranche_renders_and_reparses() {
     let probes: &[(&str, &str, &str, &str)] = &[
         // visibility drops, the parameter keeps its name for javascript
         // and its annotation for typescript, the block tail expression
-        // rides the block row.
+        // rides the block row, and the typed-fn row carries the return
+        // type after the parameter list.
         (
             "rust",
             "javascript",
@@ -378,7 +379,7 @@ fn grammar_projection_tranche_renders_and_reparses() {
             "rust",
             "typescript",
             "pub fn area(w: u32) -> u32 { w * w }",
-            "function area(w: u32) {\nw * w\n}",
+            "function area(w: u32): u32 {\nw * w\n}",
         ),
         // field access, the scoped path as property access, the call,
         // and the borrow dropped from both the type and the value.
@@ -439,7 +440,7 @@ fn grammar_projection_tranche_renders_and_reparses() {
             "rust",
             "typescript",
             "fn a(x: u32) -> u32 { if x > 0 { 1 } else { 2 } }",
-            "function a(x: u32) {\nif (x > 0) {\n1\n} else {\n2\n};\n}",
+            "function a(x: u32): u32 {\nif (x > 0) {\n1\n} else {\n2\n};\n}",
         ),
         // while, the else-if chain, break and continue.
         (
@@ -496,7 +497,7 @@ fn grammar_projection_tranche_renders_and_reparses() {
             "rust",
             "typescript",
             "fn l(x: &'a u32) { }\n\nfn m(v: std::vec::Vec<u32>) { }",
-            "function l(x: u32) {\n\n}\n\nfunction m(v: std.vec.Vec) {\n\n}",
+            "function l(x: u32) {\n\n}\n\nfunction m(v: std.vec.Vec<u32>) {\n\n}",
         ),
         // a const item drops its annotation, a struct crosses to a class
         // shell, and a tuple pattern destructures as an array pattern.
@@ -625,6 +626,70 @@ fn grammar_projection_tranche_renders_and_reparses() {
         // the ?. marker renders nothing; the member access it rode
         // already renders the plain dot.
         ("javascript", "rust", "let x = a?.b;", "let x = a.b;"),
+        // generics keep their parameters toward typescript — lifetimes
+        // drop and bounds become the extends list — and erase toward
+        // javascript with the rest of the type grammar.
+        (
+            "rust",
+            "typescript",
+            "fn k(x: Option<u32>) -> u32 { 1 }",
+            "function k(x: Option<u32>): u32 {\n1\n}",
+        ),
+        (
+            "rust",
+            "typescript",
+            "fn k<'a, T: Clone + Send>(x: &'a T) -> u32 { 1 }",
+            "function k<T extends Clone & Send>(x: T): u32 {\n1\n}",
+        ),
+        (
+            "rust",
+            "javascript",
+            "fn k<'a, T: Clone + Send>(x: &'a T) -> u32 { 1 }",
+            "function k(x) {\n1\n}",
+        ),
+        // a type alias is a ts type declaration; javascript has no
+        // declaration to make.
+        (
+            "rust",
+            "typescript",
+            "type Alias = u32;",
+            "type Alias = u32;",
+        ),
+        // the unit type is ts void in type position and the unit value
+        // is the undefined literal in both targets.
+        (
+            "rust",
+            "typescript",
+            "fn g(x: ()) -> () { () }",
+            "function g(x: void): void {\nundefined\n}",
+        ),
+        (
+            "rust",
+            "javascript",
+            "fn g() { () }",
+            "function g() {\nundefined\n}",
+        ),
+        // the spread base keeps the field variadic's join honest.
+        (
+            "rust",
+            "javascript",
+            "fn f() { let _ = S { x: 1, ..Default::default() }; }",
+            "function f() {\nlet _ = { x: 1, ...Default.default() };\n}",
+        ),
+        // a generic call site carries its arguments toward typescript.
+        (
+            "rust",
+            "typescript",
+            "fn h() { let _ = parse::<u32>(1); }",
+            "function h() {\nlet _ = parse<u32>(1);\n}",
+        ),
+        // a where clause erases toward javascript — the file renders.
+        (
+            "rust",
+            "javascript",
+            "fn w<T>(x: T) where T: Sized { x }",
+            "function w(x) {\nx\n}",
+        ),
     ];
     for (from, target, source, expected) in probes {
         match project(from, target, source) {
@@ -698,6 +763,48 @@ fn grammar_projection_no_form_refuses_by_name() {
             "javascript",
             "fn f(v: Vec<u32>) { for x in v { g(x); } }",
             "for_expression",
+        ),
+        // enums have no target spelling — payload variants refuse with
+        // the unit-only ones.
+        ("rust", "typescript", "enum E {\nA,\nB(u32)\n}", "enum_item"),
+        // the struct+impl split has no single js form.
+        (
+            "rust",
+            "javascript",
+            "struct S { x: u32 }\nimpl S { fn m(&self) { } }",
+            "impl_item",
+        ),
+        // a trait is not an interface without the impl context a query
+        // cannot see.
+        (
+            "rust",
+            "typescript",
+            "trait T { fn m(&self); }",
+            "trait_item",
+        ),
+        // a where clause refused toward typescript: erasing a
+        // constraint from typed-looking output lies.
+        (
+            "rust",
+            "typescript",
+            "fn w<T>(x: T) where T: Sized { x }",
+            "where_clause",
+        ),
+        // a labeled loop must not erase its label — that retargets
+        // control flow.
+        (
+            "rust",
+            "javascript",
+            "fn l() { 'outer: loop { break 'outer; } }",
+            "label",
+        ),
+        // await's async context rides anonymous modifier tokens the
+        // named-children filters drop, so output would not reparse.
+        (
+            "rust",
+            "javascript",
+            "async fn a(x: u32) -> u32 { x.await }",
+            "await_expression",
         ),
     ];
     for (from, target, source, construct) in probes {

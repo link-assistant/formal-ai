@@ -1028,7 +1028,83 @@ Decisions fixed before any of it is written:
    pins drop to the measured post-batch numbers, and the two
    js/ts→rust agreement tests flip with the registry.
 
-### Postscript 2026-09-26 — the flip, measured
+### Design note 2026-09-26 (batch 4) — the rust → es type-position tail (written before the code)
+
+Measured work list (generator `--full-work-list`, identical for both
+targets): enum_variant:1512 declaration_list:948 impl_item:925
+enum_item:389 enum_variant_list:389 abstract_type:355 type_parameters:296
+unit_type:235 unit_expression:217 lifetime_parameter:184 dynamic_type:156
+type_parameter:146 trait_bounds:128 base_field_initializer:83
+reference_pattern:79 type_binding:53 where_predicate:43 function_type:38
+await_expression:27 where_clause:24 trait_item:19 type_item:19
+bounded_type:7 captured_pattern:7 label:4 associated_type:2
+bracketed_type:2 higher_ranked_trait_bound:1 qualified_type:1
+ref_pattern:1. Probed field shapes (throwaway probe over each cluster):
+`function_item` carries `name`/`type_parameters`/`parameters`/
+`return_type`/`body` as fields and `where_clause` as a **field-less**
+child; `type_item` has `name`/`type`; `type_parameter` has
+`name`/optional `bounds`; `where_predicate` has `left`/`bounds`;
+`enum_item` has `name`/`body`; `await_expression`, `label`,
+`captured_pattern`, `reference_pattern` and `base_field_initializer`
+carry no field labels at all.
+
+1. **D1 — typescript keeps type positions, javascript erases them.** The
+   parameter row already carries `{pattern}: {type}` toward ts and
+   `{pattern}` toward js; this batch extends the same split to the
+   signature: `type_parameters`/`type_parameter`/`trait_bounds`/
+   `lifetime_parameter`/`lifetime`/`unit_type`/`type_item` get ts
+   templates (`<T extends Clone & Send>`, `void`, `type X = Y;`) and js
+   drop templates — the type_arguments precedent: javascript has no
+   type grammar, so its rows render empty rather than refusing files
+   whose only sin is being typed. Lifetimes drop inside both targets;
+   `unit_expression` — the value, not the type — is `undefined` in js
+   and ts both.
+2. **D2 — the return-type carry needs a second fn row.** An unbound
+   optional capture expands to nothing, so a single template cannot
+   conditionally prefix `: `. A `function_item_typed` row (query
+   requiring `return_type`) is listed *before* the plain row — the
+   `return_expression:bare` precedent — and wins typed fns by seed
+   order. Ts renders `function name<T>(params): Type { ... }`; js keeps
+   erasing.
+3. **D3 — where-clauses refuse toward ts and erase toward js.** A where
+   clause ts cannot spell would otherwise vanish from output that looks
+   typed — the silent-constraint loss D1 of the previous note refuses.
+   The fn queries capture `(where_clause)?` positionally (field-less
+   child, placed before `body` in the pattern list so the forward scan
+   binds it); ts declares it no-form so the walk refuses naming it, js
+   renders it empty with the rest of the type grammar.
+4. **D4 — labels must not silently erase.** `break 'outer` losing its
+   label still parses but changes control flow — dishonest output. The
+   loop/break/continue rows capture `(label)?` positionally; label is
+   declared no-form toward both targets (js labels exist, but `'outer`
+   cannot lose its quote — no text transformation exists), so labeled
+   control flow refuses by name instead of lying.
+5. **D5 — the remaining clusters are no-form, each for a measured
+   reason.** enums (payload variants have no ts spelling and a query
+   cannot condition on "no body"; unit-only enums are the same
+   quoted-literal/negative-condition unlock family as D4 of the
+   previous note), `impl_item`/`declaration_list`/`trait_item`/
+   `associated_type` (parent-context queries the engine does not
+   carry), `abstract_type`/`dynamic_type`/`qualified_type`/
+   `bounded_type`/`type_binding`/`higher_ranked_trait_bound`/
+   `bracketed_type` (no target spelling for `impl Trait`, `dyn`,
+   `T as Tr`, associated-type bindings, `for<'a>`), `function_type`
+   (params carry meaning the ts arrow type cannot name), the pattern
+   cluster (`captured_pattern` `x @ 1`, `reference_pattern` `&y`,
+   `ref_pattern`), and `await_expression` — which *has* a js/ts
+   spelling, but its `async` context rides anonymous modifier tokens
+   the named-only variadic drops, so output would not reparse; the
+   unlock (anonymous-token capture) is upstream-shaped and joins the
+   D4 queue. `base_field_initializer` is the one spread that crosses:
+   `..Default::default()` → `...Default::default()` inside the
+   struct-expression's object body.
+6. **D6 — the flip.** With the 30 disposed, rust→js and rust→ts reach
+   zero remaining and flip live across the same five surfaces; the
+   corpus files that refuse (enums, impls, awaits, labels — the bulk of
+   the rust corpus's weight) name their construct at runtime. Tests:
+   generics/type-alias/unit/spread render-and-reparse probes, typed-fn
+   pins updated, refusal probes for enum/impl/trait/where(ts)/label,
+   coverage pins to 0/0/0/0.
 
 D3's criterion was met and the flip landed the same day. What the probes
 forced before the legs could go live, all engine- or table-level (no test
@@ -1057,6 +1133,43 @@ stays `1084`, not the 1085 D5 predicted. The five surfaces (leg table,
 seed rows, meanings example, both agreement tests) moved in one commit;
 the seeded `translate_leg_pending` example text still pins rust → js,
 which stays owed.
+
+### Postscript 2026-09-26 (batch 4) — the quadrant closes, measured
+
+The 30-kind tail landed as designed and the flip followed the same day.
+Measured after: **121 rules, 62 splice-refusal rows, 131 no-form rows;
+all four directions 0 remaining**. What the probes forced along the way,
+again engine- or table-level (no test weakened):
+
+- **The rust wildcard `_` is a named node that splices.** `let _ = x`
+  refused with construct `_` ("no projection rule and no refusal row")
+  because the wildcard is a real named node, not an anonymous token.
+  Both targets spell it identically, so `_` joined the splice class —
+  a generalization, not a probe patch.
+- **`type_arguments` upgraded from drop to rule.** The pre-batch table
+  dropped `Vec<u32>` to `Vec`; the ts row now renders
+  `<{*argument|, }>`, so `parse::<u32>` turbofish and generic types
+  carry (`std.vec.Vec<u32>`). The typed-fn pins moved with it: ts
+  signatures read `function area(w: u32): u32 {`.
+- **`base_field_initializer` binds variadically.** Its children are the
+  anonymous `..` marker plus the named base expression; a singular `(_)`
+  would splice the marker itself, so the row captures `(_)* @base`
+  (the named-only filter) and renders `...Default::default()`.
+- **D3 and D4 held under test.** where erases toward js
+  (`function w(x) { x }`) and refuses toward ts naming `where_clause`;
+  `label`, `enum_item`, `impl_item`, `trait_item`, `await_expression`
+  refuse by construct name; unlabeled loop/break/continue render.
+
+The closure audit holds at `1084` measured/reviewed — net zero through
+the batch. Six surfaces moved in one commit: the `pending_leg` arm and
+the new dispatch arm in `meta_translate`, the two seed rows to
+`status live`, the meanings example (the `owed_by` concept row stays —
+it grounds `RootProjection::owed_by`'s vocabulary; only the example's
+tense flipped), the translation-tool live-list and render/refusal
+probes, the round-trip pointer history, and the registry guard — the
+old guard encoded the debt ("no row may claim rust renders es source
+text live"); its replacement asserts the closed state (rust→es rows
+live at token_tree, and no row anywhere owes a leaf).
 
 ## Risks
 

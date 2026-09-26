@@ -159,22 +159,15 @@ fn the_seed_registry_and_the_leg_table_agree() {
     // another grammar name the leaf that owes them — L7 inherited the
     // quadrant from L3 (the dogfood loop) and L5 (verification), landed the
     // meta → rust network leg, and passed the grammar-projection legs to L8.
-    // L8's rule table now answers for every js/ts corpus kind — ruled,
-    // spliced or declared no-form — so the js/ts → rust renders are live:
-    // they render the plain subset and refuse objects, classes and the
-    // dynamic family by name. The rust → es legs stay owed: the table
-    // still leaves a type-position tail.
+    // L8's rule table now answers for every corpus kind in every direction
+    // — ruled, spliced or declared no-form — so all four grammar legs are
+    // live: js/ts → rust renders the plain subset and refuse objects,
+    // classes and the dynamic family by name; rust → js/ts render the
+    // plain subset and refuse enums, impls, traits, the dyn family and
+    // labels by name. No leg is owed anywhere in the table.
     for (from, to) in [
         (SourceRoot::Rust, SourceRoot::JavaScript),
         (SourceRoot::Rust, SourceRoot::TypeScript),
-    ] {
-        assert_eq!(
-            meta_translate::pending_leg(from, to),
-            Some("L8"),
-            "{from:?} → {to:?} is owed by the grammar projection rules"
-        );
-    }
-    for (from, to) in [
         (SourceRoot::JavaScript, SourceRoot::Rust),
         (SourceRoot::TypeScript, SourceRoot::Rust),
     ] {
@@ -185,8 +178,7 @@ fn the_seed_registry_and_the_leg_table_agree() {
         );
     }
     // The rust row states the honest fidelity: the self-AST census is a
-    // signature projection, live, and no rust row renders es source text
-    // live — the rust → es legs exist only as rows owed to L7.
+    // signature projection, live.
     let rust_row = projections
         .iter()
         .find(|row| row.from == SourceRoot::Rust && row.to == SourceRoot::Meta)
@@ -201,12 +193,25 @@ fn the_seed_registry_and_the_leg_table_agree() {
         .expect("meta → rust is declared");
     assert_eq!(meta_rust_row.fidelity, "network");
     assert_eq!(meta_rust_row.owed_by, None);
-    assert!(
-        projections
+    // L8 closed the quadrant: the rust → es rows render es source text
+    // live at token-tree fidelity, and no row anywhere owes a leaf.
+    for (to, name) in [
+        (SourceRoot::JavaScript, "rust → js"),
+        (SourceRoot::TypeScript, "rust → ts"),
+    ] {
+        let row = projections
             .iter()
-            .filter(|row| row.from == SourceRoot::Rust)
-            .all(|row| row.to == SourceRoot::Meta || row.owed_by.is_some()),
-        "no row may claim rust renders es source text live"
+            .find(|row| row.from == SourceRoot::Rust && row.to == to)
+            .unwrap_or_else(|| panic!("{name} is declared"));
+        assert_eq!(
+            row.fidelity, "token_tree",
+            "{name} carries token-tree fidelity"
+        );
+        assert_eq!(row.owed_by, None, "{name} is live, not owed");
+    }
+    assert!(
+        projections.iter().all(|row| row.owed_by.is_none()),
+        "no row may owe a plan leaf: the quadrant is closed"
     );
 }
 

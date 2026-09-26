@@ -328,10 +328,10 @@ fn pending_legs_name_their_plan_leaf() {
     // Plan 16 L2 opened the ES quadrant: js/ts ↔ meta and js ↔ ts carry
     // through the token-tree pivot, L7 added meta → rust through the
     // lossless network serialization, and L8's grammar projection rules
-    // carry js/ts → rust (every corpus kind is ruled, spliced or declared
-    // no-form, so the walk renders or refuses by name). The rust → js/ts
-    // renders are still owed by L8, whose rule table leaves a
-    // type-position tail.
+    // carry the ES quadrant both ways (every corpus kind is ruled,
+    // spliced or declared no-form, so the walk renders or refuses by
+    // name — js/ts → rust since the no-form batch, rust → js/ts since
+    // the type-position tail closed).
     for (from, to) in [
         (SourceRoot::JavaScript, SourceRoot::Meta),
         (SourceRoot::Meta, SourceRoot::JavaScript),
@@ -341,6 +341,8 @@ fn pending_legs_name_their_plan_leaf() {
         (SourceRoot::TypeScript, SourceRoot::JavaScript),
         (SourceRoot::JavaScript, SourceRoot::Rust),
         (SourceRoot::TypeScript, SourceRoot::Rust),
+        (SourceRoot::Rust, SourceRoot::JavaScript),
+        (SourceRoot::Rust, SourceRoot::TypeScript),
     ] {
         assert_eq!(
             meta_translate::pending_leg(from, to),
@@ -348,10 +350,6 @@ fn pending_legs_name_their_plan_leaf() {
             "{from:?} → {to:?} is a delivered plan 16 leg and must be live"
         );
     }
-    assert_eq!(
-        meta_translate::pending_leg(SourceRoot::Rust, SourceRoot::JavaScript),
-        Some("L8")
-    );
     assert_eq!(
         meta_translate::pending_leg(SourceRoot::Meta, SourceRoot::Rust),
         None
@@ -468,6 +466,96 @@ fn js_to_ts_carries_through_the_pivot() {
         | TranslationOutcome::Refused { .. }
         | TranslationOutcome::Invalid { .. }) => {
             panic!("js → ts must carry through the pivot; got {other:?}")
+        }
+    }
+}
+
+#[test]
+fn rust_to_js_renders_the_plain_subset_and_refuses_enums_by_name() {
+    // The plain subset — a typed fn, arithmetic — projects into
+    // javascript with the type grammar erased.
+    let source = "fn double(x: u32) -> u32 {\nx * 2\n}\n";
+    match meta_translate::translate(
+        SourceRoot::Rust,
+        SourceRoot::JavaScript,
+        "double.rs",
+        source,
+    ) {
+        TranslationOutcome::Rendered { target, .. } => {
+            assert!(
+                target.contains("function double(x)"),
+                "the fn declaration projects with types erased: {target}"
+            );
+            assert!(
+                target.contains("x * 2"),
+                "the tail expression carries: {target}"
+            );
+        }
+        other @ (TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Refused { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("rust → js must project the plain subset; got {other:?}")
+        }
+    }
+    // An enum has no javascript spelling: the leg must refuse it by
+    // name, not guess a construct the target does not carry.
+    let refused = "enum E {\nA,\nB(u32)\n}\n";
+    match meta_translate::translate(SourceRoot::Rust, SourceRoot::JavaScript, "enum.rs", refused) {
+        TranslationOutcome::Refused { refusals } => {
+            assert!(
+                refusals
+                    .iter()
+                    .any(|refusal| refusal.construct == "enum_item"),
+                "the enum must be refused by name: {refusals:?}"
+            );
+        }
+        other @ (TranslationOutcome::Rendered { .. }
+        | TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("rust → js must refuse the enum; got {other:?}")
+        }
+    }
+}
+
+#[test]
+fn rust_to_ts_keeps_type_positions_and_refuses_the_type_tail() {
+    let source = "fn twice(n: u32) -> u32 {\nn + n\n}\n";
+    match meta_translate::translate(SourceRoot::Rust, SourceRoot::TypeScript, "twice.rs", source) {
+        TranslationOutcome::Rendered { target, .. } => {
+            // The typed-fn row carries the return type after the
+            // parameter list: type positions stay typed.
+            assert!(
+                target.contains("function twice(n: u32): u32"),
+                "the typed declaration projects with its types: {target}"
+            );
+        }
+        other @ (TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Refused { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("rust → ts must project the plain subset; got {other:?}")
+        }
+    }
+    // A where clause cannot erase from typed-looking output: the leg
+    // refuses it by name.
+    let refused = "fn w<T>(x: T) where T: Sized {\nx\n}\n";
+    match meta_translate::translate(
+        SourceRoot::Rust,
+        SourceRoot::TypeScript,
+        "where.rs",
+        refused,
+    ) {
+        TranslationOutcome::Refused { refusals } => {
+            assert!(
+                refusals
+                    .iter()
+                    .any(|refusal| refusal.construct == "where_clause"),
+                "the where clause must be refused by name: {refusals:?}"
+            );
+        }
+        other @ (TranslationOutcome::Rendered { .. }
+        | TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("rust → ts must refuse the where clause; got {other:?}")
         }
     }
 }

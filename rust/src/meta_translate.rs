@@ -83,11 +83,11 @@ pub enum TranslationOutcome {
 /// Live: `rust → meta` (self-AST census), the ES quadrant — `js ↔ meta`,
 /// `ts ↔ meta`, `js → ts`, `ts → js` (plan 16 L2's token-tree pivot) —
 /// `meta → rust` (plan 16 L7's network serialization, rendered back with
-/// `reconstruct_text`), and `js/ts → rust` (plan 16 L8's grammar
-/// projection: every corpus kind is ruled, spliced or declared no-form,
-/// so the walk renders or refuses by name — never guesses). Owed: the
-/// `rust → js/ts` renders by L8, whose rule table still leaves a
-/// type-position tail. `L0` marks a same-root non-direction. The seed's
+/// `reconstruct_text`), and the grammar projection legs both ways (plan
+/// 16 L8: every corpus kind is ruled, spliced or declared no-form, so
+/// the walk renders or refuses by name — never guesses; js/ts → rust
+/// since the no-form batch, rust → js/ts since the type-position tail
+/// closed). `L0` marks a same-root non-direction. The seed's
 /// `root_projection` rows mirror this table; [`root_projections`] reads
 /// them, and the round-trip projection test pins the two surfaces in
 /// agreement.
@@ -98,8 +98,8 @@ pub const fn pending_leg(from: SourceRoot, to: SourceRoot) -> Option<&'static st
         | (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript | SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::TypeScript)
         | (SourceRoot::TypeScript, SourceRoot::JavaScript)
-        | (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => None,
-        (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript) => Some("L8"),
+        | (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust)
+        | (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript) => None,
         (SourceRoot::Rust, SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::JavaScript)
         | (SourceRoot::TypeScript, SourceRoot::TypeScript)
@@ -169,6 +169,23 @@ pub fn translate(
         // imports, the dynamic family — by name.
         (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => {
             match crate::rust_projection::project(es_grammar_label(from), "rust", source) {
+                crate::rust_projection::ProjectionOutcome::Rendered { source, .. } => {
+                    TranslationOutcome::Rendered {
+                        target: source,
+                        carried: 0,
+                    }
+                }
+                crate::rust_projection::ProjectionOutcome::Refused { refusals } => {
+                    TranslationOutcome::Refused { refusals }
+                }
+            }
+        }
+        // The mirror legs: the same rule table answers for the rust
+        // corpus, so the walk renders the plain subset and refuses the
+        // constructs with no js/ts spelling — enums, impls, traits, the
+        // dyn family, labels — by name.
+        (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript) => {
+            match crate::rust_projection::project("rust", es_grammar_label(to), source) {
                 crate::rust_projection::ProjectionOutcome::Rendered { source, .. } => {
                     TranslationOutcome::Rendered {
                         target: source,

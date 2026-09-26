@@ -118,6 +118,9 @@ const SPLICE_CLASS_KINDS: &[&str] = &[
     // `crate` is a plain identifier spelling in the other grammars; it
     // rides the scoped paths that rule it.
     "crate",
+    // The wildcard pattern `_` is a valid identifier in both targets,
+    // so it splices: `let _ = x` keeps its binding shape.
+    "_",
     // `super` rides the scoped paths the same way crate does.
     "super",
     // A tuple expression `(a, b)` keeps its parens and comma in the
@@ -247,13 +250,61 @@ const NO_FORM_KINDS: &[(&str, &[&str])] = &[
     // Raw strings carry delimiter hashes no js/ts lexer accepts.
     ("raw_string_literal", &["javascript", "typescript"]),
     // await is postfix `x.await` in rust and prefix `await x` in js/ts;
-    // the js/ts legs refuse it rather than reorder into an async
-    // context a rule cannot check. (The rust→js/ts direction stays
-    // pending, not declared, until that measurement is made.)
+    // neither leg can reorder into an async context a rule cannot
+    // check — the js/ts legs refuse by name, and the rust leg refuses
+    // the construct outright (rust await needs `.await` spelling the
+    // js source does not carry).
     ("await_expression", &["rust"]),
     // A rust cast is ts `as` syntax (the type_cast rule row carries
     // the ts template) but js has no cast: the js leg refuses by name.
     ("type_cast_expression", &["javascript"]),
+    // The enum cluster: payload variants have no target spelling, and
+    // a query cannot condition on "variant without a body", so
+    // unit-only enums refuse with the rest — the same
+    // negative-condition unlock family as update_expression.
+    ("enum_item", &["javascript", "typescript"]),
+    ("enum_variant_list", &["javascript", "typescript"]),
+    ("enum_variant", &["javascript", "typescript"]),
+    // impl and trait items with their parts: the struct+impl split has
+    // no single js form, a trait method is not an interface method
+    // without the impl context a query cannot see, and a declaration
+    // list is an impl body.
+    ("impl_item", &["javascript", "typescript"]),
+    ("declaration_list", &["javascript", "typescript"]),
+    ("trait_item", &["javascript", "typescript"]),
+    ("associated_type", &["javascript", "typescript"]),
+    // The type family with no target spelling: `impl Trait`, `dyn`,
+    // `T as Tr`, associated-type bindings, `for<'a>`, and a fn type
+    // whose params carry meaning the ts arrow type cannot name.
+    ("abstract_type", &["javascript", "typescript"]),
+    ("dynamic_type", &["javascript", "typescript"]),
+    ("qualified_type", &["javascript", "typescript"]),
+    ("bounded_type", &["javascript", "typescript"]),
+    ("type_binding", &["javascript", "typescript"]),
+    ("higher_ranked_trait_bound", &["javascript", "typescript"]),
+    ("bracketed_type", &["javascript", "typescript"]),
+    ("function_type", &["javascript", "typescript"]),
+    // A where clause is ts-refused — erasing a constraint from output
+    // that still looks typed lies — and its predicates follow it (the
+    // javascript leg erases the whole clause through the rule row, so
+    // the predicate row is dormant there).
+    ("where_clause", &["typescript"]),
+    ("where_predicate", &["javascript", "typescript"]),
+    // Patterns with no target form: `x @ 1`, `&y` and `ref x` are
+    // destructuring spellings the targets do not carry.
+    ("captured_pattern", &["javascript", "typescript"]),
+    ("reference_pattern", &["javascript", "typescript"]),
+    ("ref_pattern", &["javascript", "typescript"]),
+    // A label cannot lose its quote — no text transformation exists —
+    // so labeled control flow refuses by name instead of silently
+    // retargetting `break 'outer` to the innermost loop.
+    ("label", &["javascript", "typescript"]),
+    // `x.await` toward js/ts: the await spelling exists, but its async
+    // context rides anonymous modifier tokens the named-children
+    // filters drop, so output would not reparse. The unlock
+    // (anonymous-token capture) is upstream-shaped and joins the
+    // update_expression queue.
+    ("await_expression", &["javascript", "typescript"]),
 ];
 
 /// The four L8 legs: (from grammar, target grammar).
@@ -283,11 +334,42 @@ const RULE_ROWS: &[RuleRow] = &[
         templates: &[("javascript", "{.:text}"), ("typescript", "{.:text}")],
     },
     RuleRow {
-        name: "rust:function_item",
-        sexpression: "(function_item name: (identifier) @name parameters: (parameters) @parameters body: (block) @body)",
+        // A typed fn names its return type: typescript keeps it after
+        // the parameter list, javascript drops it with the rest of the
+        // type grammar. A required `return_type` is what separates
+        // this row from the plain one — an optional that does not bind
+        // expands to nothing, so the `: ` cannot live in one template
+        // (the return_expression:bare precedent, inverted: the row
+        // with more structure claims first by seed order).
+        name: "rust:function_item_typed",
+        sexpression: "(function_item name: (identifier) @name type_parameters: (type_parameters)? @type_parameters parameters: (parameters) @parameters return_type: (_) @returns (where_clause)? @where body: (block) @body)",
         templates: &[
-            ("javascript", "function {name}({parameters}) {{\n{body}\n}}"),
-            ("typescript", "function {name}({parameters}) {{\n{body}\n}}"),
+            (
+                "javascript",
+                "function {name}({parameters}) {{\n{body}\n}}{where}",
+            ),
+            (
+                "typescript",
+                "function {name}{type_parameters}({parameters}): {returns} {{\n{body}\n}}{where}",
+            ),
+        ],
+    },
+    RuleRow {
+        // The untyped fn: generics still ride the typescript template
+        // and drop toward javascript; a where clause erases toward js
+        // (the rule row) and refuses toward ts (the no-form row), so
+        // typed-looking output never loses a constraint silently.
+        name: "rust:function_item",
+        sexpression: "(function_item name: (identifier) @name type_parameters: (type_parameters)? @type_parameters parameters: (parameters) @parameters (where_clause)? @where body: (block) @body)",
+        templates: &[
+            (
+                "javascript",
+                "function {name}({parameters}) {{\n{body}\n}}{where}",
+            ),
+            (
+                "typescript",
+                "function {name}{type_parameters}({parameters}) {{\n{body}\n}}{where}",
+            ),
         ],
     },
     RuleRow {
@@ -405,9 +487,12 @@ const RULE_ROWS: &[RuleRow] = &[
         templates: &[("javascript", ""), ("typescript", "")],
     },
     RuleRow {
+        // The generic call's argument list: typescript spells it (the
+        // generic_function and generic_type rows already place it),
+        // javascript drops it with the rest of the type grammar.
         name: "rust:type_arguments",
-        sexpression: "(type_arguments)",
-        templates: &[("javascript", ""), ("typescript", "")],
+        sexpression: "(type_arguments (_)* @argument)",
+        templates: &[("javascript", ""), ("typescript", "<{*argument|, }>")],
     },
     RuleRow {
         // `build::<u32>()` wraps the callee in generic_function — the
@@ -490,23 +575,36 @@ const RULE_ROWS: &[RuleRow] = &[
         ],
     },
     RuleRow {
-        // rust's unconditional loop crosses to the trivially-true while.
+        // rust's unconditional loop crosses to the trivially-true
+        // while. The label rides first in child order so it binds when
+        // present — label is no-form toward both targets, so a labeled
+        // loop refuses by name instead of erasing a target that
+        // changes control flow.
         name: "rust:loop_expression",
-        sexpression: "(loop_expression body: (block) @body)",
+        sexpression: "(loop_expression (label)? @label body: (block) @body)",
         templates: &[
-            ("javascript", "while (true) {{\n{body}\n}}"),
-            ("typescript", "while (true) {{\n{body}\n}}"),
+            ("javascript", "{label}while (true) {{\n{body}\n}}"),
+            ("typescript", "{label}while (true) {{\n{body}\n}}"),
         ],
     },
     RuleRow {
+        // `break 'outer` must not render as plain `break` — that
+        // retargets the break to the innermost loop. The label capture
+        // refuses by name when bound; unbound it expands to nothing.
         name: "rust:break_expression",
-        sexpression: "(break_expression)",
-        templates: &[("javascript", "break"), ("typescript", "break")],
+        sexpression: "(break_expression (label)? @label)",
+        templates: &[
+            ("javascript", "{label}break"),
+            ("typescript", "{label}break"),
+        ],
     },
     RuleRow {
         name: "rust:continue_expression",
-        sexpression: "(continue_expression)",
-        templates: &[("javascript", "continue"), ("typescript", "continue")],
+        sexpression: "(continue_expression (label)? @label)",
+        templates: &[
+            ("javascript", "{label}continue"),
+            ("typescript", "{label}continue"),
+        ],
     },
     RuleRow {
         name: "rust:return_expression",
@@ -624,6 +722,15 @@ const RULE_ROWS: &[RuleRow] = &[
         ],
     },
     RuleRow {
+        // `..Default::default()` crosses to the spread inside the
+        // struct-expression's object body. The variadic (named-only)
+        // skips the anonymous `..` marker and binds the base
+        // expression.
+        name: "rust:base_field_initializer",
+        sexpression: "(base_field_initializer (_)* @base)",
+        templates: &[("javascript", "...{*base|}"), ("typescript", "...{*base|}")],
+    },
+    RuleRow {
         // `let (a, b) = t;` destructures as a target array pattern.
         name: "rust:tuple_pattern",
         sexpression: "(tuple_pattern (_)* @element)",
@@ -645,6 +752,62 @@ const RULE_ROWS: &[RuleRow] = &[
         name: "rust:lifetime",
         sexpression: "(lifetime)",
         templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        // `'a` as a parameter drops whole: the type_parameters join
+        // skips its empty piece.
+        name: "rust:lifetime_parameter",
+        sexpression: "(lifetime_parameter)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        // Generic parameters: typescript spells them, javascript drops
+        // them with the rest of the type grammar — the type_arguments
+        // precedent.
+        name: "rust:type_parameters",
+        sexpression: "(type_parameters (_)* @parameter)",
+        templates: &[("javascript", ""), ("typescript", "<{*parameter|, }>")],
+    },
+    RuleRow {
+        // `T: Clone + Send` — the bounds become the ts extends list;
+        // lifetime parameters drop through their own row, so the join
+        // inside skips them.
+        name: "rust:type_parameter",
+        sexpression: "(type_parameter name: (type_identifier) @name bounds: (trait_bounds)? @bounds)",
+        templates: &[("javascript", ""), ("typescript", "{name}{bounds}")],
+    },
+    RuleRow {
+        name: "rust:trait_bounds",
+        sexpression: "(trait_bounds (_)* @bound)",
+        templates: &[("javascript", ""), ("typescript", " extends {*bound| & }")],
+    },
+    RuleRow {
+        // The unit type in type position is ts void; javascript drops
+        // it with the other type positions.
+        name: "rust:unit_type",
+        sexpression: "(unit_type)",
+        templates: &[("javascript", ""), ("typescript", "void")],
+    },
+    RuleRow {
+        // The unit value is the undefined literal in both targets.
+        name: "rust:unit_expression",
+        sexpression: "(unit_expression)",
+        templates: &[("javascript", "undefined"), ("typescript", "undefined")],
+    },
+    RuleRow {
+        // A type alias is a ts type declaration; javascript has no
+        // declaration to make.
+        name: "rust:type_item",
+        sexpression: "(type_item name: (type_identifier) @name type: (_) @type)",
+        templates: &[("javascript", ""), ("typescript", "type {name} = {type};")],
+    },
+    RuleRow {
+        // A where clause is type grammar: javascript erases it, and
+        // typescript refuses it through the no-form row so output that
+        // still looks typed never loses a constraint silently.
+        name: "rust:where_clause",
+        sexpression: "(where_clause)",
+        templates: &[("javascript", "")],
     },
     RuleRow {
         // `std::fmt::Result` in type position crosses to dotted access

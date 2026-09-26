@@ -125,7 +125,7 @@ meanings
     precondition "a projection row states whether its leg is delivered"
     effect "declares that a named plan leaf still owes the leg"
     unit "not applicable"
-    example "the rust-to-es grammar legs are owed by the L8 leaf"
+    example "the rust-to-es grammar legs were owed by the L8 leaf until the type-position tail closed"
     grounding "data/seed/language-projection.lino"
   projection_refusal_uncovered_kind
     defined-by relation
