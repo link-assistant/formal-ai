@@ -321,10 +321,10 @@ fn grammar_projection_corpus_ratchet() {
     use formal_ai::rust_projection::projection_from;
 
     // Pins, tightened to the measured counts as the authored table grows.
-    const RUST_TO_JAVASCRIPT_REMAINING: usize = 68;
-    const RUST_TO_TYPESCRIPT_REMAINING: usize = 68;
-    const JAVASCRIPT_TO_RUST_REMAINING: usize = 43;
-    const TYPESCRIPT_TO_RUST_REMAINING: usize = 46;
+    const RUST_TO_JAVASCRIPT_REMAINING: usize = 61;
+    const RUST_TO_TYPESCRIPT_REMAINING: usize = 61;
+    const JAVASCRIPT_TO_RUST_REMAINING: usize = 42;
+    const TYPESCRIPT_TO_RUST_REMAINING: usize = 45;
 
     let projection = projection_from(formal_ai::seed::GRAMMAR_PROJECTION_RULES_LINO)
         .expect("the embedded seed is well-formed");
@@ -541,6 +541,22 @@ fn grammar_projection_tranche_renders_and_reparses() {
             "rust",
             "function f(a: number, b: string) { return a; }\n\nfunction g(a) { return a; }",
             "fn f(a: number, b: string) {\nreturn a;\n}\n\nfn g(a) {\nreturn a;\n}",
+        ),
+        // struct patterns cross to object destructuring in both field
+        // shapes — renamed and shorthand.
+        (
+            "rust",
+            "javascript",
+            "fn c(p: Point) { let Point { x, y } = p; }\n\nfn d(p: Point) { let Point { x: a, y } = p; }",
+            "function c(p) {\nlet { x, y } = p;\n}\n\nfunction d(p) {\nlet { x: a, y } = p;\n}",
+        ),
+        // the array type takes typescript brackets and the tuple type
+        // takes its tuple list.
+        (
+            "rust",
+            "typescript",
+            "fn b(v: [u32; 3], t: (u32, u32)) { }",
+            "function b(v: u32[], t: [u32, u32]) {\n\n}",
         ),
     ];
     for (from, target, source, expected) in probes {

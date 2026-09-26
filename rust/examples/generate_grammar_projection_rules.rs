@@ -115,12 +115,18 @@ const SPLICE_CLASS_KINDS: &[&str] = &[
     // `crate` is a plain identifier spelling in the other grammars; it
     // rides the scoped paths that rule it.
     "crate",
+    // `super` rides the scoped paths the same way crate does.
+    "super",
     // A tuple expression `(a, b)` keeps its parens and comma in the
     // targets, where it parses as a parenthesized sequence.
     "tuple_expression",
+    // A parenthesized expression keeps its parens in every target.
+    "parenthesized_expression",
     // `Point { x, y }` — the shorthand field splices inside the
     // struct-expression row's braces.
     "shorthand_field_initializer",
+    // The shorthand name of a field pattern splices the same way.
+    "shorthand_field_identifier",
     // `true` / `false` are the same literals in every target.
     "boolean_literal",
     // `x[i]` keeps its brackets and index verbatim in every target.
@@ -453,6 +459,31 @@ const RULE_ROWS: &[RuleRow] = &[
         ],
     },
     RuleRow {
+        // `Point { x, y }` in a let binding crosses to object
+        // destructuring the same way; the type name drops.
+        name: "rust:struct_pattern",
+        sexpression: "(struct_pattern type: (_) @constructor (_)* @field)",
+        templates: &[
+            ("javascript", "{{ {*field|, } }}"),
+            ("typescript", "{{ {*field|, } }}"),
+        ],
+    },
+    RuleRow {
+        // The renamed field: `{ x: a }` is valid target destructuring.
+        name: "rust:field_pattern",
+        sexpression: "(field_pattern name: (_) @name pattern: (_) @pattern)",
+        templates: &[
+            ("javascript", "{name}: {pattern}"),
+            ("typescript", "{name}: {pattern}"),
+        ],
+    },
+    RuleRow {
+        // The shorthand field: the name is the whole pattern.
+        name: "rust:field_pattern:shorthand",
+        sexpression: "(field_pattern name: (_) @name)",
+        templates: &[("javascript", "{name}"), ("typescript", "{name}")],
+    },
+    RuleRow {
         // `!f` and `-1`: the operator and operand carry no field labels in
         // the rust grammar, and the glyph sequence is the target spelling
         // for the boolean/negation operators the corpus exercises.
@@ -507,6 +538,23 @@ const RULE_ROWS: &[RuleRow] = &[
         templates: &[
             ("javascript", "{path}.{name}"),
             ("typescript", "{path}.{name}"),
+        ],
+    },
+    RuleRow {
+        // `[u32; 3]` crosses to the element type with target brackets;
+        // the fixed length has no target spelling.
+        name: "rust:array_type",
+        sexpression: "(array_type element: (_) @element)",
+        templates: &[("javascript", "{element}"), ("typescript", "{element}[]")],
+    },
+    RuleRow {
+        // A tuple type crosses to the target's bracketed type list —
+        // typescript's tuple type; javascript never renders it.
+        name: "rust:tuple_type",
+        sexpression: "(tuple_type (_)* @element)",
+        templates: &[
+            ("javascript", "[{*element|, }]"),
+            ("typescript", "[{*element|, }]"),
         ],
     },
     RuleRow {
