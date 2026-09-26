@@ -1,5 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
+use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use super::rust_paths::{
@@ -7,6 +8,10 @@ use super::rust_paths::{
     get_package_manifest_path, get_rust_root, needs_cd, parse_rust_root_from_args,
     read_package_info,
 };
+
+/// Changelog discovery reads the process working directory, so the layout
+/// cases below serialize on this lock instead of racing the CWD.
+static CWD_LOCK: Mutex<()> = Mutex::new(());
 
 fn temp_dir(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
@@ -109,6 +114,26 @@ publish = false
 
 #[test]
 fn path_helpers_match_repository_layout() {
+    let _guard = CWD_LOCK.lock().unwrap();
+    let previous = std::env::current_dir().unwrap();
+
+    // Multi-language layout that keeps its changelog at the repository root
+    // (this repository): the root wins even though a rust root is detected,
+    // instead of the fragments being assumed to live under the rust root.
+    let repo = temp_dir("changelog-at-root");
+    fs::create_dir_all(repo.join("rust")).unwrap();
+    fs::write(
+        repo.join("rust/Cargo.toml"),
+        r#"[package]
+name = "multi-crate"
+version = "0.0.0"
+"#,
+    )
+    .unwrap();
+    fs::create_dir_all(repo.join("changelog.d")).unwrap();
+    fs::write(repo.join("CHANGELOG.md"), "# changelog\n").unwrap();
+    std::env::set_current_dir(&repo).unwrap();
+
     assert_eq!(get_cargo_toml_path("."), PathBuf::from("./Cargo.toml"));
     assert_eq!(get_cargo_lock_path("."), PathBuf::from("./Cargo.lock"));
     assert_eq!(get_changelog_dir("."), PathBuf::from("./changelog.d"));
@@ -123,12 +148,29 @@ fn path_helpers_match_repository_layout() {
         get_cargo_lock_path("rust"),
         PathBuf::from("rust/Cargo.lock")
     );
+    assert_eq!(get_changelog_dir("rust"), PathBuf::from("./changelog.d"));
+    assert_eq!(get_changelog_path("rust"), PathBuf::from("./CHANGELOG.md"));
+    assert!(needs_cd("rust"));
+
+    // Co-located layout: only the rust root carries the changelog.
+    let repo = temp_dir("changelog-in-rust-root");
+    fs::create_dir_all(repo.join("rust/changelog.d")).unwrap();
+    fs::write(repo.join("rust/CHANGELOG.md"), "# changelog\n").unwrap();
+    std::env::set_current_dir(&repo).unwrap();
     assert_eq!(get_changelog_dir("rust"), PathBuf::from("rust/changelog.d"));
     assert_eq!(
         get_changelog_path("rust"),
         PathBuf::from("rust/CHANGELOG.md")
     );
-    assert!(needs_cd("rust"));
+
+    // Fresh checkout with no changelog yet: default to the repository root
+    // so creation and reading agree on one location.
+    let repo = temp_dir("changelog-absent");
+    std::env::set_current_dir(&repo).unwrap();
+    assert_eq!(get_changelog_dir("rust"), PathBuf::from("./changelog.d"));
+    assert_eq!(get_changelog_path("rust"), PathBuf::from("./CHANGELOG.md"));
+
+    std::env::set_current_dir(previous).unwrap();
 }
 
 #[test]

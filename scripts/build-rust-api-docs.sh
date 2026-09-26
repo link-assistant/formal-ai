@@ -10,7 +10,22 @@
 # ceiling scripts/check-file-size.rs enforces.
 set -euo pipefail
 
-cargo doc --no-deps --lib
+# Discover the crate manifest instead of assuming a fixed layout: the
+# repository root (single-language) or rust/ (multi-language, plan 16 L1).
+if [ -f ./Cargo.toml ]; then
+  manifest=./Cargo.toml
+elif [ -f ./rust/Cargo.toml ]; then
+  manifest=rust/Cargo.toml
+else
+  echo "Error: could not find Cargo.toml in ./ or ./rust/" >&2
+  exit 1
+fi
+
+# --target-dir pins the output to the repository-root ./target/doc that the
+# Pages artifact assembly copies from, regardless of manifest location.
+cargo doc --no-deps --lib \
+  --manifest-path "$manifest" \
+  --target-dir target
 
 # rustdoc emits the crate docs under target/doc/formal_ai/; add a root redirect
 # so /docs/api/ lands on the crate root instead of 404ing.
