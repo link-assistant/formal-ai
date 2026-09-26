@@ -121,9 +121,9 @@ language_projection
     from js
     to rust
     fidelity token_tree
-    status "owed_by L8"
+    status live
   root_projection ts_to_rust
     from ts
     to rust
     fidelity token_tree
-    status "owed_by L8"
+    status live

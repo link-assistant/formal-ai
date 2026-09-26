@@ -326,12 +326,12 @@ fn pending_legs_name_their_plan_leaf() {
         );
     }
     // Plan 16 L2 opened the ES quadrant: js/ts ↔ meta and js ↔ ts carry
-    // through the token-tree pivot, and L7 added meta → rust through the
-    // lossless network serialization. Every leg that renders source text of
-    // another grammar — the ×rust renders and rust → js/ts — is owed by L8,
-    // the grammar projection rules (L3 landed as the dogfood loop, L5 as
-    // round-trip verification and L7 as the network round trip, so none of
-    // them may be named here).
+    // through the token-tree pivot, L7 added meta → rust through the
+    // lossless network serialization, and L8's grammar projection rules
+    // carry js/ts → rust (every corpus kind is ruled, spliced or declared
+    // no-form, so the walk renders or refuses by name). The rust → js/ts
+    // renders are still owed by L8, whose rule table leaves a
+    // type-position tail.
     for (from, to) in [
         (SourceRoot::JavaScript, SourceRoot::Meta),
         (SourceRoot::Meta, SourceRoot::JavaScript),
@@ -339,15 +339,17 @@ fn pending_legs_name_their_plan_leaf() {
         (SourceRoot::Meta, SourceRoot::TypeScript),
         (SourceRoot::JavaScript, SourceRoot::TypeScript),
         (SourceRoot::TypeScript, SourceRoot::JavaScript),
+        (SourceRoot::JavaScript, SourceRoot::Rust),
+        (SourceRoot::TypeScript, SourceRoot::Rust),
     ] {
         assert_eq!(
             meta_translate::pending_leg(from, to),
             None,
-            "{from:?} → {to:?} is a plan 16 L2 leg and must be live"
+            "{from:?} → {to:?} is a delivered plan 16 leg and must be live"
         );
     }
     assert_eq!(
-        meta_translate::pending_leg(SourceRoot::JavaScript, SourceRoot::Rust),
+        meta_translate::pending_leg(SourceRoot::Rust, SourceRoot::JavaScript),
         Some("L8")
     );
     assert_eq!(
@@ -359,6 +361,92 @@ fn pending_legs_name_their_plan_leaf() {
         meta_translate::pending_leg(SourceRoot::Rust, SourceRoot::Rust),
         Some("L0")
     );
+}
+
+#[test]
+fn js_to_rust_renders_the_plain_subset_and_refuses_objects_by_name() {
+    // The plain subset — declarations, calls, arithmetic — projects into
+    // rust through the L8 grammar rules.
+    let source = "function double(x) {\nreturn x * 2;\n}\n";
+    match meta_translate::translate(
+        SourceRoot::JavaScript,
+        SourceRoot::Rust,
+        "double.js",
+        source,
+    ) {
+        TranslationOutcome::Rendered { target, .. } => {
+            assert!(
+                target.contains("fn double(x)"),
+                "the function declaration projects: {target}"
+            );
+            assert!(
+                target.contains("return x * 2;"),
+                "the return carries its expression: {target}"
+            );
+        }
+        other @ (TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Refused { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("js → rust must project the plain subset; got {other:?}")
+        }
+    }
+    // An object literal has no rust spelling: the leg must refuse it by
+    // name, not guess a struct the construct does not carry.
+    let refused = "const point = { x: 1, y: 2 };\n";
+    match meta_translate::translate(
+        SourceRoot::JavaScript,
+        SourceRoot::Rust,
+        "point.js",
+        refused,
+    ) {
+        TranslationOutcome::Refused { refusals } => {
+            assert!(
+                refusals.iter().any(|refusal| refusal.construct == "object"),
+                "the object literal must be refused by name: {refusals:?}"
+            );
+        }
+        other @ (TranslationOutcome::Rendered { .. }
+        | TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("js → rust must refuse the object literal; got {other:?}")
+        }
+    }
+}
+
+#[test]
+fn ts_to_rust_renders_and_refuses_by_name() {
+    let source = "function twice(n: number) {\nreturn n + n;\n}\n";
+    match meta_translate::translate(SourceRoot::TypeScript, SourceRoot::Rust, "twice.ts", source) {
+        TranslationOutcome::Rendered { target, .. } => {
+            // The annotation carries verbatim: `n: number` is grammatical
+            // rust (a path type), and carrying it loses nothing.
+            assert!(
+                target.contains("fn twice(n: number)"),
+                "the typed declaration projects: {target}"
+            );
+        }
+        other @ (TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Refused { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("ts → rust must project the plain subset; got {other:?}")
+        }
+    }
+    let refused = "try {\nstep();\n} catch (e) {\n}\n";
+    match meta_translate::translate(SourceRoot::TypeScript, SourceRoot::Rust, "try.ts", refused) {
+        TranslationOutcome::Refused { refusals } => {
+            assert!(
+                refusals
+                    .iter()
+                    .any(|refusal| refusal.construct == "try_statement"),
+                "the try statement must be refused by name: {refusals:?}"
+            );
+        }
+        other @ (TranslationOutcome::Rendered { .. }
+        | TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("ts → rust must refuse the try statement; got {other:?}")
+        }
+    }
 }
 
 #[test]

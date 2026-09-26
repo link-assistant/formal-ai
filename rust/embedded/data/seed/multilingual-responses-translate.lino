@@ -99,6 +99,10 @@ multilingual_responses
     intent projection_refusal_unruled_kind
     language en
     text "no projection rule and no refusal row for {target}"
+  response response_projection_refusal_no_target_form_en
+    intent projection_refusal_no_target_form
+    language en
+    text "no {target} form for this construct; it is refused rather than guessed"
   response response_projection_refusal_unknown_placeholder_en
     intent projection_refusal_unknown_placeholder
     language en

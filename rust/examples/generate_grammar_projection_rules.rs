@@ -20,7 +20,7 @@ use std::fs;
 use std::path::Path;
 
 use formal_ai::grammar_kinds::{CORPORA, corpus_inventory, corpus_sources, named_corpus_inventory};
-use formal_ai::rust_projection::{ANY_TARGET, REFUSAL_LANGUAGE};
+use formal_ai::rust_projection::{ANY_TARGET, REFUSAL_LANGUAGE, REFUSAL_NOFORM_LANGUAGE};
 use meta_language::{
     LinkMetadata, LinkNetwork, LinkQuery, LinkType, TranslationRule, TranslationRuleSet,
 };
@@ -81,6 +81,9 @@ const SPLICE_CLASS_KINDS: &[&str] = &[
     // The augmented forms splice for the same reason: `a += b` keeps its
     // spelling in every target.
     "augmented_assignment_expression",
+    // Rust's compound assignment is the same expression: `a += b` is
+    // glyph-identical in javascript and typescript.
+    "compound_assignment_expr",
     // Literals that keep their spelling.
     "integer_literal",
     "float_literal",
@@ -133,11 +136,124 @@ const SPLICE_CLASS_KINDS: &[&str] = &[
     "index_expression",
     // An array expression `[a, b]` is the same literal in every target.
     "array_expression",
-    // Rust borrow markers ride their ruled parents' templates; a
-    // `mut` inside a let never renders because the let template omits it.
-    "mutable_specifier",
     // A macro token tree is balanced token soup, valid in every target.
     "token_tree",
+];
+
+/// Kinds with no spelling in a target grammar — declared no-form. The
+/// walk honors these by refusing the construct by name instead of
+/// splicing source text the target grammar would reject.
+///
+/// Each row is (kind, target labels): a `rust` target answers the
+/// js/ts→rust legs, `javascript`/`typescript` targets answer the
+/// rust→js/ts legs. A kind never rides both the splice list and this
+/// one — a kind is authored into exactly one disposition.
+const NO_FORM_KINDS: &[(&str, &[&str])] = &[
+    // The object cluster: object literals and destructuring have no
+    // rust form (rust has no object literals, and a rust struct
+    // pattern is grammatically incomplete without its constructor
+    // path, which the js construct does not carry).
+    ("object", &["rust"]),
+    ("pair", &["rust"]),
+    ("object_pattern", &["rust"]),
+    ("pair_pattern", &["rust"]),
+    ("assignment_pattern", &["rust"]),
+    ("shorthand_property_identifier_pattern", &["rust"]),
+    ("computed_property_name", &["rust"]),
+    ("rest_pattern", &["rust"]),
+    ("spread_element", &["rust"]),
+    // Classes and their parts: the struct+impl split has no single
+    // target form, and a method needs the impl context a query cannot
+    // see from inside the body.
+    ("class", &["rust"]),
+    ("class_body", &["rust"]),
+    ("class_declaration", &["rust"]),
+    ("class_heritage", &["rust"]),
+    ("extends_clause", &["rust"]),
+    ("method_definition", &["rust"]),
+    ("field_definition", &["rust"]),
+    ("public_field_definition", &["rust"]),
+    // ES modules: rust's use is intra-crate, not a module system.
+    ("import", &["rust"]),
+    ("import_statement", &["rust"]),
+    ("import_clause", &["rust"]),
+    ("import_specifier", &["rust"]),
+    ("named_imports", &["rust"]),
+    ("export_statement", &["rust"]),
+    ("export_clause", &["rust"]),
+    ("export_specifier", &["rust"]),
+    ("meta_property", &["rust"]),
+    // The dynamic family: template strings are format macros, regexes
+    // are crates, C-style for is while+index, try/catch and throw are
+    // Result and panic!, await needs an async runtime, ++/-- need an
+    // operator-literal query the engine does not carry, and a js label
+    // can name any statement while a rust label names loops and
+    // blocks only.
+    ("template_string", &["rust"]),
+    ("template_substitution", &["rust"]),
+    ("regex", &["rust"]),
+    ("regex_pattern", &["rust"]),
+    ("regex_flags", &["rust"]),
+    ("for_statement", &["rust"]),
+    ("throw_statement", &["rust"]),
+    ("try_statement", &["rust"]),
+    ("catch_clause", &["rust"]),
+    ("finally_clause", &["rust"]),
+    ("update_expression", &["rust"]),
+    ("labeled_statement", &["rust"]),
+    // Parse-recovery artifacts are not constructs, and a literal type
+    // has no rust spelling.
+    ("ERROR", &["rust"]),
+    ("literal_type", &["rust"]),
+    // The match family has no js/ts form: switch arms are statements,
+    // not expressions, and inventing a ternary chain would be
+    // semantics, not syntax.
+    ("match_arm", &["javascript", "typescript"]),
+    ("match_pattern", &["javascript", "typescript"]),
+    ("match_block", &["javascript", "typescript"]),
+    ("match_expression", &["javascript", "typescript"]),
+    // The use family, extern crate and modules: js/ts have no
+    // path-namespace imports (the ES module family above is the
+    // mirror refusal).
+    ("use_declaration", &["javascript", "typescript"]),
+    ("use_list", &["javascript", "typescript"]),
+    ("scoped_use_list", &["javascript", "typescript"]),
+    ("use_as_clause", &["javascript", "typescript"]),
+    ("use_wildcard", &["javascript", "typescript"]),
+    ("extern_crate_declaration", &["javascript", "typescript"]),
+    ("mod_item", &["javascript", "typescript"]),
+    // Range and loop forms with no glyph-level target: for-range is
+    // the iterator protocol, try is Result, a range has no js/ts
+    // spelling, and slice patterns have no destructuring form.
+    ("for_expression", &["javascript", "typescript"]),
+    ("try_expression", &["javascript", "typescript"]),
+    ("range_expression", &["javascript", "typescript"]),
+    ("range_pattern", &["javascript", "typescript"]),
+    ("slice_pattern", &["javascript", "typescript"]),
+    // Let conditions and chains have no js/ts form at statement
+    // level, and an or-pattern is not a js pattern.
+    ("let_condition", &["javascript", "typescript"]),
+    ("let_chain", &["javascript", "typescript"]),
+    ("or_pattern", &["javascript", "typescript"]),
+    // A tuple-struct's ordered body has no class spelling, a fn
+    // signature without a body is not a js function, and an async
+    // block is a runtime construct.
+    (
+        "ordered_field_declaration_list",
+        &["javascript", "typescript"],
+    ),
+    ("function_signature_item", &["javascript", "typescript"]),
+    ("async_block", &["javascript", "typescript"]),
+    // Raw strings carry delimiter hashes no js/ts lexer accepts.
+    ("raw_string_literal", &["javascript", "typescript"]),
+    // await is postfix `x.await` in rust and prefix `await x` in js/ts;
+    // the js/ts legs refuse it rather than reorder into an async
+    // context a rule cannot check. (The rust→js/ts direction stays
+    // pending, not declared, until that measurement is made.)
+    ("await_expression", &["rust"]),
+    // A rust cast is ts `as` syntax (the type_cast rule row carries
+    // the ts template) but js has no cast: the js leg refuses by name.
+    ("type_cast_expression", &["javascript"]),
 ];
 
 /// The four L8 legs: (from grammar, target grammar).
@@ -862,6 +978,102 @@ const RULE_ROWS: &[RuleRow] = &[
         sexpression: "(predefined_type)",
         templates: &[("rust", "{.:text}")],
     },
+    // A static crosses as a const: the name and value keep their
+    // spellings, the type child is walked for coverage and dropped.
+    RuleRow {
+        name: "rust:static_item",
+        sexpression: "(static_item name: (_) @name value: (_) @value)",
+        templates: &[
+            ("javascript", "const {name} = {value};"),
+            ("typescript", "const {name} = {value};"),
+        ],
+    },
+    // The drop-empty class: modifiers and markers with no js/ts
+    // spelling render nothing, the same documented glyph-drop class
+    // as borrows and lifetimes.
+    RuleRow {
+        name: "rust:removed_trait_bound",
+        sexpression: "(removed_trait_bound)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        name: "rust:inner_attribute_item",
+        sexpression: "(inner_attribute_item)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        name: "rust:remaining_field_pattern",
+        sexpression: "(remaining_field_pattern)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        name: "rust:function_modifiers",
+        sexpression: "(function_modifiers)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    // A mut pattern drops its marker and passes the inner pattern
+    // through — a drop-empty here would swallow the binding it wraps.
+    // The capture is the named-only variadic over the children, and the
+    // marker itself is a named `mutable_specifier` node, which is why
+    // the marker carries its own drop rule below.
+    RuleRow {
+        name: "rust:mut_pattern",
+        sexpression: "(mut_pattern (_)* @pattern)",
+        templates: &[("javascript", "{*pattern|}"), ("typescript", "{*pattern|}")],
+    },
+    // The `mut` marker is a named node inside patterns and parameters.
+    // Field-qualified parents never visit it, but a variadic enumeration
+    // does: it must render nothing, not splice `mut` into a js pattern.
+    RuleRow {
+        name: "rust:mutable_specifier",
+        sexpression: "(mutable_specifier)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    // A rust cast keeps its `as` spelling in typescript only; the js
+    // leg is a declared no-form (javascript has no cast).
+    RuleRow {
+        name: "rust:type_cast_expression",
+        sexpression: "(type_cast_expression)",
+        templates: &[("typescript", "{.:text}")],
+    },
+    // A lone semicolon is an empty statement in rust too — the kinds
+    // are the same shape on both sides.
+    RuleRow {
+        name: "es:empty_statement",
+        sexpression: "(empty_statement)",
+        templates: &[("rust", ";")],
+    },
+    // undefined joins null as the absent value: None is the
+    // established spelling precedent.
+    RuleRow {
+        name: "es:undefined",
+        sexpression: "(undefined)",
+        templates: &[("rust", "None")],
+    },
+    // do/while inverts into loop + break: the body keeps its block,
+    // the negated condition keeps its parens.
+    RuleRow {
+        name: "es:do_statement",
+        sexpression: "(do_statement body: (_) @body condition: (_) @condition)",
+        templates: &[(
+            "rust",
+            "loop {{\n{body}\nif !{condition} {{\nbreak;\n}}\n}}",
+        )],
+    },
+    // An array pattern is a tuple pattern's mirror: brackets and
+    // comma keep their spellings.
+    RuleRow {
+        name: "es:array_pattern",
+        sexpression: "(array_pattern (_)* @element)",
+        templates: &[("rust", "[{*element|, }]")],
+    },
+    // The ?. marker is a child of member_expression, which already
+    // renders the plain access — the marker itself renders nothing.
+    RuleRow {
+        name: "es:optional_chain",
+        sexpression: "(optional_chain)",
+        templates: &[("rust", "")],
+    },
 ];
 
 fn main() {
@@ -904,6 +1116,19 @@ fn main() {
                 .with_definition(ANY_TARGET),
         );
     }
+    for (kind, targets) in NO_FORM_KINDS {
+        for target in *targets {
+            network.insert_link(
+                [seed_root],
+                LinkMetadata::new()
+                    .with_link_type(LinkType::Semantic)
+                    .with_named(true)
+                    .with_term(*kind)
+                    .with_language(REFUSAL_NOFORM_LANGUAGE)
+                    .with_definition(*target),
+            );
+        }
+    }
     let lino = network.to_lino();
 
     // The seed must load through the same public loader the walk uses.
@@ -940,11 +1165,17 @@ fn main() {
             fantasy.push(*kind);
         }
     }
+    for (kind, _) in NO_FORM_KINDS {
+        if !all_kinds.contains(*kind) {
+            fantasy.push(*kind);
+        }
+    }
 
     println!(
-        "seed: {} rules, {} refusal rows",
+        "seed: {} rules, {} refusal rows, {} no-form rows",
         projection.rule_count(),
-        projection.refusal_count()
+        projection.refusal_count(),
+        projection.noform_count()
     );
     for (from, target) in DIRECTIONS {
         let (kinds, inventory) = corpus_kinds
@@ -968,9 +1199,12 @@ fn main() {
             })
             .collect();
         work_list.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(&b.1)));
+        // The full remaining list when the count is asked for on the
+        // command line (the default stays the readable head).
+        let listed = std::env::args().any(|arg| arg == "--full-work-list");
         let head: Vec<String> = work_list
             .iter()
-            .take(15)
+            .take(if listed { usize::MAX } else { 15 })
             .map(|(count, kind)| format!("{kind}:{count}"))
             .collect();
         println!(

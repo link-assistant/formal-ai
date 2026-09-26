@@ -81,13 +81,13 @@ pub enum TranslationOutcome {
 /// The plan-16 leaf that owes a leg, or `None` when the leg is live.
 ///
 /// Live: `rust → meta` (self-AST census), the ES quadrant — `js ↔ meta`,
-/// `ts ↔ meta`, `js → ts`, `ts → js` (plan 16 L2's token-tree pivot) — and
+/// `ts ↔ meta`, `js → ts`, `ts → js` (plan 16 L2's token-tree pivot) —
 /// `meta → rust` (plan 16 L7's network serialization, rendered back with
-/// `reconstruct_text`). Owed: every leg that renders source text of another
-/// grammar — the `×rust` renders and `rust → js/ts` — by L8, which owns the
-/// grammar projection rules (L3 landed as the dogfood loop, L5 as round-trip
-/// verification and L7 as the network round trip, so none of them may be
-/// named here). `L0` marks a same-root non-direction. The seed's
+/// `reconstruct_text`), and `js/ts → rust` (plan 16 L8's grammar
+/// projection: every corpus kind is ruled, spliced or declared no-form,
+/// so the walk renders or refuses by name — never guesses). Owed: the
+/// `rust → js/ts` renders by L8, whose rule table still leaves a
+/// type-position tail. `L0` marks a same-root non-direction. The seed's
 /// `root_projection` rows mirror this table; [`root_projections`] reads
 /// them, and the round-trip projection test pins the two surfaces in
 /// agreement.
@@ -97,9 +97,9 @@ pub const fn pending_leg(from: SourceRoot, to: SourceRoot) -> Option<&'static st
         (SourceRoot::Rust | SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Meta)
         | (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript | SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::TypeScript)
-        | (SourceRoot::TypeScript, SourceRoot::JavaScript) => None,
-        (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript)
-        | (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => Some("L8"),
+        | (SourceRoot::TypeScript, SourceRoot::JavaScript)
+        | (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => None,
+        (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript) => Some("L8"),
         (SourceRoot::Rust, SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::JavaScript)
         | (SourceRoot::TypeScript, SourceRoot::TypeScript)
@@ -163,6 +163,23 @@ pub fn translate(
                 },
             }
         }
+        // The L8 grammar projection legs: the seed's rule table answers
+        // for every corpus kind, so the walk renders rust or refuses the
+        // constructs that have no rust spelling — objects, classes,
+        // imports, the dynamic family — by name.
+        (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => {
+            match crate::rust_projection::project(es_grammar_label(from), "rust", source) {
+                crate::rust_projection::ProjectionOutcome::Rendered { source, .. } => {
+                    TranslationOutcome::Rendered {
+                        target: source,
+                        carried: 0,
+                    }
+                }
+                crate::rust_projection::ProjectionOutcome::Refused { refusals } => {
+                    TranslationOutcome::Refused { refusals }
+                }
+            }
+        }
         _ => TranslationOutcome::Pending {
             plan_leaf: pending_leg(from, to).unwrap_or("L2"),
         },
@@ -173,6 +190,15 @@ const fn es_language(root: SourceRoot) -> SourceLanguage {
     match root {
         SourceRoot::TypeScript => SourceLanguage::TypeScript,
         SourceRoot::Rust | SourceRoot::JavaScript | SourceRoot::Meta => SourceLanguage::JavaScript,
+    }
+}
+
+/// The grammar label the L8 projection parses an ES root as: the label
+/// [`crate::grammar_kinds::CORPORA`] declares, not the pivot's language.
+const fn es_grammar_label(root: SourceRoot) -> &'static str {
+    match root {
+        SourceRoot::TypeScript => "typescript",
+        SourceRoot::Rust | SourceRoot::JavaScript | SourceRoot::Meta => "javascript",
     }
 }
 

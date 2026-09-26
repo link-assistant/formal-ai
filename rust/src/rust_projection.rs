@@ -24,6 +24,11 @@ use crate::es_meta::Refusal;
 /// The language tag that marks a seed row as a declared refusal.
 pub const REFUSAL_LANGUAGE: &str = "grammar-projection-refusal";
 
+/// The language tag that marks a seed row as a declared no-form: the
+/// kind has no spelling in the target grammar, so the walk refuses it
+/// by name instead of splicing source text the target would reject.
+pub const REFUSAL_NOFORM_LANGUAGE: &str = "grammar-projection-noform";
+
 /// The refusal-row target that applies to every projection direction.
 pub const ANY_TARGET: &str = "any";
 
@@ -126,7 +131,8 @@ mod engine {
     use std::sync::OnceLock;
 
     use super::{
-        ANY_TARGET, MATCH_TERM, MAX_WALK_DEPTH, REFUSAL_LANGUAGE, RULE_SET_TERM, RULE_TERM,
+        ANY_TARGET, MATCH_TERM, MAX_WALK_DEPTH, REFUSAL_LANGUAGE, REFUSAL_NOFORM_LANGUAGE,
+        RULE_SET_TERM, RULE_TERM,
     };
     use crate::es_meta::Refusal;
 
@@ -154,6 +160,7 @@ mod engine {
         root_kinds: Vec<Option<String>>,
         ruled_kinds: BTreeMap<String, Vec<String>>,
         refused_kinds: BTreeMap<String, Vec<String>>,
+        noform_kinds: BTreeMap<String, Vec<String>>,
     }
 
     /// One claim: the rule that won a link, and the captures its query
@@ -207,8 +214,26 @@ mod engine {
             })
         }
 
+        /// Whether `kind` is declared to have no form in `target` (or in
+        /// every target).
+        #[must_use]
+        pub fn is_noform(&self, kind: &str, target: &str) -> bool {
+            self.noform_kinds.get(kind).is_some_and(|targets| {
+                targets
+                    .iter()
+                    .any(|noform| noform == target || noform == ANY_TARGET)
+            })
+        }
+
+        /// How many no-form rows the seed carries (one row per kind and
+        /// target).
+        #[must_use]
+        pub fn noform_count(&self) -> usize {
+            self.noform_kinds.values().map(Vec::len).sum()
+        }
+
         /// The kinds in `kinds` that are neither ruled for `target` nor
-        /// declared refused — one refusal per kind.
+        /// declared refused nor declared no-form — one refusal per kind.
         ///
         /// Kind-set arithmetic, not query matching: this is the corpus
         /// ratchet's engine, and it stays fast enough to run over every
@@ -217,7 +242,11 @@ mod engine {
         pub fn coverage_kinds(&self, kinds: &BTreeSet<String>, target: &str) -> Vec<Refusal> {
             kinds
                 .iter()
-                .filter(|kind| !self.is_ruled(kind, target) && !self.is_refused(kind, target))
+                .filter(|kind| {
+                    !self.is_ruled(kind, target)
+                        && !self.is_refused(kind, target)
+                        && !self.is_noform(kind, target)
+                })
                 .map(|kind| Refusal {
                     construct: kind.clone(),
                     detail: seeded_detail(
@@ -388,6 +417,15 @@ mod engine {
                                 depth,
                             );
                         }
+                        if self.is_noform(&kind, target) {
+                            return Err(Refusal {
+                                construct: kind,
+                                detail: seeded_detail(
+                                    "projection_refusal_no_target_form",
+                                    &[("target", target)],
+                                ),
+                            });
+                        }
                         if self.is_refused(&kind, target) {
                             return Ok(span_text(source, metadata.span()));
                         }
@@ -396,6 +434,15 @@ mod engine {
                             detail: seeded_detail(
                                 "projection_refusal_missing_template",
                                 &[("rule", rule.name()), ("target", target)],
+                            ),
+                        });
+                    }
+                    if self.is_noform(&kind, target) {
+                        return Err(Refusal {
+                            construct: kind,
+                            detail: seeded_detail(
+                                "projection_refusal_no_target_form",
+                                &[("target", target)],
                             ),
                         });
                     }
@@ -532,7 +579,12 @@ mod engine {
                     } else {
                         self.expand_link(walk, binding, depth + 1)?
                     };
-                    pieces.push(piece);
+                    // A dropped marker (the drop-empty glyph class)
+                    // contributes no separator: `{ x, .. }` joins to
+                    // `{ x }`, not `{ x,  }`.
+                    if !piece.is_empty() {
+                        pieces.push(piece);
+                    }
                 }
                 return Ok(pieces.join(&unescape_separator(separator)));
             }
@@ -591,6 +643,7 @@ mod engine {
         let mut root_kinds: Vec<Option<String>> = Vec::new();
         let mut ruled_kinds: BTreeMap<String, Vec<String>> = BTreeMap::new();
         let mut refused_kinds: BTreeMap<String, Vec<String>> = BTreeMap::new();
+        let mut noform_kinds: BTreeMap<String, Vec<String>> = BTreeMap::new();
 
         let Some(root) = network.links().find(|link| {
             link.metadata().link_type() == Some(LinkType::Semantic)
@@ -648,11 +701,26 @@ mod engine {
             }
         }
 
+        for link in network.links().filter(|link| {
+            link.references().first().copied() == Some(root.id())
+                && link.metadata().language() == Some(REFUSAL_NOFORM_LANGUAGE)
+        }) {
+            if let (Some(kind), Some(target)) =
+                (link.metadata().term(), link.metadata().definition())
+            {
+                noform_kinds
+                    .entry(kind.to_owned())
+                    .or_default()
+                    .push(target.to_owned());
+            }
+        }
+
         Ok(GrammarProjection {
             rule_set,
             root_kinds,
             ruled_kinds,
             refused_kinds,
+            noform_kinds,
         })
     }
 

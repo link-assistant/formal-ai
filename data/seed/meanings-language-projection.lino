@@ -125,7 +125,7 @@ meanings
     precondition "a projection row states whether its leg is delivered"
     effect "declares that a named plan leaf still owes the leg"
     unit "not applicable"
-    example "the grammar legs are owed by the L8 leaf"
+    example "the rust-to-es grammar legs are owed by the L8 leaf"
     grounding "data/seed/language-projection.lino"
   projection_refusal_uncovered_kind
     defined-by relation
@@ -166,6 +166,14 @@ meanings
     effect "answers with the seeded refusal that names the target without a row"
     unit "not applicable"
     example "the walk refuses a kind the seed lists no rule for"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_no_target_form
+    defined-by relation
+    role projection_refusal
+    precondition "a grammar projection walk meets a kind declared to have no spelling in the target"
+    effect "answers with the seeded refusal that names the target with no form for it"
+    unit "not applicable"
+    example "the walk refuses an object literal crossing into rust"
     grounding "data/seed/multilingual-responses-translate.lino"
   projection_refusal_unknown_placeholder
     defined-by relation

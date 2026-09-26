@@ -887,6 +887,177 @@ Decisions fixed before any of it is written:
    by name; the leg table and the seed registry agree after the flip
    (the L5 agreement test re-runs green with the new row).
 
+### Design note 2026-09-26 — L8: the semantic frontier and the no-form refusal (written before the code)
+
+Survey facts this note is planned against (the generator's
+`--full-work-list` run over the committed corpus, 2026-09-26):
+
+- **The mechanical frontier is closed.** After three authored batches
+  the remaining kind sets are rust→js 61, rust→ts 61, js→rust 42,
+  ts→rust 45 — and every remaining kind is a *semantic gap*: a construct
+  whose target language has no spelling for it at the glyph level the
+  projection works at. The biggest js→rust residuals are `pair` (21817
+  occurrences) and `object` (7554) — object literals; the biggest
+  rust→js residuals are the match family (`match_arm`/`match_pattern`
+  at 6621 each) and the use family (`use_declaration` 3281).
+- **Splicing is dishonest for these kinds.** The refusal mode L8
+  shipped (`grammar-projection-refusal`) splices the source span
+  verbatim into the target. That is honest for punctuation, identifiers
+  and literals — the tokens are legal in both grammars. It is a lie for
+  `{a: 1}` into rust (not rust), for `match x { … }` into javascript
+  (not javascript), and for every kind in the same position: the output
+  would fail the target parse the round trip exists to guarantee. A
+  refusal that fabricates unparseable output is worse than a refusal
+  that names the gap.
+- **The query language cannot split on operator text.** `++`/`--`
+  (update_expression, 376 js occurrences) would each have an honest
+  rust form (`+= 1` / `-= 1`), but selecting the operator needs a
+  child pattern by literal kind and `parse_node_pattern` in
+  meta-language 0.58.2 accepts `Ident` kinds only — a quoted literal
+  child kind is a parse error. The same limitation blocks any rule
+  whose template choice depends on an anonymous token's text.
+- **The ts corpus carries 189 `ERROR` nodes** in its remaining set —
+  tree-sitter recovery artifacts, not constructs. They have no
+  translation by definition; they need a declared disposition like
+  everything else, not a rule.
+- **js object patterns have no rust form even though the reverse
+  row exists.** `rust:struct_pattern` renders `{ x }` into js, but the
+  reverse input `{ x } = o` cannot render into rust: a rust struct
+  pattern is grammatically incomplete without its constructor path
+  (`Point { x }`), and the js construct carries none. The reverse of a
+  ruled row can still be a no-form; direction symmetry is per-kind,
+  not guaranteed.
+
+Decisions fixed before any of it is written:
+
+1. **D1 — a second refusal mode: `grammar-projection-noform`.** Rows
+   with that language label (term = kind, definition = target) declare
+   that the kind *has no form in the target*. They count toward
+   coverage (the kind leaves the work list — the gap is declared, not
+   pending), and the walk that meets one raises the seeded refusal
+   `projection_refusal_no_target_form`, naming the kind — the
+   same honest-gap contract as every other refusal: never guess, never
+   emit output the target grammar would reject. Splice refusal stays
+   for the token-identical class; no-form is for the rest. The two
+   lists are disjoint by construction (a kind is authored into one or
+   the other, never both), and the generator validates that.
+2. **D2 — per-cluster dispositions, measured, not vibes.** Every kind
+   in the four work lists gets exactly one of: a rule row (glyph-
+   mechanical), a splice row (token-identical), a no-form row (no
+   target spelling), or *stays pending* (a rule is possible but needs
+   measurement or an engine capability this batch does not carry —
+   the ratchet keeps it visible). This batch lands:
+   - *js/ts→rust rules*: `empty_statement` → `;` (a lone semicolon is
+     a legal rust statement — and a rust `empty_statement` kind, so
+     the row is shape-symmetric), `undefined` → `None` (joins the
+     existing null → `None` precedent), `do_statement` → `loop { body;
+     if !(cond) { break; } }` (the loop/break inversion is template-
+     mechanical), `array_pattern` → `[a, b]` (tuple_pattern's mirror),
+     `optional_chain` → the drop-empty template on the `?.` marker
+     itself (the marker is a child of member_expression, which already
+     renders the plain access — the glyph drops the same documented
+     way borrows and lifetimes do).
+   - *js/ts→rust no-form*: the object cluster (`object`, `pair`,
+     `object_pattern`, `pair_pattern`,
+     `shorthand_property_identifier_pattern`, `assignment_pattern`,
+     `computed_property_name`, `rest_pattern`, `spread_element`,
+     `method_definition`, `field_definition`, the class family, the
+     import/export family, `meta_property`), the dynamic family
+     (`template_string`, `template_substitution`, `regex`,
+     `regex_pattern`, `regex_flags`, `for_statement`, `throw_statement`,
+     `try_statement`, `catch_clause`, `finally_clause`,
+     `await_expression`, `update_expression`, `labeled_statement`),
+     and the ts-only `ERROR`, `literal_type`, `public_field_definition`,
+     `extends_clause`.
+   - *rust→js/ts splices*: `compound_assignment_expr` (`a += b` is
+     glyph-identical in all three grammars), `type_cast_expression`
+     for ts only (`x as T` is ts syntax; js gets a no-form row).
+   - *rust→js/ts rules*: `static_item` → `const name = value;`
+     (mirrors const_item; the type child is walked and dropped),
+     `mut_pattern` → pass-through (the marker drops, the wrapped
+     pattern renders — a drop-empty would swallow the binding),
+     `removed_trait_bound` / `inner_attribute_item` /
+     `remaining_field_pattern` / `function_modifiers` → the
+     drop-empty template (each is a modifier or marker with no js/ts
+     spelling, dropping it is the documented glyph-drop class).
+   - *rust→js/ts no-form*: the match family, the use family
+     (`use_declaration`, `use_list`, `scoped_use_list`, `use_as_clause`,
+     `use_wildcard`, `extern_crate_declaration`), `try_expression`,
+     `for_expression`, `range_expression`, `range_pattern`,
+     `let_condition`, `let_chain`, `or_pattern`, `mod_item`,
+     `ordered_field_declaration_list`, `function_signature_item`,
+     `slice_pattern`, `async_block`, `raw_string_literal`.
+   - *stays pending (next batch)*: the rust type-position tail
+     (`type_parameters`, `type_parameter`, `lifetime_parameter`,
+     `unit_type`, `unit_expression`, `dynamic_type`, `trait_bounds`,
+     `where_clause`, `where_predicate`, `function_type`, `trait_item`,
+     `type_item`, `enum_item` and its family — several have honest
+     ts spellings worth measuring), `impl_item`/`declaration_list`
+     (method-shaped functions need a parent-context query the engine
+     does not carry), and the abstract_type cluster.
+3. **D3 — the flip criterion is unchanged: remaining = 0, and the
+   declarations count.** With D2's rows and declarations, js→rust and
+   ts→rust reach zero remaining and flip live (the five surfaces the
+   L5 registry pins: the `pending_leg` arm, the seed root_projection
+   rows, meanings-translate-cycle, and the two agreement tests). The
+   tradeoff is accepted and stated here: the committed js/ts corpus
+   *contains* objects, templates and classes, so corpus files that use
+   them refuse at runtime, by name, the moment the legs go live — that
+   is the honest-gap contract doing its job; the plain subset
+   translates, and every refusal names the construct that blocked it.
+   rust→js/ts stay pending until their type-position tail is authored.
+4. **D4 — `update_expression`'s unlock is upstream-shaped.** When
+   meta-language accepts a quoted literal child kind
+   (`(update_expression operator: "++")`), two rule rows render
+   `+= 1` / `-= 1` and the no-form row retires. That extension is
+   general (operator-disambiguated rules for every grammar pair), so it
+   belongs in the dependency per the dependency policy; this repo
+   tracks it as an upstream issue, not a local fork today.
+5. **D5 — grounding follows the seeded-refusal pattern.** One new
+   intent (`projection_refusal_no_target_form`) with its meaning and
+   its en response row in the two translate seeds; the closure-audit
+   count moves 1084 → 1085 (the same precedented move task #75 made
+   when L8's first refusal strings landed).
+6. **Named tests, drafted failing first**: the projection tranche
+   gains render-and-reparse probes for every new rule row (the
+   do_statement inversion, the empty statement, undefined → None,
+   array/optional chains, static → const, the drop class) and
+   honest-refusal probes for the no-form class — an object literal
+   into rust and a match expression into js must both come back
+   `Refused` naming the construct, never spliced output. The coverage
+   pins drop to the measured post-batch numbers, and the two
+   js/ts→rust agreement tests flip with the registry.
+
+### Postscript 2026-09-26 — the flip, measured
+
+D3's criterion was met and the flip landed the same day. What the probes
+forced before the legs could go live, all engine- or table-level (no test
+was weakened to pass):
+
+- **Variadic empty-skip.** A dropped marker contributed its separator to
+  the join — `let Point { x, .. } = p` rendered `let { x,  } = p`. The
+  engine now skips empty pieces before joining, which also removed the
+  leading blank line a dropped inner attribute used to leave.
+- **`mutable_specifier` moved from splice-class to a ruled drop.** The
+  marker inside `mut_pattern` is a *named* node (probed: children are
+  `mutable_specifier`, whitespace trivia, `identifier`), so the
+  named-only variadic kept it and spliced `mut` into the js pattern —
+  `let { mutx } = o`. A singular wildcard capture was worse: it bound
+  the marker itself. The marker now renders nothing, and the
+  named-children variadic passes the wrapped binding through.
+- **ts annotations carry verbatim.** `function twice(n: number)`
+  projects to `fn twice(n: number)` — a path type is grammatical rust,
+  and carrying the annotation loses nothing (dropping it would).
+
+Measured after the batch: 111 rules, 61 splice-refusal rows, 88 no-form
+rows; js→rust and ts→rust at **0 remaining**, rust→js/ts at 30 (the
+type-position tail of D2). The closure audit measured net-zero — the new
+meaning and its response row resolve against each other, so the ledger
+stays `1084`, not the 1085 D5 predicted. The five surfaces (leg table,
+seed rows, meanings example, both agreement tests) moved in one commit;
+the seeded `translate_leg_pending` example text still pins rust → js,
+which stays owed.
+
 ## Risks
 
 1. **The restructure churns every path.** Mitigation: L1 lands as one commit

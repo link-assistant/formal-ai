@@ -159,16 +159,29 @@ fn the_seed_registry_and_the_leg_table_agree() {
     // another grammar name the leaf that owes them — L7 inherited the
     // quadrant from L3 (the dogfood loop) and L5 (verification), landed the
     // meta → rust network leg, and passed the grammar-projection legs to L8.
+    // L8's rule table now answers for every js/ts corpus kind — ruled,
+    // spliced or declared no-form — so the js/ts → rust renders are live:
+    // they render the plain subset and refuse objects, classes and the
+    // dynamic family by name. The rust → es legs stay owed: the table
+    // still leaves a type-position tail.
     for (from, to) in [
         (SourceRoot::Rust, SourceRoot::JavaScript),
         (SourceRoot::Rust, SourceRoot::TypeScript),
-        (SourceRoot::JavaScript, SourceRoot::Rust),
-        (SourceRoot::TypeScript, SourceRoot::Rust),
     ] {
         assert_eq!(
             meta_translate::pending_leg(from, to),
             Some("L8"),
             "{from:?} → {to:?} is owed by the grammar projection rules"
+        );
+    }
+    for (from, to) in [
+        (SourceRoot::JavaScript, SourceRoot::Rust),
+        (SourceRoot::TypeScript, SourceRoot::Rust),
+    ] {
+        assert_eq!(
+            meta_translate::pending_leg(from, to),
+            None,
+            "{from:?} → {to:?} is live through the L8 grammar projection"
         );
     }
     // The rust row states the honest fidelity: the self-AST census is a

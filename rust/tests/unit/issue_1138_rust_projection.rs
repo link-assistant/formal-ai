@@ -321,10 +321,13 @@ fn grammar_projection_corpus_ratchet() {
     use formal_ai::rust_projection::projection_from;
 
     // Pins, tightened to the measured counts as the authored table grows.
-    const RUST_TO_JAVASCRIPT_REMAINING: usize = 61;
-    const RUST_TO_TYPESCRIPT_REMAINING: usize = 61;
-    const JAVASCRIPT_TO_RUST_REMAINING: usize = 42;
-    const TYPESCRIPT_TO_RUST_REMAINING: usize = 45;
+    // The js/ts -> rust legs sit at zero: every remaining kind is either
+    // ruled, spliced, or declared no-form (the honest refusal that names
+    // the construct), so those directions meet the live-flip criterion.
+    const RUST_TO_JAVASCRIPT_REMAINING: usize = 30;
+    const RUST_TO_TYPESCRIPT_REMAINING: usize = 30;
+    const JAVASCRIPT_TO_RUST_REMAINING: usize = 0;
+    const TYPESCRIPT_TO_RUST_REMAINING: usize = 0;
 
     let projection = projection_from(formal_ai::seed::GRAMMAR_PROJECTION_RULES_LINO)
         .expect("the embedded seed is well-formed");
@@ -452,7 +455,7 @@ fn grammar_projection_tranche_renders_and_reparses() {
             "rust",
             "javascript",
             "#[derive(Debug)]\nfn g() { loop { println!(\"hi {}\", 1); } }",
-            "\n\nfunction g() {\nwhile (true) {\nprintln(\"hi {}\", 1);\n};\n}",
+            "function g() {\nwhile (true) {\nprintln(\"hi {}\", 1);\n};\n}",
         ),
         // closures cross to arrows — move drops the way borrows do — and
         // returns keep their valued/bare split.
@@ -558,6 +561,70 @@ fn grammar_projection_tranche_renders_and_reparses() {
             "fn b(v: [u32; 3], t: (u32, u32)) { }",
             "function b(v: u32[], t: [u32, u32]) {\n\n}",
         ),
+        // a static crosses as a const: the type child is walked for
+        // coverage and dropped from the render.
+        (
+            "rust",
+            "javascript",
+            "static MAX: u32 = 5;",
+            "const MAX = 5;",
+        ),
+        // the compound assignment splices glyph for glyph, and the
+        // mutable specifier on the let drops.
+        (
+            "rust",
+            "javascript",
+            "fn s() { let mut c = 0; c += 2; }",
+            "function s() {\nlet c = 0;\nc += 2;\n}",
+        ),
+        // a rust cast keeps its `as` spelling in typescript.
+        (
+            "rust",
+            "typescript",
+            "fn t(x: u32) { let v = x as u32; }",
+            "function t(x: u32) {\nlet v = x as u32;\n}",
+        ),
+        // the inner attribute renders nothing, the remaining-field
+        // marker drops, and the shorthand field keeps its name.
+        (
+            "rust",
+            "javascript",
+            "#![allow(dead_code)]\nfn r(p: Point) { let Point { x, .. } = p; }",
+            "function r(p) {\nlet { x } = p;\n}",
+        ),
+        // the mut pattern drops its marker and passes the binding
+        // through the tuple-struct destructuring.
+        (
+            "rust",
+            "javascript",
+            "fn t(o: Option<u32>) { let Some(mut x) = o; x }",
+            "function t(o) {\nlet { x } = o;\nx\n}",
+        ),
+        // function modifiers render nothing and visibility already
+        // drops, so the function crosses bare.
+        (
+            "rust",
+            "javascript",
+            "pub async unsafe fn f() { }",
+            "function f() {\n\n}",
+        ),
+        // a lone semicolon is an empty statement on the rust side too.
+        ("javascript", "rust", ";\nlet x = 1;", ";\n\nlet x = 1;"),
+        // undefined joins null as the absent value.
+        ("javascript", "rust", "let u = undefined;", "let u = None;"),
+        // do/while inverts into loop + break; the negated condition
+        // keeps its parens.
+        (
+            "javascript",
+            "rust",
+            "do { step(); } while (x > 0);",
+            "loop {\n{\nstep();\n}\nif !(x > 0) {\nbreak;\n}\n}",
+        ),
+        // an array pattern is a tuple pattern's mirror.
+        ("javascript", "rust", "let [a, b] = t;", "let [a, b] = t;"),
+        // the ?. marker renders nothing; the member access it rode
+        // already renders the plain dot.
+        ("javascript", "rust", "let x = a?.b;", "let x = a.b;"),
     ];
     for (from, target, source, expected) in probes {
         match project(from, target, source) {
@@ -580,6 +647,78 @@ fn grammar_projection_tranche_renders_and_reparses() {
             }
             refused @ ProjectionOutcome::Refused { .. } => {
                 panic!("{from} -> {target} must render {source}: {refused:?}")
+            }
+        }
+    }
+}
+
+/// The no-form refusal: a kind declared to have no spelling in the
+/// target is refused by name — never spliced, never guessed. This is
+/// the honest-gap contract carrying the semantic frontier, so an object
+/// literal crossing into rust and a match crossing into javascript come
+/// back as refusals that name the construct and the target.
+#[test]
+fn grammar_projection_no_form_refuses_by_name() {
+    use formal_ai::rust_projection::{ProjectionOutcome, project};
+
+    let probes: &[(&str, &str, &str, &str)] = &[
+        // object literals have no rust form.
+        ("javascript", "rust", "let o = { a: 1 };", "object"),
+        // try/catch is Result on the rust side, not syntax.
+        (
+            "javascript",
+            "rust",
+            "try { f(); } catch (e) { g(); }",
+            "try_statement",
+        ),
+        // template strings are format macros, not rust syntax.
+        (
+            "javascript",
+            "rust",
+            "let s = `hi ${n}`;",
+            "template_string",
+        ),
+        // the match family has no js/ts expression form.
+        (
+            "rust",
+            "javascript",
+            "fn m(x: u32) { match x { 1 => 2, _ => 3 } }",
+            "match_expression",
+        ),
+        // a rust cast is ts syntax only.
+        (
+            "rust",
+            "javascript",
+            "fn c(x: u32) { let v = x as u32; }",
+            "type_cast_expression",
+        ),
+        // for-range is the iterator protocol, not js syntax.
+        (
+            "rust",
+            "javascript",
+            "fn f(v: Vec<u32>) { for x in v { g(x); } }",
+            "for_expression",
+        ),
+    ];
+    for (from, target, source, construct) in probes {
+        match project(from, target, source) {
+            ProjectionOutcome::Refused { refusals } => {
+                assert!(
+                    refusals
+                        .iter()
+                        .any(|refusal| refusal.construct == *construct),
+                    "{from} -> {target} over {source} must refuse {construct}: {refusals:?}"
+                );
+                assert!(
+                    refusals
+                        .iter()
+                        .all(|refusal| refusal.detail.contains("form")),
+                    "{from} -> {target} over {source}: the no-form detail must \
+                     name the missing form: {refusals:?}"
+                );
+            }
+            rendered @ ProjectionOutcome::Rendered { .. } => {
+                panic!("{from} -> {target} over {source} must refuse, not {rendered:?}")
             }
         }
     }
