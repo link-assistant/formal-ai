@@ -321,10 +321,10 @@ fn grammar_projection_corpus_ratchet() {
     use formal_ai::rust_projection::projection_from;
 
     // Pins, tightened to the measured counts as the authored table grows.
-    const RUST_TO_JAVASCRIPT_REMAINING: usize = 102;
-    const RUST_TO_TYPESCRIPT_REMAINING: usize = 102;
-    const JAVASCRIPT_TO_RUST_REMAINING: usize = 66;
-    const TYPESCRIPT_TO_RUST_REMAINING: usize = 70;
+    const RUST_TO_JAVASCRIPT_REMAINING: usize = 68;
+    const RUST_TO_TYPESCRIPT_REMAINING: usize = 68;
+    const JAVASCRIPT_TO_RUST_REMAINING: usize = 43;
+    const TYPESCRIPT_TO_RUST_REMAINING: usize = 46;
 
     let projection = projection_from(formal_ai::seed::GRAMMAR_PROJECTION_RULES_LINO)
         .expect("the embedded seed is well-formed");
@@ -423,6 +423,124 @@ fn grammar_projection_tranche_renders_and_reparses() {
             "rust",
             "var x;\nfunction f() { return; }\nx = (x + 1);\nconsole.log(x);",
             "let x;\n\nfn f() {\nreturn;\n}\n\nx = (x + 1);\n\nconsole.log(x);",
+        ),
+        // the if/else pair: conditions take target parens, blocks own
+        // their braces, and the else clause wraps each shape it holds.
+        (
+            "rust",
+            "javascript",
+            "fn a(x: u32) -> u32 { if x > 0 { 1 } else { 2 } }",
+            "function a(x) {\nif (x > 0) {\n1\n} else {\n2\n};\n}",
+        ),
+        (
+            "rust",
+            "typescript",
+            "fn a(x: u32) -> u32 { if x > 0 { 1 } else { 2 } }",
+            "function a(x: u32) {\nif (x > 0) {\n1\n} else {\n2\n};\n}",
+        ),
+        // while, the else-if chain, break and continue.
+        (
+            "rust",
+            "javascript",
+            "fn b(x: u32) { while x > 0 { if x > 1 { break; } else if x == 1 { continue; } else { break; } } }",
+            "function b(x) {\nwhile (x > 0) {\nif (x > 1) {\nbreak;\n} else if (x == 1) {\ncontinue;\n} else {\nbreak;\n};\n};\n}",
+        ),
+        // an attribute drops to the visibility marker's empty render, the
+        // loop crosses to while (true), and the macro call keeps its
+        // identifier and token tree.
+        (
+            "rust",
+            "javascript",
+            "#[derive(Debug)]\nfn g() { loop { println!(\"hi {}\", 1); } }",
+            "\n\nfunction g() {\nwhile (true) {\nprintln(\"hi {}\", 1);\n};\n}",
+        ),
+        // closures cross to arrows — move drops the way borrows do — and
+        // returns keep their valued/bare split.
+        (
+            "rust",
+            "javascript",
+            "fn c() { let f = |a, b| a + b; let g = move |x| x * 2; }\n\nfn d(x: u32) -> u32 { return x + 1; }\n\nfn e() { return; }",
+            "function c() {\nlet f = (a, b) => a + b;\nlet g = (x) => x * 2;\n}\n\nfunction d(x) {\nreturn x + 1;\n}\n\nfunction e() {\nreturn;\n}",
+        ),
+        // the receiver renders no parameter slot and self becomes this.
+        (
+            "rust",
+            "javascript",
+            "fn s(&self) -> u32 { self.width }",
+            "function s() {\nthis.width\n}",
+        ),
+        // let-else: the tuple struct pattern crosses to object
+        // destructuring and the else block drops with the constructor.
+        (
+            "rust",
+            "javascript",
+            "fn h(o: Option<u32>) -> u32 { let Some(x) = o else { return 0 }; x }",
+            "function h(o) {\nlet { x } = o;\nx\n}",
+        ),
+        // unary expressions splice their glyph sequence, the struct
+        // expression lowers to an object literal, and tuple and array
+        // literals ride their own spans.
+        (
+            "rust",
+            "javascript",
+            "fn p(f: bool, x: u32) -> u32 { if !f { return -1; } x }\n\nfn q() { let s = Point { x: 1, y: 2 }; let t = (1, 2); let arr = [3, 4]; }",
+            "function p(f, x) {\nif (!f) {\nreturn -1;\n};\nx\n}\n\nfunction q() {\nlet s = { x: 1, y: 2 };\nlet t = (1, 2);\nlet arr = [3, 4];\n}",
+        ),
+        // lifetimes drop inside a reference type and a scoped type path
+        // crosses to dotted access in annotation position; the type
+        // arguments drop the way the turbofish does.
+        (
+            "rust",
+            "typescript",
+            "fn l(x: &'a u32) { }\n\nfn m(v: std::vec::Vec<u32>) { }",
+            "function l(x: u32) {\n\n}\n\nfunction m(v: std.vec.Vec) {\n\n}",
+        ),
+        // a const item drops its annotation, a struct crosses to a class
+        // shell, and a tuple pattern destructures as an array pattern.
+        (
+            "rust",
+            "javascript",
+            "const MAX: u32 = 5;\n\nstruct P { width: u32 }\n\nfn r(t: u32) { let (a, b) = t; }",
+            "const MAX = 5;\n\nclass P {\nwidth;\n}\n\nfunction r(t) {\nlet [a, b] = t;\n}",
+        ),
+        (
+            "rust",
+            "typescript",
+            "const MAX: u32 = 5;\n\nstruct P { width: u32 }\n\nfn r(t: u32) { let (a, b) = t; }",
+            "const MAX = 5;\n\nclass P {\nwidth: u32;\n}\n\nfunction r(t: u32) {\nlet [a, b] = t;\n}",
+        ),
+        // the javascript if spine with both else shapes, the unary
+        // operators, null, the ternary, the subscript, and this.
+        (
+            "javascript",
+            "rust",
+            "if (a > 0) { b(); } else if (a < 9) { c(); } else { d(); }\n\nif (a) { b(); }\n\nlet x = !a;\n\nlet n = null;\n\nlet t = a ? b : c;\n\nlet s = a[i];\n\nlet u = this.x;",
+            "if (a > 0) {\nb();\n} else if (a < 9) {\nc();\n} else {\nd();\n}\n\nif (a) {\nb();\n}\n\nlet x = !a;\n\nlet n = None;\n\nlet t = if a { b } else { c };\n\nlet s = a[i];\n\nlet u = self.x;",
+        ),
+        // arrows in both parameter shapes, the anonymous function
+        // expression as a closure, the array and sequence literals, the
+        // constructor call, and the augmented assignment splice.
+        (
+            "javascript",
+            "rust",
+            "const f = (a, b) => a + b;\n\nconst g = x => x * 2;\n\nconst h = function(a) { return a; };\n\nlet arr = [1, 2, 3];\n\nlet seq = (a, b, c);\n\nlet v = new Foo(1);\n\nlet w = 0;\n\nw += 2;",
+            "let f = |a, b| a + b;\n\nlet g = |x| x * 2;\n\nlet h = |a| {\nreturn a;\n};\n\nlet arr = [1, 2, 3];\n\nlet seq = (a, b, c);\n\nlet v = Foo(1);\n\nlet w = 0;\n\nw += 2;",
+        ),
+        // the loop statements, the for-of binding, and the switch as a
+        // match with case arms and the default wildcard.
+        (
+            "javascript",
+            "rust",
+            "while (a > 0) { a = a - 1; continue; }\n\nfor (const x of items) { b(x); }\n\nswitch (k) { case 1: c(); break; default: d(); }",
+            "while (a > 0) {\na = a - 1;\ncontinue;\n}\n\nfor x in items {\nb(x);\n}\n\nmatch (k) {\n1 => {\nc();\nbreak;\n},\n_ => {\nd();\n},\n}",
+        ),
+        // typescript parameters: the annotated wrapper splices its
+        // annotation span and the bare wrapper keeps the pattern alone.
+        (
+            "typescript",
+            "rust",
+            "function f(a: number, b: string) { return a; }\n\nfunction g(a) { return a; }",
+            "fn f(a: number, b: string) {\nreturn a;\n}\n\nfn g(a) {\nreturn a;\n}",
         ),
     ];
     for (from, target, source, expected) in probes {

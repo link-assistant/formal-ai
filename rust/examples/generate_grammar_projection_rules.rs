@@ -78,6 +78,9 @@ const SPLICE_CLASS_KINDS: &[&str] = &[
     // (`+=`, `-=`, ...) splices verbatim, so the whole expression is
     // splice-class rather than ruled.
     "assignment_expression",
+    // The augmented forms splice for the same reason: `a += b` keeps its
+    // spelling in every target.
+    "augmented_assignment_expression",
     // Literals that keep their spelling.
     "integer_literal",
     "float_literal",
@@ -96,9 +99,34 @@ const SPLICE_CLASS_KINDS: &[&str] = &[
     "line_comment",
     "doc_comment",
     "outer_doc_comment_marker",
+    // The //! marker rides the line_comment splice whole.
+    "inner_doc_comment_marker",
+    // A character keeps its quotes and escapes in every target: 'a' and
+    // '\n' are valid string spellings in javascript and typescript too.
+    "char_literal",
+    "escape_sequence",
+    // An attribute's inner text `derive(Debug)` is a valid expression in
+    // every target; the wrapping attribute_item row decides whether the
+    // walk reaches it at all.
+    "attribute",
     // A bare type name splices: where a template renders it the span is
     // the answer, and inside ruled parents the template decides.
     "primitive_type",
+    // `crate` is a plain identifier spelling in the other grammars; it
+    // rides the scoped paths that rule it.
+    "crate",
+    // A tuple expression `(a, b)` keeps its parens and comma in the
+    // targets, where it parses as a parenthesized sequence.
+    "tuple_expression",
+    // `Point { x, y }` — the shorthand field splices inside the
+    // struct-expression row's braces.
+    "shorthand_field_initializer",
+    // `true` / `false` are the same literals in every target.
+    "boolean_literal",
+    // `x[i]` keeps its brackets and index verbatim in every target.
+    "index_expression",
+    // An array expression `[a, b]` is the same literal in every target.
+    "array_expression",
     // Rust borrow markers ride their ruled parents' templates; a
     // `mut` inside a let never renders because the let template omits it.
     "mutable_specifier",
@@ -280,10 +308,238 @@ const RULE_ROWS: &[RuleRow] = &[
     },
     RuleRow {
         name: "rust:field_initializer",
-        sexpression: "(field_initializer name: (_) @name value: (_) @value)",
+        sexpression: "(field_initializer field: (_) @field value: (_) @value)",
         templates: &[
-            ("javascript", "{name}: {value}"),
-            ("typescript", "{name}: {value}"),
+            ("javascript", "{field}: {value}"),
+            ("typescript", "{field}: {value}"),
+        ],
+    },
+    // Control flow and function shells. The specific shape of a two-shape
+    // kind is listed before the bare one: the claim pass gives a link to
+    // the first rule that matches it, so the valued/bare pairs only split
+    // cleanly in that order.
+    RuleRow {
+        name: "rust:if_expression",
+        sexpression: "(if_expression condition: (_) @condition consequence: (block) @consequence alternative: (else_clause) @alternative)",
+        templates: &[
+            (
+                "javascript",
+                "if ({condition}) {{\n{consequence}\n}} {alternative}",
+            ),
+            (
+                "typescript",
+                "if ({condition}) {{\n{consequence}\n}} {alternative}",
+            ),
+        ],
+    },
+    RuleRow {
+        // `if` without an else — the general row's query demands the
+        // alternative field, so this row claims only the else-less shape.
+        name: "rust:if_expression:bare",
+        sexpression: "(if_expression condition: (_) @condition consequence: (block) @consequence)",
+        templates: &[
+            ("javascript", "if ({condition}) {{\n{consequence}\n}}"),
+            ("typescript", "if ({condition}) {{\n{consequence}\n}}"),
+        ],
+    },
+    RuleRow {
+        // `else if` chains: the clause wraps the nested if directly.
+        name: "rust:else_clause:if",
+        sexpression: "(else_clause (if_expression) @nested)",
+        templates: &[
+            ("javascript", "else {nested}"),
+            ("typescript", "else {nested}"),
+        ],
+    },
+    RuleRow {
+        name: "rust:else_clause",
+        sexpression: "(else_clause (block) @body)",
+        templates: &[
+            ("javascript", "else {{\n{body}\n}}"),
+            ("typescript", "else {{\n{body}\n}}"),
+        ],
+    },
+    RuleRow {
+        name: "rust:while_expression",
+        sexpression: "(while_expression condition: (_) @condition body: (block) @body)",
+        templates: &[
+            ("javascript", "while ({condition}) {{\n{body}\n}}"),
+            ("typescript", "while ({condition}) {{\n{body}\n}}"),
+        ],
+    },
+    RuleRow {
+        // rust's unconditional loop crosses to the trivially-true while.
+        name: "rust:loop_expression",
+        sexpression: "(loop_expression body: (block) @body)",
+        templates: &[
+            ("javascript", "while (true) {{\n{body}\n}}"),
+            ("typescript", "while (true) {{\n{body}\n}}"),
+        ],
+    },
+    RuleRow {
+        name: "rust:break_expression",
+        sexpression: "(break_expression)",
+        templates: &[("javascript", "break"), ("typescript", "break")],
+    },
+    RuleRow {
+        name: "rust:continue_expression",
+        sexpression: "(continue_expression)",
+        templates: &[("javascript", "continue"), ("typescript", "continue")],
+    },
+    RuleRow {
+        name: "rust:return_expression",
+        sexpression: "(return_expression (_) @argument)",
+        templates: &[
+            ("javascript", "return {argument}"),
+            ("typescript", "return {argument}"),
+        ],
+    },
+    RuleRow {
+        // `return;` — listed after the valued row so a return with an
+        // argument claims there first.
+        name: "rust:return_expression:bare",
+        sexpression: "(return_expression)",
+        templates: &[("javascript", "return"), ("typescript", "return")],
+    },
+    RuleRow {
+        // The method receiver crosses to the property receiver.
+        name: "rust:self",
+        sexpression: "(self)",
+        templates: &[("javascript", "this"), ("typescript", "this")],
+    },
+    RuleRow {
+        // A closure crosses to an arrow function: the move marker is an
+        // anonymous leaf the template never reaches.
+        name: "rust:closure_expression",
+        sexpression: "(closure_expression parameters: (closure_parameters) @parameters body: (_) @body)",
+        templates: &[
+            ("javascript", "({parameters}) => {body}"),
+            ("typescript", "({parameters}) => {body}"),
+        ],
+    },
+    RuleRow {
+        name: "rust:closure_parameters",
+        sexpression: "(closure_parameters (_)* @param)",
+        templates: &[("javascript", "{*param|, }"), ("typescript", "{*param|, }")],
+    },
+    RuleRow {
+        // `name!(args)` drops the bang and keeps the call shape — the
+        // mechanical projection at token fidelity, defined for every macro
+        // at once.
+        name: "rust:macro_invocation",
+        sexpression: "(macro_invocation macro: (_) @macro (token_tree) @arguments)",
+        templates: &[
+            ("javascript", "{macro}{arguments}"),
+            ("typescript", "{macro}{arguments}"),
+        ],
+    },
+    RuleRow {
+        // No target has attributes; the marker renders empty the way
+        // visibility does — the row keeps the walk honest instead of
+        // splicing `#[...]` into target source.
+        name: "rust:attribute_item",
+        sexpression: "(attribute_item)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        // `Some(x)` in a let binding crosses to object destructuring: a
+        // call-shaped binding is not valid target syntax, so the bindings
+        // survive as the pattern and the constructor drops.
+        name: "rust:tuple_struct_pattern",
+        sexpression: "(tuple_struct_pattern type: (_) @constructor (_)* @argument)",
+        templates: &[
+            ("javascript", "{{ {*argument|, } }}"),
+            ("typescript", "{{ {*argument|, } }}"),
+        ],
+    },
+    RuleRow {
+        // `!f` and `-1`: the operator and operand carry no field labels in
+        // the rust grammar, and the glyph sequence is the target spelling
+        // for the boolean/negation operators the corpus exercises.
+        name: "rust:unary_expression",
+        sexpression: "(unary_expression)",
+        templates: &[("javascript", "{.:text}"), ("typescript", "{.:text}")],
+    },
+    RuleRow {
+        // `Point { x: 1 }` lowers to a target object literal: the
+        // constructor name has no callee in an expression position, the
+        // field list is exactly an object body.
+        name: "rust:struct_expression",
+        sexpression: "(struct_expression name: (_) @constructor body: (field_initializer_list) @fields)",
+        templates: &[("javascript", "{fields}"), ("typescript", "{fields}")],
+    },
+    RuleRow {
+        name: "rust:field_initializer_list",
+        sexpression: "(field_initializer_list (_)* @field)",
+        templates: &[
+            ("javascript", "{{ {*field|, } }}"),
+            ("typescript", "{{ {*field|, } }}"),
+        ],
+    },
+    RuleRow {
+        // `let (a, b) = t;` destructures as a target array pattern.
+        name: "rust:tuple_pattern",
+        sexpression: "(tuple_pattern (_)* @element)",
+        templates: &[
+            ("javascript", "[{*element|, }]"),
+            ("typescript", "[{*element|, }]"),
+        ],
+    },
+    RuleRow {
+        // The receiver has no parameter slot in the targets: it renders
+        // empty, and the body's `self` becomes `this` via the self row.
+        name: "rust:self_parameter",
+        sexpression: "(self_parameter)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        // Lifetimes have no target spelling; the `'a` marker drops the
+        // way borrows do and the references stay.
+        name: "rust:lifetime",
+        sexpression: "(lifetime)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        // `std::fmt::Result` in type position crosses to dotted access
+        // the same way scoped_identifier does.
+        name: "rust:scoped_type_identifier",
+        sexpression: "(scoped_type_identifier path: (_) @path name: (_) @name)",
+        templates: &[
+            ("javascript", "{path}.{name}"),
+            ("typescript", "{path}.{name}"),
+        ],
+    },
+    RuleRow {
+        // A struct crosses to a class shell: the named fields become
+        // class fields — untyped in javascript, typed in typescript.
+        name: "rust:struct_item",
+        sexpression: "(struct_item name: (_) @name body: (field_declaration_list) @body)",
+        templates: &[
+            ("javascript", "class {name} {body}"),
+            ("typescript", "class {name} {body}"),
+        ],
+    },
+    RuleRow {
+        name: "rust:field_declaration_list",
+        sexpression: "(field_declaration_list (_)* @field)",
+        templates: &[
+            ("javascript", "{{\n{*field|\n}\n}}"),
+            ("typescript", "{{\n{*field|\n}\n}}"),
+        ],
+    },
+    RuleRow {
+        name: "rust:field_declaration",
+        sexpression: "(field_declaration name: (_) @name type: (_) @type)",
+        templates: &[("javascript", "{name};"), ("typescript", "{name}: {type};")],
+    },
+    RuleRow {
+        // `const X: u32 = 5;` drops its type annotation the way
+        // parameters do; the binding and value carry.
+        name: "rust:const_item",
+        sexpression: "(const_item name: (_) @name value: (_) @value)",
+        templates: &[
+            ("javascript", "const {name} = {value};"),
+            ("typescript", "const {name} = {value};"),
         ],
     },
     // javascript / typescript → rust: the statement spine. A kind with
@@ -381,6 +637,182 @@ const RULE_ROWS: &[RuleRow] = &[
         name: "es:parenthesized_expression",
         sexpression: "(parenthesized_expression (_) @expression)",
         templates: &[("rust", "({expression})")],
+    },
+    // Control flow and expression shells. Specific shapes list before
+    // bare ones for the same first-match reason as the return pair.
+    RuleRow {
+        name: "es:if_statement",
+        sexpression: "(if_statement condition: (_) @condition consequence: (_) @consequence alternative: (else_clause) @alternative)",
+        templates: &[("rust", "if {condition} {consequence} {alternative}")],
+    },
+    RuleRow {
+        // `if` without an else.
+        name: "es:if_statement:bare",
+        sexpression: "(if_statement condition: (_) @condition consequence: (_) @consequence)",
+        templates: &[("rust", "if {condition} {consequence}")],
+    },
+    RuleRow {
+        // `else if` chains: the clause wraps the nested statement.
+        name: "es:else_clause:if",
+        sexpression: "(else_clause (if_statement) @nested)",
+        templates: &[("rust", "else {nested}")],
+    },
+    RuleRow {
+        name: "es:else_clause",
+        sexpression: "(else_clause (statement_block) @body)",
+        templates: &[("rust", "else {body}")],
+    },
+    RuleRow {
+        // The parenthesized condition stays parenthesized: rust accepts
+        // parens in a condition position.
+        name: "es:while_statement",
+        sexpression: "(while_statement condition: (_) @condition body: (_) @body)",
+        templates: &[("rust", "while {condition} {body}")],
+    },
+    RuleRow {
+        // for-in and for-of are one kind; both cross to rust's for-in,
+        // the kind/operator leaves dropping.
+        name: "es:for_in_statement",
+        sexpression: "(for_in_statement left: (_) @left right: (_) @right body: (_) @body)",
+        templates: &[("rust", "for {left} in {right} {body}")],
+    },
+    RuleRow {
+        name: "es:unary_expression",
+        sexpression: "(unary_expression operator: (_) @operator argument: (_) @argument)",
+        templates: &[("rust", "{operator:text}{argument}")],
+    },
+    RuleRow {
+        // The absent literal crosses to rust's option-none spelling —
+        // the one-to-one literal mapping, not a guess.
+        name: "es:null",
+        sexpression: "(null)",
+        templates: &[("rust", "None")],
+    },
+    RuleRow {
+        // The conditional expression crosses to rust's if expression,
+        // which is an expression in exactly the positions a ternary is.
+        name: "es:ternary_expression",
+        sexpression: "(ternary_expression condition: (_) @condition consequence: (_) @consequence alternative: (_) @alternative)",
+        templates: &[(
+            "rust",
+            "if {condition} {{ {consequence} }} else {{ {alternative} }}",
+        )],
+    },
+    RuleRow {
+        name: "es:subscript_expression",
+        sexpression: "(subscript_expression object: (_) @object index: (_) @index)",
+        templates: &[("rust", "{object}[{index}]")],
+    },
+    RuleRow {
+        // The parenthesized parameter list crosses to rust's closure
+        // parameter list — the formal_parameters row already renders the
+        // comma-joined names without the wrapping parens.
+        name: "es:arrow_function",
+        sexpression: "(arrow_function parameters: (formal_parameters) @parameters body: (_) @body)",
+        templates: &[("rust", "|{parameters}| {body}")],
+    },
+    RuleRow {
+        // The single bare parameter — a different field, not a
+        // single-element formal_parameters.
+        name: "es:arrow_function:single",
+        sexpression: "(arrow_function parameter: (_) @parameter body: (_) @body)",
+        templates: &[("rust", "|{parameter}| {body}")],
+    },
+    RuleRow {
+        name: "es:array",
+        sexpression: "(array (_)* @element)",
+        templates: &[("rust", "[{*element|, }]")],
+    },
+    RuleRow {
+        // The comma sequence is flat however long: one variadic row
+        // covers the two-element and the chained form.
+        name: "es:sequence_expression",
+        sexpression: "(sequence_expression (_)* @item)",
+        templates: &[("rust", "{*item|, }")],
+    },
+    RuleRow {
+        // let and const are one kind; both cross to a rust let the way
+        // var does — the declared mutability drops at token fidelity.
+        name: "es:lexical_declaration",
+        sexpression: "(lexical_declaration (_)* @declarator)",
+        templates: &[("rust", "let {*declarator|; let };")],
+    },
+    RuleRow {
+        // switch crosses to match: the scrutinee keeps its parens, each
+        // case one arm, default the wildcard arm.
+        name: "es:switch_statement",
+        sexpression: "(switch_statement value: (_) @value body: (switch_body) @body)",
+        templates: &[("rust", "match {value} {body}")],
+    },
+    RuleRow {
+        name: "es:switch_body",
+        sexpression: "(switch_body (_)* @arm)",
+        templates: &[("rust", "{{\n{*arm|\n}\n}}")],
+    },
+    RuleRow {
+        name: "es:switch_case",
+        sexpression: "(switch_case value: (_) @value (_)* @body)",
+        templates: &[("rust", "{value} => {{\n{*body|\n}\n}},")],
+    },
+    RuleRow {
+        name: "es:switch_default",
+        sexpression: "(switch_default (_)* @body)",
+        templates: &[("rust", "_ => {{\n{*body|\n}\n}},")],
+    },
+    RuleRow {
+        name: "es:break_statement",
+        sexpression: "(break_statement)",
+        templates: &[("rust", "break;")],
+    },
+    RuleRow {
+        name: "es:continue_statement",
+        sexpression: "(continue_statement)",
+        templates: &[("rust", "continue;")],
+    },
+    RuleRow {
+        // The mirror of the rust self row: `this` crosses to `self` in
+        // the position a member expression gives it.
+        name: "es:this",
+        sexpression: "(this)",
+        templates: &[("rust", "self")],
+    },
+    RuleRow {
+        // `new Foo(1)` — construction has no keyword in rust; the
+        // constructor call is the whole projection.
+        name: "es:new_expression",
+        sexpression: "(new_expression constructor: (_) @constructor arguments: (arguments) @arguments)",
+        templates: &[("rust", "{constructor}{arguments}")],
+    },
+    RuleRow {
+        // An anonymous `function(a) { ... }` expression crosses to a
+        // closure the way arrow functions do.
+        name: "es:function_expression",
+        sexpression: "(function_expression parameters: (formal_parameters) @parameters body: (_) @body)",
+        templates: &[("rust", "|{parameters}| {body}")],
+    },
+    // typescript-only kinds: the parameter wrapper and the annotations it
+    // carries. The annotation splices its own `: type` span — a type
+    // position rust's parameter and let syntax accept as written.
+    RuleRow {
+        name: "ts:required_parameter",
+        sexpression: "(required_parameter pattern: (_) @pattern type: (type_annotation) @type)",
+        templates: &[("rust", "{pattern}{type}")],
+    },
+    RuleRow {
+        // The unannotated parameter.
+        name: "ts:required_parameter:bare",
+        sexpression: "(required_parameter pattern: (_) @pattern)",
+        templates: &[("rust", "{pattern}")],
+    },
+    RuleRow {
+        name: "ts:type_annotation",
+        sexpression: "(type_annotation)",
+        templates: &[("rust", "{.:text}")],
+    },
+    RuleRow {
+        name: "ts:predefined_type",
+        sexpression: "(predefined_type)",
+        templates: &[("rust", "{.:text}")],
     },
 ];
 
