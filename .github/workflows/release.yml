@@ -867,14 +867,8 @@ jobs:
         if: always()
         run: |
           sha="$(git rev-parse HEAD)"
-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
-          if [ -z "$version" ]; then
-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
-            exit 1
-          fi
           echo "sha=${sha}" >> "$GITHUB_OUTPUT"
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "Pages deploy ref: ${sha} (formal-ai ${version})"
+          rust-script scripts/get-version.rs
   manual-release:
     name: Instant Release
     concurrency:
@@ -1072,14 +1066,8 @@ jobs:
         if: always()
         run: |
           sha="$(git rev-parse HEAD)"
-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
-          if [ -z "$version" ]; then
-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
-            exit 1
-          fi
           echo "sha=${sha}" >> "$GITHUB_OUTPUT"
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "Pages deploy ref: ${sha} (formal-ai ${version})"
+          rust-script scripts/get-version.rs
   changelog-pr:
     name: Create Changelog PR
     concurrency:
@@ -1344,16 +1332,11 @@ jobs:
         run: bash scripts/build-rust-api-docs.sh
       - name: Sync data/seed into js/seed (deployment mirror)
         run: scripts/sync-seed.sh
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
       - name: Read formal-ai version from Cargo.toml
         id: formal_ai_version
-        run: |
-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
-          if [ -z "$version" ]; then
-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
-            exit 1
-          fi
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "Detected formal-ai version: ${version}"
+        run: rust-script scripts/get-version.rs
       - name: Stamp GitHub Pages artifact
         run: scripts/stamp-pages-artifact.sh js "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
       - name: Copy Rust API docs into the Pages artifact (/docs/api)

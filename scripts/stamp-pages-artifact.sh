@@ -24,6 +24,9 @@ fi
 if [[ -z "$formal_ai_version" ]]; then
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   cargo_toml="${script_dir}/../Cargo.toml"
+  if [[ ! -f "$cargo_toml" && -f "${script_dir}/../rust/Cargo.toml" ]]; then
+    cargo_toml="${script_dir}/../rust/Cargo.toml"
+  fi
   if [[ -f "$cargo_toml" ]]; then
     formal_ai_version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' "$cargo_toml" | head -n 1)"
   fi
