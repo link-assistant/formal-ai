@@ -12,4 +12,9 @@ bump: patch
   since manifest parsing moved there — every other rust-paths includer
   already declared it. Both scripts run only in push-to-main release jobs,
   so no PR-side job had ever compiled them; both are now verified locally
-  under `-Dwarnings` via side-effect-free early exits (issue #1147).
+  under `-Dwarnings` via side-effect-free early exits. The import had a
+  second consumer: the PR-side `check_release_changelog_collection` gate
+  runs `rust-script --test` over the script, whose tests module constructs
+  `super::PreparedRelease` — so the name is now imported under
+  `#[cfg(test)]`, present exactly when the tests compile it and absent
+  from the release build that must stay warning-free (issue #1147).

@@ -43,6 +43,11 @@ mod rust_paths;
 pub mod self_hosting_metric;
 
 use prepared_release::{ensure_prepared_release_tag, prepared_release};
+// Tests-only: the release build must not import PreparedRelease (unused there,
+// fatal under -Dwarnings), but version-and-commit-tests.rs constructs it via
+// `super::`.
+#[cfg(test)]
+use prepared_release::PreparedRelease;
 
 const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
 const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release-map.tsv";
