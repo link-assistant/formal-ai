@@ -161,17 +161,25 @@ fn a_prefix_containing_escaped_characters_is_restored_exactly() {
 /// The bound is a ratio against this machine's own append time rather than a
 /// wall-clock number, so it means the same thing on a fast laptop and a loaded
 /// CI runner.
+///
+/// A single sample of either leg still inherits whatever load the rest of the
+/// suite is putting on the runner at that instant: run 36263664670 measured a
+/// 2.27 s rebuild against the 2 s generosity floor and failed the merge of PR
+/// #1144, while the identical commit had passed this same test on its branch
+/// run hours earlier. Scheduling noise only ever adds time, so the minimum
+/// over a few samples estimates each leg's intrinsic cost. The regime this
+/// test exists to catch — one fsync per doublet — was two orders of magnitude
+/// past the bound and stays past it under any sample count.
 #[test]
 fn rebuilding_a_projection_costs_what_appending_to_it_costs() {
     // Both paths do the same work per request once the fsync storm is gone. The
-    // factor is generous because the two runs are separate processes on a
-    // machine that may be running the rest of the suite alongside them; before
-    // the fix the measured ratio was far past it and grew with the store.
+    // factor is generous because even the sampled legs run on a machine that
+    // may be executing the rest of the suite alongside them.
     const MAXIMUM_RATIO: u32 = 8;
+    const SAMPLES: usize = 3;
 
-    let append_elapsed = time_first_completion_against_seeded_store("append", SEEDED_EVENTS, true);
-    let rebuild_elapsed =
-        time_first_completion_against_seeded_store("rebuild", SEEDED_EVENTS, false);
+    let append_elapsed = fastest_completion_cost(SAMPLES, SEEDED_EVENTS, true);
+    let rebuild_elapsed = fastest_completion_cost(SAMPLES, SEEDED_EVENTS, false);
 
     let budget = append_elapsed
         .checked_mul(MAXIMUM_RATIO)
@@ -179,10 +187,30 @@ fn rebuilding_a_projection_costs_what_appending_to_it_costs() {
         .max(Duration::from_secs(2));
     assert!(
         rebuild_elapsed < budget,
-        "rebuilding a {SEEDED_EVENTS}-event projection took {rebuild_elapsed:?}, more than \
-         {MAXIMUM_RATIO}x the {append_elapsed:?} the same store costs to append to; a rebuild \
-         must not pay one fsync per doublet"
+        "rebuilding a {SEEDED_EVENTS}-event projection took {rebuild_elapsed:?}, over the \
+         {budget:?} budget ({MAXIMUM_RATIO}x the {append_elapsed:?} append cost, floored at \
+         2 s); a rebuild must not pay one fsync per doublet"
     );
+}
+
+/// The fastest of `samples` timed completions against identically seeded
+/// stores, so one contended sample cannot speak for the leg it belongs to.
+fn fastest_completion_cost(samples: usize, events: usize, already_projected: bool) -> Duration {
+    let leg = if already_projected {
+        "append"
+    } else {
+        "rebuild"
+    };
+    (0..samples)
+        .map(|sample| {
+            time_first_completion_against_seeded_store(
+                &format!("{leg}-{sample}"),
+                events,
+                already_projected,
+            )
+        })
+        .min()
+        .expect("at least one sample is always taken")
 }
 
 /// Seed a store of `events` events, then time one completion against it.
