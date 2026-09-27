@@ -671,6 +671,7 @@ changelog.d/20260924_090000_issue-1138-quoted-example-record.md	0.352.0
 changelog.d/20260924_091000_issue-1138-translate-via-meta-pivot.md	0.352.0
 changelog.d/20260924_091500_issue-1138-three-roots-parity-doctrine.md	0.352.0
 changelog.d/20260926_160000_issue-1142-release-version-reads.md	0.352.0
+changelog.d/20260927_004500_issue-1151-docker-compile-path.md	0.352.1
 changelog.d/20260927_023000_issue-1145-rebuild-ratio-sampling.md	0.352.0
 changelog.d/20260927_041906_issue-1147-release-script-compilation.md	0.352.0
 changelog.d/20260927_130000_issue-1143-release-layout-readers.md	0.352.0
