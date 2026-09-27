@@ -89,11 +89,17 @@ jobs:
     # 00b8d873e) had 2553 tests finished, no hanger, when the 2400s budget
     # killed the lane, while the uninstrumented twin lane (`Test / ubuntu /
     # full`) ran all 2856 in 1235.57s -- the suite outgrew 2400s instrumented.
-    # `TEST_BUDGET_SECONDS: 4200` is 70 minutes, ~1.4x the ~50 minutes that
-    # run projects for the complete lane, and 66.7% of this 105-minute cap,
-    # still inside the 70% share issue #1017 enforces so checkout, the
-    # toolchain, cargo-llvm-cov's install, the ratchet and the uploads fit.
-    timeout-minutes: 105
+    # Issue #1149 raised the pair once more, and this time the suite was
+    # innocent: main run 36269286808 (tip 9e673a1dc) burned the full 4200s
+    # with every test passing and no hanger, while the identical tree on
+    # branch run 36266423193 (f3948e0c7, same day) finished the same lane
+    # green in 2574s -- a contended host ~1.6x slower than the clean run.
+    # `TEST_BUDGET_SECONDS: 5400` is 90 minutes, ~2.1x the 43 minutes the
+    # clean run measured, and 66.7% of this 135-minute cap, still inside the
+    # 70% share issue #1017 enforces so checkout, the toolchain,
+    # cargo-llvm-cov's install, the ratchet and the uploads fit (measured
+    # overhead outside the coverage step: ~82s on the green branch run).
+    timeout-minutes: 135
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -184,7 +190,7 @@ jobs:
       # 556s on 2026-09-22.)
       - name: Generate code coverage
         env:
-          TEST_BUDGET_SECONDS: 4200
+          TEST_BUDGET_SECONDS: 5400
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \
