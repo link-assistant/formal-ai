@@ -51,6 +51,8 @@ use prepared_release::PreparedRelease;
 
 const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
 const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release-map.tsv";
+const STATUS_RENDER_SCRIPT: &str = "scripts/render-status.rs";
+const STATUS_SURFACES: &[&str] = &["docs/status.md", "docs/benchmarks.md", "README.md"];
 
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
@@ -537,6 +539,24 @@ fn regenerate_release_artifacts(version: &str, date: &str) -> Result<bool, Strin
     Ok(true)
 }
 
+// Issue #1151: this commit changes two inputs of the deterministic status
+// projection -- the crate version (Cargo.toml) and the self-hosting ledger
+// row appended above -- so the surfaces that project them must be
+// re-rendered here, or they are stale from this commit onward. The push
+// carries the bot token and triggers no workflow of its own, so nothing
+// catches the drift until the next pull request or merge runs the
+// check_status_render gate against a tree that contains this commit --
+// exactly what happened to release commit b9378cdeb (v0.352.0), which
+// failed PR #1152's gate eight minutes after the release job went green.
+fn regenerate_status_surfaces() -> Result<(), String> {
+    if !Path::new(STATUS_RENDER_SCRIPT).is_file() {
+        return Ok(());
+    }
+    exec("rust-script", &[STATUS_RENDER_SCRIPT, "--write"])?;
+    println!("Regenerated status surfaces");
+    Ok(())
+}
+
 fn record_self_hosting_release(tag_prefix: &str, new_version: &str) -> Result<PathBuf, String> {
     let repo = PathBuf::from(exec("git", &["rev-parse", "--show-toplevel"])?);
     let tag_pattern = format!("{tag_prefix}[0-9]*");
@@ -785,8 +805,16 @@ fn main() {
         false
     };
 
+    // All ledger inputs are in place now: the version, the consumed
+    // fragments, the changelog, and the self-hosting row.
+    if let Err(e) = regenerate_status_surfaces() {
+        eprintln!("Error regenerating status surfaces: {}", e);
+        exit(1);
+    }
+
     // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md, the release
-    // metric ledger, and consumed fragments.
+    // metric ledger, the status surfaces projected from it, and consumed
+    // fragments.
     let package_manifest_str = package_manifest.to_string_lossy().to_string();
     let cargo_lock_str = cargo_lock_path.to_string_lossy().to_string();
     let self_hosting_ledger_str = self_hosting_ledger.to_string_lossy().to_string();
@@ -796,6 +824,7 @@ fn main() {
         &changelog_file,
         &self_hosting_ledger_str,
     ];
+    add_args.extend_from_slice(STATUS_SURFACES);
     if lock_updated {
         add_args.push(&cargo_lock_str);
     }
