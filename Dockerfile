@@ -48,7 +48,19 @@ RUN cargo build --release --locked --bins --manifest-path rust/Cargo.toml
 # `builder` under the name `BINARY_SOURCE` selects, so the historical stage name
 # stays what it has always been -- `docker_runtime` pins it, and renaming a
 # stage to satisfy a build argument would be the tail wagging the dog.
+#
+# Contract, shared by both source stages: the binary at
+# /app/target/release/formal-ai, which `selected-binary` copies from. The
+# build above runs `cargo build --manifest-path rust/Cargo.toml`, and cargo
+# puts the target directory next to the top-level manifest -- so after the
+# Plan 16 L1 move the binary lands in rust/target/release. The prebuilt stage
+# below stages its copy at the same path for the same reason (issue #1151:
+# the compile path never did, and no pull request exercises it -- the
+# docker-build check pins BINARY_SOURCE=prebuilt -- so the first main release
+# to reach the GHCR push found nothing at /app/target/release/formal-ai).
 FROM builder AS compile-binary
+RUN mkdir -p target/release && \
+    cp rust/target/release/formal-ai target/release/formal-ai
 
 # The prebuilt path: no toolchain, no compilation, just the artifact the
 # pipeline already produced and tested.
