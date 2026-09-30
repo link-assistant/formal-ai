@@ -1127,4 +1127,3 @@ normalized body) — the baseline carries them.
 
 - `rust/src/agentic_coding/general_execution.rs:521` `fn tool_argument_path`
 - `rust/src/agentic_coding/progress.rs:561` `fn argument_path`
-
