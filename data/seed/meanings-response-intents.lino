@@ -1,0 +1,105 @@
+# Response-template intents for the quantity and calendar handlers (issues
+# #1176 and #1174). Each record names one `intent` key that
+# data/seed/multilingual-responses-quantities.lino carries response records
+# for, so the closure audit resolves the key to an authored definition rather
+# than an open reference. The shape follows the localized_response_template
+# records in meanings-intent.lino; lexeme blocks are deliberately absent
+# because these are template identifiers, not conversational vocabulary.
+
+meanings
+  statistics
+    defined-by answer
+    role localized_response_template
+    precondition "a statistics request over an explicit numeric dataset is answered"
+    effect "the dataset is echoed with its size and each requested measure is computed and listed"
+    unit "not applicable"
+    example "The values are 3, 5, 7 (n = 3). mean = 5, median = 5."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  unit_conversion_multiply
+    defined-by answer
+    role localized_response_template
+    precondition "a unit conversion is answered whose factor multiplies the source value"
+    effect "the converted value is stated with the multiplication that produced it"
+    unit "not applicable"
+    example "3 km is 3000 m. 3 x 1000 = 3000, because 1 km = 1000 m."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  unit_conversion_divide
+    defined-by answer
+    role localized_response_template
+    precondition "a unit conversion is answered whose factor divides the source value"
+    effect "the converted value is stated with the division that produced it"
+    unit "not applicable"
+    example "3000 m is 3 km. 3000 / 1000 = 3, because 1 km = 1000 m."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  unit_conversion_formula
+    defined-by answer
+    role localized_response_template
+    precondition "a compound unit conversion is answered through a multi-step formula"
+    effect "the converted value is stated with the derivation steps that produced it"
+    unit "not applicable"
+    example "100 F is 37.8 C. subtract 32, multiply 5/9."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_split_next
+    defined-by answer
+    role localized_response_template
+    precondition "a weekday-offset request forward in time is answered with a non-whole-week day count"
+    effect "the resulting weekday is stated with the week-plus-day split of the offset"
+    unit "not applicable"
+    example "100 days after Monday is Wednesday. 100 days = 14 weeks + 2 days."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_split_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a weekday-offset request backward in time is answered with a non-whole-week day count"
+    effect "the resulting weekday is stated with the week-plus-day split of the offset"
+    unit "not applicable"
+    example "100 days before Monday is Saturday. 100 days = 14 weeks + 2 days."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_exact_next
+    defined-by answer
+    role localized_response_template
+    precondition "a forward weekday-offset request is answered with a whole number of weeks"
+    effect "the unchanged weekday is stated with the exact week-to-day equivalence"
+    unit "not applicable"
+    example "14 weeks after Tuesday is Tuesday. 14 weeks = 98 days exactly."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_exact_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a backward weekday-offset request is answered with a whole number of weeks"
+    effect "the unchanged weekday is stated with the exact week-to-day equivalence"
+    unit "not applicable"
+    example "14 weeks before Tuesday is Tuesday. 14 weeks = 98 days exactly."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_exact_one_next
+    defined-by answer
+    role localized_response_template
+    precondition "a one-week forward weekday-offset request is answered"
+    effect "the unchanged weekday is stated with the single-week day equivalence"
+    unit "not applicable"
+    example "1 week after Friday is Friday. 1 week = 7 days exactly."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_exact_one_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a one-week backward weekday-offset request is answered"
+    effect "the unchanged weekday is stated with the single-week day equivalence"
+    unit "not applicable"
+    example "1 week before Friday is Friday. 1 week = 7 days exactly."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  word_problem_change
+    defined-by answer
+    role localized_response_template
+    precondition "a price-times-count change word problem is answered"
+    effect "the total change is stated with the multiplication that produced it"
+    unit "not applicable"
+    example "5 boxes pay 3 each. The change is 5 x 3 = 15."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  word_problem_total
+    defined-by answer
+    role localized_response_template
+    precondition "a total-amount word problem over priced items is answered"
+    effect "the total is stated with the multiplication and sum that produced it"
+    unit "not applicable"
+    example "4 tickets at 12 each cost 48 in total. 4 x 12 = 48."
+    grounding "data/seed/multilingual-responses-quantities.lino"

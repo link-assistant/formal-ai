@@ -1,0 +1,295 @@
+meanings
+  statistics_operation
+    defined-by concept
+  statistics_mean
+    defined-by statistics_operation
+    role statistics_operation
+    formula "mean = (sum of the values) / (how many values)"
+    source "https://en.wikipedia.org/wiki/Arithmetic_mean"
+    lexeme en
+      surface
+        text mean
+      surface
+        text average
+      surface
+        text "arithmetic mean"
+    lexeme ru
+      surface
+        text среднее
+      surface
+        text "среднее значение"
+      surface
+        text "среднее арифметическое"
+    lexeme hi
+      surface
+        text माध्य
+    lexeme zh
+      surface
+        text 平均数
+      surface
+        text 平均值
+      surface
+        text 均值
+    lexeme es
+      surface
+        text media
+      surface
+        text promedio
+      surface
+        text "media aritmética"
+  statistics_median
+    defined-by statistics_operation
+    role statistics_operation
+    formula "median = the middle value once the values are sorted (the average of the two middle values when the count is even)"
+    source "https://en.wikipedia.org/wiki/Median"
+    lexeme en
+      surface
+        text median
+    lexeme ru
+      surface
+        text медиана
+      surface
+        text медиану
+      surface
+        text медианы
+    lexeme hi
+      surface
+        text माध्यिका
+    lexeme zh
+      surface
+        text 中位数
+      surface
+        text 中位數
+    lexeme es
+      surface
+        text mediana
+  statistics_mode
+    defined-by statistics_operation
+    role statistics_operation
+    formula "mode = the value that appears most often"
+    source "https://en.wikipedia.org/wiki/Mode_(statistics)"
+    lexeme en
+      surface
+        text mode
+      surface
+        text "most common value"
+      surface
+        text "most frequent value"
+    lexeme ru
+      surface
+        text мода
+      surface
+        text моду
+      surface
+        text моды
+    lexeme hi
+      surface
+        text बहुलक
+    lexeme zh
+      surface
+        text 众数
+      surface
+        text 眾數
+    lexeme es
+      surface
+        text moda
+  statistics_variance
+    defined-by statistics_operation
+    role statistics_operation
+    formula "variance = the average of the squared differences from the mean (population form)"
+    source "https://en.wikipedia.org/wiki/Variance"
+    lexeme en
+      surface
+        text variance
+    lexeme ru
+      surface
+        text дисперсия
+      surface
+        text дисперсию
+      surface
+        text дисперсии
+    lexeme hi
+      surface
+        text प्रसरण
+    lexeme zh
+      surface
+        text 方差
+    lexeme es
+      surface
+        text varianza
+  statistics_standard_deviation
+    defined-by statistics_operation
+    role statistics_operation
+    formula "standard deviation = the square root of the variance (population form)"
+    source "https://en.wikipedia.org/wiki/Standard_deviation"
+    lexeme en
+      surface
+        text "standard deviation"
+      surface
+        text stddev
+    lexeme ru
+      surface
+        text "стандартное отклонение"
+      surface
+        text "среднеквадратичное отклонение"
+    lexeme hi
+      surface
+        text "मानक विचलन"
+    lexeme zh
+      surface
+        text 标准差
+      surface
+        text 標準差
+    lexeme es
+      surface
+        text "desviación estándar"
+      surface
+        text "desviación típica"
+  statistics_range
+    defined-by statistics_operation
+    role statistics_operation
+    formula "range = the largest value minus the smallest value"
+    source "https://en.wikipedia.org/wiki/Range_(statistics)"
+    lexeme en
+      surface
+        text range
+    lexeme ru
+      surface
+        text размах
+      surface
+        text разброс
+    lexeme hi
+      surface
+        text परिसर
+    lexeme zh
+      surface
+        text 极差
+      surface
+        text 全距
+      surface
+        text 范围
+    lexeme es
+      surface
+        text rango
+      surface
+        text recorrido
+  word_problem_unit_price
+    defined-by statistics_operation
+    role word_problem_marker
+    lexeme en
+      surface
+        text each
+    lexeme ru
+      surface
+        text каждая
+      surface
+        text каждый
+      surface
+        text каждое
+      surface
+        text каждую
+    lexeme hi
+      surface
+        text प्रत्येक
+    lexeme zh
+      surface
+        text 每个
+    lexeme es
+      surface
+        text cada
+  word_problem_payment
+    defined-by statistics_operation
+    role word_problem_marker
+    lexeme en
+      surface
+        text "pays with"
+      surface
+        text "pay with"
+      surface
+        text "paid with"
+      surface
+        text "paying with"
+      surface
+        text pays
+    lexeme ru
+      surface
+        text платит
+      surface
+        text платил
+      surface
+        text платила
+      surface
+        text заплатил
+      surface
+        text заплатила
+    lexeme hi
+      surface
+        text "भुगतान करता"
+      surface
+        text "भुगतान करती"
+    lexeme zh
+      surface
+        text 支付
+      surface
+        text 付了
+    lexeme es
+      surface
+        text "paga con"
+      surface
+        text "pagó con"
+      surface
+        text paga
+  word_problem_change
+    defined-by statistics_operation
+    role word_problem_marker
+    lexeme en
+      surface
+        text change
+    lexeme ru
+      surface
+        text сдача
+      surface
+        text сдачи
+      surface
+        text сдачу
+    lexeme hi
+      surface
+        text "शेष राशि"
+    lexeme zh
+      surface
+        text 找零
+      surface
+        text 找回
+    lexeme es
+      surface
+        text cambio
+  word_problem_total
+    defined-by statistics_operation
+    role word_problem_marker
+    lexeme en
+      surface
+        text total
+      surface
+        text "in total"
+      surface
+        text altogether
+    lexeme ru
+      surface
+        text всего
+      surface
+        text итого
+    lexeme hi
+      surface
+        text कुल
+    lexeme zh
+      surface
+        text 总共
+      surface
+        text 一共
+      surface
+        text 合计
+    lexeme es
+      surface
+        text total
+      surface
+        text "en total"

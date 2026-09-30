@@ -493,6 +493,126 @@ meanings
     lexeme zh
       surface
         text 毫米
+  mile
+    grounded-in Q253276
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    conversion kilometer 1.609344
+    source "https://www.nist.gov/pml/owm/metric-si/si-units"
+    lexeme en
+      surface
+        text mile
+      surface
+        text miles
+    lexeme ru
+      surface
+        text миля
+      surface
+        text мили
+      surface
+        text миль
+    lexeme hi
+      surface
+        text मील
+    lexeme zh
+      surface
+        text 英里
+    lexeme es
+      surface
+        text milla
+      surface
+        text millas
+  foot
+    grounded-in Q3710
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    conversion meter 0.3048
+    source "https://www.nist.gov/pml/owm/metric-si/si-units"
+    lexeme en
+      surface
+        text foot
+      surface
+        text feet
+    lexeme ru
+      surface
+        text фут
+      surface
+        text фута
+      surface
+        text футов
+    lexeme hi
+      surface
+        text फुट
+    lexeme zh
+      surface
+        text 英尺
+    lexeme es
+      surface
+        text pie
+      surface
+        text pies
+  inch
+    grounded-in Q218593
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    conversion centimeter 2.54
+    source "https://www.nist.gov/pml/owm/metric-si/si-units"
+    lexeme en
+      surface
+        text inch
+      surface
+        text inches
+    lexeme ru
+      surface
+        text дюйм
+      surface
+        text дюйма
+      surface
+        text дюймов
+    lexeme hi
+      surface
+        text इंच
+    lexeme zh
+      surface
+        text 英寸
+    lexeme es
+      surface
+        text pulgada
+      surface
+        text pulgadas
+  yard
+    grounded-in Q482798
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    conversion meter 0.9144
+    source "https://www.nist.gov/pml/owm/metric-si/si-units"
+    lexeme en
+      surface
+        text yard
+      surface
+        text yards
+    lexeme ru
+      surface
+        text ярд
+      surface
+        text ярда
+      surface
+        text ярдов
+    lexeme hi
+      surface
+        text गज
+    lexeme zh
+      surface
+        text 码
+    lexeme es
+      surface
+        text yarda
+      surface
+        text yardas
   byte
     grounded-in Q8799
     defined-by data_storage
@@ -696,6 +816,8 @@ meanings
     defined-by mass
     defined-by unit
     role measurement_unit
+    conversion kilogram 0.45359237
+    source "https://www.nist.gov/pml/owm/metric-si/si-units"
     lexeme en
       surface
         text pound
@@ -704,12 +826,46 @@ meanings
     lexeme ru
       surface
         text фунт
+      surface
+        text фунта
+      surface
+        text фунтов
     lexeme hi
       surface
         text पाउंड
     lexeme zh
       surface
         text 磅
+  ounce
+    grounded-in Q48013
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    conversion gram 28.349523125
+    source "https://www.nist.gov/pml/owm/metric-si/si-units"
+    lexeme en
+      surface
+        text ounce
+      surface
+        text ounces
+    lexeme ru
+      surface
+        text унция
+      surface
+        text унции
+      surface
+        text унций
+    lexeme hi
+      surface
+        text औंस
+    lexeme zh
+      surface
+        text 盎司
+    lexeme es
+      surface
+        text onza
+      surface
+        text onzas
   ton
     grounded-in Q191118
     defined-by mass
@@ -891,6 +1047,9 @@ meanings
     defined-by temperature
     defined-by unit
     role measurement_unit
+    conversion fahrenheit formula multiply 9/5 add 32
+    conversion kelvin formula add 273.15
+    source "https://en.wikipedia.org/wiki/Conversion_of_units_of_temperature"
     lexeme en
       surface
         text celsius
@@ -908,6 +1067,8 @@ meanings
     defined-by temperature
     defined-by unit
     role measurement_unit
+    conversion celsius formula subtract 32 multiply 5/9
+    source "https://en.wikipedia.org/wiki/Conversion_of_units_of_temperature"
     lexeme en
       surface
         text fahrenheit
@@ -925,6 +1086,8 @@ meanings
     defined-by temperature
     defined-by unit
     role measurement_unit
+    conversion celsius formula subtract 273.15
+    source "https://en.wikipedia.org/wiki/Conversion_of_units_of_temperature"
     lexeme en
       surface
         text kelvin
@@ -1029,6 +1192,37 @@ meanings
         text mililitro
       surface
         text mililitros
+  # US liquid gallon (Q23925413); the imperial and dry gallons differ.
+  gallon
+    grounded-in Q23925413
+    defined-by volume
+    defined-by unit
+    role measurement_unit
+    conversion litre 3.785411784
+    source "https://www.nist.gov/pml/owm/metric-si/si-units"
+    lexeme en
+      surface
+        text gallon
+      surface
+        text gallons
+    lexeme ru
+      surface
+        text галлон
+      surface
+        text галлона
+      surface
+        text галлонов
+    lexeme hi
+      surface
+        text गैलन
+    lexeme zh
+      surface
+        text 加仑
+    lexeme es
+      surface
+        text galón
+      surface
+        text galones
   measurement_property_height
     defined-by concept
     role measurement_property_height
@@ -1151,3 +1345,60 @@ meanings
         text largo
       surface
         text longitud
+  # Recognition cue for unit-conversion questions (issue #1176): one of these
+  # surfaces plus a number and two known units is a conversion request. Common
+  # words such as "in" or "to" only open the gate; the unit pair decides.
+  unit_conversion_question
+    defined-by unit
+    role unit_conversion_question
+    lexeme en
+      surface
+        text "how many"
+      surface
+        text "how much"
+      surface
+        text convert
+      surface
+        text in
+      surface
+        text to
+    lexeme ru
+      surface
+        text сколько
+      surface
+        text переведи
+      surface
+        text конвертируй
+      surface
+        text в
+    lexeme hi
+      surface
+        text कितने
+      surface
+        text बदलें
+      surface
+        text में
+    lexeme zh
+      surface
+        text 多少
+      surface
+        text 转换
+      surface
+        text 换算
+      surface
+        text 为
+    lexeme es
+      surface
+        text cuántos
+      surface
+        text cuántas
+      surface
+        text cuánto
+      surface
+        text convierte
+      surface
+        text convertir
+      surface
+        text en
+      surface
+        text a
