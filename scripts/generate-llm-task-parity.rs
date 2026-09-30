@@ -8,17 +8,9 @@
 //! The document is generated, never hand-edited, exactly like
 //! `docs/status.md` (modelled on `scripts/render-status.rs`).
 //!
-//! Input, in order of preference:
-//!   1. `data/meta/llm-task-classes.lino` — the class registry the issue's
-//!      R1 defines, once it lands;
-//!   2. the embedded seed registry below, which carries the same schema so
-//!      the generator runs before the registry file exists. The registry's
-//!      rows were hand-derived from the issue body (the 0.347.0 probe
-//!      batches and the class → tracking-issue table) plus the handlers and
-//!      parity cases landed on this branch; because this drafting round ran
-//!      under a strict no-build constraint, the committed document was
-//!      hand-rendered to this script's exact output shape rather than by
-//!      executing it — the first `--write` run must reproduce those bytes.
+//! Input: `data/meta/llm-task-classes.lino`, the data-owned class registry
+//! from issue #1171 R1. The generator has no embedded class table, so each
+//! parity row and benchmark citation is edited in one place.
 //!
 //! Usage:
 //!   rust-script scripts/generate-llm-task-parity.rs --write
@@ -36,7 +28,7 @@ const DOCUMENT: &str = "docs/llm-task-parity.md";
 const REGISTRY: &str = "data/meta/llm-task-classes.lino";
 const ISSUE_URL_PREFIX: &str = "https://github.com/link-assistant/formal-ai/issues/";
 
-/// One LLM task class, parsed from either input.
+/// One LLM task class parsed from the data registry.
 struct Class {
     id: String,
     name: String,
@@ -48,299 +40,6 @@ struct Class {
     evidence: String,
 }
 
-// registry-fallback:begin
-const FALLBACK_REGISTRY: &str = r#"llm_task_classes
-  class factual_qa
-    name "Factual question answering"
-    llm_strength "Recall of widely stated facts from pretrained knowledge; weak on long-tail and recent facts"
-    benchmark "Natural Questions" benchmark_url "https://ai.google.com/research/NaturalQuestions"
-    benchmark "TriviaQA" benchmark_url "https://nlp.cs.washington.edu/triviaqa/"
-    formal_version "Formalize the question to a subject and a property, read the live statement from the grounded store, and answer with its cited references"
-    status "0.347.0: wrong (answered the US capital for an Australia question); branch: word-boundary subject match landed, unmeasured until the release probe runs"
-    tracking_issue 1172
-    evidence "rust/tests/unit/issue_1172_factual_qa_subject_match.rs"
-  class explanation
-    name "Explanation (ELI5)"
-    llm_strength "Fluent multi-sentence explanations assembled from pretrained knowledge, unsourced"
-    benchmark "ELI5" benchmark_url "https://facebookresearch.github.io/ELI5/"
-    formal_version "Decompose the question into obligations, ground each part in fetched sources, and answer part by part with the fetch trace"
-    status "0.347.0: canned search paragraph, no answer; branch: the fallback now executes the search it describes, unmeasured until the release probe runs"
-    tracking_issue 1173
-    evidence "rust/tests/unit/issue_1173_fallback_executes_search.rs"
-  class definition
-    name "Definition lookup"
-    llm_strength "Definitions of common words from pretrained glosses"
-    benchmark "WordNet" benchmark_url "https://wordnet.princeton.edu/"
-    benchmark "Wiktionary" benchmark_url "https://www.wiktionary.org/"
-    formal_version "Read the grounded Wiktionary or WordNet entry for the lemma and answer with its recorded senses and license"
-    status "0.347.0: canned search paragraph, no answer; branch: the fallback now executes the search it describes, unmeasured until the release probe runs"
-    tracking_issue 1172
-    evidence "rust/tests/unit/issue_1173_fallback_executes_search.rs"
-  class comparison
-    name "Comparison (A versus B)"
-    llm_strength "Side-by-side tradeoff prose from pretrained knowledge"
-    formal_version "Formalize both subjects, ground each side's properties, and answer over the aligned property pairs"
-    status "0.347.0: only one side's encyclopedic definition answered, the second side and the comparison missing"
-    tracking_issue 1172
-    evidence "https://github.com/link-assistant/formal-ai/issues/1172"
-  class document_qa
-    name "Question answering over a given document"
-    llm_strength "Strong extractive spans from provided context"
-    benchmark "SQuAD 2.0" benchmark_url "https://rajpurkar.github.io/SQuAD-explorer/"
-    formal_version "Index the given text into statements and answer from the matching statement with its span"
-    status "0.347.0: canned search paragraph instead of reading the given text"
-    tracking_issue 1172
-    evidence "rust/tests/unit/issue_1101_documentation_question_parity.rs"
-  class summarization
-    name "Summarization"
-    llm_strength "Abstractive compression in the style of news leads"
-    benchmark "CNN/DailyMail" benchmark_url "https://github.com/abisee/cnn-dailymail"
-    benchmark "XSum" benchmark_url "https://github.com/EdinburghNLP/XSum"
-    formal_version "Bound the source into statements, select by topic under the length constraint, and emit the selection with its trace"
-    status "0.347.0: echoed the input with a task-recorded note; branch: summarization handler landed with parity case e1174, unmeasured until the release probe runs"
-    tracking_issue 1174
-    evidence "data/parity/cross-runtime-synthesis.json"
-  class translation
-    name "Translation"
-    llm_strength "High-quality translation between high-resource language pairs"
-    benchmark "WMT" benchmark_url "https://www2.statmt.org/"
-    benchmark "FLORES-200" benchmark_url "https://github.com/facebookresearch/flores"
-    formal_version "Parse the source sentence, project the parse through the language pair's rules, and render with a back-check"
-    status "0.347.0: could not identify a source phrase; branch: free-sentence translation pipeline landed, unmeasured until the release probe runs"
-    tracking_issue 1174
-    evidence "rust/tests/unit/issue_1174_text_transform.rs"
-  class rewriting
-    name "Rewriting and style transfer"
-    llm_strength "Register and tone rewriting of fluent prose"
-    benchmark "GYAFC" benchmark_url "https://github.com/raosudha89/GYAFC"
-    formal_version "Decompose the request into text operations, apply each as a traced substitution, and verify the stated constraints"
-    status "0.347.0: canned search paragraph, no answer; branch: text-rewrite handler landed, unmeasured until the release probe runs"
-    tracking_issue 1174
-    evidence "rust/tests/unit/issue_1174_text_transform.rs"
-  class grammar_correction
-    name "Grammar correction"
-    llm_strength "Fluent minimal edits of near-native text"
-    benchmark "BEA-2019" benchmark_url "https://www.cl.cam.ac.uk/research/nl/bea2019/"
-    formal_version "Parse the sentence, detect agreement violations from the rule seed, and propose the minimal repairs"
-    status "0.347.0: canned search paragraph, no answer; branch: grammar-correction rules landed with the text-transform family, unmeasured until the release probe runs"
-    tracking_issue 1174
-    evidence "rust/tests/unit/issue_1174_text_transform.rs"
-  class text_writing
-    name "Text writing (email, commit message)"
-    llm_strength "Conventional short-form drafting in the requested genre"
-    benchmark "CommitBench"
-    formal_version "Compose from the genre's styleguide seed under the stated constraints, showing which convention each line follows"
-    status "0.347.0: canned search paragraph, no answer; branch: genre writing landed with the text-transform family, unmeasured until the release probe runs"
-    tracking_issue 1174
-    evidence "rust/tests/unit/issue_1174_text_transform.rs"
-  class classification
-    name "Classification and sentiment"
-    llm_strength "Accurate label prediction for common facets"
-    benchmark "SST-2" benchmark_url "https://nlp.stanford.edu/sentiment/treebank.html"
-    formal_version "Formalize the statement, score it against the labeled seed facets, and answer with the matched label and margin"
-    status "0.347.0: canned search paragraph, no answer"
-    tracking_issue 1173
-    evidence "rust/tests/unit/issue_1173_fallback_executes_search.rs"
-  class extraction
-    name "Extraction to JSON"
-    llm_strength "Span marking into requested schemas"
-    benchmark "CoNLL-2003" benchmark_url "https://www.clips.uantwerpen.be/conll2003/ner/"
-    formal_version "Parse the text, mark spans against the schema's entity meanings, and emit the JSON with the span trace"
-    status "0.347.0: canned search paragraph, no answer"
-    tracking_issue 1173
-    evidence "rust/tests/unit/issue_1173_fallback_executes_search.rs"
-  class math_word
-    name "Math word problems"
-    llm_strength "Chain-of-thought arithmetic over stated quantities"
-    benchmark "GSM8K" benchmark_url "https://github.com/openai/grade-school-math"
-    benchmark "MATH" benchmark_url "https://github.com/hendrycks/math"
-    formal_version "Formalize the quantities and relations, compute by reduction, and show each arithmetic step"
-    status "0.347.0: canned search paragraph, no answer; branch: word-problem route landed with parity case e34_numeric_word_problem_renumbered, unmeasured until the release probe runs"
-    tracking_issue 1176
-    evidence "data/parity/cross-runtime-synthesis.json"
-  class data_analysis
-    name "Data analysis over given numbers"
-    llm_strength "Summary statistics and trend prose over pasted tables"
-    formal_version "Parse the values, compute the requested reductions as defined-by edges, and show each step"
-    status "0.347.0: canned search paragraph, no answer; branch: statistics handler landed with parity case e1176, unmeasured until the release probe runs"
-    tracking_issue 1176
-    evidence "data/parity/cross-runtime-synthesis.json"
-  class units_and_dates
-    name "Unit conversion and date arithmetic"
-    llm_strength "Everyday conversions and calendar arithmetic"
-    formal_version "Convert through the unit meaning's definition edges; walk the calendar by the parsed offset"
-    status "0.347.0: wrong (100 days after Monday answered Tuesday, correct Wednesday) and canned for miles to kilometers; branch: unit-conversion and calendar-offset handlers landed, unmeasured until the release probe runs"
-    tracking_issue 1176
-    evidence "rust/tests/unit/issue_1176_quantities_dates.rs"
-  class code_generation
-    name "Code generation"
-    llm_strength "Passing solutions for self-contained function problems"
-    benchmark "HumanEval" benchmark_url "https://github.com/openai/human-eval"
-    benchmark "MBPP" benchmark_url "https://huggingface.co/datasets/mbpp"
-    formal_version "Decompose the request to a plan, compose from the catalog, verify by execution in the bounded workspace, and emit only passing programs"
-    status "0.347.0: honest refusal, no synthesis route reached the probe; open (route breadth tracked by issues 1165 and 1167)"
-    tracking_issue 1177
-    evidence "https://github.com/link-assistant/formal-ai/issues/1177"
-  class code_explanation
-    name "Code explanation"
-    llm_strength "Fluent line-by-line and intent-level summaries"
-    benchmark "CodeXGLUE code-to-text" benchmark_url "https://microsoft.github.io/CodeXGLUE/"
-    formal_version "Parse the code to its structure, name each construct from the code-structure meanings, and build the explanation from the parse"
-    status "0.347.0: canned search paragraph, no answer; branch: explanation handler landed, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class debugging
-    name "Debugging"
-    llm_strength "Plausible defect hypotheses from pattern memory"
-    benchmark "Defects4J" benchmark_url "https://github.com/rjust/defects4j"
-    benchmark "BugsInPy" benchmark_url "https://soarsmu.github.io/BugsInPy/"
-    formal_version "Parse the snippet, locate the construct whose behavior contradicts the stated intent, and name the defect structurally without executing"
-    status "0.347.0: misrouted to a terminal-command prompt; branch: debugging handler landed behind the routing guards, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class code_review
-    name "Code review"
-    llm_strength "Broad commentary in the style of human reviews"
-    formal_version "Check the parse against the review-rules seed and report each violated rule with its location"
-    status "0.347.0: canned search paragraph, no answer; branch: review handler landed, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class refactoring
-    name "Refactoring"
-    llm_strength "Idiomatic rewrites of small snippets"
-    formal_version "Propose the structural rewrite as an edit program over the parse, never a blind textual replace"
-    status "0.347.0: canned search paragraph, no answer; branch: refactoring handler landed, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class test_generation
-    name "Test generation"
-    llm_strength "Thorough-looking test suites that may not assert the contract"
-    formal_version "Derive the test set from the parsed contract shapes and emit it with the coverage note"
-    status "0.347.0: refused claiming the language was missing although given; branch: test-generation handler landed, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class regex
-    name "Regular expression synthesis"
-    llm_strength "Compact patterns for common match shapes"
-    benchmark "NL-RX"
-    formal_version "Compose the expression from the match-shape meanings and state each part's role"
-    status "0.347.0: misrouted to an extension project plan by the surface word extension; branch: regex handler landed behind the routing guards, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class sql
-    name "SQL synthesis"
-    llm_strength "Correct queries for common relational shapes"
-    benchmark "Spider" benchmark_url "https://yale-lily.github.io/spider"
-    benchmark "BIRD" benchmark_url "https://bird-bench.github.io/"
-    formal_version "Map the question to the schema's relations and compose the query as a relational plan"
-    status "0.347.0: canned search paragraph, no answer; branch: SQL handler landed, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class shell_command
-    name "Shell command composition"
-    llm_strength "Recall of common command incantations"
-    benchmark "NL2Bash" benchmark_url "https://github.com/TellinaDev/nl2bash"
-    formal_version "Map the intent to the command grammar's flags and compose with the safety check"
-    status "0.347.0: only an offer to run a command in Agent mode; branch: shell-compose handler landed, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class format_conversion
-    name "Format conversion (JSON, YAML, CSV)"
-    llm_strength "Lossless re-serialization of small documents"
-    formal_version "Parse the source format to the meta structure and re-render in the target format"
-    status "0.347.0: canned search paragraph, no answer; branch: format-conversion handler landed, unmeasured until the release probe runs"
-    tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
-  class creative_writing
-    name "Creative writing"
-    llm_strength "Fluent constrained prose and verse"
-    benchmark "WritingPrompts"
-    formal_version "Compose under explicit constraints (line count, rhyme) from the genre styleguides, verifying each constraint"
-    status "0.347.0: canned search paragraph, no answer; open"
-    tracking_issue 1178
-    evidence "https://github.com/link-assistant/formal-ai/issues/1178"
-  class brainstorming
-    name "Brainstorming"
-    llm_strength "Wide association lists in the requested frame"
-    formal_version "Enumerate combinations over the seed's idea space under the stated constraints"
-    status "0.347.0: canned search paragraph, no answer; open"
-    tracking_issue 1178
-    evidence "https://github.com/link-assistant/formal-ai/issues/1178"
-  class planning
-    name "Planning"
-    llm_strength "Coherent multi-step plans with implicit feasibility"
-    benchmark "TravelPlanner" benchmark_url "https://github.com/OSU-NLP-Group/TravelPlanner"
-    formal_version "Search the plan space against the stated constraints and emit the feasible plan with the constraint checks"
-    status "0.347.0: misrouted to a terminal-command prompt; open"
-    tracking_issue 1178
-    evidence "https://github.com/link-assistant/formal-ai/issues/1178"
-  class advice
-    name "Advice with evidence"
-    llm_strength "Confident recommendations with unsourced confidence"
-    benchmark "TruthfulQA" benchmark_url "https://github.com/sylinrl/TruthfulQA"
-    benchmark "HealthBench"
-    formal_version "Ground each recommendation in cited sources with the uncertainty stated"
-    status "0.347.0: canned search paragraph, no answer; open"
-    tracking_issue 1178
-    evidence "https://github.com/link-assistant/formal-ai/issues/1178"
-  class fact_checking
-    name "Fact checking"
-    llm_strength "Claim verification against pretrained knowledge, unsourced"
-    benchmark "FEVER" benchmark_url "https://fever.ai/"
-    formal_version "Formalize the claim, retrieve the grounded statements, and answer supported, refuted or unproven with the contradiction trace"
-    status "0.347.0: canned search paragraph, no answer; open (statement-audit false positives tracked by the issue)"
-    tracking_issue 1179
-    evidence "rust/tests/unit/issue_845_fact_checking.rs"
-  class formalization
-    name "Formalization"
-    llm_strength "Translation of informal statements into proof-assistant syntax"
-    benchmark "miniF2F" benchmark_url "https://github.com/openai/miniF2F"
-    benchmark "ProofNet"
-    formal_version "Render the informal statement in the target formal system through the relative meta logic and round-trip check"
-    status "0.347.0: canned search paragraph, no answer; open"
-    tracking_issue 1186
-    evidence "https://github.com/link-assistant/formal-ai/issues/1186"
-  class repository_qa
-    name "Repository question answering"
-    llm_strength "Recall of popular-library APIs, weak on private code"
-    benchmark "RepoQA"
-    formal_version "Index the repository's own sources and answer from the matched definition with its file location"
-    status "0.347.0: wrong subject (a generic self-description instead of the asked function); open"
-    tracking_issue 1180
-    evidence "https://github.com/link-assistant/formal-ai/issues/1180"
-  class multi_turn_conversation
-    name "Multi-turn conversation"
-    llm_strength "Context retention across turns with persona consistency"
-    benchmark "MT-Bench"
-    formal_version "Carry the dialog state as links and resolve each turn against it"
-    status "not probed on the one-shot CLI; the probe set is to be added by this issue"
-    tracking_issue 1171
-    evidence "https://github.com/link-assistant/formal-ai/issues/1171"
-  class agentic_coding
-    name "Multi-step agentic coding"
-    llm_strength "Autonomous repository editing with test-driven verification"
-    benchmark "SWE-bench" benchmark_url "https://www.swebench.com/"
-    formal_version "Plan over the repository world model, execute each step in the bounded workspace, and repair on diagnostics"
-    status "not probed on the one-shot CLI; the Hive Mind ladder is tracked by issues 1162 and 1170"
-    tracking_issue 1162
-    evidence "https://github.com/link-assistant/formal-ai/issues/1170"
-  class ocr_image_description
-    name "OCR and image description"
-    llm_strength "Dense captioning from pretrained vision encoders"
-    formal_version "Not on the formal surface yet; this registry row fixes the target before implementation"
-    status "not yet probed; no formal route"
-    tracking_issue 1171
-    evidence "https://github.com/link-assistant/formal-ai/issues/1171"
-  class long_document_qa
-    name "Long-document question answering"
-    llm_strength "Needle-in-haystack retrieval over long context windows"
-    benchmark "NarrativeQA" benchmark_url "https://github.com/deepmind/narrativeqa"
-    formal_version "Segment the document into statements and answer from the matching segment with the position trace"
-    status "not yet probed; the document-QA route is the nearest ancestor"
-    tracking_issue 1171
-    evidence "https://github.com/link-assistant/formal-ai/issues/1171"
-"#;
-// registry-fallback:end
 
 /// Splits a field line into its `key value` pairs. A quoted value may contain
 /// spaces and may be followed by further pairs on the same line
@@ -516,20 +215,12 @@ fn document(classes: &[Class], input_source: &str) -> String {
 
 fn input_source(root: &Path) -> Result<(String, Vec<Class>), String> {
     let registry_path = root.join(REGISTRY);
-    match fs::read_to_string(&registry_path) {
-        Ok(source) => Ok((
-            format!("`{REGISTRY}`"),
-            parse_classes(&source).map_err(|error| format!("{REGISTRY}: {error}"))?,
-        )),
-        Err(_) => Ok((
-            format!(
-                "the embedded seed registry in `scripts/generate-llm-task-parity.rs` \
-                 (`{REGISTRY}` from issue #1171 R1 is not landed yet)"
-            ),
-            parse_classes(FALLBACK_REGISTRY)
-                .map_err(|error| format!("embedded seed registry: {error}"))?,
-        )),
-    }
+    let source = fs::read_to_string(&registry_path)
+        .map_err(|error| format!("failed to read {REGISTRY}: {error}"))?;
+    Ok((
+        format!("`{REGISTRY}`"),
+        parse_classes(&source).map_err(|error| format!("{REGISTRY}: {error}"))?,
+    ))
 }
 
 fn main() {

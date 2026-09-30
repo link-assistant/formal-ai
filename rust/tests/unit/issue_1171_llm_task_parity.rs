@@ -1,31 +1,19 @@
 //! Issue #1171 (E136): the generated LLM task parity surface.
 //!
-//! `docs/llm-task-parity.md` is a generated document, never hand-edited, in
-//! the same family as `docs/status.md`. Because the bulk QA/reasoning/coding
-//! branch that drafts it runs under a strict no-build constraint, the
-//! committed document was hand-rendered to the generator's exact output
-//! shape rather than produced by running it; these tests therefore pin the
-//! document **structurally** — every row complete, every evidence pointer
-//! resolving, the tracking-issue map matching the issue body, and the row
-//! set equal to the class registry embedded in
-//! `scripts/generate-llm-task-parity.rs` (the seed of the
-//! `data/meta/llm-task-classes.lino` registry the issue's R1 defines; the
-//! generator prefers that file once it lands). The parsing here mirrors the
-//! generator's deliberately: the check is structural and never executes the
-//! script.
+//! `docs/llm-task-parity.md` is generated from
+//! `data/meta/llm-task-classes.lino`. These checks pin the rendered table
+//! structurally: every row is complete, evidence pointers resolve, the
+//! tracking-issue map matches the registry, and the row set matches the
+//! registry. The tests do not execute the generator.
 //!
-//! Residuals intentionally left to the issue's wiring steps, outside this
-//! file's ownership: the registry file itself (R1), the per-class held-out
-//! probe sets and the no-memorization extension (R2), the
-//! `benchmark run --suite llm-task-classes` runner (R3), folding the surface
-//! into `scripts/render-status.rs` and CI (R4), and the release workflow
-//! (R5).
+//! Remaining wiring: per-class held-out probes and a no-memorization
+//! extension (R2), the `benchmark run --suite llm-task-classes` runner (R3),
+//! status-surface integration and CI (R4), and the release workflow (R5).
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
 const DOCUMENT: &str = "docs/llm-task-parity.md";
-const GENERATOR: &str = "scripts/generate-llm-task-parity.rs";
 const ISSUE_URL_PREFIX: &str = "https://github.com/link-assistant/formal-ai/issues/";
 
 fn repo_root() -> PathBuf {
@@ -80,21 +68,13 @@ fn class_id(row: &[String]) -> String {
         .to_owned()
 }
 
-/// The class blocks of the registry embedded in the generator: one
-/// `(id, fields)` pair per `class` child, with the single-quoted fields the
-/// structural checks need (`name`, every `benchmark`, `tracking_issue`).
-fn embedded_registry() -> Vec<(String, Vec<String>)> {
-    let source = read(GENERATOR);
-    let begin = source
-        .find("// registry-fallback:begin")
-        .expect("the generator carries its embedded registry between markers");
-    let end = source
-        .find("// registry-fallback:end")
-        .expect("the embedded registry is closed");
-    let registry = &source[begin..end];
+/// The class blocks of the data registry: one `(id, fields)` pair per
+/// class, with the fields the structural checks need.
+fn registry_classes() -> Vec<(String, Vec<String>)> {
+    let source = read("data/meta/llm-task-classes.lino");
     let mut classes = Vec::new();
     let mut current: Option<(String, Vec<String>)> = None;
-    for line in registry.lines() {
+    for line in source.lines() {
         let trimmed = line.trim();
         if let Some(id) = line.strip_prefix("  class ") {
             if let Some(done) = current.take() {
@@ -207,7 +187,7 @@ fn tracking_links_pin_the_issue_map() {
 
 #[test]
 fn document_rows_match_the_generator_registry() {
-    let registry = embedded_registry();
+    let registry = registry_classes();
     let rows = table_rows(&read(DOCUMENT));
     let document_ids: Vec<String> = rows.iter().map(|row| class_id(row)).collect();
     let registry_ids: Vec<String> = registry.iter().map(|(id, _)| id.clone()).collect();
@@ -291,8 +271,9 @@ fn generated_header_names_the_generator_and_its_input() {
         "the first line is the generated-by marker: {header}"
     );
     let input = lines.next().expect("an input line");
-    assert!(
-        input.starts_with("Input: "),
-        "the second line names the input source: {input}"
+    assert_eq!(
+        input,
+        "Input: `data/meta/llm-task-classes.lino`",
+        "the generated document names its data-owned input"
     );
 }
