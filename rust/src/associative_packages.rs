@@ -4,11 +4,11 @@
 //! Import never infers availability or approval from the untrusted manifest:
 //! callers supply their local handler catalog and the user's review decision.
 
-use std::collections::{BTreeMap, BTreeSet};
 use crate::associative_package::{AssociativePackage, PackageStore};
 use crate::links_format::push_lino_node;
 use crate::memory::{MemoryEvent, MemoryStore};
 use crate::seed::parser::parse_lino;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// A scoped package plus its portable knowledge and provenance. The contained
 /// Links Notation is data; importing this artifact does not execute it.
@@ -67,24 +67,37 @@ impl SharedPackage {
             .map_err(|error| SharingError::InvalidArtifact(error.to_string()))?;
         let tree = parse_lino(text);
         if tree.children.len() != 1 {
-            return Err(SharingError::InvalidArtifact(String::from("multiple_roots")));
+            return Err(SharingError::InvalidArtifact(String::from(
+                "multiple_roots",
+            )));
         }
         let root = &tree.children[0];
         Ok(Self {
             package,
             contained_links: root.find_child_value("contained_links").to_owned(),
-            provenance: root.children.iter().filter(|node| node.name == "provenance")
-                .map(|node| node.id.clone()).collect(),
+            provenance: root
+                .children
+                .iter()
+                .filter(|node| node.name == "provenance")
+                .map(|node| node.id.clone())
+                .collect(),
         })
     }
 
     /// Permission rows to display before asking the person to confirm import.
     #[must_use]
     pub fn declared_permissions(&self) -> Vec<(String, String, String)> {
-        self.package.permissions.iter().map(|permission| (
-            permission.capability.clone(), permission.effect.clone(),
-            permission.description.clone(),
-        )).collect()
+        self.package
+            .permissions
+            .iter()
+            .map(|permission| {
+                (
+                    permission.capability.clone(),
+                    permission.effect.clone(),
+                    permission.description.clone(),
+                )
+            })
+            .collect()
     }
 }
 
@@ -108,12 +121,18 @@ pub fn import_package(
         if !handlers.insert(handler.id.clone()) {
             return Err(SharingError::DuplicateIdentifier(handler.id.clone()));
         }
-        let local = available.get(&handler.id)
+        let local = available
+            .get(&handler.id)
             .filter(|local| local.kind == handler.kind && local.capability == handler.capability)
             .ok_or_else(|| SharingError::UnavailableHandler(handler.id.clone()))?;
         if local.agent_tagged {
-            if !review.approved_agent_capabilities.contains(&local.capability) {
-                return Err(SharingError::AgentApprovalRequired(local.capability.clone()));
+            if !review
+                .approved_agent_capabilities
+                .contains(&local.capability)
+            {
+                return Err(SharingError::AgentApprovalRequired(
+                    local.capability.clone(),
+                ));
             }
             agent_capabilities.insert(local.capability.clone());
         }
@@ -129,23 +148,39 @@ pub fn import_package(
     }
     for permission in &shared.package.permissions {
         if permission.effect != "allow" && permission.effect != "deny" {
-            return Err(SharingError::UnsupportedPermission(permission.effect.clone()));
+            return Err(SharingError::UnsupportedPermission(
+                permission.effect.clone(),
+            ));
         }
-        if permission.effect == "allow" && !available.values().any(|handler|
-            handler.capability == permission.capability) {
-            return Err(SharingError::UnsupportedPermission(permission.capability.clone()));
+        if permission.effect == "allow"
+            && !available
+                .values()
+                .any(|handler| handler.capability == permission.capability)
+        {
+            return Err(SharingError::UnsupportedPermission(
+                permission.capability.clone(),
+            ));
         }
         // A locally agent-tagged capability requires consent even if its handler
         // is not included in this package: permission grants may be used later.
         let is_agent = agent_capabilities.contains(&permission.capability)
-            || available.values().any(|handler| handler.agent_tagged
-                && handler.capability == permission.capability);
-        if permission.effect == "allow" && is_agent
-            && !review.approved_agent_capabilities.contains(&permission.capability) {
-            return Err(SharingError::AgentApprovalRequired(permission.capability.clone()));
+            || available
+                .values()
+                .any(|handler| handler.agent_tagged && handler.capability == permission.capability);
+        if permission.effect == "allow"
+            && is_agent
+            && !review
+                .approved_agent_capabilities
+                .contains(&permission.capability)
+        {
+            return Err(SharingError::AgentApprovalRequired(
+                permission.capability.clone(),
+            ));
         }
     }
-    store.install(shared.package.clone()).map_err(|error| SharingError::Install(error.to_string()))?;
+    store
+        .install(shared.package.clone())
+        .map_err(|error| SharingError::Install(error.to_string()))?;
     memory.append(MemoryEvent {
         id: crate::engine::stable_id("package_imported", artifact),
         kind: Some(String::from("package_imported")),

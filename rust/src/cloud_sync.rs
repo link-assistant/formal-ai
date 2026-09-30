@@ -7,13 +7,13 @@
 //! Local counters are not transferred: recalling an event must not create a new
 //! remote event or overwrite another machine's usage accounting.
 
+use crate::memory::{MemoryEvent, MemoryStore, export_links_notation, parse_links_notation};
+use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
-use sha2::{Digest, Sha256};
-use crate::memory::{MemoryEvent, MemoryStore, export_links_notation, parse_links_notation};
 
 const MAX_OBJECT_BYTES: u64 = 16 * 1024 * 1024;
 static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
@@ -47,7 +47,9 @@ pub enum SyncError {
     ObjectTooLarge,
 }
 impl From<io::Error> for SyncError {
-    fn from(error: io::Error) -> Self { Self::Io(error) }
+    fn from(error: io::Error) -> Self {
+        Self::Io(error)
+    }
 }
 
 /// Remote storage contract. `put_if_absent` must return true for a newly
@@ -62,11 +64,15 @@ pub trait Transport {
 
 /// User-owned directory backend; no network, service or credentials required.
 #[derive(Debug, Clone)]
-pub struct DirectoryTransport { root: PathBuf }
+pub struct DirectoryTransport {
+    root: PathBuf,
+}
 impl DirectoryTransport {
     /// Does not create the remote or perform I/O before explicit sync opt-in.
     #[must_use]
-    pub fn new(root: impl Into<PathBuf>) -> Self { Self { root: root.into() } }
+    pub fn new(root: impl Into<PathBuf>) -> Self {
+        Self { root: root.into() }
+    }
     fn path(&self, key: &str) -> Result<PathBuf, SyncError> {
         validate_key(key)?;
         Ok(self.root.join(format!("{key}.lino")))
@@ -79,7 +85,9 @@ impl Transport for DirectoryTransport {
         let mut keys = Vec::new();
         for entry in fs::read_dir(&self.root)? {
             let entry = entry?;
-            if !entry.file_type()?.is_file() { continue; }
+            if !entry.file_type()?.is_file() {
+                continue;
+            }
             let name = entry.file_name();
             if let Some(key) = name.to_str().and_then(|name| name.strip_suffix(".lino")) {
                 validate_key(key)?;
@@ -94,17 +102,28 @@ impl Transport for DirectoryTransport {
         if fs::symlink_metadata(&path)?.file_type().is_symlink() {
             return Err(SyncError::InvalidObject(key.to_owned()));
         }
-        if fs::metadata(&path)?.len() > MAX_OBJECT_BYTES { return Err(SyncError::ObjectTooLarge); }
+        if fs::metadata(&path)?.len() > MAX_OBJECT_BYTES {
+            return Err(SyncError::ObjectTooLarge);
+        }
         Ok(fs::read_to_string(path)?)
     }
     fn put_if_absent(&mut self, key: &str, contents: &str) -> Result<bool, SyncError> {
         let destination = self.path(key)?;
-        if contents.len() as u64 > MAX_OBJECT_BYTES { return Err(SyncError::ObjectTooLarge); }
-        if digest(contents) != key { return Err(SyncError::InvalidObject(key.to_owned())); }
+        if contents.len() as u64 > MAX_OBJECT_BYTES {
+            return Err(SyncError::ObjectTooLarge);
+        }
+        if digest(contents) != key {
+            return Err(SyncError::InvalidObject(key.to_owned()));
+        }
         fs::create_dir_all(&self.root)?;
         let sequence = TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed);
-        let temporary = self.root.join(format!(".pending-{}-{sequence}", std::process::id()));
-        let mut file = fs::OpenOptions::new().write(true).create_new(true).open(&temporary)?;
+        let temporary = self
+            .root
+            .join(format!(".pending-{}-{sequence}", std::process::id()));
+        let mut file = fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&temporary)?;
         let result = (|| -> Result<bool, SyncError> {
             file.write_all(contents.as_bytes())?;
             file.sync_all()?;
@@ -113,8 +132,11 @@ impl Transport for DirectoryTransport {
             match fs::hard_link(&temporary, &destination) {
                 Ok(()) => Ok(true),
                 Err(error) if error.kind() == io::ErrorKind::AlreadyExists => {
-                    if self.read(key)? == contents { Ok(false) }
-                    else { Err(SyncError::InvalidObject(key.to_owned())) }
+                    if self.read(key)? == contents {
+                        Ok(false)
+                    } else {
+                        Err(SyncError::InvalidObject(key.to_owned()))
+                    }
                 }
                 Err(error) => Err(error.into()),
             }
@@ -126,22 +148,36 @@ impl Transport for DirectoryTransport {
 }
 
 fn validate_key(key: &str) -> Result<(), SyncError> {
-    if key.len() == 64 && key.bytes().all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte)) {
+    if key.len() == 64
+        && key
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+    {
         Ok(())
-    } else { Err(SyncError::InvalidKey(key.to_owned())) }
+    } else {
+        Err(SyncError::InvalidKey(key.to_owned()))
+    }
 }
-fn digest(text: &str) -> String { format!("{:x}", Sha256::digest(text.as_bytes())) }
+fn digest(text: &str) -> String {
+    format!("{:x}", Sha256::digest(text.as_bytes()))
+}
 fn canonical(event: &MemoryEvent) -> MemoryEvent {
     let mut event = event.clone();
     event.access_count = 0;
     event.write_count = 1;
     event
 }
-fn encode(event: &MemoryEvent) -> String { export_links_notation(&[canonical(event)]) }
+fn encode(event: &MemoryEvent) -> String {
+    export_links_notation(&[canonical(event)])
+}
 fn decode(key: &str, text: &str) -> Result<MemoryEvent, SyncError> {
     validate_key(key)?;
-    if text.len() as u64 > MAX_OBJECT_BYTES { return Err(SyncError::ObjectTooLarge); }
-    if digest(text) != key { return Err(SyncError::InvalidObject(key.to_owned())); }
+    if text.len() as u64 > MAX_OBJECT_BYTES {
+        return Err(SyncError::ObjectTooLarge);
+    }
+    if digest(text) != key {
+        return Err(SyncError::InvalidObject(key.to_owned()));
+    }
     let events = parse_links_notation(text);
     if events.len() != 1 || events[0].id.is_empty() || encode(&events[0]) != text {
         return Err(SyncError::InvalidObject(key.to_owned()));
@@ -159,15 +195,21 @@ pub fn sync_memory(
     transport: &mut impl Transport,
     cursor: &mut SyncCursor,
 ) -> Result<SyncReport, SyncError> {
-    if !config.enabled { return Err(SyncError::OptInRequired); }
+    if !config.enabled {
+        return Err(SyncError::OptInRequired);
+    }
     let mut by_identity: BTreeMap<String, String> = BTreeMap::new();
     let mut outgoing: BTreeMap<String, String> = BTreeMap::new();
     for event in local.events() {
-        if event.id.is_empty() { return Err(SyncError::InvalidObject(String::from("missing_event_id"))); }
+        if event.id.is_empty() {
+            return Err(SyncError::InvalidObject(String::from("missing_event_id")));
+        }
         let canonical = canonical(event);
         let bytes = encode(&canonical);
         if let Some(previous) = by_identity.insert(canonical.id.clone(), bytes.clone()) {
-            if previous != bytes { return Err(SyncError::IdentityConflict(canonical.id)); }
+            if previous != bytes {
+                return Err(SyncError::IdentityConflict(canonical.id));
+            }
         }
         outgoing.insert(digest(&bytes), bytes);
     }
@@ -180,8 +222,10 @@ pub fn sync_memory(
         let bytes = transport.read(&key)?;
         let event = decode(&key, &bytes)?;
         match by_identity.get(&event.id) {
-            Some(previous) if previous != &bytes => return Err(SyncError::IdentityConflict(event.id)),
-            Some(_) => {},
+            Some(previous) if previous != &bytes => {
+                return Err(SyncError::IdentityConflict(event.id));
+            }
+            Some(_) => {}
             None => {
                 by_identity.insert(event.id.clone(), bytes);
                 incoming.push(event);
@@ -206,4 +250,6 @@ pub fn sync_memory(
 /// left to the CLI/server integration rather than silently treating a URL as a
 /// local directory or claiming that WebDAV/S3 authentication is implemented.
 #[must_use]
-pub fn directory_remote(path: &Path) -> DirectoryTransport { DirectoryTransport::new(path) }
+pub fn directory_remote(path: &Path) -> DirectoryTransport {
+    DirectoryTransport::new(path)
+}
