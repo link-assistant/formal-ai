@@ -155,10 +155,17 @@ impl FactRecord {
     /// as a raw substring inside a longer word — "us" must not match inside
     /// "australia", and "capital" must not match inside "capitalism".
     /// Space-delimited scripts therefore match on token boundaries: the
-    /// phrase is tokenized with the very same `engine::normalize_prompt` the
-    /// caller applied to the prompt (so an alias like "japan's" compares as
-    /// the token run `japan s`, exactly as the normalized prompt spells it),
-    /// and it must appear as a consecutive token run of `normalized`.
+    /// phrase is tokenized with `engine::normalize_prompt` and must appear
+    /// as a consecutive token run of `normalized`. Both sides are pushed
+    /// through the same normalizer, because callers do not agree on how far
+    /// they normalized the prompt: `meta_method_dispatch::try_dispatch`
+    /// passes a merely lowercased prompt (so "spider-man" arrives as one
+    /// token while the alias "spider man" tokenizes as two), while
+    /// `benchmark_prompts::fact_store_resolves` passes full
+    /// `normalize_prompt` output. Re-normalizing is idempotent for input
+    /// that is already normalized, so one comparison serves both callers
+    /// and a hyphenated alias ("человек-паук фильмы") matches a hyphenated
+    /// prompt exactly as its unhyphenated twin matches the normalized one.
     /// Scripts written without inter-word spaces (CJK, per
     /// `coding::contains_cjk`) have no token boundaries to honor, so those
     /// phrases keep substring matching — the same contract as
@@ -186,7 +193,9 @@ impl FactRecord {
             // have accepted it inside any prompt containing that punctuation.
             return false;
         }
-        let tokens: Vec<&str> = normalized.split_whitespace().collect();
+        let tokens: Vec<&str> = crate::engine::normalize_prompt(normalized)
+            .split_whitespace()
+            .collect();
         tokens
             .windows(phrase_tokens.len())
             .any(|window| window == phrase_tokens.as_slice())
