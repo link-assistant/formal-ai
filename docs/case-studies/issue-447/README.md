@@ -62,8 +62,11 @@ container with `min-height: 0` — the fix is the standard one, not novel.
 `rust/tests/unit/issue_447_dialog_politeness.rs` pins that the exact
 complaint string is answered from the seeded ru opener pool
 (`data/seed/unknown-openers.lino`) and that ru remains a declared answer
-language. The CSS change belongs to the web surface, which this batch's
-wave-3 lanes do not own; the plan above is the hand-off.
+language. The web draft now gives `.context-panel` its own vertical scroll container,
+prevents direct section children from shrinking into clipped regions, and keeps
+focus targets inside a 12px scroll margin. It applies to the mobile drawer too.
+The existing fixed shell already follows the dynamic viewport height; imposing
+a second minimum viewport height would defeat its constrained scroll region.
 
 ## Verification
 
@@ -71,3 +74,5 @@ wave-3 lanes do not own; the plan above is the hand-off.
   `rust/tests/unit/issue_447_dialog_politeness.rs` (CI).
 - Manual: replay the environment (1280×565, Firefox, Windows) and scroll
   the panel to its last button.
+
+CSS draft committed; the 1280×565 and 320px viewport checks remain unrun.

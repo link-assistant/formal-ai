@@ -4761,3 +4761,19 @@ textarea:disabled {
   .composer-grid textarea { border: 1px solid CanvasText; }
   .composer-grid button { background: Canvas; color: ButtonText; }
 }
+
+/* Issue #447: a short viewport scrolls the complete navigation column. */
+.context-panel {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+}
+.context-panel > .sidebar-section,
+.context-panel > .drawer-brand,
+.context-panel > .drawer-menu-section.sidebar-section.is-expanded {
+  flex: 0 0 auto;
+}
+.context-panel .sidebar-section-header { flex-shrink: 0; }
+.context-panel :focus-visible { scroll-margin-block: 12px; }
