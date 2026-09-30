@@ -1,0 +1,39 @@
+{
+  "lemma": "authentic",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02474343-s",
+      "partOfSpeech": "s",
+      "definition": "conforming to fact and therefore worthy of belief",
+      "examples": [
+        "an authentic account by an eyewitness",
+        "reliable information"
+      ],
+      "synonyms": [
+        "reliable"
+      ]
+    },
+    {
+      "id": "oewn-01119377-s",
+      "partOfSpeech": "s",
+      "definition": "not counterfeit or copied",
+      "examples": [
+        "an authentic signature",
+        "a bona fide manuscript",
+        "an unquestionable antique",
+        "photographs taken in a veritable bull ring"
+      ],
+      "synonyms": [
+        "bona fide",
+        "unquestionable",
+        "veritable"
+      ]
+    }
+  ]
+}

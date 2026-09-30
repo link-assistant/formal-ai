@@ -1,0 +1,138 @@
+{
+  "lemma": "float",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15319328-n",
+      "partOfSpeech": "n",
+      "definition": "the time interval between the deposit of a check in a bank and its payment"
+    },
+    {
+      "id": "oewn-13357383-n",
+      "partOfSpeech": "n",
+      "definition": "the number of shares outstanding and available for trading by the public"
+    },
+    {
+      "id": "oewn-07939274-n",
+      "partOfSpeech": "n",
+      "definition": "a drink with ice cream floating in it",
+      "synonyms": [
+        "ice-cream soda",
+        "ice-cream float"
+      ]
+    },
+    {
+      "id": "oewn-03369621-n",
+      "partOfSpeech": "n",
+      "definition": "an elaborate display mounted on a platform carried by a truck (or pulled by a truck) in a procession or parade"
+    },
+    {
+      "id": "oewn-03369445-n",
+      "partOfSpeech": "n",
+      "definition": "a hand tool with a flat face used for smoothing and finishing the surface of plaster or cement or stucco",
+      "synonyms": [
+        "plasterer's float"
+      ]
+    },
+    {
+      "id": "oewn-03369186-n",
+      "partOfSpeech": "n",
+      "definition": "something that floats on the surface of water"
+    },
+    {
+      "id": "oewn-02470212-n",
+      "partOfSpeech": "n",
+      "definition": "an air-filled sac near the spinal column in many fishes that helps maintain buoyancy",
+      "synonyms": [
+        "air bladder",
+        "swim bladder"
+      ]
+    },
+    {
+      "id": "oewn-01906776-v",
+      "partOfSpeech": "v",
+      "definition": "be in motion due to some air or water current",
+      "examples": [
+        "The leaves were blowing in the wind",
+        "the boat drifted on the lake",
+        "The sailboat was adrift on the open sea",
+        "the shipwrecked boat drifted away from the shore"
+      ],
+      "synonyms": [
+        "drift",
+        "be adrift",
+        "blow"
+      ]
+    },
+    {
+      "id": "oewn-01908286-v",
+      "partOfSpeech": "v",
+      "definition": "be afloat either on or below a liquid surface and not sink to the bottom",
+      "synonyms": [
+        "swim"
+      ]
+    },
+    {
+      "id": "oewn-01878561-v",
+      "partOfSpeech": "v",
+      "definition": "set afloat",
+      "examples": [
+        "He floated the logs down the river",
+        "The boy floated his toy boat on the pond"
+      ]
+    },
+    {
+      "id": "oewn-02537745-v",
+      "partOfSpeech": "v",
+      "definition": "circulate or discuss tentatively; test the waters with",
+      "examples": [
+        "The Republicans are floating the idea of a tax reform"
+      ]
+    },
+    {
+      "id": "oewn-01842593-v",
+      "partOfSpeech": "v",
+      "definition": "move lightly, as if suspended",
+      "examples": [
+        "The dancer floated across the stage"
+      ]
+    },
+    {
+      "id": "oewn-01517519-v",
+      "partOfSpeech": "v",
+      "definition": "put into the water",
+      "examples": [
+        "float a ship"
+      ]
+    },
+    {
+      "id": "oewn-01364701-v",
+      "partOfSpeech": "v",
+      "definition": "make the surface of level or smooth",
+      "examples": [
+        "float the plaster"
+      ]
+    },
+    {
+      "id": "oewn-00697808-v",
+      "partOfSpeech": "v",
+      "definition": "allow (currencies) to fluctuate",
+      "examples": [
+        "The government floated the ruble for a few months"
+      ]
+    },
+    {
+      "id": "oewn-00567258-v",
+      "partOfSpeech": "v",
+      "definition": "convert from a fixed point notation to a floating point notation",
+      "examples": [
+        "float data"
+      ]
+    }
+  ]
+}

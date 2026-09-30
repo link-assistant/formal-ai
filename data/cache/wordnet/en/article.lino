@@ -1,0 +1,29 @@
+language en
+lemma article
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "nonfictional prose forming an independent part of a publication"
+    id oewn-06278749-n
+    partOfSpeech n
+  entry
+    definition "one of a class of artifacts"
+    examples ("an article of clothing")
+    id oewn-00023083-n
+    partOfSpeech n
+  entry
+    definition "a separate section of a legal document (as a statute or contract or will)"
+    id oewn-06404578-n
+    partOfSpeech n
+    synonyms (clause)
+  entry
+    definition "(grammar) a determiner that may indicate the specificity of reference of a noun phrase"
+    id oewn-06335662-n
+    partOfSpeech n
+  entry
+    definition "bind by a contract; especially for a training period"
+    id oewn-00886603-v
+    partOfSpeech v
+source "oewn:2024"

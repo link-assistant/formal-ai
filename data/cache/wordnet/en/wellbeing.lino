@@ -1,0 +1,13 @@
+language en
+lemma wellbeing
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a contented state of being happy and healthy and prosperous"
+    examples ("the town was finally on the upbeat after our recent troubles")
+    id oewn-14470991-n
+    partOfSpeech n
+    synonyms (well-being welfare upbeat eudaemonia eudaimonia)
+source "oewn:2024"

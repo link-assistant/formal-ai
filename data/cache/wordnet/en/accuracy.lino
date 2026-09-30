@@ -1,0 +1,18 @@
+language en
+lemma accuracy
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the quality of being near to the true value"
+    examples ("he was beginning to doubt the accuracy of his compass" "the lawyer questioned the truth of my account")
+    id oewn-04810156-n
+    partOfSpeech n
+    synonyms (truth)
+  entry
+    definition "(mathematics) the number of significant figures given in a number"
+    examples ("the atomic clock enabled scientists to measure time with much greater accuracy")
+    id oewn-04810458-n
+    partOfSpeech n
+source "oewn:2024"

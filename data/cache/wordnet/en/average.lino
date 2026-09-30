@@ -1,0 +1,74 @@
+language en
+lemma average
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a statistic describing the location of a distribution"
+    examples ("it set the norm for American homes")
+    id oewn-06031110-n
+    partOfSpeech n
+    synonyms (norm)
+  entry
+    definition "(sports) the ratio of successful performances to opportunities"
+    id oewn-13842867-n
+    partOfSpeech n
+  entry
+    definition "an intermediate scale value regarded as normal or usual"
+    examples ("he is about average in height" "the snowfall this month is below average")
+    id oewn-05865563-n
+    partOfSpeech n
+  entry
+    definition "approximating the statistical norm or average or expected value"
+    examples ("the average income in New England is below that of the nation" "of average height for his age" "the mean annual rainfall")
+    id oewn-01598728-s
+    partOfSpeech s
+    synonyms (mean)
+  entry
+    definition "lacking special distinction, rank, or status; commonly encountered"
+    examples ("average people" "the ordinary (or common) man in the street")
+    id oewn-00488278-s
+    partOfSpeech s
+    synonyms (ordinary)
+  entry
+    definition "lacking exceptional quality or ability"
+    examples ("a novel of average merit" "only a fair performance of the sonata" "in fair health" "the caliber of the students has gone from mediocre to above average" "the performance was middling at best")
+    id oewn-01677616-s
+    partOfSpeech s
+    synonyms (fair mediocre middling)
+  entry
+    definition "around the middle of a scale of evaluation"
+    examples ("an orange of average size" "intermediate capacity" "medium bombers")
+    id oewn-01536076-s
+    partOfSpeech s
+    synonyms (intermediate medium)
+  entry
+    definition "relating to or constituting the most frequent value in a distribution"
+    examples ("the modal age at which American novelists reach their peak is 30")
+    id oewn-01599393-s
+    partOfSpeech s
+    synonyms (modal)
+  entry
+    definition "relating to or constituting the middle value of an ordered set of values (or the average of the middle two in a set with an even number of values)"
+    examples ("the median value of 17, 20, and 36 is 20" "the median income for the year was $15,000")
+    id oewn-01599054-s
+    partOfSpeech s
+    synonyms (median)
+  entry
+    definition "amount to or come to an average, without loss or gain"
+    examples ("The number of hours I work per week averages out to 40")
+    id oewn-02651473-v
+    partOfSpeech v
+    synonyms ("average out")
+  entry
+    definition "achieve or reach on average"
+    examples ("He averaged a C")
+    id oewn-02532960-v
+    partOfSpeech v
+  entry
+    definition "compute the average of"
+    id oewn-00641660-v
+    partOfSpeech v
+    synonyms ("average out")
+source "oewn:2024"

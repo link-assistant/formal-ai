@@ -1,0 +1,50 @@
+{
+  "lemma": "append",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01331387-v",
+      "partOfSpeech": "v",
+      "definition": "add to the very end",
+      "examples": [
+        "He appended a glossary to his novel where he used an invented language"
+      ],
+      "synonyms": [
+        "add on",
+        "supplement",
+        "affix"
+      ]
+    },
+    {
+      "id": "oewn-01331195-v",
+      "partOfSpeech": "v",
+      "definition": "fix to; attach",
+      "examples": [
+        "append a charm to the necklace"
+      ],
+      "synonyms": [
+        "tag on",
+        "tack on",
+        "tack",
+        "hang on"
+      ]
+    },
+    {
+      "id": "oewn-01029183-v",
+      "partOfSpeech": "v",
+      "definition": "state or say further",
+      "examples": [
+        "‘It doesn't matter,’ he supplied"
+      ],
+      "synonyms": [
+        "add",
+        "supply"
+      ]
+    }
+  ]
+}

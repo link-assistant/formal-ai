@@ -6,6 +6,7 @@ total_closure_schema
   declaration_identity_head capability_gap
   declaration_identity_head category
   declaration_identity_head coding_meta_algorithm
+  declaration_identity_head construct
   declaration_identity_head context
   declaration_identity_head entity
   declaration_identity_head environment
@@ -14,11 +15,14 @@ total_closure_schema
   declaration_identity_head field
   declaration_identity_head flow
   declaration_identity_head handler
+  declaration_identity_head id
   declaration_identity_head intent
   declaration_identity_head lesson
   declaration_identity_head method
+  declaration_identity_head name
   declaration_identity_head operation
   declaration_identity_head option
+  declaration_identity_head package
   declaration_identity_head pattern
   declaration_identity_head primitive
   declaration_identity_head promotion
@@ -36,8 +40,10 @@ total_closure_schema
   declaration_identity_head tool
   declaration_identity_head topic
   declaration_identity_head ts_construct
+  literal_operand_head column
   literal_operand_head cue
   literal_operand_head prefix
+  literal_operand_head severity
   literal_operand_head signature
   literal_operand_head substring
   literal_operand_head word

@@ -1,0 +1,31 @@
+{
+  "lemma": "ascending",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02493886-a",
+      "partOfSpeech": "a",
+      "definition": "moving or going or growing upward",
+      "examples": [
+        "the ascending plane",
+        "the ascending staircase",
+        "the ascending stems of chickweed"
+      ]
+    },
+    {
+      "id": "oewn-00325210-n",
+      "partOfSpeech": "n",
+      "definition": "the act of changing location in an upward direction",
+      "synonyms": [
+        "rise",
+        "ascent",
+        "ascension"
+      ]
+    }
+  ]
+}

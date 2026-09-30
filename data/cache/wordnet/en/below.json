@@ -1,0 +1,57 @@
+{
+  "lemma": "below",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00080389-r",
+      "partOfSpeech": "r",
+      "definition": "in or to a place that is lower",
+      "synonyms": [
+        "at a lower place",
+        "to a lower place",
+        "beneath"
+      ]
+    },
+    {
+      "id": "oewn-00080132-r",
+      "partOfSpeech": "r",
+      "definition": "(in writing) at a later place",
+      "examples": [
+        "see below",
+        "vide infra"
+      ],
+      "synonyms": [
+        "infra"
+      ]
+    },
+    {
+      "id": "oewn-00094946-r",
+      "partOfSpeech": "r",
+      "definition": "on a floor below",
+      "examples": [
+        "the tenants live downstairs"
+      ],
+      "synonyms": [
+        "downstairs",
+        "down the stairs",
+        "on a lower floor"
+      ]
+    },
+    {
+      "id": "oewn-00488265-r",
+      "partOfSpeech": "r",
+      "definition": "further down",
+      "examples": [
+        "see under for further discussion"
+      ],
+      "synonyms": [
+        "under"
+      ]
+    }
+  ]
+}

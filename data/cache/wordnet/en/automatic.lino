@@ -1,0 +1,34 @@
+language en
+lemma automatic
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "operating with minimal human intervention; independent of external control"
+    examples ("automatic transmission" "a budget deficit that caused automatic spending cuts")
+    id oewn-00182776-a
+    partOfSpeech a
+  entry
+    definition "self-loading rifle capable of automatic fire"
+    id oewn-02763860-n
+    partOfSpeech n
+    synonyms ("automatic rifle" "machine rifle")
+  entry
+    definition "a pistol that will keep firing until the ammunition is gone or the trigger is released"
+    id oewn-02763663-n
+    partOfSpeech n
+    synonyms ("automatic pistol")
+  entry
+    definition "resembling the unthinking functioning of a machine"
+    examples ("an automatic ‘thank you’" "machinelike efficiency")
+    id oewn-01503678-s
+    partOfSpeech s
+    synonyms (automatonlike machinelike robotlike robotic)
+  entry
+    definition "without volition or conscious control"
+    examples ("the automatic shrinking of the pupils of the eye in strong light" "a reflex knee jerk" "sneezing is reflexive")
+    id oewn-02532828-s
+    partOfSpeech s
+    synonyms (reflex reflexive)
+source "oewn:2024"
