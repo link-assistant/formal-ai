@@ -12,6 +12,7 @@ mod cli_coding;
 mod cli_computer_use;
 mod cli_context;
 mod cli_environments;
+mod cli_explain;
 mod cli_file_legality;
 mod cli_github_logs;
 mod cli_import;
@@ -37,6 +38,7 @@ use cli_coding::{CodingArgs, run_coding};
 use cli_computer_use::{ComputerUseArgs, run_computer_use};
 use cli_context::{ContextArgs, run_context};
 use cli_environments::run_environments;
+use cli_explain::{ExplainFormat, run_explain};
 use cli_file_legality::{FileLegalityArgs, run_file_legality};
 use cli_github_logs::{GithubLogsAction, run_github_logs};
 use cli_import::{ImportAction, run_import};
@@ -393,6 +395,22 @@ enum Command {
     Learn {
         #[command(subcommand)]
         action: LearnAction,
+    },
+    /// Print the white-box derivation of a previously returned answer
+    /// (issue #1184, E148): the search queries issued, the fetched URLs
+    /// with their SHA-256 hashes and fetch timestamps, the formalized page
+    /// fragments, the parts decomposed from retrieved examples, the
+    /// recomposition, the rendering, and the verification output — read
+    /// from the durable record keyed by the answer's `derivation_id`.
+    /// `--format links` prints the canonical Links Notation record instead
+    /// of the readable per-stage explanation. Distinct from the in-chat
+    /// "explain how Formal AI works" self-explanation recipe.
+    Explain {
+        /// The `derivation_id` the answer carried (`answer_<16 hex digits>`).
+        answer_id: String,
+
+        #[arg(long, value_enum, default_value_t = ExplainFormat::Text)]
+        format: ExplainFormat,
     },
 }
 
@@ -793,6 +811,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             open_draft_pr,
         })?,
         Command::Learn { action } => run_learn_action(action)?,
+        Command::Explain { answer_id, format } => run_explain(&answer_id, format)?,
     }
 
     Ok(())
