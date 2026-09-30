@@ -102,7 +102,7 @@ pub(super) fn resolves_body(reference: &str) -> String {
     super::work_item_steps::fill("body_resolves", &[("{reference}", reference)])
 }
 
-fn shell_quote(text: &str) -> String {
+pub(super) fn shell_quote(text: &str) -> String {
     format!("'{}'", text.replace('\'', "'\\''"))
 }
 

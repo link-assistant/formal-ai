@@ -47,13 +47,25 @@ pub fn plan_symbolic_command_reroute(
     // Only the recipe's own commands count as recipe steps. A shell result
     // from before the recipe -- the `gh issue view` that read the work item --
     // is neither a step done nor a step failed (issue #1133).
-    let expected_commands: Vec<String> = recipe
+    let mut expected_commands: Vec<String> = recipe
         .commands
         .iter()
         .cloned()
         .chain(commit.as_ref().map(commit_step))
         .collect();
+    if let Some(target) = &commit {
+        expected_commands.extend(pr_completion_commands(recipe, target));
+    }
     let progress = RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands);
+    if let Some(target) = &commit {
+        let followup = pr_completion_commands(recipe, target);
+        let observed = super::progress::Progress::scan(messages);
+        if let Some(comments) = followup.first()
+            && let Some(output) = observed.latest_successful_run_output_for(comments)
+            && super::restart_feedback::feedback_needs_changes(output) {
+            return Some(AgenticPlan::Final(format!("Pull request feedback requires review before readiness:\n{output}")));
+        }
+    }
 
     let next_file = || {
         if progress.files_written == 0 {
@@ -66,19 +78,27 @@ pub fn plan_symbolic_command_reroute(
         }
     };
     if let Some(failure) = &progress.failure {
-        let commit_command = commit.as_ref().map(commit_step);
-        let step = failure
-            .from_run
-            .then(|| {
-                recipe
-                    .commands
-                    .get(progress.commands_done)
-                    .map(String::as_str)
-                    .or(commit_command.as_deref())
-            })
-            .flatten()
-            .unwrap_or(write_tool);
+        let step = if failure.from_run {
+            expected_commands.get(progress.commands_done).map(String::as_str).unwrap_or(write_tool)
+        } else { write_tool };
         let failed_path = next_file().map_or(recipe.path.as_str(), |(path, _)| path);
+        if failure.from_run {
+            if let Some(plan) = super::prerequisite_recovery::plan_recovery(
+                messages, tool_names, step, failure.exit_code, &failure.reported,
+            ) {
+                return Some(plan);
+            }
+            let failed = super::repair_loop::FailedStep::new(&recipe.language, &failure.reported)
+                .with_exit_code(failure.exit_code)
+                .with_failed_command(Some(step.to_owned()))
+                .with_artifact_path(failed_path);
+            if let Some(plan) = super::repair_loop::plan_repair(
+                messages, tool_names, &failed, progress.repair_rung.saturating_sub(1),
+                super::repair_loop::MAX_REPAIR_RUNGS,
+            ) {
+                return Some(plan);
+            }
+        }
         return Some(AgenticPlan::Final(failure.report(
             messages,
             failed_path,
@@ -88,24 +108,27 @@ pub fn plan_symbolic_command_reroute(
     if let Some((path, source)) = next_file() {
         return Some(one_call(write_tool, write_arguments(path, source)));
     }
-    if let Some(command) = recipe.commands.get(progress.commands_done) {
-        return Some(one_call(
-            run_tool,
-            json!({ "command": command }).to_string(),
-        ));
-    }
-    if let Some(target) = &commit
-        && progress.commands_done == recipe.commands.len()
-    {
-        return Some(one_call(
-            run_tool,
-            json!({ "command": commit_step(target) }).to_string(),
-        ));
+    if let Some(command) = expected_commands.get(progress.commands_done) {
+        return Some(one_call(run_tool, json!({ "command": command }).to_string()));
     }
 
     Some(AgenticPlan::Final(
         recipe.final_answer(&progress.command_outputs, commit.as_ref()),
     ))
+}
+
+fn pr_completion_commands(recipe: &ExecutionRecipe, target: &CommitTarget) -> Vec<String> {
+    if !target.reference.contains("/pull/") { return Vec::new(); }
+    let target_url = super::git_commit::shell_quote(&target.reference);
+    let commands = recipe.commands.iter().map(|command| format!("- `{command}`")).collect::<Vec<_>>().join("\n");
+    let body = super::work_item_steps::fill("pr_body_template", &[
+        ("{path}", &recipe.path), ("{commands}", &commands), ("{reference}", &target.reference),
+    ]);
+    vec![
+        super::work_item_steps::fill("pr_comments_command", &[("{target}", &target_url)]),
+        super::work_item_steps::fill("pr_edit_command", &[("{target}", &target_url), ("{body}", &super::git_commit::shell_quote(&body))]),
+        super::work_item_steps::fill("pr_ready_command", &[("{target}", &target_url)]),
+    ]
 }
 
 fn one_call(tool: &str, arguments: String) -> AgenticPlan {
@@ -125,7 +148,7 @@ impl ExecutionRecipe {
         // output the claim rests on is the one before it.
         let (verification_outputs, commit_output) = match committed {
             Some(_) if outputs.len() > self.commands.len() => {
-                (&outputs[..self.commands.len()], outputs.last())
+                (&outputs[..self.commands.len()], outputs.get(self.commands.len()))
             }
             _ => (outputs, None),
         };
@@ -169,6 +192,7 @@ struct RecipeProgress {
     commands_done: usize,
     command_outputs: Vec<String>,
     failure: Option<StepFailure>,
+    repair_rung: u8,
 }
 
 /// A step the harness reported as failed, kept with the evidence that makes the
@@ -221,10 +245,7 @@ impl RecipeProgress {
         recipe: &ExecutionRecipe,
         expected_commands: &[String],
     ) -> Self {
-        let start = messages
-            .iter()
-            .rposition(|message| message.role == "user")
-            .map_or(0, |index| index + 1);
+        let start = super::planner::evidence_window_start(messages);
         let mut progress = Self::default();
         let files: Vec<(&str, &str)> = std::iter::once((recipe.path.as_str(), recipe.source.as_str()))
             .chain(recipe.supporting_files.iter().map(|file| (file.path.as_str(), file.source.as_str())))
@@ -250,18 +271,23 @@ impl RecipeProgress {
             let matches_run = capability == Some(Capability::Run)
                 && progress.files_written == files.len()
                 && run_command_of(&messages[start..index], Some(call_id))
-                    .is_some_and(|command| expected_commands.get(progress.commands_done) == Some(&command));
+                    .is_some_and(|command| expected_commands.get(progress.commands_done).is_some_and(|expected| {
+                        command == *expected || command.split_once("\n# __formal_ai_prerequisite_retry\n")
+                            .is_some_and(|(_, retry)| retry == expected)
+                    }));
             if !matches_write && !matches_run {
                 continue;
             }
             let output = message.content.plain_text();
             if message.is_error {
+                if matches_run { progress.repair_rung = progress.repair_rung.saturating_add(1); }
                 progress.failure = Some(StepFailure { reported: output, exit_code: None, from_run: matches_run });
                 continue;
             }
             if let Some(failure) =
                 StepFailure::from_result(output.clone(), capability == Some(Capability::Run))
             {
+                if matches_run { progress.repair_rung = progress.repair_rung.saturating_add(1); }
                 progress.failure = Some(failure);
                 continue;
             }

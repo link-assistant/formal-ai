@@ -27,7 +27,10 @@ pub(super) fn requested_in(objective: &str) -> bool {
 /// Add the workflow to `recipe` as a supporting file, once.
 #[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn attach(recipe: &mut ExecutionRecipe) {
-    let path = workflow_path();
+    let name: String = std::path::Path::new(&recipe.path)
+        .file_stem().and_then(|value| value.to_str()).unwrap_or("run")
+        .chars().map(|value| if value.is_ascii_alphanumeric() || value == '-' || value == '_' { value } else { '-' }).collect();
+    let path = super::work_item_steps::fill("workflow_path_named", &[("{name}", &name)]);
     if recipe.supporting_files.iter().any(|file| file.path == path) {
         return;
     }

@@ -11,7 +11,7 @@ work_item_steps
   read_failed_report "The work item at {target} could not be read, so nothing was planned for it and no plan record was written. Reads tried this session, each with its result:\n{attempts}"
   commit_command "git add -A && git commit -q -m {subject} -m {body} && git push -q origin {branch} && git rev-parse HEAD"
   commit_command_without_body "git add -A && git commit -q -m {subject} && git push -q origin {branch} && git rev-parse HEAD"
-  recipe_commit_command "git add -- {files} && git commit --only -q -m {subject} -m {body} -- {files} && git push -q origin {branch} && git rev-parse HEAD"
+  recipe_commit_command "git add -- {files} && (if git diff --cached --quiet -- {files}; then echo __formal_ai_commit_unchanged; else git commit --only -q -m {subject} -m {body} -- {files}; fi) && git push -q origin {branch} && git rev-parse HEAD"
   subject_added "feat: add {path}"
   subject_updated "fix: update {path}"
   subject_many "chore: update {count} files ({paths})"
@@ -21,3 +21,10 @@ work_item_steps
   workflow_template "# Runs {path} on every push and pull request with the commands the\n# change was verified with.\nname: Run {path}\n\non:\n  push:\n  pull_request:\n\npermissions:\n  contents: read\n\njobs:\n  run:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262\n"
   workflow_command_step "      - run: |\n          {command}\n"
   stuck_step_report "This session already completed the step below, and repeating it would not change anything, so the step and its last result are reported instead.\nStep: {step}\nLast result:\n{result}"
+
+  commit_nothing_marker "__formal_ai_commit_unchanged"
+  workflow_path_named ".github/workflows/{name}.yml"
+  pr_comments_command "gh pr view {target} --comments --json comments,reviews"
+  pr_edit_command "gh pr edit {target} --body {body}"
+  pr_ready_command 'test -z "$(git status --porcelain)" && pr_draft=$(gh pr view {target} --json isDraft --jq .isDraft) && if test "$pr_draft" = true; then gh pr ready {target}; fi'
+  pr_body_template "Verified artifact: {path}\n\nVerification commands:\n{commands}\n\nResolves {reference}"

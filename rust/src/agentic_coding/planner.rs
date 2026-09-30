@@ -374,6 +374,9 @@ fn plan_chat_step_routes(
     // that followed. The general planner already read the objective this way
     // (issue #904); every other route now reads it the same way, so one
     // boundary serves the whole router rather than one recipe.
+    if let Some(plan) = super::restart_feedback::plan_restart(&effective, messages, tool_names) {
+        return Some(plan);
+    }
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
     // A bare continuation cue with nothing to resume is still the cue here,
