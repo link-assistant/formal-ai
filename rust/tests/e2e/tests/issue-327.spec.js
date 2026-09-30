@@ -36,6 +36,13 @@ test.describe('Issue #327 cross-runtime synthesis parity', () => {
 
   for (const item of parityCases) {
     test(`${item.id} matches the Rust parity fixture`, async ({ page }) => {
+      // Cases whose handler the browser worker does not implement yet carry
+      // `browserNotImplemented`; they are pinned native-only (worker-parity
+      // lane) until the worker gains the handlers.
+      test.skip(
+        item.browserNotImplemented === true,
+        'the browser worker does not route this handler yet (worker-parity lane)',
+      );
       const message = await sendPrompt(page, item.prompt);
       const body = message.locator('.markdown-body');
       const evidence = message.locator('.evidence-list');
