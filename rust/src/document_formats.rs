@@ -148,9 +148,8 @@ pub fn document_profile_is_recognized(format: &str, text: &str) -> bool {
 
 /// Whether package bytes are recognized by the format's package layer.
 ///
-/// meta-language 0.45 exposes an OPC ZIP package profile for DOCX. Other
-/// document formats currently have no separate package wrapper in the upstream
-/// API, so they return `false`.
+/// DOCX uses the upstream OPC ZIP package profile. PDF uses the upstream
+/// uncompressed text profile, whose rendered text is the actual PDF container.
 #[must_use]
 pub fn document_package_is_recognized(format: &str, bytes: &[u8]) -> bool {
     #[cfg(not(feature = "meta-language"))]
@@ -162,6 +161,7 @@ pub fn document_package_is_recognized(format: &str, bytes: &[u8]) -> bool {
     {
         match canonical_document_format(format) {
             Some("DOCX") => docx_package_is_recognized(bytes),
+            Some("PDF") => std::str::from_utf8(bytes).is_ok_and(pdf_profile_is_recognized),
             _ => false,
         }
     }
@@ -204,9 +204,15 @@ fn package_bytes_for_target(
     target_format: &str,
     source_text: &str,
 ) -> Option<Vec<u8>> {
-    if target_format != "DOCX" {
+    if !matches!(target_format, "DOCX" | "PDF") {
         return None;
     }
     let document = parse_markup_document(source_format, source_text)?;
-    (!document.blocks.is_empty()).then(|| render_docx_package(&document))
+    if document.blocks.is_empty() {
+        return None;
+    }
+    Some(match target_format {
+        "PDF" => meta_language::render_pdf_document(&document).into_bytes(),
+        _ => render_docx_package(&document),
+    })
 }

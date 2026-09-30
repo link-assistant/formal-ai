@@ -58,7 +58,7 @@ runs:
 
     - name: Look up a previous green result for these inputs
       id: cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: .green-ledger/${{ inputs.check }}.txt
         key: green-ledger-${{ inputs.check }}-${{ runner.os }}-${{ steps.key.outputs.digest }}

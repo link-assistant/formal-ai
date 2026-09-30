@@ -142,10 +142,19 @@ fn general_change_step(
             if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
                 return step;
             }
-        } else if let Some(step) = plan_work_item_read(tool_names, &plan.target, &progress)
+        } else if let Some(step) = plan_work_item_read(messages, tool_names, &plan.target, &progress)
         {
             return step;
         }
+    }
+    // Never spend the only write this mode produces on a plan record when the
+    // goal could not be read (issue #1155): the record would claim a session
+    // engaged with an issue it never saw one line of. The reads tried, each
+    // with its result, are the answer instead.
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && let Some(report) = work_item_read_failure_report(plan, &progress)
+    {
+        return AgenticPlan::Final(report);
     }
     if let Some(tool) = tool_for(tool_names, Capability::Write) {
         let plan_attempted = progress.attempted_write_for(PLAN_PATH);
@@ -250,6 +259,7 @@ fn plan_work_item_execution(
 /// A protocol-hosted fetch tool runs server-side, so the fetch itself is the
 /// read and `gh` is never planned ahead of it (issue #904).
 fn plan_work_item_read(
+    messages: &[ChatMessage],
     tool_names: &[&str],
     target: &str,
     progress: &Progress,
@@ -265,10 +275,52 @@ fn plan_work_item_read(
     {
         return Some(plan_one(run, json!({ "command": issue_view_command(target) }).to_string()));
     }
+    // A read that failed — or one a client echoed without its status, which
+    // the sentinel now exposes (issue #1155) — must not end the retrieval
+    // while another route to the same text is untried. The fallbacks walk in
+    // the issue's order: the client's fetch tool on the issue URL, the
+    // credential-free REST read (`curl` needs no `gh` and no token for a
+    // public repository — exactly the case an unauthenticated `gh` used to
+    // end a session for), the authenticated REST read, and last the prepared
+    // pull request's own page, whose title and body restate the issue.
     if !progress.attempted_fetch_of(target) && let Some(tool) = fetch {
         return Some(plan_one(tool, work_item_fetch_arguments(target)));
     }
+    if let Some(run) = shell_command_tool(tool_names) {
+        for fallback in [issue_rest_read_command(target), issue_api_read_command(target)]
+            .into_iter()
+            .flatten()
+        {
+            if !progress.has_run(&fallback) {
+                return Some(plan_one(run, json!({ "command": fallback }).to_string()));
+            }
+        }
+    }
+    if let Some(prepared_pull) = prepared_pull_reference(messages)
+        && prepared_pull != target
+        && !progress.attempted_fetch_of(&prepared_pull)
+        && let Some(tool) = fetch
+    {
+        return Some(plan_one(tool, work_item_fetch_arguments(&prepared_pull)));
+    }
     None
+}
+
+/// The pull-request URL the prompt names beside the work item ("Your prepared
+/// Pull Request: …"), when it names one. It is the last resort of the read
+/// fallbacks (issue #1155): the PR's title and body restate the issue it
+/// resolves.
+fn prepared_pull_reference(messages: &[ChatMessage]) -> Option<String> {
+    let prompt = messages
+        .iter()
+        .rev()
+        .find(|message| message.role.eq_ignore_ascii_case("user"))?
+        .content
+        .plain_text();
+    prompt.split_whitespace().find_map(|token| {
+        let reference = super::general_planner::repository_work_reference(token)?;
+        (reference.rsplit('/').nth(1) == Some("pull")).then_some(reference)
+    })
 }
 
 fn work_item_fetch_arguments(target: &str) -> String {
@@ -294,6 +346,77 @@ pub(super) fn issue_view_command(target: &str) -> String {
         "issue_view_command",
         &[("{kind}", kind), ("{target}", &quoted_target)],
     )
+}
+
+/// The REST segments of a GitHub work-item URL — `{owner}`, `{repo}`, the REST
+/// spelling of the kind (`issues` / `pulls`), and the number. `None` for a
+/// URL that is not one, in which case the REST fallbacks are simply not
+/// planned for it.
+fn rest_segments(target: &str) -> Option<(String, String, &'static str, String)> {
+    let mut segments = target.trim_end_matches('/').rsplit('/');
+    let number = segments.next()?.to_owned();
+    let kind = match segments.next()? {
+        "issue" | "issues" => "issues",
+        "pull" | "pulls" => "pulls",
+        _ => return None,
+    };
+    let repo = segments.next()?.to_owned();
+    let owner = segments.next()?.to_owned();
+    (!number.is_empty() && number.chars().all(|character| character.is_ascii_digit()))
+        .then_some((owner, repo, kind, number))
+}
+
+/// The work-item read that needs no `gh` and no credential: GitHub's REST API
+/// returns the raw body to `curl` for a public repository (issue #1155). It
+/// is the route that serves the very case an unauthenticated `gh` used to end
+/// a session for.
+fn issue_rest_read_command(target: &str) -> Option<String> {
+    let (owner, repo, kind, number) = rest_segments(target)?;
+    Some(super::work_item_steps::fill(
+        "issue_rest_read_command",
+        &[
+            ("{owner}", &owner),
+            ("{repo}", &repo),
+            ("{kind}", kind),
+            ("{number}", &number),
+        ],
+    ))
+}
+
+/// The authenticated REST read, for a checkout whose `gh` answers `api` but
+/// could not render the view (issue #1155). Same two-call shape as the view
+/// read, so its output carries the title-and-body form the reader validates.
+fn issue_api_read_command(target: &str) -> Option<String> {
+    let (owner, repo, kind, number) = rest_segments(target)?;
+    Some(super::work_item_steps::fill(
+        "issue_api_read_command",
+        &[
+            ("{owner}", &owner),
+            ("{repo}", &repo),
+            ("{kind}", kind),
+            ("{number}", &number),
+        ],
+    ))
+}
+
+/// The honest close of a work item no read could deliver (issue #1155).
+///
+/// `None` while any read route is still untried — [`plan_work_item_read`]
+/// owns that order — so the report exists only once the retrieval is
+/// genuinely exhausted, and then lists every read attempted for the target
+/// with the result each one answered with.
+fn work_item_read_failure_report(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
+    progress.failed_work_item_read_of(&plan.target)?;
+    let attempts = progress.work_item_read_attempts(&plan.target);
+    (!attempts.is_empty()).then(|| {
+        super::work_item_steps::fill(
+            "read_failed_report",
+            &[
+                ("{target}", &plan.target),
+                ("{attempts}", &attempts.join("\n")),
+            ],
+        )
+    })
 }
 
 /// The text of the issue this work item names, once the client has fetched it.

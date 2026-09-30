@@ -18,7 +18,10 @@ pub fn runtime_steps(language: &str) -> Option<String> {
         .children
         .iter()
         .find(|node| node.name == "language" && node.id == language)?;
-    Some(contract.find_child_value("ci_setup").to_owned())
+    Some(crate::version_resolution::fill_workflow_versions(
+        contract.find_child_value("ci_setup"),
+        &crate::version_resolution::VersionSet::for_generation(),
+    ))
 }
 
 /// Read an explicitly quoted output operand in its own clause.
@@ -36,7 +39,9 @@ fn explicit_stdout(prompt: &str) -> Option<String> {
             .meaning("print_stdout")
             .is_some_and(|meaning| meaning.evidenced_in(&clause.to_lowercase()))
         {
-            outputs.push(literal.text);
+            if !outputs.contains(&literal.text) {
+                outputs.push(literal.text);
+            }
         }
     }
     (!outputs.is_empty()).then(|| outputs.join("\n"))
@@ -188,4 +193,23 @@ fn string_literal(value: &str, extra_escapes: &str, unicode_escape: &str) -> Str
     }
     out.push('"');
     out
+}
+
+#[cfg(test)]
+mod stdout_requirement_tests {
+    use super::explicit_stdout;
+    #[test]
+    fn repeated_mentions_are_one_output_obligation() {
+        assert_eq!(
+            explicit_stdout("Print `Hello, World!`. The program must print `Hello, World!`."),
+            Some("Hello, World!".to_owned())
+        );
+    }
+    #[test]
+    fn distinct_output_literals_preserve_request_order() {
+        assert_eq!(
+            explicit_stdout("Print `first`. Print `second`."),
+            Some("first\nsecond".to_owned())
+        );
+    }
 }

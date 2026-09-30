@@ -9,11 +9,13 @@
 //! any CST/AST for the supported languages.
 //!
 //! meta-language ships real tree-sitter grammars for every language we target
-//! (JavaScript, Python, Rust, Java, C, C++, C#, TypeScript, Go, Ruby), so the
-//! same `LinkNetwork::parse` path validates all of them. Which engine validates
-//! each language is recorded as data in `data/seed/program-cst-grammars.lino`;
-//! this module is only the native bridge from a seed language slug to the
-//! corresponding engine.
+//! (C, C++, C#, Go, Java, JavaScript, Kotlin, PHP, Python, R, Ruby, Rust,
+//! Scala, Swift, TypeScript), so the same `LinkNetwork::parse` path validates
+//! all of them. Which engine validates each language is recorded as data in
+//! `data/seed/program-cst-grammars.lino`; this module is only the native
+//! bridge from a seed language slug to the corresponding engine, plus the
+//! compose→render→parse bridge ([`compose_and_validate`], issue #1167) that
+//! lets composition happen in the meta language and render out.
 
 use std::fmt::Write as _;
 
@@ -143,18 +145,174 @@ pub fn validated_program_cst(language_slug: &str, source: &str) -> Option<Progra
     cst.is_valid().then_some(cst)
 }
 
+/// Parse `source` in `language_slug` and serialize the resulting links
+/// network into the network dialect of lino — the composition-side half of
+/// the render leg (issue #1167, R3).
+///
+/// `to_lino` is the dependency's documented lossless serialization
+/// (`from_lino(to_lino(n))` is isomorphic for any network, spans included),
+/// so this is the wire a composition travels on its way to
+/// [`compose_and_validate`]. Returns `None` when the language has no grammar
+/// entry or the engine is disabled.
+#[must_use]
+pub fn network_lino(language_slug: &str, source: &str) -> Option<String> {
+    let grammar = grammar_metadata(language_slug)?;
+    match grammar.engine.as_str() {
+        #[cfg(feature = "meta-language")]
+        META_LANGUAGE_ENGINE => Some(network_for(&grammar, source).to_lino()),
+        #[cfg(not(feature = "meta-language"))]
+        _ => {
+            let _ = source;
+            None
+        }
+        #[cfg(feature = "meta-language")]
+        _ => None,
+    }
+}
+
+/// The named reason a compose→render→parse round trip refused (issue #1167,
+/// R1/R6): a gap is stated, never a silent skip, and CST inequality is a
+/// refusal rather than a shrug.
+#[allow(dead_code)] // which variants construct depends on the `meta-language` feature
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ComposeGap {
+    /// The render leg refused; the reason names
+    /// [`crate::meta_translate::CstRenderGap`]'s finding.
+    Render { reason: String },
+    /// The rendered source did not parse into a valid CST for the language.
+    SyntaxInvalid { language_slug: String },
+    /// The rendered source parses, but its own network serialization differs
+    /// from the composed one — the round trip lost or invented structure, so
+    /// the composition is not accepted (R6).
+    NotCstEqual { language_slug: String },
+    /// The optional parsing engine is compiled out, so nothing can compose.
+    EngineDisabled,
+}
+
+impl ComposeGap {
+    /// The stable, human-readable name of the gap for error paths.
+    #[must_use]
+    pub fn describe(&self) -> String {
+        match self {
+            Self::Render { reason } => format!("the render leg refused: {reason}"),
+            Self::SyntaxInvalid { language_slug } => {
+                format!("the rendered source is not a valid `{language_slug}` parse")
+            }
+            Self::NotCstEqual { language_slug } => format!(
+                "the rendered `{language_slug}` source parses, but its network serialization \
+                 differs from the composed one, so the round trip is not CST-equal"
+            ),
+            Self::EngineDisabled => {
+                "the meta-language engine (feature `meta-language`) is disabled, so \
+                 compose_and_validate cannot run"
+                    .to_owned()
+            }
+        }
+    }
+}
+
+/// Render a meta-language network to `language_slug` source and validate it
+/// through the CST engine — the bridge that makes the render legs reachable
+/// from the coding path (issue #1167, R3).
+///
+/// The input is the network serialization dialect of lino (the output of
+/// [`network_lino`]); it renders through
+/// [`crate::meta_translate::render_cst_source`], parses back through
+/// [`parse_program_cst`], and — before success is returned — requires the
+/// rendered source's own network serialization to equal the composed one,
+/// which is the CST-equality assertion R6 puts in front of every
+/// composition. Returns `None` when the language has no grammar entry, no
+/// render leg, or the round trip is not CST-equal; the named gap is
+/// available from [`try_compose_and_validate`].
+#[must_use]
+pub fn compose_and_validate(network_text: &str, language_slug: &str) -> Option<ProgramCst> {
+    try_compose_and_validate(network_text, language_slug).ok()
+}
+
+/// The named-gap shape of [`compose_and_validate`].
+#[must_use]
+pub fn try_compose_and_validate(
+    network_text: &str,
+    language_slug: &str,
+) -> Result<ProgramCst, ComposeGap> {
+    try_compose_and_validate_impl(network_text, language_slug)
+}
+
+#[cfg(feature = "meta-language")]
+fn try_compose_and_validate_impl(
+    network_text: &str,
+    language_slug: &str,
+) -> Result<ProgramCst, ComposeGap> {
+    let rendered =
+        crate::meta_translate::try_render_cst_source(network_text, language_slug).map_err(
+            |gap| ComposeGap::Render {
+                reason: gap.describe(),
+            },
+        )?;
+    let cst = parse_program_cst(language_slug, &rendered).ok_or_else(|| {
+        ComposeGap::SyntaxInvalid {
+            language_slug: language_slug.to_owned(),
+        }
+    })?;
+    if !cst.is_valid() {
+        return Err(ComposeGap::SyntaxInvalid {
+            language_slug: language_slug.to_owned(),
+        });
+    }
+    // R6: the parsed network equals the composed one. The rendered source is
+    // serialized back and compared byte-for-byte with the input wire, so any
+    // structure the render lost or invented refuses the composition by name.
+    let round_trip = network_lino(language_slug, &rendered).ok_or_else(|| {
+        ComposeGap::SyntaxInvalid {
+            language_slug: language_slug.to_owned(),
+        }
+    })?;
+    if round_trip != network_text {
+        return Err(ComposeGap::NotCstEqual {
+            language_slug: language_slug.to_owned(),
+        });
+    }
+    Ok(cst)
+}
+
+/// The engine-disabled shape: without the optional parsing engine the bridge
+/// cannot run, and the honest answer is the named gap, not a guess.
+#[cfg(not(feature = "meta-language"))]
+fn try_compose_and_validate_impl(
+    _network_text: &str,
+    _language_slug: &str,
+) -> Result<ProgramCst, ComposeGap> {
+    Err(ComposeGap::EngineDisabled)
+}
+
+/// The meta-language label a grammar's language parses under: the recorded
+/// label when present, the slug itself otherwise.
+#[cfg(feature = "meta-language")]
+fn grammar_label(grammar: &CstGrammar) -> &str {
+    if grammar.meta_language_label.is_empty() {
+        grammar.language_slug.as_str()
+    } else {
+        grammar.meta_language_label.as_str()
+    }
+}
+
+/// Parse `source` in the grammar's language into the links network — the one
+/// parse every path here starts from, whether it validates
+/// ([`parse_with_meta_language`]) or serializes ([`network_lino`]).
+#[cfg(feature = "meta-language")]
+fn network_for(grammar: &CstGrammar, source: &str) -> LinkNetwork {
+    let label = grammar_label(grammar);
+    LinkNetwork::parse(source, label, ParseConfiguration::default())
+}
+
 /// Validate `source` through the meta-language links network and capture the
 /// resulting CST evidence. A real grammar parse populates `LinkType::Syntax`
 /// links; the lossless text fallback does not, so `syntax_link_count` doubles as
 /// a guard that meta-language really understood the language.
 #[cfg(feature = "meta-language")]
 fn parse_with_meta_language(grammar: &CstGrammar, source: &str) -> ProgramCst {
-    let label = if grammar.meta_language_label.is_empty() {
-        grammar.language_slug.as_str()
-    } else {
-        grammar.meta_language_label.as_str()
-    };
-    let network = LinkNetwork::parse(source, label, ParseConfiguration::default());
+    let label = grammar_label(grammar);
+    let network = network_for(grammar, source);
     let verification = network.verify_full_match(None);
     let syntax_link_count = network
         .projected_links(NetworkProjection::ConcreteSyntax)

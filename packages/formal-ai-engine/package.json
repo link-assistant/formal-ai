@@ -1,0 +1,11 @@
+{
+  "name": "@link-assistant/formal-ai-engine",
+  "version": "0.345.0",
+  "description": "Browser WASM worker and memory bindings for the Formal AI symbolic engine",
+  "type": "module",
+  "license": "Unlicense",
+  "repository": "github:link-assistant/formal-ai",
+  "exports": { ".": { "types": "./src/index.d.ts", "import": "./src/index.js" } },
+  "files": ["src", "assets", "README.md", "LICENSE"],
+  "publishConfig": { "access": "public", "provenance": true }
+}

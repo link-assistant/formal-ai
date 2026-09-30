@@ -598,19 +598,8 @@ fn workspace_path_matches(expected: &str, observed: &str) -> bool {
 
 fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {
     matching_result(messages, |name, arguments| {
-        if tool_capability(name) != Some(Capability::Run) {
-            return false;
-        }
-        serde_json::from_str::<Value>(arguments)
-            .ok()
-            .and_then(|value| {
-                value
-                    .get("command")
-                    .and_then(Value::as_str)
-                    .map(str::to_owned)
-            })
-            .as_deref()
-            == Some(command)
+        tool_capability(name) == Some(Capability::Run)
+            && super::tool_result::command_argument(arguments).as_deref() == Some(command)
     })
 }
 

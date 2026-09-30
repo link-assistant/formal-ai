@@ -1,0 +1,38 @@
+# Declarative tool-router confinement rules for the desktop surface.
+#
+# Issue #953 (architecture review 8.4): authorization and path confinement
+# are security-relevant decisions the Rust core owns. This file is that
+# single source of truth, shaped like the seed files the core already
+# parses, so the Rust endpoint (POST /v1/tools/authorize) reads the same
+# rules the desktop's transitional JavaScript mirror reads here. The
+# JavaScript mirror exists only until the endpoint answers on every
+# supported build; when it does, its answers are authoritative and this
+# file remains the spec both sides are pinned to by tests.
+#
+# Rules are grouped per confinement surface. Every deny line is a reason
+# string the refusing side returns verbatim, so denials stay explainable
+# across languages.
+tool_router_confinement
+  rule read_root
+    field root "the allowed read root the desktop was started with"
+    deny empty_path "a path is required"
+    deny escapes_root "path is outside the allowed root"
+    deny symlink_escape "a symlink segment resolves outside the allowed root"
+  rule computer_use_workspace
+    field root "the isolated computer-use root under user data"
+    field plan_id "the plan-scoped workspace directory name"
+    deny plan_id_unsafe "computer-use plan_id is not safe for workspace isolation"
+    deny plan_id_too_long "computer-use plan_id is not safe for workspace isolation"
+    deny path_not_relative "computer-use paths must be non-empty and relative"
+    deny escapes_workspace "path is outside the isolated computer-use workspace"
+    deny symlink_escape "a symlink segment resolves outside the isolated computer-use workspace"
+  rule archive_entry
+    field destination "the extraction directory inside the workspace"
+    field entry "the archive member path"
+    deny entry_not_relative "archive entry path must be non-empty and relative"
+    deny entry_escapes "archive entry is outside the requested extraction directory"
+  rule windows_hardening
+    deny unc_prefix "UNC paths are not addressable inside the confinement root"
+    deny reserved_segment "path segments may not end in dots or spaces"
+  rule dot_segments
+    deny parent_segment "literal .. segments must be resolved before confinement"

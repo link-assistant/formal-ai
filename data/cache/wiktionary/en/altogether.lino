@@ -1,0 +1,30 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Without exception; wholly; completely."
+          synonyms (completely wholly)
+        entry
+          definition "On the whole; with everything considered."
+          example "Altogether, I'm sorry it happened."
+          synonyms ("all in all")
+      partOfSpeech adverb
+      synonyms ("all in all" completely wholly)
+  phonetic "/ɔː.tuːˈɡɛð.ə(ɹ)/"
+  phonetics
+    entry
+      audio ""
+      text "/ɔː.tuːˈɡɛð.ə(ɹ)/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/altogether-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1250038"
+      text "/ɔl.tuˈɡɛð.ɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/altogether")
+  word altogether

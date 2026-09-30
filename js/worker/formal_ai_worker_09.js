@@ -477,11 +477,80 @@ function extractBacktickCommand(prompt) {
   return command || null;
 }
 
+// English function words that never appear as bare tokens in the argument
+// positions of the seed's shell commands but do appear in natural language
+// that merely *starts* with one of those words: "Find the bug: ...",
+// "Make a 3-day itinerary for a first visit to Rome." A leading seed token
+// followed by any of these is a sentence about work, not a command line.
+// Mirrors NATURAL_LANGUAGE_MARKER_WORDS in src/solver_terminal.rs (issue
+// #1175).
+const NATURAL_LANGUAGE_MARKER_WORDS = new Set([
+  "the", "a", "an", "me", "my", "you", "your", "for", "with", "to", "of", "in", "on", "at",
+  "and", "or", "that", "this", "it", "is", "are", "please", "help",
+]);
+
+// Replace every quoted span in `rest` with spaces, so the natural-language
+// checks that read the result see only the words the shell would also treat
+// as words: `git commit -m "fix the bug"` keeps working because the quoted
+// prose is blanked. A quote opens a span only at a token boundary (start or
+// after whitespace) and closes at the next identical quote, so the apostrophe
+// inside "don't" never opens a span.
+function maskQuotedSpans(rest) {
+  let out = "";
+  for (let index = 0; index < rest.length; index += 1) {
+    const character = rest[index];
+    if (
+      (character === "'" || character === '"' || character === "`") &&
+      (index === 0 || /\s/.test(rest[index - 1]))
+    ) {
+      // Opening quote: blank through the matching close quote (inclusive);
+      // an unterminated quote blanks to the end.
+      out += " ";
+      index += 1;
+      while (index < rest.length && rest[index] !== character) {
+        out += " ";
+        index += 1;
+      }
+      if (index < rest.length) out += " ";
+    } else {
+      out += character;
+    }
+  }
+  return out;
+}
+
+// Whether the words after a leading shell token parse as that command's
+// arguments rather than as a natural-language sentence about the work. The
+// leading-token path of detectTerminalCommand used to fire whenever a
+// prompt's first word was a seed shell token, and many of those tokens are
+// ordinary English words ("find", "make", "file", "which", "head", ...), so
+// issue #1175 reported "Find the bug: def average(xs): ..." and "Make a
+// 3-day itinerary for a first visit to Rome." answered as terminal commands.
+// The remainder qualifies as arguments only when it does not end with a
+// question mark, no bare token ends with sentence punctuation (except an
+// all-dots token, a path: `find . -name '*.log'`), it contains no ": "
+// outside quotes, and no bare token is a NATURAL_LANGUAGE_MARKER_WORDS word.
+function parsesAsCommandArguments(rest) {
+  const trimmed = maskQuotedSpans(rest).trim();
+  if (trimmed.endsWith("?") || trimmed.endsWith("？")) return false;
+  if (trimmed.includes(": ")) return false;
+  for (const token of trimmed.split(/\s+/)) {
+    if (NATURAL_LANGUAGE_MARKER_WORDS.has(token)) return false;
+    const allDots = token.length > 0 && /^\.+$/.test(token);
+    if (/[.?!,;]$/.test(token) && !allDots) return false;
+  }
+  return true;
+}
+
 function leadingShellCommand(prompt) {
   const trimmed = prompt.trim().replace(/^`+|`+$/g, "").trim();
   const first = trimmed.split(/\s+/)[0] || "";
   const normalized = (first.match(/^[A-Za-z0-9_-]+/) || [""])[0].toLowerCase();
-  return terminalCommandVocabulary().shellTokens.has(normalized) ? trimmed : null;
+  if (!terminalCommandVocabulary().shellTokens.has(normalized)) return null;
+  // A seed token as the first word is necessary but not sufficient: many
+  // shell tokens double as ordinary English words, so the rest of the prompt
+  // must parse as command arguments (issue #1175).
+  return parsesAsCommandArguments(trimmed.slice(first.length)) ? trimmed : null;
 }
 
 function detectTerminalCommand(prompt) {

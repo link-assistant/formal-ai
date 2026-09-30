@@ -12,7 +12,8 @@
 //! planner walks write → verify → final so the loop is reachable through the agentic
 //! interface. The exhaustive lossless proof over *all* owned files is the library
 //! invariant, verified by an ignored-by-default test (it parses every file, which is
-//! deliberately slow).
+//! deliberately slow); since issue #1167 a deterministic twenty-file sample of the
+//! same invariant runs unconditionally in CI.
 
 use formal_ai::agentic_coding::{
     AgenticPlan, DRIVER_TOOLS, PlannedToolCall, plan_chat_step, run_agentic_task, source_links,
@@ -273,7 +274,47 @@ fn driver_drives_the_source_links_projection_to_a_write() {
 }
 
 #[test]
-#[ignore = "exhaustive: parses every owned source file through the CST/AST engine (minutes in debug); run with `cargo test -- --ignored`"]
+fn whole_repo_round_trip_sampled() {
+    // Issue #1167 R5: the CI-sized half of the exhaustive proof. A
+    // deterministic, evenly spread sample of at most twenty owned source
+    // files must round-trip byte-for-byte through the meta-language links
+    // network on every run; the exhaustive variant below stays `#[ignore]`d
+    // for `--ignored` runs and is documented as such.
+    let files = owned_source_files();
+    assert!(files.len() > 20, "the repository is bigger than the sample");
+    let sample = sample_spread(files, 20);
+    assert_eq!(sample.len(), 20, "the sample holds exactly twenty files");
+    let graph = SourceLinks::compile(&sample);
+    assert_eq!(graph.module_count(), 20);
+    let unfaithful: Vec<&str> = graph
+        .unfaithful_modules()
+        .iter()
+        .map(|module| module.path.as_str())
+        .collect();
+    assert!(
+        graph.is_fully_faithful(),
+        "sampled modules did not round-trip losslessly: {unfaithful:?}"
+    );
+    assert_eq!(graph.coverage_permille(), 1000);
+}
+
+/// A deterministic, evenly spread pick of `count` files from the path-sorted
+/// owned list: index `i * len / count`, so the sample covers the whole tree
+/// — first to last — and never depends on run order.
+fn sample_spread(
+    files: &[(&'static str, &'static str)],
+    count: usize,
+) -> Vec<(&'static str, &'static str)> {
+    if files.len() <= count {
+        return files.to_vec();
+    }
+    (0..count)
+        .map(|index| files[index * files.len() / count])
+        .collect()
+}
+
+#[test]
+#[ignore = "exhaustive: parses every owned source file through the CST/AST engine (minutes in debug); the sampled variant `whole_repo_round_trip_sampled` runs this invariant on twenty spread files in every CI run, this one remains for `cargo test -- --ignored`"]
 fn exhaustive_whole_repo_round_trip_is_lossless() {
     // The full "and back" invariant issue #558 requires: EVERY owned source file
     // round-trips byte-for-byte through the meta-language links network.

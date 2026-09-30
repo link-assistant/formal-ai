@@ -29,6 +29,8 @@ seed_registry
     web true
   seed agentic-tool-capabilities
     bundle true
+  seed agreement-rules
+    bundle true
   seed approved-lessons
     bundle true
   seed brainstorm-seeds
@@ -41,6 +43,16 @@ seed_registry
   seed client-completion-contracts
     bundle true
   seed client-integrations
+    bundle true
+  seed cloud-sync-policy
+    bundle true
+  seed code-example-parts
+    bundle true
+  seed code-node-decomposition
+    bundle true
+  seed code-review-rules
+    bundle true
+  seed code-task-cues
     bundle true
   seed coding-guidance
     bundle true
@@ -62,9 +74,15 @@ seed_registry
   seed coreference
     bundle true
     web true
+  seed creative-composition-rules
+    bundle true
   seed demo-dialogs
     bundle true
     web true
+  seed derivation-schema
+    bundle true
+  seed diagnostic-code-shapes
+    bundle true
   seed draft-strategies
     bundle true
   seed entity-names
@@ -73,12 +91,16 @@ seed_registry
   seed environments
     bundle true
     web true
+  seed fact-check-sources
+    bundle true
   seed facts
     bundle true
     web true
   seed formal-language-projections
     bundle true
     web true
+  seed formal-targets
+    bundle true
   seed formalization-relations
     bundle true
     web true
@@ -99,6 +121,8 @@ seed_registry
   seed hello-world-programs
     bundle true
     web true
+  seed history-formalization
+    bundle true
   seed identity
     bundle true
     web true
@@ -125,6 +149,10 @@ seed_registry
     lexicon meaning
     web true
   seed learning-sources
+    bundle true
+  seed legality-patterns
+    bundle true
+  seed manual-pages
     bundle true
   seed market-price-references
     bundle true
@@ -153,6 +181,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-code-structure-explanations
+    bundle true
+  seed meanings-code-task-templates
+    bundle true
   seed meanings-coding-catalog
     bundle true
     lexicon meaning
@@ -185,6 +217,10 @@ seed_registry
     lexicon meaning
     web true
   seed meanings-conversation
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-creative-tasks
     bundle true
     lexicon meaning
     web true
@@ -314,6 +350,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-response-intents
+    bundle true
+    lexicon meaning
   seed meanings-routing-vocabulary
     bundle true
     lexicon meaning
@@ -343,7 +382,15 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-statistics
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-substitution-compiler
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-summarization
     bundle true
     lexicon meaning
     web true
@@ -351,6 +398,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-text-transform
+    bundle true
+    lexicon meaning
   seed meanings-tool-access
     bundle true
     lexicon meaning
@@ -425,7 +475,15 @@ seed_registry
   seed multilingual-responses-client-config
     bundle true
     lexicon response
+  seed multilingual-responses-code-tasks
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-concept-lookup
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-creative-tasks
     bundle true
     lexicon response
     web true
@@ -440,11 +498,19 @@ seed_registry
   seed multilingual-responses-external-benchmark
     bundle true
     lexicon response
+  seed multilingual-responses-formalization
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-issue-710
     bundle true
     lexicon response
     web true
   seed multilingual-responses-language-protocol
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-legality
     bundle true
     lexicon response
     web true
@@ -472,6 +538,18 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-product-search
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-quantities
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-repair
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-substitution-compiler
     bundle true
     lexicon response
@@ -490,6 +568,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-text-transform
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-thinking
     bundle true
     lexicon response
@@ -499,6 +581,10 @@ seed_registry
   seed multilingual-responses-translate
     bundle true
     lexicon response
+  seed multilingual-responses-triz
+    bundle true
+    lexicon response
+    web true
   seed numeric-list-operations
     bundle true
     web true
@@ -507,10 +593,16 @@ seed_registry
   seed operation-vocabulary
     bundle true
     web true
+  seed page-formalization-rules
+    bundle true
   seed personas
     bundle true
     web true
   seed planner-precedence
+    bundle true
+  seed product-search-cues
+    bundle true
+  seed program-cache-policy
     bundle true
   seed program-cst-grammars
     bundle true
@@ -527,6 +619,8 @@ seed_registry
     bundle true
     web true
   seed question-necessity
+    bundle true
+  seed register-lexicon
     bundle true
   seed release-timelines
     bundle true
@@ -545,12 +639,26 @@ seed_registry
   seed shell-intents
     bundle true
     web true
+  seed si-unit-dimensions
+    bundle true
+  seed small-model-catalog
+    bundle true
+  seed software-project-phrases
+    bundle true
+    lexicon meaning
+    web true
+  seed source-trust-weights
+    bundle true
   seed sources-registry
     bundle true
     web true
+  seed statement-audit-exclusions
+    bundle true
   seed summary-topics
     bundle true
     web true
+  seed telemetry-consent
+    bundle true
   seed terminal-commands
     bundle true
     web true
@@ -565,6 +673,8 @@ seed_registry
     bundle true
   seed unknown-openers
     web true
+  seed writing-genre-styleguides
+    bundle true
   unregistered capability-routing
     owner "src/capability_routing.rs"
     reason "Wave T skeleton for issue 1138 plan 10 leaf 8: the decision table is read from disk by the routing module and its tests. Leaf 8 moves it into the bundle and regenerates the embedded registry."

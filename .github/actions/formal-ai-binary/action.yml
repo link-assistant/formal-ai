@@ -37,7 +37,7 @@ runs:
 
     - name: Restore the binary built from these sources
       id: cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: rust/target/release/formal-ai
         key: ${{ inputs.cache-key-prefix }}-${{ runner.os }}-${{ steps.key.outputs.digest }}

@@ -173,7 +173,36 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         return Some(AgenticPlan::Final(summary));
     }
     let plan = plan_chat_step_routes(messages, tool_names, received)?;
-    Some(stop_repeated_failure(plan, messages))
+    Some(stop_repeated_failure(stop_repeated_call(plan, messages), messages))
+}
+
+/// A tool call this turn already completed is not a plan again (issue #1154).
+///
+/// Independent of any argument parsing: whatever keys a client names its
+/// arguments by, a stateless planner that re-derives a call whose result is
+/// already in the transcript ignored that result. The Codex Rust run planned
+/// the identical `gh issue view` 78 times over 6.2M input tokens because the
+/// read's accounting could not see the `cmd` key; this stop would have ended
+/// the loop on the second attempt whatever the parser did. The repeat is
+/// answered by reporting the stuck step and its last result.
+fn stop_repeated_call(plan: AgenticPlan, messages: &[ChatMessage]) -> AgenticPlan {
+    let AgenticPlan::ToolCalls(calls) = &plan else {
+        return plan;
+    };
+    let progress = Progress::scan(messages);
+    let Some((repeated, attempt)) = calls
+        .iter()
+        .find_map(|call| progress.repeated_call(call).map(|attempt| (call, attempt)))
+    else {
+        return plan;
+    };
+    AgenticPlan::Final(super::work_item_steps::fill(
+        "stuck_step_report",
+        &[
+            ("{step}", &format!("{} {}", repeated.tool, repeated.arguments)),
+            ("{result}", attempt.detail.trim()),
+        ],
+    ))
 }
 
 /// A tool call that has already failed twice this turn with the same report
@@ -345,6 +374,9 @@ fn plan_chat_step_routes(
     // that followed. The general planner already read the objective this way
     // (issue #904); every other route now reads it the same way, so one
     // boundary serves the whole router rather than one recipe.
+    if let Some(plan) = super::restart_feedback::plan_restart(&effective, messages, tool_names) {
+        return Some(plan);
+    }
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
     // A bare continuation cue with nothing to resume is still the cue here,

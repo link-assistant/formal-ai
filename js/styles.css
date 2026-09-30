@@ -132,7 +132,7 @@
 .ui-skin-glass .desktop-shell-panel div,
 .ui-skin-glass .tool,
 .ui-skin-glass .fetch-iframe-container {
-  background: rgba(251, 252, 253, 0.78);
+  background: rgba(251, 252, 253, var(--fa-glass-opacity, 0.78));
   -webkit-backdrop-filter: blur(16px) saturate(1.18);
   backdrop-filter: blur(16px) saturate(1.18);
 }
@@ -243,7 +243,7 @@
 :root[data-theme="dark"] .ui-skin-glass .desktop-shell-panel div,
 :root[data-theme="dark"] .ui-skin-glass .tool,
 :root[data-theme="dark"] .ui-skin-glass .fetch-iframe-container {
-  background: rgba(29, 32, 31, 0.78);
+  background: rgba(29, 32, 31, var(--fa-glass-opacity, 0.78));
 }
 
 :root[data-theme="dark"] .ui-skin-glass .chat-panel {
@@ -305,7 +305,7 @@
   :root:not([data-theme="light"]) .ui-skin-glass .desktop-shell-panel div,
   :root:not([data-theme="light"]) .ui-skin-glass .tool,
   :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-container {
-    background: rgba(29, 32, 31, 0.78);
+    background: rgba(29, 32, 31, var(--fa-glass-opacity, 0.78));
   }
 
   :root:not([data-theme="light"]) .ui-skin-glass .chat-panel {
@@ -4677,3 +4677,113 @@ textarea:disabled {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
 }
+
+/* Issue #934: engine-unavailable is loud, not silent. The banner sits in the
+   topbar so it is visible without diagnostics mode, and doubles as an alert
+   for screen readers. */
+.engine-unavailable {
+  color: var(--fa-danger, #d33);
+  font-weight: 600;
+  padding: 0 6px;
+  white-space: nowrap;
+}
+.setting-row-diagnostic-js-fallback .setting-warning {
+  margin: 4px 0 0;
+}
+
+/* Issue #825: the shared autocomplete listbox for every own-input-box
+ * surface. Rendered in flow directly above the composer grid; tokens theme
+ * it for light/dark automatically. */
+.autocomplete-menu {
+  width: min(860px, 100%);
+  margin: 0 auto 8px;
+  padding: 4px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  background: var(--fa-surface-card);
+  box-shadow: 0 6px 18px rgba(20, 33, 41, 0.14);
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fa-text-body);
+  font: inherit;
+  font-size: 0.93rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.autocomplete-item.is-active,
+.autocomplete-item:hover {
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-strong);
+}
+
+.autocomplete-item-hint {
+  flex: none;
+  color: var(--fa-text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Issue #557: one input surface contains both actions, including touch layouts. */
+.composer-grid { position: relative; grid-template-columns: minmax(0, 1fr); }
+.composer-grid textarea { grid-area: 1 / 1; width: 100%; padding-inline: 58px; }
+.composer-grid .composer-action-button,
+.composer-grid .send-button { position: absolute; bottom: 3px; z-index: 1; border: 0; background: transparent; min-width: 44px; width: 44px; padding: 0; }
+.composer-grid .composer-action-button { inset-inline-start: 3px; }
+.composer-grid .send-button { inset-inline-end: 3px; }
+.composer-grid .send-label { display: none; }
+.ui-skin-material { --fa-focus-ring: #6750a4; }
+.ui-skin-material .message-body,
+.ui-skin-material .sidebar-section-body { border-radius: 16px; box-shadow: 0 2px 6px rgb(0 0 0 / 12%); }
+.ui-skin-material .composer-grid textarea { border-radius: 28px; border-color: var(--fa-control-border, #79747e); }
+.ui-skin-material .topbar { box-shadow: 0 2px 8px rgb(0 0 0 / 12%); }
+.ui-skin-material button:focus-visible { outline: 3px solid var(--fa-focus-ring); outline-offset: 2px; }
+@media (prefers-reduced-transparency: reduce) {
+  .ui-skin-glass { --fa-glass-opacity: 1 !important; }
+  .ui-skin-glass * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+@media (forced-colors: active) {
+  .composer-grid textarea { border: 1px solid CanvasText; }
+  .composer-grid button { background: Canvas; color: ButtonText; }
+}
+
+/* Issue #447: a short viewport scrolls the complete navigation column. */
+.context-panel {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+}
+.context-panel > .sidebar-section,
+.context-panel > .drawer-brand,
+.context-panel > .drawer-menu-section.sidebar-section.is-expanded {
+  flex: 0 0 auto;
+}
+.context-panel .sidebar-section-header { flex-shrink: 0; }
+.context-panel :focus-visible { scroll-margin-block: 12px; }
+
+/* Issue #667: four projections remain readable as panes collapse on mobile. */
+.debugger-view { min-height: 0; max-height: 50vh; overflow: auto; border-block-end: 1px solid var(--fa-border-subtle, #bbb); padding: 12px; }
+.debugger-view header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.debugger-panes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.debugger-panes section { min-width: 0; max-height: 36vh; overflow: auto; }
+.debugger-panes pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+.debugger-panes h2 { font-size: 14px; }
+@media (max-width: 1100px) { .debugger-panes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .debugger-panes { grid-template-columns: minmax(0, 1fr); } }

@@ -1,0 +1,73 @@
+# Statement-audit claim exclusions (issue #1179).
+#
+# The structured extractor turned every `key: value` line of a TOML/YAML/JSON
+# document into an exclusive claim, so a GitHub Actions workflow with N steps
+# produced one contradiction per repeated step key -- 8,179 contradictions on
+# this repository, every one a YAML key collision, none a wrong statement.
+#
+# This seed declares which structured keys state facts. A line becomes a claim
+# only when it is a top-level (zero-indent) field whose key is a claim_field of
+# the document's type; sequence_item_key rows name the repeated step-level keys
+# (- name, - run, - uses, - id, ...) that are list structure, never facts, and
+# predicate rows derived from them are excluded from contradiction weighing so
+# audits recorded in the legacy format still read clean.
+#
+# The data is the policy: widening or narrowing what counts as a stated fact is
+# a seed edit, not a code edit.
+
+statement_audit_exclusions
+  claim_field
+    document_type any
+    key version
+  claim_field
+    document_type any
+    key status
+  claim_field
+    document_type any
+    key count
+  claim_field
+    document_type any
+    key description
+  claim_field
+    document_type any
+    key license
+  claim_field
+    document_type any
+    key homepage
+  claim_field
+    document_type any
+    key repository
+  claim_field
+    document_type manifest
+    key edition
+  claim_field
+    document_type manifest
+    key rust-version
+  claim_field
+    document_type manifest
+    key publish
+  claim_field
+    document_type workflow
+    key name
+  sequence_item_key
+    key name
+  sequence_item_key
+    key run
+  sequence_item_key
+    key uses
+  sequence_item_key
+    key id
+  sequence_item_key
+    key with
+  sequence_item_key
+    key env
+  sequence_item_key
+    key if
+  sequence_item_key
+    key shell
+  sequence_item_key
+    key needs
+  sequence_item_key
+    key steps
+  sequence_item_key
+    key jobs

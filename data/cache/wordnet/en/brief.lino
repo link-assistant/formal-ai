@@ -1,0 +1,37 @@
+language en
+lemma brief
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a document stating the facts and points of law of a client's case"
+    id oewn-06555772-n
+    partOfSpeech n
+    synonyms ("legal brief")
+  entry
+    definition "a condensed written summary or abstract"
+    id oewn-06480311-n
+    partOfSpeech n
+  entry
+    definition "of short duration or distance"
+    examples ("a brief stay in the country")
+    id oewn-01445717-s
+    partOfSpeech s
+  entry
+    definition "concise and succinct"
+    examples ("covered the matter in a brief statement")
+    id oewn-00549386-s
+    partOfSpeech s
+  entry
+    definition "(of clothing) very short"
+    examples ("an abbreviated swimsuit" "a brief bikini")
+    id oewn-01439307-s
+    partOfSpeech s
+    synonyms (abbreviated)
+  entry
+    definition "give essential information to someone"
+    examples ("The reporters were briefed about the President's plan to invade")
+    id oewn-00832934-v
+    partOfSpeech v
+source "oewn:2024"

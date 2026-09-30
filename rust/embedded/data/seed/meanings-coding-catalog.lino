@@ -315,6 +315,58 @@ meanings
     lexeme zh
       surface
         text php
+  program_language_swift
+    grounded-in Q17118377
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Swift"
+    unit "not applicable"
+    example "swift"
+    lexeme en
+      surface
+        text swift
+    lexeme ru
+      surface
+        text swift
+      surface
+        text свифт
+    lexeme hi
+      surface
+        text swift
+      surface
+        text स्विफ्ट
+    lexeme zh
+      surface
+        text swift
+    lexeme es
+      surface
+        text swift
+  program_language_r
+    grounded-in Q734168
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to R"
+    unit "not applicable"
+    example "r"
+    lexeme en
+      surface
+        text r
+    lexeme ru
+      surface
+        text r
+    lexeme hi
+      surface
+        text r
+      surface
+        text आर
+    lexeme zh
+      surface
+        text r
+    lexeme es
+      surface
+        text r
   program_language_laravel
     grounded-in Q13634357
     defined-by program_language

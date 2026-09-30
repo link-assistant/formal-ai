@@ -211,6 +211,8 @@ meanings
       surface
         text day
       surface
+        text days
+      surface
         text weekday
       surface
         text "week day"
@@ -231,6 +233,8 @@ meanings
         text 星期几
       surface
         text 日子
+      surface
+        text 天
   calendar_date
     grounded-in Q205892
     defined-by calendar_day
@@ -262,6 +266,8 @@ meanings
     lexeme en
       surface
         text week
+      surface
+        text weeks
     lexeme ru
       surface
         text неделя

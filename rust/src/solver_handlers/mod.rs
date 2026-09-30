@@ -10,6 +10,12 @@ pub use calendar::try_calendar_reasoning;
 pub use calendar_create::{
     calendar_claims, try_calendar_create_event, try_routed_calendar_create_event,
 };
+pub use code_debugging::handle_code_debugging;
+pub use code_explanation::handle_code_explanation;
+pub use code_refactoring::handle_code_refactoring;
+pub use code_review::handle_code_review;
+pub use creative_composition::{handle_advice_request, handle_brainstorm_request};
+pub use creative_writing::{handle_creative_writing_request, handle_planning_request};
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
@@ -20,6 +26,8 @@ pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
 pub use feature_capability::{CapabilityRuntime, try_feature_capability};
+pub use formalization_task::handle_formalization_request;
+pub use format_conversion::handle_format_conversion;
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
@@ -30,19 +38,28 @@ pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::{
     looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
 };
+pub use product_search::handle_product_search;
+pub use regex_synthesis::handle_regex_synthesis;
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
 pub use response_language_followup::try_response_language_followup;
 pub use self_awareness::SelfAwarenessRuntime;
+pub use shell_command_compose::handle_shell_command_compose;
 pub use shell_command_transform::{
     try_shell_command_transform, try_shell_command_transform_with_history,
 };
 pub use software_project::{software_project_claims, try_software_project_request};
 pub use software_project_followup::try_software_project_followup;
+pub use sql_synthesis::handle_sql_synthesis;
+pub use statistics::{handle_statistics, handle_word_problem};
+pub use summarization_request::handle_summarization_request;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
+pub use test_generation::handle_test_generation;
 pub use text_manipulation::{
     names_a_quoted_replacement, names_text_operation, text_outside_quoted_segments,
 };
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
+pub use text_rewrite::handle_text_rewrite;
+pub use unit_conversion::handle_unit_conversion;
 pub use user_intent::{try_proof_request, try_proof_request_with_config};
 pub use verifiable_task::try_verifiable_task;
 pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
@@ -444,6 +461,18 @@ pub fn try_translation(
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
 
+    // A well-formed sentence with no quoted or backticked surface still names
+    // the text to translate (`Translate to Russian: The weather is nice
+    // today, let's go for a walk.`): take the free text after the command
+    // head and translate it word by word (issue #1174).
+    if surface.is_empty()
+        && backticked.is_none()
+        && source_slug != target_slug
+        && let Some(free_sentence) = text_rewrite::free_text_payload(prompt)
+    {
+        return translate_free_sentence(prompt, log, source_slug, target_slug, &free_sentence);
+    }
+
     log.append("language_from", source_slug.to_owned());
     log.append("language_to", target_slug.to_owned());
 
@@ -519,6 +548,97 @@ fn render_translation_gap(surface: &str, source_slug: &str, target_slug: &str) -
         "I could not translate \"{surface}\" from {source_slug} to {target_slug} with the \
          available formalization data. I recorded this as a translation gap for follow-up."
     )
+}
+
+/// Word-by-word translation of the free sentence a translation request names
+/// after its command head (issue #1174). Each source segment goes through
+/// [`crate::translation::pipeline::TranslationPipeline::translate_sentence`];
+/// dropped function words, resolved words, and unknown words are logged so
+/// the trace explains every token, and the unknown words are reported through
+/// the seeded template instead of being hidden.
+fn translate_free_sentence(
+    prompt: &str,
+    log: &mut EventLog,
+    source_slug: &str,
+    target_slug: &str,
+    sentence: &str,
+) -> Option<SymbolicAnswer> {
+    let client = crate::translation::CachedHttpClient::new(
+        crate::translation::cache::DEFAULT_CACHE_DIR,
+        crate::translation::CurlClient::default(),
+    );
+    let pipeline = crate::translation::pipeline::TranslationPipeline::new(&client);
+    log.append("language_from", source_slug.to_owned());
+    log.append("language_to", target_slug.to_owned());
+    let mut unknown_words: Vec<String> = Vec::new();
+    let mut rendered: Vec<String> = Vec::new();
+    for segment in crate::formalization::segment::sentences(sentence) {
+        let translation = pipeline.translate_sentence(&segment.text, source_slug, target_slug);
+        log.append("translation_word_order", translation.target_order.clone());
+        for word in &translation.words {
+            if word.dropped_function_word {
+                log.append("translation_function_word", word.source.clone());
+            } else if let Some(target) = &word.target {
+                log.append("translation_word", format!("{} -> {}", word.source, target));
+                if let Some(meaning) = &word.meaning {
+                    log.append("meaning", meaning.clone());
+                }
+            } else {
+                log.append("translation_unknown_word", word.source.clone());
+                unknown_words.push(word.source.clone());
+            }
+        }
+        rendered.push(translation.surface());
+    }
+    let mut body = rendered.join(" ");
+    if rendered.iter().all(|segment| segment.is_empty()) {
+        log.append("translation_gap", sentence.to_owned());
+        let gap_body = render_translation_gap(sentence, source_slug, target_slug);
+        let intent = format!("translate_{source_slug}_to_{target_slug}");
+        return Some(finalize_simple(
+            prompt,
+            log,
+            &intent,
+            "response:translate",
+            &gap_body,
+            1.0,
+        ));
+    }
+    // Keep the source's terminal punctuation when the rendering dropped it.
+    if let Some(last) = sentence.trim_end().chars().next_back()
+        && matches!(last, '.' | '!' | '?')
+        && body.chars().next_back() != Some(last)
+    {
+        body.push(last);
+    }
+    if !unknown_words.is_empty() {
+        let unknown = unknown_words.join(", ");
+        let note = crate::seed::render_response(
+            "text_transform_translation_unknown",
+            target_slug,
+            &[("unknown", &unknown)],
+        )
+        .or_else(|| {
+            crate::seed::render_response(
+                "text_transform_translation_unknown",
+                "en",
+                &[("unknown", &unknown)],
+            )
+        })
+        .unwrap_or_default();
+        if !note.is_empty() {
+            body = format!("{}\n\n{}", body, note);
+        }
+    }
+    let intent = format!("translate_{source_slug}_to_{target_slug}");
+    Some(finalize_simple(
+        prompt,
+        log,
+        &intent,
+        "response:translate_sentence",
+        &body,
+        1.0,
+    ))
 }
 
 pub fn try_write_script(

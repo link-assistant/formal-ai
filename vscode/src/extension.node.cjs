@@ -28,6 +28,7 @@ const {
   DEFAULT_IMAGE,
 } = require("./lib/config.cjs");
 const { createBridge } = require("./lib/bridge.cjs");
+const { registerDebugger } = require("./lib/debugger-view.cjs");
 const { createChatViewProvider, renderChatWebview } = require("./lib/chat-view.cjs");
 const { startServer } = require("./lib/server-process.cjs");
 
@@ -306,6 +307,7 @@ function activate(context) {
     return applying;
   }
 
+  context.subscriptions.push(registerDebugger({ vscode, context, host }));
   const provider = createChatViewProvider({ vscode, context, host });
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(VIEW_ID, provider, {

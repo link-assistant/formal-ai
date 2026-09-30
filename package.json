@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:web": "bun build ./js/vendor-entry.js --outfile ./js/vendor.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/web-search-component-entry.js --outfile ./js/web-search-component.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/ocr-entry.js --outfile ./js/ocr.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/app/main.jsx --outfile ./js/app.js --target browser --format iife --production --minify-whitespace --minify-syntax",
+    "build:web": "bun build ./js/vendor-entry.js --outfile ./js/vendor.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/web-search-component-entry.js --outfile ./js/web-search-component.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/ocr-entry.js --outfile ./js/ocr.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/app/main.jsx --outfile ./js/app.js --target browser --format iife --production --minify-whitespace --minify-syntax && python3 scripts/generate-web-distribution.py",
     "test:web": "node --test rust/tests/web/*.test.mjs",
     "coverage:web": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage/browser-lcov.info --test-reporter=spec --test-reporter-destination=stdout rust/tests/web/*.test.mjs",
     "coverage:ratchet": "rust-script scripts/check-coverage-ratchet.rs",
@@ -19,11 +19,11 @@
     "@link-assistant/web-search": "0.11.0",
     "@chakra-ui/react": "^3.37.0",
     "@emotion/react": "^11.14.0",
-    "dompurify": "3.4.14",
+    "dompurify": "3.4.16",
     "lino-i18n": "0.2.0",
-    "marked": "18.0.11",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
+    "marked": "18.0.14",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "tesseract.js": "7.0.0"
   }
 }

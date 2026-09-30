@@ -51,7 +51,7 @@ pub use crate::thinking::{
     thinking_narrative, thinking_narrative_in, thinking_trace_heading,
 };
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct SymbolicAnswer {
     pub intent: String,
     pub answer: String,
@@ -82,7 +82,47 @@ pub struct ExecutionRecipeFile {
     pub source: String,
 }
 
+// Compute the identifier when serializing rather than storing a redundant field
+// that could become stale when a handler edits the answer text.
+impl Serialize for SymbolicAnswer {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        #[derive(Serialize)]
+        struct WireAnswer<'a> {
+            intent: &'a str,
+            answer: &'a str,
+            confidence: f32,
+            evidence_links: &'a [String],
+            #[serde(skip_serializing_if = "slice_is_empty")]
+            thinking_steps: &'a [ThinkingStep],
+            links_notation: &'a str,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            execution_recipe: Option<&'a ExecutionRecipe>,
+            derivation_id: String,
+        }
+        fn slice_is_empty<T>(value: &&[T]) -> bool {
+            value.is_empty()
+        }
+        WireAnswer {
+            intent: &self.intent,
+            answer: &self.answer,
+            confidence: self.confidence,
+            evidence_links: &self.evidence_links,
+            thinking_steps: &self.thinking_steps,
+            links_notation: &self.links_notation,
+            execution_recipe: self.execution_recipe.as_deref(),
+            derivation_id: self.derivation_id(),
+        }
+        .serialize(serializer)
+    }
+}
+
 impl SymbolicAnswer {
+    /// Content address of the answer currently carried by this value.
+    #[must_use]
+    pub fn derivation_id(&self) -> String {
+        crate::derivation::answer_derivation_id(&self.answer)
+    }
+
     /// Whether the answer never reached a conclusion about the prompt.
     ///
     /// The unknown-prompt fallback, an ill-formed prompt, a punctuation-only

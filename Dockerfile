@@ -9,7 +9,7 @@
 #             whole run on its own.
 #
 # The copied binary runs because both sides are Ubuntu 24.04 on glibc 2.39:
-# `ubuntu-latest` builds it and `konard/box-dind:2.1.1` runs it.
+# `ubuntu-latest` builds it and `konard/box-dind:2.10.2` runs it.
 ARG BINARY_SOURCE=compile
 
 FROM rust:1.98-slim AS builder
@@ -70,7 +70,7 @@ COPY rust/target/release/formal-ai /app/target/release/formal-ai
 # Resolves to whichever stage `BINARY_SOURCE` names.
 FROM ${BINARY_SOURCE}-binary AS selected-binary
 
-FROM konard/box-dind:2.1.1
+FROM konard/box-dind:2.10.2
 
 LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai"
 

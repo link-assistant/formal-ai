@@ -272,3 +272,16 @@ sources_registry
     license_url "https://github.com/eggert/tz/blob/main/LICENSE"
     cache_path data/cache/iana/
     note "The zone1970.tab projection of tz zone names to countries, fetched once by scripts/ground-entity-names.py to ground entity hours (commit e8533a522). A committed static table the grounding script reads offline; no runtime fetch path binds it."
+  source conventional_commits
+    name "Conventional Commits 1.0.0"
+    kind normative_styleguide
+    default_enabled true
+    how_to_role none
+    need_kinds (concept)
+    primacy self_published
+      basis "The Conventional Commits specification is published by the convention's own maintainers, so on the commit-message grammar the source is the spec itself."
+    api "https://www.conventionalcommits.org/en/v1.0.0/"
+    license_name "CC BY 3.0"
+    license_url "https://creativecommons.org/licenses/by/3.0/"
+    cache_path data/cache/conventional-commits/
+    note "The styleguide URL the commit-message genre cites (data/seed/writing-genre-styleguides.lino, issue #1174 R4); the genre templates are the seed's and this page is the named authority behind them. No runtime fetch path binds it; registered so the citation is provenance-tracked like every other named source, as the issue's design asked."

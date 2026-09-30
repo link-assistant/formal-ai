@@ -1,0 +1,90 @@
+# Response templates for the user-facing formalization task (issue #1186,
+# E150).
+#
+# The formalization and deformalization handlers render their prose through
+# these records so no response text lives in Rust. Placeholders in braces
+# are filled by the handler. The rendering blocks themselves (FOL, Lean,
+# Rocq, Links Notation) are language-neutral and are inserted through the
+# {statement_block} and {derivation} slots.
+
+multilingual_responses
+  response response_formalization_result_en
+    intent formalization_result
+    language en
+    text "Formalized statement:\n\n{statement_block}\n\n{honesty}\n\nDerivation:\n{derivation}"
+  response response_formalization_result_ru
+    intent formalization_result
+    language ru
+    text "Формализованное утверждение:\n\n{statement_block}\n\n{honesty}\n\nВывод:\n{derivation}"
+  response response_formalization_result_hi
+    intent formalization_result
+    language hi
+    text "औपचारिक कथन:\n\n{statement_block}\n\n{honesty}\n\nव्युत्पत्ति:\n{derivation}"
+  response response_formalization_result_zh
+    intent formalization_result
+    language zh
+    text "形式化命题：\n\n{statement_block}\n\n{honesty}\n\n推导：\n{derivation}"
+  response response_formalization_result_es
+    intent formalization_result
+    language es
+    text "Enunciado formalizado:\n\n{statement_block}\n\n{honesty}\n\nDerivación:\n{derivation}"
+  response response_formalization_unparsed_en
+    intent formalization_unparsed
+    language en
+    text "The sentence was recognized as a formalization request, but no quantified clause could be parsed from it: {reason}. A formalization needs a quantifier word (every, some, no) or a formal quantifier symbol and at least one predicate."
+  response response_formalization_unparsed_ru
+    intent formalization_unparsed
+    language ru
+    text "Предложение распознано как запрос на формализацию, но кванторной конструкции из него извлечь не удалось: {reason}. Для формализации нужно кванторное слово (каждый, некоторый, никакой) или формальный символ квантора и хотя бы один предикат."
+  response response_formalization_unparsed_hi
+    intent formalization_unparsed
+    language hi
+    text "वाक्य औपचारिकीकरण अनुरोध माना गया, पर इसमें से कोई क्वांटिफाइड क्लॉज नहीं निकाला जा सका: {reason}। औपचारिकीकरण के लिए क्वांटिफायर शब्द (हर, कोई) या औपचारिक क्वांटिफायर प्रतीक और कम से कम एक विधेय चाहिए।"
+  response response_formalization_unparsed_zh
+    intent formalization_unparsed
+    language zh
+    text "该句子已被识别为形式化请求，但未能从中解析出含量化的子句：{reason}。形式化需要一个量词（每个、某个、没有）或形式量词符号以及至少一个谓词。"
+  response response_formalization_unparsed_es
+    intent formalization_unparsed
+    language es
+    text "La frase se reconoció como una solicitud de formalización, pero no se pudo extraer de ella una cláusula cuantificada: {reason}. Una formalización necesita una palabra cuantificadora (todo, algún, ningún) o un símbolo cuantificador formal y al menos un predicado."
+  response response_formalization_deformalized_en
+    intent formalization_deformalized
+    language en
+    text "Natural-language reading:\n\n{sentence}\n\nRound trip: {round_trip}\n\n{honesty}"
+  response response_formalization_deformalized_ru
+    intent formalization_deformalized
+    language ru
+    text "Прочтение на естественном языке:\n\n{sentence}\n\nОбратный проход: {round_trip}\n\n{honesty}"
+  response response_formalization_deformalized_hi
+    intent formalization_deformalized
+    language hi
+    text "सहज भाषा में पाठ:\n\n{sentence}\n\nपुनः पारगमन: {round_trip}\n\n{honesty}"
+  response response_formalization_deformalized_zh
+    intent formalization_deformalized
+    language zh
+    text "自然语言读法：\n\n{sentence}\n\n往返：{round_trip}\n\n{honesty}"
+  response response_formalization_deformalized_es
+    intent formalization_deformalized
+    language es
+    text "Lectura en lenguaje natural:\n\n{sentence}\n\nRecorrido de ida y vuelta: {round_trip}\n\n{honesty}"
+  response response_formalization_honesty_en
+    intent formalization_honesty
+    language en
+    text "No theorem prover was invoked. {lean_check} {rocq_check} The Lean and Rocq texts are seed-grammar renderings, and their in-process export through the relative-meta-logic crate is recorded as follow-up until it is published (link-foundation/relative-meta-logic#185)."
+  response response_formalization_honesty_ru
+    intent formalization_honesty
+    language ru
+    text "Теорем-прувер не вызывался. {lean_check} {rocq_check} Тексты Lean и Rocq — порождения сид-грамматики; их экспорт внутри процесса через relative-meta-logic записан как последующая работа до публикации crates.io (link-foundation/relative-meta-logic#185)."
+  response response_formalization_honesty_hi
+    intent formalization_honesty
+    language hi
+    text "कोई थीरम प्रोवर नहीं चलाया गया। {lean_check} {rocq_check} Lean और Rocq पाठ सीड-व्याकरण से बने हैं; relative-meta-logic के crates.io प्रकाशन तक उनका इन-प्रोसेस निर्यात आगामी कार्य के रूप में दर्ज है (link-foundation/relative-meta-logic#185)।"
+  response response_formalization_honesty_zh
+    intent formalization_honesty
+    language zh
+    text "未调用任何定理证明器。{lean_check} {rocq_check} Lean 与 Rocq 文本由种子文法生成；在 relative-meta-logic 发布到 crates.io 之前，其进程内导出被记录为后续工作（link-foundation/relative-meta-logic#185）。"
+  response response_formalization_honesty_es
+    intent formalization_honesty
+    language es
+    text "No se invocó ningún demostrador de teoremas. {lean_check} {rocq_check} Los textos Lean y Rocq son producciones de la gramática semilla; su exportación en proceso a través de relative-meta-logic queda registrada como trabajo posterior hasta su publicación en crates.io (link-foundation/relative-meta-logic#185)."

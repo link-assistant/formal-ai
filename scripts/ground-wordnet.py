@@ -51,8 +51,9 @@ WN_DATA_DIR = os.environ.get(
 )
 WORD = re.compile(r"^[a-z][a-z-]*[a-z]$|^[a-z]$")
 # Reuse the already-built example binary when present (≈100× faster than a fresh
-# `cargo run` per lemma); fall back to `cargo run` otherwise.
-FAST_BIN = Path("target/debug/examples/wikidata_json_to_lino")
+# `cargo run` per lemma); fall back to `cargo run` otherwise. The crate sits
+# under rust/ since the plan 16 L1 move, so both paths point there.
+FAST_BIN = Path("rust/target/debug/examples/wikidata_json_to_lino")
 
 
 def load_wordnet():
@@ -111,7 +112,8 @@ def write_entry(lemma: str, record: dict) -> None:
         cmd = [str(FAST_BIN), "entry", str(json_path), str(lino_path)]
     else:
         cmd = [
-            "cargo", "run", "--quiet", "--example", "wikidata_json_to_lino",
+            "cargo", "run", "--quiet", "--manifest-path", "rust/Cargo.toml",
+            "--example", "wikidata_json_to_lino",
             "entry", str(json_path), str(lino_path),
         ]
     result = subprocess.run(cmd, capture_output=True, text=True)

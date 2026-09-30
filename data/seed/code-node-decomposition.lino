@@ -1,0 +1,53 @@
+# Code node decomposition schema (issue #1164, E129).
+#
+# Every DecomposedCodeNode, GeneralizedProcedure, and CodeRecomposition is
+# expressible as a Links Notation document (R1164-10); this file is that
+# schema plus one worked example of the generalized Hello World procedure.
+code_node_decomposition_schema
+  description "Decomposed code node parts and generalized procedures for retrieved code examples."
+  version "1"
+  code_part_kind
+    name entry_point
+    label "Entry point"
+    cst_node_kind function_item
+    cst_node_kind main_method_declaration
+    cst_node_kind function_declaration
+  code_part_kind
+    name output_operation
+    label "Output operation"
+    cst_node_kind call_expression
+    cst_node_kind macro_invocation
+    cst_node_kind expression_statement
+  code_part_kind
+    name string_literal
+    label "String literal"
+    cst_node_kind string_literal
+    cst_node_kind interpreted_string_literal
+  code_part_kind
+    name import
+    label "Import"
+    cst_node_kind use_declaration
+    cst_node_kind import_statement
+  code_part_kind
+    name build_command
+    label "Build command"
+    cst_node_kind prose_link
+  code_part_kind
+    name run_command
+    label "Run command"
+    cst_node_kind prose_link
+  code_part_kind
+    name test_assertion
+    label "Test assertion"
+    cst_node_kind assert_statement
+generalized_hello_world
+  id "generalized_hello_world_v1"
+  shared_structure entry_point
+  shared_structure output_operation
+  shared_structure string_literal
+  parameter
+    name output_literal
+    bound_from "the formalized requirement, never from the example"
+  source_url "https://rosettacode.org/wiki/Hello_world/Text"
+  source_url "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+  note "The worked example: align Hello World examples across languages, share the entry-output-literal structure, and bind the output literal per requirement so a held-out literal recomposes in every contributing language."

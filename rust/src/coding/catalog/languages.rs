@@ -184,6 +184,40 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         save_as: "main.php",
         framework_of: None,
     },
+    // Issue #1167: meta-language 0.58.2 ships a Swift tree-sitter grammar and
+    // data/meta/hello-world-languages.lino carries a verified Hello World for
+    // it, so Swift joins the catalog the way the seed's own rule demands — a
+    // row with its fences and execution metadata, not a special case.
+    ProgramLanguage {
+        slug: "swift",
+        name: "Swift",
+        code_fence: "swift",
+        execution: ProgramExecution {
+            check_command: Some("swiftc -parse hello.swift"),
+            run_command: "swift hello.swift",
+            notes: "hello.swift printed exactly `Hello, World!` on 2026-09-12 (data/meta/hello-world-languages.lino); a swiftc-backed check profile is still owed, so the check above is the interpreter's own parse.",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "hello.swift",
+        framework_of: None,
+    },
+    // Issue #1167: the R grammar ships in the same meta-language revision.
+    // R is one of the nine languages whose Hello World could not be executed
+    // on the reference machine (no R toolchain installed), so the row states
+    // its run command and that verification is owed to CI, never claims it.
+    ProgramLanguage {
+        slug: "r",
+        name: "R",
+        code_fence: "r",
+        execution: ProgramExecution {
+            check_command: Some("Rscript -e 'invisible(parse(\"hello.R\"))'"),
+            run_command: "Rscript hello.R",
+            notes: "no R toolchain was installed on the 2026-09-12 reference machine (data/meta/hello-world-languages.lino lists r among the nine unverified); the run is owed to the CI ladder.",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "hello.R",
+        framework_of: None,
+    },
     // Issue #723 reported `напиши мне код на PHP Laravel` and got an answer that
     // named no language at all; issue #1021 then answered it in PHP, which is
     // the language Laravel is written in but not the thing that was asked for.

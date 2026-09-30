@@ -22,7 +22,8 @@
   "browser": "./src/extension.web.cjs",
   "activationEvents": [
     "onView:formal-ai.chatView",
-    "onCommand:formal-ai.openChat"
+    "onCommand:formal-ai.openChat",
+    "onCommand:formal-ai.openDebugger"
   ],
   "capabilities": {
     "virtualWorkspaces": true,
@@ -51,6 +52,11 @@
       {
         "command": "formal-ai.openNetworkView",
         "title": "Open Network View",
+        "category": "formal-ai"
+      },
+      {
+        "command": "formal-ai.openDebugger",
+        "title": "Open Debugger",
         "category": "formal-ai"
       }
     ],
@@ -142,7 +148,7 @@
   "dependencies": {
     "@link-assistant/web-capture": "^1.11.2",
     "@link-assistant/web-search": "^0.11.0",
-    "playwright": "^1.62.1"
+    "playwright": "^1.63.0"
   },
   "overrides": {
     "@link-assistant/web-capture": {
@@ -159,5 +165,22 @@
     "esbuild": true,
     "keytar": true,
     "puppeteer": true
-  }
+  },
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#175f4f",
+    "theme": "dark"
+  },
+  "keywords": [
+    "symbolic AI",
+    "Links Notation",
+    "deterministic",
+    "WebAssembly",
+    "agent",
+    "chat"
+  ],
+  "bugs": {
+    "url": "https://github.com/link-assistant/formal-ai/issues"
+  },
+  "homepage": "https://github.com/link-assistant/formal-ai/tree/main/vscode"
 }

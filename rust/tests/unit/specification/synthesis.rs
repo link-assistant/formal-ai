@@ -50,6 +50,14 @@ fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
                 "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef count_vowels(text: str):\n    return sum(1 for character in text if character in 'aeiouAEIOU')\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#sum (PSF-2.0)\n- https://www.unicode.org/versions/Unicode15.1.0/ch03.pdf (PSF-2.0)"
             }
             "e34_text_manipulation_chain" => "RULES NOTATION LINKS",
+            "e1174_summarization_free_text" => {
+                "The Halley research station, opened in 1956, is used to study the Antarctic ice \
+                 shelf. It provides year-round measurements of ozone and sea temperature."
+            }
+            "e1176_statistics_mean_median" => {
+                "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nmean: 18 (108 / 6 = 18)\nmedian: \
+                 15.5 ((15 + 16) / 2 = 15.5)"
+            }
             other => panic!("fixture lacks a complete documented answer for {other}"),
         };
         assert_eq!(response.answer, documented);

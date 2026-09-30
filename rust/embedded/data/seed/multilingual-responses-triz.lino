@@ -1,0 +1,32 @@
+# Response templates for the TRIZ/contradiction solver (issue #901).
+#
+# The answer teaches the resolution shapes as data: the families come from
+# data/seed/triz-principles.lino (twelve general paradox-resolution
+# families plus the forty inventive principles), the precedents are the
+# top-20 benchmark tasks, and the link note explains that a contradiction
+# is a link whose 0-1 value is chosen from the requirement's own clauses
+# (computed in basis points by the selection heuristic, no default 50 %).
+# Placeholders in braces are filled by the handler in
+# rust/src/triz_solver.rs.
+
+multilingual_responses
+  response response_triz_resolution_en
+    intent triz_resolution_map
+    language en
+    text "A contradiction is a link with a value, not a wall. Ways through:\n{families}\nPrecedent from the benchmark corpus:\n{precedents}\n{link_note}"
+  response response_triz_resolution_ru
+    intent triz_resolution_map
+    language ru
+    text "Противоречие — это связь со значением, а не стена. Пути решения:\n{families}\nПрецеденты из эталонного набора задач:\n{precedents}\n{link_note}"
+  response response_triz_resolution_hi
+    intent triz_resolution_map
+    language hi
+    text "अंतर्विरोध एक मूल्य वाला लिंक है, दीवार नहीं। रास्ते:\n{families}\nबेंचमार्क संग्रह से उदाहरण:\n{precedents}\n{link_note}"
+  response response_triz_resolution_zh
+    intent triz_resolution_map
+    language zh
+    text "矛盾是一个带值的链接，而不是一堵墙。出路：\n{families}\n基准任务集的先例：\n{precedents}\n{link_note}"
+  response response_triz_resolution_es
+    intent triz_resolution_map
+    language es
+    text "Una contradicción es un enlace con valor, no un muro. Salidas:\n{families}\nPrecedentes del corpus de referencia:\n{precedents}\n{link_note}"

@@ -264,9 +264,12 @@ fn fact_records() -> &'static [FactRecord] {
 /// The planner's open-web gate asks whether the symbolic engine can answer a
 /// request before releasing it to the open web (issue #989). Concepts and
 /// computations already answer there; a question the fact store matches --
-/// subject alias plus question keyword, exactly the dispatch the solver's
-/// `fact_lookup` row runs -- is equally answerable, and planning a web search
-/// for it would discard the answer the engine already owns (issue #1138).
+/// subject alias plus question keyword at word boundaries (issue #1172), so
+/// the United States alias "us" never matches inside "australia" and an
+/// unseeded subject correctly falls through to `false`, exactly the dispatch
+/// the solver's `fact_lookup` row runs -- is equally answerable, and planning
+/// a web search for it would discard the answer the engine already owns
+/// (issue #1138).
 #[must_use]
 pub fn fact_store_resolves(prompt: &str) -> bool {
     let normalized = crate::engine::normalize_prompt(prompt);
@@ -304,11 +307,18 @@ fn detect_relation(normalized: &str) -> Option<&'static str> {
 
 /// Find the subject alias the prompt mentions, if any. Returns the alias
 /// substring as it appears in `subject_aliases`.
+///
+/// Issue #1172: the alias must match at word boundaries via
+/// [`FactRecord::contains_word_sequence`] — the same comparison
+/// [`FactRecord::matches_normalized`] gates on — so the `fact_query:subject`
+/// evidence reports an alias that actually appears in the prompt as a whole
+/// word (e.g. "usa" for "capital of usa"), never the substring coincidence
+/// that used to fire (alias "us" inside "australia").
 fn detect_subject_alias<'a>(record: &'a FactRecord, normalized: &str) -> Option<&'a str> {
     record
         .subject_aliases
         .iter()
-        .find(|alias| !alias.is_empty() && normalized.contains(alias.as_str()))
+        .find(|alias| FactRecord::contains_word_sequence(normalized, alias))
         .map(String::as_str)
 }
 

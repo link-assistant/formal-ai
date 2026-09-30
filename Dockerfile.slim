@@ -1,0 +1,111 @@
+# Issue #1153: the slim runtime image.
+#
+# `ghcr.io/link-assistant/formal-ai:latest` is 24.3 GB because it extends
+# `konard/box-dind:2.1.1`, a self-contained code-execution box. The Hive Mind
+# sidecar (`link-assistant/hive-mind#2305`) runs exactly one command in it:
+#
+#   docker run … --env DIND_SKIP_DAEMON=1 … formal-ai serve \
+#     --agent-mode --host 0.0.0.0 --port 8080
+#
+# The inner Docker daemon is skipped and no language toolchain is invoked;
+# tasks run in separate containers (`FORMAL_AI_START_ISOLATION=docker`).
+# That workload needs the ~0.8 GB of Formal AI itself, not the 23.5 GB of
+# toolchains around it.
+#
+# This file is that image: `ubuntu:24.04` (same glibc 2.39 as the binary the
+# pipeline builds on `ubuntu-latest`), the runtime deps `formal-ai serve
+# --agent-mode` calls (`curl` for the health check, `git` for repository
+# tasks, `nodejs`/`bun` plus the three global CLIs the agent loop shells out
+# to), and the binary. No Docker engine, no `VOLUME` declaration (issue
+# #1153 point 2: the DinD variant's `VOLUME ["/var/lib/docker", …]` creates
+# an orphaned anonymous volume on every `docker run` that does not mount it
+# -- Hive Mind hosts accumulated four), no language SDKs.
+#
+# Expected size: roughly 1 GB instead of 24 GB. The full DinD/box variant
+# stays in `Dockerfile` for self-contained code execution; the release
+# workflow publishes this one as `:slim` alongside it (issue #1084 gives both
+# `linux/amd64` and `linux/arm64`).
+#
+# `BINARY_SOURCE` keeps the contract of the main Dockerfile: `compile`
+# (default) proves the image can build the project alone, `prebuilt` copies
+# the binary the pipeline already built and tested.
+ARG BINARY_SOURCE=compile
+
+FROM rust:1.98-slim AS builder
+
+WORKDIR /app
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libssl-dev pkg-config && \
+    rm -rf /var/lib/apt/lists/*
+
+# Dependency-only layer, keyed on the manifests alone (see Dockerfile for the
+# cache-key measurement that motivated this split).
+COPY rust/Cargo.toml rust/Cargo.lock rust/build.rs rust/
+RUN mkdir -p rust/src rust/tests/unit rust/tests/integration && \
+    echo 'fn main() {}' > rust/src/main.rs && \
+    echo '' > rust/src/lib.rs && \
+    echo '' > rust/tests/unit/mod.rs && \
+    echo '' > rust/tests/integration/mod.rs && \
+    cargo build --release --locked --lib --bins --manifest-path rust/Cargo.toml && \
+    rm -rf rust/src rust/tests
+
+COPY . .
+RUN cargo build --release --locked --bins --manifest-path rust/Cargo.toml
+
+FROM builder AS compile-binary
+RUN mkdir -p target/release && \
+    cp rust/target/release/formal-ai target/release/formal-ai
+
+FROM scratch AS prebuilt-binary
+COPY rust/target/release/formal-ai /app/target/release/formal-ai
+
+FROM ${BINARY_SOURCE}-binary AS selected-binary
+
+FROM ubuntu:24.04
+
+LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai" \
+      org.opencontainers.image.description="Formal AI slim runtime (serve sidecar); the self-contained code-execution variant is the default tag"
+
+ENV HOME=/home/box \
+    FORMAL_AI_MEMORY_PATH=/home/box/.formal-ai/memory.lino \
+    FORMAL_AI_IMAGE_VARIANT=slim \
+    BUN_INSTALL=/home/box/.bun
+# Unlike the DinD variant, tasks are not isolated into sibling containers here
+# -- a sidecar host provides its own isolation -- so the start runner keeps
+# its plain default instead of the docker-isolated one.
+ENV PATH="${BUN_INSTALL}/bin:${PATH}"
+
+# Runtime dependencies only: ca-certificates for HTTPS, curl for the health
+# check, git for repository tasks, nodejs + bun for the global CLIs below.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates curl git nodejs && \
+    rm -rf /var/lib/apt/lists/* && \
+    node --version
+
+COPY --from=oven/bun:1.2.28 /usr/local/bin/bun /usr/local/bin/bun
+RUN chmod 0755 /usr/local/bin/bun
+
+RUN useradd --create-home --uid 1000 box
+USER box
+WORKDIR /home/box
+RUN bun install -g start-command @link-assistant/agent agent-commander && \
+    "$" --version && \
+    agent --version && \
+    start-agent --help >/dev/null
+
+USER root
+COPY --from=selected-binary /app/target/release/formal-ai /usr/local/bin/formal-ai
+COPY scripts/verify-docker-slim-runtime.sh /usr/local/bin/verify-formal-ai-slim
+RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-slim && \
+    formal-ai --version
+USER box
+
+EXPOSE 8080
+# No VOLUME declaration: every path the daemon may persist is mounted
+# explicitly by the operator (the Hive Mind sidecar mounts
+# `hive-mind-formal-ai-memory:/home/box/.formal-ai`).
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -fsS http://127.0.0.1:8080/health || exit 1
+ENTRYPOINT ["/usr/local/bin/formal-ai"]
+CMD ["serve", "--agent-mode", "--host", "0.0.0.0", "--port", "8080"]

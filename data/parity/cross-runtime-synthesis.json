@@ -81,5 +81,44 @@
       "trace:"
     ],
     "expectedTraceFragments": ["text_substitution_trace"]
+  },
+  {
+    "id": "e1174_summarization_free_text",
+    "prompt": "Summarize this paragraph: The Halley research station, opened in 1956, is used to study the Antarctic ice shelf. It provides year-round measurements of ozone and sea temperature. The crew rotates every summer. Supplies arrive by ship in February. Radar masts surround the living quarters.",
+    "expectedIntent": "summarization_free_text",
+    "expectedAnswerFragments": [
+      "is used to study the Antarctic ice shelf",
+      "year-round measurements of ozone and sea temperature"
+    ],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": [
+      "summarization_statement:",
+      "summarization_bound:",
+      "summarization_selected:",
+      "intent:summarization_free_text",
+      "response:summarization_free_text"
+    ],
+    "expectedTraceFragments": ["summarization_free_text"],
+    "browserNotImplemented": true
+  },
+  {
+    "id": "e1176_statistics_mean_median",
+    "prompt": "Given the values 4, 8, 15, 16, 23, 42, what are the mean and the median?",
+    "expectedIntent": "statistics",
+    "expectedAnswerFragments": [
+      "mean: 18 (108 / 6 = 18)",
+      "median: 15.5 ((15 + 16) / 2 = 15.5)"
+    ],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": [
+      "statistics:values:",
+      "statistics:count:",
+      "statistics:mean:",
+      "statistics:median:",
+      "intent:statistics",
+      "response:statistics"
+    ],
+    "expectedTraceFragments": ["statistics"],
+    "browserNotImplemented": true
   }
 ]

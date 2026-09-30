@@ -27,4 +27,4 @@ pub mod guidance;
 pub mod program_ir;
 
 pub use catalog::*;
-pub use cst::validated_program_cst;
+pub use cst::{compose_and_validate, network_lino, validated_program_cst};

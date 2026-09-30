@@ -131,6 +131,18 @@ seed_metadata_gaps
     source "data/seed/meanings-software-project.lino"
     record "requirement_user_interface"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_622ea3eaa165ee9e
+    source "data/seed/meanings-statistics.lino"
+    record "statistics_mode"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_b9011e58aa0c1f4e
+    source "data/seed/meanings-statistics.lino"
+    record "statistics_range"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_28ceaf6c8fe2f3fe
+    source "data/seed/meanings-statistics.lino"
+    record "word_problem_total"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_45c31c71e6737b5e
     source "data/seed/meanings-tool-access.lino"
     record "tool_argument_marker"

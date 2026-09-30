@@ -25,8 +25,13 @@ use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, Formal
 
 mod prompt_relevants;
 mod requirements;
+mod obligations;
 mod write_program_request;
 use prompt_relevants::append_prompt_relevants;
+pub use obligations::{
+    ObligationGraph, ObligationKind, coreference_pass, formalize_request,
+    request_carries_work_obligations,
+};
 pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};
 pub(crate) use requirements::{requirement_list_spans, requirement_operand_spans};
 use write_program_request::{requested_write_program_parameters, write_program_parameters};

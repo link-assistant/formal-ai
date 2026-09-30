@@ -16,10 +16,10 @@ fn attestations_digest_artifacts_without_parsing_cross_platform_checksum_text() 
 
     assert_eq!(
         desktop.matches("uses: actions/attest@v4").count(),
-        2,
-        "desktop and VS Code artifacts must use the current generic attestation action"
+        3,
+        "desktop, CLI and VS Code artifacts must use the current generic attestation action"
     );
-    assert_eq!(desktop.matches("subject-path:").count(), 2);
+    assert_eq!(desktop.matches("subject-path:").count(), 3);
     assert!(desktop.contains("desktop/release/formal-ai-desktop-*"));
     assert!(desktop.contains("desktop/release/latest*.yml"));
     assert!(desktop.contains("vscode/formal-ai-vscode-*.vsix"));

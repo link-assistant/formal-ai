@@ -119,25 +119,53 @@ To verify any integration, first check `/health`, run the tool with the prompt
 the server with `--agent-mode`, ask the client to list the current directory,
 and confirm its transcript contains the advertised read/shell call and result.
 
-| Target | Protocol and base URL | One-shot mode | Permanent target |
-| --- | --- | --- | --- |
-| Codex | Responses, `/api/openai/v1` | isolated `HOME`, read-only `codex exec` | `~/.codex/config.toml` |
-| T3 Code | Responses or Anthropic | isolated `CODEX_HOME`, browser by default | Codex config or `~/.profile` |
-| OpenCode | Chat Completions, `/api/openai/v1` | temporary `opencode.json` | `~/.config/opencode/opencode.json` |
-| OpenCode VS Code | Chat Completions, `/api/openai/v1` | fresh window with temporary `opencode.json` | `~/.config/opencode/opencode.json` |
-| OpenCode Desktop | Chat Completions, `/api/openai/v1` | temporary `opencode.json`, packaged GUI | `~/.config/opencode/opencode.json` |
-| Agent | Chat Completions, `/api/openai/v1` | inline provider JSON | `~/.config/link-assistant-agent/opencode.json` |
-| Cursor | MCP, `/mcp` | isolated `~/.cursor/mcp.json` | `~/.cursor/mcp.json` |
-| Gemini | Gemini or Vertex | isolated `GEMINI_CLI_HOME` | managed variables in `~/.profile` |
-| Claude | Anthropic Messages, `/api/anthropic` | isolated `CLAUDE_CONFIG_DIR` | managed variables in `~/.profile` |
-| Qwen | Chat Completions, `/api/openai/v1` | isolated `HOME` | managed variables in `~/.profile` |
-| Grok | Chat Completions, `/api/openai/v1` | isolated `HOME` | `~/.grok/user-settings.json` |
-| Aider | Chat Completions, `/api/openai/v1` | isolated `HOME` | managed variables in `~/.profile` |
+| Target | Protocol and base URL | One-shot mode | Permanent target | Relocate via |
+| --- | --- | --- | --- | --- |
+| Codex | Responses, `/api/openai/v1` | isolated `HOME`, read-only `codex exec` | `~/.codex/config.toml` | `CODEX_HOME` |
+| T3 Code | Responses or Anthropic | isolated `CODEX_HOME`, browser by default | Codex config or `~/.profile` | `CODEX_HOME` |
+| OpenCode | Chat Completions, `/api/openai/v1` | temporary `opencode.json` | `~/.config/opencode/opencode.json` | `OPENCODE_CONFIG`, `OPENCODE_CONFIG_DIR` |
+| OpenCode VS Code | Chat Completions, `/api/openai/v1` | fresh window with temporary `opencode.json` | `~/.config/opencode/opencode.json` | `OPENCODE_CONFIG`, `OPENCODE_CONFIG_DIR` |
+| OpenCode Desktop | Chat Completions, `/api/openai/v1` | temporary `opencode.json`, packaged GUI | `~/.config/opencode/opencode.json` | `OPENCODE_CONFIG`, `OPENCODE_CONFIG_DIR` |
+| Agent | Chat Completions, `/api/openai/v1` | inline provider JSON | `~/.config/link-assistant-agent/opencode.json` | `LINK_ASSISTANT_AGENT_CONFIG`, `LINK_ASSISTANT_AGENT_CONFIG_DIR` |
+| Cursor | MCP, `/mcp` | isolated `~/.cursor/mcp.json` | `~/.cursor/mcp.json` | — |
+| Gemini | Gemini or Vertex | isolated `GEMINI_CLI_HOME` | managed variables in `~/.profile` | — |
+| Claude | Anthropic Messages, `/api/anthropic` | isolated `CLAUDE_CONFIG_DIR` | managed variables in `~/.profile` | — |
+| Qwen | Chat Completions, `/api/openai/v1` | isolated `HOME` | managed variables in `~/.profile` | — |
+| Grok | Chat Completions, `/api/openai/v1` | isolated `HOME` | `~/.grok/user-settings.json` | — |
+| Aider | Chat Completions, `/api/openai/v1` | isolated `HOME` | managed variables in `~/.profile` | — |
 
 On Windows, one-shot mode works without translating Unix paths. Permanent
 shell-environment entries target the client's Unix-style profile mechanism;
 prefer a PowerShell profile or persistent environment variables when a client
 does not read `~/.profile` on Windows.
+
+### Host integration contract
+
+A host that launches these clients itself — Hive Mind, the end-to-end matrix,
+any CI runner — and needs a client to read a task-local copy of its config
+must point the client at that copy through the *Relocate via* variable above,
+never by relocating `XDG_CONFIG_HOME` or `HOME`. Those variables steer every
+XDG-respecting program at once: on 2026-09-27 a Hive Mind session that pointed
+the Formal AI agent at a private config through `XDG_CONFIG_HOME` also moved
+`gh`'s `hosts.yml` and git's config with it, so `gh` lost its authentication
+inside the session and every GitHub step failed
+([link-assistant/hive-mind#2314](https://github.com/link-assistant/hive-mind/issues/2314),
+issue #1161). The precise variables are:
+
+- `agent` — `LINK_ASSISTANT_AGENT_CONFIG` (the config file) or
+  `LINK_ASSISTANT_AGENT_CONFIG_DIR` (its directory)
+- `codex` and `t3code` — `CODEX_HOME` (a directory holding `config.toml`)
+- `opencode`, `opencode-vscode`, `opencode-desktop` — `OPENCODE_CONFIG` (the
+  config file) or `OPENCODE_CONFIG_DIR` (its directory)
+
+`formal-ai clients --format json` carries the same declaration as
+`global_configs[].config_env` (and the one-shot mechanism as the top-level
+`config_env`/`config_dir_env`/`config_content_env`/`temp_home_env` fields), so
+a host reads the mechanism from the registry instead of hardcoding client
+knowledge. Clients whose permanent target is a shell profile (`gemini`,
+`claude`, `qwen`, `aider`) or a fixed path with no relocation variable
+(`cursor`, `grok`) declare none: a host must provision those files directly
+instead of moving the home directory.
 
 ## `codex`
 

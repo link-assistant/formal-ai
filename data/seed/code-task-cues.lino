@@ -1,0 +1,526 @@
+# Recognition cues and word maps for the code-task handlers (issue #1177).
+#
+# `cues` records hold the trigger phrases for one handler intent (lowercase,
+# English and Russian side by side; an optional `role` splits a record into
+# named lists — e.g. the shell composer needs action verbs and file-context
+# tokens as a conjunction, the format converter needs the two directions).
+# Phrases are matched as substrings of the normalized prompt (which collapses
+# punctuation to spaces and lowercases) and of the raw prompt lowercased.
+#
+# `map` records hold the word→value vocabulary the composers consult:
+# numbers, regex separators and classes, SQL comparatives, shell extensions,
+# size units, and the test-property slugs. Rust holds no cue literals.
+#
+# `test_cases` records hold the sample inputs the test generator renders for
+# each recognized problem shape.
+#
+# Read by the handlers in `rust/src/solver_handlers/` through
+# `crate::seed::seed_files()`.
+cues
+  intent code_debugging
+    phrase "find the bug"
+    phrase "spot the bug"
+    phrase "where is the bug"
+    phrase "debug this"
+    phrase "debug the"
+    phrase "debug my"
+    phrase "what s wrong with"
+    phrase "what's wrong with"
+    phrase "whats wrong with"
+    phrase "найди ошибку"
+    phrase "найди баг"
+    phrase "найди неисправность"
+    phrase "в чём ошибка"
+    phrase "в чем ошибка"
+    phrase "отладь"
+    phrase "отладить"
+    phrase "отладка"
+cues
+  intent regex_synthesis
+    phrase "write a regular expression"
+    phrase "regular expression that"
+    phrase "regular expression which"
+    phrase "regular expression for"
+    phrase "regex for"
+    phrase "regex that"
+    phrase "regex which"
+    phrase "write a regex"
+    phrase "compose a regex"
+    phrase "build a regex"
+    phrase "regex pattern"
+    phrase "регулярное выражение"
+    phrase "регулярку"
+    phrase "regex для"
+cues
+  intent sql_synthesis
+    phrase "sql query"
+    phrase "sql запрос"
+    phrase "write sql"
+    phrase "напиши sql"
+    phrase "sql для"
+    phrase "select all"
+    phrase "выбери всех"
+    phrase "выбери все"
+cues
+  intent shell_command_compose
+    role action
+    phrase "find"
+    phrase "list"
+    phrase "show"
+    phrase "display"
+    phrase "print"
+    phrase "search"
+    phrase "count"
+    phrase "найди"
+    phrase "покажи"
+    phrase "выведи"
+    phrase "перечисли"
+    phrase "поищи"
+cues
+  intent format_conversion
+    role to_yaml
+    phrase "json to yaml"
+    phrase "из json в yaml"
+    phrase "конвертируй json"
+    phrase "переведи json в yaml"
+cues
+  intent format_conversion
+    role to_json
+    phrase "yaml to json"
+    phrase "из yaml в json"
+    phrase "конвертируй yaml"
+    phrase "переведи yaml в json"
+cues
+  intent code_explanation
+    phrase "explain this code"
+    phrase "explain the code"
+    phrase "explain this function"
+    phrase "explain the following"
+    phrase "what does this do"
+    phrase "what does this code do"
+    phrase "what does the code"
+    phrase "what does the following"
+    phrase "объясни код"
+    phrase "объясни этот код"
+    phrase "поясни код"
+    phrase "что делает этот код"
+    phrase "что делает код"
+    phrase "что делает функция"
+    phrase "как работает этот код"
+cues
+  intent code_review
+    phrase "review this code"
+    phrase "code review"
+    phrase "review the code"
+    phrase "review the following"
+    phrase "ревью кода"
+    phrase "проведи ревью"
+    phrase "проверь код"
+    phrase "рецензия на код"
+    phrase "посмотри код"
+cues
+  intent test_generation
+    role request
+    phrase "write tests for"
+    phrase "write pytest tests"
+    phrase "write unit tests"
+    phrase "write test cases"
+    phrase "generate tests for"
+    phrase "generate test cases"
+    phrase "напиши тесты"
+    phrase "сгенерируй тесты"
+    phrase "тесты для"
+    phrase "юнит тесты"
+cues
+  intent test_generation
+    role framework
+    phrase "pytest"
+    phrase "unittest"
+cues
+  intent code_refactoring
+    phrase "refactor this code"
+    phrase "refactor the"
+    phrase "rewrite this"
+    phrase "rewrite the"
+    phrase "convert this promise"
+    phrase "promise chain"
+    phrase "async await version"
+    phrase "перепиши код"
+    phrase "рефактори"
+    phrase "рефакторинг"
+map
+  name number
+    entry
+      word zero
+      value "0"
+    entry
+      word one
+      value "1"
+    entry
+      word two
+      value "2"
+    entry
+      word three
+      value "3"
+    entry
+      word four
+      value "4"
+    entry
+      word five
+      value "5"
+    entry
+      word six
+      value "6"
+    entry
+      word seven
+      value "7"
+    entry
+      word eight
+      value "8"
+    entry
+      word nine
+      value "9"
+    entry
+      word ten
+      value "10"
+    entry
+      word eleven
+      value "11"
+    entry
+      word twelve
+      value "12"
+map
+  name separator
+    entry
+      word hyphen
+      value "-"
+    entry
+      word dash
+      value "-"
+    entry
+      word minus
+      value "-"
+    entry
+      word dot
+      value "\\."
+    entry
+      word period
+      value "\\."
+    entry
+      word slash
+      value "/"
+    entry
+      word colon
+      value ":"
+    entry
+      word comma
+      value ","
+    entry
+      word underscore
+      value "_"
+    entry
+      word underline
+      value "_"
+    entry
+      word space
+      value " "
+map
+  name class
+    entry
+      word digit
+      value "\\d"
+      label digits
+    entry
+      word digits
+      value "\\d"
+      label digits
+    entry
+      word number
+      value "\\d"
+      label digits
+    entry
+      word numbers
+      value "\\d"
+      label digits
+    entry
+      word letter
+      value "[A-Za-z]"
+      label letters
+    entry
+      word letters
+      value "[A-Za-z]"
+      label letters
+    entry
+      word uppercase
+      value "[A-Z]"
+      label "uppercase letters"
+    entry
+      word lowercase
+      value "[a-z]"
+      label "lowercase letters"
+    entry
+      word character
+      value "."
+      label characters
+    entry
+      word characters
+      value "."
+      label characters
+map
+  name optional_marker
+    entry
+      word optional
+    entry
+      word optionally
+map
+  name anchor_exception
+    entry
+      word contains
+    entry
+      word "match anywhere"
+    entry
+      word anywhere
+map
+  name sql_comparative
+    entry
+      word older
+      column age
+      operator ">"
+    entry
+      word younger
+      column age
+      operator "<"
+    entry
+      word старше
+      column age
+      operator ">"
+    entry
+      word моложе
+      column age
+      operator "<"
+    entry
+      word taller
+      column height
+      operator ">"
+    entry
+      word shorter
+      column height
+      operator "<"
+    entry
+      word cheaper
+      column price
+      operator "<"
+    entry
+      word expensive
+      column price
+      operator ">"
+map
+  name extension
+    entry
+      word log
+      value "*.log"
+    entry
+      word python
+      value "*.py"
+    entry
+      word py
+      value "*.py"
+    entry
+      word javascript
+      value "*.js"
+    entry
+      word js
+      value "*.js"
+    entry
+      word typescript
+      value "*.ts"
+    entry
+      word rust
+      value "*.rs"
+    entry
+      word text
+      value "*.txt"
+    entry
+      word txt
+      value "*.txt"
+    entry
+      word json
+      value "*.json"
+    entry
+      word yaml
+      value "*.yaml"
+    entry
+      word yml
+      value "*.yml"
+    entry
+      word markdown
+      value "*.md"
+    entry
+      word md
+      value "*.md"
+    entry
+      word csv
+      value "*.csv"
+    entry
+      word html
+      value "*.html"
+    entry
+      word css
+      value "*.css"
+    entry
+      word xml
+      value "*.xml"
+    entry
+      word png
+      value "*.png"
+    entry
+      word jpg
+      value "*.jpg"
+    entry
+      word jpeg
+      value "*.jpeg"
+    entry
+      word gif
+      value "*.gif"
+    entry
+      word pdf
+      value "*.pdf"
+    entry
+      word tar
+      value "*.tar"
+    entry
+      word gz
+      value "*.gz"
+    entry
+      word zip
+      value "*.zip"
+map
+  name size_unit
+    entry
+      word mb
+      value "M"
+    entry
+      word mib
+      value "M"
+    entry
+      word m
+      value "M"
+    entry
+      word kb
+      value "k"
+    entry
+      word kib
+      value "k"
+    entry
+      word k
+      value "k"
+    entry
+      word gb
+      value "G"
+    entry
+      word gib
+      value "G"
+    entry
+      word g
+      value "G"
+    entry
+      word bytes
+      value "c"
+    entry
+      word byte
+      value "c"
+    entry
+      word b
+      value "c"
+map
+  name file_context
+    entry
+      word files
+    entry
+      word file
+    entry
+      word logs
+    entry
+      word log
+    entry
+      word lines
+    entry
+      word line
+    entry
+      word directory
+    entry
+      word directories
+    entry
+      word folder
+    entry
+      word файлов
+    entry
+      word файлы
+    entry
+      word строк
+    entry
+      word журнал
+map
+  name test_property
+    entry
+      word "ignoring case"
+      value case
+    entry
+      word "case insensitive"
+      value case
+    entry
+      word "регистр"
+      value case
+    entry
+      word "ignoring spaces"
+      value spaces
+    entry
+      word "ignoring space"
+      value spaces
+    entry
+      word "ignoring punctuation"
+      value punctuation
+    entry
+      word "spaces"
+      value spaces
+    entry
+      word "punctuation"
+      value punctuation
+test_cases
+  shape palindrome
+    trigger palindrome
+    trigger палиндром
+    case
+      input "RaceCar"
+      outcome true
+    case
+      input "hello"
+      outcome false
+    case
+      input "never odd or even"
+      outcome true
+    case
+      input ""
+      outcome true
+test_cases
+  shape average
+    trigger average
+    trigger mean
+    trigger среднее
+    case
+      input "[2, 4, 6]"
+      output "4"
+    case
+      input "[5]"
+      output "5"
+test_cases
+  shape max
+    trigger max
+    trigger maximum
+    trigger максимальн
+    case
+      input "[3, 1, 2]"
+      output "3"
+    case
+      input "[-5, -1, -2]"
+      output "-1"

@@ -1,0 +1,46 @@
+language en
+lemma bundle
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a collection of things wrapped or boxed together"
+    id oewn-08024575-n
+    partOfSpeech n
+    synonyms (package packet parcel)
+  entry
+    definition "a package of several things tied together for carrying or storing"
+    id oewn-02922798-n
+    partOfSpeech n
+    synonyms (sheaf)
+  entry
+    definition "a large sum of money (especially as pay or profit)"
+    examples ("she made a bundle selling real estate" "they sank megabucks into their new house")
+    id oewn-13271579-n
+    partOfSpeech n
+    synonyms (pile "big bucks" megabucks "big money")
+  entry
+    definition "make into a bundle"
+    examples ("he bundled up his few possessions")
+    id oewn-01489634-v
+    partOfSpeech v
+    synonyms ("bundle up" "roll up")
+  entry
+    definition "gather or cause to gather into a cluster"
+    examples ("She bunched her fingers into a fist")
+    id oewn-01487029-v
+    partOfSpeech v
+    synonyms (bunch cluster clump)
+  entry
+    definition "compress into a wad"
+    examples ("wad paper into the box")
+    id oewn-01486416-v
+    partOfSpeech v
+    synonyms (pack wad compact)
+  entry
+    definition "sleep fully clothed in the same bed with one's betrothed"
+    id oewn-00015156-v
+    partOfSpeech v
+    synonyms ("practice bundling")
+source "oewn:2024"

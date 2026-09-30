@@ -733,7 +733,8 @@ fn command_environment() -> [(&'static str, PathBuf); 1] {
     [("TMPDIR", std::env::temp_dir())]
 }
 
-/// Report what a command actually cost — only when `FORMAL_AI_TRACE_COMMANDS=1`.
+/// Report what a command actually cost — only when `FORMAL_AI_TRACE_COMMANDS`
+/// is set to a true spelling (`1`, `true`, `yes`, `on`; issue #1181).
 ///
 /// Off by default, in the same opt-in style as `FORMAL_AI_TRACE_REQUESTS` and
 /// `FORMAL_AI_TRACE_SLOW_INIT`. A timeout tells you a deadline was reached but
@@ -742,7 +743,7 @@ fn command_environment() -> [(&'static str, PathBuf); 1] {
 /// how long it ran, so the next occurrence on a runner nobody can attach a
 /// debugger to still identifies itself.
 fn trace_command(program_path: &Path, budget: Duration, elapsed: Duration, timed_out: bool) {
-    if std::env::var("FORMAL_AI_TRACE_COMMANDS").as_deref() == Ok("1") {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_COMMANDS") {
         eprintln!(
             "[agent-command] {} ran {} ms of a {} ms budget (timed_out={timed_out})",
             program_path.display(),

@@ -1,0 +1,23 @@
+# The cache policy for stored coding procedures (issue #1165, E130).
+#
+# A stored procedure is a cache entry, never knowledge: every row must name
+# where a rediscovery would start from, and a test may delete the whole cache
+# file and reproduce every row through research_coding_skill_gap.
+program_cache_policy
+  version "1"
+  purpose "A stored coding procedure is a cache entry, not knowledge. Every row names the query and the documented source a rediscovery starts from, so deleting the cache and re-running research reproduces each row with the same content_id."
+  cache_file "data/cache/coding-procedure-cache.lino"
+  content_hash "fnv1a64 of the entry program bytes"
+  grammar_seed "data/seed/program-cst-grammars.lino"
+  entry_requires
+    rediscovery_query "required"
+    rediscovery_source "required"
+    entry "required"
+    verified_output "required"
+    content_id "recomputed on store"
+  knows_language_rule "a grammar exists in the grammar seed and discovery found a procedure, either as a cache row or as the bootstrap record of a discovery that already ran"
+  bootstrap
+    active "true"
+    owner "rust/src/knowledge.rs ORACLE_SNAPSHOTS"
+    purpose "The embedded snapshots are the record of discovery that ran before the cache file existed, so offline lookups keep answering while the first live refresh materializes rows."
+    retirement "Delete the bootstrap record in this seed to stop serving the snapshots with no Rust change, then delete ORACLE_SNAPSHOTS once every language row it covered is reproduced by a rediscovery run."

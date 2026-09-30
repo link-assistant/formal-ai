@@ -3,9 +3,10 @@
 //! Each `fact_*` entry encodes a single canned fact (e.g. "Tokyo is the
 //! capital of Japan") keyed by multilingual `subject_aliases` and
 //! `question_keywords`. The matcher fires when at least one alias **and**
-//! at least one keyword appear in the normalized prompt, so the data file
-//! alone — not Rust code — decides which surface forms route to which
-//! fact, in any of the four supported languages.
+//! at least one keyword appear in the normalized prompt — each matched at
+//! word boundaries, never as a raw substring inside a longer word (issue
+//! #1172) — so the data file alone — not Rust code — decides which surface
+//! forms route to which fact, in any of the four supported languages.
 //!
 //! `wikidata` carries one or more Q-IDs as a parenthesized link list that
 //! anchors the fact to the structured knowledge graph; each Q-ID is appended
@@ -118,16 +119,21 @@ impl FactRecord {
     }
 
     /// Return `true` when at least one subject alias **and** at least one
-    /// question keyword appear as substrings of `normalized` (which the
-    /// caller is expected to lowercase). The conjunction prevents
-    /// "what is rust?" from matching the LOTR fact just because both share
-    /// a question word, and the alias requirement disambiguates entities.
+    /// question keyword appear in `normalized` — each matched at word
+    /// boundaries, never as a raw substring inside a longer word (issue
+    /// #1172: the United States alias "us" used to match inside
+    /// "a**us**tralia", so "What is the capital of Australia?" answered with
+    /// Washington, D.C. even though no Australia fact exists). `normalized`
+    /// is the caller's `engine::normalize_prompt` output. The conjunction
+    /// prevents "what is rust?" from matching the LOTR fact just because
+    /// both share a question word, and the alias requirement disambiguates
+    /// entities.
     #[must_use]
     pub fn matches_normalized(&self, normalized: &str) -> bool {
         let has_subject = self
             .subject_aliases
             .iter()
-            .any(|alias| !alias.is_empty() && normalized.contains(alias.as_str()));
+            .any(|alias| Self::contains_word_sequence(normalized, alias));
         if !has_subject {
             return false;
         }
@@ -139,7 +145,59 @@ impl FactRecord {
         }
         self.question_keywords
             .iter()
-            .any(|keyword| !keyword.is_empty() && normalized.contains(keyword.as_str()))
+            .any(|keyword| Self::contains_word_sequence(normalized, keyword))
+    }
+
+    /// Does the surface word or phrase `phrase` appear in `normalized` as a
+    /// whole word (or whole multi-word phrase)?
+    ///
+    /// Issue #1172 (R1): a subject alias or question keyword may never match
+    /// as a raw substring inside a longer word — "us" must not match inside
+    /// "australia", and "capital" must not match inside "capitalism".
+    /// Space-delimited scripts therefore match on token boundaries: the
+    /// phrase is tokenized with `engine::normalize_prompt` and must appear
+    /// as a consecutive token run of `normalized`. Both sides are pushed
+    /// through the same normalizer, because callers do not agree on how far
+    /// they normalized the prompt: `meta_method_dispatch::try_dispatch`
+    /// passes a merely lowercased prompt (so "spider-man" arrives as one
+    /// token while the alias "spider man" tokenizes as two), while
+    /// `benchmark_prompts::fact_store_resolves` passes full
+    /// `normalize_prompt` output. Re-normalizing is idempotent for input
+    /// that is already normalized, so one comparison serves both callers
+    /// and a hyphenated alias ("человек-паук фильмы") matches a hyphenated
+    /// prompt exactly as its unhyphenated twin matches the normalized one.
+    /// Scripts written without inter-word spaces (CJK, per
+    /// `coding::contains_cjk`) have no token boundaries to honor, so those
+    /// phrases keep substring matching — the same contract as
+    /// `seed::meanings::surface_present` (issue #386), which this mirrors for
+    /// the fact store's own matching path.
+    ///
+    /// An associated function (rather than a free one) so it ships with the
+    /// re-exported [`FactRecord`] type: the seed module keeps `facts` private
+    /// and re-exports selected items, and the solver-side subject-alias
+    /// reporter in `solver_handlers::benchmark_prompts` needs this exact
+    /// comparison to agree with [`Self::matches_normalized`].
+    #[must_use]
+    pub fn contains_word_sequence(normalized: &str, phrase: &str) -> bool {
+        if phrase.is_empty() {
+            return false;
+        }
+        if crate::coding::contains_cjk(phrase) {
+            return normalized.contains(phrase);
+        }
+        let phrase_normalized = crate::engine::normalize_prompt(phrase);
+        let phrase_tokens: Vec<&str> = phrase_normalized.split_whitespace().collect();
+        if phrase_tokens.is_empty() {
+            // A phrase that normalizes to nothing (bare punctuation) is not a
+            // surface any prompt can carry; the old substring matcher would
+            // have accepted it inside any prompt containing that punctuation.
+            return false;
+        }
+        let prompt_normalized = crate::engine::normalize_prompt(normalized);
+        let tokens: Vec<&str> = prompt_normalized.split_whitespace().collect();
+        tokens
+            .windows(phrase_tokens.len())
+            .any(|window| window == phrase_tokens.as_slice())
     }
 }
 

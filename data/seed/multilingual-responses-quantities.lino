@@ -1,0 +1,241 @@
+multilingual_responses_quantities
+  response response_statistics_en
+    intent statistics
+    language en
+    text "The values are {values} (n = {count}).\n{results}"
+  response response_statistics_ru
+    intent statistics
+    language ru
+    text "Значения: {values} (n = {count}).\n{results}"
+  response response_statistics_hi
+    intent statistics
+    language hi
+    text "मान ये हैं: {values} (n = {count})।\n{results}"
+  response response_statistics_zh
+    intent statistics
+    language zh
+    text "这些值是：{values}（n = {count}）。\n{results}"
+  response response_unit_conversion_multiply_en
+    intent unit_conversion_multiply
+    language en
+    text "{value} {source_unit} is {result} {target_unit}. {value} × {factor} = {result}, because 1 {source_unit} = {factor} {target_unit}."
+  response response_unit_conversion_multiply_ru
+    intent unit_conversion_multiply
+    language ru
+    text "{value} {source_unit} — это {result} {target_unit}. {value} × {factor} = {result}, потому что 1 {source_unit} = {factor} {target_unit}."
+  response response_unit_conversion_multiply_hi
+    intent unit_conversion_multiply
+    language hi
+    text "{value} {source_unit} = {result} {target_unit}। {value} × {factor} = {result}, क्योंकि 1 {source_unit} = {factor} {target_unit}।"
+  response response_unit_conversion_multiply_zh
+    intent unit_conversion_multiply
+    language zh
+    text "{value} {source_unit} 是 {result} {target_unit}。{value} × {factor} = {result}，因为 1 {source_unit} = {factor} {target_unit}。"
+  response response_unit_conversion_divide_en
+    intent unit_conversion_divide
+    language en
+    text "{value} {source_unit} is {result} {target_unit}. {value} ÷ {factor} {equals} {result}, because 1 {target_unit} = {factor} {source_unit}."
+  response response_unit_conversion_divide_ru
+    intent unit_conversion_divide
+    language ru
+    text "{value} {source_unit} — это {result} {target_unit}. {value} ÷ {factor} {equals} {result}, потому что 1 {target_unit} = {factor} {source_unit}."
+  response response_unit_conversion_divide_hi
+    intent unit_conversion_divide
+    language hi
+    text "{value} {source_unit} = {result} {target_unit}। {value} ÷ {factor} {equals} {result}, क्योंकि 1 {target_unit} = {factor} {source_unit}।"
+  response response_unit_conversion_divide_zh
+    intent unit_conversion_divide
+    language zh
+    text "{value} {source_unit} 是 {result} {target_unit}。{value} ÷ {factor} {equals} {result}，因为 1 {target_unit} = {factor} {source_unit}。"
+  response response_unit_conversion_formula_en
+    intent unit_conversion_formula
+    language en
+    text "{value} {source_unit} is {result} {target_unit}. {derivation}."
+  response response_unit_conversion_formula_ru
+    intent unit_conversion_formula
+    language ru
+    text "{value} {source_unit} — это {result} {target_unit}. {derivation}."
+  response response_unit_conversion_formula_hi
+    intent unit_conversion_formula
+    language hi
+    text "{value} {source_unit} = {result} {target_unit}। {derivation}।"
+  response response_unit_conversion_formula_zh
+    intent unit_conversion_formula
+    language zh
+    text "{value} {source_unit} 是 {result} {target_unit}。{derivation}。"
+  response response_word_problem_change_en
+    intent word_problem_change
+    language en
+    text "The change is {change}: {derivation}."
+  response response_word_problem_change_ru
+    intent word_problem_change
+    language ru
+    text "Сдача: {change}: {derivation}."
+  response response_word_problem_change_hi
+    intent word_problem_change
+    language hi
+    text "वापस मिलने वाली राशि {change} है: {derivation}।"
+  response response_word_problem_change_zh
+    intent word_problem_change
+    language zh
+    text "应找零 {change}：{derivation}。"
+  response response_word_problem_total_en
+    intent word_problem_total
+    language en
+    text "The total is {total}: {derivation}."
+  response response_word_problem_total_ru
+    intent word_problem_total
+    language ru
+    text "Итого: {total}: {derivation}."
+  response response_word_problem_total_hi
+    intent word_problem_total
+    language hi
+    text "कुल राशि {total} है: {derivation}।"
+  response response_word_problem_total_zh
+    intent word_problem_total
+    language zh
+    text "总共是 {total}：{derivation}。"
+  response response_calendar_weekday_offset_split_next_en
+    intent calendar_weekday_offset_split_next
+    language en
+    text "{n} days after {source} is {result}. {n} days = {weeks} weeks + {days} days, and {source_plain} + {days} days = {result} in the seven-day calendar cycle."
+  response response_calendar_weekday_offset_split_next_ru
+    intent calendar_weekday_offset_split_next
+    language ru
+    text "Через {n} дней после {source} — {result}. {n} дней = {weeks} недель + {days} дня; {source_plain} + {days} дня = {result} в семидневном календарном цикле."
+  response response_calendar_weekday_offset_split_next_hi
+    intent calendar_weekday_offset_split_next
+    language hi
+    text "{source} के {n} दिन बाद {result} है। {n} दिन = {weeks} सप्ताह + {days} दिन; {source_plain} + {days} दिन = {result}, सात दिनों के कैलेंडर चक्र में।"
+  response response_calendar_weekday_offset_split_next_zh
+    intent calendar_weekday_offset_split_next
+    language zh
+    text "{source}之后{n}天是{result}。{n}天 = {weeks}周 + {days}天；{source_plain} + {days}天 = {result}（七天日历循环）。"
+  response response_calendar_weekday_offset_split_previous_en
+    intent calendar_weekday_offset_split_previous
+    language en
+    text "{n} days before {source} is {result}. {n} days = {weeks} weeks + {days} days, and {source_plain} - {days} days = {result} in the seven-day calendar cycle."
+  response response_calendar_weekday_offset_split_previous_ru
+    intent calendar_weekday_offset_split_previous
+    language ru
+    text "За {n} дней до {source} — {result}. {n} дней = {weeks} недель + {days} дня; {source_plain} - {days} дня = {result} в семидневном календарном цикле."
+  response response_calendar_weekday_offset_split_previous_hi
+    intent calendar_weekday_offset_split_previous
+    language hi
+    text "{source} से {n} दिन पहले {result} है। {n} दिन = {weeks} सप्ताह + {days} दिन; {source_plain} - {days} दिन = {result}, सात दिनों के कैलेंडर चक्र में।"
+  response response_calendar_weekday_offset_split_previous_zh
+    intent calendar_weekday_offset_split_previous
+    language zh
+    text "{source}之前{n}天是{result}。{n}天 = {weeks}周 + {days}天；{source_plain} - {days}天 = {result}（七天日历循环）。"
+  response response_calendar_weekday_offset_exact_next_en
+    intent calendar_weekday_offset_exact_next
+    language en
+    text "{weeks} weeks after {source} is {result}. {weeks} weeks = {n} days exactly, so the weekday is unchanged in the seven-day calendar cycle."
+  response response_calendar_weekday_offset_exact_next_ru
+    intent calendar_weekday_offset_exact_next
+    language ru
+    text "Через {weeks} недель после {source} — {result}. {weeks} недель = {n} дней ровно, поэтому день недели не меняется в семидневном календарном цикле."
+  response response_calendar_weekday_offset_exact_next_hi
+    intent calendar_weekday_offset_exact_next
+    language hi
+    text "{source} के {weeks} सप्ताह बाद {result} ही है। {weeks} सप्ताह = {n} दिन ठीक-ठीक, इसलिए सात दिनों के कैलेंडर चक्र में वार नहीं बदलता।"
+  response response_calendar_weekday_offset_exact_next_zh
+    intent calendar_weekday_offset_exact_next
+    language zh
+    text "{source}之后{weeks}周是{result}。{weeks}周 = {n}天整，因此在七天日历循环中星期几不变。"
+  response response_calendar_weekday_offset_exact_previous_en
+    intent calendar_weekday_offset_exact_previous
+    language en
+    text "{weeks} weeks before {source} is {result}. {weeks} weeks = {n} days exactly, so the weekday is unchanged in the seven-day calendar cycle."
+  response response_calendar_weekday_offset_exact_previous_ru
+    intent calendar_weekday_offset_exact_previous
+    language ru
+    text "За {weeks} недель до {source} — {result}. {weeks} недель = {n} дней ровно, поэтому день недели не меняется в семидневном календарном цикле."
+  response response_calendar_weekday_offset_exact_previous_hi
+    intent calendar_weekday_offset_exact_previous
+    language hi
+    text "{source} से {weeks} सप्ताह पहले {result} ही है। {weeks} सप्ताह = {n} दिन ठीक-ठीक, इसलिए सात दिनों के कैलेंडर चक्र में वार नहीं बदलता।"
+  response response_calendar_weekday_offset_exact_previous_zh
+    intent calendar_weekday_offset_exact_previous
+    language zh
+    text "{source}之前{weeks}周是{result}。{weeks}周 = {n}天整，因此在七天日历循环中星期几不变。"
+  response response_calendar_weekday_offset_exact_one_next_en
+    intent calendar_weekday_offset_exact_one_next
+    language en
+    text "1 week after {source} is {result}. 1 week = 7 days exactly, so the weekday is unchanged in the seven-day calendar cycle."
+  response response_calendar_weekday_offset_exact_one_next_ru
+    intent calendar_weekday_offset_exact_one_next
+    language ru
+    text "Через неделю после {source} — {result}. Неделя = 7 дней ровно, поэтому день недели не меняется в семидневном календарном цикле."
+  response response_calendar_weekday_offset_exact_one_next_hi
+    intent calendar_weekday_offset_exact_one_next
+    language hi
+    text "{source} के एक सप्ताह बाद {result} ही है। एक सप्ताह = 7 दिन ठीक-ठीक, इसलिए सात दिनों के कैलेंडर चक्र में वार नहीं बदलता।"
+  response response_calendar_weekday_offset_exact_one_next_zh
+    intent calendar_weekday_offset_exact_one_next
+    language zh
+    text "{source}之后一周是{result}。一周 = 7天整，因此在七天日历循环中星期几不变。"
+  response response_calendar_weekday_offset_exact_one_next_es
+    intent calendar_weekday_offset_exact_one_next
+    language es
+    text "1 semana después de {source} es {result}. 1 semana = 7 días exactos, así que el día de la semana no cambia en el ciclo calendario de siete días."
+  response response_calendar_weekday_offset_exact_one_previous_en
+    intent calendar_weekday_offset_exact_one_previous
+    language en
+    text "1 week before {source} is {result}. 1 week = 7 days exactly, so the weekday is unchanged in the seven-day calendar cycle."
+  response response_calendar_weekday_offset_exact_one_previous_ru
+    intent calendar_weekday_offset_exact_one_previous
+    language ru
+    text "За неделю до {source} — {result}. Неделя = 7 дней ровно, поэтому день недели не меняется в семидневном календарном цикле."
+  response response_calendar_weekday_offset_exact_one_previous_hi
+    intent calendar_weekday_offset_exact_one_previous
+    language hi
+    text "{source} से एक सप्ताह पहले {result} ही है। एक सप्ताह = 7 दिन ठीक-ठीक, इसलिए सात दिनों के कैलेंडर चक्र में वार नहीं बदलता।"
+  response response_calendar_weekday_offset_exact_one_previous_zh
+    intent calendar_weekday_offset_exact_one_previous
+    language zh
+    text "{source}之前一周是{result}。一周 = 7天整，因此在七天日历循环中星期几不变。"
+  response response_calendar_weekday_offset_exact_one_previous_es
+    intent calendar_weekday_offset_exact_one_previous
+    language es
+    text "1 semana antes de {source} es {result}. 1 semana = 7 días exactos, así que el día de la semana no cambia en el ciclo calendario de siete días."
+  response response_statistics_es
+    intent statistics
+    language es
+    text "Los valores son {values} (n = {count}).\n{results}"
+  response response_unit_conversion_multiply_es
+    intent unit_conversion_multiply
+    language es
+    text "{value} {source_unit} equivale a {result} {target_unit}. {value} × {factor} = {result}, porque 1 {source_unit} = {factor} {target_unit}."
+  response response_unit_conversion_divide_es
+    intent unit_conversion_divide
+    language es
+    text "{value} {source_unit} equivale a {result} {target_unit}. {value} ÷ {factor} {equals} {result}, porque 1 {target_unit} = {factor} {source_unit}."
+  response response_unit_conversion_formula_es
+    intent unit_conversion_formula
+    language es
+    text "{value} {source_unit} equivale a {result} {target_unit}. {derivation}."
+  response response_word_problem_change_es
+    intent word_problem_change
+    language es
+    text "El cambio es {change}: {derivation}."
+  response response_word_problem_total_es
+    intent word_problem_total
+    language es
+    text "El total es {total}: {derivation}."
+  response response_calendar_weekday_offset_split_next_es
+    intent calendar_weekday_offset_split_next
+    language es
+    text "{n} días después de {source} es {result}. {n} días = {weeks} semanas + {days} días; {source_plain} + {days} días = {result} en el ciclo calendario de siete días."
+  response response_calendar_weekday_offset_split_previous_es
+    intent calendar_weekday_offset_split_previous
+    language es
+    text "{n} días antes de {source} es {result}. {n} días = {weeks} semanas + {days} días; {source_plain} - {days} días = {result} en el ciclo calendario de siete días."
+  response response_calendar_weekday_offset_exact_next_es
+    intent calendar_weekday_offset_exact_next
+    language es
+    text "{weeks} semanas después de {source} es {result}. {weeks} semanas = {n} días exactos, así que el día de la semana no cambia en el ciclo calendario de siete días."
+  response response_calendar_weekday_offset_exact_previous_es
+    intent calendar_weekday_offset_exact_previous
+    language es
+    text "{weeks} semanas antes de {source} es {result}. {weeks} semanas = {n} días exactos, así que el día de la semana no cambia en el ciclo calendario de siete días."

@@ -185,15 +185,10 @@ pub struct ImportConfig {
 }
 
 /// Whether live Wikidata population is enabled via the `FORMAL_AI_LIVE_API`
-/// environment variable (accepts `1`, `true`, `yes`, `on`, case-insensitive).
+/// environment variable (`1`, `true`, `yes`, `on`, case-insensitive).
 #[must_use]
 pub fn live_api_enabled() -> bool {
-    std::env::var("FORMAL_AI_LIVE_API").is_ok_and(|value| {
-        matches!(
-            value.trim().to_ascii_lowercase().as_str(),
-            "1" | "true" | "yes" | "on"
-        )
-    })
+    crate::cli_env::flag_enabled("FORMAL_AI_LIVE_API")
 }
 
 /// Parse a concepts document: a `concepts` node whose children are `<slug>

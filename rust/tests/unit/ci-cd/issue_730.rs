@@ -51,7 +51,7 @@ fn desktop_build_budget_covers_the_measured_windows_arm64_path() {
     let build = desktop
         .split("  build:\n")
         .nth(1)
-        .and_then(|tail| tail.split("\n  vscode:\n").next())
+        .and_then(|tail| tail.split("\n  cli:\n").next())
         .expect("desktop build job");
 
     // Issue #1017 moved the cap into the matrix (`capmin`) so the packaging

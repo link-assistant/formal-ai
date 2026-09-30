@@ -9,8 +9,10 @@ use crate::definition_merge::merge_definitions;
 use crate::engine::SymbolicAnswer;
 use crate::entity_resolution::resolve_who_is;
 use crate::event_log::EventLog;
+use crate::legality_warning::handle_legality_warning;
 use crate::number_constraints::solve_number_constraints;
 use crate::proof_engine::ProofRenderConfig;
+use crate::triz_solver::handle_triz;
 use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handler_how::{
     try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
@@ -18,11 +20,18 @@ use crate::solver_handler_how::{
 use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    SelfAwarenessRuntime, try_algorithm, try_arithmetic, try_brainstorming_request,
-    try_calendar_create_event, try_calendar_reasoning, try_compound_interest, try_concept_lookup,
-    try_conversation_memory, try_conversation_topic_request, try_coreference_request,
-    try_document_originality_check, try_document_request, try_execution_failure, try_fact_checking,
-    try_fact_lookup, try_http_fetch, try_http_fetch_with_offline, try_installation_conversion,
+    SelfAwarenessRuntime, handle_advice_request, handle_brainstorm_request,
+    handle_creative_writing_request, handle_formalization_request, handle_planning_request,
+    handle_product_search, handle_code_debugging, handle_code_explanation,
+    handle_code_refactoring, handle_code_review, handle_format_conversion,
+    handle_regex_synthesis, handle_shell_command_compose, handle_sql_synthesis,
+    handle_statistics, handle_summarization_request, handle_test_generation, handle_text_rewrite,
+    handle_unit_conversion, handle_word_problem, try_algorithm, try_arithmetic,
+    try_brainstorming_request, try_calendar_create_event, try_calendar_reasoning,
+    try_compound_interest, try_concept_lookup, try_conversation_memory,
+    try_conversation_topic_request, try_coreference_request, try_document_originality_check,
+    try_document_request, try_execution_failure, try_fact_checking, try_fact_lookup,
+    try_http_fetch, try_http_fetch_with_offline, try_installation_conversion,
     try_javascript_execution, try_learn_from_source, try_meta_explanation,
     try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
     try_numeric_list_with_history, try_program_synthesis, try_program_synthesis_with_online,
@@ -199,24 +208,14 @@ pub fn try_contextual_override(
             normalized,
             log,
             runtime.solver_config.offline
-                || !std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-                    matches!(
-                        value.trim().to_ascii_lowercase().as_str(),
-                        "1" | "true" | "yes" | "on"
-                    )
-                }),
+                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
         ),
         "web_search" => try_web_search_with_offline(
             prompt,
             normalized,
             log,
             runtime.solver_config.offline
-                || !std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-                    matches!(
-                        value.trim().to_ascii_lowercase().as_str(),
-                        "1" | "true" | "yes" | "on"
-                    )
-                }),
+                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
         ),
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
@@ -259,12 +258,7 @@ pub fn try_contextual_override(
             normalized,
             log,
             runtime.solver_config.offline
-                || !std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-                    matches!(
-                        value.trim().to_ascii_lowercase().as_str(),
-                        "1" | "true" | "yes" | "on"
-                    )
-                }),
+                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
         ),
         _ => return ContextualOutcome::NotHandled,
     };
@@ -285,9 +279,12 @@ pub fn try_contextual_override(
 /// asserts the two are an exact permutation, so this registry and the seed can
 /// never silently drift.
 const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
+    ("legality_warning", handle_legality_warning),
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("document_originality_check", try_document_originality_check),
+    ("formalization_request", handle_formalization_request),
+    ("product_search", handle_product_search),
     ("web_search", try_web_search),
     // Issue #499: a "learn from this data source" directive (a user pointing the
     // engine at Google Trends or another declared source it can learn from) must
@@ -315,22 +312,40 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     // fires when the previous assistant turn formalized a
     // `software_project_request`, so it sits above the general lookups.
     ("software_project_followup", try_software_project_followup),
+    // Issue #1174: a summarization request that carries its own text (paste or
+    // quote) is answered from that text. It must run before the seeded-topic
+    // summarizer below, which declines any prompt without a payload; a
+    // no-payload "summarize the weather" still falls through to it.
+    ("summarization_text", handle_summarization_request),
     ("summarization", try_summarization_request),
     ("verifiable_task", try_verifiable_task),
     ("text_manipulation", try_text_manipulation),
+    ("brainstorm_composition", handle_brainstorm_request),
     ("brainstorming", try_brainstorming_request),
     ("conversation_topic", try_conversation_topic_request),
+    ("advice_request", handle_advice_request),
     ("fact_lookup", try_fact_lookup),
     ("coreference", try_coreference_request),
     ("roleplay", try_roleplay_request),
+    ("creative_writing", handle_creative_writing_request),
     ("translation", try_translation),
+    // Issue #1174: register rewriting, grammar correction, commit-message and
+    // email composition. The cues (rewrite/correct/commit/email) are disjoint
+    // from translation's, so it sits after it and before the language
+    // follow-up noop.
+    ("text_rewrite", handle_text_rewrite),
     (
         "response_language_followup",
         response_language_followup_noop,
     ),
+    ("planning_request", handle_planning_request),
     ("calendar_reasoning", try_calendar_reasoning),
     ("calendar_create_event", try_calendar_create_event),
     ("compound_interest", try_compound_interest),
+    // Issue #1176: price-times-count word problems ("5 boxes pay 3 each,
+    // total?") are prose, not bare number lists, so they claim the prompt
+    // before `numeric_list` can read "total" as a sum cue.
+    ("word_problem", handle_word_problem),
     // Issue #395: a concrete "<operation> these numbers in <language>, give me
     // the code and the result" request must produce generated code plus the
     // deterministically-computed result. The universal numeric-list engine
@@ -343,7 +358,22 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     // executing the command. This is more specific than generic script writing
     // or terminal-command refusal.
     ("shell_command_transform", try_shell_command_transform),
+    // Issue #1177: the code-task family, part one. Each handler is structural
+    // (nothing is ever executed) and claims only prompts carrying its own cue
+    // vocabulary plus a code artifact, so they sit between the shell-command
+    // rewrite and the number-constraint reasoner without disturbing either.
+    ("code_debugging", handle_code_debugging),
+    ("regex_synthesis", handle_regex_synthesis),
+    ("sql_synthesis", handle_sql_synthesis),
+    ("shell_command_compose", handle_shell_command_compose),
     ("number_constraint_reasoning", solve_number_constraints),
+    // Issue #1177: the code-task family, part two — explanation, review, test
+    // generation, refactoring, and JSON/YAML format conversion.
+    ("code_explanation", handle_code_explanation),
+    ("code_review", handle_code_review),
+    ("test_generation", handle_test_generation),
+    ("code_refactoring", handle_code_refactoring),
+    ("format_conversion", handle_format_conversion),
     // Issue #531: a concrete "find the pattern in 1 2 1 2" / "what comes next"
     // request over an explicit sequence or grid runs the link-native
     // pattern-inference substrate. It is data-gated (needs a run of atoms) so a
@@ -351,8 +381,14 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     // it sits before `arithmetic` so a numeric sequence is analysed structurally
     // rather than mistaken for a calculation.
     ("arithmetic", handle_arithmetic),
+    // Issue #1176: statistics over an explicit numeric dataset. It sits after
+    // `arithmetic` and `numeric_list` so a bare "range of 1..5" style prompt is
+    // computed by them first; the statistics handler requires the dataset
+    // vocabulary plus at least two numbers.
+    ("statistics", handle_statistics),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", merge_definitions),
+    ("triz_resolution", handle_triz),
     ("concept_lookup", handle_concept_lookup),
     ("who_is", resolve_who_is),
     ("how_it_works", try_how_it_works),
@@ -382,6 +418,11 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     // "Do you think you can prove …" land on the formalization pipeline
     // explanation instead of the no-opinion policy.
     ("proof_request", try_proof_request),
+    // Issue #1176: exact unit conversion ("3 km in m", "how many feet in 3
+    // miles") with the arithmetic shown. It sits directly before
+    // `incompatible_units`, which declines the pairs that have no conversion
+    // path; a compatible pair is answered here and never reaches it.
+    ("unit_conversion", handle_unit_conversion),
     ("incompatible_units", try_incompatible_units),
 ];
 

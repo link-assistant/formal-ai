@@ -530,7 +530,7 @@ enum AgenticOutcome {
 /// [`plan_chat_step`] drive the loop. An unrecognised task yields
 /// [`AgenticOutcome::Fallthrough`] so ordinary chat stays untouched.
 fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> AgenticOutcome {
-    let trace = std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1");
+    let trace = crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS");
     if !request.requests_tool_execution() {
         // A client that speaks no function calling can still ground a file
         // read: `aider` puts the file's bytes in the conversation itself

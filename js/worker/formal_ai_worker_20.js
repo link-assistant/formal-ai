@@ -959,10 +959,13 @@ function workerHandlerRegistryDefinition() {
     write_program_coreference: "@writeProgram",
     program_blueprint_from_prompt: "tryProgramBlueprintFromPrompt",
     write_program_concrete: "@writeProgram",
+    legality_warning: null, // native surface only: seeded advisory policy
     http_fetch: null, // phase async
     url_navigate: null, // phase async
     github_repository_traffic: "tryGithubRepositoryTraffic",
     document_originality_check: "tryDocumentOriginalityCheck",
+    formalization_request: null, // native surface only: quantified clause renderer
+    product_search: null, // native surface only: marketplace query composer
     web_search: null, // phase async
     learn_from_source: null, // phase async
     research_comparison_table: "tryResearchComparisonTable",
@@ -972,27 +975,45 @@ function workerHandlerRegistryDefinition() {
     procedural_how_to_followup: null, // phase async
     conversation_memory: workerHandlerAliases.conversation_memory,
     software_project_followup: "trySoftwareProjectFollowup",
+    summarization_text: null, // native surface only: the text summarizer runs in the Rust core
     summarization: workerHandlerAliases.summarization,
     verifiable_task: "tryVerifiableTask",
     text_manipulation: "tryTextManipulation",
+    brainstorm_composition: null, // native surface only: constrained name composition
     brainstorming: workerHandlerAliases.brainstorming,
     conversation_topic: null, // inline opener machinery in the conversation module
+    advice_request: null, // native surface only: cited advice composition
     fact_lookup: "tryFactLookup",
     coreference: workerHandlerAliases.coreference,
     roleplay: workerHandlerAliases.roleplay,
+    creative_writing: null, // native surface only: constrained verse composition
     translation: null, // native surface only
+    text_rewrite: null, // native surface only: register rewrites run in the Rust core
     response_language_followup: null, // native rule surface only
     capabilities: "tryCapabilities",
+    planning_request: null, // native surface only: feasible itinerary composition
     calendar_reasoning: "tryCalendarReasoning",
     calendar_create_event: "tryCalendarCreateEvent",
     compound_interest: "tryCompoundInterest",
+    word_problem: null, // native surface only: price-times-count prose solves in the Rust core
     numeric_list: "tryNumericList",
     shell_command_transform: workerHandlerAliases.shell_command_transform,
+    code_debugging: null, // native surface only: structural debugging guidance runs in the Rust core
+    regex_synthesis: null, // native surface only: regex composition runs in the Rust core
+    sql_synthesis: null, // native surface only: single-SELECT composition runs in the Rust core
+    shell_command_compose: null, // native surface only: find composition runs in the Rust core
     number_constraint_reasoning: null, // native surface only
+    code_explanation: null, // native surface only: the construct table walk runs in the Rust core
+    code_review: null, // native surface only: the seeded review rules run in the Rust core
+    test_generation: null, // native surface only: pytest suite emission runs in the Rust core
+    code_refactoring: null, // native surface only: promise-chain rewriting runs in the Rust core
+    format_conversion: null, // native surface only: JSON/YAML conversion runs in the Rust core
     program_synthesis: "tryProgramSynthesis",
     arithmetic: "tryArithmetic",
+    statistics: null, // native surface only: exact decimal statistics run in the Rust core
     javascript_execution: "tryJavaScriptExecution",
     definition_merge: "@definitionMerge",
+    triz_resolution: null, // native surface only: contradiction families
     concept_lookup: "tryConceptLookup",
     who_is: workerHandlerAliases.who_is,
     how_it_works: null, // inline architecture-question machinery
@@ -1015,6 +1036,7 @@ function workerHandlerRegistryDefinition() {
     shell_refusal: null, // native surface only
     proof_request: "tryProofRequest",
     opinion_question: null, // native surface only
+    unit_conversion: null, // native surface only: exact decimal conversion runs in the Rust core
     incompatible_units: "tryIncompatibleUnits",
   };
   return { workerHandlers, workerHandlerAliases };
@@ -1208,6 +1230,21 @@ async function loadSeed() {
   return seedLoadPromise;
 }
 let initPromise = null;
+// Issue #934: a failed WASM instantiation must surface as a visible
+// "engine unavailable" state, never as a silent switch to the JavaScript
+// mirror. The mirror stays reachable only behind an explicit diagnostic
+// override (?jsfallback=1, written by the app from a dev-only setting) so
+// local development can inspect it, and every answer records which engine
+// produced it in its trace evidence.
+let engineError = "";
+let diagnosticJsFallback = false;
+try {
+  diagnosticJsFallback = /[?&]jsfallback=1\b/.test(
+    String(self.location && self.location.search || ""),
+  );
+} catch (_overrideError) {
+  diagnosticJsFallback = false;
+}
 async function init() {
   if (wasm !== undefined) return;
   if (initPromise) return initPromise;
@@ -1215,6 +1252,9 @@ async function init() {
     await loadSeed();
     try {
       const source = await fetch(withAssetVersion("formal_ai_worker.wasm"));
+      if (!source || source.ok === false) {
+        throw new Error(`wasm fetch failed: ${source ? source.status : "no response"}`);
+      }
       const bytes = await source.arrayBuffer();
       const module = await WebAssembly.instantiate(bytes, {});
       wasm = module.instance.exports;
@@ -1227,13 +1267,17 @@ async function init() {
         ).split("\n").filter(Boolean);
         assertWorkerRegistryPermutation(declared);
       }
-    } catch (_error) {
+    } catch (error) {
       wasm = null;
-      mode = "js fallback";
+      engineError = String((error && error.message) || error);
+      mode = diagnosticJsFallback
+        ? "js fallback (diagnostic override)"
+        : "engine unavailable";
     }
     postMessage({
       kind: "ready",
       mode,
+      engineError: wasm ? "" : engineError,
       seed: {
         responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
         conceptCount: CONCEPTS.length,
@@ -1246,6 +1290,10 @@ async function init() {
         files: Object.keys(SEED_RAW),
       },
     });
+    if (wasm == null && !diagnosticJsFallback) {
+      // Loud, not silent: the app turns this into a visible error banner.
+      postMessage({ kind: "engine_unavailable", error: engineError });
+    }
   })();
   return initPromise;
 }
@@ -1309,6 +1357,35 @@ self.onmessage = async (event) => {
   // rewrites; the worker stays pure and the app applies the write.
   const memory = Array.isArray(data.memory) ? data.memory : [];
   const memoryEvents = Array.isArray(data.memoryEvents) ? data.memoryEvents : [];
+  // Issue #934: engine provenance travels with every answer, and an engine
+  // that failed to load refuses to answer instead of quietly degrading.
+  const engine = wasm
+    ? "wasm"
+    : diagnosticJsFallback
+      ? "js (diagnostic override)"
+      : "unavailable";
+  if (wasm == null && !diagnosticJsFallback) {
+    postMessage({
+      kind: "message",
+      requestId: data.requestId,
+      intent: "engine_unavailable",
+      content:
+        "The formal-ai WebAssembly engine could not be loaded, so this demo cannot answer."
+        + (engineError ? ` Loader error: ${engineError}.` : "")
+        + " Reload the page to retry."
+        + " Developers can enable the diagnostic JavaScript fallback in Settings to inspect the mirror implementation.",
+      confidence: 0,
+      evidence: [`engine:unavailable${engineError ? `:${engineError}` : ""}`],
+      steps: [],
+      toolCalls: [],
+      iframeUrl: null,
+      diagnostics: null,
+      memoryOperation: null,
+      runtimeOffer: null,
+      engine,
+    });
+    return;
+  }
   const executionAnswer = await executeBrowserCodeRequest(prompt);
   const answer = executionAnswer || attachUserContext(
     await solve(prompt, history, prefs, userContext, memory, { memoryEvents }), userContext,
@@ -1319,13 +1396,14 @@ self.onmessage = async (event) => {
     intent: answer.intent,
     content: answer.content,
     confidence: answer.confidence,
-    evidence: answer.evidence,
+    evidence: [...(answer.evidence || []), `engine:${engine}`],
     steps: answer.steps,
     toolCalls: answer.toolCalls,
     iframeUrl: answer.iframeUrl || null,
     diagnostics: answer.diagnostics || null,
     memoryOperation: answer.memoryOperation || null,
     runtimeOffer: answer.runtimeOffer || null,
+    engine,
   });
 };
 init();

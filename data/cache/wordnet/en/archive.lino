@@ -1,0 +1,16 @@
+language en
+lemma archive
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a depository containing historical records and documents"
+    id oewn-02738091-n
+    partOfSpeech n
+  entry
+    definition "put into an archive"
+    id oewn-01387292-v
+    partOfSpeech v
+    synonyms ("file away")
+source "oewn:2024"

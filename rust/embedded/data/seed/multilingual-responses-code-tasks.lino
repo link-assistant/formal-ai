@@ -1,0 +1,184 @@
+# Response templates for the code-task handlers (issue #1177).
+#
+# Debugging guidance, regex and SQL composition, shell-command composition,
+# structural code explanation, review, test generation, refactoring, and
+# format conversion render their prose through these records so no response
+# text lives in Rust. Placeholders in braces are filled by the handler.
+
+multilingual_responses
+  response response_code_debugging_defect_en
+    intent code_debugging_defect
+    language en
+    text "A defect in a function named `{name}`.\n\nWhat the name promises: a function named `{name}` must return {property} ({grounding}).\n\nDetected defect (code line {line_no}): `{line}`\nThe expression applies the binary `{shift}` to the whole quotient: `/` binds tighter than `-` and `+`, so this computes ({fixed}) {shift}, not the value the name promises.\n\nFix — drop the shift so the promised value is returned unchanged:\n    {fixed}\nor, if the shift was meant to apply to an operand of the division, move it inside the divisor so it applies there, not to the quotient:\n    {parenthesized}\n\nMethod, stated honestly: a structural scan — the operator precedence of the token stream was checked against the property the function name promises (the `function_intent` records in data/seed/meanings-code-structure-explanations.lino). No code was executed and no test was run; the canonical form for this property is `{correct_form}`."
+  response response_code_debugging_no_defect_en
+    intent code_debugging_no_defect
+    language en
+    text "No recognized defect pattern.\n\nThis is a debugging request and the code was scanned, but no construct in the defect table matched: the table currently covers a binary `+`/`-` applied at top level after a division (a shifted quotient), cross-checked against the property the function name promises.{intent_note}\n\nMethod, stated honestly: structural scan only — no code was executed, no test was run, and nothing outside the table was guessed. Next steps a human would take: run the failing input, read the traceback, and compare the output against the property the function name promises."
+  response response_regex_synthesis_pattern_en
+    intent regex_synthesis_pattern
+    language en
+    text "Composed regular expression:\n\n    {pattern}\n\nHow the constraints composed:\n{mapping}{anchor_note}\nVerified structurally: groups are balanced, every repetition is well-formed, and every character class is closed.\nNot verified by execution: the regex engine in this repository is a dev-only dependency, so no match was run against any input. Test the pattern on real inputs (a regex tester or a unit test) before relying on it."
+  response response_regex_synthesis_broken_en
+    intent regex_synthesis_broken
+    language en
+    text "I will not guess a pattern. The constraints composed to `{broken}`, which failed structural verification ({problems}). Restate the counts — how many of which character class, separated by what — and I will compose it again."
+  response response_regex_synthesis_refusal_en
+    intent regex_synthesis_refusal
+    language en
+    text "I could not derive composable constraints from this request, so I will not guess a pattern. I compose from counts of character classes ('five digits', 'two letters'), optional groups ('optionally followed by a hyphen and four digits'), and separators (hyphen, dot, slash, colon, comma, underscore, space). Name the classes and counts explicitly and I will compose the pattern."
+  response response_sql_synthesis_statement_en
+    intent sql_synthesis_statement
+    language en
+    text "Composed SQL:\n\n    {statement}\n\nClause-by-clause mapping:\n{mapping}Verified by construction: each clause above maps to one constraint in the request, and the statement is a single SELECT in standard syntax.\nNot verified by execution: this project carries no SQL engine or parser dependency, so nothing was run — check the column names against your actual schema before running it."
+  response response_sql_synthesis_refusal_en
+    intent sql_synthesis_refusal
+    language en
+    text "I could not identify a table in this request, so I will not guess one. Name the table ('from the users table', 'select all users') and I will compose the SELECT. Verified by construction only: nothing was run against a database."
+  response response_shell_command_composed_en
+    intent shell_command_composed
+    language en
+    text "Composed shell command:\n\n    {command}\n\nFlags, from the {package} manual:\n{flags}Manual: {manual}\n\nDerivation: {derivation}\nNot executed: this is a composed suggestion — run it yourself and inspect the output."
+  response response_shell_compose_refusal_en
+    intent shell_compose_refusal
+    language en
+    text "This request reads as a shell task, but no manual-page entry in data/seed/manual-pages.lino covers it (find, ls, head, tail, grep are covered), so I will not guess a command. Say which files, sizes, ages, paths, line counts, or patterns are involved and I will compose it."
+  response response_code_explanation_lines_en
+    intent code_explanation_lines
+    language en
+    text "A structural explanation, line by line. No code was executed.\n\n{lines}Overall: {overall}\n{cost}Method, stated honestly: each line was matched against the construct table in data/seed/meanings-code-structure-explanations.lino; nothing was run and nothing outside the table was guessed."
+  response response_code_explanation_no_construct_en
+    intent code_explanation_no_construct
+    language en
+    text "No construct in the table matched these lines. The table covers function definitions, for loops, if statements, comprehensions, sum/len/max/min calls, comparisons, assignments, returns, division, indexing, method calls, and a few JavaScript constructs. Method, stated honestly: structural scan only — no code was executed. If the code uses constructs outside the table, a human read (or a language-server hover) will explain more than I can derive structurally."
+  response response_code_review_findings_en
+    intent code_review_findings
+    language en
+    text "Structural review against data/seed/code-review-rules.lino. No code was executed; no linter was run.\n\nFindings:\n{findings}"
+  response response_code_review_no_match_en
+    intent code_review_no_match
+    language en
+    text "No rule in the review table matched this code. That is a statement about the rule table, not a clean bill of health: the table covers bare except, mutable default arguments, == None, string += in loops, and JavaScript loose ==. Run a real linter (ruff, eslint) for a deeper review. Method, stated honestly: structural scan only — nothing was executed."
+  response response_test_generation_suite_en
+    intent test_generation_suite
+    language en
+    text "Generated pytest suite (Python). NOT executed — executing generated tests is out of scope here (that is issue #1185's scope); review the cases and run them yourself with `pytest -q`.\n\n```python\n{suite}```\n\nDerivation: {derivation}"
+  response response_code_refactoring_async_en
+    intent code_refactoring_async
+    language en
+    text "Rewrote the promise chain with async/await. Handler bodies are preserved verbatim; only the control flow changed.\n\n```javascript\n{code}```\n\nEquivalence check, stated honestly: structural — each `.then(handler)` became a `const <param> = await <previous>;` in try-block order and `.catch(handler)` became the catch clause, so every handler still receives what the previous link produced. No code was executed."
+  response response_code_refactoring_refusal_en
+    intent code_refactoring_refusal
+    language en
+    text "Recognized a refactoring request, but the only structural transformation implemented is a JavaScript promise chain (`.then`/`.catch`) to async/await, and this code has no promise chain, so I will not guess a different rewrite. Name the transformation you want (or show a promise chain) and I will do that one."
+  response response_format_conversion_to_yaml_en
+    intent format_conversion_to_yaml
+    language en
+    text "Converted JSON to YAML. Subset, stated honestly: nested objects, arrays, strings, numbers, booleans, null — block style, two-space indent; flow style, anchors, tags and multi-line scalars are outside it.\n\n```yaml\n{yaml}```\nRound-trip check: re-parsing this YAML with the same subset parser reproduced the input JSON exactly, so the conversion is reversible within the subset."
+  response response_format_conversion_to_json_en
+    intent format_conversion_to_json
+    language en
+    text "Converted YAML to JSON. Subset, stated honestly: block-style mappings and sequences, two-space indentation, scalars (numbers, booleans, null, plain or quoted strings); flow style, anchors, tags and multi-line scalars are refused rather than guessed.\n\n```json\n{json}```\nRound-trip check: parsing the emitted JSON back reproduced the same values and nesting as the input YAML."
+  response response_format_conversion_refusal_en
+    intent format_conversion_refusal
+    language en
+    text "I will not guess a conversion. {reason}"
+  response response_mapping_line_en
+    intent mapping_line
+    language en
+    text "  - '{request}' -> {emission}\n"
+  response response_flag_line_en
+    intent flag_line
+    language en
+    text "  - `{flag}` — {meaning}\n"
+  response response_code_debugging_no_intent_en
+    intent code_debugging_no_intent
+    language en
+    text "Note: the function name `{name}` is not in the intent table, so there was no promised property to check the code against."
+  response response_regex_mapping_line_en
+    intent regex_mapping_line
+    language en
+    text "  - '{label}' -> `{render}`{role}{separator}\n"
+  response response_regex_role_main_en
+    intent regex_role_main
+    language en
+    text " (the main run)"
+  response response_regex_role_optional_en
+    intent regex_role_optional
+    language en
+    text " (an optional group)"
+  response response_regex_role_required_en
+    intent regex_role_required
+    language en
+    text " (a required group)"
+  response response_regex_note_separator_en
+    intent regex_note_separator
+    language en
+    text " preceded by a literal `{literal}`"
+  response response_regex_anchor_note_anchored_en
+    intent regex_anchor_note_anchored
+    language en
+    text "  - anchored with ^ and $ so the whole string must match, not just a substring\n"
+  response response_regex_anchor_note_unanchored_en
+    intent regex_anchor_note_unanchored
+    language en
+    text "  - not anchored (the request asked to match a substring), so the pattern matches anywhere\n"
+  response response_regex_problem_dangling_escape_en
+    intent regex_problem_dangling_escape
+    language en
+    text "a backslash at the end escapes nothing"
+  response response_regex_problem_bad_repetition_en
+    intent regex_problem_bad_repetition
+    language en
+    text "a repetition count is missing after an opening brace"
+  response response_regex_problem_unclosed_repetition_en
+    intent regex_problem_unclosed_repetition
+    language en
+    text "a repetition count is not closed"
+  response response_regex_problem_unbalanced_parens_en
+    intent regex_problem_unbalanced_parens
+    language en
+    text "unbalanced parentheses"
+  response response_regex_problem_unbalanced_class_en
+    intent regex_problem_unbalanced_class
+    language en
+    text "unbalanced character-class brackets"
+  response response_code_explanation_line_en
+    intent code_explanation_line
+    language en
+    text "  - `{line}` — {meaning}\n"
+  response response_code_explanation_overall_en
+    intent code_explanation_overall
+    language en
+    text "the function name `{name}` promises {property}; the canonical expression of that promise is `{correct_form}` ({grounding}).\n"
+  response response_code_explanation_no_overall_en
+    intent code_explanation_no_overall
+    language en
+    text "the function name is not in the intent table, so there is no promised property to summarize.\n"
+  response response_code_explanation_cost_linear_en
+    intent code_explanation_cost_linear
+    language en
+    text "Cost: a single pass over the input, so the work grows linearly (O(n)).\n"
+  response response_code_explanation_cost_constant_en
+    intent code_explanation_cost_constant
+    language en
+    text "Cost: no loop over the input appears in these lines.\n"
+  response response_code_review_finding_en
+    intent code_review_finding
+    language en
+    text "  - [{severity}] {title} — line {line_no}: `{line}`\n    {advice}\n    {source}\n"
+  response response_format_conversion_reason_bad_json_en
+    intent format_conversion_reason_bad_json
+    language en
+    text "The text was recognized as JSON but could not be parsed ({detail}), so I will not guess a conversion."
+  response response_format_conversion_reason_roundtrip_en
+    intent format_conversion_reason_roundtrip
+    language en
+    text "The conversion was composed, but re-parsing it did not reproduce the input exactly, so I will not show a possibly-wrong result."
+  response response_format_conversion_reason_subset_en
+    intent format_conversion_reason_subset
+    language en
+    text "The text is outside the supported YAML subset (block mappings, block sequences, two-space indent, scalars), so I will not guess a conversion."
+  response response_test_generation_refusal_en
+    intent test_generation_refusal
+    language en
+    text "Recognized a test-writing request, but no function under test could be identified — name it, ideally in backticks like `is_palindrome(s)` — so I will not guess test cases."

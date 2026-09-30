@@ -77,11 +77,7 @@ fn program_command_intent(prompt: &str, arguments: &str) -> Option<&'static str>
     let normalized = prompt.to_lowercase();
     crate::coding::program_task_by_alias(&normalized)?;
     let language = crate::coding::program_language_by_alias(&normalized)?;
-    let arguments = serde_json::from_str::<Value>(arguments).ok()?;
-    let command = arguments
-        .get("command")
-        .or_else(|| arguments.get("cmd"))
-        .and_then(Value::as_str)?;
+    let command = super::tool_result::command_argument(arguments)?;
     if language.execution.check_command == Some(command) {
         Some("agentic_action_compile_program")
     } else if language.execution.run_command == command {

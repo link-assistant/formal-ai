@@ -18,9 +18,9 @@ This document is a deterministic projection of committed ledgers.
 
 | Verdict | Count |
 | --- | ---: |
-| `implemented` | 459 |
-| `not-delivered` | 22 |
-| `partial` | 664 |
+| `implemented` | 480 |
+| `not-delivered` | 29 |
+| `partial` | 699 |
 | `superseded` | 5 |
 | `withdrawn` | 1 |
 
@@ -52,9 +52,9 @@ This document is a deterministic projection of committed ledgers.
 | `data/benchmarks/external-results.lino` | 946 |
 | `data/meta/self-hosting-ledger.lino` | 1283 |
 | `data/meta/debt-ratchet.lino` | 64 |
-| `data/meta/core-boundary-ledger.lino` | 277 |
-| `data/meta/handler-migration-ledger.lino` | 239 |
+| `data/meta/core-boundary-ledger.lino` | 347 |
+| `data/meta/handler-migration-ledger.lino` | 295 |
 | `data/meta/ladder-ratchet.lino` | 20 |
-| `data/meta/requirement-status-ledger.lino` | 21 |
+| `data/meta/requirement-status-ledger.lino` | 22 |
 | `data/seed/languages.lino` | 37 |
 | `data/meta/worker-line-budget/*.lino` | 37 files |

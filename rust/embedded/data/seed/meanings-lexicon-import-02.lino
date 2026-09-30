@@ -255,29 +255,6 @@ meanings
         text 花 # source Q506 labels.zh.value
         part_of_speech noun
         grammatical_number singular
-  foot
-    grounded-in Q3710
-    defined-by entity
-    lexeme en
-      surface
-        text foot # source Q3710 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text фут # source Q3710 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text फुट # source Q3710 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 英尺 # source Q3710 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
   forest
     grounded-in Q4421
     defined-by entity

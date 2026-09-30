@@ -1,0 +1,20 @@
+Q218593
+  aliases
+    en (in "″" inches "U.S. survey inch" "US survey inch")
+    es (inch)
+    ru ("английский дюйм" "русский дюйм")
+    zh ("英吋" "吋")
+  descriptions
+    en "unit of length"
+    es "unidad de longitud"
+    ru "англоамериканская единица измерения длины"
+    zh "長度單位"
+  id Q218593
+  labels
+    en inch
+    es pulgada
+    hi "इंच"
+    ru "дюйм"
+    zh "英寸"
+  type item
+success 1

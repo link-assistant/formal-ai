@@ -489,11 +489,11 @@ function localizedFactFor(record, language) {
   );
 }
 
+// Issue #1172: aliases and keywords match at word boundaries (surfacePresent over normalizePrompt, mirroring FactRecord::contains_word_sequence in rust/src/seed/facts.rs) so the alias "us" never fires inside "australia".
 function tryFactLookup(prompt, normalized) {
+  const hasSurface = (values) => (values || []).some((value) => surfacePresent(normalized, normalizePrompt(value)));
   const record = FACTS.find(
-    (fact) =>
-      containsAny(normalized, fact.subjectAliases) &&
-      containsAny(normalized, fact.questionKeywords),
+    (fact) => hasSurface(fact.subjectAliases) && hasSurface(fact.questionKeywords),
   );
   if (!record) return null;
   const language = detectLanguage(prompt);
@@ -559,15 +559,13 @@ function matchingCoreferenceAntecedent(previous) {
 }
 
 function matchingAntecedentFactAlias(record, antecedent, previous) {
-  const factAliases = Array.isArray(record && record.subjectAliases)
-    ? record.subjectAliases
-    : [];
-  const antecedentAliases = Array.isArray(antecedent && antecedent.aliases)
-    ? antecedent.aliases
-    : [];
+  const factAliases = (record && record.subjectAliases) || [];
+  const antecedentAliases = (antecedent && antecedent.aliases) || [];
+  // Issue #1172: word-boundary match (see tryFactLookup) so the alias "us"
+  // counts only when the previous turn literally mentions it.
   return factAliases.find((alias) =>
     alias &&
-    previous.includes(alias) &&
+    surfacePresent(previous, normalizePrompt(alias)) &&
     antecedentAliases.includes(String(alias).toLowerCase()),
   ) || "";
 }
@@ -582,7 +580,8 @@ function tryCoreferenceFactLookup(prompt, normalized, history) {
   if (!antecedent) return null;
 
   for (const record of FACTS) {
-    if (!record || !containsAny(normalized, record.questionKeywords)) continue;
+    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).
+    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;
 
     const alias = matchingAntecedentFactAlias(record, antecedent, previous);
     if (!alias) continue;

@@ -1,0 +1,33 @@
+{
+  "lemma": "analogy",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05788336-n",
+      "partOfSpeech": "n",
+      "definition": "an inference that if things agree in some respects they probably agree in others"
+    },
+    {
+      "id": "oewn-00652419-n",
+      "partOfSpeech": "n",
+      "definition": "drawing a comparison in order to show a similarity in some respect",
+      "examples": [
+        "the operation of a computer presents an interesting analogy to the working of the brain",
+        "the models show by analogy how matter is built up"
+      ]
+    },
+    {
+      "id": "oewn-05951428-n",
+      "partOfSpeech": "n",
+      "definition": "the religious belief that between creature and creator no similarity can be found so great but that the dissimilarity is always greater; any analogy between God and humans will always be inadequate",
+      "synonyms": [
+        "doctrine of analogy"
+      ]
+    }
+  ]
+}

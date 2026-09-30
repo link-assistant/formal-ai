@@ -658,6 +658,184 @@ jobs:
           path: desktop/release/SHA256SUMS-${{ matrix.label }}.partial
           retention-days: 7
 
+  # Issue #1181 (R1-R5): ship the `formal-ai` CLI binary itself as standalone
+  # release archives, so `curl | tar xz` (or `cargo binstall formal-ai`, whose
+  # [package.metadata.binstall] in rust/Cargo.toml points at these names) works
+  # without a Rust toolchain and without building the desktop app. Five
+  # targets, one per archive:
+  #   formal-ai-cli-x86_64-unknown-linux-musl.tar.gz   (static, no glibc dependency)
+  #   formal-ai-cli-aarch64-unknown-linux-musl.tar.gz  (static)
+  #   formal-ai-cli-x86_64-apple-darwin.tar.gz
+  #   formal-ai-cli-aarch64-apple-darwin.tar.gz
+  #   formal-ai-cli-x86_64-pc-windows-msvc.zip
+  # Each archive holds `formal-ai-cli-<triple>/` with the binary, LICENSE and
+  # README.md. Names are version-less because GitHub Releases namespaces assets
+  # per tag; scripts/install.sh resolves the release by tag, so a stable name
+  # keeps the download path (and binstall's pkg-url) independent of the version
+  # string embedded everywhere else.
+  cli:
+    name: Build CLI ${{ matrix.label }}
+    needs: [resolve, base]
+    concurrency:
+      group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-cli-${{ matrix.label }}
+      queue: max
+    # Same skipped-dependency handling as `build`; see the comment there.
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # `capmin` mirrors `build`'s per-target job clock: the macos-15-intel
+        # and windows runners have measured the slowest cold compiles of this
+        # dependency graph (runs 30788311906, 30832897812), and this job
+        # compiles the same crate the desktop legs do.
+        include:
+          - { os: ubuntu-latest,    target: x86_64-unknown-linux-musl, label: cli-linux-x64,   binext: "",   archive: tar.gz, capmin: 40 }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-musl, label: cli-linux-arm64, binext: "",   archive: tar.gz, capmin: 40 }
+          - { os: macos-15-intel,   target: x86_64-apple-darwin,        label: cli-macos-x64,   binext: "",   archive: tar.gz, capmin: 50 }
+          - { os: macos-14,         target: aarch64-apple-darwin,        label: cli-macos-arm64, binext: "",   archive: tar.gz, capmin: 40 }
+          - { os: windows-latest,   target: x86_64-pc-windows-msvc,      label: cli-windows-x64, binext: ".exe", archive: zip,  capmin: 50 }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: ${{ matrix.capmin }}
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          # Same ref/fetch-depth reasoning as `build`: PRs build the merge
+          # preview below, releases build the resolved tag.
+          ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
+          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+
+      # Same reason as `build`: package the merge result, not a stale preview
+      # (issue #812), and merge the same pinned commit as every other leg
+      # (issue #1017).
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}
+        run: bash scripts/simulate-fresh-merge.sh
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      # The two Linux legs cross-compile to musl for a static binary with no
+      # glibc dependency. The crate's dependency graph compiles C code
+      # (tree-sitter grammars through meta-language, aws-lc-sys through
+      # webrtc's rustls), so a bare `rustup target add` is not enough: this
+      # action installs the musl GCC and sets CC/CFLAGS/CMAKE_TOOLCHAIN_FILE
+      # for the target. Native legs (macOS both arches, Windows x64) need
+      # nothing beyond the toolchain above.
+      - name: Set up the musl cross toolchain
+        if: runner.os == 'Linux'
+        uses: taiki-e/setup-cross-toolchain-action@v1
+        with:
+          target: ${{ matrix.target }}
+
+      - name: Cache Rust compiler outputs
+        if: runner.os != 'Windows'
+        uses: mozilla-actions/sccache-action@v0.0.11
+        with:
+          # Same response-file constraint as `build` (os error 206 on Windows).
+          version: v0.16.0
+
+      - name: Enable Rust compiler cache
+        if: runner.os != 'Windows'
+        run: |
+          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
+          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
+
+      - name: Build formal-ai CLI binary (release, pinned lock)
+        run: cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target ${{ matrix.target }}
+
+      - name: Package the CLI archive
+        run: |
+          set -euo pipefail
+          triple="${{ matrix.target }}"
+          staging="formal-ai-cli-${triple}"
+          mkdir "$staging"
+          cp "target/${triple}/release/formal-ai${{ matrix.binext }}" "$staging/"
+          cp LICENSE README.md "$staging/"
+          case "${{ matrix.archive }}" in
+            tar.gz) tar -czf "${staging}.tar.gz" "$staging" ;;
+            # Windows: Compress-Archive, not `tar -a` — the bash `tar` on the
+            # Windows runners may be GNU tar, which cannot write zip at all;
+            # PowerShell's archiver is present on every Windows runner.
+            zip) powershell -NoLogo -Command "Compress-Archive -Path '${staging}' -DestinationPath '${staging}.zip'" ;;
+            *) echo "::error::Unexpected archive format: ${{ matrix.archive }}"; exit 1 ;;
+          esac
+          ls -la "${staging}.${{ matrix.archive }}"
+
+      # The one artifact verification this job has (mirroring the desktop
+      # legs' smoke tests): extract the just-built archive and run the binary
+      # from it. Every leg builds for its own host arch (musl included -- a
+      # static musl binary executes on the glibc host), so each leg is the one
+      # runner that can actually execute its own archive. A target that
+      # compiles but cannot start (bad linker flags, a broken manifest, a
+      # packaging mistake) fails here instead of in a user's shell.
+      - name: Smoke test CLI archive
+        run: |
+          set -euo pipefail
+          triple="${{ matrix.target }}"
+          checkdir="smoke-${triple}"
+          if [ "${{ matrix.archive }}" = "tar.gz" ]; then
+            mkdir "$checkdir"
+            tar -xzf "formal-ai-cli-${triple}.tar.gz" -C "$checkdir"
+          else
+            # Expand-Archive needs the directory to exist first.
+            mkdir "$checkdir"
+            powershell -NoLogo -Command "Expand-Archive -Path 'formal-ai-cli-${triple}.zip' -DestinationPath '${checkdir}'"
+          fi
+          binary="${checkdir}/formal-ai-cli-${triple}/formal-ai${{ matrix.binext }}"
+          [ -s "$binary" ] || { echo "::error::the archive did not contain the binary"; exit 1; }
+          "$binary" --version
+          [ -s "${checkdir}/formal-ai-cli-${triple}/LICENSE" ] || { echo "::error::the archive did not contain LICENSE"; exit 1; }
+          [ -s "${checkdir}/formal-ai-cli-${triple}/README.md" ] || { echo "::error::the archive did not contain README.md"; exit 1; }
+
+      # Same `sha256sum`-format line (bare filename) as the desktop build job
+      # so the consolidated SHA256SUMS.txt covers the CLI archives too and
+      # scripts/install.sh can verify its download against it by name.
+      - name: Collect CLI checksum fragment
+        run: |
+          set -euo pipefail
+          sha256sum "formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}" \
+            > "SHA256SUMS-${{ matrix.label }}.partial"
+          cat "SHA256SUMS-${{ matrix.label }}.partial"
+
+      # Attest before publishing; see the same step in the desktop build job.
+      - name: Attest build provenance
+        if: github.event_name != 'pull_request'
+        uses: actions/attest@v4
+        with:
+          # The exact archive this leg produced (.tar.gz or .zip), not a glob:
+          # a glob that matches nothing on a leg makes attest fail the job.
+          subject-path: formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}
+
+      - name: Upload CLI archive to release
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          gh release upload "$TAG" "formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}" --repo "$REPO" --clobber
+
+      - name: Upload checksum fragment
+        uses: actions/upload-artifact@v7
+        with:
+          name: checksums-${{ matrix.label }}
+          path: SHA256SUMS-${{ matrix.label }}.partial
+          retention-days: 7
+
   vscode:
     name: Package VS Code extension (.vsix)
     needs: [resolve, base]
@@ -773,7 +951,7 @@ jobs:
 
   finalize:
     name: Publish SHA256SUMS.txt + provenance
-    needs: [resolve, build, vscode]
+    needs: [resolve, build, cli, vscode]
     concurrency:
       group: formal-ai-repository-writes
       queue: max
@@ -835,11 +1013,16 @@ jobs:
             [macos-arm64]="macos-14"
             [windows-x64]="windows-latest"
             [windows-arm64]="windows-11-arm"
+            [cli-linux-x64]="ubuntu-latest"
+            [cli-linux-arm64]="ubuntu-24.04-arm"
+            [cli-macos-x64]="macos-15-intel"
+            [cli-macos-arm64]="macos-14"
+            [cli-windows-x64]="windows-latest"
             [vscode]="ubuntu-latest"
           )
           built=()
           missing=()
-          for label in linux-x64 linux-arm64 macos-x64 macos-arm64 windows-x64 windows-arm64 vscode; do
+          for label in linux-x64 linux-arm64 macos-x64 macos-arm64 windows-x64 windows-arm64 cli-linux-x64 cli-linux-arm64 cli-macos-x64 cli-macos-arm64 cli-windows-x64 vscode; do
             if [ -f "fragments/SHA256SUMS-${label}.partial" ]; then
               built+=("${builder_of[$label]} (${label})")
             else

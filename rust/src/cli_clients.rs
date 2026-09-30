@@ -91,6 +91,11 @@ fn client_json(integration: &ClientIntegration) -> Value {
                 },
                 "format": config_format_name(&config.format),
                 "path": config.path,
+                // Issue #1161: how a host points this client at a task-local
+                // copy of `path`. Relocating XDG_CONFIG_HOME/HOME instead also
+                // moves gh's and git's config and drops the session's GitHub
+                // auth, so the registry names the precise variables.
+                "config_env": config.config_env,
                 "backup_suffix": config.backup_suffix,
             })
         })
@@ -159,6 +164,18 @@ fn client_json(integration: &ClientIntegration) -> Value {
     // sits at the json! macro's expansion depth.
     if let Some(object) = record.as_object_mut() {
         object.insert("prompt_args".to_string(), json!(invocation.prompt_args));
+        // Issue #1161: the same declaration for one-shot invocations — which
+        // env vars carry (or relocate) the client's config for a single run.
+        object.insert("config_env".to_string(), json!(invocation.config_env));
+        object.insert(
+            "config_dir_env".to_string(),
+            json!(invocation.config_dir_env),
+        );
+        object.insert(
+            "config_content_env".to_string(),
+            json!(invocation.config_content_env),
+        );
+        object.insert("temp_home_env".to_string(), json!(invocation.temp_home_env));
     }
     record
 }
@@ -225,9 +242,17 @@ fn client_text(integration: &ClientIntegration) -> String {
         verification_surface(integration)
     );
     for config in &integration.global_configs {
+        // Issue #1161: show *how* the config file is found, not only where it
+        // lives, so a host reads the relocation variable instead of moving
+        // XDG_CONFIG_HOME and losing gh's authentication.
+        let via_env = if config.config_env.is_empty() {
+            String::new()
+        } else {
+            format!(" via {}", config.config_env.join(" or "))
+        };
         let _ = writeln!(
             out,
-            "  global[{}]: {} ({})",
+            "  global[{}]: {} ({}){via_env}",
             if config.protocol.is_empty() {
                 integration.default_protocol.as_str()
             } else {

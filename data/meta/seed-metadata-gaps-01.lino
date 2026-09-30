@@ -139,6 +139,10 @@ seed_metadata_gaps
     source "data/seed/meanings-translation.lino"
     record "translate_from_hindi"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_16404722ca9ecfa1
+    source "data/seed/meanings-units.lino"
+    record "foot"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_91744b622ce9fda1
     source "data/seed/meanings-units.lino"
     record "minute"
@@ -146,6 +150,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_6c04afe7a2ae0e71
     source "data/seed/meanings-units.lino"
     record "two"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_a5a8d1700e028911
+    source "data/seed/meanings-units.lino"
+    record "yard"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_1b59daa3cd4b7921
     source "data/seed/meanings-web-followup.lino"

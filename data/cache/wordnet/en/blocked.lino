@@ -1,0 +1,18 @@
+language en
+lemma blocked
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "closed to traffic"
+    examples ("the repaving results in many blocked streets")
+    id oewn-01658299-s
+    partOfSpeech s
+  entry
+    definition "completely obstructed or closed off"
+    examples ("the storm was responsible for many blocked roads and bridges" "the drain was plugged")
+    id oewn-01625261-s
+    partOfSpeech s
+    synonyms (plugged)
+source "oewn:2024"

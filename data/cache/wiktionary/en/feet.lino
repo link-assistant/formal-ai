@@ -1,0 +1,89 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A biological structure found in many animals that is used for locomotion and that is frequently a separate organ at the terminal part of the leg."
+          example "A spider has eight feet."
+        entry
+          definition "Specifically, a human foot, which is found below the ankle and is used for standing and walking."
+          example "Southern Italy is shaped like a foot."
+        entry
+          definition "(often used attributively) Travel by walking."
+          example "There is a lot of foot traffic on this street."
+        entry
+          definition "The base or bottom of anything."
+          example "I'll meet you at the foot of the stairs."
+        entry
+          definition "The part of a flat surface on which the feet customarily rest."
+          example "We came and stood at the foot of the bed."
+        entry
+          definition "The end of a rectangular table opposite the head."
+          example "The host should sit at the foot of the table."
+        entry
+          definition "A short foot-like projection on the bottom of an object to support it."
+          example "The feet of the stove hold it a safe distance above the floor."
+        entry
+          definition "A unit of measure equal to twelve inches or one third of a yard, equal to exactly 30.48 centimetres."
+          example "The flag pole at the local high school is about 20 feet high."
+        entry
+          definition "A unit of measure for organ pipes equal to the wavelength of two octaves above middle C, approximately 328 mm."
+        entry
+          definition "(collective) Foot soldiers; infantry."
+          example "King John went to battle with ten thousand foot and one thousand horse."
+        entry
+          definition "(cigars) The end of a cigar which is lit, and usually cut before lighting."
+        entry
+          definition "The part of a sewing machine which presses downward on the fabric, and may also serve to move it forward."
+        entry
+          definition "The bottommost part of a typed or printed page."
+        entry
+          definition "The base of a piece of type, forming the sides of the groove."
+        entry
+          definition "The basic measure of rhythm in a poem."
+        entry
+          definition "The parsing of syllables into prosodic constituents, which are used to determine the placement of stress in languages along with the notions of constituent heads."
+        entry
+          definition "The bottom edge of a sail."
+          example "To make the mainsail fuller in shape, the outhaul is eased to reduce the tension on the foot of the sail."
+        entry
+          definition "The end of a billiard or pool table behind the foot point where the balls are racked."
+        entry
+          definition "In a bryophyte, that portion of a sporophyte which remains embedded within and attached to the parent gametophyte plant."
+        entry
+          definition "The muscular part of a bivalve mollusc or a gastropod by which it moves or holds its position on a surface."
+        entry
+          definition "The globular lower domain of a protein."
+        entry
+          definition "The point of intersection of one line with another that is perpendicular to it."
+        entry
+          definition "Fundamental principle; basis; plan."
+        entry
+          definition "Recognized condition; rank; footing."
+      partOfSpeech noun
+  phonetic "/fiːt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/feet-1-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1227450"
+      text "/fiːt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/feet" "https://en.wiktionary.org/wiki/foot")
+  word feet
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Fact; performance; feat."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/feet")
+  word feet

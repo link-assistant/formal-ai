@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q11663": {
+      "type": "item",
+      "id": "Q11663",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "weather"
+        },
+        "es": {
+          "language": "es",
+          "value": "tiempo atmosférico"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मौसम"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "погода"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "天氣"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "state of the atmosphere"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "совокупность значений метеорологических элементов и атмосферных явлений, наблюдаемых в определенный момент и точке пространства"
+        },
+        "es": {
+          "language": "es",
+          "value": "estado de la atmósfera"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "大氣層的狀態"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वायुमंडल की स्थिति"
+        }
+      },
+      "aliases": {
+        "es": [
+          {
+            "language": "es",
+            "value": "condición atmosférica"
+          },
+          {
+            "language": "es",
+            "value": "condiciones atmosféricas"
+          },
+          {
+            "language": "es",
+            "value": "tiempo meteorológico"
+          },
+          {
+            "language": "es",
+            "value": "tiempo atmosferico"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "天气"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "weather conditions"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "погодные условия"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1139,6 +1139,244 @@ function scanSoftwareSurface(normalized, table) {
   return null;
 }
 
+// Words that close the object noun phrase of an authoring verb. The artifact
+// kind must be the *head* of the object phrase the verb governs, never an
+// incidental surface word in a modifier or subordinate clause, so the phrase
+// ends at the first of these: prepositions and conjunctions that open
+// postmodifiers and relative clauses ("a browser extension **that** blocks
+// ads", "a command line tool **with** shell commands", "a web app **for**
+// tracking workouts"), subject pronouns that start a new clause, and the
+// politeness marker. Russian and Hindi equivalents follow the same rule in
+// their own scripts. Issue #1175: "Write a regular expression that matches a
+// US ZIP code with an optional 4-digit extension" must not become a
+// software-project request for an *extension* — there `extension` modifies
+// `ZIP code`; the head of what is written is "regular expression".
+// Mirrors OBJECT_PHRASE_BOUNDARY_TOKENS in
+// src/solver_handlers/software_project.rs.
+const OBJECT_PHRASE_BOUNDARY_TOKENS = new Set([
+  // English
+  "about", "and", "but", "by", "for", "from", "i", "in", "into", "it", "of", "or", "please",
+  "so", "that", "they", "to", "using", "via", "we", "when", "where", "which", "who", "with",
+  "without",
+  // Russian
+  "в", "для", "и", "из", "или", "которая", "которое", "который", "которые", "когда", "на",
+  "от", "с", "чтобы",
+  // Hindi
+  "और", "जो", "के", "को", "से", "में", "या",
+]);
+
+// Punctuation that ends the object phrase at the character it appears in.
+// CJK punctuation and the Devanagari danda separate phrases inside unspaced
+// script runs, so they cut a token anywhere; ASCII punctuation only cuts at
+// a token's edges, because inside a token it is part of a name ("a Node.js
+// service") rather than a sentence end. Mirrors
+// OBJECT_PHRASE_BOUNDARY_CHARACTERS in src/solver_handlers/software_project.rs.
+const OBJECT_PHRASE_BOUNDARY_CHARACTERS = new Set([
+  ",", ";", ".", "?", "!", ":", "(", ")", "[", "]", "，", "。", "？", "！", "；", "：", "、", "।",
+]);
+
+// The CJK punctuation and danda subset that cuts a token at any position.
+// Mirrors WORD_INTERNAL_BOUNDARY_CHARACTERS in
+// src/solver_handlers/software_project.rs.
+const WORD_INTERNAL_BOUNDARY_CHARACTERS = new Set(["，", "。", "？", "！", "；", "：", "、", "।"]);
+
+// Determiners, benefactives and politeness words that may sit between the
+// verb and the head noun without belonging to the object: "write **for me**
+// extension for owlbear", "build **me a** web app", "**that** dashboard".
+// Mirrors OBJECT_PHRASE_LEAD_WORDS in
+// src/solver_handlers/software_project.rs.
+const OBJECT_PHRASE_LEAD_WORDS = new Set([
+  "a", "an", "the", "this", "that", "these", "those", "my", "your", "our", "me", "us", "please",
+]);
+
+// Two-word benefactive forms whose first word is otherwise a boundary token
+// ("write **for me** a poem"). Mirrors OBJECT_PHRASE_LEAD_BIGRAMS in
+// src/solver_handlers/software_project.rs.
+const OBJECT_PHRASE_LEAD_BIGRAMS = ["for me", "for us", "to me", "to us"];
+
+// Sentence-ending punctuation that bounds the pre-verbal object of a
+// verb-final (subject-object-verb) request from the left. Mirrors
+// SENTENCE_END_CHARACTERS in src/solver_handlers/software_project.rs.
+const SENTENCE_END_CHARACTERS = new Set([".", "?", "!", ";", ":", "\n", "。", "？", "！", "；", "।"]);
+
+// Trim whitespace and object-phrase boundary characters from both ends of
+// `span`. Mirrors trim_object_phrase in
+// src/solver_handlers/software_project.rs.
+function trimObjectPhrase(span) {
+  let start = 0;
+  let end = span.length;
+  while (start < end && (/\s/.test(span[start]) || OBJECT_PHRASE_BOUNDARY_CHARACTERS.has(span[start]))) {
+    start += 1;
+  }
+  while (end > start && (/\s/.test(span[end - 1]) || OBJECT_PHRASE_BOUNDARY_CHARACTERS.has(span[end - 1]))) {
+    end -= 1;
+  }
+  return span.slice(start, end);
+}
+
+// Drop the determiner/benefactive/politeness words that lead `span`, so the
+// object phrase starts at its first content word. Mirrors
+// skip_object_phrase_lead in src/solver_handlers/software_project.rs.
+function skipObjectPhraseLead(span) {
+  let rest = span;
+  for (;;) {
+    const trimmed = rest.replace(/^\s+/, "");
+    const first = trimmed.split(/\s+/)[0] || "";
+    if (first && OBJECT_PHRASE_LEAD_WORDS.has(first)) {
+      rest = trimmed.slice(first.length);
+      continue;
+    }
+    const bigram = OBJECT_PHRASE_LEAD_BIGRAMS.find(
+      (lead) => trimmed.startsWith(lead) && /\s/.test(trimmed[lead.length] || ""),
+    );
+    if (bigram) {
+      rest = trimmed.slice(bigram.length);
+      continue;
+    }
+    return trimmed;
+  }
+}
+
+// Where `token` ends the object phrase, as an index into the token:
+// word-internal separators (CJK punctuation, danda) cut anywhere, ASCII
+// punctuation cuts only at the token's first or last character, and any
+// other token cuts nowhere. Mirrors boundary_cut in
+// src/solver_handlers/software_project.rs.
+function objectPhraseBoundaryCut(token) {
+  for (let index = 0; index < token.length; index += 1) {
+    if (WORD_INTERNAL_BOUNDARY_CHARACTERS.has(token[index])) return index;
+  }
+  if (token.length > 0 && OBJECT_PHRASE_BOUNDARY_CHARACTERS.has(token[0])) return 0;
+  const last = token.length - 1;
+  if (last > 0 && OBJECT_PHRASE_BOUNDARY_CHARACTERS.has(token[last])) return last;
+  return null;
+}
+
+// Split `span` into its boundary-delimited object-phrase segments, in order,
+// dropping empty ones. "a regular expression that matches a zip code" yields
+// "a regular expression" first: the head noun of the object phrase is the
+// end of the *first* segment, and later segments are subordinate material
+// where an artifact word is incidental (issue #1175). Mirrors
+// object_phrase_segments in src/solver_handlers/software_project.rs.
+function objectPhraseSegments(span) {
+  const segments = [];
+  let segmentStart = 0;
+  let offset = 0;
+  for (const token of span.split(/\s+/)) {
+    if (!token) continue;
+    const found = span.indexOf(token, offset);
+    if (found < 0) break;
+    const tokenStart = found;
+    const tokenEnd = tokenStart + token.length;
+    if (OBJECT_PHRASE_BOUNDARY_TOKENS.has(token)) {
+      segments.push(span.slice(segmentStart, tokenStart));
+      segmentStart = tokenEnd;
+    } else {
+      const cut = objectPhraseBoundaryCut(token);
+      if (cut !== null) {
+        segments.push(span.slice(segmentStart, tokenStart + cut));
+        segmentStart = tokenEnd;
+      }
+    }
+    offset = tokenEnd;
+  }
+  segments.push(span.slice(segmentStart));
+  return segments.map(trimObjectPhrase).filter((segment) => segment.length > 0);
+}
+
+// The artifact kind of `segment` when its head noun — the last word or
+// phrase of the segment — is a software-artifact surface. The longest
+// matching surface wins ("browser extension" over "extension"), and the
+// surface must start on a word boundary, so "an owlbear extension" matches
+// `extension` while "maxextension" matches nothing. Mirrors
+// match_artifact_head in src/solver_handlers/software_project.rs.
+function matchArtifactHead(segment, table) {
+  const trimmed = trimObjectPhrase(segment);
+  let best = null;
+  for (const [surface, label] of table) {
+    if (!surface || !trimmed.endsWith(surface)) continue;
+    const start = trimmed.length - surface.length;
+    if (!isSoftwareStartBoundary(trimmed, start)) continue;
+    if (!best || [...surface].length > [...best.surface].length) {
+      best = { surface, label };
+    }
+  }
+  return best;
+}
+
+// The next authoring-verb match at or after `from`, reporting the verb's
+// character offsets as well as its slug: the object phrase is the text after
+// the verb, so the caller needs where the verb ends, not just what it was.
+// The same isSoftwareStartBoundary/isSoftwareEndBoundary word-boundary
+// discipline the prefix scans use. Mirrors scan_action_from in
+// src/solver_handlers/software_project.rs.
+function scanSoftwareActionFrom(subject, table, from) {
+  for (let index = Math.max(0, from); index < subject.length; index += 1) {
+    if (!isSoftwareStartBoundary(subject, index)) continue;
+    for (const [surface, slug] of table) {
+      if (surface && subject.startsWith(surface, index)) {
+        const end = index + surface.length;
+        if (isSoftwareEndBoundary(subject, end)) {
+          return { start: index, end, slug };
+        }
+        break;
+      }
+    }
+  }
+  return null;
+}
+
+// The authoring verb `subject` carries and the artifact kind of the object
+// phrase that verb governs (issue #1175): the artifact is read only from the
+// *head noun of the verb's object phrase* — the first boundary-delimited
+// segment after the verb, with leading determiners and benefactives
+// skipped, must end with an artifact surface. "Write a browser extension
+// that blocks ads" qualifies; "Write a regular expression that matches a US
+// ZIP code with an optional 4-digit extension" does not. A verb whose object
+// is not an artifact does not end the search — the next authoring verb is
+// tried — and verb-final (subject-object-verb) requests read the head of the
+// phrase immediately before the verb. Mirrors object_phrase_artifact in
+// src/solver_handlers/software_project.rs.
+function objectPhraseArtifact(subject, actions, artifacts) {
+  let searchFrom = 0;
+  for (;;) {
+    const verb = scanSoftwareActionFrom(subject, actions, searchFrom);
+    if (!verb) return null;
+    searchFrom = verb.end;
+    const remainder = skipObjectPhraseLead(subject.slice(verb.end));
+    const afterSegment = objectPhraseSegments(remainder)[0];
+    if (afterSegment) {
+      const artifact = matchArtifactHead(afterSegment, artifacts);
+      if (artifact) return { action: verb.slug, surface: artifact.surface, label: artifact.label };
+    }
+    // Verb-final (subject-object-verb) request: the object phrase ends just
+    // before the verb. Only when nothing but boundaries follows the verb —
+    // an English verb with an object after it is not verb-final.
+    if (trimObjectPhrase(subject.slice(verb.end)) !== "") continue;
+    let phrase = trimObjectPhrase(subject.slice(0, verb.start));
+    let sentenceEnd = -1;
+    for (let index = 0; index < phrase.length; index += 1) {
+      if (SENTENCE_END_CHARACTERS.has(phrase[index])) sentenceEnd = index;
+    }
+    if (sentenceEnd >= 0) phrase = trimObjectPhrase(phrase.slice(sentenceEnd + 1));
+    // Politeness or a determiner may trail the object ("a browser extension,
+    // please"): the head noun ends before it.
+    for (;;) {
+      const words = phrase.split(/\s+/).filter((word) => word);
+      const last = words[words.length - 1];
+      if (!last) break;
+      if (!OBJECT_PHRASE_LEAD_WORDS.has(last) && !OBJECT_PHRASE_BOUNDARY_TOKENS.has(last)) break;
+      phrase = trimObjectPhrase(phrase.slice(0, phrase.length - last.length));
+    }
+    const segments = objectPhraseSegments(phrase);
+    const beforeSegment = segments[segments.length - 1];
+    if (beforeSegment) {
+      const artifact = matchArtifactHead(beforeSegment, artifacts);
+      if (artifact) return { action: verb.slug, surface: artifact.surface, label: artifact.label };
+    }
+  }
+}
+
 // Lowercased union of every surface word (all languages) of the meanings that
 // carry ROLE_SOFTWARE_REQUIREMENT_CATEGORY. A clause containing any of them
 // states a feature requirement. Mirrors requirement_marker_words in

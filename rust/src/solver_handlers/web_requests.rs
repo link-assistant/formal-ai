@@ -161,23 +161,35 @@ pub fn try_url_navigate(
 /// Source: <https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf>
 pub const WEB_SEARCH_RRF_K: u32 = CORE_WEB_SEARCH_RRF_K;
 
-/// Provider order used by the browser worker and by the offline Rust solver
-/// when describing the multi-engine plan for `web_search`. Sourced from
+/// Provider order used by the browser worker and by the Rust solver when
+/// recording the unexecuted provider plan for `web_search`. Sourced from
 /// `crate::web_search_core::WEB_SEARCH_PROVIDERS` so the WASM worker and the
 /// JS planner cannot drift apart (issue #133).
 pub const WEB_SEARCH_PROVIDERS: &[&str] = CORE_WEB_SEARCH_PROVIDERS;
 
+/// Execute a recognized web-search request instead of describing one.
+///
+/// Issue #1173 (E138) R2: this handler used to answer with the fixed
+/// paragraph describing the browser demo's provider plan. It now runs the
+/// executed search through the process source cache — captured sources
+/// answer from their statements with citations, and anything else degrades
+/// to the localized `web_search_unavailable` response. Live provider
+/// fetches stay opt-in via `FORMAL_AI_LIVE_FETCH`, matching the combined
+/// offline gate `solver_dispatch.rs` applies to its `web_search` route.
 pub fn try_web_search(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let request = extract_web_search_request(prompt, normalized)?;
+    // The native-handler table carries no runtime offline flag; the live-fetch
+    // opt-in is applied inside `answer_web_search_query`.
     Some(answer_web_search_query(
         prompt,
         &request.query,
         request.kind,
         log,
+        false,
     ))
 }
 
@@ -193,122 +205,34 @@ pub fn detect_web_search_query(prompt: &str) -> Option<String> {
     extract_web_search_request(prompt, &normalized).map(|request| request.query)
 }
 
+/// Execute the web search for `query` and answer from it.
+///
+/// Issue #1173 (E138): this function used to build the descriptive paragraph
+/// about the browser demo's search machinery ("Web search requested for
+/// `…`" and its latest-news, research, and Russian arms), which stood as the
+/// final answer for every prompt the intent recogniser or the
+/// unknown-reasoning fallback handed it. The description is deleted as an
+/// answer surface: the search now executes through the process source cache
+/// (issue #709 fusion) and answers from the captured statements with
+/// citations, or — offline or on a cache miss — with the localized
+/// `web_search_unavailable` response that names the query.
+///
+/// `runtime_offline` is the caller's own offline mode; the
+/// `FORMAL_AI_LIVE_FETCH` opt-in is applied here so every caller gets the
+/// combined offline gate `solver_dispatch.rs` uses at its `web_search` call
+/// site.
 pub fn answer_web_search_query(
     prompt: &str,
     query: &str,
     query_kind: WebSearchQueryKind,
     log: &mut EventLog,
+    runtime_offline: bool,
 ) -> SymbolicAnswer {
-    log.append("web_search:request", query.to_owned());
-    log.append("web_search:query_kind", query_kind.as_str());
-    for provider in WEB_SEARCH_PROVIDERS {
-        log.append("web_search:provider_planned", (*provider).to_owned());
-    }
-    log.append(
-        "web_search:fusion_planned",
-        format!("rrf:k={WEB_SEARCH_RRF_K}"),
-    );
-    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
-    let language = detect_language(prompt).slug();
-    let is_latest_news_request = matches!(query_kind, WebSearchQueryKind::LatestNews);
-    let is_research_request = matches!(
-        query_kind,
-        WebSearchQueryKind::ImplicitResearchQuestion
-            | WebSearchQueryKind::EnumerationResearchRequest
-    );
-    let body = match language {
-        "ru" if is_latest_news_request => format!(
-            "Запрошены последние новости для `{query}`.\n\n\
-             В браузерной демо-версии formal-ai такой запрос идет через веб-поиск: \
-             DuckDuckGo Instant Answer по умолчанию, затем Internet Archive, \
-             Wikipedia REST, Wikidata, Wiktionary и Wikinews (Викиновости, \
-             https://www.wikinews.org/) в указанном порядке приоритета. Топ-10 \
-             ссылок от каждого провайдера объединяются через reciprocal rank \
-             fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), а \
-             диагностика записывает провайдеры, ранги, объединение и итоговые \
-             ссылки, чтобы рассуждение можно было проверить.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        "ru" if is_research_request => format!(
-            "Распознан исследовательский вопрос для `{query}`.\n\n\
-             Чтобы ответить на такой вопрос без локального правила, браузерная \
-             демо-версия formal-ai ищет проверяемые источники: по умолчанию \
-             DuckDuckGo Instant Answer (CORS-совместимый, без ключа), затем \
-             Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews \
-             в указанном \
-             порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются \
-             через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
-             rank_i(d))`), а диагностика записывает провайдеры, ранги, объединение \
-             и итоговые ссылки, чтобы рассуждение можно было проверить.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        "ru" => format!(
-            "Поиск в интернете запрошен для `{query}`.\n\n\
-             В браузерной демо-версии formal-ai по умолчанию использует DuckDuckGo \
-             Instant Answer (CORS-совместимый, без ключа) и параллельно опрашивает \
-             Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews \
-             в указанном \
-             порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются \
-             через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
-             rank_i(d))`), поэтому URL, которые встречаются у нескольких провайдеров, \
-             всплывают вверх. Дубликаты одной и той же сущности (например, \
-             Викидата + Википедия) сворачиваются в один пункт с пометкой \
-             «Другие источники». Для произвольной страницы используйте \
-             `fetch example.com`; если прямой `fetch()` заблокирован CORS, \
-             браузер проверит frame-policy перед встроенным iframe.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        _ if is_latest_news_request => format!(
-            "Latest-news search requested for `{query}`.\n\n\
-             In the browser demo formal-ai uses web search for freshness-sensitive \
-             news prompts: DuckDuckGo Instant Answer by default, then Internet \
-             Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews \
-             (https://www.wikinews.org/) in priority order. The top-10 links \
-             from each provider are merged with reciprocal rank fusion \
-             (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), and \
-             diagnostics record each provider, rank, fusion step, and final \
-             source link so the reasoning path can be inspected.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        _ if is_research_request => format!(
-            "Open research question detected for `{query}`.\n\n\
-             To answer this without a local rule, the browser demo searches \
-             verifiable sources: DuckDuckGo Instant Answer by default, then \
-             Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and \
-             Wikinews in priority order. The top-10 links from each provider are merged \
-             with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
-             rank_i(d))`), and diagnostics record each provider, rank, fusion \
-             step, and final source link so the reasoning path can be inspected.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        _ => format!(
-            "Web search requested for `{query}`.\n\n\
-             In the browser demo formal-ai defaults to the DuckDuckGo Instant \
-             Answer endpoint (CORS-readable, keyless) and queries Internet Archive, \
-             Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The \
-             top-10 links from each provider are merged with reciprocal rank fusion \
-             (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), so URLs that \
-             appear in more than one provider bubble up. Duplicate entries for the \
-             same entity (e.g. Wikidata + Wikipedia) are collapsed into a single \
-             bullet with an \"other sources\" footnote. For an arbitrary page, use \
-             `fetch example.com`; if direct `fetch()` is blocked by CORS, the \
-             browser checks frame policy before an embedded iframe.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-    };
-    finalize_simple(prompt, log, "web_search", "response:web_search", &body, 0.8)
+    let cache_dir =
+        std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
+    let client = CachedSourceClient::new(cache_dir, CurlSourceTransport)
+        .with_online(!(runtime_offline || !live_search::live_fetch_enabled()));
+    live_search::execute_web_search_answer(prompt, query, query_kind, log, &client)
 }
 
 const PROMOTED_PROJECT_ORGS: &[&str] = &["link-assistant", "link-foundation", "linksplatform"];

@@ -1,0 +1,37 @@
+language en
+lemma array
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an orderly arrangement"
+    examples ("an array of troops in battle order")
+    id oewn-07955622-n
+    partOfSpeech n
+  entry
+    definition "an impressive display"
+    examples ("it was a bewildering array of books" "his tools were in an orderly array on the basement wall")
+    id oewn-06901224-n
+    partOfSpeech n
+  entry
+    definition "especially fine or decorative clothing"
+    id oewn-02745327-n
+    partOfSpeech n
+    synonyms (raiment regalia)
+  entry
+    definition "an arrangement of aerials spaced to give desired directional characteristics"
+    id oewn-02745199-n
+    partOfSpeech n
+  entry
+    definition "lay out orderly or logically in a line or as if in a line"
+    examples ("lay out the clothes" "lay out the arguments")
+    id oewn-01476839-v
+    partOfSpeech v
+    synonyms (range "lay out" "set out")
+  entry
+    definition "align oneself with a group or a way of thinking"
+    id oewn-00735655-v
+    partOfSpeech v
+    synonyms (align)
+source "oewn:2024"

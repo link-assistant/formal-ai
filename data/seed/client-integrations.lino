@@ -46,6 +46,7 @@ client_integrations
     global
       kind "toml"
       path ".codex/config.toml"
+      config_env "CODEX_HOME"
       backup_suffix ".formal-ai.bak"
       model_catalog_path ".codex/formal-ai-model-catalog.json"
       toml_set "model_provider={provider_id}"
@@ -109,6 +110,7 @@ client_integrations
     global "openai"
       kind "toml"
       path ".codex/config.toml"
+      config_env "CODEX_HOME"
       backup_suffix ".formal-ai.bak"
       model_catalog_path ".codex/formal-ai-model-catalog.json"
       toml_set "model_provider={provider_id}"
@@ -170,6 +172,8 @@ client_integrations
     global
       kind "json"
       path ".config/opencode/opencode.json"
+      config_env "OPENCODE_CONFIG"
+      config_env "OPENCODE_CONFIG_DIR"
       backup_suffix ".formal-ai.bak"
       json_set "$schema=https://opencode.ai/config.json"
       json_set "provider.{provider_id}.name=formal-ai server"
@@ -215,6 +219,8 @@ client_integrations
     global
       kind "json"
       path ".config/opencode/opencode.json"
+      config_env "OPENCODE_CONFIG"
+      config_env "OPENCODE_CONFIG_DIR"
       backup_suffix ".formal-ai.bak"
       json_set "$schema=https://opencode.ai/config.json"
       json_set "provider.{provider_id}.name=formal-ai server"
@@ -256,6 +262,8 @@ client_integrations
     global
       kind "json"
       path ".config/opencode/opencode.json"
+      config_env "OPENCODE_CONFIG"
+      config_env "OPENCODE_CONFIG_DIR"
       backup_suffix ".formal-ai.bak"
       json_set "$schema=https://opencode.ai/config.json"
       json_set "provider.{provider_id}.name=formal-ai server"
@@ -310,6 +318,8 @@ client_integrations
     global
       kind "json"
       path ".config/link-assistant-agent/opencode.json"
+      config_env "LINK_ASSISTANT_AGENT_CONFIG"
+      config_env "LINK_ASSISTANT_AGENT_CONFIG_DIR"
       backup_suffix ".formal-ai.bak"
       json_set "$schema=https://opencode.ai/config.json"
       json_set "provider.{provider_id}.name=formal-ai server"

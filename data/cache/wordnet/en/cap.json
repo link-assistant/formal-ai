@@ -1,0 +1,107 @@
+{
+  "lemma": "cap",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02957776-n",
+      "partOfSpeech": "n",
+      "definition": "a tight-fitting headdress"
+    },
+    {
+      "id": "oewn-02958374-n",
+      "partOfSpeech": "n",
+      "definition": "a top (as for a bottle)"
+    },
+    {
+      "id": "oewn-03186898-n",
+      "partOfSpeech": "n",
+      "definition": "a mechanical or electrical explosive device or a small amount of explosive; can be used to initiate the reaction of a disrupting explosive",
+      "synonyms": [
+        "detonator",
+        "detonating device"
+      ]
+    },
+    {
+      "id": "oewn-02958501-n",
+      "partOfSpeech": "n",
+      "definition": "something serving as a cover or protection"
+    },
+    {
+      "id": "oewn-11552802-n",
+      "partOfSpeech": "n",
+      "definition": "a fruiting structure resembling an umbrella or a cone that forms the top of a stalked fleshy fungus such as a mushroom",
+      "synonyms": [
+        "pileus"
+      ]
+    },
+    {
+      "id": "oewn-09328264-n",
+      "partOfSpeech": "n",
+      "definition": "a protective covering that is part of a plant",
+      "synonyms": [
+        "hood"
+      ]
+    },
+    {
+      "id": "oewn-06670391-n",
+      "partOfSpeech": "n",
+      "definition": "an upper limit on what is allowed",
+      "examples": [
+        "he put a ceiling on the number of women who worked for him",
+        "there was a roof on salaries",
+        "they established a cap for prices"
+      ],
+      "synonyms": [
+        "ceiling",
+        "roof"
+      ]
+    },
+    {
+      "id": "oewn-03143740-n",
+      "partOfSpeech": "n",
+      "definition": "(dentistry) dental appliance consisting of an artificial crown for a broken or decayed tooth",
+      "examples": [
+        "tomorrow my dentist will fit me for a crown"
+      ],
+      "synonyms": [
+        "crown",
+        "crownwork",
+        "jacket",
+        "jacket crown"
+      ]
+    },
+    {
+      "id": "oewn-02959683-n",
+      "partOfSpeech": "n",
+      "definition": "the upper part of a column that supports the entablature",
+      "synonyms": [
+        "capital",
+        "chapiter"
+      ]
+    },
+    {
+      "id": "oewn-02699010-v",
+      "partOfSpeech": "v",
+      "definition": "lie at the top of",
+      "examples": [
+        "Snow capped the mountains"
+      ],
+      "synonyms": [
+        "crest"
+      ]
+    },
+    {
+      "id": "oewn-00236954-v",
+      "partOfSpeech": "v",
+      "definition": "restrict the number or amount of",
+      "examples": [
+        "We had to cap the number of people we can accept into our club"
+      ]
+    }
+  ]
+}

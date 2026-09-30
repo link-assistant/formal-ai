@@ -1,0 +1,60 @@
+{
+  "lemma": "brief",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06555772-n",
+      "partOfSpeech": "n",
+      "definition": "a document stating the facts and points of law of a client's case",
+      "synonyms": [
+        "legal brief"
+      ]
+    },
+    {
+      "id": "oewn-06480311-n",
+      "partOfSpeech": "n",
+      "definition": "a condensed written summary or abstract"
+    },
+    {
+      "id": "oewn-01445717-s",
+      "partOfSpeech": "s",
+      "definition": "of short duration or distance",
+      "examples": [
+        "a brief stay in the country"
+      ]
+    },
+    {
+      "id": "oewn-00549386-s",
+      "partOfSpeech": "s",
+      "definition": "concise and succinct",
+      "examples": [
+        "covered the matter in a brief statement"
+      ]
+    },
+    {
+      "id": "oewn-01439307-s",
+      "partOfSpeech": "s",
+      "definition": "(of clothing) very short",
+      "examples": [
+        "an abbreviated swimsuit",
+        "a brief bikini"
+      ],
+      "synonyms": [
+        "abbreviated"
+      ]
+    },
+    {
+      "id": "oewn-00832934-v",
+      "partOfSpeech": "v",
+      "definition": "give essential information to someone",
+      "examples": [
+        "The reporters were briefed about the President's plan to invade"
+      ]
+    }
+  ]
+}

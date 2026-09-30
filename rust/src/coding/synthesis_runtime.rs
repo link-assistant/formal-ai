@@ -422,12 +422,7 @@ fn token_overlap(left: &str, right: &str) -> usize {
 }
 
 pub fn live_fetch_enabled() -> bool {
-    std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-        matches!(
-            value.trim().to_ascii_lowercase().as_str(),
-            "1" | "true" | "yes" | "on"
-        )
-    })
+    crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH")
 }
 
 pub fn procedure_ledger() -> Option<DiscoveredProcedureLedger> {

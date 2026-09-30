@@ -833,6 +833,68 @@ debt belongs:
   it — an untracked patch is invisible debt, because nothing fails when
   the upstream release lands and nothing ever removes it.
 
+The same rule governs *held-back releases* (issue #1169): every dependency
+must sit at its publisher's latest release, and `rust-script
+scripts/check-dependencies-latest.rs` fails when one does not. The one
+sanctioned way to hold a dependency back is a same-line annotation naming
+the issue that tracks the hold-back — `links-notation = "0.16.1" # blocked:
+https://github.com/link-foundation/lino-objects-codec/issues/60` in
+`Cargo.toml`, or a `"<name>//"` sibling key inside the same dependency
+object of a `package.json`. The annotation must point at an issue URL; a
+hold-back without one is not a decision, only drift. The daily
+`dependencies-latest` workflow re-checks every registry and opens one pull
+request with everything that moved, so the gate being green is a fact about
+yesterday's registries, not a permanent state anyone achieves once.
+
+## GitHub credentials
+
+Tokens are **optional in all cases** (issue #1187). Nothing needs
+configuring for the workflows to run; when a credential exists, more work
+happens unattended.
+
+- **One resolver.** Every workflow that writes to GitHub takes its token
+  from `.github/actions/automation-token` — never from a directly read
+  secret. Three layers, first available wins: a GitHub App
+  (`AUTOMATION_APP_ID` + `AUTOMATION_APP_PRIVATE_KEY`, one app may serve
+  every repository of the organization), then one secret named
+  `AUTOMATION_TOKEN` — the same name in every repository, so one
+  organization secret serves them all — then the built-in `github.token`.
+  The layer that resolved is printed to the log and the job summary. No
+  other token secret name may appear in a workflow
+  (`rust/tests/unit/issue_1187_credentials.rs` fails the build on one).
+- **Checks without approval.** A `pull_request` workflow run whose PR was
+  opened by `GITHUB_TOKEN` waits for approval — that is GitHub's rule, not
+  ours. When the resolver reports layer `default`, the workflow that
+  pushed the branch calls `.github/actions/dispatch-checks`, which
+  dispatches every `pull_request` workflow on the head commit; dispatch
+  runs need no approval.
+- **Isolation without tokens.** A workload needing a separate tree tests on
+  an orphan branch of this repository (`e2e/<purpose>/<run_id>/<name>`,
+  `.github/workflows/e2e-isolation.yml`), with an `e2e-task` issue and a
+  pull request based on that branch, closed and deleted at the end. A
+  separate repository is used only when the resolver reports
+  `can-create-repositories: true` (the App layer).
+- **Cross-repository work degrades, never fails.** Filing an issue in
+  another repository at layer `default` is not possible; the workload
+  writes its findings into its report (`docs/status.md`, the case study)
+  and keeps one tracking issue here listing what to file.
+
+## Manual confirmation is aspirational (issue #1090)
+
+The manual-confirmation column of
+[docs/requirements-traceability.md](docs/requirements-traceability.md) is
+**aspirational**: `not yet confirmed` is the honest resting state of a row
+whose automated test pins the machinery while nobody has yet watched it run
+by hand, and it carries no debt and gates nothing. Two rules follow:
+
+- **No new manual-confirmation ledger may be introduced until an existing
+  one is complete.** A second parallel column would dilute the one surface
+  that exists; finishing beats starting.
+- The way the column fills is the finish branch of #1090: replayed session
+  captures from the agentic-CLI matrix, cited per row. Until a capture
+  exists for a row, the row stays `not yet confirmed` — that is the
+  recorded truth, not a gap to paper over.
+
 ## Project Conventions (recurring maintainer recommendations)
 
 These conventions recur in almost every issue review. They are collected here so

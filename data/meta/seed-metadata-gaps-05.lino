@@ -163,9 +163,21 @@ seed_metadata_gaps
     source "data/seed/meanings-units.lino"
     record "day"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_70e209ebae83fcb5
+    source "data/seed/meanings-units.lino"
+    record "inch"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_93053ccebc3e2f75
+    source "data/seed/meanings-units.lino"
+    record "ounce"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_2609925dc24e6ec5
     source "data/seed/meanings-units.lino"
     record "second"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_63cc5c01e8e350f5
+    source "data/seed/meanings-units.lino"
+    record "unit_conversion_question"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_e28c967da15d4e65
     source "data/seed/meanings-web-research.lino"

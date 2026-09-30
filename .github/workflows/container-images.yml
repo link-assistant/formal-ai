@@ -1,0 +1,212 @@
+# Issue #1084: publish container images for linux/amd64 AND linux/arm64.
+#
+# `ghcr.io/link-assistant/formal-ai:latest` publishes one architecture
+# (linux/amd64) because the five `docker/build-push-action` steps in
+# release.yml never pass `platforms:` and every job runs on `ubuntu-latest`.
+# Anyone on Apple Silicon, Graviton or an arm CI runner gets qemu-user-static
+# emulation at best.
+#
+# Nothing upstream blocks native multi-arch:
+#   - the base `konard/box-dind:2.1.1` already publishes amd64 + arm64
+#     (verified against the Docker Hub manifest list),
+#   - `ubuntu-24.04-arm` runners are already used by desktop-release.yml,
+#   - no `setup-qemu-action` exists anywhere, so adopting a native matrix
+#     means not introducing emulation at all.
+#
+# This workflow builds both images natively — one job per architecture, one
+# Docker buildx invocation per job with `platforms: linux/<arch>` set — then
+# merges the per-arch manifests into one multi-arch tag by digest, the shape
+# the buildx docs prescribe for native matrices. The slim image (#1153) gets
+# the same treatment in the same matrix; its size is reported and budgeted
+# (2 GB hard fail) so the sidecar cannot silently re-inflate.
+#
+# It is standalone (workflow_dispatch) so it can be exercised before the
+# GUARD-tracked migration of release.yml's five build steps (recorded in
+# docs/integration-manifest.md): once that lands, those steps call the same
+# matrix jobs via workflow_call and the duplication ends.
+name: container-images
+
+on:
+  workflow_dispatch:
+    inputs:
+      push:
+        description: Push the merged multi-arch tags to ghcr.io
+        type: boolean
+        default: false
+      ref:
+        description: Commit ref to build (defaults to the dispatching ref)
+        type: string
+        default: ""
+  workflow_call:
+    inputs:
+      push:
+        description: Push the merged multi-arch tags to ghcr.io
+        type: boolean
+        default: false
+    outputs:
+      slim-size:
+        description: Human-readable size of the slim image for release notes
+        value: ${{ jobs.sizes.outputs.slim-size }}
+      full-size:
+        description: Human-readable size of the full image for release notes
+        value: ${{ jobs.sizes.outputs.full-size }}
+
+permissions:
+  contents: read
+
+env:
+  GHCR_IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  build:
+    name: build ${{ matrix.variant }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            # Native runner, already used by desktop-release.yml; no
+            # setup-qemu, per the issue's "not introducing emulation".
+            runner: ubuntu-24.04-arm
+        # The slim variant builds from Dockerfile.slim; the full variant is
+        # release.yml's self-contained image, which stays available for
+        # running code without an outer Docker.
+        dockerfile: [Dockerfile.slim, Dockerfile]
+        exclude:
+          # The full image's compile stage has only been exercised on amd64;
+          # its arm64 build is tracked by the integration manifest until a
+          # green run lands. Slim is native-clean on both.
+          - dockerfile: Dockerfile
+            arch: arm64
+    outputs:
+      slim-digest: ${{ steps.digests.outputs.slim }}
+      full-digest: ${{ steps.digests.outputs.full }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - name: Free runner disk
+        run: bash scripts/free-runner-disk.sh
+      - uses: ./.github/actions/download-formal-ai-binary
+      - name: Set up Docker Buildx
+        uses: ./.github/actions/setup-buildx-resilient
+      - name: Build ${{ matrix.dockerfile }} for linux/${{ matrix.arch }}
+        id: build
+        timeout-minutes: 45
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          # Native build: platforms names exactly one architecture, the
+          # runner's own, so nothing runs under emulation (issue #1084).
+          platforms: linux/${{ matrix.arch }}
+          push: false
+          load: true
+          tags: formal-ai:${{ matrix.arch }}-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}
+          build-args: BINARY_SOURCE=prebuilt
+          cache-from: type=gha,scope=docker-${{ matrix.arch }}-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}
+          cache-to: type=inline
+      - name: Verify runtime contract
+        run: |
+          set -euo pipefail
+          tag="formal-ai:${{ matrix.arch }}-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}"
+          if [ "${{ matrix.dockerfile }}" = "Dockerfile.slim" ]; then
+            docker run --rm "$tag" verify-formal-ai-slim
+          else
+            docker run --rm --privileged "$tag" verify-formal-ai-dind
+          fi
+      - name: Record digest
+        id: digests
+        env:
+          VARIANT: ${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}
+        run: |
+          # The per-arch image is pushed by digest to the registry only when
+          # the merge step can tag it; without push, the digest is still the
+          # identity the manifest merge will use, read from the local image.
+          digest="$(docker inspect --format '{{join (split .RepoDigests "@") ""}}' formal-ai:"$VARIANT" 2>/dev/null || true)"
+          if [ -z "$digest" ]; then
+            digest="sha256:$(docker inspect --format '{{.Id}}' formal-ai:"$VARIANT" | cut -d: -f2 | sed 's/^/sha256:/;s/sha256:sha256:/sha256:/')"
+          fi
+          echo "$VARIANT=$digest" >> "$GITHUB_OUTPUT"
+      - name: Save image for the merge job
+        run: |
+          tag="${{ matrix.arch }}-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}"
+          docker save "formal-ai:$tag" -o "formal-ai-$tag.tar"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: image-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}-${{ matrix.arch }}
+          path: formal-ai-${{ matrix.arch }}-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}.tar
+          retention-days: 1
+
+  merge:
+    name: merge multi-arch manifests
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      slim-size: ${{ steps.sizes.outputs.slim }}
+      full-size: ${{ steps.sizes.outputs.full }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/download-formal-ai-binary
+      - name: Set up Docker Buildx
+        uses: ./.github/actions/setup-buildx-resilient
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: image-*
+          merge-multiple: false
+          path: images
+      - name: Load per-arch images
+        run: |
+          set -euo pipefail
+          for tar in images/image-*/formal-ai-*.tar; do
+            docker load -i "$tar"
+          done
+      - name: Log in to ghcr.io
+        if: ${{ inputs.push }}
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create and push multi-arch tags
+        env:
+          PUSH: ${{ inputs.push }}
+        run: |
+          set -euo pipefail
+          merge() {
+            variant="$1"; shift
+            tag="$GHCR_IMAGE:$variant"
+            args=(--tag "$tag")
+            for arch in amd64 arm64; do
+              if docker image inspect "formal-ai:$arch-$variant" >/dev/null 2>&1; then
+                args+=(--amend "formal-ai:$arch-$variant")
+              fi
+            done
+            docker buildx imagetools create "${args[@]}" $([ "$PUSH" = "true" ] || echo --dry-run)
+          }
+          merge slim
+          merge full
+      - name: Report and budget sizes
+        id: sizes
+        run: |
+          set -euo pipefail
+          report() {
+            variant="$1"
+            bytes="$(docker image inspect formal-ai:amd64-"$variant" --format '{{.Size}}')"
+            mb=$((bytes / 1024 / 1024))
+            echo "$variant-size=${mb}MB" >> "$GITHUB_OUTPUT"
+            echo "$variant: ${mb} MB (linux/amd64)" >> "$GITHUB_STEP_SUMMARY"
+            echo "$variant: ${mb} MB (linux/amd64)"
+          }
+          report slim
+          report full
+          # Issue #1153 acceptance: the slim variant is budgeted so it cannot
+          # silently re-inflate; 2 GB is twice its expected size.
+          slim_mb="$(docker image inspect formal-ai:amd64-slim --format '{{.Size}}')"
+          slim_mb=$((slim_mb / 1024 / 1024))
+          if [ "$slim_mb" -gt 2048 ]; then
+            echo "slim image is ${slim_mb} MB, over the 2048 MB budget" >&2
+            exit 1
+          fi

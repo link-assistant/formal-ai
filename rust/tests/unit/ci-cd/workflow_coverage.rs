@@ -91,10 +91,10 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
         // Issue #1138 re-measured: run 36046809360 had 2553 tests finished when
         // the old 2400s budget killed the lane -- ordinary progress, no hanger
         // -- while the uninstrumented twin lane ran all 2856 in 1235.57s, so
-        // the lane outgrew 2400s instrumented. 105 minutes leaves the 4200s
+        // the lane outgrew 2400s instrumented. 135 minutes leaves the 4200s
         // budget room to fire first: 4200s is 66.7% of the cap, inside the 70%
         // ceiling issue #1017 pinned.
-        ("coverage", 105),
+        ("coverage", 135),
         // Issue #895: the browser denominator. `node --test` over tests/web/
         // needs no cargo build, so the budget is dominated by checkout plus the
         // rust-script install for the ratchet gate.
