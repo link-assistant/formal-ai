@@ -1,0 +1,81 @@
+# Every dependency at its latest release (issue #1169).
+#
+# A gate can only say "this drifted"; something has to move the manifests
+# forward the day a release lands. This job is that something: once a day it
+# refreshes the registry snapshot, lets the gate rewrite every manifest that
+# is behind (blocked pins are annotated in-tree and stay put), re-resolves
+# the lockfiles from the rewritten manifests, re-runs the CI gates against
+# the result, and opens one pull request carrying whatever moved. An empty
+# day produces no PR at all.
+name: dependencies-latest
+
+on:
+  schedule:
+    # Off the :00/:30 marks: a fleet-wide cron stampede is a self-inflicted
+    # outage (issue #1021's retry rule exists for the same reason).
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dependencies-latest
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: ./.github/actions/automation-token
+        id: automation
+
+      - name: Install the toolchains the re-resolution needs
+        run: |
+          rustup toolchain install stable --profile minimal --no-self-update
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+
+      - name: Refresh the registry snapshot the gate reads
+        run: rust-script scripts/check-dependencies-latest.rs --refresh-snapshot
+
+      - name: Let the gate move every unblocked manifest forward
+        run: rust-script scripts/check-dependencies-latest.rs --apply --offline || test $? -eq 1
+
+      - name: Re-resolve the Rust lockfile from the rewritten manifest
+        working-directory: rust
+        run: cargo update --workspace
+
+      - name: Re-resolve the JavaScript lockfiles from the rewritten manifests
+        run: |
+          for directory in . desktop vscode rust/tests/e2e; do
+            if [ -f "$directory/package.json" ]; then
+              (cd "$directory" && bun install --mode=save || true)
+            fi
+          done
+
+      - name: Re-run the CI gates against the bumped tree
+        run: |
+          for stage in rust wasm web; do
+            rust-script scripts/run-ci-gates.rs --stage "$stage"
+          done
+
+      - name: Open one pull request with everything that moved
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.automation.outputs.token }}
+          commit-message: "chore(dependencies): move every unblocked dependency to its latest release"
+          title: "chore(dependencies): every dependency at its latest release"
+          body: |
+            Daily pass of `scripts/check-dependencies-latest.rs --apply`
+            (issue #1169). Every pin moved here was behind its publisher's
+            latest release and carried no `# blocked:` annotation; pins that
+            do carry one are untouched by design. The registry snapshot under
+            `data/meta/` is the same run's live answer, so reviewers can see
+            what "latest" meant when the branch was cut.
+          branch: dependencies/latest
+          delete-branch: true
+          labels: dependencies

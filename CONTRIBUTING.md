@@ -833,6 +833,19 @@ debt belongs:
   it — an untracked patch is invisible debt, because nothing fails when
   the upstream release lands and nothing ever removes it.
 
+The same rule governs *held-back releases* (issue #1169): every dependency
+must sit at its publisher's latest release, and `rust-script
+scripts/check-dependencies-latest.rs` fails when one does not. The one
+sanctioned way to hold a dependency back is a same-line annotation naming
+the issue that tracks the hold-back — `links-notation = "0.16.1" # blocked:
+https://github.com/link-foundation/lino-objects-codec/issues/60` in
+`Cargo.toml`, or a `"<name>//"` sibling key inside the same dependency
+object of a `package.json`. The annotation must point at an issue URL; a
+hold-back without one is not a decision, only drift. The daily
+`dependencies-latest` workflow re-checks every registry and opens one pull
+request with everything that moved, so the gate being green is a fact about
+yesterday's registries, not a permanent state anyone achieves once.
+
 ## GitHub credentials
 
 Tokens are **optional in all cases** (issue #1187). Nothing needs
