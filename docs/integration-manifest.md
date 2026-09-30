@@ -32,6 +32,20 @@ file, a section, and an edit.
   it, new) — after creation no pending edit; listed because its first
   scheduled run must confirm the resolver degrades (R5) rather than files
   cross-repository issues at layer `default`.
+- `pending:` `.github/workflows/layered-ci.yml` — #1088: add a step running
+  `rust-script scripts/check-evidence-lines.rs --base origin/main` and a
+  step running `rust-script scripts/check-evidence-lines.rs --files` (the
+  gate arms itself once `docs/evidence/index.lino` carries no `pending-move`
+  URL), so the 2,000-line budget and the tracked-file limit are enforced on
+  every pull request.
+- `pending:` `rust/tests/unit/mod.rs` — register the wave-3A test files:
+  `issue_1187_credentials`, `issue_1090_manual_column_retired`,
+  `issue_954_module_map`, `issue_1088_evidence_index`, and the #1182 pair
+  (`issue_1182_links_notation_conformance`, `issue_1182_duplicate_gate`).
+- `pending:` `data/meta/duplicate-functions-baseline.lino` — created by
+  `rust-script scripts/check-duplicate-functions.rs --write-baseline` (the
+  file is forbidden to hand-edit); first run is a main-session action
+  because it must follow the #1182 adapter landing.
 - `pending:` `rust/Cargo.toml` — the version-currency fork (J) owns it
   while its commits land; no wave-3A edit is pending on it.
 
