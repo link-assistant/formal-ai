@@ -1,0 +1,417 @@
+# Response intents, fragment templates, rule scopes, cue roles and manual
+# packages of the issue #1177 code-task family. Each record defines a slug
+# that the code-task seed files reference as a value (intent keys in
+# multilingual-responses.lino, scope values in code-review-rules.lino, role
+# values and class labels in code-task-cues.lino, package values in
+# manual-pages.lino), so the closure audit resolves them as authored
+# meanings instead of counting them as unresolved references. No lexeme
+# children: these are response shapes and routing vocabulary, not surfaces.
+meanings
+  code_debugging_defect
+    defined-by method
+    role action
+    precondition "a debugging request names code in which the defect table's shifted-quotient pattern matches the property the function name promises"
+    effect "answers with the template that names the defect line, the shift, and both the drop-shift and parenthesized repairs"
+    unit "not applicable"
+    example "a mean function that subtracts after the division is reported with its parenthesized repair"
+    grounding "data/seed/multilingual-responses.lino"
+  code_debugging_no_defect
+    defined-by method
+    role action
+    precondition "a debugging request names code the defect table scans without a match"
+    effect "answers that no recognized defect pattern matched and names the honest next steps a human would take"
+    unit "not applicable"
+    example "a scanned function whose division carries no top-level shift is reported as unmatched"
+    grounding "data/seed/multilingual-responses.lino"
+  code_debugging_no_intent
+    defined-by method
+    role action
+    precondition "a debugging request names a function absent from the intent table"
+    effect "answers that no promised property was available to check the code against"
+    unit "not applicable"
+    example "a function whose name promises nothing is scanned without a property to compare"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_synthesis_pattern
+    defined-by method
+    role action
+    precondition "a regular-expression request states composable class counts, optional groups and separators"
+    effect "answers with the anchored pattern, the constraint mapping and the structural verification note"
+    unit "not applicable"
+    example "five digits optionally followed by a hyphen and four digits composes to an anchored postal pattern"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_synthesis_broken
+    defined-by method
+    role action
+    precondition "composed constraints failed the structural verification"
+    effect "answers that no pattern will be guessed and names the structural problems found"
+    unit "not applicable"
+    example "a composition with an unclosed repetition is refused with the problem named"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_synthesis_refusal
+    defined-by method
+    role action
+    precondition "a regular-expression request states no composable constraints"
+    effect "answers that no pattern will be guessed and names the composable forms the handler understands"
+    unit "not applicable"
+    example "a request without class counts is refused rather than guessed"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_mapping_line
+    defined-by method
+    role action
+    precondition "one composed constraint needs its derivation shown"
+    effect "renders the request phrase beside the pattern fragment it produced"
+    unit "not applicable"
+    example "the five-digit count renders beside its class fragment"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_role_main
+    defined-by method
+    role action
+    precondition "the first composed constraint needs its role named"
+    effect "renders the main-run note appended to its mapping line"
+    unit "not applicable"
+    example "the leading class count is marked as the main run"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_role_optional
+    defined-by method
+    role action
+    precondition "a composed constraint sits inside an optional group"
+    effect "renders the optional-group note appended to its mapping line"
+    unit "not applicable"
+    example "the trailing four digits are marked as an optional group"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_role_required
+    defined-by method
+    role action
+    precondition "a composed constraint after the first is required"
+    effect "renders the required-group note appended to its mapping line"
+    unit "not applicable"
+    example "a second mandatory class count is marked as a required group"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_note_separator
+    defined-by method
+    role action
+    precondition "a composed constraint follows a named literal separator"
+    effect "renders the separator note appended to its mapping line"
+    unit "not applicable"
+    example "a hyphen between two class counts is named in the mapping"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_anchor_note_anchored
+    defined-by method
+    role action
+    precondition "the composed pattern was anchored at both ends"
+    effect "renders the note that the whole string must match, not a substring"
+    unit "not applicable"
+    example "an anchored postal pattern states the whole-match requirement"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_anchor_note_unanchored
+    defined-by method
+    role action
+    precondition "the request asked to match a substring anywhere"
+    effect "renders the note that the pattern matches anywhere"
+    unit "not applicable"
+    example "an unanchored pattern states it matches anywhere"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_problem_dangling_escape
+    defined-by method
+    role action
+    precondition "a composed pattern ends with a lone backslash"
+    effect "names the dangling escape in the structural refusal"
+    unit "not applicable"
+    example "a trailing backslash escapes nothing and is named"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_problem_bad_repetition
+    defined-by method
+    role action
+    precondition "a composed repetition carries no count after its opening brace"
+    effect "names the missing repetition count in the structural refusal"
+    unit "not applicable"
+    example "an opening brace with no digits is named"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_problem_unclosed_repetition
+    defined-by method
+    role action
+    precondition "a composed repetition is not closed"
+    effect "names the unclosed repetition in the structural refusal"
+    unit "not applicable"
+    example "a brace opened and never closed is named"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_problem_unbalanced_parens
+    defined-by method
+    role action
+    precondition "composed groups do not balance"
+    effect "names the unbalanced parentheses in the structural refusal"
+    unit "not applicable"
+    example "an unclosed group is named"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_problem_unbalanced_class
+    defined-by method
+    role action
+    precondition "a composed character class is not closed"
+    effect "names the unbalanced class brackets in the structural refusal"
+    unit "not applicable"
+    example "an unclosed bracket pair is named"
+    grounding "data/seed/multilingual-responses.lino"
+  sql_synthesis_statement
+    defined-by method
+    role action
+    precondition "a query request names a table and states constraints the clause builders cover"
+    effect "answers with the composed statement and a clause-by-clause mapping back to the request"
+    unit "not applicable"
+    example "users older than thirty composes to a filtered select"
+    grounding "data/seed/multilingual-responses.lino"
+  sql_synthesis_refusal
+    defined-by method
+    role action
+    precondition "a query request names no table"
+    effect "answers that no table will be guessed and asks for one by name"
+    unit "not applicable"
+    example "a request without a table name is refused"
+    grounding "data/seed/multilingual-responses.lino"
+  shell_command_composed
+    defined-by method
+    role action
+    precondition "a shell request matches a manual page the seed covers and states constraints a composer handles"
+    effect "answers with the composed command, its flags quoted from the manual, and the derivation"
+    unit "not applicable"
+    example "log files larger than a size under a path compose to a find command"
+    grounding "data/seed/multilingual-responses.lino"
+  shell_compose_refusal
+    defined-by method
+    role action
+    precondition "a shell request matches no manual page the seed covers"
+    effect "answers that no command will be guessed and names the covered tools"
+    unit "not applicable"
+    example "a request for an uncovered tool is refused by name"
+    grounding "data/seed/multilingual-responses.lino"
+  code_explanation_lines
+    defined-by method
+    role action
+    precondition "an explanation request names code in which at least one construct matches the table"
+    effect "answers with the line-by-line meanings, the overall name promise and the cost note"
+    unit "not applicable"
+    example "a mean function is explained line by line with its name promise"
+    grounding "data/seed/multilingual-responses.lino"
+  code_explanation_line
+    defined-by method
+    role action
+    precondition "one matched construct needs its meaning shown"
+    effect "renders the code line beside its construct meaning sentence"
+    unit "not applicable"
+    example "a definition line renders beside its meaning sentence"
+    grounding "data/seed/multilingual-responses.lino"
+  code_explanation_overall
+    defined-by method
+    role action
+    precondition "the explained function name is in the intent table"
+    effect "renders the promised property and its canonical form with the grounding"
+    unit "not applicable"
+    example "a mean function promise is stated with its canonical form"
+    grounding "data/seed/multilingual-responses.lino"
+  code_explanation_no_overall
+    defined-by method
+    role action
+    precondition "the explained function name is absent from the intent table"
+    effect "renders the note that no promised property exists to summarize"
+    unit "not applicable"
+    example "an unlisted name states it promises nothing"
+    grounding "data/seed/multilingual-responses.lino"
+  code_explanation_no_construct
+    defined-by method
+    role action
+    precondition "an explanation request names code in which no construct matches the table"
+    effect "answers that no construct matched and names what the table covers"
+    unit "not applicable"
+    example "unmatched lines are reported honestly with the table's scope"
+    grounding "data/seed/multilingual-responses.lino"
+  code_explanation_cost_linear
+    defined-by method
+    role action
+    precondition "the explained lines contain a loop over the input"
+    effect "renders the note that the work grows linearly with the input"
+    unit "not applicable"
+    example "a loop states linear work"
+    grounding "data/seed/multilingual-responses.lino"
+  code_explanation_cost_constant
+    defined-by method
+    role action
+    precondition "the explained lines contain no loop over the input"
+    effect "renders the note that no loop appears in these lines"
+    unit "not applicable"
+    example "straight-line code states no loop appears"
+    grounding "data/seed/multilingual-responses.lino"
+  code_review_findings
+    defined-by method
+    role action
+    precondition "a review request names code in which at least one rule fires"
+    effect "answers with each finding, its severity, advice and upstream source"
+    unit "not applicable"
+    example "a bare except is reported with its upstream source"
+    grounding "data/seed/multilingual-responses.lino"
+  code_review_finding
+    defined-by method
+    role action
+    precondition "one rule fired on one line of the reviewed code"
+    effect "renders the finding row with severity, line number, advice and source"
+    unit "not applicable"
+    example "the bare-except row renders with its line number and source"
+    grounding "data/seed/multilingual-responses.lino"
+  code_review_no_match
+    defined-by method
+    role action
+    precondition "a review request names code in which no rule fires"
+    effect "answers that no rule matched and names the honest limits of the rule table"
+    unit "not applicable"
+    example "code the table finds nothing in is reported as unmatched, not as clean"
+    grounding "data/seed/multilingual-responses.lino"
+  test_generation_suite
+    defined-by method
+    role action
+    precondition "a test request names a function a known problem shape matches"
+    effect "answers with the suite, its derivation rows and the not-executed note"
+    unit "not applicable"
+    example "a palindrome function yields a suite of named cases with a normalize helper"
+    grounding "data/seed/multilingual-responses.lino"
+  test_generation_refusal
+    defined-by method
+    role action
+    precondition "a test request names no function under test"
+    effect "answers that no suite will be guessed and asks for the function by name"
+    unit "not applicable"
+    example "a request with no function name is refused"
+    grounding "data/seed/multilingual-responses.lino"
+  code_refactoring_async
+    defined-by method
+    role action
+    precondition "a refactoring request names a promise chain the parser fully understands"
+    effect "answers with the async rewrite that preserves every handler body verbatim"
+    unit "not applicable"
+    example "a chained fetch rewrites to awaited steps inside a try block"
+    grounding "data/seed/multilingual-responses.lino"
+  code_refactoring_refusal
+    defined-by method
+    role action
+    precondition "a refactoring request names code that is not a promise chain"
+    effect "answers that the one implemented transformation does not apply and names it"
+    unit "not applicable"
+    example "a request without a chain is refused with the supported transformation named"
+    grounding "data/seed/multilingual-responses.lino"
+  format_conversion_to_yaml
+    defined-by method
+    role action
+    precondition "a conversion request names json text inside the supported subset and yaml as the target"
+    effect "answers with the block-style yaml rendering and the round-trip note"
+    unit "not applicable"
+    example "a nested object renders as block yaml with two-space indent"
+    grounding "data/seed/multilingual-responses.lino"
+  format_conversion_to_json
+    defined-by method
+    role action
+    precondition "a conversion request names yaml text inside the supported subset and json as the target"
+    effect "answers with the json rendering and the round-trip note"
+    unit "not applicable"
+    example "block yaml renders as nested json"
+    grounding "data/seed/multilingual-responses.lino"
+  format_conversion_refusal
+    defined-by method
+    role action
+    precondition "a conversion request cannot be honored inside the subset"
+    effect "answers with the refusal that names the reason"
+    unit "not applicable"
+    example "a broken document is refused with its reason named"
+    grounding "data/seed/multilingual-responses.lino"
+  format_conversion_reason_bad_json
+    defined-by method
+    role action
+    precondition "the json text was recognized but failed to parse"
+    effect "names the parse failure inside the refusal"
+    unit "not applicable"
+    example "a trailing comma names the parse failure"
+    grounding "data/seed/multilingual-responses.lino"
+  format_conversion_reason_roundtrip
+    defined-by method
+    role action
+    precondition "the converted text did not re-parse to the input value"
+    effect "names the round-trip failure inside the refusal"
+    unit "not applicable"
+    example "a lossy rendering is refused rather than shown"
+    grounding "data/seed/multilingual-responses.lino"
+  format_conversion_reason_subset
+    defined-by method
+    role action
+    precondition "the text sits outside the supported yaml subset"
+    effect "names the subset limit inside the refusal"
+    unit "not applicable"
+    example "an anchor is refused as outside the subset"
+    grounding "data/seed/multilingual-responses.lino"
+  mapping_line
+    defined-by method
+    role action
+    precondition "a derivation needs one request phrase shown beside its emission"
+    effect "renders one mapping row with the request phrase and the emitted fragment"
+    unit "not applicable"
+    example "the older-than phrase renders beside its where clause"
+    grounding "data/seed/multilingual-responses.lino"
+  flag_line
+    defined-by method
+    role action
+    precondition "a composed command flag needs its manual meaning shown"
+    effect "renders one flag beside the meaning its manual page states"
+    unit "not applicable"
+    example "the size flag renders beside its manual meaning"
+    grounding "data/seed/multilingual-responses.lino"
+  any_line
+    defined-by method
+    role action
+    precondition "a review rule applies to every line of the code"
+    effect "scopes the rule to any line regardless of position"
+    unit "not applicable"
+    example "a bare except is checked on any line"
+    grounding "data/seed/code-review-rules.lino"
+  def_line
+    defined-by method
+    role action
+    precondition "a review rule applies to function definition lines"
+    effect "scopes the rule to lines that open a function definition"
+    unit "not applicable"
+    example "a mutable default is checked on the definition line"
+    grounding "data/seed/code-review-rules.lino"
+  loop_body
+    defined-by method
+    role action
+    precondition "a review rule applies to lines inside loops"
+    effect "scopes the rule to the indented bodies of loop headers"
+    unit "not applicable"
+    example "a string concatenation is checked inside the loop body"
+    grounding "data/seed/code-review-rules.lino"
+  to_json
+    defined-by method
+    role action
+    precondition "a conversion request names json as the target format"
+    effect "routes the request to the yaml-to-json conversion"
+    unit "not applicable"
+    example "a yaml document is asked for as json"
+    grounding "data/seed/code-task-cues.lino"
+  to_yaml
+    defined-by method
+    role action
+    precondition "a conversion request names yaml as the target format"
+    effect "routes the request to the json-to-yaml conversion"
+    unit "not applicable"
+    example "a json document is asked for as yaml"
+    grounding "data/seed/code-task-cues.lino"
+  coreutils
+    defined-by software_artifact
+    role action
+    precondition "a composed command comes from the gnu core utilities package"
+    effect "names the package the manual page belongs to"
+    unit "not applicable"
+    example "the listing command cites its core-utilities manual page"
+    grounding "data/seed/manual-pages.lino"
+  findutils
+    defined-by software_artifact
+    role action
+    precondition "a composed command comes from the gnu find utilities package"
+    effect "names the package the manual page belongs to"
+    unit "not applicable"
+    example "the find command cites its find-utilities manual page"
+    grounding "data/seed/manual-pages.lino"
