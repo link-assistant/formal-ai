@@ -1,0 +1,245 @@
+# Software-project request phrase vocabulary (issues #1138, #1175).
+#
+# The object-phrase discipline of rust/src/solver_handlers/
+# software_project_phrases.rs reads every surface from this file: the words
+# that close an authoring verb's object noun phrase (so the artifact kind is
+# the head the verb governs, never an incidental modifier), the determiners
+# and benefactives that may lead the phrase without belonging to it, and the
+# punctuation that ends a phrase or a sentence. The recognition algorithm is
+# compiled; the vocabulary is data, one meaning per table, so extending the
+# languages covered needs no Rust change. Every record is defined by the
+# statement function-word genus: these surfaces carry grammatical structure,
+# not lexical content.
+
+meanings
+  software_object_boundary_word
+    defined-by statement_function_word
+    role software_object_boundary_word
+    lexeme en
+      surface
+        text about
+      surface
+        text and
+      surface
+        text but
+      surface
+        text by
+      surface
+        text for
+      surface
+        text from
+      surface
+        text i
+      surface
+        text in
+      surface
+        text into
+      surface
+        text it
+      surface
+        text of
+      surface
+        text or
+      surface
+        text please
+      surface
+        text so
+      surface
+        text that
+      surface
+        text they
+      surface
+        text to
+      surface
+        text using
+      surface
+        text via
+      surface
+        text we
+      surface
+        text when
+      surface
+        text where
+      surface
+        text which
+      surface
+        text who
+      surface
+        text with
+      surface
+        text without
+    lexeme ru
+      surface
+        text в
+      surface
+        text для
+      surface
+        text и
+      surface
+        text из
+      surface
+        text или
+      surface
+        text которая
+      surface
+        text которое
+      surface
+        text который
+      surface
+        text которые
+      surface
+        text когда
+      surface
+        text на
+      surface
+        text от
+      surface
+        text с
+      surface
+        text чтобы
+    lexeme hi
+      surface
+        text और
+      surface
+        text जो
+      surface
+        text के
+      surface
+        text को
+      surface
+        text से
+      surface
+        text में
+      surface
+        text या
+  software_object_lead_word
+    defined-by statement_function_word
+    role software_object_lead_word
+    lexeme en
+      surface
+        text a
+      surface
+        text an
+      surface
+        text the
+      surface
+        text this
+      surface
+        text that
+      surface
+        text these
+      surface
+        text those
+      surface
+        text my
+      surface
+        text your
+      surface
+        text our
+      surface
+        text me
+      surface
+        text us
+      surface
+        text please
+  software_object_lead_bigram
+    defined-by statement_function_word
+    role software_object_lead_bigram
+    lexeme en
+      surface
+        text "for me"
+      surface
+        text "for us"
+      surface
+        text "to me"
+      surface
+        text "to us"
+  software_object_boundary_character
+    defined-by statement_function_word
+    role software_object_boundary_character
+    lexeme en
+      surface
+        text ","
+      surface
+        text ";"
+      surface
+        text "."
+      surface
+        text "?"
+      surface
+        text "!"
+      surface
+        text ":"
+      surface
+        text "("
+      surface
+        text ")"
+      surface
+        text "["
+      surface
+        text "]"
+    lexeme zh
+      surface
+        text "，"
+      surface
+        text "。"
+      surface
+        text "？"
+      surface
+        text "！"
+      surface
+        text "；"
+      surface
+        text "："
+      surface
+        text "、"
+    lexeme hi
+      surface
+        text "।"
+  software_object_word_internal_character
+    defined-by statement_function_word
+    role software_object_word_internal_character
+    lexeme zh
+      surface
+        text "，"
+      surface
+        text "。"
+      surface
+        text "？"
+      surface
+        text "！"
+      surface
+        text "；"
+      surface
+        text "："
+      surface
+        text "、"
+    lexeme hi
+      surface
+        text "।"
+  software_sentence_end_character
+    defined-by statement_function_word
+    role software_sentence_end_character
+    lexeme en
+      surface
+        text "."
+      surface
+        text "?"
+      surface
+        text "!"
+      surface
+        text ";"
+      surface
+        text ":"
+    lexeme zh
+      surface
+        text "。"
+      surface
+        text "？"
+      surface
+        text "！"
+      surface
+        text "；"
+    lexeme hi
+      surface
+        text "।"

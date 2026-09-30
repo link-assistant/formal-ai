@@ -316,14 +316,17 @@ function tryPlaywrightScript(prompt, preferences = {}, language = "en") {
   };
 }
 
-function detectSoftwareAction(normalized) {
-  const match = scanSoftwareSurface(normalized, softwareActionTable());
-  return match ? match.payload : null;
-}
-
-function detectSoftwareArtifact(normalized) {
-  const match = scanSoftwareSurface(normalized, softwareArtifactTable());
-  return match ? { surface: match.surface, label: match.payload } : null;
+// The software-authoring verb and artifact kind of `normalized`, read only
+// from the head noun of the verb's object phrase (issue #1175). The previous
+// any-position artifact scan routed "Write a regular expression that matches
+// a US ZIP code with an optional 4-digit extension" as an *extension*
+// project because `extension` appeared anywhere in the prompt;
+// objectPhraseArtifact (formal_ai_worker_10.js) requires the artifact to
+// head the verb's object phrase, mirroring object_phrase_artifact in
+// src/solver_handlers/software_project.rs.
+function detectSoftwareObjectPhrase(normalized) {
+  const match = objectPhraseArtifact(normalized, softwareActionTable(), softwareArtifactTable());
+  return match ? { action: match.action, surface: match.surface, label: match.label } : null;
 }
 
 function extractSoftwareTarget(prompt, artifact) {
@@ -605,14 +608,18 @@ function stableSoftwareMeaningId(meaning) {
 function formalizeSoftwareProjectRequest(prompt) {
   const normalized = normalizePrompt(prompt);
   if (normalized.includes("hello") && normalized.includes("world")) return null;
-  const action = detectSoftwareAction(normalized);
-  const artifact = detectSoftwareArtifact(normalized);
-  if (!action || !artifact) return null;
+  // The artifact kind comes only from the head noun of the authoring verb's
+  // object phrase (issue #1175): an artifact surface that merely modifies
+  // another noun — "an optional 4-digit extension" of a ZIP code — must not
+  // turn a regex request into an extension project.
+  const phrase = detectSoftwareObjectPhrase(normalized);
+  if (!phrase) return null;
+  const artifact = { surface: phrase.surface, label: phrase.label };
   const requirements = extractSoftwareFeatures(prompt);
   const gameTracker = isGameUnitTracker(normalized);
   const deliveryMode = detectSoftwareDeliveryMode(normalized);
   return {
-    action,
+    action: phrase.action,
     artifactSurface: artifact.surface,
     artifact: artifact.label,
     target: extractSoftwareTarget(prompt, artifact),

@@ -723,13 +723,27 @@ roles
     kind predicate
   software_language
     kind meaning
+  software_object_boundary_character
+    kind predicate
+  software_object_boundary_word
+    kind predicate
+  software_object_lead_bigram
+    kind predicate
+  software_object_lead_word
+    kind predicate
+  software_object_word_internal_character
+    kind predicate
   software_requirement_category
+    kind predicate
+  software_sentence_end_character
     kind predicate
   software_step_granularity
     kind meaning
   statement_function_word
     kind meaning
   statement_negation_cue
+    kind meaning
+  statistics_operation
     kind meaning
   substitution_compiler_concept
     kind predicate
@@ -758,6 +772,8 @@ roles
   task_first_step_cue
     kind meaning
   term_information_request_opener
+    kind meaning
+  text_summarization_action
     kind meaning
   time_duration_cue
     kind predicate
@@ -795,6 +811,8 @@ roles
     kind predicate
   translation_source_marker
     kind predicate
+  translation_stop_word
+    kind meaning
   translation_target_direction
     kind predicate
   translation_target_marker
@@ -802,6 +820,8 @@ roles
   translation_unquoted_frame
     kind meaning
   unauthorized_mutation_correction
+    kind meaning
+  unit_conversion_question
     kind meaning
   unobservable_task_action
     kind meaning
@@ -872,6 +892,8 @@ roles
   who_question_tail
     kind predicate
   wikidata_entity_anchor
+    kind predicate
+  word_problem_marker
     kind predicate
   workspace_inspection_action
     kind predicate
