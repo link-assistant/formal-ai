@@ -1,0 +1,73 @@
+name: Cross-organization duplication
+
+# Issue #1182 (E147, R9): the weekly audit that finds function bodies
+# duplicated across link-foundation and link-assistant, chooses the
+# repository that should own each group, and files one issue there.
+#
+# Credentials follow the shared resolver of #1187 (E151):
+# actions/automation-token provides the GitHub App layer or the single
+# AUTOMATION_TOKEN secret when configured, and the default GITHUB_TOKEN
+# otherwise. At the default layer the job still scans and reports -- the
+# script's --open step degrades loudly instead of demanding a token.
+
+on:
+  schedule:
+    # Weekly, off the :00 mark (issue #1182 design; fleet-jitter courtesy).
+    - cron: "23 4 * * 1"
+  workflow_dispatch:
+    inputs:
+      open:
+        description: "Open issues in the owning repositories (otherwise scan and report only)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cross-org-duplication
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve the automation credential
+        id: token
+        uses: ./.github/actions/automation-token
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install the audit runner
+        run: cargo install rust-script --locked
+
+      - name: Run the cross-organization duplication scan
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          CREDENTIAL_LAYER: ${{ steps.token.outputs.layer }}
+        run: |
+          set -euo pipefail
+          OPEN_FLAG=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.open }}" = "true" ]; then
+            OPEN_FLAG="--open"
+          fi
+          # At the default credential layer the resolver reports it: open
+          # nothing, report everything (#1187 R5 -- degrade, don't demand).
+          if [ "$CREDENTIAL_LAYER" = "default" ] && [ -n "$OPEN_FLAG" ]; then
+            echo "::warning::cross-org-duplication: --open requested at the default credential layer; scanning and reporting only"
+            OPEN_FLAG=""
+          fi
+          rust-script scripts/cross-org-duplication.rs $OPEN_FLAG
+
+      - name: Upload the duplication record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-org-duplication
+          path: data/meta/cross-org-duplication.lino
+          if-no-files-found: warn
