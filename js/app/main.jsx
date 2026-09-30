@@ -16,6 +16,7 @@ import { ChakraProvider, chakra } from "@chakra-ui/react";
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
 import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
+import { MenuGlyph, SidebarToggleGlyph } from "./glyphs.jsx";
 import { DebuggerView } from "./debugger-view.jsx";
 import { answerHasDetectedFailure } from "./detected-failure.js";
 
@@ -6405,14 +6406,6 @@ function CollapsibleSection({
     if (typeof onToggle === "function") onToggle();
   };
   return <section className={sectionClassName} data-testid={testId} data-collapsed={collapsed ? "true" : "false"}><div className="sidebar-section-header" onClick={handleHeaderClick}><button type="button" className="sidebar-section-toggle" aria-expanded={collapsed ? "false" : "true"} onClick={handleToggleClick}><span className="sidebar-section-caret" aria-hidden="true">{collapsed ? "▶" : "▼"}</span><h2>{title}</h2></button><button type="button" className="sidebar-section-isolate" data-testid="sidebar-section-isolate" data-sidebar-section-action="isolate" aria-label={isolateLabel} title={isolateTitle}><ToolbarIcon action="isolateSection" pack={iconPack} /></button></div>{collapsed ? null : <div className={sectionBodyClassName}>{children}</div>}</section>;
-}
-
-function MenuGlyph({ open }) {
-  return <span className={`btn-icon menu-icon ${open ? "menu-icon-close" : "menu-icon-hamburger"}`} aria-hidden="true" />;
-}
-
-function SidebarToggleGlyph({ collapsed }) {
-  return <span className={`btn-icon sidebar-toggle-icon ${collapsed ? "sidebar-toggle-icon-expand" : "sidebar-toggle-icon-collapse"}`} aria-hidden="true">{collapsed ? "▶" : "◀"}</span>;
 }
 
 function App() {

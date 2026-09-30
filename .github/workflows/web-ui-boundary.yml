@@ -1,0 +1,19 @@
+name: Web UI boundary
+on:
+  pull_request:
+    paths: ['js/app/**', 'scripts/check-web-ui-boundary.py', 'docs/case-studies/issue-951/**']
+  push:
+    branches: [main]
+    paths: ['js/app/**', 'scripts/check-web-ui-boundary.py', 'docs/case-studies/issue-951/**']
+permissions:
+  contents: read
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Prevent additional business logic in the UI
+        run: python3 scripts/check-web-ui-boundary.py
