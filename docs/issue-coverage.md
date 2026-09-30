@@ -35,27 +35,27 @@ worker shards.
 
 | Issue | Status | Commit(s) | Remaining |
 |---|---|---|---|
-| #1178 creative composition | done (drafted) | `71dd597eb` | wiring: registry ×3, mod/lift/dispatch, probe lift-out, DoD docs; js/ts parity (build-gated) |
-| #1179 fact-check sources | done (drafted) | `46d5dcfa8` | wiring: 4 one-liners (lib.rs, extract.rs:133, audit.rs:178, test reg); prose extractor, CLI threshold, CI job, ten-fixture test |
+| #1178 creative composition | done (drafted) | `fca05d36d` | seeded creative, writing, planning, and advice handlers are wired; JS/TS parity and probe lift-out remain build-gated |
+| #1179 fact-check sources | done (drafted) | `46d5dcfa8` + `fca05d36d` | fact-check module, source seed, registry and test census are wired; CI fixture sweep remains |
 | #1180 history context | done (drafted) | `d81d549e0` | wiring: lib.rs, registry, boundary row, test reg; 1275-line file split |
-| #1184 derivation records | done (drafted) | `b32fb4abd` | wiring: 5 one-liners; R9 js/ts parity |
+| #1184 derivation records | done (drafted) | `6b560e16f` + `6b9d0fa2c` | solver finalization, content-addressed serialization and persistence are wired; post-solver mutation and verify-event coverage remain |
 | #1185 repair loop | done (drafted) | `99221181c` | wiring: modules.rs, command_reroute seam, RecipeProgress field; R8 parity |
-| #1186 formalization task | done (drafted) | `dc3671dc7` | wiring: dispatch-before-search, lift, registry; R7 parity; upstream #185 |
+| #1186 formalization task | done (drafted) | `fca05d36d` | formalization handler, split renderer, dispatch, registry and precedence are wired; JS/TS parity remains |
 | #1163 internet as knowledge | done (drafted) | `689c44c49` | wiring: R4/R5 (registry row + source_research fetch branch); parity |
-| #1164 code examples as knowledge | done (drafted) | `5d76720ae` | wiring: adopt_decomposed_procedure call site; parity |
+| #1164 code examples as knowledge | partial | `5d76720ae` | knowledge and decomposition modules are present; adoption remains blocked because the current path requires step-specific execution evidence |
 | #1165 discovery production path | done (drafted) | `16bbbcb84` | wiring: solver.rs/general_execution.rs call sites; R4 deletions post-rediscovery |
 | #1166 obligations not phrases | done (drafted) | `feb868e8d` | wiring: ci_workflow.rs/program_contract.rs call sites |
 | #1167 code in meta language | done (drafted) | `98f7de4ae` | wiring: 2 test regs, CI generator line, composition.rs:404 delegate; closure token `r` |
 | #1168 latest versions | done (drafted) | `1394803df` | wiring: generators read discovery module (fork report pending) |
-| #1169 dependency currency | in flight | — | fork J: gate + lockfile + npm + actions + base image |
-| #1171 parity document | done (drafted) | `9d137e808` | wiring: llm-task-classes.lino, probe sets, runner, release hook, test reg |
-| #1154 progress cmd key | done (drafted) | `5a164f690` | wiring: test reg; work-item-steps mirror already committed |
+| #1169 dependency currency | done (drafted) | `71c1ee5d2` | dependency gate, daily workflow, lockfile audit, hold-back policy and currency test are committed |
+| #1171 parity document | partial | `c3ba008f8` | parity classes now come from `data/meta/llm-task-classes.lino`; held-out probes, benchmark runner, status/CI and release hook remain |
+| #1154 progress cmd key | done (drafted) | `0d6d60df3` | work-item-step guard and continuation requirements are committed; test census is wired |
 | #1155 read validation | done (drafted) | `239917faa` | wiring: test reg (issue-named file rename optional) |
-| #1156 doubled output | not started | — | root fix in program_contract.rs (dedupe print-clause literals) + verify script |
-| #1157 idempotent commit chain | not started | — | work-item-steps guard + reroute verify-before-execute |
-| #1158 PR feedback/ready | not started | — | data keys + reroute post-commit steps |
-| #1159 prerequisite recovery | not started | — | wire crate::prerequisite into reroute failure arm |
-| #1160 regular prompt | not started | — | restart_feedback.rs + planner route |
+| #1156 doubled output | done (drafted) | `0d6d60df3` | print-clause dedupe and continuation recovery are committed; live agent probe remains |
+| #1157 idempotent commit chain | done (drafted) | `0d6d60df3` | verify-before-execute and idempotent step guard are committed; live agent probe remains |
+| #1158 PR feedback/ready | done (drafted) | `0d6d60df3` | feedback and ready-state data/reroute are committed; live agent probe remains |
+| #1159 prerequisite recovery | done (drafted) | `0d6d60df3` | prerequisite recovery path is committed; live agent probe remains |
+| #1160 regular prompt | done (drafted) | `0d6d60df3` | regular-prompt restart feedback and planner route are committed; live agent probe remains |
 | #1170, #1162, #1183 (umbrellas) | leaf-tracked | — | close status derives from their leaves above |
 
 ## Wave 3 — infra, web, knowledge, backlog (32)
@@ -67,18 +67,18 @@ worker shards.
 | #1090 traceability column | partial | `4770967c1` | fork 3A report pending |
 | #954 module map | done (drafted) | `329fec41b` | move manifest execution at integration |
 | #955 hand-check suite | done (drafted) | `443d9a133` | fork 3A report pending |
-| #1182 links-notation adoption | in flight | — | fork 3A |
+| #1182 links-notation adoption | partial | `3f1b3ab58` | installed-parser adapter, duplicate gate and fixtures are committed; CI must measure and review the exact baseline before the write gate can be enabled |
 | #1153 slim image | in flight | — | fork 3A |
 | #1084 multi-arch images | in flight | — | fork 3A |
 | #934 engine hard-fail | done (drafted) | `b2772db2a` | i18n keys ×2, worker-line-budget re-measure, ROADMAP line, case study |
 | #953 tool-router confinement | done (drafted) | `f366d2c4c` + sweep | rust `/v1/tools/authorize` endpoint + embedded spec mirror; release workflow `build:web` |
 | #825 autocomplete | done (drafted) | `9d1992fdb` | Playwright e2e typing case |
-| #951 main.jsx split | not started | — | inventory → logic extraction → removal ledger |
-| #557 embedded buttons/skins | not started | — | material skin option + composer buttons ≥768px |
-| #667 debugging view | not started | — | four-pane view over derivation records |
-| #665 PWA + npm package | not started | — | service worker + package scaffolding |
-| #666 VS Code extension | not started | — | listing assets + publish workflows |
-| #670 WebVM experiment | not started | — | experiments/webvm scaffold |
+| #951 main.jsx split | done (drafted) | `39667feb2` | inventory, glyph extraction and Rust transport boundary are committed; full Rust/WASM migration and acceptance remain |
+| #557 embedded buttons/skins | done (drafted) | `6f4fadc8d` | composer actions and skins are committed; browser acceptance remains |
+| #667 debugging view | done (drafted) | `22955a53f` | four-pane projection and debugger commands are committed; server stepping and browser acceptance remain |
+| #665 PWA + npm package | done (drafted) | `c75fb3dd2` | offline app and typed package/publish hook are committed; package publication remains |
+| #666 VS Code extension | done (drafted) | `fe9329f59` | listings and publish workflow are committed; marketplace configuration and acceptance remain |
+| #670 WebVM experiment | done (drafted) | `9a76bafcc` | bounded experiment scaffold is committed; measurements remain |
 | #869 RU meeting prompt | done (drafted) | `b0a49de8b` | regression pin; dispatch precedence optional |
 | #447 dialog complaint | partial | `ac95f9656` | CSS fix per case-study plan (js was fork-forbidden) |
 | #836 legality advisory | done (drafted) | `d266b1319` | wiring: lib.rs + dispatch + registry ×2 |
@@ -88,11 +88,11 @@ worker shards.
 | #901 TRIZ automation | done (drafted) | `680f9bf3b` | wiring: lib.rs + registry + dispatch (teaching layer, after concrete) |
 | #491 least action | done (drafted) | `6913661dc` | wiring: lib.rs + test reg; integration sites documented |
 | #483 small-model fallback | done (drafted) | `5f2985a47` | wiring: lib.rs + registry + settings surface; Candle deps optional |
-| #453 moonshot tasks | not started | — | docs/case-studies/issue-453/moonshot-tasks.md |
+| #453 moonshot tasks | partial | `10a3dedd3` | requirement and provenance case study is committed; live Atari/benchmark execution remains |
 | #651 backlog issue bodies | not started | — | docs/backlog/*.md; main files via gh |
-| #861 anonymous sentry | not started | — | telemetry.rs + consent seed |
-| #668 shareable packages | not started | — | associative_packages.rs round-trip |
-| #669 cloud memory sync | not started | — | cloud_sync.rs event-log sync |
+| #861 anonymous sentry | done (drafted) | `13e85e54f` | consent-gated diagnostics and Windows transport are committed; live telemetry acceptance remains |
+| #668 shareable packages | done (drafted) | `2ad01f2cd` + `7873be0a6` | package round-trip and handler-consent checks are committed; browser/CLI acceptance remains |
+| #669 cloud memory sync | done (drafted) | `5b702e0f4` | opt-in append-only sync is committed; remote-provider acceptance remains |
 | #940 research documents | done (drafted) | — | validated Markdown, PDF and DOCX downloads with source provenance; wiring: lib.rs + test registration |
 
 ## CI repair (dedicated fixer, in flight)
@@ -104,10 +104,10 @@ release CLI ×5, dogfood regeneration gate, evidence checks ×2, agent ladder. F
 ## Running total
 
 - done (pushed): 8
-- done (drafted, wiring pending): 26
-- partial: 3 (#1088, #1090, #447)
-- in flight: 4 issues (#1169, #1182, #1153, #1084) + CI fixer
-- not started: 16 (#1156–#1160, #951, #557, #667, #665, #666, #670, #453, #651, #861, #668, #669)
+- done (drafted): 40
+- partial: 7 (#1088, #1090, #447, #1164, #1171, #1182, #453)
+- in flight: 2 issues (#1153, #1084) + CI fixer
+- not started: 1 (#651)
 
 Not-started and partial issues are re-dispatched at ≤3 concurrent agents once the current
 fleet drains, per the standing concurrency policy. This ledger is updated at every landing.
