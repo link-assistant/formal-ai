@@ -831,10 +831,10 @@ fn pretty_json(value: &Value) -> String {
 /// `Bash` sends `command`, Codex's `exec_command` sends `cmd`, and `shell`-style
 /// adapters send either `script` or an array of argv words. Seven modules once
 /// kept seven local readings of this, and the two that read only `command`
-/// (`progress.rs`, `workspace_change.rs`) went blind on Codex: `issue_view_url`
-/// returned `None`, the read was never recorded as attempted, and the planner
-/// re-planned the identical `gh issue view` 78 times in a row. One reading now
-/// serves the whole module, so a new client spelling is fixed once.
+/// (`progress.rs`, `workspace_change.rs`) went blind on Codex: the work-item
+/// read URL never resolved, the read was never recorded as attempted, and the
+/// planner re-planned the identical `gh issue view` 78 times in a row. One
+/// reading now serves the whole module, so a new client spelling is fixed once.
 ///
 /// The key preference is plain: `command`, then `cmd`, then `script`. A client
 /// whose schema names the command property differently can be recognized before
