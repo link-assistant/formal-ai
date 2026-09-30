@@ -54,11 +54,11 @@ path = "src/main.rs"
 [dependencies]
 base64 = "0.23"
 clap = { version = "4.6", features = ["derive", "env"] }
-command-stream = "=0.16.0"
+command-stream = "1.1"
 egg = { version = "0.11.0", default-features = false, features = ["deterministic"], optional = true }
 lino-arguments = "=0.3.0"
 lino-objects-codec = "0.7.0"
-links-notation = "0.16.1"
+links-notation = "0.16.1" # blocked: https://github.com/link-foundation/lino-objects-codec/issues/60 (codec 0.7.0, its latest, requires ^0.16)
 link-calculator = "0.20.3"
 # CST/AST engine: the link-foundation meta-language links network. It ships
 # real tree-sitter grammars for every language we target and exposes a single
@@ -73,7 +73,7 @@ sha2 = "0.11"
 shell-words = "1.1.1"
 fs2 = "0.4"
 thread-priority = "3.1.1"
-toml_edit = "0.25.13"
+toml_edit = "0.25.15"
 tokio = { version = "1", features = ["rt", "time"] }
 # General categories for the lib's word segmentation: abugida conjuncts are
 # held together by combining marks, which `char::is_alphanumeric` excludes.
@@ -84,11 +84,11 @@ which = "8"
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 async-trait = "0.1"
 bytes = "1"
-link-cli = { version = "0.2.10", optional = true }
+link-cli = { version = "0.2.11", optional = true }
 tungstenite = "0.30"
 web-capture = { version = "0.3.37", default-features = false, features = ["search"] }
 web-search = { version = "0.5.0", default-features = false }
-webrtc = "0.20"
+webrtc = "0.21"
 
 [features]
 default = ["doublets-native", "equality-saturation", "meta-language"]

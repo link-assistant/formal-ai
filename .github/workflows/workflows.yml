@@ -146,7 +146,7 @@ jobs:
       # Annotations rather than SARIF: the results should be a red check on the
       # pull request that introduced them, not a Security tab entry that depends
       # on Advanced Security being enabled.
-      - uses: zizmorcore/zizmor-action@v0.6.2
+      - uses: zizmorcore/zizmor-action@v0.6.4
         with:
           advanced-security: false
           annotations: true
@@ -180,7 +180,7 @@ jobs:
       # reverting the digest pin and dropping the stock image's explicit
       # exception marker takes it to exit 14 with both findings named.
       - name: 'Enforce the hash-pin policy on container images'
-        uses: zizmorcore/zizmor-action@v0.6.2
+        uses: zizmorcore/zizmor-action@v0.6.4
         with:
           advanced-security: false
           annotations: true

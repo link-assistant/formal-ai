@@ -142,7 +142,7 @@
   "dependencies": {
     "@link-assistant/web-capture": "^1.11.2",
     "@link-assistant/web-search": "^0.11.0",
-    "playwright": "^1.62.1"
+    "playwright": "^1.63.0"
   },
   "overrides": {
     "@link-assistant/web-capture": {
