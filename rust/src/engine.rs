@@ -92,12 +92,15 @@ impl Serialize for SymbolicAnswer {
             answer: &'a str,
             confidence: f32,
             evidence_links: &'a [String],
-            #[serde(skip_serializing_if = "Vec::is_empty")]
-            thinking_steps: &'a Vec<ThinkingStep>,
+            #[serde(skip_serializing_if = "slice_is_empty")]
+            thinking_steps: &'a [ThinkingStep],
             links_notation: &'a str,
             #[serde(skip_serializing_if = "Option::is_none")]
-            execution_recipe: &'a Option<Box<ExecutionRecipe>>,
+            execution_recipe: Option<&'a ExecutionRecipe>,
             derivation_id: String,
+        }
+        fn slice_is_empty<T>(value: &&[T]) -> bool {
+            value.is_empty()
         }
         WireAnswer {
             intent: &self.intent,
@@ -106,7 +109,7 @@ impl Serialize for SymbolicAnswer {
             evidence_links: &self.evidence_links,
             thinking_steps: &self.thinking_steps,
             links_notation: &self.links_notation,
-            execution_recipe: &self.execution_recipe,
+            execution_recipe: self.execution_recipe.as_deref(),
             derivation_id: self.derivation_id(),
         }
         .serialize(serializer)
