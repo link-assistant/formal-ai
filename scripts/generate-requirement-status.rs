@@ -253,6 +253,14 @@ fn render_manifest(rows: &[Requirement], shard_count: usize) -> String {
     output.push_str(
         "  verdict_vocabulary \"implemented | partial | not-delivered | superseded | withdrawn\"\n",
     );
+    // Issue #1090 (E112), the retire branch: the manual-confirmation column
+    // is aspirational. `not yet confirmed` is the honest resting state of a
+    // row whose machinery is tested but nobody has yet watched run by hand;
+    // it carries no debt and gates nothing. The vocabulary line records the
+    // decision where every consumer of this manifest reads it.
+    output.push_str(
+        "  manual_column \"aspirational since 2026-09-30 (issue #1090): not yet confirmed rows carry no debt\"\n",
+    );
     output.push_str(&format!("  requirement_count {}\n", rows.len()));
     output.push_str(&format!("  implemented_count {implemented}\n"));
     for index in 0..shard_count {

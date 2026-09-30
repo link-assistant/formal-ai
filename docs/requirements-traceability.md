@@ -6,6 +6,20 @@ when it was delivered in code, (2) the automated test that pins it, and (3)
 manual test confirmation. Populated from the 2026-08-04 requirement audit
 (944 audited requirement records, `docs/case-studies/issue-914/` lineage).
 
+**Status of the manual-confirmation column (issue #1090, E112 — decided
+2026-09-30): aspirational.** The column records what a replayed session
+capture or a hand run *would* confirm; `not yet confirmed` is its honest
+resting state, not debt and not a failure — 1,132 of 1,214 rows read it
+today and none of them gates anything. The finish branch (filling the
+column from the agentic-CLI matrix's replayable captures) is the way the
+column eventually earns its place; until then the retire branch governs:
+**no new manual-confirmation ledger may be introduced until an existing
+one is complete**, and the rule lives in CONTRIBUTING.md beside this
+notice. `scripts/generate-requirement-status.rs` carries the same decision
+in the ledger manifest (`manual_column "aspirational since 2026-09-30
+(issue #1090)…"`), and `rust/tests/unit/issue_1090_manual_column_retired.rs`
+pins the branch so a silent reversal fails CI.
+
 Honesty rules applied throughout: `not yet confirmed` and `none recorded`
 mean exactly that -- absence of a record, not failure. A `not delivered`
 row names the issue that owns the work when one exists, and says plainly
