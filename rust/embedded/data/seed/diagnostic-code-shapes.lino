@@ -1,0 +1,69 @@
+# Diagnostic shape taxonomy for the error-driven repair loop (issue #1185).
+#
+# Recognition aid ONLY. Each row states where the error code and the
+# file/line location sit in one language's diagnostic lines, as a {slot}
+# template the generic matcher in rust/src/agentic_coding/repair_loop.rs
+# interprets. No fix lives here; a fix always comes from a fetched,
+# formalized source. Slots are validated by shape, so a template cannot
+# read prose as a path or a line number.
+
+diagnostic_code_shapes
+  language rust
+    pattern "error[{code}]: {message}"
+    pattern "error: {message}"
+    location "--> {file}:{line}:{column}"
+  language typescript
+    pattern "error {code}: {message}"
+    pattern "{file}({line},{column}): error {code}: {message}"
+    pattern "{file}:{line}:{column} - error {code}: {message}"
+  language javascript
+    pattern "error: {message}"
+    location "{file}:{line}"
+  language kotlin
+    pattern "{file}:{line}:{column}: error: {message}"
+    pattern "{file}:{line}:{column} error: {message}"
+    pattern "error: {message}"
+  language scala
+    pattern "{file}:{line}: error: {message}"
+    pattern "error: {message}"
+  language java
+    pattern "{file}:{line}: error: {message}"
+  language go
+    pattern "{file}:{line}:{column}: {message}"
+  language python
+    pattern "{head}: {message}"
+    head "SyntaxError"
+    head "IndentationError"
+    head "TypeError"
+    head "ValueError"
+    head "NameError"
+    head "IndexError"
+    head "KeyError"
+    head "AttributeError"
+    head "ModuleNotFoundError"
+    head "ImportError"
+    head "ZeroDivisionError"
+    head "RuntimeError"
+    head "RecursionError"
+    head "StopIteration"
+    location "File \"{file}\", line {line}"
+  language c
+    pattern "{file}:{line}:{column}: error: {message}"
+    pattern "{file}:{line}:{column}: fatal error: {message}"
+    pattern "{file}:{line}: error: {message}"
+  language cpp
+    pattern "{file}:{line}:{column}: error: {message}"
+    pattern "{file}:{line}:{column}: fatal error: {message}"
+    pattern "{file}:{line}: error: {message}"
+  language csharp
+    pattern "error {code}: {message}"
+    pattern "{file}({line},{column}): error {code}: {message}"
+  language ruby
+    pattern "{file}:{line}: {message}"
+  language php
+    pattern "PHP Parse error: {message}"
+    pattern "PHP Fatal error: {message}"
+    location "{file} on line {line}"
+  language swift
+    pattern "{file}:{line}:{column}: error: {message}"
+    pattern "error: {message}"
