@@ -204,6 +204,7 @@ mod issue_933_answer_parity;
 mod issue_933_self_authoring;
 mod issue_936_substitution_compiler;
 mod issue_938_meta_algorithm_builder;
+mod issue_940_research_documents;
 mod issue_945;
 mod issue_956;
 mod issue_962_word_operator_parity;

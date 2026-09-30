@@ -158,6 +158,7 @@ pub mod release_timeline;
 pub mod repair_strategy;
 pub mod repository_workspace;
 pub mod requirement_contradiction;
+pub mod research_documents;
 pub mod research_learning;
 pub(crate) mod responses_stream;
 pub mod retrieval_method;
