@@ -78,7 +78,16 @@ struct Args {
     verbose: bool,
 
     /// Disable verbose output and automatic complete dialog logging.
-    #[arg(long, global = true, env = "FORMAL_AI_SILENT", default_value_t = false)]
+    // Issue #1181: route `FORMAL_AI_SILENT` through the shared boolean parser
+    // so `=1`, `=yes`, `=on` (any case) work like `=true`; the action stays
+    // `SetTrue`, so a bare `--silent` flag keeps working.
+    #[arg(
+        long,
+        global = true,
+        env = "FORMAL_AI_SILENT",
+        default_value_t = false,
+        value_parser = formal_ai::cli_env::bool_env_value_parser
+    )]
     silent: bool,
 
     #[command(subcommand)]

@@ -147,13 +147,13 @@ pub(super) fn preserved_first_user_turn(summary: &str) -> Option<String> {
 }
 
 /// Emit a `route=value` planner-routing trace line to stderr when
-/// `FORMAL_AI_TRACE_REQUESTS=1`.
+/// `FORMAL_AI_TRACE_REQUESTS` is set to a true spelling (issue #1181).
 ///
 /// Mirrors the request tracing in
 /// `crate::protocol`. Off by default; issue #956 asked for visibility into how
 /// a received task was routed.
 pub fn trace_route(route: &str, value: &str) {
-    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
         eprintln!("[trace] {route}={value}");
     }
 }

@@ -478,12 +478,7 @@ fn try_capability_route(
         );
     }
 
-    let live_fetch = std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-        matches!(
-            value.trim().to_ascii_lowercase().as_str(),
-            "1" | "true" | "yes" | "on"
-        )
-    });
+    let live_fetch = crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH");
     match capability {
         "web_fetch" => {
             try_routed_http_fetch_with_offline(prompt, log, solver.config.offline || !live_fetch)

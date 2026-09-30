@@ -84,5 +84,5 @@ pub(super) fn cleanup_link_cli_files(database: &Path) {
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 pub(super) fn link_cli_debug_enabled() -> bool {
-    std::env::var("FORMAL_AI_LINK_CLI_DEBUG").as_deref() == Ok("1")
+    crate::cli_env::flag_enabled("FORMAL_AI_LINK_CLI_DEBUG")
 }

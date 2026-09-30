@@ -336,12 +336,7 @@ pub fn benchmark_solver_with(online: bool) -> UniversalSolver {
 }
 
 fn live_fetch_enabled() -> bool {
-    std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-        matches!(
-            value.trim().to_ascii_lowercase().as_str(),
-            "1" | "true" | "yes" | "on"
-        )
-    })
+    crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH")
 }
 
 /// The repository root of a checkout, derived from the compiled manifest dir.

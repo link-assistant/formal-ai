@@ -44,15 +44,16 @@ pub fn ast_census_runs() -> u64 {
     AST_CENSUS_RUNS.load(Ordering::Relaxed)
 }
 
-/// Record one census run, and — only when `FORMAL_AI_TRACE_SLOW_INIT=1` — report
-/// what it cost and how big the source was.
+/// Record one census run, and — only when `FORMAL_AI_TRACE_SLOW_INIT` is set
+/// to a true spelling (issue #1181) — report what it cost and how big the
+/// source was.
 ///
 /// Off by default: this is diagnostic output for locating a slow first request,
 /// in the same opt-in style as `FORMAL_AI_TRACE_REQUESTS`.
 #[cfg(feature = "meta-language")]
 fn record_census_run(source_len: usize, elapsed: std::time::Duration) {
     AST_CENSUS_RUNS.fetch_add(1, Ordering::Relaxed);
-    if std::env::var("FORMAL_AI_TRACE_SLOW_INIT").as_deref() == Ok("1") {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_SLOW_INIT") {
         eprintln!(
             "[slow-init] ast_census: {source_len} bytes in {} ms (run #{})",
             elapsed.as_millis(),

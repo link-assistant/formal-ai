@@ -161,10 +161,7 @@ pub fn configured_memory_path() -> Option<PathBuf> {
 /// Live chat exchanges are recorded into memory unless explicitly disabled.
 #[must_use]
 pub fn chat_recording_enabled() -> bool {
-    !matches!(
-        std::env::var("FORMAL_AI_RECORD_CHAT").as_deref(),
-        Ok("0" | "false" | "off")
-    )
+    !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
 }
 
 /// Resolve the native link-cli database beside a portable `.lino` memory log.
@@ -230,7 +227,7 @@ impl SyncStore {
                 let compatible = match crate::shared_memory::ensure_shared_memory_file(path) {
                     Ok(()) => true,
                     Err(error) => {
-                        if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                        if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
                             eprintln!("[memory] could not initialize {}: {error}", path.display());
                         }
                         false
@@ -239,7 +236,7 @@ impl SyncStore {
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, compatible)
             }
             Err(error) => {
-                if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
                     eprintln!("[memory] could not read {}: {error}", path.display());
                 }
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, false)
@@ -254,7 +251,7 @@ impl SyncStore {
         if store.compatible
             && let Err(error) = store.synchronize_link_cli_projection()
         {
-            if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+            if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
                 eprintln!(
                     "[memory] could not synchronize link-cli store for {}: {error}",
                     path.display()

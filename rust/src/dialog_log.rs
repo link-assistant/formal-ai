@@ -49,10 +49,13 @@ pub fn configure_verbose(enabled: bool) {
 }
 
 /// Whether complete diagnostic capture is enabled for this process.
+///
+/// `FORMAL_AI_SILENT` opts out through the shared boolean parser (issue
+/// #1181): `1`/`true`/`yes`/`on` (any case) all silence diagnostics.
 #[must_use]
 pub fn verbose_enabled() -> bool {
     VERBOSE_ENABLED.load(Ordering::Relaxed)
-        && std::env::var("FORMAL_AI_SILENT").as_deref() != Ok("1")
+        && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
 }
 
 /// Resolve the explicit or default per-dialog log directory.
@@ -106,7 +109,7 @@ pub fn current_dialog_id() -> Option<String> {
 
 /// Dump inbound request details in verbose mode or when explicitly requested.
 pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
-    if verbose_enabled() || std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
+    if verbose_enabled() || crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
         eprintln!("[trace] {method} {path} ({} byte body)\n{body}", body.len());
     }
 }

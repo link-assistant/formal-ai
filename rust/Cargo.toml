@@ -29,6 +29,20 @@ build = "build.rs"
 [package.metadata.docs.rs]
 no-default-features = true
 
+# Issue #1181: the `cli` job of the Desktop Release workflow publishes
+# prebuilt standalone archives as release assets, so `cargo binstall
+# formal-ai` downloads one of those instead of compiling this crate. The
+# archives hold `formal-ai-cli-<triple>/{formal-ai,LICENSE,README.md}`; names
+# are version-less because each GitHub release namespaces its own assets.
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/formal-ai-cli-{ target }.tar.gz"
+pkg-fmt = "tgz"
+bin-dir = "formal-ai-cli-{ target }/{ bin }{ binary-ext }"
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-url = "{ repo }/releases/download/v{ version }/formal-ai-cli-{ target }.zip"
+pkg-fmt = "zip"
+
 [lib]
 name = "formal_ai"
 path = "src/lib.rs"
