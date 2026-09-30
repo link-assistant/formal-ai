@@ -1,0 +1,52 @@
+name: Publish browser engine
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the package after preparation
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: publish-browser-engine
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+          registry-url: https://registry.npmjs.org
+      - name: Install Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - name: Prepare web and engine artifacts
+        run: |
+          bun install --frozen-lockfile
+          bun run build:web
+      - name: Package the engine
+        working-directory: packages/formal-ai-engine
+        run: npm pack --ignore-scripts
+      - uses: actions/upload-artifact@v6
+        with:
+          name: formal-ai-engine
+          path: packages/formal-ai-engine/*.tgz
+          if-no-files-found: error
+      - name: Publish with provenance
+        if: github.event_name == 'release' || inputs.publish
+        working-directory: packages/formal-ai-engine
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public --ignore-scripts
