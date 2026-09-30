@@ -1,0 +1,135 @@
+# Issue #1187 (E151): the one GitHub-credential resolver.
+#
+# Architect (2026-09-30): tokens are "not mandatory, but optional in all
+# cases"; "if this for single repository, we can have only one token for all
+# kinds of workloads"; without tokens, test on "a separate branch … with
+# separate tree".
+#
+# Every formal-ai workflow that writes to GitHub takes its token from here.
+# Three layers, first available wins:
+#
+#   1. GitHub App   AUTOMATION_APP_ID + AUTOMATION_APP_PRIVATE_KEY
+#                   (one app can serve every repository of the organization;
+#                    cross-repository writes work at this layer)
+#   2. Token        AUTOMATION_TOKEN  -- the ONE secret name, identical in
+#                   every repository, so one organization secret serves all
+#   3. Default      github.token      -- always present, repository-scoped
+#
+# Nothing fails because a credential is missing: with no configuration at
+# all the action returns layer `default` and callers degrade (R5: findings
+# land in the report and one tracking issue instead of being filed across
+# repositories).
+#
+# This is the local mirror of link-foundation/.github `actions/resolve-github-token`
+# (https://github.com/link-foundation/.github/issues/1) under the same
+# contract: when that shared action ships, this file becomes a one-line
+# delegation to it, and no workflow changes -- workflows already depend only
+# on the outputs below.
+#
+# Outputs:
+#   token                     the credential to use (never empty)
+#   layer                     app | token | default
+#   can-create-repositories   "true" only at layer app (R4: a separate
+#                             repository is used only when this is true)
+name: automation-token
+description: Resolve the one GitHub credential: GitHub App, then AUTOMATION_TOKEN, then github.token
+inputs:
+  github-token:
+    description: The workflow's github.token to fall back to
+    required: false
+    default: ${{ github.token }}
+  repositories:
+    description: Extra repositories the GitHub App token may touch (csv); cross-repository workloads pass them here
+    required: false
+    default: ""
+outputs:
+  token:
+    description: The resolved credential
+    value: ${{ steps.resolve.outputs.token }}
+  layer:
+    description: Which layer resolved (app | token | default)
+    value: ${{ steps.resolve.outputs.layer }}
+  can-create-repositories:
+    description: "true" only when the app layer is active
+    value: ${{ steps.resolve.outputs.layer == 'app' && 'true' || 'false' }}
+
+runs:
+  using: composite
+  steps:
+    - id: resolve
+      shell: bash
+      env:
+        APP_ID: ${{ secrets.AUTOMATION_APP_ID }}
+        APP_PRIVATE_KEY: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+        AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+        FALLBACK_TOKEN: ${{ inputs.github-token }}
+        REPOSITORIES: ${{ inputs.repositories }}
+      run: |
+        # The layer decision, printed to the log AND the job summary (R1):
+        # an operator reading a run sees which credential served it without
+        # opening the workflow.
+        layer=""
+        token=""
+
+        if [ -n "$APP_ID" ] && [ -n "$APP_PRIVATE_KEY" ]; then
+          # Layer 1: the GitHub App. The exchange itself is delegated to the
+          # maintained action; everything before it is configuration.
+          layer=app
+        elif [ -n "$AUTOMATION_TOKEN" ]; then
+          # Layer 2: the one token name, same in every repository.
+          layer=token
+          token="$AUTOMATION_TOKEN"
+        else
+          # Layer 3: always present. Checks dispatched by another workflow
+          # and orphan-branch isolation (R2/R4) exist precisely so this
+          # layer still gets work done.
+          layer=default
+          token="$FALLBACK_TOKEN"
+        fi
+
+        echo "layer=$layer" >> "$GITHUB_OUTPUT"
+        {
+          echo "### GitHub credentials"
+          echo ""
+          echo "layer: \`${layer}\`"
+          if [ "$layer" = app ]; then
+            echo ""
+            echo "cross-repository writes: available; repository creation: available"
+          elif [ "$layer" = token ]; then
+            echo ""
+            echo "cross-repository writes: available where the token allows; repository creation: no"
+          else
+            echo ""
+            echo "cross-repository writes: degraded to report-and-track (issue #1187 R5)"
+          fi
+        } >> "$GITHUB_STEP_SUMMARY"
+        echo "automation-token: layer=${layer}"
+
+        # The app layer exchanges its token in the step below; every other
+        # layer is already resolved.
+        if [ "$layer" != app ]; then
+          # token is masked by Actions automatically (it came from secrets
+          # or github.token), so writing it to the output is safe.
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+        fi
+
+    # Layer 1 exchange, only when the app is configured. actions/
+    # create-github-app-token is the maintained implementation of the
+    # installation-token exchange; pin by commit when it is first exercised
+    # on a real run (the pin is deliberately a tag until then, so the
+    # GUARD-tracked first run chooses the pin consciously).
+    - id: app-token
+      if: ${{ steps.resolve.outputs.layer == 'app' }}
+      uses: actions/create-github-app-token@v2
+      with:
+        app-id: ${{ secrets.AUTOMATION_APP_ID }}
+        private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+        owner: ${{ github.repository_owner }}
+        repositories: ${{ inputs.repositories != '' && inputs.repositories || github.event.repository.name }}
+
+    - name: Propagate app token
+      if: ${{ steps.resolve.outputs.layer == 'app' }}
+      shell: bash
+      # GITHUB_OUTPUT is set for every run step; the app exchange's token
+      # joins the same output the other layers wrote.
+      run: echo "token=${{ steps.app-token.outputs.token }}" >> "$GITHUB_OUTPUT"

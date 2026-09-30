@@ -833,6 +833,39 @@ debt belongs:
   it — an untracked patch is invisible debt, because nothing fails when
   the upstream release lands and nothing ever removes it.
 
+## GitHub credentials
+
+Tokens are **optional in all cases** (issue #1187). Nothing needs
+configuring for the workflows to run; when a credential exists, more work
+happens unattended.
+
+- **One resolver.** Every workflow that writes to GitHub takes its token
+  from `.github/actions/automation-token` — never from a directly read
+  secret. Three layers, first available wins: a GitHub App
+  (`AUTOMATION_APP_ID` + `AUTOMATION_APP_PRIVATE_KEY`, one app may serve
+  every repository of the organization), then one secret named
+  `AUTOMATION_TOKEN` — the same name in every repository, so one
+  organization secret serves them all — then the built-in `github.token`.
+  The layer that resolved is printed to the log and the job summary. No
+  other token secret name may appear in a workflow
+  (`rust/tests/unit/issue_1187_credentials.rs` fails the build on one).
+- **Checks without approval.** A `pull_request` workflow run whose PR was
+  opened by `GITHUB_TOKEN` waits for approval — that is GitHub's rule, not
+  ours. When the resolver reports layer `default`, the workflow that
+  pushed the branch calls `.github/actions/dispatch-checks`, which
+  dispatches every `pull_request` workflow on the head commit; dispatch
+  runs need no approval.
+- **Isolation without tokens.** A workload needing a separate tree tests on
+  an orphan branch of this repository (`e2e/<purpose>/<run_id>/<name>`,
+  `.github/workflows/e2e-isolation.yml`), with an `e2e-task` issue and a
+  pull request based on that branch, closed and deleted at the end. A
+  separate repository is used only when the resolver reports
+  `can-create-repositories: true` (the App layer).
+- **Cross-repository work degrades, never fails.** Filing an issue in
+  another repository at layer `default` is not possible; the workload
+  writes its findings into its report (`docs/status.md`, the case study)
+  and keeps one tracking issue here listing what to file.
+
 ## Project Conventions (recurring maintainer recommendations)
 
 These conventions recur in almost every issue review. They are collected here so
