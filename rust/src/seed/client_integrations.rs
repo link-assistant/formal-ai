@@ -99,6 +99,15 @@ pub struct ClientIntegrationGlobalConfig {
     pub protocol: String,
     pub format: ConfigFormat,
     pub path: String,
+    /// Environment variables that relocate this config entry's own file.
+    ///
+    /// A host that needs the client to read a task-local copy of `path` must
+    /// set one of these variables instead of relocating `XDG_CONFIG_HOME` or
+    /// `HOME`, which also moves `gh`'s and git's config and silently drops the
+    /// session's GitHub authentication (the 2026-09-27 Hive Mind incident,
+    /// link-assistant/hive-mind#2314; issue #1161). Empty for entries whose
+    /// file has no such variable (shell profiles, or clients without one).
+    pub config_env: Vec<String>,
     pub backup_suffix: String,
     pub model_catalog_path: String,
     pub toml_settings: Vec<(String, String)>,
@@ -447,6 +456,7 @@ fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrati
         protocol: node.id.clone(),
         format,
         path: node.find_child_value("path").to_string(),
+        config_env: Vec::new(),
         backup_suffix: node.find_child_value("backup_suffix").to_string(),
         model_catalog_path: node.find_child_value("model_catalog_path").to_string(),
         toml_settings: Vec::new(),
@@ -482,6 +492,10 @@ fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrati
                     config.shell_env.push(TemplateEnv { key, value });
                 }
             }
+            // Issue #1161: `config_env "VAR"` names a variable that relocates
+            // this entry's own config file, so a host can point the client at
+            // a task-local copy without moving `XDG_CONFIG_HOME`/`HOME`.
+            "config_env" => config.config_env.push(child.id.clone()),
             _ => {}
         }
     }
