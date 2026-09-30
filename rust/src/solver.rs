@@ -317,6 +317,7 @@ impl UniversalSolver {
         intent_cache: &mut IntentFormalizationCache,
     ) -> SymbolicAnswer {
         let mut log = EventLog::new();
+        let mut answer = (|| {
 
         // Issue #556: when this solve is a forced-language replay, force
         // detection so every localizable handler renders in the requested
@@ -748,6 +749,9 @@ impl UniversalSolver {
             links_notation,
             execution_recipe,
         }
+        })();
+        crate::derivation::finalize_answer(&mut answer, &mut log);
+        answer
     }
 }
 

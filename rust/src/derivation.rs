@@ -101,7 +101,7 @@ impl VerificationRecord {
             None => String::from("none"),
         };
         format!(
-            "evidence_id={} command={} exit={}",
+            "evidence_id={};command={};exit={}",
             self.evidence_id, self.command, exit
         )
     }
@@ -111,20 +111,19 @@ impl VerificationRecord {
     /// skipped rather than half-read.
     #[must_use]
     pub fn parse_payload(payload: &str) -> Option<Self> {
-        let entries: Vec<&str> = payload.split(';').collect();
-        let fields = parse_entries(&entries);
-        let evidence_id = fields
-            .iter()
-            .find(|(name, _)| *name == "evidence_id")
-            .map(|(_, value)| value.clone())?;
-        let command = fields
-            .iter()
-            .find(|(name, _)| *name == "command")
-            .map_or_else(String::new, |(_, value)| value.clone());
-        let exit_code = fields
-            .iter()
-            .find(|(name, _)| *name == "exit")
-            .and_then(|(_, value)| value.parse::<i64>().ok());
+        let rest = payload.strip_prefix("evidence_id=")?;
+        let (evidence_id, rest) = rest
+            .split_once(";command=")
+            .or_else(|| rest.split_once(" command="))?;
+        let (command, exit) = rest
+            .rsplit_once(";exit=")
+            .or_else(|| rest.rsplit_once(" exit="))?;
+        if evidence_id.is_empty() {
+            return None;
+        }
+        let evidence_id = evidence_id.to_owned();
+        let command = command.to_owned();
+        let exit_code = exit.parse::<i64>().ok();
         Some(Self {
             evidence_id,
             command,
@@ -148,12 +147,35 @@ pub struct Derivation {
 }
 
 /// The content-addressed id every answer carries (R1), computed exactly the
-/// way `SymbolicAnswer`'s field will be once the engine construction sites
-/// call this: `stable_id("answer", &answer)` over the answer text, the same
-/// FNV-1a scheme `VerifiedAnswer::derivation_id` generalizes.
+/// way `SymbolicAnswer::derivation_id` does: `stable_id("answer", &answer)`
+/// over the answer text, using the same FNV-1a scheme that
+/// `VerifiedAnswer::derivation_id` generalizes.
 #[must_use]
 pub fn answer_derivation_id(answer_text: &str) -> String {
     stable_id("answer", answer_text)
+}
+
+/// Complete every solver route, including early clarification/fallback returns,
+/// using the same log from which its thinking trace was projected. Persistence
+/// failures are exposed as evidence rather than silently claiming a durable link.
+pub(crate) fn finalize_answer(answer: &mut crate::engine::SymbolicAnswer, log: &mut EventLog) {
+    let answer_id = answer.derivation_id();
+    // Nested solves may already have emitted their own render event. Append
+    // this answer's final rendering last so the projected record names the
+    // response that is actually being returned.
+    log.append(RENDER_EMIT_KIND, format!("answer_id={answer_id};format=text"));
+    let record = Derivation::record_for(log, &answer_id);
+    answer.thinking_steps = log.thinking_steps_for_answer(&answer.answer);
+    answer.evidence_links.push(format!("derivation:{answer_id}"));
+    answer.links_notation.push('\n');
+    answer.links_notation.push_str(&record.to_lino());
+    let persisted = std::env::current_dir().and_then(|root| record.persist(&root));
+    match persisted {
+        Ok(_) => answer.evidence_links.push(format!("{DERIVATIONS_DIR}/{answer_id}.lino")),
+        Err(error) => answer
+            .evidence_links
+            .push(format!("derivation:persistence_failed:{error}")),
+    }
 }
 
 impl Derivation {

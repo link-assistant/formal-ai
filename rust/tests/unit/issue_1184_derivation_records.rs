@@ -236,3 +236,33 @@ fn lino_values_survive_quoting_and_line_breaks() {
     let parsed = Derivation::from_lino(&text).expect("the record parses back");
     assert_eq!(parsed, derivation, "quoted and escaped values round-trip");
 }
+
+#[test]
+fn solver_early_returns_expose_serialized_id_and_live_record() {
+    for prompt in ["hello", "", "1 + 1", "unrecognized qwerty xyz"] {
+        let answer = formal_ai::solve(prompt);
+        let id = answer.derivation_id();
+        let wire = serde_json::to_value(&answer).expect("serialize answer");
+        assert_eq!(wire["derivation_id"].as_str(), Some(id.as_str()));
+        assert!(answer.evidence_links.contains(&format!("derivation:{id}")));
+        let root = std::env::current_dir().expect("working directory");
+        let record = Derivation::load(&root, &id).expect("solver persisted derivation");
+        assert!(record.rendering.is_some());
+        assert!(answer.links_notation.contains(&record.to_lino()));
+    }
+}
+
+#[test]
+fn verification_payload_preserves_shell_separators_and_legacy_spelling() {
+    let record = VerificationRecord {
+        evidence_id: "evidence_123".into(),
+        command: "printf first; printf second exit=inside".into(),
+        exit_code: Some(0),
+    };
+    assert_eq!(VerificationRecord::parse_payload(&record.payload()), Some(record));
+    let legacy = VerificationRecord::parse_payload(
+        "evidence_id=evidence_old command=python3 solution.py exit=0",
+    ).expect("historical payload remains readable");
+    assert_eq!(legacy.command, "python3 solution.py");
+    assert_eq!(legacy.exit_code, Some(0));
+}
