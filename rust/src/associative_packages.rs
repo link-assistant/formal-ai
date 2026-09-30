@@ -111,7 +111,12 @@ pub fn import_package(
         let local = available.get(&handler.id)
             .filter(|local| local.kind == handler.kind && local.capability == handler.capability)
             .ok_or_else(|| SharingError::UnavailableHandler(handler.id.clone()))?;
-        if local.agent_tagged { agent_capabilities.insert(local.capability.clone()); }
+        if local.agent_tagged {
+            if !review.approved_agent_capabilities.contains(&local.capability) {
+                return Err(SharingError::AgentApprovalRequired(local.capability.clone()));
+            }
+            agent_capabilities.insert(local.capability.clone());
+        }
     }
     let mut triggers = BTreeSet::new();
     for trigger in &shared.package.triggers {

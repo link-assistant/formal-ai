@@ -49,3 +49,15 @@ fn associative_package_sharing_requires_explicit_agent_approval() {
     consent.artifact.push(' ');
     assert_eq!(import_package(EXAMPLE, &mut registry, &mut memory, &catalog(true), &consent), Err(SharingError::ReviewRequired));
 }
+
+#[test]
+fn associative_package_sharing_agent_handler_cannot_omit_its_permission_to_bypass_consent() {
+    let mut package = SharedPackage::parse(EXAMPLE).unwrap();
+    package.package.permissions.clear();
+    let artifact = package.export();
+    let mut registry = PackageStore::default();
+    let mut memory = MemoryStore::new();
+    assert!(matches!(import_package(&artifact, &mut registry, &mut memory, &catalog(true), &review(&artifact)),
+        Err(SharingError::AgentApprovalRequired(_))));
+    assert!(registry.packages().is_empty());
+}
