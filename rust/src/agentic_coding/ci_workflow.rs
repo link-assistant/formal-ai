@@ -36,11 +36,29 @@ pub(super) fn attach(recipe: &mut ExecutionRecipe) {
 }
 
 /// The workflow text: checkout, then the recipe's commands in order.
+///
+/// Every third-party pin the workflow carries -- the `uses:` refs and the
+/// toolchain versions -- is resolved at generation time rather than shipped
+/// from the template, and wherever a pin came from something other than a
+/// live lookup, the workflow says so in a comment (issue #1168).
 #[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn render(recipe: &ExecutionRecipe) -> String {
-    let mut out = super::work_item_steps::fill("workflow_template", &[("{path}", &recipe.path)]);
+    let versions = crate::version_resolution::VersionSet::for_generation();
+    let mut out = String::new();
+    for note in versions.provenance_note() {
+        out.push_str("# ");
+        out.push_str(&note);
+        out.push('\n');
+    }
+    out.push_str(&super::work_item_steps::fill(
+        "workflow_template",
+        &[("{path}", &recipe.path)],
+    ));
+    out = crate::version_resolution::fill_workflow_versions(&out, &versions);
     if let Some(setup) = crate::coding::program_contract::runtime_steps(&recipe.language) {
-        out.push_str(&setup);
+        out.push_str(&crate::version_resolution::fill_workflow_versions(
+            &setup, &versions,
+        ));
     }
     for command in &recipe.commands {
         out.push_str(&super::work_item_steps::fill(

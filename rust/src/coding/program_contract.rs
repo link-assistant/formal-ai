@@ -18,7 +18,10 @@ pub fn runtime_steps(language: &str) -> Option<String> {
         .children
         .iter()
         .find(|node| node.name == "language" && node.id == language)?;
-    Some(contract.find_child_value("ci_setup").to_owned())
+    Some(crate::version_resolution::fill_workflow_versions(
+        contract.find_child_value("ci_setup"),
+        &crate::version_resolution::VersionSet::for_generation(),
+    ))
 }
 
 /// Read an explicitly quoted output operand in its own clause.
