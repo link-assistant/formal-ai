@@ -132,7 +132,7 @@
 .ui-skin-glass .desktop-shell-panel div,
 .ui-skin-glass .tool,
 .ui-skin-glass .fetch-iframe-container {
-  background: rgba(251, 252, 253, 0.78);
+  background: rgba(251, 252, 253, var(--fa-glass-opacity, 0.78));
   -webkit-backdrop-filter: blur(16px) saturate(1.18);
   backdrop-filter: blur(16px) saturate(1.18);
 }
@@ -243,7 +243,7 @@
 :root[data-theme="dark"] .ui-skin-glass .desktop-shell-panel div,
 :root[data-theme="dark"] .ui-skin-glass .tool,
 :root[data-theme="dark"] .ui-skin-glass .fetch-iframe-container {
-  background: rgba(29, 32, 31, 0.78);
+  background: rgba(29, 32, 31, var(--fa-glass-opacity, 0.78));
 }
 
 :root[data-theme="dark"] .ui-skin-glass .chat-panel {
@@ -305,7 +305,7 @@
   :root:not([data-theme="light"]) .ui-skin-glass .desktop-shell-panel div,
   :root:not([data-theme="light"]) .ui-skin-glass .tool,
   :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-container {
-    background: rgba(29, 32, 31, 0.78);
+    background: rgba(29, 32, 31, var(--fa-glass-opacity, 0.78));
   }
 
   :root:not([data-theme="light"]) .ui-skin-glass .chat-panel {
@@ -4737,4 +4737,27 @@ textarea:disabled {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+/* Issue #557: one input surface contains both actions, including touch layouts. */
+.composer-grid { position: relative; grid-template-columns: minmax(0, 1fr); }
+.composer-grid textarea { grid-area: 1 / 1; width: 100%; padding-inline: 58px; }
+.composer-grid .composer-action-button,
+.composer-grid .send-button { position: absolute; bottom: 3px; z-index: 1; border: 0; background: transparent; min-width: 44px; width: 44px; padding: 0; }
+.composer-grid .composer-action-button { inset-inline-start: 3px; }
+.composer-grid .send-button { inset-inline-end: 3px; }
+.composer-grid .send-label { display: none; }
+.ui-skin-material { --fa-focus-ring: #6750a4; }
+.ui-skin-material .message-body,
+.ui-skin-material .sidebar-section-body { border-radius: 16px; box-shadow: 0 2px 6px rgb(0 0 0 / 12%); }
+.ui-skin-material .composer-grid textarea { border-radius: 28px; border-color: var(--fa-control-border, #79747e); }
+.ui-skin-material .topbar { box-shadow: 0 2px 8px rgb(0 0 0 / 12%); }
+.ui-skin-material button:focus-visible { outline: 3px solid var(--fa-focus-ring); outline-offset: 2px; }
+@media (prefers-reduced-transparency: reduce) {
+  .ui-skin-glass { --fa-glass-opacity: 1 !important; }
+  .ui-skin-glass * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+@media (forced-colors: active) {
+  .composer-grid textarea { border: 1px solid CanvasText; }
+  .composer-grid button { background: Canvas; color: ButtonText; }
 }

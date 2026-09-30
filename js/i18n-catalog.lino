@@ -115,6 +115,7 @@ en
     trace "Trace"
     settings "Settings"
   settings
+    glassOpacity "Glass opacity"
     ambiguity "Ambiguity"
     moreQuestions "More questions"
     moreGuessing "More guessing"
@@ -176,6 +177,7 @@ en
       light "Light"
       dark "Dark"
     uiSkin
+      material "Material"
       label "UI skin"
       flat "Flat"
       glass "Glass"
@@ -356,6 +358,7 @@ ru
     trace "Трассировка"
     settings "Настройки"
   settings
+    glassOpacity "Непрозрачность стекла"
     ambiguity "Неясность"
     moreQuestions "Больше вопросов"
     moreGuessing "Больше догадок"
@@ -417,6 +420,7 @@ ru
       light "Светлая"
       dark "Темная"
     uiSkin
+      material "Материальный"
       label "Скин UI"
       flat "Плоский"
       glass "Стекло"
@@ -587,6 +591,7 @@ zh
     trace "跟踪"
     settings "设置"
   settings
+    glassOpacity "玻璃不透明度"
     ambiguity "歧义"
     moreQuestions "多提问"
     moreGuessing "多猜测"
@@ -648,6 +653,7 @@ zh
       light "浅色"
       dark "深色"
     uiSkin
+      material "Material"
       label "界面皮肤"
       flat "扁平"
       glass "玻璃"
@@ -824,6 +830,7 @@ hi
     trace "ट्रेस"
     settings "सेटिंग्स"
   settings
+    glassOpacity "ग्लास अपारदर्शिता"
     ambiguity "अस्पष्टता"
     moreQuestions "अधिक सवाल"
     moreGuessing "अधिक अनुमान"
@@ -885,6 +892,7 @@ hi
       light "लाइट"
       dark "डार्क"
     uiSkin
+      material "मटेरियल"
       label "UI स्किन"
       flat "फ्लैट"
       glass "ग्लास"
