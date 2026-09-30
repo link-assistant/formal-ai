@@ -231,7 +231,16 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
 
     let mut heavy = Vec::new();
     let mut light = Vec::new();
-    for entry in workflow.lines().filter(|line| line.contains("capmin:")) {
+    for entry in workflow
+        .split("  build:\n")
+        .nth(1)
+        .expect("desktop build job")
+        .split("\n  cli:\n")
+        .next()
+        .expect("desktop job boundary")
+        .lines()
+        .filter(|line| line.contains("capmin:"))
+    {
         let label = entry
             .split("label: \"")
             .nth(1)

@@ -107,8 +107,10 @@ fn executed_search_answers_from_captured_sources_with_citations() {
         answer.answer
     );
     assert!(
-        log.events().iter().any(|event| event.kind == "web_search:executed"
-            && event.payload.contains("query=snorflax calibration")),
+        log.events()
+            .iter()
+            .any(|event| event.kind == "web_search:executed"
+                && event.payload.contains("query=snorflax calibration")),
         "the executed search must be recorded with its query: {:?}",
         log.events()
             .iter()

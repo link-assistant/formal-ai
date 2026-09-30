@@ -18,87 +18,87 @@ structure
   construct function_definition
     language python
     pattern "def {name}({args}):"
-    meaning "defines a function named {name} which runs its indented body whenever it is called"
+    explanation "defines a function named {name} which runs its indented body whenever it is called"
     grounding "https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions"
   construct for_loop
     language python
     pattern "for {item} in {items}:"
-    meaning "binds {item} to each element of {items} in turn and runs the indented body once per element"
+    explanation "binds {item} to each element of {items} in turn and runs the indented body once per element"
     grounding "https://docs.python.org/3.12/reference/compound_stmts.html#the-for-statement"
   construct if_statement
     language python
     pattern "if {condition}:"
-    meaning "runs the indented body only when {condition} evaluates to true"
+    explanation "runs the indented body only when {condition} evaluates to true"
     grounding "https://docs.python.org/3.12/reference/compound_stmts.html#the-if-statement"
   construct comprehension
     language python
     pattern "[{expr} for {item} in {items}]"
-    meaning "builds a new list by evaluating {expr} once for every element of {items}"
+    explanation "builds a new list by evaluating {expr} once for every element of {items}"
     grounding "https://docs.python.org/3.12/reference/expressions.html#displays-for-lists-sets-and-dictionaries"
   construct builtin_sum
     language python
     pattern "sum({items})"
-    meaning "adds up all the elements of {items} and returns the total"
+    explanation "adds up all the elements of {items} and returns the total"
     grounding "https://docs.python.org/3.12/library/functions.html#sum"
   construct builtin_len
     language python
     pattern "len({items})"
-    meaning "returns the number of elements in {items}"
+    explanation "returns the number of elements in {items}"
     grounding "https://docs.python.org/3.12/library/functions.html#len"
   construct builtin_max
     language python
     pattern "max({items})"
-    meaning "returns the largest element of {items}"
+    explanation "returns the largest element of {items}"
     grounding "https://docs.python.org/3.12/library/functions.html#max"
   construct builtin_min
     language python
     pattern "min({items})"
-    meaning "returns the smallest element of {items}"
+    explanation "returns the smallest element of {items}"
     grounding "https://docs.python.org/3.12/library/functions.html#min"
   construct comparison
     language python
     pattern "a == b"
-    meaning "compares the two sides for equality and yields true only when they are equal"
+    explanation "compares the two sides for equality and yields true only when they are equal"
     grounding "https://docs.python.org/3.12/reference/expressions.html#value-comparisons"
   construct assignment
     language python
     pattern "{name} = {value}"
-    meaning "binds the name {name} to the value on the right"
+    explanation "binds the name {name} to the value on the right"
     grounding "https://docs.python.org/3.12/reference/simple_stmts.html#assignment-statements"
   construct return_statement
     language python
     pattern "return {value}"
-    meaning "hands {value} back to the caller and ends the function immediately"
+    explanation "hands {value} back to the caller and ends the function immediately"
     grounding "https://docs.python.org/3.12/reference/simple_stmts.html#the-return-statement"
   construct division
     language python
     pattern "a / b"
-    meaning "divides the left side by the right, producing a float in Python 3 even when both divide evenly"
+    explanation "divides the left side by the right, producing a float in Python 3 even when both divide evenly"
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
   construct indexing
     language python
     pattern "{items}[{index}]"
-    meaning "selects the element of {items} at position {index}, counting from zero"
+    explanation "selects the element of {items} at position {index}, counting from zero"
     grounding "https://docs.python.org/3.12/reference/expressions.html#subscriptions"
   construct method_call
     language python
     pattern "{value}.{method}({args})"
-    meaning "calls the method named {method} on {value} with the given arguments"
+    explanation "calls the method named {method} on {value} with the given arguments"
     grounding "https://docs.python.org/3.12/reference/expressions.html#calls"
   construct arrow_function
     language javascript
     pattern "({args}) => {expr}"
-    meaning "defines a function taking {args} whose body is {expr}; when the body is an expression its value is returned"
+    explanation "defines a function taking {args} whose body is {expr}; when the body is an expression its value is returned"
     grounding "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions"
   construct const_declaration
     language javascript
     pattern "const {name} = {value}"
-    meaning "binds {name} to {value} in a binding that cannot be reassigned"
+    explanation "binds {name} to {value} in a binding that cannot be reassigned"
     grounding "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const"
   construct promise_then
     language javascript
     pattern "{value}.then({handler})"
-    meaning "registers {handler} to run with the result when {value} resolves, and returns a new promise that chains further handlers"
+    explanation "registers {handler} to run with the result when {value} resolves, and returns a new promise that chains further handlers"
     grounding "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then"
 function_intent
   name average

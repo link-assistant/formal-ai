@@ -87,16 +87,12 @@ meanings
     unit "not applicable"
     example "1 week before Friday is Friday. 1 week = 7 days exactly."
     grounding "data/seed/multilingual-responses-quantities.lino"
-  word_problem_change
-    defined-by answer
     role localized_response_template
     precondition "a price-times-count change word problem is answered"
     effect "the total change is stated with the multiplication that produced it"
     unit "not applicable"
     example "5 boxes pay 3 each. The change is 5 x 3 = 15."
     grounding "data/seed/multilingual-responses-quantities.lino"
-  word_problem_total
-    defined-by answer
     role localized_response_template
     precondition "a total-amount word problem over priced items is answered"
     effect "the total is stated with the multiplication and sum that produced it"

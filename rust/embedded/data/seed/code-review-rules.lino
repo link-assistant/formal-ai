@@ -2,15 +2,16 @@
 #
 # Each `rule` record names one defect pattern the reviewer can detect
 # structurally. `detect` entries are matched as substrings of a code line
-# within the rule's `scope` (any_line: any line after trimming; def_line: a
-# line that defines a function; loop_body: a line inside a for/while body);
-# `avoid` entries suppress a match when they also appear on the line.
-# `language` gates the rule (python rules apply unless the code looks like
-# JavaScript, javascript rules only when it does). `source` cites the
-# upstream document that justifies the advice.
+# within the rule's `scope` -- any_line means any line after trimming,
+# def_line means a line that defines a function, and loop_body means a
+# line inside a for or while body. `avoid` entries suppress a match when
+# they also appear on the line. `language` gates the rule (python rules
+# apply unless the code looks like JavaScript, javascript rules only when
+# it does). `source` cites the upstream document that justifies the
+# advice.
 #
-# Read by `rust/src/solver_handlers/code_review.rs` through
-# `crate::seed::seed_files()`.
+# Read by the code-review handler in rust/src/solver_handlers/ through
+# the seed file registry (seed_files).
 rule
   id bare_except
     language python

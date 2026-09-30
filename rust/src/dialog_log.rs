@@ -54,8 +54,7 @@ pub fn configure_verbose(enabled: bool) {
 /// #1181): `1`/`true`/`yes`/`on` (any case) all silence diagnostics.
 #[must_use]
 pub fn verbose_enabled() -> bool {
-    VERBOSE_ENABLED.load(Ordering::Relaxed)
-        && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
+    VERBOSE_ENABLED.load(Ordering::Relaxed) && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
 }
 
 /// Resolve the explicit or default per-dialog log directory.

@@ -62,10 +62,7 @@ fn summarization_selects_the_weightiest_statements() {
 
 #[test]
 fn summarization_declines_a_prompt_without_text() {
-    assert!(declined_by(
-        handle_summarization_request,
-        "Summarize this."
-    ));
+    assert!(declined_by(handle_summarization_request, "Summarize this."));
 }
 
 #[test]
@@ -165,7 +162,9 @@ fn commit_message_composes_the_conventional_line() {
     );
     assert_eq!(answer.intent, "text_transform_genre_commit_message");
     assert!(
-        answer.answer.contains("fix(pagination): correct off-by-one error"),
+        answer
+            .answer
+            .contains("fix(pagination): correct off-by-one error"),
         "the scoped Conventional Commits line must render: {}",
         answer.answer
     );
@@ -215,7 +214,8 @@ fn translation_translates_a_free_sentence_word_by_word() {
     );
     assert_eq!(answer.intent, "translate_en_to_ru");
     let lower = answer.answer.to_lowercase();
-    for word in ["погода", "приятный", "сегодня", "давай", "идти", "прогулка"] {
+    for word in ["погода", "приятный", "сегодня", "давай", "идти", "прогулка"]
+    {
         assert!(
             lower.contains(word),
             "every content word must carry its seeded lemma: {word} in {}",

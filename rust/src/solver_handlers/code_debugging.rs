@@ -14,10 +14,10 @@
 //! the answer (a template from `data/seed/multilingual-responses.lino`)
 //! says so.
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::parse_lino;
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const INTENTS_PATH: &str = "data/seed/meanings-code-structure-explanations.lino";
@@ -43,7 +43,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -84,7 +90,11 @@ fn function_intents() -> Vec<FunctionIntent> {
     };
     let tree = parse_lino(text);
     let mut out = Vec::new();
-    for record in tree.children.iter().filter(|child| child.name == "function_intent") {
+    for record in tree
+        .children
+        .iter()
+        .filter(|child| child.name == "function_intent")
+    {
         let name = record.find_child_value("name").to_string();
         if name.is_empty() {
             continue;
@@ -241,12 +251,7 @@ fn scan_for_defect(code: &str) -> Option<Defect> {
         let shift = expression[op_at..].trim().to_owned();
         let fixed = expression[..op_at].trim().to_owned();
         let divisor = expression[div_at + 1..op_at].trim().to_owned();
-        let parenthesized = format!(
-            "{} / ({} {})",
-            expression[..div_at].trim(),
-            divisor,
-            shift
-        );
+        let parenthesized = format!("{} / ({} {})", expression[..div_at].trim(), divisor, shift);
         return Some(Defect {
             line_number: index + 1,
             line: line.trim().to_owned(),

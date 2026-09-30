@@ -34,7 +34,8 @@ fn reported_probes_stop_misrouting() {
     // "Find the bug: …" must not be a terminal command (its first word is a
     // seed shell token, but the rest is a code-review task introduced by a
     // colon).
-    let answer = FormalAiEngine.answer("Find the bug: def average(xs): return sum(xs) / len(xs) - 1");
+    let answer =
+        FormalAiEngine.answer("Find the bug: def average(xs): return sum(xs) / len(xs) - 1");
     assert_ne!(answer.intent, "agent_suggestion", "answer: {answer:?}");
 
     // "Make a 3-day itinerary …" must not be a terminal command (natural
@@ -81,7 +82,10 @@ fn natural_language_starting_with_a_shell_word_is_not_a_command() {
 fn argument_shaped_prompts_after_a_shell_token_stay_terminal_commands() {
     for (prompt, command) in [
         ("ls ~", "ls ~"),
-        ("find . -name '*.log' -size +10M", "find . -name '*.log' -size +10M"),
+        (
+            "find . -name '*.log' -size +10M",
+            "find . -name '*.log' -size +10M",
+        ),
         ("make test", "make test"),
         ("head -n 5 main.rs", "head -n 5 main.rs"),
         ("export FOO=bar", "export FOO=bar"),
@@ -144,9 +148,15 @@ fn incidental_artifact_words_do_not_claim_the_software_project_frame() {
 fn artifact_headed_requests_still_claim_the_software_project_frame() {
     for (language, prompt) in [
         // language: en
-        ("English (en)", "Write a browser extension that blocks ads on news sites."),
+        (
+            "English (en)",
+            "Write a browser extension that blocks ads on news sites.",
+        ),
         // language: ru
-        ("Russian (ru)", "Создай расширение для браузера, чтобы блокировать рекламу."),
+        (
+            "Russian (ru)",
+            "Создай расширение для браузера, чтобы блокировать рекламу.",
+        ),
         // language: hi — the object precedes the verb.
         ("Hindi (hi)", "एक ब्राउज़र एक्सटेंशन बनाओ"),
         // language: zh — no inter-word spaces.

@@ -50,7 +50,10 @@ fn fenced(answer: &str, tag: &str) -> String {
 fn engine_answers_code_debugging_request() {
     let answer = solved("What's wrong with `def average(xs): return sum(xs) / len(xs) - 1`?");
     assert!(answer.contains("- 1"), "the shift must be named: {answer}");
-    assert!(answer.contains("average"), "the function must be named: {answer}");
+    assert!(
+        answer.contains("average"),
+        "the function must be named: {answer}"
+    );
     assert!(answer.contains("No code was executed"), "{answer}");
 }
 
@@ -96,15 +99,17 @@ fn engine_answers_code_explanation_request() {
 fn engine_answers_code_review_request() {
     let prompt = "Review this code:\n```python\ndef load(path):\n    try:\n        f = open(path)\n    except:\n        pass\n```";
     let answer = solved(prompt);
-    assert!(answer.contains("except:"), "the offending line is quoted: {answer}");
+    assert!(
+        answer.contains("except:"),
+        "the offending line is quoted: {answer}"
+    );
     assert!(answer.contains("docs.python.org"), "{answer}");
 }
 
 #[test]
 fn engine_answers_test_generation_request() {
-    let answer = solved(
-        "Write tests for `is_palindrome(s)` ignoring case, spaces, and punctuation",
-    );
+    let answer =
+        solved("Write tests for `is_palindrome(s)` ignoring case, spaces, and punctuation");
     assert!(answer.contains("def test_"), "{answer}");
     assert!(answer.contains("RaceCar"), "{answer}");
     assert!(answer.contains("is_palindrome(normalize("), "{answer}");
@@ -123,8 +128,7 @@ fn engine_answers_code_refactoring_request() {
 
 #[test]
 fn engine_answers_format_conversion_request() {
-    let json_text =
-        "{\"name\": \"formal-ai\", \"tags\": [\"rust\", \"lino\"], \"counts\": {\"lines\": 42, \"passed\": 41}}";
+    let json_text = "{\"name\": \"formal-ai\", \"tags\": [\"rust\", \"lino\"], \"counts\": {\"lines\": 42, \"passed\": 41}}";
     let to_yaml = ["Convert this JSON to YAML:\n```json\n", json_text, "\n```"].concat();
     let yaml_answer = solved(&to_yaml);
     let yaml_text = fenced(&yaml_answer, "yaml");
@@ -164,7 +168,10 @@ fn handler_code_debugging_reports_shifted_quotient() {
         "What's wrong with `def average(xs): return sum(xs) / len(xs) - 1`?"
     );
     assert!(answer.contains("- 1"), "the shift must be named: {answer}");
-    assert!(answer.contains("sum(xs)"), "the fixed form must be shown: {answer}");
+    assert!(
+        answer.contains("sum(xs)"),
+        "the fixed form must be shown: {answer}"
+    );
     assert!(answer.contains("No code was executed"), "{answer}");
 }
 
@@ -234,7 +241,10 @@ fn handler_code_explanation_names_function_and_promise() {
 fn handler_code_review_reports_bare_except_with_source() {
     let prompt = "Review this code:\n```python\ndef load(path):\n    try:\n        f = open(path)\n    except:\n        pass\n```";
     let answer = answer_of!(formal_ai::handle_code_review, prompt);
-    assert!(answer.contains("except:"), "the offending line is quoted: {answer}");
+    assert!(
+        answer.contains("except:"),
+        "the offending line is quoted: {answer}"
+    );
     assert!(answer.contains("docs.python.org"), "{answer}");
     assert!(answer.contains("no linter was run"), "{answer}");
 }
@@ -268,8 +278,7 @@ fn handler_code_refactoring_rewrites_promise_chain() {
 
 #[test]
 fn handler_format_conversion_round_trips_json_and_yaml() {
-    let json_text =
-        "{\"name\": \"formal-ai\", \"tags\": [\"rust\", \"lino\"], \"counts\": {\"lines\": 42, \"passed\": 41}}";
+    let json_text = "{\"name\": \"formal-ai\", \"tags\": [\"rust\", \"lino\"], \"counts\": {\"lines\": 42, \"passed\": 41}}";
     let to_yaml = ["Convert this JSON to YAML:\n```json\n", json_text, "\n```"].concat();
     let yaml_answer = answer_of!(formal_ai::handle_format_conversion, &to_yaml);
     let yaml_text = fenced(&yaml_answer, "yaml");

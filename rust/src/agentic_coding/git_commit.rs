@@ -11,7 +11,7 @@
 
 use serde_json::json;
 
-use super::planner::{plan_one, tool_for, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::Progress;
 use super::write_request::{bare_surfaces, clean_cue_token, tokens};
 use crate::engine::ExecutionRecipe;
@@ -56,9 +56,12 @@ pub(super) fn named_branch(request: &str) -> Option<String> {
         if !is_cue {
             return None;
         }
-        let candidate = pair[1]
-            .text
-            .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ',' | '.' | ';' | ':' | '(' | ')'));
+        let candidate = pair[1].text.trim_matches(|character: char| {
+            matches!(
+                character,
+                '`' | '"' | '\'' | ',' | '.' | ';' | ':' | '(' | ')'
+            )
+        });
         is_branch_name(candidate).then(|| candidate.to_owned())
     })
 }
@@ -66,10 +69,12 @@ pub(super) fn named_branch(request: &str) -> Option<String> {
 fn is_branch_name(word: &str) -> bool {
     !word.is_empty()
         && !word.starts_with('-')
-        && word.chars().any(|character| character.is_ascii_alphanumeric())
         && word
             .chars()
-            .all(|character| character.is_ascii_alphanumeric() || matches!(character, '-' | '_' | '/' | '.'))
+            .any(|character| character.is_ascii_alphanumeric())
+        && word.chars().all(|character| {
+            character.is_ascii_alphanumeric() || matches!(character, '-' | '_' | '/' | '.')
+        })
 }
 
 /// The shell step that lands the tree: stage, commit, push, print the hash.
@@ -108,16 +113,30 @@ pub(super) fn shell_quote(text: &str) -> String {
 
 /// Commit only the recipe's declared source artifacts; compiler outputs and
 /// unrelated staged edits are not part of the requested change.
-#[allow(clippy::literal_string_with_formatting_args, reason = "bind quoted operands in the shared commit template")]
+#[allow(
+    clippy::literal_string_with_formatting_args,
+    reason = "bind quoted operands in the shared commit template"
+)]
 pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTarget) -> String {
     let files = std::iter::once(recipe.path.as_str())
-        .chain(recipe.supporting_files.iter().map(|file| file.path.as_str()))
-        .map(shell_quote).collect::<Vec<_>>().join(" ");
-    super::work_item_steps::fill("recipe_commit_command", &[
-        ("{files}", &files), ("{subject}", &shell_quote(&recipe_subject(recipe))),
-        ("{body}", &shell_quote(&resolves_body(&target.reference))),
-        ("{branch}", &shell_quote(target.push_ref())),
-    ])
+        .chain(
+            recipe
+                .supporting_files
+                .iter()
+                .map(|file| file.path.as_str()),
+        )
+        .map(shell_quote)
+        .collect::<Vec<_>>()
+        .join(" ");
+    super::work_item_steps::fill(
+        "recipe_commit_command",
+        &[
+            ("{files}", &files),
+            ("{subject}", &shell_quote(&recipe_subject(recipe))),
+            ("{body}", &shell_quote(&resolves_body(&target.reference))),
+            ("{branch}", &shell_quote(target.push_ref())),
+        ],
+    )
 }
 
 /// The commit subject for a recipe's artifact.

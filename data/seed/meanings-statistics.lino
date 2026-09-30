@@ -1,6 +1,6 @@
 meanings
   statistics_operation
-    defined-by concept
+    defined-by statistics
   statistics_mean
     defined-by statistics_operation
     role statistics_operation
@@ -241,6 +241,7 @@ meanings
         text paga
   word_problem_change
     defined-by statistics_operation
+
     role word_problem_marker
     lexeme en
       surface
@@ -265,6 +266,7 @@ meanings
         text cambio
   word_problem_total
     defined-by statistics_operation
+
     role word_problem_marker
     lexeme en
       surface

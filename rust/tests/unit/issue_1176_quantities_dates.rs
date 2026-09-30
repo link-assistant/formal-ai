@@ -46,9 +46,7 @@ fn bare_day_after_keeps_the_plus_one_reading() {
 
     assert_eq!(response.intent, "calendar_weekday_relation");
     assert!(
-        response
-            .answer
-            .contains("The day after Monday is Tuesday"),
+        response.answer.contains("The day after Monday is Tuesday"),
         "the bare day-after reading should be unchanged, got: {}",
         response.answer
     );
@@ -134,8 +132,8 @@ fn russian_stated_offset_answers_in_russian() {
 // both exact, both with the arithmetic shown.
 #[test]
 fn mean_and_median_are_computed_exactly() {
-    let response =
-        FormalAiEngine.answer("Given the values 4, 8, 15, 16, 23, 42, what are the mean and the median?");
+    let response = FormalAiEngine
+        .answer("Given the values 4, 8, 15, 16, 23, 42, what are the mean and the median?");
 
     assert_eq!(response.intent, "statistics");
     assert!(
@@ -148,7 +146,9 @@ fn mean_and_median_are_computed_exactly() {
         response.answer
     );
     assert!(
-        response.answer.contains("median: 15.5 ((15 + 16) / 2 = 15.5)"),
+        response
+            .answer
+            .contains("median: 15.5 ((15 + 16) / 2 = 15.5)"),
         "the median should state the halving, got: {}",
         response.answer
     );
@@ -156,7 +156,8 @@ fn mean_and_median_are_computed_exactly() {
 
 #[test]
 fn mode_and_range_read_from_the_seed_vocabulary() {
-    let response = FormalAiEngine.answer("For the values 2, 3, 3, 5, what are the mode and the range?");
+    let response =
+        FormalAiEngine.answer("For the values 2, 3, 3, 5, what are the mode and the range?");
 
     assert_eq!(response.intent, "statistics");
     assert!(
@@ -315,8 +316,8 @@ fn total_word_problem_multiplies_price_by_count() {
 // the same pattern; the derivation itself is language-neutral.
 #[test]
 fn spanish_change_word_problem_reads_the_seed_markers() {
-    let response =
-        FormalAiEngine.answer("Compra 4 bolígrafos a 3 dólares cada uno y paga con 20. ¿Cuánto cambio recibe?");
+    let response = FormalAiEngine
+        .answer("Compra 4 bolígrafos a 3 dólares cada uno y paga con 20. ¿Cuánto cambio recibe?");
 
     assert_eq!(
         response.intent, "word_problem_change",

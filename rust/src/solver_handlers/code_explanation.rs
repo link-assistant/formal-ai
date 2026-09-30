@@ -13,10 +13,10 @@
 //! The scan is structural: no code is executed, and the answer (a template
 //! from `data/seed/multilingual-responses.lino`) says so.
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::parse_lino;
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const STRUCTURES_PATH: &str = "data/seed/meanings-code-structure-explanations.lino";
@@ -49,7 +49,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -87,14 +93,17 @@ fn structures() -> Vec<Structure> {
     };
     let tree = parse_lino(text);
     let mut out = Vec::new();
-    for record in tree.children.iter().filter(|child| child.name == "structure") {
-        // A structure's fields sit under its `construct` child.
-        let Some(body) = record.children.first().filter(|child| child.name == "construct") else {
-            continue;
-        };
+    for body in tree
+        .children
+        .iter()
+        .filter(|child| child.name == "structure")
+        .flat_map(|record| record.children.iter())
+        .filter(|child| child.name == "construct")
+    {
+        // Each construct owns its own fields under the shared structure root.
         out.push(Structure {
-            construct: record.find_child_value("construct").to_string(),
-            meaning: body.find_child_value("meaning").to_string(),
+            construct: body.id.clone(),
+            meaning: body.find_child_value("explanation").to_string(),
         });
     }
     out
@@ -114,7 +123,11 @@ fn function_intents() -> Vec<FunctionIntent> {
     };
     let tree = parse_lino(text);
     let mut out = Vec::new();
-    for record in tree.children.iter().filter(|child| child.name == "function_intent") {
+    for record in tree
+        .children
+        .iter()
+        .filter(|child| child.name == "function_intent")
+    {
         let name = record.find_child_value("name").to_string();
         if name.is_empty() {
             continue;
@@ -230,10 +243,7 @@ fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>
         let handler = inside_parens(trimmed, at + 5);
         return Some((
             "promise_then",
-            vec![
-                ("value", value.to_owned()),
-                ("handler", handler.to_owned()),
-            ],
+            vec![("value", value.to_owned()), ("handler", handler.to_owned())],
             false,
         ));
     }
@@ -315,11 +325,7 @@ fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>
     for (marker, construct) in BUILTINS {
         if let Some(open) = trimmed.find(marker) {
             let items = inside_parens(trimmed, open + marker.len() - 1);
-            return Some((
-                construct,
-                vec![("items", items.to_owned())],
-                false,
-            ));
+            return Some((construct, vec![("items", items.to_owned())], false));
         }
     }
     if let Some(rest) = trimmed.strip_prefix("return ") {
@@ -348,16 +354,17 @@ fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>
     // indexing: `identifier[...]`
     if let Some(open) = trimmed.find('[') {
         let before = trimmed[..open].trim_end();
-        if before.chars().last().is_some_and(|c| c.is_alphanumeric() || c == '_') {
+        if before
+            .chars()
+            .last()
+            .is_some_and(|c| c.is_alphanumeric() || c == '_')
+        {
             if let Some(close) = trimmed[open..].find(']') {
                 let items = before;
                 let index = &trimmed[open + 1..open + close];
                 return Some((
                     "indexing",
-                    vec![
-                        ("items", items.to_owned()),
-                        ("index", index.to_owned()),
-                    ],
+                    vec![("items", items.to_owned()), ("index", index.to_owned())],
                     false,
                 ));
             }
@@ -435,10 +442,7 @@ pub fn handle_code_explanation(
     }
 
     let (body, confidence) = if matched == 0 {
-        log.append(
-            "code_explanation:no_construct",
-            "table=0".to_owned(),
-        );
+        log.append("code_explanation:no_construct", "table=0".to_owned());
         (template("code_explanation_no_construct", &[]), 0.4)
     } else {
         let intents = function_intents();

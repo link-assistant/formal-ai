@@ -20,9 +20,9 @@
 //! these prompts, which contain no `c++`/`c#` spellings that the engine
 //! additionally canonicalizes).
 
+use formal_ai::FormalAiEngine;
 use formal_ai::seed::{FactRecord, facts};
 use formal_ai::web_engine_core::normalize_prompt;
-use formal_ai::FormalAiEngine;
 
 /// Fetch a seeded fact record by slug (e.g. `fact_capital_usa`).
 fn fact(slug: &str) -> FactRecord {

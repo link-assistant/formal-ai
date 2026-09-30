@@ -754,7 +754,7 @@ jobs:
           echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
 
       - name: Build formal-ai CLI binary (release, pinned lock)
-        run: cargo build --manifest-path rust/Cargo.toml --release --bin formal-ai --locked --target ${{ matrix.target }}
+        run: cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target ${{ matrix.target }}
 
       - name: Package the CLI archive
         run: |

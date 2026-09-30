@@ -12,10 +12,10 @@
 //! `data/seed/multilingual-responses.lino`) states that honestly; nothing is
 //! executed against a database.
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const INTENT: &str = "sql_synthesis";
@@ -40,7 +40,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -93,7 +99,12 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
 /// template (the row shape is data, not Rust prose).
 fn mapping_rows(rows: &[(String, String)]) -> String {
     rows.iter()
-        .map(|(request, emission)| template("mapping_line", &[("request", request), ("emission", emission)]))
+        .map(|(request, emission)| {
+            template(
+                "mapping_line",
+                &[("request", request), ("emission", emission)],
+            )
+        })
         .collect()
 }
 
@@ -188,7 +199,11 @@ fn filters(tokens: &[&str]) -> Vec<Filter> {
             let value = tokens
                 .get(index + 2)
                 .and_then(|word| number_value(word, &numbers))
-                .or_else(|| tokens.get(index + 1).and_then(|word| number_value(word, &numbers)));
+                .or_else(|| {
+                    tokens
+                        .get(index + 1)
+                        .and_then(|word| number_value(word, &numbers))
+                });
             if let Some(value) = value {
                 let column = entry.find_child_value("column");
                 let operator = entry.find_child_value("operator");
@@ -200,7 +215,10 @@ fn filters(tokens: &[&str]) -> Vec<Filter> {
             continue;
         }
         // generic: "<column> greater/less than N", "<column> at least N"
-        if let Some(value) = tokens.get(index + 2).and_then(|word| number_value(word, &numbers)) {
+        if let Some(value) = tokens
+            .get(index + 2)
+            .and_then(|word| number_value(word, &numbers))
+        {
             let (column, operator) = match *token {
                 "greater" | "more" | "больше" => {
                     (index.checked_sub(1).map(|i| tokens[i]), ">")
@@ -241,7 +259,7 @@ fn aggregate(tokens: &[&str]) -> Option<(String, String)> {
     for (index, token) in tokens.iter().enumerate() {
         let function = match *token {
             "many" | "count" | "сколько" => {
-                return Some(("COUNT(*)".to_owned(), echo(tokens, index, index)))
+                return Some(("COUNT(*)".to_owned(), echo(tokens, index, index)));
             }
             "average" | "mean" | "среднее" => "AVG",
             "sum" | "total" | "сумма" => "SUM",
@@ -249,7 +267,10 @@ fn aggregate(tokens: &[&str]) -> Option<(String, String)> {
             "minimum" | "lowest" | "min" => "MIN",
             _ => continue,
         };
-        let column = tokens.get(index + 1).map(|word| identifier(word)).unwrap_or_default();
+        let column = tokens
+            .get(index + 1)
+            .map(|word| identifier(word))
+            .unwrap_or_default();
         if column.is_empty() {
             return None;
         }
@@ -267,7 +288,10 @@ fn order_clause(tokens: &[&str]) -> Option<(String, String)> {
         if (*token == "sorted" || *token == "ordered" || *token == "по")
             && tokens.get(index + 1) == Some(&"by")
         {
-            let column = tokens.get(index + 2).map(|word| identifier(word)).unwrap_or_default();
+            let column = tokens
+                .get(index + 2)
+                .map(|word| identifier(word))
+                .unwrap_or_default();
             if !column.is_empty() {
                 let direction = if tokens.contains(&"descending") || tokens.contains(&"reverse") {
                     " DESC"
@@ -281,10 +305,7 @@ fn order_clause(tokens: &[&str]) -> Option<(String, String)> {
             }
         }
         if *token == "alphabetical" || *token == "алфавитном" {
-            return Some((
-                " ORDER BY name".to_owned(),
-                echo(tokens, index, index),
-            ));
+            return Some((" ORDER BY name".to_owned(), echo(tokens, index, index)));
         }
     }
     None
@@ -294,12 +315,11 @@ fn order_clause(tokens: &[&str]) -> Option<(String, String)> {
 fn limit_clause(tokens: &[&str], numbers: &[LinoNode]) -> Option<(String, String)> {
     for (index, token) in tokens.iter().enumerate() {
         if matches!(*token, "top" | "first" | "limit" | "первые" | "топ") {
-            if let Some(value) = tokens.get(index + 1).and_then(|word| number_value(word, numbers))
+            if let Some(value) = tokens
+                .get(index + 1)
+                .and_then(|word| number_value(word, numbers))
             {
-                return Some((
-                    format!(" LIMIT {}", value),
-                    echo(tokens, index, index + 1),
-                ));
+                return Some((format!(" LIMIT {}", value), echo(tokens, index, index + 1)));
             }
         }
     }
@@ -423,8 +443,17 @@ pub fn handle_sql_synthesis(
     let (order, order_request) = order_clause(&tokens).unwrap_or_default();
     let (limit, limit_request) = limit_clause(&tokens, &numbers).unwrap_or_default();
 
-    let statement = ["SELECT ", &columns, " FROM ", &table, &where_clause, &order, &limit, ";"]
-        .concat();
+    let statement = [
+        "SELECT ",
+        &columns,
+        " FROM ",
+        &table,
+        &where_clause,
+        &order,
+        &limit,
+        ";",
+    ]
+    .concat();
     log.append("sql_synthesis:statement", statement.clone());
 
     let mut rows: Vec<(String, String)> = vec![(columns_request, format!("SELECT {}", columns))];

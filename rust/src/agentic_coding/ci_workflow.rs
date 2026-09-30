@@ -28,14 +28,26 @@ pub(super) fn requested_in(objective: &str) -> bool {
 #[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn attach(recipe: &mut ExecutionRecipe) {
     let name: String = std::path::Path::new(&recipe.path)
-        .file_stem().and_then(|value| value.to_str()).unwrap_or("run")
-        .chars().map(|value| if value.is_ascii_alphanumeric() || value == '-' || value == '_' { value } else { '-' }).collect();
+        .file_stem()
+        .and_then(|value| value.to_str())
+        .unwrap_or("run")
+        .chars()
+        .map(|value| {
+            if value.is_ascii_alphanumeric() || value == '-' || value == '_' {
+                value
+            } else {
+                '-'
+            }
+        })
+        .collect();
     let path = super::work_item_steps::fill("workflow_path_named", &[("{name}", &name)]);
     if recipe.supporting_files.iter().any(|file| file.path == path) {
         return;
     }
     let source = render(recipe);
-    recipe.supporting_files.push(ExecutionRecipeFile { path, source });
+    recipe
+        .supporting_files
+        .push(ExecutionRecipeFile { path, source });
 }
 
 /// The workflow text: checkout, then the recipe's commands in order.

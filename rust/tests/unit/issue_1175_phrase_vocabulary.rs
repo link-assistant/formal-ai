@@ -27,14 +27,55 @@ fn boundary_words_close_the_object_phrase_in_every_seeded_language() {
         sorted_words(ROLE_SOFTWARE_OBJECT_BOUNDARY_WORD),
         [
             // English
-            "about", "and", "but", "by", "for", "from", "i", "in", "into", "it", "of", "or",
-            "please", "so", "that", "they", "to", "using", "via", "we", "when", "where",
-            "which", "who", "with", "without",
+            "about",
+            "and",
+            "but",
+            "by",
+            "for",
+            "from",
+            "i",
+            "in",
+            "into",
+            "it",
+            "of",
+            "or",
+            "please",
+            "so",
+            "that",
+            "they",
+            "to",
+            "using",
+            "via",
+            "we",
+            "when",
+            "where",
+            "which",
+            "who",
+            "with",
+            "without",
             // Russian
-            "в", "для", "и", "из", "или", "которая", "которое", "который", "которые", "когда",
-            "на", "от", "с", "чтобы",
+            "в",
+            "для",
+            "и",
+            "из",
+            "или",
+            "которая",
+            "которое",
+            "который",
+            "которые",
+            "когда",
+            "на",
+            "от",
+            "с",
+            "чтобы",
             // Hindi
-            "और", "जो", "के", "को", "से", "में", "या",
+            "और",
+            "जो",
+            "के",
+            "को",
+            "से",
+            "में",
+            "या",
         ]
         .map(String::from)
         .to_vec(),
@@ -60,7 +101,9 @@ fn lead_words_skip_determiners_and_benefactives() {
 fn lead_bigrams_cover_the_benefactive_forms_whose_first_word_is_a_boundary() {
     assert_eq!(
         sorted_words(ROLE_SOFTWARE_OBJECT_LEAD_BIGRAM),
-        ["for me", "for us", "to me", "to us"].map(String::from).to_vec(),
+        ["for me", "for us", "to me", "to us"]
+            .map(String::from)
+            .to_vec(),
     );
 }
 

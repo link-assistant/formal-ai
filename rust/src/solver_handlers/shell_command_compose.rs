@@ -17,10 +17,10 @@
 //! renders request→emission mapping rows (each row's shape is itself a
 //! seed template, `mapping_line`).
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const MANUAL_PATH: &str = "data/seed/manual-pages.lino";
@@ -61,7 +61,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -139,7 +145,12 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
 /// template (the row shape — quote, arrow, indentation — is data too).
 fn mapping_rows(rows: &[(String, String)]) -> String {
     rows.iter()
-        .map(|(request, emission)| template("mapping_line", &[("request", request), ("emission", emission)]))
+        .map(|(request, emission)| {
+            template(
+                "mapping_line",
+                &[("request", request), ("emission", emission)],
+            )
+        })
         .collect()
 }
 
@@ -318,7 +329,12 @@ fn size_test(normalized_tokens: &[&str]) -> Option<(u32, String, usize, usize)> 
                 .find(|entry| entry.find_child_value("word") == rest)
             {
                 if let Ok(value) = digits.parse::<u32>() {
-                    return Some((value, unit.find_child_value("value").to_owned(), qualifier_at, index));
+                    return Some((
+                        value,
+                        unit.find_child_value("value").to_owned(),
+                        qualifier_at,
+                        index,
+                    ));
                 }
             }
         }
@@ -443,7 +459,10 @@ fn grep_search(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     let flag_list = flags.join(" ");
     let explained = explained_flags(&manual, &flags);
     let rows = vec![
-        (echo(normalized_tokens, cue_at, cue_at), "grep(1)".to_owned()),
+        (
+            echo(normalized_tokens, cue_at, cue_at),
+            "grep(1)".to_owned(),
+        ),
         (pattern.clone(), format!("'{pattern}'")),
         (path.clone(), path.clone()),
     ];
@@ -536,9 +555,10 @@ fn ls_listing(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
         flags.push("-a".to_owned());
         rows.push((echo(normalized_tokens, at, at), "-a".to_owned()));
     }
-    if let Some(at) = normalized_tokens.iter().position(|token| {
-        matches!(*token, "recursive" | "рекурсив" | "поддиректории")
-    }) {
+    if let Some(at) = normalized_tokens
+        .iter()
+        .position(|token| matches!(*token, "recursive" | "рекурсив" | "поддиректории"))
+    {
         flags.push("-R".to_owned());
         rows.push((echo(normalized_tokens, at, at), "-R".to_owned()));
     }

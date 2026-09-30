@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "Q48013": {
+      "type": "item",
+      "id": "Q48013",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "盎司"
+        },
+        "es": {
+          "language": "es",
+          "value": "onza"
+        },
+        "en": {
+          "language": "en",
+          "value": "ounce"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "унция"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आउन्स"
+        }
+      },
+      "descriptions": {
+        "es": {
+          "language": "es",
+          "value": "unidad de masa"
+        },
+        "en": {
+          "language": "en",
+          "value": "unit of mass"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица массы"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英制计量单位"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "盎斯"
+          },
+          {
+            "language": "zh",
+            "value": "英兩"
+          },
+          {
+            "language": "zh",
+            "value": "安士"
+          },
+          {
+            "language": "zh",
+            "value": "Ounce"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Ounce"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "oz"
+          },
+          {
+            "language": "en",
+            "value": "avoirdupois ounce"
+          },
+          {
+            "language": "en",
+            "value": "oz."
+          },
+          {
+            "language": "en",
+            "value": "℥"
+          },
+          {
+            "language": "en",
+            "value": "ounce (avoirdupois)"
+          },
+          {
+            "language": "en",
+            "value": "ounces"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "oz"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

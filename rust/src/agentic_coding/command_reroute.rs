@@ -15,7 +15,7 @@ use crate::protocol::ChatMessage;
 use super::capability_router::is_workspace_creation_tool;
 use super::git_commit::{self, CommitTarget};
 use super::planner::{
-    tool_capability, tool_for, write_arguments, AgenticPlan, Capability, PlannedToolCall,
+    AgenticPlan, Capability, PlannedToolCall, tool_capability, tool_for, write_arguments,
 };
 
 /// Plan the next client-side step for a typed source-and-command artifact.
@@ -56,14 +56,18 @@ pub fn plan_symbolic_command_reroute(
     if let Some(target) = &commit {
         expected_commands.extend(pr_completion_commands(recipe, target));
     }
-    let progress = RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands);
+    let progress =
+        RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands);
     if let Some(target) = &commit {
         let followup = pr_completion_commands(recipe, target);
         let observed = super::progress::Progress::scan(messages);
         if let Some(comments) = followup.first()
             && let Some(output) = observed.latest_successful_run_output_for(comments)
-            && super::restart_feedback::feedback_needs_changes(output) {
-            return Some(AgenticPlan::Final(format!("Pull request feedback requires review before readiness:\n{output}")));
+            && super::restart_feedback::feedback_needs_changes(output)
+        {
+            return Some(AgenticPlan::Final(format!(
+                "Pull request feedback requires review before readiness:\n{output}"
+            )));
         }
     }
 
@@ -79,12 +83,21 @@ pub fn plan_symbolic_command_reroute(
     };
     if let Some(failure) = &progress.failure {
         let step = if failure.from_run {
-            expected_commands.get(progress.commands_done).map(String::as_str).unwrap_or(write_tool)
-        } else { write_tool };
+            expected_commands
+                .get(progress.commands_done)
+                .map(String::as_str)
+                .unwrap_or(write_tool)
+        } else {
+            write_tool
+        };
         let failed_path = next_file().map_or(recipe.path.as_str(), |(path, _)| path);
         if failure.from_run {
             if let Some(plan) = super::prerequisite_recovery::plan_recovery(
-                messages, tool_names, step, failure.exit_code, &failure.reported,
+                messages,
+                tool_names,
+                step,
+                failure.exit_code,
+                &failure.reported,
             ) {
                 return Some(plan);
             }
@@ -93,7 +106,10 @@ pub fn plan_symbolic_command_reroute(
                 .with_failed_command(Some(step.to_owned()))
                 .with_artifact_path(failed_path);
             if let Some(plan) = super::repair_loop::plan_repair(
-                messages, tool_names, &failed, progress.repair_rung.saturating_sub(1),
+                messages,
+                tool_names,
+                &failed,
+                progress.repair_rung.saturating_sub(1),
                 super::repair_loop::MAX_REPAIR_RUNGS,
             ) {
                 return Some(plan);
@@ -109,7 +125,10 @@ pub fn plan_symbolic_command_reroute(
         return Some(one_call(write_tool, write_arguments(path, source)));
     }
     if let Some(command) = expected_commands.get(progress.commands_done) {
-        return Some(one_call(run_tool, json!({ "command": command }).to_string()));
+        return Some(one_call(
+            run_tool,
+            json!({ "command": command }).to_string(),
+        ));
     }
 
     Some(AgenticPlan::Final(
@@ -118,15 +137,33 @@ pub fn plan_symbolic_command_reroute(
 }
 
 fn pr_completion_commands(recipe: &ExecutionRecipe, target: &CommitTarget) -> Vec<String> {
-    if !target.reference.contains("/pull/") { return Vec::new(); }
+    if !target.reference.contains("/pull/") {
+        return Vec::new();
+    }
     let target_url = super::git_commit::shell_quote(&target.reference);
-    let commands = recipe.commands.iter().map(|command| format!("- `{command}`")).collect::<Vec<_>>().join("\n");
-    let body = super::work_item_steps::fill("pr_body_template", &[
-        ("{path}", &recipe.path), ("{commands}", &commands), ("{reference}", &target.reference),
-    ]);
+    let commands = recipe
+        .commands
+        .iter()
+        .map(|command| format!("- `{command}`"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let body = super::work_item_steps::fill(
+        "pr_body_template",
+        &[
+            ("{path}", &recipe.path),
+            ("{commands}", &commands),
+            ("{reference}", &target.reference),
+        ],
+    );
     vec![
         super::work_item_steps::fill("pr_comments_command", &[("{target}", &target_url)]),
-        super::work_item_steps::fill("pr_edit_command", &[("{target}", &target_url), ("{body}", &super::git_commit::shell_quote(&body))]),
+        super::work_item_steps::fill(
+            "pr_edit_command",
+            &[
+                ("{target}", &target_url),
+                ("{body}", &super::git_commit::shell_quote(&body)),
+            ],
+        ),
         super::work_item_steps::fill("pr_ready_command", &[("{target}", &target_url)]),
     ]
 }
@@ -143,13 +180,18 @@ impl ExecutionRecipe {
     /// Shared with the literal-file general plan a resolved work item composes
     /// (issue #1133), so every drive that ends in a harness-executed artifact
     /// reports through one voice.
-    pub(super) fn final_answer(&self, outputs: &[String], committed: Option<&CommitTarget>) -> String {
+    pub(super) fn final_answer(
+        &self,
+        outputs: &[String],
+        committed: Option<&CommitTarget>,
+    ) -> String {
         // With a commit step the last output is the push's; the verification
         // output the claim rests on is the one before it.
         let (verification_outputs, commit_output) = match committed {
-            Some(_) if outputs.len() > self.commands.len() => {
-                (&outputs[..self.commands.len()], outputs.get(self.commands.len()))
-            }
+            Some(_) if outputs.len() > self.commands.len() => (
+                &outputs[..self.commands.len()],
+                outputs.get(self.commands.len()),
+            ),
             _ => (outputs, None),
         };
         let outputs = verification_outputs;
@@ -217,9 +259,10 @@ impl StepFailure {
         const CODE_PLACEHOLDER: &str = "{code}";
         const REPORT_PLACEHOLDER: &str = "{report}";
 
-        let language =
-            crate::language::detect(&crate::protocol::latest_user_request(messages).unwrap_or_default())
-                .slug();
+        let language = crate::language::detect(
+            &crate::protocol::latest_user_request(messages).unwrap_or_default(),
+        )
+        .slug();
         let intent = if self.exit_code.is_some() {
             "agentic_step_failed_with_exit_code"
         } else {
@@ -247,47 +290,80 @@ impl RecipeProgress {
     ) -> Self {
         let start = super::planner::evidence_window_start(messages);
         let mut progress = Self::default();
-        let files: Vec<(&str, &str)> = std::iter::once((recipe.path.as_str(), recipe.source.as_str()))
-            .chain(recipe.supporting_files.iter().map(|file| (file.path.as_str(), file.source.as_str())))
-            .collect();
+        let files: Vec<(&str, &str)> =
+            std::iter::once((recipe.path.as_str(), recipe.source.as_str()))
+                .chain(
+                    recipe
+                        .supporting_files
+                        .iter()
+                        .map(|file| (file.path.as_str(), file.source.as_str())),
+                )
+                .collect();
         let mut observed_ids = std::collections::BTreeSet::new();
         for (index, message) in messages.iter().enumerate().skip(start) {
             if message.role != "tool" {
                 continue;
             }
-            let Some(call_id) = message.tool_call_id.as_deref() else { continue; };
-            let Some(call) = messages[start..index].iter().rev()
-                .flat_map(|prior| &prior.tool_calls).find(|call| call.id == call_id)
-                .filter(|_| observed_ids.insert(call_id)) else { continue; };
+            let Some(call_id) = message.tool_call_id.as_deref() else {
+                continue;
+            };
+            let Some(call) = messages[start..index]
+                .iter()
+                .rev()
+                .flat_map(|prior| &prior.tool_calls)
+                .find(|call| call.id == call_id)
+                .filter(|_| observed_ids.insert(call_id))
+            else {
+                continue;
+            };
             let result_tool = call.function.name.as_str();
-            if message.name.as_deref().is_some_and(|name| !name.eq_ignore_ascii_case(result_tool)) {
+            if message
+                .name
+                .as_deref()
+                .is_some_and(|name| !name.eq_ignore_ascii_case(result_tool))
+            {
                 continue;
             }
             let capability = tool_capability(result_tool);
             let matches_write = result_tool.eq_ignore_ascii_case(write_tool)
-                && files.get(progress.files_written).is_some_and(|(path, source)| {
-                    super::progress::write_matches(&call.function.arguments, path, source)
-                });
+                && files
+                    .get(progress.files_written)
+                    .is_some_and(|(path, source)| {
+                        super::progress::write_matches(&call.function.arguments, path, source)
+                    });
             let matches_run = capability == Some(Capability::Run)
                 && progress.files_written == files.len()
-                && run_command_of(&messages[start..index], Some(call_id))
-                    .is_some_and(|command| expected_commands.get(progress.commands_done).is_some_and(|expected| {
-                        command == *expected || command.split_once("\n# __formal_ai_prerequisite_retry\n")
-                            .is_some_and(|(_, retry)| retry == expected)
-                    }));
+                && run_command_of(&messages[start..index], Some(call_id)).is_some_and(|command| {
+                    expected_commands
+                        .get(progress.commands_done)
+                        .is_some_and(|expected| {
+                            command == *expected
+                                || command
+                                    .split_once("\n# __formal_ai_prerequisite_retry\n")
+                                    .is_some_and(|(_, retry)| retry == expected)
+                        })
+                });
             if !matches_write && !matches_run {
                 continue;
             }
             let output = message.content.plain_text();
             if message.is_error {
-                if matches_run { progress.repair_rung = progress.repair_rung.saturating_add(1); }
-                progress.failure = Some(StepFailure { reported: output, exit_code: None, from_run: matches_run });
+                if matches_run {
+                    progress.repair_rung = progress.repair_rung.saturating_add(1);
+                }
+                progress.failure = Some(StepFailure {
+                    reported: output,
+                    exit_code: None,
+                    from_run: matches_run,
+                });
                 continue;
             }
             if let Some(failure) =
                 StepFailure::from_result(output.clone(), capability == Some(Capability::Run))
             {
-                if matches_run { progress.repair_rung = progress.repair_rung.saturating_add(1); }
+                if matches_run {
+                    progress.repair_rung = progress.repair_rung.saturating_add(1);
+                }
                 progress.failure = Some(failure);
                 continue;
             }

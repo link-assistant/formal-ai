@@ -1,0 +1,21 @@
+Q11663
+  aliases
+    en ("weather conditions")
+    es ("condición atmosférica" "condiciones atmosféricas" "tiempo meteorológico" "tiempo atmosferico")
+    ru ("погодные условия")
+    zh ("天气")
+  descriptions
+    en "state of the atmosphere"
+    es "estado de la atmósfera"
+    hi "वायुमंडल की स्थिति"
+    ru "совокупность значений метеорологических элементов и атмосферных явлений, наблюдаемых в определенный момент и точке пространства"
+    zh "大氣層的狀態"
+  id Q11663
+  labels
+    en weather
+    es "tiempo atmosférico"
+    hi "मौसम"
+    ru "погода"
+    zh "天氣"
+  type item
+success 1

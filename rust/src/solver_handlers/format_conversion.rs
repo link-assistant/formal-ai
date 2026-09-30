@@ -12,11 +12,11 @@
 //! YAML→JSON is parsed back and compared. On any mismatch the handler
 //! refuses by name (the refusal reasons are seed templates).
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::parse_lino;
 use serde_json::{Map, Value};
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const INTENT: &str = "format_conversion";
@@ -41,7 +41,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -156,7 +162,10 @@ fn json_span(prompt: &str) -> Option<String> {
 fn json_text(prompt: &str) -> Option<String> {
     fenced(prompt, "json")
         .or_else(|| fenced_any(prompt))
-        .or_else(|| backtick_span(prompt).filter(|span| span.find('{').is_some() || span.find('[').is_some()))
+        .or_else(|| {
+            backtick_span(prompt)
+                .filter(|span| span.find('{').is_some() || span.find('[').is_some())
+        })
         .or_else(|| json_span(prompt))
 }
 
@@ -205,7 +214,10 @@ fn plain_safe(text: &str) -> bool {
             return false;
         }
     }
-    if matches!(text, "true" | "false" | "null" | "yes" | "no" | "on" | "off" | "~") {
+    if matches!(
+        text,
+        "true" | "false" | "null" | "yes" | "no" | "on" | "off" | "~"
+    ) {
         return false;
     }
     if text.parse::<f64>().is_ok() {
@@ -277,7 +289,9 @@ fn render_yaml(value: &Value, indent: usize) -> String {
                         out.push_str(&[&pad, &key_yaml(key), ": []\n"].concat());
                     }
                     _ => {
-                        out.push_str(&[&pad, &key_yaml(key), ": ", &scalar_yaml(child), "\n"].concat());
+                        out.push_str(
+                            &[&pad, &key_yaml(key), ": ", &scalar_yaml(child), "\n"].concat(),
+                        );
                     }
                 }
             }
@@ -560,8 +574,11 @@ pub fn handle_format_conversion(
                 Ok(value) => {
                     let mut yaml = render_yaml(&value, 0);
                     if yaml.is_empty() {
-                        yaml =
-                            if value.is_object() { "{}".to_owned() } else { "[]".to_owned() };
+                        yaml = if value.is_object() {
+                            "{}".to_owned()
+                        } else {
+                            "[]".to_owned()
+                        };
                     }
                     match parse_yaml(&yaml) {
                         Some(reparsed) if reparsed == value => {
@@ -595,7 +612,10 @@ pub fn handle_format_conversion(
                     match serde_json::from_str::<Value>(&json) {
                         Ok(reparsed) if reparsed == value => {
                             log.append("format_conversion:converted", "roundtrip=ok".to_owned());
-                            (template("format_conversion_to_json", &[("json", &json)]), 0.7)
+                            (
+                                template("format_conversion_to_json", &[("json", &json)]),
+                                0.7,
+                            )
                         }
                         _ => {
                             log.append("format_conversion:refusal", "roundtrip=fail".to_owned());

@@ -200,10 +200,16 @@ mod stdout_requirement_tests {
     use super::explicit_stdout;
     #[test]
     fn repeated_mentions_are_one_output_obligation() {
-        assert_eq!(explicit_stdout("Print `Hello, World!`. The program must print `Hello, World!`."), Some("Hello, World!".to_owned()));
+        assert_eq!(
+            explicit_stdout("Print `Hello, World!`. The program must print `Hello, World!`."),
+            Some("Hello, World!".to_owned())
+        );
     }
     #[test]
     fn distinct_output_literals_preserve_request_order() {
-        assert_eq!(explicit_stdout("Print `first`. Print `second`."), Some("first\nsecond".to_owned()));
+        assert_eq!(
+            explicit_stdout("Print `first`. Print `second`."),
+            Some("first\nsecond".to_owned())
+        );
     }
 }

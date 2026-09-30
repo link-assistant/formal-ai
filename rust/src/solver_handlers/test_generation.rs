@@ -14,10 +14,10 @@
 //! matches no known shape, a smoke-test skeleton is emitted and the
 //! derivation says the shape was not recognized.
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const INTENT: &str = "test_generation";
@@ -42,7 +42,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -95,7 +101,12 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
 /// template.
 fn mapping_rows(rows: &[(String, String)]) -> String {
     rows.iter()
-        .map(|(request, emission)| template("mapping_line", &[("request", request), ("emission", emission)]))
+        .map(|(request, emission)| {
+            template(
+                "mapping_line",
+                &[("request", request), ("emission", emission)],
+            )
+        })
         .collect()
 }
 
@@ -121,7 +132,11 @@ fn shapes() -> Vec<Shape> {
     };
     let tree = parse_lino(text);
     let mut out = Vec::new();
-    for record in tree.children.iter().filter(|child| child.name == "test_cases") {
+    for record in tree
+        .children
+        .iter()
+        .filter(|child| child.name == "test_cases")
+    {
         let name = record.find_child_value("shape").to_string();
         if name.is_empty() {
             continue;
@@ -129,7 +144,11 @@ fn shapes() -> Vec<Shape> {
         let mut triggers = Vec::new();
         let mut cases = Vec::new();
         // A shape's triggers and cases sit under its `shape` child.
-        let Some(body) = record.children.first().filter(|child| child.name == "shape") else {
+        let Some(body) = record
+            .children
+            .first()
+            .filter(|child| child.name == "shape")
+        else {
             continue;
         };
         for child in &body.children {
@@ -279,8 +298,11 @@ fn normalize_helper(properties: &[String]) -> (Vec<String>, String) {
         (
             vec![
                 ["def ", "normalize(value):"].concat(),
-                ["    return ", "\"\".join(ch for ch in value.lower() if ch.isalnum())"]
-                    .concat(),
+                [
+                    "    return ",
+                    "\"\".join(ch for ch in value.lower() if ch.isalnum())",
+                ]
+                .concat(),
             ],
             "normalize".to_owned(),
         )
@@ -288,7 +310,11 @@ fn normalize_helper(properties: &[String]) -> (Vec<String>, String) {
         (
             vec![
                 ["def ", "normalize(value):"].concat(),
-                ["    return ", "\"\".join(ch for ch in value if ch.isalnum())"].concat(),
+                [
+                    "    return ",
+                    "\"\".join(ch for ch in value if ch.isalnum())",
+                ]
+                .concat(),
             ],
             "normalize".to_owned(),
         )
@@ -348,9 +374,12 @@ pub fn handle_test_generation(
 
     // The shape whose trigger words name the function under test.
     let table = shapes();
-    let shape = table
-        .iter()
-        .find(|shape| shape.triggers.iter().any(|trigger| function.contains(trigger.as_str())));
+    let shape = table.iter().find(|shape| {
+        shape
+            .triggers
+            .iter()
+            .any(|trigger| function.contains(trigger.as_str()))
+    });
 
     let mut normalize_applied = false;
     let (mut lines, mut rows): (Vec<String>, Vec<(String, String)>) = match shape {
@@ -395,10 +424,7 @@ pub fn handle_test_generation(
 
     let body = template(
         "test_generation_suite",
-        &[
-            ("suite", &suite),
-            ("derivation", &mapping_rows(&rows)),
-        ],
+        &[("suite", &suite), ("derivation", &mapping_rows(&rows))],
     );
 
     Some(finalize_simple(

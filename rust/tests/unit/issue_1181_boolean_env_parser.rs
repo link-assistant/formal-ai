@@ -51,7 +51,9 @@ fn parse_bool_env_accepts_every_documented_spelling() {
 fn parse_bool_env_rejects_unrecognised_values_instead_of_guessing() {
     // Garbage is `None`, never silently coerced: the caller keeps the
     // documented default rather than guessing what "maybe" means.
-    for value in ["", "  ", "maybe", "2", "y", "t", "enabled", "01", "1.0", "on-off"] {
+    for value in [
+        "", "  ", "maybe", "2", "y", "t", "enabled", "01", "1.0", "on-off",
+    ] {
         assert_eq!(parse_bool_env(value), None, "value {value:?}");
     }
 }

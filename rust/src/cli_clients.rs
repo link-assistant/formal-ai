@@ -167,7 +167,10 @@ fn client_json(integration: &ClientIntegration) -> Value {
         // Issue #1161: the same declaration for one-shot invocations — which
         // env vars carry (or relocate) the client's config for a single run.
         object.insert("config_env".to_string(), json!(invocation.config_env));
-        object.insert("config_dir_env".to_string(), json!(invocation.config_dir_env));
+        object.insert(
+            "config_dir_env".to_string(),
+            json!(invocation.config_dir_env),
+        );
         object.insert(
             "config_content_env".to_string(),
             json!(invocation.config_content_env),

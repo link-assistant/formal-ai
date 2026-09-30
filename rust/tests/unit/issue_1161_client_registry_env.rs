@@ -59,7 +59,9 @@ fn agent_global_config_names_its_own_relocation_env() {
     let global = default_global("agent");
     assert_eq!(global.path, ".config/link-assistant-agent/opencode.json");
     assert!(
-        global.config_env.contains(&"LINK_ASSISTANT_AGENT_CONFIG".to_owned()),
+        global
+            .config_env
+            .contains(&"LINK_ASSISTANT_AGENT_CONFIG".to_owned()),
         "agent config file must be relocatable via LINK_ASSISTANT_AGENT_CONFIG, got {:?}",
         global.config_env
     );

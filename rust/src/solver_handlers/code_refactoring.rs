@@ -14,10 +14,10 @@
 //! facts. Anything that is not a promise chain — or a handler the parser
 //! does not fully understand — is refused by name rather than guessed.
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::parse_lino;
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const INTENT: &str = "code_refactoring";
@@ -42,7 +42,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -184,7 +190,11 @@ struct Chain {
 /// Parse the chain out of whitespace-flattened code.
 fn parse_chain(flat: &str) -> Option<Chain> {
     let first_then = flat.find(".then(")?;
-    let head = flat[..first_then].trim().trim_end_matches(';').trim().to_owned();
+    let head = flat[..first_then]
+        .trim()
+        .trim_end_matches(';')
+        .trim()
+        .to_owned();
     if head.is_empty() {
         return None;
     }
@@ -283,7 +293,10 @@ pub fn handle_code_refactoring(
                 format!("then={}", chain.thens.len()),
             );
             let rewritten = render_async(&chain);
-            (template("code_refactoring_async", &[("code", &rewritten)]), 0.7)
+            (
+                template("code_refactoring_async", &[("code", &rewritten)]),
+                0.7,
+            )
         }
         None => {
             log.append("code_refactoring:refusal", "chain=none".to_owned());

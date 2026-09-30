@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Q218593": {
+      "type": "item",
+      "id": "Q218593",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "inch"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英寸"
+        },
+        "es": {
+          "language": "es",
+          "value": "pulgada"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дюйм"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इंच"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of length"
+        },
+        "es": {
+          "language": "es",
+          "value": "unidad de longitud"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "англоамериканская единица измерения длины"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "長度單位"
+        }
+      },
+      "aliases": {
+        "es": [
+          {
+            "language": "es",
+            "value": "inch"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "in"
+          },
+          {
+            "language": "en",
+            "value": "″"
+          },
+          {
+            "language": "en",
+            "value": "inches"
+          },
+          {
+            "language": "en",
+            "value": "U.S. survey inch"
+          },
+          {
+            "language": "en",
+            "value": "US survey inch"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "英吋"
+          },
+          {
+            "language": "zh",
+            "value": "吋"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "английский дюйм"
+          },
+          {
+            "language": "ru",
+            "value": "русский дюйм"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

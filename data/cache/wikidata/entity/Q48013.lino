@@ -1,0 +1,20 @@
+Q48013
+  aliases
+    en (oz "avoirdupois ounce" oz. "℥" "ounce (avoirdupois)" ounces)
+    es (oz)
+    ru (Ounce)
+    zh ("盎斯" "英兩" "安士" Ounce)
+  descriptions
+    en "unit of mass"
+    es "unidad de masa"
+    ru "единица массы"
+    zh "英制计量单位"
+  id Q48013
+  labels
+    en ounce
+    es onza
+    hi "आउन्स"
+    ru "унция"
+    zh "盎司"
+  type item
+success 1

@@ -14,10 +14,10 @@
 //! When the constraints do not compose, the handler refuses by name rather
 //! than guessing.
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const INTENT: &str = "regex_synthesis";
@@ -42,7 +42,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -163,7 +169,10 @@ fn scan_mentions(lower: &str) -> (Vec<ClassMention>, Vec<SeparatorMention>) {
         // ("3 or more digits"); the filler itself also means at-least.
         let mut at_least = false;
         let mut cursor = index + 1;
-        while matches!(words.get(cursor).map(|(_, word)| *word), Some("or") | Some("more")) {
+        while matches!(
+            words.get(cursor).map(|(_, word)| *word),
+            Some("or") | Some("more")
+        ) {
             at_least = true;
             cursor += 1;
         }
@@ -326,11 +335,7 @@ pub fn handle_regex_synthesis(
 
     let (body, confidence) = match compose(&classes, &separators) {
         Some(body) if verify_structurally(&body).is_empty() => {
-            let pattern = if anchored {
-                format!("^{body}$")
-            } else {
-                body
-            };
+            let pattern = if anchored { format!("^{body}$") } else { body };
             log.append("regex_synthesis:pattern", pattern.clone());
             let mut mapping = String::new();
             for (index, mention) in classes.iter().enumerate() {
@@ -385,10 +390,7 @@ pub fn handle_regex_synthesis(
                 .map(|code| problem_text(code))
                 .collect::<Vec<_>>()
                 .join("; ");
-            log.append(
-                "regex_synthesis:refusal",
-                format!("problems: {}", problems),
-            );
+            log.append("regex_synthesis:refusal", format!("problems: {}", problems));
             (
                 template(
                     "regex_synthesis_broken",

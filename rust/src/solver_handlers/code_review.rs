@@ -12,10 +12,10 @@
 //! `data/seed/multilingual-responses.lino`) states both facts and names the
 //! rules' upstream documents.
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::parse_lino;
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const RULES_PATH: &str = "data/seed/code-review-rules.lino";
@@ -45,7 +45,13 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        if record.find_child_value("role") != role {
+        if record
+            .children
+            .iter()
+            .find(|child| child.name == "intent")
+            .map_or("", |child| child.find_child_value("role"))
+            != role
+        {
             continue;
         }
         for phrase in record
@@ -272,16 +278,10 @@ pub fn handle_code_review(
     } else {
         "python"
     };
-    log.append(
-        "code_review:request",
-        format!("lang={}", language),
-    );
+    log.append("code_review:request", format!("lang={}", language));
     let table = rules();
     let findings = review(&code, language, &table);
-    log.append(
-        "code_review:findings",
-        format!("n={}", findings.len()),
-    );
+    log.append("code_review:findings", format!("n={}", findings.len()));
 
     let (body, confidence) = if findings.is_empty() {
         (template("code_review_no_match", &[]), 0.4)
@@ -301,7 +301,10 @@ pub fn handle_code_review(
                 ],
             ));
         }
-        (template("code_review_findings", &[("findings", &rendered)]), 0.7)
+        (
+            template("code_review_findings", &[("findings", &rendered)]),
+            0.7,
+        )
     };
 
     Some(finalize_simple(
