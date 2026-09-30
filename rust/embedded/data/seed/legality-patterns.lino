@@ -1,0 +1,136 @@
+# Request-legality pattern catalogue (issue #836).
+#
+# Advisory, not policing: each `pattern` names one category of request the
+# agent should warn about before acting, with the disposition (refuse for
+# the narrow prohibited set, warn for everything else), the reason a user
+# can read, and the jurisdiction note that legality varies. Trigger
+# phrases are lowercase substrings matched against the normalized prompt
+# (and the raw prompt lowercased), English and Russian side by side.
+#
+# `exemption` records name the framings that are sensitive-but-legal
+# (education, defensive security, journalism, academic study); a prompt
+# matching an exemption is answered without a warning unless its category
+# is the narrow refuse set.
+#
+# The agent renders the warning through the templates in
+# data/seed/multilingual-responses-legality.lino; no warning text lives in
+# Rust. Read by rust/src/legality_warning.rs through
+# crate::seed::seed_files().
+legality_patterns
+  pattern refuse_csam
+    category child_safety
+    disposition refuse
+    reason "sexual content involving minors is unlawful essentially everywhere and is not produced or assisted with"
+    phrase "csam"
+    phrase "child sexual abuse material"
+    phrase "sexual images of children"
+    phrase "сексуальные изображения детей"
+  pattern refuse_credible_violence
+    category serious_violence
+    disposition refuse
+    reason "credible facilitation of serious violence against identifiable people is not assisted with"
+    phrase "how to kill my"
+    phrase "how to kidnap"
+    phrase "build a bomb to kill"
+    phrase "как убить моего"
+    phrase "как похитить"
+  pattern warn_breaking_entering
+    category property_crime
+    disposition warn
+    jurisdiction_note "unauthorized entry is a crime in every jurisdiction; the phrase is what triggered this"
+    phrase "break into my neighbor"
+    phrase "break into his house"
+    phrase "break into her apartment"
+    phrase "взломать дом соседа"
+    phrase "влезть в квартиру"
+  pattern warn_stolen_goods
+    category theft_and_handling
+    disposition warn
+    jurisdiction_note "handling stolen goods and theft tools is criminalized broadly"
+    phrase "sell stolen"
+    phrase "fence stolen goods"
+    phrase "продать краденое"
+    phrase "сбыть краденое"
+  pattern warn_fraud
+    category fraud
+    disposition warn
+    jurisdiction_note "fraud, phishing and forgery are crimes; the boundary to security testing is authorization, which only you can establish"
+    phrase "phishing kit"
+    phrase "fake invoice for"
+    phrase "forge a signature"
+    phrase "skimmer for cards"
+    phrase "фишинговый набор"
+    phrase "поддельный счёт на оплату"
+    phrase "подделать подпись"
+  pattern warn_drug_production
+    category controlled_substances
+    disposition warn
+    jurisdiction_note "controlled-substance law varies sharply by jurisdiction and by substance"
+    phrase "synthesize meth"
+    phrase "cook meth"
+    phrase "grow psilocybin"
+    phrase "синтезировать метамфетамин"
+    phrase "вырастить псилоцибин"
+  pattern warn_weapons
+    category weapons
+    disposition warn
+    jurisdiction_note "weapon manufacture, modification and conversion are jurisdiction-specific and license-dependent"
+    phrase "3d print a gun"
+    phrase "convert a pistol to full auto"
+    phrase "make a suppressor for"
+    phrase "напечатать пистолет"
+    phrase "переделать пистолет в автоматический"
+  pattern warn_copyright_piracy
+    category copyright
+    disposition warn
+    jurisdiction_note "distributing copyrighted works without a license is unlawful in most jurisdictions; fair use is narrower than commonly believed"
+    phrase "pirate the new movie"
+    phrase "crack the license of"
+    phrase "download the film from torrents"
+    phrase "скачать фильм с торрентов"
+    phrase "взломать лицензию"
+  pattern warn_malware
+    category unauthorized_access
+    disposition warn
+    jurisdiction_note "deploying malware on systems you do not own is a crime; authorization is the boundary this warning cannot verify"
+    phrase "write ransomware"
+    phrase "make a botnet"
+    phrase "ddos tool for"
+    phrase "написать вымогательское по"
+    phrase "создать ботнет"
+  pattern warn_impersonation
+    category impersonation
+    disposition warn
+    jurisdiction_note "impersonating a person or authority is unlawful in most jurisdictions even without profit"
+    phrase "pretend to be a police officer"
+    phrase "fake id that passes"
+    phrase "выдать себя за полицейского"
+    phrase "поддельное удостоверение"
+legality_exemptions
+  exemption education
+    framing education
+    phrase "for my class"
+    phrase "to teach"
+    phrase "explain for students"
+    phrase "для урока"
+    phrase "объяснить студентам"
+  exemption security_research
+    framing security_research
+    phrase "so i can fix"
+    phrase "to defend my"
+    phrase "penetration test i am authorized"
+    phrase "vulnerability in my own app"
+    phrase "чтобы исправить"
+    phrase "уязвимость в моём приложении"
+  exemption journalism
+    framing journalism
+    phrase "as a journalist"
+    phrase "for my reporting"
+    phrase "как журналист"
+    phrase "для репортажа"
+  exemption academic
+    framing academic
+    phrase "in my thesis"
+    phrase "for a research paper"
+    phrase "в моей диссертации"
+    phrase "для научной работы"
