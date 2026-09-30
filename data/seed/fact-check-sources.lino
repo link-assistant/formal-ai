@@ -1,0 +1,66 @@
+# Fact-check source registry (issue #1179).
+#
+# The fact_check collectors read this file. source_tier rows map each evidence
+# context to its relative-meta-logic trust tier and its assumed-true prior,
+# ordered code above tests above generated status above docs above notes; a
+# web page starts at independent corroboration unless its host is itself the
+# subject, and web_aggregator_host rows name the reposting hosts that carry no
+# weight at all. code_query_cue rows carry the bounded query phrasings the
+# code collector recognizes, so a new query shape is a seed row, not a parser.
+#
+# The tiers and priors are data: the collectors only read them.
+
+fact_check_sources
+  source_tier
+    context code
+    tier original_first_party
+    prior 0.8
+  source_tier
+    context tests
+    tier original_first_party
+    prior 0.75
+  source_tier
+    context git
+    tier original_first_party
+    prior 0.75
+  source_tier
+    context github
+    tier original_first_party
+    prior 0.7
+  source_tier
+    context web
+    tier independent_corroboration
+    prior 0.6
+  source_tier
+    context generated_status
+    tier independent_corroboration
+    prior 0.6
+  source_tier
+    context docs
+    tier independent_corroboration
+    prior 0.55
+  source_tier
+    context notes
+    tier independent_corroboration
+    prior 0.5
+  web_aggregator_host
+    host reddit.com
+  web_aggregator_host
+    host news.ycombinator.com
+  web_aggregator_host
+    host medium.com
+  web_aggregator_host
+    host quora.com
+  web_aggregator_host
+    host stackoverflow.com
+  code_query_cue
+    query function_called_outside_tests
+    phrase "is called outside tests"
+    phrase "is called from the cli"
+    phrase "is called in production"
+    phrase "is referenced outside tests"
+  code_query_cue
+    query symbol_exists_at_path
+    phrase "does the symbol"
+    phrase "exists at the path"
+    phrase "is defined in the file"
