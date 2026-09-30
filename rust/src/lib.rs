@@ -34,6 +34,7 @@ pub use coding::task_spec as coding_task_spec;
 pub mod authoring_loop;
 pub mod behavior_delta;
 pub mod capability_routing;
+pub mod cli_env;
 pub mod cli_solve;
 pub mod coding_research_learning;
 pub mod computer_use;
@@ -464,6 +465,10 @@ pub use solver_handler_how_synthesis::{
 pub use solver_handlers::{
     AnswerAgreement, MemoryQueryExecution, VerifiedAnswer, answer_memory_recall,
     classify_agreement, execute_memory_query, execute_memory_query_with_options,
+    handle_code_debugging, handle_code_explanation, handle_code_refactoring,
+    handle_code_review, handle_format_conversion, handle_regex_synthesis,
+    handle_shell_command_compose, handle_sql_synthesis, handle_summarization_request,
+    handle_test_generation, handle_text_rewrite, try_translation,
     try_web_search_with_client,
 };
 pub use solver_helpers::humanize_url;

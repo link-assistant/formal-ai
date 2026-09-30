@@ -167,6 +167,14 @@ seed_metadata_gaps
     source "data/seed/meanings-research-table.lino"
     record "key_differences"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_0b7e1eea704651c8
+    source "data/seed/meanings-statistics.lino"
+    record "statistics_mean"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_4ff9301d104ab648
+    source "data/seed/meanings-statistics.lino"
+    record "statistics_standard_deviation"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_6e88bf5a08359218
     source "data/seed/meanings-summary.lino"
     record "summary_kind_example"
@@ -206,6 +214,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_25257f0efc5f9368
     source "data/seed/meanings-units.lino"
     record "eight"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_54a3d04e6229b898
+    source "data/seed/meanings-units.lino"
+    record "gallon"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_788f212068fc0428
     source "data/seed/meanings-web-search-query.lino"

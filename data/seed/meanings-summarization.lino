@@ -1,0 +1,418 @@
+# Free-text summarization and sentence-translation vocabulary (issue #1174).
+#
+# Three concept groups live here. The text_summarization_action role names the
+# act of summarizing a text the request itself carries (a paragraph after a
+# colon, a line break, or quotes), which is a different act from summarizing
+# the running conversation (meanings-intent.lino) or a seeded topic
+# (summary-topics.lino), so both of those handlers keep their prompts. The
+# compositional_lemma records give the offline sentence translator its everyday
+# vocabulary, and the translation_stop_word role names the function words a
+# word-by-word rendering leaves out instead of echoing them in the source
+# script.
+#
+# Surface forms are stored the way normalize_prompt renders them, so a
+# punctuation-folded cue such as "tl dr" (tl;dr) still matches.
+
+meanings
+  text_summarization_action
+    defined-by action
+    role text_summarization_action
+    lexeme en
+      surface
+        text summarize
+      surface
+        text summarise
+      surface
+        text "give me a summary"
+      surface
+        text "tl dr"
+    lexeme ru
+      surface
+        text резюмируй
+      surface
+        text резюмируйте
+      surface
+        text "кратко перескажи"
+    lexeme hi
+      surface
+        text "सारांशित करें"
+      surface
+        text "संक्षेप में लिखें"
+    lexeme zh
+      surface
+        text 总结一下
+      surface
+        text 概括一下
+    lexeme es
+      surface
+        text "haz un resumen"
+      surface
+        text "resume esto"
+  weather
+    grounded-in Q11663
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text weather
+    lexeme ru
+      surface
+        text погода
+    lexeme hi
+      surface
+        text मौसम
+    lexeme zh
+      surface
+        text 天气
+    lexeme es
+      surface
+        text tiempo
+  nice
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text nice
+    lexeme ru
+      surface
+        text приятный
+    lexeme hi
+      surface
+        text अच्छा
+    lexeme zh
+      surface
+        text 好
+    lexeme es
+      surface
+        text agradable
+  today
+    grounded-in Q3151690
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text today
+    lexeme ru
+      surface
+        text сегодня
+    lexeme hi
+      surface
+        text आज
+    lexeme zh
+      surface
+        text 今天
+    lexeme es
+      surface
+        text hoy
+  go
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text go
+    lexeme ru
+      surface
+        text идти
+    lexeme hi
+      surface
+        text जाना
+    lexeme zh
+      surface
+        text 去
+    lexeme es
+      surface
+        text ir
+  walk
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text walk
+    lexeme ru
+      surface
+        text прогулка
+    lexeme hi
+      surface
+        text सैर
+    lexeme zh
+      surface
+        text 散步
+    lexeme es
+      surface
+        text paseo
+  lets
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text "let's"
+      surface
+        text "let’s"
+      surface
+        text lets
+    lexeme ru
+      surface
+        text давай
+    lexeme hi
+      surface
+        text चलो
+    lexeme zh
+      surface
+        text 让我们
+    lexeme es
+      surface
+        text vamos
+  translation_stop_word
+    defined-by concept
+    role translation_stop_word
+    lexeme en
+      surface
+        text "a"
+      surface
+        text "an"
+      surface
+        text "the"
+      surface
+        text "and"
+      surface
+        text "or"
+      surface
+        text "but"
+      surface
+        text "if"
+      surface
+        text "of"
+      surface
+        text "in"
+      surface
+        text "on"
+      surface
+        text "at"
+      surface
+        text "to"
+      surface
+        text "for"
+      surface
+        text "with"
+      surface
+        text "by"
+      surface
+        text "from"
+      surface
+        text "as"
+      surface
+        text "is"
+      surface
+        text "are"
+      surface
+        text "was"
+      surface
+        text "were"
+      surface
+        text "be"
+      surface
+        text "been"
+      surface
+        text "being"
+      surface
+        text "am"
+      surface
+        text "do"
+      surface
+        text "does"
+      surface
+        text "did"
+      surface
+        text "let"
+      surface
+        text "us"
+      surface
+        text "so"
+      surface
+        text "than"
+      surface
+        text "then"
+      surface
+        text "this"
+      surface
+        text "that"
+      surface
+        text "these"
+      surface
+        text "those"
+      surface
+        text "there"
+      surface
+        text "here"
+      surface
+        text "its"
+      surface
+        text "his"
+      surface
+        text "her"
+      surface
+        text "their"
+      surface
+        text "our"
+      surface
+        text "my"
+      surface
+        text "your"
+    lexeme ru
+      surface
+        text "и"
+      surface
+        text "или"
+      surface
+        text "в"
+      surface
+        text "во"
+      surface
+        text "на"
+      surface
+        text "к"
+      surface
+        text "ко"
+      surface
+        text "для"
+      surface
+        text "из"
+      surface
+        text "с"
+      surface
+        text "со"
+      surface
+        text "о"
+      surface
+        text "об"
+      surface
+        text "от"
+      surface
+        text "по"
+      surface
+        text "за"
+      surface
+        text "это"
+      surface
+        text "был"
+      surface
+        text "была"
+      surface
+        text "было"
+      surface
+        text "были"
+      surface
+        text "есть"
+      surface
+        text "же"
+      surface
+        text "ли"
+    lexeme hi
+      surface
+        text "और"
+      surface
+        text "या"
+      surface
+        text "में"
+      surface
+        text "का"
+      surface
+        text "की"
+      surface
+        text "के"
+      surface
+        text "को"
+      surface
+        text "से"
+      surface
+        text "एक"
+      surface
+        text "है"
+      surface
+        text "हैं"
+      surface
+        text "था"
+      surface
+        text "थे"
+      surface
+        text "ने"
+      surface
+        text "पर"
+      surface
+        text "कि"
+      surface
+        text "हूँ"
+      surface
+        text "हो"
+    lexeme zh
+      surface
+        text "的"
+      surface
+        text "是"
+      surface
+        text "了"
+      surface
+        text "在"
+      surface
+        text "和"
+      surface
+        text "或"
+      surface
+        text "一"
+      surface
+        text "吧"
+    lexeme es
+      surface
+        text "y"
+      surface
+        text "o"
+      surface
+        text "el"
+      surface
+        text "la"
+      surface
+        text "los"
+      surface
+        text "las"
+      surface
+        text "un"
+      surface
+        text "una"
+      surface
+        text "en"
+      surface
+        text "a"
+      surface
+        text "para"
+      surface
+        text "con"
+      surface
+        text "de"
+      surface
+        text "por"
+      surface
+        text "del"
+      surface
+        text "al"
+      surface
+        text "es"
+      surface
+        text "son"
+      surface
+        text "era"
+      surface
+        text "eran"
+      surface
+        text "sea"
+      surface
+        text "ser"
+      surface
+        text "su"
+      surface
+        text "sus"
+      surface
+        text "mi"
+      surface
+        text "tu"
+      surface
+        text "nuestro"

@@ -48,7 +48,12 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("role") != role {
             continue;
         }
-        for phrase in record.children.iter().filter(|child| child.name == "phrase") {
+        for phrase in record
+            .children
+            .iter()
+            .flat_map(|child| child.children.iter())
+            .filter(|phrase| phrase.name == "phrase")
+        {
             if !phrase.id.is_empty() {
                 out.push(phrase.id.clone());
             }
@@ -86,9 +91,13 @@ fn rules() -> Vec<Rule> {
     let tree = parse_lino(text);
     let mut out = Vec::new();
     for record in tree.children.iter().filter(|child| child.name == "rule") {
+        // A rule's fields sit under its `id` child; the `rule` head only
+        // names the record kind, and the id child carries the rule id.
+        let Some(body) = record.children.first().filter(|child| child.name == "id") else {
+            continue;
+        };
         let collect = |name: &str| -> Vec<String> {
-            record
-                .children
+            body.children
                 .iter()
                 .filter(|child| child.name == name)
                 .map(|child| child.id.clone())
@@ -97,14 +106,14 @@ fn rules() -> Vec<Rule> {
         };
         out.push(Rule {
             id: record.find_child_value("id").to_string(),
-            language: record.find_child_value("language").to_string(),
-            scope: record.find_child_value("scope").to_string(),
-            severity: record.find_child_value("severity").to_string(),
+            language: body.find_child_value("language").to_string(),
+            scope: body.find_child_value("scope").to_string(),
+            severity: body.find_child_value("severity").to_string(),
             detects: collect("detect"),
             avoids: collect("avoid"),
-            title: record.find_child_value("title").to_string(),
-            advice: record.find_child_value("advice").to_string(),
-            source: record.find_child_value("source").to_string(),
+            title: body.find_child_value("title").to_string(),
+            advice: body.find_child_value("advice").to_string(),
+            source: body.find_child_value("source").to_string(),
         });
     }
     out

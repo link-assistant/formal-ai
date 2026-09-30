@@ -45,7 +45,12 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("role") != role {
             continue;
         }
-        for phrase in record.children.iter().filter(|child| child.name == "phrase") {
+        for phrase in record
+            .children
+            .iter()
+            .flat_map(|child| child.children.iter())
+            .filter(|phrase| phrase.name == "phrase")
+        {
             if !phrase.id.is_empty() {
                 out.push(phrase.id.clone());
             }
@@ -69,7 +74,8 @@ fn word_entries(map: &str) -> Vec<LinoNode> {
             record
                 .children
                 .iter()
-                .filter(|child| child.name == "entry")
+                .flat_map(|child| child.children.iter())
+                .filter(|entry| entry.name == "entry")
                 .cloned(),
         );
     }
@@ -122,7 +128,11 @@ fn shapes() -> Vec<Shape> {
         }
         let mut triggers = Vec::new();
         let mut cases = Vec::new();
-        for child in &record.children {
+        // A shape's triggers and cases sit under its `shape` child.
+        let Some(body) = record.children.first().filter(|child| child.name == "shape") else {
+            continue;
+        };
+        for child in &body.children {
             match child.name.as_str() {
                 "trigger" if !child.id.is_empty() => triggers.push(child.id.clone()),
                 "case" => cases.push(TestCase {

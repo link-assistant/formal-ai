@@ -90,30 +90,34 @@ fn conversions() -> &'static Vec<(String, String, Conversion)> {
     TABLE.get_or_init(|| {
         let mut table = Vec::new();
         for record in &parser::parse_lino(MEANINGS_UNITS_LINO).children {
-            for child in &record.children {
-                if child.name != "conversion" {
-                    continue;
-                }
-                let mut tokens = child.id.split_whitespace();
-                let Some(target) = tokens.next() else {
-                    continue;
-                };
-                let rest = tokens.collect::<Vec<_>>();
-                // `conversion kilometer 1.609344` is linear;
-                // `conversion fahrenheit formula multiply 9/5 add 32` is a
-                // formula. Anything unparsable is skipped, not guessed.
-                let conversion = match rest.first() {
-                    Some(&"formula") => match parse_formula_steps(&rest[1..]) {
-                        Some(steps) if !steps.is_empty() => Conversion::Formula(steps),
-                        _ => continue,
-                    },
-                    Some(factor) => match Decimal::parse(factor) {
-                        Some(factor) => Conversion::Linear(factor),
+            // Each unit is one record under the file's `meanings` root, and
+            // its `conversion` rows are that unit's children.
+            for unit in &record.children {
+                for child in &unit.children {
+                    if child.name != "conversion" {
+                        continue;
+                    }
+                    let mut tokens = child.id.split_whitespace();
+                    let Some(target) = tokens.next() else {
+                        continue;
+                    };
+                    let rest = tokens.collect::<Vec<_>>();
+                    // `conversion kilometer 1.609344` is linear;
+                    // `conversion fahrenheit formula multiply 9/5 add 32` is a
+                    // formula. Anything unparsable is skipped, not guessed.
+                    let conversion = match rest.first() {
+                        Some(&"formula") => match parse_formula_steps(&rest[1..]) {
+                            Some(steps) if !steps.is_empty() => Conversion::Formula(steps),
+                            _ => continue,
+                        },
+                        Some(factor) => match Decimal::parse(factor) {
+                            Some(factor) => Conversion::Linear(factor),
+                            None => continue,
+                        },
                         None => continue,
-                    },
-                    None => continue,
-                };
-                table.push((record.name.clone(), target.to_owned(), conversion));
+                    };
+                    table.push((unit.name.clone(), target.to_owned(), conversion));
+                }
             }
         }
         table

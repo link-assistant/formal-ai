@@ -369,13 +369,15 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status \"justified-native\"").count(),
-        2,
-        "the native set must stay explicit and small",
+        16,
+        "the native set must stay explicit and small: two originals (arithmetic, \
+         javascript_execution) plus the fourteen handlers issues #1174/#1176/#1177 \
+         delivered native with seed vocabulary and response templates",
     );
     let pending = ledger.matches("status pending").count();
     assert_eq!(
         pending,
-        expected.len() - 18,
+        expected.len() - 32,
         "every other current method must honestly remain pending",
     );
     assert_eq!(

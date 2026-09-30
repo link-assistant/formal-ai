@@ -115,6 +115,10 @@ seed_metadata_gaps
     source "data/seed/meanings-software-project.lino"
     record "delivery_script_generation"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_ef88eba95d205d30
+    source "data/seed/meanings-statistics.lino"
+    record "word_problem_unit_price"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_5862ce6cf56ba440
     source "data/seed/meanings-tool-access.lino"
     record "local_shell_tool"
@@ -134,6 +138,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_f892368169a19570
     source "data/seed/meanings-translation.lino"
     record "translate_from_russian"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_3fea0bc83e23c040
+    source "data/seed/meanings-units.lino"
+    record "mile"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_030ba32b8ddb32b0
     source "data/seed/meanings-units.lino"

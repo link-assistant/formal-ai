@@ -127,6 +127,10 @@ seed_metadata_gaps
     source "data/seed/meanings-software-project.lino"
     record "software_followup_execution"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_ae1a7b0e39d02cdc
+    source "data/seed/meanings-statistics.lino"
+    record "word_problem_change"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_13e8ab4a3250e40c
     source "data/seed/meanings-tool-access.lino"
     record "tool_result_failure"

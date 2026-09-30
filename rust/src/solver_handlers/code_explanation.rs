@@ -52,7 +52,12 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("role") != role {
             continue;
         }
-        for phrase in record.children.iter().filter(|child| child.name == "phrase") {
+        for phrase in record
+            .children
+            .iter()
+            .flat_map(|child| child.children.iter())
+            .filter(|phrase| phrase.name == "phrase")
+        {
             if !phrase.id.is_empty() {
                 out.push(phrase.id.clone());
             }
@@ -83,9 +88,13 @@ fn structures() -> Vec<Structure> {
     let tree = parse_lino(text);
     let mut out = Vec::new();
     for record in tree.children.iter().filter(|child| child.name == "structure") {
+        // A structure's fields sit under its `construct` child.
+        let Some(body) = record.children.first().filter(|child| child.name == "construct") else {
+            continue;
+        };
         out.push(Structure {
             construct: record.find_child_value("construct").to_string(),
-            meaning: record.find_child_value("meaning").to_string(),
+            meaning: body.find_child_value("meaning").to_string(),
         });
     }
     out
@@ -111,16 +120,20 @@ fn function_intents() -> Vec<FunctionIntent> {
             continue;
         }
         let mut names = vec![name];
-        for alias in record.children.iter().filter(|child| child.name == "alias") {
+        // An intent's fields sit under its `name` child.
+        let Some(body) = record.children.first().filter(|child| child.name == "name") else {
+            continue;
+        };
+        for alias in body.children.iter().filter(|child| child.name == "alias") {
             if !alias.id.is_empty() {
                 names.push(alias.id.clone());
             }
         }
         out.push(FunctionIntent {
             names,
-            property: record.find_child_value("property").to_string(),
-            correct_form: record.find_child_value("correct_form").to_string(),
-            grounding: record.find_child_value("grounding").to_string(),
+            property: body.find_child_value("property").to_string(),
+            correct_form: body.find_child_value("correct_form").to_string(),
+            grounding: body.find_child_value("grounding").to_string(),
         });
     }
     out

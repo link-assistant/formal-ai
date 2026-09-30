@@ -233,7 +233,8 @@ impl SeedLinkNetwork {
 
 /// Whether `formal-ai serve` mirrors the network into the native store.
 ///
-/// Opt-in through `FORMAL_AI_SEED_LINKS_MIRROR=1` (or `true`, `on`). The
+/// Opt-in through `FORMAL_AI_SEED_LINKS_MIRROR` set to a true spelling (`1`,
+/// `true`, `yes`, `on`; issue #1181). The
 /// mirror writes tens of thousands of doublets through the transaction log,
 /// and a server started per scenario pays that once per server: the held-out
 /// generalization end-to-end run starts 24 of them and went from 265 s to over
@@ -243,10 +244,7 @@ impl SeedLinkNetwork {
 /// for where it is wanted (issue #1085 D1.2).
 #[must_use]
 pub fn native_mirror_enabled() -> bool {
-    matches!(
-        std::env::var("FORMAL_AI_SEED_LINKS_MIRROR").as_deref(),
-        Ok("1" | "true" | "on")
-    )
+    crate::cli_env::flag_enabled("FORMAL_AI_SEED_LINKS_MIRROR")
 }
 
 /// Where a native build keeps the seed network beside the memory store.

@@ -45,7 +45,12 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("role") != role {
             continue;
         }
-        for phrase in record.children.iter().filter(|child| child.name == "phrase") {
+        for phrase in record
+            .children
+            .iter()
+            .flat_map(|child| child.children.iter())
+            .filter(|phrase| phrase.name == "phrase")
+        {
             if !phrase.id.is_empty() {
                 out.push(phrase.id.clone());
             }
@@ -69,7 +74,8 @@ fn word_entries(map: &str) -> Vec<LinoNode> {
             record
                 .children
                 .iter()
-                .filter(|child| child.name == "entry")
+                .flat_map(|child| child.children.iter())
+                .filter(|entry| entry.name == "entry")
                 .cloned(),
         );
     }

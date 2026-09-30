@@ -64,7 +64,12 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
         if record.find_child_value("role") != role {
             continue;
         }
-        for phrase in record.children.iter().filter(|child| child.name == "phrase") {
+        for phrase in record
+            .children
+            .iter()
+            .flat_map(|child| child.children.iter())
+            .filter(|phrase| phrase.name == "phrase")
+        {
             if !phrase.id.is_empty() {
                 out.push(phrase.id.clone());
             }
@@ -84,7 +89,12 @@ fn any_cue_matches(intent: &str, prompt: &str, normalized: &str) -> bool {
         if record.find_child_value("intent") != intent {
             continue;
         }
-        for phrase in record.children.iter().filter(|child| child.name == "phrase") {
+        for phrase in record
+            .children
+            .iter()
+            .flat_map(|child| child.children.iter())
+            .filter(|phrase| phrase.name == "phrase")
+        {
             if normalized.contains(phrase.id.as_str()) || lower.contains(phrase.id.as_str()) {
                 return true;
             }
@@ -108,7 +118,8 @@ fn word_entries(map: &str) -> Vec<LinoNode> {
             record
                 .children
                 .iter()
-                .filter(|child| child.name == "entry")
+                .flat_map(|child| child.children.iter())
+                .filter(|entry| entry.name == "entry")
                 .cloned(),
         );
     }
@@ -157,8 +168,12 @@ fn manual_pages() -> Vec<ManualCommand> {
         if name.is_empty() {
             continue;
         }
+        // A command's fields sit under its `name` child.
+        let Some(body) = record.children.first().filter(|child| child.name == "name") else {
+            continue;
+        };
         let mut flags = Vec::new();
-        for flag in record.children.iter().filter(|child| child.name == "flag") {
+        for flag in body.children.iter().filter(|child| child.name == "flag") {
             flags.push(ManualFlag {
                 spelling: flag.find_child_value("spelling").to_string(),
                 meaning: flag.find_child_value("meaning").to_string(),
@@ -166,8 +181,8 @@ fn manual_pages() -> Vec<ManualCommand> {
         }
         out.push(ManualCommand {
             name,
-            package: record.find_child_value("package").to_string(),
-            url: record.find_child_value("url").to_string(),
+            package: body.find_child_value("package").to_string(),
+            url: body.find_child_value("url").to_string(),
             flags,
         });
     }

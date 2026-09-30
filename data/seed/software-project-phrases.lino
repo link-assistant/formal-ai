@@ -68,6 +68,104 @@ meanings
         text with
       surface
         text without
+    lexeme zh
+      surface
+        text 从
+      surface
+        text 但
+      surface
+        text 关于
+      surface
+        text 和
+      surface
+        text 或
+      surface
+        text 那
+      surface
+        text 请
+      surface
+        text 所以
+      surface
+        text 使用
+      surface
+        text 谁
+      surface
+        text 他们
+      surface
+        text 它
+      surface
+        text 到
+      surface
+        text 的
+      surface
+        text 为
+      surface
+        text 通过
+      surface
+        text 我们
+      surface
+        text 无论
+      surface
+        text 哪个
+      surface
+        text 哪里
+      surface
+        text 什么时候
+      surface
+        text 与
+      surface
+        text 经由
+      surface
+        text 在
+    lexeme es
+      surface
+        text a
+      surface
+        text asi
+      surface
+        text con
+      surface
+        text cual
+      surface
+        text cuando
+      surface
+        text de
+      surface
+        text desde
+      surface
+        text dentro
+      surface
+        text donde
+      surface
+        text ello
+      surface
+        text ellos
+      surface
+        text en
+      surface
+        text nosotros
+      surface
+        text o
+      surface
+        text para
+      surface
+        text "por favor"
+      surface
+        text que
+      surface
+        text quien
+      surface
+        text sobre
+      surface
+        text sin
+      surface
+        text usando
+      surface
+        text via
+      surface
+        text y
+      surface
+        text yo
     lexeme ru
       surface
         text в
@@ -142,6 +240,96 @@ meanings
         text us
       surface
         text please
+    lexeme ru
+      surface
+        text эта
+      surface
+        text эти
+      surface
+        text те
+      surface
+        text мой
+      surface
+        text твой
+      surface
+        text наш
+      surface
+        text мне
+      surface
+        text нам
+      surface
+        text пожалуйста
+    lexeme hi
+      surface
+        text एक
+      surface
+        text यह
+      surface
+        text वह
+      surface
+        text ये
+      surface
+        text वे
+      surface
+        text मेरा
+      surface
+        text तुम्हारा
+      surface
+        text हमारा
+      surface
+        text मुझे
+      surface
+        text हमें
+      surface
+        text कृपया
+    lexeme zh
+      surface
+        text 一个
+      surface
+        text 这
+      surface
+        text 那
+      surface
+        text 这些
+      surface
+        text 那些
+      surface
+        text 我的
+      surface
+        text 你的
+      surface
+        text 我们的
+      surface
+        text 我
+      surface
+        text 我们
+      surface
+        text 请
+    lexeme es
+      surface
+        text "por favor"
+      surface
+        text el
+      surface
+        text esos
+      surface
+        text este
+      surface
+        text estos
+      surface
+        text la
+      surface
+        text mi
+      surface
+        text nos
+      surface
+        text nuestro
+      surface
+        text tu
+      surface
+        text un
+      surface
+        text una
   software_object_lead_bigram
     defined-by statement_function_word
     role software_object_lead_bigram
@@ -154,6 +342,34 @@ meanings
         text "to me"
       surface
         text "to us"
+    lexeme ru
+      surface
+        text "для меня"
+      surface
+        text "для нас"
+    lexeme hi
+      surface
+        text "मेरे लिए"
+      surface
+        text "हमारे लिए"
+    lexeme zh
+      surface
+        text 给我
+      surface
+        text 给我们
+      surface
+        text 对我
+      surface
+        text 对我们
+    lexeme es
+      surface
+        text "para mí"
+      surface
+        text "para nosotros"
+      surface
+        text "a mí"
+      surface
+        text "a nosotros"
   software_object_boundary_character
     defined-by statement_function_word
     role software_object_boundary_character
@@ -196,6 +412,49 @@ meanings
     lexeme hi
       surface
         text "।"
+    
+    lexeme ru
+      surface
+        text ","
+      surface
+        text ";"
+      surface
+        text "."
+      surface
+        text "?"
+      surface
+        text "!"
+      surface
+        text ":"
+      surface
+        text "("
+      surface
+        text ")"
+      surface
+        text "["
+      surface
+        text "]"
+    lexeme es
+      surface
+        text ","
+      surface
+        text ";"
+      surface
+        text "."
+      surface
+        text "?"
+      surface
+        text "!"
+      surface
+        text ":"
+      surface
+        text "("
+      surface
+        text ")"
+      surface
+        text "["
+      surface
+        text "]"
   software_object_word_internal_character
     defined-by statement_function_word
     role software_object_word_internal_character
@@ -217,6 +476,34 @@ meanings
     lexeme hi
       surface
         text "।"
+    
+    lexeme en
+      surface
+        text "."
+      surface
+        text "-"
+      surface
+        text "_"
+      surface
+        text "'"
+    lexeme ru
+      surface
+        text "."
+      surface
+        text "-"
+      surface
+        text "_"
+      surface
+        text "'"
+    lexeme es
+      surface
+        text "."
+      surface
+        text "-"
+      surface
+        text "_"
+      surface
+        text "'"
   software_sentence_end_character
     defined-by statement_function_word
     role software_sentence_end_character
@@ -243,3 +530,26 @@ meanings
     lexeme hi
       surface
         text "।"
+    
+    lexeme ru
+      surface
+        text "."
+      surface
+        text "?"
+      surface
+        text "!"
+      surface
+        text ";"
+      surface
+        text ":"
+    lexeme es
+      surface
+        text "."
+      surface
+        text "?"
+      surface
+        text "!"
+      surface
+        text ";"
+      surface
+        text ":"

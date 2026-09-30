@@ -1,0 +1,44 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Any mathematical rule expressed symbolically."
+          synonyms ("mathematical formula")
+        entry
+          definition "A symbolic expression of the structure of a compound."
+          example "H2O is the formula for water."
+          synonyms ("chemical formula")
+        entry
+          definition "A plan or method for dealing with a problem or for achieving a result."
+          example "The company's winning formula includes excellent service and quality products."
+        entry
+          definition "A formulation; a prescription; a mixture or solution made in a prescribed manner; the identity and quantities of ingredients of such a mixture."
+          example "The formula of the rocket fuel has not been revealed."
+        entry
+          definition "A formal statement of doctrine, as in religion."
+        entry
+          definition "A syntactic expression of a proposition, built up from quantifiers, logical connectives, variables, relation and operation symbols, and, depending on the type of logic, possibly other operators such as modal, temporal, deontic or epistemic ones."
+      partOfSpeech noun
+      synonyms ("chemical formula" "mathematical formula")
+    entry
+      definitions
+        entry
+          definition "A manufactured food simulating human breast milk, designed to be fed to babies and infants under 12 months of age."
+          synonyms ("baby formula" formula)
+      partOfSpeech noun
+      synonyms ("baby formula" formula)
+  phonetic "/ˈfɔː.mjʊ.lə/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/formula-uk.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2243762"
+      text "/ˈfɔː.mjʊ.lə/"
+    entry
+      audio ""
+      text "/ˈfɔɹ.mjə.lə/"
+  sourceUrls ("https://en.wiktionary.org/wiki/formula" "https://en.wiktionary.org/wiki/infant%20formula")
+  word formula

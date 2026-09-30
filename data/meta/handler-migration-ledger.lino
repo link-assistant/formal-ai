@@ -79,6 +79,10 @@ handler_migration_ledger
     status pending
   handler software_project_followup
     status pending
+  handler summarization_text
+    status "justified-native"
+    primitive "rust/src/solver_handlers/summarization_request.rs"
+    justification "Free-text summarization composes the compressed summary in Rust under a length bound that can never echo the input; the topic tables, stop-word lists, and every response template are seed data."
   handler summarization
     status pending
   handler verifiable_task
@@ -97,6 +101,10 @@ handler_migration_ledger
     status pending
   handler translation
     status pending
+  handler text_rewrite
+    status "justified-native"
+    primitive "rust/src/solver_handlers/text_rewrite.rs"
+    justification "Register substitution tables, agreement rules, and genre style guides are seed data; the in-place rewrite engine that applies them is a compiled primitive."
   handler response_language_followup
     status pending
   handler capabilities
@@ -111,16 +119,56 @@ handler_migration_ledger
     status pending
   handler compound_interest
     status pending
+  handler word_problem
+    status "justified-native"
+    primitive "rust/src/solver_handlers/statistics.rs"
+    justification "Price-times-count relation extraction runs as a compiled primitive over the seed marker vocabulary; the derivations render from localized response templates."
   handler numeric_list
     status pending
   handler shell_command_transform
     status pending
+  handler code_debugging
+    status "justified-native"
+    primitive "rust/src/solver_handlers/code_debugging.rs"
+    justification "Defect-pattern recognition works over the seed name-promise table; the structural diagnosis engine that reads it is native."
+  handler regex_synthesis
+    status "justified-native"
+    primitive "rust/src/solver_handlers/regex_synthesis.rs"
+    justification "Regex composition works from the seed cue vocabulary and emits patterns that are structurally verified but never executed; the composer itself is a compiled primitive."
+  handler sql_synthesis
+    status "justified-native"
+    primitive "rust/src/solver_handlers/sql_synthesis.rs"
+    justification "Single-SELECT composition maps request clauses to SQL over seed vocabulary; the clause parser and emitter are native."
+  handler shell_command_compose
+    status "justified-native"
+    primitive "rust/src/solver_handlers/shell_command_compose.rs"
+    justification "The find composition and its cited manual pages are seed data; the composer that assembles the command is native."
   handler number_constraint_reasoning
     status migrated
     data "data/seed/meanings-number-constraints.lino"
     primitive "rust/src/number_constraints.rs"
     justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved."
     held_out "rust/tests/unit/issue_699_handler_migration.rs"
+  handler code_explanation
+    status "justified-native"
+    primitive "rust/src/solver_handlers/code_explanation.rs"
+    justification "The construct table with its grounding URLs is seed data; the line-by-line explainer that walks the pasted code is a compiled primitive."
+  handler code_review
+    status "justified-native"
+    primitive "rust/src/solver_handlers/code_review.rs"
+    justification "The five review rules and their sources are seed data; the rule-matching engine is native."
+  handler test_generation
+    status "justified-native"
+    primitive "rust/src/solver_handlers/test_generation.rs"
+    justification "The three problem shapes and their pytest templates are seed data; the suite emitter that fills them is native."
+  handler code_refactoring
+    status "justified-native"
+    primitive "rust/src/solver_handlers/code_refactoring.rs"
+    justification "Promise-chain to async-await rewriting is a structural transformation engine over seed target vocabulary; the rewriter itself is a compiled primitive."
+  handler format_conversion
+    status "justified-native"
+    primitive "rust/src/solver_handlers/format_conversion.rs"
+    justification "The JSON and YAML subset parsers and the round-trip value check are compiled primitives; the conversion vocabulary is seed data."
   handler program_synthesis
     status migrated
     data "data/seed/coding-idioms.lino|data/seed/multilingual-responses-synthesis.lino"
@@ -131,6 +179,10 @@ handler_migration_ledger
     status "justified-native"
     primitive "rust/src/calculation.rs"
     justification "Exact arithmetic evaluation is a compiled host primitive; recognition and operator vocabulary are seed data."
+  handler statistics
+    status "justified-native"
+    primitive "rust/src/solver_handlers/statistics.rs"
+    justification "Exact decimal statistics computation is a compiled primitive; the operation meanings and every response template are seed data."
   handler javascript_execution
     status "justified-native"
     primitive "rust/src/solver_handlers/mod.rs"
@@ -215,6 +267,10 @@ handler_migration_ledger
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Fifteen opener prefixes as rule data; the no-opinion wording moved into seed responses in four languages."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+  handler unit_conversion
+    status "justified-native"
+    primitive "rust/src/solver_handlers/unit_conversion.rs"
+    justification "Exact decimal conversion arithmetic is a compiled primitive; the unit factors, conversion formulas, and response templates are seed data."
   handler incompatible_units
     status pending
   handler diagnostic

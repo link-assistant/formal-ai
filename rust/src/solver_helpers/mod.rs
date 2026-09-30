@@ -692,6 +692,10 @@ pub fn env_definition_fusion_by_default() -> Option<bool> {
 }
 
 /// Parse a boolean env var using the standard truthy/falsy vocabulary.
+///
+/// Issue #1181: delegates to the one shared spelling table
+/// ([`crate::cli_env::parse_bool_env`]) so every boolean switch in the crate
+/// accepts exactly the same forms.
 pub fn env_bool(name: &str) -> Option<bool> {
     env_bool_with_extra_truthy(name, &[], &[])
 }
@@ -703,13 +707,16 @@ pub fn env_bool_with_extra_truthy(name: &str, truthy: &[&str], falsy: &[&str]) -
     if value.is_empty() {
         return None;
     }
-    match value.as_str() {
-        "1" | "true" | "yes" | "on" => Some(true),
-        "0" | "false" | "no" | "off" => Some(false),
-        other if truthy.contains(&other) => Some(true),
-        other if falsy.contains(&other) => Some(false),
-        _ => None,
+    if let Some(parsed) = crate::cli_env::parse_bool_env(&value) {
+        return Some(parsed);
     }
+    if truthy.contains(&value.as_str()) {
+        return Some(true);
+    }
+    if falsy.contains(&value.as_str()) {
+        return Some(false);
+    }
+    None
 }
 
 /// Parse a finite `f32` env var, clamped into `[min, max]`.

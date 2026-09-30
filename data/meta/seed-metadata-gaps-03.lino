@@ -123,6 +123,10 @@ seed_metadata_gaps
     source "data/seed/meanings-statement-merge.lino"
     record "identifier_reserved_word"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_30dda0d0c203dd93
+    source "data/seed/meanings-statistics.lino"
+    record "statistics_median"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_00cec2b0a458add3
     source "data/seed/meanings-translation.lino"
     record "agreement"

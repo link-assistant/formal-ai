@@ -90,6 +90,9 @@ handler_precedence
   handler software_project_followup
     rank 250
     note "issue 341 a decomposed step stays bound to the active software-project dialogue"
+  handler summarization_text
+    rank 259
+    note "issue 1174 a summarization request carrying its own text is answered from that text before the seeded-topic summarizer"
   handler summarization
     rank 260
   handler verifiable_task
@@ -110,6 +113,9 @@ handler_precedence
     rank 330
   handler translation
     rank 340
+  handler text_rewrite
+    rank 345
+    note "issue 1174 register rewriting, grammar correction, commit-message and email composition; cues are disjoint from translation's"
   handler response_language_followup
     rank 350
   handler capabilities
@@ -120,19 +126,52 @@ handler_precedence
     rank 380
   handler compound_interest
     rank 390
+  handler word_problem
+    rank 396
+    note "issue 1176 price-times-count word problems are prose and claim the prompt before numeric_list reads total as a sum cue"
   handler numeric_list
     rank 400
     note "issue 395 generated code plus deterministic result beats arithmetic and the generic algorithm handler"
   handler shell_command_transform
     rank 410
     note "issue 552 a shell-command rewrite beats generic script writing and terminal-command refusal"
+  handler code_debugging
+    rank 412
+    note "issue 1177 structural debugging guidance; never executes the code"
+  handler regex_synthesis
+    rank 414
+    note "issue 1177 seed-vocabulary regex composition; no match is ever run"
+  handler sql_synthesis
+    rank 416
+    note "issue 1177 single-SELECT composition from the request clauses"
+  handler shell_command_compose
+    rank 418
+    note "issue 1177 find composition with a cited manual; other verbs refused by name"
   handler number_constraint_reasoning
     rank 420
+  handler code_explanation
+    rank 422
+    note "issue 1177 line-by-line construct table; requires a code artifact so an ordinary explanation request is untouched"
+  handler code_review
+    rank 424
+    note "issue 1177 five seed review rules with sources; requires a code artifact"
+  handler test_generation
+    rank 426
+    note "issue 1177 pytest suites for the seeded problem shapes"
+  handler code_refactoring
+    rank 428
+    note "issue 1177 promise-chain to async-await; other targets refused by name"
+  handler format_conversion
+    rank 429
+    note "issue 1177 JSON to YAML and back over a subset parser with a round-trip check"
   handler program_synthesis
     rank 430
     note "issue 710 structural coding-task recognition beats arithmetic and concepts inside examples/docstrings"
   handler arithmetic
     rank 440
+  handler statistics
+    rank 445
+    note "issue 1176 statistics over an explicit dataset; sits after arithmetic and numeric_list so bare number prompts are computed by them first"
   handler javascript_execution
     rank 450
   handler definition_merge
@@ -183,5 +222,8 @@ handler_precedence
     note "a proof request beats opinion_question so it reaches the formalization pipeline explanation"
   handler opinion_question
     rank 670
+  handler unit_conversion
+    rank 675
+    note "issue 1176 exact conversion with the arithmetic shown; sits directly before incompatible_units which declines the pairs with no path"
   handler incompatible_units
     rank 680
