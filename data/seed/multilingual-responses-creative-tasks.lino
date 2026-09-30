@@ -1,0 +1,52 @@
+# Response templates for the creative-composition handlers (issue #1178).
+#
+# Brainstorming, creative writing, planning, and advice render their prose
+# through these records so no response text lives in Rust. Placeholders in
+# braces are filled by the handler; every template states its method
+# honestly, including what was and was not verified.
+
+multilingual_responses
+  response response_brainstorming_candidates_en
+    intent brainstorming_candidates
+    language en
+    text "{count} name candidates for the concepts {concepts}:\n\n{candidates}\nRanking, stated: {metric}\nEvery candidate above satisfies: {constraints}\nComposed by: {rules}\nNo fixed catalog was consulted — the candidates are built from the topic words of the request itself. Trademark registries were not consulted (this run is offline), so check availability before committing to a name."
+  response response_brainstorming_refusal_en
+    intent brainstorming_refusal
+    language en
+    text "This reads as a brainstorming request, but no topic words survived extraction, so I will not guess. Name the subject of the names or ideas (for example 'for a coffee shop near a university') and I will compose candidates from it."
+  response response_creative_writing_poem_en
+    intent creative_writing_poem
+    language en
+    text "{poem}\nConstraint check, run on the rendered poem before it was returned:\n- lines: {lines_got} (wanted {lines_want}) — {lines_check}\n- rhyme scheme {scheme}: {rhyme_check}\n- topic word present: {topic_check}\nMethod, stated honestly: composed by constraint satisfaction over the '{rhyme_class}' rhyme class of Wiktionary pronunciation data (en only offline); meter was not machine-verified, and no style model was used."
+  response response_creative_writing_unrhymed_en
+    intent creative_writing_unrhymed
+    language en
+    text "{poem}\nConstraint check, run on the rendered poem before it was returned:\n- lines: {lines_got} (wanted {lines_want}) — {lines_check}\n- topic word present: {topic_check}\nForm: no rhyme scheme was requested, so no rhyme claim is made; the stated meter ({syllables}) was not machine-verified, and no style model was used."
+  response response_creative_writing_gap_en
+    intent creative_writing_gap
+    language en
+    text "{poem}\nConstraint check, run on the rendered poem before it was returned:\n- lines: {lines_got} (wanted {lines_want}) — {lines_check}\n- topic word present: {topic_check}\nRhyme: {gap}\nMethod, stated honestly: unrhymed free verse composed under the stated line-count and topic constraints; the pronunciation coverage for this language is a stated gap, not a guess."
+  response response_creative_writing_refusal_en
+    intent creative_writing_refusal
+    language en
+    text "I could not satisfy the stated form constraints (lines: {lines_want}, scheme: {scheme}, topic: {topic}), and an output violating a stated constraint is never returned. Restate the constraint — fewer lines, or no rhyme requirement — and I will compose again."
+  response response_planning_itinerary_en
+    intent planning_itinerary
+    language en
+    text "{days}-day itinerary for {destination}:\n\n{schedule}\nFeasibility check, run on the schedule before it was returned: {feasibility}\nEvery item above carries the fact it depends on; a plan with an uncited item is not returned.\n{cache_note}\nMethod, stated honestly: scheduling under constraints from the seeded place cache (opening hours, visit lengths, intra/inter-district travel times, one lunch window, at most four items a day, no two consecutive items of one category). No web search was run and nothing was booked."
+  response response_planning_refusal_en
+    intent planning_refusal
+    language en
+    text "This reads as a planning request, but the destination '{destination}' has no places in the seeded cache (currently: {cached_destinations}), and a plan with uncited items is not returned. Name a cached destination, or say the places you care about and I will schedule under your constraints once they are seeded with sources."
+  response response_planning_infeasible_en
+    intent planning_infeasible
+    language en
+    text "The {days}-day schedule for {destination} did not pass its own feasibility check ({failures}), and a schedule that fails it is not returned. State fewer days, fewer places, or looser categories and I will schedule again."
+  response response_advice_guidance_en
+    intent advice_guidance
+    language en
+    text "Evidence-graded guidance for {topic}:\n\n{items}\nWeighting, stated: {weighting}\n{forward_note}\nMethod, stated honestly: recommendations were retrieved from primary health-authority pages and formalized into the seeded table; each carries its citation and evidence grade. This run is offline, so the pages were not re-fetched — follow the citations for the current wording."
+  response response_advice_refusal_en
+    intent advice_refusal
+    language en
+    text "This reads as an advice request, but the topic '{topic}' has no formalized recommendations in the seeded table (currently: sleep), and uncited advice is not returned. Name the topic in the table, or say what a good answer would cite and I will ground it when the source is registered."

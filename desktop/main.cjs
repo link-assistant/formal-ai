@@ -525,6 +525,29 @@ const toolRouter = createToolRouter({
   allowedReadRoot: REPO_ROOT,
   computerUseRoot: path.join(app.getPath("userData"), "computer-use"),
   resolvePath: (value) => path.resolve(REPO_ROOT, value),
+  // Issue #953: the supervised engine is the authoritative authorizer.
+  // currentStatus() carries apiBase only when the local server is up, so
+  // an offline engine degrades to the local spec-driven checks instead of
+  // blocking the desktop.
+  engineAuthorize: async (payload) => {
+    try {
+      const status = localServerManager.currentStatus();
+      if (!status || !status.apiBase) return { available: false };
+      const response = await globalThis.fetch(
+        `${status.apiBase}/v1/tools/authorize`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!response || !response.ok) return { available: false };
+      return await response.json();
+    } catch (_error) {
+      return { available: false };
+    }
+  },
+  realpath: (target) => fs.promises.realpath(String(target)),
   dockerAvailable: dockerIsAvailable,
   runInSandbox,
   runOnHost,
