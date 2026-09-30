@@ -52,6 +52,7 @@ pub mod cache;
 pub(crate) mod formal_statement;
 pub mod formalization;
 pub mod formatting;
+pub mod free_sentence;
 pub mod http;
 mod language_markers;
 pub mod meaning;

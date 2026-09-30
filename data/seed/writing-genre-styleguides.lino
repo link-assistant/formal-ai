@@ -1,0 +1,83 @@
+# Genre styleguides for generated writing (issue #1174).
+#
+# The genre-writing handler reads this file. action_cue records name the
+# request shapes that ask for a piece of genre writing and carry the genre
+# they select (the cue must appear in the command head). Each genre record
+# holds the styleguide it follows and the slot grammar the handler fills:
+# commit_message composes a Conventional Commits line from the described
+# change, and email composes a business email from the stated intent and
+# reason. The frames are data; the handler only fills their slots from the
+# request and reports the styleguide it followed.
+
+writing_genre_styleguides
+  action_cue
+    genre commit_message
+    language en
+    cue "write a commit message"
+    cue "write a conventional commit"
+    cue "draft a commit message"
+  action_cue
+    genre email
+    language en
+    cue "write an email"
+    cue "compose an email"
+    cue "draft an email"
+  action_cue
+    genre email
+    language ru
+    cue "напиши письмо"
+    cue "напиши электронное письмо"
+  genre
+    name commit_message
+    styleguide "https://www.conventionalcommits.org/en/v1.0.0/"
+    template "{type}({component}): {imperative} {effect}"
+    template_no_scope "{type}: {imperative} {effect}"
+    requires "verb"
+    requires "effect"
+    slot
+      cue "fix"
+      value "fix"
+    slot
+      cue "correct"
+      value "fix"
+    slot
+      cue "add"
+      value "feat"
+    slot
+      cue "improve"
+      value "refactor"
+    slot
+      cue "refactor"
+      value "refactor"
+    slot
+      cue "clean"
+      value "chore"
+    slot
+      cue "document"
+      value "docs"
+    slot
+      cue "docs"
+      value "docs"
+    component_preposition "in"
+    article "the"
+    article "a"
+    article "an"
+  genre
+    name email
+    requires "intent"
+    part "greeting"
+    part "intent_frame"
+    part "reason_frame"
+    part "date_frame"
+    part "closing"
+    greeting "Hello {recipient},"
+    greeting_default "Hello,"
+    recipient_preposition "to"
+    possessive "my"
+    possessive "our"
+    intent_frame "I am writing to let you know that {intent}."
+    reason_cue "because"
+    reason_frame "The reason is that {reason}."
+    date_frame "When: {date}"
+    weekday_role calendar_weekday
+    closing "Best regards,"
