@@ -824,6 +824,76 @@ fn pretty_json(value: &Value) -> String {
     serde_json::to_string_pretty(value).unwrap_or_else(|_| value.to_string())
 }
 
+/// The shell command a run-tool call carried, under whichever argument key its
+/// client declares (issue #1154).
+///
+/// Every agentic CLI names the command argument differently: Claude Code's
+/// `Bash` sends `command`, Codex's `exec_command` sends `cmd`, and `shell`-style
+/// adapters send either `script` or an array of argv words. Seven modules once
+/// kept seven local readings of this, and the two that read only `command`
+/// (`progress.rs`, `workspace_change.rs`) went blind on Codex: `issue_view_url`
+/// returned `None`, the read was never recorded as attempted, and the planner
+/// re-planned the identical `gh issue view` 78 times in a row. One reading now
+/// serves the whole module, so a new client spelling is fixed once.
+///
+/// The key preference is plain: `command`, then `cmd`, then `script`. A client
+/// whose schema names the command property differently can be recognized before
+/// any of those match through [`command_argument_key`], which resolves the
+/// property whose own schema says it carries the shell command.
+pub(super) fn command_argument(arguments: &str) -> Option<String> {
+    let value: Value = serde_json::from_str(arguments).ok()?;
+    ["command", "cmd", "script"].iter().find_map(|key| match value.get(*key) {
+        Some(Value::String(command)) => Some(command.clone()),
+        // A `shell`-style adapter may send the argv as an array; joining the
+        // words reproduces the command line the client will run.
+        Some(Value::Array(words)) => {
+            let joined = words
+                .iter()
+                .filter_map(Value::as_str)
+                .collect::<Vec<_>>()
+                .join(" ");
+            (!joined.is_empty()).then_some(joined)
+        }
+        _ => None,
+    })
+}
+
+/// The property name a tool definition's own schema gives the shell command.
+///
+/// A definition such as Codex's `exec_command` declares
+/// `parameters.properties.cmd` with `"description": "The bash command to
+/// execute"`; the property whose description or title names a command is that
+/// tool's command key, whatever it is called. Callers that hold the request's
+/// tool definitions resolve the key once and pass it in ahead of the fallback
+/// list, so a client that renames the property keeps working without a Rust
+/// change (requirement 1 of issue #1154).
+pub(super) fn command_argument_key(definition: &Value) -> Option<String> {
+    // A function tool nests its parameters under `function`; a custom tool
+    // declares them at the top level.
+    let parameters = definition
+        .get("function")
+        .or(Some(definition))?
+        .get("parameters")?;
+    let object = parameters.get("properties")?.as_object()?;
+    object
+        .iter()
+        .find(|(_, property)| {
+            let describes_command = ["description", "title", "name"].iter().any(|field| {
+                property
+                    .get(*field)
+                    .and_then(Value::as_str)
+                    .is_some_and(|text| {
+                        let lowered = text.to_lowercase();
+                        (lowered.contains("command") || lowered.contains("shell command"))
+                            && !lowered.contains("working directory")
+                    })
+            });
+            describes_command
+                && matches!(property.get("type"), Some(Value::String(kind)) if kind == "string")
+        })
+        .map(|(key, _)| key.clone())
+}
+
 fn result_tool(messages: &[ChatMessage], index: usize) -> Option<&str> {
     let message = &messages[index];
     message.name.as_deref().or_else(|| {
@@ -845,12 +915,10 @@ fn result_label(messages: &[ChatMessage], index: usize) -> String {
             .find(|call| call.id == id)
     });
     if let Some(command) = call
-        .and_then(|call| serde_json::from_str::<Value>(&call.function.arguments).ok())
-        .as_ref()
-        .and_then(|arguments| arguments.get("command").or_else(|| arguments.get("cmd")))
-        .and_then(Value::as_str)
+        .map(|call| call.function.arguments.as_str())
+        .and_then(command_argument)
     {
-        return command.to_owned();
+        return command;
     }
     result_tool(messages, index).unwrap_or("tool").to_owned()
 }

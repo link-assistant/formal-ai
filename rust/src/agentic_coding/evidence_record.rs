@@ -481,11 +481,7 @@ fn planned_destination(arguments: &str) -> Option<String> {
 /// written -- which is what issue #1069's agent-CLI audit run did, on the turn
 /// after the audit succeeded.
 fn planned_command_output_path(arguments: &str) -> Option<String> {
-    let value = serde_json::from_str::<serde_json::Value>(arguments).ok()?;
-    let command = value
-        .get("command")
-        .or_else(|| value.get("cmd"))?
-        .as_str()?;
+    let command = super::tool_result::command_argument(arguments)?;
     let parts = command.split_whitespace().collect::<Vec<_>>();
     let index = parts.iter().position(|part| *part == OUTPUT_OPTION)?;
     parts.get(index + 1).map(|path| (*path).to_owned())

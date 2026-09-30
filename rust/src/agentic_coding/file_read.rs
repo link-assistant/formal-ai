@@ -702,23 +702,11 @@ fn run_record_for_command<'a>(records: &'a [ToolResultRecord], command: &str) ->
         .iter()
         .find(|record| {
             record.capability == Some(Capability::Run)
-                && command_argument(&record.arguments) == Some(command)
+                && super::tool_result::command_argument(&record.arguments.to_string())
+                    .as_deref()
+                    == Some(command)
         })
         .map(|record| record.content.as_str())
-}
-
-/// The shell command a recorded run call carried.
-///
-/// Codex advertises `exec_command(cmd)`, so [`crate::protocol_responses`]
-/// projects the planner's `command` argument onto `cmd` before it reaches the
-/// client — and the transcript then plays that projected form back. Reading the
-/// record under `command` alone never matched, so the planner could not see its
-/// own completed `cat` and re-planned the identical call on every round
-/// (issue #671).
-fn command_argument(arguments: &serde_json::Value) -> Option<&str> {
-    ["command", "cmd"]
-        .iter()
-        .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
 }
 
 fn path_argument(arguments: &serde_json::Value) -> Option<String> {

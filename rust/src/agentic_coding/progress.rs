@@ -30,7 +30,7 @@ impl ToolAttempt {
             && self
                 .arguments
                 .as_deref()
-                .and_then(command_argument)
+                .and_then(super::tool_result::command_argument)
                 .is_some_and(|command| is_issue_view_command(&command))
     }
 }
@@ -129,7 +129,7 @@ impl Progress {
             }
             if capability == Capability::Run {
                 if let Some(command) = result_tool_call(messages, index)
-                    .and_then(|call| command_argument(&call.function.arguments))
+                    .and_then(|call| super::tool_result::command_argument(&call.function.arguments))
                 {
                     run_observations.push((command, raw.clone()));
                 }
@@ -191,6 +191,61 @@ impl Progress {
         self.attempted_work_item_reads
             .iter()
             .any(|attempted| attempted == url)
+    }
+
+    /// The prior attempt one planned call would repeat, if any (issue #1154).
+    ///
+    /// The planner is stateless: it re-derives the next step from the
+    /// transcript, so a step that asks for a call this turn already *completed*
+    /// is the signature of a loop, not a plan -- the earlier result is in the
+    /// transcript, and a planner that still derives the same call ignored it
+    /// (Codex planned the identical `gh issue view` 78 times, every one of them
+    /// successful). A *failed* call is not matched here: re-planning it once is
+    /// the existing bounded retry, and the second identical failure is already
+    /// stopped by [`Progress::identical_failures_of`]. The match is
+    /// byte-identical arguments or the same canonical operand, because the
+    /// protocol layer may project the planner's `command` key onto the
+    /// client's `cmd` before the transcript echoes the call back.
+    pub(super) fn repeated_call(
+        &self,
+        call: &super::planner::PlannedToolCall,
+    ) -> Option<&ToolAttempt> {
+        self.attempts.iter().find(|attempt| {
+            if !attempt.succeeded {
+                return false;
+            }
+            let same_tool = attempt
+                .tool
+                .as_deref()
+                .is_some_and(|tool| tool.eq_ignore_ascii_case(&call.tool))
+                || attempt.tool.is_none()
+                    && super::planner::tool_capability(&call.tool) == Some(attempt.capability);
+            same_tool
+                && (attempt.arguments.as_deref() == Some(call.arguments.as_str())
+                    || self.same_run_operand(attempt, call))
+        })
+    }
+
+    /// Whether an attempt and a planned call address one shell command or one
+    /// URL under the client's own argument spellings.
+    fn same_run_operand(&self, attempt: &ToolAttempt, call: &super::planner::PlannedToolCall) -> bool {
+        let attempted_command = attempt
+            .arguments
+            .as_deref()
+            .and_then(super::tool_result::command_argument);
+        let planned_command = super::tool_result::command_argument(&call.arguments);
+        if attempted_command.is_some()
+            && attempted_command.is_some_and(|command| planned_command == Some(command))
+        {
+            return true;
+        }
+        let attempted_url = attempt
+            .arguments
+            .as_deref()
+            .and_then(argument_url);
+        attempted_url.is_some_and(|url| {
+            argument_url(&call.arguments).is_some_and(|planned| planned == url)
+        })
     }
 
     /// The latest failed attempt that came back under `tool`.
@@ -463,20 +518,12 @@ fn argument_url(arguments: &str) -> Option<String> {
         .map(str::to_owned)
 }
 
-fn command_argument(arguments: &str) -> Option<String> {
-    let arguments: serde_json::Value = serde_json::from_str(arguments).ok()?;
-    arguments
-        .get("command")
-        .and_then(serde_json::Value::as_str)
-        .map(str::to_owned)
-}
-
 fn run_attempt_matches(attempt: &ToolAttempt, command: &str) -> bool {
     attempt.capability == Capability::Run
         && attempt
             .arguments
             .as_deref()
-            .and_then(command_argument)
+            .and_then(super::tool_result::command_argument)
             .is_some_and(|attempted| attempted == command)
 }
 
@@ -490,7 +537,7 @@ fn is_issue_view_command(command: &str) -> bool {
 /// The issue or pull-request URL a `gh issue view <url> …` / `gh pr view <url> …`
 /// command reads, when the shell call is one.
 fn issue_view_url(call: &crate::protocol::ToolCall) -> Option<String> {
-    let command = command_argument(&call.function.arguments)?;
+    let command = super::tool_result::command_argument(&call.function.arguments)?;
     let mut words = command.split_whitespace();
     if words.next()? != "gh" {
         return None;

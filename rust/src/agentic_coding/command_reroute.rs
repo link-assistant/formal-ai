@@ -396,10 +396,5 @@ fn run_command_of(messages: &[ChatMessage], call_id: Option<&str>) -> Option<Str
         .iter()
         .flat_map(|message| &message.tool_calls)
         .find(|call| call.id == call_id)?;
-    let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).ok()?;
-    arguments
-        .get("command")
-        .or_else(|| arguments.get("cmd"))
-        .and_then(serde_json::Value::as_str)
-        .map(str::to_owned)
+    super::tool_result::command_argument(&call.function.arguments)
 }
