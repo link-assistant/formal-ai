@@ -7,13 +7,17 @@
 //! the plan-16 leaf that owes it — the same honesty the capability table
 //! practices: a gap is stated, never papered over with a silent no-op.
 //!
-//! Live legs: `rust → meta` (the self-AST signature projection) and, since
-//! plan 16 L2, the whole ES quadrant — `js ↔ meta`, `ts ↔ meta`,
-//! `js → ts`, `ts → js` — carried by the token-tree pivot in
-//! [`crate::es_meta`] under the seed's projection rules. Every other
-//! direction runs through the pivot in principle and is owed by exactly one
-//! leaf: the dogfood back-translation into Rust by L3, and the
-//! CST-equal round trip including the full `meta → rust` inverse by L5.
+//! Live legs: since plan 16 L7 every directed pair among the four roots is
+//! live — `rust ↔ meta` (the self-AST signature projection and the network
+//! serialization read back with `reconstruct_text`), the whole ES quadrant
+//! (`js ↔ meta`, `ts ↔ meta`, `js → ts`, `ts → js`) carried by the token-tree
+//! pivot in [`crate::es_meta`] under the seed's projection rules, and the L8
+//! grammar projection legs both ways between rust and the ES roots. The legs
+//! beyond the four roots are the CST render legs ([`render_cst_source`],
+//! issue #1167): every language `data/seed/program-cst-grammars.lino`
+//! registers is an emit target reached through the network serialization
+//! wire, not a fifth root — the three-roots doctrine governs
+//! Rust/JS/TS/Meta and those targets alike.
 //! `L0` marks a same-root non-direction: no leaf owes it because it is not
 //! a translation, and callers reject it before listing.
 
@@ -23,6 +27,9 @@ use alloc::string::String;
 use alloc::vec::Vec;
 
 use crate::es_meta::{ProjectionTarget, Refusal, SourceLanguage, render_document, render_source};
+
+#[cfg(feature = "meta-language")]
+use meta_language::LinkNetwork;
 
 /// The four trees the pivot connects; `Meta` is the pivot itself.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -477,4 +484,108 @@ pub fn describe_leg(from: SourceRoot, to: SourceRoot, pending: Option<&'static s
             },
         )
         .unwrap_or_else(|| "translate_leg".to_string())
+}
+
+/// Why a CST render leg refused, named so no caller can confuse a missing
+/// leg with an empty program (issue #1167, R1: a gap is stated, never a
+/// silent skip).
+#[allow(dead_code)] // which variants construct depends on the `meta-language` feature
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CstRenderGap {
+    /// `program-cst-grammars.lino` declares no `cst_grammar` block for the
+    /// slug — the language is not a registered emit target.
+    NoGrammarEntry { language_slug: String },
+    /// The grammar entry names an engine other than the sole CST engine
+    /// (`meta_language`); rendering through it is not implemented.
+    UnknownEngine { language_slug: String, engine: String },
+    /// The optional parsing engine is compiled out, so no leg can render.
+    EngineDisabled { language_slug: String },
+    /// The document is not the network serialization dialect of lino (the
+    /// output side of `LinkNetwork::to_lino`); a census or token-tree pivot
+    /// document cannot render, and the reason says so.
+    NotNetworkLino { reason: String },
+}
+
+impl CstRenderGap {
+    /// The stable, human-readable name of the gap for error paths.
+    #[must_use]
+    pub fn describe(&self) -> String {
+        match self {
+            Self::NoGrammarEntry { language_slug } => format!(
+                "no cst_grammar entry in program-cst-grammars.lino names `{language_slug}`, so it is not a registered render target"
+            ),
+            Self::UnknownEngine {
+                language_slug,
+                engine,
+            } => format!(
+                "`{language_slug}` names engine `{engine}`, and only the meta_language engine renders"
+            ),
+            Self::EngineDisabled { language_slug } => format!(
+                "the meta-language engine (feature `meta-language`) is disabled, so `{language_slug}` cannot render"
+            ),
+            Self::NotNetworkLino { reason } => format!(
+                "cst render legs read only the network serialization dialect of lino (the output side of LinkNetwork::to_lino): {reason}"
+            ),
+        }
+    }
+}
+
+/// Render a serialized `LinkNetwork` (lino text) back to source for a named
+/// CST language — the render leg every `program-cst-grammars.lino` entry
+/// owes (issue #1167, R1).
+///
+/// `SourceRoot` stays at the four roots the three-roots doctrine governs;
+/// CST-only targets (Kotlin, Scala, Swift, R, …) are emit targets reached
+/// through the network serialization wire, not new roots. Returns `None`
+/// when the language is not a registered grammar entry or the document is
+/// not a network serialization; the named gap is available from
+/// [`try_render_cst_source`] so a missing leg is never confused with an
+/// empty program.
+#[must_use]
+pub fn render_cst_source(network_text: &str, language_slug: &str) -> Option<String> {
+    try_render_cst_source(network_text, language_slug).ok()
+}
+
+/// The named-gap shape of [`render_cst_source`].
+#[must_use]
+pub fn try_render_cst_source(
+    network_text: &str,
+    language_slug: &str,
+) -> Result<String, CstRenderGap> {
+    try_render_cst_source_impl(network_text, language_slug)
+}
+
+#[cfg(feature = "meta-language")]
+fn try_render_cst_source_impl(
+    network_text: &str,
+    language_slug: &str,
+) -> Result<String, CstRenderGap> {
+    let grammar = crate::coding::cst::grammar_metadata(language_slug).ok_or_else(|| {
+        CstRenderGap::NoGrammarEntry {
+            language_slug: language_slug.to_owned(),
+        }
+    })?;
+    if grammar.engine != crate::coding::cst::META_LANGUAGE_ENGINE {
+        return Err(CstRenderGap::UnknownEngine {
+            language_slug: language_slug.to_owned(),
+            engine: grammar.engine,
+        });
+    }
+    LinkNetwork::from_lino(network_text)
+        .map(|network| network.reconstruct_text())
+        .map_err(|error| CstRenderGap::NotNetworkLino {
+            reason: error.to_string(),
+        })
+}
+
+/// The engine-disabled shape: without the optional parsing engine no leg
+/// renders, and the honest answer is the named gap, not a guess.
+#[cfg(not(feature = "meta-language"))]
+fn try_render_cst_source_impl(
+    _network_text: &str,
+    language_slug: &str,
+) -> Result<String, CstRenderGap> {
+    Err(CstRenderGap::EngineDisabled {
+        language_slug: language_slug.to_owned(),
+    })
 }

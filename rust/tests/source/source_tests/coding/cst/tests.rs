@@ -16,17 +16,18 @@ fn grammar_languages() -> Vec<CstGrammar> {
 /// `LinkType::Syntax` links to prove "meta-language really understood the
 /// language", so declaring a grammar the engine does not ship would assert a
 /// validation that never happens. Issue #921 added Scala and Kotlin to the
-/// catalog for the hive-mind#2158 production matrix; meta-language 0.54.0 ships
-/// grammars for the ten languages the seed's own description enumerates, and
-/// neither of those is among them.
-///
-/// `validated_program_cst` returns [`Option`], so an uncovered language simply
-/// carries no CST evidence rather than failing. The rule below is therefore
-/// two-way: every declared grammar must be a catalog language (asserted in
-/// `every_cst_metadata_entry_names_a_catalog_language`), and every catalog
-/// language must either declare one or be listed here as knowingly uncovered.
-/// Adding a grammar upstream is what should make this list shrink.
-const LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR: &[&str] = &["scala", "kotlin"];
+/// catalog for the hive-mind#2158 production matrix while meta-language
+/// 0.54.0 shipped no grammar for either; meta-language 0.58.2 ships Kotlin,
+/// Scala, Swift and R grammars, and issue #1167 registered all four in the
+/// seed (with Swift and R joining the catalog), so the knowingly-uncovered
+/// list is empty. `validated_program_cst` returns [`Option`], so an
+/// uncovered language would simply carry no CST evidence rather than fail.
+/// The rule below is therefore two-way: every declared grammar must be a
+/// catalog language (asserted in `every_cst_metadata_entry_names_a_catalog_language`),
+/// and every catalog language must either declare one or be listed here as
+/// knowingly uncovered. Adding a grammar upstream is what should make this
+/// list shrink — it has, to nothing.
+const LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR: &[&str] = &[];
 
 #[test]
 fn every_catalog_language_has_cst_metadata_or_is_a_declared_gap() {
@@ -161,6 +162,11 @@ fn meta_language_handles_every_covered_language() {
             "go" => "package main\n\nfunc main() {}\n",
             "ruby" => "puts 1\n",
             "php" => "<?php\n\necho 1;\n",
+            // Issue #1167: the four grammars meta-language 0.58.2 added.
+            "kotlin" => "fun main() {}\n",
+            "scala" => "@main def hello(): Unit = ()\n",
+            "swift" => "func f() {}\n",
+            "r" => "x <- 1\n",
             other => panic!("no snippet for meta-language language `{other}`"),
         };
         let cst = parse_program_cst(&grammar.language_slug, snippet)
@@ -175,4 +181,84 @@ fn meta_language_handles_every_covered_language() {
             grammar.language_slug
         );
     }
+}
+
+#[test]
+fn network_lino_serializes_and_compose_and_validate_round_trips() {
+    // Issue #1167 R3/R6: a source parses into the network serialization
+    // dialect, and compose→render→parse accepts it back only when the
+    // rendered source's own serialization is byte-equal to the composed one.
+    for (slug, source) in [
+        ("python", "x = 1\n"),
+        ("javascript", "const x = 1;\n"),
+        ("typescript", "const x: number = 1;\n"),
+        ("rust", "fn main() {}\n"),
+        ("java", "class A { }\n"),
+        ("csharp", "class A { }\n"),
+        ("c", "int main(void) { return 0; }\n"),
+        ("cpp", "int main() { return 0; }\n"),
+        ("go", "package main\n\nfunc main() {}\n"),
+        ("ruby", "puts 1\n"),
+        ("php", "<?php\n\necho 1;\n"),
+        ("kotlin", "fun main() {}\n"),
+        ("scala", "@main def hello(): Unit = ()\n"),
+        ("swift", "func f() {}\n"),
+        ("r", "x <- 1\n"),
+    ] {
+        let wire = network_lino(slug, source)
+            .unwrap_or_else(|| panic!("`{slug}` must serialize to network lino"));
+        assert!(!wire.is_empty(), "`{slug}` wire is not empty");
+        let cst = compose_and_validate(&wire, slug)
+            .unwrap_or_else(|| panic!("`{slug}` must compose, render and re-validate: {}", {
+                let gap = try_compose_and_validate(&wire, slug);
+                format!("{gap:?}")
+            }));
+        assert!(cst.is_valid(), "`{slug}`: {cst:#?}");
+        assert_eq!(cst.language_slug, slug);
+    }
+}
+
+#[test]
+fn compose_and_validate_names_a_missing_render_target() {
+    // R1: an unregistered language is a named gap, never a silent skip.
+    let python_wire = network_lino("python", "x = 1\n").expect("python serializes");
+    let gap = try_compose_and_validate(&python_wire, "nonexistent")
+        .expect_err("an unregistered slug must refuse");
+    assert!(
+        matches!(gap, ComposeGap::Render { .. }),
+        "expected a render gap, got {gap:?}"
+    );
+    assert!(gap.describe().contains("no cst_grammar entry"), "{gap:?}");
+}
+
+#[test]
+fn compose_and_validate_refuses_a_language_mismatch() {
+    // R6: rendering a Python network under the JavaScript slug parses fine,
+    // but the rendered source's own serialization differs from the composed
+    // one, so the round trip refuses with NotCstEqual instead of passing a
+    // composition that changed trees.
+    let python_wire = network_lino("python", "x = 1\n").expect("python serializes");
+    let gap = try_compose_and_validate(&python_wire, "javascript")
+        .expect_err("a language mismatch must refuse");
+    assert!(
+        matches!(gap, ComposeGap::NotCstEqual { .. }),
+        "expected a CST-equality refusal, got {gap:?}"
+    );
+    assert!(gap.describe().contains("CST-equal"), "{gap:?}");
+}
+
+#[test]
+fn compose_and_validate_refuses_a_foreign_dialect() {
+    // The wire is the network serialization dialect; anything else is named
+    // as such rather than mis-parsed into invented source.
+    let gap = try_compose_and_validate("census_document\n  signature fn\n", "python")
+        .expect_err("a non-network document must refuse");
+    assert!(
+        matches!(gap, ComposeGap::Render { .. }),
+        "expected a render gap, got {gap:?}"
+    );
+    assert!(
+        gap.describe().contains("network serialization dialect"),
+        "{gap:?}"
+    );
 }
