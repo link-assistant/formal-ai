@@ -229,9 +229,24 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
     out
 }
 
+/// The matched product noun's surface phrase (the words the user wrote,
+/// e.g. `игры для малышей`), used for the composed query in place of the
+/// catalogue slug.
+fn matched_noun_surface(lower: &str, nouns: &[ProductNoun]) -> Option<String> {
+    nouns
+        .iter()
+        .find_map(|noun| {
+            noun.phrases
+                .iter()
+                .find(|phrase| lower.contains(phrase.as_str()))
+                .cloned()
+        })
+}
+
 /// Try to recognize a shopping request with a marketplace and compose the
-/// site-scoped search. Returns `None` when no intent cue or no
-/// marketplace phrase matches.
+/// site-scoped search. Returns `None` when neither an intent cue nor the
+/// structural shopping shape (a marketplace phrase plus a product noun)
+/// matches, or no marketplace phrase is present.
 pub fn handle_product_search(
     prompt: &str,
     normalized: &str,
@@ -239,13 +254,6 @@ pub fn handle_product_search(
 ) -> Option<SymbolicAnswer> {
     let catalogue = Catalogue::load();
     let lower = prompt.to_lowercase();
-    let cued = catalogue
-        .cues
-        .iter()
-        .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()));
-    if !cued {
-        return None;
-    }
     let marketplace = catalogue
         .marketplaces
         .iter()
@@ -255,6 +263,17 @@ pub fn handle_product_search(
                 .iter()
                 .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()))
         })?;
+    let noun_surface = matched_noun_surface(&lower, &catalogue.product_nouns);
+    let cued = catalogue
+        .cues
+        .iter()
+        .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()));
+    // A bare noun phrase with a marketplace ("игры для малышей … в App
+    // Store", issue #872) is a shopping request without a request verb;
+    // the structural shape carries it.
+    if !cued && noun_surface.is_none() {
+        return None;
+    }
     let terms = product_terms(prompt, &catalogue.product_nouns);
     let matched_noun = catalogue
         .product_nouns
@@ -279,11 +298,19 @@ pub fn handle_product_search(
         log.append("product_search:constraint", constraint.name.clone());
     }
 
-    // The composed query: noun + brand/model terms, marketplace-scoped.
-    let mut query_terms = terms.clone();
-    if matched_noun.is_some() && query_terms.is_empty() {
-        query_terms.push(marketplace.name.clone());
+    // The composed query: the product noun's own surface phrase plus
+    // brand/model terms (the noun's catalogue slug is logged, not
+    // searched), marketplace-scoped.
+    let mut query_terms = Vec::new();
+    if let Some(surface) = &noun_surface {
+        query_terms.push(surface.clone());
     }
+    query_terms.extend(
+        terms
+            .iter()
+            .filter(|term| matched_noun.map(|noun| &noun.noun) != Some(term))
+            .cloned(),
+    );
     let query = query_terms.join(" ");
     let link = marketplace
         .link_template
@@ -308,11 +335,10 @@ pub fn handle_product_search(
         }
     }
 
-    let product_display = if terms.is_empty() {
-        prompt.trim().to_owned()
-    } else {
-        terms.join(" ")
-    };
+    let product_display = noun_surface
+        .clone()
+        .or_else(|| terms.first().cloned())
+        .unwrap_or_else(|| prompt.trim().to_owned());
     let body = template(
         "product_search_result",
         &[
