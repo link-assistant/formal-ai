@@ -193,9 +193,8 @@ impl FactRecord {
             // have accepted it inside any prompt containing that punctuation.
             return false;
         }
-        let tokens: Vec<&str> = crate::engine::normalize_prompt(normalized)
-            .split_whitespace()
-            .collect();
+        let prompt_normalized = crate::engine::normalize_prompt(normalized);
+        let tokens: Vec<&str> = prompt_normalized.split_whitespace().collect();
         tokens
             .windows(phrase_tokens.len())
             .any(|window| window == phrase_tokens.as_slice())

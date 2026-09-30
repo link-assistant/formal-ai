@@ -63,10 +63,13 @@ validated TLS store fetched the records instead. No certificate check was disabl
   authored contribution. Produce a genuine contribution through the supported
   authoring workflow, or use its existing 24-hour relaxation. Never add an
   attribution trailer to work that Formal AI did not author.
-- **Proactive failure-report E2E:** [run 36707093271](https://github.com/link-assistant/formal-ai/actions/runs/36707093271)
-  contains the failed-command result and opt-in report invitation, but the shell
-  assertions still exit 1. Inspect the exact trace-argument assertion rather
-  than changing failure reporting based only on the job label.
+- **Proactive failure-report E2E (draft repaired):** [run 36707093271](https://github.com/link-assistant/formal-ai/actions/runs/36707093271)
+  contains the failed-command result and opt-in report invitation. The actual
+  failure was strict stderr classification rejecting the fixture's structured
+  expected exit-127 tool event. A narrow filter now preserves the raw log,
+  removes only that exact deliberately missing command event from the policy
+  input, and passes every other line to the unchanged strict classifier.
+  Trace assertions remain in place. No helper or E2E execution was run locally.
 - **Binary-tree agent ladder:** latest check is failed. Retrieval of its old log
   was pending during this pass; no failure cause or repair is claimed.
 
@@ -76,3 +79,9 @@ Source formatting completed. Seed mirrors were copied byte-for-byte from their
 edited source documents. Existing failure logs were read; no test definitions were
 executed. All untouched failures remain explicit above. The final push belongs to
 the coordinating agent after the drafting fleet finishes.
+
+## Follow-up source repair
+
+The prior fact-normalization fix borrowed string slices from a temporary normalized
+String. Bind that String before collecting slices so the fix is valid Rust; no
+compiler execution was used to identify or check this lifetime correction.
