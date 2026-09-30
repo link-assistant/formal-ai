@@ -93,7 +93,7 @@ worker shards.
 | #861 anonymous sentry | not started | — | telemetry.rs + consent seed |
 | #668 shareable packages | not started | — | associative_packages.rs round-trip |
 | #669 cloud memory sync | not started | — | cloud_sync.rs event-log sync |
-| #940 research documents | not started | — | research_documents/ PDF+DOCX |
+| #940 research documents | done (drafted) | — | validated Markdown, PDF and DOCX downloads with source provenance; wiring: lib.rs + test registration |
 
 ## CI repair (dedicated fixer, in flight)
 
@@ -104,10 +104,10 @@ release CLI ×5, dogfood regeneration gate, evidence checks ×2, agent ladder. F
 ## Running total
 
 - done (pushed): 8
-- done (drafted, wiring pending): 25
+- done (drafted, wiring pending): 26
 - partial: 3 (#1088, #1090, #447)
 - in flight: 4 issues (#1169, #1182, #1153, #1084) + CI fixer
-- not started: 17 (#1156–#1160, #951, #557, #667, #665, #666, #670, #453, #651, #861, #668, #669, #940)
+- not started: 16 (#1156–#1160, #951, #557, #667, #665, #666, #670, #453, #651, #861, #668, #669)
 
 Not-started and partial issues are re-dispatched at ≤3 concurrent agents once the current
 fleet drains, per the standing concurrency policy. This ledger is updated at every landing.
