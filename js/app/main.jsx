@@ -16,6 +16,7 @@ import { ChakraProvider, chakra } from "@chakra-ui/react";
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
 import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
+import { DebuggerView } from "./debugger-view.jsx";
 import { answerHasDetectedFailure } from "./detected-failure.js";
 
 // Issue #839: the six-section issue-report document is no longer written here.
@@ -6502,7 +6503,7 @@ function App() {
   const [demoPhase, setDemoPhase] = useState("manual");
   const [demoCountdown, setDemoCountdown] = useState(null);
   const [diagnosticsMode, setDiagnosticsMode] = useState(
-    initialPreferences.current.diagnosticsMode,
+    Boolean(window.FORMAL_AI_DEBUG_VIEW) || initialPreferences.current.diagnosticsMode,
   );
   const [thinkingDetailLevel, setThinkingDetailLevel] = useState(
     normalizeThinkingDetailLevel(initialPreferences.current.thinkingDetailLevel),
@@ -8261,6 +8262,7 @@ function App() {
       // diagnostics panel can show raw HTTP request/response exchanges and
       // the per-provider success/failure status.
       diagnostics: answer.diagnostics || null,
+      derivationId: answer.derivation_id || answer.derivationId || null,
       iframeUrl: answer.iframeUrl || null,
       // Issue #541 (R5/R6): mark this as a freshly produced answer so the
       // Message component stages its reasoning-then-body reveal across the
@@ -9403,7 +9405,7 @@ function App() {
         }} title={entry.label}>{entry.text}</button>)}</div>} />{seed.tools && seed.tools.length > 0 ? <SidebarSection title={t("sidebar.tools")} testId="sidebar-tools" collapsed={sidebarToolsCollapsed} onToggle={() => setSidebarToolsCollapsed(value => !value)} children={<div className="tool-registry" data-testid="tool-registry"><ul className="tool-list">{seed.tools.map(tool => {
             const displayTool = localizeTool(tool, uiLanguage);
             return <li key={tool.id} className={`tool tool-mode-${tool.mode || "thinking"}`} data-testid="tool-entry" data-tool-id={tool.id} data-tool-mode={tool.mode || "thinking"}><div className="tool-head"><strong>{displayTool.name || tool.id}</strong><span className="tool-mode">{tool.mode === "agent" ? t("toolMode.agent") : t("toolMode.thinking")}</span></div>{displayTool.description ? <p className="tool-desc">{displayTool.description}</p> : null}</li>;
-          })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} stepLevelOverrides={stepLevelOverrides} onEditStepLevel={editStepLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
+          })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel">{diagnosticsMode ? <DebuggerView messages={messages} apiBase={desktopStatus?.apiReady ? desktopStatus.apiBase : ""} /> : null}<section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} stepLevelOverrides={stepLevelOverrides} onEditStepLevel={editStepLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
           ...reportContext,
           focusMessage: message
         }) : null} />)}{pending && desktopAgentStream.length > 0 ? <div className="desktop-agent-stream" data-testid="desktop-agent-stream" role="status"><strong>{`${desktopStatus && desktopStatus.activeEngine || "agent"}:`}</strong><span>{desktopAgentEventLabel(desktopAgentStream[desktopAgentStream.length - 1])}</span></div> : null}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {
