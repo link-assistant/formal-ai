@@ -6410,6 +6410,15 @@ function App() {
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("loading worker");
   const [workerReady, setWorkerReady] = useState(false);
+  // Issue #934: the engine that failed to load must be visible, not silent.
+  const [engineUnavailable, setEngineUnavailable] = useState("");
+  const [diagnosticJsFallback, setDiagnosticJsFallback] = useState(() => {
+    try {
+      return window.localStorage.getItem("formalAiDiagnosticJsFallback") === "1";
+    } catch (_error) {
+      return false;
+    }
+  });
   const [browserRuntimeState, setBrowserRuntimeState] = useState({
     status: "available_to_download",
     error: "",
@@ -7701,11 +7710,26 @@ function App() {
   ]);
 
   useEffect(() => {
-    const worker = new Worker(withAssetVersion("worker/formal_ai_worker.js"));
+    // Issue #934: the diagnostic JS fallback is a dev-only override the worker
+    // reads from its own URL, so it must be appended before the script loads.
+    const workerUrl = withAssetVersion("worker/formal_ai_worker.js");
+    const worker = new Worker(
+      diagnosticJsFallback
+        ? `${workerUrl}${workerUrl.includes("?") ? "&" : "?"}jsfallback=1`
+        : workerUrl,
+    );
     workerRef.current = worker;
     worker.onmessage = (event) => {
       if (event.data.kind === "ready") {
         setWorkerState(event.data.mode);
+        setWorkerReady(true);
+        if (event.data.mode === "engine unavailable") {
+          setEngineUnavailable(String(event.data.engineError || "unknown error"));
+        }
+        return;
+      }
+      if (event.data.kind === "engine_unavailable") {
+        setEngineUnavailable(String(event.data.error || "unknown error"));
         setWorkerReady(true);
         return;
       }
@@ -9192,6 +9216,9 @@ function App() {
         </chakra.span>
       </chakra.div>
       <chakra.div className="topbar-actions">
+        {engineUnavailable ? <chakra.span className="engine-unavailable" data-testid="engine-unavailable" role="alert" data-menu-priority="8" title={engineUnavailable}>
+            {"engine unavailable — reload to retry"}
+          </chakra.span> : null}
         {desktopStatus ? <chakra.span className="desktop-status" data-testid="desktop-shell-status" data-menu-priority="7" role="status" title={desktopStatus.apiError || desktopStatusText}>
             {desktopStatusText}
           </chakra.span> : null}
@@ -9269,7 +9296,22 @@ function App() {
               seconds: (minMessageAnimationMs / 1000).toFixed(1)
             })}</output></div><div className="setting-row setting-row-ocr"><label className="setting-check"><input type="checkbox" checked={experimentalOcr} data-testid="setting-experimental-ocr" onChange={event => setExperimentalOcr(event.target.checked)} /><span>{t("settings.experimentalOcr")}</span></label><p className="setting-warning" data-testid="setting-experimental-ocr-warning" title={OCR_DOWNLOAD_WARNING}>{t("settings.experimentalOcr.warning")}</p></div><div className="setting-row setting-row-browser-runtime" data-testid="setting-browser-runtime"><p className="setting-section-title">{t("message.browserRuntime.title")}</p><p className="setting-section-note" role="status">{t(`message.browserRuntime.${browserRuntimeStatusKey(browserRuntimeState)}`, {
               error: browserRuntimeState.error
-            })}</p><button type="button" className="permission-button" data-testid="setting-browser-runtime-load" disabled={browserRuntimeState.status === "loading" || browserRuntimeState.status === "ready"} onClick={loadBrowserRuntime}>{t("message.browserRuntime.load")}</button></div>{
+            })}</p><button type="button" className="permission-button" data-testid="setting-browser-runtime-load" disabled={browserRuntimeState.status === "loading" || browserRuntimeState.status === "ready"} onClick={loadBrowserRuntime}>{t("message.browserRuntime.load")}</button></div><div className="setting-row setting-row-diagnostic-js-fallback" data-testid="setting-diagnostic-js-fallback"><label className="setting-check"><input type="checkbox" checked={diagnosticJsFallback} onChange={event => {
+            // Issue #934: development-only override for the hard engine
+            // failure. It takes effect on reload because the worker reads
+            // the flag from its own URL before the engine initializes.
+            try {
+              window.localStorage.setItem(
+                "formalAiDiagnosticJsFallback",
+                event.target.checked ? "1" : "0",
+              );
+            } catch (_error) {
+              // Storage may be unavailable; the toggle still applies for
+              // this page load only.
+            }
+            setDiagnosticJsFallback(event.target.checked);
+            window.location.reload();
+          }} /><span>{"Diagnostic JavaScript fallback (development only; reloads the page)"}</span></label><p className="setting-warning">{"Answers produced under the override are marked engine: js (diagnostic override) in their trace."}</p></div>{
         // Issue #444: external trusted-services opt-in/opt-out section. The
         // checkbox list is generated from EXTERNAL_TRUSTED_SERVICES so the
         // catalog stays the single source of truth; each service is enabled

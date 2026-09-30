@@ -4677,3 +4677,16 @@ textarea:disabled {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
 }
+
+/* Issue #934: engine-unavailable is loud, not silent. The banner sits in the
+   topbar so it is visible without diagnostics mode, and doubles as an alert
+   for screen readers. */
+.engine-unavailable {
+  color: var(--fa-danger, #d33);
+  font-weight: 600;
+  padding: 0 6px;
+  white-space: nowrap;
+}
+.setting-row-diagnostic-js-fallback .setting-warning {
+  margin: 4px 0 0;
+}

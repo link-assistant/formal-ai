@@ -1222,6 +1222,21 @@ async function loadSeed() {
   return seedLoadPromise;
 }
 let initPromise = null;
+// Issue #934: a failed WASM instantiation must surface as a visible
+// "engine unavailable" state, never as a silent switch to the JavaScript
+// mirror. The mirror stays reachable only behind an explicit diagnostic
+// override (?jsfallback=1, written by the app from a dev-only setting) so
+// local development can inspect it, and every answer records which engine
+// produced it in its trace evidence.
+let engineError = "";
+let diagnosticJsFallback = false;
+try {
+  diagnosticJsFallback = /[?&]jsfallback=1\b/.test(
+    String(self.location && self.location.search || ""),
+  );
+} catch (_overrideError) {
+  diagnosticJsFallback = false;
+}
 async function init() {
   if (wasm !== undefined) return;
   if (initPromise) return initPromise;
@@ -1229,6 +1244,9 @@ async function init() {
     await loadSeed();
     try {
       const source = await fetch(withAssetVersion("formal_ai_worker.wasm"));
+      if (!source || source.ok === false) {
+        throw new Error(`wasm fetch failed: ${source ? source.status : "no response"}`);
+      }
       const bytes = await source.arrayBuffer();
       const module = await WebAssembly.instantiate(bytes, {});
       wasm = module.instance.exports;
@@ -1241,13 +1259,17 @@ async function init() {
         ).split("\n").filter(Boolean);
         assertWorkerRegistryPermutation(declared);
       }
-    } catch (_error) {
+    } catch (error) {
       wasm = null;
-      mode = "js fallback";
+      engineError = String((error && error.message) || error);
+      mode = diagnosticJsFallback
+        ? "js fallback (diagnostic override)"
+        : "engine unavailable";
     }
     postMessage({
       kind: "ready",
       mode,
+      engineError: wasm ? "" : engineError,
       seed: {
         responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
         conceptCount: CONCEPTS.length,
@@ -1260,6 +1282,10 @@ async function init() {
         files: Object.keys(SEED_RAW),
       },
     });
+    if (wasm == null && !diagnosticJsFallback) {
+      // Loud, not silent: the app turns this into a visible error banner.
+      postMessage({ kind: "engine_unavailable", error: engineError });
+    }
   })();
   return initPromise;
 }
@@ -1323,6 +1349,35 @@ self.onmessage = async (event) => {
   // rewrites; the worker stays pure and the app applies the write.
   const memory = Array.isArray(data.memory) ? data.memory : [];
   const memoryEvents = Array.isArray(data.memoryEvents) ? data.memoryEvents : [];
+  // Issue #934: engine provenance travels with every answer, and an engine
+  // that failed to load refuses to answer instead of quietly degrading.
+  const engine = wasm
+    ? "wasm"
+    : diagnosticJsFallback
+      ? "js (diagnostic override)"
+      : "unavailable";
+  if (wasm == null && !diagnosticJsFallback) {
+    postMessage({
+      kind: "message",
+      requestId: data.requestId,
+      intent: "engine_unavailable",
+      content:
+        "The formal-ai WebAssembly engine could not be loaded, so this demo cannot answer."
+        + (engineError ? ` Loader error: ${engineError}.` : "")
+        + " Reload the page to retry."
+        + " Developers can enable the diagnostic JavaScript fallback in Settings to inspect the mirror implementation.",
+      confidence: 0,
+      evidence: [`engine:unavailable${engineError ? `:${engineError}` : ""}`],
+      steps: [],
+      toolCalls: [],
+      iframeUrl: null,
+      diagnostics: null,
+      memoryOperation: null,
+      runtimeOffer: null,
+      engine,
+    });
+    return;
+  }
   const executionAnswer = await executeBrowserCodeRequest(prompt);
   const answer = executionAnswer || attachUserContext(
     await solve(prompt, history, prefs, userContext, memory, { memoryEvents }), userContext,
@@ -1333,13 +1388,14 @@ self.onmessage = async (event) => {
     intent: answer.intent,
     content: answer.content,
     confidence: answer.confidence,
-    evidence: answer.evidence,
+    evidence: [...(answer.evidence || []), `engine:${engine}`],
     steps: answer.steps,
     toolCalls: answer.toolCalls,
     iframeUrl: answer.iframeUrl || null,
     diagnostics: answer.diagnostics || null,
     memoryOperation: answer.memoryOperation || null,
     runtimeOffer: answer.runtimeOffer || null,
+    engine,
   });
 };
 init();
