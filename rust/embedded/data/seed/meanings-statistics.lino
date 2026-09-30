@@ -241,7 +241,6 @@ meanings
         text paga
   word_problem_change
     defined-by statistics_operation
-
     role word_problem_marker
     lexeme en
       surface
@@ -264,9 +263,14 @@ meanings
     lexeme es
       surface
         text cambio
+    role localized_response_template
+    precondition "a priced-item change word problem is answered"
+    effect "the payment minus the item cost is stated with its multiplication and subtraction"
+    unit "not applicable"
+    example "3 boxes cost 4 each and the payment is 20. The change is 20 - (3 x 4) = 8."
+    grounding "data/seed/multilingual-responses-quantities.lino"
   word_problem_total
     defined-by statistics_operation
-
     role word_problem_marker
     lexeme en
       surface
@@ -295,3 +299,9 @@ meanings
         text total
       surface
         text "en total"
+    role localized_response_template
+    precondition "a total-amount word problem over priced items is answered"
+    effect "the total is stated with the multiplication and sum that produced it"
+    unit "not applicable"
+    example "4 tickets at 12 each cost 48 in total. 4 x 12 = 48."
+    grounding "data/seed/multilingual-responses-quantities.lino"
