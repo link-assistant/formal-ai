@@ -217,6 +217,11 @@ impl Decimal {
         }
     }
 
+    /// Exact rational form for the seed-driven SI dimension interpreter.
+    pub(super) fn ratio(self) -> Option<(i128, i128)> {
+        Some((self.mantissa, 10_i128.checked_pow(self.scale)?))
+    }
+
     /// Render the minimal decimal form: no trailing fraction zeros, no `-0`.
     pub(super) fn render(self) -> String {
         let negative = self.mantissa < 0;

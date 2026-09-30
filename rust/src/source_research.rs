@@ -127,6 +127,25 @@ impl SourceResearchExecution {
                 ],
             ));
         }
+        // Issue #1163: formalize the exact captured page bytes before a
+        // learning proposal can cite their statements. Each derived statement
+        // retains the URL and digest of its source capture; a ranking alone
+        // never creates one.
+        for page in &self.pages {
+            for statement in crate::web_formalize::generic_page_statements(
+                page.capture.bytes(),
+                None,
+            ) {
+                records.push(format_lino_record(
+                    "formalized_page_statement",
+                    &[
+                        ("url", page.capture.source_url().to_owned()),
+                        ("sha256", page.capture.sha256().to_owned()),
+                        ("statement", statement),
+                    ],
+                ));
+            }
+        }
         records.join("\n")
     }
 }

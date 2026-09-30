@@ -9,8 +9,10 @@ use crate::definition_merge::merge_definitions;
 use crate::engine::SymbolicAnswer;
 use crate::entity_resolution::resolve_who_is;
 use crate::event_log::EventLog;
+use crate::legality_warning::handle_legality_warning;
 use crate::number_constraints::solve_number_constraints;
 use crate::proof_engine::ProofRenderConfig;
+use crate::triz_solver::handle_triz;
 use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handler_how::{
     try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
@@ -18,7 +20,9 @@ use crate::solver_handler_how::{
 use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    SelfAwarenessRuntime, handle_code_debugging, handle_code_explanation,
+    SelfAwarenessRuntime, handle_advice_request, handle_brainstorm_request,
+    handle_creative_writing_request, handle_formalization_request, handle_planning_request,
+    handle_product_search, handle_code_debugging, handle_code_explanation,
     handle_code_refactoring, handle_code_review, handle_format_conversion,
     handle_regex_synthesis, handle_shell_command_compose, handle_sql_synthesis,
     handle_statistics, handle_summarization_request, handle_test_generation, handle_text_rewrite,
@@ -275,9 +279,12 @@ pub fn try_contextual_override(
 /// asserts the two are an exact permutation, so this registry and the seed can
 /// never silently drift.
 const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
+    ("legality_warning", handle_legality_warning),
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("document_originality_check", try_document_originality_check),
+    ("formalization_request", handle_formalization_request),
+    ("product_search", handle_product_search),
     ("web_search", try_web_search),
     // Issue #499: a "learn from this data source" directive (a user pointing the
     // engine at Google Trends or another declared source it can learn from) must
@@ -313,11 +320,14 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     ("summarization", try_summarization_request),
     ("verifiable_task", try_verifiable_task),
     ("text_manipulation", try_text_manipulation),
+    ("brainstorm_composition", handle_brainstorm_request),
     ("brainstorming", try_brainstorming_request),
     ("conversation_topic", try_conversation_topic_request),
+    ("advice_request", handle_advice_request),
     ("fact_lookup", try_fact_lookup),
     ("coreference", try_coreference_request),
     ("roleplay", try_roleplay_request),
+    ("creative_writing", handle_creative_writing_request),
     ("translation", try_translation),
     // Issue #1174: register rewriting, grammar correction, commit-message and
     // email composition. The cues (rewrite/correct/commit/email) are disjoint
@@ -328,6 +338,7 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
         "response_language_followup",
         response_language_followup_noop,
     ),
+    ("planning_request", handle_planning_request),
     ("calendar_reasoning", try_calendar_reasoning),
     ("calendar_create_event", try_calendar_create_event),
     ("compound_interest", try_compound_interest),
@@ -377,6 +388,7 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     ("statistics", handle_statistics),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", merge_definitions),
+    ("triz_resolution", handle_triz),
     ("concept_lookup", handle_concept_lookup),
     ("who_is", resolve_who_is),
     ("how_it_works", try_how_it_works),

@@ -25,6 +25,12 @@ pub const CLIENT_COMPLETION_CONTRACTS_LINO: &str =
     include_str!("../../embedded/data/seed/client-completion-contracts.lino");
 pub const CLIENT_INTEGRATIONS_LINO: &str =
     include_str!("../../embedded/data/seed/client-integrations.lino");
+pub const CLOUD_SYNC_POLICY_LINO: &str =
+    include_str!("../../embedded/data/seed/cloud-sync-policy.lino");
+pub const CODE_EXAMPLE_PARTS_LINO: &str =
+    include_str!("../../embedded/data/seed/code-example-parts.lino");
+pub const CODE_NODE_DECOMPOSITION_LINO: &str =
+    include_str!("../../embedded/data/seed/code-node-decomposition.lino");
 pub const CODE_REVIEW_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/code-review-rules.lino");
 pub const CODE_TASK_CUES_LINO: &str = include_str!("../../embedded/data/seed/code-task-cues.lino");
@@ -41,14 +47,23 @@ pub const CONCEPTS_LINO: &str = include_str!("../../embedded/data/seed/concepts.
 pub const CONTRIBUTION_ARTIFACTS_LINO: &str =
     include_str!("../../embedded/data/seed/contribution-artifacts.lino");
 pub const COREFERENCE_LINO: &str = include_str!("../../embedded/data/seed/coreference.lino");
+pub const CREATIVE_COMPOSITION_RULES_LINO: &str =
+    include_str!("../../embedded/data/seed/creative-composition-rules.lino");
 pub const DEMO_DIALOGS_LINO: &str = include_str!("../../embedded/data/seed/demo-dialogs.lino");
+pub const DERIVATION_SCHEMA_LINO: &str =
+    include_str!("../../embedded/data/seed/derivation-schema.lino");
+pub const DIAGNOSTIC_CODE_SHAPES_LINO: &str =
+    include_str!("../../embedded/data/seed/diagnostic-code-shapes.lino");
 pub const DRAFT_STRATEGIES_LINO: &str =
     include_str!("../../embedded/data/seed/draft-strategies.lino");
 pub const ENTITY_NAMES_LINO: &str = include_str!("../../embedded/data/seed/entity-names.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../../embedded/data/seed/environments.lino");
+pub const FACT_CHECK_SOURCES_LINO: &str =
+    include_str!("../../embedded/data/seed/fact-check-sources.lino");
 pub const FACTS_LINO: &str = include_str!("../../embedded/data/seed/facts.lino");
 pub const FORMAL_LANGUAGE_PROJECTIONS_LINO: &str =
     include_str!("../../embedded/data/seed/formal-language-projections.lino");
+pub const FORMAL_TARGETS_LINO: &str = include_str!("../../embedded/data/seed/formal-targets.lino");
 pub const FORMALIZATION_RELATIONS_LINO: &str =
     include_str!("../../embedded/data/seed/formalization-relations.lino");
 pub const GRAMMAR_PROJECTION_RULES_LINO: &str =
@@ -63,6 +78,8 @@ pub const HANDLER_PROMOTIONS_LINO: &str =
 pub const HANDLER_RULES_LINO: &str = include_str!("../../embedded/data/seed/handler-rules.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
     include_str!("../../embedded/data/seed/hello-world-programs.lino");
+pub const HISTORY_FORMALIZATION_LINO: &str =
+    include_str!("../../embedded/data/seed/history-formalization.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../embedded/data/seed/identity.lino");
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../embedded/data/seed/intent-routing.lino");
 pub const INTERFACE_CAPABILITIES_LINO: &str =
@@ -80,6 +97,8 @@ pub const LEARNED_REQUEST_OPENERS_LINO: &str =
     include_str!("../../embedded/data/seed/learned-request-openers.lino");
 pub const LEARNING_SOURCES_LINO: &str =
     include_str!("../../embedded/data/seed/learning-sources.lino");
+pub const LEGALITY_PATTERNS_LINO: &str =
+    include_str!("../../embedded/data/seed/legality-patterns.lino");
 pub const MANUAL_PAGES_LINO: &str = include_str!("../../embedded/data/seed/manual-pages.lino");
 pub const MARKET_PRICE_REFERENCES_LINO: &str =
     include_str!("../../embedded/data/seed/market-price-references.lino");
@@ -115,6 +134,8 @@ pub const MEANINGS_CONCEPT_LOOKUP_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-concept-lookup.lino");
 pub const MEANINGS_CONVERSATION_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-conversation.lino");
+pub const MEANINGS_CREATIVE_TASKS_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-creative-tasks.lino");
 pub const MEANINGS_DECOMPOSITION_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-decomposition.lino");
 pub const MEANINGS_DEFINITION_MERGE_LINO: &str =
@@ -246,16 +267,22 @@ pub const MULTILINGUAL_RESPONSES_CODE_TASKS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-code-tasks.lino");
 pub const MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-concept-lookup.lino");
+pub const MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-creative-tasks.lino");
 pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-decomposition.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-entities.lino");
 pub const MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-external-benchmark.lino");
+pub const MULTILINGUAL_RESPONSES_FORMALIZATION_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-formalization.lino");
 pub const MULTILINGUAL_RESPONSES_ISSUE_710_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-issue-710.lino");
 pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-language-protocol.lino");
+pub const MULTILINGUAL_RESPONSES_LEGALITY_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-legality.lino");
 pub const MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-memory-program.lino");
 pub const MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO: &str =
@@ -268,8 +295,12 @@ pub const MULTILINGUAL_RESPONSES_POLICY_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-policy.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-procedure.lino");
+pub const MULTILINGUAL_RESPONSES_PRODUCT_SEARCH_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-product-search.lino");
 pub const MULTILINGUAL_RESPONSES_QUANTITIES_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-quantities.lino");
+pub const MULTILINGUAL_RESPONSES_REPAIR_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-repair.lino");
 pub const MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-substitution-compiler.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
@@ -288,15 +319,23 @@ pub const MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-thinking-narrative.lino");
 pub const MULTILINGUAL_RESPONSES_TRANSLATE_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-translate.lino");
+pub const MULTILINGUAL_RESPONSES_TRIZ_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-triz.lino");
 pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
     include_str!("../../embedded/data/seed/numeric-list-operations.lino");
 pub const OBLIGATION_MISMATCH_LINO: &str =
     include_str!("../../embedded/data/seed/obligation-mismatch.lino");
 pub const OPERATION_VOCABULARY_LINO: &str =
     include_str!("../../embedded/data/seed/operation-vocabulary.lino");
+pub const PAGE_FORMALIZATION_RULES_LINO: &str =
+    include_str!("../../embedded/data/seed/page-formalization-rules.lino");
 pub const PERSONAS_LINO: &str = include_str!("../../embedded/data/seed/personas.lino");
 pub const PLANNER_PRECEDENCE_LINO: &str =
     include_str!("../../embedded/data/seed/planner-precedence.lino");
+pub const PRODUCT_SEARCH_CUES_LINO: &str =
+    include_str!("../../embedded/data/seed/product-search-cues.lino");
+pub const PROGRAM_CACHE_POLICY_LINO: &str =
+    include_str!("../../embedded/data/seed/program-cache-policy.lino");
 pub const PROGRAM_CST_GRAMMARS_LINO: &str =
     include_str!("../../embedded/data/seed/program-cst-grammars.lino");
 pub const PROGRAM_PLAN_RULES_LINO: &str =
@@ -323,11 +362,21 @@ pub const SENTENCE_PUNCTUATION_LINO: &str =
 pub const SETUP_PUBLISHERS_LINO: &str =
     include_str!("../../embedded/data/seed/setup-publishers.lino");
 pub const SHELL_INTENTS_LINO: &str = include_str!("../../embedded/data/seed/shell-intents.lino");
+pub const SI_UNIT_DIMENSIONS_LINO: &str =
+    include_str!("../../embedded/data/seed/si-unit-dimensions.lino");
+pub const SMALL_MODEL_CATALOG_LINO: &str =
+    include_str!("../../embedded/data/seed/small-model-catalog.lino");
 pub const SOFTWARE_PROJECT_PHRASES_LINO: &str =
     include_str!("../../embedded/data/seed/software-project-phrases.lino");
+pub const SOURCE_TRUST_WEIGHTS_LINO: &str =
+    include_str!("../../embedded/data/seed/source-trust-weights.lino");
 pub const SOURCES_REGISTRY_LINO: &str =
     include_str!("../../embedded/data/seed/sources-registry.lino");
+pub const STATEMENT_AUDIT_EXCLUSIONS_LINO: &str =
+    include_str!("../../embedded/data/seed/statement-audit-exclusions.lino");
 pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../embedded/data/seed/summary-topics.lino");
+pub const TELEMETRY_CONSENT_LINO: &str =
+    include_str!("../../embedded/data/seed/telemetry-consent.lino");
 pub const TERMINAL_COMMANDS_LINO: &str =
     include_str!("../../embedded/data/seed/terminal-commands.lino");
 pub const TOOL_RESOURCE_SCOPES_LINO: &str =
@@ -352,6 +401,9 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/caller-context.lino", CALLER_CONTEXT_LINO),
         ("data/seed/client-completion-contracts.lino", CLIENT_COMPLETION_CONTRACTS_LINO),
         ("data/seed/client-integrations.lino", CLIENT_INTEGRATIONS_LINO),
+        ("data/seed/cloud-sync-policy.lino", CLOUD_SYNC_POLICY_LINO),
+        ("data/seed/code-example-parts.lino", CODE_EXAMPLE_PARTS_LINO),
+        ("data/seed/code-node-decomposition.lino", CODE_NODE_DECOMPOSITION_LINO),
         ("data/seed/code-review-rules.lino", CODE_REVIEW_RULES_LINO),
         ("data/seed/code-task-cues.lino", CODE_TASK_CUES_LINO),
         ("data/seed/coding-guidance.lino", CODING_GUIDANCE_LINO),
@@ -362,12 +414,17 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/contribution-artifacts.lino", CONTRIBUTION_ARTIFACTS_LINO),
         ("data/seed/coreference.lino", COREFERENCE_LINO),
+        ("data/seed/creative-composition-rules.lino", CREATIVE_COMPOSITION_RULES_LINO),
         ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
+        ("data/seed/derivation-schema.lino", DERIVATION_SCHEMA_LINO),
+        ("data/seed/diagnostic-code-shapes.lino", DIAGNOSTIC_CODE_SHAPES_LINO),
         ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),
         ("data/seed/entity-names.lino", ENTITY_NAMES_LINO),
         ("data/seed/environments.lino", ENVIRONMENTS_LINO),
+        ("data/seed/fact-check-sources.lino", FACT_CHECK_SOURCES_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
         ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),
+        ("data/seed/formal-targets.lino", FORMAL_TARGETS_LINO),
         ("data/seed/formalization-relations.lino", FORMALIZATION_RELATIONS_LINO),
         ("data/seed/grammar-projection-rules.lino", GRAMMAR_PROJECTION_RULES_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
@@ -376,6 +433,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/handler-promotions.lino", HANDLER_PROMOTIONS_LINO),
         ("data/seed/handler-rules.lino", HANDLER_RULES_LINO),
         ("data/seed/hello-world-programs.lino", HELLO_WORLD_PROGRAMS_LINO),
+        ("data/seed/history-formalization.lino", HISTORY_FORMALIZATION_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
         ("data/seed/interface-capabilities.lino", INTERFACE_CAPABILITIES_LINO),
@@ -386,6 +444,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/learned-program-rules.lino", LEARNED_PROGRAM_RULES_LINO),
         ("data/seed/learned-request-openers.lino", LEARNED_REQUEST_OPENERS_LINO),
         ("data/seed/learning-sources.lino", LEARNING_SOURCES_LINO),
+        ("data/seed/legality-patterns.lino", LEGALITY_PATTERNS_LINO),
         ("data/seed/manual-pages.lino", MANUAL_PAGES_LINO),
         ("data/seed/market-price-references.lino", MARKET_PRICE_REFERENCES_LINO),
         ("data/seed/meanings.lino", MEANINGS_LINO),
@@ -408,6 +467,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-computer-use.lino", MEANINGS_COMPUTER_USE_LINO),
         ("data/seed/meanings-concept-lookup.lino", MEANINGS_CONCEPT_LOOKUP_LINO),
         ("data/seed/meanings-conversation.lino", MEANINGS_CONVERSATION_LINO),
+        ("data/seed/meanings-creative-tasks.lino", MEANINGS_CREATIVE_TASKS_LINO),
         ("data/seed/meanings-decomposition.lino", MEANINGS_DECOMPOSITION_LINO),
         ("data/seed/meanings-definition-merge.lino", MEANINGS_DEFINITION_MERGE_LINO),
         ("data/seed/meanings-docs.lino", MEANINGS_DOCS_LINO),
@@ -492,6 +552,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
         ),
         (
+            "data/seed/multilingual-responses-creative-tasks.lino",
+            MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-decomposition.lino",
             MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
         ),
@@ -500,11 +564,16 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/multilingual-responses-external-benchmark.lino",
             MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO,
         ),
+        (
+            "data/seed/multilingual-responses-formalization.lino",
+            MULTILINGUAL_RESPONSES_FORMALIZATION_LINO,
+        ),
         ("data/seed/multilingual-responses-issue-710.lino", MULTILINGUAL_RESPONSES_ISSUE_710_LINO),
         (
             "data/seed/multilingual-responses-language-protocol.lino",
             MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
         ),
+        ("data/seed/multilingual-responses-legality.lino", MULTILINGUAL_RESPONSES_LEGALITY_LINO),
         (
             "data/seed/multilingual-responses-memory-program.lino",
             MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
@@ -518,9 +587,14 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/multilingual-responses-policy.lino", MULTILINGUAL_RESPONSES_POLICY_LINO),
         ("data/seed/multilingual-responses-procedure.lino", MULTILINGUAL_RESPONSES_PROCEDURE_LINO),
         (
+            "data/seed/multilingual-responses-product-search.lino",
+            MULTILINGUAL_RESPONSES_PRODUCT_SEARCH_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-quantities.lino",
             MULTILINGUAL_RESPONSES_QUANTITIES_LINO,
         ),
+        ("data/seed/multilingual-responses-repair.lino", MULTILINGUAL_RESPONSES_REPAIR_LINO),
         (
             "data/seed/multilingual-responses-substitution-compiler.lino",
             MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO,
@@ -545,11 +619,15 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
         ),
         ("data/seed/multilingual-responses-translate.lino", MULTILINGUAL_RESPONSES_TRANSLATE_LINO),
+        ("data/seed/multilingual-responses-triz.lino", MULTILINGUAL_RESPONSES_TRIZ_LINO),
         ("data/seed/numeric-list-operations.lino", NUMERIC_LIST_OPERATIONS_LINO),
         ("data/seed/obligation-mismatch.lino", OBLIGATION_MISMATCH_LINO),
         ("data/seed/operation-vocabulary.lino", OPERATION_VOCABULARY_LINO),
+        ("data/seed/page-formalization-rules.lino", PAGE_FORMALIZATION_RULES_LINO),
         ("data/seed/personas.lino", PERSONAS_LINO),
         ("data/seed/planner-precedence.lino", PLANNER_PRECEDENCE_LINO),
+        ("data/seed/product-search-cues.lino", PRODUCT_SEARCH_CUES_LINO),
+        ("data/seed/program-cache-policy.lino", PROGRAM_CACHE_POLICY_LINO),
         ("data/seed/program-cst-grammars.lino", PROGRAM_CST_GRAMMARS_LINO),
         ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
         ("data/seed/projects.lino", PROJECTS_LINO),
@@ -564,9 +642,14 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/sentence-punctuation.lino", SENTENCE_PUNCTUATION_LINO),
         ("data/seed/setup-publishers.lino", SETUP_PUBLISHERS_LINO),
         ("data/seed/shell-intents.lino", SHELL_INTENTS_LINO),
+        ("data/seed/si-unit-dimensions.lino", SI_UNIT_DIMENSIONS_LINO),
+        ("data/seed/small-model-catalog.lino", SMALL_MODEL_CATALOG_LINO),
         ("data/seed/software-project-phrases.lino", SOFTWARE_PROJECT_PHRASES_LINO),
+        ("data/seed/source-trust-weights.lino", SOURCE_TRUST_WEIGHTS_LINO),
         ("data/seed/sources-registry.lino", SOURCES_REGISTRY_LINO),
+        ("data/seed/statement-audit-exclusions.lino", STATEMENT_AUDIT_EXCLUSIONS_LINO),
         ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
+        ("data/seed/telemetry-consent.lino", TELEMETRY_CONSENT_LINO),
         ("data/seed/terminal-commands.lino", TERMINAL_COMMANDS_LINO),
         ("data/seed/tool-resource-scopes.lino", TOOL_RESOURCE_SCOPES_LINO),
         ("data/seed/toolchains.lino", TOOLCHAINS_LINO),
@@ -590,18 +673,23 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
     MULTILINGUAL_RESPONSES_CODE_TASKS_LINO,
     MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
+    MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
     MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO,
+    MULTILINGUAL_RESPONSES_FORMALIZATION_LINO,
     MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
+    MULTILINGUAL_RESPONSES_LEGALITY_LINO,
     MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
     MULTILINGUAL_RESPONSES_PARITY_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO,
     MULTILINGUAL_RESPONSES_POLICY_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    MULTILINGUAL_RESPONSES_PRODUCT_SEARCH_LINO,
     MULTILINGUAL_RESPONSES_QUANTITIES_LINO,
+    MULTILINGUAL_RESPONSES_REPAIR_LINO,
     MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO,
@@ -611,6 +699,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_THINKING_LINO,
     MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
     MULTILINGUAL_RESPONSES_TRANSLATE_LINO,
+    MULTILINGUAL_RESPONSES_TRIZ_LINO,
 ];
 
 /// The registered set of meaning-lexicon files, concatenated by
@@ -636,6 +725,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_COMPUTER_USE_LINO,
     MEANINGS_CONCEPT_LOOKUP_LINO,
     MEANINGS_CONVERSATION_LINO,
+    MEANINGS_CREATIVE_TASKS_LINO,
     MEANINGS_DECOMPOSITION_LINO,
     MEANINGS_DEFINITION_MERGE_LINO,
     MEANINGS_DOCS_LINO,

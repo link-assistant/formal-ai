@@ -58,6 +58,9 @@ handler_precedence
     rank 120
     browser_only true
     note "the browser's interactive software-project dialogue (plan 09 leaf 13)"
+  handler legality_warning
+    rank 125
+    note "issue 836 advisory and narrow refusal precede ordinary task routing"
   handler http_fetch
     rank 130
     note "phase async -- the worker answers fetches in its async network phase"
@@ -68,6 +71,12 @@ handler_precedence
     rank 150
   handler document_originality_check
     rank 160
+  handler formalization_request
+    rank 165
+    note "issue 1186 formalization is parsed before generic web search"
+  handler product_search
+    rank 167
+    note "issues 800 and 872 marketplace and model cues precede generic search"
   handler web_search
     rank 170
     note "phase async -- the worker answers searches in its async network phase"
@@ -100,10 +109,16 @@ handler_precedence
     note "generic recognise/discover/compose/execute/verify interpreter; includes seed-gated pattern inference"
   handler text_manipulation
     rank 280
+  handler brainstorm_composition
+    rank 285
+    note "issue 1178 topic-bearing brainstorm requests compose candidates before bare-topic fallback"
   handler brainstorming
     rank 290
   handler conversation_topic
     rank 300
+  handler advice_request
+    rank 305
+    note "issue 1178 seeded evidence-grade advice precedes generic factual lookup"
   handler fact_lookup
     rank 310
     note "phase async -- the worker's fact query runs after the synchronous table"
@@ -111,6 +126,9 @@ handler_precedence
     rank 320
   handler roleplay
     rank 330
+  handler creative_writing
+    rank 335
+    note "issue 1178 constrained verse composition precedes general text transformation"
   handler translation
     rank 340
   handler text_rewrite
@@ -120,6 +138,9 @@ handler_precedence
     rank 350
   handler capabilities
     rank 360
+  handler planning_request
+    rank 365
+    note "issue 1178 citation-backed itinerary planning precedes calendar arithmetic"
   handler calendar_reasoning
     rank 370
   handler calendar_create_event
@@ -176,6 +197,9 @@ handler_precedence
     rank 450
   handler definition_merge
     rank 460
+  handler triz_resolution
+    rank 465
+    note "issue 901 seeded contradiction resolution precedes general concept lookup"
   handler concept_lookup
     rank 470
   handler who_is

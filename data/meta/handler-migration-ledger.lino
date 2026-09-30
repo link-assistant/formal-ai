@@ -45,6 +45,10 @@ handler_migration_ledger
   handler software_project_request
     status pending
     justification "plan 09 leaf 13: browser-only interactive software-project dialogue, recorded by the same census correction."
+  handler legality_warning
+    status "justified-native"
+    primitive "rust/src/legality_warning.rs"
+    justification "Issue 836 evaluates seeded legality patterns and exemptions before ordinary task routing; advisory wording is localized seed data."
   handler http_fetch
     status pending
   handler url_navigate
@@ -57,6 +61,14 @@ handler_migration_ledger
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler document_originality_check
     status pending
+  handler formalization_request
+    status "justified-native"
+    primitive "rust/src/solver_handlers/formalization_task.rs"
+    justification "Issue 1186 parses quantified clauses and renders formal targets using seeded grammar and responses."
+  handler product_search
+    status "justified-native"
+    primitive "rust/src/solver_handlers/product_search.rs"
+    justification "Issues 800 and 872 compose marketplace searches from seeded hosts, qualifiers, and localized responses."
   handler web_search
     status pending
   handler learn_from_source
@@ -89,16 +101,28 @@ handler_migration_ledger
     status pending
   handler text_manipulation
     status pending
+  handler brainstorm_composition
+    status "justified-native"
+    primitive "rust/src/solver_handlers/creative_composition.rs"
+    justification "Issue 1178 composes and ranks topic-bound names from seeded morphology and constraint rules."
   handler brainstorming
     status pending
   handler conversation_topic
     status pending
+  handler advice_request
+    status "justified-native"
+    primitive "rust/src/solver_handlers/creative_composition.rs"
+    justification "Issue 1178 orders seeded, cited advice by evidence grade and renders localized responses."
   handler fact_lookup
     status pending
   handler coreference
     status pending
   handler roleplay
     status pending
+  handler creative_writing
+    status "justified-native"
+    primitive "rust/src/solver_handlers/creative_writing.rs"
+    justification "Issue 1178 generates and checks constrained verse against seeded rhyme classes and form rules."
   handler translation
     status pending
   handler text_rewrite
@@ -113,6 +137,10 @@ handler_migration_ledger
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Capability queries are role conditions with the assistant-free-time route excluded; the prior-web-search note is a history condition."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+  handler planning_request
+    status "justified-native"
+    primitive "rust/src/solver_handlers/creative_writing.rs"
+    justification "Issue 1178 builds feasible cited itineraries from seeded place, duration, and travel constraints."
   handler calendar_reasoning
     status pending
   handler calendar_create_event
@@ -193,6 +221,10 @@ handler_migration_ledger
     primitive "rust/src/definition_merge.rs"
     justification "Fragment deduplication, ordering, and rendering are language-neutral operations; the source-host language mapping moved to the language-detection rules and every rendered label is a seed response with en/ru/hi/zh coverage."
     held_out "rust/tests/unit/issue_699_handler_migration.rs"
+  handler triz_resolution
+    status "justified-native"
+    primitive "rust/src/triz_solver.rs"
+    justification "Issue 901 resolves seeded contradiction families and benchmark methods through the native scoring interpreter."
   handler concept_lookup
     status pending
   handler who_is

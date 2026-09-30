@@ -959,10 +959,13 @@ function workerHandlerRegistryDefinition() {
     write_program_coreference: "@writeProgram",
     program_blueprint_from_prompt: "tryProgramBlueprintFromPrompt",
     write_program_concrete: "@writeProgram",
+    legality_warning: null, // native surface only: seeded advisory policy
     http_fetch: null, // phase async
     url_navigate: null, // phase async
     github_repository_traffic: "tryGithubRepositoryTraffic",
     document_originality_check: "tryDocumentOriginalityCheck",
+    formalization_request: null, // native surface only: quantified clause renderer
+    product_search: null, // native surface only: marketplace query composer
     web_search: null, // phase async
     learn_from_source: null, // phase async
     research_comparison_table: "tryResearchComparisonTable",
@@ -976,15 +979,19 @@ function workerHandlerRegistryDefinition() {
     summarization: workerHandlerAliases.summarization,
     verifiable_task: "tryVerifiableTask",
     text_manipulation: "tryTextManipulation",
+    brainstorm_composition: null, // native surface only: constrained name composition
     brainstorming: workerHandlerAliases.brainstorming,
     conversation_topic: null, // inline opener machinery in the conversation module
+    advice_request: null, // native surface only: cited advice composition
     fact_lookup: "tryFactLookup",
     coreference: workerHandlerAliases.coreference,
     roleplay: workerHandlerAliases.roleplay,
+    creative_writing: null, // native surface only: constrained verse composition
     translation: null, // native surface only
     text_rewrite: null, // native surface only: register rewrites run in the Rust core
     response_language_followup: null, // native rule surface only
     capabilities: "tryCapabilities",
+    planning_request: null, // native surface only: feasible itinerary composition
     calendar_reasoning: "tryCalendarReasoning",
     calendar_create_event: "tryCalendarCreateEvent",
     compound_interest: "tryCompoundInterest",
@@ -1006,6 +1013,7 @@ function workerHandlerRegistryDefinition() {
     statistics: null, // native surface only: exact decimal statistics run in the Rust core
     javascript_execution: "tryJavaScriptExecution",
     definition_merge: "@definitionMerge",
+    triz_resolution: null, // native surface only: contradiction families
     concept_lookup: "tryConceptLookup",
     who_is: workerHandlerAliases.who_is,
     how_it_works: null, // inline architecture-question machinery

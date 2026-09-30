@@ -161,6 +161,27 @@ fn unit_mentions(lowered: &str) -> Vec<UnitMention> {
             });
         }
     }
+    // Issue #700: the SI catalogue extends the older direct-pair lexicon.
+    // Recognition still requires whole seeded surfaces, never a substring.
+    for unit in crate::si_units::si_units() {
+        let Some((surface, position)) = unit
+            .surfaces
+            .iter()
+            .chain(std::iter::once(&unit.unit))
+            .filter(|word| word.as_str() != "in")
+            .filter_map(|word| term_position(lowered, word).map(|position| (word, position)))
+            .min_by_key(|(_, position)| *position)
+        else {
+            continue;
+        };
+        if !mentions.iter().any(|mention| mention.slug == unit.unit) {
+            mentions.push(UnitMention {
+                slug: unit.unit.clone(),
+                surface: surface.to_owned(),
+                position,
+            });
+        }
+    }
     mentions
 }
 
@@ -267,7 +288,42 @@ pub fn handle_unit_conversion(
         .iter()
         .min_by_key(|mention| mention.position.abs_diff(number_position))?;
     let target = mentions.iter().find(|mention| mention.slug != source.slug)?;
-    let direction = find_conversion(&source.slug, &target.slug)?;
+    let direction = find_conversion(&source.slug, &target.slug);
+
+    if direction.is_none() {
+        let (numerator, denominator) = value.ratio()?;
+        let outcome = crate::si_units::convert_through_si(
+            numerator,
+            denominator,
+            &source.slug,
+            &target.slug,
+        );
+        let body = match outcome {
+            crate::si_units::SiConversion::Converted { value_num, value_den } => {
+                log.append("unit_conversion:si_path", format!("{} -> {}", source.slug, target.slug));
+                format!("{} {} = {}/{} {}", value.render(), source.surface, value_num, value_den, target.surface)
+            }
+            crate::si_units::SiConversion::UnknownUnit(unit) => {
+                crate::si_units::note_unknown_unit(log, &unit);
+                format!("unknown unit: {unit}")
+            }
+            crate::si_units::SiConversion::Incompatible { from, to } => {
+                format!("incompatible dimensions: {} vs {}", from.as_string(), to.as_string())
+            }
+            crate::si_units::SiConversion::Overflow => {
+                String::from("value out of range for exact conversion")
+            }
+        };
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "unit_conversion",
+            "response:unit_conversion_si",
+            &body,
+            1.0,
+        ));
+    }
+    let direction = direction?;
 
     let language = detect_language(prompt).slug();
     log.append("unit_conversion:source_unit", source.slug.clone());

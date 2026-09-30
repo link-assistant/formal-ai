@@ -14,6 +14,8 @@ pub use code_debugging::handle_code_debugging;
 pub use code_explanation::handle_code_explanation;
 pub use code_refactoring::handle_code_refactoring;
 pub use code_review::handle_code_review;
+pub use creative_composition::{handle_advice_request, handle_brainstorm_request};
+pub use creative_writing::{handle_creative_writing_request, handle_planning_request};
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
@@ -24,6 +26,7 @@ pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
 pub use feature_capability::{CapabilityRuntime, try_feature_capability};
+pub use formalization_task::handle_formalization_request;
 pub use format_conversion::handle_format_conversion;
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
@@ -35,6 +38,7 @@ pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::{
     looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
 };
+pub use product_search::handle_product_search;
 pub use regex_synthesis::handle_regex_synthesis;
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
 pub use response_language_followup::try_response_language_followup;
