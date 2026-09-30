@@ -69,6 +69,12 @@ en
     send "Send"
     sending "Sending..."
     attachments "{count} attached"
+  autocomplete
+    listLabel "Suggestions"
+    source
+      command "command"
+      history "your earlier prompt"
+      example "example"
   conversation
     new "+ New conversation"
     empty "Start a new conversation."
@@ -302,6 +308,12 @@ ru
     send "Отправить"
     sending "Отправка..."
     attachments "Прикреплено: {count}"
+  autocomplete
+    listLabel "Подсказки"
+    source
+      command "команда"
+      history "ваш прошлый запрос"
+      example "пример"
   conversation
     new "+ Новый разговор"
     empty "Начните новый разговор."
@@ -529,6 +541,12 @@ zh
     send "发送"
     sending "发送中..."
     attachments "已附加 {count} 个"
+  autocomplete
+    listLabel "建议"
+    source
+      command "命令"
+      history "你之前的消息"
+      example "示例"
   conversation
     new "+ 新对话"
     empty "开始一个新对话。"
@@ -760,6 +778,12 @@ hi
     send "भेजें"
     sending "भेज रहा है..."
     attachments "{count} जुड़ी हुई"
+  autocomplete
+    listLabel "सुझाव"
+    source
+      command "कमांड"
+      history "आपका पिछला संदेश"
+      example "उदाहरण"
   conversation
     new "+ नई बातचीत"
     empty "नई बातचीत शुरू करें।"

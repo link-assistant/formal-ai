@@ -4690,3 +4690,51 @@ textarea:disabled {
 .setting-row-diagnostic-js-fallback .setting-warning {
   margin: 4px 0 0;
 }
+
+/* Issue #825: the shared autocomplete listbox for every own-input-box
+ * surface. Rendered in flow directly above the composer grid; tokens theme
+ * it for light/dark automatically. */
+.autocomplete-menu {
+  width: min(860px, 100%);
+  margin: 0 auto 8px;
+  padding: 4px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  background: var(--fa-surface-card);
+  box-shadow: 0 6px 18px rgba(20, 33, 41, 0.14);
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fa-text-body);
+  font: inherit;
+  font-size: 0.93rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.autocomplete-item.is-active,
+.autocomplete-item:hover {
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-strong);
+}
+
+.autocomplete-item-hint {
+  flex: none;
+  color: var(--fa-text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

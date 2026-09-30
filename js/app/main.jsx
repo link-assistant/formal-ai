@@ -24,6 +24,19 @@ import { answerHasDetectedFailure } from "./detected-failure.js";
 // the Rust core), so this file only assembles the facts and the labels.
 import { renderReportBody } from "./issue-report.js";
 
+// Issue #825: the shared autocomplete engine backs every own-input-box
+// surface — the chat composer here and the free-text settings fields below.
+// Ranking, the keyboard contract and the localStorage input history live in
+// one place; this file only supplies the suggestion vocabulary and renders.
+import {
+  COMMAND_SUGGESTIONS,
+  createAutocompleteController,
+  examplePromptSuggestions,
+  historySuggestions,
+  recallInputValues,
+  rememberInputValue,
+} from "./autocomplete.js";
+
 const {
   createElement: h,
   Fragment,
@@ -6407,6 +6420,37 @@ function App() {
   const composerInputRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
+  // Issue #825: composer autocomplete state ({ open, items, activeIndex })
+  // mirrors the controller snapshot so React re-renders the listbox.
+  const [composerAutocomplete, setComposerAutocomplete] = useState({
+    open: false,
+    items: [],
+    activeIndex: -1,
+  });
+  const composerHistoryRef = useRef([]);
+  const autocompleteControllerRef = useRef(null);
+  if (autocompleteControllerRef.current === null) {
+    autocompleteControllerRef.current = createAutocompleteController({
+      getItems: () => [
+        ...COMMAND_SUGGESTIONS,
+        ...examplePromptSuggestions(EXAMPLE_PROMPTS),
+        ...historySuggestions(composerHistoryRef.current),
+      ],
+      onComplete: value => {
+        setPrompt(value);
+        setComposerAutocomplete({ open: false, items: [], activeIndex: -1 });
+      },
+    });
+  }
+  // The user's own earlier prompts are the third suggestion source; loaded
+  // once per session (localStorage is per-browser and never synced).
+  const [assistantNameHistory, setAssistantNameHistory] = useState([]);
+  const [locationHistory, setLocationHistory] = useState([]);
+  useEffect(() => {
+    composerHistoryRef.current = recallInputValues("composerPrompts");
+    setAssistantNameHistory(recallInputValues("assistantName"));
+    setLocationHistory(recallInputValues("location"));
+  }, []);
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("loading worker");
   const [workerReady, setWorkerReady] = useState(false);
@@ -8976,6 +9020,12 @@ function App() {
       return;
     }
 
+    // Issue #825: a sent prompt becomes autocomplete history for the next
+    // one (newest first, capped; purely local).
+    rememberInputValue("composerPrompts", text);
+    composerHistoryRef.current = recallInputValues("composerPrompts");
+    autocompleteControllerRef.current.close();
+    setComposerAutocomplete({ open: false, items: [], activeIndex: -1 });
     setPrompt("");
     setComposerMenuOpen(false);
     const queuedAttachments = attachments;
@@ -8989,7 +9039,22 @@ function App() {
     });
   }
 
+  // Issue #825: re-rank suggestions on every keystroke against the word
+  // being typed (see autocomplete.js for the trigger heuristics).
+  function handleComposerAutocompleteInput(value) {
+    const controller = autocompleteControllerRef.current;
+    controller.handleInput(value);
+    setComposerAutocomplete(controller.snapshot());
+  }
+
   function handleKeyDown(event) {
+    // Issue #825: while the suggestion list is open the controller owns the
+    // navigation keys — Enter/Tab complete the active suggestion instead of
+    // sending, Escape closes, arrows move. Anything else falls through.
+    if (autocompleteControllerRef.current.handleKeyDown(event) === "handled") {
+      event.preventDefault();
+      return;
+    }
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       send();
@@ -9316,7 +9381,13 @@ function App() {
         // checkbox list is generated from EXTERNAL_TRUSTED_SERVICES so the
         // catalog stays the single source of truth; each service is enabled
         // by default and the user can opt out of any one.
-        <div className="setting-row setting-row-external-services" data-testid="settings-external-services"><p className="setting-section-title">{t("settings.externalServices")}</p><p className="setting-section-note">{t("settings.externalServices.note")}</p>{EXTERNAL_TRUSTED_SERVICES.map(service => <label className="setting-check" key={service.key}><input type="checkbox" checked={externalServices[service.key] !== false} data-testid={`setting-${service.key}`} onChange={event => setExternalService(service.key, event.target.checked)} /><span>{t(service.label)}</span></label>)}</div>}<label className="setting-row"><span>{t("settings.language")}</span><select data-testid="setting-ui-language" value={uiLanguagePreference} onChange={event => setUiLanguagePreference(normalizeUiLanguagePreference(event.target.value))}><option value="auto">{t("settings.language.auto")}</option><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label><label className="setting-row"><span>{t("settings.responseLanguage")}</span><select data-testid="setting-response-language" value={responseLanguage} onChange={event => setResponseLanguage(normalizeResponseLanguageMode(event.target.value))}><option value="last_message">{t("settings.responseLanguage.lastMessage")}</option><option value="preferred">{t("settings.responseLanguage.preferred")}</option><option value="ui">{t("settings.responseLanguage.ui")}</option></select></label>{responseLanguage === "preferred" ? <label className="setting-row"><span>{t("settings.preferredLanguage")}</span><select data-testid="setting-preferred-language" value={preferredLanguage} onChange={event => setPreferredLanguage(normalizePreferredLanguage(event.target.value))}><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label> : null}<label className="setting-row"><span>{t("settings.theme")}</span><select data-testid="setting-theme" value={themePreference} onChange={event => setThemePreference(normalizeThemePreference(event.target.value))}><option value="auto">{t("settings.theme.auto")}</option><option value="light">{t("settings.theme.light")}</option><option value="dark">{t("settings.theme.dark")}</option></select></label><label className="setting-row"><span>{t("settings.uiSkin")}</span><select data-testid="setting-ui-skin" value={uiSkin} onChange={event => setUiSkin(normalizeUiSkin(event.target.value))}><option value="flat">{t("settings.uiSkin.flat")}</option><option value="glass">{t("settings.uiSkin.glass")}</option><option value="contrast">{t("settings.uiSkin.contrast")}</option></select></label><label className="setting-row"><span>{t("settings.toolbarIconPack")}</span><select data-testid="setting-toolbar-icon-pack" value={toolbarIconPack} onChange={event => setToolbarIconPack(normalizeToolbarIconPack(event.target.value))}><option value="fontawesome">{t("settings.toolbarIconPack.fontawesome")}</option><option value="material-symbols">{t("settings.toolbarIconPack.materialSymbols")}</option><option value="bootstrap-icons">{t("settings.toolbarIconPack.bootstrapIcons")}</option><option value="ionicons">{t("settings.toolbarIconPack.ionicons")}</option><option value="remix-icon">{t("settings.toolbarIconPack.remixIcon")}</option><option value="tabler-icons">{t("settings.toolbarIconPack.tablerIcons")}</option><option value="names">{t("settings.toolbarIconPack.names")}</option></select></label><label className="setting-row"><span>{t("settings.chatStyle")}</span><select data-testid="setting-chat-style" value={chatStyle} onChange={event => setChatStyle(normalizeChatStyle(event.target.value))}><option value="cards">{t("settings.chatStyle.cards")}</option><option value="compact">{t("settings.chatStyle.compact")}</option><option value="bubbles">{t("settings.chatStyle.bubbles")}</option></select></label><label className="setting-row"><span>{t("settings.composerStyle")}</span><select data-testid="setting-composer-style" value={composerStyle} onChange={event => setComposerStyle(normalizeComposerStyle(event.target.value))}><option value="flat">{t("settings.composerStyle.flat")}</option><option value="glass-soft">{t("settings.composerStyle.glassSoft")}</option><option value="glass-clear">{t("settings.composerStyle.glassClear")}</option><option value="bubble">{t("settings.composerStyle.bubble")}</option></select></label><label className="setting-row"><span>{t("settings.composerAction")}</span><select data-testid="setting-composer-action" value={composerAction} onChange={event => setComposerAction(normalizeComposerAction(event.target.value))}><option value="attach">{t("settings.composerAction.attach")}</option><option value="plus">{t("settings.composerAction.plus")}</option></select></label><label className="setting-row"><span>{t("settings.assistantName")}</span><input data-testid="setting-assistant-name" type="text" value={assistantName} maxLength={64} placeholder={t("settings.assistantName.placeholder")} onChange={event => setAssistantName(sanitizeAssistantNameInput(event.target.value))} /></label><label className="setting-row"><span>{t("settings.location")}</span><input data-testid="setting-location" type="text" value={locationPreference} placeholder={t("settings.location.placeholder")} onChange={event => setLocationPreference(event.target.value.slice(0, 80))} /></label></div>} /><SidebarSection title={t("sidebar.examplePrompts")} testId="sidebar-prompts" collapsed={sidebarPromptsCollapsed} onToggle={() => setSidebarPromptsCollapsed(value => !value)} children={<div className="prompt-list" data-testid="example-prompts">{EXAMPLE_PROMPTS.map(entry => <button key={entry.text} type="button" data-prompt-label={entry.label} data-prompt-text={entry.text} onClick={() => {
+        <div className="setting-row setting-row-external-services" data-testid="settings-external-services"><p className="setting-section-title">{t("settings.externalServices")}</p><p className="setting-section-note">{t("settings.externalServices.note")}</p>{EXTERNAL_TRUSTED_SERVICES.map(service => <label className="setting-check" key={service.key}><input type="checkbox" checked={externalServices[service.key] !== false} data-testid={`setting-${service.key}`} onChange={event => setExternalService(service.key, event.target.checked)} /><span>{t(service.label)}</span></label>)}</div>}<label className="setting-row"><span>{t("settings.language")}</span><select data-testid="setting-ui-language" value={uiLanguagePreference} onChange={event => setUiLanguagePreference(normalizeUiLanguagePreference(event.target.value))}><option value="auto">{t("settings.language.auto")}</option><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label><label className="setting-row"><span>{t("settings.responseLanguage")}</span><select data-testid="setting-response-language" value={responseLanguage} onChange={event => setResponseLanguage(normalizeResponseLanguageMode(event.target.value))}><option value="last_message">{t("settings.responseLanguage.lastMessage")}</option><option value="preferred">{t("settings.responseLanguage.preferred")}</option><option value="ui">{t("settings.responseLanguage.ui")}</option></select></label>{responseLanguage === "preferred" ? <label className="setting-row"><span>{t("settings.preferredLanguage")}</span><select data-testid="setting-preferred-language" value={preferredLanguage} onChange={event => setPreferredLanguage(normalizePreferredLanguage(event.target.value))}><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label> : null}<label className="setting-row"><span>{t("settings.theme")}</span><select data-testid="setting-theme" value={themePreference} onChange={event => setThemePreference(normalizeThemePreference(event.target.value))}><option value="auto">{t("settings.theme.auto")}</option><option value="light">{t("settings.theme.light")}</option><option value="dark">{t("settings.theme.dark")}</option></select></label><label className="setting-row"><span>{t("settings.uiSkin")}</span><select data-testid="setting-ui-skin" value={uiSkin} onChange={event => setUiSkin(normalizeUiSkin(event.target.value))}><option value="flat">{t("settings.uiSkin.flat")}</option><option value="glass">{t("settings.uiSkin.glass")}</option><option value="contrast">{t("settings.uiSkin.contrast")}</option></select></label><label className="setting-row"><span>{t("settings.toolbarIconPack")}</span><select data-testid="setting-toolbar-icon-pack" value={toolbarIconPack} onChange={event => setToolbarIconPack(normalizeToolbarIconPack(event.target.value))}><option value="fontawesome">{t("settings.toolbarIconPack.fontawesome")}</option><option value="material-symbols">{t("settings.toolbarIconPack.materialSymbols")}</option><option value="bootstrap-icons">{t("settings.toolbarIconPack.bootstrapIcons")}</option><option value="ionicons">{t("settings.toolbarIconPack.ionicons")}</option><option value="remix-icon">{t("settings.toolbarIconPack.remixIcon")}</option><option value="tabler-icons">{t("settings.toolbarIconPack.tablerIcons")}</option><option value="names">{t("settings.toolbarIconPack.names")}</option></select></label><label className="setting-row"><span>{t("settings.chatStyle")}</span><select data-testid="setting-chat-style" value={chatStyle} onChange={event => setChatStyle(normalizeChatStyle(event.target.value))}><option value="cards">{t("settings.chatStyle.cards")}</option><option value="compact">{t("settings.chatStyle.compact")}</option><option value="bubbles">{t("settings.chatStyle.bubbles")}</option></select></label><label className="setting-row"><span>{t("settings.composerStyle")}</span><select data-testid="setting-composer-style" value={composerStyle} onChange={event => setComposerStyle(normalizeComposerStyle(event.target.value))}><option value="flat">{t("settings.composerStyle.flat")}</option><option value="glass-soft">{t("settings.composerStyle.glassSoft")}</option><option value="glass-clear">{t("settings.composerStyle.glassClear")}</option><option value="bubble">{t("settings.composerStyle.bubble")}</option></select></label><label className="setting-row"><span>{t("settings.composerAction")}</span><select data-testid="setting-composer-action" value={composerAction} onChange={event => setComposerAction(normalizeComposerAction(event.target.value))}><option value="attach">{t("settings.composerAction.attach")}</option><option value="plus">{t("settings.composerAction.plus")}</option></select></label><label className="setting-row"><span>{t("settings.assistantName")}</span><input data-testid="setting-assistant-name" type="text" value={assistantName} maxLength={64} placeholder={t("settings.assistantName.placeholder")} list="setting-assistant-name-options" aria-autocomplete="list" onChange={event => setAssistantName(sanitizeAssistantNameInput(event.target.value))} onBlur={event => {
+            rememberInputValue("assistantName", event.target.value);
+            setAssistantNameHistory(recallInputValues("assistantName"));
+          }} /><datalist id="setting-assistant-name-options" data-testid="setting-assistant-name-options">{assistantNameHistory.map(value => <option key={value} value={value} />)}</datalist></label><label className="setting-row"><span>{t("settings.location")}</span><input data-testid="setting-location" type="text" value={locationPreference} placeholder={t("settings.location.placeholder")} list="setting-location-options" aria-autocomplete="list" onChange={event => setLocationPreference(event.target.value.slice(0, 80))} onBlur={event => {
+            rememberInputValue("location", event.target.value);
+            setLocationHistory(recallInputValues("location"));
+          }} /><datalist id="setting-location-options" data-testid="setting-location-options">{locationHistory.map(value => <option key={value} value={value} />)}</datalist></label></div>} /><SidebarSection title={t("sidebar.examplePrompts")} testId="sidebar-prompts" collapsed={sidebarPromptsCollapsed} onToggle={() => setSidebarPromptsCollapsed(value => !value)} children={<div className="prompt-list" data-testid="example-prompts">{EXAMPLE_PROMPTS.map(entry => <button key={entry.text} type="button" data-prompt-label={entry.label} data-prompt-text={entry.text} onClick={() => {
           setDemoMode(false);
           setPrompt(entry.text);
         }} title={entry.label}>{entry.text}</button>)}</div>} />{seed.tools && seed.tools.length > 0 ? <SidebarSection title={t("sidebar.tools")} testId="sidebar-tools" collapsed={sidebarToolsCollapsed} onToggle={() => setSidebarToolsCollapsed(value => !value)} children={<div className="tool-registry" data-testid="tool-registry"><ul className="tool-list">{seed.tools.map(tool => {
@@ -9330,7 +9401,13 @@ function App() {
         send();
       }}><input ref={attachmentInputRef} type="file" multiple={true} style={{
           display: "none"
-        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><button type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</button><textarea ref={composerInputRef} value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode || !workerReady} data-testid="chat-composer-input" /><button className="send-button" type="submit" disabled={pending || demoMode || !workerReady || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit">{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></button></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
+        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}{composerAutocomplete.open && composerAutocomplete.items.length ? <ul className="autocomplete-menu" role="listbox" aria-label={t("autocomplete.listLabel")} data-testid="composer-autocomplete" id="composer-autocomplete">{composerAutocomplete.items.map((item, index) => <li key={`${item.source}:${item.value}`} role="presentation"><button type="button" role="option" aria-selected={index === composerAutocomplete.activeIndex} className={`autocomplete-item${index === composerAutocomplete.activeIndex ? " is-active" : ""}`} data-testid="composer-autocomplete-item" data-source={item.source} onClick={() => {
+              autocompleteControllerRef.current.commit(index);
+              setComposerAutocomplete(autocompleteControllerRef.current.snapshot());
+            }}>{item.value}<span className="autocomplete-item-hint">{t(`autocomplete.source.${item.source}`)}</span></button></li>)}</ul> : null}<div className="composer-grid"><button type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</button><textarea ref={composerInputRef} value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => {
+            setPrompt(event.target.value);
+            handleComposerAutocompleteInput(event.target.value);
+          }} onKeyDown={handleKeyDown} disabled={demoMode || !workerReady} data-testid="chat-composer-input" aria-controls="composer-autocomplete" aria-autocomplete="list" /><button className="send-button" type="submit" disabled={pending || demoMode || !workerReady || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit">{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></button></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
 }
 
 function wait(milliseconds) {
