@@ -972,6 +972,7 @@ function workerHandlerRegistryDefinition() {
     procedural_how_to_followup: null, // phase async
     conversation_memory: workerHandlerAliases.conversation_memory,
     software_project_followup: "trySoftwareProjectFollowup",
+    summarization_text: null, // native surface only: the text summarizer runs in the Rust core
     summarization: workerHandlerAliases.summarization,
     verifiable_task: "tryVerifiableTask",
     text_manipulation: "tryTextManipulation",
@@ -981,16 +982,28 @@ function workerHandlerRegistryDefinition() {
     coreference: workerHandlerAliases.coreference,
     roleplay: workerHandlerAliases.roleplay,
     translation: null, // native surface only
+    text_rewrite: null, // native surface only: register rewrites run in the Rust core
     response_language_followup: null, // native rule surface only
     capabilities: "tryCapabilities",
     calendar_reasoning: "tryCalendarReasoning",
     calendar_create_event: "tryCalendarCreateEvent",
     compound_interest: "tryCompoundInterest",
+    word_problem: null, // native surface only: price-times-count prose solves in the Rust core
     numeric_list: "tryNumericList",
     shell_command_transform: workerHandlerAliases.shell_command_transform,
+    code_debugging: null, // native surface only: structural debugging guidance runs in the Rust core
+    regex_synthesis: null, // native surface only: regex composition runs in the Rust core
+    sql_synthesis: null, // native surface only: single-SELECT composition runs in the Rust core
+    shell_command_compose: null, // native surface only: find composition runs in the Rust core
     number_constraint_reasoning: null, // native surface only
+    code_explanation: null, // native surface only: the construct table walk runs in the Rust core
+    code_review: null, // native surface only: the seeded review rules run in the Rust core
+    test_generation: null, // native surface only: pytest suite emission runs in the Rust core
+    code_refactoring: null, // native surface only: promise-chain rewriting runs in the Rust core
+    format_conversion: null, // native surface only: JSON/YAML conversion runs in the Rust core
     program_synthesis: "tryProgramSynthesis",
     arithmetic: "tryArithmetic",
+    statistics: null, // native surface only: exact decimal statistics run in the Rust core
     javascript_execution: "tryJavaScriptExecution",
     definition_merge: "@definitionMerge",
     concept_lookup: "tryConceptLookup",
@@ -1015,6 +1028,7 @@ function workerHandlerRegistryDefinition() {
     shell_refusal: null, // native surface only
     proof_request: "tryProofRequest",
     opinion_question: null, // native surface only
+    unit_conversion: null, // native surface only: exact decimal conversion runs in the Rust core
     incompatible_units: "tryIncompatibleUnits",
   };
   return { workerHandlers, workerHandlerAliases };
