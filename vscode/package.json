@@ -159,5 +159,22 @@
     "esbuild": true,
     "keytar": true,
     "puppeteer": true
-  }
+  },
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#175f4f",
+    "theme": "dark"
+  },
+  "keywords": [
+    "symbolic AI",
+    "Links Notation",
+    "deterministic",
+    "WebAssembly",
+    "agent",
+    "chat"
+  ],
+  "bugs": {
+    "url": "https://github.com/link-assistant/formal-ai/issues"
+  },
+  "homepage": "https://github.com/link-assistant/formal-ai/tree/main/vscode"
 }

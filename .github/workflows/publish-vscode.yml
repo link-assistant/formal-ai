@@ -1,0 +1,84 @@
+name: Publish VS Code extension
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: publish-vscode-extension
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+          cache: npm
+          cache-dependency-path: vscode/package-lock.json
+      - name: Build web resources and extension
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun install --frozen-lockfile
+          bun run build:web
+          npm ci --prefix vscode --no-audit --no-fund
+          npm --prefix vscode run package
+      - name: Compare the packaged extension version with the preceding release
+        id: version
+        run: |
+          current=$(python3 -c 'import json; print(json.load(open("vscode/package.json"))["version"])')
+          previous_tag=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)
+          previous=''
+          if [ -n "$previous_tag" ]; then
+            git show "$previous_tag:vscode/package.json" > /tmp/previous-extension.json
+            previous=$(python3 -c 'import json; print(json.load(open("/tmp/previous-extension.json"))["version"])')
+          fi
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          if [ "$current" != "$previous" ]; then echo 'changed=true' >> "$GITHUB_OUTPUT"; else echo 'changed=false' >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/upload-artifact@v6
+        with:
+          name: formal-ai-vscode
+          path: vscode/*.vsix
+          if-no-files-found: error
+      - name: Publish Marketplace
+        if: steps.version.outputs.changed == 'true'
+        working-directory: vscode
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          if [ -z "$VSCE_PAT" ]; then echo 'Marketplace publishing unavailable: VSCE_PAT is not configured'; exit 0; fi
+          npx --no-install vsce publish --packagePath ./*.vsix
+      - name: Publish Open VSX
+        if: steps.version.outputs.changed == 'true'
+        working-directory: vscode
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          if [ -z "$OVSX_PAT" ]; then echo 'Open VSX publishing unavailable: OVSX_PAT is not configured'; exit 0; fi
+          npx --yes ovsx@1.2.0 publish ./*.vsix
+      - name: Run existing extension checks
+        run: npm --prefix vscode test
+      - name: Install published Marketplace extension in a clean profile
+        if: steps.version.outputs.changed == 'true'
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          EXPECTED_VERSION: ${{ steps.version.outputs.current }}
+        run: |
+          if [ -z "$VSCE_PAT" ]; then echo 'Install-by-id smoke unavailable: publication was not configured'; exit 0; fi
+          curl -fsSL https://update.code.visualstudio.com/latest/linux-x64/stable -o /tmp/vscode.tar.gz
+          mkdir /tmp/formal-ai-clean-vscode
+          tar -xzf /tmp/vscode.tar.gz -C /tmp/formal-ai-clean-vscode --strip-components=1
+          code=/tmp/formal-ai-clean-vscode/bin/code
+          for attempt in 1 2 3 4 5; do
+            "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --install-extension link-assistant.formal-ai-vscode --force
+            if "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --list-extensions --show-versions | grep -Fx "link-assistant.formal-ai-vscode@$EXPECTED_VERSION"; then exit 0; fi
+            sleep 15
+          done
+          echo 'Published version did not become installable by id'; exit 1
