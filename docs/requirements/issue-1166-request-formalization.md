@@ -1,0 +1,20 @@
+## Issue #1166 The Request Formalized into Obligations
+
+Issue [#1166](https://github.com/link-assistant/formal-ai/issues/1166) (E131)
+replaces phrase matching with request formalization: an issue body parses
+into an obligation graph whose nodes carry semantic kinds and anchored
+literals, mentions of the same quoted literal collapse to one node (the
+structural fix for the Kotlin doubled output of #1156), and nothing
+underivable is silently discarded. The root-cause analysis lives in
+`docs/case-studies/issue-1166/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1166-1 | An issue body parses into an `ObligationGraph`; every enumerated requirement produces an `ObligationNode` anchored to seed meanings/roles. | Implemented: `rust/src/intent_formalization/obligations.rs` (`formalize_request`) builds on `obligation_ledger::ObligationNode::build` — no new ledger type — and classifies clauses against `print_stdout`, `ci_workflow_request`, and the program-request roles. Pinned by `rust/tests/unit/issue_1166_obligation_routing.rs`. |
+| R1166-2 | Two or more mentions of the same quoted literal produce exactly one output-literal node. | Implemented: `coreference_pass` merges by literal value across clauses; `two_identical_output_clauses_produce_one_node` proves three mentions (intro, "print exactly", Expected Output) yield one node and one value. |
+| R1166-3 | The executor derives its plan from obligation nodes and reports undischargeable nodes with byte spans. | Module delivered: the graph exposes `obligations_of_kind`, `gap_report` (node id + byte span + reason) for `gap_answer` consumers. Open wiring row: the `ci_workflow::requested_in` and `program_contract::explicit_stdout` call-site rewrites live in files owned by other slices of this batch; the terminal router's rewrite is delivered (see R1166-8). |
+| R1166-4 | A completed run emits an obligation report for each undischargeable node; none is silently omitted. | Delivered at module level: `ObligationGraph::gap_report` and `underivable()`; the executor emission is the same wiring row as R1166-3. |
+| R1166-5 | An underivable clause yields `ObligationExpectation::Underivable`, split or reported, never discarded. | Implemented and pinned: `unknown_requirement_clause_yields_underivable_node_not_panic` (the ledger's own expectation semantics; the classifier leaves such nodes unclassified). |
+| R1166-6 | A translated body (en/ru/hi/zh/es) yields the same graph modulo the language tag. | Implemented for the fixture family: `kotlin_issue_ru_yields_same_obligation_count_as_en` and `kotlin_issue_hi_zh_es_yield_same_graph_modulo_language_tag` over `rust/tests/fixtures/issue-1166/hello-world-kotlin-{en,ru,hi,zh,es}.txt`; classification reads the seed lexicon's multilingual lexemes with documented per-language fallback tables for the style/naming/badge vocabulary the seeds do not own yet. |
+| R1166-7 | A paraphrased body produces an equivalent graph. | Implemented: `paraphrase_en_yields_same_obligation_count_as_canonical_en` over `hello-world-kotlin-paraphrase-en.txt`. |
+| R1166-8 | Routing decides by the formalized request, not the leading word. | Implemented for the terminal router: `leading_shell_command` in `rust/src/solver_terminal.rs` now consults `request_carries_work_obligations` — a quoted output literal plus an authoring clause (program, CI, style, naming, badge) is a sentence about building something, in any of the five languages, while `git status` and `echo "Hello, World!"` stay commands (`work_obligation_requests_are_not_terminal_commands`). |

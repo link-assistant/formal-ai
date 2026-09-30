@@ -1,0 +1,9 @@
+Crea un pequeño programa en Kotlin que imprime "Hello, World!" en la consola.
+
+Primero, el programa debe imprimir exactamente: "Hello, World!"
+Luego, la salida esperada es:
+  "Hello, World!"
+Después, añade un workflow de GitHub Actions que ejecute la compilación en cada push a la rama main
+Después, usa un nombre significativo para el archivo del workflow, por ejemplo test-hello-world.yml
+Después, añade comentarios claros y sigue las buenas prácticas de Kotlin
+Finalmente, una insignia de CI (opcional)

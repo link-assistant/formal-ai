@@ -163,7 +163,12 @@ fn parses_as_command_arguments(rest: &str) -> bool {
 /// must also [`parse as command arguments`](parses_as_command_arguments) —
 /// "git status" and "find . -name '*.log'" are commands, "Find the bug: …"
 /// and "Make a 3-day itinerary …" are sentences that merely start like one
-/// (issue #1175).
+/// (issue #1175). And a request that
+/// [`formalizes into work obligations`](crate::intent_formalization::request_carries_work_obligations)
+/// — a quoted output literal plus an authoring clause, a file-naming clause —
+/// is a sentence about building something even when its language's marker
+/// words the argument check above does not know, so the obligation graph, not
+/// the leading word, decides (issue #1166).
 fn leading_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     let trimmed = prompt.trim().trim_matches('`').trim();
     let first = trimmed.split_whitespace().next()?;
@@ -176,7 +181,13 @@ fn leading_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Opt
         return None;
     }
     let rest = &trimmed[first.len()..];
-    parses_as_command_arguments(rest).then(|| trimmed.to_owned())
+    if !parses_as_command_arguments(rest) {
+        return None;
+    }
+    if crate::intent_formalization::request_carries_work_obligations(trimmed) {
+        return None;
+    }
+    Some(trimmed.to_owned())
 }
 
 /// Detect a terminal-command request and, if found, return the command text.
