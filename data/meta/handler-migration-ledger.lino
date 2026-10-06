@@ -48,7 +48,7 @@ handler_migration_ledger
   handler legality_warning
     status "justified-native"
     primitive "rust/src/legality_warning.rs"
-    justification "Issue 836 evaluates seeded legality patterns and exemptions before ordinary task routing; advisory wording is localized seed data."
+    justification "Issue 836 evaluates seeded legality patterns and exemptions before ordinary task routing; advisory wording is localized seed data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_reasoning_guards.js answers the same seed records in the worker."
   handler http_fetch
     status pending
   handler url_navigate
@@ -64,11 +64,11 @@ handler_migration_ledger
   handler formalization_request
     status "justified-native"
     primitive "rust/src/solver_handlers/formalization_task.rs"
-    justification "Issue 1186 parses quantified clauses and renders formal targets using seeded grammar and responses."
+    justification "Issue 1186 parses quantified clauses and renders formal targets using seeded grammar and responses. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_formalization_request.js answers the same seed records in the worker."
   handler product_search
     status "justified-native"
     primitive "rust/src/solver_handlers/product_search.rs"
-    justification "Issues 800 and 872 compose marketplace searches from seeded hosts, qualifiers, and localized responses."
+    justification "Issues 800 and 872 compose marketplace searches from seeded hosts, qualifiers, and localized responses. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_product_search.js answers the same seed records in the worker."
   handler web_search
     status pending
   handler learn_from_source
@@ -94,7 +94,7 @@ handler_migration_ledger
   handler summarization_text
     status "justified-native"
     primitive "rust/src/solver_handlers/summarization_request.rs"
-    justification "Free-text summarization composes the compressed summary in Rust under a length bound that can never echo the input; the topic tables, stop-word lists, and every response template are seed data."
+    justification "Free-text summarization composes the compressed summary in Rust under a length bound that can never echo the input; the topic tables, stop-word lists, and every response template are seed data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_text_transform.js answers the same seed records in the worker."
   handler summarization
     status pending
   handler verifiable_task
@@ -128,7 +128,7 @@ handler_migration_ledger
   handler text_rewrite
     status "justified-native"
     primitive "rust/src/solver_handlers/text_rewrite.rs"
-    justification "Register substitution tables, agreement rules, and genre style guides are seed data; the in-place rewrite engine that applies them is a compiled primitive."
+    justification "Register substitution tables, agreement rules, and genre style guides are seed data; the in-place rewrite engine that applies them is a compiled primitive. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_text_transform.js answers the same seed records in the worker."
   handler response_language_followup
     status pending
   handler capabilities
@@ -150,7 +150,7 @@ handler_migration_ledger
   handler word_problem
     status "justified-native"
     primitive "rust/src/solver_handlers/statistics.rs"
-    justification "Price-times-count relation extraction runs as a compiled primitive over the seed marker vocabulary; the derivations render from localized response templates."
+    justification "Price-times-count relation extraction runs as a compiled primitive over the seed marker vocabulary; the derivations render from localized response templates. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_statistics.js answers the same seed records in the worker."
   handler numeric_list
     status pending
   handler shell_command_transform
@@ -175,7 +175,7 @@ handler_migration_ledger
     status migrated
     data "data/seed/meanings-number-constraints.lino"
     primitive "rust/src/number_constraints.rs"
-    justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved."
+    justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_number_constraints.js answers the same seed records in the worker."
     held_out "rust/tests/unit/issue_699_handler_migration.rs"
   handler code_explanation
     status "justified-native"
@@ -210,7 +210,7 @@ handler_migration_ledger
   handler statistics
     status "justified-native"
     primitive "rust/src/solver_handlers/statistics.rs"
-    justification "Exact decimal statistics computation is a compiled primitive; the operation meanings and every response template are seed data."
+    justification "Exact decimal statistics computation is a compiled primitive; the operation meanings and every response template are seed data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_statistics.js answers the same seed records in the worker."
   handler javascript_execution
     status "justified-native"
     primitive "rust/src/solver_handlers/mod.rs"
@@ -224,7 +224,7 @@ handler_migration_ledger
   handler triz_resolution
     status "justified-native"
     primitive "rust/src/triz_solver.rs"
-    justification "Issue 901 resolves seeded contradiction families and benchmark methods through the native scoring interpreter."
+    justification "Issue 901 resolves seeded contradiction families and benchmark methods through the native scoring interpreter. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_triz.js answers the same seed records in the worker."
   handler concept_lookup
     status pending
   handler who_is
@@ -259,25 +259,25 @@ handler_migration_ledger
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/rule_interpreter.rs"
-    justification "issue #1085 D1.3: A single role condition and the seeded clarification reply."
+    justification "issue #1085 D1.3: A single role condition and the seeded clarification reply. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler punctuation_only_prompt
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
     primitive "rust/src/rule_interpreter.rs"
-    justification "issue #1085 D1.3: A character-set condition over the trimmed prompt; the wording moved from a Rust format string into seed responses."
+    justification "issue #1085 D1.3: A character-set condition over the trimmed prompt; the wording moved from a Rust format string into seed responses. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler ill_formed
     status migrated
     data "data/seed/handler-rules.lino"
     primitive "rust/src/rule_interpreter.rs"
-    justification "issue #1085 D1.3: A phrase and an unbalanced-parentheses condition answering with the shared unknown response."
+    justification "issue #1085 D1.3: A phrase and an unbalanced-parentheses condition answering with the shared unknown response. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler physical_action_question
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-policy.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/rule_interpreter.rs"
-    justification "issue #1085 D1.3: A raw role condition with the seeded reply and its Russian fallback expressed as rule data."
+    justification "issue #1085 D1.3: A raw role condition with the seeded reply and its Russian fallback expressed as rule data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler kupi_slona
     status migrated
@@ -297,12 +297,12 @@ handler_migration_ledger
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
     primitive "rust/src/rule_interpreter.rs"
-    justification "issue #1085 D1.3: Fifteen opener prefixes as rule data; the no-opinion wording moved into seed responses in four languages."
+    justification "issue #1085 D1.3: Fifteen opener prefixes as rule data; the no-opinion wording moved into seed responses in four languages. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler unit_conversion
     status "justified-native"
     primitive "rust/src/solver_handlers/unit_conversion.rs"
-    justification "Exact decimal conversion arithmetic is a compiled primitive; the unit factors, conversion formulas, and response templates are seed data."
+    justification "Exact decimal conversion arithmetic is a compiled primitive; the unit factors, conversion formulas, and response templates are seed data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_units.js answers the same seed records in the worker."
   handler incompatible_units
     status pending
   handler diagnostic

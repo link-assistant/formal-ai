@@ -134,21 +134,17 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryMemoryInspection" });
     return finalize(events, steps, toolCalls, memoryInspection, formalizationContext);
   }
-  if (isPunctuationOnlyPrompt(prompt)) {
+  // The punctuation_only_prompt registry row runs here, ahead of the
+  // translation and lookup probes, through the seed rule interpreter
+  // (data/seed/handler-rules.lino) so its wording is the seeded response.
+  const punctuationOnly = isPunctuationOnlyPrompt(prompt)
+    ? tryPunctuationOnlyPrompt(prompt, normalized)
+    : null;
+  if (punctuationOnly) {
     events.push("handler:clarification");
     events.push(`clarification:punctuation_only:${String(prompt).trim()}`);
     steps.push({ step: "dispatch_handler", detail: "tryPunctuationOnlyPrompt" });
-    const trimmed = String(prompt).trim();
-    return finalize(events, steps, toolCalls, {
-      intent: "clarification",
-      content: `I received only punctuation (\`${trimmed}\`). What would you like me to do next?`,
-      confidence: 0.8,
-      evidence: [
-        "handler:clarification",
-        "clarification:punctuation_only",
-        `language:${language}`,
-      ],
-    }, formalizationContext);
+    return finalize(events, steps, toolCalls, punctuationOnly, formalizationContext);
   }
   const translation = await tryTranslation(prompt, normalized);
   if (translation) {
@@ -416,7 +412,10 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       ],
     }, formalizationContext);
   }
-  if (isIdentityPrompt(normalized, prompt)) {
+  // Issue #1085: an opinion opener ("what do you think about …") is the
+  // opinion_question row natively, which the identity route must not claim;
+  // the row itself answers from the synchronous table below.
+  if (isIdentityPrompt(normalized, prompt) && !tryOpinionQuestion(prompt, normalized)) {
     events.push("rule:identity");
     steps.push({ step: "match_rule", detail: "identity" });
     return finalize(events, steps, toolCalls, {
@@ -887,6 +886,11 @@ function withThinkingLevels(steps) {
   );
 }
 function finalize(events, steps, toolCalls, answer, formalizationContext) {
+  // Issue #1173 R5: no answer may be the canned search-machinery description.
+  answer = guardCannedWebSearchAnswer(
+    answer,
+    (formalizationContext && formalizationContext.language) || "en",
+  );
   const interpretations = collectInterpretations(formalizationContext, answer);
   answer = applyVisibleInterpretations(answer, interpretations);
   applyResolvedFormalization(events, steps, formalizationContext, answer);
@@ -959,13 +963,13 @@ function workerHandlerRegistryDefinition() {
     write_program_coreference: "@writeProgram",
     program_blueprint_from_prompt: "tryProgramBlueprintFromPrompt",
     write_program_concrete: "@writeProgram",
-    legality_warning: null, // native surface only: seeded advisory policy
+    legality_warning: "tryLegalityWarning",
     http_fetch: null, // phase async
     url_navigate: null, // phase async
     github_repository_traffic: "tryGithubRepositoryTraffic",
     document_originality_check: "tryDocumentOriginalityCheck",
-    formalization_request: null, // native surface only: quantified clause renderer
-    product_search: null, // native surface only: marketplace query composer
+    formalization_request: "tryFormalizationRequest",
+    product_search: "tryProductSearch",
     web_search: null, // phase async
     learn_from_source: null, // phase async
     research_comparison_table: "tryResearchComparisonTable",
@@ -975,7 +979,7 @@ function workerHandlerRegistryDefinition() {
     procedural_how_to_followup: null, // phase async
     conversation_memory: workerHandlerAliases.conversation_memory,
     software_project_followup: "trySoftwareProjectFollowup",
-    summarization_text: null, // native surface only: the text summarizer runs in the Rust core
+    summarization_text: "trySummarizationText",
     summarization: workerHandlerAliases.summarization,
     verifiable_task: "tryVerifiableTask",
     text_manipulation: "tryTextManipulation",
@@ -987,22 +991,22 @@ function workerHandlerRegistryDefinition() {
     coreference: workerHandlerAliases.coreference,
     roleplay: workerHandlerAliases.roleplay,
     creative_writing: null, // native surface only: constrained verse composition
-    translation: null, // native surface only
-    text_rewrite: null, // native surface only: register rewrites run in the Rust core
-    response_language_followup: null, // native rule surface only
+    translation: "tryTranslation", // async: runs inline ahead of the synchronous table
+    text_rewrite: "tryTextRewrite",
+    response_language_followup: "tryResponseLanguageFollowup", // async: replays the previous turn inline
     capabilities: "tryCapabilities",
     planning_request: null, // native surface only: feasible itinerary composition
     calendar_reasoning: "tryCalendarReasoning",
     calendar_create_event: "tryCalendarCreateEvent",
     compound_interest: "tryCompoundInterest",
-    word_problem: null, // native surface only: price-times-count prose solves in the Rust core
+    word_problem: "tryWordProblem",
     numeric_list: "tryNumericList",
     shell_command_transform: workerHandlerAliases.shell_command_transform,
     code_debugging: null, // native surface only: structural debugging guidance runs in the Rust core
     regex_synthesis: null, // native surface only: regex composition runs in the Rust core
     sql_synthesis: null, // native surface only: single-SELECT composition runs in the Rust core
     shell_command_compose: null, // native surface only: find composition runs in the Rust core
-    number_constraint_reasoning: null, // native surface only
+    number_constraint_reasoning: "tryNumberConstraintReasoning",
     code_explanation: null, // native surface only: the construct table walk runs in the Rust core
     code_review: null, // native surface only: the seeded review rules run in the Rust core
     test_generation: null, // native surface only: pytest suite emission runs in the Rust core
@@ -1010,10 +1014,10 @@ function workerHandlerRegistryDefinition() {
     format_conversion: null, // native surface only: JSON/YAML conversion runs in the Rust core
     program_synthesis: "tryProgramSynthesis",
     arithmetic: "tryArithmetic",
-    statistics: null, // native surface only: exact decimal statistics run in the Rust core
+    statistics: "tryStatistics",
     javascript_execution: "tryJavaScriptExecution",
     definition_merge: "@definitionMerge",
-    triz_resolution: null, // native surface only: contradiction families
+    triz_resolution: "tryTrizResolution",
     concept_lookup: "tryConceptLookup",
     who_is: workerHandlerAliases.who_is,
     how_it_works: null, // inline architecture-question machinery
@@ -1028,15 +1032,15 @@ function workerHandlerRegistryDefinition() {
     algorithm: null, // native surface only
     source_refresh: null, // phase async
     source_conflict: null, // native surface only
-    clarification: null, // native surface only
-    punctuation_only_prompt: null, // native surface only
-    ill_formed: null, // native surface only
-    physical_action_question: null, // native surface only
+    clarification: "tryClarification", // seed rule interpreter (handler-rules.lino)
+    punctuation_only_prompt: "tryPunctuationOnlyPrompt", // seed rule interpreter, run inline early
+    ill_formed: "tryIllFormed", // seed rule interpreter
+    physical_action_question: "tryPhysicalActionQuestion", // seed rule interpreter
     kupi_slona: "tryKupiSlona",
     shell_refusal: null, // native surface only
     proof_request: "tryProofRequest",
-    opinion_question: null, // native surface only
-    unit_conversion: null, // native surface only: exact decimal conversion runs in the Rust core
+    opinion_question: "tryOpinionQuestion", // seed rule interpreter
+    unit_conversion: "tryUnitConversion",
     incompatible_units: "tryIncompatibleUnits",
   };
   return { workerHandlers, workerHandlerAliases };

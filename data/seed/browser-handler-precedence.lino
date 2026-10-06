@@ -31,6 +31,15 @@ browser_handler_precedence
   handler tryHistorical
     argument_prompt
     argument_history
+  handler tryLegalityWarning
+    argument_prompt
+    argument_normalized
+  handler tryFormalizationRequest
+    argument_prompt
+    argument_normalized
+  handler tryProductSearch
+    argument_prompt
+    argument_normalized
   handler tryResearchComparisonTable
     argument_prompt
     argument_normalized
@@ -39,12 +48,17 @@ browser_handler_precedence
     argument_prompt
     argument_normalized
     argument_history
+  handler trySummarizationText
+    argument_prompt
+    argument_normalized
   handler tryBrainstormingRequest
     argument_prompt
     argument_normalized
   handler tryRoleplayRequest
     argument_prompt
     argument_normalized
+  handler tryTextRewrite
+    argument_prompt
   handler tryKupiSlona
     argument_prompt
     argument_normalized
@@ -58,6 +72,10 @@ browser_handler_precedence
     argument_language
   handler tryVerifiableTask
     argument_prompt
+  handler tryUnitConversion
+    argument_prompt
+    argument_normalized
+    argument_language
   handler tryIncompatibleUnits
     argument_prompt
     argument_normalized
@@ -77,9 +95,17 @@ browser_handler_precedence
     argument_prompt
     argument_normalized
     argument_history
+  handler tryWordProblem
+    argument_prompt
+    argument_normalized
+    argument_language
   handler tryNumericList
     argument_prompt
     argument_history
+  handler tryNumberConstraintReasoning
+    argument_prompt
+    argument_normalized
+    argument_language
   handler tryProgramSynthesis
     argument_prompt
     argument_normalized
@@ -89,6 +115,10 @@ browser_handler_precedence
     argument_history
   handler tryArithmetic
     argument_prompt
+  handler tryStatistics
+    argument_prompt
+    argument_normalized
+    argument_language
   handler tryJavaScriptExecution
     argument_prompt
   handler tryInstallationConversion
@@ -99,6 +129,9 @@ browser_handler_precedence
     result_intent_write_program
   handler tryDefinitionMerge
     context_binding_definitionMerge
+  handler tryTrizResolution
+    argument_prompt
+    argument_normalized
   handler trySoftwareProjectFollowup
     argument_prompt
     argument_history
@@ -109,3 +142,15 @@ browser_handler_precedence
   handler trySoftwareProjectRequest
     argument_prompt
     argument_history
+  handler tryClarification
+    argument_prompt
+    argument_normalized
+  handler tryIllFormed
+    argument_prompt
+    argument_normalized
+  handler tryPhysicalActionQuestion
+    argument_prompt
+    argument_normalized
+  handler tryOpinionQuestion
+    argument_prompt
+    argument_normalized

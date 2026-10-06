@@ -31,6 +31,7 @@ seed_registry
     bundle true
   seed agreement-rules
     bundle true
+    web true
   seed approved-lessons
     bundle true
   seed brainstorm-seeds
@@ -52,8 +53,10 @@ seed_registry
     bundle true
   seed code-review-rules
     bundle true
+    web true
   seed code-task-cues
     bundle true
+    web true
   seed coding-guidance
     bundle true
   seed coding-idioms
@@ -101,6 +104,7 @@ seed_registry
     web true
   seed formal-targets
     bundle true
+    web true
   seed formalization-relations
     bundle true
     web true
@@ -118,6 +122,7 @@ seed_registry
     bundle true
   seed handler-rules
     bundle true
+    web true
   seed hello-world-programs
     bundle true
     web true
@@ -152,8 +157,10 @@ seed_registry
     bundle true
   seed legality-patterns
     bundle true
+    web true
   seed manual-pages
     bundle true
+    web true
   seed market-price-references
     bundle true
     web true
@@ -183,6 +190,7 @@ seed_registry
     web true
   seed meanings-code-structure-explanations
     bundle true
+    web true
   seed meanings-code-task-templates
     bundle true
   seed meanings-coding-catalog
@@ -602,6 +610,7 @@ seed_registry
     bundle true
   seed product-search-cues
     bundle true
+    web true
   seed program-cache-policy
     bundle true
   seed program-cst-grammars
@@ -622,6 +631,7 @@ seed_registry
     bundle true
   seed register-lexicon
     bundle true
+    web true
   seed release-timelines
     bundle true
   seed repository-command-allowlist
@@ -641,6 +651,7 @@ seed_registry
     web true
   seed si-unit-dimensions
     bundle true
+    web true
   seed small-model-catalog
     bundle true
   seed software-project-phrases
@@ -671,10 +682,12 @@ seed_registry
     web true
   seed triz-principles
     bundle true
+    web true
   seed unknown-openers
     web true
   seed writing-genre-styleguides
     bundle true
+    web true
   unregistered capability-routing
     owner "src/capability_routing.rs"
     reason "Wave T skeleton for issue 1138 plan 10 leaf 8: the decision table is read from disk by the routing module and its tests. Leaf 8 moves it into the bundle and regenerates the embedded registry."
