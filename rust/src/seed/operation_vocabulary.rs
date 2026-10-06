@@ -25,6 +25,24 @@ impl OperationLanguageForms {
                         .all(|token| normalized.contains(token.as_str()))
             })
     }
+
+    /// Where the earliest phrase, or the earliest token of a fully present
+    /// combo, starts in `normalized`.
+    fn first_position(&self, normalized: &str) -> Option<usize> {
+        let phrases = self
+            .phrases
+            .iter()
+            .filter_map(|phrase| normalized.find(phrase.as_str()));
+        let combos = self.combos.iter().filter_map(|combo| {
+            combo
+                .iter()
+                .map(|token| normalized.find(token.as_str()))
+                .collect::<Option<Vec<_>>>()?
+                .into_iter()
+                .min()
+        });
+        phrases.chain(combos).min()
+    }
 }
 
 /// One canonical operation token plus localized trigger phrases.
@@ -74,6 +92,22 @@ impl OperationVocabulary {
         self.operations
             .iter()
             .any(|op| op.canonical == canonical && op.matches(normalized))
+    }
+
+    /// Where the request first names the operation with this canonical token,
+    /// so a chain of operations runs in the order the request states them.
+    #[must_use]
+    pub fn position(&self, canonical: &str, normalized: &str) -> Option<usize> {
+        self.operations
+            .iter()
+            .filter(|op| op.canonical == canonical && op.matches(normalized))
+            .filter_map(|op| {
+                op.languages
+                    .values()
+                    .filter_map(|forms| forms.first_position(normalized))
+                    .min()
+            })
+            .min()
     }
 
     /// Every canonical operation token whose phrasing appears in the normalized

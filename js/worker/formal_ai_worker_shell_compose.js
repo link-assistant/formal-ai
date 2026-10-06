@@ -366,6 +366,9 @@ function handleShellCommandCompose(prompt, normalized) {
   for (const intent of shellComposeOtherIntents()) {
     if (codeTaskAnyCueMatches(intent, prompt, normalized)) return null;
   }
+  // An inline text payload under a seeded text operation is the text
+  // handler's, not a filesystem command (Rust `names_text_operation`).
+  if (parseTextManipulationRequest(normalized, normalized) !== null) return null;
   const log = codeTaskLog();
   codeTaskLogAppend(log, "shell_command_compose:request", "action + file context");
   let composed = shellComposeLineSlice(tokens, prompt);

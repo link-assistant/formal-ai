@@ -310,6 +310,21 @@ function operationFormMatches(normalized, operation) {
   );
 }
 
+// Where the earliest phrase, or the earliest token of a fully present combo,
+// starts in `normalized`; null when the operation is not named. Mirrors
+// OperationVocabulary::position in src/seed/operation_vocabulary.rs.
+function operationFirstPosition(normalized, operation) {
+  const source = String(normalized || "");
+  if (!operationFormMatches(source, operation)) return null;
+  const positions = (operation.phrases || []).map((phrase) => source.indexOf(phrase));
+  for (const combo of operation.combos || []) {
+    const tokens = combo.map((token) => source.indexOf(String(token || "")));
+    if (tokens.length && tokens.every((index) => index >= 0)) positions.push(Math.min(...tokens));
+  }
+  const found = positions.filter((index) => index >= 0);
+  return found.length ? Math.min(...found) : null;
+}
+
 // Issue #386: every canonical operation token whose phrasing appears in
 // `normalized`, in declaration order. Mirrors OperationVocabulary::detect in
 // src/seed/operation_vocabulary.rs (substring match, so a native verb still

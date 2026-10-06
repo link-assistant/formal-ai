@@ -225,6 +225,19 @@ fn handler_shell_compose_builds_find_command() {
     assert!(answer.contains("Not executed"), "{answer}");
 }
 
+/// R1017: an inline quoted text payload under a seeded text operation is the
+/// text handler's; "lines" alone is no filesystem operand for the composer.
+#[test]
+fn handler_shell_compose_defers_inline_text_operations() {
+    let prompt = "Count the lines in this text: 'a\nb\nc'";
+    let normalized = normalize_prompt(prompt);
+    let mut log = EventLog::new();
+    assert!(
+        formal_ai::handle_shell_command_compose(prompt, &normalized, &mut log).is_none(),
+        "shell compose must not claim: {prompt}"
+    );
+}
+
 #[test]
 fn handler_code_explanation_names_function_and_promise() {
     let answer = answer_of!(

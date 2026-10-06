@@ -3,7 +3,7 @@
 // A task it could not derive is made to work by a general mechanism in the
 // seed data, never a rule written for that one request. "Reverse the order of
 // words" failed while "reverse the words" worked: the English reverse_words row
-// had literal phrases only, and gained the token combo the other languages use.
+// had literal phrases only and gained the "order of" phrasings.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -48,3 +48,12 @@ for (const prompt of [
     assert.match(String(answer.content), /release CI green/u, JSON.stringify(answer));
   });
 }
+
+// A chain runs in the order the request names its steps, whatever order the
+// vocabulary declares the operations in; a count still ends the chain.
+test("R1017: text operations chain in the order the request states them", async () => {
+  const sortedFirst = await solve("Sort words and then reverse words: 'b a c'");
+  assert.match(String(sortedFirst.content), /^c b a$/u, JSON.stringify(sortedFirst));
+  const reversedFirst = await solve("Reverse words and then sort words: 'b a c'");
+  assert.match(String(reversedFirst.content), /^a b c$/u, JSON.stringify(reversedFirst));
+});

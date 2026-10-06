@@ -691,6 +691,33 @@ function appendSimpleTextOperations(normalized, operations) {
   if (textOperationMatches("count_characters", normalized)) {
     operations.push({ slug: "count_characters" });
   }
+  // The chain runs in the order the request names its steps ("sort the words
+  // and reverse them" sorts first); a count reduces the text to a number, so it
+  // ends the chain wherever it is named. Mirrors append_simple_operations.
+  const rank = (operation) => [
+    TEXT_COUNT_OPERATIONS.has(operation.slug) ? 1 : 0,
+    textOperationPosition(operation.slug, normalized) ?? -1,
+  ];
+  operations.sort((left, right) => {
+    const [a, b] = [rank(left), rank(right)];
+    return a[0] - b[0] || a[1] - b[1];
+  });
+}
+
+const TEXT_COUNT_OPERATIONS = new Set([
+  "count_occurrences",
+  "count_unique_words",
+  "count_words",
+  "count_lines",
+  "count_characters",
+]);
+
+function textOperationPosition(slug, normalized) {
+  const positions = operationVocabulary()
+    .filter((operation) => operation.slug === slug)
+    .map((operation) => operationFirstPosition(normalized, operation))
+    .filter((index) => index !== null);
+  return positions.length ? Math.min(...positions) : null;
 }
 
 function looksLikeInputFirstUnaryTextEdit(prompt, quoted) {

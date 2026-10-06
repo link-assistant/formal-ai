@@ -97,7 +97,8 @@ operation_vocabulary
     language en
       phrase "reverse words"
       phrase "reverse the words"
-      combo reverse+words
+      phrase "reverse the order of words"
+      phrase "reverse the order of the words"
     language ru
       phrase "обратный порядок слов"
       combo переверни+слова
@@ -203,6 +204,8 @@ operation_vocabulary
     language en
       phrase "count lines"
       phrase "line count"
+      phrase "count the lines"
+      phrase "number of lines"
     language ru
       phrase "количество строк"
       combo посчитай+строки

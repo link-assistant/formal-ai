@@ -613,6 +613,12 @@ pub fn handle_shell_command_compose(
     {
         return None;
     }
+    // An inline text payload under a seeded text operation (data/seed/
+    // operation-vocabulary.lino) is the text handler's, not a filesystem
+    // command. The raw prompt keeps the quotes the payload is read from.
+    if super::names_text_operation(&prompt.to_lowercase()) {
+        return None;
+    }
     log.append(
         "shell_command_compose:request",
         "action + file context".to_owned(),

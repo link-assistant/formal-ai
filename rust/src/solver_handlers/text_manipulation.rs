@@ -292,6 +292,15 @@ fn append_simple_operations(
     if vocabulary.matches("count_characters", normalized) {
         operations.push(TextOperation::CountCharacters);
     }
+    // The chain runs in the order the request names its steps ("sort the words
+    // and reverse them" sorts first); a count reduces the text to a number, so
+    // it ends the chain wherever it is named.
+    operations.sort_by_key(|operation| {
+        (
+            operation.yields_count(),
+            vocabulary.position(operation.slug(), normalized),
+        )
+    });
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -334,6 +343,17 @@ enum TextOperation {
 }
 
 impl TextOperation {
+    const fn yields_count(&self) -> bool {
+        matches!(
+            self,
+            Self::CountOccurrences { .. }
+                | Self::CountUniqueWords
+                | Self::CountWords
+                | Self::CountLines
+                | Self::CountCharacters
+        )
+    }
+
     const fn slug(&self) -> &'static str {
         match self {
             Self::Uppercase => "uppercase",

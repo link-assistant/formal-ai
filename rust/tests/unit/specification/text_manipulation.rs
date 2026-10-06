@@ -889,3 +889,17 @@ fn apostrophe_delimited_operands_are_recognized_in_every_supported_language() {
         );
     }
 }
+
+#[test]
+fn chained_operations_run_in_the_order_the_request_states_them() {
+    // R1017: the chain follows the request, not the vocabulary's declaration
+    // order; a count still ends the chain wherever it is named.
+    let solver = text_solver();
+    let sorted_first = solver.solve("Sort words and then reverse words: 'b a c'");
+    assert_eq!(sorted_first.intent, "text_manipulation");
+    assert_eq!(sorted_first.answer, "c b a");
+    let reversed_first = solver.solve("Reverse words and then sort words: 'b a c'");
+    assert_eq!(reversed_first.answer, "a b c");
+    let reworded = solver.solve("Reverse the order of words: 'green CI release'");
+    assert_eq!(reworded.answer, "release CI green");
+}
