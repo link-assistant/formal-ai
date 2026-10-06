@@ -1,8 +1,8 @@
 //! The weekday a stated calendar date falls on (R1017).
 //!
 //! "What day of the week was 2024-02-29?" is pure calendar arithmetic: the
-//! date is day 19 782 counted from 1970-01-01 (a Thursday), 19 782 = 7 × 2 826
-//! + 0, so it is a Thursday. The question is recognised by the
+//! date is day 19 782 counted from 1970-01-01 (a Thursday), and
+//! 19 782 = 7 × 2 826 + 0, so it is a Thursday. The question is recognised by the
 //! `calendar_weekday_query` role ("day of the week", "weekday", "какой день",
 //! 星期几…) and the month names by `calendar_month_name`, both in
 //! `data/seed/meanings-calendar.lino`; the prose is the `calendar_date_weekday`

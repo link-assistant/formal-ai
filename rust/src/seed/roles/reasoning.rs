@@ -472,9 +472,10 @@ pub const ROLE_CALCULATION_DOMAIN_TERM: &str = "calculation_domain_term";
 /// `logarithm`, `natural_logarithm`); read by the Rust calculation router and the
 /// JS worker.
 pub const ROLE_MATH_FUNCTION_NAME: &str = "math_function_name";
-/// Semantic role: the word joining a spelled function name to its argument
-/// ("square root *of* 144", "корень *из* 144"). The calculator rewrites
-/// "<function> <marker> <number>" into call syntax ("sqrt(144)") before
+/// Semantic role: the word joining a spelled function name to its argument.
+///
+/// ("square root *of* 144", "корень *из* 144".) The calculator rewrites
+/// "`<function> <marker> <number>`" into call syntax ("sqrt(144)") before
 /// evaluation (R1017); carried by `math_function_argument`.
 pub const ROLE_MATH_FUNCTION_ARGUMENT_MARKER: &str = "math_function_argument_marker";
 /// Semantic role: the "combine the numbers" framing of a reachability search.

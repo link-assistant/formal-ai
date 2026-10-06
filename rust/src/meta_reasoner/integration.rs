@@ -121,9 +121,11 @@ pub fn try_meta_answer(
     Some(project(prompt, log, answer))
 }
 
-/// Discovery before research: when no handler took the turn and the request
-/// asks for an artifact, the loop looks up the words it could not ground and
-/// answers if a program now derives, before any external research runs.
+/// Discovery before research.
+///
+/// When no handler took the turn and the request asks for an artifact, the
+/// loop looks up the words it could not ground and answers if a program now
+/// derives, before any external research runs.
 ///
 /// Mirrors the `metaReasonTurn` step ahead of `unknown_intent_research` in
 /// `solveImpl` (`js/worker/formal_ai_worker_20.js`).

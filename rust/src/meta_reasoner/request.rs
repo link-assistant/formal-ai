@@ -1,5 +1,6 @@
-//! The request's shape beyond its literals: location operands ("any file in
-//! data"), the imperative mood ("replace every colon ..."), and where a word
+//! The request's shape beyond its literals.
+//!
+//! Location operands ("any file in data"), the imperative mood ("replace every colon ..."), and where a word
 //! stands, so values named by words keep the request's order.
 //!
 //! Originals: `metaLocationOperands`, `metaWordPosition` and the imperative
@@ -46,8 +47,9 @@ pub fn names_operation(word: &str, language: &str) -> bool {
     top.len() <= BOUNDS.required_group_size && !top.iter().all(|id| seed.is_view(id))
 }
 
-/// Location operands: the bare name right after a locative cue that follows
-/// a file noun, a word whose documented operations all take or give a path.
+/// Location operands.
+///
+/// The bare name right after a locative cue that follows a file noun, a word whose documented operations all take or give a path.
 /// A name with no determiner is a proper name ("in data"); "in a folder"
 /// names no operand.
 ///
@@ -108,13 +110,11 @@ fn bare_name(text: &str) -> &str {
     while let Some((index, character)) = characters.next() {
         if word(character) {
             end = index + character.len_utf8();
-        } else if matches!(character, '.' | '-')
+        } else if !(matches!(character, '.' | '-')
             && end == index
             && end > 0
-            && characters.peek().is_some_and(|(_, next)| word(*next))
+            && characters.peek().is_some_and(|(_, next)| word(*next)))
         {
-            continue;
-        } else {
             break;
         }
     }

@@ -673,16 +673,19 @@ pub fn handle_shell_command_compose(
     let (body, confidence) = if let Some(composed) = composition {
         log.append("shell_command_compose:command", composed.command.clone());
         let flags = flag_lines(&composed.explained);
-        let (intent, pipe_tool, pipe_package, pipe_flags, pipe_manual) = match &composed.pipe {
-            Some(pipe) => (
-                "shell_command_piped",
-                pipe.tool.as_str(),
-                pipe.manual.package.as_str(),
-                flag_lines(&pipe.explained),
-                pipe.manual.url.as_str(),
-            ),
-            None => ("shell_command_composed", "", "", String::new(), ""),
-        };
+        let (intent, pipe_tool, pipe_package, pipe_flags, pipe_manual) =
+            composed.pipe.as_ref().map_or_else(
+                || ("shell_command_composed", "", "", String::new(), ""),
+                |pipe| {
+                    (
+                        "shell_command_piped",
+                        pipe.tool.as_str(),
+                        pipe.manual.package.as_str(),
+                        flag_lines(&pipe.explained),
+                        pipe.manual.url.as_str(),
+                    )
+                },
+            );
         (
             template(
                 intent,
