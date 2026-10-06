@@ -45,7 +45,7 @@ const metaCompiled = new Map();
 function metaSeed() {
   if (metaSeedCache) return metaSeedCache;
   const text = typeof SEED_RAW === "object" ? seedRawText(SEED_RAW, META_REASONING_FILE) : "";
-  const seed = { cues: {}, grammatical: {}, affixes: {}, degrees: {}, primitives: [], combinators: [], filters: [], selectors: [], probes: {}, responses: {}, notes: {}, impasse: { intents: [], suffixes: [] } };
+  const seed = { cues: {}, grammatical: {}, affixes: {}, degrees: {}, primitives: [], combinators: [], filters: [], selectors: [], probes: {}, responses: {}, notes: {}, impasse: { intents: [], suffixes: [], named: [] } };
   if (!text) return seed;
   const root = parseLinoTree(text);
   for (const top of root.children) {
@@ -97,7 +97,7 @@ function metaSeed() {
         seed.selectors.push({ id: record.value, doc: field("doc"), test: field("test") });
       } else if (record.name === "impasse") {
         seed.impasse.intents.push(...fields("intent"));
-        seed.impasse.suffixes.push(...fields("suffix"));
+        seed.impasse.suffixes.push(...fields("suffix")); seed.impasse.named.push(...fields("named_suffix"));
       } else if (record.name === "probe") {
         seed.probes[field("type")] = (seed.probes[field("type")] || []).concat(fields("value"));
       } else if (record.name === "note") {
@@ -1155,7 +1155,7 @@ async function metaResolveImpasse(prompt, answer, preferences) {
   if (!answer || !metaIsImpasseIntent(answer.intent)) return answer;
   const language = typeof detectLanguage === "function" ? detectLanguage(prompt) : "en";
   const meta = await metaReasonTurn(prompt, language, preferences);
-  const resolved = metaAnswer(meta, true);
+  const resolved = metaAnswer(meta, !metaSeed().impasse.named.some((suffix) => answer.intent.endsWith(suffix))); // a named gap yields only to a program (Rust `MetaSeed::names_gap`)
   const impasseStep = { step: "meta_impasse", detail: `${answer.intent} → general loop: ${meta.goal} ${meta.status}`, derivation: meta.derivationLino, level: "high" };
   // The trace still ends by projecting the answer out of the formalization.
   const steps = (answer.steps || []).slice();

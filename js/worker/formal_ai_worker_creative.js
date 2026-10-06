@@ -553,7 +553,7 @@ function tryBrainstormComposition(prompt, normalized) {
   trace.push(`brainstorming:pool:${pool.length}`);
   const candidates = creativeSelectCandidates(pool, topics, count, maxLength, excluded, metric);
   if (candidates.length === 0) return refusal("no candidate passed");
-  trace.push(`brainstorming:candidates:${candidates.join(", ")}`);
+  trace.push(`brainstorming:candidates:${candidates.join(", ")}`, ...candidates.map((candidate) => `candidate:brainstorming:${candidate}`));
   const listed = candidates.map((candidate, index) => `${index + 1}. ${candidate}`).join("\n");
   const pronounce = `at most ${maxLength} characters, pronounceable (carries a vowel, no digits)`;
   const constraints = excluded.length === 0

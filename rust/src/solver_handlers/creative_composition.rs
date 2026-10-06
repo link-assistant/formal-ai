@@ -588,6 +588,11 @@ pub fn handle_brainstorm_request(
         ));
     }
     log.append("brainstorming:candidates", candidates.join(", "));
+    // Each kept candidate is an explored option of the reasoning loop's
+    // candidate-generation step, linked on its own.
+    for candidate in &candidates {
+        log.append("candidate", format!("brainstorming:{candidate}"));
+    }
 
     let listed = candidates
         .iter()

@@ -416,7 +416,7 @@ function shellComposeLsListing(tokens, prompt) {
 function handleShellCommandCompose(prompt, normalized) {
   const tokens = codeTaskTokens(normalized);
   const actions = codeTaskCuePhrases("shell_command_compose", "action");
-  if (!tokens.some(function (token) { return actions.includes(token); })) return null;
+  if (isAgentTextRequest(prompt.toLowerCase()) || !tokens.some(function (token) { return actions.includes(token); })) return null; // an agent opt-in is the agent flow's
   const fileContext = codeTaskMapWords("file_context");
   if (!tokens.some(function (token) { return fileContext.includes(token); })) return null;
   // A requested function/program is program synthesis, not a shell command.

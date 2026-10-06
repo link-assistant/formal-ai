@@ -555,35 +555,49 @@ fn summarization_intent_routes_to_summarization_handler() {
     }
 }
 
-const BRAINSTORMING_PROMPTS: &[&str] = &[
-    "Give me five ideas for an open-source side project.",
-    "Brainstorm ten names for a code review tool.",
-    "Suggest five open-source utilities for developers.",
-    "Brainstorm 5 small tools for link notation.",
-    "Give me 5 ideas for a local-first AI helper.",
-    "Brainstorm ten names for a symbolic assistant.",
+/// Brainstorming prompts, with whether the topic composer owns them.
+///
+/// Issue #1178 moved topic-bearing name requests (`names for a`, `ideas for
+/// a`, see `data/seed/meanings-creative-tasks.lino`) from the memorized
+/// dev-tool name pool to candidates composed from the request's own topic
+/// words; the remaining prompts keep the seeded brainstorm list.
+const BRAINSTORMING_PROMPTS: &[(&str, bool)] = &[
+    ("Give me five ideas for an open-source side project.", false),
+    ("Brainstorm ten names for a code review tool.", true),
+    ("Suggest five open-source utilities for developers.", false),
+    ("Brainstorm 5 small tools for link notation.", false),
+    ("Give me 5 ideas for a local-first AI helper.", true),
+    ("Brainstorm ten names for a symbolic assistant.", true),
 ];
 
 #[test]
 fn brainstorming_intent_routes_to_brainstorm_handler() {
-    for prompt in BRAINSTORMING_PROMPTS {
+    for &(prompt, composed) in BRAINSTORMING_PROMPTS {
         let response = answer(prompt);
         assert!(
             response.intent.starts_with("brainstorm"),
             "prompt {prompt:?} should route to a brainstorm* intent, got: {}",
             response.intent,
         );
-        let expected_last_number = if prompt.contains("ten") { "10." } else { "5." };
-        let expected_answer = if prompt.contains("ten") {
-            "1. TraceLint\n2. ReviewLink\n3. PatchSignal\n4. DiffAnchor\n5. CodeLedger\n6. SymbolScribe\n7. RuleBeacon\n8. LinkHarbor\n9. TraceForge\n10. PromptLedger"
-        } else {
-            "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs."
-        };
-        assert_eq!(response.answer, expected_answer);
-        assert!(
-            response.answer.contains(expected_last_number),
-            "prompt {prompt:?} should return the requested number of ideas, got: {}",
+        if composed {
+            assert!(
+                response.answer.contains("name candidates for the concepts")
+                    && response.answer.contains("1. ")
+                    && response.answer.contains("levenshtein"),
+                "prompt {prompt:?} should compose ranked candidates from its topic, got: {}",
+                response.answer,
+            );
+            assert!(
+                !response.answer.contains("TraceLint"),
+                "prompt {prompt:?} must not recite the memorized name pool, got: {}",
+                response.answer,
+            );
+            continue;
+        }
+        assert_eq!(
             response.answer,
+            "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.",
+            "prompt {prompt:?} keeps the seeded brainstorm list",
         );
     }
 }

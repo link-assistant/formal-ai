@@ -52,6 +52,9 @@
 #                not do the task (an exact intent, or a `suffix`). Such an
 #                answer is an impasse, not a result — the turn is handed to the
 #                general loop, which answers when it can derive a program.
+#                A `named_suffix` intent already names the missing skill, its
+#                language and its task, so only a derived program replaces it;
+#                an open reply naming what is still unknown would lose it.
 
 meta_reasoning
   cue
@@ -453,6 +456,7 @@ meta_reasoning
     intent unknown
     suffix _skill_gap
     suffix _unspecified
+    named_suffix _skill_gap
   probe
     type text
     value "hello world"

@@ -661,8 +661,8 @@ function testGenerationNormalizeHelper(properties) {
  * @returns {object|null} the worker answer, or null
  */
 function handleTestGeneration(prompt, normalized) {
-  if (!codeTaskCued("test_generation", "request", prompt, normalized)) return null;
-  const lower = prompt.toLowerCase();
+  const lower = prompt.toLowerCase(); // an agent opt-in is the agent flow's (Rust `is_agent_opt_in`)
+  if (isAgentTextRequest(lower) || !codeTaskCued("test_generation", "request", prompt, normalized)) return null;
   const log = codeTaskLog();
   codeTaskLogAppend(log, "test_generation:request", "cued");
   const fn = testGenerationFunctionName(prompt);

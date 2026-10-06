@@ -2,7 +2,7 @@ core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 78
-  source_lines_max 32176
+  source_lines_max 32191
   outside_core_file_count_max 51
   outside_core_lines_max 20419
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
@@ -10,6 +10,7 @@ core_boundary_ledger
   note "Re-measured 2026-10-07 for the PR #1188 gate sweep. The R379 migration moved the constraint-check, planning-feasibility, brainstorming-constraint and advice-ordering prose of creative_writing.rs, creative_writing_planning.rs and creative_composition.rs, and the prover-presence and derivation lines of formalization_task_render.rs, into seed response records rendered through template calls and append_fields evidence entries, which take more lines than the format strings they replace; unit_conversion.rs now renders its SI refusals through SiConversion::describe and was reflowed by rustfmt. The clippy sweep of the same batch shrank or reflowed the remaining rows. source_lines_max records the measured 31106 and outside_core_lines_max the measured 20255; every baseline is the measured tree."
   note "Re-measured again 2026-10-07 for the PR #1188 delegated-task batch (R1017, issues #1175 and #1176). Five sources joined the ledger as promoted generic interpreters, by the same test the code-task and creative interpreters passed: calendar/date_weekday.rs and calendar/month.rs are civil-date arithmetic over seeded month names and weekday cues, statistics/primality.rs is trial division recognised through a seeded number property, and numeric_list/stated_result.rs and text_request_framing.rs apply the seeded operation vocabulary; none embeds domain vocabulary or a canned answer, and each keeps its parent under the 1000-line gate. Seven rows grew with the arms that dispatch to them and with the routing fixes recorded in their reasons. source_lines_max records the measured 32237 and outside_core_lines_max the measured 20398 (calendar_create.rs and unit_conversion.rs grew with the #1175 routing fixes); every baseline is the measured tree. The growth is new computed capability in both runtimes, not regrowth of migrated prose; migration debt grows only through the seven re-measured rows."
   note "Re-measured 2026-10-07 for the PR #1188 code-probe routing batch: the code-task family shares one code_block extractor (three identical copies removed), and try_algorithm, numeric_list and text_manipulation gained seed-driven arms (the multilingual sort operation; a format-conversion cue outside the quoted literals reads the payload as data). source_lines_max records the measured 32176 and outside_core_lines_max the measured 20419."
+  note "Re-measured 2026-10-07 for the PR #1188 specification-red fixes: test_generation.rs and shell_command_compose.rs leave an agent opt-in to the agent flow, and creative_composition.rs links each kept brainstorm candidate, for 15 promoted-core lines; source_lines_max records the measured 32191 and outside_core_lines_max is unchanged."
   component retrieval_method_interpreter
     file rust/src/retrieval_method.rs
     kind "Generic interpreter"
@@ -101,9 +102,9 @@ core_boundary_ledger
     reason "Issue #1177: rule-matching engine over the five seed review rules with their sources; the rules are data, the matcher is the core interpreter. Re-measured 2026-10-07 for PR #1188: its private copy of code_block was removed in favour of the shared code_debugging::code_block."
   source rust/src/solver_handlers/creative_composition.rs
     disposition promote
-    baseline_lines 792
+    baseline_lines 797
     core_component creative_composition_interpreter
-    reason "Issue #1178: composes constrained names and advice from seed morphology, evidence grades, and response templates; the structural composer is core machinery."
+    reason "Issue #1178: composes constrained names and advice from seed morphology, evidence grades, and response templates; the structural composer is core machinery. Re-measured 2026-10-07 for PR #1188: each kept brainstorm candidate is linked as its own candidate event, the reasoning loop's candidate-generation step (797 lines)."
   source rust/src/solver_handlers/creative_writing.rs
     disposition promote
     baseline_lines 637
@@ -296,9 +297,9 @@ core_boundary_ledger
     reason "Capability and architecture claims must remain auditable data rather than compiled assertions."
   source rust/src/solver_handlers/shell_command_compose.rs
     disposition promote
-    baseline_lines 722
+    baseline_lines 727
     core_component shell_command_compose_interpreter
-    reason "Issue #1177: assembles find commands from the seed command vocabulary and the cited manual pages in manual-pages.lino; composition logic is core, the verbs and manuals are data. Re-measured 2026-10-07 for PR #1188: the composer reads its words from the seeded shell_cue map and composes counting pipelines ending in wc -l (719 lines). The clippy option_if_let_else fix spells the piped/composed choice as map_or_else (722 lines)."
+    reason "Issue #1177: assembles find commands from the seed command vocabulary and the cited manual pages in manual-pages.lino; composition logic is core, the verbs and manuals are data. Re-measured 2026-10-07 for PR #1188: the composer reads its words from the seeded shell_cue map and composes counting pipelines ending in wc -l (719 lines). The clippy option_if_let_else fix spells the piped/composed choice as map_or_else (722 lines). Re-measured 2026-10-07 for PR #1188: an agent opt-in is left to the agent flow, which runs the command in the sandbox (727 lines)."
   source rust/src/solver_handlers/shell_command_transform.rs
     disposition migrate
     baseline_lines 272
@@ -346,9 +347,9 @@ core_boundary_ledger
     reason "Decomposition heuristics and examples are problem-solving metadata."
   source rust/src/solver_handlers/test_generation.rs
     disposition promote
-    baseline_lines 436
+    baseline_lines 441
     core_component test_generation_interpreter
-    reason "Issue #1177: fills the seed pytest templates for the three recognized problem shapes; shape recognition and the emitter are the core interpreter."
+    reason "Issue #1177: fills the seed pytest templates for the three recognized problem shapes; shape recognition and the emitter are the core interpreter. Re-measured 2026-10-07 for PR #1188: an agent opt-in is left to the agent flow, which acts on the workspace (441 lines)."
   source rust/src/solver_handlers/text_edit_ops.rs
     disposition migrate
     baseline_lines 328

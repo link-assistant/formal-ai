@@ -127,6 +127,8 @@ pub struct MetaSeed {
     pub impasse_intents: Vec<String>,
     /// Intent suffixes by which a handler admits an impasse.
     pub impasse_suffixes: Vec<String>,
+    /// Impasse suffixes that already name the missing skill.
+    pub named_gap_suffixes: Vec<String>,
     /// The documentation index: every operation with its forms.
     pub operations: Vec<Operation>,
     /// Document frequency of every form over the operations.
@@ -261,6 +263,8 @@ impl MetaSeed {
             "impasse" => {
                 self.impasse_intents.extend(fields(record, "intent"));
                 self.impasse_suffixes.extend(fields(record, "suffix"));
+                self.named_gap_suffixes
+                    .extend(fields(record, "named_suffix"));
             }
             "probe" => {
                 self.probes
@@ -545,6 +549,18 @@ impl MetaSeed {
                 .impasse_suffixes
                 .iter()
                 .any(|suffix| intent.ends_with(suffix.as_str()))
+    }
+
+    /// True when a handler's impasse already names the missing skill.
+    ///
+    /// Only a derived program replaces such an answer; an open reply would
+    /// lose the named gap. Mirrors the `named` check in `metaResolveImpasse`,
+    /// `js/worker/formal_ai_worker_meta_reasoner.js`.
+    #[must_use]
+    pub fn names_gap(&self, intent: &str) -> bool {
+        self.named_gap_suffixes
+            .iter()
+            .any(|suffix| intent.ends_with(suffix.as_str()))
     }
 }
 

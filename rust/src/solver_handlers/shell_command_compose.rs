@@ -625,6 +625,11 @@ pub fn handle_shell_command_compose(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // An agent opt-in is the agent flow's to serve: it runs the command in
+    // the sandbox, where this composer only prints one.
+    if crate::solver_helpers::is_agent_opt_in(&prompt.to_lowercase()) {
+        return None;
+    }
     let normalized_tokens = tokens(normalized);
     let actions = cue_phrases(INTENT, "action");
     let has_action = normalized_tokens

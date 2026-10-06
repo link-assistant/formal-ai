@@ -341,6 +341,11 @@ pub fn handle_test_generation(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let lower = prompt.to_lowercase();
+    // An agent opt-in is the agent flow's to serve: it acts on the workspace,
+    // where this chat composer only prints a suite.
+    if crate::solver_helpers::is_agent_opt_in(&lower) {
+        return None;
+    }
     let cued = cue_phrases(INTENT, "request")
         .iter()
         .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()));

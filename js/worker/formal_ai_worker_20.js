@@ -1,4 +1,8 @@
 // Worker module 21 of 21. Loaded by ../formal_ai_worker.js.
+function isTargetlessProgramModification(normalized) { // "Reverse it.": Rust `looks_like_ambiguous_program_modification`
+  const mentions = (role) => lexiconMentionsRole(role, normalized);
+  return mentions(ROLE_PROGRAM_MODIFICATION) && mentions(ROLE_PROGRAM_MODIFICATION_REFERENCE) && !mentions(ROLE_PROGRAM_ARTIFACT);
+}
 async function solve(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
   // Issue #556: activate the forced response language for the whole replay and
   // always restore the previous value, so a nested follow-up replay never
@@ -100,7 +104,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   events.push(`meta:${meta.goal}:${meta.status}`);
   steps.push({ step: "meta_reason", detail: `${meta.goal} ${meta.status}`, derivation: meta.derivationLino });
   // A bare imperative after earlier turns refines their artifact: it never takes the turn ahead of the handlers.
-  if (meta.status === "solved" && (meta.program || meta.subgoals) && !(meta.imperative && history?.length)) {
+  if (meta.status === "solved" && (meta.program || meta.subgoals) && !(meta.imperative && history?.length) && !isTargetlessProgramModification(normalized)) {
     events.push("handler:meta_reasoner");
     return finalize(events, steps, toolCalls, solverMetaProjection(metaAnswer(meta)), formalizationContext);
   }
@@ -720,11 +724,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   const howItWorks = tryHowItWorks(prompt, history);
   if (howItWorks) return finalizeInlineHandler(events, steps, toolCalls, howItWorks, "tryHowItWorks", formalizationContext);
 
-  if (
-    lexiconMentionsRole(ROLE_PROGRAM_MODIFICATION, normalized) &&
-    lexiconMentionsRole(ROLE_PROGRAM_MODIFICATION_REFERENCE, normalized) &&
-    !lexiconMentionsRole(ROLE_PROGRAM_ARTIFACT, normalized)
-  ) {
+  if (isTargetlessProgramModification(normalized)) {
     events.push("handler:ambiguous_modification_clarification");
     steps.push({ step: "dispatch_handler", detail: "clarifyProgramModificationTarget" });
     return finalize(events, steps, toolCalls, {

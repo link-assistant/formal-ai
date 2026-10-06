@@ -694,7 +694,7 @@ routing_probes
     language en
     intent write_program
     prompt "Write a program in Rust that prints hello"
-    js_misroute meta_reasoning_open
+    js_misroute write_program_skill_gap
     rust_misroute unverified
   probe p353
     lane write_program
@@ -711,7 +711,7 @@ routing_probes
     language ru
     intent write_program
     prompt "Напиши программу на Python, которая печатает привет"
-    js_misroute meta_reasoning_open
+    js_misroute write_program_skill_gap
     rust_misroute unverified
   probe p356
     lane write_program

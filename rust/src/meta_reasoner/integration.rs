@@ -94,7 +94,9 @@ fn project(prompt: &str, log: &mut EventLog, answer: MetaAnswer) -> SymbolicAnsw
 ///
 /// A bare imperative after earlier turns (`follows_turns`) refines the
 /// artifact those turns produced, which the request does not carry, so it
-/// never takes the turn ahead of the handlers.
+/// never takes the turn ahead of the handlers. Neither does a modification
+/// that points at an artifact it does not carry ("Reverse it."): the
+/// clarification handler asks which artifact is meant.
 ///
 /// Mirrors the `metaReason(prompt, language, {})` step at the top of
 /// `solveImpl` in `js/worker/formal_ai_worker_20.js`.
@@ -104,6 +106,11 @@ pub fn try_meta_answer(
     follows_turns: bool,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if crate::program_coreference::looks_like_ambiguous_program_modification(
+        &crate::engine::normalize_prompt(prompt),
+    ) {
+        return None;
+    }
     let mut knowledge = Knowledge::new();
     let meta = meta_reason(prompt, language, &mut knowledge, None);
     if meta.status != "solved"
@@ -155,7 +162,8 @@ pub fn try_meta_discovery(
 ///
 /// When the loop derives a program (or can name what is still unknown), its
 /// answer replaces the admission; otherwise the handler's answer stands,
-/// carrying the derivation on the log.
+/// carrying the derivation on the log. An impasse that already names the
+/// missing skill (a seed `named_suffix`) is replaced only by a program.
 ///
 /// Mirrors `metaResolveImpasse` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 pub fn resolve_impasse(prompt: &str, answer: &mut SymbolicAnswer, log: &mut EventLog) {
@@ -164,7 +172,7 @@ pub fn resolve_impasse(prompt: &str, answer: &mut SymbolicAnswer, log: &mut Even
     }
     let language = crate::language::detect(prompt).slug();
     let meta = meta_reason_turn(prompt, language);
-    let resolved = meta_answer(&meta, true);
+    let resolved = meta_answer(&meta, !meta_seed().names_gap(&answer.intent));
     log.append(
         "meta_impasse",
         fill(IMPASSE_HANDOFF, &[&answer.intent, &meta.goal, &meta.status]),

@@ -122,7 +122,7 @@ fn_is_language_reanswer_followup
 fn_is_inconclusive
   record_type "meta_function"
   function "is_inconclusive"
-  source_file "src/engine.rs"
+  source_file "src/engine_answer.rs"
   kind "guard"
 fn_detect_response_language
   record_type "meta_function"
@@ -172,7 +172,7 @@ parity_is_language_reanswer_followup
 parity_is_inconclusive
   record_type "meta_parity"
   rust_function "is_inconclusive"
-  rust_file "src/engine.rs"
+  rust_file "src/engine_answer.rs"
   js_function "isInconclusiveReplayIntent"
   js_file "js/worker/formal_ai_worker_19.js"
 parity_set_forced_language
