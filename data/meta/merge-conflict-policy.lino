@@ -84,6 +84,9 @@ merge_conflict_policy
       extracted_from "src/solver_handlers/modules.rs"
       extracted_from "src/solver_handlers/mod.rs"
       declares_directory "rust/src/solver_handlers"
+      inert "creative_writing_planning"
+      inert "formalization_task_render"
+      note "The two inert files are halves of creative_writing.rs and formalization_task.rs pulled in with `include!`, not modules of their own."
     file
       path "rust/src/agentic_coding/modules.rs"
       extracted_from "src/agentic_coding/modules.rs"
