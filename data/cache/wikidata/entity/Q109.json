@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Q109": {
+      "type": "item",
+      "id": "Q109",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "February"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "февраль"
+        },
+        "es": {
+          "language": "es",
+          "value": "febrero"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फ़रवरी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "2月"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "second month in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "segundo mes del año en los calendarios juliano y gregoriano"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "второй месяц года в юлианском и григорианском календарях"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公历及儒略历中第二个月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में दूसरा महीना"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "二月"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Feb"
+          },
+          {
+            "language": "en",
+            "value": "2. month"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "февраля"
+          },
+          {
+            "language": "ru",
+            "value": "фев."
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "feb"
+          },
+          {
+            "language": "es",
+            "value": "feb."
+          },
+          {
+            "language": "es",
+            "value": "fe."
+          },
+          {
+            "language": "es",
+            "value": "2"
+          },
+          {
+            "language": "es",
+            "value": "2.º mes"
+          },
+          {
+            "language": "es",
+            "value": "mes 2"
+          },
+          {
+            "language": "es",
+            "value": "mes 2.º"
+          },
+          {
+            "language": "es",
+            "value": "mes de las februas"
+          },
+          {
+            "language": "es",
+            "value": "segundo mes"
+          },
+          {
+            "language": "es",
+            "value": "mes segundo"
+          },
+          {
+            "language": "es",
+            "value": "mes bisiesto"
+          },
+          {
+            "language": "es",
+            "value": "F"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,20 @@
+Q119
+  aliases
+    en ("5. month" "may (month)")
+    es ("mes de mayo" floreal "mes de las flores" "mes de María" Maius "Maius [mensis]" "Maius mensis" "mes de Maya" "5" "mes 5" "mes 5.º" "5.º mes" "mes quinto" "quinto mes")
+    ru ("мая")
+  descriptions
+    en "fifth month in the Julian and Gregorian calendars"
+    es "quinto mes del año en los calendarios juliano y gregoriano"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में पांचवां महीना"
+    ru "пятый месяц года в юлианском и григорианском календарях"
+    zh "公曆及儒略曆中第五個月份"
+  id Q119
+  labels
+    en May
+    es mayo
+    hi "मई"
+    ru "май"
+    zh "5月"
+  type item
+success 1

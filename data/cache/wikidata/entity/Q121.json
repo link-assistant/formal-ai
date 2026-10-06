@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "Q121": {
+      "type": "item",
+      "id": "Q121",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "July"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "июль"
+        },
+        "es": {
+          "language": "es",
+          "value": "julio"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जुलाई"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "7月"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "седьмой месяц года в юлианском и григорианском календарях"
+        },
+        "es": {
+          "language": "es",
+          "value": "séptimo mes del año en los calendarios juliano y gregoriano"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公历及儒略历中第七个月份"
+        },
+        "en": {
+          "language": "en",
+          "value": "seventh month of the year in the Julian and Gregorian calendars"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में सातवां महीना"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "июля"
+          },
+          {
+            "language": "ru",
+            "value": "июл."
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "七月"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Jul"
+          },
+          {
+            "language": "en",
+            "value": "7. month"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Jul"
+          },
+          {
+            "language": "es",
+            "value": "Jul."
+          },
+          {
+            "language": "es",
+            "value": "7"
+          },
+          {
+            "language": "es",
+            "value": "7.º mes"
+          },
+          {
+            "language": "es",
+            "value": "mes 7"
+          },
+          {
+            "language": "es",
+            "value": "mes de Julio César"
+          },
+          {
+            "language": "es",
+            "value": "séptimo mes"
+          },
+          {
+            "language": "es",
+            "value": "mes séptimo"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

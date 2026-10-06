@@ -1,0 +1,20 @@
+Q126
+  aliases
+    en (Dec "12. month")
+    es (Dic. dic. Di Di. "duodécimo mes" "decimosegundo mes" "mes duodécimo" "mes decimosegundo" "12.° mes" "mes 12.°" "12" "último mes" D)
+    ru ("декабря" "дек.")
+  descriptions
+    en "twelfth month in the Julian and Gregorian calendars"
+    es "duodécimo y último mes del año"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में बारहवां महीना"
+    ru "двенадцатый и последний месяц года в юлианском и григорианском календарях"
+    zh "公曆及儒略曆中第十二個月份"
+  id Q126
+  labels
+    en December
+    es diciembre
+    hi "दिसम्बर"
+    ru "декабрь"
+    zh "12月"
+  type item
+success 1

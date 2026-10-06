@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "Q122": {
+      "type": "item",
+      "id": "Q122",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "August"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "август"
+        },
+        "es": {
+          "language": "es",
+          "value": "agosto"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अगस्त"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "8月"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "eighth month in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "octavo mes del año"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "восьмой месяц года в юлианском и григорианском календарях"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公历及儒略历中第八个月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में आठवां महीना"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Aug"
+          },
+          {
+            "language": "en",
+            "value": "8. month"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "августа"
+          },
+          {
+            "language": "ru",
+            "value": "авг."
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Ago."
+          },
+          {
+            "language": "es",
+            "value": "Ago"
+          },
+          {
+            "language": "es",
+            "value": "8"
+          },
+          {
+            "language": "es",
+            "value": "mes 8"
+          },
+          {
+            "language": "es",
+            "value": "8.º mes"
+          },
+          {
+            "language": "es",
+            "value": "mes de Augusto"
+          },
+          {
+            "language": "es",
+            "value": "octavo mes"
+          },
+          {
+            "language": "es",
+            "value": "mes octavo"
+          },
+          {
+            "language": "es",
+            "value": "mes de Octavio Augusto"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
