@@ -21,7 +21,7 @@ use std::path::{Path, PathBuf};
 /// The canonical form two parsers must agree on: one line per node,
 /// children indented, `name\tid` — everything structural, nothing
 /// lexical (quotes, spacing, comment placement).
-fn canonical(node: &formal_ai::seed::parser::LinoNode, depth: usize) -> String {
+fn canonical(node: &formal_ai::lino_adapters::links_notation::LinoNode, depth: usize) -> String {
     let mut out = format!("{}{}\t{}\n", "  ".repeat(depth), node.name, node.id);
     for child in &node.children {
         out.push_str(&canonical(child, depth + 1));
@@ -86,7 +86,7 @@ fn every_seed_file_parses_to_the_same_tree_with_both_parsers() {
     let mut rejected = Vec::new();
     for file in &files {
         let text = fs::read_to_string(file).expect("every corpus file is readable");
-        let local = formal_ai::seed::parser::parse_lino(&text);
+        let local = formal_ai::seed::parse_lino(&text);
         let relative = file
             .strip_prefix(repo_root())
             .unwrap_or(file)

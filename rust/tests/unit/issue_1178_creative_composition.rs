@@ -193,7 +193,8 @@ fn handler_creative_writing_rhymed_positions_share_a_rhyme_class() {
     };
     let night_class = ["night", "light", "bright", "white", "sight", "flight"];
     assert!(
-        night_class.contains(&end(&poem[1])) && night_class.contains(&end(&poem[3])),
+        night_class.contains(&end(&poem[1]).as_str())
+            && night_class.contains(&end(&poem[3]).as_str()),
         "positions 2 and 4 end in one rhyme class: {answer}"
     );
 }

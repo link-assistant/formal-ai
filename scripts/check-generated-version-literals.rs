@@ -24,6 +24,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 /// One memorized pin the tree should have resolved instead.
+#[derive(Debug)]
 pub struct Finding {
     pub path: PathBuf,
     pub line: usize,

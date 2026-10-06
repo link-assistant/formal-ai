@@ -315,7 +315,7 @@ fn recompose_with_formal_ai_literal_yields_rust_source() {
     );
     assert!(recomposition.source.contains("fn main()"));
     assert_eq!(recomposition.language_slug, "rust");
-    assert!(formal_ai::coding::cst::parse_program_cst("rust", &recomposition.source).is_some());
+    assert!(decompose_code_node(&recomposition.source, "rust", &[]).is_ok());
 }
 
 /// R1164-6: the same procedure recomposes for Go from the one binding.
@@ -336,7 +336,7 @@ fn recompose_with_formal_ai_literal_yields_go_source() {
             .contains("fmt.Println(\"Hello, Formal AI!\")")
     );
     assert!(recomposition.source.contains("package main"));
-    assert!(formal_ai::coding::cst::parse_program_cst("go", &recomposition.source).is_some());
+    assert!(decompose_code_node(&recomposition.source, "go", &[]).is_ok());
 }
 
 /// R1164-9 (static half): the seed already carries Pascal's program shape

@@ -83,9 +83,12 @@ fn codex_cmd_read_drives_execution_instead_of_repeating() {
         let command = serde_json::from_str::<serde_json::Value>(&call.arguments)
             .ok()
             .and_then(|value| {
-                ["command", "cmd", "script"]
-                    .iter()
-                    .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
+                ["command", "cmd", "script"].iter().find_map(|key| {
+                    value
+                        .get(*key)
+                        .and_then(serde_json::Value::as_str)
+                        .map(str::to_owned)
+                })
             })
             .unwrap_or_default();
         assert!(
@@ -140,7 +143,7 @@ fn every_argument_spelling_records_the_same_read() {
 #[test]
 fn repeated_successful_read_is_reported_not_replanned() {
     let mut items = codex_read_pair();
-    let mut array = items.as_array_mut().expect("items");
+    let array = items.as_array_mut().expect("items");
     let first_call = array[1].clone();
     let first_output = array[2].clone();
     array.push(first_call);

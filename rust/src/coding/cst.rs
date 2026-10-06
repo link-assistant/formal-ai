@@ -192,7 +192,9 @@ pub enum ComposeGap {
 impl ComposeGap {
     /// The stable, human-readable name of the gap for error paths.
     #[must_use]
-    #[cfg_attr(not(test), allow(dead_code))] // read by the issue #1167 tests
+    // `coding` is crate-private and no in-crate path formats the gap yet; the
+    // issue #1167 tests read it through the tests/source mirror.
+    #[allow(dead_code)]
     pub fn describe(&self) -> String {
         match self {
             Self::Render { reason } => format!("the render leg refused: {reason}"),

@@ -88,7 +88,7 @@ fn store_lookup_reload_roundtrip() {
 fn content_id_is_fnv1a_of_entry_and_recomputed_on_store() {
     let recipe = kotlin_hello_recipe();
     assert_eq!(
-        recipe.content_address(&recipe.entry),
+        RediscoverableRecipe::content_address(&recipe.entry),
         fnv1a64(recipe.entry.as_bytes())
     );
     let mut cache = ProcedureCache::load_at(&isolated_cache("content-id"));

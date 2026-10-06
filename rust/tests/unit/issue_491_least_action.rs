@@ -80,9 +80,8 @@ fn a_plan_with_fewer_smallest_subtasks_is_less_action() {
     let coarse = plan(&coarse);
     let a = plan(&refined_a);
     let b = plan(&refined_b);
-    assert_eq!(
-        least_action_plan(&coarse, &a),
-        None,
+    assert!(
+        least_action_plan(&coarse, &a).is_none(),
         "different subtask counts do not compare"
     );
     assert_eq!(least_action_plan(&a, &b).map(|p| p.planned_steps), Some(12));

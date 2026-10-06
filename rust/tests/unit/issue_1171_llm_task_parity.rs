@@ -83,7 +83,7 @@ fn registry_classes() -> Vec<(String, Vec<String>)> {
                 classes.push(done);
             }
             current = Some((id.trim().to_owned(), Vec::new()));
-        } else if let Some(fields) = current.as_mut() {
+        } else if let Some((_, fields)) = current.as_mut() {
             if let Some(name) = trimmed.strip_prefix("name \"") {
                 let name = name.strip_suffix('"').unwrap_or(name);
                 fields.push(format!("name {name}"));
