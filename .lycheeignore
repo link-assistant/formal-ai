@@ -59,3 +59,13 @@ styles\.css\?v=__FORMAL_AI_ASSET_VERSION__
 # caught.
 https://github\.com/[^/]+/[^/]+/(issues|pull)/[0-9]+
 https://github\.com/[^/]+/[^/]+/blob/
+
+# js/app/index.html sets `<base href="../" />`, so the browser resolves its
+# relative icon and manifest links against js/ (js/pwa/icon-192.png,
+# js/manifest.webmanifest, both present). lychee ignores <base> for local
+# files and looks for them under js/app/, which do not exist by design.
+file://.*/js/app/(pwa/icon-192\.png|manifest\.webmanifest)$
+
+# The VS Code Marketplace listing is a publication target, not yet live;
+# vscode/README.md says so explicitly. Drop this once the extension publishes.
+https://marketplace\.visualstudio\.com/items\?itemName=link-assistant\.formal-ai-vscode

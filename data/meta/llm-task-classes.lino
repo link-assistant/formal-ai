@@ -19,7 +19,7 @@ llm_task_classes
   class definition
     name "Definition lookup"
     llm_strength "Definitions of common words from pretrained glosses"
-    benchmark "WordNet" benchmark_url "https://wordnet.princeton.edu/"
+    benchmark "WordNet" benchmark_url "https://en.wikipedia.org/wiki/WordNet"
     benchmark "Wiktionary" benchmark_url "https://www.wiktionary.org/"
     formal_version "Read the grounded Wiktionary or WordNet entry for the lemma and answer with its recorded senses and license"
     status "0.347.0: canned search paragraph, no answer; branch: the fallback now executes the search it describes, unmeasured until the release probe runs"
@@ -61,7 +61,7 @@ llm_task_classes
   class rewriting
     name "Rewriting and style transfer"
     llm_strength "Register and tone rewriting of fluent prose"
-    benchmark "GYAFC" benchmark_url "https://github.com/raosudha89/GYAFC"
+    benchmark "GYAFC" benchmark_url "https://github.com/raosudha89/GYAFC-corpus"
     formal_version "Decompose the request into text operations, apply each as a traced substitution, and verify the stated constraints"
     status "0.347.0: canned search paragraph, no answer; branch: text-rewrite handler landed, unmeasured until the release probe runs"
     tracking_issue 1174
@@ -69,7 +69,7 @@ llm_task_classes
   class grammar_correction
     name "Grammar correction"
     llm_strength "Fluent minimal edits of near-native text"
-    benchmark "BEA-2019" benchmark_url "https://www.cl.cam.ac.uk/research/nl/bea2019/"
+    benchmark "BEA-2019" benchmark_url "https://www.cl.cam.ac.uk/research/nl/bea2019st/"
     formal_version "Parse the sentence, detect agreement violations from the rule seed, and propose the minimal repairs"
     status "0.347.0: canned search paragraph, no answer; branch: grammar-correction rules landed with the text-transform family, unmeasured until the release probe runs"
     tracking_issue 1174
@@ -93,7 +93,7 @@ llm_task_classes
   class extraction
     name "Extraction to JSON"
     llm_strength "Span marking into requested schemas"
-    benchmark "CoNLL-2003" benchmark_url "https://www.clips.uantwerpen.be/conll2003/ner/"
+    benchmark "CoNLL-2003" benchmark_url "https://aclanthology.org/W03-0419/"
     formal_version "Parse the text, mark spans against the schema's entity meanings, and emit the JSON with the span trace"
     status "0.347.0: canned search paragraph, no answer"
     tracking_issue 1173
@@ -125,7 +125,7 @@ llm_task_classes
     name "Code generation"
     llm_strength "Passing solutions for self-contained function problems"
     benchmark "HumanEval" benchmark_url "https://github.com/openai/human-eval"
-    benchmark "MBPP" benchmark_url "https://huggingface.co/datasets/mbpp"
+    benchmark "MBPP" benchmark_url "https://huggingface.co/datasets/google-research-datasets/mbpp"
     formal_version "Decompose the request to a plan, compose from the catalog, verify by execution in the bounded workspace, and emit only passing programs"
     status "0.347.0: honest refusal, no synthesis route reached the probe; open (route breadth tracked by issues 1165 and 1167)"
     tracking_issue 1177
@@ -142,7 +142,7 @@ llm_task_classes
     name "Debugging"
     llm_strength "Plausible defect hypotheses from pattern memory"
     benchmark "Defects4J" benchmark_url "https://github.com/rjust/defects4j"
-    benchmark "BugsInPy" benchmark_url "https://soarsmu.github.io/BugsInPy/"
+    benchmark "BugsInPy" benchmark_url "https://github.com/soarsmu/BugsInPy"
     formal_version "Parse the snippet, locate the construct whose behavior contradicts the stated intent, and name the defect structurally without executing"
     status "0.347.0: misrouted to a terminal-command prompt; branch: debugging handler landed behind the routing guards, unmeasured until the release probe runs"
     tracking_issue 1177
@@ -188,7 +188,7 @@ llm_task_classes
   class shell_command
     name "Shell command composition"
     llm_strength "Recall of common command incantations"
-    benchmark "NL2Bash" benchmark_url "https://github.com/TellinaDev/nl2bash"
+    benchmark "NL2Bash" benchmark_url "https://github.com/TellinaTool/nl2bash"
     formal_version "Map the intent to the command grammar's flags and compose with the safety check"
     status "0.347.0: only an offer to run a command in Agent mode; branch: shell-compose handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
