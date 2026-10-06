@@ -34,7 +34,6 @@ struct Function {
     name: String,
     path: String,
     start_line: usize,
-    body_lines: usize,
 }
 
 mod duplication_support;
@@ -87,7 +86,6 @@ fn scan(roots: &[String], max_lines: usize) -> Vec<Group> {
                 name,
                 path: path.display().to_string(),
                 start_line,
-                body_lines,
             });
         }
     }
@@ -209,7 +207,7 @@ fn main() {
         println!("[");
         for (position, group) in groups.iter().enumerate() {
             println!(
-                "  {{\"digest\": \"{}\", \"body_lines\": {}, \"names\": [{}], \"sites\": [{}]}{}",
+                "  {{\"digest\": \"{}\", \"body_lines\": {}, \"names\": [{}], \"sites\": [{}]}}{}",
                 group.digest,
                 group.body_lines,
                 group

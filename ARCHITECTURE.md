@@ -1585,16 +1585,31 @@ new module fails CI until this map documents it.
 | `agent` | Agent loop that plans, calls tools and records evidence. | §2 |
 | `anthropic` | Anthropic API adapter for live engine calls. | §2 |
 | `arithmetic` | Exact and rounded arithmetic over Links Notation numbers. | §2 |
+| `cloud_sync` | Opt-in, vendor-neutral append-only memory synchronization (issue #669). | §2 |
+| `code_example_knowledge` | Code examples as formal knowledge (issue #1164, E129). | §2 |
+| `derivation` | White-box derivation record for every answer (issue #1184, E148). | §2 |
+| `discovery_production` | Discovery on the production path: a rediscoverable coding-procedure cache. | §2 |
 | `engine` | Engine entry: formalize, solve, and compose the answer. | §2 |
+| `fact_check` | Fact checking over code, Git, GitHub, and the internet (issue #1179). | §2 |
 | `file_legality` | Evidence-oriented, multi-jurisdiction file-legality assessments. | §2 |
 | `gemini` | Gemini API adapter for live engine calls. | §2 |
+| `history_context` | Repository history as formal context for reasoning (issue #1180, E145). | §2 |
+| `least_action` | The principle of least action for task splitting and solution choice. | §2 |
+| `legality_warning` | Request-legality advisory (issue #836). | §2 |
+| `lino_adapters` | Adapters that front our maintained dependencies behind the interfaces. | §2 |
 | `needs` | Need records that gate solver retries. | §2 |
 | `requirement_contradiction` | Contradiction reporting over the shared evidence-weighted requirement store. | §2 |
 | `self_healing` | The closed self-healing / auto-learning loop (issue #558). | §2 |
 | `self_improvement` | White-box self-improvement over accumulated unknown traces. | §2 |
+| `si_units` | SI dimension algebra for unit conversion (issue #700, E58). | §2 |
+| `small_model_fallback` | Small-model formalization fallback, behind an experimental flag. | §2 |
+| `telemetry` | Consent-gated anonymous Sentry diagnostics (issue #861). | §2 |
 | `translation` | Translation pipeline. | §2 |
+| `triz_solver` | User-facing TRIZ/contradiction solver (issue #901). | §2 |
+| `version_resolution` | Resolve the third-party versions generated code pins, at generation time. | §2 |
 | `agentic_coding` | Agentic-coding capability for the Formal AI server (issue #468). | §3 |
 | `associative_package` | Reusable associative packages, handlers, triggers, and permissions. | §3 |
+| `associative_packages` | Shareable, reviewable package artifacts (issue #668). | §3 |
 | `associative_persistence` | Usage-weighted persistence of meta-language expressions — issue #686. | §3 |
 | `behavior_delta` | The #701 criterion, generalized: a learned item must demonstrably change. | §3 |
 | `bounded_autonomy` | Issue #947 (E95): bounded autonomy -- a stuck-recovery limit, full trust as. | §3 |
@@ -1617,6 +1632,7 @@ new module fails CI until this map documents it.
 | `question_generation` | Lazy question generation and answering primitives for issue #527. | §3 |
 | `question_necessity` | Seed-driven authorization for questions in user-facing solver answers. | §3 |
 | `recipe_interpreter` | Issue #559 (R343): executing the meta algorithm *as data*. | §3 |
+| `research_documents` | Downloadable research artifacts over the upstream document concept layer. | §3 |
 | `research_learning` | Event-sourced research, learning, verification, and recovery (issue #873). | §3 |
 | `rust_projection` | Grammar projection between the three committed corpora (issue #1138,. | §3 |
 | `search_fusion` | Statement-level fusion for captured web research. | §3 |
@@ -1737,6 +1753,7 @@ new module fails CI until this map documents it.
 | `telegram` | Telegram bot surface: prompt composition and reply formatting. | §13 |
 | `telegram_runtime` | Long-poll runtime that keeps the Telegram surface alive. | §13 |
 | `web_engine_core` | Shared symbolic engine primitives reused by the CLI, the HTTP server,. | §13 |
+| `web_formalize` | The internet as formal knowledge (issue #1163, E128). | §13 |
 | `web_search_core` | Shared symbolic core for the multi-engine `web_search` planner. | §13 |
 | `web_search_fusion_core` | Seed-backed statement fusion for the browser's Rust→WASM search path. | §13 |
 | `web_search_markers` | The web-search cue projection: every surface marker the recogniser reads,. | §13 |

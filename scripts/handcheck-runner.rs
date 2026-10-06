@@ -27,7 +27,7 @@
 
 use std::collections::BTreeMap;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 const SUITE: &str = "docs/handcheck/suite.md";
 const STATUSES: &[&str] = &["pending", "pass", "fail", "n/a"];
@@ -38,8 +38,23 @@ struct Check {
     status: String,
 }
 
+/// `relative` under the repository root: the working directory when the
+/// script runs from the root, else the script's own checkout (the
+/// `rust-script --test` harness runs tests from its cache directory).
+fn repo_path(relative: &str) -> PathBuf {
+    let direct = PathBuf::from(relative);
+    if direct.exists() {
+        return direct;
+    }
+    Path::new(file!())
+        .parent()
+        .and_then(Path::parent)
+        .map(|root| root.join(relative))
+        .unwrap_or(direct)
+}
+
 fn suite_path() -> PathBuf {
-    PathBuf::from(SUITE)
+    repo_path(SUITE)
 }
 
 /// One row per `| HC-nn | req | action | status |` line; the header and
@@ -55,17 +70,15 @@ fn parse(source: &str) -> Result<BTreeMap<String, Check>, String> {
             return Err(format!("a row must have exactly four cells: {line}"));
         }
         let id = cells[0].to_string();
-        if !id.starts_with("HC-") || !id[3..]
-            .chars()
-            .all(|character| character.is_ascii_digit())
-        {
+        if !id.starts_with("HC-") || !id[3..].chars().all(|character| character.is_ascii_digit()) {
             return Err(format!("a check id is HC- followed by digits: {line}"));
         }
         let status = cells[3].to_string();
+        // The verdict precedes an em dash or, in ASCII-only rows, "--".
+        let separator = if status.contains('—') { "—" } else { "--" };
         let head = status
-            .split("—")
+            .split(separator)
             .next()
-            .or_else(|| status.split('--').next())
             .unwrap_or(&status)
             .trim()
             .to_string();
@@ -121,10 +134,13 @@ fn main() {
         .filter(|check| !check.status.starts_with("pending"))
         .count();
     for (id, check) in &checks {
-        if pending_only && check.status.starts_with("pending") {
+        if pending_only && !check.status.starts_with("pending") {
             continue;
         }
-        println!("{id}\t{}\t{}", check.status, check.requirement);
+        println!(
+            "{id}\t{}\t{}\t{}",
+            check.status, check.requirement, check.action
+        );
     }
     println!(
         "handcheck: {} checks, {} settled, {} pending",
@@ -147,8 +163,8 @@ mod tests {
 
     #[test]
     fn a_well_formed_row_parses() {
-        let checks = parse("| HC-01 | R1-14 | demo e2e | pass — run 123 |")
-            .expect("well-formed row");
+        let checks =
+            parse("| HC-01 | R1-14 | demo e2e | pass — run 123 |").expect("well-formed row");
         assert!(checks.contains_key("HC-01"));
         assert!(checks["HC-01"].status.starts_with("pass"));
     }

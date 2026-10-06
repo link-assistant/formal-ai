@@ -40,7 +40,14 @@ const SOURCE_EXTENSIONS: [&str; 13] = [
     "rs", "js", "mjs", "cjs", "ts", "tsx", "sh", "py", "toml", "yml", "yaml", "html", "css",
 ];
 const SOURCE_ROOTS: [&str; 8] = [
-    "rust/", "scripts/", "js/", "web/", "desktop/", "vscode/", "extension/", ".github/",
+    "rust/",
+    "scripts/",
+    "js/",
+    "web/",
+    "desktop/",
+    "vscode/",
+    "extension/",
+    ".github/",
 ];
 
 fn extension(path: &str) -> &str {
@@ -81,14 +88,20 @@ struct NumstatRow {
 fn parse_numstat(stdout: &str) -> Vec<NumstatRow> {
     let mut rows = Vec::new();
     for line in stdout.lines() {
-        let Some((counts, path)) = line.split_once('\t') else {
+        // `git diff --numstat`: added, deleted, path -- tab-separated, with
+        // `-` in place of both counts for binary files.
+        let mut parts = line.splitn(3, '\t');
+        let (Some(added), Some(_deleted), Some(path)) = (parts.next(), parts.next(), parts.next())
+        else {
             continue;
         };
-        let mut parts = counts.split('\t');
-        let added = parts.next().unwrap_or("-").parse().unwrap_or(0);
+        let added = added.parse().unwrap_or(0);
         rows.push(NumstatRow {
             added,
-            path: path.trim_start_matches('"').trim_end_matches('"').to_string(),
+            path: path
+                .trim_start_matches('"')
+                .trim_end_matches('"')
+                .to_string(),
         });
     }
     rows
@@ -111,7 +124,10 @@ fn move_is_complete(index_source: &str) -> bool {
 
 fn tracked_evidence_files() -> u64 {
     let output = git(&["ls-files", "--", "dev/log", "docs/case-studies"]);
-    output.lines().filter(|line| !line.trim().is_empty()).count() as u64
+    output
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .count() as u64
 }
 
 fn resolve_base() -> String {
@@ -204,9 +220,15 @@ mod tests {
     #[test]
     fn the_three_prose_shapes_are_exempt_and_only_those() {
         assert!(is_allowed_prose("docs/case-studies/issue-1088/README.md"));
-        assert!(is_allowed_prose("docs/case-studies/issue-1088/requirements.md"));
-        assert!(is_allowed_prose("docs/case-studies/issue-1088/solution-plan.md"));
-        assert!(!is_allowed_prose("docs/case-studies/issue-1088/raw/capture.log"));
+        assert!(is_allowed_prose(
+            "docs/case-studies/issue-1088/requirements.md"
+        ));
+        assert!(is_allowed_prose(
+            "docs/case-studies/issue-1088/solution-plan.md"
+        ));
+        assert!(!is_allowed_prose(
+            "docs/case-studies/issue-1088/raw/capture.log"
+        ));
         assert!(!is_allowed_prose("docs/case-studies/README.md"));
         assert!(!is_allowed_prose("README.md"));
     }
@@ -216,15 +238,21 @@ mod tests {
         assert!(!counts_against_budget("rust/src/lib.rs"));
         assert!(!counts_against_budget("scripts/move-evidence.rs"));
         assert!(!counts_against_budget("web/worker/index.js"));
-        assert!(!counts_against_budget(".github/workflows/e2e-isolation.yml"));
+        assert!(!counts_against_budget(
+            ".github/workflows/e2e-isolation.yml"
+        ));
         assert!(counts_against_budget("dev/log/issues/1188/capture.txt"));
         assert!(counts_against_budget("data/seed/some-capture.lino"));
-        assert!(counts_against_budget("docs/case-studies/issue-1088/raw/session.json"));
+        assert!(counts_against_budget(
+            "docs/case-studies/issue-1088/raw/session.json"
+        ));
     }
 
     #[test]
     fn numstat_rows_parse_including_binary_dashes() {
-        let rows = parse_numstat("12\t0\trust/src/lib.rs\n-\t-\tdev/log/issues/1/run.log\n0\t9\tgone.txt\n");
+        let rows = parse_numstat(
+            "12\t0\trust/src/lib.rs\n-\t-\tdev/log/issues/1/run.log\n0\t9\tgone.txt\n",
+        );
         assert_eq!(rows.len(), 3);
         assert_eq!(rows[0].added, 12);
         assert_eq!(rows[0].path, "rust/src/lib.rs");
@@ -235,6 +263,8 @@ mod tests {
     #[test]
     fn the_file_gate_arms_only_when_the_move_is_complete() {
         assert!(!move_is_complete("group\n  url \"pending-move\"\n"));
-        assert!(move_is_complete("group\n  url \"https://github.com/link-assistant/formal-ai-evidence/tree/main/dev/log/issues\"\n"));
+        assert!(move_is_complete(
+            "group\n  url \"https://github.com/link-assistant/formal-ai-evidence/tree/main/dev/log/issues\"\n"
+        ));
     }
 }

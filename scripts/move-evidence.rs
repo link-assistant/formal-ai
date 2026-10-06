@@ -63,7 +63,9 @@ fn parse_index(source: &str) -> Vec<Group> {
             });
             continue;
         }
-        let Some(group) = current.as_mut() else { continue };
+        let Some(group) = current.as_mut() else {
+            continue;
+        };
         let Some((field, value)) = trimmed.split_once(' ') else {
             continue;
         };
@@ -85,12 +87,27 @@ fn parse_index(source: &str) -> Vec<Group> {
 
 /// sha256 over every (relative path, file sha256) pair under `root`,
 /// sorted -- the digest method the index header documents.
+/// `relative` under the repository root: the working directory when the
+/// script runs from the root, else the script's own checkout (the
+/// `rust-script --test` harness runs tests from its cache directory).
+fn repo_path(relative: &str) -> PathBuf {
+    let direct = PathBuf::from(relative);
+    if direct.exists() {
+        return direct;
+    }
+    Path::new(file!())
+        .parent()
+        .and_then(Path::parent)
+        .map(|root| root.join(relative))
+        .unwrap_or(direct)
+}
+
 fn group_digest(root: &Path) -> Result<(String, u64, u64), String> {
     let mut entries: BTreeMap<String, String> = BTreeMap::new();
     let mut bytes = 0u64;
     let mut files = 0u64;
     collect(root, root, &mut entries, &mut bytes, &mut files)?;
-    let mut digest = Sha256::new();
+    let mut digest = sha256::Sha256::new();
     for (path, file_hash) in &entries {
         digest.update(path.as_bytes());
         digest.update(file_hash.as_bytes());
@@ -145,8 +162,8 @@ fn main() {
             println!("ok: {} moved to {}", group.path, group.url);
             continue;
         }
-        let (digest, files, bytes) = group_digest(&path)
-            .unwrap_or_else(|error| panic!("{}: {error}", group.path));
+        let (digest, files, bytes) =
+            group_digest(&path).unwrap_or_else(|error| panic!("{}: {error}", group.path));
         let unchanged = digest.starts_with(&group.sha256) || group.sha256 == digest;
         println!(
             "{}: {} files, {} bytes, digest {} (indexed {}, {})",
@@ -163,7 +180,9 @@ fn main() {
             // change. Either way the mismatch must be loud.
             eprintln!(
                 "move-evidence: {} changed since indexing ({} -> {})",
-                group.path, group.sha256, &digest[..digest.len().min(16)]
+                group.path,
+                group.sha256,
+                &digest[..digest.len().min(16)]
             );
             std::process::exit(1);
         }
@@ -201,18 +220,27 @@ fn main() {
             "https://github.com/{}/tree/main/{}",
             EVIDENCE_REPOSITORY, group.path
         );
-        println!("moved {} -> {} ({} files, {} bytes, {})",
-            group.path, url, files, bytes, &digest[..digest.len().min(16)]
+        println!(
+            "moved {} -> {} ({} files, {} bytes, {})",
+            group.path,
+            url,
+            files,
+            bytes,
+            &digest[..digest.len().min(16)]
         );
         // git rm keeps the removal staged for the pull request that lands
         // the move; the index rewrite below records where it went.
-        assert!(std::process::Command::new("git")
-            .args(["rm", "-r", "--quiet", "--cached", &group.path])
-            .status()
-            .expect("git rm")
-            .success());
+        assert!(
+            std::process::Command::new("git")
+                .args(["rm", "-r", "--quiet", "--cached", &group.path])
+                .status()
+                .expect("git rm")
+                .success()
+        );
     }
-    println!("re-run write of {INDEX} is the index rewrite step; the calling pull request commits both repositories");
+    println!(
+        "re-run write of {INDEX} is the index rewrite step; the calling pull request commits both repositories"
+    );
 }
 
 fn copy_tree(source: &Path, destination: &Path) -> std::io::Result<()> {
@@ -378,7 +406,7 @@ mod tests {
 
     #[test]
     fn the_index_parses_and_names_real_groups() {
-        let source = fs::read_to_string(INDEX).expect("index readable");
+        let source = fs::read_to_string(repo_path(INDEX)).expect("index readable");
         let groups = parse_index(&source);
         assert!(groups.len() >= 2, "dev/log groups are indexed");
         assert!(groups.iter().all(|group| group.files > 0));
