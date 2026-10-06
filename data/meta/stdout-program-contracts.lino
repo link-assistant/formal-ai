@@ -17,7 +17,7 @@ stdout_program_contracts
     comment "//"
     escape_characters "$"
     unicode_escape "\\u{hex4}"
-    ci_setup "      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961\n        with:\n          distribution: temurin\n          java-version: '21'\n      - uses: fwilhe2/setup-kotlin@51a059ff08b95e2b83aa952b5b46b696d5b615a0\n        with:\n          version: '2.3.10'\n"
+    ci_setup "      - uses: actions/setup-java@{setup_java_ref} # {setup_java_tag}\n        with:\n          distribution: temurin\n          java-version: '{java_lts}'\n      - uses: fwilhe2/setup-kotlin@{setup_kotlin_ref} # {setup_kotlin_tag}\n        with:\n          version: '{kotlin_version}'\n"
     ci_source "https://github.com/fwilhe2/setup-kotlin/blob/51a059ff08b95e2b83aa952b5b46b696d5b615a0/action.yml"
   language scala
     source "https://docs.scala-lang.org/tour/basics.html"
@@ -33,5 +33,5 @@ stdout_program_contracts
     operation 'print({value})'
     comment "#"
     unicode_escape "\\u{hex4}"
-    ci_setup "      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1\n        with:\n          python-version: '3.14'\n"
+    ci_setup "      - uses: actions/setup-python@{setup_python_ref} # {setup_python_tag}\n        with:\n          python-version: '{python_version}'\n"
     ci_source "https://github.com/actions/setup-python/blob/ece7cb06caefa5fff74198d8649806c4678c61a1/action.yml"

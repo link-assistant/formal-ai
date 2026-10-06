@@ -62,7 +62,7 @@ fn main() {
         findings.len()
     );
     if findings.is_empty() {
-        println("generated-version literals: clean");
+        println!("generated-version literals: clean");
         return;
     }
     println!(
