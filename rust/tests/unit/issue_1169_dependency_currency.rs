@@ -32,12 +32,12 @@ fn write(path: &Path, body: &str) {
     fs::write(path, body).expect("fixture file");
 }
 
-fn snapshot_with(entries: Vec<((Ecosystem, &str), &str)>) -> Snapshot {
+fn snapshot_with(entries: Vec<(Ecosystem, &str)>) -> Snapshot {
     Snapshot {
         refreshed_at: "2026-09-30T15:04:05Z".to_string(),
         entries: entries
             .into_iter()
-            .map(|((ecosystem, name), _)| {
+            .map(|(ecosystem, name)| {
                 let name = name.to_string();
                 let latest = latest_of(&name).to_string();
                 ((ecosystem, name), (latest, String::new()))
@@ -55,7 +55,7 @@ fn latest_of(name: &str) -> &str {
         "marked" => "18.0.14",
         "@scope/tool" => "2.1.0",
         "zizmorcore/zizmor-action" => "v0.6.4",
-        "konrad/box-dind" => "2.10.2",
+        "konard/box-dind" => "2.10.2",
         "rustc" => "1.98.1",
         _ => "0.0.0",
     }
@@ -88,7 +88,7 @@ fn full_fixture(root: &Path) {
         &root.join(".github/workflows/ci.yml"),
         "steps:\n  - uses: zizmorcore/zizmor-action@v0.6.4\n",
     );
-    write(&root.join("Dockerfile"), "FROM konrad/box-dind:2.10.2\n");
+    write(&root.join("Dockerfile"), "FROM konard/box-dind:2.10.2\n");
 }
 
 #[test]
@@ -104,7 +104,7 @@ fn offline_gate_flags_drift_and_honors_blocked_annotations() {
         (Ecosystem::Npm, "marked"),
         (Ecosystem::Npm, "@scope/tool"),
         (Ecosystem::GitHubAction, "zizmorcore/zizmor-action"),
-        (Ecosystem::DockerImage, "konrad/box-dind"),
+        (Ecosystem::DockerImage, "konard/box-dind"),
         (Ecosystem::RustToolchain, "rustc"),
     ]);
     write_snapshot(&snapshot_path, &snapshot);
@@ -149,12 +149,12 @@ fn apply_moves_unblocked_manifests_and_leaves_blocked_alone() {
         (Ecosystem::Npm, "marked"),
         (Ecosystem::Npm, "@scope/tool"),
         (Ecosystem::GitHubAction, "zizmorcore/zizmor-action"),
-        (Ecosystem::DockerImage, "konrad/box-dind"),
+        (Ecosystem::DockerImage, "konard/box-dind"),
         (Ecosystem::RustToolchain, "rustc"),
     ]);
     let dependencies = collect(&root);
     let (findings, _) = compare(&dependencies, &snapshot);
-    apply_latest(&root, &findings);
+    apply_latest(&findings);
 
     let manifest = fs::read_to_string(root.join("rust/Cargo.toml")).expect("reread Cargo.toml");
     assert!(
@@ -198,7 +198,7 @@ fn the_repository_tree_collects_every_ecosystem() {
     );
     // Spot anchors: the pins this branch itself moved.
     for (ecosystem, name, resolved) in [
-        (Ecosystem::DockerImage, "konrad/box-dind", "2.10.2"),
+        (Ecosystem::DockerImage, "konard/box-dind", "2.10.2"),
         (Ecosystem::GitHubAction, "zizmorcore/zizmor-action", "0.6.4"),
         (Ecosystem::Npm, "react", "19.3.0"),
     ] {
