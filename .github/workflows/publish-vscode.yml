@@ -76,7 +76,7 @@ jobs:
           mkdir /tmp/formal-ai-clean-vscode
           tar -xzf /tmp/vscode.tar.gz -C /tmp/formal-ai-clean-vscode --strip-components=1
           code=/tmp/formal-ai-clean-vscode/bin/code
-          for attempt in 1 2 3 4 5; do
+          for _ in 1 2 3 4 5; do
             "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --install-extension link-assistant.formal-ai-vscode --force
             if "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --list-extensions --show-versions | grep -Fx "link-assistant.formal-ai-vscode@$EXPECTED_VERSION"; then exit 0; fi
             sleep 15

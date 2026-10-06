@@ -46,10 +46,10 @@ on:
     outputs:
       slim-size:
         description: Human-readable size of the slim image for release notes
-        value: ${{ jobs.sizes.outputs.slim-size }}
+        value: ${{ jobs.merge.outputs.slim-size }}
       full-size:
         description: Human-readable size of the full image for release notes
-        value: ${{ jobs.sizes.outputs.full-size }}
+        value: ${{ jobs.merge.outputs.full-size }}
 
 permissions:
   contents: read
@@ -59,7 +59,7 @@ env:
 
 jobs:
   build:
-    name: build ${{ matrix.variant }} (${{ matrix.arch }})
+    name: build ${{ matrix.dockerfile }} (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -145,8 +145,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     outputs:
-      slim-size: ${{ steps.sizes.outputs.slim }}
-      full-size: ${{ steps.sizes.outputs.full }}
+      slim-size: ${{ steps.sizes.outputs.slim-size }}
+      full-size: ${{ steps.sizes.outputs.full-size }}
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/download-formal-ai-binary
@@ -184,7 +184,10 @@ jobs:
                 args+=(--amend "formal-ai:$arch-$variant")
               fi
             done
-            docker buildx imagetools create "${args[@]}" $([ "$PUSH" = "true" ] || echo --dry-run)
+            if [ "$PUSH" != "true" ]; then
+              args+=(--dry-run)
+            fi
+            docker buildx imagetools create "${args[@]}"
           }
           merge slim
           merge full

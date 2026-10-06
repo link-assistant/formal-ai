@@ -32,7 +32,7 @@
 #   can-create-repositories   "true" only at layer app (R4: a separate
 #                             repository is used only when this is true)
 name: automation-token
-description: Resolve the one GitHub credential: GitHub App, then AUTOMATION_TOKEN, then github.token
+description: "Resolve the one GitHub credential: GitHub App, then AUTOMATION_TOKEN, then github.token"
 inputs:
   github-token:
     description: The workflow's github.token to fall back to
@@ -50,7 +50,7 @@ outputs:
     description: Which layer resolved (app | token | default)
     value: ${{ steps.resolve.outputs.layer }}
   can-create-repositories:
-    description: "true" only when the app layer is active
+    description: '"true" only when the app layer is active'
     value: ${{ steps.resolve.outputs.layer == 'app' && 'true' || 'false' }}
 
 runs:
@@ -126,10 +126,18 @@ runs:
         private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
         owner: ${{ github.repository_owner }}
         repositories: ${{ inputs.repositories != '' && inputs.repositories || github.event.repository.name }}
+        # Scope the installation token to the writes callers perform
+        # (contents, issues, pull requests) instead of inheriting the
+        # installation's blanket permissions.
+        permission-contents: write
+        permission-issues: write
+        permission-pull-requests: write
 
     - name: Propagate app token
       if: ${{ steps.resolve.outputs.layer == 'app' }}
       shell: bash
       # GITHUB_OUTPUT is set for every run step; the app exchange's token
       # joins the same output the other layers wrote.
-      run: echo "token=${{ steps.app-token.outputs.token }}" >> "$GITHUB_OUTPUT"
+      env:
+        APP_TOKEN: ${{ steps.app-token.outputs.token }}
+      run: echo "token=$APP_TOKEN" >> "$GITHUB_OUTPUT"

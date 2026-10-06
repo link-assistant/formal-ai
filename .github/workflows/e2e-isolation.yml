@@ -27,7 +27,7 @@ on:
         type: string
         required: true
       files:
-        description: Space-separated paths the isolated tree needs (default: the replayed task fixtures)
+        description: "Space-separated paths the isolated tree needs (default: the replayed task fixtures)"
         type: string
         default: "rust/ data/ docs/ scripts/"
       keep:
@@ -46,15 +46,16 @@ on:
         type: boolean
         default: false
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+permissions: {}
 
 jobs:
   isolate:
     name: orphan-branch run (${{ inputs.purpose }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -87,6 +88,7 @@ jobs:
           git rm -rf --quiet .
           # Restore exactly the paths the test needs from the dispatching
           # commit's tree.
+          # shellcheck disable=SC2086 # FILES is a space-separated path list.
           git checkout "${GITHUB_SHA}" -- $FILES
           git -c user.name="formal-ai-e2e" -c user.email="noreply@users.noreply.github.com" \
             commit --no-verify -m "e2e: isolated tree for ${PURPOSE} (${run_id})"
@@ -116,8 +118,8 @@ jobs:
           The cleanup job closes this issue and deletes the branch at the end of the run.")"
           issue_number="${issue_url##*/}"
 
-          pr_url="$(gh pr create \
-            --base "$BRANCH" --head "$BRANCH-run" 2>/dev/null || true)"
+          gh pr create \
+            --base "$BRANCH" --head "$BRANCH-run" >/dev/null 2>&1 || true
           # A PR needs two refs; the run's own work commits onto a child
           # branch of the orphan when it produces changes to review. When
           # nothing has changed yet, the tracking issue alone carries the
@@ -133,12 +135,13 @@ jobs:
           E2E_BRANCH: ${{ steps.orphan.outputs.branch }}
           E2E_ISSUE: ${{ steps.track.outputs.issue }}
           GH_TOKEN: ${{ steps.creds.outputs.token }}
+          PURPOSE: ${{ inputs.purpose }}
         run: |
           # The workload itself: the replayed task, the end-to-end test, or
           # the self-coding ladder step (issue #1170) that needed the
           # separate tree. It runs against the orphan branch checked out
           # above and records its result on the tracking issue.
-          echo "isolated workload runs here (purpose: ${{ inputs.purpose }})"
+          echo "isolated workload runs here (purpose: ${PURPOSE})"
           gh issue comment "$E2E_ISSUE" --body "workload: started on ${E2E_BRANCH}"
 
       - name: Cleanup
