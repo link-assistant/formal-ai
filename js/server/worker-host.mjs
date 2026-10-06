@@ -302,9 +302,13 @@ export class WorkerHost {
     return this.readers;
   }
 
-  /** The worker's answer to `prompt` after `history` turns. */
+  /**
+   * The worker's answer to `prompt` after `history` turns. The Rust server
+   * greets with the canonical wording, so the worker's per-reply greeting
+   * variation (a browser preference) is off here.
+   */
   solve(prompt, history = [], options = {}) {
-    return this.run("solve(__serverPrompt, __serverHistory, {}, {}, [], __serverOptions)", {
+    return this.run("solve(__serverPrompt, __serverHistory, { greetingVariations: false }, {}, [], __serverOptions)", {
       __serverPrompt: prompt,
       __serverHistory: history,
       __serverOptions: options,
