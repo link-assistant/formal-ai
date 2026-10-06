@@ -147,6 +147,17 @@ jobs:
               exit 1
             }
           echo "the ts tree mirrors the js tree file for file"
+      - name: The ts tree is what the JavaScript translator renders
+        shell: bash
+        run: |
+          set -euo pipefail
+          # scripts/translate-es.mjs is the js-first twin of the native
+          # js -> ts leg (es_tokenizer.rs + es_meta.rs write_source); it
+          # checks every file's bytes in well under a second, no build.
+          node scripts/translate-es.mjs --check || {
+            echo "::error::ts/ drifted from js/; regenerate with: node scripts/translate-es.mjs --write"
+            exit 1
+          }
 
   rust:
     name: rust tier (dogfood regeneration gate)
@@ -180,3 +191,10 @@ jobs:
           rust/target/release/formal-ai translate --from js --to ts --write
           git diff --exit-code -- ts/
           echo "the committed ts tree regenerates byte-for-byte from js"
+      - name: The JavaScript translator agrees with the native one
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The tree was just regenerated natively; the js twin must render
+          # the same bytes, so the two translators cannot drift apart.
+          node scripts/translate-es.mjs --check
