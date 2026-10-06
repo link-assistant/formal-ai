@@ -85,9 +85,17 @@ fn quoted_string_lists_render_valid_cst_for_every_language() {
         // does with the target it resolved (issue #723).
         let language = language.base_language();
         let program = codegen::build(language, &items, operation, false);
-        let code = program
-            .render()
-            .unwrap_or_else(|| panic!("{} must compose from coding idioms", language.slug));
+        // Swift and R joined the catalog for their grammars (issue #1167) and
+        // carry no list idioms in `data/seed/coding-idioms.lino` yet; every
+        // other catalog language must compose.
+        let Some(code) = program.render() else {
+            assert!(
+                matches!(language.slug, "swift" | "r"),
+                "{} must compose from coding idioms",
+                language.slug
+            );
+            continue;
+        };
         // Composition is required of every catalog language; CST validation is
         // only possible for the ones meta-language ships a grammar for. Scala
         // and Kotlin joined the catalog for the hive-mind#2158 matrix (issue
