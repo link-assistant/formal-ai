@@ -151,7 +151,6 @@ routing_probes
     language en
     intent clarification
     prompt "What do you mean?"
-    js_misroute identity
   probe p048
     lane clarification
     language hi
@@ -530,7 +529,6 @@ routing_probes
     language en
     intent roleplay_explanation
     prompt "Pretend you are a pirate and greet me"
-    js_misroute greeting
   probe p244
     lane roleplay
     language en

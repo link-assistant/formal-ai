@@ -339,7 +339,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       ],
     }, formalizationContext);
   }
-  if (isGreetingPrompt(normalized, prompt)) {
+  if (isGreetingPrompt(normalized, prompt) && !tryRoleplayRequest(prompt, normalized)) {
     events.push("rule:greeting");
     steps.push({ step: "match_rule", detail: "greeting" });
     const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
@@ -436,9 +436,9 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }, formalizationContext);
   }
   // Issue #1085: an opinion opener ("what do you think about …") is the
-  // opinion_question row natively, which the identity route must not claim;
-  // the row itself answers from the synchronous table below.
-  if (isIdentityPrompt(normalized, prompt) && !tryOpinionQuestion(prompt, normalized)) {
+  // opinion_question (and clarification) row natively, which identity must not
+  // claim; the rows answer from the synchronous table below, as Rust dispatches.
+  if (isIdentityPrompt(normalized, prompt) && !tryOpinionQuestion(prompt, normalized) && !tryClarification(prompt, normalized)) {
     events.push("rule:identity");
     steps.push({ step: "match_rule", detail: "identity" });
     return finalize(events, steps, toolCalls, {
