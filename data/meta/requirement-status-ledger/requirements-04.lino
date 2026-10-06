@@ -126,7 +126,7 @@ requirement_status_ledger_shard requirements_04
     verdict "partial"
     delivered ""
     issue "1172"
-    automated_test ""
+    automated_test "rust/tests/web/issue-1172-1173-worker-parity.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1172-2"

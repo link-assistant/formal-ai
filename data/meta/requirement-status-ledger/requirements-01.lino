@@ -307,10 +307,10 @@ requirement_status_ledger_shard requirements_01
   requirement
     id "R1015"
     shard "docs/requirements/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "server parity corpus and ratchet"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/web/agentic-recipes-a.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1016"
@@ -326,7 +326,7 @@ requirement_status_ledger_shard requirements_01
     verdict "partial"
     delivered ""
     issue ""
-    automated_test ""
+    automated_test "rust/tests/web/r1017-delegated-tasks.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1017-1"
