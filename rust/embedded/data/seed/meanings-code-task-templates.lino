@@ -415,3 +415,43 @@ meanings
     unit "not applicable"
     example "the find command cites its find-utilities manual page"
     grounding "data/seed/manual-pages.lino"
+  regex_synthesis_execution_verified
+    defined-by method
+    role action
+    precondition "a composed pattern compiled in the browser regex engine and behaved as derived on every example"
+    effect "appends the execution evidence: how many positive examples matched and negative examples were rejected"
+    unit "not applicable"
+    example "the postal pattern matches 12345 and 12345-6789 and rejects 1234"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_synthesis_execution_failed
+    defined-by method
+    role action
+    precondition "a composed pattern disagreed with an example derived from its own constraints"
+    effect "appends the failing examples and withdraws reliance on the pattern"
+    unit "not applicable"
+    example "a pattern that rejects one of its own positive examples is flagged"
+    grounding "data/seed/multilingual-responses.lino"
+  code_refactoring_execution_matched
+    defined-by method
+    role action
+    precondition "the promise chain and its async rewrite produced the same call trace in every stubbed scenario"
+    effect "appends the scenario count and the matched call trace"
+    unit "not applicable"
+    example "a fetch-json-render chain traces the same calls before and after the rewrite"
+    grounding "data/seed/multilingual-responses.lino"
+  code_refactoring_execution_mismatch
+    defined-by method
+    role action
+    precondition "the promise chain and its async rewrite produced different call traces in some scenario"
+    effect "appends the differing traces and asks for review"
+    unit "not applicable"
+    example "a rewrite that drops the catch handler is flagged"
+    grounding "data/seed/multilingual-responses.lino"
+  code_refactoring_execution_skipped
+    defined-by method
+    role action
+    precondition "the rewritten chain cannot be run safely in the worker"
+    effect "appends why the execution check did not run"
+    unit "not applicable"
+    example "a handler body with a loop is not executed"
+    grounding "data/seed/multilingual-responses.lino"

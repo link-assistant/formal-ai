@@ -182,3 +182,23 @@ multilingual_responses
     intent test_generation_refusal
     language en
     text "Recognized a test-writing request, but no function under test could be identified — name it, ideally in backticks like `is_palindrome(s)` — so I will not guess test cases."
+  response response_regex_synthesis_execution_verified_en
+    intent regex_synthesis_execution_verified
+    language en
+    text "Verified by execution in the browser worker: the pattern was compiled with the JavaScript RegExp engine and matched all {positive_count} positive examples derived from the constraints ({positives}) and rejected all {negative_count} negative examples ({negatives})."
+  response response_regex_synthesis_execution_failed_en
+    intent regex_synthesis_execution_failed
+    language en
+    text "Execution check failed in the browser worker: {failures}. Do not rely on this pattern; restate the counts and separators and I will compose it again."
+  response response_code_refactoring_execution_matched_en
+    intent code_refactoring_execution_matched
+    language en
+    text "Execution check in the browser worker, beyond the structural check: the original chain and the rewrite both ran against recording stubs for every free identifier in {scenarios} scenarios (every call fulfilled, then each of the {calls} calls rejecting in turn), and the recorded call traces matched. Fulfilled trace: {trace}."
+  response response_code_refactoring_execution_mismatch_en
+    intent code_refactoring_execution_mismatch
+    language en
+    text "Execution check in the browser worker found a difference between the original chain and the rewrite ({detail}). Review the rewrite before relying on it."
+  response response_code_refactoring_execution_skipped_en
+    intent code_refactoring_execution_skipped
+    language en
+    text "Execution check in the browser worker was skipped ({detail}); only the structural check above applies."
