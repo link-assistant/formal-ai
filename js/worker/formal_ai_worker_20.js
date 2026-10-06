@@ -1002,16 +1002,16 @@ function workerHandlerRegistryDefinition() {
     word_problem: "tryWordProblem",
     numeric_list: "tryNumericList",
     shell_command_transform: workerHandlerAliases.shell_command_transform,
-    code_debugging: null, // native surface only: structural debugging guidance runs in the Rust core
-    regex_synthesis: null, // native surface only: regex composition runs in the Rust core
-    sql_synthesis: null, // native surface only: single-SELECT composition runs in the Rust core
-    shell_command_compose: null, // native surface only: find composition runs in the Rust core
+    code_debugging: "tryCodeDebugging",
+    regex_synthesis: "tryRegexSynthesis",
+    sql_synthesis: "trySqlSynthesis",
+    shell_command_compose: "tryShellCommandCompose",
     number_constraint_reasoning: "tryNumberConstraintReasoning",
-    code_explanation: null, // native surface only: the construct table walk runs in the Rust core
-    code_review: null, // native surface only: the seeded review rules run in the Rust core
-    test_generation: null, // native surface only: pytest suite emission runs in the Rust core
-    code_refactoring: null, // native surface only: promise-chain rewriting runs in the Rust core
-    format_conversion: null, // native surface only: JSON/YAML conversion runs in the Rust core
+    code_explanation: "tryCodeExplanation",
+    code_review: "tryCodeReview",
+    test_generation: "tryTestGeneration",
+    code_refactoring: "tryCodeRefactoring",
+    format_conversion: "tryFormatConversion",
     program_synthesis: "tryProgramSynthesis",
     arithmetic: "tryArithmetic",
     statistics: "tryStatistics",
@@ -1023,21 +1023,21 @@ function workerHandlerRegistryDefinition() {
     how_it_works: null, // inline architecture-question machinery
     meta_explanation: null, // inline architecture-question machinery
     network_query: null, // phase async
-    execution_failure: null, // native surface only
+    execution_failure: "tryExecutionFailure",
     installation_conversion: "tryInstallationConversion",
     write_script: workerHandlerAliases.write_script,
-    document_generation_plan: null, // native surface only
+    document_generation_plan: "tryDocumentGenerationPlan",
     software_project: workerHandlerAliases.software_project,
     software_project_request: "trySoftwareProjectRequest",
-    algorithm: null, // native surface only
+    algorithm: "tryAlgorithm",
     source_refresh: null, // phase async
-    source_conflict: null, // native surface only
+    source_conflict: "trySourceConflict",
     clarification: "tryClarification", // seed rule interpreter (handler-rules.lino)
     punctuation_only_prompt: "tryPunctuationOnlyPrompt", // seed rule interpreter, run inline early
     ill_formed: "tryIllFormed", // seed rule interpreter
     physical_action_question: "tryPhysicalActionQuestion", // seed rule interpreter
     kupi_slona: "tryKupiSlona",
-    shell_refusal: null, // native surface only
+    shell_refusal: "tryShellRefusal",
     proof_request: "tryProofRequest",
     opinion_question: "tryOpinionQuestion", // seed rule interpreter
     unit_conversion: "tryUnitConversion",

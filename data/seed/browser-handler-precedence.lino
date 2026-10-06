@@ -82,6 +82,8 @@ browser_handler_precedence
     argument_prompt
     argument_normalized
     argument_language
+  handler tryTestGeneration
+    argument_prompt
   handler tryVerifiableTask
     argument_prompt
   handler tryUnitConversion
@@ -114,10 +116,26 @@ browser_handler_precedence
   handler tryNumericList
     argument_prompt
     argument_history
+  handler tryCodeDebugging
+    argument_prompt
+  handler tryRegexSynthesis
+    argument_prompt
+  handler trySqlSynthesis
+    argument_prompt
+  handler tryShellCommandCompose
+    argument_prompt
   handler tryNumberConstraintReasoning
     argument_prompt
     argument_normalized
     argument_language
+  handler tryCodeExplanation
+    argument_prompt
+  handler tryCodeReview
+    argument_prompt
+  handler tryCodeRefactoring
+    argument_prompt
+  handler tryFormatConversion
+    argument_prompt
   handler tryProgramSynthesis
     argument_prompt
     argument_normalized
@@ -132,6 +150,8 @@ browser_handler_precedence
     argument_normalized
     argument_language
   handler tryJavaScriptExecution
+    argument_prompt
+  handler tryExecutionFailure
     argument_prompt
   handler tryInstallationConversion
     argument_prompt
@@ -149,11 +169,17 @@ browser_handler_precedence
     argument_history
   handler tryConceptLookup
     argument_prompt
+  handler tryAlgorithm
+    argument_prompt
   handler tryWriteProgram
     context_binding_writeProgram
+  handler tryDocumentGenerationPlan
+    argument_prompt
   handler trySoftwareProjectRequest
     argument_prompt
     argument_history
+  handler trySourceConflict
+    argument_prompt
   handler tryClarification
     argument_prompt
     argument_normalized
@@ -163,6 +189,8 @@ browser_handler_precedence
   handler tryPhysicalActionQuestion
     argument_prompt
     argument_normalized
+  handler tryShellRefusal
+    argument_prompt
   handler tryOpinionQuestion
     argument_prompt
     argument_normalized
