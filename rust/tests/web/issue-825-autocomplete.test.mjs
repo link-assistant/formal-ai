@@ -185,3 +185,16 @@ test("the catalog carries the autocomplete strings in every locale", () => {
     }
   }
 });
+
+test("completing mid-sentence replaces only the word being typed", () => {
+  const completed = [];
+  const controller = createAutocompleteController({
+    getItems: () => [{ value: "glass" }],
+    onComplete: (value) => completed.push(value),
+  });
+
+  controller.handleInput("use the gla");
+  assert.equal(controller.snapshot().open, true);
+  assert.equal(controller.handleKeyDown(keyEvent("Tab")), "handled");
+  assert.deepEqual(completed, ["use the glass"]);
+});

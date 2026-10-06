@@ -81,6 +81,7 @@ function createAutocompleteController({ getItems, limit = SUGGESTION_LIMIT, onCo
   let open = false;
   let activeIndex = -1;
   let items = [];
+  let prefix = "";
 
   function snapshot() {
     return { open, items: [...items], activeIndex };
@@ -99,7 +100,9 @@ function createAutocompleteController({ getItems, limit = SUGGESTION_LIMIT, onCo
       return;
     }
     close();
-    onComplete(item.value);
+    // Only the trailing word was matched, so only it is replaced: the
+    // prose typed before it stays.
+    onComplete(prefix + item.value);
   }
 
   function handleInput(value) {
@@ -107,6 +110,7 @@ function createAutocompleteController({ getItems, limit = SUGGESTION_LIMIT, onCo
     // The word under the caret is the last whitespace-delimited token; the
     // rest of the sentence is prose and must not drive the suggestions.
     const trailingWord = /\s$/.test(query) ? "" : query.match(/\S*$/)[0];
+    prefix = query.slice(0, query.length - trailingWord.length);
     items = rankSuggestions(trailingWord, getItems(trailingWord), limit);
     // Only a partial word is completable: a finished sentence would turn
     // every keystroke into a popup.
