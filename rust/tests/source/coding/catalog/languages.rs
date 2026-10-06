@@ -199,6 +199,40 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         setup_hint: "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)",
         framework_of: None,
     },
+    // Issue #1167 (mirrors rust/src/coding/catalog/languages.rs): the Swift
+    // and R grammars ship in the meta-language revision the seed names.
+    ProgramLanguage {
+        slug: "swift",
+        name: "Swift",
+        code_fence: "swift",
+        execution: ProgramExecution {
+            status: ExecutionStatus::Unavailable,
+            environment: "Swift toolchain is not configured in this repository runtime",
+            check_command: Some("swiftc -parse hello.swift"),
+            run_command: "swift hello.swift",
+            notes: "",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "hello.swift",
+        setup_hint: "the Swift toolchain from https://www.swift.org/install/",
+        framework_of: None,
+    },
+    ProgramLanguage {
+        slug: "r",
+        name: "R",
+        code_fence: "r",
+        execution: ProgramExecution {
+            status: ExecutionStatus::Unavailable,
+            environment: "R toolchain is not configured in this repository runtime",
+            check_command: Some("Rscript -e 'invisible(parse(\"hello.R\"))'"),
+            run_command: "Rscript hello.R",
+            notes: "",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "hello.R",
+        setup_hint: "R from https://cloud.r-project.org/",
+        framework_of: None,
+    },
     ProgramLanguage {
         slug: "php",
         name: "PHP",

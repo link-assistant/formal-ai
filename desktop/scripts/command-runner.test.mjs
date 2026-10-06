@@ -18,7 +18,7 @@ test("production manifests and focused fallback limitations stay mapped", () => 
     "utf8",
   );
 
-  assert.equal(desktopManifest.dependencies["command-stream"], "0.19.0");
+  assert.equal(desktopManifest.dependencies["command-stream"], "1.2.0");
   assert.equal(vscodeManifest.dependencies["command-stream"], undefined);
   assert.match(cargoManifest, /^command-stream = "=0\.16\.0"$/m);
   // Issue #189 is that a CommonJS host could not reach this library at all.
