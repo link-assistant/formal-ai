@@ -236,6 +236,7 @@ const MODIFIER_NODE = "request:modifier";
 // OPERATION_VOCABULARY_LINO is loaded from synced seed/*.lino data during loadSeed().
 
 let cachedOperationVocabulary = null;
+let cachedCountingCues = [];
 // Parse the embedded operation vocabulary into language-pooled triggers
 // ({ slug, phrases, combos, inverse? }). Mirrors operation_vocabulary() in
 // src/seed/operation_vocabulary.rs; phrases/combos are pooled across every
@@ -246,17 +247,31 @@ function operationVocabulary() {
   const container =
     root.children.find((child) => child.name === "operation_vocabulary") || root;
   const operations = [];
+  cachedCountingCues = container.children
+    .filter((node) => node.name === "counting_cue")
+    .flatMap((node) => node.children.flatMap((language) => language.children))
+    .filter((form) => form.name === "phrase")
+    .map((form) => form.value);
   for (const operationNode of container.children) {
     if (operationNode.name !== "operation") continue;
     const phrases = [];
     const combos = [];
     const exclusions = [];
+    const units = [];
+    const members = [];
+    // Phrases whose argument the language states before them (hi, zh).
+    const argumentBefore = new Set();
     let inverse = null;
     for (const child of operationNode.children) {
       if (child.name === "inverse") inverse = child.value;
       else if (child.name === "language") {
+        const before = child.children.some((form) => form.name === "argument" && form.value === "before");
         for (const form of child.children) {
-          if (form.name === "phrase") phrases.push(form.value);
+          if (form.name === "phrase") {
+            phrases.push(form.value);
+            if (before) argumentBefore.add(form.value);
+          } else if (form.name === "unit") units.push(form.value);
+          else if (form.name === "members") members.push(form.value);
           else if (form.name === "exclude") exclusions.push(form.value);
           else if (form.name === "combo") {
             combos.push(
@@ -269,7 +284,7 @@ function operationVocabulary() {
         }
       }
     }
-    const operation = { slug: operationNode.value, phrases, combos, exclusions };
+    const operation = { slug: operationNode.value, phrases, combos, exclusions, units, members, argumentBefore };
     if (inverse) operation.inverse = inverse;
     operations.push(operation);
   }

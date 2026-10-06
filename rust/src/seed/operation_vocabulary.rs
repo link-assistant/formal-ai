@@ -11,6 +11,14 @@ use super::parser::parse_lino;
 pub struct OperationLanguageForms {
     pub phrases: Vec<String>,
     pub combos: Vec<Vec<String>>,
+    /// Nouns naming what a count operation counts ("words", "строк"): a
+    /// counting cue plus one of them in a request's own framing asks for it.
+    pub units: Vec<String>,
+    /// The characters a character-class operation ("vowels") stands for.
+    pub members: Vec<String>,
+    /// Whether this language states an operation's argument before its
+    /// phrase ("x से शुरू होने वाली पंक्तियाँ") rather than after it.
+    pub argument_before: bool,
 }
 
 impl OperationLanguageForms {
@@ -82,6 +90,9 @@ impl OperationTrigger {
 #[derive(Debug, Clone, Default)]
 pub struct OperationVocabulary {
     pub operations: Vec<OperationTrigger>,
+    /// Every language's counting cues ("how many", "сколько", "count"),
+    /// declared once in the `counting_cue` block.
+    pub counting_cues: Vec<String>,
 }
 
 impl OperationVocabulary {
@@ -108,6 +119,66 @@ impl OperationVocabulary {
                     .min()
             })
             .min()
+    }
+
+    /// Does a request's own framing — its words outside the quoted payload —
+    /// ask how many of the unit the operation with this canonical token counts
+    /// ("how many words are in ..." asks for `count_words`)?
+    #[must_use]
+    pub fn asks_count_of(&self, canonical: &str, framing: &str) -> bool {
+        self.names_counting_cue(framing)
+            && self.operations.iter().any(|op| {
+                op.canonical == canonical
+                    && op.languages.values().any(|forms| {
+                        forms
+                            .units
+                            .iter()
+                            .any(|unit| framing.contains(unit.as_str()))
+                    })
+            })
+    }
+
+    /// The characters of the character class a request's own framing asks to
+    /// count ("count the vowels in ..."), pooled across every language that
+    /// declares `members` for it.
+    #[must_use]
+    pub fn counted_character_class(&self, framing: &str) -> Option<String> {
+        if !self.names_counting_cue(framing) {
+            return None;
+        }
+        self.operations
+            .iter()
+            .filter(|op| op.languages.values().any(|forms| !forms.members.is_empty()))
+            .find(|op| op.matches(framing))
+            .map(|op| {
+                op.languages
+                    .values()
+                    .flat_map(|forms| forms.members.iter().map(String::as_str))
+                    .collect()
+            })
+    }
+
+    fn names_counting_cue(&self, framing: &str) -> bool {
+        self.counting_cues
+            .iter()
+            .any(|cue| framing.contains(cue.as_str()))
+    }
+
+    /// Every language's phrases for the operation with this canonical token,
+    /// each paired with whether that language states the argument before it.
+    #[must_use]
+    pub fn argument_phrases(&self, canonical: &str) -> Vec<(&str, bool)> {
+        self.operations
+            .iter()
+            .filter(|op| op.canonical == canonical)
+            .flat_map(|op| op.languages.values())
+            .flat_map(|forms| {
+                forms
+                    .phrases
+                    .iter()
+                    .map(move |phrase| (phrase.as_str(), forms.argument_before))
+            })
+            .collect()
     }
 
     /// Every canonical operation token whose phrasing appears in the normalized
@@ -170,6 +241,17 @@ pub fn operation_vocabulary() -> OperationVocabulary {
     let tree = parse_lino(OPERATION_VOCABULARY_LINO);
     let mut vocabulary = OperationVocabulary::default();
     if let Some(root) = tree.children.first() {
+        for cue_node in root.children.iter().filter(|c| c.name == "counting_cue") {
+            for language_node in cue_node.children.iter().filter(|c| c.name == "language") {
+                vocabulary.counting_cues.extend(
+                    language_node
+                        .children
+                        .iter()
+                        .filter(|entry| entry.name == "phrase")
+                        .map(|entry| entry.id.clone()),
+                );
+            }
+        }
         for operation_node in root.children.iter().filter(|c| c.name == "operation") {
             let mut languages = BTreeMap::new();
             let mut exclusions = Vec::new();
@@ -184,6 +266,9 @@ pub fn operation_vocabulary() -> OperationVocabulary {
                         "phrase" => forms.phrases.push(entry.id.clone()),
                         "combo" => forms.combos.push(split_combo(&entry.id)),
                         "exclude" => exclusions.push(entry.id.clone()),
+                        "unit" => forms.units.push(entry.id.clone()),
+                        "members" => forms.members.push(entry.id.clone()),
+                        "argument" => forms.argument_before = entry.id == "before",
                         _ => {}
                     }
                 }

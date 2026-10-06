@@ -15,6 +15,7 @@ use crate::solver_handlers::text_edit_ops::{
     number_lines, outdent_line, pascal_case, remove_punctuation, reverse_lines, sentence_case,
     sort_words, strip_empty_lines, title_case, uncomment_lines,
 };
+use crate::solver_handlers::text_request_framing::{phrase_argument, request_framing};
 use crate::substitution::{
     CrudEvent, SubstitutionGraph, SubstitutionRuleSet, SubstitutionTraceReport,
 };
@@ -138,6 +139,10 @@ impl TextRequest {
     ) -> Option<Self> {
         let vocabulary = crate::seed::operation_vocabulary();
         let quoted = quoted_segments(prompt);
+        let spans = quoted_segment_spans(prompt);
+        // The request's own words: its quoted payload is content, so a payload
+        // word ("раз") never names an operation asked of the framing.
+        let framing = request_framing(prompt, &spans);
         let fallback_input = || last_assistant_text_artifact(history);
 
         if vocabulary.matches("replace", normalized) && quoted.len() >= 2 {
@@ -145,7 +150,7 @@ impl TextRequest {
             return Self::build(input, vec![TextOperation::Replace { from, to }]);
         }
 
-        if vocabulary.matches("count_occurrences", normalized) && !quoted.is_empty() {
+        if vocabulary.matches("count_occurrences", &framing) && !quoted.is_empty() {
             let needle = quoted[0].clone();
             let input = quoted
                 .get(1)
@@ -173,13 +178,25 @@ impl TextRequest {
             return Self::build(input, vec![TextOperation::PrependText { prefix }]);
         }
 
-        let input = quoted
-            .first()
-            .cloned()
+        // An operation phrase may carry its own argument ("lines that start
+        // with x"); when that argument is quoted, the payload is the other
+        // quoted segment.
+        let line_prefix = phrase_argument(&vocabulary, "filter_lines_by_prefix", prompt, &spans);
+        let argument_index = line_prefix.as_ref().and_then(|argument| argument.quoted);
+        let input = spans
+            .iter()
+            .enumerate()
+            .find(|(index, _)| Some(*index) != argument_index)
+            .map(|(_, segment)| segment.text.clone())
             .or_else(|| text_after_colon(prompt))
             .or_else(fallback_input)?;
         let mut operations = Vec::new();
-        append_simple_operations(&vocabulary, normalized, &mut operations);
+        if let Some(argument) = line_prefix {
+            operations.push(TextOperation::FilterLinesByPrefix {
+                prefix: argument.text,
+            });
+        }
+        append_simple_operations(&vocabulary, normalized, &framing, &mut operations);
         Self::build(input, operations)
     }
 
@@ -202,8 +219,14 @@ fn matches_specific_remove_operation(
 fn append_simple_operations(
     vocabulary: &crate::seed::OperationVocabulary,
     normalized: &str,
+    framing: &str,
     operations: &mut Vec<TextOperation>,
 ) {
+    // A count is named outright ("count words") or asked of the request's own
+    // framing: a seeded counting cue plus the unit noun ("how many words").
+    let counts = |canonical: &str| {
+        vocabulary.matches(canonical, normalized) || vocabulary.asks_count_of(canonical, framing)
+    };
     if vocabulary.matches("lowercase", normalized) {
         operations.push(TextOperation::Lowercase);
     } else if vocabulary.matches("uppercase", normalized) {
@@ -281,15 +304,18 @@ fn append_simple_operations(
     if vocabulary.matches("remove_punctuation", normalized) {
         operations.push(TextOperation::RemovePunctuation);
     }
-    if vocabulary.matches("count_unique_words", normalized) {
+    if counts("count_unique_words") {
         operations.push(TextOperation::CountUniqueWords);
-    } else if vocabulary.matches("count_words", normalized) {
+    } else if counts("count_words") {
         operations.push(TextOperation::CountWords);
     }
-    if vocabulary.matches("count_lines", normalized) {
+    if counts("count_lines") {
         operations.push(TextOperation::CountLines);
     }
-    if vocabulary.matches("count_characters", normalized) {
+    // A seeded character class ("vowels") counted names its members.
+    if let Some(members) = vocabulary.counted_character_class(framing) {
+        operations.push(TextOperation::CountCharacterClass { members });
+    } else if counts("count_characters") {
         operations.push(TextOperation::CountCharacters);
     }
     // The chain runs in the order the request names its steps ("sort the words
@@ -320,6 +346,8 @@ enum TextOperation {
     CountWords,
     CountLines,
     CountCharacters,
+    CountCharacterClass { members: String },
+    FilterLinesByPrefix { prefix: String },
     DeduplicateLines,
     SortLines,
     SortWords,
@@ -351,6 +379,7 @@ impl TextOperation {
                 | Self::CountWords
                 | Self::CountLines
                 | Self::CountCharacters
+                | Self::CountCharacterClass { .. }
         )
     }
 
@@ -371,6 +400,8 @@ impl TextOperation {
             Self::CountWords => "count_words",
             Self::CountLines => "count_lines",
             Self::CountCharacters => "count_characters",
+            Self::CountCharacterClass { .. } => "count_character_class",
+            Self::FilterLinesByPrefix { .. } => "filter_lines_by_prefix",
             Self::DeduplicateLines => "deduplicate_lines",
             Self::SortLines => "sort_lines",
             Self::SortWords => "sort_words",
@@ -417,6 +448,20 @@ impl TextOperation {
             Self::CountWords => count_words(input).to_string(),
             Self::CountLines => input.lines().count().to_string(),
             Self::CountCharacters => input.chars().count().to_string(),
+            Self::CountCharacterClass { members } => input
+                .chars()
+                .filter(|character| {
+                    character
+                        .to_lowercase()
+                        .all(|lower| members.contains(lower))
+                })
+                .count()
+                .to_string(),
+            Self::FilterLinesByPrefix { prefix } => input
+                .lines()
+                .filter(|line| line.starts_with(prefix.as_str()))
+                .collect::<Vec<_>>()
+                .join("\n"),
             Self::DeduplicateLines => deduplicate_lines(input).join("\n"),
             Self::SortLines => {
                 let mut lines = input.lines().map(str::to_owned).collect::<Vec<_>>();

@@ -603,7 +603,95 @@ function textOperationMatches(slug, normalized) {
   );
 }
 
-function appendSimpleTextOperations(normalized, operations) {
+// R1017: the request's own words, normalized — outside its quoted payload;
+// "" when it quotes none, so neither a question about the world nor a
+// signature colon reads as a count. Mirrors request_framing in
+// rust/src/solver_handlers/text_request_framing.rs.
+function textRequestFraming(prompt, spans) {
+  const source = String(prompt || "");
+  if (!spans.length) return "";
+  let outside = "";
+  let cursor = 0;
+  for (const span of spans) {
+    if (span.start < cursor) continue;
+    outside += `${source.slice(cursor, span.start)} `;
+    cursor = span.end;
+  }
+  return normalizePrompt(outside + source.slice(cursor));
+}
+
+// R1017: does a request's own framing (its words outside the quoted payload)
+// ask how many of the unit `slug` counts — a seeded counting cue plus a unit
+// noun ("how many words")? Mirrors OperationVocabulary::asks_count_of.
+function operationAsksCountOf(slug, framing) {
+  const source = String(framing || "");
+  operationVocabulary();
+  if (!cachedCountingCues.some((cue) => source.includes(cue))) return false;
+  return operationVocabulary().some(
+    (operation) => operation.slug === slug && operation.units.some((unit) => source.includes(unit)),
+  );
+}
+
+// The members of the seeded character class ("vowels") the framing asks to
+// count, pooled across languages; "" when none. Mirrors
+// OperationVocabulary::counted_character_class.
+function countedCharacterClass(framing) {
+  const source = String(framing || "");
+  operationVocabulary();
+  if (!cachedCountingCues.some((cue) => source.includes(cue))) return "";
+  const found = operationVocabulary().find(
+    (operation) => operation.members.length && operationFormMatches(source, operation),
+  );
+  return found ? found.members.join("") : "";
+}
+
+const TEXT_ARGUMENT_ENDS = /[:,;?!：，"'`«»“”‘’「」『』]/u;
+
+// The argument an operation phrase introduces ("lines that start with x"):
+// the quoted segment where the argument goes, or the bare token there; each
+// language declares whether it follows or precedes the phrase. Mirrors
+// phrase_argument in rust/src/solver_handlers/text_request_framing.rs.
+function textPhraseArgument(slug, prompt, spans) {
+  const source = String(prompt || "");
+  const words = normalizedWordSpans(source);
+  const insideQuoted = (offset) => spans.some((span) => span.start <= offset && offset < span.end);
+  const quotedArgument = (index) => (spans[index].text ? { text: spans[index].text, quoted: index } : null);
+  const bareArgument = (token, after) => {
+    const pieces = String(token || "").split(TEXT_ARGUMENT_ENDS);
+    const text = (after ? pieces[0] : pieces[pieces.length - 1]).replace(/[.。]+$/u, "");
+    return text ? { text, quoted: null } : null;
+  };
+  for (const operation of operationVocabulary().filter((entry) => entry.slug === slug)) {
+    for (const phrase of operation.phrases) {
+      const needle = normalizedWordSpans(phrase).map((span) => span.word);
+      if (!needle.length || words.length < needle.length) continue;
+      let start = -1;
+      for (let index = 0; index + needle.length <= words.length && start < 0; index += 1) {
+        if (insideQuoted(words[index].start)) continue;
+        if (needle.every((word, offset) => words[index + offset].word === word)) start = index;
+      }
+      if (start < 0) continue;
+      let argument;
+      if (operation.argumentBefore.has(phrase)) {
+        const head = source.slice(0, words[start].start).trimEnd();
+        const index = spans.findIndex((span) => span.end === head.length);
+        argument = index >= 0 ? quotedArgument(index) : bareArgument(head.split(/\s+/u).pop(), false);
+      } else {
+        const end = words[start + needle.length - 1].end;
+        const begin = end + (source.slice(end).length - source.slice(end).trimStart().length);
+        const index = spans.findIndex((span) => span.start === begin);
+        argument = index >= 0 ? quotedArgument(index) : bareArgument(source.slice(begin).split(/\s+/u)[0], true);
+      }
+      if (argument) return argument;
+    }
+  }
+  return null;
+}
+
+function appendSimpleTextOperations(normalized, operations, framing = "") {
+  // A count is named outright ("count words") or asked of the request's own
+  // framing: a seeded counting cue plus the unit noun ("how many words").
+  const counts = (slug) => textOperationMatches(slug, normalized) || operationAsksCountOf(slug, framing);
   if (textOperationMatches("lowercase", normalized)) {
     operations.push({ slug: "lowercase" });
   } else if (textOperationMatches("uppercase", normalized)) {
@@ -680,15 +768,19 @@ function appendSimpleTextOperations(normalized, operations) {
   if (textOperationMatches("remove_punctuation", normalized)) {
     operations.push({ slug: "remove_punctuation" });
   }
-  if (textOperationMatches("count_unique_words", normalized)) {
+  if (counts("count_unique_words")) {
     operations.push({ slug: "count_unique_words" });
-  } else if (textOperationMatches("count_words", normalized)) {
+  } else if (counts("count_words")) {
     operations.push({ slug: "count_words" });
   }
-  if (textOperationMatches("count_lines", normalized)) {
+  if (counts("count_lines")) {
     operations.push({ slug: "count_lines" });
   }
-  if (textOperationMatches("count_characters", normalized)) {
+  // A seeded character class ("vowels") counted names its members.
+  const members = countedCharacterClass(framing);
+  if (members) {
+    operations.push({ slug: "count_character_class", members });
+  } else if (counts("count_characters")) {
     operations.push({ slug: "count_characters" });
   }
   // The chain runs in the order the request names its steps ("sort the words
@@ -710,6 +802,7 @@ const TEXT_COUNT_OPERATIONS = new Set([
   "count_words",
   "count_lines",
   "count_characters",
+  "count_character_class",
 ]);
 
 function textOperationPosition(slug, normalized) {
@@ -760,6 +853,9 @@ function parseTextManipulationRequest(prompt, normalized, history = []) {
   const quoted = quotedTextSpans(prompt);
   const operations = [];
   const fallbackInput = lastAssistantTextArtifact(history);
+  // The request's own words: a quoted payload word ("раз") never names an
+  // operation asked of the framing.
+  const framing = textRequestFraming(prompt, quoted);
   let input = "";
   if (isReplaceTextPrompt(normalized)) {
     if (quoted.length < 2) return null;
@@ -770,8 +866,7 @@ function parseTextManipulationRequest(prompt, normalized, history = []) {
       operations.push({ slug: "replace_text", from: quoted[0].text, to: quoted[1].text });
       input = (quoted[2] && quoted[2].text) || textAfterColon(prompt) || fallbackInput;
     }
-  } else if (normalized.includes("count occurrences")) {
-    if (quoted.length < 1) return null;
+  } else if (quoted.length && textOperationMatches("count_occurrences", framing)) {
     operations.push({ slug: "count_occurrences", needle: quoted[0].text });
     input = (quoted[1] && quoted[1].text) || textAfterColon(prompt) || fallbackInput;
   } else if (textOperationMatches("remove_text", normalized) && !matchesSpecificRemoveOperation(normalized)) {
@@ -790,8 +885,13 @@ function parseTextManipulationRequest(prompt, normalized, history = []) {
     operations.push({ slug: "prepend_text", prefix: parsed.affix });
     input = parsed.input;
   } else {
-    input = (quoted[0] && quoted[0].text) || textAfterColon(prompt) || fallbackInput;
-    appendSimpleTextOperations(normalized, operations);
+    // An operation phrase may carry its own argument ("lines that start with
+    // x"); when that argument is quoted, the payload is the other segment.
+    const prefix = textPhraseArgument("filter_lines_by_prefix", prompt, quoted);
+    const payload = quoted.find((_, index) => !prefix || index !== prefix.quoted);
+    input = (payload && payload.text) || textAfterColon(prompt) || fallbackInput;
+    if (prefix) operations.push({ slug: "filter_lines_by_prefix", prefix: prefix.text });
+    appendSimpleTextOperations(normalized, operations, framing);
   }
   if (!input || operations.length === 0) return null;
   return { input, operations };
@@ -1105,9 +1205,17 @@ function applyTextOperation(operation, input) {
     case "count_words":
       return String(countWords(input));
     case "count_lines":
-      return String(String(input).split(/\r?\n/).length);
+      return String(textLines(input).length);
     case "count_characters":
       return String(Array.from(String(input)).length);
+    case "count_character_class":
+      return String(
+        Array.from(String(input)).filter((character) => operation.members.includes(character.toLowerCase())).length,
+      );
+    case "filter_lines_by_prefix":
+      return textLines(input)
+        .filter((line) => line.startsWith(operation.prefix))
+        .join("\n");
     case "deduplicate_lines":
       return deduplicateLines(input).join("\n");
     case "sort_lines":
@@ -1151,6 +1259,14 @@ function applyTextOperation(operation, input) {
     default:
       return String(input);
   }
+}
+
+// The lines of `input` as Rust's str::lines reads them: a final line break
+// ends the last line rather than opening an empty one.
+function textLines(input) {
+  const source = String(input);
+  if (!source) return [];
+  return source.replace(/\r?\n$/u, "").split(/\r?\n/u);
 }
 
 function buildTextManipulationChain(input, operations) {

@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_07.js"
-  ceiling 1220
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling 1220 (2026-10-07, R1017): text operations chain in the order the request names them (OperationVocabulary::position twin)."
+  ceiling 1336
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling 1220 (2026-10-07, R1017): text operations chain in the order the request names them (OperationVocabulary::position twin). Ceiling 1336 (2026-10-07, R1017): counting questions (a seeded counting cue plus a unit noun asked of the request framing outside its quoted payload, operationAsksCountOf), a seeded character-class count (countedCharacterClass) and the line filter-by-prefix operation with its phrase argument, twins of rust/src/solver_handlers/text_request_framing.rs, text_manipulation.rs and OperationVocabulary::asks_count_of / counted_character_class."

@@ -55,6 +55,7 @@ mod task_decomposition;
 mod test_generation;
 mod text_edit_ops;
 mod text_manipulation;
+mod text_request_framing;
 mod unit_conversion;
 
 pub mod numeric_list;
