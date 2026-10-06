@@ -23,31 +23,46 @@ function normalizeForMatch(value) {
     .trim();
 }
 
+// Language names in every UI language the catalog ships. They mirror the
+// uiLanguage term table in main.jsx, so a Russian reader typing "рус" is
+// offered "switch to Russian" exactly as the parser would accept "русский".
+const LANGUAGE_NAME_ALIASES = {
+  english: ["английский", "अंग्रेज़ी", "अंग्रेजी", "英语"],
+  russian: ["русский", "रूसी", "俄语"],
+  chinese: ["китайский", "चीनी", "中文", "汉语"],
+  hindi: ["хинди", "हिन्दी", "हिंदी", "印地语"],
+};
+
+function matchWords(haystack) {
+  const words = haystack.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const aliases = [];
+  for (const word of words) {
+    for (const alias of LANGUAGE_NAME_ALIASES[word] || []) aliases.push(normalizeForMatch(alias));
+  }
+  return [...words, ...aliases];
+}
+
 /**
  * Rank `items` against `query`. Items are { value, hint?, source? }.
- * Score: 3 = prefix match, 2 = word-start match, 1 = substring match.
+ * Score: 3 = prefix match, 2 = word-start match (a language name also
+ * matches its name in the other UI languages), 1 = substring match.
  * Non-matching items are dropped; ties keep the caller's order.
  */
 function rankSuggestions(query, items, limit = SUGGESTION_LIMIT) {
   const needle = normalizeForMatch(query);
   if (!needle) return [];
   const ranked = [];
-  for (const item of items || []) {
+  for (const [index, item] of (items || []).entries()) {
     if (!item || typeof item.value !== "string" || !item.value) continue;
     const haystack = normalizeForMatch(item.value);
     let score = 0;
     if (haystack.startsWith(needle)) score = 3;
-    else {
-      const wordStart = haystack
-        .split(/[^\p{L}\p{N}]+/u)
-        .some((word) => word.startsWith(needle));
-      if (wordStart) score = 2;
-      else if (haystack.includes(needle)) score = 1;
-    }
-    if (score > 0) ranked.push({ item, score });
+    else if (matchWords(haystack).some((word) => word.startsWith(needle))) score = 2;
+    else if (haystack.includes(needle)) score = 1;
+    if (score > 0) ranked.push({ item, score, index });
   }
   return ranked
-    .sort((a, b) => b.score - a.score || a.item.value.localeCompare(b.item.value))
+    .sort((a, b) => b.score - a.score || a.index - b.index)
     .slice(0, limit)
     .map((entry) => entry.item);
 }
@@ -89,7 +104,9 @@ function createAutocompleteController({ getItems, limit = SUGGESTION_LIMIT, onCo
 
   function handleInput(value) {
     const query = String(value || "");
-    const trailingWord = query.match(/[^\n]*$/)[0].trim();
+    // The word under the caret is the last whitespace-delimited token; the
+    // rest of the sentence is prose and must not drive the suggestions.
+    const trailingWord = /\s$/.test(query) ? "" : query.match(/\S*$/)[0];
     items = rankSuggestions(trailingWord, getItems(trailingWord), limit);
     // Only a partial word is completable: a finished sentence would turn
     // every keystroke into a popup.
