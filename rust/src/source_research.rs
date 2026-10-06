@@ -132,10 +132,9 @@ impl SourceResearchExecution {
         // retains the URL and digest of its source capture; a ranking alone
         // never creates one.
         for page in &self.pages {
-            for statement in crate::web_formalize::generic_page_statements(
-                page.capture.bytes(),
-                None,
-            ) {
+            for statement in
+                crate::web_formalize::generic_page_statements(page.capture.bytes(), None)
+            {
                 records.push(format_lino_record(
                     "formalized_page_statement",
                     &[

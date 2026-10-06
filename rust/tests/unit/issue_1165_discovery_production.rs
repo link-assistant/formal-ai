@@ -96,7 +96,10 @@ fn content_id_is_fnv1a_of_entry_and_recomputed_on_store() {
     poisoned.content_id = u64::MAX;
     cache.store(poisoned).expect("stores");
     assert_eq!(
-        cache.lookup("kotlin", "hello_world").expect("row").content_id,
+        cache
+            .lookup("kotlin", "hello_world")
+            .expect("row")
+            .content_id,
         fnv1a64(recipe.entry.as_bytes()),
         "store recomputes the address from the entry"
     );
@@ -244,10 +247,7 @@ fn miss_path_runs_research_and_stores_the_verified_procedure() {
 #[test]
 fn grammar_exists_reads_the_cst_seed() {
     for language in ["kotlin", "php", "swift", "scala", "rust", "r"] {
-        assert!(
-            grammar_exists(language),
-            "{language} carries a CST grammar"
-        );
+        assert!(grammar_exists(language), "{language} carries a CST grammar");
     }
     assert!(!grammar_exists("latin-vulgate"));
 }
@@ -282,7 +282,5 @@ fn bootstrap_tier_is_governed_by_the_policy_seed() {
         "the committed policy keeps the bootstrap active until the wiring retires it"
     );
     assert!(formal_ai::knowledge::CodingOracle::knows_language("kotlin"));
-    assert!(
-        formal_ai::knowledge::CodingOracle::lookup("hello_world", "kotlin").is_some()
-    );
+    assert!(formal_ai::knowledge::CodingOracle::lookup("hello_world", "kotlin").is_some());
 }

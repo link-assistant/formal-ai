@@ -2,7 +2,10 @@
 
 use super::*;
 
-pub(super) fn run_git(repo_root: &Path, args: &[&str]) -> Result<String, RepositoryHistoryImportError> {
+pub(super) fn run_git(
+    repo_root: &Path,
+    args: &[&str],
+) -> Result<String, RepositoryHistoryImportError> {
     let output = Command::new("git")
         .args(args)
         .current_dir(repo_root)
@@ -214,12 +217,20 @@ pub fn diff_symbols(
     rules: &HistoryRules,
 ) -> Vec<SymbolChange> {
     let name = path.to_ascii_lowercase();
-    if rules.census_suffixes.iter().any(|suffix| name.ends_with(suffix.as_str())) {
+    if rules
+        .census_suffixes
+        .iter()
+        .any(|suffix| name.ends_with(suffix.as_str()))
+    {
         let before = blob_at(repo_root, &format!("{}^", sha), path).unwrap_or_default();
         let after = blob_at(repo_root, sha, path).unwrap_or_default();
         return diff_census(path, &before, &after);
     }
-    if rules.es_suffixes.iter().any(|suffix| name.ends_with(suffix.as_str())) {
+    if rules
+        .es_suffixes
+        .iter()
+        .any(|suffix| name.ends_with(suffix.as_str()))
+    {
         let before = blob_at(repo_root, &format!("{}^", sha), path).unwrap_or_default();
         let after = blob_at(repo_root, sha, path).unwrap_or_default();
         return diff_es(path, &before, &after);

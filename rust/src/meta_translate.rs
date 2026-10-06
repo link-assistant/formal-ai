@@ -497,7 +497,10 @@ pub enum CstRenderGap {
     NoGrammarEntry { language_slug: String },
     /// The grammar entry names an engine other than the sole CST engine
     /// (`meta_language`); rendering through it is not implemented.
-    UnknownEngine { language_slug: String, engine: String },
+    UnknownEngine {
+        language_slug: String,
+        engine: String,
+    },
     /// The optional parsing engine is compiled out, so no leg can render.
     EngineDisabled { language_slug: String },
     /// The document is not the network serialization dialect of lino (the

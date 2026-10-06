@@ -68,7 +68,10 @@ fn the_gate_fails_on_a_memorized_toolchain_version() {
         )],
     );
     let findings = scan_data(&data);
-    assert!(findings.iter().any(|f| f.detail.contains("version")), "{findings:?}");
+    assert!(
+        findings.iter().any(|f| f.detail.contains("version")),
+        "{findings:?}"
+    );
 }
 
 #[test]

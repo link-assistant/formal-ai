@@ -76,7 +76,10 @@ fn the_module_map_equals_the_librs_mod_list() {
         .iter()
         .filter(|name| !mapped.contains(name))
         .collect();
-    let stale: Vec<&String> = mapped.iter().filter(|name| !declared.contains(name)).collect();
+    let stale: Vec<&String> = mapped
+        .iter()
+        .filter(|name| !declared.contains(name))
+        .collect();
     assert!(
         missing.is_empty() && stale.is_empty(),
         "ARCHITECTURE.md §18 is out of sync with rust/src/lib.rs -- missing {missing:?}, stale {stale:?}; run `rust-script scripts/generate-module-map.rs --write`"

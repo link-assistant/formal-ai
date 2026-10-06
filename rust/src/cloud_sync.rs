@@ -8,7 +8,6 @@
 //! remote event or overwrite another machine's usage accounting.
 
 use crate::memory::{MemoryEvent, MemoryStore, export_links_notation, parse_links_notation};
-use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::io::{self, Write};
@@ -159,7 +158,7 @@ fn validate_key(key: &str) -> Result<(), SyncError> {
     }
 }
 fn digest(text: &str) -> String {
-    format!("{:x}", Sha256::digest(text.as_bytes()))
+    crate::source_fetch::sha256_hex(text.as_bytes())
 }
 fn canonical(event: &MemoryEvent) -> MemoryEvent {
     let mut event = event.clone();

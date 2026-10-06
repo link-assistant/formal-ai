@@ -198,7 +198,9 @@ pub fn parse_factor(text: &str) -> Option<(i128, i128)> {
     let mut num: i128 = whole.parse().ok()?;
     let mut den: i128 = 1;
     for digit in fractional.chars() {
-        num = num.checked_mul(10)?.checked_add((digit as u8 - b'0') as i128)?;
+        num = num
+            .checked_mul(10)?
+            .checked_add((digit as u8 - b'0') as i128)?;
         den = den.checked_mul(10)?;
     }
     if num <= 0 {
@@ -319,10 +321,7 @@ pub enum SiConversion {
     Converted { value_num: i128, value_den: i128 },
     /// The units exist but measure different dimensions (meters to
     /// seconds); converting would fabricate a number.
-    Incompatible {
-        from: Dimension,
-        to: Dimension,
-    },
+    Incompatible { from: Dimension, to: Dimension },
     /// A unit the seed does not carry; the gap is named, not papered over.
     UnknownUnit(String),
     /// The exact rational does not fit in i128 at this magnitude.
@@ -437,9 +436,19 @@ mod tests {
     fn dimension_algebra_multiplies_and_inverts() {
         let speed = Dimension::parse("LT-1").unwrap();
         let time = Dimension::parse("T").unwrap();
-        assert_eq!(speed.multiply(&time).unwrap(), Dimension::parse("L").unwrap());
+        assert_eq!(
+            speed.multiply(&time).unwrap(),
+            Dimension::parse("L").unwrap()
+        );
         assert_eq!(time.inverse().unwrap(), Dimension::parse("T-1").unwrap());
-        assert!(speed.inverse().unwrap().multiply(&speed).unwrap().is_dimensionless());
+        assert!(
+            speed
+                .inverse()
+                .unwrap()
+                .multiply(&speed)
+                .unwrap()
+                .is_dimensionless()
+        );
     }
 
     #[test]

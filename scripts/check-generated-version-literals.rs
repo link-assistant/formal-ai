@@ -65,7 +65,9 @@ fn main() {
         println("generated-version literals: clean");
         return;
     }
-    println!("generated-version literals: FAIL - resolve these pins or replace them with {{placeholders}}");
+    println!(
+        "generated-version literals: FAIL - resolve these pins or replace them with {{placeholders}}"
+    );
     std::process::exit(1);
 }
 
@@ -116,9 +118,14 @@ fn scan_file(root: &Path, path: &Path, findings: &mut Vec<Finding>) {
         }
         if let Some(key) = literal_toolchain_version(line) {
             findings.push(Finding {
-                path: path.strip_prefix(root.parent().unwrap_or(root)).unwrap_or(path).to_path_buf(),
+                path: path
+                    .strip_prefix(root.parent().unwrap_or(root))
+                    .unwrap_or(path)
+                    .to_path_buf(),
                 line: index + 1,
-                detail: format!("literal toolchain version behind `{key}`: resolve it at generation time"),
+                detail: format!(
+                    "literal toolchain version behind `{key}`: resolve it at generation time"
+                ),
             });
         }
     }
@@ -152,10 +159,7 @@ fn literal_toolchain_version(line: &str) -> Option<&'static str> {
             continue;
         };
         let value = line[offset + key.len()..].trim_start();
-        let quoted = value
-            .chars()
-            .next()
-            .is_some_and(|c| c == '\'' || c == '"');
+        let quoted = value.chars().next().is_some_and(|c| c == '\'' || c == '"');
         let digits = if quoted {
             value.chars().nth(1)
         } else {
@@ -180,34 +184,50 @@ mod tests {
     #[test]
     fn a_forty_hex_sha_after_at_is_a_finding() {
         assert_eq!(
-            literal_action_sha("      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262"),
+            literal_action_sha(
+                "      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+            ),
             Some(29)
         );
     }
 
     #[test]
     fn a_tag_ref_is_not_a_sha_finding() {
-        assert_eq!(literal_action_sha("      - uses: actions/checkout@v7"), None);
+        assert_eq!(
+            literal_action_sha("      - uses: actions/checkout@v7"),
+            None
+        );
     }
 
     #[test]
     fn a_sixty_four_hex_digest_without_at_is_not_a_finding() {
         assert_eq!(
-            literal_action_sha("  sha256 \"a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2\""),
+            literal_action_sha(
+                "  sha256 \"a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2\""
+            ),
             None
         );
     }
 
     #[test]
     fn the_baseline_fields_are_data_not_pins() {
-        assert_eq!(literal_action_sha("  latest_sha \"3d3c42e5aac5ba805825da76410c181273ba90b1\""), None);
+        assert_eq!(
+            literal_action_sha("  latest_sha \"3d3c42e5aac5ba805825da76410c181273ba90b1\""),
+            None
+        );
         assert_eq!(literal_toolchain_version("  latest_tag \"v7.0.1\""), None);
-        assert_eq!(literal_toolchain_version("  releases_url \"https://api.github.com\""), None);
+        assert_eq!(
+            literal_toolchain_version("  releases_url \"https://api.github.com\""),
+            None
+        );
     }
 
     #[test]
     fn quoted_and_bare_toolchain_versions_are_findings() {
-        assert_eq!(literal_toolchain_version("          version: '2.3.10'"), Some("version"));
+        assert_eq!(
+            literal_toolchain_version("          version: '2.3.10'"),
+            Some("version")
+        );
         assert_eq!(
             literal_toolchain_version("          java-version: '21'"),
             Some("java-version")
@@ -224,6 +244,9 @@ mod tests {
 
     #[test]
     fn a_non_version_key_is_left_alone() {
-        assert_eq!(literal_toolchain_version("          verbose: 'quite'"), None);
+        assert_eq!(
+            literal_toolchain_version("          verbose: 'quite'"),
+            None
+        );
     }
 }

@@ -154,7 +154,10 @@ fn triz_cues() -> Vec<String> {
     records_named("triz_cues")
         .iter()
         .flat_map(|record| {
-            record.children.iter().filter(|child| child.name == "phrase")
+            record
+                .children
+                .iter()
+                .filter(|child| child.name == "phrase")
         })
         .filter_map(|child| {
             let phrase = child.id.trim().to_lowercase();
@@ -166,7 +169,7 @@ fn triz_cues() -> Vec<String> {
 /// Every benchmark task whose statement or domain shares a word with the
 /// prompt, best match first (words of five or more characters, so
 /// stopwords do not carry the match). Empty when nothing overlaps.
-fn relevant_tasks(prompt: &str, tasks: &[BenchmarkTask]) -> Vec<&BenchmarkTask> {
+fn relevant_tasks<'a>(prompt: &str, tasks: &'a [BenchmarkTask]) -> Vec<&'a BenchmarkTask> {
     let words: Vec<&str> = prompt
         .split_whitespace()
         .map(|word| word.trim_matches(|c: char| !c.is_alphanumeric()))
@@ -220,17 +223,13 @@ const LINK_NOTE: &str = "A contradiction is a link whose value (0-1) is chosen f
 /// Try to recognize a contradiction/invention question and answer with
 /// the seeded resolution families and relevant benchmark precedents.
 /// Returns `None` when no cue matches.
-pub fn handle_triz(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
+pub fn handle_triz(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let families = triz_families();
     let tasks = triz_benchmark_tasks();
     let lower = prompt.to_lowercase();
-    let cued = triz_cues().into_iter().any(|cue| {
-        normalized.contains(cue.as_str()) || lower.contains(cue.as_str())
-    });
+    let cued = triz_cues()
+        .into_iter()
+        .any(|cue| normalized.contains(cue.as_str()) || lower.contains(cue.as_str()));
     if !cued {
         return None;
     }
@@ -247,8 +246,8 @@ pub fn handle_triz(
         relevant.iter().take(3).copied().collect()
     };
     let body = {
-        let mut out = crate::seed::localized_response("triz_resolution_map", "en")
-            .unwrap_or_default();
+        let mut out =
+            crate::seed::localized_response("triz_resolution_map", "en").unwrap_or_default();
         for (key, value) in [
             ("families", families_text(&families)),
             ("precedents", precedents_text(&cited)),
@@ -275,12 +274,24 @@ mod tests {
     #[test]
     fn families_and_benchmark_load_from_the_seed() {
         let families = triz_families();
-        assert!(families.len() >= 12, "twelve general families, got {}", families.len());
-        assert!(families.iter().any(|family| family.method_id == "family_range_selection"));
+        assert!(
+            families.len() >= 12,
+            "twelve general families, got {}",
+            families.len()
+        );
+        assert!(
+            families
+                .iter()
+                .any(|family| family.method_id == "family_range_selection")
+        );
         let tasks = triz_benchmark_tasks();
         assert_eq!(tasks.len(), 20, "the top-20 corpus");
         for task in &tasks {
-            assert!(!task.methods.is_empty(), "{} must name its methods", task.task_id);
+            assert!(
+                !task.methods.is_empty(),
+                "{} must name its methods",
+                task.task_id
+            );
         }
         // Every method a task names must exist as a family or a seeded
         // principle identifier — the corpus cannot cite ghosts.
@@ -307,7 +318,10 @@ mod tests {
             "How do I design an umbrella that is big enough in rain but small in a crowded bus?",
             &tasks,
         );
-        assert_eq!(relevant.first().map(|task| task.task_id.as_str()), Some("umbrella_crowd"));
+        assert_eq!(
+            relevant.first().map(|task| task.task_id.as_str()),
+            Some("umbrella_crowd")
+        );
     }
 
     #[test]

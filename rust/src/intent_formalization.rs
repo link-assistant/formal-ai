@@ -23,15 +23,15 @@ use crate::seed;
 use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
 
+mod obligations;
 mod prompt_relevants;
 mod requirements;
-mod obligations;
 mod write_program_request;
-use prompt_relevants::append_prompt_relevants;
 pub use obligations::{
     ObligationGraph, ObligationKind, coreference_pass, formalize_request,
     request_carries_work_obligations,
 };
+use prompt_relevants::append_prompt_relevants;
 pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};
 pub(crate) use requirements::{requirement_list_spans, requirement_operand_spans};
 use write_program_request::{requested_write_program_parameters, write_program_parameters};

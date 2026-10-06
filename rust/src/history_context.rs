@@ -156,9 +156,27 @@ impl HistoryRules {
     pub fn defaults() -> Self {
         Self {
             records: vec![
-                record_rule("commit", "commit:", "author", "subject_and_body", "committer_date"),
-                record_rule("issue", "issue:", "reporter", "title_and_body", "created_at"),
-                record_rule("pull_request", "pull:", "author", "title_and_body", "created_at"),
+                record_rule(
+                    "commit",
+                    "commit:",
+                    "author",
+                    "subject_and_body",
+                    "committer_date",
+                ),
+                record_rule(
+                    "issue",
+                    "issue:",
+                    "reporter",
+                    "title_and_body",
+                    "created_at",
+                ),
+                record_rule(
+                    "pull_request",
+                    "pull:",
+                    "author",
+                    "title_and_body",
+                    "created_at",
+                ),
                 record_rule("review", "review:", "author", "body", "created_at"),
                 record_rule(
                     "ci_run",
@@ -216,7 +234,11 @@ impl HistoryRules {
                     );
                     // A seed row replaces the default with the same pattern,
                     // so re-stating one overrides it instead of duplicating it.
-                    match rules.trailers.iter_mut().find(|row| row.pattern == rule.pattern) {
+                    match rules
+                        .trailers
+                        .iter_mut()
+                        .find(|row| row.pattern == rule.pattern)
+                    {
                         Some(existing) => *existing = rule,
                         None => rules.trailers.push(rule),
                     }

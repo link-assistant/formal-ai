@@ -19,8 +19,8 @@ pub mod change_request;
 pub mod client_contract_learning;
 pub mod client_integrations;
 pub mod cloud_sync;
-pub mod code_example_knowledge;
 pub(crate) mod code_editing;
+pub mod code_example_knowledge;
 pub(crate) mod coding;
 pub use coding::composition;
 pub use coding::composition_search;
@@ -50,15 +50,15 @@ pub mod contribution_write_path;
 pub mod conversation_context;
 pub mod cue_lexicon;
 pub mod definition_merge;
+pub mod derivation;
 pub mod dialog_conversation;
 pub mod dialog_log;
+pub mod discovery_production;
 pub mod document_formats;
 pub mod draft_portfolio;
 pub mod dreaming;
 pub mod dreaming_application;
 pub mod dreaming_runtime;
-pub mod derivation;
-pub mod discovery_production;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
@@ -70,8 +70,8 @@ pub mod execution_box;
 pub mod execution_evidence;
 pub(crate) mod execution_intent;
 pub mod external_benchmarks;
-pub mod fact_checking;
 pub mod fact_check;
+pub mod fact_checking;
 pub(crate) mod failure_reporting;
 pub mod family_method;
 pub mod file_legality;
@@ -80,11 +80,11 @@ pub mod formalization;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;
-pub mod history_context;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
 pub mod grammar_kinds;
 pub mod handler_promotion;
+pub mod history_context;
 pub mod how_to_capture_manifest;
 pub mod how_to_guide;
 pub mod implementation_language;
@@ -92,20 +92,20 @@ pub mod intent_formalization;
 pub mod issue_report;
 pub mod json_lino;
 pub mod knowledge;
-pub mod least_action;
-pub mod legality_warning;
 pub mod language;
 pub mod language_adoption;
 pub mod language_frontier;
 pub mod learning_adoption_ledger;
 pub mod learning_cycle;
 pub mod learning_ledger;
+pub mod least_action;
+pub mod legality_warning;
 pub mod lexeme_import;
-pub mod lino_adapters;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;
 pub mod links_substitution_query;
+pub mod lino_adapters;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod local_transport;
 pub(crate) mod mcp;
@@ -180,16 +180,16 @@ pub mod self_explanation;
 pub mod self_healing;
 pub mod self_improvement;
 pub mod self_source_links;
-pub mod si_units;
-pub mod small_model_fallback;
 pub mod sequences;
 pub mod server;
 pub mod service_accessibility;
 pub mod shared_dialog;
 pub mod shared_memory;
+pub mod si_units;
 pub mod skill_compiler;
 pub mod skill_ledger;
 pub mod skill_procedure;
+pub mod small_model_fallback;
 pub mod solution_evidence;
 pub mod solver;
 pub(crate) mod solver_config;
@@ -223,15 +223,16 @@ pub mod telegram_runtime;
 pub mod telemetry;
 pub mod thinking;
 pub mod thinking_prose;
-pub mod triz_solver;
 pub mod tool_scope;
 pub mod trace_record;
 pub mod translate_write;
 pub mod translation;
+pub mod triz_solver;
 pub(crate) mod unknown_opener;
 pub mod verifiable_task;
-pub mod web_formalize;
+pub mod version_resolution;
 pub mod web_engine_core;
+pub mod web_formalize;
 pub mod web_search_core;
 pub mod web_search_fusion_core;
 pub mod web_search_markers;
@@ -481,13 +482,12 @@ pub use solver_handler_how_synthesis::{
 pub use solver_handlers::{
     AnswerAgreement, MemoryQueryExecution, VerifiedAnswer, answer_memory_recall,
     classify_agreement, execute_memory_query, execute_memory_query_with_options,
-    handle_advice_request, handle_brainstorm_request, handle_creative_writing_request,
-    handle_formalization_request, handle_planning_request, handle_product_search,
-    handle_code_debugging, handle_code_explanation, handle_code_refactoring,
-    handle_code_review, handle_format_conversion, handle_regex_synthesis,
+    handle_advice_request, handle_brainstorm_request, handle_code_debugging,
+    handle_code_explanation, handle_code_refactoring, handle_code_review,
+    handle_creative_writing_request, handle_formalization_request, handle_format_conversion,
+    handle_planning_request, handle_product_search, handle_regex_synthesis,
     handle_shell_command_compose, handle_sql_synthesis, handle_summarization_request,
-    handle_test_generation, handle_text_rewrite, try_translation,
-    try_web_search_with_client,
+    handle_test_generation, handle_text_rewrite, try_translation, try_web_search_with_client,
 };
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{

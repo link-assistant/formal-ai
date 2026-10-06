@@ -27,8 +27,9 @@ fn fixture_dir() -> PathBuf {
 }
 
 fn fixture(name: &str) -> String {
-    fs::read_to_string(fixture_dir().join(name))
-        .unwrap_or_else(|error| panic!("fixture {name} missing under tests/fixtures/issue-1166: {error}"))
+    fs::read_to_string(fixture_dir().join(name)).unwrap_or_else(|error| {
+        panic!("fixture {name} missing under tests/fixtures/issue-1166: {error}")
+    })
 }
 
 const CANONICAL: &str = "hello-world-kotlin-en.txt";
@@ -67,7 +68,9 @@ fn two_output_clauses_with_distinct_literals_produce_two_nodes() {
     let body = "First, print exactly: \"Alpha\"\nThen, print exactly: \"Beta\"\n";
     let graph = formalize_request(body);
     assert_eq!(
-        graph.obligations_of_kind(ObligationKind::OutputLiteral).len(),
+        graph
+            .obligations_of_kind(ObligationKind::OutputLiteral)
+            .len(),
         2,
         "distinct literals must not merge"
     );
@@ -89,10 +92,15 @@ fn coreference_does_not_merge_filename_with_output_literal() {
     );
     let graph = formalize_request(body);
     assert_eq!(
-        graph.obligations_of_kind(ObligationKind::OutputLiteral).len(),
+        graph
+            .obligations_of_kind(ObligationKind::OutputLiteral)
+            .len(),
         1
     );
-    assert_eq!(graph.obligations_of_kind(ObligationKind::FileNaming).len(), 1);
+    assert_eq!(
+        graph.obligations_of_kind(ObligationKind::FileNaming).len(),
+        1
+    );
     let naming = graph
         .obligations_of_kind(ObligationKind::FileNaming)
         .pop()
@@ -147,13 +155,14 @@ fn unknown_requirement_clause_yields_underivable_node_not_panic() {
         "the unreadable clause must stay in the graph"
     );
     assert!(
-        underivable
-            .iter()
-            .all(|node| node.span.1 > node.span.0),
+        underivable.iter().all(|node| node.span.1 > node.span.0),
         "every reported gap carries its byte span"
     );
     assert!(
-        graph.gap_report().iter().all(|line| line.contains("underivable")),
+        graph
+            .gap_report()
+            .iter()
+            .all(|line| line.contains("underivable")),
         "gap lines name the reason"
     );
 }
@@ -177,9 +186,7 @@ fn kotlin_issue_ru_yields_same_obligation_count_as_en() {
 fn kotlin_issue_hi_zh_es_yield_same_graph_modulo_language_tag() {
     let en = formalize_request(&fixture(CANONICAL));
     for language in ["hi", "zh", "es"] {
-        let body = formalize_request(&fixture(&format!(
-            "hello-world-kotlin-{language}.txt"
-        )));
+        let body = formalize_request(&fixture(&format!("hello-world-kotlin-{language}.txt")));
         assert_eq!(
             body.obligation_kinds(),
             en.obligation_kinds(),

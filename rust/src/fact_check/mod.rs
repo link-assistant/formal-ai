@@ -37,7 +37,8 @@ use crate::relative_meta_logic::{
 use crate::seed::parser::parse_lino;
 use crate::statement_audit::Claim;
 
-const EXCLUSIONS_LINO: &str = include_str!("../../embedded/data/seed/statement-audit-exclusions.lino");
+const EXCLUSIONS_LINO: &str =
+    include_str!("../../embedded/data/seed/statement-audit-exclusions.lino");
 const SOURCES_LINO: &str = include_str!("../../embedded/data/seed/fact-check-sources.lino");
 
 /// The document family a structured path belongs to, matching the
@@ -90,7 +91,9 @@ pub fn predicate_is_excluded(predicate: &str) -> bool {
         return false;
     };
     let key = key.trim();
-    sequence_item_keys().iter().any(|candidate| candidate == key)
+    sequence_item_keys()
+        .iter()
+        .any(|candidate| candidate == key)
 }
 
 /// The repeated step-level keys declared as sequence structure in the seed.
@@ -154,7 +157,9 @@ pub fn structured_claim(path: &str, raw_line: &str) -> Option<Claim> {
     if trimmed.is_empty() || trimmed.starts_with('#') || trimmed.starts_with('[') {
         return None;
     }
-    let pair = trimmed.split_once('=').or_else(|| trimmed.split_once(':'))?;
+    let pair = trimmed
+        .split_once('=')
+        .or_else(|| trimmed.split_once(':'))?;
     let (raw_key, raw_value) = pair;
     let key = raw_key.trim().trim_matches('"');
     let value = raw_value

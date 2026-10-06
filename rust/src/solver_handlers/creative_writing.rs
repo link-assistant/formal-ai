@@ -56,6 +56,7 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
 // ---------------------------------------------------------------------------
 
 /// One `writing_form` record: the default constraints of a verse form.
+#[derive(Clone)]
 struct WritingForm {
     form: String,
     default_lines: usize,
@@ -402,7 +403,7 @@ fn compose_poem(
     let mut other_used = 0usize;
     let mut rhyme_index = 0usize;
     let mut free_index = 0usize;
-    for letter in letters {
+    for &letter in &letters {
         let repeats = letters.iter().filter(|other| **other == letter).count();
         if repeats < 2 {
             // A free position (abcb's a and c): a free skeleton, no rhyme

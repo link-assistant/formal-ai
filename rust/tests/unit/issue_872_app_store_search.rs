@@ -36,8 +36,7 @@ fn the_reported_app_store_prompt_composes_the_search() {
         answer.answer
     );
     assert!(
-        answer.answer.contains("%D0%B8%D0%B3%D1%80%D1%8B")
-            || answer.answer.contains("игры"),
+        answer.answer.contains("%D0%B8%D0%B3%D1%80%D1%8B") || answer.answer.contains("игры"),
         "the query keeps the user's own words: {}",
         answer.answer
     );

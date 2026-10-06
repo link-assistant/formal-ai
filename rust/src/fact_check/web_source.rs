@@ -28,7 +28,10 @@ use super::web_aggregator_hosts;
 pub fn tier_for_url(url: &str) -> SourceTier {
     let host = url_host(url);
     if web_aggregator_hosts().iter().any(|aggregator| {
-        host == aggregator || host.strip_prefix("www.").is_some_and(|stripped| stripped == *aggregator)
+        host == aggregator
+            || host
+                .strip_prefix("www.")
+                .is_some_and(|stripped| stripped == *aggregator)
     }) {
         return SourceTier::Unoriginal;
     }
@@ -48,9 +51,9 @@ pub fn url_host(url: &str) -> &str {
 #[must_use]
 pub fn is_external_statement(text: &str) -> bool {
     !text.contains('`')
-        && !text.split_whitespace().any(|token| {
-            token.contains('/') && token.contains('.') && !token.contains("://")
-        })
+        && !text
+            .split_whitespace()
+            .any(|token| token.contains('/') && token.contains('.') && !token.contains("://"))
 }
 
 /// The search query for one external statement: its longest sentence-shaped

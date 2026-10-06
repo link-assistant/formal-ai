@@ -71,9 +71,18 @@ impl PageMime {
     /// unrecognized hint is resolved by the seed's sniff rules over the
     /// first bytes.
     #[must_use]
-    pub fn from_hint_or_sniff(hint: Option<&str>, bytes: &[u8], rules: &FormalizationRules) -> Self {
+    pub fn from_hint_or_sniff(
+        hint: Option<&str>,
+        bytes: &[u8],
+        rules: &FormalizationRules,
+    ) -> Self {
         if let Some(hint) = hint {
-            let normalized = hint.split(';').next().unwrap_or(hint).trim().to_ascii_lowercase();
+            let normalized = hint
+                .split(';')
+                .next()
+                .unwrap_or(hint)
+                .trim()
+                .to_ascii_lowercase();
             for mime in &rules.mime_hints {
                 if mime.hint == normalized {
                     return mime.kind();
@@ -87,24 +96,11 @@ impl PageMime {
 /// One structural block of a page, before it becomes a link.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PageBlock {
-    Heading {
-        level: u8,
-        text: String,
-    },
-    Paragraph {
-        text: String,
-        command: bool,
-    },
-    ListItem {
-        text: String,
-    },
-    TableRow {
-        cells: String,
-    },
-    CodeBlock {
-        language: String,
-        text: String,
-    },
+    Heading { level: u8, text: String },
+    Paragraph { text: String, command: bool },
+    ListItem { text: String },
+    TableRow { cells: String },
+    CodeBlock { language: String, text: String },
 }
 
 /// The seed-driven rules the formalizer interprets (issue #1163).
@@ -241,18 +237,17 @@ fn sniff(rules: &FormalizationRules, bytes: &[u8]) -> PageMime {
     let head = String::from_utf8_lossy(&bytes[..bytes.len().min(512)]);
     let lower_head = head.to_ascii_lowercase();
     for rule in &rules.sniffs {
-        let matched = rule
-            .lower_prefix
-            .as_ref()
-            .is_some_and(|prefix| lower_head.starts_with(prefix.as_str()))
-            || rule
-                .first_char
+        let matched =
+            rule.lower_prefix
                 .as_ref()
-                .is_some_and(|character| head.starts_with(character.as_str()))
-            || rule
-                .line_start
-                .as_ref()
-                .is_some_and(|marker| head.lines().any(|line| line.starts_with(marker.as_str())));
+                .is_some_and(|prefix| lower_head.starts_with(prefix.as_str()))
+                || rule
+                    .first_char
+                    .as_ref()
+                    .is_some_and(|character| head.starts_with(character.as_str()))
+                || rule.line_start.as_ref().is_some_and(|marker| {
+                    head.lines().any(|line| line.starts_with(marker.as_str()))
+                });
         if matched {
             return kind_of(&rule.kind);
         }
@@ -305,13 +300,16 @@ pub fn formalize_page_with_context(
         }
         PageMime::PlainText | PageMime::PdfText | PageMime::Unknown => plain_blocks(&text, &rules),
     };
-    (blocks_to_network(&blocks, url_hint), blocks)
+    blocks_to_network(&blocks, url_hint)
 }
 
 /// Build the page network from parsed blocks: a `page` root with one child
 /// object per block, each carrying its text (and language/level/command
 /// fields where they apply). Block node ids come back in document order.
-fn blocks_to_network(blocks: &[PageBlock], url_hint: Option<&str>) -> (LinkNetwork, Vec<(LinkId, PageBlock)>) {
+fn blocks_to_network(
+    blocks: &[PageBlock],
+    url_hint: Option<&str>,
+) -> (LinkNetwork, Vec<(LinkId, PageBlock)>) {
     let mut network = LinkNetwork::new();
     let page = network.insert_object("page");
     if let Some(url) = url_hint {
@@ -359,7 +357,9 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
     let mut cursor = 0usize;
     while let Some(rel) = lower[cursor..].find('<') {
         let open = cursor + rel;
-        let Some(tag_end_rel) = lower[open..].find('>') else { break };
+        let Some(tag_end_rel) = lower[open..].find('>') else {
+            break;
+        };
         let tag_end = open + tag_end_rel;
         let inner_tag = &text[open + 1..tag_end];
         let closing = inner_tag.starts_with('/');
@@ -374,7 +374,9 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
             continue;
         }
         let close = format!("</{name}");
-        let inner_end = lower[tag_end + 1..].find(&close).map(|offset| tag_end + 1 + offset);
+        let inner_end = lower[tag_end + 1..]
+            .find(&close)
+            .map(|offset| tag_end + 1 + offset);
         let block = match name.as_str() {
             "h1" | "h2" | "h3" | "h4" | "h5" | "h6" => inner_end.map(|end| {
                 let level = name.as_bytes()[1] - b'0';
@@ -383,7 +385,9 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
                     text: decode_entities(&strip_tags(&text[tag_end + 1..end])),
                 }
             }),
-            "p" => inner_end.map(|end| paragraph_block(&strip_tags(&text[tag_end + 1..end]), rules)),
+            "p" => {
+                inner_end.map(|end| paragraph_block(&strip_tags(&text[tag_end + 1..end]), rules))
+            }
             "li" => inner_end.map(|end| PageBlock::ListItem {
                 text: decode_entities(&strip_tags(&text[tag_end + 1..end])),
             }),
@@ -399,10 +403,10 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
                 let code_attrs = raw.find("<code").and_then(|code_open| {
                     let after = &raw[code_open..];
                     let tag_close = after.find('>').map(|offset| code_open + offset)?;
-                    Some(tag_attr(&raw[code_open + 1..tag_close], "class"))
+                    tag_attr(&raw[code_open + 1..tag_close], "class")
                 });
                 PageBlock::CodeBlock {
-                    language: resolve_language(rules, None, attrs.or(code_attrs), raw, None),
+                    language: resolve_language(rules, None, attrs.or(code_attrs).as_deref(), raw, None),
                     text: decode_entities(&strip_tags_keep_lines(raw)),
                 }
             }),
@@ -418,7 +422,11 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
 
 /// Markdown walking: ATX headings, fenced code, list items, table rows,
 /// blank-line-separated paragraphs.
-fn markdown_blocks(text: &str, rules: &FormalizationRules, url_hint: Option<&str>) -> Vec<PageBlock> {
+fn markdown_blocks(
+    text: &str,
+    rules: &FormalizationRules,
+    url_hint: Option<&str>,
+) -> Vec<PageBlock> {
     let mut out = Vec::new();
     let mut paragraph = String::new();
     let mut lines = text.lines();
@@ -432,7 +440,11 @@ fn markdown_blocks(text: &str, rules: &FormalizationRules, url_hint: Option<&str
             for code_line in lines.by_ref() {
                 let code_trimmed = code_line.trim_start();
                 if code_trimmed.starts_with(fence)
-                    && code_trimmed.chars().filter(|character| *character == fence).count() >= 3
+                    && code_trimmed
+                        .chars()
+                        .filter(|character| *character == fence)
+                        .count()
+                        >= 3
                 {
                     break;
                 }
@@ -445,7 +457,10 @@ fn markdown_blocks(text: &str, rules: &FormalizationRules, url_hint: Option<&str
             });
             continue;
         }
-        let heading_level = trimmed.chars().take_while(|character| *character == '#').count();
+        let heading_level = trimmed
+            .chars()
+            .take_while(|character| *character == '#')
+            .count();
         if heading_level > 0 && trimmed[heading_level..].starts_with(' ') {
             flush_paragraph(&mut paragraph, rules, &mut out);
             out.push(PageBlock::Heading {
@@ -648,7 +663,12 @@ fn tag_attr(inner_tag: &str, name: &str) -> Option<String> {
         let end = rest[1..].find(quote)? + 1;
         Some(rest[1..end].to_owned())
     } else {
-        Some(rest.split_whitespace().next().unwrap_or_default().to_owned())
+        Some(
+            rest.split_whitespace()
+                .next()
+                .unwrap_or_default()
+                .to_owned(),
+        )
     }
 }
 
@@ -683,7 +703,9 @@ fn cell_texts(row: &str) -> Vec<String> {
     let mut cursor = 0usize;
     while let Some(rel) = lower[cursor..].find("<t") {
         let open = cursor + rel;
-        let Some(tag_end) = lower[open..].find('>') else { break };
+        let Some(tag_end) = lower[open..].find('>') else {
+            break;
+        };
         let tag_end = open + tag_end;
         let name = lower[open + 1..tag_end]
             .trim_start_matches('/')

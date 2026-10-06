@@ -117,7 +117,11 @@ pub fn catalog() -> Vec<CatalogModel> {
     let Some(text) = seed_text(SEED_PATH) else {
         return out;
     };
-    let Some(root) = parse_lino(text).children.iter().find(|child| child.name == "small_model_catalog")
+    let document = parse_lino(text);
+    let Some(root) = document
+        .children
+        .iter()
+        .find(|child| child.name == "small_model_catalog")
     else {
         return out;
     };
@@ -134,10 +138,26 @@ pub fn catalog() -> Vec<CatalogModel> {
             model_id,
             kind: record.find_child_value("kind").to_string(),
             family: record.find_child_value("family").to_string(),
-            params_m: record.find_child_value("params_m").trim().parse().unwrap_or(0),
-            ram_required_mb: record.find_child_value("ram_required_mb").trim().parse().unwrap_or(0),
-            disk_required_mb: record.find_child_value("disk_required_mb").trim().parse().unwrap_or(0),
-            rating: record.find_child_value("rating").trim().parse().unwrap_or(0),
+            params_m: record
+                .find_child_value("params_m")
+                .trim()
+                .parse()
+                .unwrap_or(0),
+            ram_required_mb: record
+                .find_child_value("ram_required_mb")
+                .trim()
+                .parse()
+                .unwrap_or(0),
+            disk_required_mb: record
+                .find_child_value("disk_required_mb")
+                .trim()
+                .parse()
+                .unwrap_or(0),
+            rating: record
+                .find_child_value("rating")
+                .trim()
+                .parse()
+                .unwrap_or(0),
             rating_source: record.find_child_value("rating_source").to_string(),
             task_affinity: record.find_child_value("task_affinity").to_string(),
             license: record.find_child_value("license").to_string(),
@@ -244,7 +264,9 @@ fn lexical_affinity(target: &str, candidate: &FormalizationCandidate) -> f32 {
     let target_tokens: Vec<&str> = target.split_whitespace().collect();
     let overlap = target_tokens
         .iter()
-        .filter(|token| label.contains(*token) || candidate.description.to_lowercase().contains(*token))
+        .filter(|token| {
+            label.contains(*token) || candidate.description.to_lowercase().contains(*token)
+        })
         .count();
     overlap as f32 / (target_tokens.len().max(1) as f32) * 0.5
 }
@@ -306,7 +328,11 @@ mod tests {
     #[test]
     fn nothing_in_the_catalog_is_packaged() {
         for model in catalog() {
-            assert!(!model.packaged, "{} must not ship in the package", model.model_id);
+            assert!(
+                !model.packaged,
+                "{} must not ship in the package",
+                model.model_id
+            );
         }
     }
 
@@ -344,7 +370,10 @@ mod tests {
         let proposal = propose_best_match(&options, "метр-класс: metre", &candidates, &mut log)
             .expect("a fitting model proposes");
         assert!(proposal.is_advisory());
-        assert!(!confirm_proposal(&proposal, false), "rules disagree: discarded");
+        assert!(
+            !confirm_proposal(&proposal, false),
+            "rules disagree: discarded"
+        );
         assert!(confirm_proposal(&proposal, true), "rules agree: confirmed");
         assert!(log.first_of("small_model:proposal").is_some());
     }
@@ -358,7 +387,13 @@ mod tests {
         }];
         let mut log = EventLog::new();
         assert!(
-            propose_best_match(&SmallModelOptions::default(), "metre", &candidates, &mut log).is_none()
+            propose_best_match(
+                &SmallModelOptions::default(),
+                "metre",
+                &candidates,
+                &mut log
+            )
+            .is_none()
         );
     }
 

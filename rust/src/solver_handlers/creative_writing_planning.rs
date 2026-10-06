@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------
 
 /// One `planning_place_cache` row: a place with the facts it cites.
+#[derive(Clone)]
 struct Place {
     id: String,
     name: String,

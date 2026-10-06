@@ -102,7 +102,7 @@ fn parse_atom(text: &str, variable: &str) -> Option<AppliedPredicate> {
     let args = text[open + 1..close].split(',').map(str::trim).collect::<Vec<_>>();
     let object = args
         .iter()
-        .find(|argument| *argument != variable)
+        .find(|argument| **argument != variable)
         .map(|argument| argument.trim_matches('"').to_owned());
     Some(AppliedPredicate { name, object })
 }
@@ -149,7 +149,7 @@ pub fn parse_fol_clause(text: &str) -> Option<QuantifiedClause> {
     // Rocq's ASCII arrow normalizes to the FOL arrow before splitting.
     let body = rest[open + 1..close].trim().replace("->", "→");
     let conditional_parts = split_top_level(&body, '→');
-    let atoms: Vec<AppliedPredicate> = if conditional_parts.len() >= 2 {
+    let atoms: Vec<String> = if conditional_parts.len() >= 2 {
         let mut all = split_top_level(&conditional_parts[0], '∧');
         all.extend(split_top_level(&conditional_parts[1], '∧'));
         all

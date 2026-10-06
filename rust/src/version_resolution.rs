@@ -14,7 +14,7 @@
 //! origin supplied a pin is said out loud, in a comment on the generated
 //! workflow, so a reader never mistakes a baseline for a lookup.
 
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::source_fetch::{
     CachedSourceClient, CurlSourceTransport, FetchError, SourceCapture, SourceTransport,
 };
@@ -128,8 +128,7 @@ impl VersionSet {
             .or_else(|| baseline("python_interpreter"));
         let kotlin = Self::resolve_github(client, "JetBrains", "kotlin", &mut captures)
             .or_else(|| baseline("kotlin_compiler"));
-        let java_lts = resolve_java_lts(client, &mut captures)
-            .or_else(|| baseline("java_lts"));
+        let java_lts = resolve_java_lts(client, &mut captures).or_else(|| baseline("java_lts"));
         Self {
             checkout: checkout.expect("the toolchains seed carries the checkout baseline"),
             setup_java: setup_java.expect("the toolchains seed carries the setup-java baseline"),
@@ -149,8 +148,7 @@ impl VersionSet {
     /// the source cache has them, otherwise the shipped baseline.
     #[must_use]
     pub fn for_generation() -> Self {
-        let cache_dir =
-            std::env::var(CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
+        let cache_dir = std::env::var(CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
         let client = CachedSourceClient::new(cache_dir, CurlSourceTransport);
         Self::resolve(&client)
     }
@@ -550,7 +548,10 @@ mod tests {
         let client = MockTransport::online(dir);
         let versions = VersionSet::resolve(&client);
         assert_eq!(versions.checkout.tag, "v7.0.1");
-        assert_eq!(versions.checkout.sha, "3d3c42e5aac5ba805825da76410c181273ba90b1");
+        assert_eq!(
+            versions.checkout.sha,
+            "3d3c42e5aac5ba805825da76410c181273ba90b1"
+        );
         assert_eq!(versions.checkout.origin, Origin::Live);
         assert_eq!(versions.setup_java.tag, "v6.0.1");
         assert_eq!(versions.setup_java.origin, Origin::Live);
@@ -631,12 +632,18 @@ mod tests {
             versions.checkout.sha,
             "3d3c42e5aac5ba805825da76410c181273ba90b1"
         );
-        assert_eq!(versions.setup_java.sha, "de7274f081f381c8f8158605e0321c36c376e2e6");
+        assert_eq!(
+            versions.setup_java.sha,
+            "de7274f081f381c8f8158605e0321c36c376e2e6"
+        );
         assert_eq!(
             versions.setup_kotlin.sha,
             "ee9692514da313706b193d808526812102a344e4"
         );
-        assert_eq!(versions.setup_python.sha, "5fda3b95a4ea91299a34e894583c3862153e4b97");
+        assert_eq!(
+            versions.setup_python.sha,
+            "5fda3b95a4ea91299a34e894583c3862153e4b97"
+        );
         assert_eq!(versions.python_interpreter.tag, "3.14.7");
         assert_eq!(versions.kotlin.tag, "v2.4.20");
         assert_eq!(versions.java_lts.tag, "25");
@@ -703,7 +710,8 @@ mod tests {
     #[test]
     fn a_version_key_outside_the_setup_blocks_is_left_alone() {
         let versions = VersionSet::baseline().expect("baselines");
-        let template = "      - uses: some/other-action@v1\n        with:\n          version: '9.9.9'\n";
+        let template =
+            "      - uses: some/other-action@v1\n        with:\n          version: '9.9.9'\n";
         let filled = fill_workflow_versions(template, &versions);
         assert!(filled.contains("version: '9.9.9'"), "{filled}");
     }

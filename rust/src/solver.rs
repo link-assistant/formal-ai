@@ -318,437 +318,438 @@ impl UniversalSolver {
     ) -> SymbolicAnswer {
         let mut log = EventLog::new();
         let mut answer = (|| {
-
-        // Issue #556: when this solve is a forced-language replay, force
-        // detection so every localizable handler renders in the requested
-        // language. The guard restores the previous value when this function
-        // returns, keeping nested replays balanced.
-        //
-        // Plan 10 leaf 15 (issue #724): a language the conversation has
-        // already established binds the same way — the demonstration or
-        // retarget that named it speaks for the turns that follow, until the
-        // user names another language. An explicit per-run forcing in the
-        // config is the stronger statement and wins.
-        let _forced_language_guard = crate::language::set_forced_language(
-            self.config
-                .forced_response_language
-                .or_else(|| crate::meta_method_answers::established_response_language(history))
-                .and_then(crate::language::from_slug),
-        );
-
-        for turn in history {
-            let kind: &'static str = match turn.role {
-                ConversationRole::User => "prior_turn:user",
-                ConversationRole::Assistant => "prior_turn:assistant",
-            };
-            log.append(kind, turn.content.clone());
-        }
-
-        log.append("impulse", prompt.to_owned());
-
-        let language = detect_language(prompt);
-        log.append("language", language.slug().to_owned());
-        probability_store.replay_into_event_log(&mut log, self.config.offline);
-
-        let intent_entry = if let Some(formalization) = intent_cache.get(prompt).cloned() {
-            IntentFormalizationCacheEntry {
-                formalization,
-                cache_hit: true,
-            }
-        } else {
-            let formalization_candidates = formalize_prompt_candidates(prompt, language.slug());
-            let formalization_selection = select_formalization_candidate_with_policy(
-                &formalization_candidates,
-                FormalizationSelectionConfig {
-                    temperature: self.config.temperature,
-                    guess_probability: self.config.guess_probability,
-                    questioning_rigor: self.config.questioning_rigor,
-                },
-                prompt,
-                probability_store,
-                self.config.offline,
-                self.config.probability_policy,
+            // Issue #556: when this solve is a forced-language replay, force
+            // detection so every localizable handler renders in the requested
+            // language. The guard restores the previous value when this function
+            // returns, keeping nested replays balanced.
+            //
+            // Plan 10 leaf 15 (issue #724): a language the conversation has
+            // already established binds the same way — the demonstration or
+            // retarget that named it speaks for the turns that follow, until the
+            // user names another language. An explicit per-run forcing in the
+            // config is the stronger statement and wins.
+            let _forced_language_guard = crate::language::set_forced_language(
+                self.config
+                    .forced_response_language
+                    .or_else(|| crate::meta_method_answers::established_response_language(history))
+                    .and_then(crate::language::from_slug),
             );
-            record_formalization_selection(&mut log, &formalization_selection);
-            if let FormalizationDecision::Clarify { question, .. } =
-                &formalization_selection.decision
-            {
-                return finalize_simple(
+
+            for turn in history {
+                let kind: &'static str = match turn.role {
+                    ConversationRole::User => "prior_turn:user",
+                    ConversationRole::Assistant => "prior_turn:assistant",
+                };
+                log.append(kind, turn.content.clone());
+            }
+
+            log.append("impulse", prompt.to_owned());
+
+            let language = detect_language(prompt);
+            log.append("language", language.slug().to_owned());
+            probability_store.replay_into_event_log(&mut log, self.config.offline);
+
+            let intent_entry = if let Some(formalization) = intent_cache.get(prompt).cloned() {
+                IntentFormalizationCacheEntry {
+                    formalization,
+                    cache_hit: true,
+                }
+            } else {
+                let formalization_candidates = formalize_prompt_candidates(prompt, language.slug());
+                let formalization_selection = select_formalization_candidate_with_policy(
+                    &formalization_candidates,
+                    FormalizationSelectionConfig {
+                        temperature: self.config.temperature,
+                        guess_probability: self.config.guess_probability,
+                        questioning_rigor: self.config.questioning_rigor,
+                    },
                     prompt,
-                    &mut log,
-                    "clarify_interpretation",
-                    "response:clarify_interpretation",
-                    question,
-                    0.5,
+                    probability_store,
+                    self.config.offline,
+                    self.config.probability_policy,
                 );
-            }
-            if let Some(candidate) = formalization_selection.selected_candidate() {
-                record_formalization(&mut log, candidate);
-            }
-            intent_cache.formalize_or_insert(
+                record_formalization_selection(&mut log, &formalization_selection);
+                if let FormalizationDecision::Clarify { question, .. } =
+                    &formalization_selection.decision
+                {
+                    return finalize_simple(
+                        prompt,
+                        &mut log,
+                        "clarify_interpretation",
+                        "response:clarify_interpretation",
+                        question,
+                        0.5,
+                    );
+                }
+                if let Some(candidate) = formalization_selection.selected_candidate() {
+                    record_formalization(&mut log, candidate);
+                }
+                intent_cache.formalize_or_insert(
+                    prompt,
+                    language.slug(),
+                    formalization_selection.selected_candidate(),
+                )
+            };
+            record_intent_formalization(&mut log, &intent_entry);
+            let intent_formalization = intent_entry.formalization;
+
+            // Issue #661 (R384): before any contextual handler runs (a language
+            // directive would otherwise be replayed by the response-language
+            // follow-up), check whether this newly formalized requirement
+            // contradicts a retained one. A clash — same subject, opposite polarity
+            // — is surfaced as a warning naming both statements, their weights, and
+            // a resolution that reuses the append-only retraction protocol.
+            if let Some(answer) = crate::requirement_contradiction::detect_and_report(
                 prompt,
-                language.slug(),
-                formalization_selection.selected_candidate(),
-            )
-        };
-        record_intent_formalization(&mut log, &intent_entry);
-        let intent_formalization = intent_entry.formalization;
+                language,
+                history,
+                self.config.temperature,
+                &mut log,
+            ) {
+                return answer;
+            }
 
-        // Issue #661 (R384): before any contextual handler runs (a language
-        // directive would otherwise be replayed by the response-language
-        // follow-up), check whether this newly formalized requirement
-        // contradicts a retained one. A clash — same subject, opposite polarity
-        // — is surfaced as a warning naming both statements, their weights, and
-        // a resolution that reuses the append-only retraction protocol.
-        if let Some(answer) = crate::requirement_contradiction::detect_and_report(
-            prompt,
-            language,
-            history,
-            self.config.temperature,
-            &mut log,
-        ) {
-            return answer;
-        }
+            // Issue #559: record the problem frame, recursive work units, needs,
+            // methods, and solution evidence (R330–R334). The trace and executable
+            // dispatch share the same registry-backed method vocabulary.
+            crate::meta_core::record_meta_core(
+                &mut log,
+                &intent_formalization,
+                self.config.max_decomposition_depth,
+                self.config.recursion_mode,
+                self.config.selection_mode,
+                self.config.skill_mode,
+            );
 
-        // Issue #559: record the problem frame, recursive work units, needs,
-        // methods, and solution evidence (R330–R334). The trace and executable
-        // dispatch share the same registry-backed method vocabulary.
-        crate::meta_core::record_meta_core(
-            &mut log,
-            &intent_formalization,
-            self.config.max_decomposition_depth,
-            self.config.recursion_mode,
-            self.config.selection_mode,
-            self.config.skill_mode,
-        );
+            log.append("search:local", prompt.to_owned());
 
-        log.append("search:local", prompt.to_owned());
+            // Bind process operands together before decomposing the clauses.
+            if let Some(answer) = crate::coding::program_contract::answer(prompt, &mut log) {
+                return answer;
+            }
 
-        // Bind process operands together before decomposing the clauses.
-        if let Some(answer) = crate::coding::program_contract::answer(prompt, &mut log) {
-            return answer;
-        }
+            let sub_impulses =
+                record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
+            let sub_results =
+                self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
-        let sub_impulses =
-            record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
-        let sub_results =
-            self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
+            if let Some(answer) = try_export_substitution_program(prompt, history, &mut log) {
+                return answer;
+            }
 
-        if let Some(answer) = try_export_substitution_program(prompt, history, &mut log) {
-            return answer;
-        }
-
-        let selected_rule = select_rule_for_intent(&intent_formalization);
-        // Issue #704: with a portfolio configured, the ledger recall and the
-        // vocabulary derivation stop being an ordered fallback chain and become
-        // independent drafts that are tested against the same fixture and
-        // compared. At the default `draft_count` of 1 this is a no-op and the
-        // sequential path below runs exactly as before.
-        let drafted_rule = try_portfolio_rule(
-            selected_rule,
-            prompt,
-            history,
-            &mut log,
-            self.config.draft_count,
-        );
-        let recalled_rule = try_recall_approved_rule(drafted_rule, prompt, history, &mut log);
-        let rule = try_construct_unknown_rule(recalled_rule, prompt, history, &mut log);
-        let rule =
-            if let Some(rewrite) = rewrite_bare_program_coreference_rule(&rule, prompt, history) {
+            let selected_rule = select_rule_for_intent(&intent_formalization);
+            // Issue #704: with a portfolio configured, the ledger recall and the
+            // vocabulary derivation stop being an ordered fallback chain and become
+            // independent drafts that are tested against the same fixture and
+            // compared. At the default `draft_count` of 1 this is a no-op and the
+            // sequential path below runs exactly as before.
+            let drafted_rule = try_portfolio_rule(
+                selected_rule,
+                prompt,
+                history,
+                &mut log,
+                self.config.draft_count,
+            );
+            let recalled_rule = try_recall_approved_rule(drafted_rule, prompt, history, &mut log);
+            let rule = try_construct_unknown_rule(recalled_rule, prompt, history, &mut log);
+            let rule = if let Some(rewrite) =
+                rewrite_bare_program_coreference_rule(&rule, prompt, history)
+            {
                 log.append("write_program_coreference_rewrite", rewrite.trace);
                 rewrite.rule
             } else {
                 rule
             };
 
-        // Issue #324: a follow-up modification ("make the program accept a path
-        // argument") routes to write_program but names no concrete task or
-        // language — they came from the previous turn. Recover the missing
-        // parameters from the conversation so the request completes instead of
-        // surfacing the "language `missing` and task `missing`" error.
-        let rule = if matches!(rule, SelectedRule::UnsupportedWriteProgram { .. }) {
-            let recovery = recover_write_program_rule(rule, prompt, history);
-            if let Some(trace) = recovery.trace {
-                log.append("write_program_context_recovery", trace);
-            }
-            if let Some(plan) = recovery.plan {
-                log.append("write_program_plan", plan);
-            }
-            recovery.rule
-        } else {
-            rule
-        };
-
-        // Issue #458: some composite program prompts also contain strong
-        // non-program signals such as "search current prices". Let a recognized
-        // blueprint recipe preempt those broader fallback handlers before they
-        // can claim the request as generic web search. Concrete catalog programs
-        // still win above this path.
-        if !matches!(rule, SelectedRule::WriteProgram(_)) {
-            let language_hint = match &rule {
-                SelectedRule::UnsupportedWriteProgram { language, .. } => language.as_deref(),
-                _ => None,
+            // Issue #324: a follow-up modification ("make the program accept a path
+            // argument") routes to write_program but names no concrete task or
+            // language — they came from the previous turn. Recover the missing
+            // parameters from the conversation so the request completes instead of
+            // surfacing the "language `missing` and task `missing`" error.
+            let rule = if matches!(rule, SelectedRule::UnsupportedWriteProgram { .. }) {
+                let recovery = recover_write_program_rule(rule, prompt, history);
+                if let Some(trace) = recovery.trace {
+                    log.append("write_program_context_recovery", trace);
+                }
+                if let Some(plan) = recovery.plan {
+                    log.append("write_program_plan", plan);
+                }
+                recovery.rule
+            } else {
+                rule
             };
-            let normalized_for_blueprint = normalize_prompt(prompt);
-            if let Some(answer) = try_program_blueprint(
+
+            // Issue #458: some composite program prompts also contain strong
+            // non-program signals such as "search current prices". Let a recognized
+            // blueprint recipe preempt those broader fallback handlers before they
+            // can claim the request as generic web search. Concrete catalog programs
+            // still win above this path.
+            if !matches!(rule, SelectedRule::WriteProgram(_)) {
+                let language_hint = match &rule {
+                    SelectedRule::UnsupportedWriteProgram { language, .. } => language.as_deref(),
+                    _ => None,
+                };
+                let normalized_for_blueprint = normalize_prompt(prompt);
+                if let Some(answer) = try_program_blueprint(
+                    prompt,
+                    &normalized_for_blueprint,
+                    language_hint,
+                    self.config.blueprint_composition,
+                    &mut log,
+                ) {
+                    return answer;
+                }
+            }
+
+            // Issue #340: a `write_program` request can name a supported language but
+            // a composite task the verified catalog has no single template for
+            // (HTTP GET -> parse JSON -> compute mean/median -> output). Rather than
+            // dead-ending on `write_program_unsupported`, decompose the request into
+            // capabilities and, when they match a curated blueprint recipe, return a
+            // real, idiomatic program with an honest "not run" execution report. The
+            // verified catalog stays untouched, so its "compiled and ran" guarantee
+            // is preserved.
+            // Issue #340 + #412: rescue an `UnsupportedWriteProgram` request via the
+            // composite blueprint, then the cached coding oracle (uncatalogued
+            // languages), so "write a hello world program in Kotlin" returns code.
+            if let SelectedRule::UnsupportedWriteProgram { task, language } = &rule {
+                if let Some(answer) = try_unsupported_write_program(
+                    prompt,
+                    task.as_deref(),
+                    language.as_deref(),
+                    self.config.blueprint_composition,
+                    &mut log,
+                ) {
+                    return answer;
+                }
+                // Issue #699 batch 3: every synthesis route missed. Name the gap in
+                // the evidence trail — the same `skill_gap` event the procedure
+                // compiler emits — so the miss is actionable instead of being
+                // rendered as a recitation of the templates we happen to hold.
+                //
+                // Issue #906: a request that named no implementation language never
+                // reached a route, so it is logged under its own event rather than
+                // as a gap in what we can synthesize.
+                let shape = crate::program_skill_gap::shape(task.as_deref(), language.as_deref());
+                log.append(
+                    shape.event(),
+                    crate::program_skill_gap::gap_name(task.as_deref(), language.as_deref()),
+                );
+            }
+
+            if let Some(answer) = try_synthesize_from_sub_results(
                 prompt,
-                &normalized_for_blueprint,
-                language_hint,
-                self.config.blueprint_composition,
                 &mut log,
+                &sub_results,
+                probability_store,
+                self.config,
             ) {
                 return answer;
             }
-        }
 
-        // Issue #340: a `write_program` request can name a supported language but
-        // a composite task the verified catalog has no single template for
-        // (HTTP GET -> parse JSON -> compute mean/median -> output). Rather than
-        // dead-ending on `write_program_unsupported`, decompose the request into
-        // capabilities and, when they match a curated blueprint recipe, return a
-        // real, idiomatic program with an honest "not run" execution report. The
-        // verified catalog stays untouched, so its "compiled and ran" guarantee
-        // is preserved.
-        // Issue #340 + #412: rescue an `UnsupportedWriteProgram` request via the
-        // composite blueprint, then the cached coding oracle (uncatalogued
-        // languages), so "write a hello world program in Kotlin" returns code.
-        if let SelectedRule::UnsupportedWriteProgram { task, language } = &rule {
-            if let Some(answer) = try_unsupported_write_program(
-                prompt,
-                task.as_deref(),
-                language.as_deref(),
-                self.config.blueprint_composition,
-                &mut log,
-            ) {
-                return answer;
-            }
-            // Issue #699 batch 3: every synthesis route missed. Name the gap in
-            // the evidence trail — the same `skill_gap` event the procedure
-            // compiler emits — so the miss is actionable instead of being
-            // rendered as a recitation of the templates we happen to hold.
-            //
-            // Issue #906: a request that named no implementation language never
-            // reached a route, so it is logged under its own event rather than
-            // as a gap in what we can synthesize.
-            let shape = crate::program_skill_gap::shape(task.as_deref(), language.as_deref());
-            log.append(
-                shape.event(),
-                crate::program_skill_gap::gap_name(task.as_deref(), language.as_deref()),
-            );
-        }
-
-        if let Some(answer) = try_synthesize_from_sub_results(
-            prompt,
-            &mut log,
-            &sub_results,
-            probability_store,
-            self.config,
-        ) {
-            return answer;
-        }
-
-        // Issue #312: a concrete write_program request (recognized task and
-        // language with a matching template) must take precedence over the
-        // specialized handlers. Otherwise concept_lookup answers the language
-        // name ("Rust") as an encyclopedia definition instead of returning the
-        // requested program. Policy guards still run for these prompts below.
-        let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
-        if !is_concrete_write_program
-            && let Some(answer) = crate::meta_method_dispatch::try_dispatch(
-                self,
-                prompt,
-                &intent_formalization,
-                history,
-                &mut log,
-            )
-        {
-            return answer;
-        }
-
-        if let Some(answer) = crate::solver_handlers::policy_gates::try_policy_gates(
-            self.config.execution_surface,
-            prompt,
-            &mut log,
-            language,
-        ) {
-            return answer;
-        }
-
-        if let Some(answer) = crate::coding::rosetta_request::try_rosetta_code_request(
-            prompt,
-            &intent_formalization.normalized_text,
-            &mut log,
-            self.config.offline,
-        ) {
-            return answer;
-        }
-
-        if matches!(rule, SelectedRule::Unknown) {
-            if crate::program_coreference::looks_like_ambiguous_program_modification(
-                &normalize_prompt(prompt),
-            ) {
-                // Label the question with the seed's requirement-section
-                // marker. A target-less modification cannot proceed until the
-                // user names the target, so this is a blocking requirement;
-                // unlabelled it falls to the `factual` default and issue
-                // #920's necessity gate drops it, leaving an empty answer.
-                let body = seed::localized_response(
-                    "ambiguous_modification_clarification",
-                    language.slug(),
+            // Issue #312: a concrete write_program request (recognized task and
+            // language with a matching template) must take precedence over the
+            // specialized handlers. Otherwise concept_lookup answers the language
+            // name ("Rust") as an encyclopedia definition instead of returning the
+            // requested program. Policy guards still run for these prompts below.
+            let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
+            if !is_concrete_write_program
+                && let Some(answer) = crate::meta_method_dispatch::try_dispatch(
+                    self,
+                    prompt,
+                    &intent_formalization,
+                    history,
+                    &mut log,
                 )
-                .map(|question| {
-                    crate::question_necessity::requirement_section_marker(language.slug())
-                        .map_or_else(
-                            || question.clone(),
-                            |marker| [marker, format!("- {question}")].join("\n"),
-                        )
-                })
-                .unwrap_or_default();
-                return finalize_simple(
-                    prompt,
-                    &mut log,
-                    "ambiguous_modification_clarification",
-                    "response:ambiguous_modification_clarification",
-                    &body,
-                    0.9,
-                );
-            }
-            let intent = language_aware_intent_for(&rule, language);
-            record_candidates(&mut log, prompt, &intent);
-            if let Some(choice) = record_validation(&mut log, prompt) {
-                let response_link = response_link_for_intent(&rule, &intent);
-                return finalize_simple(
-                    prompt,
-                    &mut log,
-                    &intent,
-                    &response_link,
-                    &choice.answer,
-                    1.0,
-                );
-            }
-            // Issue #513: recognize terminal-command requests (visible fix for
-            // #511) before falling through to the unknown answer, so a shell
-            // request returns an agent_suggestion intent in both engines.
-            if crate::verifiable_task::recognise_verifiable(prompt).is_none()
-                && let Some(answer) =
-                    crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
             {
                 return answer;
             }
-            // Issue #662: no reusable part or rule matched. Combine reasoning,
-            // random search, and evolutionary search within the configured
-            // compute budget (GOALS.md Universal Solver Goals) before giving up.
-            // On budget exhaustion the `search:` evidence stays on the log and
-            // the honest unknown-reasoning reply below takes over.
-            if let Some(answer) =
-                crate::solver_search::try_budget_search(prompt, &mut log, self.config)
-            {
+
+            if let Some(answer) = crate::solver_handlers::policy_gates::try_policy_gates(
+                self.config.execution_surface,
+                prompt,
+                &mut log,
+                language,
+            ) {
                 return answer;
             }
-            let senses = if unresolved_surfaces_present(
-                &crate::engine::normalize_prompt(prompt),
-                language.slug(),
-            ) || !crate::solver_helpers::bare_concept_misses(&log).is_empty()
-            {
-                crate::solver_search::record_external_search(
-                    &self.config,
-                    &mut log,
+
+            if let Some(answer) = crate::coding::rosetta_request::try_rosetta_code_request(
+                prompt,
+                &intent_formalization.normalized_text,
+                &mut log,
+                self.config.offline,
+            ) {
+                return answer;
+            }
+
+            if matches!(rule, SelectedRule::Unknown) {
+                if crate::program_coreference::looks_like_ambiguous_program_modification(
+                    &normalize_prompt(prompt),
+                ) {
+                    // Label the question with the seed's requirement-section
+                    // marker. A target-less modification cannot proceed until the
+                    // user names the target, so this is a blocking requirement;
+                    // unlabelled it falls to the `factual` default and issue
+                    // #920's necessity gate drops it, leaving an empty answer.
+                    let body = seed::localized_response(
+                        "ambiguous_modification_clarification",
+                        language.slug(),
+                    )
+                    .map(|question| {
+                        crate::question_necessity::requirement_section_marker(language.slug())
+                            .map_or_else(
+                                || question.clone(),
+                                |marker| [marker, format!("- {question}")].join("\n"),
+                            )
+                    })
+                    .unwrap_or_default();
+                    return finalize_simple(
+                        prompt,
+                        &mut log,
+                        "ambiguous_modification_clarification",
+                        "response:ambiguous_modification_clarification",
+                        &body,
+                        0.9,
+                    );
+                }
+                let intent = language_aware_intent_for(&rule, language);
+                record_candidates(&mut log, prompt, &intent);
+                if let Some(choice) = record_validation(&mut log, prompt) {
+                    let response_link = response_link_for_intent(&rule, &intent);
+                    return finalize_simple(
+                        prompt,
+                        &mut log,
+                        &intent,
+                        &response_link,
+                        &choice.answer,
+                        1.0,
+                    );
+                }
+                // Issue #513: recognize terminal-command requests (visible fix for
+                // #511) before falling through to the unknown answer, so a shell
+                // request returns an agent_suggestion intent in both engines.
+                if crate::verifiable_task::recognise_verifiable(prompt).is_none()
+                    && let Some(answer) =
+                        crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
+                {
+                    return answer;
+                }
+                // Issue #662: no reusable part or rule matched. Combine reasoning,
+                // random search, and evolutionary search within the configured
+                // compute budget (GOALS.md Universal Solver Goals) before giving up.
+                // On budget exhaustion the `search:` evidence stays on the log and
+                // the honest unknown-reasoning reply below takes over.
+                if let Some(answer) =
+                    crate::solver_search::try_budget_search(prompt, &mut log, self.config)
+                {
+                    return answer;
+                }
+                let senses = if unresolved_surfaces_present(
+                    &crate::engine::normalize_prompt(prompt),
+                    language.slug(),
+                ) || !crate::solver_helpers::bare_concept_misses(&log).is_empty()
+                {
+                    crate::solver_search::record_external_search(
+                        &self.config,
+                        &mut log,
+                        prompt,
+                        language,
+                    )
+                } else {
+                    Vec::new()
+                };
+                return answer_unknown_prompt(
                     prompt,
                     language,
-                )
-            } else {
-                Vec::new()
-            };
-            return answer_unknown_prompt(
-                prompt,
-                language,
-                &mut log,
-                UnknownReasoningConfig {
-                    questioning_rigor: self.config.questioning_rigor,
-                    offline: self.config.offline,
-                    agent_mode: self.config.agent_mode,
-                },
-                &senses,
-            );
-        }
-
-        let intent = language_aware_intent_for(&rule, language);
-        log.append("intent", intent.clone());
-
-        if let SelectedRule::WriteProgram(spec) = &rule {
-            if log.first_of("rule_synthesis_candidate").is_none() {
-                crate::coding::record_algorithm_construction(&mut log);
+                    &mut log,
+                    UnknownReasoningConfig {
+                        questioning_rigor: self.config.questioning_rigor,
+                        offline: self.config.offline,
+                        agent_mode: self.config.agent_mode,
+                    },
+                    &senses,
+                );
             }
-            log.append(
-                "execution_status",
-                spec.language.execution_status().label().to_owned(),
-            );
-            log.append("execution_environment", spec.language.environment());
-            log.append("program_parameter:language", spec.language.slug.to_owned());
-            log.append("program_parameter:task", spec.task.slug.to_owned());
-            log.append("program_parameters", spec.parameter_summary());
-            log.append("legacy_intent", spec.legacy_intent());
-        }
 
-        record_candidates(&mut log, prompt, &intent);
+            let intent = language_aware_intent_for(&rule, language);
+            log.append("intent", intent.clone());
 
-        let validation_choice = record_validation(&mut log, prompt);
-        if validation_choice.is_none() && log.first_of("validation").is_none() {
-            log.append(
-                "validation",
-                "accepted_without_extra_constraints".to_owned(),
-            );
-        }
-        let prior = coding_guidance::history_has_prior_code(history);
-        let base_answer = match (&validation_choice, &rule) {
-            (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
-            _ => language_aware_answer_for(&rule, language, prompt, prior),
-        };
-        let base_answer = crate::question_necessity::enforce_questions(&base_answer, &mut log);
+            if let SelectedRule::WriteProgram(spec) = &rule {
+                if log.first_of("rule_synthesis_candidate").is_none() {
+                    crate::coding::record_algorithm_construction(&mut log);
+                }
+                log.append(
+                    "execution_status",
+                    spec.language.execution_status().label().to_owned(),
+                );
+                log.append("execution_environment", spec.language.environment());
+                log.append("program_parameter:language", spec.language.slug.to_owned());
+                log.append("program_parameter:task", spec.task.slug.to_owned());
+                log.append("program_parameters", spec.parameter_summary());
+                log.append("legacy_intent", spec.legacy_intent());
+            }
 
-        let response_link = response_link_for_intent(&rule, &intent);
-        log.append("response", response_link.clone());
+            record_candidates(&mut log, prompt, &intent);
 
-        log.append("trace:simplification", "smallest_sufficient".to_owned());
-        let trace_id = log.append("trace", intent.clone());
+            let validation_choice = record_validation(&mut log, prompt);
+            if validation_choice.is_none() && log.first_of("validation").is_none() {
+                log.append(
+                    "validation",
+                    "accepted_without_extra_constraints".to_owned(),
+                );
+            }
+            let prior = coding_guidance::history_has_prior_code(history);
+            let base_answer = match (&validation_choice, &rule) {
+                (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
+                _ => language_aware_answer_for(&rule, language, prompt, prior),
+            };
+            let base_answer = crate::question_necessity::enforce_questions(&base_answer, &mut log);
 
-        let evidence_links = build_evidence_links(prompt, &log, &response_link);
-        let links_notation = answer_links_notation(prompt, &intent, &base_answer, &log, &trace_id);
-        let thinking_steps = log.thinking_steps_for_answer(&base_answer);
-        let answer =
-            append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
+            let response_link = response_link_for_intent(&rule, &intent);
+            log.append("response", response_link.clone());
 
-        let execution_recipe = match &rule {
-            SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
-                language: spec.language.code_fence.to_owned(),
-                source: crate::code_editing::apply_inline_hello_world_source_replacement(
-                    prompt,
-                    spec.template.code,
-                    *spec,
-                ),
-                path: spec.language.save_as.to_owned(),
-                supporting_files: Vec::new(),
-                commands: spec
-                    .language
-                    .execution
-                    .check_command
-                    .into_iter()
-                    .chain(std::iter::once(spec.language.execution.run_command))
-                    .map(str::to_owned)
-                    .collect(),
-            })),
-            _ => None,
-        };
+            log.append("trace:simplification", "smallest_sufficient".to_owned());
+            let trace_id = log.append("trace", intent.clone());
 
-        SymbolicAnswer {
-            intent,
-            answer,
-            confidence: confidence_for(&rule, validation_choice.as_ref()),
-            evidence_links,
-            thinking_steps,
-            links_notation,
-            execution_recipe,
-        }
+            let evidence_links = build_evidence_links(prompt, &log, &response_link);
+            let links_notation =
+                answer_links_notation(prompt, &intent, &base_answer, &log, &trace_id);
+            let thinking_steps = log.thinking_steps_for_answer(&base_answer);
+            let answer =
+                append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
+
+            let execution_recipe = match &rule {
+                SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
+                    language: spec.language.code_fence.to_owned(),
+                    source: crate::code_editing::apply_inline_hello_world_source_replacement(
+                        prompt,
+                        spec.template.code,
+                        *spec,
+                    ),
+                    path: spec.language.save_as.to_owned(),
+                    supporting_files: Vec::new(),
+                    commands: spec
+                        .language
+                        .execution
+                        .check_command
+                        .into_iter()
+                        .chain(std::iter::once(spec.language.execution.run_command))
+                        .map(str::to_owned)
+                        .collect(),
+                })),
+                _ => None,
+            };
+
+            SymbolicAnswer {
+                intent,
+                answer,
+                confidence: confidence_for(&rule, validation_choice.as_ref()),
+                evidence_links,
+                thinking_steps,
+                links_notation,
+                execution_recipe,
+            }
         })();
         crate::derivation::finalize_answer(&mut answer, &mut log);
         answer

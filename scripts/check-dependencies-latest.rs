@@ -131,7 +131,9 @@ fn main() {
             "--refresh-snapshot" => refresh = true,
             "--apply" => apply = true,
             "--format" => {
-                let format = arguments.next().unwrap_or_else(|| usage("--format needs lino"));
+                let format = arguments
+                    .next()
+                    .unwrap_or_else(|| usage("--format needs lino"));
                 if format != "lino" {
                     usage(&format!("unknown format {format}"));
                 }
@@ -150,7 +152,9 @@ fn main() {
             Ok(snapshot) => snapshot,
             Err(error) => {
                 eprintln!("check-dependencies-latest: {error}");
-                eprintln!("check-dependencies-latest: a registry was unreachable; retry, or --offline against the last snapshot");
+                eprintln!(
+                    "check-dependencies-latest: a registry was unreachable; retry, or --offline against the last snapshot"
+                );
                 std::process::exit(3);
             }
         }
@@ -212,7 +216,9 @@ fn main() {
         println!("dependency currency: every finding carries a blocked annotation");
         return;
     }
-    println!("dependency currency: FAIL - bump the manifest or add a `# blocked: <issue-url>` annotation");
+    println!(
+        "dependency currency: FAIL - bump the manifest or add a `# blocked: <issue-url>` annotation"
+    );
     std::process::exit(1);
 }
 
@@ -300,7 +306,10 @@ fn collect_npm(repo: &Path, dependencies: &mut Vec<Dependency>) {
 fn npm_lock_versions(manifest_path: &Path) -> BTreeMap<String, String> {
     let directory = manifest_path.parent().unwrap_or(manifest_path);
     for (lock_name, parse) in [
-        ("package-lock.json", parse_package_lock as fn(&str) -> BTreeMap<String, String>),
+        (
+            "package-lock.json",
+            parse_package_lock as fn(&str) -> BTreeMap<String, String>,
+        ),
         ("bun.lock", parse_bun_lock),
     ] {
         if let Ok(text) = fs::read_to_string(directory.join(lock_name)) {
@@ -385,7 +394,10 @@ fn walk_for(root: &Path, needle: &str, found: &mut Vec<PathBuf>) {
             continue;
         };
         if path.is_dir() {
-            if matches!(name, "node_modules" | "target" | ".git" | ".claude" | "cache") {
+            if matches!(
+                name,
+                "node_modules" | "target" | ".git" | ".claude" | "cache"
+            ) {
                 continue;
             }
             walk_for(&path, needle, found);
@@ -400,9 +412,15 @@ pub fn compare(dependencies: &[Dependency], snapshot: &Snapshot) -> (Vec<Finding
     let mut findings = Vec::new();
     let mut unverifiable = Vec::new();
     for dependency in dependencies {
-        let Some((latest, _url)) = snapshot.entries.get(&(dependency.ecosystem, dependency.name.clone()))
+        let Some((latest, _url)) = snapshot
+            .entries
+            .get(&(dependency.ecosystem, dependency.name.clone()))
         else {
-            unverifiable.push(format!("{}/{}", dependency.ecosystem.key(), dependency.name));
+            unverifiable.push(format!(
+                "{}/{}",
+                dependency.ecosystem.key(),
+                dependency.name
+            ));
             continue;
         };
         let latest = latest.clone();
@@ -427,10 +445,8 @@ pub fn compare(dependencies: &[Dependency], snapshot: &Snapshot) -> (Vec<Finding
         }
     }
     findings.sort_by(|a, b| {
-        (a.dependency.path.display().to_string(), a.dependency.line).cmp(&(
-            b.dependency.path.display().to_string(),
-            b.dependency.line,
-        ))
+        (a.dependency.path.display().to_string(), a.dependency.line)
+            .cmp(&(b.dependency.path.display().to_string(), b.dependency.line))
     });
     (findings, unverifiable)
 }
@@ -461,9 +477,13 @@ pub fn apply_latest(repo: &Path, findings: &[Finding]) {
             let updated = match ecosystem {
                 Ecosystem::CratesIo => rewrite_cargo_line(&rewritten, dependency, &bare),
                 Ecosystem::Npm => rewrite_npm_line(&rewritten, dependency, &bare),
-                Ecosystem::GitHubAction => rewrite_uses_line(&rewritten, dependency, &finding.latest),
+                Ecosystem::GitHubAction => {
+                    rewrite_uses_line(&rewritten, dependency, &finding.latest)
+                }
                 Ecosystem::DockerImage => rewrite_from_line(&rewritten, dependency, &bare),
-                Ecosystem::RustToolchain => rewrite_rust_version(&rewritten, dependency, &minor_of(&finding.latest)),
+                Ecosystem::RustToolchain => {
+                    rewrite_rust_version(&rewritten, dependency, &minor_of(&finding.latest))
+                }
             };
             rewritten = updated;
         }
@@ -532,7 +552,11 @@ fn rewrite_rust_version(text: &str, dependency: &Dependency, minor: &str) -> Str
     })
 }
 
-fn rewrite_line_at(text: &str, line_number: usize, rewrite: impl Fn(&str) -> Option<String>) -> String {
+fn rewrite_line_at(
+    text: &str,
+    line_number: usize,
+    rewrite: impl Fn(&str) -> Option<String>,
+) -> String {
     let lines: Vec<&str> = text.lines().collect();
     if line_number == 0 || line_number > lines.len() {
         return text.to_string();
@@ -585,7 +609,10 @@ pub fn parse_cargo_manifest(text: &str) -> Vec<(String, String, usize, Option<St
         }
         if line.starts_with('[') {
             let header = line.trim_start_matches('[').trim_end_matches(']');
-            section = if matches!(header, "dependencies" | "dev-dependencies" | "build-dependencies") {
+            section = if matches!(
+                header,
+                "dependencies" | "dev-dependencies" | "build-dependencies"
+            ) {
                 Section::Table
             } else if header.starts_with("dependencies.")
                 || header.starts_with("dev-dependencies.")
@@ -607,7 +634,8 @@ pub fn parse_cargo_manifest(text: &str) -> Vec<(String, String, usize, Option<St
         };
         let name = name.trim().trim_matches('"').to_string();
         let value = value.trim();
-        if value.contains("path =") || value.contains("git =") || value.contains("workspace = true") {
+        if value.contains("path =") || value.contains("git =") || value.contains("workspace = true")
+        {
             continue;
         }
         let requirement = if let Some(version) = version_key_of_inline_table(value) {
@@ -697,7 +725,10 @@ pub fn parse_package_json(text: &str) -> Vec<(String, String, usize, Option<Stri
         };
         if let Some(name) = key.strip_suffix("//") {
             if let Some(url) = json_string(value) {
-                blocked.insert(name.to_string(), url.trim_start_matches("blocked:").trim().to_string());
+                blocked.insert(
+                    name.to_string(),
+                    url.trim_start_matches("blocked:").trim().to_string(),
+                );
             }
         }
     }
@@ -727,12 +758,7 @@ pub fn parse_package_json(text: &str) -> Vec<(String, String, usize, Option<Stri
         let Some(range) = json_string(value) else {
             continue;
         };
-        out.push((
-            key.clone(),
-            range,
-            index + 1,
-            blocked.get(&key).cloned(),
-        ));
+        out.push((key.clone(), range, index + 1, blocked.get(&key).cloned()));
     }
     out
 }
@@ -744,10 +770,7 @@ fn json_member(line: &str) -> Option<(String, &str)> {
     let end = rest.find('"')?;
     let value = &rest[end + 1..];
     let colon = value.find(':')?;
-    Some((
-        rest[..end].to_string(),
-        value[colon + 1..].trim(),
-    ))
+    Some((rest[..end].to_string(), value[colon + 1..].trim()))
 }
 
 fn json_string(value: &str) -> Option<String> {
@@ -761,7 +784,9 @@ pub fn parse_package_lock(text: &str) -> BTreeMap<String, String> {
     for line in text.lines() {
         let trimmed = line.trim();
         if let Some(version) = trimmed.strip_prefix("\"version\": ") {
-            if let (Some(name), Some(version)) = (current.take(), quoted_value(version.trim_end_matches(','))) {
+            if let (Some(name), Some(version)) =
+                (current.take(), quoted_value(version.trim_end_matches(',')))
+            {
                 out.insert(name, version);
             }
         } else if trimmed.starts_with("\"node_modules/") && trimmed.ends_with("\": {") {
@@ -920,7 +945,10 @@ pub fn read_snapshot(path: &Path) -> Option<Snapshot> {
             }
         }
     }
-    Some(Snapshot { refreshed_at, entries })
+    Some(Snapshot {
+        refreshed_at,
+        entries,
+    })
 }
 
 /// Write the snapshot `--offline` runs against.
@@ -987,7 +1015,10 @@ fn live_snapshot(dependencies: &[Dependency]) -> Result<Snapshot, String> {
             ),
             Ecosystem::GitHubAction => {
                 let latest = latest_github(&name)?;
-                (latest, format!("https://api.github.com/repos/{name}/releases/latest"))
+                (
+                    latest,
+                    format!("https://api.github.com/repos/{name}/releases/latest"),
+                )
             }
             Ecosystem::DockerImage => (
                 latest_docker_hub(&name)?,
@@ -1018,7 +1049,8 @@ fn fetch(url: &str) -> Result<String, String> {
 #[cfg(not(test))]
 fn latest_crates_io(name: &str) -> Result<String, String> {
     let body = fetch(&format!("https://crates.io/api/v1/crates/{name}"))?;
-    json_field(&body, "max_stable_version").ok_or_else(|| format!("crates.io answer for {name} had no max_stable_version"))
+    json_field(&body, "max_stable_version")
+        .ok_or_else(|| format!("crates.io answer for {name} had no max_stable_version"))
 }
 
 #[cfg(not(test))]
@@ -1027,18 +1059,24 @@ fn latest_npm(name: &str) -> Result<String, String> {
     let tags = body
         .find("\"dist-tags\"")
         .ok_or_else(|| format!("npm answer for {name} had no dist-tags"))?;
-    json_field(&body[tags..], "latest").ok_or_else(|| format!("npm dist-tags for {name} had no latest"))
+    json_field(&body[tags..], "latest")
+        .ok_or_else(|| format!("npm dist-tags for {name} had no latest"))
 }
 
 #[cfg(not(test))]
 fn latest_github(repository: &str) -> Result<String, String> {
-    let body = fetch(&format!("https://api.github.com/repos/{repository}/releases/latest"))?;
-    json_field(&body, "tag_name").ok_or_else(|| format!("github answer for {repository} had no tag_name"))
+    let body = fetch(&format!(
+        "https://api.github.com/repos/{repository}/releases/latest"
+    ))?;
+    json_field(&body, "tag_name")
+        .ok_or_else(|| format!("github answer for {repository} had no tag_name"))
 }
 
 #[cfg(not(test))]
 fn latest_docker_hub(image: &str) -> Result<String, String> {
-    let body = fetch(&format!("https://hub.docker.com/v2/repositories/{image}/tags?page_size=100"))?;
+    let body = fetch(&format!(
+        "https://hub.docker.com/v2/repositories/{image}/tags?page_size=100"
+    ))?;
     let results = body
         .find("\"results\"")
         .ok_or_else(|| format!("docker hub answer for {image} had no results"))?;
@@ -1054,7 +1092,9 @@ fn latest_docker_hub(image: &str) -> Result<String, String> {
         }
         cursor = after;
     }
-    Err(format!("docker hub tag list for {image} had no versioned tag"))
+    Err(format!(
+        "docker hub tag list for {image} had no versioned tag"
+    ))
 }
 
 #[cfg(not(test))]
@@ -1067,7 +1107,8 @@ fn latest_rustc() -> Result<String, String> {
             section = trimmed.to_string();
         } else if section == "[rust]" {
             if let Some(rest) = trimmed.strip_prefix("version = ") {
-                return quoted_value(rest).ok_or_else(|| "rust channel had no quoted version".to_string());
+                return quoted_value(rest)
+                    .ok_or_else(|| "rust channel had no quoted version".to_string());
             }
         }
     }
@@ -1119,7 +1160,10 @@ pretty_assertions = \"1.4\"
 ";
         let parsed = parse_cargo_manifest(text);
         let names: Vec<&str> = parsed.iter().map(|(n, _, _, _)| n.as_str()).collect();
-        assert_eq!(names, ["base64", "clap", "links-notation", "pretty_assertions"]);
+        assert_eq!(
+            names,
+            ["base64", "clap", "links-notation", "pretty_assertions"]
+        );
         assert_eq!(parsed[0].1, "0.23");
         assert_eq!(parsed[0].2, 6);
         assert_eq!(parsed[1].1, "4.6");
@@ -1201,7 +1245,10 @@ version = \"4.6.7\"
 ";
         let versions = parse_bun_lock(bun_lock);
         assert_eq!(versions.get("react").map(String::as_str), Some("19.3.0"));
-        assert_eq!(versions.get("@scope/tool").map(String::as_str), Some("2.1.0"));
+        assert_eq!(
+            versions.get("@scope/tool").map(String::as_str),
+            Some("2.1.0")
+        );
     }
 
     #[test]
@@ -1214,7 +1261,14 @@ steps:
 ";
         let pins = parse_uses_pins(workflow);
         assert_eq!(pins.len(), 2);
-        assert_eq!(pins[1], ("zizmorcore/zizmor-action".to_string(), "v0.6.4".to_string(), 4));
+        assert_eq!(
+            pins[1],
+            (
+                "zizmorcore/zizmor-action".to_string(),
+                "v0.6.4".to_string(),
+                4
+            )
+        );
 
         let dockerfile = "\
 FROM ubuntu:24.04 AS build
@@ -1223,7 +1277,10 @@ FROM konrad/box-dind:2.10.2
 ";
         let bases = parse_dockerfile_from(dockerfile);
         assert_eq!(bases.len(), 2);
-        assert_eq!(bases[1], ("konrad/box-dind".to_string(), "2.10.2".to_string(), 3));
+        assert_eq!(
+            bases[1],
+            ("konrad/box-dind".to_string(), "2.10.2".to_string(), 3)
+        );
     }
 
     #[test]
@@ -1250,10 +1307,22 @@ FROM konrad/box-dind:2.10.2
         let snapshot = Snapshot {
             refreshed_at: String::new(),
             entries: [
-                ((Ecosystem::CratesIo, "clap".to_string()), ("4.6.7".to_string(), String::new())),
-                ((Ecosystem::CratesIo, "egg".to_string()), ("0.11.0".to_string(), String::new())),
-                ((Ecosystem::Npm, "react".to_string()), ("19.3.0".to_string(), String::new())),
-                ((Ecosystem::RustToolchain, "rustc".to_string()), ("1.98.1".to_string(), String::new())),
+                (
+                    (Ecosystem::CratesIo, "clap".to_string()),
+                    ("4.6.7".to_string(), String::new()),
+                ),
+                (
+                    (Ecosystem::CratesIo, "egg".to_string()),
+                    ("0.11.0".to_string(), String::new()),
+                ),
+                (
+                    (Ecosystem::Npm, "react".to_string()),
+                    ("19.3.0".to_string(), String::new()),
+                ),
+                (
+                    (Ecosystem::RustToolchain, "rustc".to_string()),
+                    ("1.98.1".to_string(), String::new()),
+                ),
             ]
             .into_iter()
             .collect(),
@@ -1282,25 +1351,45 @@ FROM konrad/box-dind:2.10.2
 
     #[test]
     fn snapshot_round_trip() {
-        let directory = std::env::temp_dir().join(format!(
-            "issue-1169-snapshot-{}",
-            std::process::id()
-        ));
+        let directory =
+            std::env::temp_dir().join(format!("issue-1169-snapshot-{}", std::process::id()));
         fs::create_dir_all(&directory).expect("temp dir");
         let path = directory.join("snapshot.lino");
         let snapshot = Snapshot {
             refreshed_at: "2026-09-30T15:04:05Z".to_string(),
             entries: [
-                ((Ecosystem::CratesIo, "clap".to_string()), ("4.6.7".to_string(), "https://crates.io/api/v1/crates/clap".to_string())),
-                ((Ecosystem::Npm, "@scope/tool".to_string()), ("2.1.0".to_string(), "https://registry.npmjs.org/@scope/tool".to_string())),
+                (
+                    (Ecosystem::CratesIo, "clap".to_string()),
+                    (
+                        "4.6.7".to_string(),
+                        "https://crates.io/api/v1/crates/clap".to_string(),
+                    ),
+                ),
+                (
+                    (Ecosystem::Npm, "@scope/tool".to_string()),
+                    (
+                        "2.1.0".to_string(),
+                        "https://registry.npmjs.org/@scope/tool".to_string(),
+                    ),
+                ),
             ]
             .into_iter()
             .collect(),
         };
         write_snapshot(&path, &snapshot);
         let read = read_snapshot(&path).expect("read back");
-        assert_eq!(read.entries.get(&(Ecosystem::Npm, "@scope/tool".to_string())).map(|(v, _)| v.clone()), Some("2.1.0".to_string()));
-        assert_eq!(read.entries.get(&(Ecosystem::CratesIo, "clap".to_string())).map(|(v, _)| v.clone()), Some("4.6.7".to_string()));
+        assert_eq!(
+            read.entries
+                .get(&(Ecosystem::Npm, "@scope/tool".to_string()))
+                .map(|(v, _)| v.clone()),
+            Some("2.1.0".to_string())
+        );
+        assert_eq!(
+            read.entries
+                .get(&(Ecosystem::CratesIo, "clap".to_string()))
+                .map(|(v, _)| v.clone()),
+            Some("4.6.7".to_string())
+        );
         let _ = fs::remove_dir_all(&directory);
     }
 
@@ -1321,7 +1410,10 @@ egg = \"0.10.0\"
             blocked: None,
         };
         let rewritten = rewrite_cargo_line(text, &dependency("clap", "4.6", 3), "4.6.7");
-        assert!(rewritten.contains("clap = { version = \"4.6.7\","), "{rewritten}");
+        assert!(
+            rewritten.contains("clap = { version = \"4.6.7\","),
+            "{rewritten}"
+        );
         let rewritten = rewrite_cargo_line(text, &dependency("egg", "0.10.0", 4), "0.11.0");
         assert!(rewritten.contains("egg = \"0.11.0\""), "{rewritten}");
 
@@ -1336,7 +1428,10 @@ egg = \"0.10.0\"
             blocked: None,
         };
         let rewritten = rewrite_npm_line(json, &dependency, "18.0.14");
-        assert!(rewritten.contains("\"marked\": \"^18.0.14\""), "{rewritten}");
+        assert!(
+            rewritten.contains("\"marked\": \"^18.0.14\""),
+            "{rewritten}"
+        );
     }
 
     #[test]
@@ -1348,7 +1443,9 @@ egg = \"0.10.0\"
             resolved: "0.16.1".to_string(),
             path: PathBuf::from("Cargo.toml"),
             line: 3,
-            blocked: Some("https://github.com/link-foundation/lino-objects-codec/issues/60".to_string()),
+            blocked: Some(
+                "https://github.com/link-foundation/lino-objects-codec/issues/60".to_string(),
+            ),
         };
         let text = "[dependencies]\nlinks-notation = \"0.16.1\" # blocked: https://github.com/link-foundation/lino-objects-codec/issues/60\n";
         let rewritten = rewrite_cargo_line(text, &blocked, "0.22.0");

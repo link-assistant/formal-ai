@@ -62,7 +62,12 @@ impl ActionCost {
     /// acts less — fewer steps, or equal steps and less code, and so on.
     pub fn is_less_action_than(&self, other: &Self) -> bool {
         (self.steps, self.code_units, self.compute_ms, self.memory_kb)
-            < (other.steps, other.code_units, other.compute_ms, other.memory_kb)
+            < (
+                other.steps,
+                other.code_units,
+                other.compute_ms,
+                other.memory_kb,
+            )
     }
 }
 
@@ -234,12 +239,18 @@ mod tests {
             SolutionCandidate {
                 id: "short_but_wrong".into(),
                 solves_entire_range: false,
-                cost: ActionCost { steps: 1, ..ActionCost::ZERO },
+                cost: ActionCost {
+                    steps: 1,
+                    ..ActionCost::ZERO
+                },
             },
             SolutionCandidate {
                 id: "correct".into(),
                 solves_entire_range: true,
-                cost: ActionCost { steps: 6, ..ActionCost::ZERO },
+                cost: ActionCost {
+                    steps: 6,
+                    ..ActionCost::ZERO
+                },
             },
         ];
         let best = least_action_solution(&candidates).unwrap();

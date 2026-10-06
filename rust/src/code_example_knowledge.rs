@@ -100,7 +100,7 @@ pub struct Parameter {
 }
 
 /// A procedure shared across languages: the shared structure is the body,
- /// the language-specific values are parameters.
+/// the language-specific values are parameters.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneralizedProcedure {
     /// The procedure's identity.
@@ -249,11 +249,17 @@ pub fn decompose_code_node(
     let grammar = crate::coding::cst::grammar_metadata(language_slug)
         .ok_or_else(|| DecomposeError::UnknownGrammar(language_slug.to_owned()))?;
     let vocabulary = PartVocabulary::load();
-    let network = LinkNetwork::parse(source, &grammar.meta_language_label, ParseConfiguration::default());
+    let network = LinkNetwork::parse(
+        source,
+        &grammar.meta_language_label,
+        ParseConfiguration::default(),
+    );
     let mut kinds: Vec<String> = Vec::new();
     let mut tokens: Vec<String> = Vec::new();
     for link in network.projected_links(NetworkProjection::ConcreteSyntax) {
-        let Some(term) = link.metadata().term() else { continue };
+        let Some(term) = link.metadata().term() else {
+            continue;
+        };
         match link.metadata().link_type() {
             Some(LinkType::Grammar) | Some(LinkType::Syntax) => kinds.push(term.to_owned()),
             Some(LinkType::Token) => tokens.push(term.to_owned()),
@@ -297,12 +303,15 @@ pub fn decompose_code_node(
     if let Some(entry) = entry_name {
         if entry != "none" {
             let named = tokens.iter().any(|token| token == &entry)
-                || source.split_whitespace().any(|word| word.trim(|c| c == '(' || c == '!') == entry);
+                || source
+                    .split_whitespace()
+                    .any(|word| word.trim_matches(|c: char| c == '(' || c == '!') == entry);
             if named {
                 parts.push(CodePart {
                     kind: CodePartKind::EntryPoint,
                     source_text: entry,
-                    cst_node_kind: function_kind.unwrap_or_else(|| "function_declaration".to_owned()),
+                    cst_node_kind: function_kind
+                        .unwrap_or_else(|| "function_declaration".to_owned()),
                     source_url: String::new(),
                 });
             }
@@ -320,9 +329,13 @@ pub fn decompose_code_node(
         .cloned()
         .unwrap_or_else(|| "call_expression".to_owned());
     let mut matched_call: Option<String> = None;
-    for call in vocabulary.output_calls.get(language_slug).into_iter().flatten() {
-        let present = tokens.iter().any(|token| token == call)
-            || source.contains(call.as_str());
+    for call in vocabulary
+        .output_calls
+        .get(language_slug)
+        .into_iter()
+        .flatten()
+    {
+        let present = tokens.iter().any(|token| token == call) || source.contains(call.as_str());
         if present {
             parts.push(CodePart {
                 kind: CodePartKind::OutputOperation,
@@ -353,10 +366,7 @@ pub fn decompose_code_node(
     let literal_scope = matched_call
         .as_deref()
         .and_then(|call| {
-            let lines: Vec<&str> = source
-                .lines()
-                .filter(|line| line.contains(call))
-                .collect();
+            let lines: Vec<&str> = source.lines().filter(|line| line.contains(call)).collect();
             (!lines.is_empty()).then(|| lines.join("\n"))
         })
         .unwrap_or_else(|| source.to_owned());
@@ -421,7 +431,13 @@ fn normalize_relation(relation: &str) -> String {
     relation
         .to_ascii_lowercase()
         .chars()
-        .map(|character| if character.is_whitespace() { '_' } else { character })
+        .map(|character| {
+            if character.is_whitespace() {
+                '_'
+            } else {
+                character
+            }
+        })
         .collect()
 }
 
@@ -468,7 +484,10 @@ fn quoted_literals(source: &str) -> Vec<String> {
 /// become `Parameter` entries.
 #[must_use]
 pub fn generalize_examples(examples: &[DecomposedCodeNode]) -> GeneralizedProcedure {
-    let mut languages: Vec<&str> = examples.iter().map(|example| example.language_slug.as_str()).collect();
+    let mut languages: Vec<&str> = examples
+        .iter()
+        .map(|example| example.language_slug.as_str())
+        .collect();
     languages.sort_unstable();
     languages.dedup();
     let mut shared_structure = Vec::new();
@@ -635,7 +654,11 @@ pub fn recomposition_links_notation(recomposition: &CodeRecomposition) -> String
     use std::fmt::Write as _;
     let mut out = String::from("code_recomposition\n");
     let _ = writeln!(out, "  language_slug {}", recomposition.language_slug);
-    let _ = writeln!(out, "  source \"{}\"", recomposition.source.replace('\n', "\\n"));
+    let _ = writeln!(
+        out,
+        "  source \"{}\"",
+        recomposition.source.replace('\n', "\\n")
+    );
     for url in &recomposition.part_source_urls {
         let _ = writeln!(out, "  part_source_url \"{url}\"");
     }

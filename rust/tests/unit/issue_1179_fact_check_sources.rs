@@ -159,7 +159,11 @@ fn fact_check_weighs_evidence_from_the_declared_prior() {
         Stance::Contradicts,
         0.9,
     );
-    let verdict = fact_check("Status: planned, nothing implemented", "docs", &[contradiction]);
+    let verdict = fact_check(
+        "Status: planned, nothing implemented",
+        "docs",
+        &[contradiction],
+    );
     let prior = prior_for_context("docs");
     let posterior = verdict.assessment.posterior.get();
     assert!(
@@ -216,9 +220,10 @@ fn symbol_matching_is_whole_word() {
 /// R4: the bounded queries are recognized from the seeded phrasings.
 #[test]
 fn code_queries_parse_from_seeded_phrases() {
-    let query =
-        parse_code_query("The audit asks whether `research_coding_skill_gap` is called outside tests today.")
-            .expect("seeded phrasing");
+    let query = parse_code_query(
+        "The audit asks whether `research_coding_skill_gap` is called outside tests today.",
+    )
+    .expect("seeded phrasing");
     assert_eq!(
         query,
         CodeQuery::FunctionCalledOutsideTests {
@@ -227,9 +232,10 @@ fn code_queries_parse_from_seeded_phrases() {
     );
     assert_eq!(query.query_id(), "function_called_outside_tests");
 
-    let query =
-        parse_code_query("does the symbol `parse_lino` exist in the file `rust/src/seed/parser.rs`?")
-            .expect("seeded phrasing");
+    let query = parse_code_query(
+        "does the symbol `parse_lino` exist in the file `rust/src/seed/parser.rs`?",
+    )
+    .expect("seeded phrasing");
     assert_eq!(
         query,
         CodeQuery::SymbolExistsAtPath {
@@ -309,8 +315,11 @@ fn git_history_supports_and_contradicts() {
     }
     let root = temp_repo("git");
     git(&root, &["init", "-q"]);
-    fs::write(root.join("STATUS.md"), "Status: planned, nothing implemented\n")
-        .expect("fixture");
+    fs::write(
+        root.join("STATUS.md"),
+        "Status: planned, nothing implemented\n",
+    )
+    .expect("fixture");
     git(&root, &["add", "STATUS.md"]);
     git(&root, &["commit", "-q", "-m", "plan recorded"]);
     fs::write(root.join("STATUS.md"), "Status: implemented in PR #1139\n").expect("fixture");
@@ -345,7 +354,10 @@ fn git_history_supports_and_contradicts() {
 /// R6/R7: aggregator reposts carry no weight; any other host corroborates.
 #[test]
 fn web_tiering_demotes_aggregators() {
-    assert_eq!(tier_for_url("https://medium.com/some-post"), SourceTier::Unoriginal);
+    assert_eq!(
+        tier_for_url("https://medium.com/some-post"),
+        SourceTier::Unoriginal
+    );
     assert_eq!(
         tier_for_url("https://www.reddit.com/r/rust"),
         SourceTier::Unoriginal

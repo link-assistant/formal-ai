@@ -14,14 +14,14 @@ pub use code_debugging::handle_code_debugging;
 pub use code_explanation::handle_code_explanation;
 pub use code_refactoring::handle_code_refactoring;
 pub use code_review::handle_code_review;
-pub use creative_composition::{handle_advice_request, handle_brainstorm_request};
-pub use creative_writing::{handle_creative_writing_request, handle_planning_request};
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
     MemoryQueryExecution, answer_memory_recall, conversation_summary_answer, execute_memory_query,
     execute_memory_query_with_options, try_conversation_memory,
 };
+pub use creative_composition::{handle_advice_request, handle_brainstorm_request};
+pub use creative_writing::{handle_creative_writing_request, handle_planning_request};
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
@@ -34,11 +34,11 @@ pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use pattern_inference::{try_pattern_inference, try_pattern_inference_with_response_language};
 pub use playwright_script::try_playwright_script;
+pub use product_search::handle_product_search;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::{
     looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
 };
-pub use product_search::handle_product_search;
 pub use regex_synthesis::handle_regex_synthesis;
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
 pub use response_language_followup::try_response_language_followup;

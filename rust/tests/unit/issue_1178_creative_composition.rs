@@ -29,9 +29,9 @@
 //!   constraint checks (lift-out into data/benchmarks/*-tasks/ shards is
 //!   the integration step; the checks themselves live here).
 
+use formal_ai::engine::SymbolicAnswer;
 use formal_ai::event_log::EventLog;
 use formal_ai::web_engine_core::normalize_prompt;
-use formal_ai::engine::SymbolicAnswer;
 
 /// Run one handler over a prompt and return its answer body.
 macro_rules! answer_of {
@@ -70,13 +70,19 @@ fn handler_brainstorm_composes_from_the_formalized_topic() {
         formal_ai::handle_brainstorm_request,
         "five name ideas for a coffee shop near a university"
     );
-    assert!(answer.contains("Coffee"), "candidates compose from the topic: {answer}");
+    assert!(
+        answer.contains("Coffee"),
+        "candidates compose from the topic: {answer}"
+    );
     assert!(
         answer.contains("coffee") && answer.contains("university"),
         "the formalized concepts are named: {answer}"
     );
     assert!(!answer.contains("Web search requested for"), "{answer}");
-    assert!(!answer.contains("TraceLint"), "the memorized pool is not consulted: {answer}");
+    assert!(
+        !answer.contains("TraceLint"),
+        "the memorized pool is not consulted: {answer}"
+    );
     assert!(!answer.contains("Links Notation notebook"), "{answer}");
 }
 
@@ -86,13 +92,28 @@ fn handler_brainstorm_states_metric_and_constraints() {
         formal_ai::handle_brainstorm_request,
         "five short name ideas for a coffee shop without cafe in them"
     );
-    assert!(answer.contains("levenshtein"), "the metric is stated: {answer}");
-    assert!(answer.contains("12 characters"), "short caps the length: {answer}");
-    assert!(answer.contains("excluding"), "the named exclusion is stated: {answer}");
-    assert!(!answer.contains("Cafe"), "excluded words are filtered: {answer}");
+    assert!(
+        answer.contains("levenshtein"),
+        "the metric is stated: {answer}"
+    );
+    assert!(
+        answer.contains("12 characters"),
+        "short caps the length: {answer}"
+    );
+    assert!(
+        answer.contains("excluding"),
+        "the named exclusion is stated: {answer}"
+    );
+    assert!(
+        !answer.contains("Cafe"),
+        "excluded words are filtered: {answer}"
+    );
     // Every numbered candidate obeys the short cap.
     for line in answer.lines() {
-        if let Some(rest) = line.strip_prefix("1. ").or_else(|| line.strip_prefix("2. ")) {
+        if let Some(rest) = line
+            .strip_prefix("1. ")
+            .or_else(|| line.strip_prefix("2. "))
+        {
             assert!(rest.chars().count() <= 12, "{rest} exceeds the cap");
         }
     }
@@ -110,7 +131,10 @@ fn handler_brainstorm_honors_the_requested_count() {
 #[test]
 fn handler_brainstorm_multilingual_probes() {
     let probes = [
-        ("ru", "придумай пять идей для кофейной рядом с университетом"),
+        (
+            "ru",
+            "придумай пять идей для кофейной рядом с университетом",
+        ),
         ("hi", "विश्वविद्यालय के पास कॉफी की दुकान के लिए नाम के विचार दो"),
         ("zh", "给大学附近的咖啡店起个名字"),
     ];
@@ -120,7 +144,10 @@ fn handler_brainstorm_multilingual_probes() {
             answer.contains('.'),
             "{language} brainstorming returns candidates: {answer}"
         );
-        assert!(!answer.contains("Web search requested for"), "{language}: {answer}");
+        assert!(
+            !answer.contains("Web search requested for"),
+            "{language}: {answer}"
+        );
     }
 }
 
@@ -140,8 +167,14 @@ fn handler_creative_writing_four_line_poem_about_the_sea() {
         poem.iter().any(|line| line.to_lowercase().contains("sea")),
         "the topic word appears: {answer}"
     );
-    assert!(answer.contains("rhyme scheme abcb"), "the default scheme is stated: {answer}");
-    assert!(answer.contains("holds"), "the constraint check passed: {answer}");
+    assert!(
+        answer.contains("rhyme scheme abcb"),
+        "the default scheme is stated: {answer}"
+    );
+    assert!(
+        answer.contains("holds"),
+        "the constraint check passed: {answer}"
+    );
     assert!(!answer.contains("Web search requested for"), "{answer}");
 }
 
@@ -191,7 +224,10 @@ fn handler_creative_writing_haiku_states_syllables_unverified() {
     );
     let poem = poem_of(&answer);
     assert_eq!(poem.len(), 3, "a haiku carries three lines: {answer}");
-    assert!(answer.contains("not machine-verified"), "meter honesty: {answer}");
+    assert!(
+        answer.contains("not machine-verified"),
+        "meter honesty: {answer}"
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -209,7 +245,10 @@ fn handler_creative_writing_states_the_non_english_rhyme_gap() {
         let answer = answer_of!(formal_ai::handle_creative_writing_request, prompt);
         let poem = poem_of(&answer);
         assert_eq!(poem.len(), 4, "{language}: exactly four lines: {answer}");
-        assert!(answer.contains("gap"), "{language}: the gap is stated: {answer}");
+        assert!(
+            answer.contains("gap"),
+            "{language}: the gap is stated: {answer}"
+        );
         assert!(
             !answer.contains("rhyme scheme") || answer.contains("none"),
             "{language}: no guessed rhyme: {answer}"
@@ -230,14 +269,23 @@ fn handler_planning_builds_a_cited_feasible_itinerary() {
     assert!(answer.contains("Day 1"), "{answer}");
     assert!(answer.contains("Day 3"), "{answer}");
     assert!(answer.contains("Colosseum"), "{answer}");
-    assert!(answer.contains("wikivoyage.org"), "items cite their source: {answer}");
+    assert!(
+        answer.contains("wikivoyage.org"),
+        "items cite their source: {answer}"
+    );
     assert!(
         answer.matches("wikivoyage.org").count() >= 5,
         "every scheduled item carries a citation: {answer}"
     );
-    assert!(answer.contains("no overlapping items"), "feasibility reported: {answer}");
+    assert!(
+        answer.contains("no overlapping items"),
+        "feasibility reported: {answer}"
+    );
     assert!(answer.contains("travel time accounted"), "{answer}");
-    assert!(!answer.contains("terminal"), "no terminal-command misroute: {answer}");
+    assert!(
+        !answer.contains("terminal"),
+        "no terminal-command misroute: {answer}"
+    );
     assert!(!answer.contains("Web search requested for"), "{answer}");
 }
 
@@ -272,8 +320,14 @@ fn handler_planning_schedule_respects_windows() {
         let start_minutes = hours * 60 + minutes;
         let (hours, minutes) = (end / 100, end % 100);
         let end_minutes = hours * 60 + minutes;
-        assert!(start_minutes >= 9 * 60, "nothing before the day window: {trimmed}");
-        assert!(end_minutes <= 19 * 60, "nothing past the day window: {trimmed}");
+        assert!(
+            start_minutes >= 9 * 60,
+            "nothing before the day window: {trimmed}"
+        );
+        assert!(
+            end_minutes <= 19 * 60,
+            "nothing past the day window: {trimmed}"
+        );
         assert!(start_minutes >= previous_end, "no overlap: {trimmed}");
         previous_end = end_minutes;
     }
@@ -298,7 +352,10 @@ fn handler_planning_multilingual_probes() {
     for (language, prompt) in probes {
         let answer = answer_of!(formal_ai::handle_planning_request, prompt);
         assert!(answer.contains("Day 1"), "{language}: {answer}");
-        assert!(answer.contains("wikivoyage.org"), "{language}: cited: {answer}");
+        assert!(
+            answer.contains("wikivoyage.org"),
+            "{language}: cited: {answer}"
+        );
         assert!(!answer.contains("terminal"), "{language}: {answer}");
     }
 }
@@ -365,7 +422,10 @@ fn unrelated_prompts_are_not_claimed_by_any_composition_handler() {
         &str,
     ); 4] = [
         (formal_ai::handle_brainstorm_request, "brainstorming"),
-        (formal_ai::handle_creative_writing_request, "creative writing"),
+        (
+            formal_ai::handle_creative_writing_request,
+            "creative writing",
+        ),
         (formal_ai::handle_planning_request, "planning"),
         (formal_ai::handle_advice_request, "advice"),
     ];

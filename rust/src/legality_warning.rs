@@ -178,15 +178,18 @@ fn matched_pattern<'a>(
 }
 
 /// The first exemption whose phrase occurs in the prompt.
-fn matched_framing(prompt: &str, normalized: &str, exemptions: &[LegalityExemption]) -> Option<&str> {
+fn matched_framing<'a>(
+    prompt: &str,
+    normalized: &str,
+    exemptions: &'a [LegalityExemption],
+) -> Option<&'a str> {
     let lower = prompt.to_lowercase();
     exemptions
         .iter()
         .find(|exemption| {
-            exemption
-                .phrases
-                .iter()
-                .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()))
+            exemption.phrases.iter().any(|phrase| {
+                normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str())
+            })
         })
         .map(|exemption| exemption.framing.as_str())
 }
@@ -261,16 +264,18 @@ pub fn handle_legality_warning(
 
     let values = [
         ("category", assessment.pattern.category.as_str()),
-        ("category_readable", &category_readable(&assessment.pattern.category)),
+        (
+            "category_readable",
+            &category_readable(&assessment.pattern.category),
+        ),
         ("reason", assessment.pattern.reason.as_str()),
-        ("jurisdiction_note", assessment.pattern.jurisdiction_note.as_str()),
+        (
+            "jurisdiction_note",
+            assessment.pattern.jurisdiction_note.as_str(),
+        ),
     ];
     let (intent, response_link, confidence) = match assessment.pattern.disposition {
-        LegalityDisposition::Refuse => (
-            "legality_refuse",
-            "response:legality_refuse",
-            0.9,
-        ),
+        LegalityDisposition::Refuse => ("legality_refuse", "response:legality_refuse", 0.9),
         LegalityDisposition::Warn => ("legality_warn", "response:legality_warn", 0.7),
     };
     let body = template(intent, &values);

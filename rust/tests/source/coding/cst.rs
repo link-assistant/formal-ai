@@ -234,11 +234,10 @@ pub fn try_compose_and_validate(
                 "cst render legs read only the network serialization dialect of lino: {error}"
             ),
         })?;
-    let cst = parse_program_cst(language_slug, &rendered).ok_or_else(|| {
-        ComposeGap::SyntaxInvalid {
+    let cst =
+        parse_program_cst(language_slug, &rendered).ok_or_else(|| ComposeGap::SyntaxInvalid {
             language_slug: language_slug.to_owned(),
-        }
-    })?;
+        })?;
     if !cst.is_valid() {
         return Err(ComposeGap::SyntaxInvalid {
             language_slug: language_slug.to_owned(),
@@ -247,11 +246,10 @@ pub fn try_compose_and_validate(
     // R6: the parsed network equals the composed one. The rendered source is
     // serialized back and compared byte-for-byte with the input wire, so any
     // structure the render lost or invented refuses the composition by name.
-    let round_trip = network_lino(language_slug, &rendered).ok_or_else(|| {
-        ComposeGap::SyntaxInvalid {
+    let round_trip =
+        network_lino(language_slug, &rendered).ok_or_else(|| ComposeGap::SyntaxInvalid {
             language_slug: language_slug.to_owned(),
-        }
-    })?;
+        })?;
     if round_trip != network_text {
         return Err(ComposeGap::NotCstEqual {
             language_slug: language_slug.to_owned(),

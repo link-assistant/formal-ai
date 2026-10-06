@@ -7,7 +7,6 @@
 //! the configured Sentry server; this is not a promise of network anonymity.
 
 use serde_json::json;
-use sha2::{Digest, Sha256};
 use std::io::Write;
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -133,10 +132,7 @@ impl Telemetry {
             .duration_since(UNIX_EPOCH)
             .map_err(|_| TelemetryError::Clock)?;
         let nonce = NEXT_EVENT.fetch_add(1, Ordering::Relaxed);
-        let hash = format!(
-            "{:x}",
-            Sha256::digest(format!("{}:{nonce}", now.as_nanos()).as_bytes())
-        );
+        let hash = crate::source_fetch::sha256_hex(format!("{}:{nonce}", now.as_nanos()).as_bytes());
         let event_id = hash[..32].to_owned();
         let payload = json!({
             "event_id": event_id,

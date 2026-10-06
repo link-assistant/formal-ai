@@ -82,10 +82,16 @@ impl ObligationKind {
 /// when it is *quoted*, so no command line can pick these up by accident.
 const PRINT_VERB_FALLBACK: &[(&str, &[&str])] = &[
     ("en", &["print", "prints", "write", "writes", "output"]),
-    ("ru", &["выведи", "вывод", "напечатай", "напиши", "печатать"]),
+    (
+        "ru",
+        &["выведи", "вывод", "напечатай", "напиши", "печатать"],
+    ),
     ("hi", &["छापो", "छाप", "प्रिंट", "आउटपुट", "लिखो"]),
     ("zh", &["打印", "输出", "打印出"]),
-    ("es", &["imprime", "imprimir", "escribe", "escribir", "salida"]),
+    (
+        "es",
+        &["imprime", "imprimir", "escribe", "escribir", "salida"],
+    ),
 ];
 
 /// Code-style clause vocabulary, pending a seed meaning for style demands.
@@ -133,7 +139,15 @@ const FILE_NAMING_MARKERS: &[&str] = &[
 ];
 
 /// CI-badge clause phrases.
-const CI_BADGE_MARKERS: &[&str] = &["badge", "значок", "бейдж", "escudo", "insignia", "प्रतीक", "徽章"];
+const CI_BADGE_MARKERS: &[&str] = &[
+    "badge",
+    "значок",
+    "бейдж",
+    "escudo",
+    "insignia",
+    "प्रतीक",
+    "徽章",
+];
 
 /// The formalized request: ledger nodes plus their classifications.
 ///
@@ -164,11 +178,8 @@ impl ObligationGraph {
     /// Distinct kinds present, in declaration order.
     #[must_use]
     pub fn obligation_kinds(&self) -> Vec<ObligationKind> {
-        let mut kinds: Vec<ObligationKind> = self
-            .classifications
-            .iter()
-            .map(|(_, kind)| *kind)
-            .collect();
+        let mut kinds: Vec<ObligationKind> =
+            self.classifications.iter().map(|(_, kind)| *kind).collect();
         kinds.sort_unstable();
         kinds.dedup();
         kinds
@@ -234,9 +245,7 @@ impl ObligationGraph {
     pub fn underivable(&self) -> Vec<&ObligationNode> {
         self.nodes
             .iter()
-            .filter(|node| {
-                matches!(node.expectation, ObligationExpectation::Underivable { .. })
-            })
+            .filter(|node| matches!(node.expectation, ObligationExpectation::Underivable { .. }))
             .collect()
     }
 
@@ -353,13 +362,13 @@ pub fn coreference_pass(graph: ObligationGraph) -> ObligationGraph {
     let kind_of = |node_id: &str| {
         classifications
             .iter()
-            .find(|(id, kind)| id == node_id)
+            .find(|(id, _kind)| id == node_id)
             .map(|(_, kind)| *kind)
     };
     let literal_of = |node_id: &str| {
         literal_by_node
             .iter()
-            .find(|(id, value)| id == node_id)
+            .find(|(id, _value)| id == node_id)
             .map(|(_, value)| value.clone())
     };
 
@@ -379,9 +388,7 @@ pub fn coreference_pass(graph: ObligationGraph) -> ObligationGraph {
             // coreference of this node is the node that carries the value.
             continue;
         }
-        if is_output
-            && let Some(value) = &literal
-        {
+        if is_output && let Some(value) = &literal {
             seen_literals.push(value.clone());
         }
         kept_classifications.extend(
@@ -469,10 +476,16 @@ fn classify_clause(clause: &str) -> Option<(ObligationKind, Option<String>)> {
     {
         return Some((ObligationKind::ProgramFile, None));
     }
-    if CODE_STYLE_MARKERS.iter().any(|marker| lower.contains(marker)) {
+    if CODE_STYLE_MARKERS
+        .iter()
+        .any(|marker| lower.contains(marker))
+    {
         return Some((ObligationKind::CodeStyle, None));
     }
-    if FILE_NAMING_MARKERS.iter().any(|marker| lower.contains(marker)) {
+    if FILE_NAMING_MARKERS
+        .iter()
+        .any(|marker| lower.contains(marker))
+    {
         return Some((ObligationKind::FileNaming, None));
     }
     if CI_BADGE_MARKERS.iter().any(|marker| lower.contains(marker)) {

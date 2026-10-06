@@ -12,7 +12,6 @@ use crate::event_log::EventLog;
 use crate::legality_warning::handle_legality_warning;
 use crate::number_constraints::solve_number_constraints;
 use crate::proof_engine::ProofRenderConfig;
-use crate::triz_solver::handle_triz;
 use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handler_how::{
     try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
@@ -20,12 +19,12 @@ use crate::solver_handler_how::{
 use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    SelfAwarenessRuntime, handle_advice_request, handle_brainstorm_request,
-    handle_creative_writing_request, handle_formalization_request, handle_planning_request,
-    handle_product_search, handle_code_debugging, handle_code_explanation,
-    handle_code_refactoring, handle_code_review, handle_format_conversion,
-    handle_regex_synthesis, handle_shell_command_compose, handle_sql_synthesis,
-    handle_statistics, handle_summarization_request, handle_test_generation, handle_text_rewrite,
+    SelfAwarenessRuntime, handle_advice_request, handle_brainstorm_request, handle_code_debugging,
+    handle_code_explanation, handle_code_refactoring, handle_code_review,
+    handle_creative_writing_request, handle_formalization_request, handle_format_conversion,
+    handle_planning_request, handle_product_search, handle_regex_synthesis,
+    handle_shell_command_compose, handle_sql_synthesis, handle_statistics,
+    handle_summarization_request, handle_test_generation, handle_text_rewrite,
     handle_unit_conversion, handle_word_problem, try_algorithm, try_arithmetic,
     try_brainstorming_request, try_calendar_create_event, try_calendar_reasoning,
     try_compound_interest, try_concept_lookup, try_conversation_memory,
@@ -44,6 +43,7 @@ use crate::solver_handlers::{
     try_verifiable_task, try_web_search, try_web_search_with_offline, try_world_state,
     try_write_script,
 };
+use crate::triz_solver::handle_triz;
 
 /// Uniform signature every specialized handler conforms to. Handlers that
 /// don't need `normalized` go through tiny adapter wrappers below so the
@@ -207,15 +207,13 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline
-                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
         ),
         "web_search" => try_web_search_with_offline(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline
-                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
         ),
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
@@ -257,8 +255,7 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline
-                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
         ),
         _ => return ContextualOutcome::NotHandled,
     };

@@ -51,8 +51,9 @@ fn contributing_states_the_rule() {
         "CONTRIBUTING.md carries the #1090 section"
     );
     assert!(
-        contributing
-            .contains("No new manual-confirmation ledger may be introduced until an existing one is complete"),
+        contributing.contains(
+            "No new manual-confirmation ledger may be introduced until an existing one is complete"
+        ),
         "the rule is the literal one the issue prescribed"
     );
 }
@@ -75,7 +76,10 @@ fn the_generated_manifest_carries_the_decision() {
         let body = fs::read_to_string(entry.path()).unwrap_or_default();
         rows += body.lines().filter(|line| line.contains("manual ")).count();
     }
-    assert!(rows > 1_000, "every requirement keeps its manual row ({rows})");
+    assert!(
+        rows > 1_000,
+        "every requirement keeps its manual row ({rows})"
+    );
 }
 
 #[test]

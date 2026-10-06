@@ -166,18 +166,15 @@ impl ResearchDocument {
                     return Err(ArtifactError::PdfRequiresUnicodeFonts);
                 }
                 if lines.len() > 28
-                    || lines
-                        .iter()
-                        .enumerate()
-                        .any(|(index, line)| {
-                            // The upstream PDF profile emits one unwrapped text
-                            // run per block. Estimate Helvetica's standard
-                            // character widths to keep each block in the page's
-                            // 468 point line area, including the larger title.
-                            let font_size = if index == 0 { 24 } else { 12 };
-                            pdf_text_width_units(line) * font_size > 468_000
-                                || line.contains(['\n', '\r'])
-                        })
+                    || lines.iter().enumerate().any(|(index, line)| {
+                        // The upstream PDF profile emits one unwrapped text
+                        // run per block. Estimate Helvetica's standard
+                        // character widths to keep each block in the page's
+                        // 468 point line area, including the larger title.
+                        let font_size = if index == 0 { 24 } else { 12 };
+                        pdf_text_width_units(line) * font_size > 468_000
+                            || line.contains(['\n', '\r'])
+                    })
                 {
                     return Err(ArtifactError::PdfRequiresPagination);
                 }

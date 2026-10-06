@@ -32,7 +32,9 @@ fn read(relative: &str) -> String {
 /// The rows of the document's class table: one vector of trimmed cells per
 /// row, in document order.
 fn table_rows(document: &str) -> Vec<Vec<String>> {
-    let mut lines = document.lines().skip_while(|line| !line.starts_with("| Task class |"));
+    let mut lines = document
+        .lines()
+        .skip_while(|line| !line.starts_with("| Task class |"));
     lines.next(); // the header row
     let separator = lines.next().expect("a separator row after the header");
     assert!(
@@ -124,7 +126,11 @@ fn every_row_has_seven_non_empty_columns() {
             class_id(row)
         );
         for (column, cell) in row.iter().enumerate() {
-            assert!(!cell.is_empty(), "row {} column {column} is empty", index + 1);
+            assert!(
+                !cell.is_empty(),
+                "row {} column {column} is empty",
+                index + 1
+            );
         }
     }
 }
@@ -272,8 +278,7 @@ fn generated_header_names_the_generator_and_its_input() {
     );
     let input = lines.next().expect("an input line");
     assert_eq!(
-        input,
-        "Input: `data/meta/llm-task-classes.lino`",
+        input, "Input: `data/meta/llm-task-classes.lino`",
         "the generated document names its data-owned input"
     );
 }

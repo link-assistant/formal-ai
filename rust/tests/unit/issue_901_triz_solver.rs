@@ -11,9 +11,7 @@
 //! entry in rust/src/triz_solver.rs.
 
 use formal_ai::event_log::EventLog;
-use formal_ai::triz_solver::{
-    handle_triz, triz_benchmark_tasks, triz_families,
-};
+use formal_ai::triz_solver::{handle_triz, triz_benchmark_tasks, triz_families};
 use formal_ai::web_engine_core::normalize_prompt;
 
 /// The handler answer for a raw prompt.
@@ -26,20 +24,37 @@ fn the_seed_carries_twelve_families_and_twenty_benchmark_tasks() {
     let families = triz_families();
     assert!(families.len() >= 12, "got {}", families.len());
     // The two shapes #901 names explicitly must be present.
-    assert!(families.iter().any(|family| family.method_id == "family_range_selection"));
-    assert!(families.iter().any(|family| family.method_id == "family_dimension_change"));
+    assert!(
+        families
+            .iter()
+            .any(|family| family.method_id == "family_range_selection")
+    );
+    assert!(
+        families
+            .iter()
+            .any(|family| family.method_id == "family_dimension_change")
+    );
     let tasks = triz_benchmark_tasks();
     assert_eq!(tasks.len(), 20, "the top-20 corpus");
     for task in &tasks {
-        assert!(!task.contradiction.is_empty(), "{} states its contradiction", task.task_id);
-        assert!(!task.methods.is_empty(), "{} names its methods", task.task_id);
+        assert!(
+            !task.contradiction.is_empty(),
+            "{} states its contradiction",
+            task.task_id
+        );
+        assert!(
+            !task.methods.is_empty(),
+            "{} names its methods",
+            task.task_id
+        );
     }
 }
 
 #[test]
 fn a_russian_contradiction_prompt_gets_the_family_map() {
-    let answer = handled("Как разрешить противоречие: деталь должна быть жёсткой и одновременно гибкой?")
-        .expect("a contradiction question must be handled");
+    let answer =
+        handled("Как разрешить противоречие: деталь должна быть жёсткой и одновременно гибкой?")
+            .expect("a contradiction question must be handled");
     assert_eq!(answer.intent, "triz_resolution");
     assert!(
         answer.answer.contains("Range selection") && answer.answer.contains("Dimension change"),

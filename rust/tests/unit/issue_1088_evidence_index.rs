@@ -49,7 +49,9 @@ fn parse_groups(source: &str) -> Vec<Group> {
             });
             continue;
         }
-        let Some(group) = current.as_mut() else { continue };
+        let Some(group) = current.as_mut() else {
+            continue;
+        };
         let Some((field, value)) = trimmed.split_once(' ') else {
             continue;
         };
@@ -79,14 +81,19 @@ fn the_index_carries_resolvable_measured_groups() {
         assert!(group.files > 0, "a group with no files is a stale row");
         assert!(
             group.sha256.len() >= 16
-                && group.sha256.chars().all(|character| character.is_ascii_hexdigit()),
+                && group
+                    .sha256
+                    .chars()
+                    .all(|character| character.is_ascii_hexdigit()),
             "each group carries a hex sha256 aggregate, got {:?}",
             group.sha256
         );
         assert!(
             !group.url.is_empty()
                 && (group.url == "pending-move"
-                    || group.url.starts_with("https://github.com/link-assistant/formal-ai-evidence/")),
+                    || group
+                        .url
+                        .starts_with("https://github.com/link-assistant/formal-ai-evidence/")),
             "a URL is either the honest pending-move marker or the evidence repository, got {:?}",
             group.url
         );

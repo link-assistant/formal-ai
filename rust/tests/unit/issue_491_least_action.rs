@@ -12,8 +12,8 @@
 //! rust/src/least_action.rs.
 
 use formal_ai::least_action::{
-    least_action_plan, least_action_solution, plan, rank_by_least_action, ActionCost,
-    SolutionCandidate, Subtask,
+    ActionCost, SolutionCandidate, Subtask, least_action_plan, least_action_solution, plan,
+    rank_by_least_action,
 };
 
 fn subtask(title: &str, atomic: bool, steps: u32) -> Subtask {
@@ -80,7 +80,11 @@ fn a_plan_with_fewer_smallest_subtasks_is_less_action() {
     let coarse = plan(&coarse);
     let a = plan(&refined_a);
     let b = plan(&refined_b);
-    assert_eq!(least_action_plan(&coarse, &a), None, "different subtask counts do not compare");
+    assert_eq!(
+        least_action_plan(&coarse, &a),
+        None,
+        "different subtask counts do not compare"
+    );
     assert_eq!(least_action_plan(&a, &b).map(|p| p.planned_steps), Some(12));
     // Equal count, equal steps: fewer unhandled paths wins.
     let open: Vec<Subtask> = (0..6)
@@ -94,7 +98,10 @@ fn a_plan_with_fewer_smallest_subtasks_is_less_action() {
     // Both cost 6 planned steps (3×2 vs 1×2? no: open costs 3×2=6,
     // more_open costs 1×2=2 — so more_open has fewer planned steps and
     // wins on the primary rule, unhandled only breaks exact ties).
-    assert_eq!(least_action_plan(&open, &more_open).map(|p| p.unhandled.len()), Some(5));
+    assert_eq!(
+        least_action_plan(&open, &more_open).map(|p| p.unhandled.len()),
+        Some(5)
+    );
 }
 
 #[test]
@@ -103,22 +110,41 @@ fn solutions_rank_by_least_action_steps_first() {
         candidate(
             "fast",
             true,
-            ActionCost { steps: 3, code_units: 90, compute_ms: 900, memory_kb: 40 },
+            ActionCost {
+                steps: 3,
+                code_units: 90,
+                compute_ms: 900,
+                memory_kb: 40,
+            },
         ),
         candidate(
             "small",
             true,
-            ActionCost { steps: 5, code_units: 10, compute_ms: 10, memory_kb: 1 },
+            ActionCost {
+                steps: 5,
+                code_units: 10,
+                compute_ms: 10,
+                memory_kb: 1,
+            },
         ),
         candidate(
             "slow",
             true,
-            ActionCost { steps: 7, code_units: 50, compute_ms: 500, memory_kb: 5 },
+            ActionCost {
+                steps: 7,
+                code_units: 50,
+                compute_ms: 500,
+                memory_kb: 5,
+            },
         ),
     ];
     let ranked = rank_by_least_action(&candidates);
     let ids: Vec<&str> = ranked.iter().map(|c| c.id.as_str()).collect();
-    assert_eq!(ids, vec!["fast", "small", "slow"], "steps dominate every other dimension");
+    assert_eq!(
+        ids,
+        vec!["fast", "small", "slow"],
+        "steps dominate every other dimension"
+    );
     assert_eq!(least_action_solution(&candidates).unwrap().id, "fast");
 }
 
@@ -128,15 +154,28 @@ fn a_millisecond_saved_by_an_extra_step_still_loses() {
         candidate(
             "fewer_steps",
             true,
-            ActionCost { steps: 2, code_units: 40, compute_ms: 900, memory_kb: 9 },
+            ActionCost {
+                steps: 2,
+                code_units: 40,
+                compute_ms: 900,
+                memory_kb: 9,
+            },
         ),
         candidate(
             "fewer_ms",
             true,
-            ActionCost { steps: 3, code_units: 40, compute_ms: 1, memory_kb: 1 },
+            ActionCost {
+                steps: 3,
+                code_units: 40,
+                compute_ms: 1,
+                memory_kb: 1,
+            },
         ),
     ];
-    assert_eq!(least_action_solution(&candidates).unwrap().id, "fewer_steps");
+    assert_eq!(
+        least_action_solution(&candidates).unwrap().id,
+        "fewer_steps"
+    );
 }
 
 #[test]
@@ -145,22 +184,41 @@ fn the_shortest_code_that_fails_the_input_range_never_ranks() {
         candidate(
             "short_but_narrow",
             false,
-            ActionCost { steps: 1, code_units: 1, compute_ms: 1, memory_kb: 1 },
+            ActionCost {
+                steps: 1,
+                code_units: 1,
+                compute_ms: 1,
+                memory_kb: 1,
+            },
         ),
         candidate(
             "covers_all_inputs",
             true,
-            ActionCost { steps: 6, code_units: 60, compute_ms: 60, memory_kb: 6 },
+            ActionCost {
+                steps: 6,
+                code_units: 60,
+                compute_ms: 60,
+                memory_kb: 6,
+            },
         ),
     ];
     let ranked = rank_by_least_action(&candidates);
-    assert_eq!(ranked.len(), 1, "only entire-range solutions are candidates");
+    assert_eq!(
+        ranked.len(),
+        1,
+        "only entire-range solutions are candidates"
+    );
     assert_eq!(ranked[0].id, "covers_all_inputs");
 }
 
 #[test]
 fn equal_costs_break_stably_by_id() {
-    let cost = ActionCost { steps: 4, code_units: 4, compute_ms: 4, memory_kb: 4 };
+    let cost = ActionCost {
+        steps: 4,
+        code_units: 4,
+        compute_ms: 4,
+        memory_kb: 4,
+    };
     let candidates = vec![candidate("b", true, cost), candidate("a", true, cost)];
     let ids: Vec<&str> = rank_by_least_action(&candidates)
         .iter()

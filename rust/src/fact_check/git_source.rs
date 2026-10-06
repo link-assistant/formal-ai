@@ -82,11 +82,7 @@ pub fn git_log_for_path(root: &Path, path: &str) -> Vec<GitHistoryEntry> {
 /// Walks the bounded log and shows each historical revision of the file;
 /// binary-sized or unreadable revisions are skipped rather than guessed at.
 #[must_use]
-pub fn last_revision_containing(
-    root: &Path,
-    path: &str,
-    needle: &str,
-) -> Option<GitHistoryEntry> {
+pub fn last_revision_containing(root: &Path, path: &str, needle: &str) -> Option<GitHistoryEntry> {
     for entry in git_log_for_path(root, path) {
         if revision_contains(root, &entry.commit, path, needle) {
             return Some(entry);

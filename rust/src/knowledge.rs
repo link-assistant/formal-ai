@@ -43,7 +43,8 @@
 //! once every language row they covered is reproduced by a rediscovery run.
 
 /// The cache policy seed that governs the bootstrap tier (issue #1165).
-const PROCEDURE_CACHE_POLICY: &str = include_str!("../embedded/data/seed/program-cache-policy.lino");
+const PROCEDURE_CACHE_POLICY: &str =
+    include_str!("../embedded/data/seed/program-cache-policy.lino");
 
 /// Whether the embedded snapshot bootstrap still fronts the rediscoverable
 /// procedure cache.

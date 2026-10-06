@@ -12,8 +12,8 @@
 
 use formal_ai::event_log::EventLog;
 use formal_ai::small_model_fallback::{
-    catalog, confirm_proposal, download_manifest, eligible, propose_best_match, recommend,
-    FormalizationCandidate, SmallModelOptions,
+    FormalizationCandidate, SmallModelOptions, catalog, confirm_proposal, download_manifest,
+    eligible, propose_best_match, recommend,
 };
 
 fn grounded_options() -> Vec<FormalizationCandidate> {
@@ -67,16 +67,26 @@ fn only_hardware_fitting_models_are_shown_sorted_by_public_rating() {
     sorted.sort_unstable_by(|a, b| b.cmp(a));
     assert_eq!(ratings, sorted, "best public rating first");
     // The best-rated fitting model is the recommendation.
-    assert_eq!(recommend(&options).map(|model| model.rating), Some(ratings[0]));
+    assert_eq!(
+        recommend(&options).map(|model| model.rating),
+        Some(ratings[0])
+    );
 }
 
 #[test]
 fn nothing_is_packaged_or_downloaded_in_advance() {
     for model in catalog() {
-        assert!(!model.packaged, "{} must not ship in the package or web UI", model.model_id);
+        assert!(
+            !model.packaged,
+            "{} must not ship in the package or web UI",
+            model.model_id
+        );
         let manifest = download_manifest(&model);
         assert_eq!(manifest.model_id, model.model_id);
-        assert!(manifest.disk_required_mb > 0, "an on-demand download has a stated size");
+        assert!(
+            manifest.disk_required_mb > 0,
+            "an on-demand download has a stated size"
+        );
     }
 }
 
@@ -86,11 +96,16 @@ fn the_model_selects_the_best_match_from_offered_options() {
     let mut log = EventLog::new();
     let proposal = propose_best_match(&options, "metre", &grounded_options(), &mut log)
         .expect("an enabled, fitting model picks from the options");
-    assert_eq!(proposal.candidate_index, 1, "the metre (Q11573) option wins for 'metre'");
+    assert_eq!(
+        proposal.candidate_index, 1,
+        "the metre (Q11573) option wins for 'metre'"
+    );
     assert!(proposal.confidence > 0.0);
     assert!(log.first_of("small_model:proposal").is_some());
     assert!(
-        log.first_of("small_model:candidate").map(|e| e.payload.as_str()) == Some("Q11573"),
+        log.first_of("small_model:candidate")
+            .map(|e| e.payload.as_str())
+            == Some("Q11573"),
         "the chosen Q-id is logged"
     );
 }
@@ -101,9 +116,18 @@ fn the_proposal_is_advisory_and_the_formal_rules_hold_the_pen() {
     let mut log = EventLog::new();
     let proposal = propose_best_match(&options, "metre", &grounded_options(), &mut log)
         .expect("proposal exists");
-    assert!(proposal.is_advisory(), "LLMs are never at the steering wheel");
-    assert!(!confirm_proposal(&proposal, false), "rules disagree: the model cannot commit");
-    assert!(confirm_proposal(&proposal, true), "rules agree: the match is confirmed");
+    assert!(
+        proposal.is_advisory(),
+        "LLMs are never at the steering wheel"
+    );
+    assert!(
+        !confirm_proposal(&proposal, false),
+        "rules disagree: the model cannot commit"
+    );
+    assert!(
+        confirm_proposal(&proposal, true),
+        "rules agree: the match is confirmed"
+    );
 }
 
 #[test]

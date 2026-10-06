@@ -46,7 +46,10 @@ fn reported_meeting_prompt_is_not_the_unknown_fallback() {
 #[test]
 fn reported_meeting_prompt_names_participant_time_and_zone() {
     let answer = solved("Назначь мне встречу с Александром на 20:00 по Грузии");
-    assert!(answer.contains("Александр"), "participant must be named: {answer}");
+    assert!(
+        answer.contains("Александр"),
+        "participant must be named: {answer}"
+    );
     assert!(
         answer.contains("20:00") || answer.contains("20 00"),
         "the wall-clock time must survive into the answer: {answer}"

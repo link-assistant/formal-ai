@@ -78,7 +78,7 @@ fn program_command_intent(prompt: &str, arguments: &str) -> Option<&'static str>
     crate::coding::program_task_by_alias(&normalized)?;
     let language = crate::coding::program_language_by_alias(&normalized)?;
     let command = super::tool_result::command_argument(arguments)?;
-    if language.execution.check_command == Some(command) {
+    if language.execution.check_command == Some(command.as_str()) {
         Some("agentic_action_compile_program")
     } else if language.execution.run_command == command {
         Some("agentic_action_run_program")

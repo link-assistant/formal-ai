@@ -208,11 +208,12 @@ fn network_lino_serializes_and_compose_and_validate_round_trips() {
         let wire = network_lino(slug, source)
             .unwrap_or_else(|| panic!("`{slug}` must serialize to network lino"));
         assert!(!wire.is_empty(), "`{slug}` wire is not empty");
-        let cst = compose_and_validate(&wire, slug)
-            .unwrap_or_else(|| panic!("`{slug}` must compose, render and re-validate: {}", {
+        let cst = compose_and_validate(&wire, slug).unwrap_or_else(|| {
+            panic!("`{slug}` must compose, render and re-validate: {}", {
                 let gap = try_compose_and_validate(&wire, slug);
                 format!("{gap:?}")
-            }));
+            })
+        });
         assert!(cst.is_valid(), "`{slug}`: {cst:#?}");
         assert_eq!(cst.language_slug, slug);
     }

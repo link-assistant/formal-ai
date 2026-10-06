@@ -243,17 +243,14 @@ fn try_compose_and_validate_impl(
     network_text: &str,
     language_slug: &str,
 ) -> Result<ProgramCst, ComposeGap> {
-    let rendered =
-        crate::meta_translate::try_render_cst_source(network_text, language_slug).map_err(
-            |gap| ComposeGap::Render {
-                reason: gap.describe(),
-            },
-        )?;
-    let cst = parse_program_cst(language_slug, &rendered).ok_or_else(|| {
-        ComposeGap::SyntaxInvalid {
+    let rendered = crate::meta_translate::try_render_cst_source(network_text, language_slug)
+        .map_err(|gap| ComposeGap::Render {
+            reason: gap.describe(),
+        })?;
+    let cst =
+        parse_program_cst(language_slug, &rendered).ok_or_else(|| ComposeGap::SyntaxInvalid {
             language_slug: language_slug.to_owned(),
-        }
-    })?;
+        })?;
     if !cst.is_valid() {
         return Err(ComposeGap::SyntaxInvalid {
             language_slug: language_slug.to_owned(),
@@ -262,11 +259,10 @@ fn try_compose_and_validate_impl(
     // R6: the parsed network equals the composed one. The rendered source is
     // serialized back and compared byte-for-byte with the input wire, so any
     // structure the render lost or invented refuses the composition by name.
-    let round_trip = network_lino(language_slug, &rendered).ok_or_else(|| {
-        ComposeGap::SyntaxInvalid {
+    let round_trip =
+        network_lino(language_slug, &rendered).ok_or_else(|| ComposeGap::SyntaxInvalid {
             language_slug: language_slug.to_owned(),
-        }
-    })?;
+        })?;
     if round_trip != network_text {
         return Err(ComposeGap::NotCstEqual {
             language_slug: language_slug.to_owned(),

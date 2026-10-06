@@ -18,8 +18,8 @@
 
 use formal_ai::event_log::EventLog;
 use formal_ai::si_units::{
-    base_dimensions, convert_through_si, note_unknown_unit, si_units, unit_named_by, Dimension,
-    SiConversion, BASE_SYMBOLS,
+    BASE_SYMBOLS, Dimension, SiConversion, base_dimensions, convert_through_si, note_unknown_unit,
+    si_units, unit_named_by,
 };
 
 /// Assert a conversion equals an expected value within 1e-9 (the seed's
@@ -78,7 +78,10 @@ fn every_dimension_in_the_table_parses_and_round_trips() {
 fn dimension_algebra_holds_for_products_and_inverses() {
     let speed = Dimension::parse("LT-1").unwrap();
     let time = Dimension::parse("T").unwrap();
-    assert_eq!(speed.multiply(&time).unwrap(), Dimension::parse("L").unwrap());
+    assert_eq!(
+        speed.multiply(&time).unwrap(),
+        Dimension::parse("L").unwrap()
+    );
     assert_eq!(
         time.inverse().unwrap(),
         Dimension::parse("T-1").unwrap(),
@@ -170,7 +173,13 @@ fn exact_conversions_stay_rational() {
         }
     );
     let outcome = convert_through_si(90, 1, "kilometer_per_hour", "meter_per_second");
-    assert_eq!(outcome, SiConversion::Converted { value_num: 25, value_den: 1 });
+    assert_eq!(
+        outcome,
+        SiConversion::Converted {
+            value_num: 25,
+            value_den: 1
+        }
+    );
 }
 
 #[test]
@@ -188,7 +197,11 @@ fn incompatible_dimensions_fail_instead_of_fabricating_a_number() {
         convert_through_si(1, 1, "joule", "watt"),
         SiConversion::Incompatible { .. }
     ));
-    assert!(convert_through_si(5, 1, "meter", "second").as_f64().is_none());
+    assert!(
+        convert_through_si(5, 1, "meter", "second")
+            .as_f64()
+            .is_none()
+    );
 }
 
 #[test]
@@ -198,7 +211,8 @@ fn unknown_units_are_named_gaps_and_log_events() {
     let mut log = EventLog::new();
     note_unknown_unit(&mut log, "furlong");
     assert_eq!(
-        log.first_of("si_units:unknown_unit").map(|event| event.payload.as_str()),
+        log.first_of("si_units:unknown_unit")
+            .map(|event| event.payload.as_str()),
         Some("furlong"),
         "the gap must be a named event, not silence"
     );
@@ -256,13 +270,34 @@ fn surfaces_in_four_languages_resolve_to_canonical_units() {
 #[test]
 fn multilingual_prompts_resolve_and_convert() {
     let cases: [(&str, i128, &str, &str, f64); 4] = [
-        ("Сколько метров в 5 километрах?", 5, "километрах", "метров", 5000.0),
-        ("How many watts is 3 horsepower?", 3, "horsepower", "watts", 3.0 * 745.699872),
-        ("5 मील कितने किलोमीटर हैं?", 5, "मील", "किलोमीटर", 5.0 * 1609.344 / 1000.0),
+        (
+            "Сколько метров в 5 километрах?",
+            5,
+            "километрах",
+            "метров",
+            5000.0,
+        ),
+        (
+            "How many watts is 3 horsepower?",
+            3,
+            "horsepower",
+            "watts",
+            3.0 * 745.699872,
+        ),
+        (
+            "5 मील कितने किलोमीटर हैं?",
+            5,
+            "मील",
+            "किलोमीटर",
+            5.0 * 1609.344 / 1000.0,
+        ),
         ("3 马力是多少瓦?", 3, "马力", "瓦", 3.0 * 745.699872),
     ];
     for (prompt, value, from_surface, to_surface, expected) in cases {
-        assert!(prompt.contains(from_surface), "case surface must occur in its prompt");
+        assert!(
+            prompt.contains(from_surface),
+            "case surface must occur in its prompt"
+        );
         let from = unit_named_by(from_surface).expect("from surface resolves");
         let to = unit_named_by(to_surface).expect("to surface resolves");
         let outcome = convert_through_si(value, 1, &from, &to);

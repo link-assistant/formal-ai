@@ -41,9 +41,7 @@ fn interface_complaint_gets_a_seeded_unknown_opener() {
         "Это для меня новое.",
     ];
     assert!(
-        seeded_openers
-            .iter()
-            .any(|opener| answer.contains(opener)),
+        seeded_openers.iter().any(|opener| answer.contains(opener)),
         "the complaint must be answered by a seeded ru opener, not a Rust literal: {answer}"
     );
 }

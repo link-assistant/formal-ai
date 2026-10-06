@@ -1,8 +1,8 @@
 //! Durable history storage and incremental watermarks (issue #1180).
 
-use super::*;
 use super::commits::run_git;
 use super::github::import_issues_and_pulls_inner;
+use super::*;
 
 /// Append `events` to the store at `store_path`, skipping ids already
 /// present, and return how many were appended.
@@ -19,7 +19,11 @@ pub fn write_repository_history(
         RepositoryHistoryImportError::with_detail("memory_store_io", format!("{error}"))
     };
     let mut store = crate::memory::MemoryStore::load_from_file(store_path).map_err(io)?;
-    let existing: BTreeSet<String> = store.events().iter().map(|event| event.id.clone()).collect();
+    let existing: BTreeSet<String> = store
+        .events()
+        .iter()
+        .map(|event| event.id.clone())
+        .collect();
     let mut appended = 0;
     for event in events {
         if existing.contains(&event.id) {
@@ -97,12 +101,8 @@ impl RepositoryHistoryCursor {
     /// and run ids take the maximum.
     pub fn advance(&mut self, events: &[MemoryEvent], rules: &HistoryRules) {
         let defaults = HistoryRules::defaults();
-        let (Some(commit), Some(ci)) = (
-            effective_record(rules, "commit", &defaults),
-            effective_record(rules, "ci_run", &defaults),
-        ) else {
-            return;
-        };
+        let commit = effective_record(rules, "commit", &defaults);
+        let ci = effective_record(rules, "ci_run", &defaults);
         for event in events {
             let kind = event.kind.as_deref();
             if kind == Some(commit.kind.as_str()) {
@@ -116,7 +116,8 @@ impl RepositoryHistoryCursor {
                     .and_then(|number| number.parse::<u64>().ok())
                 {
                     self.last_ci_run_database_id = Some(
-                        self.last_ci_run_database_id.map_or(number, |current| current.max(number)),
+                        self.last_ci_run_database_id
+                            .map_or(number, |current| current.max(number)),
                     );
                 }
             }
@@ -149,7 +150,11 @@ pub fn repository_slug(repo_root: &Path) -> String {
         .filter(|segment| !segment.is_empty())
         .collect();
     if segments.len() >= 2 {
-        return format!("{}-{}", segments[segments.len() - 2], segments[segments.len() - 1]);
+        return format!(
+            "{}-{}",
+            segments[segments.len() - 2],
+            segments[segments.len() - 1]
+        );
     }
     String::from("local-repository")
 }

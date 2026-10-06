@@ -101,7 +101,7 @@ impl Catalogue {
             cues: Vec::new(),
         };
         for record in root.children.iter() {
-            match record.name {
+            match record.name.as_str() {
                 "marketplace" => {
                     let name = record.id.clone();
                     if name.is_empty() {

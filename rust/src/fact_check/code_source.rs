@@ -60,7 +60,9 @@ pub fn parse_code_query(text: &str) -> Option<CodeQuery> {
         }),
         "symbol_exists_at_path" => {
             let spans = backticked_spans(text);
-            let path = spans.iter().find(|span| span.contains('/') && span.contains('.'))?;
+            let path = spans
+                .iter()
+                .find(|span| span.contains('/') && span.contains('.'))?;
             let symbol = spans
                 .iter()
                 .find(|span| !span.contains('/') && !span.is_empty())?;
@@ -228,7 +230,11 @@ pub fn code_evidence_for(query: &CodeQuery, root: &Path) -> Vec<RelativeEvidence
             vec![RelativeEvidence::new(
                 format!("code:{path}"),
                 tier,
-                if exists { Stance::Supports } else { Stance::Contradicts },
+                if exists {
+                    Stance::Supports
+                } else {
+                    Stance::Contradicts
+                },
                 TruthValue::new(if exists { 1.0 } else { 0.9 }),
             )]
         }
@@ -297,7 +303,10 @@ fn rust_files(root: &Path) -> Vec<String> {
                     queue.push(path);
                 }
             } else if file_type.is_file()
-                && entry.file_name().to_str().is_some_and(|name| name.ends_with(".rs"))
+                && entry
+                    .file_name()
+                    .to_str()
+                    .is_some_and(|name| name.ends_with(".rs"))
                 && let Ok(relative) = path.strip_prefix(root)
             {
                 files.push(relative.to_string_lossy().replace('\\', "/"));

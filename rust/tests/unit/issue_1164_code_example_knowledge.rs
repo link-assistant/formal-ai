@@ -26,23 +26,28 @@
 use std::collections::BTreeMap;
 
 use formal_ai::code_example_knowledge::{
-    CodePartKind, DecomposeError, ParameterBindings, ProseLink, decomposed_links_notation,
-    decompose_code_node, generalize_examples, generalized_links_notation,
+    CodePartKind, DecomposeError, ParameterBindings, ProseLink, decompose_code_node,
+    decomposed_links_notation, generalize_examples, generalized_links_notation,
     recompose_for_requirement, recomposition_links_notation,
 };
 use formal_ai::web_formalize::{PageBlock, formalize_page_with_context};
 
 const RUST_HELLO: &str = "fn main() {\n    println!(\"Hello, world!\");\n}\n";
-const GO_HELLO: &str = "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}\n";
+const GO_HELLO: &str =
+    "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}\n";
 const KOTLIN_HELLO: &str = "fun main() {\n    println(\"Hello, world!\")\n}\n";
 const SWIFT_HELLO: &str = "print(\"Hello, world!\")\n";
 const PYTHON_HELLO: &str = "print(\"Hello, world!\")\n";
 
-const KOTLIN_PAGE: &str = include_str!("../fixtures/coding-discovery/issue-1164/kotlin-hello-world.html");
-const RUST_PAGE: &str = include_str!("../fixtures/coding-discovery/issue-1164/rust-hello-world.html");
+const KOTLIN_PAGE: &str =
+    include_str!("../fixtures/coding-discovery/issue-1164/kotlin-hello-world.html");
+const RUST_PAGE: &str =
+    include_str!("../fixtures/coding-discovery/issue-1164/rust-hello-world.html");
 const GO_PAGE: &str = include_str!("../fixtures/coding-discovery/issue-1164/go-hello-world.html");
-const SWIFT_PAGE: &str = include_str!("../fixtures/coding-discovery/issue-1164/swift-hello-world.html");
-const SCALA_PAGE: &str = include_str!("../fixtures/coding-discovery/issue-1164/scala-hello-world.html");
+const SWIFT_PAGE: &str =
+    include_str!("../fixtures/coding-discovery/issue-1164/swift-hello-world.html");
+const SCALA_PAGE: &str =
+    include_str!("../fixtures/coding-discovery/issue-1164/scala-hello-world.html");
 
 /// R1164-2: a Rust Hello World decomposes into entry point, output
 /// operation, and string literal parts with real CST node kinds.
@@ -50,12 +55,7 @@ const SCALA_PAGE: &str = include_str!("../fixtures/coding-discovery/issue-1164/s
 fn decompose_rust_hello_world_produces_entry_output_literal() {
     let node = decompose_code_node(RUST_HELLO, "rust", &[]).expect("rust grammar is registered");
     assert_eq!(node.language_slug, "rust");
-    let kinds = |kind: CodePartKind| {
-        node.parts
-            .iter()
-            .filter(|part| part.kind == kind)
-            .count()
-    };
+    let kinds = |kind: CodePartKind| node.parts.iter().filter(|part| part.kind == kind).count();
     assert_eq!(kinds(CodePartKind::EntryPoint), 1);
     assert_eq!(kinds(CodePartKind::OutputOperation), 1);
     assert_eq!(kinds(CodePartKind::StringLiteral), 1);
@@ -85,33 +85,37 @@ fn decompose_rust_hello_world_produces_entry_output_literal() {
 #[test]
 fn decompose_go_hello_world_produces_entry_output_literal() {
     let node = decompose_code_node(GO_HELLO, "go", &[]).expect("go grammar is registered");
-    assert!(node.parts.iter().any(|part| part.kind == CodePartKind::EntryPoint));
-    assert!(node
-        .parts
-        .iter()
-        .any(|part| part.kind == CodePartKind::OutputOperation && part.source_text == "fmt.Println"));
-    assert!(node
-        .parts
-        .iter()
-        .any(|part| part.kind == CodePartKind::StringLiteral && part.source_text == "Hello, world!"));
+    assert!(
+        node.parts
+            .iter()
+            .any(|part| part.kind == CodePartKind::EntryPoint)
+    );
+    assert!(node.parts.iter().any(
+        |part| part.kind == CodePartKind::OutputOperation && part.source_text == "fmt.Println"
+    ));
+    assert!(node.parts.iter().any(
+        |part| part.kind == CodePartKind::StringLiteral && part.source_text == "Hello, world!"
+    ));
 }
 
 /// R1164-2: script languages have no entry point.
 #[test]
 fn decompose_python_script_has_no_entry_point() {
-    let node = decompose_code_node(PYTHON_HELLO, "python", &[]).expect("python grammar is registered");
-    assert!(node
-        .parts
-        .iter()
-        .any(|part| part.kind == CodePartKind::OutputOperation && part.source_text == "print"));
-    assert!(node
-        .parts
-        .iter()
-        .any(|part| part.kind == CodePartKind::StringLiteral && part.source_text == "Hello, world!"));
-    assert!(node
-        .parts
-        .iter()
-        .all(|part| part.kind != CodePartKind::EntryPoint));
+    let node =
+        decompose_code_node(PYTHON_HELLO, "python", &[]).expect("python grammar is registered");
+    assert!(
+        node.parts
+            .iter()
+            .any(|part| part.kind == CodePartKind::OutputOperation && part.source_text == "print")
+    );
+    assert!(node.parts.iter().any(
+        |part| part.kind == CodePartKind::StringLiteral && part.source_text == "Hello, world!"
+    ));
+    assert!(
+        node.parts
+            .iter()
+            .all(|part| part.kind != CodePartKind::EntryPoint)
+    );
 }
 
 /// R1164-1/R1164-9: an unregistered slug is named in the error, never
@@ -120,7 +124,8 @@ fn decompose_python_script_has_no_entry_point() {
 /// answers the need honestly.
 #[test]
 fn unknown_grammar_slug_returns_unknown_grammar_error() {
-    let error = decompose_code_node("print(\"hello\")", "zig", &[]).expect_err("zig has no grammar");
+    let error =
+        decompose_code_node("print(\"hello\")", "zig", &[]).expect_err("zig has no grammar");
     assert_eq!(error, DecomposeError::UnknownGrammar("zig".to_owned()));
     let error = decompose_code_node("program HelloWorld;\nbegin\nend.", "pascal", &[])
         .expect_err("pascal grammar row is not registered yet");
@@ -154,10 +159,11 @@ fn decompose_reads_the_code_block_of_a_captured_page() {
         },
     ];
     let node = decompose_code_node(&code, "kotlin", &prose).expect("kotlin grammar is registered");
-    assert!(node
-        .parts
-        .iter()
-        .any(|part| part.kind == CodePartKind::EntryPoint && part.source_text == "main"));
+    assert!(
+        node.parts
+            .iter()
+            .any(|part| part.kind == CodePartKind::EntryPoint && part.source_text == "main")
+    );
     assert!(node
         .parts
         .iter()
@@ -167,15 +173,24 @@ fn decompose_reads_the_code_block_of_a_captured_page() {
         .iter()
         .find(|part| part.kind == CodePartKind::BuildCommand)
         .expect("build command from prose");
-    assert_eq!(build.source_text, "kotlinc hello.kt -include-runtime -d hello.jar");
-    assert_eq!(build.source_url, "https://kotlinlang.org/docs/command-line.html");
+    assert_eq!(
+        build.source_text,
+        "kotlinc hello.kt -include-runtime -d hello.jar"
+    );
+    assert_eq!(
+        build.source_url,
+        "https://kotlinlang.org/docs/command-line.html"
+    );
     let run = node
         .parts
         .iter()
         .find(|part| part.kind == CodePartKind::RunCommand)
         .expect("run command from prose");
     assert_eq!(run.source_text, "java -jar hello.jar");
-    assert_eq!(run.source_url, "https://kotlinlang.org/docs/command-line.html");
+    assert_eq!(
+        run.source_url,
+        "https://kotlinlang.org/docs/command-line.html"
+    );
 }
 
 /// Every captured fixture decomposes (R1164-2 across languages).
@@ -199,20 +214,28 @@ fn every_captured_fixture_decomposes() {
         let node = decompose_code_node(&code, language, &[])
             .unwrap_or_else(|error| panic!("{language} fixture must decompose: {error:?}"));
         assert!(
-            node.parts.iter().any(|part| part.kind == CodePartKind::OutputOperation && part.source_text == call),
+            node.parts
+                .iter()
+                .any(|part| part.kind == CodePartKind::OutputOperation && part.source_text == call),
             "{language} finds its seed output call"
         );
         assert!(
-            node.parts.iter().any(|part| part.kind == CodePartKind::StringLiteral && part.source_text == "Hello, world!"),
+            node.parts
+                .iter()
+                .any(|part| part.kind == CodePartKind::StringLiteral
+                    && part.source_text == "Hello, world!"),
             "{language} finds the literal"
         );
     }
     // Swift has no entry point at all (the page says so and the seed agrees).
-    let swift = decompose_code_node(SWIFT_HELLO, "swift", &[]).expect("swift grammar is registered");
-    assert!(swift
-        .parts
-        .iter()
-        .all(|part| part.kind != CodePartKind::EntryPoint));
+    let swift =
+        decompose_code_node(SWIFT_HELLO, "swift", &[]).expect("swift grammar is registered");
+    assert!(
+        swift
+            .parts
+            .iter()
+            .all(|part| part.kind != CodePartKind::EntryPoint)
+    );
 }
 
 /// R1164-5: aligning the Rust and Go examples shares the
@@ -227,9 +250,21 @@ fn generalize_rust_and_go_produces_shared_structure_with_literal_parameter() {
     ];
     let procedure = generalize_examples(&examples);
     assert!(procedure.id.starts_with("generalized:"));
-    assert!(procedure.shared_structure.contains(&CodePartKind::EntryPoint));
-    assert!(procedure.shared_structure.contains(&CodePartKind::OutputOperation));
-    assert!(procedure.shared_structure.contains(&CodePartKind::StringLiteral));
+    assert!(
+        procedure
+            .shared_structure
+            .contains(&CodePartKind::EntryPoint)
+    );
+    assert!(
+        procedure
+            .shared_structure
+            .contains(&CodePartKind::OutputOperation)
+    );
+    assert!(
+        procedure
+            .shared_structure
+            .contains(&CodePartKind::StringLiteral)
+    );
     assert!(!procedure.shared_structure.contains(&CodePartKind::Import));
     let literal = procedure
         .parameters
@@ -249,8 +284,14 @@ fn generalize_rust_and_go_produces_shared_structure_with_literal_parameter() {
         .iter()
         .find(|parameter| parameter.name == "output_call")
         .expect("call parameter");
-    assert_eq!(call.per_language.get("rust").map(String::as_str), Some("println!"));
-    assert_eq!(call.per_language.get("go").map(String::as_str), Some("fmt.Println"));
+    assert_eq!(
+        call.per_language.get("rust").map(String::as_str),
+        Some("println!")
+    );
+    assert_eq!(
+        call.per_language.get("go").map(String::as_str),
+        Some("fmt.Println")
+    );
 }
 
 /// R1164-6/R1164-8 (structural half): a held-out literal recomposes into
@@ -264,13 +305,14 @@ fn recompose_with_formal_ai_literal_yields_rust_source() {
     ];
     let procedure = generalize_examples(&examples);
     let mut bindings = BTreeMap::new();
-    bindings.insert(
-        "output_literal".to_owned(),
-        "Hello, Formal AI!".to_owned(),
+    bindings.insert("output_literal".to_owned(), "Hello, Formal AI!".to_owned());
+    let recomposition = recompose_for_requirement(&procedure, &ParameterBindings(bindings), "rust")
+        .expect("rust shape");
+    assert!(
+        recomposition
+            .source
+            .contains("println!(\"Hello, Formal AI!\")")
     );
-    let recomposition =
-        recompose_for_requirement(&procedure, &ParameterBindings(bindings), "rust").expect("rust shape");
-    assert!(recomposition.source.contains("println!(\"Hello, Formal AI!\")"));
     assert!(recomposition.source.contains("fn main()"));
     assert_eq!(recomposition.language_slug, "rust");
     assert!(formal_ai::coding::cst::parse_program_cst("rust", &recomposition.source).is_some());
@@ -286,9 +328,13 @@ fn recompose_with_formal_ai_literal_yields_go_source() {
     let procedure = generalize_examples(&examples);
     let mut bindings = BTreeMap::new();
     bindings.insert("output_literal".to_owned(), "Hello, Formal AI!".to_owned());
-    let recomposition =
-        recompose_for_requirement(&procedure, &ParameterBindings(bindings), "go").expect("go shape");
-    assert!(recomposition.source.contains("fmt.Println(\"Hello, Formal AI!\")"));
+    let recomposition = recompose_for_requirement(&procedure, &ParameterBindings(bindings), "go")
+        .expect("go shape");
+    assert!(
+        recomposition
+            .source
+            .contains("fmt.Println(\"Hello, Formal AI!\")")
+    );
     assert!(recomposition.source.contains("package main"));
     assert!(formal_ai::coding::cst::parse_program_cst("go", &recomposition.source).is_some());
 }
@@ -304,8 +350,13 @@ fn pascal_shape_is_ready_for_its_grammar_row() {
     let mut bindings = BTreeMap::new();
     bindings.insert("output_literal".to_owned(), "Hello, Formal AI!".to_owned());
     let recomposition =
-        recompose_for_requirement(&procedure, &ParameterBindings(bindings), "pascal").expect("pascal shape is seeded");
-    assert!(recomposition.source.contains("writeln('Hello, Formal AI!')"));
+        recompose_for_requirement(&procedure, &ParameterBindings(bindings), "pascal")
+            .expect("pascal shape is seeded");
+    assert!(
+        recomposition
+            .source
+            .contains("writeln('Hello, Formal AI!')")
+    );
     assert!(recomposition.source.contains("program HelloWorld;"));
 }
 
@@ -334,14 +385,19 @@ fn recomposed_parts_carry_all_source_urls() {
         decompose_code_node(KOTLIN_HELLO, "kotlin", &prose).expect("kotlin decomposes"),
     ];
     let procedure = generalize_examples(&examples);
-    assert!(procedure
-        .source_urls
-        .contains(&"https://kotlinlang.org/docs/command-line.html".to_owned()));
+    assert!(
+        procedure
+            .source_urls
+            .contains(&"https://kotlinlang.org/docs/command-line.html".to_owned())
+    );
     let recomposition =
-        recompose_for_requirement(&procedure, &ParameterBindings::default(), "rust").expect("rust shape");
-    assert!(recomposition
-        .part_source_urls
-        .contains(&"https://kotlinlang.org/docs/command-line.html".to_owned()));
+        recompose_for_requirement(&procedure, &ParameterBindings::default(), "rust")
+            .expect("rust shape");
+    assert!(
+        recomposition
+            .part_source_urls
+            .contains(&"https://kotlinlang.org/docs/command-line.html".to_owned())
+    );
 }
 
 /// R1164-10: every record is expressible as a Links Notation document
@@ -363,8 +419,8 @@ fn records_render_as_links_notation() {
 
     let mut bindings = BTreeMap::new();
     bindings.insert("output_literal".to_owned(), "Hello, Formal AI!".to_owned());
-    let recomposition =
-        recompose_for_requirement(&procedure, &ParameterBindings(bindings), "rust").expect("rust shape");
+    let recomposition = recompose_for_requirement(&procedure, &ParameterBindings(bindings), "rust")
+        .expect("rust shape");
     let notation = recomposition_links_notation(&recomposition);
     assert!(notation.contains("code_recomposition"));
     assert!(notation.contains("language_slug rust"));

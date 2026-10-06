@@ -8,9 +8,7 @@
 //! tree (`rust/tests/source/source_tests/coding/cst/tests.rs`), which
 //! compiles the coding modules directly.
 
-use formal_ai::meta_translate::{
-    CstRenderGap, render_cst_source, try_render_cst_source,
-};
+use formal_ai::meta_translate::{CstRenderGap, render_cst_source, try_render_cst_source};
 
 #[test]
 fn render_cst_source_reports_missing_language() {

@@ -163,15 +163,22 @@ pub(crate) fn finalize_answer(answer: &mut crate::engine::SymbolicAnswer, log: &
     // Nested solves may already have emitted their own render event. Append
     // this answer's final rendering last so the projected record names the
     // response that is actually being returned.
-    log.append(RENDER_EMIT_KIND, format!("answer_id={answer_id};format=text"));
+    log.append(
+        RENDER_EMIT_KIND,
+        format!("answer_id={answer_id};format=text"),
+    );
     let record = Derivation::record_for(log, &answer_id);
     answer.thinking_steps = log.thinking_steps_for_answer(&answer.answer);
-    answer.evidence_links.push(format!("derivation:{answer_id}"));
+    answer
+        .evidence_links
+        .push(format!("derivation:{answer_id}"));
     answer.links_notation.push('\n');
     answer.links_notation.push_str(&record.to_lino());
     let persisted = std::env::current_dir().and_then(|root| record.persist(&root));
     match persisted {
-        Ok(_) => answer.evidence_links.push(format!("{DERIVATIONS_DIR}/{answer_id}.lino")),
+        Ok(_) => answer
+            .evidence_links
+            .push(format!("{DERIVATIONS_DIR}/{answer_id}.lino")),
         Err(error) => answer
             .evidence_links
             .push(format!("derivation:persistence_failed:{error}")),
@@ -362,9 +369,7 @@ impl Derivation {
         let _ = writeln!(
             out,
             "  stage recomposition: {}",
-            self.recomposition
-                .as_deref()
-                .unwrap_or(NOT_RECORDED)
+            self.recomposition.as_deref().unwrap_or(NOT_RECORDED)
         );
         let _ = writeln!(
             out,
@@ -419,7 +424,11 @@ pub fn store_path(repository_root: &Path, answer_id: &str) -> Option<PathBuf> {
         && answer_id
             .chars()
             .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-');
-    safe.then(|| repository_root.join(DERIVATIONS_DIR).join(format!("{answer_id}.lino")))
+    safe.then(|| {
+        repository_root
+            .join(DERIVATIONS_DIR)
+            .join(format!("{answer_id}.lino"))
+    })
 }
 
 /// The `explain` entry (R4): load a durable record and render it,

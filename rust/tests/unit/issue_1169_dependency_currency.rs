@@ -12,7 +12,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use check_dependencies_latest::{
-    collect, compare, apply_latest, read_snapshot, write_snapshot, Ecosystem, Snapshot,
+    Ecosystem, Snapshot, apply_latest, collect, compare, read_snapshot, write_snapshot,
 };
 
 fn fixture_tree(tag: &str) -> PathBuf {
@@ -121,7 +121,11 @@ fn offline_gate_flags_drift_and_honors_blocked_annotations() {
     // blocked-crate is reported but blocked; the stale @scope/tool and the
     // drifted crate fail; everything at its latest stays silent, and the
     // rust-version floor "1.98" matches the 1.98.x channel.
-    assert_eq!(drifted, ["drifting-crate", "blocked-crate", "@scope/tool"], "{findings:?}");
+    assert_eq!(
+        drifted,
+        ["drifting-crate", "blocked-crate", "@scope/tool"],
+        "{findings:?}"
+    );
     let blocked = findings
         .iter()
         .find(|f| f.dependency.name == "blocked-crate")
@@ -153,12 +157,16 @@ fn apply_moves_unblocked_manifests_and_leaves_blocked_alone() {
     apply_latest(&root, &findings);
 
     let manifest = fs::read_to_string(root.join("rust/Cargo.toml")).expect("reread Cargo.toml");
-    assert!(manifest.contains("drifting-crate = \"0.11.0\""), "{manifest}");
+    assert!(
+        manifest.contains("drifting-crate = \"0.11.0\""),
+        "{manifest}"
+    );
     assert!(
         manifest.contains("blocked-crate = \"0.16.1\" # blocked:"),
         "{manifest}"
     );
-    let tooling = fs::read_to_string(root.join("tooling/package.json")).expect("reread package.json");
+    let tooling =
+        fs::read_to_string(root.join("tooling/package.json")).expect("reread package.json");
     assert!(tooling.contains("\"@scope/tool\": \"2.1.0\""), "{tooling}");
     // The lockfile is the re-resolution step's business, not the gate's.
     let lock = fs::read_to_string(root.join("rust/Cargo.lock")).expect("reread Cargo.lock");
@@ -173,10 +181,7 @@ fn the_repository_tree_collects_every_ecosystem() {
         .expect("the repository root sits one level above the crate");
     let dependencies = collect(repository);
     let ecosystems: Vec<Ecosystem> = {
-        let mut seen: Vec<Ecosystem> = dependencies
-            .iter()
-            .map(|d| d.ecosystem)
-            .collect();
+        let mut seen: Vec<Ecosystem> = dependencies.iter().map(|d| d.ecosystem).collect();
         seen.sort();
         seen.dedup();
         seen
@@ -209,5 +214,8 @@ fn the_repository_tree_collects_every_ecosystem() {
         .iter()
         .find(|d| d.name == "links-notation")
         .expect("links-notation is a declared dependency");
-    assert_eq!(blocked.blocked.as_deref(), Some("https://github.com/link-foundation/lino-objects-codec/issues/60"));
+    assert_eq!(
+        blocked.blocked.as_deref(),
+        Some("https://github.com/link-foundation/lino-objects-codec/issues/60")
+    );
 }

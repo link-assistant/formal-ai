@@ -137,7 +137,10 @@ fn a_status_less_gh_banner_is_a_failed_read_and_webfetch_of_the_issue_follows() 
         },
         2,
     );
-    assert!(planned.len() >= 2, "the read failure must not end the run: {planned:?}");
+    assert!(
+        planned.len() >= 2,
+        "the read failure must not end the run: {planned:?}"
+    );
     assert_eq!(planned[1].tool, "webfetch", "{planned:?}");
     assert!(
         planned[1].arguments.contains(ISSUE),
@@ -165,7 +168,10 @@ fn with_the_sentinel_line_the_read_is_a_failure_and_the_fetch_follows() {
         },
         2,
     );
-    assert!(planned.len() >= 2, "the sentinel failure must not end the run: {planned:?}");
+    assert!(
+        planned.len() >= 2,
+        "the sentinel failure must not end the run: {planned:?}"
+    );
     assert_eq!(planned[1].tool, "webfetch", "{planned:?}");
     assert!(
         planned[1].arguments.contains(ISSUE),
@@ -181,9 +187,8 @@ fn with_the_sentinel_line_the_read_is_a_failure_and_the_fetch_follows() {
 #[test]
 fn a_failing_sentinel_outranks_a_well_shaped_output() {
     let mut messages = vec![ChatMessage::user(solve_prompt(ISSUE))];
-    let shaped_but_failed = format!(
-        "Implement Hello World in Rust\n\n{GH_AUTH_BANNER}\n__formal_ai_exit=4\n"
-    );
+    let shaped_but_failed =
+        format!("Implement Hello World in Rust\n\n{GH_AUTH_BANNER}\n__formal_ai_exit=4\n");
     let (planned, _) = drive(
         &AGENT_TOOLS,
         &mut messages,
@@ -196,7 +201,10 @@ fn a_failing_sentinel_outranks_a_well_shaped_output() {
         },
         2,
     );
-    assert!(planned.len() >= 2, "the exit status outranks the shape: {planned:?}");
+    assert!(
+        planned.len() >= 2,
+        "the exit status outranks the shape: {planned:?}"
+    );
     assert_eq!(planned[1].tool, "webfetch", "{planned:?}");
 }
 
@@ -223,10 +231,15 @@ fn the_rest_routes_follow_the_fetch_fallback_in_order() {
         4,
     );
     assert!(planned.len() >= 4, "every route is walked: {planned:?}");
-    assert_eq!(planned[1].tool, "mcp__codex_apps__github_fetch", "{planned:?}");
+    assert_eq!(
+        planned[1].tool, "mcp__codex_apps__github_fetch",
+        "{planned:?}"
+    );
     let rest = command_of(&planned[2]);
     assert!(
-        rest.starts_with("curl -fsSL -H 'Accept: application/vnd.github.raw+json' https://api.github.com/repos/"),
+        rest.starts_with(
+            "curl -fsSL -H 'Accept: application/vnd.github.raw+json' https://api.github.com/repos/"
+        ),
         "the credential-free REST read follows the fetch, got `{rest}`"
     );
     assert!(
@@ -256,7 +269,10 @@ fn the_rest_fallback_of_a_pull_request_reads_the_pulls_endpoint() {
         },
         3,
     );
-    assert!(planned.len() >= 3, "the read failure must not end the run: {planned:?}");
+    assert!(
+        planned.len() >= 3,
+        "the read failure must not end the run: {planned:?}"
+    );
     let rest = command_of(&planned[2]);
     assert!(
         rest.contains("/pulls/2;"),
@@ -283,7 +299,10 @@ fn the_prepared_pull_request_is_the_last_read_fallback() {
         },
         5,
     );
-    assert!(planned.len() >= 5, "the prepared PR is tried last: {planned:?}");
+    assert!(
+        planned.len() >= 5,
+        "the prepared PR is tried last: {planned:?}"
+    );
     assert_eq!(planned[4].tool, "webfetch", "{planned:?}");
     assert!(
         planned[4].arguments.contains(PR) && !planned[4].arguments.contains(ISSUE),
@@ -344,7 +363,9 @@ fn an_exhausted_retrieval_reports_every_read_and_writes_no_plan_record() {
     );
     for call in &planned {
         assert!(
-            !call.arguments.contains(".formal-ai/general-change-plan.lino"),
+            !call
+                .arguments
+                .contains(".formal-ai/general-change-plan.lino"),
             "the only write was not spent on a plan record: {}",
             call.arguments
         );

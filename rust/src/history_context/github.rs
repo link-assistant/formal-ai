@@ -45,7 +45,10 @@ fn classify_log_file(name: &str) -> LogFile {
         }
     }
     if let Some(rest) = stem.strip_prefix("pr-") {
-        if let Some(number) = rest.strip_suffix("-conversation-comments").and_then(parse_digits) {
+        if let Some(number) = rest
+            .strip_suffix("-conversation-comments")
+            .and_then(parse_digits)
+        {
             return LogFile::PullConversationComments(number);
         }
         if let Some(number) = rest.strip_suffix("-review-comments").and_then(parse_digits) {
@@ -142,7 +145,10 @@ pub(super) fn import_issues_and_pulls_inner(
     // updatedAt that passed.
     let mut record = |imported: ImportedIssuePr, watermark: &mut Option<String>| {
         if let Some(updated) = &imported.updated_at {
-            if watermark.as_deref().is_none_or(|current| *updated > current) {
+            if watermark
+                .as_deref()
+                .is_none_or(|current| updated.as_str() > current)
+            {
                 *watermark = Some(updated.clone());
             }
         }
@@ -332,7 +338,10 @@ fn formalize_review(
         format!("{}{}-{}-{}", rule.id_prefix, parent, intent, own_id),
         Some(intent.to_owned()),
         content,
-        stamped(value, &["submittedAt", "submitted_at", "createdAt", "created_at"]),
+        stamped(
+            value,
+            &["submittedAt", "submitted_at", "createdAt", "created_at"],
+        ),
         Some(parent),
         vec![format!("{}:{}", parent_kind, parent_number)],
     );

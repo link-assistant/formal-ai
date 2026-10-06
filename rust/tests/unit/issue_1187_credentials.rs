@@ -138,7 +138,10 @@ fn no_workflow_reads_a_foreign_token_secret() {
 #[test]
 fn every_pending_manifest_row_names_a_file_and_an_issue() {
     let manifest = read("docs/integration-manifest.md");
-    for line in manifest.lines().filter(|line| line.starts_with("- `pending:`")) {
+    for line in manifest
+        .lines()
+        .filter(|line| line.starts_with("- `pending:`"))
+    {
         let rest = line.trim_start_matches("- `pending:` ").trim();
         assert!(
             rest.starts_with('`') && rest.contains(".yml`") || rest.contains(".toml`"),

@@ -102,17 +102,33 @@ fn kotlin_page() -> FormalizedPage {
 fn html_page_formalizes_structure_and_code() {
     let page = kotlin_page();
     let statements = web_formalize::network_statements(&page.network);
-    assert!(statements.iter().any(|statement| statement == "Command-line compiler"));
-    assert!(statements.iter().any(|statement| statement.contains("Kotlin runtime")));
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement == "Command-line compiler")
+    );
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement.contains("Kotlin runtime"))
+    );
     let code = page
         .code_blocks()
         .iter()
         .find(|block| block.language == "kotlin")
         .expect("kotlin code block");
-    assert!(code.text.contains("kotlinc hello.kt -include-runtime -d hello.jar"));
+    assert!(
+        code.text
+            .contains("kotlinc hello.kt -include-runtime -d hello.jar")
+    );
     // The table and list formalize too (R1: tables and lists).
-    assert!(statements.iter().any(|statement| statement == "-include-runtime | Include the Kotlin runtime into the resulting jar"));
-    assert!(statements.iter().any(|statement| statement.contains("JDK 8 or higher")));
+    assert!(statements.iter().any(|statement| statement
+        == "-include-runtime | Include the Kotlin runtime into the resulting jar"));
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement.contains("JDK 8 or higher"))
+    );
 }
 
 /// R2: a fence annotation tags the language; an unrecognized fence falls
@@ -121,9 +137,17 @@ fn html_page_formalizes_structure_and_code() {
 fn markdown_fences_tag_languages_with_unknown_fallback() {
     let network = formalize_page(RUST_BOOK_PAGE.as_bytes(), Some("text/markdown"));
     let statements = web_formalize::network_statements(&network);
-    assert!(statements.iter().any(|statement| statement.contains("println!(\"Hello, world!\")")));
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement.contains("println!(\"Hello, world!\")"))
+    );
 
-    let (_, nodes) = web_formalize::formalize_page_with_context(RUST_BOOK_PAGE.as_bytes(), Some("text/markdown"), None);
+    let (_, nodes) = web_formalize::formalize_page_with_context(
+        RUST_BOOK_PAGE.as_bytes(),
+        Some("text/markdown"),
+        None,
+    );
     let languages: Vec<&str> = nodes
         .iter()
         .filter_map(|(_, block)| match block {
@@ -134,7 +158,8 @@ fn markdown_fences_tag_languages_with_unknown_fallback() {
     assert_eq!(languages, vec!["rust", "shell"]);
 
     let bare_fence = b"```\nplain text block\n```";
-    let (_, nodes) = web_formalize::formalize_page_with_context(bare_fence, Some("text/markdown"), None);
+    let (_, nodes) =
+        web_formalize::formalize_page_with_context(bare_fence, Some("text/markdown"), None);
     let language = nodes
         .iter()
         .find_map(|(_, block)| match block {
@@ -237,7 +262,10 @@ fn page_queries_answer_with_links() {
     let blocks = store.code_blocks_on("kotlinlang.org", "-d");
     assert!(!blocks.is_empty(), "code_blocks_on returns link values");
     let commands = store.command_mentioning("compil");
-    assert!(!commands.is_empty(), "command_mentioning returns link values");
+    assert!(
+        !commands.is_empty(),
+        "command_mentioning returns link values"
+    );
 }
 
 /// R9: the network carries the rediscovery procedure -- query, rank, URL,
@@ -246,11 +274,17 @@ fn page_queries_answer_with_links() {
 fn rediscovery_procedure_is_recorded() {
     let page = kotlin_page();
     let statements = web_formalize::network_statements(&page.network);
-    assert!(statements.iter().any(|statement| statement == KOTLINLANG_URL));
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement == KOTLINLANG_URL)
+    );
     assert!(statements.iter().any(|statement| statement == &page.sha256));
-    assert!(statements.iter().any(|statement| {
-        statement == "how to compile a Kotlin program from the command line"
-    }));
+    assert!(
+        statements.iter().any(|statement| {
+            statement == "how to compile a Kotlin program from the command line"
+        })
+    );
     assert_eq!(page.rank, 1);
 }
 
@@ -259,9 +293,18 @@ fn rediscovery_procedure_is_recorded() {
 fn plain_and_pdf_text_formalize() {
     let network = formalize_page(b"first paragraph\n\nsecond paragraph", Some("text/plain"));
     let statements = web_formalize::network_statements(&network);
-    assert!(statements.iter().any(|statement| statement == "first paragraph"));
-    let pdf = formalize_page(b"extracted pdf line one\n\nextracted pdf line two", Some("application/pdf"));
-    assert!(web_formalize::network_statements(&pdf)
-        .iter()
-        .any(|statement| statement == "extracted pdf line one"));
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement == "first paragraph")
+    );
+    let pdf = formalize_page(
+        b"extracted pdf line one\n\nextracted pdf line two",
+        Some("application/pdf"),
+    );
+    assert!(
+        web_formalize::network_statements(&pdf)
+            .iter()
+            .any(|statement| statement == "extracted pdf line one")
+    );
 }

@@ -306,7 +306,10 @@ impl ProcedureCache {
                 "    verified_output {}\n",
                 quote(&recipe.verified_output)
             ));
-            out.push_str(&format!("    content_id \"0x{:016x}\"\n", recipe.content_id));
+            out.push_str(&format!(
+                "    content_id \"0x{:016x}\"\n",
+                recipe.content_id
+            ));
         }
         if let Some(parent) = self.path.parent() {
             std::fs::create_dir_all(parent)
@@ -372,7 +375,12 @@ pub fn cached_or_research<T: SourceTransport>(
     // opened with, captured before research advances the gap's schedule.
     let rediscovery_query = gap.next_query().to_owned();
     let execution = research_coding_skill_gap(
-        gap, ledger, client, candidate_source, expected_output, approval,
+        gap,
+        ledger,
+        client,
+        candidate_source,
+        expected_output,
+        approval,
     )?;
     // `execution.output` is the verified produced text (for a rewrite task,
     // the rewritten program; for a template, the completed program), so it is
@@ -438,6 +446,9 @@ pub fn default_cache_path() -> PathBuf {
 fn quote(value: &str) -> String {
     format!(
         "\"{}\"",
-        value.replace('\\', "\\\\").replace('"', "\\\"").replace('\n', "\\n")
+        value
+            .replace('\\', "\\\\")
+            .replace('"', "\\\"")
+            .replace('\n', "\\n")
     )
 }

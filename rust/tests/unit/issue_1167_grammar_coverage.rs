@@ -22,8 +22,21 @@ const HELLO_WORLD_LANGUAGES: &str = include_str!("../../../data/meta/hello-world
 /// from `cargo metadata`. Upstream shipping a new grammar is what changes
 /// this list (and the seed), never a hand edit.
 const SHIPPED_TRACKED_GRAMMAR_SLUGS: &[&str] = &[
-    "c", "cpp", "csharp", "go", "java", "javascript", "kotlin", "php", "python", "r", "ruby",
-    "rust", "scala", "swift", "typescript",
+    "c",
+    "cpp",
+    "csharp",
+    "go",
+    "java",
+    "javascript",
+    "kotlin",
+    "php",
+    "python",
+    "r",
+    "ruby",
+    "rust",
+    "scala",
+    "swift",
+    "typescript",
 ];
 
 /// Every `name value` pair the canonical grammar found, in document order —

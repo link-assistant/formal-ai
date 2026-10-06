@@ -20,8 +20,7 @@
 
 use formal_ai::agentic_coding::explain::{EXPLAIN_TASK, is_explain_task};
 use formal_ai::derivation::{
-    Derivation, FetchRecord, VerificationRecord, answer_derivation_id, explain_answer,
-    store_path,
+    Derivation, FetchRecord, VerificationRecord, answer_derivation_id, explain_answer, store_path,
 };
 use formal_ai::event_log::EventLog;
 use std::path::{Path, PathBuf};
@@ -76,16 +75,13 @@ fn derivation_carries_search_queries_fetches_and_hashes_for_an_online_answer() {
         derivation.fetches[0],
         FetchRecord {
             url: String::from("https://kotlinlang.org/docs/command-line.html"),
-            sha256: String::from(
-                "9f86d081884c7d65a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
-            ),
+            sha256: String::from("9f86d081884c7d65a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"),
             fetched_at: String::from("2026-09-29T00:00:00Z"),
         },
         "the SourceCapture trace_payload form is read"
     );
     assert_eq!(
-        derivation.fetches[1].url,
-        "https://example.com/kotlin",
+        derivation.fetches[1].url, "https://example.com/kotlin",
         "the semicolon-separated synthesis-runtime form is read"
     );
     assert_eq!(derivation.fetches[1].sha256.len(), 64);
@@ -185,8 +181,8 @@ fn durable_record_round_trips_by_answer_id() {
         .expect("the record loads back without replaying the request");
     assert_eq!(loaded, derivation, "the lino round-trip is lossless");
 
-    let explained = explain_answer(&root, "answer_0123456789abcdef")
-        .expect("explain reads the durable record");
+    let explained =
+        explain_answer(&root, "answer_0123456789abcdef").expect("explain reads the durable record");
     assert!(explained.contains("sha256 9f86d0"));
     assert!(explained.contains("python3 solution.py exit=0"));
     assert!(
@@ -231,7 +227,9 @@ fn explain_command_does_not_collide_with_the_self_explanation_recipe() {
 #[test]
 fn lino_values_survive_quoting_and_line_breaks() {
     let mut derivation = Derivation::record_for(&EventLog::new(), "answer_0123456789abcdef");
-    derivation.search_queries.push(String::from("what is \"1 + 1\"?\nsecond line"));
+    derivation
+        .search_queries
+        .push(String::from("what is \"1 + 1\"?\nsecond line"));
     let text = derivation.to_lino();
     let parsed = Derivation::from_lino(&text).expect("the record parses back");
     assert_eq!(parsed, derivation, "quoted and escaped values round-trip");
@@ -259,10 +257,14 @@ fn verification_payload_preserves_shell_separators_and_legacy_spelling() {
         command: "printf first; printf second exit=inside".into(),
         exit_code: Some(0),
     };
-    assert_eq!(VerificationRecord::parse_payload(&record.payload()), Some(record));
+    assert_eq!(
+        VerificationRecord::parse_payload(&record.payload()),
+        Some(record)
+    );
     let legacy = VerificationRecord::parse_payload(
         "evidence_id=evidence_old command=python3 solution.py exit=0",
-    ).expect("historical payload remains readable");
+    )
+    .expect("historical payload remains readable");
     assert_eq!(legacy.command, "python3 solution.py");
     assert_eq!(legacy.exit_code, Some(0));
 }

@@ -90,8 +90,8 @@ fn commit_formalization_extracts_trailers_and_changed_symbols() {
     );
 
     let rules = HistoryRules::defaults();
-    let events = history_context::import_commits(&repo, None, &rules)
-        .expect("import fixture commits");
+    let events =
+        history_context::import_commits(&repo, None, &rules).expect("import fixture commits");
     assert_eq!(events.len(), 2, "both commits import");
 
     let event = events
@@ -123,7 +123,10 @@ fn commit_formalization_extracts_trailers_and_changed_symbols() {
     assert!(content.starts_with("add beta"));
     assert!(content.contains("Refs #42"));
     assert!(
-        event.content.as_deref().is_some_and(|text| !text.is_empty()),
+        event
+            .content
+            .as_deref()
+            .is_some_and(|text| !text.is_empty()),
         "subject and body both formalize into content"
     );
 }
@@ -133,24 +136,30 @@ fn incremental_import_is_idempotent() {
     let repo = temp_dir("idempotent");
     init_repo(&repo);
     commit(&repo, "a.rs", "pub fn one() {}\n", "one", None);
-    commit(&repo, "a.rs", "pub fn one() {}\npub fn two() {}\n", "two", None);
+    commit(
+        &repo,
+        "a.rs",
+        "pub fn one() {}\npub fn two() {}\n",
+        "two",
+        None,
+    );
 
     let memory = temp_dir("idempotent-memory");
     let rules = HistoryRules::defaults();
-    let first = history_context::import_incremental(&repo, None, &memory, &rules)
-        .expect("first import");
+    let first =
+        history_context::import_incremental(&repo, None, &memory, &rules).expect("first import");
     assert_eq!(first, 2, "both commits append");
 
-    let second = history_context::import_incremental(&repo, None, &memory, &rules)
-        .expect("second import");
+    let second =
+        history_context::import_incremental(&repo, None, &memory, &rules).expect("second import");
     assert_eq!(second, 0, "no new history appends nothing");
 
     let (store_path, cursor_path) = history_context::store_paths(&memory, &repo);
     let cursor_before = std::fs::read_to_string(&cursor_path).expect("cursor written");
     assert!(cursor_before.contains("last_commit_sha"));
 
-    let third = history_context::import_incremental(&repo, None, &memory, &rules)
-        .expect("third import");
+    let third =
+        history_context::import_incremental(&repo, None, &memory, &rules).expect("third import");
     assert_eq!(third, 0);
     let cursor_after = std::fs::read_to_string(&cursor_path).expect("cursor stable");
     assert_eq!(cursor_before, cursor_after);
@@ -164,7 +173,13 @@ fn incremental_import_only_advances_past_the_watermark() {
     let repo = temp_dir("watermark");
     init_repo(&repo);
     let first = commit(&repo, "a.rs", "pub fn one() {}\n", "one", None);
-    let second = commit(&repo, "a.rs", "pub fn one() {}\npub fn two() {}\n", "two", None);
+    let second = commit(
+        &repo,
+        "a.rs",
+        "pub fn one() {}\npub fn two() {}\n",
+        "two",
+        None,
+    );
     let third = commit(
         &repo,
         "a.rs",
@@ -290,12 +305,9 @@ fn issue_and_pr_import_links_commit_to_source_issue() {
     assert_eq!(comment.conversation_id.as_deref(), Some("issue-1014"));
 
     // The watermark keeps only records strictly newer than it.
-    let filtered = history_context::import_issues_and_pulls(
-        &logs,
-        Some("2026-09-08T00:00:00Z"),
-        &rules,
-    )
-    .expect("filtered import");
+    let filtered =
+        history_context::import_issues_and_pulls(&logs, Some("2026-09-08T00:00:00Z"), &rules)
+            .expect("filtered import");
     let ids: Vec<&str> = filtered.iter().map(|event| event.id.as_str()).collect();
     assert!(
         !ids.contains(&"issue:1014"),
@@ -383,8 +395,8 @@ fn ci_run_import_carries_failing_steps() {
             .any(|e| e == "commit:e4193a615c2a0788a2f7e1067a1a55d4c5d7912d")
     );
 
-    let newer_only = history_context::import_ci_runs(&logs, Some(36266423193), &rules)
-        .expect("filtered runs");
+    let newer_only =
+        history_context::import_ci_runs(&logs, Some(36266423193), &rules).expect("filtered runs");
     let ids: Vec<&str> = newer_only.iter().map(|event| event.id.as_str()).collect();
     assert!(
         !ids.contains(&"ci_run:36266423193"),
@@ -406,10 +418,8 @@ fn rules_seed_round_trips_through_the_parser() {
 
 #[test]
 fn on_this_repo_check_self_development_release_lineage() {
-    let repo_root = std::fs::canonicalize(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join(".."),
-    )
-    .expect("repo root");
+    let repo_root =
+        std::fs::canonicalize(Path::new(env!("CARGO_MANIFEST_DIR")).join("..")).expect("repo root");
     let shallow = Command::new("git")
         .args(["rev-parse", "--is-shallow-repository"])
         .current_dir(&repo_root)

@@ -152,7 +152,7 @@ pub(crate) fn requested_count(normalized: &str, language: &str) -> Option<u32> {
     for (word, value) in spelled_numbers(language) {
         // CJK scripts carry no inter-word spaces, so their numeral words
         // match by substring; space-delimited scripts match whole tokens.
-        if crate::coding::contains_cjk(word) {
+        if crate::coding::contains_cjk(&word) {
             if normalized.contains(word.as_str()) {
                 return Some(value);
             }
@@ -630,7 +630,7 @@ pub fn handle_advice_request(
     let listed = items
         .iter()
         .enumerate()
-        .map(|(index, (weight, item))| {
+        .map(|(index, (_weight, item))| {
             let label = grades
                 .iter()
                 .find(|grade| grade.grade == item.grade)

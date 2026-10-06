@@ -16,7 +16,7 @@
 
 use formal_ai::event_log::EventLog;
 use formal_ai::web_engine_core::normalize_prompt;
-use formal_ai::{handle_formalization_request, SolverConfig, UniversalSolver};
+use formal_ai::{SolverConfig, UniversalSolver, handle_formalization_request};
 
 /// The answer a hermetic (offline) solver gives to `prompt`.
 fn solved(prompt: &str) -> String {
@@ -65,7 +65,10 @@ fn handler_formalizes_the_issue_probe_sentence() {
         "the FOL shape must match ∀x (P(x) ∧ Q(x) → R(x)): {answer}"
     );
     let lean = fenced(&answer, "lean");
-    assert!(lean.contains("∀ (x : U)"), "Lean renders a binder: {answer}");
+    assert!(
+        lean.contains("∀ (x : U)"),
+        "Lean renders a binder: {answer}"
+    );
     assert!(lean.contains("Student x"), "{answer}");
     let rocq = fenced(&answer, "rocq");
     assert!(
@@ -113,9 +116,7 @@ fn handler_formalizes_russian_conditional_in_russian() {
 
 #[test]
 fn handler_formalizes_hindi_and_chinese_conditionals() {
-    let hindi = handler_answer(
-        "औपचारिक बनाओ: हर छात्र जो पढ़ता है, परीक्षा पास करता है",
-    );
+    let hindi = handler_answer("औपचारिक बनाओ: हर छात्र जो पढ़ता है, परीक्षा पास करता है");
     assert!(
         fenced(&hindi, "fol").starts_with("∀x (छात्र(x) ∧ पढ़ता(x) → "),
         "{hindi}"
@@ -180,7 +181,9 @@ fn deformalization_round_trip_preserves_structure() {
     );
     // The structural check, end to end: re-formalizing the rendered
     // sentence must reproduce the original FOL exactly.
-    let again = handler_answer("Formalize in first-order logic: every student that studies passes the exam");
+    let again = handler_answer(
+        "Formalize in first-order logic: every student that studies passes the exam",
+    );
     assert_eq!(
         fenced(&again, "fol"),
         fol,
@@ -245,9 +248,8 @@ fn unrelated_prompts_are_not_claimed() {
 
 #[test]
 fn engine_answers_formalization_request() {
-    let answer = solved(
-        "Formalize in first-order logic: Every student who studies passes the exam.",
-    );
+    let answer =
+        solved("Formalize in first-order logic: Every student who studies passes the exam.");
     assert!(answer.contains("∀x"), "the FOL binder renders: {answer}");
     assert!(
         !answer.contains("Web search requested"),

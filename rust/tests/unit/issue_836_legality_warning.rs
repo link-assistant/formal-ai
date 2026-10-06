@@ -93,12 +93,9 @@ fn defensive_security_framing_suppresses_the_warning() {
         assessment.warning_suppressed(),
         "a legitimate framing must suppress a warn-category warning"
     );
-    assert!(handle_legality_warning(
-        prompt,
-        &normalize_prompt(prompt),
-        &mut EventLog::new()
-    )
-    .is_none());
+    assert!(
+        handle_legality_warning(prompt, &normalize_prompt(prompt), &mut EventLog::new()).is_none()
+    );
 }
 
 #[test]
@@ -138,8 +135,11 @@ fn the_russian_twin_warns_too() {
         &mut EventLog::new(),
     )
     .expect("the Russian phrase is seeded too");
-    assert!(answer.answer.contains("не является юридической консультацией")
-        || answer.answer.contains("not legal advice"),
+    assert!(
+        answer
+            .answer
+            .contains("не является юридической консультацией")
+            || answer.answer.contains("not legal advice"),
         "the disclaimer must survive localization: {}",
         answer.answer
     );

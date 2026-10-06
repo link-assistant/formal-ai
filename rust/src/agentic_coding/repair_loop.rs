@@ -223,7 +223,7 @@ fn match_template(template: &str, line: &str, heads: &[String]) -> Option<Vec<Ca
 /// Reject a slot value that is not what its slot names: this is what keeps a
 /// generic template from reading prose as a path or a line number.
 fn validate_slot(slot: &str, value: &str, heads: &[String]) -> Option<()> {
-    match slot {
+    let valid = match slot {
         "file" => value.contains('.') || value.contains('/'),
         "line" | "column" => value.parse::<u32>().is_ok(),
         "head" => heads.iter().any(|head| head == value),
@@ -231,8 +231,9 @@ fn validate_slot(slot: &str, value: &str, heads: &[String]) -> Option<()> {
             value.chars().next().is_some_and(char::is_alphabetic)
                 && value.chars().any(char::is_numeric)
         }
-        _ => Some(()),
-    }
+        _ => true,
+    };
+    valid.then_some(())
 }
 
 fn capture<'a>(captures: &'a [Capture], slot: &str) -> Option<&'a str> {
@@ -553,7 +554,7 @@ pub fn attempts_from(messages: &[ChatMessage], failure: &FailedStep) -> Vec<Repa
     let applied = progress
         .fetched_pages
         .iter()
-        .any(|(url, text)| page_addresses(text, primary))
+        .any(|(_url, text)| page_addresses(text, primary))
         && progress.successful_write_for(&repair_document_path(&failure.artifact_path, primary));
     let resolved = failure
         .failed_command
