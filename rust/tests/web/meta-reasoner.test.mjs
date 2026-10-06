@@ -151,3 +151,21 @@ test("every rung of the task ladder is derived, never handled", async () => {
     assert.equal(derived && derived[1].split(" ∘ ").join(" "), steps, prompt);
   }
 });
+
+test("a derived file program runs in node and agrees with a direct count", async () => {
+  const { mkdtempSync, writeFileSync, rmSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { createRequire } = await import("node:module");
+  const folder = mkdtempSync(path.join(tmpdir(), "meta-ladder-"));
+  try {
+    writeFileSync(path.join(folder, "long.txt"), "x\n".repeat(5));
+    writeFileSync(path.join(folder, "short.txt"), "x\n");
+    const answer = await solve("Write a Node.js script that prints every file in a folder with more than 3 lines");
+    const source = /```javascript\n([\s\S]*?)```/u.exec(answer.content)[1];
+    // eslint-disable-next-line no-new-func -- running the derived answer is the check.
+    const solution = new Function("require", `${source}\nreturn solution;`)(createRequire(import.meta.url));
+    assert.deepEqual(solution(folder), [path.join(folder, "long.txt")]);
+  } finally {
+    rmSync(folder, { recursive: true, force: true });
+  }
+});

@@ -25,6 +25,7 @@ const META_BOUNDS = Object.freeze({
   lookupRounds: 3,
   lookupsPerRound: 4,
   rejectionsTraced: 5,
+  measureLength: 3,
   requiredGroupSize: 2,
 });
 
@@ -70,6 +71,7 @@ function metaSeed() {
           doc: field("doc"),
           code: field("code"),
           infer: field("infer"),
+          environment: field("environment"),
         });
       } else if (record.name === "combinator") {
         seed.combinators.push({ id: record.value, doc: field("doc") });
@@ -392,6 +394,16 @@ function metaGroundText(text, context, depth, stack, needs) {
 }
 
 /**
+ * True when this runtime offers an environment a primitive needs.
+ * @param {string} environment
+ * @returns {boolean}
+ */
+function metaEnvironmentAvailable(environment) {
+  if (environment === "node") return typeof require === "function";
+  return !environment;
+}
+
+/**
  * True when an operation only changes representation between a text and the
  * list of its parts (split / join), which carries no ordering constraint.
  * @param {string} id
@@ -579,6 +591,17 @@ function metaReasonCore(prompt, language, knowledge) {
       // eslint-disable-next-line no-new-func -- the probe runs the shown source.
       const solution = new Function(`${source}\nreturn solution;`)();
       let probe = null;
+      // An operation that needs an environment this runtime lacks (the file
+      // system outside Node) is not probed here; the answer says so.
+      const needs = found.steps.map((step) => step.primitive.environment).find(Boolean);
+      if (needs && !metaEnvironmentAvailable(needs)) {
+        trace.emit("probe", `skipped: the program needs the ${needs} environment`);
+        result.program = { steps: found.steps.map(metaStepLabel), parameter: found.parameter, source, alternatives: 0, evaluated: 0, environment: needs };
+        result.probe = null;
+        result.status = result.unknowns.some((unknown) => unknown.status === "open") ? "partial" : "solved";
+        metaLearn(groundings, found.steps, trace);
+        return result;
+      }
       for (const sample of metaSeed().probes[found.fromType] || []) {
         try {
           const input = found.fromType === "text" ? sample : JSON.parse(sample);

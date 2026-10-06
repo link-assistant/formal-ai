@@ -19,7 +19,9 @@
 #                word reaches a primitive only through that documentation or
 #                through a dictionary definition that shares its words.
 #                `code` is the JavaScript the answer shows and the verifier
-#                runs; `infer` derives a parameter from one example pair.
+#                runs; `infer` derives a parameter from one example pair;
+#                `environment` names a runtime the operation needs (node:
+#                the file system), so it is not probed where that is absent.
 #   filter       a comparison a list is filtered by: the element's measure
 #                (any primitive to a number, or the number itself) against a
 #                threshold inferred from the examples or read from the request.
@@ -220,6 +222,18 @@ meta_reasoning
     to text
     doc "Joins a list of lines into one string, one per line, separated by line breaks."
     code "(input) => input.join(String.fromCharCode(10))"
+  primitive list_files
+    from path
+    to list_path
+    environment node
+    doc "Lists the files in a folder (directory): returns the path of every file it contains."
+    code "(input) => require('fs').readdirSync(input, { withFileTypes: true }).filter((entry) => entry.isFile()).map((entry) => require('path').join(input, entry.name))"
+  primitive read_file
+    from path
+    to text
+    environment node
+    doc "Reads a file from disk and returns its contents as text."
+    code "(input) => require('fs').readFileSync(input, 'utf8')"
   primitive split_characters
     from text
     to list_text

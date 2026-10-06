@@ -55,8 +55,38 @@ function metaCompile(primitive, parameter) {
  * @returns {Array<object>}
  */
 function metaMeasures(element) {
-  const out = metaSeed().primitives.filter((primitive) => primitive.to === "number" && !primitive.infer && metaApply(primitive, element) === "number");
-  if (element === "number") out.unshift({ id: "value", from: "number", to: "number", doc: "", code: "(input) => input", infer: "" });
+  const seed = metaSeed();
+  if (!seed.measureCache) seed.measureCache = new Map();
+  if (seed.measureCache.has(element)) return seed.measureCache.get(element);
+  const out = [];
+  if (element === "number") out.push({ id: "value", from: "number", to: "number", doc: "", code: "(input) => input", infer: "", environment: "" });
+  // A measure is any short parameter-free program from the element to a
+  // number ("the lines of a file": read the file, split its lines, count).
+  let frontier = [{ ids: [], codes: [], type: element, environment: "" }];
+  for (let size = 1; size <= META_BOUNDS.measureLength; size += 1) {
+    const next = [];
+    for (const partial of frontier) {
+      for (const primitive of seed.primitives) {
+        if (primitive.infer) continue;
+        const type = metaApply(primitive, partial.type);
+        if (!type) continue;
+        const grown = {
+          ids: partial.ids.concat(primitive.id),
+          codes: partial.codes.concat(primitive.code),
+          type,
+          environment: partial.environment || primitive.environment || "",
+        };
+        if (type === "number") {
+          const code = `(input) => ${grown.codes.reduce((inner, step) => `(${step})(${inner})`, "input")}`;
+          out.push({ id: grown.ids.join("∘"), parts: grown.ids, from: element, to: "number", doc: "", code, infer: "", environment: grown.environment });
+        } else {
+          next.push(grown);
+        }
+      }
+    }
+    frontier = next;
+  }
+  seed.measureCache.set(element, out);
   return out;
 }
 
@@ -356,7 +386,7 @@ function metaStepLabel(step) {
  */
 function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, inputTypes, clauses) {
   trace.emit("goal", `program serving ${groups.map((group) => `{${group.join("|")}}`).join(" ")}`);
-  const types = ["text", "list_number", "list_text", "number"];
+  const types = ["text", "list_number", "list_text", "number", "path"];
   const operations = metaSeed().primitives;
   // The last clause's head is the outermost operation, so its result type is
   // the program's.
@@ -370,13 +400,25 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, in
       const used = new Set(program.steps.flatMap(metaStepOperations));
       if (!lastHead.some((operation) => used.has(operation))) continue;
       const uncovered = groups.filter((group) => !group.some((operation) => used.has(operation))).length;
-      const ungrounded = program.steps.flatMap(metaStepOperations).filter((operation) => !evidence.get(operation)).length;
+      // A filter's measure is internal to the filter: it is not charged as
+      // an ungrounded operation; its grounded parts only break ties.
+      const ungrounded = program.steps
+        .flatMap((step) => (step.filter ? [step.filter.id] : metaStepOperations(step)))
+        .filter((operation) => !evidence.get(operation)).length;
+      const main = new Set(program.steps.flatMap((step) => (step.filter ? [step.filter.id] : metaStepOperations(step))));
+      const parts = new Set(program.steps.filter((step) => step.filter).flatMap((step) => step.primitive.parts || [step.primitive.id]));
+      let measureEvidence = 0;
+      for (const hypotheses of words) {
+        if (hypotheses.some((hypothesis) => main.has(hypothesis.operation))) continue;
+        measureEvidence += Math.max(0, ...hypotheses.filter((hypothesis) => parts.has(hypothesis.operation)).map((hypothesis) => hypothesis.score));
+      }
+      const measureSize = parts.size;
       const order = metaClauseOrder(program, fromType, clauses);
       const statedInput = inputTypes.length && !inputTypes.includes(fromType) ? 1 : 0;
       const headFits = headTypes.some((type) => type === program.type || (type === "list_any" && program.type.startsWith("list_"))) ? 0 : 1;
       // Grounded evidence decides first (every operation asked for, none
       // invented), then the request's own composition order, then shape.
-      const rank = [ungrounded, uncovered, -metaCoverageScore(program.steps, words), order.violations, order.objectMismatch, statedInput, headFits, program.type === fromType ? 0 : 1, program.steps.length];
+      const rank = [ungrounded, uncovered, -metaCoverageScore(program.steps, words), -measureEvidence, order.violations, order.objectMismatch, statedInput, headFits, program.type === fromType ? 0 : 1, program.steps.length, measureSize];
       let better = !best;
       for (let position = 0; !better && position < rank.length; position += 1) {
         if (rank[position] !== best.rank[position]) {
