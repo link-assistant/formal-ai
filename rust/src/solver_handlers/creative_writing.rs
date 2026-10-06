@@ -25,22 +25,15 @@
 //! handler that answers "3-day itinerary for Rome" with a schedule instead
 //! of the terminal-command misroute or the canned web-search paragraph.
 
+use super::creative_composition::{
+    cue_field, cue_words, requested_count, rules_records_named, topic_words,
+};
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use super::finalize_simple;
-use super::creative_composition::{requested_count, topic_words};
 
-const RULES_PATH: &str = "data/seed/creative-composition-rules.lino";
 const ROLE_CREATIVE_WRITING: &str = "creative_writing_request";
 const ROLE_PLANNING: &str = "planning_request";
-
-/// Look up embedded seed content by its registered path.
-fn seed_text(path: &str) -> Option<&'static str> {
-    crate::seed::seed_files()
-        .into_iter()
-        .find(|(registered, _)| *registered == path)
-        .map(|(_, text)| text)
-}
 
 /// Fill a localized response template's `{placeholder}` slots.
 fn template(intent: &str, values: &[(&str, &str)]) -> String {
@@ -66,13 +59,7 @@ struct WritingForm {
 }
 
 fn writing_forms() -> Vec<WritingForm> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "writing_form")
+    rules_records_named("writing_form")
         .map(|record| WritingForm {
             form: record.find_child_value("form").to_string(),
             default_lines: record
@@ -106,13 +93,7 @@ struct RhymeClass {
 }
 
 fn rhyme_classes() -> Vec<RhymeClass> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "rhyme_class")
+    rules_records_named("rhyme_class")
         .map(|record| RhymeClass {
             id: record.find_child_value("id").to_string(),
             words: record
@@ -131,15 +112,7 @@ fn rhyme_classes() -> Vec<RhymeClass> {
 /// The `rhyme_coverage` record: which languages carry offline rhyme
 /// grounding, and the stated gap text for the others.
 fn rhyme_coverage() -> (Vec<String>, String) {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return (Vec::new(), String::new());
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    let Some(record) = tree
-        .children
-        .iter()
-        .find(|record| record.name == "rhyme_coverage")
-    else {
+    let Some(record) = rules_records_named("rhyme_coverage").next() else {
         return (Vec::new(), String::new());
     };
     (
@@ -158,13 +131,7 @@ struct Skeleton {
 }
 
 fn skeletons(language: &str) -> Vec<Skeleton> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "poem_line_skeleton")
+    rules_records_named("poem_line_skeleton")
         .filter(|record| record.find_child_value("language") == language)
         .map(|record| Skeleton {
             text: record.find_child_value("text").to_string(),
@@ -210,26 +177,39 @@ fn detect_form(normalized: &str) -> WritingForm {
 /// filling the unstated ones.
 fn form_constraints(normalized: &str, language: &str) -> FormConstraints {
     let form = detect_form(normalized);
-    // A stated line count: a spelled number or digit beside a line word.
-    let line_words = ["line", "lines", "строка", "строки", "पंक्ति", "行", "línea", "líneas"];
+    // A stated line count: a spelled number or digit beside a line word
+    // (the `line_count` request cue).
+    let line_words = cue_words("line_count");
     let stated = requested_count(normalized, language).filter(|_| {
-        line_words.iter().any(|word| normalized.contains(word))
+        line_words
+            .iter()
+            .any(|word| normalized.contains(word.as_str()))
             || crate::coding::contains_cjk(normalized)
     });
     let lines = stated
         .map(|count| count as usize)
         .unwrap_or(form.default_lines)
         .clamp(1, 14);
-    // A stated rhyme scheme: the literal scheme, or "rhyming" poetry.
-    let scheme = if normalized.contains("aabb") {
-        "aabb".to_owned()
-    } else if normalized.contains("abab") {
-        "abab".to_owned()
-    } else if normalized.contains("rhyming") || normalized.contains("rhyme") {
-        "aabb".to_owned()
-    } else {
-        form.default_scheme.clone()
-    };
+    // A stated rhyme scheme: the literal scheme (the `stated_scheme` cue),
+    // else a bare rhyme request (the `rhyme_request` cue and its scheme).
+    let rhyme_requested = cue_words("rhyme_request")
+        .iter()
+        .any(|word| normalized.contains(word.as_str()));
+    let scheme = cue_words("stated_scheme")
+        .into_iter()
+        .find(|scheme| normalized.contains(scheme.as_str()))
+        .unwrap_or_else(|| {
+            let cued = if rhyme_requested {
+                cue_field("rhyme_request", "scheme")
+            } else {
+                String::new()
+            };
+            if cued.is_empty() {
+                form.default_scheme.clone()
+            } else {
+                cued
+            }
+        });
     let (covered, _) = rhyme_coverage();
     let rhymes = scheme != "none" && covered.iter().any(|lang| lang == language);
     let topic = topic_words(normalized, language)
@@ -408,14 +388,14 @@ fn compose_poem(
         if repeats < 2 {
             // A free position (abcb's a and c): a free skeleton, no rhyme
             // constraint on its end word.
-            let text = if let Some(free) = free_skeletons.get(free_index % free_skeletons.len())
-            {
-                free_index += 1;
-                free.text.clone()
-            } else {
+            let text = if free_skeletons.is_empty() {
                 rhyme_skeletons[rhyme_index % rhyme_skeletons.len()]
                     .text
                     .clone()
+            } else {
+                let free = free_skeletons[free_index % free_skeletons.len()];
+                free_index += 1;
+                free.text.clone()
             };
             poem.push(fill_skeleton(&text, &constraints.topic, ""));
             continue;

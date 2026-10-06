@@ -28,13 +28,29 @@
 //! live in `data/seed/creative-composition-rules.lino`. Rust holds no cue
 //! or response literals.
 
+use std::sync::OnceLock;
+
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use super::finalize_simple;
+use crate::seed::parser::{LinoNode, parse_lino};
 
 const RULES_PATH: &str = "data/seed/creative-composition-rules.lino";
+/// The root link every record of the rules seed sits under.
+const RULES_ROOT: &str = "creative_composition_rules";
 const ROLE_BRAINSTORMING: &str = "brainstorming_request";
 const ROLE_ADVICE: &str = "advice_request";
+const ROLE_CREATIVE_WRITING: &str = "creative_writing_request";
+const ROLE_PLANNING: &str = "planning_request";
+/// The four request classes whose cue meanings name the request, not the topic.
+const COMPOSITION_ROLES: [&str; 4] = [
+    ROLE_BRAINSTORMING,
+    ROLE_ADVICE,
+    ROLE_CREATIVE_WRITING,
+    ROLE_PLANNING,
+];
+/// Name-length cap when no request cue states a shorter one.
+const DEFAULT_MAX_LENGTH: usize = 18;
 
 /// Look up embedded seed content by its registered path.
 fn seed_text(path: &str) -> Option<&'static str> {
@@ -42,6 +58,63 @@ fn seed_text(path: &str) -> Option<&'static str> {
         .into_iter()
         .find(|(registered, _)| *registered == path)
         .map(|(_, text)| text)
+}
+
+/// The records under the rules seed's `creative_composition_rules` root
+/// (the top-level links when the file carries no such root).
+fn rules_records() -> &'static [LinoNode] {
+    static RECORDS: OnceLock<Vec<LinoNode>> = OnceLock::new();
+    RECORDS.get_or_init(|| {
+        let Some(text) = seed_text(RULES_PATH) else {
+            return Vec::new();
+        };
+        let mut tree = parse_lino(text);
+        if let Some(index) = tree
+            .children
+            .iter()
+            .position(|child| child.name == RULES_ROOT)
+        {
+            return tree.children.swap_remove(index).children;
+        }
+        tree.children
+    })
+}
+
+/// Every rules record named `name`, in seed order.
+pub(crate) fn rules_records_named(name: &str) -> impl Iterator<Item = &'static LinoNode> {
+    rules_records()
+        .iter()
+        .filter(move |record| record.name == name)
+}
+
+/// The non-empty values of a record's children named `name`.
+pub(crate) fn child_values(record: &LinoNode, name: &str) -> Vec<String> {
+    record
+        .children
+        .iter()
+        .filter(|child| child.name == name)
+        .map(|child| child.id.clone())
+        .filter(|value| !value.is_empty())
+        .collect()
+}
+
+/// The `request_cue` record named `cue`.
+fn cue_record(cue: &str) -> Option<&'static LinoNode> {
+    rules_records_named("request_cue").find(|record| record.find_child_value("cue") == cue)
+}
+
+/// The words of the `request_cue` record named `cue`.
+pub(crate) fn cue_words(cue: &str) -> Vec<String> {
+    cue_record(cue)
+        .map(|record| child_values(record, "word"))
+        .unwrap_or_default()
+}
+
+/// The value of child `name` on the `request_cue` record named `cue`.
+pub(crate) fn cue_field(cue: &str, name: &str) -> String {
+    cue_record(cue)
+        .map(|record| record.find_child_value(name).to_owned())
+        .unwrap_or_default()
 }
 
 /// Fill a localized response template's `{placeholder}` slots.
@@ -55,76 +128,93 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
 
 /// One `topic_stop_word` list per language: words a topic extraction drops.
 fn stop_words(language: &str) -> Vec<String> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "topic_stop_word")
+    rules_records_named("topic_stop_word")
         .filter(|record| record.find_child_value("language") == language)
-        .flat_map(|record| record.children.iter())
-        .filter(|child| child.name == "word")
-        .map(|child| child.id.clone())
-        .filter(|word| !word.is_empty())
+        .flat_map(|record| child_values(record, "word"))
         .collect()
 }
 
-/// The `number word value` triples of one language's `spelled_number`
-/// record: (word, value) pairs plus every word, for stop-listing.
+/// The `(word, value)` pairs of one language's `spelled_number` record. The
+/// seed writes `number <word> <value>` (the value inline); a `value` child
+/// is read too.
 fn spelled_numbers(language: &str) -> Vec<(String, u32)> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
     let mut out = Vec::new();
-    for record in tree
-        .children
-        .iter()
-        .filter(|record| record.name == "spelled_number")
+    for record in rules_records_named("spelled_number")
         .filter(|record| record.find_child_value("language") == language)
     {
         for pair in record.children.iter().filter(|child| child.name == "number") {
-            let word = pair.id.clone();
-            let value = pair.find_child_value("value").parse::<u32>().unwrap_or(0);
+            let mut parts = pair.id.split_whitespace();
+            let word = parts.next().unwrap_or_default();
+            let inline = parts.next().unwrap_or_default();
+            let child = pair.find_child_value("value");
+            let raw = if child.is_empty() { inline } else { child };
+            let value = raw.parse::<u32>().unwrap_or(0);
             if !word.is_empty() && value > 0 {
-                out.push((word, value));
+                out.push((word.to_owned(), value));
             }
         }
     }
     out
 }
 
+/// The CJK runs of `normalized` left once the request vocabulary is
+/// removed: the cue surfaces of the four composition roles, plus `removed`
+/// (the language's stop words and numerals), longest first.
+fn cjk_remainder(normalized: &str, removed: &[String]) -> Vec<String> {
+    let lexicon = crate::seed::lexicon();
+    let mut vocabulary: Vec<&str> = removed.iter().map(String::as_str).collect();
+    for role in COMPOSITION_ROLES {
+        for meaning in lexicon.meanings_with_role(role) {
+            vocabulary.extend(meaning.words());
+        }
+    }
+    vocabulary.sort_by_key(|word| std::cmp::Reverse(word.chars().count()));
+    let mut text = normalized.to_owned();
+    for word in vocabulary {
+        if !word.is_empty() && crate::coding::contains_cjk(word) {
+            text = text.replace(word, " ");
+        }
+    }
+    text.split_whitespace()
+        .filter(|run| crate::coding::contains_cjk(run))
+        .map(str::to_owned)
+        .collect()
+}
+
 /// Extract the topic words of a composition request.
 ///
 /// Space-delimited scripts keep every alphabetic token that is neither a
 /// stop word nor a spelled number. CJK scripts have no token boundaries, so
-/// the topic words there are the meaning-lexicon surfaces of the prompt's
-/// language (plus English) that occur in the prompt — the lexicon already
-/// carries the multilingual vocabulary of real concepts.
+/// the topic words there are the meaning-lexicon surfaces present in the
+/// prompt, minus the same stop words and numerals, and when the lexicon
+/// names none, the runs the request vocabulary leaves behind.
 pub(crate) fn topic_words(normalized: &str, language: &str) -> Vec<String> {
     let stops = stop_words(language);
     let numbers: Vec<String> = spelled_numbers(language)
         .into_iter()
         .map(|(word, _)| word)
         .collect();
+    let skipped = |word: &str| {
+        stops.iter().any(|stop| stop == word) || numbers.iter().any(|number| number == word)
+    };
     let mut words: Vec<String> = Vec::new();
     if crate::coding::contains_cjk(normalized) {
         for meaning in &crate::seed::lexicon().meanings {
             // Cue meanings name the request classes, not the topic.
-            if meaning.has_role(ROLE_BRAINSTORMING)
-                || meaning.has_role(ROLE_ADVICE)
-                || meaning.has_role("creative_writing_request")
-                || meaning.has_role("planning_request")
-            {
+            if COMPOSITION_ROLES.iter().any(|role| meaning.has_role(role)) {
                 continue;
             }
-            for word in meaning.words() {
-                if !word.is_empty() && normalized.contains(word) {
-                    words.push(word.to_owned());
-                    break;
-                }
+            if let Some(found) = meaning
+                .words()
+                .find(|word| !word.is_empty() && !skipped(word) && normalized.contains(*word))
+            {
+                words.push(found.to_owned());
             }
+        }
+        if words.is_empty() {
+            let mut removed = stops.clone();
+            removed.extend(numbers.iter().cloned());
+            words.extend(cjk_remainder(normalized, &removed));
         }
     } else {
         for token in normalized.split_whitespace() {
@@ -132,10 +222,7 @@ pub(crate) fn topic_words(normalized: &str, language: &str) -> Vec<String> {
             if token.chars().count() < 2 || !token.chars().any(char::is_alphabetic) {
                 continue;
             }
-            if stops.iter().any(|stop| stop == token) {
-                continue;
-            }
-            if numbers.iter().any(|number| number == token) {
+            if skipped(token) {
                 continue;
             }
             words.push(token.to_owned());
@@ -146,21 +233,36 @@ pub(crate) fn topic_words(normalized: &str, language: &str) -> Vec<String> {
     words
 }
 
-/// The first spelled number in `normalized` for `language`, else the first
-/// standalone decimal number.
+/// The count a request states: a spelled number (CJK numerals by substring
+/// once the language's stop words are removed, the longest numeral
+/// winning; other scripts as whole tokens), else the first standalone
+/// decimal number when it lies in 1..=12.
 pub(crate) fn requested_count(normalized: &str, language: &str) -> Option<u32> {
+    let mut stripped = normalized.to_owned();
+    for stop in stop_words(language) {
+        if crate::coding::contains_cjk(&stop) {
+            stripped = stripped.replace(stop.as_str(), " ");
+        }
+    }
+    let mut best: Option<(String, u32)> = None;
     for (word, value) in spelled_numbers(language) {
         // CJK scripts carry no inter-word spaces, so their numeral words
         // match by substring; space-delimited scripts match whole tokens.
         if crate::coding::contains_cjk(&word) {
-            if normalized.contains(word.as_str()) {
-                return Some(value);
+            let longer = best
+                .as_ref()
+                .is_none_or(|(held, _)| word.chars().count() > held.chars().count());
+            if longer && stripped.contains(word.as_str()) {
+                best = Some((word, value));
             }
         } else if normalized.contains(&format!(" {word} "))
             || normalized.starts_with(&format!("{word} "))
         {
             return Some(value);
         }
+    }
+    if let Some((_, value)) = best {
+        return Some(value);
     }
     normalized
         .split_whitespace()
@@ -175,13 +277,7 @@ struct BrainstormRule {
 }
 
 fn brainstorm_rules() -> Vec<BrainstormRule> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "brainstorm_rule")
+    rules_records_named("brainstorm_rule")
         .map(|record| BrainstormRule {
             kind: record.find_child_value("kind").to_string(),
             pieces: record
@@ -209,15 +305,7 @@ fn distinctness_metric() -> DistinctnessMetric {
         statement: "pairwise normalized levenshtein ratio".to_owned(),
         share_rule: String::new(),
     };
-    let Some(text) = seed_text(RULES_PATH) else {
-        return default;
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    let Some(record) = tree
-        .children
-        .iter()
-        .find(|record| record.name == "distinctness_metric")
-    else {
+    let Some(record) = rules_records_named("distinctness_metric").next() else {
         return default;
     };
     DistinctnessMetric {
@@ -268,12 +356,13 @@ fn pronounceable(candidate: &str) -> bool {
         .any(|c| "aeiouyAEIOUYаеёиоуыэюяАЕЁИОУЫЭЮЯ".contains(c))
 }
 
-/// The words named after "without" in the prompt: candidates containing
-/// one are excluded before ranking.
+/// The words named after the `exclusion` request cue in the prompt:
+/// candidates containing one are excluded before ranking.
 fn exclusions(normalized: &str) -> Vec<String> {
+    let markers = cue_words("exclusion");
     normalized
         .split_whitespace()
-        .skip_while(|token| *token != "without")
+        .skip_while(|token| !markers.iter().any(|marker| marker.as_str() == *token))
         .skip(1)
         .map(|token| token.trim_matches(|c: char| !c.is_alphanumeric()).to_lowercase())
         .filter(|token| token.chars().count() >= 2)
@@ -437,7 +526,14 @@ pub fn handle_brainstorm_request(
     }
     let count = requested_count(normalized, &language).unwrap_or(5);
     log.append("brainstorming:count", count.to_string());
-    let max_length = if normalized.contains("short") { 12 } else { 18 };
+    let short_cued = cue_words("short_names")
+        .iter()
+        .any(|word| normalized.contains(word.as_str()));
+    let max_length = cue_field("short_names", "max_length")
+        .parse::<usize>()
+        .ok()
+        .filter(|_| short_cued)
+        .unwrap_or(DEFAULT_MAX_LENGTH);
     let excluded = exclusions(normalized);
     for word in &excluded {
         log.append("brainstorming:exclusion", word.clone());
@@ -509,13 +605,7 @@ struct EvidenceGrade {
 }
 
 fn evidence_grades() -> Vec<EvidenceGrade> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "advice_evidence_grade")
+    rules_records_named("advice_evidence_grade")
         .map(|record| EvidenceGrade {
             grade: record.find_child_value("grade").to_string(),
             weight: record.find_child_value("weight").parse().unwrap_or(0.3),
@@ -534,13 +624,7 @@ struct Recommendation {
 }
 
 fn recommendations(topic: &str) -> Vec<Recommendation> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "advice_recommendation")
+    rules_records_named("advice_recommendation")
         .filter(|record| record.find_child_value("topic") == topic)
         .map(|record| Recommendation {
             text: record.find_child_value("text").to_string(),
@@ -554,13 +638,7 @@ fn recommendations(topic: &str) -> Vec<Recommendation> {
 
 /// The topics the advice table covers, with their detection surfaces.
 fn advice_topics() -> Vec<(String, Vec<String>)> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "advice_topic")
+    rules_records_named("advice_topic")
         .map(|record| {
             (
                 record.find_child_value("topic").to_string(),

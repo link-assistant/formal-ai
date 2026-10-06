@@ -17,13 +17,7 @@ struct Place {
 
 /// One `destination_surface` record: the surfaces naming a destination.
 fn destinations() -> Vec<(String, Vec<String>)> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "destination_surface")
+    rules_records_named("destination_surface")
         .map(|record| {
             (
                 record.find_child_value("destination").to_string(),
@@ -41,13 +35,7 @@ fn destinations() -> Vec<(String, Vec<String>)> {
 }
 
 fn places(destination: &str) -> Vec<Place> {
-    let Some(text) = seed_text(RULES_PATH) else {
-        return Vec::new();
-    };
-    let tree = crate::seed::parser::parse_lino(text);
-    tree.children
-        .iter()
-        .filter(|record| record.name == "planning_place_cache")
+    rules_records_named("planning_place_cache")
         .filter(|record| record.find_child_value("destination") == destination)
         .map(|record| Place {
             id: record.find_child_value("id").to_string(),
@@ -89,17 +77,19 @@ fn plan_constraints() -> PlanConstraints {
         max_items: 4,
         note: String::new(),
     };
-    let Some(text) = seed_text(RULES_PATH) else {
+    let Some(record) = rules_records_named("plan_constraint").next() else {
         return default;
     };
-    let tree = crate::seed::parser::parse_lino(text);
-    let Some(record) = tree
-        .children
-        .iter()
-        .find(|record| record.name == "plan_constraint")
-    else {
-        return default;
-    };
+    let (day_start, day_end) = clock_window(
+        record.find_child_value("day_window"),
+        default.day_start,
+        default.day_end,
+    );
+    let (lunch_start, lunch_end) = clock_window(
+        record.find_child_value("lunch_window"),
+        default.lunch_start,
+        default.lunch_end,
+    );
     PlanConstraints {
         travel_intra: record
             .find_child_value("travel_intra_district_minutes")
@@ -109,10 +99,10 @@ fn plan_constraints() -> PlanConstraints {
             .find_child_value("travel_cross_district_minutes")
             .parse()
             .unwrap_or(default.travel_cross),
-        lunch_start: 13 * 60,
-        lunch_end: 14 * 60,
-        day_start: 9 * 60,
-        day_end: 19 * 60,
+        lunch_start,
+        lunch_end,
+        day_start,
+        day_end,
         max_items: record
             .find_child_value("max_items_per_day")
             .parse()
@@ -125,6 +115,19 @@ fn plan_constraints() -> PlanConstraints {
 fn parse_hhmm(text: &str) -> Option<u32> {
     let (hours, minutes) = text.split_once(':')?;
     Some(hours.trim().parse::<u32>().ok()? * 60 + minutes.trim().parse::<u32>().ok()?)
+}
+
+/// The opening and closing minutes of an "HH:MM-HH:MM" window, with the
+/// fallbacks standing in for an unparsable end ("always open").
+fn clock_window(hours: &str, open: u32, close: u32) -> (u32, u32) {
+    (
+        hours.split('-').next().and_then(parse_hhmm).unwrap_or(open),
+        hours
+            .split('-')
+            .next_back()
+            .and_then(parse_hhmm)
+            .unwrap_or(close),
+    )
 }
 
 /// Render minutes past midnight as "HH:MM".
