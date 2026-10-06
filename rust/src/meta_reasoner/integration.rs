@@ -121,7 +121,10 @@ pub fn try_meta_discovery(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let first = meta_reason(prompt, language, &mut Knowledge::new(), None);
-    if !(first.goal.starts_with("synthesize") || first.goal == "decompose") {
+    if !matches!(
+        first.goal.as_str(),
+        "synthesize_from_examples" | "synthesize_from_meaning" | "decompose"
+    ) {
         return None;
     }
     let meta = meta_reason_turn(prompt, language);
