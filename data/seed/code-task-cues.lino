@@ -33,6 +33,11 @@ cues
     phrase "what s wrong with"
     phrase "what's wrong with"
     phrase "whats wrong with"
+    phrase "why does this fail"
+    phrase "why does this code fail"
+    phrase "why is this failing"
+    phrase "why doesn't this work"
+    phrase "why does this not work"
     phrase "найди ошибку"
     phrase "найди баг"
     phrase "найди неисправность"
@@ -41,6 +46,8 @@ cues
     phrase "отладь"
     phrase "отладить"
     phrase "отладка"
+    phrase "почему это не работает"
+    phrase "почему этот код не работает"
 cues
   intent regex_synthesis
     phrase "write a regular expression"

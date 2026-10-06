@@ -124,8 +124,31 @@ fn extract_shell_command(prompt: &str) -> Option<String> {
         .lines()
         .map(str::trim)
         .map(strip_code_fence)
+        .map(command_span)
         .find(|line| looks_like_shell_command(line) && !line.starts_with("screen "))
         .map(str::to_owned)
+}
+
+/// The command span of a line. A line such as *"Make this a single line loop:
+/// sleep 5m && cleanup -f"* carries a prose lead that ends at a colon; the
+/// lead is the request, not part of the command, so the command is the span
+/// after the colon. The lead counts as prose only when it is plain words
+/// (letters, digits, spaces, apostrophes, hyphens), so a colon inside a real
+/// command (a URL, a quoted string, a `host:path`) never splits it.
+fn command_span(line: &str) -> &str {
+    let Some((lead, rest)) = line.split_once(": ") else {
+        return line;
+    };
+    let rest = strip_code_fence(rest.trim());
+    let prose_lead = !lead.trim().is_empty()
+        && lead
+            .chars()
+            .all(|ch| ch.is_alphanumeric() || ch.is_whitespace() || ch == '\'' || ch == '-');
+    if prose_lead && looks_like_shell_command(rest) {
+        rest
+    } else {
+        line
+    }
 }
 
 fn command_after_shell_prompt(line: &str) -> Option<String> {

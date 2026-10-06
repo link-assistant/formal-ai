@@ -76,7 +76,9 @@ function isWhyQuestion(lower) {
       if (lexeme.language !== "en" && lexeme.language !== "ru") continue;
       for (const text of lexeme.words) {
         const form = makeWordForm(text, "", "");
-        const matched = form.slot === "prefix" ? lower.startsWith(form.before) : lower.includes(form.text);
+        const matched = form.slot === "prefix"
+          ? lower.startsWith(form.before) && whyQuestionAddressesAssistant(lower.slice(form.before.length))
+          : lower.includes(form.text);
         if (matched) return true;
       }
     }
@@ -86,6 +88,19 @@ function isWhyQuestion(lower) {
     const namesPrior = wordsForRoleInLanguages(ROLE_PRIOR_ANSWER_REFERENCE, [language]).some((word) => lower.includes(word));
     return namesCause && namesPrior;
   });
+}
+
+/**
+ * True when the rest of a fronted why-question addresses the assistant: it
+ * carries an assistant_self_reference surface ("you", "ты", …) as a whole
+ * word, so "Why does this fail: …" about the user's code is not claimed.
+ * Mirrors addresses_assistant in rust/src/solver_handlers/meta_explanation.rs.
+ * @param {string} rest
+ * @returns {boolean}
+ */
+function whyQuestionAddressesAssistant(rest) {
+  const tokens = rest.split(/[^\p{Alphabetic}\p{N}]+/u).filter(Boolean).join(" ");
+  return lexiconMentionsRole(ROLE_ASSISTANT_SELF_REFERENCE, tokens);
 }
 
 /**
@@ -245,8 +260,27 @@ function shellTransformCommand(prompt) {
     const command = shellTransformStripFence(backticked.trim());
     if (shellTransformLooksLikeCommand(command) && !command.startsWith("screen ")) return command;
   }
-  return prompt.split("\n").map((line) => shellTransformStripFence(line.trim()))
+  return prompt.split("\n").map((line) => shellTransformCommandSpan(shellTransformStripFence(line.trim())))
     .find((line) => shellTransformLooksLikeCommand(line) && !line.startsWith("screen ")) || null;
+}
+
+/**
+ * The command span of a line: a plain-word prose lead ending at a colon
+ * ("Make this a single line loop: sleep 5m && cleanup -f") is the request,
+ * not part of the command, so the command is the span after the colon. A
+ * colon inside a real command (URL, quoted string, host:path) never splits it
+ * because its lead is not plain words. Mirrors command_span in
+ * rust/src/solver_handlers/shell_command_transform.rs.
+ * @param {string} line
+ * @returns {string}
+ */
+function shellTransformCommandSpan(line) {
+  const index = line.indexOf(": ");
+  if (index < 0) return line;
+  const lead = line.slice(0, index);
+  const rest = shellTransformStripFence(line.slice(index + 2).trim());
+  const proseLead = lead.trim() !== "" && /^[\p{Alphabetic}\p{N}\s'-]+$/u.test(lead);
+  return proseLead && shellTransformLooksLikeCommand(rest) ? rest : line;
 }
 
 function shellTransformWrapLoop(command) {

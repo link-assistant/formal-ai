@@ -80,7 +80,6 @@ routing_probes
     language en
     intent code_debugging
     prompt "Why does this fail: def f(x): return x +"
-    js_misroute meta_explanation
     rust_misroute unverified
   probe p055
     lane code_explanation

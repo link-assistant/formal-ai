@@ -99,3 +99,12 @@ test("unrelated prompts are not claimed by the composer", () => {
     assert.equal(worker.handleShellCommandCompose(prompt, worker.normalizePrompt(prompt)), null, prompt);
   }
 });
+
+test("a prose lead before a colon is not part of the looped command", async () => {
+  const prompt = "Make this a single line loop: sleep 5m && cleanup -f";
+  const expected = "while true; do sleep 5m && cleanup -f; done";
+  const engine = await solve(prompt);
+  assert.equal(engine.intent, "shell_command_transform");
+  assert.equal(engine.content, expected);
+  assert.equal(worker.tryShellCommandTransform(prompt, []).content, expected);
+});

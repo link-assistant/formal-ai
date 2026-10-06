@@ -86,6 +86,19 @@ fn why_meta_question_explains_previous_answer() {
     assert!(response.answer.contains("because") || response.answer.contains("evidence"));
 }
 
+/// A fronted "why …" only opens a question: it is a meta explanation when it
+/// addresses the assistant itself, never when it asks about the user's code.
+#[test]
+fn why_question_about_user_code_is_not_a_meta_explanation() {
+    for prompt in [
+        "Why does this fail: def f(x): return x +",
+        "Why is the sky blue?",
+    ] {
+        let response = answer(prompt);
+        assert_ne!(response.intent, "meta_explanation", "{prompt}");
+    }
+}
+
 #[test]
 fn why_meta_question_explains_previous_answer_in_supported_languages() {
     struct Case {

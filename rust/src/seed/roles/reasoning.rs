@@ -146,13 +146,15 @@ pub const ROLE_PRIOR_ANSWER_REFERENCE: &str = "prior_answer_reference";
 ///
 /// The English and Russian why-questions front the interrogative, so they are
 /// matched directly: a prefix surface ("why …", "почему …") fires when the
-/// prompt opens with the literal, and a bare surface ("why did you answer",
-/// "почему ты ответил", …) matches anywhere. Carried by
+/// prompt opens with the literal *and* the rest addresses the assistant (a
+/// whole-word `assistant_self_reference` such as "you" or "ты"), so "Why does
+/// this fail: …" stays a debugging request; a bare surface ("why did you
+/// answer", "почему ты ответил", …) matches anywhere. Carried by
 /// `answer_rationale_inquiry`; the meta-explanation why-recogniser iterates only
 /// the English and Russian forms (the Hindi and Chinese forms are inert
 /// completeness surfaces, handled instead by the per-language pairing of
 /// [`ROLE_CAUSAL_INTERROGATIVE`] and [`ROLE_PRIOR_ANSWER_REFERENCE`]). Read by the
-/// Rust solver only.
+/// Rust solver and, since PR #1188, the browser worker's native lanes.
 pub const ROLE_ANSWER_RATIONALE_LEAD: &str = "answer_rationale_lead";
 /// Semantic role: a second-person reference to the assistant itself.
 ///

@@ -190,7 +190,9 @@ fn is_why_question(normalized: &str) -> bool {
             }
             for form in &lexeme.words {
                 let matched = match form.slot() {
-                    Slot::Prefix => normalized.starts_with(form.before_slot()),
+                    Slot::Prefix => normalized
+                        .strip_prefix(form.before_slot())
+                        .is_some_and(addresses_assistant),
                     _ => normalized.contains(form.text.as_str()),
                 };
                 if matched {
@@ -210,6 +212,25 @@ fn is_why_question(normalized: &str) -> bool {
             .any(|word| normalized.contains(word.as_str()));
         names_cause && names_prior_answer
     })
+}
+
+/// True when the rest of a fronted why-question addresses the assistant.
+///
+/// A prefix rationale lead ("why …", "почему …") only opens a question; "Why
+/// does this fail: def f(x): …" asks about the user's code, not about the
+/// assistant's answer. The question is about the assistant itself only when its
+/// remainder carries an
+/// [`assistant_self_reference`](seed::ROLE_ASSISTANT_SELF_REFERENCE) surface
+/// ("you", "ты", "вы", …) as a whole word — "why did you …", "почему ты …".
+/// The remainder is cut into letter/digit tokens first, so punctuation glued to
+/// a word ("you?") does not hide it.
+fn addresses_assistant(rest: &str) -> bool {
+    let tokens = rest
+        .split(|ch: char| !ch.is_alphanumeric())
+        .filter(|token| !token.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ");
+    seed::lexicon().mentions_role(seed::ROLE_ASSISTANT_SELF_REFERENCE, &tokens)
 }
 
 /// True when the prompt asks the assistant to explain how it works.
