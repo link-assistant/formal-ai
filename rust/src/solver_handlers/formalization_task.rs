@@ -33,8 +33,6 @@ use crate::seed::parser::{parse_lino, LinoNode};
 use super::finalize_simple;
 
 const TARGETS: &str = include_str!("../../embedded/data/seed/formal-targets.lino");
-const RESPONSES: &str =
-    include_str!("../../embedded/data/seed/multilingual-responses-formalization.lino");
 const INTENT: &str = "formalization";
 
 /// How the bound variable is named; the seed's `variable` record owns it.
@@ -163,29 +161,13 @@ fn named_child<'a>(node: &'a LinoNode, name: &str) -> Option<&'a LinoNode> {
     node.children.iter().find(|child| child.name == name)
 }
 
-/// Cue phrases for `intent`/`role` from the targets seed. The phrases sit
-/// under the `role` wrapper child of the `intent` node, one nesting level
-/// below the record head — the wrapper descent every `.lino` reader in
-/// this family performs.
-fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
-    let tree = parse_lino(TARGETS);
-    let mut out = Vec::new();
-    for record in tree.children.iter().filter(|child| child.name == "cues") {
-        if record.find_child_value("intent") != intent {
-            continue;
-        }
-        let Some(intent_node) = named_child(record, "intent") else {
-            continue;
-        };
-        for role_node in intent_node
-            .children
-            .iter()
-            .filter(|child| child.name == "role" && child.id == role)
-        {
-            out.extend(child_values(role_node, "phrase"));
-        }
-    }
-    out
+/// The records of the targets seed. `formal-targets.lino` wraps every
+/// record (`cues`, `variable`, `formal_language`, `natural_language`)
+/// under one `formal_targets` root, so the records are the children of the
+/// top-level nodes — mirroring `formalTargetRecords` in
+/// js/worker/formal_ai_worker_formalization_request.js.
+fn target_records(tree: &LinoNode) -> impl Iterator<Item = &LinoNode> {
+    tree.children.iter().flat_map(|top| top.children.iter())
 }
 
 /// Parse the whole targets seed into the grammar tables.
@@ -195,7 +177,7 @@ fn grammar() -> &'static Grammar {
         let tree = parse_lino(TARGETS);
         let mut formal = Vec::new();
         let mut natural = Vec::new();
-        for record in tree.children.iter().filter(|child| child.name == "formal_language") {
+        for record in target_records(&tree).filter(|child| child.name == "formal_language") {
             formal.push(FormalLanguage {
                 slug: record.id.clone(),
                 aliases: child_values(record, "alias"),
@@ -213,11 +195,11 @@ fn grammar() -> &'static Grammar {
                     .filter(|child| child.name == "quantifier")
                     .map(|child| (child.id.clone(), child.find_child_value("text").to_owned()))
                     .collect(),
-                clause_conditional: record.find_child_value("conditional").to_owned(),
-                clause_conjunctive: record.find_child_value("conjunctive").to_owned(),
+                clause_conditional: record.find_child_value("clause_conditional").to_owned(),
+                clause_conjunctive: record.find_child_value("clause_conjunctive").to_owned(),
             });
         }
-        for record in tree.children.iter().filter(|child| child.name == "natural_language") {
+        for record in target_records(&tree).filter(|child| child.name == "natural_language") {
             natural.push(NaturalLanguage {
                 language: record.id.clone(),
                 quantifiers: record
@@ -250,24 +232,12 @@ fn grammar() -> &'static Grammar {
     })
 }
 
-/// A localized response template from this handler's response seed.
+/// A localized response template from this handler's response seed
+/// (`multilingual-responses-formalization.lino`, registered with the
+/// shared response tables): the language, else English, else empty.
 fn response(intent: &str, language: &str) -> String {
-    let tree = parse_lino(RESPONSES);
-    let exact = tree.children.iter().find_map(|record| {
-        (record.name == "response"
-            && record.find_child_value("intent") == intent
-            && record.find_child_value("language") == language)
-        .then(|| record.find_child_value("text").to_owned())
-    });
-    exact
-        .or_else(|| {
-            tree.children.iter().find_map(|record| {
-                (record.name == "response"
-                    && record.find_child_value("intent") == intent
-                    && record.find_child_value("language") == "en")
-                .then(|| record.find_child_value("text").to_owned())
-            })
-        })
+    crate::seed::response_for(intent, language)
+        .or_else(|| crate::seed::response_for(intent, "en"))
         .unwrap_or_default()
 }
 
@@ -284,15 +254,31 @@ fn fill(template: &str, values: &[(&str, &str)]) -> String {
 // Natural-language parsing
 // ---------------------------------------------------------------------------
 
-/// Tokenize on whitespace and punctuation, keeping word characters (any
-/// script); commas are kept as standalone tokens because comma languages
-/// delimit their relative clauses with them.
+/// A word character: letters, numbers and combining marks. A Devanagari
+/// virama or nukta is a mark, not alphanumeric, so without the mark clause
+/// "पढ़ता" would split inside its conjunct.
+fn is_word_character(character: char) -> bool {
+    use unicode_general_category::GeneralCategory;
+    character.is_alphanumeric()
+        || matches!(
+            unicode_general_category::get_general_category(character),
+            GeneralCategory::NonspacingMark
+                | GeneralCategory::SpacingMark
+                | GeneralCategory::EnclosingMark
+        )
+}
+
+/// Tokenize the lowercased text on whitespace and punctuation, keeping
+/// word characters (any script, marks included); commas are kept as
+/// standalone tokens because comma languages delimit their relative
+/// clauses with them. Lowercasing lets the seed's lowercase quantifier and
+/// marker surfaces match a sentence-initial capital ("Every").
 fn tokenize(text: &str) -> Vec<String> {
     let mut tokens = Vec::new();
     let mut current = String::new();
-    for character in text.chars() {
+    for character in text.to_lowercase().chars() {
         match character {
-            c if c.is_alphanumeric() || c == '-' || c == '\'' || c == '’' => current.push(c),
+            c if is_word_character(c) || c == '-' || c == '\'' || c == '’' => current.push(c),
             ',' => {
                 if !current.is_empty() {
                     tokens.push(current.clone());
@@ -340,7 +326,7 @@ fn quantifier_at(
 
 /// Parse a natural-language sentence into a quantified clause using the
 /// recognition surfaces of `language`.
-pub fn parse_quantified_clause(
+fn parse_quantified_clause(
     text: &str,
     language: &NaturalLanguage,
 ) -> Option<QuantifiedClause> {

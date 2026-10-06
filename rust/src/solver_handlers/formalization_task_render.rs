@@ -274,7 +274,8 @@ fn role_language(role: &str) -> &str {
 fn matched_roles(prompt: &str, normalized: &str) -> Vec<(String, String)> {
     let lower = prompt.to_lowercase();
     let mut out = Vec::new();
-    for record in parse_lino(TARGETS).children.iter().filter(|child| child.name == "cues") {
+    let tree = parse_lino(TARGETS);
+    for record in target_records(&tree).filter(|child| child.name == "cues") {
         let Some(intent_node) = named_child(record, "intent") else {
             continue;
         };
@@ -333,9 +334,12 @@ pub fn handle_formalization_request(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let roles = matched_roles(prompt, normalized);
-    let formalize = roles.iter().any(|(family, _)| family == "command");
-    let deformalize = roles.iter().any(|(family, _)| family == "direction")
-        || (!formalize && carries_formal_surface(prompt));
+    // Every deformalize verb contains its formalize verb ("deformalize" /
+    // "деформализуй"), so a matched direction cue decides the direction —
+    // mirroring `tryFormalizationRequest` in the JS twin.
+    let direction = roles.iter().any(|(family, _)| family == "direction");
+    let formalize = !direction && roles.iter().any(|(family, _)| family == "command");
+    let deformalize = direction || (!formalize && carries_formal_surface(prompt));
     if !formalize && !deformalize {
         return None;
     }
