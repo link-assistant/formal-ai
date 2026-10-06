@@ -64,6 +64,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # arch is an axis of its own so `exclude` can name it; each include
+        # row matches one arch and attaches its runner.
+        arch: [amd64, arm64]
         include:
           - arch: amd64
             runner: ubuntu-latest

@@ -33,15 +33,6 @@ const LANGUAGE_NAME_ALIASES = {
   hindi: ["хинди", "हिन्दी", "हिंदी", "印地语"],
 };
 
-function matchWords(haystack) {
-  const words = haystack.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
-  const aliases = [];
-  for (const word of words) {
-    for (const alias of LANGUAGE_NAME_ALIASES[word] || []) aliases.push(normalizeForMatch(alias));
-  }
-  return [...words, ...aliases];
-}
-
 /**
  * Rank `items` against `query`. Items are { value, hint?, source? }.
  * Score: 3 = prefix match, 2 = word-start match (a language name also
@@ -57,8 +48,16 @@ function rankSuggestions(query, items, limit = SUGGESTION_LIMIT) {
     const haystack = normalizeForMatch(item.value);
     let score = 0;
     if (haystack.startsWith(needle)) score = 3;
-    else if (matchWords(haystack).some((word) => word.startsWith(needle))) score = 2;
-    else if (haystack.includes(needle)) score = 1;
+    else {
+      // Word starts, plus each language name's spelling in the other UI
+      // languages, so "рус" finds "switch to Russian".
+      const words = haystack.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+      for (const word of [...words]) {
+        for (const alias of LANGUAGE_NAME_ALIASES[word] || []) words.push(normalizeForMatch(alias));
+      }
+      if (words.some((word) => word.startsWith(needle))) score = 2;
+      else if (haystack.includes(needle)) score = 1;
+    }
     if (score > 0) ranked.push({ item, score, index });
   }
   return ranked
