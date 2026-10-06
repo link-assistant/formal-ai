@@ -65,17 +65,23 @@ fn seed_text(path: &str) -> Option<&'static str> {
         .map(|(_, text)| text)
 }
 
-/// Iterate the top-level records of the seed with a given name (this
-/// seed's records are siblings of the `triz_principles` root, not
-/// nested under it).
-fn records_named(name: &str) -> Vec<crate::seed::parser::LinoNode> {
+/// Iterate the top-level records of the seed of one type (this seed's
+/// records are siblings of the `triz_principles` root, not nested under
+/// it). The seed names its records individually
+/// (`triz_family_range_selection`, `triz_task_umbrella_crowd`) and types
+/// them with a `record_type` field, so the type is read from that field;
+/// a record literally named `name` is accepted as well — mirroring
+/// `trizRecordsOfType` in js/worker/formal_ai_worker_triz.js.
+fn records_of_type(record_type: &str, name: &str) -> Vec<crate::seed::parser::LinoNode> {
     let Some(text) = seed_text(SEED_PATH) else {
         return Vec::new();
     };
     parse_lino(text)
         .children
         .into_iter()
-        .filter(|record| record.name == name)
+        .filter(|record| {
+            record.name == name || record.find_child_value("record_type") == record_type
+        })
         .collect()
 }
 
@@ -105,7 +111,7 @@ fn records_named_by_type(record_type: &str) -> Vec<String> {
 
 /// The general resolution families, in seed order.
 pub fn triz_families() -> Vec<ResolutionFamily> {
-    records_named("triz_resolution_family")
+    records_of_type("triz_resolution_family", "triz_resolution_family")
         .iter()
         .filter_map(|record| {
             let method_id = record.find_child_value("method_id").trim().to_owned();
@@ -125,7 +131,7 @@ pub fn triz_families() -> Vec<ResolutionFamily> {
 
 /// The top-20 benchmark corpus, in seed order.
 pub fn triz_benchmark_tasks() -> Vec<BenchmarkTask> {
-    records_named("triz_benchmark_task")
+    records_of_type("triz_benchmark_task", "triz_benchmark_task")
         .iter()
         .filter_map(|record| {
             let task_id = record.find_child_value("task_id").trim().to_owned();
@@ -151,7 +157,7 @@ pub fn triz_benchmark_tasks() -> Vec<BenchmarkTask> {
 /// The `triz_cues` phrases that mark a prompt as a contradiction
 /// question (stemmed fragments match by substring: противоречи-, triz).
 fn triz_cues() -> Vec<String> {
-    records_named("triz_cues")
+    records_of_type("triz_intent_cues", "triz_cues")
         .iter()
         .flat_map(|record| {
             record
