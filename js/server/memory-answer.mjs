@@ -13,6 +13,7 @@
 // (`WorkerHost.seedReaders`), so both servers read one seed. The fixed
 // report wording Rust writes inline lives in data/meta/server-messages.lino.
 
+import { EventLog, buildEvidenceLinks } from './evidence-links.mjs';
 import { stableId } from './ids.mjs';
 import { serverMessage } from './messages.mjs';
 import { thinkingStepsFromEvents } from './solver-trace.mjs';
@@ -29,47 +30,9 @@ const ROLE_CONVERSATION_RECALL_QUERY = 'conversation_recall_query';
 const ROLE_CONVERSATION_RECALL_OTHER_QUERY = 'conversation_recall_other_query';
 const encoder = new TextEncoder();
 
-/** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
-export class EventLog {
-  constructor() {
-    this.events = [];
-  }
-
-  /** `EventLog::append`: the event id is `stable_id(kind, "{kind}:{index}:{payload}")`. */
-  append(kind, payload) {
-    const text = String(payload);
-    const id = stableId(kind, `${kind}:${this.events.length}:${text}`);
-    this.events.push({ id, kind, payload: text });
-    return id;
-  }
-
-  firstOf(kind) {
-    return this.events.find((event) => event.kind === kind) || null;
-  }
-}
-
-/** Kinds whose evidence link is `kind:payload` in `build_evidence_links`. */
-const PAYLOAD_EVIDENCE_KINDS = new Set([
-  'language', 'language_from', 'language_to', 'meaning', 'cache_hit', 'filter:user',
-  'intent', 'legacy_intent', 'diagnostic_mode',
-]);
-
-/**
- * Mirrors rust/src/event_log.rs `build_evidence_links` for the events the
- * memory answers append: payload-carrying kinds keep their payload, the
- * `response` event is its own link, and every other kind is addressed by its
- * event id (the function's catch-all arm).
- */
-export function buildEvidenceLinks(prompt, log, responseLink) {
-  const links = [`prompt:${stableId('prompt', prompt)}`];
-  for (const event of log.events) {
-    if (event.kind === 'response') links.push(event.payload);
-    else if (PAYLOAD_EVIDENCE_KINDS.has(event.kind)) links.push(`${event.kind}:${event.payload}`);
-    else links.push(`${event.kind}:${event.id}`);
-  }
-  if (!links.includes(responseLink)) links.push(responseLink);
-  return links;
-}
+// The log and its evidence projection live in ./evidence-links.mjs; re-exported
+// for the modules that finish an answer through `finalizeSimple`.
+export { EventLog, buildEvidenceLinks };
 
 /**
  * Mirrors rust/src/solver_handlers/mod.rs `finalize_simple`: close the log

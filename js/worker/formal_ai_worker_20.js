@@ -208,6 +208,9 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
         formalizationContext,
       );
     }
+    // With no earlier turn to re-render, the terse switch is answered in the named language.
+    const demonstration = tryResponseLanguageDemonstration(prompt);
+    if (demonstration) return finalizeInlineHandler(events, steps, toolCalls, demonstration, "tryResponseLanguageDemonstration", formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "project_lookup" });
   const projectLookup = await tryProjectLookup(prompt, language, preferences);
@@ -714,6 +717,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
     return finalize(events, steps, toolCalls, terminal, formalizationContext);
   }
+  const howItWorks = tryHowItWorks(prompt);
+  if (howItWorks) return finalizeInlineHandler(events, steps, toolCalls, howItWorks, "tryHowItWorks", formalizationContext);
 
   if (
     lexiconMentionsRole(ROLE_PROGRAM_MODIFICATION, normalized) &&
@@ -957,6 +962,9 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
   if (answer.diagnostics) {
     result.diagnostics = answer.diagnostics;
   }
+  if (answer.programExecution) {
+    result.programExecution = answer.programExecution; // R1013
+  }
   // Issue #529: carry a natural-language memory write (append/substitution) out
   // to the app so it can apply the read+write transform to persistent storage.
   if (answer.memoryOperation) {
@@ -980,14 +988,14 @@ function workerHandlerRegistryDefinition() {
     brainstorming: "tryBrainstormingRequest",
     roleplay: "tryRoleplayRequest",
     coreference: "tryCoreferenceFactLookup",
-    shell_command_transform: "tryTerminalCommand",
+    shell_command_transform: "tryShellCommandTransform",
     write_script: "tryWriteProgram",
     software_project: "trySoftwareProjectRequest",
     who_is: "tryWhoIsQuestion",
   };
   const workerHandlers = {
     conversation_control: null, // local recall and behavior rules run above the table
-    agentic_continuation: null, // the agentic runtime resumes above the table
+    agentic_continuation: "tryAgenticContinuation", // seed rule interpreter; the agentic runtime resumes above the table
     exact_memory_query: "tryExactMemoryQuery",
     memory_program: "tryMemoryProgram",
     memory_program_gap: "tryMemoryProgramGap",
@@ -1054,8 +1062,8 @@ function workerHandlerRegistryDefinition() {
     triz_resolution: "tryTrizResolution",
     concept_lookup: "tryConceptLookup",
     who_is: workerHandlerAliases.who_is,
-    how_it_works: null, // inline architecture-question machinery
-    meta_explanation: null, // inline architecture-question machinery
+    how_it_works: "tryHowItWorks", // runs inline after the async lookups, so online sources answer first
+    meta_explanation: "tryMetaExplanation",
     network_query: null, // phase async
     execution_failure: "tryExecutionFailure",
     installation_conversion: "tryInstallationConversion",
@@ -1064,7 +1072,7 @@ function workerHandlerRegistryDefinition() {
     software_project: workerHandlerAliases.software_project,
     software_project_request: "trySoftwareProjectRequest",
     algorithm: "tryAlgorithm",
-    source_refresh: null, // phase async
+    source_refresh: "trySourceRefresh",
     source_conflict: "trySourceConflict",
     clarification: "tryClarification", // seed rule interpreter (handler-rules.lino)
     punctuation_only_prompt: "tryPunctuationOnlyPrompt", // seed rule interpreter, run inline early

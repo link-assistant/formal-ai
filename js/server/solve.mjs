@@ -4,10 +4,12 @@
 // `estimate_tokens`) and the tool-policy refusals of
 // rust/src/protocol_policy.rs.
 
+import { EventLog, buildEvidenceLinks } from './evidence-links.mjs';
 import { f32 } from './json.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
 import { serverMessage } from './messages.mjs';
 import { noteLearned } from './meta-learned.mjs';
+import { nativeProgramAnswer } from './program-report.mjs';
 import { answerFromMemoryIfRequested } from './memory-answer.mjs';
 import { thinkingStepsFromEvents } from './solver-trace.mjs';
 import { applyRetainedAmendments, solveWithStandingRequirements } from './standing-requirements.mjs';
@@ -23,19 +25,66 @@ export { estimateTokens, stableId };
  * }} SymbolicAnswer
  */
 
+const PRIOR_TURN_USER = 'prior_turn:user';
+const PRIOR_TURN_ASSISTANT = 'prior_turn:assistant';
+const ASSISTANT_ROLE = 'assistant';
+const IMPULSE_KIND = 'impulse';
+const RESPONSE_KIND = 'response';
+const META_RESPONSE_LINK = 'response:meta_reasoner';
+const BROWSER_TRACE_PREFIX = 'trace:';
+
+/**
+ * The worker's own evidence without the browser trace `finalize` appends
+ * after it (`trace:<event>` per dispatch event): the handler's evidence.
+ */
+function handlerEvidence(evidence) {
+  let end = evidence.length;
+  while (end > 0 && evidence[end - 1].startsWith(BROWSER_TRACE_PREFIX)) end -= 1;
+  return evidence.slice(0, end);
+}
+
+/**
+ * Mirrors rust/src/event_log.rs `build_evidence_links` over the native log
+ * the worker recorded (`solverEvents`), after the `prior_turn:*` events
+ * `solve_with_history` opens the log with; a meta-reasoner answer extends the
+ * links with its own evidence (rust/src/meta_reasoner/integration.rs
+ * `project`). Null when the worker recorded no native log.
+ */
+export function solverEvidenceLinks(result, history = []) {
+  const events = Array.isArray(result?.solverEvents) ? result.solverEvents : null;
+  if (!events) return null;
+  const impulse = events.find((event) => event.kind === IMPULSE_KIND);
+  if (!impulse) return null;
+  const log = new EventLog();
+  for (const turn of history || []) {
+    log.append(turn?.role === ASSISTANT_ROLE ? PRIOR_TURN_ASSISTANT : PRIOR_TURN_USER, String(turn?.content ?? ''));
+  }
+  for (const event of events) log.append(String(event.kind), String(event.payload ?? ''));
+  const response = log.lastOf(RESPONSE_KIND);
+  const responseLink = response ? response.payload : `${RESPONSE_KIND}:${String(result?.intent ?? 'unknown')}`;
+  const links = buildEvidenceLinks(String(impulse.payload), log, responseLink);
+  if (responseLink === META_RESPONSE_LINK && Array.isArray(result?.evidence)) {
+    links.push(...handlerEvidence(result.evidence.map(String)));
+  }
+  return links;
+}
+
 /**
  * Recast a worker answer as a `SymbolicAnswer`.
  * @param {object} result the worker's `solve` value
+ * @param {Array<{role: string, content: string}>} [history] the turns it was solved after
+ * @param {(intent: string) => string|null} [seedReport] the seed's English report text
  * @returns {SymbolicAnswer}
  */
-export function symbolicFromWorker(result) {
-  const answer = String(result?.content ?? '');
+export function symbolicFromWorker(result, history = [], seedReport = undefined) {
+  const answer = nativeProgramAnswer(String(result?.content ?? ''), result?.programExecution, seedReport);
   noteLearned(result?.memoryOperation);
   return {
     intent: String(result?.intent ?? 'unknown'),
     answer,
     confidence: Number(result?.confidence ?? 0),
-    evidence_links: Array.isArray(result?.evidence) ? result.evidence.map(String) : [],
+    evidence_links: solverEvidenceLinks(result, history)
+      ?? (Array.isArray(result?.evidence) ? result.evidence.map(String) : []),
     // The native solver's event log when the worker recorded one (it always
     // does on the finalize path); the browser trace otherwise.
     thinking_steps: Array.isArray(result?.solverEvents)
@@ -49,6 +98,12 @@ export function symbolicFromWorker(result) {
   };
 }
 
+/** The seed's English report text (`seed::report_text`), through the worker's readers. */
+async function seedReportReader(ctx) {
+  const seed = await ctx.worker.seedReaders();
+  return (intent) => seed.responseFor(intent, 'en');
+}
+
 /**
  * Solve `prompt` after `history` with the booted worker.
  * @param {{worker: import('./worker-host.mjs').WorkerHost}} ctx
@@ -57,7 +112,8 @@ export function symbolicFromWorker(result) {
  * @returns {Promise<SymbolicAnswer>}
  */
 export async function solveSymbolic(ctx, prompt, history) {
-  return symbolicFromWorker(await ctx.worker.solve(prompt, history));
+  const result = await ctx.worker.solve(prompt, history);
+  return symbolicFromWorker(result, history, await seedReportReader(ctx));
 }
 
 /** The store's `MemoryEvent`s the protocol surfaces answer with (`store.events()`). */

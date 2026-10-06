@@ -18,7 +18,7 @@ const host = new WorkerHost();
 port.on('message', async ({ input, amendments }) => {
   let reply;
   try {
-    const solve = async (prompt, history) => symbolicFromWorker(await host.solve(prompt, history));
+    const solve = async (prompt, history) => symbolicFromWorker(await host.solve(prompt, history), history);
     const answer = await solveWithAmendmentRecords(solve, input, [], amendments);
     reply = { answer: answer.answer };
   } catch (error) {

@@ -283,16 +283,8 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   lines.push(template);
   lines.push("```");
   lines.push("");
-  lines.push(
-    ...writeProgramExecutionLines(
-      language,
-      task,
-      template,
-      expectedOutput,
-      i18n,
-      responseLanguage,
-    ),
-  );
+  const executionLines = writeProgramExecutionLines(language, task, template, expectedOutput, i18n, responseLanguage);
+  lines.push(...executionLines);
   // Issue #330 (R9): teach a novice — append a plain-language explanation of how
   // the code works, then step-by-step instructions for testing it. Follow-up
   // edits (when the dialog already showed code) drop the verbose setup steps.
@@ -305,6 +297,10 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   return {
     intent: "write_program",
     content,
+    // R1013: the sandbox block and the facts a native host reports instead (js/server/program-report.mjs).
+    programExecution: { language, task, responseLanguage, checkCommand: languageInfo.checkCommand || null,
+      runCommand: languageInfo.runCommand, output: applyInlineHelloWorldOutputReplacement(prompt, task, expectedOutput),
+      block: applyInlineHelloWorldOutputReplacement(prompt, task, executionLines.join("\n")) },
     confidence: 0.9,
     evidence: [
       `response:write_program:${task}:${language}`, ...metaAlgorithmConstructionEvidence(activeMetaAlgorithmSurface(diagnostics.trace)),

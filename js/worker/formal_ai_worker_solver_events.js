@@ -22,6 +22,8 @@
 
 const SOLVER_EVENT_VALIDATION = "validation";
 const SOLVER_VALIDATION_ACCEPTED = "accepted_without_extra_constraints";
+const SOLVER_EVENT_SIMPLIFICATION = "trace:simplification";
+const SOLVER_SIMPLIFICATION_SMALLEST = "smallest_sufficient";
 const SOLVER_RESPONSE_PREFIX = "response:";
 const SOLVER_META_RESPONSE_LINK = "response:meta_reasoner";
 const SOLVER_ENGINE_LINK_CALCULATOR = "link-calculator";
@@ -248,7 +250,8 @@ function solverMetaProjection(answer) {
 
 // The whole log for a finished answer: the solver prelude, the route, the
 // handler's own events, then `finalize_simple` (or the meta reasoner's
-// `project`, which records no validation).
+// `project`, which records no validation). Not recorded yet: the formalization,
+// intent-formalization and meta-core records, and `finalize_simple`'s `candidate`.
 function solverEventLog(prompt, answer) {
   const events = [solverEvent("impulse", prompt), solverEvent("language", detectLanguage(prompt))];
   const route = solverIntentRoute(prompt);
@@ -259,11 +262,15 @@ function solverEventLog(prompt, answer) {
   for (const event of solverWriteProgramEvents(answer)) events.push(event);
   if (answer.solverMetaProjection) {
     events.push(solverEvent("response", SOLVER_META_RESPONSE_LINK));
+    events.push(solverEvent("trace", answer.intent));
     return events;
   }
   if (!events.some((event) => event.kind === SOLVER_EVENT_VALIDATION)) {
     events.push(solverEvent(SOLVER_EVENT_VALIDATION, SOLVER_VALIDATION_ACCEPTED));
   }
   events.push(solverEvent("response", `${SOLVER_RESPONSE_PREFIX}${answer.intent}`));
+  // The `finalize_simple` tail; the `trace` link is the Telegram `/trace` footer.
+  events.push(solverEvent(SOLVER_EVENT_SIMPLIFICATION, SOLVER_SIMPLIFICATION_SMALLEST));
+  events.push(solverEvent("trace", answer.intent));
   return events;
 }

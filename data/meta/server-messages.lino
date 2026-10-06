@@ -202,3 +202,91 @@ server_messages
     text "Recurring structure {structure} observed {occurrences} time(s)"
   message dreaming_replay_timeout
     text "dreaming replay did not answer within {seconds} seconds"
+  message program_execution_status_line_en
+    text "Execution status: {status} in {environment}."
+  message program_execution_status_line_ru
+    text "Статус выполнения: {status} в среде «{environment}»."
+  message program_execution_status_line_hi
+    text "निष्पादन स्थिति: {status} ({environment} में)।"
+  message program_execution_status_line_zh
+    text "执行状态：{status}（{environment}）。"
+  message program_execution_status_verified_en
+    text "compiled and ran"
+  message program_execution_status_unavailable_en
+    text "not compiled or run"
+  message program_execution_status_not_probed_en
+    text "not probed in this environment"
+  message program_execution_status_verified_ru
+    text "скомпилировано и запущено"
+  message program_execution_status_unavailable_ru
+    text "не скомпилировано и не запущено"
+  message program_execution_status_not_probed_ru
+    text "не проверялось в этой среде"
+  message program_execution_status_verified_hi
+    text "संकलित और चलाया गया"
+  message program_execution_status_unavailable_hi
+    text "संकलित या चलाया नहीं गया"
+  message program_execution_status_not_probed_hi
+    text "इस वातावरण में जाँचा नहीं गया"
+  message program_execution_status_verified_zh
+    text "已编译并运行"
+  message program_execution_status_unavailable_zh
+    text "未编译或运行"
+  message program_execution_status_not_probed_zh
+    text "未在本环境中探测"
+  message program_execution_output_verified_en
+    text "Output"
+  message program_execution_output_unavailable_en
+    text "Expected output after verification"
+  message program_execution_output_not_probed_en
+    text "Output, not observed in this environment"
+  message program_execution_output_verified_ru
+    text "Вывод"
+  message program_execution_output_unavailable_ru
+    text "Ожидаемый вывод после проверки"
+  message program_execution_output_not_probed_ru
+    text "Вывод, не наблюдавшийся в этой среде"
+  message program_execution_output_verified_hi
+    text "आउटपुट"
+  message program_execution_output_unavailable_hi
+    text "सत्यापन के बाद अपेक्षित आउटपुट"
+  message program_execution_output_not_probed_hi
+    text "आउटपुट, इस वातावरण में नहीं देखा गया"
+  message program_execution_output_verified_zh
+    text "输出"
+  message program_execution_output_unavailable_zh
+    text "验证后的预期输出"
+  message program_execution_output_not_probed_zh
+    text "输出，未在本环境中观察到"
+  message program_execution_check_command
+    text "Check command: `{command}`"
+  message program_execution_run_command
+    text "Run command: `{command}`"
+  message program_execution_notes_rust
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_python
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_javascript
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_typescript
+    text "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available."
+  message program_execution_notes_go
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_c
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_cpp
+    text "The C++ seed is returned with this warning until a g++-backed execution profile is available."
+  message program_execution_notes_java
+    text "The Java seed is returned with this warning until a javac-backed execution profile is available."
+  message program_execution_notes_csharp
+    text "The C# seed is returned with this warning until a dotnet-backed execution profile is available."
+  message program_execution_notes_ruby
+    text "The Ruby seed is returned with this warning until a ruby-backed execution profile is available."
+  message program_execution_notes_scala
+    text "The Scala seed is returned with this warning until a scalac-backed execution profile is available."
+  message program_execution_notes_kotlin
+    text "The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available."
+  message program_execution_notes_php
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_laravel
+    text "Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly."
