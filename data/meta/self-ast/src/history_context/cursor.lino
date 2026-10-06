@@ -1,0 +1,19 @@
+self_ast_census
+  target src/history_context/cursor.rs
+  language rust
+  fidelity signature
+  byte_len 7690
+  line_count 207
+  content_id source_module_c284630a7c47039b
+  symbol_count 10
+  symbols
+    function write_repository_history 17 40
+    struct RepositoryHistoryCursor 45 49
+    function read 54 72
+    function write 79 101
+    function row 80 83
+    function advance 105 127
+    function optional_value 130 136
+    function repository_slug 141 162
+    function store_paths 166 171
+    function import_incremental 183 207

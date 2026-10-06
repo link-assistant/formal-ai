@@ -1,0 +1,23 @@
+self_ast_census
+  target src/meta_reasoner/grounding.rs
+  language rust
+  fidelity signature
+  byte_len 18409
+  line_count 533
+  content_id source_module_a5c73588c88e646e
+  symbol_count 14
+  symbols
+    struct Sense 21 26
+    type Knowledge 30 30
+    struct Chunk 34 41
+    struct Grounding 45 56
+    function open 59 67
+    function top 73 81
+    struct Context 85 98
+    function push_unique 100 106
+    function indent_for 108 114
+    function ground 121 232
+    function ground_through_glosses 240 393
+    function ground_text 398 427
+    struct Clause 431 438
+    function meta_clauses 444 533

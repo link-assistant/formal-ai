@@ -1,0 +1,26 @@
+self_ast_census
+  target src/legality_warning.rs
+  language rust
+  fidelity signature
+  byte_len 9775
+  line_count 294
+  content_id source_module_cdb997554959ad61
+  symbol_count 17
+  symbols
+    const PATTERNS_PATH 24 24
+    enum LegalityDisposition 28 33
+    function from_seed 37 43
+    function as_str 46 51
+    struct LegalityPattern 56 65
+    struct LegalityExemption 69 72
+    function seed_text 75 80
+    function legality_patterns 84 124
+    function legality_exemptions 128 157
+    function category_readable 162 164
+    function matched_pattern 168 180
+    function matched_framing 183 197
+    struct LegalityAssessment 201 207
+    function assess 211 221
+    function warning_suppressed 227 229
+    function template 233 239
+    function handle_legality_warning 247 294

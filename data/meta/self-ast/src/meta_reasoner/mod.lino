@@ -1,0 +1,25 @@
+self_ast_census
+  target src/meta_reasoner/mod.rs
+  language rust
+  fidelity signature
+  byte_len 4341
+  line_count 123
+  content_id source_module_83c3b496a22a881b
+  symbol_count 16
+  symbols
+    module answer 25 25
+    module catalog 26 26
+    module grounding 27 27
+    module integration 28 28
+    module interpreter 29 29
+    module phrases 30 30
+    module reasoner 31 31
+    module seed 32 32
+    module synthesis 33 33
+    module text 34 34
+    module value 35 35
+    struct Bounds 52 75
+    const BOUNDS 78 90
+    struct TraceEvent 94 101
+    struct Trace 107 110
+    function emit 116 122

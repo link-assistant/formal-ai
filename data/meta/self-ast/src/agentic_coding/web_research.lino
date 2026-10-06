@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 42336
-  line_count 940
-  content_id source_module_a91672b529719b5c
+  byte_len 42455
+  line_count 942
+  content_id source_module_4f780bed853a9241
   symbol_count 48
   symbols
     function web_research_query_for 31 47
@@ -46,22 +46,22 @@ self_ast_census
     function preferred_url 774 776
     const MAX_RESEARCH_SOURCES 782 782
     function research_urls 784 793
-    function urls_in 795 804
-    function authoritative_host 806 822
-    function is_context_reference 824 836
-    function topic_from_history 838 885
-    function is_conversation_meta_request 887 893
-    function trim_question_punctuation 895 900
-    function open_web_query_for_block 908 912
-    function stated_web_search_query_for_block 918 921
-    function concept_lookup_leaves_unknown 930 940
+    function urls_in 797 806
+    function authoritative_host 808 824
+    function is_context_reference 826 838
+    function topic_from_history 840 887
+    function is_conversation_meta_request 889 895
+    function trim_question_punctuation 897 902
+    function open_web_query_for_block 910 914
+    function stated_web_search_query_for_block 920 923
+    function concept_lookup_leaves_unknown 932 942
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 22847
-    named_node_count 4942
+    total_link_count 22879
+    named_node_count 4950
     distinct_node_kinds 80
     node_kinds
       abstract_type 1
@@ -81,7 +81,7 @@ self_ast_census
       closure_parameters 70
       const_item 5
       crate 47
-      doc_comment 211
+      doc_comment 213
       else_clause 2
       escape_sequence 9
       expression_statement 72
@@ -103,7 +103,7 @@ self_ast_census
       let_chain 2
       let_condition 4
       let_declaration 69
-      line_comment 290
+      line_comment 292
       macro_invocation 14
       match_arm 14
       match_block 4
@@ -111,7 +111,7 @@ self_ast_census
       match_pattern 14
       mutable_specifier 13
       or_pattern 2
-      outer_doc_comment_marker 205
+      outer_doc_comment_marker 207
       parameter 64
       parameters 44
       parenthesized_expression 4
@@ -130,7 +130,7 @@ self_ast_census
       string_content 44
       string_literal 46
       struct_pattern 4
-      super 18
+      super 19
       token_tree 28
       try_expression 18
       tuple_expression 1
@@ -143,4 +143,4 @@ self_ast_census
       unary_expression 27
       use_declaration 7
       use_list 3
-      visibility_modifier 13
+      visibility_modifier 14

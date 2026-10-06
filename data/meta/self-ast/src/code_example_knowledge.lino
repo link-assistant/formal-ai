@@ -1,0 +1,32 @@
+self_ast_census
+  target src/code_example_knowledge.rs
+  language rust
+  fidelity signature
+  byte_len 25518
+  line_count 692
+  content_id source_module_91567aa091123cc0
+  symbol_count 23
+  symbols
+    const PARTS_TEXT 35 35
+    struct CodePart 39 48
+    enum CodePartKind 52 67
+    function as_str 72 82
+    struct DecomposedCodeNode 87 92
+    struct Parameter 96 101
+    struct GeneralizedProcedure 106 115
+    struct ParameterBindings 119 119
+    struct CodeRecomposition 124 131
+    struct ProseLink 135 142
+    enum DecomposeError 146 151
+    struct PartVocabulary 155 165
+    function load 168 233
+    const KIND_ORDER 237 237
+    function decompose_code_node 254 436
+    function normalize_relation 440 452
+    function quoted_literals 455 490
+    function generalize_examples 496 558
+    function recompose_for_requirement 567 604
+    function procedure_step_records 613 632
+    function decomposed_links_notation 637 653
+    function generalized_links_notation 657 675
+    function recomposition_links_notation 679 692

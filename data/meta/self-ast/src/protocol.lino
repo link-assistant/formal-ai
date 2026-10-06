@@ -2,9 +2,9 @@ self_ast_census
   target src/protocol.rs
   language rust
   fidelity signature
-  byte_len 38025
+  byte_len 38018
   line_count 997
-  content_id source_module_e6654b444bdd669a
+  content_id source_module_a2abdd8f1124f4a0
   symbol_count 51
   symbols
     module content 28 28

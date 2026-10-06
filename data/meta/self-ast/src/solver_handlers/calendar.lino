@@ -2,40 +2,56 @@ self_ast_census
   target src/solver_handlers/calendar.rs
   language rust
   fidelity signature
-  byte_len 17060
-  line_count 486
-  content_id source_module_a4b182b073b0927c
-  symbol_count 32
+  byte_len 27861
+  line_count 750
+  content_id source_module_89e3997bc2b777ba
+  symbol_count 48
   symbols
-    enum Weekday 19 27
-    function index 30 40
-    function from_index 42 52
-    function shifted 54 59
-    function slug 61 71
-    function from_slug 76 87
-    function en 89 99
-    function ru 101 111
-    function ru_genitive 113 123
-    function ru_instrumental 125 135
-    function hi 137 147
-    function zh 149 159
-    enum WeekdayOperation 163 166
-    function delta 169 174
-    function event_kind 176 181
-    struct CalendarDate 193 198
-    function iso 201 203
-    function try_calendar_reasoning 206 246
-    function try_current_day_reasoning 248 268
-    function mentions_current_day_question 270 294
-    function mentions_weekday_context 296 301
-    function detect_operation 303 321
-    function detect_weekday 323 331
-    function contains_term 333 343
-    function is_cjk_character 345 347
-    function is_word_character 349 351
-    function current_utc_date 353 357
-    function date_from_unix_days 359 367
-    function days_to_date 369 386
-    function weekday_for_unix_days 388 398
-    function render_current_day_answer 400 412
-    function render_answer 414 486
+    module month 18 18
+    enum Weekday 21 29
+    function index 32 42
+    function from_index 44 54
+    function shifted_by 59 72
+    function slug 74 84
+    function from_slug 89 100
+    function en 102 112
+    function ru 114 124
+    function ru_genitive 126 136
+    function ru_instrumental 138 148
+    function hi 150 160
+    function zh 162 172
+    function es 177 187
+    enum WeekdayOperation 191 194
+    function sign 198 203
+    function delta 205 210
+    function event_kind 212 217
+    struct CalendarDate 229 234
+    function iso 237 239
+    function try_calendar_reasoning 242 311
+    function try_current_day_reasoning 313 333
+    function mentions_current_day_question 335 359
+    function mentions_weekday_context 361 366
+    function detect_operation 368 386
+    function detect_weekday 388 396
+    enum OffsetUnit 402 405
+    function multiplier 408 413
+    function meaning_slug 416 421
+    struct Offset 426 429
+    function total 432 434
+    function detect_offset 443 457
+    function stated_count_with_unit 463 492
+    function is_numeral_token_character 496 498
+    function starts_with_term 503 514
+    function contains_term 516 526
+    function term_position 533 538
+    function is_cjk_character 540 542
+    function is_word_character 544 546
+    function current_utc_date 548 552
+    function date_from_unix_days 554 562
+    function days_to_date 564 581
+    function weekday_for_unix_days 583 593
+    function render_current_day_answer 595 607
+    function render_answer 609 681
+    function weekday_label 686 694
+    function weekday_direction_label 698 708
+    function render_offset_answer 715 750

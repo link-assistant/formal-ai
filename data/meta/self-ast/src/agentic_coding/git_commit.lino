@@ -2,31 +2,31 @@ self_ast_census
   target src/agentic_coding/git_commit.rs
   language rust
   fidelity full_ast
-  byte_len 8283
-  line_count 206
-  content_id source_module_927aa97d7b177e28
+  byte_len 8515
+  line_count 225
+  content_id source_module_0975cff0ce534cbd
   symbol_count 13
   symbols
     struct CommitTarget 22 28
     function push_ref 32 34
     function target_of 38 44
-    function named_branch 48 64
-    function is_branch_name 66 73
-    function commit_command 77 97
-    function resolves_body 101 103
-    function shell_quote 105 107
-    function recipe_commit_command 112 121
-    function recipe_subject 125 127
-    function plan_commit_step 134 163
-    function subject_for_listing 167 195
-    function porcelain_entry 198 206
+    function named_branch 48 67
+    function is_branch_name 69 78
+    function commit_command 82 102
+    function resolves_body 106 108
+    function shell_quote 110 112
+    function recipe_commit_command 120 140
+    function recipe_subject 144 146
+    function plan_commit_step 153 182
+    function subject_for_listing 186 214
+    function porcelain_entry 217 225
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6335
-    named_node_count 1272
+    total_link_count 6406
+    named_node_count 1276
     distinct_node_kinds 75
     node_kinds
       arguments 97
@@ -35,7 +35,7 @@ self_ast_census
       attribute 5
       attribute_item 5
       binary_expression 14
-      block 24
+      block 26
       call_expression 97
       char_literal 16
       closure_expression 10
@@ -91,7 +91,7 @@ self_ast_census
       string_literal 44
       struct_expression 1
       struct_item 1
-      super 24
+      super 25
       token_tree 13
       try_expression 3
       tuple_expression 17
@@ -103,4 +103,4 @@ self_ast_census
       unary_expression 8
       use_declaration 7
       use_list 2
-      visibility_modifier 11
+      visibility_modifier 12

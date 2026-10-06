@@ -1,0 +1,11 @@
+self_ast_census
+  target src/solver_handlers/summarization_request.rs
+  language rust
+  fidelity signature
+  byte_len 3387
+  line_count 87
+  content_id source_module_bee300077b467cc9
+  symbol_count 2
+  symbols
+    const ROLE_TEXT_SUMMARIZATION_ACTION 25 25
+    function handle_summarization_request 33 87

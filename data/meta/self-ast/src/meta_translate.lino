@@ -2,29 +2,35 @@ self_ast_census
   target src/meta_translate.rs
   language rust
   fidelity signature
-  byte_len 18965
-  line_count 480
-  content_id source_module_10afa91cf577335d
-  symbol_count 21
+  byte_len 23667
+  line_count 596
+  content_id source_module_bccf6967bcd01a10
+  symbol_count 27
   symbols
-    enum SourceRoot 29 34
-    function parse 40 48
-    function name 52 59
-    enum TranslationOutcome 68 79
-    function pending_leg 95 108
-    function translate 116 204
-    function es_language 206 211
-    function es_grammar_label 215 220
-    function projection_target 222 229
-    function es_render 231 245
-    function directions 250 266
-    struct RootProjection 272 282
-    function root_projections 291 316
-    enum WriteTargetError 320 328
-    function directory 334 341
-    function owned_extension 345 351
-    function write_target 361 389
-    struct SourceTreeRequest 394 398
-    function escapes_root 402 404
-    function source_tree_request 414 456
-    function describe_leg 461 480
+    enum SourceRoot 36 41
+    function parse 47 55
+    function name 59 66
+    enum TranslationOutcome 75 86
+    function pending_leg 102 115
+    function translate 123 211
+    function es_language 213 218
+    function es_grammar_label 222 227
+    function projection_target 229 236
+    function es_render 238 252
+    function directions 257 273
+    struct RootProjection 279 289
+    function root_projections 298 323
+    enum WriteTargetError 327 335
+    function directory 341 348
+    function owned_extension 352 358
+    function write_target 368 396
+    struct SourceTreeRequest 401 405
+    function escapes_root 409 411
+    function source_tree_request 421 463
+    function describe_leg 468 487
+    enum CstRenderGap 494 510
+    function describe 515 536
+    function render_cst_source 551 553
+    function try_render_cst_source 556 561
+    function try_render_cst_source_impl 564 584
+    function try_render_cst_source_impl 589 596

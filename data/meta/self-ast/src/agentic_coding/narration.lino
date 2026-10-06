@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/narration.rs
   language rust
   fidelity full_ast
-  byte_len 5440
-  line_count 132
-  content_id source_module_40f57008856f75e1
+  byte_len 5320
+  line_count 128
+  content_id source_module_e7122e939f899056
   symbol_count 9
   symbols
     function tool_action_narration 17 44
@@ -12,46 +12,46 @@ self_ast_census
     const SUBJECT_SLOT 19 19
     function capability_intent 52 64
     function localized 68 70
-    function program_command_intent 76 92
-    function tool_action_target 94 132
-    const TARGET_FIELDS 95 107
-    function first_text 109 119
+    function program_command_intent 76 88
+    function tool_action_target 90 128
+    const TARGET_FIELDS 91 103
+    function first_text 105 115
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3692
-    named_node_count 760
+    total_link_count 3554
+    named_node_count 729
     distinct_node_kinds 56
     node_kinds
-      arguments 55
+      arguments 51
       array_expression 1
       array_type 2
       binary_expression 4
       block 15
-      call_expression 55
+      call_expression 51
       char_literal 1
-      closure_expression 3
-      closure_parameters 3
+      closure_expression 2
+      closure_parameters 2
       const_item 3
       crate 4
       doc_comment 21
       else_clause 2
       expression_statement 12
-      field_expression 45
-      field_identifier 45
+      field_expression 41
+      field_identifier 41
       function_item 6
       function_modifiers 1
-      generic_function 3
+      generic_function 2
       generic_type 3
-      identifier 175
+      identifier 170
       if_expression 6
       inner_doc_comment_marker 1
       integer_literal 2
       let_chain 1
       let_condition 3
-      let_declaration 13
+      let_declaration 12
       lifetime 2
       line_comment 24
       macro_invocation 2
@@ -70,14 +70,14 @@ self_ast_census
       return_expression 3
       scoped_identifier 39
       source_file 1
-      string_content 29
-      string_literal 29
-      super 4
+      string_content 27
+      string_literal 27
+      super 5
       token_tree 2
-      try_expression 4
+      try_expression 3
       tuple_struct_pattern 7
-      type_arguments 6
-      type_identifier 12
+      type_arguments 5
+      type_identifier 11
       unary_expression 2
       use_declaration 4
       visibility_modifier 1

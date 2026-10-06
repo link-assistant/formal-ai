@@ -2,17 +2,18 @@ self_ast_census
   target src/seed/facts.rs
   language rust
   fidelity signature
-  byte_len 8843
-  line_count 210
-  content_id source_module_38e4e6117db0c2d3
-  symbol_count 9
+  byte_len 12216
+  line_count 268
+  content_id source_module_a1f96925cf5acef4
+  symbol_count 10
   symbols
-    struct LocalizedFact 29 36
-    struct FactRecord 50 71
-    function localized_for 77 82
-    function summary_for 86 91
-    function source_for 95 100
-    function subject_label_for 104 109
-    function value_label_for 113 118
-    function matches_normalized 126 143
-    function facts 147 210
+    struct LocalizedFact 30 37
+    struct FactRecord 51 72
+    function localized_for 78 83
+    function summary_for 87 92
+    function source_for 96 101
+    function subject_label_for 105 110
+    function value_label_for 114 119
+    function matches_normalized 132 149
+    function contains_word_sequence 181 201
+    function facts 205 268

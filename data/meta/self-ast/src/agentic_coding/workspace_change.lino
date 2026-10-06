@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_change.rs
   language rust
   fidelity full_ast
-  byte_len 24392
-  line_count 669
-  content_id source_module_470ac144743bc732
+  byte_len 24132
+  line_count 658
+  content_id source_module_b54cde31648ad58d
   symbol_count 28
   symbols
     struct GroundedRewrite 30 37
@@ -31,33 +31,33 @@ self_ast_census
     function argument_matches_path 576 583
     function argument_matches 585 588
     function workspace_path_matches 590 597
-    function result_for_command 599 615
-    function plan_digest_verification 617 642
-    function matching_result 644 665
-    function read_arguments 667 669
+    function result_for_command 599 604
+    function plan_digest_verification 606 631
+    function matching_result 633 654
+    function read_arguments 656 658
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17265
-    named_node_count 3440
+    total_link_count 17090
+    named_node_count 3401
     distinct_node_kinds 86
     node_kinds
       abstract_type 2
-      arguments 305
+      arguments 300
       array_expression 12
       array_type 15
       attribute 3
       attribute_item 3
-      binary_expression 55
-      block 81
-      boolean_literal 6
+      binary_expression 56
+      block 79
+      boolean_literal 5
       break_expression 1
-      call_expression 305
+      call_expression 300
       char_literal 16
-      closure_expression 32
-      closure_parameters 32
+      closure_expression 31
+      closure_parameters 31
       const_item 1
       continue_expression 1
       crate 5
@@ -65,21 +65,21 @@ self_ast_census
       doc_comment 29
       else_clause 4
       escape_sequence 2
-      expression_statement 76
+      expression_statement 74
       field_declaration 12
       field_declaration_list 3
-      field_expression 217
-      field_identifier 245
+      field_expression 212
+      field_identifier 240
       field_initializer 16
       field_initializer_list 5
       for_expression 2
       function_item 24
       function_modifiers 1
       function_type 1
-      generic_function 4
+      generic_function 3
       generic_type 17
-      identifier 875
-      if_expression 34
+      identifier 869
+      if_expression 33
       impl_item 1
       index_expression 5
       inner_doc_comment_marker 8
@@ -104,27 +104,27 @@ self_ast_census
       range_expression 5
       reference_expression 100
       reference_type 64
-      return_expression 35
-      scoped_identifier 75
+      return_expression 34
+      scoped_identifier 74
       scoped_use_list 5
       self 5
       self_parameter 2
       shorthand_field_initializer 4
       source_file 1
-      string_content 60
-      string_literal 59
+      string_content 59
+      string_literal 58
       struct_expression 5
       struct_item 3
-      super 8
+      super 9
       token_tree 21
       try_expression 30
       tuple_expression 9
       tuple_pattern 9
       tuple_struct_pattern 15
       tuple_type 3
-      type_arguments 21
+      type_arguments 20
       type_binding 1
-      type_identifier 71
+      type_identifier 70
       type_parameters 1
       unary_expression 16
       use_declaration 11

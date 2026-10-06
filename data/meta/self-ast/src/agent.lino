@@ -2,9 +2,9 @@ self_ast_census
   target src/agent.rs
   language rust
   fidelity signature
-  byte_len 27007
-  line_count 765
-  content_id source_module_35a5a3e0fab6e5a5
+  byte_len 27068
+  line_count 766
+  content_id source_module_079baa059965dd08
   symbol_count 53
   symbols
     static WORKSPACE_SEQ 25 25
@@ -57,6 +57,6 @@ self_ast_census
     function is_blocked_execution_alias 702 708
     function effective_command_time_budget 710 716
     function command_environment 732 732
-    function trace_command 744 753
-    function command_timed_out 755 757
-    function looks_like_workspace_path 759 765
+    function trace_command 745 754
+    function command_timed_out 756 758
+    function looks_like_workspace_path 760 766

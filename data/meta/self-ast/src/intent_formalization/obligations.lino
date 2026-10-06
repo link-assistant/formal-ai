@@ -1,0 +1,34 @@
+self_ast_census
+  target src/intent_formalization/obligations.rs
+  language rust
+  fidelity signature
+  byte_len 19543
+  line_count 511
+  content_id source_module_1f270979c5032310
+  symbol_count 25
+  symbols
+    const GRAPH_RECORD 45 45
+    const SPLIT_DEPTH_BOUND 48 48
+    enum ObligationKind 55 68
+    function slug 73 82
+    const PRINT_VERB_FALLBACK 88 100
+    const CODE_STYLE_MARKERS 103 122
+    const FILE_NAMING_MARKERS 126 144
+    const CI_BADGE_MARKERS 147 155
+    struct ObligationGraph 163 168
+    function nodes 173 175
+    function language 179 181
+    function obligation_kinds 185 191
+    function has_obligation 195 199
+    function obligations_of_kind 203 212
+    function unique_output_literal 220 233
+    function literal_for 237 245
+    function underivable 250 255
+    function gap_report 260 280
+    function has_node_kind 282 286
+    function links_notation 291 317
+    function formalize_request 326 353
+    function coreference_pass 363 423
+    function request_carries_work_obligations 436 446
+    function classify_clause 453 503
+    function graph_id 509 511

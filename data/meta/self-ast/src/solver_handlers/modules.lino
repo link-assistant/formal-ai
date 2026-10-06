@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/modules.rs
   language rust
   fidelity signature
-  byte_len 1383
-  line_count 49
-  content_id source_module_9c1bef86b86812e1
-  symbol_count 41
+  byte_len 1788
+  line_count 68
+  content_id source_module_d1011fd39232873f
+  symbol_count 59
   symbols
     module agent_workspace 9 9
     module behavior_rule_followups 10 10
@@ -16,35 +16,53 @@ self_ast_census
     module calendar 15 15
     module calendar_create 16 16
     module calendar_ics 17 17
-    module compound_interest 18 18
-    module conversation_memory 19 19
-    module curated_project_fetch 20 20
-    module document_originality 21 21
-    module document_request 22 22
-    module fact_checking 23 23
-    module feature_capability 24 24
-    module installation_conversion 25 25
-    module meta_explanation 26 26
-    module natural_language_tools 27 27
-    module numeric_list 28 28
-    module pattern_inference 29 29
-    module playwright_script 30 30
-    module policy_gates 31 31
-    module procedure_rules 32 32
-    module program_blueprint 33 33
-    module program_synthesis 34 34
-    module research_table 35 35
-    module response_language_followup 36 36
-    module self_awareness 37 37
-    module shell_command_transform 38 38
-    module software_project 39 39
-    module software_project_code 40 40
-    module software_project_followup 41 41
-    module task_decomposition 42 42
-    module text_edit_ops 43 43
-    module text_manipulation 44 44
-    module user_intent 45 45
-    module verifiable_task 46 46
-    module web_requests 47 47
-    module web_search_intent 48 48
-    module world_state 49 49
+    module code_debugging 18 18
+    module code_explanation 19 19
+    module code_refactoring 20 20
+    module code_review 21 21
+    module compound_interest 22 22
+    module conversation_memory 23 23
+    module creative_composition 24 24
+    module creative_writing 25 25
+    module curated_project_fetch 26 26
+    module document_originality 27 27
+    module document_request 28 28
+    module fact_checking 29 29
+    module feature_capability 30 30
+    module formalization_task 31 31
+    module format_conversion 32 32
+    module installation_conversion 33 33
+    module meta_explanation 34 34
+    module natural_language_tools 35 35
+    module pattern_inference 36 36
+    module playwright_script 37 37
+    module procedure_rules 38 38
+    module product_search 39 39
+    module program_blueprint 40 40
+    module program_synthesis 41 41
+    module regex_synthesis 42 42
+    module research_table 43 43
+    module response_language_followup 44 44
+    module self_awareness 45 45
+    module shell_command_compose 46 46
+    module shell_command_transform 47 47
+    module software_project 48 48
+    module software_project_code 49 49
+    module software_project_followup 50 50
+    module software_project_phrases 51 51
+    module sql_synthesis 52 52
+    module statistics 53 53
+    module task_decomposition 54 54
+    module test_generation 55 55
+    module text_edit_ops 56 56
+    module text_manipulation 57 57
+    module unit_conversion 58 58
+    module numeric_list 60 60
+    module policy_gates 61 61
+    module summarization_request 62 62
+    module text_rewrite 63 63
+    module user_intent 64 64
+    module verifiable_task 65 65
+    module web_requests 66 66
+    module web_search_intent 67 67
+    module world_state 68 68

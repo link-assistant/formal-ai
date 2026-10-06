@@ -1,0 +1,153 @@
+self_ast_census
+  target src/agentic_coding/repair_loop.rs
+  language rust
+  fidelity full_ast
+  byte_len 31949
+  line_count 826
+  content_id source_module_15e31d17e42c3500
+  symbol_count 40
+  symbols
+    const MAX_REPAIR_RUNGS 74 74
+    const MAX_REPAIR_SOURCES 78 78
+    const QUERY_MESSAGE_TOKENS 81 81
+    const SHAPES_PATH 83 83
+    function seed_text 88 93
+    struct Diagnostic 106 112
+    struct DiagnosticShapes 118 122
+    function is_empty 125 127
+    function shape_language 131 139
+    function shapes_for 143 165
+    struct Capture 168 171
+    function match_template 184 221
+    function validate_slot 225 237
+    function capture 239 245
+    function formalize_diagnostic 260 315
+    function search_query 326 340
+    function message_coverage 345 367
+    function page_addresses 373 380
+    function fix_fragment 386 443
+    function lino_escape 450 452
+    function repair_document_path 456 466
+    function repair_edit_document 475 504
+    struct RepairAttempt 512 518
+    function links_notation 525 543
+    function attempts_from 554 581
+    function evidence_document 586 597
+    enum RepairStop 607 618
+    enum RepairOutcome 622 633
+    function plan 638 645
+    struct FailedStep 655 661
+    function new 665 673
+    function with_exit_code 676 679
+    function with_failed_command 682 685
+    function with_artifact_path 688 691
+    function source_urls 696 702
+    function repair_step 712 780
+    function plan_repair 785 793
+    function template 796 802
+    function ladder_note 810 819
+    function unresolved_note 824 826
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 20777
+    named_node_count 4279
+    distinct_node_kinds 95
+    node_kinds
+      arguments 305
+      array_expression 3
+      array_type 10
+      assignment_expression 12
+      attribute 21
+      attribute_item 21
+      binary_expression 33
+      block 83
+      boolean_literal 2
+      break_expression 2
+      call_expression 305
+      char_literal 11
+      closure_expression 31
+      closure_parameters 31
+      const_item 4
+      continue_expression 5
+      crate 5
+      declaration_list 4
+      doc_comment 188
+      else_clause 2
+      enum_item 2
+      enum_variant 9
+      enum_variant_list 2
+      escape_sequence 15
+      expression_statement 99
+      field_declaration 20
+      field_declaration_list 5
+      field_expression 254
+      field_identifier 284
+      field_initializer 10
+      field_initializer_list 3
+      float_literal 3
+      for_expression 8
+      function_item 29
+      function_modifiers 2
+      generic_function 2
+      generic_type 32
+      identifier 904
+      if_expression 27
+      impl_item 4
+      index_expression 8
+      inner_doc_comment_marker 54
+      integer_literal 28
+      let_chain 1
+      let_condition 14
+      let_declaration 78
+      lifetime 4
+      lifetime_parameter 1
+      line_comment 207
+      macro_invocation 16
+      match_arm 18
+      match_block 5
+      match_expression 5
+      match_pattern 18
+      mutable_specifier 33
+      or_pattern 5
+      ordered_field_declaration_list 5
+      outer_doc_comment_marker 134
+      parameter 58
+      parameters 29
+      parenthesized_expression 2
+      primitive_type 64
+      range_expression 8
+      reference_expression 52
+      reference_type 57
+      return_expression 16
+      scoped_identifier 68
+      scoped_use_list 1
+      self 19
+      self_parameter 6
+      shorthand_field_initializer 2
+      source_file 1
+      string_content 68
+      string_literal 69
+      struct_expression 3
+      struct_item 5
+      super 2
+      token_tree 39
+      try_expression 4
+      tuple_expression 9
+      tuple_pattern 20
+      tuple_struct_pattern 31
+      tuple_type 4
+      type_arguments 34
+      type_cast_expression 2
+      type_identifier 114
+      type_parameters 1
+      unary_expression 15
+      unit_expression 1
+      unit_type 1
+      use_as_clause 1
+      use_declaration 7
+      use_list 1
+      visibility_modifier 37
+      while_expression 2

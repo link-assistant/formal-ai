@@ -2,33 +2,33 @@ self_ast_census
   target src/translation/pipeline.rs
   language rust
   fidelity signature
-  byte_len 31796
-  line_count 847
-  content_id source_module_b58fa34b608c2020
+  byte_len 32159
+  line_count 853
+  content_id source_module_0310d0368e1ea875
   symbol_count 25
   symbols
-    function translation_debug_enabled 42 45
-    function translation_debug 50 54
-    struct Translation 58 65
-    function primary_surface 71 77
-    struct TranslationPipeline 82 84
-    function new 87 89
-    function translate 96 340
-    function reverse_lookup 348 374
-    function select_best_block 394 465
-    function upgrade_meaning_via_wikidata 472 534
-    function canonical_target_english_meaning 536 565
-    function compositional_candidates 567 634
-    function seed_meaning_id 636 638
-    function seed_meaning_for_surface 640 644
-    function seed_compositional_translation 646 665
-    function seed_role_translation 667 691
-    function same_surface 693 695
-    function russian_phrase_to_english 704 711
-    function russian_word_to_english 719 721
-    function translate_russian_word_sequence 723 742
-    function russian_genitive_relation_head 750 752
-    function russian_genitive_noun 759 767
-    function capitalize_ascii_first 769 778
-    function phrasal_variants 791 823
-    function normalize_page_title 833 847
+    function translation_debug_enabled 44 46
+    function translation_debug 51 55
+    struct Translation 59 66
+    function primary_surface 72 78
+    struct TranslationPipeline 88 90
+    function new 93 95
+    function translate 102 346
+    function reverse_lookup 354 380
+    function select_best_block 400 471
+    function upgrade_meaning_via_wikidata 478 540
+    function canonical_target_english_meaning 542 571
+    function compositional_candidates 573 640
+    function seed_meaning_id 642 644
+    function seed_meaning_for_surface 646 650
+    function seed_compositional_translation 652 671
+    function seed_role_translation 673 697
+    function same_surface 699 701
+    function russian_phrase_to_english 710 717
+    function russian_word_to_english 725 727
+    function translate_russian_word_sequence 729 748
+    function russian_genitive_relation_head 756 758
+    function russian_genitive_noun 765 773
+    function capitalize_ascii_first 775 784
+    function phrasal_variants 797 829
+    function normalize_page_title 839 853

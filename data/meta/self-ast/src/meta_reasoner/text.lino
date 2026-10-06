@@ -1,0 +1,43 @@
+self_ast_census
+  target src/meta_reasoner/text.rs
+  language rust
+  fidelity signature
+  byte_len 16163
+  line_count 493
+  content_id source_module_4f31615ae75411fb
+  symbol_count 34
+  symbols
+    function is_js_whitespace 20 32
+    function js_trim 38 40
+    function utf16_len 46 48
+    function is_letter 52 61
+    function is_number 65 72
+    function is_letter_or_number 74 76
+    function meta_words 82 97
+    function is_numeral 104 106
+    enum LiteralKind 110 115
+    struct Literal 119 128
+    struct Example 132 140
+    struct Definition 144 149
+    enum Scanned 151 154
+    struct Scanner 156 158
+    function at 161 163
+    function is 165 167
+    function closing 170 182
+    function run_of 184 190
+    function path_lookahead 192 196
+    function path_tail 198 203
+    function path_repetitions 205 219
+    function path 223 245
+    function number 248 271
+    function text_between 273 277
+    function byte 279 283
+    function scan_at 285 355
+    function is_path_character 358 360
+    function meta_value_literals 367 389
+    function meta_examples 395 418
+    function chars_from 421 425
+    function chars_until 427 431
+    function meta_request_definitions 437 465
+    function collation_class 467 473
+    function locale_compare 481 493

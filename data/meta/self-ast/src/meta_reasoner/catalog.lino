@@ -1,0 +1,43 @@
+self_ast_census
+  target src/meta_reasoner/catalog.rs
+  language rust
+  fidelity signature
+  byte_len 24034
+  line_count 681
+  content_id source_module_c69902c0b015792d
+  symbol_count 34
+  symbols
+    type OpId 17 17
+    type TypeId 19 19
+    struct Prim 23 48
+    struct Step 53 62
+    struct FilterDef 66 73
+    struct Extension 76 79
+    struct Catalog 83 102
+    const LIST_PREFIX 107 107
+    function is_list_type 114 116
+    function apply_type 120 129
+    function intern_op 132 140
+    function intern_type 142 150
+    function op 154 156
+    function type_id 160 162
+    function type_name 166 168
+    function is_view 172 174
+    function prim 178 180
+    function build 184 246
+    function close_types 249 286
+    function build_measures 293 354
+    function compose_measure 356 381
+    function push_measure 383 387
+    function build_extensions 391 469
+    function for_each_program 475 486
+    function walk 488 517
+    function step_ops 522 542
+    function main_ops 548 554
+    function is_parametric 560 562
+    function step_environment 568 573
+    function step_label 579 597
+    function rewrite_code_for 603 605
+    function render 612 673
+    function catalog 678 681
+    static CATALOG 679 679

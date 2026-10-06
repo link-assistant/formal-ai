@@ -1,0 +1,21 @@
+self_ast_census
+  target src/research_documents/mod.rs
+  language rust
+  fidelity signature
+  byte_len 8792
+  line_count 257
+  content_id source_module_3be15a570a7c0e3b
+  symbol_count 12
+  symbols
+    struct ResearchReference 10 15
+    struct ResearchStatement 19 22
+    struct ResearchDocument 26 31
+    enum ArtifactFormat 34 38
+    function extension 42 48
+    function mime_type 51 57
+    struct ResearchArtifact 61 66
+    enum ArtifactError 70 81
+    function validate 84 121
+    function lines 123 137
+    function render 140 213
+    function pdf_text_width_units 218 257

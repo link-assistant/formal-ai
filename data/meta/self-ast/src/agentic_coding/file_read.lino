@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 30045
-  line_count 894
-  content_id source_module_56906eed63c223b1
-  symbol_count 51
+  byte_len 29473
+  line_count 882
+  content_id source_module_03a775fa8460a5c1
+  symbol_count 50
   symbols
     module audit 3 3
     module exact 4 4
@@ -43,48 +43,47 @@ self_ast_census
     function grep_result_for_path 645 663
     function same_path 671 680
     function read_results_for_paths 682 692
-    function run_record_for_command 700 708
-    function command_argument 718 722
-    function path_argument 724 729
-    function read_arguments 731 744
-    function grep_arguments 746 748
-    function file_analysis_pattern 752 764
-    function regex_escape 766 781
-    function read_command_for 783 809
-    function list_files_command 811 820
-    function cat_many_command 822 834
-    function shell_path 836 844
-    function shell_string 846 848
-    function selected_paths_from_listing 850 880
-    function tool_for 882 887
-    function plan_one 889 894
+    function run_record_for_command 700 710
+    function path_argument 712 717
+    function read_arguments 719 732
+    function grep_arguments 734 736
+    function file_analysis_pattern 740 752
+    function regex_escape 754 769
+    function read_command_for 771 797
+    function list_files_command 799 808
+    function cat_many_command 810 822
+    function shell_path 824 832
+    function shell_string 834 836
+    function selected_paths_from_listing 838 868
+    function tool_for 870 875
+    function plan_one 877 882
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21630
-    named_node_count 4359
+    total_link_count 21390
+    named_node_count 4300
     distinct_node_kinds 95
     node_kinds
-      arguments 359
-      array_expression 8
+      arguments 357
+      array_expression 7
       array_type 13
       assignment_expression 4
       attribute 4
       attribute_item 4
       binary_expression 60
-      block 121
+      block 120
       boolean_literal 6
-      call_expression 359
+      call_expression 357
       char_literal 46
-      closure_expression 43
-      closure_parameters 43
+      closure_expression 42
+      closure_parameters 42
       const_item 2
       continue_expression 1
       crate 3
       declaration_list 1
-      doc_comment 49
+      doc_comment 41
       else_clause 9
       enum_item 3
       enum_variant 11
@@ -93,17 +92,17 @@ self_ast_census
       expression_statement 101
       field_declaration 11
       field_declaration_list 4
-      field_expression 254
-      field_identifier 285
+      field_expression 252
+      field_identifier 283
       field_initializer 20
       field_initializer_list 9
       field_pattern 11
       for_expression 4
-      function_item 42
+      function_item 41
       function_modifiers 1
       generic_function 4
-      generic_type 30
-      identifier 1017
+      generic_type 29
+      identifier 1009
       if_expression 47
       impl_item 1
       index_expression 23
@@ -114,7 +113,7 @@ self_ast_census
       let_declaration 46
       lifetime 12
       lifetime_parameter 4
-      line_comment 84
+      line_comment 76
       macro_invocation 31
       match_arm 11
       match_block 4
@@ -124,41 +123,41 @@ self_ast_census
       mutable_specifier 7
       or_pattern 3
       ordered_field_declaration_list 1
-      outer_doc_comment_marker 48
-      parameter 74
-      parameters 42
+      outer_doc_comment_marker 40
+      parameter 73
+      parameters 41
       parenthesized_expression 8
-      primitive_type 67
+      primitive_type 66
       range_expression 2
       raw_string_literal 1
       reference_expression 50
-      reference_type 72
+      reference_type 70
       remaining_field_pattern 3
       return_expression 38
       scoped_identifier 102
-      scoped_type_identifier 16
+      scoped_type_identifier 15
       scoped_use_list 3
       self 2
       self_parameter 1
       shorthand_field_identifier 11
       shorthand_field_initializer 5
       source_file 1
-      string_content 101
-      string_literal 97
+      string_content 99
+      string_literal 95
       struct_expression 9
       struct_item 1
       struct_pattern 6
-      super 18
+      super 19
       token_tree 54
       try_expression 4
       tuple_expression 8
       tuple_pattern 5
       tuple_struct_pattern 23
       tuple_type 1
-      type_arguments 34
-      type_identifier 118
+      type_arguments 33
+      type_identifier 116
       type_parameters 4
-      unary_expression 18
+      unary_expression 17
       use_declaration 10
       use_list 3
       visibility_modifier 7

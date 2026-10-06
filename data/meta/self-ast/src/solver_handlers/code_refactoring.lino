@@ -1,0 +1,23 @@
+self_ast_census
+  target src/solver_handlers/code_refactoring.rs
+  language rust
+  fidelity signature
+  byte_len 10220
+  line_count 309
+  content_id source_module_12619ee4ae02d439
+  symbol_count 14
+  symbols
+    const CUES_PATH 22 22
+    const INTENT 23 23
+    function seed_text 26 31
+    function cue_phrases 35 66
+    function template 69 75
+    function code_block 80 105
+    struct Handler 108 111
+    function paren_span 115 130
+    function parse_handler 134 177
+    struct Chain 181 185
+    function parse_chain 188 223
+    function render_async 226 256
+    function triggered 260 265
+    function handle_code_refactoring 270 309

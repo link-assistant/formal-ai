@@ -2,67 +2,68 @@ self_ast_census
   target src/agentic_coding/self_ast.rs
   language rust
   fidelity full_ast
-  byte_len 15196
-  line_count 347
-  content_id source_module_a27bb3d053ea9607
+  byte_len 15231
+  line_count 348
+  content_id source_module_83ee4e0fd85d7566
   symbol_count 26
   symbols
     static AST_CENSUS_RUNS 32 32
     function ast_census_runs 43 45
-    function record_census_run 53 62
-    const RUST_GRAMMAR_LABEL 66 66
-    const TARGET_MODULE_PATH 73 73
-    const TARGET_MODULE_SOURCE 76 76
-    const AST_PATH 79 79
-    const AST_TASK 84 92
-    const AST_KEYWORDS 92 92
-    function is_self_ast_task 101 112
-    struct AstNodeCount 117 122
-    struct AstCensus 127 138
-    function ast_census 148 181
-    function ast_census 186 194
-    function render_ast_document 203 224
-    function reconstruct_source 237 240
-    function reconstruct_source 245 247
-    function round_trips 256 258
-    function network_lino 270 272
-    function network_lino 277 279
-    function render_network_source 289 299
-    function render_network_source 305 312
-    function render_document 316 318
-    function target_census 324 326
-    function target_source 332 334
-    function final_answer 339 347
+    function record_census_run 54 63
+    const RUST_GRAMMAR_LABEL 67 67
+    const TARGET_MODULE_PATH 74 74
+    const TARGET_MODULE_SOURCE 77 77
+    const AST_PATH 80 80
+    const AST_TASK 85 93
+    const AST_KEYWORDS 93 93
+    function is_self_ast_task 102 113
+    struct AstNodeCount 118 123
+    struct AstCensus 128 139
+    function ast_census 149 182
+    function ast_census 187 195
+    function render_ast_document 204 225
+    function reconstruct_source 238 241
+    function reconstruct_source 246 248
+    function round_trips 257 259
+    function network_lino 271 273
+    function network_lino 278 280
+    function render_network_source 290 300
+    function render_network_source 306 313
+    function render_document 317 319
+    function target_census 325 327
+    function target_source 333 335
+    function final_answer 340 348
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7098
-    named_node_count 1447
-    distinct_node_kinds 67
+    total_link_count 7064
+    named_node_count 1440
+    distinct_node_kinds 68
     node_kinds
-      arguments 61
+      arguments 59
       array_expression 1
       array_type 1
       attribute 27
       attribute_item 27
-      binary_expression 11
+      binary_expression 10
       block 23
       boolean_literal 2
-      call_expression 61
+      call_expression 59
       closure_expression 4
       closure_parameters 4
       compound_assignment_expr 1
       const_item 6
       continue_expression 1
-      doc_comment 119
+      crate 1
+      doc_comment 120
       escape_sequence 13
       expression_statement 10
       field_declaration 7
       field_declaration_list 2
-      field_expression 41
-      field_identifier 56
+      field_expression 40
+      field_identifier 55
       field_initializer 8
       field_initializer_list 3
       field_pattern 2
@@ -70,17 +71,17 @@ self_ast_census
       function_item 17
       function_modifiers 2
       generic_type 4
-      identifier 282
+      identifier 280
       if_expression 3
       inner_doc_comment_marker 21
       integer_literal 7
       let_condition 1
       let_declaration 28
       lifetime 1
-      line_comment 125
+      line_comment 126
       macro_invocation 19
       mutable_specifier 2
-      outer_doc_comment_marker 98
+      outer_doc_comment_marker 99
       parameter 15
       parameters 17
       parenthesized_expression 1
@@ -94,8 +95,8 @@ self_ast_census
       shorthand_field_initializer 4
       source_file 1
       static_item 1
-      string_content 56
-      string_literal 47
+      string_content 55
+      string_literal 46
       struct_expression 3
       struct_item 2
       struct_pattern 1

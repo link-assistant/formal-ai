@@ -1,0 +1,29 @@
+self_ast_census
+  target src/telemetry.rs
+  language rust
+  fidelity signature
+  byte_len 9853
+  line_count 289
+  content_id source_module_d9e369b7ec8903a7
+  symbol_count 20
+  symbols
+    static NEXT_EVENT 15 15
+    enum ConsentMode 18 23
+    enum ReportChoice 25 30
+    function reporting_choices 35 46
+    enum DiagnosticKind 49 56
+    function name 58 67
+    struct AnonymousDiagnostic 70 74
+    enum TelemetryError 77 83
+    struct Telemetry 91 94
+    function from_setting 96 107
+    function choose 108 115
+    function mode 117 119
+    function report 123 166
+    struct SentryTarget 174 177
+    function parse 179 219
+    function endpoint 221 223
+    trait TelemetryTransport 226 228
+    function send 227 227
+    struct CurlSentryTransport 233 233
+    function send 235 288

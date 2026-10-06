@@ -2,31 +2,32 @@ self_ast_census
   target src/coding/catalog/types.rs
   language rust
   fidelity signature
-  byte_len 12402
-  line_count 299
-  content_id source_module_9de92314d191ed0b
-  symbol_count 23
+  byte_len 12960
+  line_count 313
+  content_id source_module_41424b4e79b1224d
+  symbol_count 24
   symbols
     struct ProgramLanguage 15 39
     function base_language 49 53
     function is_framework 57 59
     function setup_hint 71 73
-    function environment 77 79
-    function execution_status 89 95
-    function probe_now 102 109
-    struct ProgramTask 113 129
-    function output_for_language 133 136
-    struct ProgramTemplate 140 144
-    struct ProgramSpec 147 151
-    function response_link 155 160
-    function parameter_summary 163 168
-    function legacy_intent 171 177
-    function expected_output 180 182
-    function stdin_fixture 186 188
-    function run_command_line 199 205
-    function shell_escaped 210 223
-    function list_files_sample_output 225 237
-    struct ProgramExecution 248 252
-    enum ExecutionStatus 262 269
-    function label 272 278
-    function from_verdict 291 298
+    function execution_notes 81 87
+    function environment 91 93
+    function execution_status 103 109
+    function probe_now 116 123
+    struct ProgramTask 127 143
+    function output_for_language 147 150
+    struct ProgramTemplate 154 158
+    struct ProgramSpec 161 165
+    function response_link 169 174
+    function parameter_summary 177 182
+    function legacy_intent 185 191
+    function expected_output 194 196
+    function stdin_fixture 200 202
+    function run_command_line 213 219
+    function shell_escaped 224 237
+    function list_files_sample_output 239 251
+    struct ProgramExecution 262 266
+    enum ExecutionStatus 276 283
+    function label 286 292
+    function from_verdict 305 312

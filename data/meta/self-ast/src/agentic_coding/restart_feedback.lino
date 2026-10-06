@@ -1,0 +1,89 @@
+self_ast_census
+  target src/agentic_coding/restart_feedback.rs
+  language rust
+  fidelity full_ast
+  byte_len 7163
+  line_count 202
+  content_id source_module_61b7ca78230a204a
+  symbol_count 7
+  symbols
+    function changed_paths 8 40
+    function feedback_needs_changes 42 76
+    function plan_restart 78 166
+    module tests 169 185
+    function only_the_marked_fenced_listing_is_consumed 172 184
+    module feedback_tests 188 202
+    function unreadable_or_requested_feedback_blocks_readiness 191 201
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 6038
+    named_node_count 1267
+    distinct_node_kinds 64
+    node_kinds
+      arguments 109
+      array_expression 9
+      array_type 2
+      attribute 4
+      attribute_item 4
+      binary_expression 13
+      block 20
+      boolean_literal 2
+      call_expression 109
+      char_literal 7
+      closure_expression 17
+      closure_parameters 17
+      continue_expression 1
+      crate 1
+      declaration_list 2
+      doc_comment 2
+      escape_sequence 8
+      expression_statement 28
+      field_expression 76
+      field_identifier 76
+      for_expression 2
+      function_item 5
+      generic_function 3
+      generic_type 5
+      identifier 280
+      if_expression 8
+      index_expression 3
+      inner_doc_comment_marker 1
+      integer_literal 6
+      let_chain 1
+      let_condition 2
+      let_declaration 21
+      line_comment 3
+      macro_invocation 27
+      mod_item 2
+      mutable_specifier 1
+      outer_doc_comment_marker 1
+      parameter 5
+      parameters 5
+      parenthesized_expression 1
+      primitive_type 5
+      range_expression 2
+      raw_string_literal 3
+      reference_expression 25
+      reference_type 6
+      return_expression 8
+      scoped_identifier 57
+      scoped_type_identifier 1
+      scoped_use_list 1
+      source_file 1
+      string_content 76
+      string_literal 67
+      super 18
+      token_tree 42
+      try_expression 7
+      tuple_expression 16
+      tuple_pattern 4
+      tuple_struct_pattern 3
+      type_arguments 8
+      type_identifier 11
+      unary_expression 8
+      use_declaration 6
+      use_list 1
+      visibility_modifier 2

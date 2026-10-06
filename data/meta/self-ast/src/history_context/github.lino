@@ -1,0 +1,31 @@
+self_ast_census
+  target src/history_context/github.rs
+  language rust
+  fidelity signature
+  byte_len 15872
+  line_count 459
+  content_id source_module_3e5c80647538ffcb
+  symbol_count 22
+  symbols
+    enum LogFile 9 21
+    function parse_digits 23 28
+    function classify_log_file 32 71
+    function json_root 73 75
+    function value_items 77 82
+    function field_str 86 90
+    function nested_login 92 101
+    function label_names 103 115
+    struct ImportedIssuePr 118 121
+    function import_issues_and_pulls 130 137
+    function import_issues_and_pulls_inner 139 207
+    function comment_batch 210 220
+    function review_batch 223 233
+    function review_items 235 240
+    function imported_passes 242 248
+    function sorted_entries 250 262
+    function formalize_issue_or_pull 264 308
+    function stamped 310 312
+    function formalize_review 314 354
+    function import_ci_runs 362 415
+    function keep_richer 419 427
+    function failing_step_lines 431 459

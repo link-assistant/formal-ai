@@ -2,10 +2,10 @@ self_ast_census
   target src/seed.rs
   language rust
   fidelity signature
-  byte_len 36291
-  line_count 919
-  content_id source_module_9b92429f07804bcc
-  symbol_count 66
+  byte_len 36492
+  line_count 923
+  content_id source_module_fb9997e132a2d5e5
+  symbol_count 67
   symbols
     module agentic_tool_capabilities 24 24
     module brainstorm 25 25
@@ -31,45 +31,46 @@ self_ast_census
     module projects 45 45
     module proof_programs 46 46
     module release_timelines 47 47
-    module roles 48 48
-    module shell_intents 49 49
-    module sources 50 50
-    module summary_topics 51 51
-    module terminal_commands 52 52
-    module tool_resource_scopes 53 53
-    function merged_bundle 160 162
-    function bundle_from_files 170 187
-    function parse_bundle 208 283
-    struct ResponseRecord 287 293
-    function multilingual_responses 297 326
-    function response_for 331 338
-    function response_variant_for 346 365
-    function render_response 369 376
-    function localized_response 389 399
-    function response_values_for 406 408
-    function agent_info 412 425
-    function supported_languages 434 439
-    struct LanguageRule 443 456
-    function language_rules 459 479
-    function language_of_source 486 491
-    struct PromptPattern 495 501
-    struct LocalizedConcept 509 516
-    struct ConceptRecord 539 551
-    function localized_for 557 562
-    function concepts 566 616
-    struct LocalizedContextLabel 620 623
-    struct ContextRecord 629 634
-    function label_for 640 648
-    function matches 653 668
-    function concept_contexts 672 702
-    struct LearningSource 712 717
-    struct LearningSources 722 725
-    function match_directive 743 758
-    function learning_sources 767 797
-    function prompt_patterns 800 819
-    struct EnvironmentRecord 829 841
-    struct MigrationFlow 844 848
-    struct EnvironmentDirectory 851 855
-    function environment_directory 858 902
-    function child_value_alias 904 911
-    function environment_records 917 919
+    module reports 48 48
+    module roles 49 49
+    module shell_intents 50 50
+    module sources 51 51
+    module summary_topics 52 52
+    module terminal_commands 53 53
+    module tool_resource_scopes 54 54
+    function merged_bundle 164 166
+    function bundle_from_files 174 191
+    function parse_bundle 212 287
+    struct ResponseRecord 291 297
+    function multilingual_responses 301 330
+    function response_for 335 342
+    function response_variant_for 350 369
+    function render_response 373 380
+    function localized_response 393 403
+    function response_values_for 410 412
+    function agent_info 416 429
+    function supported_languages 438 443
+    struct LanguageRule 447 460
+    function language_rules 463 483
+    function language_of_source 490 495
+    struct PromptPattern 499 505
+    struct LocalizedConcept 513 520
+    struct ConceptRecord 543 555
+    function localized_for 561 566
+    function concepts 570 620
+    struct LocalizedContextLabel 624 627
+    struct ContextRecord 633 638
+    function label_for 644 652
+    function matches 657 672
+    function concept_contexts 676 706
+    struct LearningSource 716 721
+    struct LearningSources 726 729
+    function match_directive 747 762
+    function learning_sources 771 801
+    function prompt_patterns 804 823
+    struct EnvironmentRecord 833 845
+    struct MigrationFlow 848 852
+    struct EnvironmentDirectory 855 859
+    function environment_directory 862 906
+    function child_value_alias 908 915
+    function environment_records 921 923

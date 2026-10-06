@@ -1,0 +1,29 @@
+self_ast_census
+  target src/solver_handlers/sql_synthesis.rs
+  language rust
+  fidelity signature
+  byte_len 16772
+  line_count 482
+  content_id source_module_e8807712eecfdf61
+  symbol_count 20
+  symbols
+    const CUES_PATH 20 20
+    const INTENT 21 21
+    function seed_text 24 29
+    function cue_phrases 33 64
+    function word_entries 67 87
+    function template 90 96
+    function mapping_rows 100 109
+    function echo 112 117
+    function number_value 121 129
+    function identifier 131 135
+    function table_name 138 179
+    struct Filter 182 185
+    function filters 190 255
+    function aggregate 258 283
+    function order_clause 286 312
+    function limit_clause 315 326
+    function select_columns 330 358
+    function carries_code 362 365
+    function is_sql_request 370 386
+    function handle_sql_synthesis 390 482

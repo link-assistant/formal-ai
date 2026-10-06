@@ -1,0 +1,39 @@
+self_ast_census
+  target src/solver_handlers/text_rewrite.rs
+  language rust
+  fidelity signature
+  byte_len 32452
+  line_count 830
+  content_id source_module_1c8adaac69146e0a
+  symbol_count 30
+  symbols
+    const REGISTER_PATH 16 16
+    const AGREEMENT_PATH 17 17
+    const GENRE_PATH 18 18
+    const INTENT_REGISTER 19 19
+    const INTENT_GRAMMAR 20 20
+    const INTENT_GENRE_PREFIX 21 21
+    function seed_text 24 29
+    function root_records 32 41
+    function record_values 45 53
+    function cue_list 56 62
+    function genre_cues 65 76
+    function head_cue_matches 79 82
+    function command_head 86 94
+    function command_colon 100 127
+    function free_text_payload 133 147
+    function strip_outer_quotes 150 161
+    function double_quoted 164 174
+    function token_core 178 191
+    function is_core 179 181
+    function capitalize_first 194 199
+    function rebuild_core 204 222
+    function render_line 226 230
+    function fill_template 233 239
+    function handle_rewrite_register 246 318
+    function apply_phrase_rule 323 365
+    function handle_grammar_correction 372 518
+    function unsatisfied_requirements 521 528
+    function finalize_genre_incomplete 532 547
+    function handle_genre_writing 554 814
+    function handle_text_rewrite 822 830

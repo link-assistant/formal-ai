@@ -1,0 +1,21 @@
+self_ast_census
+  target src/meta_reasoner/answer.rs
+  language rust
+  fidelity signature
+  byte_len 15882
+  line_count 474
+  content_id source_module_78a3fa909e53c64d
+  symbol_count 12
+  symbols
+    type LookupFn 15 15
+    struct MetaAnswer 19 29
+    function meta_sub_requests 37 54
+    function split_sentences 57 101
+    function meta_reason 110 159
+    function meta_reason_composite 165 242
+    function answer_language 244 246
+    function open_words 248 255
+    function derivation_evidence 257 263
+    function open_unknowns_text 265 275
+    function meta_answer 283 407
+    function meta_composite_answer 412 474

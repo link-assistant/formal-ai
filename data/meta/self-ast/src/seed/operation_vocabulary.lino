@@ -2,19 +2,21 @@ self_ast_census
   target src/seed/operation_vocabulary.rs
   language rust
   fidelity signature
-  byte_len 5637
-  line_count 165
-  content_id source_module_eded8d692b470680
-  symbol_count 11
+  byte_len 7577
+  line_count 213
+  content_id source_module_69f38152b3cfb711
+  symbol_count 13
   symbols
     struct OperationLanguageForms 11 14
     function matches 17 27
-    struct OperationTrigger 32 40
-    function matches 45 49
-    struct OperationVocabulary 54 56
-    function matches 62 66
-    function detect 71 77
-    function canonicalized_prompt 84 101
-    function inverse_pairs 111 120
-    function operation_vocabulary 124 157
-    function split_combo 159 165
+    function first_position 31 45
+    struct OperationTrigger 50 63
+    function matches 69 78
+    struct OperationVocabulary 83 85
+    function matches 91 95
+    function position 100 111
+    function detect 116 122
+    function canonicalized_prompt 129 146
+    function inverse_pairs 156 165
+    function operation_vocabulary 169 205
+    function split_combo 207 213

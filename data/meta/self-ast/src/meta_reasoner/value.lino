@@ -1,0 +1,29 @@
+self_ast_census
+  target src/meta_reasoner/value.rs
+  language rust
+  fidelity signature
+  byte_len 12155
+  line_count 361
+  content_id source_module_db2a58e14399c97a
+  symbol_count 20
+  symbols
+    enum Value 22 35
+    function from_json 44 57
+    function parse_json 64 68
+    function to_json 75 92
+    function type_name 98 113
+    function is_string 120 122
+    function as_str 129 134
+    function as_list 141 146
+    function to_js_string 153 161
+    function to_js_number 168 182
+    function js_join 190 202
+    function json_string 208 210
+    function js_number 218 264
+    function string_to_number 267 290
+    enum Primitive 293 296
+    function to_primitive 298 304
+    function js_less 312 319
+    function primitive_number 321 326
+    function same_value_zero 334 342
+    function to_fixed2 350 361

@@ -1,0 +1,33 @@
+self_ast_census
+  target src/web_formalize_trust.rs
+  language rust
+  fidelity signature
+  byte_len 11227
+  line_count 328
+  content_id source_module_bb8209d7bd7d53ff
+  symbol_count 24
+  symbols
+    function trust_score 4 65
+    function annotate_capture 74 88
+    function network_statements 92 102
+    function covers_statements 108 118
+    function generic_page_statements 123 125
+    struct CodeBlockIndex 129 136
+    struct CommandIndex 140 145
+    struct ParagraphIndex 149 154
+    struct FormalizedPage 158 175
+    function page_key 181 183
+    function from_capture 190 228
+    function key 232 234
+    function code_blocks 238 240
+    function commands 244 246
+    function mentions 250 254
+    struct FormalizedPageStore 260 262
+    function new 267 269
+    function insert 272 276
+    function get 280 282
+    function contains_url 286 288
+    function len 292 294
+    function is_empty 298 300
+    function code_blocks_on 306 314
+    function command_mentioning 320 327

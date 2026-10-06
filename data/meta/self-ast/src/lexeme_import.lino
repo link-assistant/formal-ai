@@ -2,9 +2,9 @@ self_ast_census
   target src/lexeme_import.rs
   language rust
   fidelity signature
-  byte_len 34770
-  line_count 985
-  content_id source_module_1495746f451d381d
+  byte_len 34626
+  line_count 980
+  content_id source_module_d563a7a9138e2d3c
   symbol_count 49
   symbols
     function import_languages 42 55
@@ -26,33 +26,33 @@ self_ast_census
     struct ImportCoverage 156 161
     function permille 166 172
     struct ImportConfig 176 185
-    function live_api_enabled 190 197
-    function parse_concepts 202 229
-    function is_entity_id 233 236
-    function entity_json_path 240 242
-    function entity_lino_path 246 248
-    function run 255 329
-    function reject 331 341
-    function resolve_surfaces 345 396
-    function surfaces_from_entity 400 454
-    function labels_from_entity 457 459
-    function surface_matches_language 461 465
-    function fetch_and_cache 471 523
-    function trim_entity 529 553
-    enum Ordered 557 562
-    function keep_languages 564 573
-    function keep_language_arrays 575 589
-    function value_to_ordered 591 604
-    function serialize_trimmed 610 615
-    function write_ordered 617 665
-    function pad 667 671
-    function escape_json 673 686
-    function validate 693 809
-    function slug_is_clean 813 818
-    function surface_is_clean 822 826
-    function render_block 830 849
-    function shard 857 879
-    function render_import_events 886 898
-    function write_event_field 900 902
-    function write_shards 909 978
-    function escape_lino 980 985
+    function live_api_enabled 190 192
+    function parse_concepts 197 224
+    function is_entity_id 228 231
+    function entity_json_path 235 237
+    function entity_lino_path 241 243
+    function run 250 324
+    function reject 326 336
+    function resolve_surfaces 340 391
+    function surfaces_from_entity 395 449
+    function labels_from_entity 452 454
+    function surface_matches_language 456 460
+    function fetch_and_cache 466 518
+    function trim_entity 524 548
+    enum Ordered 552 557
+    function keep_languages 559 568
+    function keep_language_arrays 570 584
+    function value_to_ordered 586 599
+    function serialize_trimmed 605 610
+    function write_ordered 612 660
+    function pad 662 666
+    function escape_json 668 681
+    function validate 688 804
+    function slug_is_clean 808 813
+    function surface_is_clean 817 821
+    function render_block 825 844
+    function shard 852 874
+    function render_import_events 881 893
+    function write_event_field 895 897
+    function write_shards 904 973
+    function escape_lino 975 980

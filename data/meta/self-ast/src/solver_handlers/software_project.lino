@@ -2,21 +2,20 @@ self_ast_census
   target src/solver_handlers/software_project.rs
   language rust
   fidelity signature
-  byte_len 35030
-  line_count 929
-  content_id source_module_861363e8a42bcc8e
-  symbol_count 50
+  byte_len 32163
+  line_count 840
+  content_id source_module_3c83998d49535579
+  symbol_count 42
   symbols
-    struct ArtifactMatch 21 24
-    struct SoftwareProjectMeaning 27 38
-    struct SoftwareSubtask 41 45
-    enum DeliveryMode 48 53
-    function label 56 63
-    function from_slug 68 75
-    enum ApprovalState 79 82
-    function label 85 90
-    function software_project_claims 100 108
-    function from_prompt 111 140
+    struct SoftwareProjectMeaning 20 31
+    struct SoftwareSubtask 34 38
+    enum DeliveryMode 41 46
+    function label 49 56
+    function from_slug 61 68
+    enum ApprovalState 72 75
+    function label 78 83
+    function software_project_claims 97 104
+    function from_prompt 107 140
     function canonical_key 142 160
     function meaning_id 162 164
     function delivery_mode_label 168 170
@@ -26,34 +25,27 @@ self_ast_census
     function prior_software_project_meaning 278 286
     function record_meaning 288 342
     function artifact_label 353 377
-    function artifact_surface_table 384 395
-    function action_surface_table 402 411
-    function match_action 415 425
-    function match_artifact 429 439
-    function scan_match 446 459
-    function is_start_boundary 461 469
-    function is_end_boundary 471 479
-    function is_word_character 489 491
-    function is_cjk_character 495 502
-    function extract_target 504 519
-    function extract_after_marker 521 542
-    function capitalize_short_target 544 554
-    function requirement_marker_words 560 567
-    function extract_requirements 569 590
-    function derive_subtasks 592 605
-    function requirement_category_label 612 624
-    function classify_requirement 631 648
-    function subtask_title 650 664
-    function detect_delivery_mode 672 677
-    function detect_implementation_language 682 687
-    function implementation_language_from_slug 693 695
-    function approval_gates 697 720
-    function push_unique 722 726
-    function sentence_case 728 735
-    function is_game_unit_tracker 741 745
-    function is_approval_prompt 753 762
-    function reasoning_steps 764 797
-    function plan_steps 799 842
-    function render_plan_response 844 885
-    function render_implementation_response 887 920
-    function lino_string 922 929
+    function artifact_surface_table 386 397
+    function action_surface_table 404 413
+    function extract_target 415 430
+    function extract_after_marker 432 453
+    function capitalize_short_target 455 465
+    function requirement_marker_words 471 478
+    function extract_requirements 480 501
+    function derive_subtasks 503 516
+    function requirement_category_label 523 535
+    function classify_requirement 542 559
+    function subtask_title 561 575
+    function detect_delivery_mode 583 588
+    function detect_implementation_language 593 598
+    function implementation_language_from_slug 604 606
+    function approval_gates 608 631
+    function push_unique 633 637
+    function sentence_case 639 646
+    function is_game_unit_tracker 652 656
+    function is_approval_prompt 664 673
+    function reasoning_steps 675 708
+    function plan_steps 710 753
+    function render_plan_response 755 796
+    function render_implementation_response 798 831
+    function lino_string 833 840

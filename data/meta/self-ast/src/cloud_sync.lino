@@ -1,0 +1,33 @@
+self_ast_census
+  target src/cloud_sync.rs
+  language rust
+  fidelity signature
+  byte_len 9288
+  line_count 260
+  content_id source_module_251a3c995433f000
+  symbol_count 24
+  symbols
+    const MAX_OBJECT_BYTES 17 17
+    static TEMP_SEQUENCE 18 18
+    struct SyncConfig 21 24
+    struct SyncCursor 27 31
+    struct SyncReport 34 37
+    enum SyncError 40 47
+    function from 49 51
+    trait Transport 60 64
+    function keys 61 61
+    function read 62 62
+    function put_if_absent 63 63
+    struct DirectoryTransport 68 70
+    function new 74 76
+    function path 77 80
+    function keys 84 100
+    function read 101 110
+    function put_if_absent 111 148
+    function validate_key 151 161
+    function digest 162 164
+    function canonical 165 170
+    function encode 171 173
+    function decode 174 187
+    function sync_memory 195 250
+    function directory_remote 258 260
