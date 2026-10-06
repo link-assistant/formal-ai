@@ -5,7 +5,7 @@
 // rust/tests/fixtures/meta-reasoner (sha256 in capture-manifest.lino).
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { test } from "node:test";
 
@@ -45,8 +45,15 @@ const worker = createWorkerContext({
       }
     }
     const body = replay.get(target);
-    if (body === undefined) return { ok: false, status: 404, text: async () => "" };
-    return { ok: true, status: 200, text: async () => body };
+    if (body !== undefined) return { ok: true, status: 200, text: async () => body };
+    // The repository's pre-cached Wiktionary captures (data/cache/wiktionary).
+    const cached = /^https:\/\/api\.dictionaryapi\.dev\/api\/v2\/entries\/en\/([a-z]+)$/u.exec(target);
+    const file = cached && path.join(REPO_ROOT, "data/cache/wiktionary/en", `${cached[1]}.json`);
+    if (file && existsSync(file)) {
+      const text = readFileSync(file, "utf8");
+      return { ok: true, status: 200, text: async () => text };
+    }
+    return { ok: false, status: 404, text: async () => "" };
   },
 });
 const ready = evaluate(worker, "loadSeed()");

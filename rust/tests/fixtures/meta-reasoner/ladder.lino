@@ -35,3 +35,5 @@ ladder
     steps "list_files"
   rung "Write a Node.js script that prints every file in a folder with more than 1000 lines"
     steps "list_files keep_greater(read_file∘split_lines∘count_items)"
+  rung "write a function that deduplicates the lines of a text"
+    steps "split_lines unique_items"

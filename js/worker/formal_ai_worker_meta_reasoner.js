@@ -19,7 +19,9 @@
 const META_REASONING_FILE = "meta-reasoning.lino";
 const META_BOUNDS = Object.freeze({
   groundDepth: 2,
-  glossesPerWord: 6,
+  glossesPerWord: 3,
+  specificGloss: 0.5,
+  glossSupport: 0.2,
   programLength: 4,
   candidateBudget: 20000,
   lookupRounds: 3,
@@ -332,10 +334,20 @@ function metaGround(word, context, depth, stack) {
     return { word, status: "grounded", origin: "documentation", hypotheses: documented.map((item) => ({ ...item, via: "documentation" })), needs: [] };
   }
   const senses = context.knowledge.get(word) || [];
-  if (senses.length && depth < META_BOUNDS.groundDepth) {
+  // Captures ground only the request's own words. A gloss word is grounded
+  // from documentation and the request alone, so meaning cannot drift
+  // through chains of loosely related senses.
+  if (senses.length && depth === 0) {
     trace.emit("subgoal", `${indent}understand ${word} through ${senses.length} gloss(es)`);
     const frameMarkers = metaCueMarkers("artifact");
-    const frame = senses.slice(0, META_BOUNDS.glossesPerWord).find((sense) => frameMarkers.some((marker) => metaWords(sense.gloss).some((token) => token.startsWith(marker.trim()))));
+    // The word names the artifact's frame when a salient gloss is mostly
+    // about it ("JavaScript: a programming language"), not when one word of
+    // a long gloss happens to match.
+    const frame = senses.slice(0, META_BOUNDS.glossesPerWord).find((sense) => {
+      const content = metaWords(sense.gloss).filter((token) => !metaIsGrammatical(token));
+      const framing = content.filter((token) => frameMarkers.some((marker) => token.startsWith(marker.trim()))).length;
+      return content.length > 0 && framing / content.length >= META_BOUNDS.glossSupport;
+    });
     if (frame) {
       trace.emit("grounded", `${indent}${word} names the artifact's frame: "${frame.gloss}"`);
       return { word, status: "frame", origin: "capture", hypotheses: [], needs: [] };
@@ -344,10 +356,28 @@ function metaGround(word, context, depth, stack) {
     const deeperNeeds = [];
     let via = "";
     for (const sense of senses.slice(0, META_BOUNDS.glossesPerWord)) {
-      for (const hypothesis of metaGroundText(sense.gloss, context, depth + 1, stack.concat(word), deeperNeeds)) {
-        const score = hypothesis.score / 2;
-        if (score > (scores.get(hypothesis.operation) || 0)) {
-          scores.set(hypothesis.operation, score);
+      // Lesk-style support: the share of the gloss's content words whose
+      // specific meaning (an operation's name or a rare documentation word)
+      // is the operation. A synonym-like gloss ("Reversed.") vouches fully;
+      // one incidental word in a long sentence barely does.
+      const content = metaWords(sense.gloss).filter((token) => !metaIsGrammatical(token));
+      if (!content.length) continue;
+      const support = new Map();
+      let grounded = 0;
+      for (const token of new Set(content)) {
+        const grounding = metaGround(token, context, depth + 1, stack.concat(word));
+        for (const need of grounding.needs) if (!deeperNeeds.includes(need)) deeperNeeds.push(need);
+        const specific = new Set(grounding.hypotheses.filter((item) => item.score >= META_BOUNDS.specificGloss).map((item) => item.operation));
+        if (specific.size) grounded += 1;
+        for (const operation of specific) support.set(operation, (support.get(operation) || 0) + 1);
+      }
+      for (const [operation, count] of support) {
+        // A majority of the gloss's grounded words, and a real share of all
+        // its words; words grounded nowhere are neutral, rivals dilute.
+        const score = count / content.length;
+        if (score < META_BOUNDS.glossSupport || count * 2 <= grounded) continue;
+        if (score > (scores.get(operation) || 0)) {
+          scores.set(operation, score);
           if (!via || score >= Math.max(...scores.values())) via = sense.sourceUrl || sense.gloss;
         }
       }
@@ -362,7 +392,7 @@ function metaGround(word, context, depth, stack) {
     trace.emit("impasse", `${indent}${word}: no gloss reaches an operation`);
     return { word, status: "open", origin: "capture", hypotheses: [], needs: deeperNeeds };
   }
-  if (!context.knowledge.has(word) && depth < META_BOUNDS.groundDepth) {
+  if (!context.knowledge.has(word) && depth === 0) {
     if (depth === 0) trace.emit("impasse", `${word}: unknown, lookup needed`);
     return { word, status: "open", origin: "none", hypotheses: [], needs: [word] };
   }
@@ -698,15 +728,21 @@ async function metaReason(prompt, language, options) {
     if (result.goal === "understand" || result.goal === "explain") break;
     const opened = [];
     for (const word of result.needs.slice(0, META_BOUNDS.lookupsPerRound)) {
+      // A dictionary lists base forms: the surface first, then each lemma.
       let senses = [];
-      try {
-        // eslint-disable-next-line no-await-in-loop -- each lookup is bounded by the budget.
-        senses = (await settings.lookup(word, language)) || [];
-      } catch {
-        senses = [];
+      let looked = word;
+      for (const lemma of metaLemmas(word, language)) {
+        try {
+          // eslint-disable-next-line no-await-in-loop -- each lookup is bounded by the budget.
+          senses = (await settings.lookup(lemma, language)) || [];
+        } catch {
+          senses = [];
+        }
+        looked = lemma;
+        if (senses.length) break;
       }
       knowledge.set(word, senses);
-      opened.push(`${word}:${senses.length}`);
+      opened.push(`${word}${looked === word ? "" : `(${looked})`}:${senses.length}`);
     }
     rounds.push(opened.join(" "));
     result = metaReasonCore(prompt, language, knowledge);
