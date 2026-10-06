@@ -91,38 +91,18 @@ fn finalize_shell_transform(
     )
 }
 
+/// Whether the prompt asks for the command to repeat forever. The cue words
+/// (English, Russian, Hindi, Chinese) live in the `shell_infinite_loop` set of
+/// `data/meta/cue-lexicon.lino`, matched as substrings of the normalized prompt.
 fn wants_infinite_loop(normalized: &str) -> bool {
-    normalized.contains("loop")
-        || normalized.contains("infinite")
-        || normalized.contains("forever")
-        || normalized.contains("repeatedly")
-        || normalized.contains("цикл")
-        || normalized.contains("бесконеч")
-        || normalized.contains("लूप")
-        || normalized.contains("अनंत")
-        || normalized.contains("बार-बार")
-        || normalized.contains("循环")
-        || normalized.contains("无限")
-        || normalized.contains("一直")
+    crate::cue_lexicon::matches("shell_infinite_loop", normalized)
 }
 
+/// Whether the prompt asks for the command to run inside a `screen` session
+/// (on one line, executed inside it). The cue words live in the
+/// `shell_screen_execution` set of `data/meta/cue-lexicon.lino`.
 fn wants_screen_execution(normalized: &str) -> bool {
-    normalized.contains("single line")
-        || normalized.contains("one line")
-        || normalized.contains("execute")
-        || normalized.contains("run")
-        || normalized.contains("inside")
-        || normalized.contains("одной строк")
-        || normalized.contains("внутри")
-        || normalized.contains("выполн")
-        || normalized.contains("एक पंक्ति")
-        || normalized.contains("अंदर")
-        || normalized.contains("चल")
-        || normalized.contains("निष्पादित")
-        || normalized.contains("单行")
-        || normalized.contains("一行")
-        || normalized.contains("执行")
-        || normalized.contains("里面")
+    crate::cue_lexicon::matches("shell_screen_execution", normalized)
 }
 
 fn extract_shell_command(prompt: &str) -> Option<String> {

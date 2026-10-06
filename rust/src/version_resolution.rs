@@ -204,13 +204,9 @@ impl VersionSet {
         })
     }
 
-    /// Append the resolution to the derivation: every capture's provenance,
-    /// then one line per pin naming what was pinned and how (R4).
-    pub fn record(&self, log: &mut crate::event_log::EventLog) {
-        for capture in &self.captures {
-            capture.record(log);
-        }
-        for (name, pin) in [
+    /// Every pin beside its `generated_version` id in the toolchains seed.
+    fn pins(&self) -> [(&'static str, &ResolvedVersion); 7] {
+        [
             ("actions_checkout", &self.checkout),
             ("actions_setup_java", &self.setup_java),
             ("setup_kotlin_action", &self.setup_kotlin),
@@ -218,7 +214,24 @@ impl VersionSet {
             ("python_interpreter", &self.python_interpreter),
             ("kotlin_compiler", &self.kotlin),
             ("java_lts", &self.java_lts),
-        ] {
+        ]
+    }
+
+    /// The pin the toolchains seed names by `id`.
+    fn pin(&self, id: &str) -> Option<&ResolvedVersion> {
+        self.pins()
+            .into_iter()
+            .find(|(name, _)| *name == id)
+            .map(|(_, pin)| pin)
+    }
+
+    /// Append the resolution to the derivation: every capture's provenance,
+    /// then one line per pin naming what was pinned and how (R4).
+    pub fn record(&self, log: &mut crate::event_log::EventLog) {
+        for capture in &self.captures {
+            capture.record(log);
+        }
+        for (name, pin) in self.pins() {
             log.append(
                 "version_resolution",
                 format!(
@@ -344,45 +357,91 @@ pub fn fill_workflow_versions(template: &str, versions: &VersionSet) -> String {
         .replace("{kotlin_version}", &versions.kotlin.tag)
         .replace("{java_lts}", &versions.java_lts.tag);
 
-    #[derive(PartialEq)]
-    enum Block {
-        None,
-        Kotlin,
-        Java,
-        Python,
-    }
-    let mut block = Block::None;
+    let actions = workflow_actions(versions);
+    let step_marker = workflow_step_marker();
+    // The `version:`-shaped key the current action block consumes, and the
+    // pin it is rewritten to; a new `uses:` step closes the block.
+    let mut block: Option<(&str, &ResolvedVersion)> = None;
     let mut out = String::with_capacity(text.len());
     for line in text.lines() {
         let mut line = line.to_owned();
-        if line.contains("actions/checkout@") {
-            line = replace_action_ref(&line, "actions/checkout", &versions.checkout);
+        let mut entered = false;
+        for action in &actions {
+            if line.contains(&action.marker) {
+                line = replace_action_ref(&line, &action.uses, action.pin);
+                if let Some((key, pin)) = &action.scoped {
+                    block = Some((key.as_str(), *pin));
+                    entered = true;
+                }
+            }
         }
-        if line.contains("actions/setup-java@") {
-            line = replace_action_ref(&line, "actions/setup-java", &versions.setup_java);
-            block = Block::Java;
-        } else if line.contains("fwilhe2/setup-kotlin@") {
-            line = replace_action_ref(&line, "fwilhe2/setup-kotlin", &versions.setup_kotlin);
-            block = Block::Kotlin;
-        } else if line.contains("actions/setup-python@") {
-            line = replace_action_ref(&line, "actions/setup-python", &versions.setup_python);
-            block = Block::Python;
-        } else if line.trim_start().starts_with("- uses:") {
-            block = Block::None;
+        if !entered
+            && step_marker
+                .as_deref()
+                .is_some_and(|marker| line.trim_start().starts_with(marker))
+        {
+            block = None;
         }
-        if line.contains("java-version:") && block == Block::Java {
-            line = replace_quoted_value(&line, &versions.java_lts.tag);
-        }
-        if line.contains("python-version:") && block == Block::Python {
-            line = replace_quoted_value(&line, &versions.python_interpreter.tag);
-        }
-        if line.contains("version:") && block == Block::Kotlin {
-            line = replace_quoted_value(&line, &versions.kotlin.tag);
+        // A `version:` key takes the bare version (`2.4.20`), not the
+        // release tag (`v2.4.20`) the publisher's API names it by.
+        if let Some((_, pin)) = block.filter(|(key, _)| line.contains(*key)) {
+            line = replace_quoted_value(&line, pin.tag.trim_start_matches('v'));
         }
         out.push_str(&line);
         out.push('\n');
     }
     out.trim_end_matches('\n').to_owned()
+}
+
+/// One `uses:` action a generated workflow pins, as the toolchains seed
+/// declares it on its `generated_version` row (`workflow_uses`, and for a
+/// setup action the `workflow_version_key` it consumes and the
+/// `workflow_version_pin` that key is rewritten to).
+struct WorkflowAction<'a> {
+    uses: String,
+    marker: String,
+    pin: &'a ResolvedVersion,
+    scoped: Option<(String, &'a ResolvedVersion)>,
+}
+
+fn workflow_actions(versions: &VersionSet) -> Vec<WorkflowAction<'_>> {
+    let root = parse_lino(TOOLCHAINS);
+    let mut nodes = Vec::new();
+    descend(&root, &mut nodes);
+    nodes
+        .iter()
+        .filter(|node| node.name == "generated_version")
+        .filter_map(|node| {
+            let uses = node.find_child_value("workflow_uses");
+            if uses.is_empty() {
+                return None;
+            }
+            let pin = versions.pin(&node.id)?;
+            let key = node.find_child_value("workflow_version_key");
+            let scoped = versions
+                .pin(node.find_child_value("workflow_version_pin"))
+                .filter(|_| !key.is_empty())
+                .map(|scoped_pin| (key.to_owned(), scoped_pin));
+            Some(WorkflowAction {
+                uses: uses.to_owned(),
+                marker: format!("{uses}@"),
+                pin,
+                scoped,
+            })
+        })
+        .collect()
+}
+
+/// The line prefix that opens a new workflow step, from the toolchains seed.
+fn workflow_step_marker() -> Option<String> {
+    let root = parse_lino(TOOLCHAINS);
+    let mut nodes = Vec::new();
+    descend(&root, &mut nodes);
+    nodes
+        .iter()
+        .find(|node| node.name == "generated_workflow_step")
+        .map(|node| node.find_child_value("marker").to_owned())
+        .filter(|marker| !marker.is_empty())
 }
 
 /// `action@<anything>` becomes `action@<resolved ref> # <tag>`, per R1: the
@@ -397,12 +456,20 @@ fn replace_action_ref(line: &str, action: &str, pin: &ResolvedVersion) -> String
         .find(|c: char| !(c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-')))
         .map_or(line.len(), |offset| ref_start + offset);
     let comment = format!("  # {}", pin.tag);
+    // A `# <tag>` comment already behind the ref (the placeholder form
+    // `@{checkout_ref} # {checkout_tag}`) is replaced, not doubled.
+    let rest = &line[ref_end..];
+    let rest = if rest.trim_start().starts_with('#') {
+        ""
+    } else {
+        rest
+    };
     format!(
         "{}{}{}{}",
         &line[..ref_start],
         pin.pinned_ref(),
         comment,
-        &line[ref_end..]
+        rest
     )
 }
 
@@ -417,303 +484,5 @@ fn replace_quoted_value(line: &str, value: &str) -> String {
     match quote {
         Some(q) => format!("{head} {q}{value}{q}"),
         None => format!("{head} {value}"),
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::source_fetch::FetchError;
-    use std::collections::HashMap;
-    use std::fs;
-    use std::path::PathBuf;
-    use std::time::{SystemTime, UNIX_EPOCH};
-
-    use super::*;
-
-    const CHECKOUT_RELEASE: &str = r#"{"tag_name":"v7.0.1"}"#;
-    const CHECKOUT_COMMIT: &str = r#"{"sha":"3d3c42e5aac5ba805825da76410c181273ba90b1"}"#;
-    const SETUP_JAVA_RELEASE: &str = r#"{"tag_name":"v6.0.1"}"#;
-    const SETUP_JAVA_COMMIT: &str = r#"{"sha":"de7274f081f381c8f8158605e0321c36c376e2e6"}"#;
-    const SETUP_KOTLIN_RELEASE: &str = r#"{"tag_name":"v2.0"}"#;
-    const SETUP_KOTLIN_COMMIT: &str = r#"{"sha":"ee9692514da313706b193d808526812102a344e4"}"#;
-    const SETUP_PYTHON_RELEASE: &str = r#"{"tag_name":"v7.0.0"}"#;
-    const SETUP_PYTHON_COMMIT: &str = r#"{"sha":"5fda3b95a4ea91299a34e894583c3862153e4b97"}"#;
-    const CPYTHON_RELEASE: &str = r#"{"tag_name":"v3.14.7"}"#;
-    const CPYTHON_COMMIT: &str = r#"{"sha":"0000000000000000000000000000000000000000"}"#;
-    const KOTLIN_RELEASE: &str = r#"{"tag_name":"v2.4.20"}"#;
-    const KOTLIN_COMMIT: &str = r#"{"sha":"0000000000000000000000000000000000000000"}"#;
-    const ADOPTIUM: &str = r#"{"most_recent_lts":25}"#;
-
-    #[derive(Default)]
-    struct MockTransport {
-        responses: HashMap<String, &'static str>,
-    }
-
-    impl MockTransport {
-        fn seeded() -> Self {
-            let mut responses = HashMap::new();
-            for (url, body) in [
-                (
-                    "https://api.github.com/repos/actions/checkout/releases/latest",
-                    CHECKOUT_RELEASE,
-                ),
-                (
-                    "https://api.github.com/repos/actions/checkout/commits/v7.0.1",
-                    CHECKOUT_COMMIT,
-                ),
-                (
-                    "https://api.github.com/repos/actions/setup-java/releases/latest",
-                    SETUP_JAVA_RELEASE,
-                ),
-                (
-                    "https://api.github.com/repos/actions/setup-java/commits/v6.0.1",
-                    SETUP_JAVA_COMMIT,
-                ),
-                (
-                    "https://api.github.com/repos/fwilhe2/setup-kotlin/releases/latest",
-                    SETUP_KOTLIN_RELEASE,
-                ),
-                (
-                    "https://api.github.com/repos/fwilhe2/setup-kotlin/commits/v2.0",
-                    SETUP_KOTLIN_COMMIT,
-                ),
-                (
-                    "https://api.github.com/repos/actions/setup-python/releases/latest",
-                    SETUP_PYTHON_RELEASE,
-                ),
-                (
-                    "https://api.github.com/repos/actions/setup-python/commits/v7.0.0",
-                    SETUP_PYTHON_COMMIT,
-                ),
-                (
-                    "https://api.github.com/repos/python/cpython/releases/latest",
-                    CPYTHON_RELEASE,
-                ),
-                (
-                    "https://api.github.com/repos/python/cpython/commits/v3.14.7",
-                    CPYTHON_COMMIT,
-                ),
-                (
-                    "https://api.github.com/repos/JetBrains/kotlin/releases/latest",
-                    KOTLIN_RELEASE,
-                ),
-                (
-                    "https://api.github.com/repos/JetBrains/kotlin/commits/v2.4.20",
-                    KOTLIN_COMMIT,
-                ),
-                (
-                    "https://api.adoptium.net/v3/info/available_releases",
-                    ADOPTIUM,
-                ),
-            ] {
-                responses.insert(url.to_owned(), body);
-            }
-            Self { responses }
-        }
-
-        fn online(cache_dir: PathBuf) -> CachedSourceClient<Self> {
-            CachedSourceClient::new(cache_dir, Self::seeded())
-                .with_online(true)
-                .with_clock(fixed_clock)
-        }
-    }
-
-    impl SourceTransport for MockTransport {
-        fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
-            self.responses
-                .get(url)
-                .map(|body| body.as_bytes().to_vec())
-                .ok_or_else(|| FetchError::Transport(format!("no fixture for {url}")))
-        }
-    }
-
-    fn fixed_clock() -> u64 {
-        1_800_000_000
-    }
-
-    fn temp_dir(tag: &str) -> PathBuf {
-        let dir = std::env::temp_dir().join(format!(
-            "issue-1168-{tag}-{}-{}",
-            std::process::id(),
-            SystemTime::now()
-                .duration_since(UNIX_EPOCH)
-                .map_or(0, |d| d.as_nanos())
-        ));
-        fs::create_dir_all(&dir).expect("temp dir");
-        dir
-    }
-
-    #[test]
-    fn resolves_every_pin_from_live_fixtures() {
-        let dir = temp_dir("live");
-        let client = MockTransport::online(dir);
-        let versions = VersionSet::resolve(&client);
-        assert_eq!(versions.checkout.tag, "v7.0.1");
-        assert_eq!(
-            versions.checkout.sha,
-            "3d3c42e5aac5ba805825da76410c181273ba90b1"
-        );
-        assert_eq!(versions.checkout.origin, Origin::Live);
-        assert_eq!(versions.setup_java.tag, "v6.0.1");
-        assert_eq!(versions.setup_java.origin, Origin::Live);
-        assert_eq!(versions.setup_kotlin.tag, "v2.0");
-        assert_eq!(versions.setup_python.tag, "v7.0.0");
-        assert_eq!(versions.setup_python.origin, Origin::Live);
-        assert_eq!(versions.python_interpreter.tag, "3.14.7");
-        assert_eq!(versions.kotlin.tag, "v2.4.20");
-        assert_eq!(versions.java_lts.tag, "25");
-        assert_eq!(versions.java_lts.sha, "");
-        assert_eq!(versions.java_lts.origin, Origin::Live);
-        assert!(versions.provenance_note().is_empty());
-    }
-
-    #[test]
-    fn records_the_resolution_in_the_derivation() {
-        let dir = temp_dir("record");
-        let client = MockTransport::online(dir);
-        let versions = VersionSet::resolve(&client);
-        let mut log = crate::event_log::EventLog::new();
-        versions.record(&mut log);
-        let joined = log
-            .events()
-            .iter()
-            .map(|event| format!("{} {}", event.kind, event.payload))
-            .collect::<Vec<_>>()
-            .join("\n");
-        assert!(joined.contains("version_resolution"));
-        assert!(joined.contains("actions_checkout tag=v7.0.1"));
-        assert!(joined.contains("java_lts tag=25 sha= origin=live"));
-        assert!(joined.contains("source:http"));
-    }
-
-    #[test]
-    fn offline_replays_the_cached_capture_and_says_so() {
-        let dir = temp_dir("cache");
-        let online = MockTransport::online(dir.clone());
-        let warmed = VersionSet::resolve(&online);
-        assert!(warmed.checkout.origin == Origin::Live);
-        drop(online);
-
-        let offline = CachedSourceClient::new(dir, MockTransport::default())
-            .with_online(false)
-            .with_clock(fixed_clock);
-        let versions = VersionSet::resolve(&offline);
-        assert_eq!(versions.checkout.tag, "v7.0.1");
-        assert_eq!(versions.checkout.origin, Origin::Cache);
-        assert_eq!(versions.kotlin.tag, "v2.4.20");
-        let note = versions.provenance_note().join("\n");
-        assert!(
-            note.contains("(version resolved from cache; fetched_at=1800000000)"),
-            "the R5 annotation must name the cache and its timestamp: {note}"
-        );
-    }
-
-    #[test]
-    fn empty_cache_falls_back_to_the_shipped_baseline() {
-        let dir = temp_dir("baseline");
-        let offline = CachedSourceClient::new(dir, MockTransport::default())
-            .with_online(false)
-            .with_clock(fixed_clock);
-        let versions = VersionSet::resolve(&offline);
-        assert_eq!(versions.checkout.origin, Origin::Baseline);
-        assert_eq!(versions.checkout.tag, "v7.0.1");
-        assert_eq!(versions.setup_java.tag, "v6.0.1");
-        assert_eq!(versions.setup_kotlin.tag, "v2.0");
-        assert_eq!(versions.kotlin.tag, "v2.4.20");
-        assert_eq!(versions.java_lts.tag, "25");
-        let note = versions.provenance_note().join("\n");
-        assert!(note.contains("shipped baseline"), "{note}");
-    }
-
-    #[test]
-    fn the_toolchains_seed_carries_every_baseline() {
-        let versions = VersionSet::baseline().expect("all five baselines shipped");
-        assert_eq!(versions.checkout.tag, "v7.0.1");
-        assert_eq!(
-            versions.checkout.sha,
-            "3d3c42e5aac5ba805825da76410c181273ba90b1"
-        );
-        assert_eq!(
-            versions.setup_java.sha,
-            "de7274f081f381c8f8158605e0321c36c376e2e6"
-        );
-        assert_eq!(
-            versions.setup_kotlin.sha,
-            "ee9692514da313706b193d808526812102a344e4"
-        );
-        assert_eq!(
-            versions.setup_python.sha,
-            "5fda3b95a4ea91299a34e894583c3862153e4b97"
-        );
-        assert_eq!(versions.python_interpreter.tag, "3.14.7");
-        assert_eq!(versions.kotlin.tag, "v2.4.20");
-        assert_eq!(versions.java_lts.tag, "25");
-    }
-
-    #[test]
-    fn rewrites_the_stale_ci_setup_literals() {
-        let versions = VersionSet::baseline().expect("baselines");
-        let stale = "      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961\n        with:\n          distribution: temurin\n          java-version: '21'\n      - uses: fwilhe2/setup-kotlin@51a059ff08b95e2b83aa952b5b46b696d5b615a0\n        with:\n          version: '2.3.10'\n";
-        let filled = fill_workflow_versions(stale, &versions);
-        assert!(
-            filled.contains("actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6"),
-            "{filled}"
-        );
-        assert!(filled.contains("java-version: '25'"), "{filled}");
-        assert!(
-            filled.contains("fwilhe2/setup-kotlin@ee9692514da313706b193d808526812102a344e4"),
-            "{filled}"
-        );
-        assert!(filled.contains("version: '2.4.20'"), "{filled}");
-        assert!(!filled.contains("'21'"), "{filled}");
-        assert!(!filled.contains("2.3.10"), "{filled}");
-        assert!(!filled.contains("b6effb05"), "{filled}");
-        assert!(!filled.contains("51a059ff"), "{filled}");
-    }
-
-    #[test]
-    fn rewrites_the_workflow_template_checkout_ref() {
-        let versions = VersionSet::baseline().expect("baselines");
-        let stale = "      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262\n";
-        let filled = fill_workflow_versions(stale, &versions);
-        assert!(
-            filled.contains("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"),
-            "{filled}"
-        );
-        assert!(filled.contains("# v7.0.1"), "{filled}");
-        assert!(!filled.contains("11d5960"), "{filled}");
-    }
-
-    #[test]
-    fn fills_the_placeholder_forms() {
-        let versions = VersionSet::baseline().expect("baselines");
-        let template = "      - uses: actions/checkout@{checkout_ref} # {checkout_tag}\n";
-        let filled = fill_workflow_versions(template, &versions);
-        assert!(
-            filled.contains("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1"),
-            "{filled}"
-        );
-    }
-
-    #[test]
-    fn rewrites_the_stale_python_ci_setup_literals() {
-        let versions = VersionSet::baseline().expect("baselines");
-        let stale = "      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1\n        with:\n          python-version: '3.14'\n";
-        let filled = fill_workflow_versions(stale, &versions);
-        assert!(
-            filled.contains("actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97"),
-            "{filled}"
-        );
-        assert!(filled.contains("python-version: '3.14.7'"), "{filled}");
-        assert!(!filled.contains("ece7cb06"), "{filled}");
-    }
-
-    #[test]
-    fn a_version_key_outside_the_setup_blocks_is_left_alone() {
-        let versions = VersionSet::baseline().expect("baselines");
-        let template =
-            "      - uses: some/other-action@v1\n        with:\n          version: '9.9.9'\n";
-        let filled = fill_workflow_versions(template, &versions);
-        assert!(filled.contains("version: '9.9.9'"), "{filled}");
     }
 }

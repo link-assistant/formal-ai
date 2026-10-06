@@ -792,7 +792,9 @@ fn research_urls(text: &str) -> Vec<String> {
     urls
 }
 
-fn urls_in(text: &str) -> Vec<String> {
+/// Every `http://` / `https://` token of `text`, trailing punctuation
+/// trimmed, in order of appearance.
+pub(super) fn urls_in(text: &str) -> Vec<String> {
     text.split_whitespace()
         .filter(|token| token.starts_with("http://") || token.starts_with("https://"))
         .map(|token| {

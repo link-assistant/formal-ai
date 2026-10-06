@@ -44,6 +44,9 @@ const CONSULTED_SETS: &[(&str, CueMatch)] = &[
     ("world_state_because", CueMatch::Substring),
     ("world_state_separator", CueMatch::Token),
     ("world_state_filler", CueMatch::Token),
+    // Issue #1085 D1: the shell-command transform's loop and screen cues.
+    ("shell_infinite_loop", CueMatch::Substring),
+    ("shell_screen_execution", CueMatch::Substring),
 ];
 
 #[test]
@@ -122,6 +125,46 @@ fn migrated_cue_contents_match_the_lists_they_replaced() {
             "trim whitespace",
             "normalize whitespace",
             "reverse words",
+        ]
+    );
+    // The shell-command transform's former inline `normalized.contains(..)`
+    // chains (rust/src/solver_handlers/shell_command_transform.rs).
+    assert_eq!(
+        cues("shell_infinite_loop"),
+        [
+            "loop",
+            "infinite",
+            "forever",
+            "repeatedly",
+            "цикл",
+            "бесконеч",
+            "लूप",
+            "अनंत",
+            "बार-बार",
+            "循环",
+            "无限",
+            "一直",
+        ]
+    );
+    assert_eq!(
+        cues("shell_screen_execution"),
+        [
+            "single line",
+            "one line",
+            "execute",
+            "run",
+            "inside",
+            "одной строк",
+            "внутри",
+            "выполн",
+            "एक पंक्ति",
+            "अंदर",
+            "चल",
+            "निष्पादित",
+            "单行",
+            "一行",
+            "执行",
+            "里面",
         ]
     );
 }

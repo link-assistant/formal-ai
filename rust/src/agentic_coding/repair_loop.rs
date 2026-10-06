@@ -684,18 +684,9 @@ impl FailedStep {
 }
 
 /// Rank a search result's URLs: deduped, capped, first read next — the same
-/// shape [`super::web_research`] ranks with, kept local because its copy is
-/// private to that module.
+/// URL extraction [`super::web_research`] ranks with.
 fn source_urls(text: &str) -> Vec<String> {
-    let mut urls: Vec<String> = text
-        .split_whitespace()
-        .filter(|token| token.starts_with("http://") || token.starts_with("https://"))
-        .map(|token| {
-            token
-                .trim_end_matches(['.', ',', ';', ')', ']', '"', '\''])
-                .to_owned()
-        })
-        .collect();
+    let mut urls = super::web_research::urls_in(text);
     let mut seen = BTreeSet::new();
     urls.retain(|url| seen.insert(url.clone()));
     urls.truncate(MAX_REPAIR_SOURCES);
