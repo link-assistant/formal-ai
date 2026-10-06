@@ -50,14 +50,12 @@ routing_probes
     language ru
     intent algorithm_sort_python
     prompt "Напиши алгоритм сортировки на Python"
-    js_misroute meta_reasoning_open
     rust_misroute unverified
   probe p050
     lane code_debugging
     language en
     intent code_debugging
     prompt "Debug this code: for i in range(10) print(i)"
-    js_misroute meta_reasoning_open
     rust_misroute unverified
   probe p051
     lane code_debugging
@@ -101,21 +99,18 @@ routing_probes
     language en
     intent code_explanation
     prompt "Explain this code: print(sum(range(10)))"
-    js_misroute meta_reasoned_program_unverified
     rust_misroute unverified
   probe p059
     lane code_explanation
     language en
     intent code_explanation
     prompt "What does this code do: x = [i*i for i in range(5)]"
-    js_misroute meta_reasoning_open
     rust_misroute unverified
   probe p060
     lane code_explanation
     language en
     intent code_explanation
     prompt "What does this function do: `def square(n): return n * n`"
-    js_misroute meta_reasoning_open
     rust_misroute unverified
   probe p061
     lane code_refactoring
@@ -137,7 +132,6 @@ routing_probes
     language en
     intent code_refactoring
     prompt "Refactor: for i in range(len(xs)): print(xs[i])"
-    js_misroute unknown
     rust_misroute unverified
   probe p065
     lane code_review
@@ -160,14 +154,12 @@ routing_probes
     intent document_generation_plan
     prompt "Make me a PDF file with a list of countries that have food subsidies"
     adversarial true
-    js_misroute shell_command_compose
   probe p098
     lane document_generation_plan
     language en
     intent document_generation_plan
     prompt "Make me a PDF file with a list of national parks"
     adversarial true
-    js_misroute shell_command_compose
   probe p099
     lane document_generation_plan
     language ru
@@ -189,7 +181,7 @@ routing_probes
     intent execution_failure
     prompt "Write a Python script that calls missing_helper()"
     adversarial true
-    js_misroute meta_reasoning_open
+    js_misroute write_script_python
     rust_misroute unverified
   probe p106
     lane execution_failure
@@ -197,7 +189,7 @@ routing_probes
     intent execution_failure
     prompt "Write a Python script that calls not_defined_anywhere()"
     adversarial true
-    js_misroute meta_reasoning_open
+    js_misroute write_script_python
     rust_misroute unverified
   probe p107
     lane execution_failure
@@ -210,7 +202,7 @@ routing_probes
     intent execution_failure
     prompt "Write a Python script that calls undefined_helper()"
     adversarial true
-    js_misroute meta_reasoning_open
+    js_misroute write_script_python
     rust_misroute unverified
   probe p119
     lane format_conversion
@@ -256,7 +248,6 @@ routing_probes
     intent format_conversion
     prompt "Convert this JSON to YAML: {""sort"": ""words"", ""reverse"": true}"
     adversarial true
-    js_misroute text_manipulation
     rust_misroute unverified
   probe p126
     lane format_conversion
@@ -264,7 +255,6 @@ routing_probes
     intent format_conversion
     prompt "Convert this JSON to YAML: {""text"": ""count the lines in this file""}"
     adversarial true
-    js_misroute text_manipulation
     rust_misroute unverified
   probe p127
     lane format_conversion
@@ -272,7 +262,6 @@ routing_probes
     intent format_conversion
     prompt "Convert this JSON to YAML: {""total_lines"": 12, ""word_count"": 40}"
     adversarial true
-    js_misroute text_manipulation
     rust_misroute unverified
   probe p128
     lane format_conversion
@@ -306,7 +295,6 @@ routing_probes
     intent format_conversion
     prompt "Преобразуй JSON в YAML: {""name"": ""Анна""}"
     adversarial true
-    js_misroute unknown
     rust_misroute unverified
   probe p166
     lane installation_conversion
@@ -319,7 +307,6 @@ routing_probes
     intent installation_conversion
     prompt "Convert these steps into an install script:\n\ngit clone https://github.com/acme/tool\ncd tool\nmake install"
     adversarial true
-    js_misroute project_lookup
   probe p168
     lane installation_conversion
     language en
@@ -331,7 +318,6 @@ routing_probes
     intent installation_conversion
     prompt "Turn this installation guide into a bash script: git clone https://github.com/acme/widget && cd widget && make install"
     adversarial true
-    js_misroute project_lookup
     rust_misroute unverified
   probe p170
     lane javascript_execution
@@ -365,7 +351,6 @@ routing_probes
     intent javascript_execution
     prompt "Run this JavaScript: console.log(1 + 2)"
     rust_intent tool_call_refused
-    js_misroute meta_reasoning_open
     rust_misroute unverified
   probe p223
     lane program_synthesis
@@ -404,7 +389,6 @@ routing_probes
     language zh
     intent regex_synthesis
     prompt "写一个匹配五位数字的正则表达式"
-    js_misroute unknown
     rust_misroute unverified
   probe p245
     lane shell_command_compose
@@ -472,7 +456,6 @@ routing_probes
     intent software_project_plan
     prompt "Create a VS Code extension that counts lines in a file"
     adversarial true
-    js_misroute shell_command_compose
     rust_misroute unverified
   probe p257
     lane software_project
@@ -485,7 +468,6 @@ routing_probes
     intent software_project_plan
     prompt "Write a CLI tool in Rust that converts JSON to YAML"
     adversarial true
-    js_misroute format_conversion
     rust_misroute unverified
   probe p259
     lane software_project
@@ -502,7 +484,6 @@ routing_probes
     language en
     intent software_project_plan
     prompt "Build a todo app in TypeScript"
-    js_misroute meta_reasoning_open
     rust_misroute unverified
   probe p268
     lane sql_synthesis
@@ -690,14 +671,12 @@ routing_probes
     language hi
     intent text_manipulation
     prompt "शब्द उल्टे करो: 'हरा सीआई रिलीज़'"
-    js_misroute unknown
     rust_misroute unverified
   probe p308
     lane text_manipulation
     language zh
     intent text_manipulation
     prompt "数一数这段文字有几个词：'猫 坐 在 垫子 上'"
-    js_misroute unknown
     rust_misroute unverified
   probe p309
     lane text_manipulation
@@ -739,20 +718,17 @@ routing_probes
     language zh
     intent write_program
     prompt "用Python写一个hello world程序"
-    js_misroute write_program_skill_gap
     rust_misroute unverified
   probe p357
     lane write_script
     language en
     intent write_script_python
     prompt "Write a Python script that prints hello"
-    js_misroute meta_reasoning_open
   probe p358
     lane write_script
     language en
     intent write_script_python
     prompt "Write a Python script that prints the date"
-    js_misroute meta_reasoning_open
   probe p359
     lane write_script
     language en

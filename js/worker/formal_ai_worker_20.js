@@ -989,7 +989,6 @@ function workerHandlerRegistryDefinition() {
     roleplay: "tryRoleplayRequest",
     coreference: "tryCoreferenceFactLookup",
     shell_command_transform: "tryShellCommandTransform",
-    write_script: "tryWriteProgram",
     software_project: "trySoftwareProjectRequest",
     who_is: "tryWhoIsQuestion",
   };
@@ -1067,7 +1066,7 @@ function workerHandlerRegistryDefinition() {
     network_query: "tryNetworkSnapshot", // the snapshot branch; concept introspection and the user filter stay native
     execution_failure: "tryExecutionFailure",
     installation_conversion: "tryInstallationConversion",
-    write_script: workerHandlerAliases.write_script,
+    write_script: "tryWriteScript",
     document_generation_plan: "tryDocumentGenerationPlan",
     software_project: workerHandlerAliases.software_project,
     software_project_request: "trySoftwareProjectRequest",

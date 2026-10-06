@@ -80,7 +80,7 @@ function algorithmSortingAnswer(language, withTests) {
  * @returns {object|null} the worker answer, or null
  */
 function handleAlgorithm(prompt, normalized) {
-  if (!normalized.includes("algorithm") && !normalized.includes("sort")) return null;
+  if (!normalized.includes("algorithm") && !operationMatchesSlug("sort", normalizePrompt(normalized))) return null;
   const language = algorithmDetectLanguage(normalized);
   const log = codeTaskLog();
   codeTaskLogAppend(log, "execution_status", "unavailable");
@@ -135,6 +135,54 @@ function handleExecutionFailure(prompt, normalized) {
  */
 function tryExecutionFailure(prompt) {
   return handleExecutionFailure(prompt, prompt.toLowerCase());
+}
+
+// ---------------------------------------------------------------------------
+// write_script (rust/src/solver_handlers/mod.rs try_write_script)
+// ---------------------------------------------------------------------------
+
+/**
+ * The catalogued language whose minimal script the request asks for, or null
+ * when the route cannot render everything the prompt names. Mirrors
+ * `is_write_script_request` and `names_no_task_beyond_the_minimal_script`.
+ * @param {string} prompt raw prompt
+ * @param {string} normalized normalized prompt
+ * @returns {string|null} the language slug
+ */
+function writeScriptLanguage(prompt, normalized) {
+  if (lexiconMentionsRole("program_genus", normalized) || lexiconMentionsRole("hello_world_reference", normalized)) return null;
+  if (!lexiconMentionsRole("script_authoring_verb", normalized) || !lexiconMentionsRole("script_or_code_artifact", normalized)) return null;
+  if (looksLikePythonFunctionSynthesis(prompt, canonicalizedPrompt(normalized))) return null;
+  const program = normalizeProgramPrompt(prompt);
+  const language = programLanguageFromPrompt(program);
+  if (!language || !WRITE_PROGRAM_TEMPLATES.hello_world?.[language]) return null;
+  const task = programTaskFromPrompt(program);
+  if (task && task !== "hello_world") return null;
+  return tryNumericList(prompt, []) ? null : language;
+}
+
+/**
+ * Browser binding for the `write_script` precedence row: the hello-world
+ * template of the one catalogued language the request names.
+ * @param {string} prompt raw prompt
+ * @param {string} responseLanguage reply language
+ * @returns {object|null} the worker answer, or null
+ */
+function tryWriteScript(prompt, responseLanguage) {
+  const language = writeScriptLanguage(prompt, normalizePrompt(prompt));
+  if (!language) return null;
+  const template = WRITE_PROGRAM_TEMPLATES.hello_world[language];
+  const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
+  const taskInfo = WRITE_PROGRAM_TASKS.hello_world;
+  const i18n = writeProgramStrings(responseLanguage);
+  const output = writeProgramExpectedOutput("hello_world", languageInfo, taskInfo);
+  const execution = writeProgramExecutionLines(language, "hello_world", template, output, i18n, responseLanguage);
+  return {
+    intent: `write_script_${language}`,
+    content: [i18n.intro(languageInfo.name, taskInfo.label), "", "```" + languageInfo.fence, template, "```", "", ...execution].join("\n"),
+    confidence: 1.0,
+    evidence: [`response:write_program:hello_world:${language}`, `program_parameter:language:${language}`],
+  };
 }
 
 // ---------------------------------------------------------------------------

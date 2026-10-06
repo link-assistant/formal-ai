@@ -58,6 +58,16 @@ pub fn text_outside_quoted_segments(prompt: &str) -> String {
     outside
 }
 
+/// Does the prose around the quoted literals name a format conversion?
+///
+/// "Convert this JSON to YAML: {...}" reads its payload as data: an
+/// operation word inside it is a key, not a request. A cue inside a quote
+/// ("Uppercase: 'json to yaml'") is content and names nothing.
+pub(super) fn names_format_conversion(prompt: &str) -> bool {
+    let frame = text_outside_quoted_segments(prompt).to_lowercase();
+    super::shell_command_compose::any_cue_matches("format_conversion", &frame, &frame)
+}
+
 pub fn try_text_manipulation(
     prompt: &str,
     normalized: &str,
@@ -83,6 +93,9 @@ pub fn try_text_manipulation_with_history(
     history: &[ConversationTurn],
 ) -> Option<SymbolicAnswer> {
     if crate::solver_helpers::is_agent_request(normalized) {
+        return None;
+    }
+    if names_format_conversion(prompt) {
         return None;
     }
 

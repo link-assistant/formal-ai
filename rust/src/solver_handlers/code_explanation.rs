@@ -152,36 +152,6 @@ fn function_intents() -> Vec<FunctionIntent> {
     out
 }
 
-/// Extract the code under discussion: the first fenced block, else a
-/// backtick span that looks like code, else the whole prompt when it carries
-/// code markers.
-fn code_block(prompt: &str) -> Option<String> {
-    if let Some(start) = prompt.find("```") {
-        let rest = &prompt[start + 3..];
-        let after_open = rest.find('\n').map_or(rest, |nl| &rest[nl + 1..]);
-        if let Some(end) = after_open.find("```") {
-            let code = &after_open[..end];
-            if !code.trim().is_empty() {
-                return Some(code.to_owned());
-            }
-        }
-    }
-    if let Some(start) = prompt.find('`')
-        && let Some(end) = prompt[start + 1..].find('`')
-    {
-        let code = &prompt[start + 1..start + 1 + end];
-        let code_markers = ["(", "def ", "=>", "return "];
-        if code_markers.iter().any(|marker| code.contains(marker)) {
-            return Some(code.to_owned());
-        }
-    }
-    let markers = ["def ", "function ", "fn ", "=>", "return "];
-    if markers.iter().any(|marker| prompt.contains(marker)) {
-        return Some(prompt.to_owned());
-    }
-    None
-}
-
 /// The name of the first function defined in the code.
 fn function_name(code: &str) -> Option<String> {
     for line in code.lines() {
@@ -412,7 +382,7 @@ pub fn handle_code_explanation(
     if !triggered(prompt, normalized) {
         return None;
     }
-    let code = code_block(prompt)?;
+    let code = super::code_debugging::code_block(prompt)?;
     let table = structures();
     log.append(
         "code_explanation:request",

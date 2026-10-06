@@ -242,12 +242,19 @@ fn contains_token(normalized: &str, expected: &str) -> bool {
     normalized.split_whitespace().any(|token| token == expected)
 }
 
+/// A whitespace-bounded phrase.
+///
+/// A Han character beside a Latin phrase is a word boundary too, as it is for [`contains_token`]: an ordinary Chinese
+/// request writes `写一个hello world程序` with no spaces around the phrase.
 fn contains_phrase(normalized: &str, expected: &str) -> bool {
     if contains_cjk(expected) {
         return normalized.contains(expected);
     }
-    normalized == expected
-        || normalized.starts_with(&format!("{expected} "))
-        || normalized.ends_with(&format!(" {expected}"))
-        || normalized.contains(&format!(" {expected} "))
+    let is_boundary =
+        |character: char| character.is_whitespace() || contains_cjk(&character.to_string());
+    normalized.match_indices(expected).any(|(index, _)| {
+        let before = normalized[..index].chars().next_back();
+        let after = normalized[index + expected.len()..].chars().next();
+        before.is_none_or(is_boundary) && after.is_none_or(is_boundary)
+    })
 }

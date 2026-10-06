@@ -417,7 +417,12 @@ function codeTaskCodeBlock(prompt) {
   for (const marker of ["def ", "function ", "fn ", "=>", "return "]) {
     if (prompt.includes(marker)) return prompt;
   }
-  return null;
+  // The colon after the request introduces the code itself
+  // ("Explain this code: print(sum(range(10)))") when it carries a call,
+  // an assignment or a subscript (Rust `code_debugging::code_block`).
+  const colon = prompt.indexOf(": ");
+  const payload = colon === -1 ? "" : prompt.slice(colon + 2).trim();
+  return /[(=[]/u.test(payload) ? payload : null;
 }
 
 /**

@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_code_task_support.js"
-  ceiling 529
-  rationale "Shared support for the browser twins of the issue #1177 code-task handlers. JavaScript-first twin of native handler keys (shared helpers for the code-task twins), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."
+  ceiling 534
+  rationale "Shared support for the browser twins of the issue #1177 code-task handlers. JavaScript-first twin of native handler keys (shared helpers for the code-task twins), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling 534 (2026-10-07, PR #1188): codeTaskCodeBlock reads code-shaped text after the request's colon, mirroring the shared code_debugging::code_block in Rust."

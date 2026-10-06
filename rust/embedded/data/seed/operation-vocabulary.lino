@@ -107,6 +107,7 @@ operation_vocabulary
     language hi
       phrase "शब्दों को उल्टा"
       combo शब्द+उल्टा
+      combo शब्द+उल्टे
     language zh
       phrase 反转单词
       phrase 倒转单词
@@ -231,6 +232,8 @@ operation_vocabulary
     language zh
       phrase 统计单词
       phrase 单词数量
+      phrase 几个词
+      phrase 多少个词
       unit 单词
   operation count_lines
     language en

@@ -119,10 +119,12 @@ fn function_intents() -> Vec<FunctionIntent> {
     out
 }
 
-/// Extract the code under discussion: the first fenced block, else a
-/// backtick span that looks like code, else the whole prompt when it carries
-/// code markers.
-fn code_block(prompt: &str) -> Option<String> {
+/// Extract the code under discussion, shared by the code-task family.
+///
+/// The first fenced block, else a backtick span that looks like code, else the
+/// whole prompt when it carries code markers, else the code-shaped text after
+/// the request's colon.
+pub(super) fn code_block(prompt: &str) -> Option<String> {
     if let Some(start) = prompt.find("```") {
         let rest = &prompt[start + 3..];
         let after_open = rest.find('\n').map_or(rest, |nl| &rest[nl + 1..]);
@@ -146,7 +148,13 @@ fn code_block(prompt: &str) -> Option<String> {
     if markers.iter().any(|marker| prompt.contains(marker)) {
         return Some(prompt.to_owned());
     }
-    None
+    // The colon after the request introduces the code itself
+    // ("Explain this code: print(sum(range(10)))") when it carries a call, an
+    // assignment or a subscript.
+    let payload = prompt.split_once(": ").map(|(_, rest)| rest.trim())?;
+    payload
+        .contains(['(', '=', '['])
+        .then(|| payload.to_owned())
 }
 
 /// The name of the first function defined in the code (`def name(`,

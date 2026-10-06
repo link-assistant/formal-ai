@@ -195,6 +195,15 @@ function solverPromotedHandlers(prompt) {
     .map((row) => row.handler);
 }
 
+// `ordered_method_names_for_relevants`: the rows a prompt promotes run first, in promotion rank order.
+// A hoisted row claims only what it can answer; its impasse waits for the row's own rank.
+function promotedHandlerOrder(registry, prompt) {
+  const bindings = typeof WORKER_HANDLER_REGISTRY === "object" ? WORKER_HANDLER_REGISTRY.workerHandlers : {};
+  const names = [...new Set(solverPromotedHandlers(prompt).map((slug) => bindings[slug]).filter(Boolean))];
+  const hoisted = names.flatMap((name) => registry.filter((record) => record.name === name)).map((record) => ({ ...record, hoisted: true }));
+  return [...hoisted, ...registry];
+}
+
 function solverRouteMatches(normalized, route) {
   const tokens = normalized.split(/\s+/).filter(Boolean);
   const hasToken = (expected) =>

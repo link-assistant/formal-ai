@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_19.js"
-  ceiling 1312
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker."
+  ceiling 1314
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling 1314 (2026-10-07, PR #1188): tryProjectLookup leaves an install guide being converted to installation_conversion, which Rust asks before its repository lookup."

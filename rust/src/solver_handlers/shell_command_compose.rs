@@ -88,7 +88,7 @@ fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
 }
 
 /// True when any cue phrase of the intent (any role) matches.
-fn any_cue_matches(intent: &str, prompt: &str, normalized: &str) -> bool {
+pub(super) fn any_cue_matches(intent: &str, prompt: &str, normalized: &str) -> bool {
     let lower = prompt.to_lowercase();
     let Some(text) = seed_text(CUES_PATH) else {
         return false;

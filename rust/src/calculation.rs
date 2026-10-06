@@ -425,6 +425,8 @@ pub fn contains_word_operator(expression: &str) -> bool {
 /// `link-calculator` and preserving the in-repo evaluator as a fallback for
 /// syntax the upstream crate does not support yet.
 pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, ArithmeticError> {
+    let split = split_glued_operator_words(expression);
+    let expression = split.as_str();
     if let Ok(evaluation) = evaluate_with_link_calculator(expression) {
         return Ok(evaluation);
     }
@@ -440,6 +442,36 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
         lino: None,
         steps: Vec::new(),
     })
+}
+
+/// Split the seeded CJK operator surfaces off the operands they are glued to.
+///
+/// `12乘以7` reads `12 * 7`. Those scripts write no space between an operator
+/// word and a numeral, so neither `link-calculator` nor the whitespace token
+/// normalizer would see the word. The surfaces are the
+/// `arithmetic_operator_word` meanings' spelled forms, longest first so `乘以`
+/// is rewritten before the `乘` it contains. Mirrors the CJK split in
+/// `normalizeArithmeticWords` (js/worker/formal_ai_worker_01.js).
+fn split_glued_operator_words(expression: &str) -> String {
+    if !crate::coding::contains_cjk(expression) {
+        return expression.to_owned();
+    }
+    let mut glued: Vec<(String, char)> = Vec::new();
+    for operator in seed::lexicon().arithmetic_operators() {
+        let symbol = operator.symbol;
+        for word in operator.spelled {
+            if crate::coding::contains_cjk(&word) {
+                glued.push((word, symbol));
+            }
+        }
+    }
+    glued.sort_by_key(|(word, _)| core::cmp::Reverse(word.chars().count()));
+    let split = glued
+        .iter()
+        .fold(expression.to_owned(), |current, (word, symbol)| {
+            current.replace(word.as_str(), &format!(" {symbol} "))
+        });
+    split.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
 fn trim_prompt_punctuation(value: &str) -> &str {

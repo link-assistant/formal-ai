@@ -117,3 +117,30 @@ fn spanish_opening_question_mark_does_not_change_the_answer() {
         assert_exact_calculation(without_mark, answer);
     }
 }
+
+/// Chinese writes no space between an operator word and its operands, so
+/// `12乘以7` reaches the evaluator as one glued run. The seeded
+/// `arithmetic_operator_word` surfaces are split off before evaluation (the
+/// browser's `normalizeArithmeticWords` does the same), so the glued form
+/// computes instead of echoing the expression back.
+#[test]
+fn glued_chinese_operator_words_are_split_before_evaluation() {
+    for (prompt, result) in [
+        ("12乘以7", "= 84"),
+        ("12乘以7等于多少?", "= 84"),
+        ("9减去4等于多少?", "= 5"),
+        ("8除以2等于多少?", "= 4"),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "calculation",
+            "prompt {prompt:?}: intent={:?} answer={:?}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.ends_with(result),
+            "prompt {prompt:?} should end with {result:?}, got {:?}",
+            response.answer,
+        );
+    }
+}

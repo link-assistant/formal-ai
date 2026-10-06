@@ -70,14 +70,14 @@ function containsProgramToken(normalized, token) {
     .includes(token);
 }
 
+// A Han character beside a Latin phrase is a word boundary (`写一个hello world程序`).
 function containsProgramPhrase(normalized, phrase) {
   if (containsCjk(phrase)) return normalized.includes(phrase);
-  return (
-    normalized === phrase ||
-    normalized.startsWith(`${phrase} `) ||
-    normalized.endsWith(` ${phrase}`) ||
-    normalized.includes(` ${phrase} `)
-  );
+  const boundary = (character) => character === undefined || /\s/u.test(character) || containsCjk(character);
+  for (let at = normalized.indexOf(phrase); at !== -1; at = normalized.indexOf(phrase, at + 1)) {
+    if (boundary(normalized[at - 1]) && boundary(normalized[at + phrase.length])) return true;
+  }
+  return false;
 }
 
 function programTaskFromPrompt(normalized) {

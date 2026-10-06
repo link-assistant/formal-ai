@@ -1022,6 +1022,8 @@ async function renderPromotedProjectLookup(prompt, language, project) {
 }
 
 async function tryProjectLookup(prompt, language, preferences) {
+  // A guide being converted quotes its repository as content; Rust asks installation_conversion first.
+  if (tryInstallationConversion(prompt, normalizePrompt(prompt))) return null;
   return tryProjectLookupForPrompt(prompt, prompt, language, preferences);
 }
 

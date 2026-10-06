@@ -28,7 +28,7 @@ function handlerImplementation(record, context) {
 }
 
 function handlerResultMatches(record, hit) {
-  if (!hit) return false;
+  if (!hit || (record.hoisted && metaIsImpasseIntent(hit.intent))) return false;
   if (record.resultIntent && hit.intent !== record.resultIntent) return false;
   if (!record.evidenceKind) return true;
   return Array.isArray(hit.evidence) && hit.evidence.some((link) => {
@@ -67,7 +67,7 @@ function browserHandlerPrecedence() {
   return BROWSER_HANDLER_PRECEDENCE.slice();
 }
 
-function synchronousHandlerCandidates(context, registry = browserHandlerPrecedence()) {
+function synchronousHandlerCandidates(context, registry = promotedHandlerOrder(browserHandlerPrecedence(), context.prompt)) {
   return registry.map((record) => ({
     name: record.name,
     run: () => {

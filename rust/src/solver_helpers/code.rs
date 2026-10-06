@@ -344,5 +344,11 @@ pub fn extract_javascript_program(prompt: &str) -> Option<String> {
     if let Some(body) = extract_backticked(prompt) {
         return Some(body);
     }
-    extract_quoted_phrase(prompt)
+    extract_quoted_phrase(prompt).or_else(|| {
+        // The colon after the request introduces the program
+        // ("Run this JavaScript: console.log(1 + 2)").
+        let (_, body) = prompt.split_once(": ")?;
+        let body = body.trim();
+        (!body.is_empty()).then(|| body.to_owned())
+    })
 }

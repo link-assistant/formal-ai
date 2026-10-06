@@ -293,6 +293,11 @@ fn solve_numeric_list_with_context(
     if vocabulary.matches("function", normalized) || prompt.contains("def ") {
         return None;
     }
+    // A named format conversion reads its payload as data, not as a list to
+    // reduce ("Convert this JSON to YAML: {\"sort\": \"words\"}").
+    if super::text_manipulation::names_format_conversion(prompt) {
+        return None;
+    }
 
     let operation = detect_operation(&vocabulary, normalized)?;
 

@@ -677,7 +677,10 @@ pub fn try_write_script(
 }
 
 pub fn try_algorithm(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    if !normalized.contains("algorithm") && !normalized.contains("sort") {
+    if !normalized.contains("algorithm")
+        && !crate::seed::operation_vocabulary()
+            .matches("sort", &crate::engine::normalize_prompt(normalized))
+    {
         return None;
     }
     let with_tests = normalized.contains("test");

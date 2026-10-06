@@ -74,36 +74,6 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
     out
 }
 
-/// Extract the code under discussion: the first fenced block, else a
-/// backtick span that looks like code, else the whole prompt when it carries
-/// code markers.
-fn code_block(prompt: &str) -> Option<String> {
-    if let Some(start) = prompt.find("```") {
-        let rest = &prompt[start + 3..];
-        let after_open = rest.find('\n').map_or(rest, |nl| &rest[nl + 1..]);
-        if let Some(end) = after_open.find("```") {
-            let code = &after_open[..end];
-            if !code.trim().is_empty() {
-                return Some(code.to_owned());
-            }
-        }
-    }
-    if let Some(start) = prompt.find('`')
-        && let Some(end) = prompt[start + 1..].find('`')
-    {
-        let code = &prompt[start + 1..start + 1 + end];
-        let code_markers = ["(", "def ", "=>", "return "];
-        if code_markers.iter().any(|marker| code.contains(marker)) {
-            return Some(code.to_owned());
-        }
-    }
-    let markers = ["def ", "function ", "fn ", "=>", "return "];
-    if markers.iter().any(|marker| prompt.contains(marker)) {
-        return Some(prompt.to_owned());
-    }
-    None
-}
-
 /// One chain handler: its parameter and its body expression.
 struct Handler {
     param: String,
@@ -275,7 +245,7 @@ pub fn handle_code_refactoring(
     if !triggered(prompt, normalized) {
         return None;
     }
-    let code = code_block(prompt);
+    let code = super::code_debugging::code_block(prompt);
     log.append("code_refactoring:request", "cued".to_owned());
 
     let chain = code.as_deref().and_then(|code| {

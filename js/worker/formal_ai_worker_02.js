@@ -1133,7 +1133,10 @@ function extractJavaScriptProgram(prompt) {
   const backticks = prompt.match(/`([^`]+)`/);
   if (backticks) return backticks[1];
   const quoted = prompt.match(/"([^"]+)"/);
-  return quoted ? quoted[1] : null;
+  if (quoted) return quoted[1];
+  // The colon after the request introduces the program ("Run this JavaScript: console.log(1 + 2)").
+  const body = prompt.includes(": ") ? prompt.slice(prompt.indexOf(": ") + 2).trim() : "";
+  return body || null;
 }
 
 // Look up an intent route by id (e.g. "intent_greeting"). Returns `null`

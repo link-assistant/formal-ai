@@ -326,6 +326,7 @@ function tryNumericList(prompt, history) {
   if (operationMatchesSlug("function", normalized) || prompt.includes("def ")) {
     return null;
   }
+  if (namesFormatConversion(prompt)) return null;
 
   const canonical = detectNumericListOperation(normalized);
   if (!canonical) return null;
@@ -553,6 +554,22 @@ function quotedTextSpans(text) {
 
 function quotedTextSegments(text) {
   return quotedTextSpans(text).map((segment) => segment.text);
+}
+
+// A format conversion named in the prose around the quoted literals reads its
+// payload as data: an operation word inside it is a key, not a request (Rust
+// `text_manipulation::names_format_conversion`).
+function namesFormatConversion(prompt) {
+  const source = String(prompt || "");
+  let frame = "";
+  let cursor = 0;
+  for (const span of quotedTextSpans(source)) {
+    if (span.start < cursor) continue;
+    frame += `${source.slice(cursor, span.start)} `;
+    cursor = span.end;
+  }
+  frame = (frame + source.slice(cursor)).toLowerCase();
+  return codeTaskAnyCueMatches("format_conversion", frame, frame);
 }
 
 function textAfterColon(prompt) {
@@ -1326,6 +1343,7 @@ function buildTextManipulationChain(input, operations) {
 }
 
 function tryTextManipulation(prompt, normalized, history = []) {
+  if (namesFormatConversion(prompt)) return null;
   const request = parseTextManipulationRequest(prompt, normalized, history);
   if (!request) return null;
   const chain = buildTextManipulationChain(request.input, request.operations);
