@@ -145,7 +145,9 @@ function textTransformAnswer(intent, body, confidence, slug, trace) {
     intent: intent,
     content: body,
     confidence: confidence,
-    evidence: [`handler:${slug}`, `response:${intent}`],
+    // The handler's log events are evidence, as `build_evidence_links` makes
+    // them in Rust (handler, events, response).
+    evidence: [`handler:${slug}`, ...(Array.isArray(trace) ? trace : []), `response:${intent}`],
     trace: trace,
   };
 }

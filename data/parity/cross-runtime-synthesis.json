@@ -99,7 +99,12 @@
       "response:summarization_free_text"
     ],
     "expectedTraceFragments": ["summarization_free_text"],
-    "browserNotImplemented": true
+    "browserExpectedEvidencePrefixes": [
+      "summarization_statement:",
+      "summarization_bound:",
+      "summarization_selected:",
+      "response:summarization_free_text"
+    ]
   },
   {
     "id": "e1176_statistics_mean_median",
@@ -119,6 +124,12 @@
       "response:statistics"
     ],
     "expectedTraceFragments": ["statistics"],
-    "browserNotImplemented": true
+    "browserExpectedEvidencePrefixes": [
+      "statistics:values:",
+      "statistics:count:",
+      "statistics:mean:",
+      "statistics:median:",
+      "response:statistics"
+    ]
   }
 ]
