@@ -10,6 +10,7 @@ struct Place {
     district: String,
     category: String,
     hours: String,
+    #[allow(dead_code)] // seed provenance, carried but not yet rendered
     closed_days: String,
     visit_minutes: u32,
     source_url: String,

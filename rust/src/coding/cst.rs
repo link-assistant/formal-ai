@@ -192,6 +192,7 @@ pub enum ComposeGap {
 impl ComposeGap {
     /// The stable, human-readable name of the gap for error paths.
     #[must_use]
+    #[cfg_attr(not(test), allow(dead_code))] // read by the issue #1167 tests
     pub fn describe(&self) -> String {
         match self {
             Self::Render { reason } => format!("the render leg refused: {reason}"),

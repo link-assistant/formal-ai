@@ -30,6 +30,7 @@ const INTENT: &str = "product_search";
 /// One `marketplace` record: host, deep-link template, trigger phrases.
 struct Marketplace {
     name: String,
+    #[allow(dead_code)] // seed provenance, carried but not yet rendered
     host: String,
     link_template: String,
     phrases: Vec<String>,

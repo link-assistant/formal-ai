@@ -71,11 +71,7 @@ impl PageMime {
     /// unrecognized hint is resolved by the seed's sniff rules over the
     /// first bytes.
     #[must_use]
-    pub fn from_hint_or_sniff(
-        hint: Option<&str>,
-        bytes: &[u8],
-        rules: &FormalizationRules,
-    ) -> Self {
+    fn from_hint_or_sniff(hint: Option<&str>, bytes: &[u8], rules: &FormalizationRules) -> Self {
         if let Some(hint) = hint {
             let normalized = hint
                 .split(';')

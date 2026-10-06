@@ -867,6 +867,7 @@ pub(super) fn command_argument(arguments: &str) -> Option<String> {
 /// tool definitions resolve the key once and pass it in ahead of the fallback
 /// list, so a client that renames the property keeps working without a Rust
 /// change (requirement 1 of issue #1154).
+#[allow(dead_code)] // drafted for issue #1154 R1; callers do not pass tool definitions yet
 pub(super) fn command_argument_key(definition: &Value) -> Option<String> {
     // A function tool nests its parameters under `function`; a custom tool
     // declares them at the top level.

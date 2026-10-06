@@ -296,6 +296,7 @@ fn brainstorm_rules() -> Vec<BrainstormRule> {
 struct DistinctnessMetric {
     floor: f32,
     statement: String,
+    #[allow(dead_code)] // seed provenance, carried but not yet rendered
     share_rule: String,
 }
 

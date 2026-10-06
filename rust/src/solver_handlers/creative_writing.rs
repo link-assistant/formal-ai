@@ -89,6 +89,7 @@ fn writing_forms() -> Vec<WritingForm> {
 struct RhymeClass {
     id: String,
     words: Vec<String>,
+    #[allow(dead_code)] // seed provenance, carried but not yet rendered
     source_url: String,
 }
 

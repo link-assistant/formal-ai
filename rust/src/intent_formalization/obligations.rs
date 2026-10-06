@@ -497,6 +497,7 @@ fn classify_clause(clause: &str) -> Option<(ObligationKind, Option<String>)> {
 /// Stable graph id for a request: the same meaning yields the same id, so
 /// parity fixtures can pin expected graphs without pinning clause order.
 #[must_use]
+#[allow(dead_code)] // drafted for the obligation parity fixtures, not yet read
 pub fn graph_id(text: &str) -> String {
     stable_id("request_obligation_graph", text)
 }

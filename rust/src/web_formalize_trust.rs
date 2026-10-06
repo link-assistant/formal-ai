@@ -157,6 +157,7 @@ pub struct FormalizedPage {
     pub network: LinkNetwork,
     code_blocks: Vec<CodeBlockIndex>,
     commands: Vec<CommandIndex>,
+    #[allow(dead_code)] // seed provenance, carried but not yet rendered
     paragraphs: Vec<ParagraphIndex>,
 }
 

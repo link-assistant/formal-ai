@@ -87,6 +87,7 @@ fn records_of_type(record_type: &str, name: &str) -> Vec<crate::seed::parser::Li
 
 /// The seeded principle identifiers (forty inventive + four separation),
 /// for validating that benchmark tasks cite only real methods.
+#[cfg(test)]
 fn principle_ids() -> Vec<String> {
     ["triz_inventive_principle", "triz_separation_principle"]
         .iter()
@@ -96,6 +97,7 @@ fn principle_ids() -> Vec<String> {
 
 /// Top-level records whose `record_type` field matches (this seed types
 /// its records by field, and names the records `triz_inventive_01` …).
+#[cfg(test)]
 fn records_named_by_type(record_type: &str) -> Vec<String> {
     let Some(text) = seed_text(SEED_PATH) else {
         return Vec::new();

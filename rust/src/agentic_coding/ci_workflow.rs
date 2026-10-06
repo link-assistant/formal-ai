@@ -11,7 +11,7 @@ use crate::engine::{ExecutionRecipe, ExecutionRecipeFile};
 use crate::seed;
 
 /// Where the workflow is written.
-#[allow(clippy::literal_string_with_formatting_args)]
+#[allow(clippy::literal_string_with_formatting_args, dead_code)] // not yet read by the work-item steps
 pub(super) fn workflow_path() -> String {
     super::work_item_steps::fill("workflow_path", &[])
 }
