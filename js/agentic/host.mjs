@@ -20,7 +20,10 @@
 //   that consult `crate::solve_with_history`;
 // * `isDirectory(path)` / `isFile(path)` / `currentDirectory()` - the few
 //   filesystem probes the Rust planner makes (`Path::is_dir`, the server's
-//   own working directory). A browser host answers `false` / `null`.
+//   own working directory). A browser host answers `false` / `null`;
+// * `listDirectory(relative)` - the entries of a repository directory as
+//   `[{name, isDirectory}]` (the twin of build.rs's `fs::read_dir` over
+//   `rust/src` that embeds `OWNED_SOURCE_FILES`). A browser host answers `[]`.
 //
 // The JavaScript server installs a host once its worker has booted
 // (js/server/agentic.mjs); node:test suites install the same one through
@@ -32,7 +35,8 @@ const caches = new Map();
 /**
  * Install the host every planner module reads through.
  * @param {{readText: Function, parseLino: Function, realm: object,
- *   isDirectory?: Function, isFile?: Function, currentDirectory?: Function}} next
+ *   isDirectory?: Function, isFile?: Function, currentDirectory?: Function,
+ *   listDirectory?: Function}} next
  */
 export function installHost(next) {
   current = next;
@@ -101,6 +105,16 @@ export function isFile(path) {
 /** `std::env::current_dir`, or null. */
 export function currentDirectory() {
   return current?.currentDirectory?.() ?? null;
+}
+
+/**
+ * The entries of the repository directory `relative` (`fs::read_dir`), or
+ * `[]` when the host cannot list it.
+ * @param {string} relative
+ * @returns {Array<{name: string, isDirectory: boolean}>}
+ */
+export function listDirectory(relative) {
+  return current?.listDirectory?.(relative) ?? [];
 }
 
 /** Children of `node` named `name`. */

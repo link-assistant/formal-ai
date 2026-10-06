@@ -1,9 +1,12 @@
 // The issue-#558 self-explanation recipe (rust/src/agentic_coding/explain.rs).
 //
-// The task predicate is an exact port. The document is native-only: see
-// `renderDocument`.
+// An exact port: the document is `crate::self_explanation`'s canonical
+// explanation (js/agentic/crate/self_explanation.mjs), whose source citations
+// are content-addressed through the owned manifest the host enumerates from
+// rust/src exactly as build.rs does.
 
 import { cached } from './host.mjs';
+import { canonicalExplanation } from './crate/self_explanation.mjs';
 import { agenticMessage } from './messages.mjs';
 import { rustLines } from './content.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
@@ -32,21 +35,29 @@ export function isExplainTask(prompt) {
   return asksHowItWorks && grounded;
 }
 
+/** Mirrors `fn cached_explanation` (a `OnceLock`). */
+const cachedExplanation = () => cached('self-explanation', canonicalExplanation);
+
 /**
  * Mirrors `fn render_document` in rust/src/agentic_coding/explain.rs.
- * native-only: rust/src/self_explanation.rs `canonical_explanation`; every
- * citation is content-addressed through the owned manifest of the whole
- * embedded Rust source tree (build.rs `OWNED_SOURCE_FILES`), which a JS host
- * cannot enumerate. The stub renders only the record head.
+ * Deterministic and ends with exactly one trailing newline.
  */
 export function renderDocument() {
-  return 'system_explanation\n';
+  return `${trimEnd(cachedExplanation().linksNotation())}\n`;
+}
+
+/** Mirrors `fn explanation` in rust/src/agentic_coding/explain.rs. */
+export function explanation() {
+  return cachedExplanation();
 }
 
 /**
  * Mirrors `fn final_answer` in rust/src/agentic_coding/explain.rs.
- * native-only: the section and citation counts of the stubbed explanation are 0.
+ * @param {string} document
  */
 export function finalAnswer(document) {
-  return agenticMessage('explain_final_answer', { sections: 0, citations: 0, path: EXPLAIN_PATH, document: trimEnd(document) });
+  const current = cachedExplanation();
+  return agenticMessage('explain_final_answer', {
+    sections: current.sectionCount(), citations: current.citationCount(), path: EXPLAIN_PATH, document: trimEnd(document),
+  });
 }

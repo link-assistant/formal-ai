@@ -410,3 +410,15 @@ agentic_messages
     text "learning frontier|self-improvement loop"
   message question_catalog_keywords
     text "question catalog|all possible questions|generate every possible question|generate all questions|enumerate questions"
+  message self_explanation_question
+    text "how does Formal AI work?"
+  message self_explanation_deterministic_meta_algorithm
+    text "Formal AI answers agentic requests with a deterministic planner state machine: a keyword-routed recipe walk (write, verify, final answer), never neural inference, so every step is a reproducible function of its inputs."
+  message self_explanation_source_to_links_round_trip
+    text "The entire owned source tree is embedded as content-addressed data and projected through the single CST/AST engine (tree-sitter); every owned module round-trips source to links and back byte-for-byte, so the system's own code is present in its data as links."
+  message self_explanation_self_healing_loop
+    text "When Formal AI cannot answer, it does not simply fail: it captures the failure as a structured RepairCase (unknown trace, a verified source-to-links mapping, and a benchmark gate) that never advances past awaiting human review."
+  message self_explanation_human_gated_promotion_ledger
+    text "An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning."
+  message self_explanation_agentic_interface
+    text "Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests."

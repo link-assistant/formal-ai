@@ -3,9 +3,10 @@
 // Used by the JavaScript server and by node:test suites; a browser host would
 // install the same shape from the worker's own globals.
 
-import { statSync } from 'node:fs';
+import { readdirSync, statSync } from 'node:fs';
+import path from 'node:path';
 
-import { parseLino, readRepoFile } from '../server/lino.mjs';
+import { REPO_ROOT, parseLino, readRepoFile } from '../server/lino.mjs';
 import { symbolicFromWorker } from '../server/solve.mjs';
 import { installHost } from './host.mjs';
 
@@ -15,6 +16,22 @@ function stat(path) {
   } catch {
     return null;
   }
+}
+
+/**
+ * The entries of the repository directory `relative`, following symlinks
+ * for `isDirectory` like Rust's `Path::is_dir`; `[]` when it cannot be read.
+ * @param {string} relative
+ */
+function listRepoDirectory(relative) {
+  const directory = path.join(REPO_ROOT, relative);
+  let names;
+  try {
+    names = readdirSync(directory);
+  } catch {
+    return [];
+  }
+  return names.map((name) => ({ name, isDirectory: Boolean(stat(path.join(directory, name))?.isDirectory()) }));
 }
 
 /**
@@ -33,6 +50,7 @@ export async function installNodeHost(worker) {
     isDirectory: (path) => Boolean(stat(path)?.isDirectory()),
     isFile: (path) => Boolean(stat(path)?.isFile()),
     currentDirectory: () => process.cwd(),
+    listDirectory: listRepoDirectory,
   });
   return context;
 }

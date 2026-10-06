@@ -12,7 +12,7 @@
 // sessions, the seed meaning blocks) are the expectations here too.
 
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { before, describe, it } from 'node:test';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
@@ -34,6 +34,12 @@ import * as changeRequest from '../../../js/agentic/change_request.mjs';
 import * as repairStrategy from '../../../js/agentic/repair_strategy.mjs';
 import * as rebuildPlan from '../../../js/agentic/rebuild_plan.mjs';
 import * as sourceLinks from '../../../js/agentic/source_links.mjs';
+import {
+  SourceLinks, fastStableId, ownedFileCount, ownedManifest, ownedManifestContentId, ownedManifestNotation, ownedSourceFiles,
+  ownedTotalBytes,
+} from '../../../js/agentic/crate/self_source_links.mjs';
+import { sourceCitation } from '../../../js/agentic/crate/self_explanation.mjs';
+import { stableId } from '../../../js/agentic/crate/engine_stable_id.mjs';
 import { sentences, clauses } from '../../../js/agentic/crate/formalization_segment.mjs';
 import { unknownSurfaceSpans, unknownSurfaces } from '../../../js/agentic/crate/concept_lookup.mjs';
 import { ConceptGraph, formalizeDeeply } from '../../../js/agentic/crate/formalization_concept_links.mjs';
@@ -449,5 +455,151 @@ describe('issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)', 
     assert.equal(call.arguments, '{"command":"cat learning-ledger.lino"}');
     answerCall(messages, call, ledger.renderDocument());
     assert.equal(final(await importDocumentRecipe.planLedgerStep(messages, tools)), ledger.finalAnswer(ledger.renderDocument()));
+  });
+});
+
+/** Every `.rs` file under rust/src, enumerated independently of the port. */
+function rustSourcePaths(dir = 'rust/src') {
+  const out = [];
+  for (const name of readdirSync(new URL(dir, ROOT))) {
+    const path = `${dir}/${name}`;
+    if (statSync(new URL(path, ROOT)).isDirectory()) out.push(...rustSourcePaths(path));
+    else if (name.endsWith('.rs')) out.push(path.slice('rust/'.length));
+  }
+  return out;
+}
+const utf8 = (text) => new TextEncoder().encode(text).length;
+
+describe('issue #558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)', () => {
+  it('owned_manifest_content_addresses_every_source_file', () => {
+    const manifest = ownedManifest();
+    const files = ownedSourceFiles();
+    assert.equal(manifest.length, ownedFileCount());
+    assert.equal(manifest.length, files.length);
+    assert.ok(manifest.length > 150, 'the whole repository, not a corner');
+    assert.deepEqual(manifest.map((digest) => digest.path), rustSourcePaths().sort());
+    let total = 0;
+    manifest.forEach((digest, index) => {
+      const [path, source] = files[index];
+      assert.equal(digest.path, path);
+      assert.ok(digest.path.startsWith('src/') && digest.path.endsWith('.rs'), digest.path);
+      assert.equal(digest.byte_len, utf8(source));
+      if (index > 0) assert.ok(manifest[index - 1].path < digest.path, 'sorted and unique');
+      total += utf8(source);
+    });
+    assert.equal(total, ownedTotalBytes());
+    assert.equal(ownedManifestContentId(), stableId('source_tree', ownedManifestNotation()));
+  });
+
+  it('content ids equal the Rust-generated self-AST census for every undrifted module', () => {
+    // data/meta/self-ast/src/**.lino is written by the Rust example
+    // regenerate_self_ast_census from the same OWNED_SOURCE_FILES and pinned to
+    // the sources by issue_673_self_ast_census.rs. A census whose byte_len no
+    // longer matches has drifted with an unregenerated edit and is skipped.
+    let compared = 0;
+    for (const digest of ownedManifest()) {
+      const census = new URL(`data/meta/self-ast/${digest.path.slice(0, -3)}.lino`, ROOT);
+      if (!existsSync(census)) continue;
+      const text = readFileSync(census, 'utf8');
+      if (Number(/\n  byte_len (\d+)/.exec(text)[1]) !== digest.byte_len) continue;
+      assert.equal(digest.content_id, /\n  content_id (\S+)/.exec(text)[1], digest.path);
+      compared += 1;
+    }
+    assert.ok(compared > 100, `compared ${compared} modules`);
+  });
+
+  it('the fast FNV-1a equals crate::engine::stable_id', () => {
+    for (const text of ['', 'a', 'source_tree', 'Привет ✓ 🎉', repo('rust/src/self_source_links.rs')]) {
+      assert.equal(fastStableId('source_module', text), stableId('source_module', text));
+    }
+  });
+
+  it('owned_manifest_renders_valid_links_notation', () => {
+    const notation = ownedManifestNotation();
+    assert.ok(notation.startsWith('source_manifest\n  engine meta_language\n  language rust\n'));
+    assert.ok(notation.includes(`file_count ${ownedFileCount()}`));
+    assert.ok(notation.includes(`total_bytes ${ownedTotalBytes()}`));
+    assert.ok(notation.includes('src/self_source_links.rs'));
+  });
+
+  it('coverage_is_integer_permille_and_flags_unfaithful_modules', () => {
+    const fake = (path, faithful) => ({ path, byte_len: 10, content_id: `id_${path}`, total_link_count: 5, named_node_count: 3, faithful });
+    const graph = new SourceLinks([fake('a.rs', true), fake('b.rs', true), fake('c.rs', false), fake('d.rs', true)]);
+    assert.equal(graph.moduleCount(), 4);
+    assert.equal(graph.faithfulCount(), 3);
+    assert.equal(graph.coveragePermille(), 750);
+    assert.ok(!graph.isFullyFaithful());
+    const empty = new SourceLinks([]);
+    assert.equal(empty.coveragePermille(), 0);
+    assert.ok(!empty.isFullyFaithful());
+  });
+
+  it('every source citation is grounded and a fabricated one cannot be constructed', () => {
+    const current = explain.explanation();
+    const manifest = ownedManifest();
+    assert.equal(current.sectionCount(), 5);
+    assert.equal(current.citationCount(), 13);
+    for (const citation of current.citationsOf('source')) {
+      assert.equal(citation.content_id, manifest.find((digest) => digest.path === citation.path).content_id);
+    }
+    for (const citation of current.citations().filter((entry) => entry.kind !== 'source')) {
+      assert.ok(existsSync(new URL(citation.path, ROOT)), citation.path);
+      assert.equal(citation.content_id, null);
+    }
+    assert.ok(current.citationsOf('data').length > 0 && current.citationsOf('test').length > 0);
+    assert.throws(() => sourceCitation('src/this_module_does_not_exist.rs'), /self_explanation_unowned_source/);
+  });
+
+  it('the explanation document matches the committed Agent CLI evidence modulo the live ids', () => {
+    // docs/case-studies/issue-839 recorded render_document() from a Rust run;
+    // only the manifest-derived values (and the later move of tests/ under
+    // rust/) differ.
+    const live = (text) => text.replace(/ (content_id|source_file_count|source_manifest_content_id) .*/g, ' $1 X')
+      .replace(/path "tests\//g, 'path "rust/tests/');
+    const document = explain.renderDocument();
+    assert.equal(live(document), live(repo('docs/case-studies/issue-839/self-hosting-evidence/how-formal-ai-works.lino')));
+    assert.ok(document.includes(`  source_file_count ${ownedFileCount()}\n  source_manifest_content_id "${ownedManifestContentId()}"\n`));
+    assert.ok(document.endsWith('\n') && !document.endsWith('\n\n'));
+    const answer = explain.finalAnswer(document);
+    assert.ok(answer.startsWith('Here is how Formal AI works, grounded in its own source, data, and tests: across 5 topics with 13 citations'));
+    assert.ok(answer.endsWith(`Generated document (how-formal-ai-works.lino):\n\n${document.trimEnd()}`));
+  });
+
+  it('the source-links document reports the whole repo over the representative slice', () => {
+    const document = sourceLinks.renderDocument();
+    assert.ok(document.startsWith(`self_source_links\n  engine meta_language\n  language rust\n  task translate_entire_source_to_links_and_back\n  entire_source\n    file_count ${ownedFileCount()}\n    total_bytes ${ownedTotalBytes()}\n    manifest_content_id "${ownedManifestContentId()}"\n  round_trip_proof\n    slice_size 6\n`));
+    const files = ownedSourceFiles();
+    const stride = Math.floor(files.length / 6);
+    assert.deepEqual(sourceLinks.slice().modules.map((module) => module.path), [0, 1, 2, 3, 4, 5].map((index) => files[index * stride][0]));
+    // Same shape as the Rust run committed in docs/case-studies/issue-841; the
+    // parse census is the no-`meta-language`-feature build's (see the header
+    // of js/agentic/crate/self_source_links.mjs).
+    const shape = (text) => text.replace(/ (file_count|total_bytes|manifest_content_id|path|byte_len|content_id|total_link_count|named_node_count|total_named_node_count|faithful_count|slice_faithful_count|coverage_permille|fully_faithful|slice_fully_faithful|faithful) .*/g, ' $1 X');
+    assert.equal(shape(document), shape(repo('docs/case-studies/issue-841/self-hosting-evidence/self-source-links.lino')));
+    assert.ok(document.includes('    slice_fully_faithful false\n'));
+    assert.ok(document.endsWith('\n') && !document.endsWith('\n\n'));
+    assert.ok(sourceLinks.finalAnswer(document).includes(`content-addressed all ${ownedFileCount()} owned source files under one manifest id, and verified a representative slice of 6 modules`));
+  });
+
+  it('the explain and source-links recipes walk write -> verify -> final', async (t) => {
+    const { importDocumentRecipe } = await documentRecipeModule();
+    if (!importDocumentRecipe) return t.skip('document_recipe.mjs siblings not ported yet');
+    const tools = ['write_file', 'run_command'];
+    for (const [recipe, task, step, path] of [
+      [explain, TASKS.explain, importDocumentRecipe.planExplainStep, 'how-formal-ai-works.lino'],
+      [sourceLinks, TASKS.sourceLinks, importDocumentRecipe.planSourceLinksStep, 'self-source-links.lino'],
+    ]) {
+      const messages = [user(task)];
+      let call = single(await step(messages, tools));
+      assert.equal(call.tool, 'write_file');
+      const written = JSON.parse(call.arguments);
+      assert.equal(written.path, path);
+      assert.equal(written.content, recipe.renderDocument());
+      answerCall(messages, call, 'ok');
+      call = single(await step(messages, tools));
+      assert.equal(call.arguments, `{"command":"cat ${path}"}`);
+      answerCall(messages, call, recipe.renderDocument());
+      assert.equal(final(await step(messages, tools)), recipe.finalAnswer(recipe.renderDocument()));
+    }
   });
 });
