@@ -655,6 +655,13 @@ impl UniversalSolver {
                 {
                     return answer;
                 }
+                // R1012: discovery runs before external research, as the
+                // `metaReasonTurn` step does in solveImpl.
+                if let Some(answer) =
+                    crate::meta_reasoner::try_meta_discovery(prompt, language.slug(), &mut log)
+                {
+                    return answer;
+                }
                 let senses = if unresolved_surfaces_present(
                     &crate::engine::normalize_prompt(prompt),
                     language.slug(),

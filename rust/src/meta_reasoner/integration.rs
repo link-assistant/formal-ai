@@ -109,6 +109,31 @@ pub fn try_meta_answer(prompt: &str, language: &str, log: &mut EventLog) -> Opti
     Some(project(prompt, log, answer))
 }
 
+/// Discovery before research: when no handler took the turn and the request
+/// asks for an artifact, the loop looks up the words it could not ground and
+/// answers if a program now derives, before any external research runs.
+///
+/// Mirrors the `metaReasonTurn` step ahead of `unknown_intent_research` in
+/// `solveImpl` (`js/worker/formal_ai_worker_20.js`).
+pub fn try_meta_discovery(
+    prompt: &str,
+    language: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let first = meta_reason(prompt, language, &mut Knowledge::new(), None);
+    if !(first.goal.starts_with("synthesize") || first.goal == "decompose") {
+        return None;
+    }
+    let meta = meta_reason_turn(prompt, language);
+    let answer = meta_answer(&meta, false)?;
+    log.append(
+        "meta_discover",
+        fill(GOAL_STATUS, &[&meta.goal, &meta.status]),
+    );
+    log.append("meta_derivation", meta.derivation_lino);
+    Some(project(prompt, log, answer))
+}
+
 /// A handler impasse is a subgoal for the general loop.
 ///
 /// When the loop derives a program (or can name what is still unknown), its

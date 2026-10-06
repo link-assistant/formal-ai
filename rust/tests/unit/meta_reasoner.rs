@@ -281,6 +281,25 @@ fn learned_chunks_come_back_from_memory() {
 }
 
 #[test]
+fn learned_chunks_survive_the_memory_log() {
+    let statement = String::from(
+        "meta_learned_chunk\n  word \"vrelkify\"\n  operation upper_case\n  score 0.5\n  via \"memory\"",
+    );
+    let event = formal_ai::memory::MemoryEvent {
+        id: String::from("learned-1"),
+        kind: Some(String::from(formal_ai::memory_sync::LEARNED_CHUNK_KIND)),
+        role: Some(String::from("assistant")),
+        content: Some(statement.clone()),
+        ..formal_ai::memory::MemoryEvent::default()
+    };
+    let log = formal_ai::memory::export_links_notation(&[event]);
+    let events = formal_ai::memory::parse_links_notation(&log);
+    let statements = formal_ai::memory_sync::learned_statements(&events);
+    assert_eq!(statements, vec![statement], "{log}");
+    assert_eq!(import_learned(&statements), 1);
+}
+
+#[test]
 fn numbers_print_as_javascript_prints_them() {
     assert_eq!(js_number(3.0), "3");
     assert_eq!(js_number(0.1 + 0.2), "0.30000000000000004");

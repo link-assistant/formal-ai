@@ -36,7 +36,9 @@ pub mod value;
 
 pub use answer::{MetaAnswer, meta_answer, meta_reason, meta_sub_requests};
 pub use grounding::{Knowledge, Sense};
-pub use integration::{meta_is_impasse_intent, resolve_impasse, try_meta_answer};
+pub use integration::{
+    meta_is_impasse_intent, resolve_impasse, try_meta_answer, try_meta_discovery,
+};
 pub use reasoner::{
     MetaResult, ProgramInfo, Unknown, forget_learned, import_learned, meta_derivation_lino,
     meta_learned_lino, meta_reason_core, take_learned,

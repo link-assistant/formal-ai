@@ -170,6 +170,20 @@ pub fn server_link_database_path(memory_path: &Path) -> PathBuf {
     memory_path.with_extension("links")
 }
 
+/// The memory kind of a meta-reasoner learned-chunk statement (the
+/// `memoryOperation` kind the browser worker appends).
+pub const LEARNED_CHUNK_KIND: &str = "meta_learned_chunk";
+
+/// The learned-chunk statements held in `events`.
+#[must_use]
+pub fn learned_statements(events: &[MemoryEvent]) -> Vec<String> {
+    events
+        .iter()
+        .filter(|event| event.kind.as_deref() == Some(LEARNED_CHUNK_KIND))
+        .filter_map(|event| event.content.clone())
+        .collect()
+}
+
 /// A small file-backed event log used by the HTTP sync endpoints.
 ///
 /// Each request loads the current log, applies its operation, and (for writes)
@@ -259,6 +273,10 @@ impl SyncStore {
             }
             store.compatible = false;
         }
+        // R1012: meanings the meta reasoner learned in earlier sessions come
+        // back from the log, so a paraphrase is answered without a lookup
+        // (`metaImportLearned`, js/worker/formal_ai_worker_meta_composite.js).
+        let _ = crate::meta_reasoner::import_learned(&learned_statements(&store.events));
         store
     }
 
@@ -370,6 +388,16 @@ impl SyncStore {
                 outputs: Some(execution.outputs.clone()),
                 content: Some(format!("tool:{}", execution.tool)),
                 evidence: vec![user_id.clone()],
+                write_count: 1,
+                ..MemoryEvent::default()
+            });
+        }
+        if let Some(statement) = crate::meta_reasoner::take_learned() {
+            recorded.push(MemoryEvent {
+                id: crate::engine::stable_id(LEARNED_CHUNK_KIND, &statement),
+                kind: Some(String::from(LEARNED_CHUNK_KIND)),
+                role: Some(String::from("assistant")),
+                content: Some(statement),
                 write_count: 1,
                 ..MemoryEvent::default()
             });
