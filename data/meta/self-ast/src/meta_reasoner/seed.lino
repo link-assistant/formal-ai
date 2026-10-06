@@ -2,36 +2,41 @@ self_ast_census
   target src/meta_reasoner/seed.rs
   language rust
   fidelity signature
-  byte_len 17108
-  line_count 471
-  content_id source_module_0b99248559b7c4a3
-  symbol_count 28
+  byte_len 21236
+  line_count 579
+  content_id source_module_ee6eebddb0c6ef88
+  symbol_count 33
   symbols
     const SEED_PATH 15 15
-    struct Primitive 19 36
-    struct Combinator 40 47
-    struct Filter 51 58
-    struct Operation 62 69
-    struct Hypothesis 73 80
-    struct MetaSeed 84 111
-    function upsert 113 119
-    function fields 121 128
-    function field 130 132
-    function parse 139 149
-    function read_record 151 220
-    function build_doc_index 226 254
-    function response 260 276
-    function note 284 293
-    function lemmas 299 318
-    function is_grammatical 325 330
-    function cue_markers 336 346
-    function structural_limit 353 355
-    function frequency_of 361 363
-    function doc_hypotheses 370 406
-    function primitive 413 415
-    function is_view 422 428
-    function is_impasse_intent 434 440
-    function sort_hypotheses 447 454
-    function seed_text 457 462
-    function meta_seed 468 471
-    static SEED 469 469
+    struct Primitive 19 39
+    struct Degree 43 51
+    struct Combinator 55 62
+    struct Filter 66 76
+    struct Operation 80 87
+    struct Hypothesis 91 98
+    struct MetaSeed 102 134
+    function upsert 136 142
+    function fields 144 151
+    function field 153 155
+    function endings 161 174
+    function parse 181 191
+    function read_record 193 280
+    function build_doc_index 286 317
+    function response 323 339
+    function note 347 356
+    function lemmas 362 381
+    function is_grammatical 388 393
+    function cue_markers 399 409
+    function structural_limit 416 418
+    function frequency_of 424 426
+    function doc_hypotheses 433 469
+    function primitive 476 478
+    function is_measure 485 492
+    function degrees_of 499 506
+    function degree_gloss 514 523
+    function is_view 530 536
+    function is_impasse_intent 542 548
+    function sort_hypotheses 555 562
+    function seed_text 565 570
+    function meta_seed 576 579
+    static SEED 577 577

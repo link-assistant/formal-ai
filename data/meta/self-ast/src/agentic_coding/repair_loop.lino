@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/repair_loop.rs
   language rust
   fidelity full_ast
-  byte_len 31949
-  line_count 826
-  content_id source_module_15e31d17e42c3500
+  byte_len 32488
+  line_count 834
+  content_id source_module_f0fbb659004cf871
   symbol_count 40
   symbols
     const MAX_REPAIR_RUNGS 74 74
@@ -16,47 +16,47 @@ self_ast_census
     struct DiagnosticShapes 118 122
     function is_empty 125 127
     function shape_language 131 139
-    function shapes_for 143 165
-    struct Capture 168 171
-    function match_template 184 221
-    function validate_slot 225 237
-    function capture 239 245
-    function formalize_diagnostic 260 315
-    function search_query 326 340
-    function message_coverage 345 367
-    function page_addresses 373 380
-    function fix_fragment 386 443
-    function lino_escape 450 452
-    function repair_document_path 456 466
-    function repair_edit_document 475 504
-    struct RepairAttempt 512 518
-    function links_notation 525 543
-    function attempts_from 554 581
-    function evidence_document 586 597
-    enum RepairStop 607 618
-    enum RepairOutcome 622 633
-    function plan 638 645
-    struct FailedStep 655 661
-    function new 665 673
-    function with_exit_code 676 679
-    function with_failed_command 682 685
-    function with_artifact_path 688 691
-    function source_urls 696 702
-    function repair_step 712 780
-    function plan_repair 785 793
-    function template 796 802
-    function ladder_note 810 819
-    function unresolved_note 824 826
+    function shapes_for 143 167
+    struct Capture 170 173
+    function match_template 186 223
+    function validate_slot 227 239
+    function capture 241 247
+    function formalize_diagnostic 262 323
+    function search_query 334 348
+    function message_coverage 353 375
+    function page_addresses 381 388
+    function fix_fragment 394 451
+    function lino_escape 458 460
+    function repair_document_path 464 474
+    function repair_edit_document 483 512
+    struct RepairAttempt 520 526
+    function links_notation 533 551
+    function attempts_from 562 589
+    function evidence_document 594 605
+    enum RepairStop 615 626
+    enum RepairOutcome 630 641
+    function plan 646 653
+    struct FailedStep 663 669
+    function new 673 681
+    function with_exit_code 684 687
+    function with_failed_command 690 693
+    function with_artifact_path 696 699
+    function source_urls 704 710
+    function repair_step 720 788
+    function plan_repair 793 801
+    function template 804 810
+    function ladder_note 818 827
+    function unresolved_note 832 834
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20777
-    named_node_count 4279
+    total_link_count 21175
+    named_node_count 4364
     distinct_node_kinds 95
     node_kinds
-      arguments 305
+      arguments 316
       array_expression 3
       array_type 10
       assignment_expression 12
@@ -66,10 +66,10 @@ self_ast_census
       block 83
       boolean_literal 2
       break_expression 2
-      call_expression 305
+      call_expression 316
       char_literal 11
-      closure_expression 31
-      closure_parameters 31
+      closure_expression 33
+      closure_parameters 33
       const_item 4
       continue_expression 5
       crate 5
@@ -83,17 +83,17 @@ self_ast_census
       expression_statement 99
       field_declaration 20
       field_declaration_list 5
-      field_expression 254
-      field_identifier 284
+      field_expression 262
+      field_identifier 292
       field_initializer 10
       field_initializer_list 3
       float_literal 3
       for_expression 8
       function_item 29
       function_modifiers 2
-      generic_function 2
+      generic_function 3
       generic_type 32
-      identifier 904
+      identifier 924
       if_expression 27
       impl_item 4
       index_expression 8
@@ -101,15 +101,15 @@ self_ast_census
       integer_literal 28
       let_chain 1
       let_condition 14
-      let_declaration 78
+      let_declaration 80
       lifetime 4
       lifetime_parameter 1
-      line_comment 207
+      line_comment 210
       macro_invocation 16
-      match_arm 18
-      match_block 5
-      match_expression 5
-      match_pattern 18
+      match_arm 20
+      match_block 6
+      match_expression 6
+      match_pattern 20
       mutable_specifier 33
       or_pattern 5
       ordered_field_declaration_list 5
@@ -117,9 +117,9 @@ self_ast_census
       parameter 58
       parameters 29
       parenthesized_expression 2
-      primitive_type 64
+      primitive_type 65
       range_expression 8
-      reference_expression 52
+      reference_expression 54
       reference_type 57
       return_expression 16
       scoped_identifier 68
@@ -128,18 +128,18 @@ self_ast_census
       self_parameter 6
       shorthand_field_initializer 2
       source_file 1
-      string_content 68
-      string_literal 69
+      string_content 70
+      string_literal 71
       struct_expression 3
       struct_item 5
       super 2
       token_tree 39
       try_expression 4
-      tuple_expression 9
-      tuple_pattern 20
-      tuple_struct_pattern 31
+      tuple_expression 10
+      tuple_pattern 21
+      tuple_struct_pattern 32
       tuple_type 4
-      type_arguments 34
+      type_arguments 35
       type_cast_expression 2
       type_identifier 114
       type_parameters 1

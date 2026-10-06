@@ -1,0 +1,15 @@
+self_ast_census
+  target src/meta_reasoner/request.rs
+  language rust
+  fidelity signature
+  byte_len 5942
+  line_count 165
+  content_id source_module_10dca73ff55c5ac0
+  symbol_count 6
+  symbols
+    struct Operand 15 24
+    function names_operation 32 47
+    function location_operands 56 97
+    function bare_name 104 122
+    function is_file_noun 129 142
+    function word_position 150 165

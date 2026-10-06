@@ -2,29 +2,29 @@ self_ast_census
   target src/meta_reasoner/reasoner.rs
   language rust
   fidelity signature
-  byte_len 29513
-  line_count 857
-  content_id source_module_f20c6cea386537d6
+  byte_len 33886
+  line_count 974
+  content_id source_module_7ce2c3f50c487f0c
   symbol_count 21
   symbols
-    struct ProgramInfo 27 44
-    struct Probe 48 53
-    struct Unknown 57 66
-    struct MetaResult 70 102
-    static LEARNED_CHUNKS 104 104
-    static NEW_CHUNKS 105 105
-    function lock 107 109
-    function learned_snapshot 111 113
-    function forget_learned 119 122
-    function meta_learn 128 161
-    function sorted_chunks 163 167
-    function meta_learned_lino 173 182
-    function import_learned 189 223
-    function take_learned 230 244
-    function meta_derivation_lino 251 291
-    function environment_available 298 300
-    function top_of 303 305
-    struct Request 308 314
-    function meta_reason_core 321 497
-    function solve_from_examples 501 540
-    function solve_from_meaning 544 857
+    struct ProgramInfo 29 46
+    struct Probe 50 55
+    struct Unknown 59 68
+    struct MetaResult 72 107
+    static LEARNED_CHUNKS 109 109
+    static NEW_CHUNKS 110 110
+    function lock 112 114
+    function learned_snapshot 116 118
+    function forget_learned 124 127
+    function meta_learn 133 166
+    function sorted_chunks 168 172
+    function meta_learned_lino 178 187
+    function import_learned 194 228
+    function take_learned 235 249
+    function meta_derivation_lino 256 296
+    function environment_available 303 305
+    function top_of 308 310
+    struct Request 313 320
+    function meta_reason_core 327 537
+    function solve_from_examples 541 580
+    function solve_from_meaning 584 974

@@ -2,42 +2,46 @@ self_ast_census
   target src/meta_reasoner/catalog.rs
   language rust
   fidelity signature
-  byte_len 24034
-  line_count 681
-  content_id source_module_c69902c0b015792d
-  symbol_count 34
+  byte_len 30007
+  line_count 841
+  content_id source_module_ca7a39a1f1cef27e
+  symbol_count 38
   symbols
-    type OpId 17 17
-    type TypeId 19 19
-    struct Prim 23 48
-    struct Step 53 62
-    struct FilterDef 66 73
-    struct Extension 76 79
-    struct Catalog 83 102
-    const LIST_PREFIX 107 107
-    function is_list_type 114 116
-    function apply_type 120 129
-    function intern_op 132 140
-    function intern_type 142 150
-    function op 154 156
-    function type_id 160 162
-    function type_name 166 168
-    function is_view 172 174
-    function prim 178 180
-    function build 184 246
-    function close_types 249 286
-    function build_measures 293 354
-    function compose_measure 356 381
-    function push_measure 383 387
-    function build_extensions 391 469
-    function for_each_program 475 486
-    function walk 488 517
-    function step_ops 522 542
-    function main_ops 548 554
-    function is_parametric 560 562
-    function step_environment 568 573
-    function step_label 579 597
-    function rewrite_code_for 603 605
-    function render 612 673
-    function catalog 678 681
-    static CATALOG 679 679
+    type OpId 18 18
+    type TypeId 20 20
+    struct Prim 24 51
+    struct Step 56 65
+    struct FilterDef 69 81
+    struct Extension 84 87
+    struct Catalog 91 110
+    const LIST_PREFIX 115 115
+    function is_list_type 122 124
+    function apply_type 128 137
+    function intern_op 140 148
+    function intern_type 150 158
+    function op 162 164
+    function type_id 168 170
+    function type_name 174 176
+    function is_view 180 182
+    function prim 186 188
+    function build 192 270
+    function close_types 273 310
+    function build_measures 317 381
+    function compose_measure 383 409
+    function build_text_measures 416 460
+    function push_measure 462 466
+    function build_extensions 470 571
+    function chooser 574 584
+    function for_each_program 590 601
+    function walk 603 632
+    function step_ops 637 657
+    function main_ops 663 669
+    function chooser_of 673 675
+    function is_parametric 681 686
+    function parameter_types 694 703
+    function step_environment 709 714
+    function step_label 720 738
+    function rewrite_code_for 744 746
+    function render 753 833
+    function catalog 838 841
+    static CATALOG 839 839

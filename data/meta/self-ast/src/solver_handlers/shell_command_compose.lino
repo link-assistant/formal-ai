@@ -2,37 +2,43 @@ self_ast_census
   target src/solver_handlers/shell_command_compose.rs
   language rust
   fidelity signature
-  byte_len 23712
-  line_count 675
-  content_id source_module_e885b663bafbff8d
-  symbol_count 29
+  byte_len 25654
+  line_count 719
+  content_id source_module_cdbe91f307831012
+  symbol_count 35
   symbols
-    const CUES_PATH 25 25
-    const MANUAL_PATH 26 26
-    const INTENT 27 27
-    const OTHER_INTENTS 30 39
-    const SIZE_QUALIFIERS 42 42
-    function seed_text 45 50
-    function cue_phrases 54 85
-    function any_cue_matches 88 110
-    function word_entries 113 133
-    function template 136 142
-    function mapping_rows 146 155
-    struct ManualFlag 158 161
-    struct ManualCommand 164 169
-    function manual_pages 171 201
-    struct Composed 205 213
-    function explained_flags 216 223
-    function tokens 225 227
-    function echo 231 236
-    function root_path 240 253
-    function file_argument 256 265
-    function number_value 269 277
-    function name_pattern 281 303
-    function size_test 307 346
-    function mtime_test 350 361
-    function line_slice 364 412
-    function grep_search 415 479
-    function find_files 482 536
-    function ls_listing 539 586
-    function handle_shell_command_compose 591 675
+    const CUES_PATH 28 28
+    const MANUAL_PATH 29 29
+    const INTENT 30 30
+    const OTHER_INTENTS 33 42
+    const SHELL_CUE_MAP 45 45
+    function seed_text 48 53
+    function cue_phrases 57 88
+    function any_cue_matches 91 113
+    function word_entries 116 136
+    function role_words 139 145
+    function role_position 148 153
+    function word_after_lead 157 169
+    function template 172 178
+    function mapping_rows 182 191
+    struct ManualFlag 194 197
+    struct ManualCommand 200 205
+    function manual_pages 207 237
+    struct Composed 241 251
+    struct PipeStage 254 258
+    function counted 262 285
+    function flag_lines 288 293
+    function explained_flags 296 303
+    function tokens 305 307
+    function echo 311 316
+    function root_path 320 333
+    function file_argument 336 345
+    function number_value 349 357
+    function name_pattern 361 391
+    function size_test 395 432
+    function mtime_test 436 443
+    function line_slice 446 482
+    function grep_search 485 526
+    function find_files 529 579
+    function ls_listing 582 618
+    function handle_shell_command_compose 623 719
