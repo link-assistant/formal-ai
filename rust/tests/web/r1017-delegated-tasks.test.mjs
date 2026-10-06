@@ -57,3 +57,13 @@ test("R1017: text operations chain in the order the request states them", async 
   const reversedFirst = await solve("Reverse words and then sort words: 'b a c'");
   assert.match(String(reversedFirst.content), /^a b c$/u, JSON.stringify(reversedFirst));
 });
+
+// Prose names no function: "a function that reverses" has no signature, so
+// `that` is never taken as the function's name (Rust's parse_signature).
+test("R1017: a function described in prose is not named after its relative pronoun", async () => {
+  const answer = await solve("Write a Python function that reverses a string");
+  assert.doesNotMatch(String(answer.content), /function `that`/u, JSON.stringify(answer));
+  await ready;
+  assert.equal(await evaluate(worker, `extractPythonFunctionName("Implement Python function count_vowels(text: str) -> int.")`), "count_vowels");
+  assert.equal(await evaluate(worker, `extractPythonFunctionName("Write a Python function that reverses a string")`), "");
+});

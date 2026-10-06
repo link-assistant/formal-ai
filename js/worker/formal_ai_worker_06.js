@@ -451,11 +451,11 @@ function identifierAfterAsciiMarker(prompt, marker) {
 function extractPythonFunctionName(prompt) {
   const text = String(prompt || "");
   const assertion = text.match(/\bassert\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(/);
-  return (
-    identifierAfterAsciiMarker(text, "def ") ||
-    (assertion ? assertion[1] : "") ||
-    identifierAfterAsciiMarker(text, "function ")
-  );
+  // Prose names no function: "a function that reverses" is not `that`. As in
+  // Rust's parse_signature, a name after "function " needs its parameter list.
+  const named = identifierAfterAsciiMarker(text, "function ");
+  const signature = named && new RegExp(`\\bfunction\\s+${named}\\s*\\(`).test(text) ? named : "";
+  return identifierAfterAsciiMarker(text, "def ") || (assertion ? assertion[1] : "") || signature;
 }
 
 function discoveredCodingStructures(normalized) {
