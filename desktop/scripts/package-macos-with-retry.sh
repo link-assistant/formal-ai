@@ -46,6 +46,10 @@ readonly transient_signatures=(
   # image or capacity defect that a retry must not hide.
   'hdiutil: resize: failed\. (Device not configured|Resource busy|No child processes)( \([0-9]+\))?[[:space:]]*$'
   'dmgbuild\.core\.DMGError: Unable to shrink:[[:space:]]*$'
+  # The same service holding the finished image open at detach: dmgbuild's
+  # `Unable to detach device cleanly: hdiutil: couldn't eject "disk4" - Resource
+  # busy` (Build macos-x64, run 37534053151). Busy is the only reason matched.
+  "hdiutil: couldn't eject \"disk[0-9]+\" - Resource busy"
   # got's request timeout inside electron-builder's toolset download (#1017).
   "Timeout awaiting 'request' for [0-9]+ms"
   # Issue #1055: the same download, dropped mid-stream instead of stalling.

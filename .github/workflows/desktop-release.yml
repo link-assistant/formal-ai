@@ -806,7 +806,9 @@ jobs:
       - name: Collect CLI checksum fragment
         run: |
           set -euo pipefail
-          sha256sum "formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}" \
+          # macOS runners ship `shasum`, not `sha256sum`; both print `hash  name`.
+          if command -v sha256sum >/dev/null; then sum=(sha256sum); else sum=(shasum -a 256); fi
+          "${sum[@]}" "formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}" \
             > "SHA256SUMS-${{ matrix.label }}.partial"
           cat "SHA256SUMS-${{ matrix.label }}.partial"
 
