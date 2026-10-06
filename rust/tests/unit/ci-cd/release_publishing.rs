@@ -34,6 +34,24 @@ fn read_worker_source(manifest_dir: &str) -> String {
     source
 }
 
+/// The web front-end is authored as JSX modules under `js/app/` (bundled by bun
+/// into the served `js/app.js`), so source-level assertions read every module.
+fn read_web_app_source(manifest_dir: &str) -> String {
+    let mut modules: Vec<PathBuf> = fs::read_dir(format!("{manifest_dir}/js/app"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.extension().and_then(|ext| ext.to_str()) == Some("jsx"))
+        .collect();
+    modules.sort();
+
+    let mut source = String::new();
+    for module in modules {
+        source.push_str(&fs::read_to_string(module).unwrap());
+        source.push('\n');
+    }
+    source
+}
+
 #[test]
 fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     // Issue #72: the deployed Pages site advertised `0.16.0` long after the
@@ -44,8 +62,8 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
     let index_html = fs::read_to_string(format!("{manifest_dir}/js/index.html")).unwrap();
     // Issue #550: app source moved to JSX (bundled by bun into the served
-    // app.js); these checks assert source-level code, so read the JSX source.
-    let app_js = fs::read_to_string(format!("{manifest_dir}/js/app/main.jsx")).unwrap();
+    // app.js); these checks assert source-level code, so read the JSX modules.
+    let app_js = read_web_app_source(manifest_dir);
     let stamp_script =
         fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
     let workflow = release_workflow();
@@ -201,8 +219,8 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     let app_index_html = fs::read_to_string(format!("{manifest_dir}/js/app/index.html")).unwrap();
     let tests_index = fs::read_to_string(format!("{manifest_dir}/js/tests/index.html")).unwrap();
     // Issue #550: app source moved to JSX (bundled by bun into the served
-    // app.js); these checks assert source-level code, so read the JSX source.
-    let app_js = fs::read_to_string(format!("{manifest_dir}/js/app/main.jsx")).unwrap();
+    // app.js); these checks assert source-level code, so read the JSX modules.
+    let app_js = read_web_app_source(manifest_dir);
     let seed_loader_js = fs::read_to_string(format!("{manifest_dir}/js/seed_loader.js")).unwrap();
     let worker_js = read_worker_source(manifest_dir);
     let stamp_script =
@@ -213,7 +231,15 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     .unwrap();
 
     for asset in [
-        "styles.css?v=__FORMAL_AI_ASSET_VERSION__",
+        // The app stylesheet is split by concern into js/styles/ (linked in
+        // cascade order); every part is cache-busted like any other asset.
+        "styles/01-tokens.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/02-shell.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/03-panels.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/04-message-content.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/05-composer-responsive.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/06-dark-theme.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/07-interactions.css?v=__FORMAL_AI_ASSET_VERSION__",
         // The generated seed inventory ships and cache-busts like any other
         // asset; without it seed_loader.js would fetch nothing (issue #991).
         "seed-files.js?v=__FORMAL_AI_ASSET_VERSION__",

@@ -4,12 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Issue #1963 — UI/UX polish harness</title>
-    <!-- Link the REAL shipped stylesheet so the harness renders exactly what
+    <!-- Link the REAL shipped stylesheets (in cascade order) so the harness renders exactly what
          the desktop app renders. The DOM below is copied verbatim from the
          React render functions in js/app.js (ThinkingPreview,
          PendingAssistantBubble, the desktop services + update panels, and the
          topbar), so every class resolves against production CSS. -->
-    <link rel="stylesheet" href="../js/styles.css" />
+    <link rel="stylesheet" href="../js/styles/01-tokens.css" />
+    <link rel="stylesheet" href="../js/styles/02-shell.css" />
+    <link rel="stylesheet" href="../js/styles/03-panels.css" />
+    <link rel="stylesheet" href="../js/styles/04-message-content.css" />
+    <link rel="stylesheet" href="../js/styles/05-composer-responsive.css" />
+    <link rel="stylesheet" href="../js/styles/06-dark-theme.css" />
+    <link rel="stylesheet" href="../js/styles/07-interactions.css" />
     <style>
       /* Harness-only chrome — never ships. Lets the page flow for a full-height
          screenshot instead of the app's fixed 100dvh viewport. */

@@ -32,9 +32,10 @@ https://app\.docker\.com/settings/personal-access-tokens
 # either: `check-web-archive.mjs` found no snapshot.
 https://digital-strategy\.ec\.europa\.eu/
 
-# The HTML is stamped and served from src/web/, so this build-time relative
-# asset is not resolvable from src/web/app/index.html in the checkout.
-styles\.css\?v=__FORMAL_AI_ASSET_VERSION__
+# The HTML is stamped and served from js/, so these build-time relative
+# stylesheets (js/styles/*.css) are not resolvable from js/app/index.html in
+# the checkout.
+styles/[0-9a-z-]+\.css\?v=__FORMAL_AI_ASSET_VERSION__
 
 # GitHub issue and pull-request pages, which CI cannot verify.
 #

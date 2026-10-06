@@ -1,12 +1,12 @@
 // Issue #550: Chakra UI theme bridge.
 //
 // The app's colours live as `--fa-*` CSS design tokens defined once in
-// styles.css and themed across the light / dark / OS-preference axis there
-// (see the header comment in js/styles.css). This module maps those
+// js/styles/01-tokens.css and themed across the light / dark / OS-preference
+// axis there (see the token header comment in that file). This module maps those
 // tokens 1:1 into Chakra semantic tokens so any Chakra component can reference
 // them — e.g. `<Box bg="fa.surface.card">` resolves to `var(--fa-surface-card)`
-// and themes automatically because styles.css overrides the var's value per
-// theme. styles.css therefore stays the single source of truth for colour.
+// and themes automatically because the stylesheet overrides the var's value per
+// theme. js/styles/ therefore stays the single source of truth for colour.
 //
 // Two deliberate choices keep the existing, pixel-tested UI byte-identical
 // while Chakra is layered on top incrementally:
@@ -17,7 +17,7 @@
 //     `* { font-feature-settings }` global rules are removed, so the provider
 //     only emits CSS-variable definitions (in `@layer tokens`) and the layer
 //     declaration. Cascade layers rank below unlayered author styles, so even
-//     those variable layers cannot win over styles.css.
+//     those variable layers cannot win over js/styles/*.css.
 //
 // The net effect of mounting <ChakraProvider> with this system is that the
 // rendered DOM and computed styles are unchanged until a component is actually
@@ -28,10 +28,10 @@ import { createSystem, defaultConfig } from "@chakra-ui/react";
 
 // Wrap a raw `--fa-*` custom property as a Chakra semantic-token value. The
 // value is the CSS var itself (not a copied colour literal), so the light/dark
-// override authored in styles.css flows through without duplication here.
+// override authored in js/styles/ flows through without duplication here.
 const faVar = (token) => ({ value: `var(${token})` });
 
-// Mirror of the --fa-* tokens in js/styles.css. Grouped by role to read
+// Mirror of the --fa-* tokens in js/styles/01-tokens.css. Grouped by role to read
 // naturally as Chakra token paths (fa.surface.card, fa.control.hoverBg, …).
 const faColors = {
   fa: {

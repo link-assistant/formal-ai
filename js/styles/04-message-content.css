@@ -1,0 +1,990 @@
+/* Message content: diagnostic badges, Markdown and code blocks, the thinking
+ * trace, diagnostics panels, the formalization view, and the fetch iframe.
+ *
+ * Part of the app stylesheet split from the former js/styles.css. The
+ * files in js/styles/ are linked in numeric order by js/app/index.html and
+ * together form one cascade: keep that order when editing.
+ */
+
+/* Issue #180: diagnostic badges (intent label, evidence chips, tool mode
+ * tags) were rendered as inline pills with no wrap rules, so long ids
+ * (`intent:web_search`, evidence prefixes such as
+ * `web_search:provider:internet-archive`) overflowed the message body and
+ * the rounded background bled past the text. Allow them to wrap to the
+ * next line, soft-break long tokens, and keep the pill shape intact. */
+.intent {
+  display: inline-block;
+  max-width: 100%;
+  border: 1px solid #dac78b;
+  border-radius: 999px;
+  padding: 2px 7px;
+  background: #fff8df;
+  color: #6c5512;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.markdown-body {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  --code-surface: #f8fafc;
+  --code-header-surface: #eef3f8;
+  --code-border: #d7e0ea;
+  --code-text: #1f2937;
+  --code-muted: #526173;
+  --code-button-bg: #ffffff;
+  --code-button-border: #cbd5e1;
+  --code-button-hover-bg: #e5edf5;
+  --code-copy-done-text: #166534;
+  --code-copy-done-bg: #dcfce7;
+  --code-copy-done-border: #86efac;
+  --hljs-comment: #667085;
+  --hljs-keyword: #9f1239;
+  --hljs-string: #0f766e;
+  --hljs-number: #a16207;
+  --hljs-type: #166534;
+  --hljs-title: #6d28d9;
+}
+
+.markdown-body p {
+  margin: 8px 0;
+}
+
+.markdown-body p:first-child {
+  margin-top: 0;
+}
+
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin: 14px 0 8px;
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.markdown-body h1:first-child,
+.markdown-body h2:first-child,
+.markdown-body h3:first-child,
+.markdown-body h4:first-child,
+.markdown-body h5:first-child,
+.markdown-body h6:first-child {
+  margin-top: 0;
+}
+
+.markdown-body pre {
+  overflow: auto;
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--code-surface);
+  color: var(--code-text);
+  border: 1px solid var(--code-border);
+  line-height: 1.45;
+}
+
+.markdown-body code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.92em;
+}
+
+.markdown-body :not(pre) > code {
+  border-radius: 5px;
+  padding: 2px 5px;
+  background: #e9eef1;
+}
+
+/* Issue #330: code-block shell with a language label + per-block copy button. */
+.markdown-body .code-block {
+  position: relative;
+  margin: 8px 0;
+  border: 1px solid var(--code-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--code-surface);
+}
+
+.markdown-body .code-block:first-child {
+  margin-top: 0;
+}
+
+.markdown-body .code-block:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body .code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--code-header-surface);
+  border-bottom: 1px solid var(--code-border);
+  font-size: 12px;
+}
+
+.markdown-body .code-block-lang {
+  color: var(--code-muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.markdown-body .code-block > pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.code-copy-button,
+.message-copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.2;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.code-copy-button {
+  padding: 3px 9px;
+  color: var(--code-text);
+  background: var(--code-button-bg);
+  border-color: var(--code-button-border);
+}
+
+.code-copy-button:hover {
+  background: var(--code-button-hover-bg);
+  color: var(--code-text);
+}
+
+.code-copy-button.is-copied {
+  color: var(--code-copy-done-text);
+  background: var(--code-copy-done-bg);
+  border-color: var(--code-copy-done-border);
+}
+
+.message-copy-button {
+  padding: 1px 7px;
+  margin-left: 4px;
+  color: inherit;
+  opacity: 0.62;
+  background: transparent;
+  border-color: rgba(127, 140, 158, 0.32);
+}
+
+.message-copy-button:hover {
+  opacity: 1;
+  background: rgba(127, 140, 158, 0.14);
+}
+
+.message-copy-button.is-copied {
+  opacity: 1;
+  color: #137a45;
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(34, 197, 94, 0.16);
+}
+
+/* Syntax-highlight token palette follows the active code surface. */
+.markdown-body code.hljs {
+  color: var(--code-text);
+}
+
+.markdown-body .hljs-comment {
+  color: var(--hljs-comment);
+  font-style: italic;
+}
+
+.markdown-body .hljs-keyword {
+  color: var(--hljs-keyword);
+}
+
+.markdown-body .hljs-string {
+  color: var(--hljs-string);
+}
+
+.markdown-body .hljs-number,
+.markdown-body .hljs-literal {
+  color: var(--hljs-number);
+}
+
+.markdown-body .hljs-type {
+  color: var(--hljs-type);
+}
+
+.markdown-body .hljs-title {
+  color: var(--hljs-title);
+}
+
+.markdown-body a.external-link {
+  color: #175f4f;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.markdown-body a.external-link .external-link-icon {
+  display: inline-block;
+  width: 0.82em;
+  height: 0.82em;
+  margin-left: 2px;
+  vertical-align: -0.08em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDEyIDEyIj48cGF0aCBkPSJNNiAxaDV2NUw4Ljg2IDMuODUgNC43IDggNCA3LjNsNC4xNS00LjE2ek0yIDNoMnYxSDJ2Nmg2VjhoMXYyYTEgMSAwIDAgMS0xIDFIMmExIDEgMCAwIDEtMS0xVjRhMSAxIDAgMCAxIDEtMSIvPjwvc3ZnPg==") center / contain no-repeat;
+  mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDEyIDEyIj48cGF0aCBkPSJNNiAxaDV2NUw4Ljg2IDMuODUgNC43IDggNCA3LjNsNC4xNS00LjE2ek0yIDNoMnYxSDJ2Nmg2VjhoMXYyYTEgMSAwIDAgMS0xIDFIMmExIDEgMCAwIDEtMS0xVjRhMSAxIDAgMCAxIDEtMSIvPjwvc3ZnPg==") center / contain no-repeat;
+}
+
+.evidence-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  min-width: 0;
+}
+
+.evidence-list span {
+  display: inline-block;
+  max-width: 100%;
+  border: 1px solid #cbd6db;
+  border-radius: 999px;
+  padding: 3px 7px;
+  color: #4b5e6b;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.thinking-steps {
+  margin-top: 10px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 10px;
+  color: #4b5e6b;
+  font-size: 12px;
+}
+
+.thinking-steps strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #40515f;
+  text-transform: uppercase;
+}
+
+.thinking-steps ol {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.thinking-steps li + li {
+  margin-top: 4px;
+}
+
+.thinking-preview {
+  margin-top: 10px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 10px;
+  color: #4b5e6b;
+  font-size: 13px;
+}
+
+.thinking-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.thinking-preview-title {
+  color: #40515f;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Issue #676 (R8): the human, first-person headline that leads the trace. It
+   sits above the collapsed/expanded steps and reads as a sentence, so it is
+   styled a touch larger and darker than the robotic step detail beneath it. */
+.thinking-preview-narrative {
+  margin: 0 0 6px;
+  color: #2b3a45;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.thinking-preview-toggle {
+  flex: 0 0 auto;
+  border: 1px solid #cbd6db;
+  border-radius: 6px;
+  padding: 3px 9px;
+  background: #ffffff;
+  color: #175f4f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.thinking-preview-toggle:hover {
+  border-color: #86b8a7;
+  background: #edf7f3;
+}
+
+.thinking-preview-collapsed {
+  display: grid;
+  gap: 3px;
+  margin-top: 7px;
+  min-width: 0;
+  /* Issue #541 (R7): reserve enough height for at least one full reasoning
+     step (one fading hint line + a wrapped current step), so the collapsed
+     view never clips the current step to a sub-line height where "not a
+     single line of thinking is displayed". */
+  min-height: 1.55em;
+  /* Issue #488: clip the rotated-scrolling animation so the previous line
+     does not visibly translate out of the bubble before the gradient fade
+     swallows it. */
+  overflow: hidden;
+}
+
+/* Issue #1963 (P1): the scroll-fade gradient must read as ONE continuous fade
+   spanning the whole collapsed reasoning container (the tail of the previous
+   step blending into the current step), not a separate per-paragraph fade on
+   each line — the latter "looks broken, because each paragraph/line/step has
+   its own gradient". A single container-level mask replaces the former
+   per-element mask on `.thinking-preview-previous`, so both visible steps share
+   one gradient and the fade reads as earlier reasoning scrolling out of view
+   above. The mask is applied via `:has()` only when a previous step exists to
+   fade, so a lone first step is never dimmed. */
+.thinking-preview-collapsed:has(.thinking-preview-previous) {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 1.4em);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 1.4em);
+}
+
+.thinking-preview-previous,
+.thinking-preview-current {
+  margin: 0;
+  min-width: 0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.thinking-preview-previous {
+  /* Issue #488: keep the already-scrolled-past step a single fading hint
+     line so the rotated-scrolling illusion (1.x visible lines: the tail of
+     the previous step + the current step) is honoured. */
+  max-height: 1.05em;
+  overflow: hidden;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  color: #667684;
+  opacity: 0.72;
+  /* Issue #1963 (P1): the fade gradient is no longer applied per line here;
+     the parent `.thinking-preview-collapsed` now carries a single container
+     mask so the previous + current steps share one continuous gradient. */
+  /* Issue #488: when a new step arrives the React key for `previous`
+     changes, which re-mounts the <p> and (because animations only run on
+     mount/key-change) replays this keyframe — that is the rotated
+     scrolling illusion the issue asks for. */
+  animation: thinking-rotate-previous 320ms ease-out both;
+}
+
+.thinking-preview-current {
+  /* Issue #541 (R7): show the current reasoning step FULLY — at least one
+     whole paragraph — instead of clipping it to a single ellipsised line.
+     A generous line cap keeps a pathologically long step from dominating the
+     collapsed bubble while normal 1-4 line steps render in full. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  line-clamp: 10;
+  overflow: hidden;
+  white-space: normal;
+  color: #334650;
+  animation: thinking-rotate-current 320ms ease-out both;
+}
+
+@keyframes thinking-rotate-current {
+  from {
+    transform: translateY(0.8em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes thinking-rotate-previous {
+  from {
+    transform: translateY(0.6em);
+    opacity: 0.95;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-preview-previous,
+  .thinking-preview-current {
+    animation: none !important;
+  }
+}
+
+/* Issue #541 (R5/R6): paced message reveal. The reasoning steps animate
+   (scrolling through the collapsed preview) first; only once they have all
+   been revealed does the answer body appear, and it fades in rather than
+   snapping. The whole sequence stays inside the user's animation budget
+   (default 2s, configurable down to 0 = immediate). The `.is-revealing`
+   state keeps the body out of the layout entirely so a tall answer cannot
+   "peek" beneath the still-animating reasoning steps. */
+.markdown-body.is-revealing {
+  display: none;
+}
+
+.markdown-body.is-revealed {
+  animation: message-body-reveal 600ms ease-out both;
+}
+
+@keyframes message-body-reveal {
+  from {
+    transform: translateY(0.5em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .markdown-body.is-revealed {
+    animation: none !important;
+  }
+}
+
+/* Issue #672 (F3): the per-message escape hatch from that paced reveal. It is
+   deliberately quiet — a small text control under the reasoning trace rather
+   than a prominent button — because it exists for the impatient minority and
+   should not compete with the answer it is about to show. It only renders
+   while the reveal is withholding the body, so it never lingers. */
+.skip-animation {
+  align-self: flex-start;
+  margin: 2px 0 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fa-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.skip-animation:hover {
+  border-color: var(--fa-control-hover-border);
+  color: var(--fa-text-body);
+}
+
+/* Issue #488: pulsing dot next to the "Thinking" title while the assistant
+   is mid-response, so the live trace is visibly live. */
+.thinking-preview-live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #2f9a6f;
+  vertical-align: middle;
+  animation: thinking-live-dot 1100ms ease-in-out infinite;
+}
+
+@keyframes thinking-live-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-preview-live-dot {
+    animation: none !important;
+    opacity: 0.85;
+  }
+}
+
+.thinking-preview-list {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.thinking-preview-list li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.diagnostics-steps,
+.diagnostics-tools {
+  margin-top: 12px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 10px;
+  color: #334650;
+  font-size: 13px;
+}
+
+.diagnostics-steps > strong,
+.diagnostics-tools > strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #40515f;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.diagnostics-step-list,
+.diagnostics-tool-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.diagnostics-step,
+.diagnostics-tool {
+  padding-left: 2px;
+}
+
+.diagnostics-detail {
+  overflow: hidden;
+  border: 1px solid #cfdadf;
+  border-radius: 8px;
+  background: #f8fafb;
+}
+
+/* Issue #180: diagnostics summary rows must wrap long step names and detail
+ * fragments onto multiple lines so the rounded chevron does not collide with
+ * the name when the panel is narrow. */
+.diagnostics-detail > summary {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 10px;
+  color: #1f2d36;
+  cursor: pointer;
+  list-style: none;
+}
+
+.diagnostics-detail > summary::-webkit-details-marker {
+  display: none;
+}
+
+.diagnostics-detail > summary::before {
+  content: "▶";
+  flex: 0 0 auto;
+  color: #5f6d78;
+  font-size: 11px;
+}
+
+.diagnostics-detail[open] > summary::before {
+  content: "▼";
+}
+
+.diagnostics-step-name,
+.diagnostics-tool-name {
+  min-width: 0;
+  flex: 0 1 auto;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.diagnostics-step-summary,
+.diagnostics-tool-summary {
+  min-width: 0;
+  flex: 1 1 100%;
+  color: #5f6d78;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.diagnostics-detail-body {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid #dce4e7;
+  padding: 10px;
+  background: #ffffff;
+}
+
+/* Issue #672 (F4): a step whose level the user edited is marked, so the trace
+ * never silently disagrees with what the solver actually reported. */
+.diagnostics-detail[data-level-override] {
+  border-color: var(--fa-control-hover-border);
+}
+
+/* The marker rides the step name rather than the summary row: the row wraps
+   (the detail text takes a line of its own), so a row-level ::after would land
+   under the step instead of beside it. */
+.diagnostics-detail[data-level-override]
+  > summary
+  .diagnostics-step-name::after {
+  content: " •";
+  color: var(--fa-accent-link);
+}
+
+/* Positioned at the pointer, hence `fixed` + inline coordinates. */
+.step-hierarchy-menu {
+  position: fixed;
+  z-index: 40;
+  display: grid;
+  min-width: 180px;
+  overflow: hidden;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  background: var(--fa-surface-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.step-hierarchy-menu button {
+  border: 0;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--fa-text-body);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.step-hierarchy-menu button:hover:not(:disabled) {
+  background: var(--fa-control-hover-bg);
+}
+
+.step-hierarchy-menu button:disabled {
+  color: var(--fa-text-muted);
+  cursor: default;
+}
+
+.diagnostics-tool-section {
+  display: grid;
+  gap: 6px;
+}
+
+.diagnostics-section-label {
+  color: #657584;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.diagnostics-payload,
+.diagnostics-tool-reasoning {
+  margin: 0;
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid #dce4e7;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: #f5f8f9;
+  color: #1f2d36;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Issue #180: raw HTTP exchange panel. One block per worker turn that
+ * surfaces the per-provider status row and an expandable details element
+ * for every fetch the worker performed. */
+.diagnostics-http {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #dce4e7;
+  color: #334650;
+  font-size: 13px;
+}
+
+.diagnostics-http-section {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.diagnostics-http-provider-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.diagnostics-http-provider {
+  padding: 4px 8px;
+  border: 1px solid #dce4e7;
+  border-radius: 6px;
+  background: #f8fafb;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.diagnostics-http-provider.is-error {
+  border-color: #ecc2c2;
+  background: #fdf3f3;
+  color: #7d2c2c;
+}
+
+.diagnostics-http-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.diagnostics-http-item {
+  display: block;
+  min-width: 0;
+}
+
+.diagnostics-http-status {
+  flex: 1 1 100%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5f6d78;
+  overflow-wrap: anywhere;
+}
+
+.diagnostics-http-links {
+  background: #f0f4f7;
+  border-color: #cbd6db;
+}
+
+.diagnostics-http-empty {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #f5f8f9;
+  color: #5f6d78;
+  font-size: 12px;
+}
+
+/* Issue #153: formalization view — Subject-Verb-Object tuple rendering for
+   the `formalize` and `formalize_resolved` diagnostics steps. The raw prompt
+   is shown on the left with an arrow → to the canonical tuple, then the SVO
+   slots are listed below with one-letter labels (S/V/O). */
+.formalization-view {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #2c3a44;
+  background: #f5f8f9;
+  border: 1px solid #cfdadf;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.formalization-raw {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.formalization-raw code,
+.formalization-tuple {
+  background: transparent;
+  color: #1f2d36;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+.formalization-arrow {
+  color: #6b7d89;
+  font-weight: 700;
+}
+
+.formalization-svo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formalization-svo-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7d89;
+}
+
+.formalization-svo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.formalization-svo-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formalization-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #e3ebee;
+  color: #40515f;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.formalization-svo-list code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: #1f2d36;
+}
+
+.message-actions {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.message-actions a {
+  color: #175f4f;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.message-actions a:hover {
+  text-decoration: underline;
+}
+
+.fetch-iframe-container {
+  margin-top: 12px;
+  border: 1px solid #d6dde1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.fetch-iframe-container.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border-radius: 0;
+}
+
+.fetch-iframe-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #f0f4f8;
+  border-bottom: 1px solid #d6dde1;
+  font-size: 12px;
+  flex-wrap: nowrap;
+}
+
+.fetch-iframe-url {
+  color: #444;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.fetch-iframe-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.fetch-iframe-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid #b0bac4;
+  border-radius: 4px;
+  color: #175f4f;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  text-decoration: none;
+}
+
+.fetch-iframe-control:hover {
+  background: #dde3e9;
+  text-decoration: none;
+}
+
+.fetch-iframe {
+  display: block;
+  width: 100%;
+  height: 400px;
+  border: none;
+  background: #fff;
+}
+
+.fetch-iframe-container.is-fullscreen .fetch-iframe {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}

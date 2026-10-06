@@ -8,12 +8,13 @@
 // truncation cap raised from 120 to 600 chars and is pinned by the
 // `tests/unit/issue_1963.rs` unit test (the JS `thinkingDetailText` helper is a
 // documented mirror of the same constant). The remaining four are pure
-// CSS/cascade defects in `js/styles.css`, and this spec guards them.
+// CSS/cascade defects in the app stylesheet (`js/styles/*.css`), and this
+// spec guards them.
 //
 // The desktop SERVICES + UPDATE panels only render when the Electron desktop
 // bridge supplies a `serviceStatus`, so they never mount in the plain web build
 // Playwright loads. Rather than mock the bridge, this spec loads the real app
-// (so the shipped `styles.css` and the full cascade apply exactly as they ship)
+// (so the shipped `js/styles/*.css` and the full cascade apply exactly as they ship)
 // and injects the precise DOM the React render functions emit, then asserts the
 // COMPUTED styles. Every assertion below FAILS against the pre-fix CSS and
 // PASSES against the fix:

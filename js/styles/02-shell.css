@@ -1,0 +1,876 @@
+/* Base element reset, the topbar, the sidebar / drawer navigation, and the
+ * conversation list.
+ *
+ * Part of the app stylesheet split from the former js/styles.css. The
+ * files in js/styles/ are linked in numeric order by js/app/index.html and
+ * together form one cascade: keep that order when editing.
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  height: var(--formal-ai-viewport-height, 100dvh);
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: var(--formal-ai-viewport-height, 100dvh);
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+button,
+textarea,
+.report-button {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  position: fixed;
+  top: var(--formal-ai-viewport-offset-top, 0px);
+  left: var(--formal-ai-viewport-offset-left, 0px);
+  width: 100vw;
+  width: var(--formal-ai-viewport-width, 100vw);
+  height: 100vh;
+  height: 100dvh;
+  height: var(--formal-ai-viewport-height, 100dvh);
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+}
+
+.topbar {
+  width: 100%;
+  min-width: 0;
+  min-height: 64px;
+  container: formal-ai-topbar / inline-size;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 24px;
+  border-bottom: 1px solid #d6dde1;
+  background: #fbfcfd;
+}
+
+.brand,
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand {
+  flex: 0 0 auto;
+}
+
+.topbar-actions {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+.brand strong {
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.brand-version {
+  color: #657584;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.mark,
+.avatar {
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #175f4f;
+  font-size: 14px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+.status {
+  color: #5f6d78;
+  font-size: 14px;
+}
+
+.demo-status {
+  color: #40515f;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* Issue #513: the active-mode status badge reads like the demo-mode badge so the
+ * toolbar's status labels stay visually consistent. */
+.mode-status {
+  color: var(--fa-mode-status-text);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.desktop-status {
+  flex: 0 1 auto;
+  max-width: min(360px, 38vw);
+  padding: 6px 8px;
+  border: 1px solid #b9d8cf;
+  border-radius: 8px;
+  background: #edf6f3;
+  color: #175f4f;
+  font-size: 12px;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Issue #672 (F2): the desktop profile-migration notice. Every colour here is a
+ * theme token rather than a literal — that is the direct lesson of issue #541
+ * (R1), where hardcoded light hexes with no dark counterpart left widgets
+ * rendering in the wrong palette. */
+.data-migration-notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--fa-border-subtle);
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+  font-size: 13px;
+}
+
+.data-migration-notice.is-failed {
+  color: var(--fa-error-text);
+}
+
+.data-migration-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.data-migration-copy strong {
+  color: var(--fa-text-strong);
+}
+
+.data-migration-items {
+  color: var(--fa-text-muted);
+  font-size: 12px;
+}
+
+.data-migration-actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.data-migration-actions button {
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  padding: 5px 12px;
+  background: var(--fa-surface-card);
+  color: var(--fa-text-body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.data-migration-actions button:hover:not(:disabled) {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+.data-migration-actions button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.mode-toggle,
+.diagnostics-toggle,
+.mode-option,
+.mobile-menu-toggle,
+.sidebar-toggle,
+.drawer-close,
+.drawer-action,
+.report-button,
+.source-code-button,
+.download-button,
+.memory-button,
+.send-button,
+.prompt-list button {
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e252b;
+  font-weight: 700;
+}
+
+.mode-toggle,
+.diagnostics-toggle,
+.mode-option,
+.mobile-menu-toggle,
+.sidebar-toggle,
+.report-button,
+.source-code-button,
+.download-button,
+.memory-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+/* Issue #513: the binary agent toggle became a three-way mode radio group.
+ * The options sit in a single segmented control so the active mode reads as a
+ * connected switch rather than three independent buttons. */
+.mode-radio,
+.drawer-mode-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.drawer-mode-radio {
+  flex-wrap: wrap;
+}
+
+/* Issue #409: toolbar buttons carry a local icon + label so the label can be
+ * hidden on narrow viewports without falling back to ambiguous emoji glyphs. */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.toolbar-icon-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.toolbar-icon.icon-pack-fontawesome .toolbar-icon-svg {
+  stroke-width: 2.35;
+}
+
+.toolbar-icon.icon-pack-material-symbols .toolbar-icon-svg,
+.toolbar-icon.icon-pack-ionicons .toolbar-icon-svg {
+  stroke-width: 2.2;
+}
+
+.toolbar-icon.icon-pack-bootstrap-icons .toolbar-icon-svg,
+.toolbar-icon.icon-pack-remix-icon .toolbar-icon-svg {
+  stroke-width: 1.95;
+}
+
+.toolbar-icon.icon-pack-tabler-icons .toolbar-icon-svg {
+  stroke-width: 1.75;
+}
+
+.toolbar-icon-name {
+  width: 30px;
+  flex-basis: 30px;
+  overflow: hidden;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.btn-label {
+  display: inline;
+  margin-left: 6px;
+}
+
+/* Issue #27: the hamburger toggle is hidden on wide viewports — the full
+ * sidebar is always visible there — and only surfaces under the mobile
+ * breakpoint where the sidebar collapses behind a drawer. */
+.mobile-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.mobile-menu-toggle .btn-icon {
+  font-size: 20px;
+}
+
+/* Issue #153: desktop-only sidebar collapse toggle. Hidden on the mobile
+ * breakpoint where the slide-in drawer already provides the equivalent
+ * affordance. */
+.sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  min-height: 38px;
+  flex: 0 0 auto;
+}
+
+.sidebar-toggle-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.menu-icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.menu-icon-hamburger::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow:
+    0 6px 0 currentColor,
+    0 12px 0 currentColor;
+}
+
+.menu-icon-close::before,
+.menu-icon-close::after {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 8px;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.menu-icon-close::before {
+  transform: rotate(45deg);
+}
+
+.menu-icon-close::after {
+  transform: rotate(-45deg);
+}
+
+/* Issue #27: full-viewport scrim sits behind the slide-in drawer and dismisses
+ * the menu on tap, the same way iOS / Material navigation drawers behave. */
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 30, 40, 0.45);
+  z-index: 90;
+}
+
+.drawer-brand {
+  display: none;
+}
+
+.drawer-menu-section {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 8px;
+  padding: 10px 18px 12px;
+  border-bottom: 1px solid #d6dde1;
+  background: #f7f8fa;
+}
+
+.drawer-menu-section h2 {
+  margin: 0;
+  color: var(--fa-mode-status-text);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.drawer-action-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.drawer-action {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 10px;
+  text-align: left;
+  text-decoration: none;
+  white-space: normal;
+}
+
+.drawer-action span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.memory-status {
+  font-size: 13px;
+  color: #40515f;
+  align-self: center;
+}
+
+.report-button,
+.source-code-button,
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.mode-toggle[aria-pressed="true"],
+.diagnostics-toggle[aria-pressed="true"],
+.mode-option[aria-checked="true"],
+.mode-option.is-active,
+.mobile-menu-toggle[aria-pressed="true"],
+.send-button {
+  border-color: #175f4f;
+  background: #175f4f;
+  color: #ffffff;
+}
+
+/* Issue #153: when the desktop sidebar is collapsed the toggle keeps its
+ * "expand" affordance subtle — no green press state, since the action label
+ * already flips. */
+.sidebar-toggle.is-collapsed {
+  background: var(--fa-sidebar-toggle-collapsed-bg);
+}
+
+.workspace {
+  --context-panel-width: 300px;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, var(--context-panel-width)) 10px minmax(0, 1fr);
+  overflow: hidden;
+}
+
+/* Issue #153: when the desktop sidebar is collapsed the workspace gives the
+ * chat the full viewport width. The aside and resizer are display:none, so the
+ * remaining chat panel must be laid out in a single full-width grid column. */
+.workspace.sidebar-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.context-panel {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+  border-right: 1px solid #d6dde1;
+  background: #f7f8fa;
+}
+
+.context-panel.is-desktop-collapsed {
+  display: none;
+}
+
+.workspace.sidebar-collapsed .context-resizer {
+  display: none;
+}
+
+.context-resizer {
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  border-right: 1px solid #d6dde1;
+  background: #eef2f1;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.context-resizer::before {
+  content: "";
+  width: 2px;
+  height: 34px;
+  border-radius: 999px;
+  background: #9aa9b1;
+}
+
+.context-resizer:hover,
+.context-resizer:focus-visible,
+body.is-resizing-context .context-resizer {
+  background: #dfe8e5;
+}
+
+.context-resizer:focus-visible {
+  outline: 2px solid #2d6cdf;
+  outline-offset: -2px;
+}
+
+body.is-resizing-context {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.context-panel h2 {
+  margin: 0;
+  color: #40515f;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+/* Issue #27: each sidebar section is a flex column that shares space
+ * equally with its siblings and scrolls on its own. Collapsed sections drop
+ * out of the flex grow pool so the remaining sections expand to fill the
+ * panel — replicating VS Code's accordion behaviour. */
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-bottom: 1px solid #d6dde1;
+}
+
+.sidebar-section.is-expanded {
+  flex: 1 1 0;
+}
+
+.sidebar-section.is-collapsed {
+  flex: 0 0 auto;
+}
+
+.sidebar-section-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  border: 0;
+  background: #eef2f1;
+  color: #40515f;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar-section-header:hover {
+  background: #e3eae9;
+}
+
+.sidebar-section-toggle {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 36px;
+  padding: 10px 0 10px 18px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar-section-isolate {
+  display: inline-flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  min-height: 32px;
+  margin-right: 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #5f6d78;
+  cursor: pointer;
+}
+
+.sidebar-section-toggle:hover,
+.sidebar-section-isolate:hover {
+  background: rgba(64, 81, 95, 0.08);
+}
+
+.sidebar-section-toggle:focus-visible,
+.sidebar-section-isolate:focus-visible {
+  outline: 2px solid #2f80ed;
+  outline-offset: -2px;
+}
+
+.sidebar-section-isolate .btn-icon {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+}
+
+.sidebar-section-header h2 {
+  margin: 0;
+  min-width: 0;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.sidebar-section-caret {
+  display: inline-block;
+  width: 10px;
+  font-size: 10px;
+  color: #5f6d78;
+}
+
+.sidebar-section-body {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px 18px 14px;
+}
+
+.drawer-menu-section.sidebar-section {
+  display: flex;
+  gap: 0;
+  padding: 0;
+}
+
+.drawer-menu-section.sidebar-section.is-expanded {
+  flex: 1 1 0;
+}
+
+.drawer-menu-section.sidebar-section .sidebar-section-body {
+  padding: 10px 18px 12px;
+}
+
+.drawer-menu-body {
+  min-height: 0;
+}
+
+.conversation-list {
+  display: grid;
+  gap: 6px;
+}
+
+.conversation-new {
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px dashed #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #175f4f;
+  font-weight: 700;
+  text-align: left;
+}
+
+.conversation-new:hover {
+  border-color: #175f4f;
+  background: #f1f6f4;
+}
+
+.conversation-deleted-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.conversation-deleted-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: #175f4f;
+}
+
+.conversation-purge-deleted {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid #d8a2a2;
+  border-radius: 6px;
+  background: #fff7f7;
+  color: #8b2f2f;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.conversation-purge-deleted:hover:not(:disabled) {
+  border-color: #8b2f2f;
+  background: #fff0f0;
+}
+
+.conversation-purge-deleted:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.conversation-empty {
+  margin: 0;
+  color: #5f6d78;
+  font-size: 12px;
+}
+
+.conversation-entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.conversation-entry-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 4px;
+  align-items: stretch;
+}
+
+/* Issue #386: copy the whole conversation as Markdown from the sidebar. */
+.conversation-copy {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0 8px;
+  border: 1px solid #d6dee2;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #40515f;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.conversation-copy:hover {
+  border-color: #175f4f;
+  background: #f1f6f4;
+}
+
+.conversation-copy.is-copied {
+  border-color: #175f4f;
+  color: #175f4f;
+}
+
+.conversation-entry-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 34px;
+  padding: 6px 8px;
+  border: 1px solid #d6dee2;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1c2429;
+  text-align: left;
+  cursor: pointer;
+}
+
+.conversation-delete {
+  width: 34px;
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d6dee2;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #8b2f2f;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.conversation-entry-button:hover {
+  border-color: #175f4f;
+  background: #f1f6f4;
+}
+
+.conversation-delete:hover {
+  border-color: #8b2f2f;
+  background: #fff0f0;
+}
+
+.conversation-entry.is-active .conversation-entry-button {
+  border-color: #175f4f;
+  background: #e3efe9;
+  font-weight: 600;
+}
+
+.conversation-entry.is-deleted .conversation-entry-button {
+  border-color: #c7cdd1;
+  background: #f0f3f4;
+  color: #5f6d78;
+}
+
+.conversation-entry-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  font-size: 13px;
+}
+
+.conversation-entry-meta {
+  color: #5f6d78;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Issue #180: prompt list is always a single column so it never competes for
+ * width with the conversation list in the left menu. */
+.prompt-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.prompt-list button {
+  min-height: 42px;
+  padding: 9px 10px;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.prompt-list button:hover {
+  border-color: #2d6cdf;
+}
