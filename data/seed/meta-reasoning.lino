@@ -67,6 +67,20 @@ meta_reasoning
     marker " возвращает "
     marker " в "
   cue
+    role sequence
+    language en
+    marker " and then "
+    marker " then "
+    marker " and "
+    marker ", "
+  cue
+    role sequence
+    language ru
+    marker " а затем "
+    marker " затем "
+    marker " и "
+    marker ", "
+  cue
     role artifact
     language en
     marker "function"
@@ -114,6 +128,13 @@ meta_reasoning
     word this
     word it
     word its
+    word them
+    word they
+    word their
+    word these
+    word those
+    word one
+    word ones
     word is
     word are
     word be
@@ -150,6 +171,10 @@ meta_reasoning
     word из
     word что
     word это
+    word их
+    word его
+    word её
+    word них
     word как
     word мне
     word напиши

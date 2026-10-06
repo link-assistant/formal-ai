@@ -351,35 +351,32 @@ function metaStepLabel(step) {
  * @param {number|null} parameter a number the request states, bound to a parametric step
  * @param {Array<Array<object>>} words every grounded word's hypotheses
  * @param {Array<string>} inputTypes argument types the request's data words name
+ * @param {Array<object>} clauses the request's clauses (see metaClauses)
  * @returns {object|null}
  */
-function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, inputTypes) {
+function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, inputTypes, clauses) {
   trace.emit("goal", `program serving ${groups.map((group) => `{${group.join("|")}}`).join(" ")}`);
   const types = ["text", "list_number", "list_text", "number"];
-  // The head word (the first grounded action) is the outermost operation, so
-  // its result type is the program's.
   const operations = metaSeed().primitives;
-  let headTypes = [];
-  let headIndex = 0;
-  for (const [position, group] of groups.entries()) {
-    headTypes = group.map((id) => (operations.find((primitive) => primitive.id === id) || {}).to).filter(Boolean);
-    headIndex = position;
-    if (headTypes.length) break;
-  }
+  // The last clause's head is the outermost operation, so its result type is
+  // the program's.
+  const lastHead = clauses.length ? clauses[clauses.length - 1].head : groups[0];
+  const headTypes = lastHead.map((id) => (operations.find((primitive) => primitive.id === id) || {}).to).filter(Boolean);
   let best = null;
   for (const fromType of types) {
     for (const program of metaPrograms(fromType, META_BOUNDS.programLength - 1)) {
       const parametric = program.steps.filter(metaStepIsParametric).length;
       if (parametric > (parameter === null ? 0 : 1)) continue;
       const used = new Set(program.steps.flatMap(metaStepOperations));
-      if (!groups[headIndex].some((operation) => used.has(operation))) continue;
+      if (!lastHead.some((operation) => used.has(operation))) continue;
       const uncovered = groups.filter((group) => !group.some((operation) => used.has(operation))).length;
       const ungrounded = program.steps.flatMap(metaStepOperations).filter((operation) => !evidence.get(operation)).length;
-      // Grounded evidence decides first (every operation should be asked
-      // for), then shape: a type-preserving program, then the shortest.
+      const order = metaClauseOrder(program, fromType, clauses);
       const statedInput = inputTypes.length && !inputTypes.includes(fromType) ? 1 : 0;
       const headFits = headTypes.some((type) => type === program.type || (type === "list_any" && program.type.startsWith("list_"))) ? 0 : 1;
-      const rank = [ungrounded, uncovered, -metaCoverageScore(program.steps, words), statedInput, headFits, program.type === fromType ? 0 : 1, program.steps.length];
+      // Grounded evidence decides first (every operation asked for, none
+      // invented), then the request's own composition order, then shape.
+      const rank = [ungrounded, uncovered, -metaCoverageScore(program.steps, words), order.violations, order.objectMismatch, statedInput, headFits, program.type === fromType ? 0 : 1, program.steps.length];
       let better = !best;
       for (let position = 0; !better && position < rank.length; position += 1) {
         if (rank[position] !== best.rank[position]) {
@@ -392,7 +389,42 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, in
       }
     }
   }
-  if (!best) trace.emit("impasse", "no typed program serves the head word");
+  if (!best) trace.emit("impasse", "no typed program serves the last clause's head");
   else if (best.uncovered) trace.emit("evidence", `${best.uncovered} grounded word group(s) left unexplained by the chosen program`);
   return best;
+}
+
+/**
+ * How far a program departs from the request's composition: coordinated
+ * clauses apply in order; within a clause the head acts last, after its
+ * object's modifiers; the head consumes the type its object noun names.
+ * Representation changes (split / join) are free.
+ * @param {{steps: Array<object>}} program
+ * @param {string} fromType
+ * @param {Array<object>} clauses
+ * @returns {{violations: number, objectMismatch: number}}
+ */
+function metaClauseOrder(program, fromType, clauses) {
+  const inputs = [];
+  let type = fromType;
+  for (const step of program.steps) {
+    inputs.push(step.mapped ? type.slice(5) : type);
+    type = step.filter ? type : step.mapped ? `list_${step.primitive.to}` : metaApply(step.primitive, type);
+  }
+  const positionOf = (ids) => program.steps.findIndex((step) => metaStepOperations(step).some((id) => ids.includes(id) && !metaIsView(id)));
+  let violations = 0;
+  let objectMismatch = 0;
+  let previousHead = -1;
+  for (const clause of clauses) {
+    const head = positionOf(clause.head);
+    if (head < 0) continue;
+    if (head < previousHead) violations += 1;
+    previousHead = head;
+    for (const [position, step] of program.steps.entries()) {
+      const ids = metaStepOperations(step).filter((id) => !metaIsView(id));
+      if (position > head && ids.some((id) => clause.others.includes(id))) violations += 1;
+    }
+    if (clause.objectType && inputs[head] !== clause.objectType && !(clause.objectType.startsWith("list_") && inputs[head] === "list_any")) objectMismatch += 1;
+  }
+  return { violations, objectMismatch };
 }

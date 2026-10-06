@@ -392,6 +392,61 @@ function metaGroundText(text, context, depth, stack, needs) {
 }
 
 /**
+ * True when an operation only changes representation between a text and the
+ * list of its parts (split / join), which carries no ordering constraint.
+ * @param {string} id
+ * @returns {boolean}
+ */
+function metaIsView(id) {
+  const primitive = metaSeed().primitives.find((item) => item.id === id);
+  if (!primitive) return false;
+  const pair = [primitive.from, primitive.to].sort().join(" ");
+  return pair === "list_text text";
+}
+
+/**
+ * The request's coordinated clauses, each with its head action (the first
+ * grounded word's operations) and the type its object noun denotes: a plural
+ * noun grounded only in representation changes names the list, a singular
+ * one names the text.
+ * @param {string} text
+ * @param {Array<object>} groundings
+ * @param {object} trace
+ * @returns {Array<{head: Array<string>, others: Array<string>, objectType: string|null}>}
+ */
+function metaClauses(text, groundings, trace) {
+  let parts = [` ${String(text).toLowerCase()} `];
+  for (const marker of metaCueMarkers("sequence")) parts = parts.flatMap((part) => part.split(marker));
+  const byWord = new Map(groundings.map((grounding) => [grounding.word, grounding]));
+  const clauses = [];
+  for (const part of parts) {
+    const grounded = metaWords(part).map((word) => byWord.get(word)).filter((grounding) => grounding && grounding.hypotheses.length);
+    if (!grounded.length) continue;
+    const top = (grounding) => grounding.hypotheses.filter((item) => item.score >= grounding.hypotheses[0].score * 0.99).map((item) => item.operation);
+    // The head is the first specific action: not a representation change,
+    // and not a word tied across many operations (that one names data).
+    const headAt = grounded.findIndex((grounding) => !top(grounding).every(metaIsView) && top(grounding).length <= META_BOUNDS.requiredGroupSize);
+    if (headAt < 0) continue;
+    const head = top(grounded[headAt]);
+    const others = grounded
+      .filter((grounding, position) => position !== headAt && top(grounding).length <= META_BOUNDS.requiredGroupSize)
+      .flatMap(top)
+      .filter((id) => !head.includes(id));
+    let objectType = null;
+    const noun = grounded.slice(headAt + 1).find((grounding) => top(grounding).every(metaIsView));
+    if (noun) {
+      const plural = metaLemmas(noun.word, "en").some((lemma) => lemma !== noun.word);
+      const views = top(noun).map((id) => metaSeed().primitives.find((item) => item.id === id));
+      const split = views.find((primitive) => primitive.from === "text");
+      objectType = plural && split ? split.to : "text";
+    }
+    clauses.push({ head, others, objectType });
+    trace.emit("clause", `head {${head.join("|")}}${objectType ? ` acting on ${objectType}` : ""}${others.length ? `; modifiers {${others.join("|")}}` : ""}`);
+  }
+  return clauses;
+}
+
+/**
  * The synchronous core: parse, open unknowns, ground them, plan and verify.
  * `knowledge` maps a word to dictionary senses already fetched.
  * @param {string} prompt
@@ -514,7 +569,8 @@ function metaReasonCore(prompt, language, knowledge) {
         }
       }
     }
-    const found = metaSynthesizeFromMeaning(groups, evidence, trace, stated ? stated.value : null, words, inputTypes);
+    const clauses = metaClauses(unquoted, groundings, trace);
+    const found = metaSynthesizeFromMeaning(groups, evidence, trace, stated ? stated.value : null, words, inputTypes, clauses);
     if (found) {
       if (found.parameter !== null) trace.emit("bind", `parameter ${found.parameter} from the request`);
       const source = metaRender(found.steps, found.parameter);
