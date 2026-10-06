@@ -461,6 +461,9 @@ seed_registry
   seed memory-programs
     bundle true
     web true
+  seed meta-reasoning
+    bundle true
+    web true
   seed method-execution
     bundle true
   seed model-aliases

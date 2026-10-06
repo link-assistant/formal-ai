@@ -1,0 +1,27 @@
+# The task ladder the meta reasoner climbs (2026-10-06): real requests put to
+# Formal AI itself, smallest first. Every rung is answered by derivation —
+# grounding the request's words in the instruction set's documentation and
+# composing typed operations — never by a handler written for it. A rung is
+# added when the next bigger request is made to work; `steps` is the program
+# the derivation must reach. Walked by rust/tests/web/meta-reasoner.test.mjs.
+ladder
+  rung "'a b c' -> 3"
+    steps "split_words count_items"
+  rung "[1, 2, 3] -> [3, 6, 9]"
+    steps "each(multiply_by)"
+  rung "[\"a\", \"bbbb\", \"cc\"] -> [\"bbbb\"]"
+    steps "keep_greater(text_length)"
+  rung "write a function that keeps only the even numbers"
+    steps "keep_even"
+  rung "write a function that returns the largest number in a list"
+    steps "maximum_number"
+  rung "Write a function that counts the words of a text"
+    steps "split_words count_items"
+  rung "write a function that reverses each word"
+    steps "split_words each(reverse_text) join_words"
+  rung "write a function that removes duplicate words from a text"
+    steps "split_words unique_items join_words"
+  rung "Write a function that sorts the lines of a text"
+    steps "split_lines sort_list"
+  rung "write a function that counts the lines longer than 80 characters"
+    steps "split_lines keep_greater(text_length) count_items"

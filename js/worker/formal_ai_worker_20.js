@@ -9,7 +9,8 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
       : null;
   const previousForced = setForcedResponseLanguage(forced);
   try {
-    return await solveImpl(prompt, history, prefs, userContext, memory, options);
+    const answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
+    return await metaResolveImpasse(prompt, answer, prefs);
   } finally {
     setForcedResponseLanguage(previousForced);
   }
@@ -83,6 +84,21 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       confidence: 0.4,
       evidence: ["formalization:ambiguous"],
     }, formalizationContext);
+  }
+
+  // 2026-10-06 meta-algorithm doctrine: every turn first opens its words as
+  // unknowns and grounds them without network (request definitions, learned
+  // chunks, the instruction set's documentation). A program verified against
+  // the request's own examples, or one every word of the request grounds,
+  // answers here ahead of any canned handler; dictionary lookups wait for the
+  // fallback below, so they are spent only when no handler answers.
+  let meta = await metaReason(prompt, language, {});
+  formalizationContext.meta = meta;
+  events.push(`meta:${meta.goal}:${meta.status}`);
+  steps.push({ step: "meta_reason", detail: `${meta.goal} ${meta.status}`, derivation: meta.derivationLino });
+  if (meta.status === "solved" && meta.program) {
+    events.push("handler:meta_reasoner");
+    return finalize(events, steps, toolCalls, metaAnswer(meta), formalizationContext);
   }
 
   const compound = await FormalAiSeed.solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solve);
@@ -735,6 +751,16 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       return finalize(events, steps, toolCalls, bareTermSearch, formalizationContext);
     }
   }
+  if (meta.goal.startsWith("synthesize")) {
+    meta = await metaReasonTurn(prompt, language, preferences);
+    formalizationContext.meta = meta;
+    steps.push({ step: "meta_discover", detail: `${meta.goal} ${meta.status} after ${meta.lookups.length} lookup round(s)`, derivation: meta.derivationLino });
+    const discovered = metaAnswer(meta);
+    if (discovered) {
+      events.push("handler:meta_reasoner");
+      return finalize(events, steps, toolCalls, discovered, formalizationContext);
+    }
+  }
   steps.push({ step: "invoke_tool", detail: "unknown_intent_research" });
   const researchedUnknown = await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
   const researchedSources = researchedUnknown?.diagnostics?.fused;
@@ -917,6 +943,9 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
     steps: withThinkingLevels(steps),
     toolCalls,
   };
+  if (formalizationContext && formalizationContext.meta) {
+    result.derivation = formalizationContext.meta.derivationLino;
+  }
   if (answer.iframeUrl) {
     result.iframeUrl = answer.iframeUrl;
   }

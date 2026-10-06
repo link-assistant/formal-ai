@@ -104,6 +104,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/meanings-wikidata.lino",
   "seed/meanings-writing-systems.lino",
   "seed/memory-programs.lino",
+  "seed/meta-reasoning.lino",
   "seed/multilingual-responses.lino",
   "seed/multilingual-responses-agentic.lino",
   "seed/multilingual-responses-agentic-continuation.lino",

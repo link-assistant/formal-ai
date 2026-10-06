@@ -250,6 +250,7 @@ pub const MEANINGS_WRITING_SYSTEMS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-writing-systems.lino");
 pub const MEMORY_PROGRAMS_LINO: &str =
     include_str!("../../embedded/data/seed/memory-programs.lino");
+pub const META_REASONING_LINO: &str = include_str!("../../embedded/data/seed/meta-reasoning.lino");
 pub const METHOD_EXECUTION_LINO: &str =
     include_str!("../../embedded/data/seed/method-execution.lino");
 pub const MODEL_ALIASES_LINO: &str = include_str!("../../embedded/data/seed/model-aliases.lino");
@@ -527,6 +528,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-wikidata.lino", MEANINGS_WIKIDATA_LINO),
         ("data/seed/meanings-writing-systems.lino", MEANINGS_WRITING_SYSTEMS_LINO),
         ("data/seed/memory-programs.lino", MEMORY_PROGRAMS_LINO),
+        ("data/seed/meta-reasoning.lino", META_REASONING_LINO),
         ("data/seed/method-execution.lino", METHOD_EXECUTION_LINO),
         ("data/seed/model-aliases.lino", MODEL_ALIASES_LINO),
         ("data/seed/multilingual-responses.lino", MULTILINGUAL_RESPONSES_LINO),
