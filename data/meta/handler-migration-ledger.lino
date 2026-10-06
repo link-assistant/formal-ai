@@ -158,19 +158,19 @@ handler_migration_ledger
   handler code_debugging
     status "justified-native"
     primitive "rust/src/solver_handlers/code_debugging.rs"
-    justification "Defect-pattern recognition works over the seed name-promise table; the structural diagnosis engine that reads it is native."
+    justification "Defect-pattern recognition works over the seed name-promise table; the structural diagnosis engine that reads it is native. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_tasks.js answers the same seed records in the worker."
   handler regex_synthesis
     status "justified-native"
     primitive "rust/src/solver_handlers/regex_synthesis.rs"
-    justification "Regex composition works from the seed cue vocabulary and emits patterns that are structurally verified but never executed; the composer itself is a compiled primitive."
+    justification "Regex composition works from the seed cue vocabulary and emits patterns that are structurally verified but never executed; the composer itself is a compiled primitive. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_synthesis.js answers the same seed records in the worker. The twin also compiles the pattern with RegExp and runs it on derived positive and negative examples."
   handler sql_synthesis
     status "justified-native"
     primitive "rust/src/solver_handlers/sql_synthesis.rs"
-    justification "Single-SELECT composition maps request clauses to SQL over seed vocabulary; the clause parser and emitter are native."
+    justification "Single-SELECT composition maps request clauses to SQL over seed vocabulary; the clause parser and emitter are native. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_synthesis.js answers the same seed records in the worker."
   handler shell_command_compose
     status "justified-native"
     primitive "rust/src/solver_handlers/shell_command_compose.rs"
-    justification "The find composition and its cited manual pages are seed data; the composer that assembles the command is native."
+    justification "The find composition and its cited manual pages are seed data; the composer that assembles the command is native. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_shell_compose.js answers the same seed records in the worker."
   handler number_constraint_reasoning
     status migrated
     data "data/seed/meanings-number-constraints.lino"
@@ -180,23 +180,23 @@ handler_migration_ledger
   handler code_explanation
     status "justified-native"
     primitive "rust/src/solver_handlers/code_explanation.rs"
-    justification "The construct table with its grounding URLs is seed data; the line-by-line explainer that walks the pasted code is a compiled primitive."
+    justification "The construct table with its grounding URLs is seed data; the line-by-line explainer that walks the pasted code is a compiled primitive. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_tasks.js answers the same seed records in the worker."
   handler code_review
     status "justified-native"
     primitive "rust/src/solver_handlers/code_review.rs"
-    justification "The five review rules and their sources are seed data; the rule-matching engine is native."
+    justification "The five review rules and their sources are seed data; the rule-matching engine is native. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_tasks.js answers the same seed records in the worker."
   handler test_generation
     status "justified-native"
     primitive "rust/src/solver_handlers/test_generation.rs"
-    justification "The three problem shapes and their pytest templates are seed data; the suite emitter that fills them is native."
+    justification "The three problem shapes and their pytest templates are seed data; the suite emitter that fills them is native. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_tasks.js answers the same seed records in the worker."
   handler code_refactoring
     status "justified-native"
     primitive "rust/src/solver_handlers/code_refactoring.rs"
-    justification "Promise-chain to async-await rewriting is a structural transformation engine over seed target vocabulary; the rewriter itself is a compiled primitive."
+    justification "Promise-chain to async-await rewriting is a structural transformation engine over seed target vocabulary; the rewriter itself is a compiled primitive. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_tasks.js answers the same seed records in the worker. The twin also runs the chain and its rewrite in the worker and compares the call traces."
   handler format_conversion
     status "justified-native"
     primitive "rust/src/solver_handlers/format_conversion.rs"
-    justification "The JSON and YAML subset parsers and the round-trip value check are compiled primitives; the conversion vocabulary is seed data."
+    justification "The JSON and YAML subset parsers and the round-trip value check are compiled primitives; the conversion vocabulary is seed data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_format_conversion.js answers the same seed records in the worker. The twin also requires the reverse conversion to round-trip losslessly."
   handler program_synthesis
     status migrated
     data "data/seed/coding-idioms.lino|data/seed/multilingual-responses-synthesis.lino"
@@ -241,20 +241,24 @@ handler_migration_ledger
     status pending
   handler execution_failure
     status pending
+    justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
   handler installation_conversion
     status pending
   handler write_script
     status pending
   handler document_generation_plan
     status pending
+    justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
   handler software_project
     status pending
   handler algorithm
     status pending
+    justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
   handler source_refresh
     status pending
   handler source_conflict
     status pending
+    justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
   handler clarification
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"
@@ -289,7 +293,7 @@ handler_migration_ledger
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
     primitive "rust/src/rule_interpreter.rs"
-    justification "issue #1085 D1.3: Substring conditions over the normalized prompt with an agent-mode exclusion; the refusal wording moved into seed responses in four languages."
+    justification "issue #1085 D1.3: Substring conditions over the normalized prompt with an agent-mode exclusion; the refusal wording moved into seed responses in four languages. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker. tryShellRefusal routes through runHandlerRuleSet."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler proof_request
     status pending
