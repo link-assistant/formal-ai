@@ -132,7 +132,8 @@ impl Telemetry {
             .duration_since(UNIX_EPOCH)
             .map_err(|_| TelemetryError::Clock)?;
         let nonce = NEXT_EVENT.fetch_add(1, Ordering::Relaxed);
-        let hash = crate::source_fetch::sha256_hex(format!("{}:{nonce}", now.as_nanos()).as_bytes());
+        let hash =
+            crate::source_fetch::sha256_hex(format!("{}:{nonce}", now.as_nanos()).as_bytes());
         let event_id = hash[..32].to_owned();
         let payload = json!({
             "event_id": event_id,

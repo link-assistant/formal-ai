@@ -406,7 +406,13 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
                     tag_attr(&raw[code_open + 1..tag_close], "class")
                 });
                 PageBlock::CodeBlock {
-                    language: resolve_language(rules, None, attrs.or(code_attrs).as_deref(), raw, None),
+                    language: resolve_language(
+                        rules,
+                        None,
+                        attrs.or(code_attrs).as_deref(),
+                        raw,
+                        None,
+                    ),
                     text: decode_entities(&strip_tags_keep_lines(raw)),
                 }
             }),
