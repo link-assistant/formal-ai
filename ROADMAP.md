@@ -426,7 +426,7 @@ Requirement-level status by area, updated:
 | Universal 11-step solver runs for every prompt | Done (pillar 2); the recipe is data (`data/meta/recursive-core-recipe.lino`) executed by `rust/src/recipe_interpreter.rs` |
 | Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial with an enforced boundary: #918 recursively classifies the mixed handler sources as migration debt and ratchets their outside-core lines — `data/meta/core-boundary-ledger.lino` records 49 outside-core sources and 19,741 outside-core lines, enforced shrink-only by `scripts/check-minimal-core-boundary.rs`; #938 removes duplicated construction ownership from installation conversion, program synthesis, coding catalog, numeric-list, and rule synthesis by making one executable builder and trace shape authoritative in Rust and the browser worker; remaining handler logic must still migrate into generic interpreters |
 | Real upstream benchmarks with honest scores | Done for #698 (was stale "Not done"): `rust/src/external_benchmarks/` and `rust/tests/unit/specification/external_benchmarks.rs` score external corpora with results in `data/benchmarks/external-results.lino` |
-| Self-improvement that compounds | Partial: #656/#657/#701/#924 closed (gated promotion, release self-hosting metric, generalized adoption for one class, and a self-development loop requiring one merged, session-backed Formal AI pull request per release cycle); anticipatory learning #705 remains open |
+| Self-improvement that compounds | Partial: #656/#657/#701/#924 closed (gated promotion, release self-hosting metric, generalized adoption for one class, and a self-development loop requiring one merged, session-backed Formal AI pull request per release cycle); anticipatory learning #705 (closed 2026-09-26) shipped only its first-order slice |
 | Symbolic world models (#649) | Done for #686/#702 (was stale "Partial ... behaviors unimplemented"): `rust/src/world_model.rs` implements contexts, STRIPS-style actions, justification-based recalculation, and dialogue behaviors, covered by `rust/tests/unit/issue_649_world_model.rs` |
 | Agentic-CLI server correctness | Partial: #671/#681/#682/#687 closed, but the #848 coding ladder measured 65 of 130 tasks at v0.320.0 (`data/meta/ladder-ratchet.lino`, `experiments/issue_847_coding_ladder/results.json`) and exposed the new defect cluster [#902](https://github.com/link-assistant/formal-ai/issues/902)-[#909](https://github.com/link-assistant/formal-ai/issues/909), which has since closed; the ladder ratchet epic E69 closed 2026-08-05 (PR #966) |
 | Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703 and #921: release CI now crosses the real Hive Mind -> Agent CLI -> Formal AI boundary and the Formal AI -> external Agent CLI boundary, commits both fixture effects, replays the hash-chained session, and fails on nonzero child exits |
@@ -622,8 +622,8 @@ actual issue requirements, complete projects, recursive prerequisite discovery,
 durable personal memory, stronger Formal AI self-use) and plan 07
 (`07-prerequisite-discovery-bridge.md` — automatic setup discovery) remain
 active, and the full-slice scores leave most of HumanEval and MBPP unsolved.
-Issue #710 remains open with
-`docs/case-studies/issue-710/plans/README.md` as the resume point; the
+Issue #710 was closed on 2026-09-26; its resume point stays
+`docs/case-studies/issue-710/plans/README.md`; the
 universal-loop retrieval boundary the run exposed is closed by issue #1138 B1.
 
 ## Verification Contract

@@ -435,9 +435,9 @@ winner won through `rust/src/draft_portfolio.rs` (issue
 following the drafts→selection→composition shape of
 [konard/problem-solving](https://github.com/konard/problem-solving)); and the
 meta-algorithm's anticipatory loop ships its first-order slice — deterministic
-request-class transitions with proposal-only frontier integration — while issue
-[#705](https://github.com/link-assistant/formal-ai/issues/705) remains open for
-higher-order and organic-log quality. Language
+request-class transitions with proposal-only frontier integration — while
+higher-order and organic-log quality stay future work (issue
+[#705](https://github.com/link-assistant/formal-ai/issues/705), closed on 2026-09-26). Language
 breadth grows by data alone through the meta language — the any-language
 protocol shipped in PR #880 (issue
 [#706](https://github.com/link-assistant/formal-ai/issues/706)) — and
