@@ -924,8 +924,8 @@ export function App() {
 
   function handleKeyDown(event) {
     // Issue #825: while the suggestion list is open the controller owns the
-    // navigation keys — Enter/Tab complete the active suggestion instead of
-    // sending, Escape closes, arrows move. Anything else falls through.
+    // keys — Tab (or Enter after arrowing) completes, Escape closes, arrows
+    // move. Anything else, Enter on an untouched list included, falls through.
     if (autocompleteControllerRef.current.handleKeyDown(event) === "handled") {
       event.preventDefault();
       return;

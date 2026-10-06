@@ -199,16 +199,15 @@ function isExplicitUiLanguageCommand(normalized) {
   return includesAnyText(normalized, UI_LANGUAGE_COMMAND_TERMS);
 }
 
+// The number must follow the term in the same clause ("temperature 0.3",
+// "set temperature to 30%"); prose merely mentioning "temperature" is no command.
 function commandNumberValue(normalized, terms) {
-  if (!includesAnyText(normalized, terms)) return null;
-  const match = normalized.match(/(\d+(?:[.,]\d+)?)\s*%?/);
-  if (!match) return null;
-  const raw = Number(match[1].replace(",", "."));
-  if (!Number.isFinite(raw)) return null;
-  if (normalized.includes("%") || raw > 1) {
-    return clampNumber(raw / 100, 0, 1, 0);
+  for (const term of terms) for (let at = normalized.indexOf(term); at !== -1; at = normalized.indexOf(term, at + 1)) {
+    const match = normalized.slice(at + term.length).match(/^[^\d.!?;。!?;\n]{0,24}?(\d+(?:[.,]\d+)?)\s*(%?)/u);
+    const raw = match ? Number(match[1].replace(",", ".")) : NaN;
+    if (Number.isFinite(raw)) return clampNumber(match[2] === "%" || raw > 1 ? raw / 100 : raw, 0, 1, 0);
   }
-  return clampNumber(raw, 0, 1, 0);
+  return null;
 }
 
 export function sanitizeAssistantNameInput(value) {

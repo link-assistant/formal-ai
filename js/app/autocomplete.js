@@ -81,6 +81,10 @@ function createAutocompleteController({ getItems, limit = SUGGESTION_LIMIT, onCo
   let activeIndex = -1;
   let items = [];
   let prefix = "";
+  // Enter completes only a suggestion the reader picked with the arrow keys;
+  // an untouched list leaves Enter to send the message (Tab still accepts the
+  // highlighted suggestion), so a short prompt like "Hi" is never rewritten.
+  let navigated = false;
 
   function snapshot() {
     return { open, items: [...items], activeIndex };
@@ -88,6 +92,7 @@ function createAutocompleteController({ getItems, limit = SUGGESTION_LIMIT, onCo
 
   function close() {
     open = false;
+    navigated = false;
     activeIndex = -1;
     items = [];
   }
@@ -115,20 +120,23 @@ function createAutocompleteController({ getItems, limit = SUGGESTION_LIMIT, onCo
     // every keystroke into a popup.
     open = items.length > 0 && /[^\s]/.test(trailingWord) && trailingWord.length >= 2;
     activeIndex = open ? 0 : -1;
+    navigated = false;
   }
 
   function handleKeyDown(event) {
     if (!open || items.length === 0) return "ignored";
     const key = event && event.key;
     if (key === "ArrowDown") {
+      navigated = true;
       activeIndex = (activeIndex + 1) % items.length;
       return "handled";
     }
     if (key === "ArrowUp") {
+      navigated = true;
       activeIndex = (activeIndex - 1 + items.length) % items.length;
       return "handled";
     }
-    if (key === "Tab" || (key === "Enter" && !event.shiftKey)) {
+    if (key === "Tab" || (key === "Enter" && !event.shiftKey && navigated)) {
       commit(activeIndex >= 0 ? activeIndex : 0);
       return "handled";
     }

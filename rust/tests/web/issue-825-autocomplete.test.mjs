@@ -85,6 +85,20 @@ test("the controller opens on a partial word and completes via keyboard", () => 
   assert.equal(controller.snapshot().open, false);
 });
 
+test("Enter on an untouched list sends instead of completing", () => {
+  const completed = [];
+  const controller = createAutocompleteController({
+    getItems: () => [...COMMAND_SUGGESTIONS],
+    onComplete: (value) => completed.push(value),
+  });
+
+  // "Hi" word-start matches "switch to Hindi"; Enter must still send "Hi".
+  controller.handleInput("Hi");
+  assert.equal(controller.snapshot().open, true);
+  assert.equal(controller.handleKeyDown(keyEvent("Enter")), "ignored");
+  assert.deepEqual(completed, []);
+});
+
 test("Tab completes, Escape closes and releases the keys, short input stays closed", () => {
   const completed = [];
   const controller = createAutocompleteController({

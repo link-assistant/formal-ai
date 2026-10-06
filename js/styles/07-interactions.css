@@ -133,18 +133,53 @@
   letter-spacing: 0.04em;
 }
 
-/* Issue #557: one input surface contains both actions, including touch layouts. */
-.composer-grid { position: relative; grid-template-columns: minmax(0, 1fr); }
-.composer-grid textarea { grid-area: 1 / 1; width: 100%; padding-inline: 58px; }
+/* Issue #557: one input surface contains both actions, including touch layouts.
+ * Issue #112: the text keeps equal padding on every side, so the surface is the
+ * grid row itself (action | text | send) and the textarea draws no box of its
+ * own; padding the textarea around overlaid buttons would unbalance it. */
+.composer-grid {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 2px;
+  align-items: end;
+  padding: 3px;
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+}
+.composer-grid:focus-within { outline: 2px solid #2d6cdf; outline-offset: 1px; }
+.composer-grid:has(textarea:disabled) { background: #edf1f3; }
+.composer-grid textarea,
+.composer-grid textarea:disabled { border-color: transparent; background: transparent; }
+.composer-grid textarea:focus { outline: none; }
+.composer-grid .composer-action-button { border-color: transparent; background: transparent; }
 .composer-grid .composer-action-button,
-.composer-grid .send-button { position: absolute; bottom: 3px; z-index: 1; border: 0; background: transparent; min-width: 44px; width: 44px; padding: 0; }
-.composer-grid .composer-action-button { inset-inline-start: 3px; }
-.composer-grid .send-button { inset-inline-end: 3px; }
+.composer-grid .send-button { min-width: 44px; width: 44px; height: 44px; padding: 0; }
 .composer-grid .send-label { display: none; }
+.composer-style-glass-soft .composer-grid { background: rgba(255, 255, 255, 0.74); }
+.composer-style-glass-clear .composer-grid { background: rgba(255, 255, 255, 0.52); }
+.ui-skin-contrast .composer-grid { border-color: #25313a; }
+:root[data-theme="dark"] .composer-grid { border-color: #4a524e; background: #202322; }
+:root[data-theme="dark"] .composer-grid:focus-within { outline-color: #7aa5ff; }
+:root[data-theme="dark"] .composer-grid:has(textarea:disabled) { background: #272b2a; }
+:root[data-theme="dark"] .composer-style-glass-soft .composer-grid { background: rgba(32, 35, 34, 0.74); }
+:root[data-theme="dark"] .composer-style-glass-clear .composer-grid { background: rgba(32, 35, 34, 0.52); }
+:root[data-theme="dark"] .ui-skin-contrast .composer-grid { border-color: #c9c1b6; }
+:root[data-theme="dark"] .composer-grid textarea,
+:root[data-theme="dark"] .composer-grid .composer-action-button { border-color: transparent; background: transparent; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .composer-grid { border-color: #4a524e; background: #202322; }
+  :root:not([data-theme="light"]) .composer-grid:focus-within { outline-color: #7aa5ff; }
+  :root:not([data-theme="light"]) .composer-grid:has(textarea:disabled) { background: #272b2a; }
+  :root:not([data-theme="light"]) .composer-style-glass-soft .composer-grid { background: rgba(32, 35, 34, 0.74); }
+  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-grid { background: rgba(32, 35, 34, 0.52); }
+  :root:not([data-theme="light"]) .ui-skin-contrast .composer-grid { border-color: #c9c1b6; }
+  :root:not([data-theme="light"]) .composer-grid textarea,
+  :root:not([data-theme="light"]) .composer-grid .composer-action-button { border-color: transparent; background: transparent; }
+}
 .ui-skin-material { --fa-focus-ring: #6750a4; }
 .ui-skin-material .message-body,
 .ui-skin-material .sidebar-section-body { border-radius: 16px; box-shadow: 0 2px 6px rgb(0 0 0 / 12%); }
-.ui-skin-material .composer-grid textarea { border-radius: 28px; border-color: var(--fa-control-border, #79747e); }
+.ui-skin-material .composer-grid { border-radius: 28px; border-color: var(--fa-control-border, #79747e); }
 .ui-skin-material .topbar { box-shadow: 0 2px 8px rgb(0 0 0 / 12%); }
 .ui-skin-material button:focus-visible { outline: 3px solid var(--fa-focus-ring); outline-offset: 2px; }
 @media (prefers-reduced-transparency: reduce) {
@@ -152,7 +187,7 @@
   .ui-skin-glass * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
 }
 @media (forced-colors: active) {
-  .composer-grid textarea { border: 1px solid CanvasText; }
+  .composer-grid { border: 1px solid CanvasText; }
   .composer-grid button { background: Canvas; color: ButtonText; }
 }
 
@@ -164,10 +199,17 @@
   overscroll-behavior-y: contain;
   scrollbar-gutter: stable;
 }
-.context-panel > .sidebar-section,
+/* Issue #27 R3 keeps the accordion: expanded sections still share the column
+ * equally (flex-basis 0) and each body scrolls by itself. The #447 floor stops
+ * them shrinking into clipped slivers: once the viewport is shorter than the
+ * floors the column overflows and scrolls as a whole. */
 .context-panel > .drawer-brand,
-.context-panel > .drawer-menu-section.sidebar-section.is-expanded {
+.context-panel > .sidebar-section.is-collapsed {
   flex: 0 0 auto;
+}
+.context-panel > .sidebar-section.is-expanded {
+  flex: 1 1 0;
+  min-height: 6rem;
 }
 .context-panel .sidebar-section-header { flex-shrink: 0; }
 .context-panel :focus-visible { scroll-margin-block: 12px; }

@@ -23,6 +23,13 @@ async function sendPrompt(page, text) {
 }
 
 test.describe('Issue #776 source-first translation', () => {
+  // Issue #665's offline service worker precaches formal_ai_worker.wasm and
+  // claims the page on first load, so after `page.reload()` the worker's WASM
+  // fetch is answered from the cache and never reaches `page.route` (which
+  // does not see service-worker-served requests). Blocking the service worker
+  // keeps the WASM request on the network where this spec holds it back.
+  test.use({ serviceWorkers: 'block' });
+
   test.beforeEach(async ({ page }) => {
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
