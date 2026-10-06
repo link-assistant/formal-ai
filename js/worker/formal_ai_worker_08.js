@@ -1095,19 +1095,36 @@ function tryCalendarReasoning(prompt, normalized, userContext = {}) {
   if (!operation) return null;
   const source = detectWeekday(normalized);
   if (!source) return null;
-  const result = shiftWeekday(source, operation);
   const language = detectLanguage(prompt);
+  // Issue #1176: read the offset the prompt states ("100 days after", "2 weeks
+  // before") instead of always shifting by one; a bare "the day after X"
+  // states no offset and keeps the ±1 reading (detect_offset in calendar.rs).
+  const offset = detectCalendarOffset(normalized, language);
+  const sign = operation === "next" ? 1 : -1;
+  const signed = offset ? sign * offset.total : sign;
+  const result = offset ? shiftWeekdayBy(source, signed) : shiftWeekday(source, operation);
+  const evidence = [
+    "calendar:cycle:monday,tuesday,wednesday,thursday,friday,saturday,sunday",
+    `calendar:subject_weekday:${source.slug}`,
+    `calendar:operation:${operation}:${source.slug}`,
+  ];
+  if (offset) {
+    const total = Math.abs(signed);
+    evidence.push(`calendar:offset:${signed >= 0 ? "+" : ""}${signed}d`);
+    evidence.push(
+      `calendar:offset_derivation:${total}d = ${Math.floor(total / 7)}w + ${total % 7}d`,
+    );
+  }
+  evidence.push(`calendar:result_weekday:${result.slug}`);
+  evidence.push(`language:${language}`);
+  const offsetAnswer = offset && offset.total > 1
+    ? renderCalendarOffsetAnswer(language, operation, source, result, offset)
+    : null;
   return {
     intent: "calendar_weekday_relation",
-    content: renderWeekdayRelation(language, operation, source, result),
+    content: offsetAnswer || renderWeekdayRelation(language, operation, source, result),
     confidence: 1.0,
-    evidence: [
-      "calendar:cycle:monday,tuesday,wednesday,thursday,friday,saturday,sunday",
-      `calendar:subject_weekday:${source.slug}`,
-      `calendar:operation:${operation}:${source.slug}`,
-      `calendar:result_weekday:${result.slug}`,
-      `language:${language}`,
-    ],
+    evidence,
   };
 }
 
