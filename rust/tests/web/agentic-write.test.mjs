@@ -256,10 +256,16 @@ describe('workspace rewrites, read results and repair diagnostics', () => {
     assert.equal(sourceFromReadResult('<content>\n1: a\n2: b\n(End of file - total 2 lines)\n</content>'), 'a\nb\n');
   });
 
-  test('formalize_diagnostic is inert, as in Rust (rust/tests/unit/issue_1185_error_repair_loop.rs)', () => {
-    // The shapes seed nests `language` rows under `diagnostic_code_shapes`
-    // while `shapes_for` reads top-level rows, so Rust finds no shape either.
+  test('formalize_diagnostic reads file, line, code and message (rust/tests/unit/issue_1185_error_repair_loop.rs)', () => {
     assert.deepEqual(formalizeDiagnostic('rust', 'finished in 0.3s\nall good'), []);
-    assert.deepEqual(formalizeDiagnostic('rust', 'error[E0308]: mismatched types\n --> src/main.rs:6:33\n'), []);
+    const [rust] = formalizeDiagnostic('rust', 'error[E0308]: mismatched types\n --> src/main.rs:6:33\n');
+    assert.deepEqual([rust.file, rust.line, rust.code, rust.message], ['src/main.rs', 6, 'E0308', 'mismatched types']);
+    // A pattern that names its own location binds it; Kotlin has no code.
+    const [kotlin] = formalizeDiagnostic('kotlin', 'main.kt:3:5 error: unresolved reference: greeting');
+    assert.deepEqual([kotlin.file, kotlin.line, kotlin.code, kotlin.message], ['main.kt', 3, null, 'unresolved reference: greeting']);
+    // The traceback's innermost frame binds, not the outermost one.
+    const traceback = 'Traceback (most recent call last):\n  File "main.py", line 4, in <module>\n    greet()\n  File "main.py", line 2, in greet\n    return gretting("hi")\nNameError: name \'gretting\' is not defined\n';
+    const [python] = formalizeDiagnostic('python', traceback);
+    assert.deepEqual([python.file, python.line, python.code, python.message], ['main.py', 2, null, "name 'gretting' is not defined"]);
   });
 });

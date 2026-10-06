@@ -147,9 +147,11 @@ fn shapes_for(language: &str) -> DiagnosticShapes {
     let tree = parse_lino(text);
     let slug = shape_language(language);
     let mut shapes = DiagnosticShapes::default();
+    // The `language` rows sit under the `diagnostic_code_shapes` wrapper.
     for record in tree
         .children
         .iter()
+        .flat_map(|root| root.children.iter())
         .filter(|child| child.name == "language" && child.id == slug)
     {
         for field in &record.children {
@@ -299,9 +301,15 @@ pub fn formalize_diagnostic(language: &str, raw_output: &str) -> Vec<Diagnostic>
             if message.is_empty() {
                 continue;
             }
-            let (file, line_number) = pending_location
-                .take()
-                .map_or((None, None), |(file, line)| (Some(file), Some(line)));
+            // A pattern that names the location itself ("{file}:{line}: error")
+            // binds it; otherwise a location line read before it does.
+            let pending = pending_location.take();
+            let own = capture(&found, "file")
+                .zip(capture(&found, "line").and_then(|value| value.parse::<u32>().ok()));
+            let (file, line_number) = match own {
+                Some((file, line)) => (Some(file.to_owned()), Some(line)),
+                None => pending.map_or((None, None), |(file, line)| (Some(file), Some(line))),
+            };
             diagnostics.push(Diagnostic {
                 file,
                 line: line_number,

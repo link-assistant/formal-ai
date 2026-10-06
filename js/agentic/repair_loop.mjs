@@ -38,7 +38,9 @@ function shapesFor(language) {
   const tree = parseLinoRoot(readText(SHAPES_PATH));
   const slug = shapeLanguage(language);
   const shapes = { patterns: [], locations: [], heads: [] };
-  for (const record of tree.children.filter((child) => child.name === 'language' && child.id === slug)) {
+  // The `language` rows sit under the `diagnostic_code_shapes` wrapper.
+  const records = tree.children.flatMap((root) => root.children || []);
+  for (const record of records.filter((child) => child.name === 'language' && child.id === slug)) {
     for (const field of record.children) {
       if (!field.id) continue;
       if (field.name === 'pattern') shapes.patterns.push(field.id);
@@ -136,7 +138,12 @@ export function formalizeDiagnostic(language, rawOutput) {
     if (!found) continue;
     const message = capture(found, 'message') ?? '';
     if (!message) continue;
-    const [file, lineNumber] = pending ?? [null, null];
+    // A pattern that names the location itself ("{file}:{line}: error")
+    // binds it; otherwise a location line read before it does.
+    const ownFile = capture(found, 'file');
+    const ownLine = capture(found, 'line');
+    const own = ownFile !== null && ownLine !== null && parseU32(ownLine) !== null ? [ownFile, parseU32(ownLine)] : null;
+    const [file, lineNumber] = own ?? pending ?? [null, null];
     pending = null;
     diagnostics.push({ file, line: lineNumber, code: capture(found, 'code'), message, raw: trimEnd(line) });
   }

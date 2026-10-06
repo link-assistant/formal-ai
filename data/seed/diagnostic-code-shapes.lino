@@ -46,7 +46,7 @@ diagnostic_code_shapes
     head "RuntimeError"
     head "RecursionError"
     head "StopIteration"
-    location "File \"{file}\", line {line}"
+    location `File "{file}", line {line}, in {scope}`
   language c
     pattern "{file}:{line}:{column}: error: {message}"
     pattern "{file}:{line}:{column}: fatal error: {message}"
