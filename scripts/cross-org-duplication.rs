@@ -81,7 +81,7 @@ fn fnv1a(data: &[u8]) -> u64 {
 mod duplication_support;
 use duplication_support::{functions as function_bodies, strip_comments};
 
-fn scan_repository(root: &Path, repository: &str) -> Vec<(String, u64, usize, String, usize)> {
+fn scan_repository(root: &Path) -> Vec<(String, u64, usize, String, usize)> {
     let mut files = Vec::new();
     walk(root, &mut files);
     let mut out = Vec::new();
@@ -258,7 +258,7 @@ fn render_record(groups: &[Group], owners: &BTreeMap<String, Option<String>>) ->
     out
 }
 
-fn scan_checkouts(checkouts: &Path) -> (Vec<Group>, BTreeMap<String, Vec<String>>) {
+fn scan_checkouts(checkouts: &Path) -> (Vec<Group>, BTreeMap<String, Option<String>>) {
     let mut repositories: BTreeMap<String, Vec<String>> = BTreeMap::new();
     let mut buckets: BTreeMap<u64, Vec<Site>> = BTreeMap::new();
     let mut lines_of: BTreeMap<u64, usize> = BTreeMap::new();
@@ -276,7 +276,7 @@ fn scan_checkouts(checkouts: &Path) -> (Vec<Group>, BTreeMap<String, Vec<String>
             .unwrap_or_default()
             .replace("__", "/");
         repositories.insert(repository.clone(), declared_dependencies(&path));
-        for (name, hash, body_lines, relative, start_line) in scan_repository(&path, &repository) {
+        for (name, hash, body_lines, relative, start_line) in scan_repository(&path) {
             lines_of.insert(hash, body_lines);
             buckets.entry(hash).or_default().push(Site {
                 repository: repository.clone(),
