@@ -822,7 +822,10 @@ function rewritePercentOf(expression) {
 
 function normalizeArithmeticWords(expression) {
   const { tokens, phrases } = arithmeticNormalizationTables();
-  const lower = String(expression).toLowerCase();
+  let lower = String(expression).toLowerCase();
+  // CJK operator surfaces glue onto their operands ("12乘以7"): split them off, longest first.
+  const glued = wordsForRole(ROLE_ARITHMETIC_OPERATOR_WORD).filter(containsCjk).sort((a, b) => b.length - a.length);
+  if (glued.length) lower = lower.replace(new RegExp(glued.map(escapeRegExp).join("|"), "gu"), " $& ");
   // Multi-word operator phrases first, longest-first (the table is pre-sorted),
   // each padded with spaces so it only rewrites on a token boundary — exactly as
   // the Rust normalize_expression does before it splits on whitespace.

@@ -62,6 +62,7 @@ si_units
     surface "метра"
     surface "метров"
     surface "метрах"
+    surface "метры"
     surface "मीटर"
     surface "米"
   si_unit
@@ -70,10 +71,12 @@ si_units
     si_factor 1000
     surface "km"
     surface "kilometer"
+    surface "kilometers"
     surface "километр"
     surface "километра"
     surface "километров"
     surface "километрах"
+    surface "километры"
     surface "किलोमीटर"
     surface "公里"
   si_unit
@@ -121,6 +124,7 @@ si_units
     surface "миля"
     surface "мили"
     surface "миль"
+    surface "милях"
     surface "मील"
     surface "英里"
   si_unit
@@ -141,6 +145,7 @@ si_units
     surface "фут"
     surface "фута"
     surface "футов"
+    surface "फीट"
     surface "फुट"
     surface "英尺"
   si_unit

@@ -146,12 +146,15 @@ function tryMetaExplanation(prompt) {
  * `how_it_works` precedence row: a "how does X work?" question whose subject
  * the local concept lookup (an earlier row) did not answer gets the
  * source-backed mechanism discovery plan — offline, the plan is the answer,
- * exactly as the native handler renders it. Mirrors try_how_it_works in
- * rust/src/solver_handler_how.rs (the inline-subject branch).
+ * exactly as the native handler renders it. A bare "how does it work?" reads
+ * its topic from the previous assistant reply, and with no reply to read
+ * explains how to ask. Mirrors try_how_it_works in rust/src/solver_handler_how.rs.
  * @param {string} prompt
+ * @param {object[]} history
  * @returns {object|null}
  */
-function tryHowItWorks(prompt) {
+function tryHowItWorks(prompt, history) {
+  if (isBareHowItWorks(cleanMechanismFragment(prompt).toLowerCase())) return howItWorksFromHistory(history);
   const subject = extractHowItWorksSubject(prompt, nativeLaneLowercase(prompt));
   if (!subject) return null;
   const language = detectLanguage(prompt);
@@ -167,6 +170,68 @@ function tryHowItWorks(prompt) {
       "response:how_it_works",
     ],
   };
+}
+
+/**
+ * True when `lower` is a bare mechanism_inquiry phrase (a Bare word form, no
+ * subject slot), alone or followed by a space. Mirrors is_bare_how_it_works.
+ * @param {string} lower
+ * @returns {boolean}
+ */
+function isBareHowItWorks(lower) {
+  return lower !== "" && roleWordForms(ROLE_MECHANISM_INQUIRY)
+    .some((form) => form.slot === "bare" && (lower === form.text || lower.startsWith(`${form.text} `)));
+}
+
+/**
+ * The bare question's answer: the prior reply's topic through the concept
+ * lookup, the seeded "no record yet" answer naming that topic, or — with no
+ * prior reply — the seeded explanation of how to ask.
+ * @param {object[]} history
+ * @returns {object}
+ */
+function howItWorksFromHistory(history) {
+  const prior = lastHistoryTurn(history, "assistant");
+  const term = prior ? howItWorksPriorTopic(prior) : null;
+  if (term) {
+    const concept = tryConceptLookup(`what is ${term}`);
+    if (concept) {
+      concept.evidence = [`followup:subject:prior_reply:${term}`, ...concept.evidence];
+      return concept;
+    }
+    return {
+      intent: "concept_elaboration_missing",
+      content: nativeLaneRender(answerFor("how_it_works_prior_topic", "en"), { term }),
+      confidence: 0.3,
+      evidence: ["followup:prior_turn:assistant", `followup:subject:prior_reply_no_record:${term}`, "response:concept_elaboration_missing"],
+    };
+  }
+  return {
+    intent: "meta_explanation",
+    content: answerFor("how_it_works_no_context", "en"),
+    confidence: 0.5,
+    evidence: ["response:meta_explanation"],
+  };
+}
+
+/**
+ * The topic of a prior assistant reply: the term before "(" on its first line
+ * ("Term (category): …"), else its first capitalised token of two or more
+ * bytes that is not a topic_scan_stop_word. Mirrors extract_topic_from_prior_reply.
+ * @param {string} reply
+ * @returns {string|null}
+ */
+function howItWorksPriorTopic(reply) {
+  const firstLine = String(reply).split(/\r?\n/u)[0].trim();
+  const paren = firstLine.indexOf("(");
+  if (paren >= 0 && firstLine.slice(0, paren).trim()) return firstLine.slice(0, paren).trim().toLowerCase();
+  const stopWords = roleWordForms("topic_scan_stop_word").map((form) => form.text);
+  for (const word of String(reply).split(/\s+/u).filter(Boolean)) {
+    const clean = word.replace(/^[^\p{Alphabetic}\p{N}]+|[^\p{Alphabetic}\p{N}]+$/gu, "");
+    if (new TextEncoder().encode(clean).length < 2 || !/^\p{Uppercase}/u.test(clean)) continue;
+    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();
+  }
+  return null;
 }
 
 /**

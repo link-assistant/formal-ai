@@ -457,6 +457,8 @@ function tryUnitConversion(prompt, normalized, language) {
   if (direction === null) {
     const log = [];
     const outcome = siConvertThroughSi(value.mantissa, 10n ** BigInt(value.scale), source.slug, target.slug);
+    // Two lexicon dimensions have no path: `incompatible_units`, the next row, explains it.
+    if (outcome.tag === "incompatible" && detectIncompatibleUnitPair(normalized)) return null;
     let body;
     switch (outcome.tag) {
       case "converted":

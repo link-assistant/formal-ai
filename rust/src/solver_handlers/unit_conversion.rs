@@ -298,6 +298,13 @@ pub fn handle_unit_conversion(
         let (numerator, denominator) = value.ratio()?;
         let outcome =
             crate::si_units::convert_through_si(numerator, denominator, &source.slug, &target.slug);
+        // A pair the lexicon places in two physical dimensions has no
+        // conversion path: `incompatible_units`, the next row, explains it.
+        if matches!(outcome, crate::si_units::SiConversion::Incompatible { .. })
+            && crate::solver_handler_units::names_incompatible_unit_pair(normalized)
+        {
+            return None;
+        }
         // The refusals read the same here as everywhere else the SI path
         // is reported: `SiConversion::describe` renders them from the seed.
         let body = match &outcome {

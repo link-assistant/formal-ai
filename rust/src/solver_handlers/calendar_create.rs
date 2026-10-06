@@ -17,7 +17,7 @@ use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
 use crate::seed::{
     ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_RELATIVE_DATE,
-    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, lexicon,
+    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, ROLE_CALENDAR_WEEKDAY, lexicon,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -189,7 +189,12 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
         .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
         .iter()
         .any(|w| contains_term(normalized, w));
-    let has_date_signal = has_day_ref || has_clock || has_relative_date;
+    // A named weekday ("on Friday") anchors the event to a day as well.
+    let has_weekday = lex
+        .words_for_role(ROLE_CALENDAR_WEEKDAY)
+        .iter()
+        .any(|w| contains_term(normalized, w));
+    let has_date_signal = has_day_ref || has_clock || has_relative_date || has_weekday;
     if !has_date_signal {
         return false;
     }

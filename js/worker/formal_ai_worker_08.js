@@ -503,7 +503,9 @@ function mentionsCalendarCreateRequest(normalized) {
   // date signal — they were the source of false positives that hijacked
   // installation-conversion prompts such as
   // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
-  const hasDateSignal = hasDayRef || hasClock || hasRelativeDate;
+  // A named weekday ("on Friday") anchors the event to a day as well.
+  const hasWeekday = wordsForRole(ROLE_CALENDAR_WEEKDAY).some((w) => containsCalendarTerm(normalized, w));
+  const hasDateSignal = hasDayRef || hasClock || hasRelativeDate || hasWeekday;
   if (!hasDateSignal) return false;
   const hasTimezone = resolveTimezone(normalized) !== null;
   const hasParticipant = extractParticipantTitle(normalized) !== null;

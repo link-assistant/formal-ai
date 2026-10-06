@@ -751,6 +751,18 @@ multilingual_responses
     intent how_it_works
     language zh
     text "`{subject}` 的机制发现计划。\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {providers}. If no source explains the mechanism, it should ask for a source or a narrower term."
+  response response_how_it_works_prior_topic_en
+    intent how_it_works_prior_topic
+    language en
+    text "To explain how {term} works: I know the term from the prior conversation but do not have a detailed symbolic rule for it yet. Add a Links Notation fact with the mechanism description, then ask again."
+  response response_how_it_works_no_context_en
+    intent how_it_works_no_context
+    language en
+    text 'I answered that way because the prompt matched a deterministic Links Notation rule. To ask about a specific topic, try "how does X work?" where X is a concept I know (e.g. "how does Wikipedia work?"). The evidence and trace events are appended to the log; see the trace link for the full chain.'
+  response response_network_snapshot_en
+    intent network_snapshot
+    language en
+    text "Here is the link network this runtime has loaded from its seed data, as a links-notation snapshot:\n\n```links\n{snapshot}\n```"
   response response_source_refresh_en
     intent source_refresh
     language en

@@ -245,6 +245,27 @@ cues
     role object
     phrase "cache"
     phrase "page"
+# The network snapshot (try_network_query in retrieval_procedures.rs) answers
+# a request to show or export the link network; its rule records are the
+# seeded intents knowledge_links_notation (engine.rs) renders, in that order.
+cues
+  intent network_snapshot
+    role request
+    phrase "show me the current network"
+    phrase "show me the network"
+    phrase "export the network"
+    phrase "export network"
+cues
+  intent network_snapshot_record
+    role rule
+    phrase greeting
+    phrase courtesy_response
+    phrase assistant_free_time
+    phrase identity
+    phrase assistant_name
+    phrase test_status
+    phrase write_program
+    phrase unknown
 map
   name number
     entry

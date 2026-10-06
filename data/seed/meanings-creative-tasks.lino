@@ -163,6 +163,8 @@ meanings
       surface
         text "хокку"
       surface
+        text "хайку"
+      surface
         text "лимерик"
       surface
         text "четверостишие"
@@ -217,6 +219,8 @@ meanings
         text "plan a trip"
       surface
         text "plan a visit"
+      surface
+        text "day trip"
       surface
         text "travel plan"
       surface

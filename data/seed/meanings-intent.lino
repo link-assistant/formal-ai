@@ -418,6 +418,16 @@ meanings
       surface
         text "didnt understand"
       surface
+        text "do not understand"
+      surface
+        text "did not understand"
+      surface
+        text "don t get it"
+      surface
+        text "dont get it"
+      surface
+        text "do not get it"
+      surface
         text "what do you mean"
       surface
         text "i m confused"
@@ -469,6 +479,10 @@ meanings
         text "how can you help"
       surface
         text "what are your features"
+      surface
+        text "what are you able to do"
+      surface
+        text "what can you help"
     lexeme ru
       surface
         text "что ты умеешь"

@@ -177,6 +177,8 @@ browser_handler_precedence
     argument_prompt
   handler tryMetaExplanation
     argument_prompt
+  handler tryNetworkSnapshot
+    argument_prompt
   handler tryAlgorithm
     argument_prompt
   handler tryWriteProgram

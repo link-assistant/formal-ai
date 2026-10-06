@@ -965,6 +965,16 @@ meanings
         text "doing well thank you"
       surface
         text "doing well thanks"
+      surface
+        text "thank you very much"
+      surface
+        text "thank you so much"
+      surface
+        text "thanks a lot"
+      surface
+        text "thanks so much"
+      surface
+        text "many thanks"
     lexeme ru
       surface
         text спасибо

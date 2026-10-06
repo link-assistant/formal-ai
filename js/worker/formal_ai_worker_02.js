@@ -979,7 +979,7 @@ function elapsedTimeExpression(prompt) {
 }
 
 function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
-  const trimmed = String(prompt || "").trim();
+  const trimmed = String(prompt || "").trim().replace(/^[!¡¿。？！]+/u, "").trim(); // trim_prompt_punctuation
   if (!trimmed) return null;
   const interpretations = [];
   // Issue #386: the leading calculation cues come from the calculation_request
@@ -1005,7 +1005,7 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
       strippedLeadingCue = true;
     }
   }
-  working = working.replace(/[?.!]+$/g, "").trim();
+  working = working.replace(/[?!。？！.]+$/u, "").trim();
   // Issue #386: the trailing calculation cues come from the
   // calculation_result_query and politeness meanings by role, not a literal
   // array of regexes. Each surface is rebuilt into a strip suffix following its
@@ -1034,7 +1034,7 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
       // Mirror strip_suffix_case_insensitive in src/calculation.rs: a
       // case-insensitive endsWith followed by trimming the trailing whitespace.
       if (working.toLowerCase().endsWith(suffix)) {
-        working = working.slice(0, working.length - suffix.length).trim();
+        working = working.slice(0, working.length - suffix.length).trim().replace(/[?!。？！.]+$/u, "").trim();
         changed = true;
         break;
       }

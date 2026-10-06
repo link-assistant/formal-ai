@@ -719,6 +719,8 @@ meanings
       surface
         text просмотр
       surface
+        text смотр
+      surface
         text трафик
       surface
         text клон
@@ -729,6 +731,8 @@ meanings
         text आए
       surface
         text देखा
+      surface
+        text देखी
       surface
         text विज़िटर
       surface

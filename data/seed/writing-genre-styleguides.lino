@@ -22,11 +22,13 @@ writing_genre_styleguides
     cue "write an email"
     cue "compose an email"
     cue "draft an email"
+    cue "as an email"
   action_cue
     genre email
     language ru
     cue "напиши письмо"
     cue "напиши электронное письмо"
+    cue "в виде письма"
   genre
     name commit_message
     styleguide "https://www.conventionalcommits.org/en/v1.0.0/"

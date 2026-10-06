@@ -42,13 +42,11 @@ routing_probes
     language zh
     intent calculation
     prompt "12乘以7等于多少？"
-    js_misroute calculation_error
   probe p030
     lane calendar_create_event
     language en
     intent calendar_create_event
     prompt "Add an event to my calendar: team lunch on Friday at noon"
-    js_misroute unknown
   probe p031
     lane calendar_create_event
     language en
@@ -59,7 +57,6 @@ routing_probes
     language en
     intent calendar_create_event
     prompt "Create an event on Friday at 9:00 for the dentist"
-    js_misroute unknown
     rust_misroute unverified
   probe p033
     lane calendar_create_event
@@ -71,7 +68,6 @@ routing_probes
     language en
     intent calendar_create_event
     prompt "Schedule a meeting with Anna on Friday at 10am"
-    js_misroute unknown
   probe p035
     lane calendar_create_event
     language ru
@@ -218,14 +214,12 @@ routing_probes
     language hi
     intent github_repository_traffic
     prompt "क्या मैं देख सकता हूँ कि मेरी GitHub रिपॉजिटरी किसने देखी?"
-    js_misroute unknown
     rust_misroute unverified
   probe p136
     lane github_repository_traffic
     language ru
     intent github_repository_traffic
     prompt "можно ли узнать, кто смотрел мой репозиторий на github?"
-    js_misroute unknown
     rust_misroute unverified
   probe p137
     lane github_repository_traffic
@@ -310,13 +304,11 @@ routing_probes
     intent unit_incompatibility
     prompt "Convert 5 kilograms to meters"
     adversarial true
-    js_misroute unit_conversion
   probe p161
     lane incompatible_units
     language en
     intent unit_incompatibility
     prompt "How many kilograms are in 4 seconds?"
-    js_misroute unit_conversion
   probe p162
     lane incompatible_units
     language en
@@ -327,7 +319,6 @@ routing_probes
     language en
     intent unit_incompatibility
     prompt "How many meters are in 5 seconds?"
-    js_misroute unit_conversion
   probe p164
     lane incompatible_units
     language en
@@ -355,19 +346,16 @@ routing_probes
     language en
     intent network_snapshot
     prompt "export the network"
-    js_misroute unknown
   probe p196
     lane network_query
     language en
     intent network_snapshot
     prompt "show me the current network"
-    js_misroute unknown
   probe p197
     lane network_query
     language en
     intent network_snapshot
     prompt "show me the network"
-    js_misroute unknown
   probe p198
     lane number_constraint_reasoning
     language en
@@ -527,7 +515,6 @@ routing_probes
     language hi
     intent unit_conversion
     prompt "5 फीट कितने मीटर हैं?"
-    js_misroute unknown
     rust_misroute unverified
   probe p324
     lane unit_conversion
@@ -541,14 +528,12 @@ routing_probes
     language ru
     intent unit_conversion
     prompt "Сколько километров в 10 милях?"
-    js_misroute unknown
     rust_misroute unverified
   probe p326
     lane unit_conversion
     language ru
     intent unit_conversion
     prompt "Сколько метров в 3 милях?"
-    js_misroute unknown
     rust_misroute unverified
   probe p327
     lane unit_conversion

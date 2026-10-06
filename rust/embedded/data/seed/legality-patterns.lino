@@ -41,14 +41,19 @@ legality_patterns
     phrase "break into my neighbor"
     phrase "break into his house"
     phrase "break into her apartment"
+    phrase "break into my"
+    phrase "break into someone"
     phrase "взломать дом соседа"
     phrase "влезть в квартиру"
+    phrase "взломать квартиру"
   pattern warn_stolen_goods
     category theft_and_handling
     disposition warn
     jurisdiction_note "handling stolen goods and theft tools is criminalized broadly"
     phrase "sell stolen"
     phrase "fence stolen goods"
+    phrase "steal a car"
+    phrase "steal someone"
     phrase "продать краденое"
     phrase "сбыть краденое"
   pattern warn_fraud
@@ -96,6 +101,7 @@ legality_patterns
     phrase "write ransomware"
     phrase "make a botnet"
     phrase "ddos tool for"
+    phrase "hack into"
     phrase "написать вымогательское по"
     phrase "создать ботнет"
   pattern warn_impersonation

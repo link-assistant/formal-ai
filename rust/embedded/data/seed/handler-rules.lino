@@ -183,6 +183,12 @@ handler_rules
           prefix "share your opinion"
           prefix "share your thoughts"
           prefix "what are your thoughts"
+          prefix "как ты думаешь"
+          prefix "что ты думаешь"
+          prefix "каково твоё мнение"
+          prefix "каково твое мнение"
+          prefix "你认为"
+          prefix "你觉得"
       log "policy:no_opinion" $prompt
       respond opinion_question
       link "response:opinion_question"

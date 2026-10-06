@@ -717,7 +717,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
     return finalize(events, steps, toolCalls, terminal, formalizationContext);
   }
-  const howItWorks = tryHowItWorks(prompt);
+  const howItWorks = tryHowItWorks(prompt, history);
   if (howItWorks) return finalizeInlineHandler(events, steps, toolCalls, howItWorks, "tryHowItWorks", formalizationContext);
 
   if (
@@ -1064,7 +1064,7 @@ function workerHandlerRegistryDefinition() {
     who_is: workerHandlerAliases.who_is,
     how_it_works: "tryHowItWorks", // runs inline after the async lookups, so online sources answer first
     meta_explanation: "tryMetaExplanation",
-    network_query: null, // phase async
+    network_query: "tryNetworkSnapshot", // the snapshot branch; concept introspection and the user filter stay native
     execution_failure: "tryExecutionFailure",
     installation_conversion: "tryInstallationConversion",
     write_script: workerHandlerAliases.write_script,
