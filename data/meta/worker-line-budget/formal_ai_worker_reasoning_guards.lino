@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_reasoning_guards.js"
+  ceiling 191
+  rationale "Reasoning guards shared with the native surface. JavaScript-first twin of native handler keys (legality_warning and the #1173 R5 fallback guard), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."

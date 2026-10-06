@@ -19,6 +19,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, rmSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const REGEX_CONTEXT_KEYWORDS = [
@@ -407,6 +408,37 @@ function walk(directory) {
   return out;
 }
 
+/**
+ * The js sources a checkout carries: tracked plus new unignored files, so a
+ * locally built bundle (gitignored, absent from CI) never gains a ts twin.
+ * Falls back to the directory walk outside a git work tree.
+ * @param {string} repo
+ * @returns {Array<string>}
+ */
+function sourceFiles(repo) {
+  try {
+    const listed = execFileSync(
+      'git',
+      ['ls-files', '--cached', '--others', '--exclude-standard', '--', 'js'],
+      { cwd: repo, encoding: 'utf8' },
+    );
+    return listed
+      .split('\n')
+      .filter((line) => line.endsWith('.js'))
+      .map((line) => join(repo, line))
+      .filter((path) => {
+        try {
+          return statSync(path).isFile();
+        } catch {
+          return false;
+        }
+      })
+      .sort();
+  } catch {
+    return walk(join(repo, 'js'));
+  }
+}
+
 function main(argv) {
   const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
   const mode = argv[0] || '--check';
@@ -417,7 +449,7 @@ function main(argv) {
   const jsRoot = join(repo, 'js');
   const drifted = [];
   const expected = new Set();
-  for (const file of walk(jsRoot)) {
+  for (const file of sourceFiles(repo)) {
     const rel = relative(jsRoot, file).replace(/\.js$/, '.ts');
     const target = join(repo, 'ts', rel);
     expected.add(target);

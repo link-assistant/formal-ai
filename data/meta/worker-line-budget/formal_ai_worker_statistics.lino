@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_statistics.js"
+  ceiling 832
+  rationale "Statistics over stated number lists, and the price-times-count word problems that share their vocabulary (issue #1176). JavaScript-first twin of native handler keys (statistics, word_problem), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_creative.js"
+  ceiling 652
+  rationale "Creative composition, part one (issue #1178): brainstorming and advice, browser twin (PR #1188 JavaScript-first parity). JavaScript-first twin of native handler keys (brainstorm_composition, advice_request), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."

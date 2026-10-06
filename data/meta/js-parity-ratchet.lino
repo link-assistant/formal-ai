@@ -7,4 +7,4 @@
 # scripts/check-js-parity.mjs fails above the ceiling and asks for the ceiling
 # to be lowered below it: the number only falls.
 js_parity_ratchet
-  native_only_ceiling 35
+  native_only_ceiling 0

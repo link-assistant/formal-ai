@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_code_plans.js"
+  ceiling 314
+  rationale "Browser twins of the remaining native-only coding/policy rows of the handler precedence seed: `algorithm`, `execution_failure`, `document_generation_plan`, `source_conflict` and `shell_refusal`. Each `handle*` function mirrors its Rust counterpart (named in the JSDoc); the `try*` bindings pass the lowercased prompt as `normalized`, exactly as the native dispatcher does (rust/src/meta_method_dispatch.rs). JavaScript-first twin of native handler keys (algorithm, execution_failure, document_generation_plan, source_conflict, shell_refusal), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."

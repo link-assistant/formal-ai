@@ -209,6 +209,10 @@ fn quotient_shift(expr: &str) -> Option<(usize, usize)> {
                 seen_division = false;
                 prev_ends_operand = false;
             }
+            // Whitespace keeps the previous non-space character's verdict,
+            // as the contract above states (mirrors the JavaScript twin in
+            // js/worker/formal_ai_worker_code_tasks.js).
+            c if c.is_whitespace() => {}
             c => {
                 prev_ends_operand =
                     c.is_alphanumeric() || c == '_' || c == '"' || c == '\'' || c == '.';

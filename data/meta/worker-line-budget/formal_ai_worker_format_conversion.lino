@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_format_conversion.js"
+  ceiling 970
+  rationale "Browser twin of the issue #1177 JSON↔YAML format converter. Mirrors `handle_format_conversion` in rust/src/solver_handlers/format_conversion.rs: the same YAML subset (block mappings and sequences, two-space indent, scalars), the same refusal reasons (seed templates), and the same verify-before-show rule. JavaScript-first twin of native handler keys (format_conversion), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."
