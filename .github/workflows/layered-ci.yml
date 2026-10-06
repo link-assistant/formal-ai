@@ -114,6 +114,10 @@ jobs:
             node --check "$file"
           done
           echo "all ${#files[@]} js files parse"
+      - name: Native-only handler rows only fall (R998)
+        run: node scripts/check-js-parity.mjs --list
+      - name: The JavaScript suites pass
+        run: node --test rust/tests/web/*.test.mjs
 
   ts:
     name: ts tier (js<->ts file-set parity)

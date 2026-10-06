@@ -910,10 +910,18 @@ hardcoded prompt→answer tables.
    same prompt identically. A behavioural change in one **must** be mirrored in
    the other in the same PR. Name and comment the twin so the parity is obvious
    (e.g. "Mirrors `try_x` in `rust/src/solver_handler_x.rs`").
-   Mirror parity is the transitional contract while JS worker logic remains:
-   under the compiled-logic doctrine (REQUIREMENTS.md R536), prefer absorbing
-   the path into the Rust→WASM worker over adding a new JS twin, and never
-   grow the worker line budget (`scripts/check-worker-line-budget.rs`).
+   **JavaScript first (REQUIREMENTS.md R997-R1000, 2026-10-06).** Implement
+   and test a requirement in the JavaScript worker first (`npm run test:web`
+   runs in seconds); Rust follows by translation through the meta language,
+   or by a port that names its JavaScript original. Never land a new
+   `null` ("native surface only") registry row: `scripts/check-js-parity.mjs`
+   ratchets their count down. A worker module's line ceiling may rise for a
+   JavaScript twin of a native handler, with the keys named in the shard's
+   rationale (R999). Write new handler modules in the portable subset
+   (top-level functions with JSDoc types, `const`/`let`, tagged unions
+   dispatched by `switch`, no classes or destructuring) so they translate
+   mechanically. Regenerate `ts/` with `node scripts/translate-es.mjs
+   --write`; leave Rust compilation to CI — a push is the build.
 
 2. **Data-driven seed, no hardcoded natural language in code (issues #386,
    #513).** Natural language is *data*, never a string literal in the engine.
