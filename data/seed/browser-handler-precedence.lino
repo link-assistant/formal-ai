@@ -6,6 +6,9 @@
 # authority for both membership and first-match-wins order.  Child node names
 # are executable symbols rather than natural-language meaning references.
 browser_handler_precedence
+  handler tryAgenticContinuation
+    argument_prompt
+    argument_normalized
   handler tryExactMemoryQuery
     argument_prompt
     argument_memoryEvents
@@ -116,6 +119,9 @@ browser_handler_precedence
   handler tryNumericList
     argument_prompt
     argument_history
+  handler tryShellCommandTransform
+    argument_prompt
+    argument_history
   handler tryCodeDebugging
     argument_prompt
   handler tryRegexSynthesis
@@ -169,6 +175,8 @@ browser_handler_precedence
     argument_history
   handler tryConceptLookup
     argument_prompt
+  handler tryMetaExplanation
+    argument_prompt
   handler tryAlgorithm
     argument_prompt
   handler tryWriteProgram
@@ -178,6 +186,8 @@ browser_handler_precedence
   handler trySoftwareProjectRequest
     argument_prompt
     argument_history
+  handler trySourceRefresh
+    argument_prompt
   handler trySourceConflict
     argument_prompt
   handler tryClarification

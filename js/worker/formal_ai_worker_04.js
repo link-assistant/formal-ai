@@ -7,13 +7,13 @@ function conversationTopic(prompt, normalized) {
   // at the start, so an opener that follows a greeting is still found. No
   // per-language opener list lives here — only the concept. Mirrors
   // conversation_topic in src/solver_handlers/benchmark_prompts.rs (issue #386).
+  // Like the native handler, the lowercased prompt (keeping "let's") goes first.
   const forms = roleWordForms(ROLE_CONVERSATION_TOPIC_OPENER);
-  for (const form of forms) {
-    if (normalized.startsWith(form.before)) {
-      return cleanConversationTopic(normalized.slice(form.before.length));
-    }
-  }
   const lower = String(prompt || "").toLowerCase();
+  for (const text of [lower, normalized]) {
+    const form = forms.find((candidate) => text.startsWith(candidate.before));
+    if (form) return cleanConversationTopic(text.slice(form.before.length));
+  }
   for (const form of forms) {
     if (form.action !== "scan") continue;
     const index = lower.indexOf(form.before);

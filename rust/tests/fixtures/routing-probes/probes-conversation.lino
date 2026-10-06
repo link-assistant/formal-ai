@@ -35,19 +35,16 @@ routing_probes
     language en
     intent continuation_cue
     prompt "continue"
-    js_misroute unknown
   probe p008
     lane agentic_continuation
     language en
     intent continuation_cue
     prompt "go on"
-    js_misroute unknown
   probe p009
     lane agentic_continuation
     language ru
     intent continuation_cue
     prompt "продолжай"
-    js_misroute unknown
   probe p019
     lane assistant_free_time
     language en
@@ -189,25 +186,21 @@ routing_probes
     language en
     intent conversation_topic
     prompt "Let's talk about astronomy"
-    js_misroute unknown
   probe p078
     lane conversation_topic
     language en
     intent conversation_topic
     prompt "Let's talk about existence"
-    js_misroute unknown
   probe p079
     lane conversation_topic
     language en
     intent conversation_topic
     prompt "Let's talk about music"
-    js_misroute unknown
   probe p080
     lane conversation_topic
     language en
     intent conversation_topic
     prompt "Let's talk about time"
-    js_misroute unknown
   probe p081
     lane conversation_topic
     language ru
@@ -399,43 +392,36 @@ routing_probes
     language en
     intent meta_explanation
     prompt "explain how you work"
-    js_misroute unknown
   probe p189
     lane meta_explanation
     language en
     intent meta_explanation
     prompt "how do you work?"
-    js_misroute unknown
   probe p190
     lane meta_explanation
     language en
     intent meta_explanation
     prompt "show me how you work"
-    js_misroute unknown
   probe p191
     lane meta_explanation
     language hi
     intent meta_explanation
     prompt "तुम कैसे काम करते हो?"
-    js_misroute unknown
   probe p192
     lane meta_explanation
     language ru
     intent meta_explanation
     prompt "как ты работаешь?"
-    js_misroute unknown
   probe p193
     lane meta_explanation
     language ru
     intent meta_explanation
     prompt "покажи как ты работаешь"
-    js_misroute unknown
   probe p194
     lane meta_explanation
     language zh
     intent meta_explanation
     prompt "你为什么这样回答?"
-    js_misroute unknown
   probe p204
     lane opinion_question
     language en
@@ -518,31 +504,26 @@ routing_probes
     language en
     intent response_language_demonstration
     prompt "Answer in Chinese"
-    js_misroute unknown
   probe p236
     lane response_language_followup
     language en
     intent response_language_demonstration
     prompt "Answer in Russian please"
-    js_misroute unknown
   probe p237
     lane response_language_followup
     language en
     intent response_language_demonstration
     prompt "Now answer in English"
-    js_misroute unknown
   probe p238
     lane response_language_followup
     language en
     intent response_language_demonstration
     prompt "Reply in Hindi"
-    js_misroute unknown
   probe p239
     lane response_language_followup
     language en
     intent response_language_demonstration
     prompt "Reply in Russian"
-    js_misroute unknown
   probe p240
     lane roleplay
     language en

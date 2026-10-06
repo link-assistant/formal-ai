@@ -161,6 +161,83 @@ cues
     phrase "перепиши код"
     phrase "рефактори"
     phrase "рефакторинг"
+# The shell-command rewrite (issue #552) reads the same cue sets the native
+# handler reads from data/meta/cue-lexicon.lino (`shell_infinite_loop`,
+# `shell_screen_execution`), plus the command heads and prose leads its
+# command detector weighs, so the browser twin answers from seed data.
+cues
+  intent shell_command_transform
+    role infinite_loop
+    phrase "loop"
+    phrase "infinite"
+    phrase "forever"
+    phrase "repeatedly"
+    phrase "цикл"
+    phrase "бесконеч"
+    phrase "लूप"
+    phrase "अनंत"
+    phrase "बार-बार"
+    phrase "循环"
+    phrase "无限"
+    phrase "一直"
+cues
+  intent shell_command_transform
+    role screen_execution
+    phrase "single line"
+    phrase "one line"
+    phrase "execute"
+    phrase "run"
+    phrase "inside"
+    phrase "одной строк"
+    phrase "внутри"
+    phrase "выполн"
+    phrase "एक पंक्ति"
+    phrase "अंदर"
+    phrase "चल"
+    phrase "निष्पादित"
+    phrase "单行"
+    phrase "一行"
+    phrase "执行"
+    phrase "里面"
+cues
+  intent shell_command_transform
+    role command_head
+    phrase "awk"
+    phrase "bash"
+    phrase "cargo"
+    phrase "curl"
+    phrase "docker"
+    phrase "find"
+    phrase "git"
+    phrase "grep"
+    phrase "hive-cleanup"
+    phrase "jq"
+    phrase "make"
+    phrase "node"
+    phrase "npm"
+    phrase "python"
+    phrase "python3"
+    phrase "sed"
+    phrase "sh"
+    phrase "sleep"
+    phrase "tar"
+    phrase "while"
+cues
+  intent shell_command_transform
+    role prose_lead
+    phrase "make a "
+    phrase "can we "
+# The source-refresh row (retrieval_procedures.rs) keys on the refresh verb
+# and a cached object.
+cues
+  intent source_refresh
+    role verb
+    phrase "refresh"
+cues
+  intent source_refresh
+    role object
+    phrase "cache"
+    phrase "page"
 map
   name number
     entry

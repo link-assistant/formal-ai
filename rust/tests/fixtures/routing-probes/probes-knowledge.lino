@@ -237,61 +237,51 @@ routing_probes
     language en
     intent how_it_works
     prompt "How does a refrigerator work?"
-    js_misroute unknown
   probe p142
     lane how_it_works
     language en
     intent how_it_works
     prompt "how does AUR work?"
-    js_misroute unknown
   probe p143
     lane how_it_works
     language en
     intent how_it_works
     prompt "how does Docker work?"
-    js_misroute unknown
   probe p144
     lane how_it_works
     language en
     intent how_it_works
     prompt "how does git work?"
-    js_misroute unknown
   probe p145
     lane how_it_works
     language en
     intent how_it_works
     prompt "how does npm work?"
-    js_misroute unknown
   probe p146
     lane how_it_works
     language hi
     intent how_it_works
     prompt "git कैसे काम करता है?"
-    js_misroute unknown
   probe p147
     lane how_it_works
     language ru
     intent how_it_works
     prompt "как работает git?"
-    js_misroute unknown
   probe p148
     lane how_it_works
     language ru
     intent how_it_works
     prompt "как работает npm?"
-    js_misroute unknown
   probe p149
     lane how_it_works
     language ru
     intent how_it_works
     prompt "Как работает холодильник?"
-    js_misroute unknown
   probe p150
     lane how_it_works
     language zh
     intent how_it_works
     prompt "Docker 如何工作?"
-    js_misroute unknown
   probe p151
     lane http_fetch
     language en
@@ -482,19 +472,16 @@ routing_probes
     language en
     intent source_refresh
     prompt "please refresh the page cache now"
-    js_misroute unknown
   probe p266
     lane source_refresh
     language en
     intent source_refresh
     prompt "refresh the cache for this page"
-    js_misroute unknown
   probe p267
     lane source_refresh
     language en
     intent source_refresh
     prompt "refresh the page cache"
-    js_misroute unknown
   probe p271
     lane statistics
     language en

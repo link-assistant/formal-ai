@@ -15,7 +15,7 @@
 routing_probe_budget
   minimum_probes 200
   minimum_probes_per_lane 2
-  js_misroute_ceiling 118
+  js_misroute_ceiling 83
   rust_misroute_ceiling 75
   extra_lane agent_suggestion
     reason "the terminal-command detector answers before the handler table; it is not a precedence row"

@@ -1,0 +1,362 @@
+// Browser twins of native precedence rows the worker used to leave to the
+// Rust engine (PR #1188, JavaScript-first parity, issue #1175 routing probes):
+// agentic_continuation, how_it_works, meta_explanation, shell_command_transform,
+// source_refresh, and the response-language demonstration. Every recogniser
+// reads seed roles or seed cue records; every answer renders a seeded response
+// template, so the code keeps only the reasoning.
+//
+// The native dispatcher hands these handlers `prompt.to_lowercase()` as their
+// normalized text (rust/src/meta_method_dispatch.rs), not the punctuation-
+// collapsed normalizePrompt form, so each twin re-derives that lowercase form
+// from the raw prompt before matching.
+
+const ROLE_ANSWER_RATIONALE_LEAD = "answer_rationale_lead";
+const ROLE_CAUSAL_INTERROGATIVE = "causal_interrogative";
+const ROLE_PRIOR_ANSWER_REFERENCE = "prior_answer_reference";
+const ROLE_ASSISTANT_MECHANISM_INQUIRY = "assistant_mechanism_inquiry";
+const ROLE_OPERATING_PRINCIPLE = "operating_principle";
+
+/**
+ * Record an inline handler hit on the turn's trace and finalize its answer.
+ * @returns {object}
+ */
+function finalizeInlineHandler(events, steps, toolCalls, hit, name, formalizationContext) {
+  events.push(`handler:${hit.intent}`);
+  steps.push({ step: "dispatch_handler", detail: name });
+  return finalize(events, steps, toolCalls, hit, formalizationContext);
+}
+
+/**
+ * The native handlers' normalized text: the raw prompt lowercased.
+ * @param {string} prompt
+ * @returns {string}
+ */
+function nativeLaneLowercase(prompt) {
+  return String(prompt || "").toLowerCase();
+}
+
+/**
+ * Fill `{name}` slots of a seeded response template.
+ * @param {string} template
+ * @param {object} values
+ * @returns {string}
+ */
+function nativeLaneRender(template, values) {
+  let out = String(template || "");
+  for (const [name, value] of Object.entries(values)) {
+    out = out.split(`{${name}}`).join(String(value));
+  }
+  return out;
+}
+
+/**
+ * `agentic_continuation` precedence row: a turn that is only a continuation
+ * cue, with nothing in progress to resume, is answered from the seeded rule
+ * (data/seed/handler-rules.lino) instead of being searched for (issue #1095).
+ * @param {string} prompt
+ * @param {string} normalized
+ * @returns {object|null}
+ */
+function tryAgenticContinuation(prompt, normalized) {
+  return runHandlerRuleSet("agentic_continuation", prompt, normalized, []);
+}
+
+/**
+ * True when the prompt asks the assistant to justify its previous answer.
+ * English and Russian rationale leads are matched directly (a prefix form
+ * against the start, a bare form anywhere); the head-final Hindi and Chinese
+ * questions need a same-language causal interrogative and prior-answer
+ * reference. Mirrors is_why_question in rust/src/solver_handlers/meta_explanation.rs.
+ * @param {string} lower
+ * @returns {boolean}
+ */
+function isWhyQuestion(lower) {
+  for (const meaning of meaningsWithRole(ROLE_ANSWER_RATIONALE_LEAD)) {
+    for (const lexeme of meaning.lexemes) {
+      if (lexeme.language !== "en" && lexeme.language !== "ru") continue;
+      for (const text of lexeme.words) {
+        const form = makeWordForm(text, "", "");
+        const matched = form.slot === "prefix" ? lower.startsWith(form.before) : lower.includes(form.text);
+        if (matched) return true;
+      }
+    }
+  }
+  return ["hi", "zh"].some((language) => {
+    const namesCause = wordsForRoleInLanguages(ROLE_CAUSAL_INTERROGATIVE, [language]).some((word) => lower.includes(word));
+    const namesPrior = wordsForRoleInLanguages(ROLE_PRIOR_ANSWER_REFERENCE, [language]).some((word) => lower.includes(word));
+    return namesCause && namesPrior;
+  });
+}
+
+/**
+ * True when the prompt asks the assistant how it works: a seeded mechanism
+ * inquiry clause, or the compositional Russian operating-principle phrasing.
+ * Mirrors is_how_you_work in rust/src/solver_handlers/meta_explanation.rs.
+ * @param {string} lower
+ * @returns {boolean}
+ */
+function isHowYouWork(lower) {
+  if (lexiconMentionsRoleSubstring(ROLE_ASSISTANT_MECHANISM_INQUIRY, lower)) return true;
+  const namesPrinciple = wordsForRoleInLanguages(ROLE_OPERATING_PRINCIPLE, ["ru"]).some((word) => lower.includes(word));
+  const addressesAssistant = wordsForRoleInLanguages(ROLE_ASSISTANT_SELF_REFERENCE, ["ru"]).some((word) => lower.includes(word));
+  return namesPrinciple && addressesAssistant;
+}
+
+/**
+ * `meta_explanation` precedence row: why-questions, how-you-work questions and
+ * architecture questions about the assistant itself. Mirrors
+ * try_meta_explanation_with_runtime (the single-turn branches).
+ * @param {string} prompt
+ * @returns {object|null}
+ */
+function tryMetaExplanation(prompt) {
+  const lower = nativeLaneLowercase(prompt);
+  const why = isWhyQuestion(lower);
+  const howYouWork = isHowYouWork(lower);
+  const architecture = isArchitectureQuestion(lower);
+  if (!why && !howYouWork && !architecture) return null;
+  const language = selfAwarenessLanguage(prompt, lower);
+  let content = answerFor("meta_explanation", language);
+  if (why) content = answerFor("meta_explanation_why", language);
+  else if (architecture) content = architectureExplanationContent(language);
+  return {
+    intent: "meta_explanation",
+    content,
+    confidence: 1.0,
+    evidence: ["response:meta_explanation", `language:${language}`],
+  };
+}
+
+/**
+ * `how_it_works` precedence row: a "how does X work?" question whose subject
+ * the local concept lookup (an earlier row) did not answer gets the
+ * source-backed mechanism discovery plan — offline, the plan is the answer,
+ * exactly as the native handler renders it. Mirrors try_how_it_works in
+ * rust/src/solver_handler_how.rs (the inline-subject branch).
+ * @param {string} prompt
+ * @returns {object|null}
+ */
+function tryHowItWorks(prompt) {
+  const subject = extractHowItWorksSubject(prompt, nativeLaneLowercase(prompt));
+  if (!subject) return null;
+  const language = detectLanguage(prompt);
+  const providers = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
+  return {
+    intent: "how_it_works",
+    content: nativeLaneRender(answerFor("how_it_works", language), { subject, providers }),
+    confidence: 0.68,
+    evidence: [
+      `followup:subject:inline:${subject.toLowerCase()}`,
+      `mechanism_query:request:${subject}`,
+      "mechanism_query:source_gate:source_backed_mechanism_only",
+      "response:how_it_works",
+    ],
+  };
+}
+
+/**
+ * The FNV-1a source id the native `stable_id` derives.
+ * @param {string} prefix
+ * @param {string} text
+ * @returns {string}
+ */
+function nativeLaneStableId(prefix, text) {
+  return stableBehaviorRuleId(prefix, text);
+}
+
+/**
+ * `source_refresh` precedence row: a refresh request about a cached page or
+ * cache queues that source for refresh. The refresh verb and its objects are
+ * the `source_refresh` cue records of data/seed/code-task-cues.lino. Mirrors
+ * try_source_refresh in rust/src/retrieval_procedures.rs.
+ * @param {string} prompt
+ * @returns {object|null}
+ */
+function trySourceRefresh(prompt) {
+  const lower = nativeLaneLowercase(prompt);
+  if (!codeTaskCued("source_refresh", "verb", prompt, lower)) return null;
+  if (!codeTaskCued("source_refresh", "object", prompt, lower)) return null;
+  const target = nativeLaneStableId("source", prompt);
+  return {
+    intent: "source_refresh",
+    content: nativeLaneRender(answerFor("source_refresh", "en"), { target }),
+    confidence: 1.0,
+    evidence: [`source_refresh:${target}`, "response:source_refresh"],
+  };
+}
+
+/** Shell joiners that make any line a command sequence. */
+const SHELL_TRANSFORM_JOINERS = [" && ", " || ", " | ", "; "];
+
+/**
+ * Whether a candidate line reads as a shell command rather than prose.
+ * Mirrors looks_like_shell_command in rust/src/solver_handlers/shell_command_transform.rs;
+ * the command heads and prose leads are seed cue records.
+ * @param {string} candidate
+ * @returns {boolean}
+ */
+function shellTransformLooksLikeCommand(candidate) {
+  const text = String(candidate || "").trim();
+  if (!text || text.includes("\n") || text.endsWith("?")) return false;
+  if (codeTaskCuePhrases("shell_command_transform", "prose_lead").some((lead) => text.startsWith(lead))) return false;
+  if (SHELL_TRANSFORM_JOINERS.some((joiner) => text.includes(joiner))) return true;
+  const first = text.split(/\s+/u)[0] || "";
+  return codeTaskCuePhrases("shell_command_transform", "command_head").includes(first);
+}
+
+function shellTransformStripFence(line) {
+  return String(line || "").replace(/^`+|`+$/gu, "").trim();
+}
+
+function shellTransformBackticked(text) {
+  const start = text.indexOf("`");
+  if (start < 0) return null;
+  const end = text.indexOf("`", start + 1);
+  return end < 0 ? null : text.slice(start + 1, end);
+}
+
+function shellTransformAfterPrompt(line) {
+  for (const marker of ["$ ", "# ", "% "]) {
+    const index = line.lastIndexOf(marker);
+    if (index < 0) continue;
+    const command = line.slice(index + marker.length).trim();
+    if (shellTransformLooksLikeCommand(command)) return command;
+  }
+  return null;
+}
+
+function shellTransformIsLoop(candidate) {
+  return candidate.startsWith("while true; do ") && candidate.endsWith("; done");
+}
+
+function shellTransformLoopCommand(text) {
+  const trimmed = shellTransformStripFence(String(text || "").trim());
+  if (shellTransformIsLoop(trimmed)) return trimmed;
+  return String(text || "").split("\n").map((line) => shellTransformStripFence(line.trim())).find(shellTransformIsLoop) || null;
+}
+
+function shellTransformCommand(prompt) {
+  for (const line of prompt.split("\n")) {
+    const command = shellTransformAfterPrompt(shellTransformStripFence(line.trim()));
+    if (command) return command;
+  }
+  const backticked = shellTransformBackticked(prompt);
+  if (backticked !== null) {
+    const command = shellTransformStripFence(backticked.trim());
+    if (shellTransformLooksLikeCommand(command) && !command.startsWith("screen ")) return command;
+  }
+  return prompt.split("\n").map((line) => shellTransformStripFence(line.trim()))
+    .find((line) => shellTransformLooksLikeCommand(line) && !line.startsWith("screen ")) || null;
+}
+
+function shellTransformWrapLoop(command) {
+  if (shellTransformLoopCommand(command)) return command.trim();
+  return `while true; do ${command.trim()}; done`;
+}
+
+function shellTransformScreenSession(prompt) {
+  const backticked = shellTransformBackticked(prompt);
+  const command = backticked !== null && backticked.split(/\s+/u).filter(Boolean)[0] === "screen"
+    ? backticked
+    : prompt.split("\n").map((line) => line.trim()).find((line) => line.startsWith("screen "));
+  if (!command) return null;
+  let session = null;
+  for (const token of command.split(/\s+/u).filter(Boolean).slice(1)) {
+    if (!token.startsWith("-")) session = token;
+  }
+  return session || null;
+}
+
+function shellTransformQuote(command) {
+  return `'${command.split("'").join("'\\''")}'`;
+}
+
+function shellTransformScreen(prompt, lower, history) {
+  if (!lower.includes("screen")) return null;
+  if (!codeTaskCued("shell_command_transform", "screen_execution", prompt, lower)) return null;
+  const session = shellTransformScreenSession(prompt);
+  if (!session) return null;
+  let loop = shellTransformLoopCommand(prompt);
+  if (!loop) {
+    const turns = Array.isArray(history) ? history.slice().reverse() : [];
+    for (const turn of turns) {
+      if (String((turn || {}).role || "") !== "assistant") continue;
+      loop = shellTransformLoopCommand(String(turn.content || ""));
+      if (loop) break;
+    }
+  }
+  if (!loop) {
+    const command = shellTransformCommand(prompt);
+    if (command) loop = shellTransformWrapLoop(command);
+  }
+  if (!loop) return null;
+  return { operation: "screen_session", input: loop, command: `screen -dmS ${session} bash -c ${shellTransformQuote(loop)}` };
+}
+
+/**
+ * `shell_command_transform` precedence row (issue #552): rewrite a shell
+ * command as an infinite loop or a detached screen session, producing the
+ * command text without executing it. Mirrors try_shell_command_transform_with_history.
+ * @param {string} prompt
+ * @param {object[]} history
+ * @returns {object|null}
+ */
+function tryShellCommandTransform(prompt, history) {
+  const source = String(prompt || "");
+  const lower = nativeLaneLowercase(source);
+  let rewrite = shellTransformScreen(source, lower, history);
+  if (!rewrite && codeTaskCued("shell_command_transform", "infinite_loop", source, lower)) {
+    const command = shellTransformCommand(source);
+    if (command) rewrite = { operation: "infinite_loop", input: command, command: shellTransformWrapLoop(command) };
+  }
+  if (!rewrite) return null;
+  return {
+    intent: "shell_command_transform",
+    content: rewrite.command,
+    confidence: 0.92,
+    evidence: [
+      `shell_transform:${rewrite.operation}`,
+      `shell_command:input:${rewrite.input}`,
+      `shell_command:output:${rewrite.command}`,
+      `shell_transform:operation:${rewrite.operation}`,
+      "response:shell_command_transform",
+    ],
+  };
+}
+
+/**
+ * The ledger name of a language code (data/seed/languages.lino), or the code.
+ * @param {string} code
+ * @returns {string}
+ */
+function nativeLaneLanguageName(code) {
+  const ledger = seedRawText(SEED_RAW, "languages.lino");
+  const match = new RegExp(`^  language ${code}\\r?\\n    name (.+)$`, "m").exec(ledger);
+  return match ? match[1].trim() : code;
+}
+
+/**
+ * The response-language demonstration: a terse "answer in <language>" with no
+ * earlier turn to re-render is answered in that language. The canonical name
+ * comes from the language ledger, the surface is the marker word the prompt
+ * used, the demonstration is the seeded greeting of that language. Mirrors
+ * response_language_demonstration in rust/src/meta_method_answers.rs.
+ * @param {string} prompt
+ * @returns {object|null}
+ */
+function tryResponseLanguageDemonstration(prompt) {
+  const lower = nativeLaneLowercase(prompt);
+  const target = detectResponseLanguage(lower);
+  if (!target || !isLanguageReanswerFollowup(lower)) return null;
+  const canonical = nativeLaneLanguageName(target);
+  const marker = meaningsWithRole(ROLE_RESPONSE_LANGUAGE_MARKER)
+    .find((meaning) => meaningDefinedLanguageCode(meaning) === target);
+  const surface = (marker && marker.words.find((word) => lower.includes(word))) || canonical;
+  const demonstration = answerFor("greeting", target) || canonical;
+  return {
+    intent: "response_language_demonstration",
+    content: nativeLaneRender(answerFor("response_language_demonstration", "en"), { canonical, surface, demonstration }),
+    confidence: 1.0,
+    evidence: [`language_to:${target}`, "response:response_language_demonstration"],
+  };
+}

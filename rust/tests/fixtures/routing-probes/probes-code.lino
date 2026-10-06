@@ -80,7 +80,7 @@ routing_probes
     language en
     intent code_debugging
     prompt "Why does this fail: def f(x): return x +"
-    js_misroute unknown
+    js_misroute meta_explanation
     rust_misroute unverified
   probe p055
     lane code_explanation
@@ -442,19 +442,16 @@ routing_probes
     language en
     intent shell_command_transform
     prompt "Make this a single line loop: sleep 5m && cleanup -f"
-    js_misroute unknown
   probe p251
     lane shell_command_transform
     language en
     intent shell_command_transform
     prompt "Make this an infinite loop: sleep 10m && cleanup-run -f"
-    js_misroute unknown
   probe p252
     lane shell_command_transform
     language en
     intent shell_command_transform
     prompt "Make this run in a loop forever: sleep 30m && hive-cleanup -f"
-    js_misroute unknown
   probe p253
     lane shell_refusal
     language en

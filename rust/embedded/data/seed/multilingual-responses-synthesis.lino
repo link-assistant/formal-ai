@@ -719,3 +719,39 @@ multilingual_responses
     intent coding_rosetta_capture_fetched
     language es
     text "Captura de fuente: se obtuvo {sha256}."
+  response response_meta_explanation_why_en
+    intent meta_explanation_why
+    language en
+    text "I answered that way because the prompt matched a deterministic Links Notation rule. The evidence links and trace events are appended to the log; see the trace link for the full chain."
+  response response_meta_explanation_why_ru
+    intent meta_explanation_why
+    language ru
+    text "Я ответил так, потому что запрос совпал с детерминированным правилом Links Notation. Evidence-ссылки и trace-события добавлены в журнал; по trace-ссылке можно проверить всю цепочку."
+  response response_meta_explanation_why_hi
+    intent meta_explanation_why
+    language hi
+    text "मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt deterministic Links Notation rule से मेल खाता था. evidence links और trace events log में जोड़े गए हैं; पूरी chain देखने के लिए trace link देखें."
+  response response_meta_explanation_why_zh
+    intent meta_explanation_why
+    language zh
+    text "我这样回答是因为该提示匹配了确定性的 Links Notation 规则。evidence links 和 trace events 已追加到日志中; 可通过 trace link 检查完整链路。"
+  response response_how_it_works_en
+    intent how_it_works
+    language en
+    text "Mechanism discovery plan for `{subject}`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {providers}. If no source explains the mechanism, it should ask for a source or a narrower term."
+  response response_how_it_works_ru
+    intent how_it_works
+    language ru
+    text "План поиска механизма для `{subject}`.\n\nЯ не отвечаю на это из зашитого факта. Решатель трактует запрос как вопрос о том, как устроен или работает `{subject}`: сначала проверяет Wikipedia для обзорного источника, затем Wikidata для связей сущности, затем веб-поиск через {providers}. Если источники не объясняют механизм, ответ должен попросить источник или более узкий термин, а не выдумывать детали."
+  response response_how_it_works_hi
+    intent how_it_works
+    language hi
+    text "`{subject}` के लिए mechanism discovery plan.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {providers}. If no source explains the mechanism, it should ask for a source or a narrower term."
+  response response_how_it_works_zh
+    intent how_it_works
+    language zh
+    text "`{subject}` 的机制发现计划。\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {providers}. If no source explains the mechanism, it should ask for a source or a narrower term."
+  response response_source_refresh_en
+    intent source_refresh
+    language en
+    text "Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified."
