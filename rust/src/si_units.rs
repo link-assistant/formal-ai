@@ -231,7 +231,7 @@ const fn gcd(mut a: i128, mut b: i128) -> i128 {
 }
 
 /// Reduce a rational to lowest terms.
-fn reduce(num: i128, den: i128) -> (i128, i128) {
+const fn reduce(num: i128, den: i128) -> (i128, i128) {
     let common = gcd(num, den);
     if common <= 1 {
         return (num, den);

@@ -1,10 +1,10 @@
 //! The recursive meta reasoner, ported by hand from JavaScript (R1012 of
 //! docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md).
 //!
-//! Originals: js/worker/formal_ai_worker_meta_reasoner.js (grounding, the
-//! core loop, answers), js/worker/formal_ai_worker_meta_synthesis.js (typed
+//! Originals: `js/worker/formal_ai_worker_meta_reasoner.js` (grounding, the
+//! core loop, answers), `js/worker/formal_ai_worker_meta_synthesis.js` (typed
 //! enumeration, inference, rendering, verification) and
-//! js/worker/formal_ai_worker_meta_composite.js (decomposition, memory). Every
+//! `js/worker/formal_ai_worker_meta_composite.js` (decomposition, memory). Every
 //! function names the JavaScript function it mirrors.
 //!
 //! Nothing here knows a task. Every word of a request starts as an unknown,
@@ -45,7 +45,7 @@ pub use value::Value;
 
 /// Search and grounding bounds.
 ///
-/// Mirrors `META_BOUNDS` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `META_BOUNDS` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Bounds {
     /// How deep a gloss is grounded.
@@ -100,7 +100,7 @@ pub struct TraceEvent {
 
 /// The trace recorder: numbered events in the order decisions were taken.
 ///
-/// Mirrors `metaTrace` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaTrace` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Trace {
     /// The events, in order.
@@ -110,7 +110,7 @@ pub struct Trace {
 impl Trace {
     /// Record one event.
     ///
-    /// Mirrors `trace.emit` of `metaTrace` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `trace.emit` of `metaTrace` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     pub fn emit(&mut self, kind: &str, detail: impl Into<String>) {
         self.events.push(TraceEvent {
             seq: self.events.len() + 1,

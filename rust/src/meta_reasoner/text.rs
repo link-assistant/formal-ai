@@ -1,7 +1,9 @@
-//! Request reading: words, value literals, examples and the definitions a
-//! request gives itself. JavaScript's regular expressions are written out as
-//! scanners here (the crate carries no regex engine), each following the
-//! backtracking order of the pattern it mirrors.
+//! Request reading.
+//!
+//! Words, value literals, examples and the definitions a request gives itself.
+//! JavaScript's regular expressions are written out as scanners here (the crate
+//! carries no regex engine), each following the backtracking order of the
+//! pattern it mirrors.
 
 use core::cmp::Ordering;
 
@@ -13,7 +15,7 @@ use super::value::Value;
 /// ECMAScript `WhiteSpace` and `LineTerminator`, what `String.prototype.trim`
 /// removes.
 ///
-/// Mirrors `trim()` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `trim()` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub const fn is_js_whitespace(character: char) -> bool {
     matches!(
@@ -31,7 +33,7 @@ pub const fn is_js_whitespace(character: char) -> bool {
 
 /// `String.prototype.trim`.
 ///
-/// Mirrors `trim()` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `trim()` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn js_trim(text: &str) -> &str {
     text.trim_matches(is_js_whitespace)
@@ -39,7 +41,7 @@ pub fn js_trim(text: &str) -> &str {
 
 /// The length of a string in UTF-16 code units, JavaScript's `length`.
 ///
-/// Mirrors `String.prototype.length` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `String.prototype.length` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn utf16_len(text: &str) -> usize {
     text.encode_utf16().count()
@@ -75,7 +77,7 @@ fn is_letter_or_number(character: char) -> bool {
 
 /// Lowercased word tokens of a text: maximal runs of `[\p{L}\p{N}_]`.
 ///
-/// Mirrors `metaWords` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaWords` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_words(text: &str) -> Vec<String> {
     let lowered = text.to_lowercase();
@@ -97,7 +99,7 @@ pub fn meta_words(text: &str) -> Vec<String> {
 /// True when a word is digits only (`/^\p{N}+$/u`).
 ///
 /// Mirrors the numeral test in `metaIsGrammatical`
-/// (js/worker/formal_ai_worker_meta_reasoner.js).
+/// (`js/worker/formal_ai_worker_meta_reasoner.js`).
 #[must_use]
 pub fn is_numeral(word: &str) -> bool {
     !word.is_empty() && word.chars().all(is_number)
@@ -360,7 +362,7 @@ fn is_path_character(character: char) -> bool {
 /// The value literals of a request with their positions: quoted strings,
 /// bracketed lists, paths and bare numbers.
 ///
-/// Mirrors `metaValueLiterals` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaValueLiterals` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_value_literals(prompt: &str) -> Vec<Literal> {
     let seed = meta_seed();
@@ -388,7 +390,7 @@ pub fn meta_value_literals(prompt: &str) -> Vec<Literal> {
 
 /// Input/output examples: two adjacent values joined by an example marker.
 ///
-/// Mirrors `metaExamples` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaExamples` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_examples(prompt: &str, literals: &[Literal]) -> Vec<Example> {
     let markers = meta_seed().cue_markers("example");
@@ -430,7 +432,7 @@ fn chars_until(text: &str, until: usize) -> &str {
 
 /// Definitions the request gives itself: `<term> is <definition>`.
 ///
-/// Mirrors `metaRequestDefinitions` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaRequestDefinitions` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_request_definitions(prompt: &str) -> Vec<Definition> {
     let seed = meta_seed();
@@ -465,10 +467,8 @@ pub fn meta_request_definitions(prompt: &str) -> Vec<Definition> {
 fn collation_class(character: char) -> u8 {
     if is_letter(character) {
         2
-    } else if is_number(character) {
-        1
     } else {
-        0
+        u8::from(is_number(character))
     }
 }
 
@@ -476,7 +476,7 @@ fn collation_class(character: char) -> u8 {
 /// before digits before letters, letters case-insensitively first, then by
 /// code point.
 ///
-/// Mirrors `localeCompare` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `localeCompare` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn locale_compare(left: &str, right: &str) -> Ordering {
     let key = |text: &str| -> Vec<(u8, String)> {

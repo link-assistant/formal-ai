@@ -32,7 +32,7 @@ pub struct MetaAnswer {
 /// an artifact or carry their own examples. A message with one request is
 /// returned whole.
 ///
-/// Mirrors `metaSubRequests` in js/worker/formal_ai_worker_meta_composite.js.
+/// Mirrors `metaSubRequests` in `js/worker/formal_ai_worker_meta_composite.js`.
 #[must_use]
 pub fn meta_sub_requests(prompt: &str) -> Vec<String> {
     let markers = meta_seed().cue_markers("artifact");
@@ -100,11 +100,13 @@ fn split_sentences(prompt: &str) -> Vec<String> {
         .collect()
 }
 
-/// The full loop: run the core, open the lookups its impasses asked for, run
-/// again with the new knowledge, until solved or the budget is spent. A
-/// message holding several requests is decomposed into sub-goals first.
+/// The full loop.
 ///
-/// Mirrors `metaReason` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Run the core, open the lookups its impasses asked for, run again with the
+/// new knowledge, until solved or the budget is spent. A message holding
+/// several requests is decomposed into sub-goals first.
+///
+/// Mirrors `metaReason` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 pub fn meta_reason(
     prompt: &str,
     language: &str,
@@ -159,7 +161,7 @@ pub fn meta_reason(
 /// Solve every sub-request as its own goal and compose the results. The
 /// composite is solved when every sub-goal is.
 ///
-/// Mirrors `metaReasonComposite` in js/worker/formal_ai_worker_meta_composite.js.
+/// Mirrors `metaReasonComposite` in `js/worker/formal_ai_worker_meta_composite.js`.
 fn meta_reason_composite(
     prompt: &str,
     requests: &[String],
@@ -276,7 +278,7 @@ fn open_unknowns_text(language: &str, terms: &str) -> String {
 /// `allow_open`, an unsolved synthesis goal answers with what is still
 /// unknown.
 ///
-/// Mirrors `metaAnswer` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaAnswer` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_answer(result: &MetaResult, allow_open: bool) -> Option<MetaAnswer> {
     if result.subgoals.is_some() {
@@ -406,7 +408,7 @@ pub fn meta_answer(result: &MetaResult, allow_open: bool) -> Option<MetaAnswer> 
 
 /// The composed answer: each sub-request with its own answer.
 ///
-/// Mirrors `metaCompositeAnswer` in js/worker/formal_ai_worker_meta_composite.js.
+/// Mirrors `metaCompositeAnswer` in `js/worker/formal_ai_worker_meta_composite.js`.
 fn meta_composite_answer(result: &MetaResult, allow_open: bool) -> Option<MetaAnswer> {
     let seed = meta_seed();
     let language = answer_language(result);

@@ -8,7 +8,7 @@
 # weight at all. code_query_cue rows carry the bounded query phrasings the
 # code collector recognizes, so a new query shape is a seed row, not a parser.
 #
-# The tiers and priors are data: the collectors only read them.
+# The tiers and priors are data — the collectors only read them.
 
 fact_check_sources
   source_tier

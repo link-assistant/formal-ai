@@ -131,7 +131,7 @@ jobs:
           EXPECT_FILE: main.py
           EXPECT_FILES: |
             tests/verify-output.sh
-            .github/workflows/run.yml
+            .github/workflows/main.yml
           EXPECT_TEXT: Saffron 61!
           EXPECT_AGENT_TEXTS: |
             Created and verified

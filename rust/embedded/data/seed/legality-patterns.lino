@@ -1,6 +1,6 @@
 # Request-legality pattern catalogue (issue #836).
 #
-# Advisory, not policing: each `pattern` names one category of request the
+# Advisory, not policing — each `pattern` names one category of request the
 # agent should warn about before acting, with the disposition (refuse for
 # the narrow prohibited set, warn for everything else), the reason a user
 # can read, and the jurisdiction note that legality varies. Trigger
@@ -15,7 +15,7 @@
 # The agent renders the warning through the templates in
 # data/seed/multilingual-responses-legality.lino; no warning text lives in
 # Rust. Read by rust/src/legality_warning.rs through
-# crate::seed::seed_files().
+# `crate::seed::seed_files()`.
 legality_patterns
   pattern refuse_csam
     category child_safety

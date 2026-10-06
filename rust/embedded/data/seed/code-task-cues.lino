@@ -7,7 +7,7 @@
 # Phrases are matched as substrings of the normalized prompt (which collapses
 # punctuation to spaces and lowercases) and of the raw prompt lowercased.
 #
-# `map` records hold the word→value vocabulary the composers consult:
+# `map` records hold the word→value vocabulary the composers consult —
 # numbers, regex separators and classes, SQL comparatives, shell extensions,
 # size units, and the test-property slugs. Rust holds no cue literals.
 #

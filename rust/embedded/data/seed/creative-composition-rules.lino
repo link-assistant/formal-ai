@@ -1,6 +1,6 @@
 # Creative-composition rules and knowledge (issue #1178, E143).
 #
-# Everything the four composition handlers consult lives here as data:
+# Everything the four composition handlers consult lives here as data —
 # writing forms and their default constraints, spelled numbers, the English
 # rhyme classes (grounded in Wiktionary's Rhymes pages), the stated
 # pronunciation-coverage gap for the other languages, verse-line skeletons
@@ -64,7 +64,7 @@ creative_composition_rules
     es soneto
   # ---------------------------------------------------------- request cues
   # Recognition words the handlers test the request against beyond the role
-  # lexicon: a stated line count (substring), a stated rhyme scheme literal,
+  # lexicon — a stated line count (substring), a stated rhyme scheme literal,
   # a bare rhyme request (falls back to its scheme), the brainstorm length
   # cap, and the exclusion marker whose following tokens name excluded words.
   request_cue

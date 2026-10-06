@@ -115,7 +115,7 @@ fn learned_snapshot() -> BTreeMap<String, Chunk> {
 /// Forget every learned chunk (a fresh session).
 ///
 /// Mirrors clearing `metaLearnedChunks` / `metaNewChunks` in
-/// js/worker/formal_ai_worker_meta_reasoner.js.
+/// `js/worker/formal_ai_worker_meta_reasoner.js`.
 pub fn forget_learned() {
     lock(&LEARNED_CHUNKS).clear();
     lock(&NEW_CHUNKS).clear();
@@ -124,7 +124,7 @@ pub fn forget_learned() {
 /// Explanation-based learning: a word grounded only through a capture
 /// becomes a chunk keyed by the word once a program used its operation.
 ///
-/// Mirrors `metaLearn` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaLearn` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 fn meta_learn(groundings: &[Grounding], steps: &[Step], trace: &mut Trace) {
     let catalog = catalog();
     let mut used = Vec::new();
@@ -168,7 +168,7 @@ fn sorted_chunks(store: &BTreeMap<String, Chunk>) -> Vec<(&String, &Chunk)> {
 
 /// Learned chunks as links notation, so a session can persist them.
 ///
-/// Mirrors `metaLearnedLino` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaLearnedLino` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_learned_lino() -> String {
     let store = learned_snapshot();
@@ -184,7 +184,8 @@ pub fn meta_learned_lino() -> String {
 /// Load learned chunks from the app's memory statements
 /// (`meta_learned_chunk` records); returns how many were loaded.
 ///
-/// Mirrors `metaImportLearned` in js/worker/formal_ai_worker_meta_composite.js.
+/// Mirrors `metaImportLearned` in `js/worker/formal_ai_worker_meta_composite.js`.
+#[must_use]
 pub fn import_learned(memory: &[String]) -> usize {
     let mut loaded = 0;
     for statement in memory {
@@ -224,7 +225,7 @@ pub fn import_learned(memory: &[String]) -> usize {
 /// The chunks learned since the last call, as one `meta_learned_chunk`
 /// statement for the memory store to append, or `None`.
 ///
-/// Mirrors `metaTakeLearned` in js/worker/formal_ai_worker_meta_composite.js.
+/// Mirrors `metaTakeLearned` in `js/worker/formal_ai_worker_meta_composite.js`.
 #[must_use]
 pub fn take_learned() -> Option<String> {
     let taken = core::mem::take(&mut *lock(&NEW_CHUNKS));
@@ -245,7 +246,7 @@ pub fn take_learned() -> Option<String> {
 /// The derivation as links notation: goal, unknowns, program, verification
 /// and every trace event in order, then each sub-goal's derivation.
 ///
-/// Mirrors `metaDerivationLino` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaDerivationLino` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_derivation_lino(result: &MetaResult) -> String {
     let mut lines = vec![
@@ -293,7 +294,7 @@ pub fn meta_derivation_lino(result: &MetaResult) -> String {
 /// rendered program is JavaScript for Node; the Rust engine does not run
 /// Node, so like the web worker it offers no environment.
 ///
-/// Mirrors `metaEnvironmentAvailable` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaEnvironmentAvailable` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 const fn environment_available(environment: &str) -> bool {
     environment.is_empty()
 }
@@ -315,7 +316,7 @@ struct Request<'a> {
 /// The synchronous core: parse, open unknowns, ground them, plan and verify.
 /// `knowledge` maps a word to dictionary senses already fetched.
 ///
-/// Mirrors `metaReasonCore` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaReasonCore` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> MetaResult {
     let seed = meta_seed();
@@ -496,7 +497,7 @@ pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> 
 }
 
 /// The `synthesize_from_examples` branch of `metaReasonCore`
-/// (js/worker/formal_ai_worker_meta_reasoner.js).
+/// (`js/worker/formal_ai_worker_meta_reasoner.js`).
 fn solve_from_examples(result: &mut MetaResult, groundings: &[Grounding], evidence: &[f64]) {
     let catalog = catalog();
     let Some(found) =
@@ -539,7 +540,7 @@ fn solve_from_examples(result: &mut MetaResult, groundings: &[Grounding], eviden
 }
 
 /// The `synthesize_from_meaning` branch of `metaReasonCore`
-/// (js/worker/formal_ai_worker_meta_reasoner.js).
+/// (`js/worker/formal_ai_worker_meta_reasoner.js`).
 fn solve_from_meaning(
     result: &mut MetaResult,
     request: &Request<'_>,

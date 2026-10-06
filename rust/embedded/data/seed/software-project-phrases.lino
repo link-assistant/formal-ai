@@ -1,14 +1,14 @@
 # Software-project request phrase vocabulary (issues #1138, #1175).
 #
 # The object-phrase discipline of rust/src/solver_handlers/
-# software_project_phrases.rs reads every surface from this file: the words
+# software_project_phrases.rs reads every surface from this file — the words
 # that close an authoring verb's object noun phrase (so the artifact kind is
 # the head the verb governs, never an incidental modifier), the determiners
 # and benefactives that may lead the phrase without belonging to it, and the
 # punctuation that ends a phrase or a sentence. The recognition algorithm is
 # compiled; the vocabulary is data, one meaning per table, so extending the
 # languages covered needs no Rust change. Every record is defined by the
-# statement function-word genus: these surfaces carry grammatical structure,
+# statement function-word genus — these surfaces carry grammatical structure,
 # not lexical content.
 
 meanings

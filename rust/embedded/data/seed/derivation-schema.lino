@@ -6,7 +6,7 @@
 # printed by `formal-ai explain <answer-id>`.
 #
 # This document declares the record's shape and stage vocabulary so the
-# structure is data, not Rust: the record heads and field names below are
+# structure is data, not Rust — the record heads and field names below are
 # the ones rust/src/derivation.rs writes and reads, and the stage kinds are
 # the EventLog kinds it projects.
 derivation_schema
@@ -26,26 +26,26 @@ derivation_schema
       field command "the exact command line as issued"
       field exit "the process exit status, or none when the route reported none"
   stage
-    kind web_search:request
+    kind "web_search:request"
     collects search_query
   stage
-    kind source:http
+    kind "source:http"
     collects fetch
     note "two payload spellings are read: SourceCapture trace_payload (leading bare url, space-separated fields) and the coding synthesis runtime's semicolon-separated url= form"
   stage
-    kind formalize:fragment
+    kind "formalize:fragment"
     collects formalized_fragment
   stage
-    kind decompose:part
+    kind "decompose:part"
     collects decomposed_part
   stage
-    kind recompose:bind
+    kind "recompose:bind"
     collects recomposition
   stage
-    kind render:emit
+    kind "render:emit"
     collects rendering
   stage
-    kind verify:evidence
+    kind "verify:evidence"
     collects verification
     note "payload fields evidence_id, command, exit; appended by the verifiable-task route"
   convention

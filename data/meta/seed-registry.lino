@@ -121,6 +121,7 @@ seed_registry
     web true
   seed handler-promotions
     bundle true
+    web true
   seed handler-rules
     bundle true
     web true

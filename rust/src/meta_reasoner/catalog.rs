@@ -1,7 +1,8 @@
-//! The typed instruction set as the enumerator walks it: interned operation
-//! ids and types, the measures a list can be filtered by, the steps that
-//! extend a program of each type, and rendering of a program as the
-//! JavaScript the answer shows.
+//! The typed instruction set as the enumerator walks it.
+//!
+//! Interned operation ids and types, the measures a list can be filtered by,
+//! the steps that extend a program of each type, and rendering of a program as
+//! the JavaScript the answer shows.
 //!
 //! The JavaScript materialises every program of a length as an array; there
 //! are millions at length three, so here the same programs are visited in
@@ -108,13 +109,13 @@ const LIST_PREFIX: &str = "list_";
 /// Whether a type name denotes a list (`list_text`, `list_any`, ...).
 ///
 /// Mirrors the `type.startsWith("list_")` tests of
-/// js/worker/formal_ai_worker_meta_synthesis.js.
+/// `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn is_list_type(name: &str) -> bool {
     name.strip_prefix(LIST_PREFIX).is_some()
 }
 
-/// Mirrors `metaApply` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaApply` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn apply_type(from: &str, to: &str, input: &str) -> Option<String> {
     if from == input || (from == "list_any" && is_list_type(input)) {
@@ -288,7 +289,7 @@ impl Catalog {
     /// parameter-free program from the element type to a number, and a number
     /// element itself.
     ///
-    /// Mirrors `metaMeasures` in js/worker/formal_ai_worker_meta_synthesis.js.
+    /// Mirrors `metaMeasures` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     fn build_measures(&mut self, element: &str, seed_count: usize) -> Vec<u32> {
         let mut out = Vec::new();
         if element == "number" {
@@ -386,7 +387,7 @@ impl Catalog {
     }
 
     /// The steps that extend a program of type `name`, in the order
-    /// `metaPrograms` (js/worker/formal_ai_worker_meta_synthesis.js) appends them.
+    /// `metaPrograms` (`js/worker/formal_ai_worker_meta_synthesis.js`) appends them.
     fn build_extensions(
         &self,
         name: &str,
@@ -468,7 +469,7 @@ impl Catalog {
     }
 
     /// Visit every typed program from `from` of exactly `length` steps, in
-    /// the order `metaPrograms` (js/worker/formal_ai_worker_meta_synthesis.js)
+    /// the order `metaPrograms` (`js/worker/formal_ai_worker_meta_synthesis.js`)
     /// lists them. `types[i]` is the type before step `i`; the last entry is
     /// the program's type. The walk stops after `ceiling` programs.
     pub fn for_each_program(
@@ -517,7 +518,7 @@ impl Catalog {
 
     /// A step's operations for evidence scoring.
     ///
-    /// Mirrors `metaStepOperations` in js/worker/formal_ai_worker_meta_synthesis.js.
+    /// Mirrors `metaStepOperations` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     pub fn step_ops(&self, step: Step, out: &mut Vec<OpId>) {
         let prim = self.prim(step);
         if step.rewrite {
@@ -543,7 +544,7 @@ impl Catalog {
     /// A step's operations with a filter's measure folded into the filter.
     ///
     /// Mirrors `step.filter ? [step.filter.id] : metaStepOperations(step)` in
-    /// js/worker/formal_ai_worker_meta_synthesis.js.
+    /// `js/worker/formal_ai_worker_meta_synthesis.js`.
     pub fn main_ops(&self, step: Step, out: &mut Vec<OpId>) {
         if let Some(filter) = step.filter {
             out.push(self.filters[usize::from(filter)].op);
@@ -554,7 +555,7 @@ impl Catalog {
 
     /// True when a step takes the program's parameter.
     ///
-    /// Mirrors `metaStepIsParametric` in js/worker/formal_ai_worker_meta_synthesis.js.
+    /// Mirrors `metaStepIsParametric` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
     pub fn is_parametric(&self, step: Step) -> bool {
         step.filter.is_some() || !self.prim(step).infer.is_empty()
@@ -562,7 +563,7 @@ impl Catalog {
 
     /// The environment one program step needs (`node` for the file system).
     ///
-    /// Mirrors `metaStepEnvironment` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaStepEnvironment` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn step_environment(&self, step: Step) -> &str {
         if step.rewrite {
@@ -573,7 +574,7 @@ impl Catalog {
 
     /// A short label for one program step.
     ///
-    /// Mirrors `metaStepLabel` in js/worker/formal_ai_worker_meta_synthesis.js.
+    /// Mirrors `metaStepLabel` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
     pub fn step_label(&self, step: Step) -> String {
         let id = &self.prim(step).id;
@@ -597,7 +598,7 @@ impl Catalog {
 
     /// The in-place edit of one file by a text transformation.
     ///
-    /// Mirrors `metaRewriteCode` in js/worker/formal_ai_worker_meta_synthesis.js.
+    /// Mirrors `metaRewriteCode` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
     pub fn rewrite_code_for(&self, code: &str) -> String {
         self.rewrite_code.replace("{f}", code)
@@ -606,7 +607,7 @@ impl Catalog {
     /// Render a program as the JavaScript the answer shows and the verifier
     /// runs. `parameter` is the JavaScript text of the parameter.
     ///
-    /// Mirrors `metaRender` in js/worker/formal_ai_worker_meta_synthesis.js.
+    /// Mirrors `metaRender` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
     pub fn render(&self, steps: &[Step], parameter: &str) -> String {
         let mut lines = vec![

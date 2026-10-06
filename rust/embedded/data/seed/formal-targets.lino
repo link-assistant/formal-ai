@@ -1,18 +1,18 @@
 # Formalization-target grammar for the user-facing formalization task
 # (issue #1186, E150).
 #
-# The `cues` records trigger the handler: `command_*` roles carry the
+# The `cues` records trigger the handler — `command_*` roles carry the
 # formalize/deformalize verbs per request language (the role name's suffix
 # is the language the answer renders in), and the `target` role lists the
 # alias surfaces that name a formal target inside the prompt.
 #
-# The `formal_language` records hold each target's rendering grammar:
+# The `formal_language` records hold each target's rendering grammar —
 # atom templates, join symbols, quantifier symbols, and the two clause
 # shapes (conditional for universal readings, conjunctive for existential
 # and negative readings). The `natural_language` records hold the surfaces
 # the parser recognizes (quantifier words, join words, relative markers,
 # object-introducing articles, droppable words) and the deformalization
-# templates. Nothing here is keyed to a particular probe sentence: predicate
+# templates. Nothing here is keyed to a particular probe sentence — predicate
 # symbols derive from the sentence's own words at parse time.
 #
 # Read by `rust/src/solver_handlers/formalization_task.rs` through

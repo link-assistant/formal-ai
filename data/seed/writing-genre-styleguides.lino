@@ -3,7 +3,7 @@
 # The genre-writing handler reads this file. action_cue records name the
 # request shapes that ask for a piece of genre writing and carry the genre
 # they select (the cue must appear in the command head). Each genre record
-# holds the styleguide it follows and the slot grammar the handler fills:
+# holds the styleguide it follows and the slot grammar the handler fills —
 # commit_message composes a Conventional Commits line from the described
 # change, and email composes a business email from the stated intent and
 # reason. The frames are data; the handler only fills their slots from the

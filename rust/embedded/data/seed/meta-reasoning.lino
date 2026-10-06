@@ -1,14 +1,14 @@
 # The recursive meta reasoner's data (2026-10-06 meta-algorithm doctrine).
 #
-# js/worker/formal_ai_worker_meta_reasoner.js is domain-free: it knows how to
+# js/worker/formal_ai_worker_meta_reasoner.js is domain-free — it knows how to
 # open unknowns, rank hypotheses, recurse into what a definition itself left
 # unknown, enumerate typed programs and verify them against the request's own
-# examples. Everything it *reads* lives here:
+# examples. Everything it *reads* lives here —
 #
 #   cue          request-shape markers (how a definition, an example, an
 #                artifact request, a question or a universal quantifier is
 #                written) per language. A universal quantifier ("every file")
-#                says the program iterates: it ranks programs that pass
+#                says the program iterates — it ranks programs that pass
 #                through a list above ones that never do.
 #   grammatical  words whose dictionary part of speech is a closed class
 #                (article, preposition, conjunction, pronoun, auxiliary). It is
@@ -18,16 +18,16 @@
 #                documented name (reverses -> reverse).
 #   primitive    the instruction set programs are composed from. `doc` is the
 #                operation's own documentation (the wording its language
-#                reference uses), never a list of request words: a request
+#                reference uses), never a list of request words — a request
 #                word reaches a primitive only through that documentation or
 #                through a dictionary definition that shares its words.
 #                `code` is the JavaScript the answer shows and the verifier
 #                runs; `infer` derives a parameter from one example pair;
-#                `environment` names a runtime the operation needs (node:
+#                `environment` names a runtime the operation needs (node —
 #                the file system), so it is not probed where that is absent;
 #                `effect true` marks an operation that acts on the world
 #                (prints, exits, runs), which never serves as a measure.
-#   filter       a comparison a list is filtered by: the element's measure
+#   filter       a comparison a list is filtered by — the element's measure
 #                (any primitive to a number, or the number itself) against a
 #                threshold inferred from the examples or read from the request.
 #   probe        sample inputs per type, run when a request gives no example;
@@ -38,7 +38,7 @@
 #                kind; {name} slots are filled from the decision.
 #   impasse      answer intents by which a specialized handler admits it could
 #                not do the task (an exact intent, or a `suffix`). Such an
-#                answer is an impasse, not a result: the turn is handed to the
+#                answer is an impasse, not a result — the turn is handed to the
 #                general loop, which answers when it can derive a program.
 
 meta_reasoning
@@ -458,7 +458,7 @@ meta_reasoning
   note stated_path
     text "{path} is a path: the program takes a path"
   note universal
-    text "\"{word}\" quantifies universally: the program iterates"
+    text "“{word}” quantifies universally — the program iterates"
   note measure_unit
     text "{word} follows the bound {bound}: it names the measure"
   note parameter

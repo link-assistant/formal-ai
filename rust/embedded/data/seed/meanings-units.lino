@@ -1345,7 +1345,7 @@ meanings
         text largo
       surface
         text longitud
-  # Recognition cue for unit-conversion questions (issue #1176): one of these
+  # Recognition cue for unit-conversion questions (issue #1176) — one of these
   # surfaces plus a number and two known units is a conversion request. Common
   # words such as "in" or "to" only open the gate; the unit pair decides.
   unit_conversion_question

@@ -1,7 +1,8 @@
 //! Runtime values of the instruction set, with the JavaScript semantics the
-//! seed's `code` fields are written in: `JSON.stringify` equality, number
-//! formatting, `<` ordering, `Set` identity and the coercions the operators
-//! apply.
+//! seed's `code` fields are written in.
+//!
+//! `JSON.stringify` equality, number formatting, `<` ordering, `Set` identity
+//! and the coercions the operators apply.
 //!
 //! Equality and ordering here are exact on purpose: the JavaScript verifier
 //! compares serialised values, so a float compared with `==` is the semantics,
@@ -38,7 +39,7 @@ impl Value {
     /// instruction set and yield `None`.
     ///
     /// Mirrors `JSON.parse` as used by `metaValueLiterals` in
-    /// js/worker/formal_ai_worker_meta_reasoner.js.
+    /// `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn from_json(json: &Json) -> Option<Self> {
         match json {
@@ -58,7 +59,7 @@ impl Value {
     /// Parse JSON text into a value.
     ///
     /// Mirrors `JSON.parse` in `metaValueLiterals` and the probe samples of
-    /// `metaReasonCore` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// `metaReasonCore` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn parse_json(text: &str) -> Option<Self> {
         serde_json::from_str::<Json>(text)
@@ -69,7 +70,7 @@ impl Value {
     /// The value serialised exactly as `JSON.stringify` does.
     ///
     /// Mirrors `JSON.stringify` as used throughout
-    /// js/worker/formal_ai_worker_meta_synthesis.js.
+    /// `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
     pub fn to_json(&self) -> String {
         match self {
@@ -92,7 +93,7 @@ impl Value {
 
     /// The type of a runtime value in the instruction set's vocabulary.
     ///
-    /// Mirrors `metaTypeOf` in js/worker/formal_ai_worker_meta_synthesis.js.
+    /// Mirrors `metaTypeOf` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
     pub fn type_name(&self) -> &'static str {
         match self {
@@ -114,7 +115,7 @@ impl Value {
     /// True for a JavaScript string (text or path).
     ///
     /// Mirrors `typeof value === "string"` in `metaTypeOf`
-    /// (js/worker/formal_ai_worker_meta_synthesis.js).
+    /// (`js/worker/formal_ai_worker_meta_synthesis.js`).
     #[must_use]
     pub const fn is_string(&self) -> bool {
         matches!(self, Self::Text(_) | Self::Path(_))
@@ -123,7 +124,7 @@ impl Value {
     /// The string of a text or path value.
     ///
     /// Mirrors a JavaScript string operand in the seed's `code`
-    /// (js/worker/formal_ai_worker_meta_synthesis.js `metaCompile`).
+    /// (`js/worker/formal_ai_worker_meta_synthesis.js` `metaCompile`).
     #[must_use]
     pub fn as_str(&self) -> Option<&str> {
         match self {
@@ -135,7 +136,7 @@ impl Value {
     /// The items of a list value.
     ///
     /// Mirrors a JavaScript array operand in the seed's `code`
-    /// (js/worker/formal_ai_worker_meta_synthesis.js `metaCompile`).
+    /// (`js/worker/formal_ai_worker_meta_synthesis.js` `metaCompile`).
     #[must_use]
     pub fn as_list(&self) -> Option<&[Self]> {
         match self {
@@ -147,7 +148,7 @@ impl Value {
     /// `String(value)`.
     ///
     /// Mirrors JavaScript `ToString`, used by `Array.prototype.join` in the
-    /// seed's `code` (js/worker/formal_ai_worker_meta_synthesis.js).
+    /// seed's `code` (`js/worker/formal_ai_worker_meta_synthesis.js`).
     #[must_use]
     pub fn to_js_string(&self) -> String {
         match self {
@@ -162,7 +163,7 @@ impl Value {
     /// `Number(value)`.
     ///
     /// Mirrors JavaScript `ToNumber`, applied by the arithmetic operators in
-    /// the seed's `code` and `infer` (js/worker/formal_ai_worker_meta_synthesis.js).
+    /// the seed's `code` and `infer` (`js/worker/formal_ai_worker_meta_synthesis.js`).
     #[must_use]
     pub fn to_js_number(&self) -> f64 {
         match self {
@@ -184,7 +185,7 @@ impl Value {
 /// `Array.prototype.join(separator)`: `null` items become empty strings.
 ///
 /// Mirrors the `join` calls in the seed's `code`
-/// (js/worker/formal_ai_worker_meta_synthesis.js `metaCompile`).
+/// (`js/worker/formal_ai_worker_meta_synthesis.js` `metaCompile`).
 #[must_use]
 pub fn js_join(items: &[Value], separator: &str) -> String {
     items
@@ -202,7 +203,7 @@ pub fn js_join(items: &[Value], separator: &str) -> String {
 
 /// A string as a JSON string literal.
 ///
-/// Mirrors `JSON.stringify(string)` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `JSON.stringify(string)` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn json_string(text: &str) -> String {
     serde_json::to_string(text).unwrap_or_default()
@@ -212,7 +213,7 @@ pub fn json_string(text: &str) -> String {
 /// ECMAScript `Number::toString` rules.
 ///
 /// Mirrors `String(parameter)` in `metaRender`
-/// (js/worker/formal_ai_worker_meta_synthesis.js).
+/// (`js/worker/formal_ai_worker_meta_synthesis.js`).
 #[must_use]
 pub fn js_number(value: f64) -> String {
     if value.is_nan() {
@@ -306,7 +307,7 @@ fn to_primitive(value: &Value) -> Primitive {
 /// compare by UTF-16 code units, anything else numerically.
 ///
 /// Mirrors the `sort_list` comparator `(a < b ? -1 : a > b ? 1 : 0)` in
-/// data/seed/meta-reasoning.lino, run by js/worker/formal_ai_worker_meta_synthesis.js.
+/// data/seed/meta-reasoning.lino, run by `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn js_less(left: &Value, right: &Value) -> bool {
     match (to_primitive(left), to_primitive(right)) {
@@ -328,7 +329,7 @@ fn primitive_number(value: &Primitive) -> f64 {
 /// objects, so two lists are never the same value.
 ///
 /// Mirrors `new Set(input)` in the `unique_items` code of
-/// data/seed/meta-reasoning.lino (js/worker/formal_ai_worker_meta_synthesis.js).
+/// data/seed/meta-reasoning.lino (`js/worker/formal_ai_worker_meta_synthesis.js`).
 #[must_use]
 pub fn same_value_zero(left: &Value, right: &Value) -> bool {
     match (left, right) {
@@ -344,7 +345,7 @@ pub fn same_value_zero(left: &Value, right: &Value) -> bool {
 /// specification picks the larger candidate.
 ///
 /// Mirrors `score.toFixed(2)` in `metaGround`
-/// (js/worker/formal_ai_worker_meta_reasoner.js).
+/// (`js/worker/formal_ai_worker_meta_reasoner.js`).
 #[must_use]
 pub fn to_fixed2(value: f64) -> String {
     let doubled = value * 200.0;
@@ -353,7 +354,7 @@ pub fn to_fixed2(value: f64) -> String {
         && (doubled / 200.0) == value
         && (doubled.abs() % 2.0) == 1.0;
     if exact_tie {
-        let rounded = (doubled + doubled.signum()) / 2.0;
+        let rounded = doubled.midpoint(doubled.signum());
         return format!("{:.2}", rounded / 100.0);
     }
     format!("{value:.2}")

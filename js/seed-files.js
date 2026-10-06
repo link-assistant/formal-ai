@@ -27,6 +27,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/formalization-relations.lino",
   "seed/greetings.lino",
   "seed/handler-precedence.lino",
+  "seed/handler-promotions.lino",
   "seed/handler-rules.lino",
   "seed/hello-world-programs.lino",
   "seed/identity.lino",

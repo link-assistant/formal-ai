@@ -1,6 +1,6 @@
 # Response templates for the TRIZ/contradiction solver (issue #901).
 #
-# The answer teaches the resolution shapes as data: the families come from
+# The answer teaches the resolution shapes as data — the families come from
 # data/seed/triz-principles.lino (twelve general paradox-resolution
 # families plus the forty inventive principles), the precedents are the
 # top-20 benchmark tasks, and the link note explains that a contradiction

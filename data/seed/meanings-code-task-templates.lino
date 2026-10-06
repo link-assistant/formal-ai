@@ -5,7 +5,7 @@
 # values and class labels in code-task-cues.lino, package values in
 # manual-pages.lino), so the closure audit resolves them as authored
 # meanings instead of counting them as unresolved references. No lexeme
-# children: these are response shapes and routing vocabulary, not surfaces.
+# children — these are response shapes and routing vocabulary, not surfaces.
 meanings
   code_debugging_defect
     defined-by method

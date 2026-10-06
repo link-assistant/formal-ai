@@ -1,6 +1,6 @@
 # Statement-audit claim exclusions (issue #1179).
 #
-# The structured extractor turned every `key: value` line of a TOML/YAML/JSON
+# The structured extractor turned every `key — value` line of a TOML/YAML/JSON
 # document into an exclusive claim, so a GitHub Actions workflow with N steps
 # produced one contradiction per repeated step key -- 8,179 contradictions on
 # this repository, every one a YAML key collision, none a wrong statement.
@@ -12,7 +12,7 @@
 # predicate rows derived from them are excluded from contradiction weighing so
 # audits recorded in the legacy format still read clean.
 #
-# The data is the policy: widening or narrowing what counts as a stated fact is
+# The data is the policy — widening or narrowing what counts as a stated fact is
 # a seed edit, not a code edit.
 
 statement_audit_exclusions

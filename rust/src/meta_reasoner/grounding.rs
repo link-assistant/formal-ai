@@ -1,7 +1,9 @@
-//! Grounding: every word of a request starts as an unknown and is grounded
-//! from a definition the request gives, a learned chunk, the instruction
-//! set's documentation, then the glosses of its dictionary captures, whose own
-//! words are grounded one level deeper.
+//! Grounding.
+//!
+//! Every word of a request starts as an unknown and is grounded from a
+//! definition the request gives, a learned chunk, the instruction set's
+//! documentation, then the glosses of its dictionary captures, whose own words
+//! are grounded one level deeper.
 
 use std::collections::BTreeMap;
 
@@ -66,7 +68,7 @@ impl Grounding {
 
     /// The hypotheses tied with the strongest one.
     ///
-    /// Mirrors `top` in `metaClauses` (js/worker/formal_ai_worker_meta_reasoner.js).
+    /// Mirrors `top` in `metaClauses` (`js/worker/formal_ai_worker_meta_reasoner.js`).
     #[must_use]
     pub fn top(&self) -> Vec<&Hypothesis> {
         let Some(first) = self.hypotheses.first() else {
@@ -115,7 +117,7 @@ fn indent_for(depth: usize) -> String {
 /// the glosses of its dictionary captures, whose own words are grounded one
 /// level deeper.
 ///
-/// Mirrors `metaGround` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaGround` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[String]) -> Grounding {
     let seed = meta_seed();
     let indent = indent_for(depth);
@@ -233,7 +235,7 @@ pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[Stri
 /// or its glosses vouch for operations (Lesk-style support).
 ///
 /// Mirrors the `senses.length && depth === 0` branch of `metaGround` in
-/// js/worker/formal_ai_worker_meta_reasoner.js.
+/// `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[allow(clippy::cast_precision_loss)]
 fn ground_through_glosses(
     word: &str,
@@ -253,11 +255,11 @@ fn ground_through_glosses(
     // The word names the artifact's frame when a salient gloss is mostly
     // about it, not when one word of a long gloss happens to match.
     let frame = salient.iter().find(|sense| {
-        let content: Vec<String> = meta_words(&sense.gloss)
+        let gloss_words: Vec<String> = meta_words(&sense.gloss)
             .into_iter()
             .filter(|token| !seed.is_grammatical(token))
             .collect();
-        let framing = content
+        let framing = gloss_words
             .iter()
             .filter(|token| {
                 frame_markers
@@ -265,7 +267,7 @@ fn ground_through_glosses(
                     .any(|marker| token.starts_with(marker.trim()))
             })
             .count();
-        !content.is_empty() && framing as f64 / content.len() as f64 >= BOUNDS.gloss_support
+        !gloss_words.is_empty() && framing as f64 / gloss_words.len() as f64 >= BOUNDS.gloss_support
     });
     if let Some(frame) = frame {
         context.trace.emit(
@@ -289,17 +291,17 @@ fn ground_through_glosses(
     let mut deeper = stack.to_vec();
     deeper.push(word.to_owned());
     for sense in salient {
-        // Lesk-style support: the share of the gloss's content words whose
+        // Lesk-style support: the share of the gloss's gloss_words words whose
         // specific meaning is the operation.
-        let content: Vec<String> = meta_words(&sense.gloss)
+        let gloss_words: Vec<String> = meta_words(&sense.gloss)
             .into_iter()
             .filter(|token| !seed.is_grammatical(token))
             .collect();
-        if content.is_empty() {
+        if gloss_words.is_empty() {
             continue;
         }
         let mut unique: Vec<&String> = Vec::new();
-        for token in &content {
+        for token in &gloss_words {
             if !unique.contains(&token) {
                 unique.push(token);
             }
@@ -331,7 +333,7 @@ fn ground_through_glosses(
         for (operation, count) in support {
             // A majority of the gloss's grounded words, and a real share of
             // all its words; words grounded nowhere are neutral.
-            let score = count as f64 / content.len() as f64;
+            let score = count as f64 / gloss_words.len() as f64;
             if score < BOUNDS.gloss_support || count * 2 <= grounded {
                 continue;
             }
@@ -392,7 +394,7 @@ fn ground_through_glosses(
 
 /// Ground every content word of a text and merge the operation evidence.
 ///
-/// Mirrors `metaGroundText` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaGroundText` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 pub fn ground_text(
     text: &str,
     context: &mut Context<'_>,
@@ -438,7 +440,7 @@ pub struct Clause {
 /// The request's coordinated clauses, each with its head action (the first
 /// grounded word's operations) and the type its object noun denotes.
 ///
-/// Mirrors `metaClauses` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaClauses` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 pub fn meta_clauses(text: &str, groundings: &[Grounding], trace: &mut Trace) -> Vec<Clause> {
     let seed = meta_seed();
     let mut parts = vec![[" ", &text.to_lowercase(), " "].concat()];

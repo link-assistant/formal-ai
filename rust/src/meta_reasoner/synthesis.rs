@@ -1,7 +1,8 @@
-//! Synthesis: typed programs enumerated over the instruction set, shortest
-//! first; examples are the goal state (difference = failing examples), and
-//! without examples the grounded words and the request's clause order rank
-//! the programs.
+//! Synthesis.
+//!
+//! Typed programs enumerated over the instruction set, shortest first; examples
+//! are the goal state (difference = failing examples), and without examples the
+//! grounded words and the request's clause order rank the programs.
 #![allow(clippy::float_cmp, clippy::cast_precision_loss)]
 
 use std::cmp::Ordering;
@@ -16,9 +17,11 @@ use super::text::Example;
 use super::value::Value;
 use super::{BOUNDS, Trace};
 
-/// The most programs one enumeration visits. The JavaScript materialises
-/// every program of a length and runs out of memory long before this; the
-/// bound only keeps a request the JavaScript cannot answer from stalling.
+/// The most programs one enumeration visits.
+///
+/// The JavaScript materialises every program of a length and runs out of memory
+/// long before this; the bound only keeps a request the JavaScript cannot
+/// answer from stalling.
 pub const ENUMERATION_CEILING: usize = 4_000_000;
 
 /// A program found from examples.
@@ -61,7 +64,7 @@ pub struct Verification {
 /// The labels of a program's steps joined by the composition sign.
 ///
 /// Mirrors `program.steps.map(metaStepLabel).join(" ∘ ")` in
-/// js/worker/formal_ai_worker_meta_synthesis.js.
+/// `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn program_label(catalog: &Catalog, steps: &[Step]) -> String {
     steps
@@ -92,7 +95,7 @@ fn distinct_ops(catalog: &Catalog, steps: &[Step], main: bool, out: &mut Vec<OpI
 
 /// Evidence for a program: the grounded score of every operation it uses.
 ///
-/// Mirrors `metaEvidenceScore` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaEvidenceScore` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn evidence_score(catalog: &Catalog, steps: &[Step], evidence: &[f64]) -> f64 {
     let mut ops = Vec::new();
@@ -107,7 +110,7 @@ pub fn evidence_score(catalog: &Catalog, steps: &[Step], evidence: &[f64]) -> f6
 /// Run a program on every example; the verifier never trusts the
 /// enumerator's own evaluation.
 ///
-/// Mirrors `metaVerify` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaVerify` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn verify(
     catalog: &Catalog,
@@ -177,7 +180,7 @@ fn json_or_undefined(value: Option<&Value>) -> String {
 /// Search for a program whose difference from the goal (failing examples)
 /// is zero: shortest first, then most evidenced.
 ///
-/// Mirrors `metaSynthesizeFromExamples` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaSynthesizeFromExamples` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 pub fn synthesize_from_examples(
     catalog: &Catalog,
     examples: &[Example],
@@ -398,7 +401,7 @@ fn intern_words(catalog: &Catalog, words: &[Vec<Hypothesis>]) -> Interned {
 /// Coverage of the request: each grounded word credits once, with the best
 /// of its hypotheses the program uses (a filter's measure excluded).
 ///
-/// Mirrors `metaCoverageScore` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaCoverageScore` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 fn coverage_score(main: &[OpId], words: &Interned) -> f64 {
     let mut score = 0.0;
     for hypotheses in words {
@@ -424,7 +427,7 @@ struct Order {
 /// clauses apply in order; within a clause the head acts last, after its
 /// object's modifiers; the head consumes the type its object noun names.
 ///
-/// Mirrors `metaClauseOrder` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaClauseOrder` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 fn clause_order(
     catalog: &Catalog,
     steps: &[Step],
@@ -485,7 +488,7 @@ fn clause_order(
 /// Without examples, the goal is a program that uses one operation from
 /// every grounded word's hypothesis group, preferring a type-preserving one.
 ///
-/// Mirrors `metaSynthesizeFromMeaning` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaSynthesizeFromMeaning` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 pub fn synthesize_from_meaning(
     catalog: &Catalog,
     goal: &MeaningGoal<'_>,

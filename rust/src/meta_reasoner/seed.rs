@@ -1,6 +1,7 @@
-//! The meta reasoner's seed (data/seed/meta-reasoning.lino): cues,
-//! grammatical words, affixes, the instruction set, probes, impasse intents
-//! and response templates, read through the embedded seed registry.
+//! The meta reasoner's seed (data/seed/meta-reasoning.lino).
+//!
+//! Cues, grammatical words, affixes, the instruction set, probes, impasse
+//! intents and response templates, read through the embedded seed registry.
 #![allow(clippy::cast_precision_loss)]
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -133,7 +134,7 @@ fn field(record: &LinoNode, name: &str) -> String {
 impl MetaSeed {
     /// Parse the seed text.
     ///
-    /// Mirrors `metaSeed` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaSeed` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn parse(text: &str) -> Self {
         let mut seed = Self::default();
@@ -221,7 +222,7 @@ impl MetaSeed {
     /// Document frequency of every doc token over the instruction set, so a
     /// word shared by most operations carries almost no evidence.
     ///
-    /// Mirrors `metaDocIndex` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaDocIndex` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     fn build_doc_index(&mut self) {
         let mut operations: Vec<(String, &'static str, String)> = Vec::new();
         for primitive in &self.primitives {
@@ -254,7 +255,7 @@ impl MetaSeed {
 
     /// One response template with its `{slots}` filled.
     ///
-    /// Mirrors `metaResponse` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaResponse` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn response(&self, id: &str, language: &str, slots: &[(&str, String)]) -> String {
         let variants = self.responses.get(id);
@@ -278,7 +279,7 @@ impl MetaSeed {
     /// derivation's wording is data, like every answer's. An unknown id
     /// yields the id itself.
     ///
-    /// Mirrors `metaNote` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaNote` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn note(&self, id: &str, slots: &[(&str, &str)]) -> String {
         let Some(template) = self.notes.get(id) else {
@@ -293,7 +294,7 @@ impl MetaSeed {
 
     /// A word and the base forms its seeded inflection endings yield.
     ///
-    /// Mirrors `metaLemmas` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaLemmas` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn lemmas(&self, word: &str, language: &str) -> Vec<String> {
         let mut out = vec![word.to_owned()];
@@ -319,7 +320,7 @@ impl MetaSeed {
     /// True when the word is a closed-class (grammatical) word in any
     /// language, or a numeral.
     ///
-    /// Mirrors `metaIsGrammatical` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaIsGrammatical` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn is_grammatical(&self, word: &str) -> bool {
         self.grammatical
@@ -330,7 +331,7 @@ impl MetaSeed {
 
     /// The cue markers of one role across every language.
     ///
-    /// Mirrors `metaCueMarkers` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaCueMarkers` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn cue_markers(&self, role: &str) -> Vec<String> {
         let mut out: Vec<String> = Vec::new();
@@ -347,7 +348,7 @@ impl MetaSeed {
     /// The document frequency above which a form is structural vocabulary.
     ///
     /// Mirrors `Math.max(2, Math.floor(index.operations.length / 4))` in
-    /// `metaDocHypotheses` and `metaGround` (js/worker/formal_ai_worker_meta_reasoner.js).
+    /// `metaDocHypotheses` and `metaGround` (`js/worker/formal_ai_worker_meta_reasoner.js`).
     #[must_use]
     pub fn structural_limit(&self) -> usize {
         (self.operations.len() / 4).max(2)
@@ -355,7 +356,7 @@ impl MetaSeed {
 
     /// The document frequency of a form.
     ///
-    /// Mirrors `index.frequency.get(lemma) || 0` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `index.frequency.get(lemma) || 0` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn frequency_of(&self, form: &str) -> usize {
         self.frequency.get(form).copied().unwrap_or(0)
@@ -364,7 +365,7 @@ impl MetaSeed {
     /// Operations whose documentation shares a form with the word, weighted
     /// by inverse document frequency.
     ///
-    /// Mirrors `metaDocHypotheses` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaDocHypotheses` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn doc_hypotheses(&self, word: &str, language: &str) -> Vec<Hypothesis> {
         let limit = self.structural_limit();
@@ -407,7 +408,7 @@ impl MetaSeed {
     /// The primitive with this id.
     ///
     /// Mirrors `metaSeed().primitives.find((item) => item.id === id)` in
-    /// js/worker/formal_ai_worker_meta_reasoner.js.
+    /// `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn primitive(&self, id: &str) -> Option<&Primitive> {
         self.primitives.iter().find(|primitive| primitive.id == id)
@@ -416,7 +417,7 @@ impl MetaSeed {
     /// True when an operation only changes representation between a text and
     /// the list of its parts (split / join).
     ///
-    /// Mirrors `metaIsView` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaIsView` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn is_view(&self, id: &str) -> bool {
         self.primitive(id).is_some_and(|primitive| {
@@ -428,7 +429,7 @@ impl MetaSeed {
 
     /// True when a handler's answer admits it could not do the task.
     ///
-    /// Mirrors `metaIsImpasseIntent` in js/worker/formal_ai_worker_meta_reasoner.js.
+    /// Mirrors `metaIsImpasseIntent` in `js/worker/formal_ai_worker_meta_reasoner.js`.
     #[must_use]
     pub fn is_impasse_intent(&self, intent: &str) -> bool {
         self.impasse_intents.iter().any(|item| item == intent)
@@ -442,7 +443,7 @@ impl MetaSeed {
 /// Sort hypotheses by score, strongest first, then by operation name.
 ///
 /// Mirrors `.sort((a, b) => b.score - a.score || a.operation.localeCompare(b.operation))`
-/// in js/worker/formal_ai_worker_meta_reasoner.js.
+/// in `js/worker/formal_ai_worker_meta_reasoner.js`.
 pub fn sort_hypotheses(hypotheses: &mut [Hypothesis]) {
     hypotheses.sort_by(|a, b| {
         b.score
@@ -462,7 +463,7 @@ fn seed_text() -> &'static str {
 
 /// The parsed seed, read once.
 ///
-/// Mirrors the `metaSeedCache` of `metaSeed` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors the `metaSeedCache` of `metaSeed` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_seed() -> &'static MetaSeed {
     static SEED: OnceLock<MetaSeed> = OnceLock::new();

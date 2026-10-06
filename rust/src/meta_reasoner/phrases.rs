@@ -1,8 +1,10 @@
-//! The trace vocabulary: the detail templates the JavaScript reasoner writes
-//! into its numbered events, one constant per template literal, so the Rust
-//! derivation is byte-identical to the JavaScript one. They are machine
-//! notation of the derivation (event kind + detail), not answer prose: the
-//! reader-facing sentences come from the seed's `response` records.
+//! The trace vocabulary.
+//!
+//! The detail templates the JavaScript reasoner writes into its numbered
+//! events, one constant per template literal, so the Rust derivation is
+//! byte-identical to the JavaScript one. They are machine notation of the
+//! derivation (event kind + detail), not answer prose: the reader-facing
+//! sentences come from the seed's `response` records.
 //!
 //! `{}` marks a slot; [`fill`] fills the slots in order.
 
@@ -64,7 +66,7 @@ pub const ALTERNATIVES: &str = " | ";
 /// Fill the `{}` slots of a template in order; `{{` and `}}` are literal
 /// braces.
 ///
-/// Mirrors JavaScript template literals in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors JavaScript template literals in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn fill(template: &str, slots: &[&str]) -> String {
     let mut out =

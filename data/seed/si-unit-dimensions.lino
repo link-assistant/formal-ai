@@ -7,7 +7,7 @@
 # data/seed/meanings-units.lino (issue #1176's engine converts stated
 # pairs; this table derives the rest).
 #
-# Base dimension symbols: L length, M mass, T time, I electric current,
+# Base dimension symbols — L length, M mass, T time, I electric current,
 # K thermodynamic temperature, N amount of substance, J luminous
 # intensity. A `dimension` of `1` is dimensionless. Exponent digits follow
 # the symbol (`L2MT-3` is the watt's kg·m²/s³).
@@ -20,7 +20,7 @@
 # that also live in meanings-units.lino keep their full five-language
 # lexemes there — this table adds dimensions and factors, not vocabulary.
 #
-# Read by rust/src/si_units.rs through crate::seed::seed_files().
+# Read by rust/src/si_units.rs through `crate::seed::seed_files()`.
 si_units
   base_dimension
     symbol L

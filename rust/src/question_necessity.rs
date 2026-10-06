@@ -580,7 +580,7 @@ fn sentence_start(body: &str, question_index: usize) -> usize {
         // A stop inside an inline code span (`find . -name`) is part of the
         // code, not the end of a sentence.
         if is_sentence_terminator(character)
-            && (character == '\n' || prefix[..index].matches('`').count() % 2 == 0)
+            && (character == '\n' || prefix[..index].matches('`').count().is_multiple_of(2))
         {
             let boundary = index + character.len_utf8();
             if character == '\n'

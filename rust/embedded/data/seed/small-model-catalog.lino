@@ -2,7 +2,7 @@
 #
 # Candidates for the smallest models that can actually help with
 # formalization matching against grounded knowledge (Wikipedia/Wikidata
-# Q-ids): given a surface and a list of candidate entities, pick the
+# Q-ids) — given a surface and a list of candidate entities, pick the
 # best match. Two shapes matter -- tiny instruct decoders (the
 # link-assistant/model-in-browser experiment runs SmolLM2-135M-Instruct
 # via Candle-in-WASM, ~270 MB of weights, ~512 MB free memory) and
@@ -19,9 +19,9 @@
 # correctness claim. Verify the two or three rows you act on before
 # wiring a download URL into a release.
 #
-# Every row is `packaged false`: nothing here ships in the application
+# Every row is `packaged false` — nothing here ships in the application
 # package or the web UI; downloads happen on demand, only after the
-# user enables the feature (SmallModelOptions::default() is off).
+# user enables the feature (`SmallModelOptions::default()` is off).
 # Plain data fields only -- no lexeme blocks, so no language-parity
 # gaps open.
 small_model_catalog

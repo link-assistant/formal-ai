@@ -1,9 +1,9 @@
 //! The reasoner inside the universal solver: it runs ahead of the handler
 //! table, and a handler that admits an impasse hands its turn to the loop.
 //!
-//! Originals: `solve` and `solveImpl` in js/worker/formal_ai_worker_20.js, and
+//! Originals: `solve` and `solveImpl` in `js/worker/formal_ai_worker_20.js`, and
 //! `metaReasonTurn` / `metaResolveImpasse` in
-//! js/worker/formal_ai_worker_meta_reasoner.js.
+//! `js/worker/formal_ai_worker_meta_reasoner.js`.
 
 use crate::concept_lookup::lookup_surface;
 use crate::engine::{SymbolicAnswer, answer_links_notation};
@@ -24,7 +24,7 @@ const RESPONSE_LINK: &str = "response:meta_reasoner";
 
 /// True when a handler's answer admits it could not do the task.
 ///
-/// Mirrors `metaIsImpasseIntent` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaIsImpasseIntent` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_is_impasse_intent(intent: &str) -> bool {
     meta_seed().is_impasse_intent(intent)
@@ -34,7 +34,7 @@ pub fn meta_is_impasse_intent(intent: &str) -> bool {
 /// looked up through the registry concept lookup, reading the committed
 /// source cache only (no network), and the core runs again.
 ///
-/// Mirrors `metaReasonTurn` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// Mirrors `metaReasonTurn` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn meta_reason_turn(prompt: &str, language: &str) -> MetaResult {
     let cache_root = crate::coding::synthesis_runtime::source_cache_root();
@@ -86,12 +86,14 @@ fn project(prompt: &str, log: &mut EventLog, answer: MetaAnswer) -> SymbolicAnsw
     }
 }
 
-/// The general loop at the start of a turn: the request's words are opened
-/// and grounded without network; a program verified against the request's
-/// examples, or one every word grounds, answers ahead of any handler.
+/// The general loop at the start of a turn.
+///
+/// The request's words are opened and grounded without network; a program
+/// verified against the request's examples, or one every word grounds, answers
+/// ahead of any handler.
 ///
 /// Mirrors the `metaReason(prompt, language, {})` step at the top of
-/// `solveImpl` in js/worker/formal_ai_worker_20.js.
+/// `solveImpl` in `js/worker/formal_ai_worker_20.js`.
 pub fn try_meta_answer(prompt: &str, language: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let mut knowledge = Knowledge::new();
     let meta = meta_reason(prompt, language, &mut knowledge, None);
@@ -107,12 +109,13 @@ pub fn try_meta_answer(prompt: &str, language: &str, log: &mut EventLog) -> Opti
     Some(project(prompt, log, answer))
 }
 
-/// A handler impasse is a subgoal for the general loop: when the loop
-/// derives a program (or can name what is still unknown), its answer
-/// replaces the admission; otherwise the handler's answer stands, carrying
-/// the derivation on the log.
+/// A handler impasse is a subgoal for the general loop.
 ///
-/// Mirrors `metaResolveImpasse` in js/worker/formal_ai_worker_meta_reasoner.js.
+/// When the loop derives a program (or can name what is still unknown), its
+/// answer replaces the admission; otherwise the handler's answer stands,
+/// carrying the derivation on the log.
+///
+/// Mirrors `metaResolveImpasse` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 pub fn resolve_impasse(prompt: &str, answer: &mut SymbolicAnswer, log: &mut EventLog) {
     if !meta_is_impasse_intent(&answer.intent) {
         return;

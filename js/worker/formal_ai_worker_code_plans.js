@@ -95,6 +95,9 @@ function handleAlgorithm(prompt, normalized) {
  * @returns {object|null} the worker answer, or null
  */
 function tryAlgorithm(prompt) {
+  // Rust's `web_search` row runs before `algorithm`; here it is an async-phase
+  // row, so a search request ("search for ... algorithms") is left to it.
+  if (extractWebSearchRequest(prompt, normalizePrompt(prompt))) return null;
   return handleAlgorithm(prompt, prompt.toLowerCase());
 }
 

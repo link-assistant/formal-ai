@@ -1,6 +1,6 @@
 # The cache policy for stored coding procedures (issue #1165, E130).
 #
-# A stored procedure is a cache entry, never knowledge: every row must name
+# A stored procedure is a cache entry, never knowledge — every row must name
 # where a rediscovery would start from, and a test may delete the whole cache
 # file and reproduce every row through research_coding_skill_gap.
 program_cache_policy

@@ -3,7 +3,7 @@
 #
 # `#901 asks for contradictions to be links carrying a value on a 0-1 range,`
 # `and for the resolution shapes to be data rather than Rust branches. These`
-# `are those shapes. src/selection_heuristics.rs names no principle: it reads`
+# `are those shapes. src/selection_heuristics.rs names no principle — it reads`
 # `an identifier out of this file, which is what makes the catalogue`
 # `forgettable and rediscoverable -- delete it, rediscover it through the`
 # `sources registry's wikipedia source from the article each row names, replay`
@@ -294,8 +294,8 @@ triz_separation_between_part_and_whole
 # General paradox/contradiction resolution families (issue #901).
 #
 # The forty principles and four separations above are TRIZ's own catalogue.
-# #901 asks for "all other common ways to solve paradoxes and
-# contradictions" too: they usually dissolve in another dimension, by
+# #901 also asks for all other common ways to solve paradoxes and
+# contradictions — they usually dissolve in another dimension, by
 # alternating, or by choosing a point on the range between the poles. These
 # twelve families cover those shapes. `family_range_selection` is the
 # user-facing face of what src/selection_heuristics.rs already computes --
@@ -398,7 +398,7 @@ triz_family_partial_spectrum
   example "Firefighting water damages what fire would not: a mist is not 'water or no water', it is a point on the droplet-size axis."
   source "https://en.wikipedia.org/wiki/TRIZ"
 # ---------------------------------------------------------------------------
-# Top-20 benchmark tasks (issue #901): commonly discussed invention
+# Top-20 benchmark tasks (issue #901) — commonly discussed invention
 # challenges from the TRIZ teaching canon, each stating its contradiction
 # and the resolution families (and, where classical, the inventive
 # principles) that solve it. `contradiction` is free text "A vs B" --
@@ -586,7 +586,7 @@ triz_task_bottle_cutting
   notes "Score, then thermal shock: stress in a different field does the separating."
   source "https://en.wikipedia.org/wiki/TRIZ"
 # ---------------------------------------------------------------------------
-# Cues for the user-facing solver (issue #901): phrases that mark a prompt
+# Cues for the user-facing solver (issue #901) — phrases that mark a prompt
 # as a contradiction/invention question. Stemmed fragments (противоречи-,
 # изобретател-, paradox, triz) match by substring.
 triz_cues

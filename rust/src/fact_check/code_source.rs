@@ -248,7 +248,7 @@ pub fn code_evidence_for(query: &CodeQuery, root: &Path) -> Vec<RelativeEvidence
 
 /// The support strength for `n` production references, saturating at `1`.
 #[allow(clippy::cast_precision_loss)]
-fn production_strength(production: usize) -> f64 {
+const fn production_strength(production: usize) -> f64 {
     0.1f64.mul_add(production as f64, 0.5).min(1.0)
 }
 

@@ -544,7 +544,7 @@ fn std_dev_of(values: &[Decimal]) -> Option<OpResult> {
     }
     let root = variance.sqrt();
     // For finite values a difference of exactly zero is equality.
-    let exact = root * root - variance == 0.0;
+    let exact = root.mul_add(root, -variance) == 0.0;
     let mut text = format!("{root:.7}");
     if text.contains('.') {
         while text.ends_with('0') {

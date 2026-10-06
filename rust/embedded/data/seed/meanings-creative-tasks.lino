@@ -1,6 +1,6 @@
 # Creative-composition request vocabulary (issue #1178, E143).
 #
-# Four roles name the request classes the composition handlers own:
+# Four roles name the request classes the composition handlers own —
 # brainstorming_request (candidates composed from the formalized topic),
 # creative_writing_request (verse under form constraints), planning_request
 # (schedules under time constraints), and advice_request (guidance weighted
@@ -8,7 +8,7 @@
 # them (lowercase, punctuation folded to spaces) so a cue still matches its
 # punctuated raw form; multi-word surfaces are quoted.
 #
-# The handlers deliberately claim only topic-bearing shapes: a bare
+# The handlers deliberately claim only topic-bearing shapes — a bare
 # "brainstorm" with no topic stays with the legacy brainstorm-seeds path
 # (data/seed/brainstorm-seeds.lino), whose two fixed categories remain as a
 # deletable cache while the composition path here answers topic requests.

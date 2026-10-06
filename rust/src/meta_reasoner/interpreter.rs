@@ -1,8 +1,10 @@
-//! The interpreter of the instruction set. Rust cannot evaluate the seed's
-//! JavaScript `code`, so each operation is implemented here, keyed by its
-//! primitive id, with the JavaScript semantics of that code. An id the
-//! interpreter does not know behaves as a JavaScript throw (`None`): the
-//! program is still enumerated and rendered, it just cannot be run here.
+//! The interpreter of the instruction set.
+//!
+//! Rust cannot evaluate the seed's JavaScript `code`, so each operation is
+//! implemented here, keyed by its primitive id, with the JavaScript semantics
+//! of that code. An id the interpreter does not know behaves as a JavaScript
+//! throw (`None`): the program is still enumerated and rendered, it just cannot
+//! be run here.
 //!
 //! Operations that need the `node` environment (the file system, a shell,
 //! the process) only run when the caller grants it; the solver never does,
@@ -31,7 +33,7 @@ impl Param {
     /// The parameter as the JavaScript text `String(parameter)` substitutes
     /// into `{k}`.
     ///
-    /// Mirrors `String(parameter)` in `metaRender` (js/worker/formal_ai_worker_meta_synthesis.js).
+    /// Mirrors `String(parameter)` in `metaRender` (`js/worker/formal_ai_worker_meta_synthesis.js`).
     #[must_use]
     pub fn to_js(self) -> String {
         match self {
@@ -75,7 +77,7 @@ fn numbers(input: &Value) -> Option<Vec<f64>> {
 /// One seed primitive applied to a value, by id.
 ///
 /// Mirrors running a primitive's compiled `code` (`metaCompile` in
-/// js/worker/formal_ai_worker_meta_synthesis.js).
+/// `js/worker/formal_ai_worker_meta_synthesis.js`).
 #[must_use]
 pub fn apply_primitive(
     id: &str,
@@ -311,7 +313,7 @@ fn compare(test: &str, measure: f64, threshold: f64) -> Option<bool> {
 /// A filter's test applied to one measured element.
 ///
 /// Mirrors running a filter's compiled `test` (`metaRun` in
-/// js/worker/formal_ai_worker_meta_synthesis.js).
+/// `js/worker/formal_ai_worker_meta_synthesis.js`).
 #[must_use]
 pub fn filter_test(test: &str, measure: &Value, threshold: Param) -> Option<bool> {
     compare(test, measure.to_js_number(), threshold.numeric())
@@ -320,7 +322,7 @@ pub fn filter_test(test: &str, measure: &Value, threshold: Param) -> Option<bool
 /// A program operation (a primitive or a composed measure) applied to a value.
 ///
 /// Mirrors `metaCompile(primitive, parameter)(value)` in
-/// js/worker/formal_ai_worker_meta_synthesis.js.
+/// `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn apply_prim(
     catalog: &Catalog,
@@ -354,7 +356,7 @@ fn rewrite(catalog: &Catalog, prim: &Prim, input: &Value, runtime: Runtime) -> O
 
 /// Run a program on one input; a parametric step takes `parameter`.
 ///
-/// Mirrors `metaRun` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaRun` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn run_program(
     catalog: &Catalog,
@@ -412,7 +414,7 @@ pub fn run_program(
 /// a ratio (`output / input`) or a difference (`output - input`).
 ///
 /// Mirrors running a primitive's compiled `infer` in `metaInferParameter`
-/// (js/worker/formal_ai_worker_meta_synthesis.js).
+/// (`js/worker/formal_ai_worker_meta_synthesis.js`).
 fn infer_rule(rule: &str, input: &Value, output: &Value) -> Param {
     // The rule's result expression is the text after its last arrow; its
     // operator decides ratio or difference.
@@ -432,7 +434,7 @@ fn infer_rule(rule: &str, input: &Value, output: &Value) -> Param {
 /// Infer the parameter of a program's parametric last step: an arithmetic
 /// parameter from the first example, a filter threshold from all of them.
 ///
-/// Mirrors `metaInferParameter` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaInferParameter` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn infer_parameter(catalog: &Catalog, steps: &[Step], examples: &[Example]) -> Param {
     let (Some(last), Some(example)) = (steps.last(), examples.first()) else {
@@ -479,7 +481,7 @@ pub fn infer_parameter(catalog: &Catalog, steps: &[Step], examples: &[Example]) 
 /// every example, or `Undefined` when the output is not a filtering of the
 /// input or no threshold separates them.
 ///
-/// Mirrors `metaInferThreshold` in js/worker/formal_ai_worker_meta_synthesis.js.
+/// Mirrors `metaInferThreshold` in `js/worker/formal_ai_worker_meta_synthesis.js`.
 #[must_use]
 pub fn infer_threshold(catalog: &Catalog, steps: &[Step], examples: &[Example]) -> Param {
     let Some(last) = steps.last() else {

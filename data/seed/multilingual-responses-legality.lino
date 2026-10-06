@@ -1,6 +1,6 @@
 # Response templates for the request-legality warning (issue #836).
 #
-# Advisory, not policing: the warn templates inform the user what fired,
+# Advisory, not policing — the warn templates inform the user what fired,
 # why, that jurisdictions vary, and that the classification is not legal
 # advice — then leave the decision to the user. The refuse templates apply
 # only to the narrow prohibited set (child safety, credible serious

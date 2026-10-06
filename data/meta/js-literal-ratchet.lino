@@ -5,12 +5,15 @@
 # read as natural language (three or more words, no code punctuation),
 # counted by scripts/check-js-literals.mjs with the ts twin's tokenizer.
 # Wording belongs in seed data, where every language can carry it. The meta
-# reasoner's modules (formal_ai_worker_meta_*) hold none: their answers come
+# reasoner's modules (formal_ai_worker_meta_*) hold none — their answers come
 # from `response` records and their trace from `note` records in
 # data/seed/meta-reasoning.lino. The JavaScript server (js/server/*.mjs)
-# holds none either - its wording is data/meta/server-messages.lino (R1013).
+# holds none either - its wording is data/meta/server-messages.lino (R1013) -
+# and neither does the agentic planner port (js/agentic/**/*.mjs), whose
+# wording is data/meta/agentic-messages.lino and the seed responses (R1015).
 # Every number only falls.
 js_literal_ratchet
   worker_ceiling 1106
   meta_ceiling 0
   server_ceiling 0
+  agentic_ceiling 0

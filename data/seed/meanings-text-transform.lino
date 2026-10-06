@@ -5,7 +5,7 @@
 # in data/seed/writing-genre-styleguides.lino are semantic references, so
 # they are grounded here with authored five-field metadata rather than left
 # unresolved or hidden behind a higher closure ceiling (the meanings-agent-
-# actions.lino precedent for response intents). No lexeme children: nothing
+# actions.lino precedent for response intents). No lexeme children — nothing
 # here is a matchable surface; the lexicon loads only the roles.
 
 meanings

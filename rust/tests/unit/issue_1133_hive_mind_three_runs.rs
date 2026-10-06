@@ -151,7 +151,7 @@ fn repository_workflows_include_runtime_setup_and_output_verification() {
         );
         let workflow = planned
             .iter()
-            .find(|call| path_of(call) == ".github/workflows/run.yml")
+            .find(|call| path_of(call).starts_with(".github/workflows/"))
             .unwrap_or_else(|| panic!("missing workflow for {language}"));
         assert!(
             workflow.arguments.to_lowercase().contains(setup),

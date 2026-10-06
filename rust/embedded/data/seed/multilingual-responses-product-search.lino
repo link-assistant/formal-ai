@@ -1,7 +1,7 @@
 # Response templates for the product-search handler (issues #800, #872).
 #
 # The handler composes a site-scoped search and states honestly that in
-# offline mode nothing was fetched: the link is the query it would run,
+# offline mode nothing was fetched — the link is the query it would run,
 # and the advice rows are what to verify before buying. Placeholders in
 # braces are filled by rust/src/solver_handlers/product_search.rs.
 

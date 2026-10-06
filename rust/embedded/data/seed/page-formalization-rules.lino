@@ -1,7 +1,7 @@
 # Page formalization rules (issue #1163, E128).
 #
 # The generic page formalizer (rust/src/web_formalize.rs) reads every rule
-# here before it reads a byte of a fetched page: which mime hints map to
+# here before it reads a byte of a fetched page — which mime hints map to
 # which parser, how to sniff a payload with no hint, the order in which a
 # code block's language tag is resolved, and which plain-text line openers
 # mark a command paragraph. Changing behavior means changing this file, not
