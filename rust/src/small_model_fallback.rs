@@ -118,14 +118,16 @@ pub fn catalog() -> Vec<CatalogModel> {
         return out;
     };
     let document = parse_lino(text);
-    let Some(root) = document
+    // The `small_model_catalog` header and the `small_model` rows are
+    // siblings at the top level of the seed file.
+    if !document
         .children
         .iter()
-        .find(|child| child.name == "small_model_catalog")
-    else {
+        .any(|child| child.name == "small_model_catalog")
+    {
         return out;
-    };
-    for record in root.children.iter() {
+    }
+    for record in document.children.iter() {
         if record.name != "small_model" {
             continue;
         }
@@ -340,6 +342,10 @@ mod tests {
     fn hardware_fit_hides_oversized_models_and_sorts_by_rating() {
         let small_machine = SmallModelOptions::enabled_for(1024);
         let shown = eligible(&small_machine);
+        assert!(
+            !shown.is_empty(),
+            "a 1 GB machine is offered the small tier"
+        );
         assert!(shown.iter().all(|model| model.ram_required_mb <= 1024));
         assert!(
             !shown.iter().any(|model| model.model_id == "phi_3_5_mini"),
