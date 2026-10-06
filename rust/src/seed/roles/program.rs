@@ -99,6 +99,10 @@ pub const ROLE_CALENDAR_TODAY: &str = "calendar_today";
 /// Semantic role: a reference to a day, date, or week — the noun a calendar
 /// question is about (day, weekday, date, week, день, неделя, 星期, …).
 pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
+/// Semantic role: a named month of the year (January … December). The meaning
+/// slug is the English month name so the month-offset reader can resolve a
+/// matched lexeme back to its number in the twelve-month cycle (issue #1176).
+pub const ROLE_CALENDAR_MONTH_NAME: &str = "calendar_month_name";
 /// Semantic role: a relative period measured in hours (the last few hours,
 /// часа, घंटे, 小时) — the noun a fresh-period digest asks about.
 ///

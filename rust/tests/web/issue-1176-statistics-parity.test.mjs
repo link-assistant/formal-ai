@@ -83,6 +83,53 @@ test("a Spanish change word problem reads the seed markers", async () => {
   assert.ok(answer.content.includes("20 - 4 × 3 = 8"), answer.content);
 });
 
+test("the percentile interpolates between closest ranks with the derivation shown", async () => {
+  const answer = await solve("What is the 90th percentile of 1, 2, 3, 4, 5?");
+  assert.equal(answer.intent, "statistics");
+  assert.equal(
+    answer.content,
+    "The values are 1, 2, 3, 4, 5 (n = 5).\n" +
+      "percentile: 4.6 (p = 90; rank = 1 + (5 - 1) × 90 / 100 = 4.6; 4 + 0.6 × (5 - 4) = 4.6)",
+  );
+});
+
+test("the percentile rank leaves the dataset and joins other operations", async () => {
+  const answer = await solve(
+    "What are the mean and the 25th percentile of 4, 8, 15, 16, 23, 42?",
+  );
+  assert.equal(answer.intent, "statistics");
+  assert.ok(answer.content.startsWith("The values are 4, 8, 15, 16, 23, 42 (n = 6)."), answer.content);
+  assert.ok(answer.content.includes("mean: 18 (108 / 6 = 18)"), answer.content);
+  assert.ok(
+    answer.content.includes(
+      "percentile: 9.75 (p = 25; rank = 1 + (6 - 1) × 25 / 100 = 2.25; 8 + 0.25 × (15 - 8) = 9.75)",
+    ),
+    answer.content,
+  );
+});
+
+test("percentile labels and derivations follow the prompt language", async () => {
+  const russian = await solve("Каков 90-й перцентиль чисел 1, 2, 3, 4, 5?");
+  assert.ok(
+    russian.content.includes("перцентиль: 4.6 (p = 90; ранг = 1 + (5 - 1) × 90 / 100 = 4.6;"),
+    russian.content,
+  );
+  const spanish = await solve("¿Cuál es el percentil 90 de 1, 2, 3, 4, 5?");
+  assert.ok(spanish.content.includes("percentil: 4.6 (p = 90; posición ="), spanish.content);
+  const chinese = await solve("1、2、3、4、5的第90百分位数是多少？");
+  assert.ok(chinese.content.includes("百分位数: 4.6 (p = 90；秩 ="), chinese.content);
+});
+
+test("a percentile without a stated or valid rank is declined", async () => {
+  for (const prompt of [
+    "What is the percentile of 1, 2, 3?",
+    "What is the 150th percentile of 1, 2, 3?",
+  ]) {
+    const answer = await solve(prompt);
+    assert.notEqual(answer.intent, "statistics", `${prompt} -> ${answer.content}`);
+  }
+});
+
 test("questions without a quantity operation are not claimed", async () => {
   for (const prompt of [
     "What is the deeper meaning of joy?",

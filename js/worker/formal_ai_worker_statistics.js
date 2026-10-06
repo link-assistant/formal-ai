@@ -40,8 +40,14 @@ const STATISTICS_OPERATIONS = [
     slug: "statistics_standard_deviation",
     evidence: "statistics:standard_deviation",
   },
+  { op: "percentile", slug: "statistics_percentile", evidence: "statistics:percentile" },
   { op: "range", slug: "statistics_range", evidence: "statistics:range" },
 ];
+
+/** Most characters an ordinal suffix glued to a percentile rank may carry. */
+const STATISTICS_MAX_RANK_SUFFIX_CHARS = 4;
+/** Most whitespace characters between a percentile surface and a later rank. */
+const STATISTICS_MAX_RANK_LEAD_CHARS = 3;
 
 /**
  * The bigint when it fits i128, otherwise null (the native checked ops).
@@ -655,12 +661,119 @@ function statisticsRange(values) {
 }
 
 /**
+ * The percentile by linear interpolation between closest ranks (C = 1): the
+ * rank 1 + (n - 1) * p / 100 = k + f over the sorted values gives
+ * x(k) + f * (x(k + 1) - x(k)), exact within `scale + 2` digits. Mirrors
+ * `percentile_of` in statistics.rs.
+ * @param {Array<{mantissa: bigint, scale: number}>} values
+ * @param {{mantissa: bigint, scale: number}} rank
+ * @param {string} language
+ * @returns {{value: string, derivation: string|null}|null}
+ */
+function statisticsPercentile(values, rank, language) {
+  const sorted = statisticsSorted(values);
+  const numerator = exactI128(BigInt(sorted.length - 1) * rank.mantissa);
+  const power = exactPow10(rank.scale);
+  if (numerator === null || power === null) return null;
+  const denominator = exactI128(100n * power);
+  if (denominator === null) return null;
+  const lowerIndex = Number(numerator / denominator);
+  const remainder = numerator % denominator;
+  const lower = sorted[lowerIndex];
+  if (lower === undefined) return null;
+  const upper = sorted[lowerIndex + 1] === undefined ? lower : sorted[lowerIndex + 1];
+  const precision = rank.scale + 2;
+  const fraction = exactDecimalFromQuotient(remainder, denominator, precision);
+  const offset = exactDecimalFromQuotient(numerator, denominator, precision);
+  if (fraction === null || offset === null) return null;
+  const position = exactDecimalAdd(offset.value, exactDecimal(1n, 0));
+  const difference = exactDecimalSub(upper, lower);
+  if (position === null || difference === null) return null;
+  const step = exactDecimalMulDiv(difference, remainder, denominator, precision);
+  if (step === null) return null;
+  const value = exactDecimalAdd(lower, step.value);
+  if (value === null) return null;
+  const template = quantityLocalizedTemplate("statistics_percentile_derivation", language);
+  const derivation = template === null
+    ? null
+    : quantityFillTemplate(template, [
+      ["p", exactDecimalRender(rank)],
+      ["count", String(sorted.length)],
+      ["rank", exactDecimalRender(position)],
+      ["lower", exactDecimalRender(lower)],
+      ["fraction", exactDecimalRender(fraction.value)],
+      ["upper", exactDecimalRender(upper)],
+      ["value", exactDecimalRender(value)],
+    ]);
+  return { value: exactDecimalRender(value), derivation: derivation };
+}
+
+/**
+ * UTF-16 span of the earliest surface of the meaning `slug` (the longest on
+ * a tie), or null. Mirrors `surface_span` in statistics.rs.
+ * @param {string} lowered
+ * @param {string} slug
+ * @returns {{start: number, end: number}|null}
+ */
+function statisticsSurfaceSpan(lowered, slug) {
+  let best = null;
+  for (const word of quantityMeaningWords(slug)) {
+    if (!quantityContainsTerm(lowered, word)) continue;
+    const start = lowered.indexOf(word);
+    const end = start + word.length;
+    if (best === null || start < best.start || (start === best.start && end > best.end)) {
+      best = { start: start, end: end };
+    }
+  }
+  return best;
+}
+
+/**
+ * Index, among the stated numbers, of the percentile rank glued to the
+ * percentile surface, or null. Mirrors `percentile_rank_index`.
+ * @param {string} lowered
+ * @returns {number|null}
+ */
+function statisticsPercentileRankIndex(lowered) {
+  const surface = statisticsSurfaceSpan(lowered, "statistics_percentile");
+  if (surface === null) return null;
+  const spans = [];
+  let cursor = 0;
+  for (const item of parseNumericListNumbers(lowered)) {
+    const start = lowered.indexOf(item.text, cursor);
+    if (start === -1) return null;
+    cursor = start + item.text.length;
+    spans.push({ start: start, end: cursor });
+  }
+  let before = -1;
+  for (let index = 0; index < spans.length; index += 1) {
+    if (spans[index].end <= surface.start) before = index;
+  }
+  if (before !== -1) {
+    const suffix = Array.from(lowered.slice(spans[before].end, surface.start).replace(/\s+$/u, ""));
+    if (suffix.length <= STATISTICS_MAX_RANK_SUFFIX_CHARS &&
+      suffix.every((character) => /\p{Alphabetic}/u.test(character) || character === "-")) {
+      return before;
+    }
+  }
+  const after = spans.findIndex((span) => span.start >= surface.end);
+  if (after === -1) return null;
+  const lead = Array.from(lowered.slice(surface.end, spans[after].start));
+  const next = quantityFirstCharacter(lowered.slice(spans[after].end));
+  const opensList = [",", "，", "、", ";"].includes(next);
+  const whitespace = lead.every((character) => /\s/u.test(character));
+  return lead.length <= STATISTICS_MAX_RANK_LEAD_CHARS && whitespace && !opensList ? after : null;
+}
+
+/**
  * Compute one named operation.
  * @param {string} op
  * @param {Array<{mantissa: bigint, scale: number}>} values
+ * @param {{mantissa: bigint, scale: number}|null} rank the percentile rank
+ * @param {string} language
  * @returns {{value: string, derivation: string|null}|null}
  */
-function statisticsCompute(op, values) {
+function statisticsCompute(op, values, rank, language) {
   switch (op) {
     case "mean":
       return statisticsMean(values);
@@ -672,6 +785,8 @@ function statisticsCompute(op, values) {
       return statisticsVariance(values);
     case "standard_deviation":
       return statisticsStandardDeviation(values);
+    case "percentile":
+      return statisticsPercentile(values, rank, language);
     case "range":
       return statisticsRange(values);
     default:
@@ -707,13 +822,22 @@ function tryStatistics(prompt, normalized, language) {
     quantityMeaningWords(operation.slug).some((word) => quantityContainsTerm(normalized, word)));
   if (ops.length === 0) return null;
   const stated = statisticsStatedNumbers(lowered);
-  if (stated === null || stated.values.length < 2) return null;
+  if (stated === null) return null;
   const values = stated.values;
+  // The percentile rank is a parameter, not a data point (statistics.rs).
+  let rank = null;
+  if (ops.some((operation) => operation.op === "percentile")) {
+    const index = statisticsPercentileRankIndex(lowered);
+    if (index === null || index >= values.length) return null;
+    rank = values.splice(index, 1)[0];
+    if (rank.mantissa < 0n || exactDecimalCompare(rank, exactDecimal(100n, 0)) > 0) return null;
+  }
+  if (values.length < 2) return null;
   const valuesText = values.map(exactDecimalRender).join(", ");
   const log = [`statistics:values:${valuesText}`, `statistics:count:${values.length}`];
   const lines = [];
   for (const operation of ops) {
-    const result = statisticsCompute(operation.op, values);
+    const result = statisticsCompute(operation.op, values, rank, language);
     if (result === null) return null;
     const label = statisticsLabel(operation.slug, language);
     const line = result.derivation === null

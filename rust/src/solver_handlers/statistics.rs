@@ -259,19 +259,28 @@ enum Op {
     Mode,
     Variance,
     StdDev,
+    Percentile,
     Range,
 }
 
 /// Canonical answer order: a multi-operation question lists its results in
 /// this order regardless of the order the words appeared in the prompt.
-const OP_ORDER: [Op; 6] = [
+const OP_ORDER: [Op; 7] = [
     Op::Mean,
     Op::Median,
     Op::Mode,
     Op::Variance,
     Op::StdDev,
+    Op::Percentile,
     Op::Range,
 ];
+
+/// Most characters an ordinal suffix glued to a percentile rank may carry
+/// ("90th", "90-й", "90वाँ").
+const MAX_RANK_SUFFIX_CHARS: usize = 4;
+/// Most whitespace characters between a percentile surface and a rank stated
+/// after it ("percentil 90").
+const MAX_RANK_LEAD_CHARS: usize = 3;
 
 impl Op {
     /// The seed meaning slug carrying this operation's multilingual surfaces
@@ -283,6 +292,7 @@ impl Op {
             Self::Mode => "statistics_mode",
             Self::Variance => "statistics_variance",
             Self::StdDev => "statistics_standard_deviation",
+            Self::Percentile => "statistics_percentile",
             Self::Range => "statistics_range",
         }
     }
@@ -295,6 +305,7 @@ impl Op {
             Self::Mode => "statistics:mode",
             Self::Variance => "statistics:variance",
             Self::StdDev => "statistics:standard_deviation",
+            Self::Percentile => "statistics:percentile",
             Self::Range => "statistics:range",
         }
     }
@@ -582,6 +593,104 @@ fn range_of(values: &[Decimal]) -> Option<OpResult> {
     })
 }
 
+/// The percentile by linear interpolation between closest ranks (the C = 1
+/// variant the seed meaning cites): the rank 1 + (n − 1) · p / 100 = k + f
+/// over the sorted values gives x(k) + f · (x(k + 1) − x(k)). The rank is the
+/// integer fraction (n − 1) · p / (100 · 10ˢᶜᵃˡᵉ), whose denominator has only
+/// the factors 2 and 5, so the fraction, the rank and the interpolated value
+/// all terminate within `scale + 2` digits and the answer is exact.
+fn percentile_of(values: &[Decimal], rank: Decimal, language: &str) -> Option<OpResult> {
+    let mut sorted = values.to_vec();
+    sorted.sort_by(|left, right| left.compare(*right));
+    let gaps = i128::try_from(sorted.len()).ok()? - 1;
+    let numerator = gaps.checked_mul(rank.mantissa)?;
+    let denominator = 100_i128.checked_mul(10_i128.checked_pow(rank.scale)?)?;
+    let lower_index = usize::try_from(numerator / denominator).ok()?;
+    let remainder = numerator % denominator;
+    let lower = *sorted.get(lower_index)?;
+    let upper = sorted.get(lower_index + 1).copied().unwrap_or(lower);
+    let precision = rank.scale + 2;
+    let (fraction, _) = Decimal::from_quotient(remainder, denominator, precision)?;
+    let (offset, _) = Decimal::from_quotient(numerator, denominator, precision)?;
+    let position = offset.add(Decimal {
+        mantissa: 1,
+        scale: 0,
+    })?;
+    let (step, _) = upper
+        .sub(lower)?
+        .mul_div(remainder, denominator, precision)?;
+    let value = lower.add(step)?;
+    let derivation =
+        localized_response("statistics_percentile_derivation", language).map(|template| {
+            template
+                .replace(concat!("{", "p}"), &rank.render())
+                .replace(concat!("{", "count}"), &sorted.len().to_string())
+                .replace(concat!("{", "rank}"), &position.render())
+                .replace(concat!("{", "lower}"), &lower.render())
+                .replace(concat!("{", "fraction}"), &fraction.render())
+                .replace(concat!("{", "upper}"), &upper.render())
+                .replace(concat!("{", "value}"), &value.render())
+        });
+    Some(OpResult {
+        value: value.render(),
+        derivation,
+    })
+}
+
+/// Byte span of the earliest surface of the meaning `slug` in `lowered` (the
+/// longest one on a tie), if any.
+fn surface_span(lowered: &str, slug: &str) -> Option<(usize, usize)> {
+    lexicon().meaning(slug).and_then(|meaning| {
+        meaning
+            .words()
+            .filter_map(|word| {
+                super::calendar::term_position(lowered, word)
+                    .map(|start| (start, start + word.len()))
+            })
+            .min_by_key(|(start, end)| (*start, std::cmp::Reverse(*end)))
+    })
+}
+
+/// Index, among the stated numbers, of the percentile rank `p` — the number
+/// glued to the percentile surface: before it with at most a short ordinal
+/// suffix ("the 90th percentile", "90-й перцентиль", "第90百分位数"), or right
+/// after it and not opening the list ("el percentil 90 de 1, 2, 3"). The
+/// spans are found in order, so a rank that repeats a listed value is still
+/// told apart from it.
+fn percentile_rank_index(lowered: &str) -> Option<usize> {
+    let (surface_start, surface_end) = surface_span(lowered, Op::Percentile.meaning_slug())?;
+    let mut spans = Vec::new();
+    let mut cursor = 0;
+    for item in parse_numbers(lowered) {
+        let start = cursor + lowered[cursor..].find(&item.text)?;
+        cursor = start + item.text.len();
+        spans.push((start, cursor));
+    }
+    let before = spans
+        .iter()
+        .rposition(|(_, end)| *end <= surface_start)
+        .filter(|index| {
+            let suffix = lowered[spans[*index].1..surface_start].trim_end();
+            suffix.chars().count() <= MAX_RANK_SUFFIX_CHARS
+                && suffix
+                    .chars()
+                    .all(|character| character.is_alphabetic() || character == '-')
+        });
+    before.or_else(|| {
+        let index = spans.iter().position(|(start, _)| *start >= surface_end)?;
+        let (start, end) = spans[index];
+        let lead = &lowered[surface_end..start];
+        let opens_list = lowered[end..]
+            .chars()
+            .next()
+            .is_some_and(|character| matches!(character, ',' | '，' | '、' | ';'));
+        (lead.chars().count() <= MAX_RANK_LEAD_CHARS
+            && lead.chars().all(char::is_whitespace)
+            && !opens_list)
+            .then_some(index)
+    })
+}
+
 /// Render a decimal, marking inexact quotients so the answer never claims
 /// more precision than was computed (issue #1176).
 fn render_approx(value: Decimal, exact: bool) -> String {
@@ -610,7 +719,24 @@ pub fn handle_statistics(
     if ops.is_empty() {
         return None;
     }
-    let (values, _) = stated_numbers(&lowered)?;
+    let (mut values, _) = stated_numbers(&lowered)?;
+    // The percentile rank is a parameter, not a data point: it leaves the
+    // list before any operation reads it, and an unstated or out-of-range
+    // rank declines the question rather than guessing one.
+    let mut rank = None;
+    if ops.contains(&Op::Percentile) {
+        let index = percentile_rank_index(&lowered)?;
+        let stated = *values.get(index)?;
+        values.remove(index);
+        let hundred = Decimal {
+            mantissa: 100,
+            scale: 0,
+        };
+        if stated.is_negative() || stated.compare(hundred) == Ordering::Greater {
+            return None;
+        }
+        rank = Some(stated);
+    }
     if values.len() < 2 {
         return None;
     }
@@ -632,6 +758,7 @@ pub fn handle_statistics(
             Op::Mode => mode_of(&values)?,
             Op::Variance => variance_of(&values)?,
             Op::StdDev => std_dev_of(&values)?,
+            Op::Percentile => percentile_of(&values, rank?, language)?,
             Op::Range => range_of(&values)?,
         };
         // The operation's name in the answer language comes from the seed

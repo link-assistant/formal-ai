@@ -145,6 +145,42 @@ meanings
         text "desviación estándar"
       surface
         text "desviación típica"
+  statistics_percentile
+    defined-by statistics_operation
+    role statistics_operation
+    formula "percentile p = x(k) + f × (x(k + 1) - x(k)), where the rank 1 + (n - 1) × p / 100 = k + f is read over the values sorted ascending (linear interpolation between closest ranks, the C = 1 variant; Hyndman and Fan definition 7)"
+    source "https://en.wikipedia.org/wiki/Percentile#The_linear_interpolation_between_closest_ranks_method"
+    lexeme en
+      surface
+        text percentile
+      surface
+        text percentiles
+    lexeme ru
+      surface
+        text перцентиль
+      surface
+        text перцентиля
+      surface
+        text перцентили
+      surface
+        text процентиль
+      surface
+        text процентиля
+    lexeme hi
+      surface
+        text प्रतिशतक
+      surface
+        text शततमक
+    lexeme zh
+      surface
+        text 百分位数
+      surface
+        text 百分位
+    lexeme es
+      surface
+        text percentil
+      surface
+        text percentiles
   statistics_range
     defined-by statistics_operation
     role statistics_operation

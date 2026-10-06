@@ -159,6 +159,22 @@ function detectCalendarOffset(normalized, language) {
       units.push({ multiplier: unit.multiplier, surface: word });
     }
   }
+  const found = calendarOffsetStatedCount(normalized, language, units);
+  return found
+    ? { count: found.count, multiplier: found.unit.multiplier, total: found.count * found.unit.multiplier }
+    : null;
+}
+
+/**
+ * The first stated `<numeral> <unit surface>` pair (Rust
+ * `stated_count_with_unit`): the count, the matched unit entry and its
+ * surface, or null. Units are tried longest surface first.
+ * @param {string} normalized
+ * @param {string} language
+ * @param {Array<{surface: string}>} units
+ * @returns {{count: number, unit: object, surface: string}|null}
+ */
+function calendarOffsetStatedCount(normalized, language, units) {
   // Longest surfaces first so "weeks" is not read as the tail of "week"
   // (stable, like Rust's sort_by on byte length).
   const encoder = new TextEncoder();
@@ -184,7 +200,7 @@ function detectCalendarOffset(normalized, language) {
     const tail = normalized.slice(tokenEnd).trimStart();
     for (const unit of ordered) {
       if (calendarOffsetStartsWithTerm(tail, unit.surface)) {
-        return { count, multiplier: unit.multiplier, total: count * unit.multiplier };
+        return { count, unit, surface: unit.surface };
       }
     }
   }
@@ -258,4 +274,193 @@ function renderCalendarOffsetAnswer(language, operation, source, result, offset)
     .split("{source}").join(sourceLabel)
     .split("{source_plain}").join(calendarOffsetWeekdayLabel(language, source))
     .split("{result}").join(calendarOffsetWeekdayLabel(language, result));
+}
+
+// Month offsets (issue #1176), mirroring rust/src/solver_handlers/calendar/month.rs:
+// "2 months after January" is modulo-12 arithmetic over the
+// `calendar_month_name` meanings, and "3 months after Monday" is answered
+// with a clarification, since a month is no fixed number of days.
+
+const ROLE_CALENDAR_MONTH_NAME = "calendar_month_name";
+const CALENDAR_MONTH_UNIT_SLUG = "calendar_month";
+const CALENDAR_MONTH_SLUGS = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];
+const CALENDAR_MONTHS_PER_YEAR = 12;
+
+/**
+ * The month number (1-12) a prompt names; the longest surface wins, ties keep
+ * the earlier month (Rust `detect_month`).
+ * @param {string} normalized
+ * @returns {number|null}
+ */
+function detectCalendarMonth(normalized) {
+  const encoder = new TextEncoder();
+  let best = null;
+  for (const meaning of meaningsWithRole(ROLE_CALENDAR_MONTH_NAME)) {
+    const position = CALENDAR_MONTH_SLUGS.indexOf(meaning.slug);
+    if (position === -1) continue;
+    for (const word of meaning.words) {
+      const length = encoder.encode(word).length;
+      if ((best === null || length > best.length) && containsCalendarTerm(normalized, word)) {
+        best = { length: length, month: position + 1 };
+      }
+    }
+  }
+  return best === null ? null : best.month;
+}
+
+/**
+ * The month's name in the answer language from its seed lexeme.
+ * @param {string} slug
+ * @param {string} language
+ * @returns {string}
+ */
+function calendarMonthLabel(slug, language) {
+  const meaning = findMeaning(slug);
+  if (!meaning) return CALENDAR_MONTH_UNIT_SLUG;
+  return wordInLanguage(meaning, language) || wordInLanguage(meaning, "en") || CALENDAR_MONTH_UNIT_SLUG;
+}
+
+/**
+ * Days since 1970-01-01 of a Gregorian date, for years from 2000 on (Rust
+ * `days_from_civil`).
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
+ * @returns {number}
+ */
+function calendarDaysFromCivil(year, month, day) {
+  const shiftedYear = month <= 2 ? year - 1 : year;
+  const era = Math.floor(shiftedYear / 400);
+  const yearOfEra = shiftedYear - era * 400;
+  const monthFromMarch = (month + 9) % 12;
+  const dayOfYear = Math.floor((153 * monthFromMarch + 2) / 5) + day - 1;
+  const dayOfEra = yearOfEra * 365 + Math.floor(yearOfEra / 4) - Math.floor(yearOfEra / 100) + dayOfYear;
+  return era * 146097 + dayOfEra - 719468;
+}
+
+/**
+ * Fewest and most days `months` consecutive months span, from the first of
+ * every month over one 400-year Gregorian cycle (Rust `month_span_days`).
+ * @param {number} months
+ * @returns {{min: number, max: number}}
+ */
+function calendarMonthSpanDays(months) {
+  let min = Infinity;
+  let max = -Infinity;
+  for (let year = 2000; year < 2400; year += 1) {
+    for (let month = 0; month < CALENDAR_MONTHS_PER_YEAR; month += 1) {
+      const start = calendarDaysFromCivil(year, month + 1, 1);
+      const total = month + months;
+      const end = calendarDaysFromCivil(
+        year + Math.floor(total / CALENDAR_MONTHS_PER_YEAR),
+        (total % CALENDAR_MONTHS_PER_YEAR) + 1,
+        1,
+      );
+      min = Math.min(min, end - start);
+      max = Math.max(max, end - start);
+    }
+  }
+  return { min: min, max: max };
+}
+
+/**
+ * Answer a stated month offset (Rust `try_month_offset`): modulo-12
+ * arithmetic from a month name, or a clarification from a weekday; null when
+ * the prompt states no month offset, no direction, or no anchor.
+ * @param {string} prompt
+ * @param {string} normalized
+ * @returns {{intent: string, content: string, confidence: number, evidence: Array<string>}|null}
+ */
+function tryCalendarMonthOffset(prompt, normalized) {
+  const meaning = findMeaning(CALENDAR_MONTH_UNIT_SLUG);
+  if (!meaning) return null;
+  const language = detectLanguage(prompt);
+  const found = calendarOffsetStatedCount(
+    normalized,
+    language,
+    meaning.words.map((word) => ({ surface: word })),
+  );
+  if (!found) return null;
+  const operation = detectWeekdayOperation(normalized);
+  if (!operation) return null;
+  const count = found.count;
+  const signed = (operation === "next" ? 1 : -1) * count;
+  const signedText = `${signed >= 0 ? "+" : ""}${signed}m`;
+  const weekday = detectWeekday(normalized);
+  if (weekday) {
+    const span = calendarMonthSpanDays(count);
+    const template = calendarOffsetLocalizedResponse(
+      `calendar_weekday_month_offset_unresolved_${operation}`,
+      language,
+    );
+    let source = calendarOffsetWeekdayLabel(language, weekday);
+    if (language === "ru") {
+      source = operation === "next" ? weekday.ruGenitive : weekday.ruInstrumental;
+    }
+    const content = template === null
+      ? ""
+      : template
+        .split("{n}").join(String(count))
+        .split("{unit}").join(found.surface)
+        .split("{source}").join(source)
+        .split("{min_days}").join(String(span.min))
+        .split("{max_days}").join(String(span.max));
+    return {
+      intent: "calendar_month_offset_clarification",
+      content: content,
+      confidence: 1.0,
+      evidence: [
+        `calendar:subject_weekday:${weekday.slug}`,
+        `calendar:operation:${operation}:${weekday.slug}`,
+        `calendar:offset:${signedText}`,
+        `calendar:offset_span:${span.min}d..${span.max}d`,
+        `calendar:offset_unresolved:${CALENDAR_MONTH_UNIT_SLUG}`,
+        `language:${language}`,
+      ],
+    };
+  }
+  const source = detectCalendarMonth(normalized);
+  if (source === null) return null;
+  const sum = source + signed;
+  const result = ((((sum - 1) % CALENDAR_MONTHS_PER_YEAR) + CALENDAR_MONTHS_PER_YEAR) %
+    CALENDAR_MONTHS_PER_YEAR) + 1;
+  const sourceSlug = CALENDAR_MONTH_SLUGS[source - 1];
+  const resultSlug = CALENDAR_MONTH_SLUGS[result - 1];
+  const template = calendarOffsetLocalizedResponse(`calendar_month_offset_${operation}`, language);
+  if (template === null) return null;
+  const content = template
+    .split("{n}").join(String(count))
+    .split("{unit}").join(found.surface)
+    .split("{source}").join(calendarMonthLabel(sourceSlug, language))
+    .split("{source_index}").join(String(source))
+    .split("{sum}").join(String(sum))
+    .split("{result_index}").join(String(result))
+    .split("{result}").join(calendarMonthLabel(resultSlug, language));
+  const sign = operation === "next" ? "+" : "-";
+  return {
+    intent: "calendar_month_relation",
+    content: content,
+    confidence: 1.0,
+    evidence: [
+      `calendar:subject_month:${sourceSlug}`,
+      `calendar:operation:${operation}:${sourceSlug}`,
+      `calendar:offset:${signedText}`,
+      `calendar:offset_derivation:${source} ${sign} ${count} = ${sum} ≡ ${result} (mod 12)`,
+      `calendar:result_month:${resultSlug}`,
+      `language:${language}`,
+    ],
+  };
 }

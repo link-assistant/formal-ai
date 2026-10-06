@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_08.js"
-  ceiling 1311
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1264 to 1294 with the canonical operand order and entity-grounded hours mirror arms. Ceiling moved 1294 to 1311 for the calendar offset hook (calendar_reasoning: N days/weeks after/before a weekday)."
+  ceiling 1314
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1264 to 1294 with the canonical operand order and entity-grounded hours mirror arms. Ceiling moved 1294 to 1311 for the calendar offset hook (calendar_reasoning: N days/weeks after/before a weekday). Ceiling moved 1311 to 1314 for the month-offset hook (calendar_reasoning: N months after/before a month or weekday)."

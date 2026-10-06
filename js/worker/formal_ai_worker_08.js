@@ -1090,6 +1090,9 @@ function tryCalendarReasoning(prompt, normalized, userContext = {}) {
       ],
     };
   }
+  // Issue #1176: month offsets are read before the weekday gate (calendar.rs).
+  const monthOffset = tryCalendarMonthOffset(prompt, normalized);
+  if (monthOffset) return monthOffset;
   if (!mentionsWeekdayContext(normalized)) return null;
   const operation = detectWeekdayOperation(normalized);
   if (!operation) return null;

@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_calendar_offset.js"
-  ceiling 261
-  rationale "Stated weekday offsets for the calendar relation handler (issue #1176). JavaScript-first twin of native handler keys (calendar_reasoning), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."
+  ceiling 466
+  rationale "Stated weekday offsets for the calendar relation handler (issue #1176). JavaScript-first twin of native handler keys (calendar_reasoning), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling moved 261 to 466 for the month-offset twin (R1176-4, 2026-10-07): modulo-12 month arithmetic, the weekday-plus-months clarification with its Gregorian day span, and the shared numeral-plus-unit reader."

@@ -239,3 +239,103 @@ multilingual_responses_quantities
     intent calendar_weekday_offset_exact_previous
     language es
     text "{weeks} semanas antes de {source} es {result}. {weeks} semanas = {n} días exactos, así que el día de la semana no cambia en el ciclo calendario de siete días."
+  response response_statistics_percentile_derivation_en
+    intent statistics_percentile_derivation
+    language en
+    text "p = {p}; rank = 1 + ({count} - 1) × {p} / 100 = {rank}; {lower} + {fraction} × ({upper} - {lower}) = {value}"
+  response response_statistics_percentile_derivation_ru
+    intent statistics_percentile_derivation
+    language ru
+    text "p = {p}; ранг = 1 + ({count} - 1) × {p} / 100 = {rank}; {lower} + {fraction} × ({upper} - {lower}) = {value}"
+  response response_statistics_percentile_derivation_hi
+    intent statistics_percentile_derivation
+    language hi
+    text "p = {p}; क्रम = 1 + ({count} - 1) × {p} / 100 = {rank}; {lower} + {fraction} × ({upper} - {lower}) = {value}"
+  response response_statistics_percentile_derivation_zh
+    intent statistics_percentile_derivation
+    language zh
+    text "p = {p}；秩 = 1 + ({count} - 1) × {p} / 100 = {rank}；{lower} + {fraction} × ({upper} - {lower}) = {value}"
+  response response_statistics_percentile_derivation_es
+    intent statistics_percentile_derivation
+    language es
+    text "p = {p}; posición = 1 + ({count} - 1) × {p} / 100 = {rank}; {lower} + {fraction} × ({upper} - {lower}) = {value}"
+  response response_calendar_month_offset_next_en
+    intent calendar_month_offset_next
+    language en
+    text "{n} {unit} after {source} is {result}. {source} is month {source_index}; {source_index} + {n} = {sum}, and {sum} ≡ {result_index} (mod 12), which is {result} in the twelve-month calendar cycle."
+  response response_calendar_month_offset_next_ru
+    intent calendar_month_offset_next
+    language ru
+    text "Через {n} {unit} после месяца «{source}» наступает {result}. Месяц «{source}» имеет номер {source_index}; {source_index} + {n} = {sum}, а {sum} ≡ {result_index} (mod 12) — это {result} в двенадцатимесячном календарном цикле."
+  response response_calendar_month_offset_next_hi
+    intent calendar_month_offset_next
+    language hi
+    text "{source} के {n} {unit} बाद {result} आता है। {source} वर्ष का महीना क्रमांक {source_index} है; {source_index} + {n} = {sum}, और {sum} ≡ {result_index} (mod 12), जो बारह महीनों के कैलेंडर चक्र में {result} है।"
+  response response_calendar_month_offset_next_zh
+    intent calendar_month_offset_next
+    language zh
+    text "{source}之后{n}{unit}是{result}。{source}是第{source_index}个月；{source_index} + {n} = {sum}，而 {sum} ≡ {result_index} (mod 12)，即十二个月日历循环中的{result}。"
+  response response_calendar_month_offset_next_es
+    intent calendar_month_offset_next
+    language es
+    text "{n} {unit} después de {source} es {result}. El mes {source} es el número {source_index}; {source_index} + {n} = {sum}, y {sum} ≡ {result_index} (mod 12), que es {result} en el ciclo calendario de doce meses."
+  response response_calendar_month_offset_previous_en
+    intent calendar_month_offset_previous
+    language en
+    text "{n} {unit} before {source} is {result}. {source} is month {source_index}; {source_index} - {n} = {sum}, and {sum} ≡ {result_index} (mod 12), which is {result} in the twelve-month calendar cycle."
+  response response_calendar_month_offset_previous_ru
+    intent calendar_month_offset_previous
+    language ru
+    text "За {n} {unit} до месяца «{source}» был {result}. Месяц «{source}» имеет номер {source_index}; {source_index} - {n} = {sum}, а {sum} ≡ {result_index} (mod 12) — это {result} в двенадцатимесячном календарном цикле."
+  response response_calendar_month_offset_previous_hi
+    intent calendar_month_offset_previous
+    language hi
+    text "{source} से {n} {unit} पहले {result} आता है। {source} वर्ष का महीना क्रमांक {source_index} है; {source_index} - {n} = {sum}, और {sum} ≡ {result_index} (mod 12), जो बारह महीनों के कैलेंडर चक्र में {result} है।"
+  response response_calendar_month_offset_previous_zh
+    intent calendar_month_offset_previous
+    language zh
+    text "{source}之前{n}{unit}是{result}。{source}是第{source_index}个月；{source_index} - {n} = {sum}，而 {sum} ≡ {result_index} (mod 12)，即十二个月日历循环中的{result}。"
+  response response_calendar_month_offset_previous_es
+    intent calendar_month_offset_previous
+    language es
+    text "{n} {unit} antes de {source} es {result}. El mes {source} es el número {source_index}; {source_index} - {n} = {sum}, y {sum} ≡ {result_index} (mod 12), que es {result} en el ciclo calendario de doce meses."
+  response response_calendar_weekday_month_offset_unresolved_next_en
+    intent calendar_weekday_month_offset_unresolved_next
+    language en
+    text "{n} {unit} after {source} has no single weekday answer: {n} {unit} span {min_days} to {max_days} days depending on the starting date, because calendar months run 28 to 31 days, so the weekday it lands on is not fixed. Tell me the starting date, or state the offset in days or weeks."
+  response response_calendar_weekday_month_offset_unresolved_next_ru
+    intent calendar_weekday_month_offset_unresolved_next
+    language ru
+    text "Через {n} {unit} после {source} нет однозначного дня недели: {n} {unit} — это от {min_days} до {max_days} дней в зависимости от начальной даты, потому что календарный месяц длится от 28 до 31 дня, и день недели не фиксирован. Назовите начальную дату или укажите сдвиг в днях или неделях."
+  response response_calendar_weekday_month_offset_unresolved_next_hi
+    intent calendar_weekday_month_offset_unresolved_next
+    language hi
+    text "{source} के {n} {unit} बाद का वार एक नहीं है: {n} {unit} शुरुआती तारीख के अनुसार {min_days} से {max_days} दिन के होते हैं, क्योंकि कैलेंडर महीना 28 से 31 दिन का होता है, इसलिए वार तय नहीं है। शुरुआती तारीख बताइए, या अंतर दिनों या सप्ताहों में बताइए।"
+  response response_calendar_weekday_month_offset_unresolved_next_zh
+    intent calendar_weekday_month_offset_unresolved_next
+    language zh
+    text "{source}之后{n}{unit}没有唯一的星期几：{n}{unit}按起始日期不同为{min_days}到{max_days}天，因为日历月有28到31天，所以落在星期几并不固定。请告诉我起始日期，或用天数或周数表示偏移。"
+  response response_calendar_weekday_month_offset_unresolved_next_es
+    intent calendar_weekday_month_offset_unresolved_next
+    language es
+    text "{n} {unit} después de {source} no tiene un único día de la semana: {n} {unit} abarcan de {min_days} a {max_days} días según la fecha de inicio, porque un mes del calendario dura de 28 a 31 días, así que el día de la semana no es fijo. Indica la fecha de inicio o expresa el desplazamiento en días o semanas."
+  response response_calendar_weekday_month_offset_unresolved_previous_en
+    intent calendar_weekday_month_offset_unresolved_previous
+    language en
+    text "{n} {unit} before {source} has no single weekday answer: {n} {unit} span {min_days} to {max_days} days depending on the starting date, because calendar months run 28 to 31 days, so the weekday it lands on is not fixed. Tell me the starting date, or state the offset in days or weeks."
+  response response_calendar_weekday_month_offset_unresolved_previous_ru
+    intent calendar_weekday_month_offset_unresolved_previous
+    language ru
+    text "За {n} {unit} перед {source} нет однозначного дня недели: {n} {unit} — это от {min_days} до {max_days} дней в зависимости от начальной даты, потому что календарный месяц длится от 28 до 31 дня, и день недели не фиксирован. Назовите начальную дату или укажите сдвиг в днях или неделях."
+  response response_calendar_weekday_month_offset_unresolved_previous_hi
+    intent calendar_weekday_month_offset_unresolved_previous
+    language hi
+    text "{source} से {n} {unit} पहले का वार एक नहीं है: {n} {unit} शुरुआती तारीख के अनुसार {min_days} से {max_days} दिन के होते हैं, क्योंकि कैलेंडर महीना 28 से 31 दिन का होता है, इसलिए वार तय नहीं है। शुरुआती तारीख बताइए, या अंतर दिनों या सप्ताहों में बताइए।"
+  response response_calendar_weekday_month_offset_unresolved_previous_zh
+    intent calendar_weekday_month_offset_unresolved_previous
+    language zh
+    text "{source}之前{n}{unit}没有唯一的星期几：{n}{unit}按起始日期不同为{min_days}到{max_days}天，因为日历月有28到31天，所以落在星期几并不固定。请告诉我起始日期，或用天数或周数表示偏移。"
+  response response_calendar_weekday_month_offset_unresolved_previous_es
+    intent calendar_weekday_month_offset_unresolved_previous
+    language es
+    text "{n} {unit} antes de {source} no tiene un único día de la semana: {n} {unit} abarcan de {min_days} a {max_days} días según la fecha de inicio, porque un mes del calendario dura de 28 a 31 días, así que el día de la semana no es fijo. Indica la fecha de inicio o expresa el desplazamiento en días o semanas."

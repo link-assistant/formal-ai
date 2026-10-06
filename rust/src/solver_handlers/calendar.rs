@@ -15,6 +15,8 @@ use super::calendar_create::try_calendar_create_event;
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+mod month;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Weekday {
     Monday,
@@ -251,6 +253,12 @@ pub fn try_calendar_reasoning(
     if mentions_current_day_question(normalized) {
         return try_current_day_reasoning(prompt, log);
     }
+    // Issue #1176: a month offset ("2 months after January", "3 months after
+    // Monday") is read before the weekday gate, since a month name carries no
+    // day reference and a weekday plus months has no fixed day count.
+    if let Some(answer) = month::try_month_offset(prompt, normalized, log) {
+        return Some(answer);
+    }
     if !mentions_weekday_context(normalized) {
         return None;
     }
@@ -444,7 +452,19 @@ fn detect_offset(normalized: &str, language: &str) -> Option<Offset> {
         .collect();
     // Longest surfaces first so "weeks" is not read as the tail of "week".
     units.sort_by_key(|unit| std::cmp::Reverse(unit.1.len()));
+    stated_count_with_unit(normalized, language, &units)
+        .map(|(count, unit, _)| Offset { count, unit })
+}
 
+/// The first stated `<numeral> <unit surface>` pair in the prompt: the count,
+/// the unit tag and the surface that matched. `units` is ordered longest
+/// surface first by the caller. Shared by the day/week reader above and the
+/// month reader in `calendar/month.rs` (issue #1176).
+fn stated_count_with_unit<'units, U: Copy>(
+    normalized: &str,
+    language: &str,
+    units: &'units [(U, String)],
+) -> Option<(i64, U, &'units str)> {
     for quantity in crate::verifiable_task::quantities::extract_quantities(normalized, language) {
         let Ok(count) = quantity.value.parse::<i64>() else {
             continue;
@@ -462,12 +482,9 @@ fn detect_offset(normalized: &str, language: &str) -> Option<Offset> {
             .find(|character: char| !is_numeral_token_character(character))
             .map_or(normalized.len(), |gap| quantity.offset + gap);
         let tail = normalized[token_end..].trim_start();
-        for (unit, surface) in &units {
+        for (unit, surface) in units {
             if starts_with_term(tail, surface) {
-                return Some(Offset {
-                    count,
-                    unit: *unit,
-                });
+                return Some((count, *unit, surface.as_str()));
             }
         }
     }

@@ -413,3 +413,127 @@ fn non_quantity_questions_are_not_claimed() {
         );
     }
 }
+
+// R1176-3: the percentile by linear interpolation between closest ranks (the
+// C = 1 variant the seed meaning cites). The rank 90 is a parameter, not a
+// data point, so it leaves the echoed list.
+#[test]
+fn percentile_interpolates_between_closest_ranks() {
+    let response = FormalAiEngine.answer("What is the 90th percentile of 1, 2, 3, 4, 5?");
+
+    assert_eq!(response.intent, "statistics");
+    assert_eq!(
+        response.answer,
+        "The values are 1, 2, 3, 4, 5 (n = 5).\npercentile: 4.6 (p = 90; rank = 1 + (5 - 1) × 90 / 100 = 4.6; 4 + 0.6 × (5 - 4) = 4.6)"
+    );
+}
+
+#[test]
+fn percentile_joins_other_operations_and_languages() {
+    let response =
+        FormalAiEngine.answer("What are the mean and the 25th percentile of 4, 8, 15, 16, 23, 42?");
+    assert_eq!(response.intent, "statistics");
+    assert!(
+        response.answer.contains("mean: 18 (108 / 6 = 18)")
+            && response.answer.contains(
+                "percentile: 9.75 (p = 25; rank = 1 + (6 - 1) × 25 / 100 = 2.25; 8 + 0.25 × (15 - 8) = 9.75)"
+            ),
+        "got: {}",
+        response.answer
+    );
+
+    let russian = FormalAiEngine.answer("Каков 90-й перцентиль чисел 1, 2, 3, 4, 5?");
+    assert!(
+        russian
+            .answer
+            .contains("перцентиль: 4.6 (p = 90; ранг = 1 + (5 - 1) × 90 / 100 = 4.6;"),
+        "got: {}",
+        russian.answer
+    );
+    let spanish = FormalAiEngine.answer("¿Cuál es el percentil 90 de 1, 2, 3, 4, 5?");
+    assert!(
+        spanish
+            .answer
+            .contains("percentil: 4.6 (p = 90; posición ="),
+        "got: {}",
+        spanish.answer
+    );
+}
+
+#[test]
+fn percentile_without_a_valid_rank_is_declined() {
+    for prompt in [
+        "What is the percentile of 1, 2, 3?",
+        "What is the 150th percentile of 1, 2, 3?",
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_ne!(
+            response.intent, "statistics",
+            "prompt {prompt:?} states no usable rank, got: {}",
+            response.answer
+        );
+    }
+}
+
+// R1176-4: a month offset from a month name is exact modulo-12 arithmetic.
+#[test]
+fn month_offset_from_a_month_name_is_modulo_twelve() {
+    let response = FormalAiEngine.answer("2 months after January");
+    assert_eq!(response.intent, "calendar_month_relation");
+    assert_eq!(
+        response.answer,
+        "2 months after January is March. January is month 1; 1 + 2 = 3, and 3 ≡ 3 (mod 12), which is March in the twelve-month calendar cycle."
+    );
+
+    let forward = FormalAiEngine.answer("What month is 5 months after November?");
+    assert!(
+        forward
+            .answer
+            .contains("11 + 5 = 16, and 16 ≡ 4 (mod 12), which is April"),
+        "got: {}",
+        forward.answer
+    );
+    let backward = FormalAiEngine.answer("3 months before February");
+    assert!(
+        backward
+            .answer
+            .starts_with("3 months before February is November.")
+            && backward.answer.contains("2 - 3 = -1, and -1 ≡ 11 (mod 12)"),
+        "got: {}",
+        backward.answer
+    );
+    let russian = FormalAiEngine.answer("через 2 месяца после января");
+    assert!(
+        russian
+            .answer
+            .starts_with("Через 2 месяца после месяца «январь» наступает март."),
+        "got: {}",
+        russian.answer
+    );
+    let chinese = FormalAiEngine.answer("三月之后2个月是几月？");
+    assert!(
+        chinese.answer.starts_with("三月之后2个月是五月。"),
+        "got: {}",
+        chinese.answer
+    );
+}
+
+// R1176-4: months over weekdays are no whole number of days, so the honest
+// answer is a clarification that shows the day span and names why.
+#[test]
+fn month_offset_from_a_weekday_asks_for_the_starting_date() {
+    let response = FormalAiEngine.answer("3 months after Monday");
+    assert_eq!(response.intent, "calendar_month_offset_clarification");
+    assert_eq!(
+        response.answer,
+        "3 months after Monday has no single weekday answer: 3 months span 89 to 92 days depending on the starting date, because calendar months run 28 to 31 days, so the weekday it lands on is not fixed. Tell me the starting date, or state the offset in days or weeks."
+    );
+
+    let chinese = FormalAiEngine.answer("星期一之后3个月是星期几？");
+    assert_eq!(chinese.intent, "calendar_month_offset_clarification");
+    assert!(
+        chinese.answer.contains("89到92天"),
+        "got: {}",
+        chinese.answer
+    );
+}

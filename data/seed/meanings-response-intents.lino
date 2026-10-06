@@ -93,6 +93,46 @@ meanings
     unit "not applicable"
     example "1 week before Friday is Friday. 1 week = 7 days exactly."
     grounding "data/seed/multilingual-responses-quantities.lino"
+  statistics_percentile_derivation
+    defined-by answer
+    role localized_response_template
+    precondition "a percentile of an explicit numeric dataset is computed by linear interpolation between closest ranks"
+    effect "the rank 1 + (n - 1) x p / 100 and the interpolation between the two neighbouring sorted values are stated"
+    unit "not applicable"
+    example "p = 90; rank = 1 + (5 - 1) x 90 / 100 = 4.6; 4 + 0.6 x (5 - 4) = 4.6"
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_month_offset_next
+    defined-by answer
+    role localized_response_template
+    precondition "a month-offset request forward in time from a named month is answered"
+    effect "the resulting month is stated with its modulo-12 month-number arithmetic"
+    unit "not applicable"
+    example "2 months after January is March. January is month 1; 1 + 2 = 3, and 3 is March mod 12."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_month_offset_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a month-offset request backward in time from a named month is answered"
+    effect "the resulting month is stated with its modulo-12 month-number arithmetic"
+    unit "not applicable"
+    example "3 months before February is November. February is month 2; 2 - 3 = -1, and -1 is 11 mod 12."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_month_offset_unresolved_next
+    defined-by answer
+    role localized_response_template
+    precondition "a forward month offset from a weekday is asked, which no fixed day count represents"
+    effect "the request is answered with a clarification naming the day span the months can cover and asking for a starting date"
+    unit "not applicable"
+    example "3 months after Monday has no single weekday answer, because 3 months span 89 to 92 days."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_month_offset_unresolved_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a backward month offset from a weekday is asked, which no fixed day count represents"
+    effect "the request is answered with a clarification naming the day span the months can cover and asking for a starting date"
+    unit "not applicable"
+    example "3 months before Monday has no single weekday answer, because 3 months span 89 to 92 days."
+    grounding "data/seed/multilingual-responses-quantities.lino"
   brainstorming_candidates
     defined-by answer
     role localized_response_template

@@ -61,6 +61,10 @@ roles
     kind meaning
   calendar_hour_reference
     kind predicate
+  calendar_month_name
+    kind predicate
+  calendar_month_reference
+    kind predicate
   calendar_question
     kind predicate
   calendar_relative_date

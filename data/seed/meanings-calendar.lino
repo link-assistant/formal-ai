@@ -289,6 +289,439 @@ meanings
         text 星期
       surface
         text 周
+  calendar_month
+    grounded-in Q5151
+    defined-by calendar_day
+    role calendar_month_reference
+    lexeme en
+      surface
+        text month
+      surface
+        text months
+    lexeme ru
+      surface
+        text месяц
+      surface
+        text месяца
+      surface
+        text месяцев
+      surface
+        text месяцы
+      surface
+        text месяцу
+    lexeme hi
+      surface
+        text महीने
+      surface
+        text महीना
+      surface
+        text महीनों
+      surface
+        text माह
+    lexeme zh
+      surface
+        text 个月
+      surface
+        text 個月
+    lexeme es
+      surface
+        text mes
+      surface
+        text meses
+  january
+    grounded-in Q108
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text January
+      surface
+        text january
+      surface
+        text jan
+    lexeme ru
+      surface
+        text январь
+      surface
+        text января
+      surface
+        text январе
+      surface
+        text январю
+      surface
+        text январём
+      surface
+        text январем
+    lexeme hi
+      surface
+        text जनवरी
+    lexeme zh
+      surface
+        text 一月
+    lexeme es
+      surface
+        text enero
+  february
+    grounded-in Q109
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text February
+      surface
+        text february
+      surface
+        text feb
+    lexeme ru
+      surface
+        text февраль
+      surface
+        text февраля
+      surface
+        text феврале
+      surface
+        text февралю
+      surface
+        text февралём
+      surface
+        text февралем
+    lexeme hi
+      surface
+        text फ़रवरी
+      surface
+        text फरवरी
+    lexeme zh
+      surface
+        text 二月
+    lexeme es
+      surface
+        text febrero
+  march
+    grounded-in Q110
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text March
+      surface
+        text march
+      surface
+        text mar
+    lexeme ru
+      surface
+        text март
+      surface
+        text марта
+      surface
+        text марте
+      surface
+        text марту
+      surface
+        text мартом
+    lexeme hi
+      surface
+        text मार्च
+    lexeme zh
+      surface
+        text 三月
+    lexeme es
+      surface
+        text marzo
+  april
+    grounded-in Q118
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text April
+      surface
+        text april
+      surface
+        text apr
+    lexeme ru
+      surface
+        text апрель
+      surface
+        text апреля
+      surface
+        text апреле
+      surface
+        text апрелю
+      surface
+        text апрелем
+    lexeme hi
+      surface
+        text अप्रैल
+    lexeme zh
+      surface
+        text 四月
+    lexeme es
+      surface
+        text abril
+  may
+    grounded-in Q119
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text May
+      surface
+        text may
+    lexeme ru
+      surface
+        text май
+      surface
+        text мая
+      surface
+        text мае
+      surface
+        text маю
+      surface
+        text маем
+    lexeme hi
+      surface
+        text मई
+    lexeme zh
+      surface
+        text 五月
+    lexeme es
+      surface
+        text mayo
+  june
+    grounded-in Q120
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text June
+      surface
+        text june
+      surface
+        text jun
+    lexeme ru
+      surface
+        text июнь
+      surface
+        text июня
+      surface
+        text июне
+      surface
+        text июню
+      surface
+        text июнем
+    lexeme hi
+      surface
+        text जून
+    lexeme zh
+      surface
+        text 六月
+    lexeme es
+      surface
+        text junio
+  july
+    grounded-in Q121
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text July
+      surface
+        text july
+      surface
+        text jul
+    lexeme ru
+      surface
+        text июль
+      surface
+        text июля
+      surface
+        text июле
+      surface
+        text июлю
+      surface
+        text июлем
+    lexeme hi
+      surface
+        text जुलाई
+    lexeme zh
+      surface
+        text 七月
+    lexeme es
+      surface
+        text julio
+  august
+    grounded-in Q122
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text August
+      surface
+        text august
+      surface
+        text aug
+    lexeme ru
+      surface
+        text август
+      surface
+        text августа
+      surface
+        text августе
+      surface
+        text августу
+      surface
+        text августом
+    lexeme hi
+      surface
+        text अगस्त
+    lexeme zh
+      surface
+        text 八月
+    lexeme es
+      surface
+        text agosto
+  september
+    grounded-in Q123
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text September
+      surface
+        text september
+      surface
+        text sep
+      surface
+        text sept
+    lexeme ru
+      surface
+        text сентябрь
+      surface
+        text сентября
+      surface
+        text сентябре
+      surface
+        text сентябрю
+      surface
+        text сентябрём
+      surface
+        text сентябрем
+    lexeme hi
+      surface
+        text सितंबर
+      surface
+        text सितम्बर
+    lexeme zh
+      surface
+        text 九月
+    lexeme es
+      surface
+        text septiembre
+      surface
+        text setiembre
+  october
+    grounded-in Q124
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text October
+      surface
+        text october
+      surface
+        text oct
+    lexeme ru
+      surface
+        text октябрь
+      surface
+        text октября
+      surface
+        text октябре
+      surface
+        text октябрю
+      surface
+        text октябрём
+      surface
+        text октябрем
+    lexeme hi
+      surface
+        text अक्टूबर
+    lexeme zh
+      surface
+        text 十月
+    lexeme es
+      surface
+        text octubre
+  november
+    grounded-in Q125
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text November
+      surface
+        text november
+      surface
+        text nov
+    lexeme ru
+      surface
+        text ноябрь
+      surface
+        text ноября
+      surface
+        text ноябре
+      surface
+        text ноябрю
+      surface
+        text ноябрём
+      surface
+        text ноябрем
+    lexeme hi
+      surface
+        text नवंबर
+      surface
+        text नवम्बर
+    lexeme zh
+      surface
+        text 十一月
+    lexeme es
+      surface
+        text noviembre
+  december
+    grounded-in Q126
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en
+      surface
+        text December
+      surface
+        text december
+      surface
+        text dec
+    lexeme ru
+      surface
+        text декабрь
+      surface
+        text декабря
+      surface
+        text декабре
+      surface
+        text декабрю
+      surface
+        text декабрём
+      surface
+        text декабрем
+    lexeme hi
+      surface
+        text दिसंबर
+      surface
+        text दिसम्बर
+    lexeme zh
+      surface
+        text 十二月
+    lexeme es
+      surface
+        text diciembre
   calendar_following
     defined-by calendar_day
     role calendar_direction_next
@@ -336,6 +769,11 @@ meanings
         text 下一个
       surface
         text 下一天
+    lexeme es
+      surface
+        text "después de"
+      surface
+        text "después del"
   calendar_preceding
     defined-by calendar_day
     role calendar_direction_previous
@@ -379,6 +817,11 @@ meanings
         text 上一个
       surface
         text 上一天
+    lexeme es
+      surface
+        text "antes de"
+      surface
+        text "antes del"
   calendar_today
     grounded-in Q3151690
     defined-by calendar_day
