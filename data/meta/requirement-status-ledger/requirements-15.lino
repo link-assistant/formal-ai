@@ -315,7 +315,7 @@ requirement_status_ledger_shard requirements_15
   requirement
     id "R919-2"
     shard "docs/requirements/issue-0919-research-driven-coding-procedures.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered "none recorded"
     issue "0919"
     automated_test ""
@@ -411,7 +411,7 @@ requirement_status_ledger_shard requirements_15
   requirement
     id "R921-7"
     shard "docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered "none recorded"
     issue "0921"
     automated_test "rust/tests/unit/issue_904.rs"

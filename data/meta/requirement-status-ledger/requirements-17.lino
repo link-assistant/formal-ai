@@ -67,7 +67,7 @@ requirement_status_ledger_shard requirements_17
   requirement
     id "R992"
     shard "docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md"
-    verdict "partial"
+    verdict "not-delivered"
     delivered "doctrine adopted 2026-09-24 (PR #1139, issue #1138)"
     issue ""
     automated_test ""
@@ -83,7 +83,7 @@ requirement_status_ledger_shard requirements_17
   requirement
     id "R993"
     shard "docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "delivered 2026-09-24 (PR #1139)"
     issue ""
     automated_test "rust/tests/unit/issue_1138_translation_tool.rs"
@@ -99,7 +99,7 @@ requirement_status_ledger_shard requirements_17
   requirement
     id "R995"
     shard "docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md"
-    verdict "superseded"
+    verdict "partial"
     delivered "doctrine row; ratchet unchanged today"
     issue ""
     automated_test ""
@@ -130,7 +130,7 @@ requirement_status_ledger_shard requirements_17
     manual "not yet confirmed"
   requirement
     id "R998"
-    shard "docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md"
+    shard "docs/requirements/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.md"
     verdict "partial"
     delivered "delivered 2026-10-06"
     issue ""

@@ -3,7 +3,7 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R254"
     shard "docs/requirements/issue-0244-vision-implementation-planning.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered "pre-2026-07 (undated); issue #244"
     issue "0244"
     automated_test ""
@@ -459,7 +459,7 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R304"
     shard "docs/requirements/issue-0451-symbolic-ai-reference-and-best-practices.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered "PR #452 (issue #451)"
     issue "0451"
     automated_test ""
@@ -587,7 +587,7 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R319"
     shard "docs/requirements/issue-0468-agentic-coding-mode.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "PR #469 (issue #468)"
     issue "0468"
     automated_test "rust/tests/unit/agentic_coding.rs"

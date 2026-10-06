@@ -94,15 +94,15 @@ requirement_status_ledger_shard requirements_08
     verdict "implemented"
     delivered "PR #560 (issue #559)"
     issue "0559"
-    automated_test "rust/tests/unit/specification/recipe_interpreter.rs"
+    automated_test "rust/tests/unit/specification/recursive_core_recipe.rs"
     manual "not yet confirmed"
   requirement
     id "R336"
     shard "docs/requirements/issue-0559-general-meta-algorithm.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "PR #560 (issue #559)"
     issue "0559"
-    automated_test "rust/tests/unit/issue_699_handler_migration.rs"
+    automated_test "rust/tests/unit/specification/route_method_alias.rs"
     manual "not yet confirmed"
   requirement
     id "R337"
@@ -110,7 +110,7 @@ requirement_status_ledger_shard requirements_08
     verdict "implemented"
     delivered "PR #560 (issue #559)"
     issue "0559"
-    automated_test "rust/tests/unit/specification/meta_construction.rs"
+    automated_test "rust/tests/unit/specification/meta_reasoning.rs"
     manual "not yet confirmed"
   requirement
     id "R338"

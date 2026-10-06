@@ -139,7 +139,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1073-2"
     shard "docs/requirements/issue-1073-reasoning-standard.md"
-    verdict "implemented"
+    verdict "partial"
     delivered "PR #1074 (issue #1073), 2026-09-04"
     issue "1073"
     automated_test "rust/tests/unit/issue_1073_reasoning_standard.rs"
@@ -195,7 +195,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1085-1"
     shard "docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md"
-    verdict "superseded"
+    verdict "partial"
     delivered "issue-1085 branch, 2026-09-08"
     issue "1085"
     automated_test ""
@@ -307,7 +307,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1085-7"
     shard "docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered "issue-1085 branch, 2026-09-08"
     issue "1085"
     automated_test ""
@@ -362,10 +362,10 @@ requirement_status_ledger_shard requirements_02
     manual "not yet confirmed"
   requirement
     id "R112"
-    shard "docs/requirements/issue-0078-shorter-issue-reporting-requirements.md"
+    shard "docs/requirements/issue-0018-full-memory-export-import-requirements.md"
     verdict "partial"
     delivered "pre-2026-07 (undated); issue #18"
-    issue "0078"
+    issue "0018"
     automated_test ""
     manual "not yet confirmed"
   requirement

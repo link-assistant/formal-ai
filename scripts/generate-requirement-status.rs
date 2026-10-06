@@ -140,8 +140,31 @@ fn issue_from_shard(path: &Path) -> String {
         .unwrap_or_default()
 }
 
+/// `needle` occurs in `text` as words, not inside an identifier such as the
+/// `web_search:provider_planned` event a row may name.
+fn contains_word(text: &str, needle: &str) -> bool {
+    let is_word = |character: char| character.is_alphanumeric() || character == '_';
+    text.match_indices(needle).any(|(start, _)| {
+        let before = text[..start].chars().next_back();
+        let after = text[start + needle.len()..].chars().next();
+        !before.is_some_and(is_word) && !after.is_some_and(is_word)
+    })
+}
+
 fn verdict(line: &str, automated_test: &str) -> String {
-    let lower = line.to_ascii_lowercase();
+    // A table row states its status after the id and requirement cells; the
+    // requirement text may use the same words ("narration of the planned search").
+    let status = if line.trim_start().starts_with('|') {
+        let cells: Vec<&str> = line.trim().trim_matches('|').split('|').collect();
+        if cells.len() > 2 {
+            cells[2..].join("|")
+        } else {
+            line.to_owned()
+        }
+    } else {
+        line.to_owned()
+    };
+    let lower = status.to_ascii_lowercase();
     if lower.contains("withdrawn") {
         return "withdrawn".to_owned();
     }
@@ -150,7 +173,7 @@ fn verdict(line: &str, automated_test: &str) -> String {
     }
     if ["not delivered", "not implemented", "pending", "planned"]
         .iter()
-        .any(|needle| lower.contains(needle))
+        .any(|needle| contains_word(&lower, needle))
     {
         return "not-delivered".to_owned();
     }
@@ -218,11 +241,16 @@ fn requirement_rows(root: &Path) -> Result<Vec<Requirement>, String> {
         let source = fs::read_to_string(&path)
             .map_err(|error| format!("cannot read {}: {error}", path.display()))?;
         for line in source.lines() {
-            for id in requirement_ids(line) {
+            let ids = requirement_ids(line);
+            // A definition row defines only the id it leads with; the other ids
+            // it names ("R1172-1's word-boundary fix") are references.
+            let defined = ids.first().cloned();
+            for id in ids {
                 if expected.contains(&id) {
-                    let is_definition = line.trim_start().starts_with("| R")
+                    let is_definition = (line.trim_start().starts_with("| R")
                         || line.trim_start().starts_with("### R")
-                        || line.trim_start().starts_with("- R");
+                        || line.trim_start().starts_with("- R"))
+                        && defined.as_ref() == Some(&id);
                     match ownership.get(&id) {
                         None => {
                             ownership.insert(id, (relative.clone(), line.to_owned()));

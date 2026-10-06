@@ -195,7 +195,7 @@ requirement_status_ledger_shard requirements_16
   requirement
     id "R933-12"
     shard "docs/requirements/issue-0933-conversational-variation-floor.md"
-    verdict "implemented"
+    verdict "partial"
     delivered "none recorded"
     issue "0933"
     automated_test "rust/tests/unit/issue_933_answer_parity.rs"

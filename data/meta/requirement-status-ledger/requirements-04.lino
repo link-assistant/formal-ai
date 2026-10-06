@@ -99,7 +99,7 @@ requirement_status_ledger_shard requirements_04
   requirement
     id "R1172-1"
     shard "docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "2026-09-30 (this pull request)"
     issue "1172"
     automated_test "rust/tests/unit/issue_1172_factual_qa_subject_match.rs"
@@ -107,10 +107,10 @@ requirement_status_ledger_shard requirements_04
   requirement
     id "R1172-10"
     shard "docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "2026-10-07 (this pull request; Rust, JS and the regenerated TS twin)"
     issue "1172"
-    automated_test "rust/tests/web/issue-1172-1173-worker-parity.test.mjs"
+    automated_test "rust/tests/unit/issue_1172_factual_qa_subject_match.rs"
     manual "not yet confirmed"
   requirement
     id "R1172-11"
@@ -203,7 +203,7 @@ requirement_status_ledger_shard requirements_04
   requirement
     id "R1173-2"
     shard "docs/requirements/issue-1173-no-canned-search-answer.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "2026-09-30 (this pull request)"
     issue "1173"
     automated_test "rust/tests/unit/issue_1173_fallback_executes_search.rs"
@@ -475,7 +475,7 @@ requirement_status_ledger_shard requirements_04
   requirement
     id "R1177-8"
     shard "docs/requirements/issue-1177-code-tasks-formal-answers.md"
-    verdict "implemented"
+    verdict "partial"
     delivered "2026-09-30 (this pull request) — promise-chain → async/await with bodies verbatim; other refactoring targets refused by name"
     issue "1177"
     automated_test "rust/tests/unit/issue_1177_code_task_handlers.rs"

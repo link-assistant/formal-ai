@@ -10,10 +10,10 @@ requirement_status_ledger_shard requirements_12
     manual "not yet confirmed"
   requirement
     id "R67"
-    shard "docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md"
+    shard "docs/requirements/issue-0012-holistic-vision-requirements.md"
     verdict "implemented"
     delivered "delivered 2026-09-18 by issue #1138 B1: the universal loop grounds unresolved surfaces through the trusted sources with recorded provenance; the fabricated-provenance removal is #843 (PR #853)"
-    issue "0133"
+    issue "0012"
     automated_test "rust/tests/unit/specification/source_cache.rs"
     manual "not yet confirmed"
   requirement

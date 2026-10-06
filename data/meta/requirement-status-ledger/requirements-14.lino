@@ -219,7 +219,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R864-2"
     shard "docs/requirements/issue-0864-proactive-failure-report-invitations.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered "PR #910 (issue #864)"
     issue "0864"
     automated_test "rust/tests/unit/issue_864.rs"
@@ -627,7 +627,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R909-1"
     shard "docs/requirements/issue-0909-headless-ready-global-client-configuration.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "delivered 2026-08-04; issue #909"
     issue "0909"
     automated_test "rust/tests/integration/with_formal_ai_headless_global.rs"

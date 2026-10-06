@@ -355,7 +355,7 @@ requirement_status_ledger_shard requirements_03
   requirement
     id "R1155-1"
     shard "docs/requirements/issue-1155-work-item-read-validation.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered ""
     issue "1155"
     automated_test ""
@@ -379,7 +379,7 @@ requirement_status_ledger_shard requirements_03
   requirement
     id "R1155-4"
     shard "docs/requirements/issue-1155-work-item-read-validation.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered ""
     issue "1155"
     automated_test ""
@@ -475,7 +475,7 @@ requirement_status_ledger_shard requirements_03
   requirement
     id "R1165-2"
     shard "docs/requirements/issue-1165-discovery-production-path.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered ""
     issue "1165"
     automated_test ""

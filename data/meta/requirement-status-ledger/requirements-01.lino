@@ -26,11 +26,11 @@ requirement_status_ledger_shard requirements_01
     manual "not yet confirmed"
   requirement
     id "R1000"
-    shard "docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md"
-    verdict "partial"
+    shard "docs/requirements/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.md"
+    verdict "implemented"
     delivered "js → ts twin delivered 2026-10-06; js → rust awaits meta-language#196"
     issue ""
-    automated_test "rust/tests/unit/meta_reasoner.rs"
+    automated_test "rust/tests/web/translate-es.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1001"
@@ -83,10 +83,10 @@ requirement_status_ledger_shard requirements_01
   requirement
     id "R1007"
     shard "docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "learned chunks persisted through memory operations"
     issue ""
-    automated_test "rust/tests/unit/meta_reasoner.rs"
+    automated_test "rust/tests/web/meta-reasoner.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1008"
