@@ -153,6 +153,7 @@ function writeScriptLanguage(prompt, normalized) {
   if (lexiconMentionsRole("program_genus", normalized) || lexiconMentionsRole("hello_world_reference", normalized)) return null;
   if (!lexiconMentionsRole("script_authoring_verb", normalized) || !lexiconMentionsRole("script_or_code_artifact", normalized)) return null;
   if (looksLikePythonFunctionSynthesis(prompt, canonicalizedPrompt(normalized))) return null;
+  if (metaNamesFileNoun(prompt, detectLanguage(prompt))) return null; // a script over files is derived, not templated
   const program = normalizeProgramPrompt(prompt);
   const language = programLanguageFromPrompt(program);
   if (!language || !WRITE_PROGRAM_TEMPLATES.hello_world?.[language]) return null;

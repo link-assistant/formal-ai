@@ -911,6 +911,31 @@ function metaReasonCore(prompt, language, knowledge) {
 }
 
 /**
+ * A file noun: every documented operation of the word takes or gives a path.
+ * Mirrors `is_file_noun` in rust/src/meta_reasoner/request.rs.
+ * @param {string} word
+ * @param {string} language
+ * @returns {boolean}
+ */
+function metaIsFileNoun(word, language) {
+  const types = metaDocHypotheses(word, language)
+    .map((item) => metaSeed().primitives.find((primitive) => primitive.id === item.operation))
+    .filter(Boolean);
+  return types.length > 0 && types.every((primitive) => [primitive.from, primitive.to].some((type) => type === "path" || type === "list_path"));
+}
+
+/**
+ * Whether the request names a file noun anywhere: a program over paths, which
+ * no fixed template renders. Mirrors `names_file_noun` in request.rs.
+ * @param {string} text
+ * @param {string} language
+ * @returns {boolean}
+ */
+function metaNamesFileNoun(text, language) {
+  return metaWords(text).some((word) => !metaIsGrammatical(word) && metaIsFileNoun(word, language));
+}
+
+/**
  * Location operands: the bare name right after a locative cue ("in", "в")
  * that follows a file noun, a word whose documented operations all take or
  * give a path. A name with no determiner is a proper name ("in data"); "in a
@@ -932,10 +957,7 @@ function metaLocationOperands(text, language) {
       const noun = before[before.length - 1];
       const after = /^[\p{L}\p{N}_]+(?:[.-][\p{L}\p{N}_]+)*/u.exec(text.slice(at + marker.length));
       if (!noun || !after || metaIsGrammatical(after[0].toLowerCase())) continue;
-      const types = metaDocHypotheses(noun, language)
-        .map((item) => metaSeed().primitives.find((primitive) => primitive.id === item.operation))
-        .filter(Boolean);
-      if (!types.length || !types.every((primitive) => [primitive.from, primitive.to].some((type) => type === "path" || type === "list_path"))) continue;
+      if (!metaIsFileNoun(noun, language)) continue;
       const start = at + marker.length;
       if (out.some((operand) => operand.start === start)) continue;
       out.push({ start, end: start + after[0].length, value: after[0], cue: marker.trim() });

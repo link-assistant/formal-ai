@@ -641,6 +641,11 @@ fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bo
     if crate::solver_handlers::looks_like_python_function_request(prompt, &canonical) {
         return false;
     }
+    // A script over files ("every file in a folder with more than 1000 lines")
+    // is a program the meta reasoner derives; the template prints one line.
+    if crate::meta_reasoner::request::names_file_noun(prompt, detect_language(prompt).slug()) {
+        return false;
+    }
     let Some(program) = crate::engine::hello_world_program_by_alias(normalized) else {
         // No catalogued language: the route declines on its own grounds.
         return true;

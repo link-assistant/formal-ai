@@ -141,6 +141,19 @@ fn is_file_noun(word: &str, language: &str) -> bool {
         })
 }
 
+/// Whether the request names a file noun anywhere.
+///
+/// A request about files ("every file in a folder") asks for a program over
+/// paths, which no fixed template renders.
+///
+/// Mirrors `metaNamesFileNoun` in `js/worker/formal_ai_worker_meta_reasoner.js`.
+#[must_use]
+pub fn names_file_noun(text: &str, language: &str) -> bool {
+    meta_words(text)
+        .iter()
+        .any(|word| !meta_seed().is_grammatical(word) && is_file_noun(word, language))
+}
+
 /// Where a word first stands in the request (a byte offset in its lower
 /// case), so values named by words and values stated as literals keep the
 /// request's order.
