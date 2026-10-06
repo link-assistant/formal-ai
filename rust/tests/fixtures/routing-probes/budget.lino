@@ -1,0 +1,61 @@
+# Issue #1175 R1175-4 — coverage budget and misroute ratchets for the routing
+# probe corpus in this directory (probes-*.lino).
+#
+# The lanes are every handler row of data/seed/handler-precedence.lino (the
+# specialized-handler table both runtimes join to their code) plus every slug
+# of data/seed/intent-routing.lino, plus the extra lanes declared here. A
+# probe covers a lane when the lane is its `lane` or the intent it expects.
+# Every lane needs `minimum_probes_per_lane` probes or an `exempt_lane` entry
+# naming why a single-turn, offline probe cannot reach it. An exemption for a
+# lane that the corpus does cover is stale and fails the test.
+#
+# The two ceilings are ratchets — they equal the number of probes carrying a
+# `js_misroute` / `rust_misroute` line, may only fall, and must be lowered in
+# the same change that fixes a misroute.
+routing_probe_budget
+  minimum_probes 200
+  minimum_probes_per_lane 2
+  js_misroute_ceiling 118
+  rust_misroute_ceiling 75
+  extra_lane agent_suggestion
+    reason "the terminal-command detector answers before the handler table; it is not a precedence row"
+  exempt_lane exact_memory_query
+    reason "browser_only: needs the worker's memory store"
+  exempt_lane memory_program
+    reason "browser_only: needs a stored memory program"
+  exempt_lane memory_program_gap
+    reason "browser_only: needs a stored memory program"
+  exempt_lane current_dialogue_fact_checking
+    reason "browser_only: checks earlier turns of the running dialogue"
+  exempt_lane link_native_synthesis
+    reason "browser_only: synthesizes over the worker's own link store"
+  exempt_lane historical
+    reason "browser_only: replays stored conversation history"
+  exempt_lane write_program_coreference
+    reason "browser_only: rewrites a program named in an earlier turn"
+  exempt_lane program_blueprint_from_prompt
+    reason "browser_only: composes the interactive program blueprint dialogue"
+  exempt_lane write_program_concrete
+    reason "browser_only: binds a program request to earlier context"
+  exempt_lane software_project_request
+    reason "browser_only: the interactive software-project dialogue"
+  exempt_lane research_comparison_table
+    reason "follow-up: tabulates the results of an earlier research turn"
+  exempt_lane research_result_followup
+    reason "follow-up: refers to an earlier research turn"
+  exempt_lane procedural_how_to_followup
+    reason "follow-up: continues an earlier how-to plan"
+  exempt_lane conversation_memory
+    reason "follow-up: recalls earlier turns"
+  exempt_lane software_project_followup
+    reason "follow-up: approves or tests an earlier project plan"
+  exempt_lane summarization
+    reason "summarizes a fetched page or the conversation; offline a URL prompt is answered by http_fetch"
+  exempt_lane coreference
+    reason "follow-up: resolves a pronoun against an earlier turn"
+  exempt_lane software_project_implementation
+    reason "follow-up: implements an approved project plan"
+  exempt_lane concept_lookup_in_context
+    reason "follow-up: looks a concept up in the context of an earlier turn"
+  exempt_lane recall_name
+    reason "follow-up: recalls a name the user gave earlier"

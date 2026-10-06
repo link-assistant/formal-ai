@@ -318,6 +318,7 @@ mod issue_1173_fallback_executes_search;
 mod issue_1174_text_transform;
 mod issue_1175_phrase_vocabulary;
 mod issue_1175_routing;
+mod issue_1175_routing_probes;
 mod issue_1176_quantities_dates;
 mod issue_1177_code_task_handlers;
 mod issue_1178_creative_composition;
