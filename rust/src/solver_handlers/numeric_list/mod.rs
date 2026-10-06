@@ -33,6 +33,7 @@
 //! `program_synthesis` handler.
 
 mod codegen;
+mod stated_result;
 
 use std::{cmp::Ordering, fmt::Write as _};
 
@@ -197,9 +198,14 @@ pub fn try_numeric_list_with_history(
     let has_inheritance =
         inherited.language.is_some() || inherited.code_requested || !inherited.items.is_empty();
     let solution = if has_inheritance {
-        solve_numeric_list_with_context(prompt, &inherited)?
+        solve_numeric_list_with_context(prompt, &inherited)
     } else {
-        solve_numeric_list(prompt)?
+        solve_numeric_list(prompt)
+    };
+    // R1017: with no language and no code request, "sort the numbers 5, 2,
+    // 9, 1" asks for the sorted list itself.
+    let Some(solution) = solution else {
+        return stated_result::try_stated_result(prompt, log);
     };
     MetaAlgorithmBuilder::for_surface(CodingSurface::NumericList).record(log);
     if has_inheritance {

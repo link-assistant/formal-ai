@@ -27,6 +27,8 @@ use std::cmp::Ordering;
 use super::calendar::contains_term;
 use super::numeric_list::parse_numbers;
 
+mod primality;
+
 /// Seed meaning slugs carrying the word-problem markers of issue #1176.
 const MARKER_UNIT_PRICE: &str = "word_problem_unit_price";
 const MARKER_PAYMENT: &str = "word_problem_payment";
@@ -708,6 +710,11 @@ pub fn handle_statistics(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // R1017: a number property of one stated number ("is 97 prime?") shares
+    // the stated-values surface; it needs no list and no question mark.
+    if let Some(answer) = primality::handle_primality(prompt, log) {
+        return Some(answer);
+    }
     // Question gate: statistics prompts ask ("what is the mean of …?"). The
     // mark also keeps a stray "range" in a coding prompt from reading as the
     // statistics range; ASCII and fullwidth forms both count.

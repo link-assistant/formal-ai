@@ -259,6 +259,40 @@ meanings
         text 日期
       surface
         text 几号
+  calendar_weekday_query
+    defined-by calendar_day
+    role calendar_weekday_query
+    lexeme en
+      surface
+        text "day of the week"
+      surface
+        text weekday
+      surface
+        text "what day"
+      surface
+        text "which day"
+    lexeme ru
+      surface
+        text "день недели"
+      surface
+        text "какой день"
+    lexeme hi
+      surface
+        text "सप्ताह का दिन"
+      surface
+        text "कौन सा दिन"
+    lexeme zh
+      surface
+        text 星期几
+      surface
+        text 周几
+      surface
+        text 礼拜几
+    lexeme es
+      surface
+        text "día de la semana"
+      surface
+        text "qué día"
   calendar_week
     grounded-in Q23387
     defined-by calendar_day

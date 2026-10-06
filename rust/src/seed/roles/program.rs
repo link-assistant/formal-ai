@@ -103,6 +103,11 @@ pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
 /// slug is the English month name so the month-offset reader can resolve a
 /// matched lexeme back to its number in the twelve-month cycle (issue #1176).
 pub const ROLE_CALENDAR_MONTH_NAME: &str = "calendar_month_name";
+/// Semantic role: a question asking which weekday a date falls on ("day of
+/// the week", "weekday", "какой день", 星期几). Read by the date-weekday reader
+/// of the calendar handler so "What day of the week was 2024-02-29?" is
+/// computed from the stated date rather than looked up (R1017).
+pub const ROLE_CALENDAR_WEEKDAY_QUERY: &str = "calendar_weekday_query";
 /// Semantic role: a relative period measured in hours (the last few hours,
 /// часа, घंटे, 小时) — the noun a fresh-period digest asks about.
 ///

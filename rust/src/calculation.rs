@@ -10,6 +10,8 @@ use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
 use crate::seed;
 
+mod function_phrase;
+
 /// Engine that produced a calculation result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CalculationEngine {
@@ -882,6 +884,8 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     let cue_prefixes = calculation_request_prefixes();
     let (stripped, explicit, interpretations) =
         strip_calculation_wrappers_with_prefixes(trimmed, &cue_prefixes);
+    // R1017: "the square root of 144" is the call `sqrt(144)`.
+    let stripped = function_phrase::rewrite_function_phrases(&stripped).unwrap_or(stripped);
     let mut candidates = Vec::new();
 
     let embedded_slices = if explicit {
@@ -904,6 +908,8 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     for embedded in embedded_slices {
         let (embedded_stripped, _, embedded_interpretations) =
             strip_calculation_wrappers_with_prefixes(embedded, &cue_prefixes);
+        let embedded_stripped = function_phrase::rewrite_function_phrases(&embedded_stripped)
+            .unwrap_or(embedded_stripped);
         if !embedded_stripped.is_empty() && has_calculation_signal(&embedded_stripped, true) {
             push_calculation_candidate(
                 &mut candidates,

@@ -867,6 +867,41 @@ function extractArithmeticExpression(prompt) {
   return extractArithmeticExpressionInternal(prompt, true);
 }
 
+// R1017: "the square root of 144" is the call `sqrt(144)`. A seeded
+// math_function_name surface, an optional math_function_argument_marker word
+// ("of", "из") and a number become `<first English surface>(<number>)`; number-
+// free words before it ("the") drop, and trailing prose declines the rewrite.
+// Mirrors rust/src/calculation/function_phrase.rs.
+function rewriteMathFunctionPhrases(expression) {
+  const names = [];
+  for (const meaning of meaningsWithRole(ROLE_MATH_FUNCTION_NAME)) {
+    const canonical = wordInLanguage(meaning, "en");
+    if (!canonical || !/^[A-Za-z]+$/u.test(canonical)) continue;
+    for (const word of meaning.words) names.push({ surface: word.toLowerCase(), canonical });
+  }
+  names.sort((left, right) => Array.from(right.surface).length - Array.from(left.surface).length);
+  const markers = wordsForRole(ROLE_MATH_FUNCTION_ARGUMENT_MARKER);
+  const lower = String(expression || "").toLowerCase();
+  for (const { surface, canonical } of names) {
+    for (let start = lower.indexOf(surface); start !== -1; start = lower.indexOf(surface, start + 1)) {
+      const prefix = lower.slice(0, start);
+      if (/[\p{L}\p{N}]$/u.test(prefix)) continue;
+      const afterName = lower.slice(start + surface.length);
+      if (!/^\s/u.test(afterName)) continue;
+      let rest = afterName.trimStart();
+      const marker = markers.find((word) => rest.startsWith(word) && /^\s/u.test(rest.slice(word.length)));
+      if (marker) rest = rest.slice(marker.length).trimStart();
+      const argument = /^[0-9.]*/u.exec(rest)[0];
+      if (!/^[0-9]/u.test(argument)) continue;
+      const suffix = rest.slice(argument.length);
+      if (/\p{Alphabetic}/u.test(suffix)) continue;
+      const keptPrefix = /[0-9]/u.test(prefix) ? prefix : "";
+      return `${keptPrefix}${canonical}(${argument})${suffix}`.trim();
+    }
+  }
+  return null;
+}
+
 function calculationRequestPrefixes() {
   return wordsForRole(ROLE_CALCULATION_REQUEST_CUE).map((surface) =>
     containsCjk(surface) ? surface : `${surface} `,
@@ -1006,6 +1041,7 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
     }
   }
   if (!working) return null;
+  working = rewriteMathFunctionPhrases(working) || working;
   if (allowEmbedded && !strippedLeadingCue) {
     for (const slice of embeddedCalculationRequestSlices(trimmed, prefixes)) {
       const extracted = extractArithmeticExpressionInternal(slice, false);

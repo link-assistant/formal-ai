@@ -816,6 +816,9 @@ function statisticsLabel(slug, language) {
  * @returns {{intent: string, content: string, confidence: number, evidence: Array<string>}|null}
  */
 function tryStatistics(prompt, normalized, language) {
+  // R1017: a number property of one stated number ("is 97 prime?").
+  const primality = tryNumberPrimality(prompt, language);
+  if (primality) return primality;
   const lowered = String(prompt || "").toLowerCase();
   if (!lowered.includes("?") && !lowered.includes("？")) return null;
   const ops = STATISTICS_OPERATIONS.filter((operation) =>
@@ -953,4 +956,86 @@ function tryWordProblem(prompt, normalized, language) {
     return quantityAnswer("word_problem_total", body, log, language);
   }
   return null;
+}
+
+// Primality of one stated whole number (R1017), mirroring
+// rust/src/solver_handlers/statistics/primality.rs: exactly one standalone
+// whole number, the `number_property_prime` surfaces named after it, no code
+// request; trial division up to floor(sqrt(n)) decides, and a composite names
+// its smallest factor with the cofactor.
+
+const NUMBER_PROPERTY_PRIME_SLUG = "number_property_prime";
+const NUMBER_PROPERTY_MAX_TESTED = 1000000000000;
+
+/**
+ * Offsets of the prompt's only standalone whole number, or null (Rust
+ * `single_stated_integer`).
+ * @param {string} lowered
+ * @returns {{start: number, end: number}|null}
+ */
+function numberPropertySingleInteger(lowered) {
+  const glued = (character) => /[A-Za-z0-9.]/u.test(character);
+  let found = null;
+  for (const match of lowered.matchAll(/[0-9]+/gu)) {
+    const start = match.index;
+    const end = start + match[0].length;
+    const before = start > 0 ? lowered[start - 1] : "";
+    const after = end < lowered.length ? lowered[end] : "";
+    if (before === "-") return null;
+    if ((before && glued(before)) || (after && glued(after))) continue;
+    if (found !== null) return null;
+    found = { start: start, end: end };
+  }
+  return found;
+}
+
+/**
+ * Answer "is <n> prime?" (Rust `handle_primality`), or null.
+ * @param {string} prompt
+ * @param {string} language
+ * @returns {{intent: string, content: string, confidence: number, evidence: Array<string>}|null}
+ */
+function tryNumberPrimality(prompt, language) {
+  const lowered = String(prompt || "").toLowerCase();
+  const span = numberPropertySingleInteger(lowered);
+  if (span === null) return null;
+  const after = lowered.slice(span.end);
+  if (!quantityMeaningWords(NUMBER_PROPERTY_PRIME_SLUG).some((word) => quantityContainsTerm(after, word))) {
+    return null;
+  }
+  const normalized = normalizePrompt(prompt);
+  if (["code_request", "function", "implement"].some((slug) => operationMatchesSlug(slug, normalized))) {
+    return null;
+  }
+  const number = Number(lowered.slice(span.start, span.end));
+  if (!Number.isSafeInteger(number) || number > NUMBER_PROPERTY_MAX_TESTED) return null;
+  const limit = Math.floor(Math.sqrt(number));
+  let factor = null;
+  for (let divisor = 2; divisor <= limit; divisor += 1) {
+    if (number % divisor === 0) {
+      factor = divisor;
+      break;
+    }
+  }
+  let intent = "number_primality_prime";
+  if (number < 2) intent = "number_primality_below_two";
+  else if (factor !== null) intent = "number_primality_composite";
+  else if (limit < 2) intent = "number_primality_prime_small";
+  const subject = String(number);
+  const log = [
+    `number_property:subject:${subject}`,
+    `number_property:property:${NUMBER_PROPERTY_PRIME_SLUG}`,
+    `number_property:trial_division:2..=${limit}`,
+  ];
+  if (factor !== null) log.push(`number_property:factor:${subject} = ${factor} × ${number / factor}`);
+  log.push(`number_property:result:${factor === null && number >= 2}`);
+  const template = quantityLocalizedTemplate(intent, language);
+  if (template === null) return null;
+  const body = quantityFillTemplate(template, [
+    ["n", subject],
+    ["limit", String(limit)],
+    ["factor", factor === null ? "" : String(factor)],
+    ["cofactor", factor === null ? "" : String(number / factor)],
+  ]);
+  return quantityAnswer("number_primality", body, log, language);
 }

@@ -341,3 +341,36 @@ meanings
     unit "not applicable"
     example "4 tickets at 12 each cost 48 in total. 4 x 12 = 48."
     grounding "data/seed/multilingual-responses-quantities.lino"
+  number_property_prime
+    grounded-in Q49008
+    defined-by statistics_operation
+    role number_property
+    formula "n is prime when n > 1 and no integer d with 2 <= d <= floor(sqrt(n)) divides n"
+    source "https://en.wikipedia.org/wiki/Prime_number"
+    lexeme en
+      surface
+        text prime
+      surface
+        text "prime number"
+    lexeme ru
+      surface
+        text простое
+      surface
+        text простым
+      surface
+        text "простое число"
+    lexeme hi
+      surface
+        text अभाज्य
+      surface
+        text "अभाज्य संख्या"
+    lexeme zh
+      surface
+        text 质数
+      surface
+        text 素数
+    lexeme es
+      surface
+        text primo
+      surface
+        text "número primo"

@@ -77,6 +77,8 @@ roles
     kind meaning
   calendar_weekday
     kind predicate
+  calendar_weekday_query
+    kind meaning
   capability_act_compose
     kind predicate
   capability_act_demonstrate
@@ -443,6 +445,8 @@ roles
     kind predicate
   localized_response_template
     kind meaning
+  math_function_argument_marker
+    kind predicate
   math_function_name
     kind predicate
   measurement_concept
@@ -505,6 +509,8 @@ roles
     kind meaning
   number_constraint_upper_strict
     kind meaning
+  number_property
+    kind predicate
   numeric_concept
     kind predicate
   observable_task_action

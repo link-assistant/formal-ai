@@ -344,6 +344,7 @@ mod issue_869_meeting_scheduling;
 mod issue_872_app_store_search;
 mod issue_901_triz_solver;
 mod issue_954_module_map;
+mod r1017_small_math_tasks;
 mod verifiable_task;
 
 // Readers for the split REQUIREMENTS.md register and the archived CHANGELOG.md.

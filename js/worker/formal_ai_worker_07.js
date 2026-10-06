@@ -353,7 +353,8 @@ function tryNumericList(prompt, history) {
 
   // The current prompt's own language wins; otherwise inherit it from context.
   const slug = programLanguageFromPrompt(normalized) || inherited.slug;
-  if (!slug) return null;
+  // R1017: no language and no code request asks for the result itself.
+  if (!slug) return numericListStatedResult(prompt, normalized, canonical);
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
 
@@ -423,6 +424,43 @@ function tryNumericList(prompt, history) {
       `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
       `synthesis:syntax_tree:${syntaxTree}`,
       `execution_result:${resultText}`,
+    ],
+  };
+}
+
+// R1017: "Sort the numbers 5, 2, 9, 1" with no language and no code request
+// answers with the transformed list, through the numeric_list_result_*
+// templates. The items must form one stated list (no letter between them).
+// Mirrors rust/src/solver_handlers/numeric_list/stated_result.rs.
+function numericListStatedResult(prompt, normalized, canonical) {
+  if (["code_request", "implement"].some((slug) => operationMatchesSlug(slug, normalized))) return null;
+  if (numericListFamily(canonical) !== "list_transformation") return null;
+  const text = String(prompt || "");
+  const items = parseNumericListItems(text, canonical);
+  if (items.length < 2) return null;
+  let cursor = 0;
+  for (const [index, item] of items.entries()) {
+    const start = text.indexOf(item.text, cursor);
+    if (start === -1 || (index > 0 && /\p{Alphabetic}/u.test(text.slice(cursor, start)))) return null;
+    cursor = start + item.text.length;
+  }
+  const isFloat = items.some((item) => item.kind === "number" && !Number.isInteger(item.value));
+  const given = items.map((item) => item.text).join(", ");
+  const result = computeNumericList(canonical, items, isFloat).join(", ");
+  const language = detectLanguage(prompt);
+  const template = quantityLocalizedTemplate(`numeric_list_result_${canonical}`, language);
+  if (template === null) return null;
+  return {
+    intent: "numeric_list_result",
+    content: quantityFillTemplate(template, [["given", given], ["result", result]]),
+    confidence: 1.0,
+    evidence: [
+      `numeric_list:operation:${canonical}`,
+      `numeric_list:given:${given}`,
+      "execution_status:computed deterministically",
+      `execution_result:${result}`,
+      `language:${language}`,
+      "response:numeric_list_result",
     ],
   };
 }

@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_statistics.js"
-  ceiling 956
-  rationale "Statistics over stated number lists, and the price-times-count word problems that share their vocabulary (issue #1176). JavaScript-first twin of native handler keys (statistics, word_problem), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling moved 832 to 956 for the percentile twin (R1176-3, 2026-10-07): exact linear interpolation between closest ranks and the rank-parameter reader."
+  ceiling 1041
+  rationale "Statistics over stated number lists, and the price-times-count word problems that share their vocabulary (issue #1176). JavaScript-first twin of native handler keys (statistics, word_problem), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling moved 832 to 956 for the percentile twin (R1176-3, 2026-10-07): exact linear interpolation between closest ranks and the rank-parameter reader. Ceiling moved 956 to 1041 for the primality twin (R1017, 2026-10-07): one stated whole number tested by trial division up to its integer square root, twin of rust/src/solver_handlers/statistics/primality.rs."

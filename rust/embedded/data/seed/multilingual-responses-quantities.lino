@@ -339,3 +339,163 @@ multilingual_responses_quantities
     intent calendar_weekday_month_offset_unresolved_previous
     language es
     text "{n} {unit} antes de {source} no tiene un único día de la semana: {n} {unit} abarcan de {min_days} a {max_days} días según la fecha de inicio, porque un mes del calendario dura de 28 a 31 días, así que el día de la semana no es fijo. Indica la fecha de inicio o expresa el desplazamiento en días o semanas."
+  response response_calendar_date_weekday_en
+    intent calendar_date_weekday
+    language en
+    text "{date} is a {weekday}. Counting from {epoch}, a {epoch_weekday}, it is day {days}: {days} = 7 × {weeks} + {rest}, and {epoch_weekday} + {rest} days = {weekday}."
+  response response_calendar_date_weekday_ru
+    intent calendar_date_weekday
+    language ru
+    text "{date} — {weekday}. От {epoch} ({epoch_weekday}) это день {days}: {days} = 7 × {weeks} + {rest}, а {epoch_weekday} + {rest} дн. = {weekday}."
+  response response_calendar_date_weekday_hi
+    intent calendar_date_weekday
+    language hi
+    text "{date} को {weekday} है। {epoch} ({epoch_weekday}) से गिनने पर यह दिन {days} है: {days} = 7 × {weeks} + {rest}, और {epoch_weekday} + {rest} दिन = {weekday}।"
+  response response_calendar_date_weekday_zh
+    intent calendar_date_weekday
+    language zh
+    text "{date}是{weekday}。从 {epoch}（{epoch_weekday}）起算是第 {days} 天：{days} = 7 × {weeks} + {rest}，{epoch_weekday} + {rest} 天 = {weekday}。"
+  response response_calendar_date_weekday_es
+    intent calendar_date_weekday
+    language es
+    text "{date} es {weekday}. Contando desde {epoch}, un {epoch_weekday}, es el día {days}: {days} = 7 × {weeks} + {rest}, y {epoch_weekday} + {rest} días = {weekday}."
+  response response_numeric_list_result_sort_en
+    intent numeric_list_result_sort
+    language en
+    text "{given} sorted in ascending order: {result}."
+  response response_numeric_list_result_sort_ru
+    intent numeric_list_result_sort
+    language ru
+    text "{given} по возрастанию: {result}."
+  response response_numeric_list_result_sort_hi
+    intent numeric_list_result_sort
+    language hi
+    text "{given} आरोही क्रम में: {result}।"
+  response response_numeric_list_result_sort_zh
+    intent numeric_list_result_sort
+    language zh
+    text "{given} 按升序排列：{result}。"
+  response response_numeric_list_result_sort_es
+    intent numeric_list_result_sort
+    language es
+    text "{given} en orden ascendente: {result}."
+  response response_numeric_list_result_reverse_sort_en
+    intent numeric_list_result_reverse_sort
+    language en
+    text "{given} sorted in descending order: {result}."
+  response response_numeric_list_result_reverse_sort_ru
+    intent numeric_list_result_reverse_sort
+    language ru
+    text "{given} по убыванию: {result}."
+  response response_numeric_list_result_reverse_sort_hi
+    intent numeric_list_result_reverse_sort
+    language hi
+    text "{given} अवरोही क्रम में: {result}।"
+  response response_numeric_list_result_reverse_sort_zh
+    intent numeric_list_result_reverse_sort
+    language zh
+    text "{given} 按降序排列：{result}。"
+  response response_numeric_list_result_reverse_sort_es
+    intent numeric_list_result_reverse_sort
+    language es
+    text "{given} en orden descendente: {result}."
+  response response_numeric_list_result_reverse_en
+    intent numeric_list_result_reverse
+    language en
+    text "{given} in reverse order: {result}."
+  response response_numeric_list_result_reverse_ru
+    intent numeric_list_result_reverse
+    language ru
+    text "{given} в обратном порядке: {result}."
+  response response_numeric_list_result_reverse_hi
+    intent numeric_list_result_reverse
+    language hi
+    text "{given} उल्टे क्रम में: {result}।"
+  response response_numeric_list_result_reverse_zh
+    intent numeric_list_result_reverse
+    language zh
+    text "{given} 反转后：{result}。"
+  response response_numeric_list_result_reverse_es
+    intent numeric_list_result_reverse
+    language es
+    text "{given} en orden inverso: {result}."
+  response response_number_primality_prime_en
+    intent number_primality_prime
+    language en
+    text "Yes, {n} is a prime number: no integer from 2 to ⌊√{n}⌋ = {limit} divides it, so its only divisors are 1 and {n}."
+  response response_number_primality_prime_ru
+    intent number_primality_prime
+    language ru
+    text "Да, {n} — простое число: ни одно целое от 2 до ⌊√{n}⌋ = {limit} не делит его, поэтому его делители только 1 и {n}."
+  response response_number_primality_prime_hi
+    intent number_primality_prime
+    language hi
+    text "हाँ, {n} एक अभाज्य संख्या है: 2 से ⌊√{n}⌋ = {limit} तक का कोई पूर्णांक इसे विभाजित नहीं करता, इसलिए इसके भाजक केवल 1 और {n} हैं।"
+  response response_number_primality_prime_zh
+    intent number_primality_prime
+    language zh
+    text "是的，{n} 是质数：从 2 到 ⌊√{n}⌋ = {limit} 的整数都不能整除它，所以它的约数只有 1 和 {n}。"
+  response response_number_primality_prime_es
+    intent number_primality_prime
+    language es
+    text "Sí, {n} es un número primo: ningún entero de 2 a ⌊√{n}⌋ = {limit} lo divide, así que sus únicos divisores son 1 y {n}."
+  response response_number_primality_prime_small_en
+    intent number_primality_prime_small
+    language en
+    text "Yes, {n} is a prime number: its only divisors are 1 and {n}."
+  response response_number_primality_prime_small_ru
+    intent number_primality_prime_small
+    language ru
+    text "Да, {n} — простое число: его делители только 1 и {n}."
+  response response_number_primality_prime_small_hi
+    intent number_primality_prime_small
+    language hi
+    text "हाँ, {n} एक अभाज्य संख्या है: इसके भाजक केवल 1 और {n} हैं।"
+  response response_number_primality_prime_small_zh
+    intent number_primality_prime_small
+    language zh
+    text "是的，{n} 是质数：它的约数只有 1 和 {n}。"
+  response response_number_primality_prime_small_es
+    intent number_primality_prime_small
+    language es
+    text "Sí, {n} es un número primo: sus únicos divisores son 1 y {n}."
+  response response_number_primality_composite_en
+    intent number_primality_composite
+    language en
+    text "No, {n} is not a prime number: {n} = {factor} × {cofactor}, so {factor} divides it."
+  response response_number_primality_composite_ru
+    intent number_primality_composite
+    language ru
+    text "Нет, {n} — не простое число: {n} = {factor} × {cofactor}, то есть {factor} делит его."
+  response response_number_primality_composite_hi
+    intent number_primality_composite
+    language hi
+    text "नहीं, {n} अभाज्य संख्या नहीं है: {n} = {factor} × {cofactor}, इसलिए {factor} इसे विभाजित करता है।"
+  response response_number_primality_composite_zh
+    intent number_primality_composite
+    language zh
+    text "不是，{n} 不是质数：{n} = {factor} × {cofactor}，所以 {factor} 能整除它。"
+  response response_number_primality_composite_es
+    intent number_primality_composite
+    language es
+    text "No, {n} no es un número primo: {n} = {factor} × {cofactor}, así que {factor} lo divide."
+  response response_number_primality_below_two_en
+    intent number_primality_below_two
+    language en
+    text "No, {n} is not a prime number: a prime is a whole number greater than 1 whose only divisors are 1 and itself."
+  response response_number_primality_below_two_ru
+    intent number_primality_below_two
+    language ru
+    text "Нет, {n} — не простое число: простое число — это целое число больше 1, делители которого только 1 и оно само."
+  response response_number_primality_below_two_hi
+    intent number_primality_below_two
+    language hi
+    text "नहीं, {n} अभाज्य संख्या नहीं है: अभाज्य संख्या 1 से बड़ी वह पूर्ण संख्या है जिसके भाजक केवल 1 और वह स्वयं हों।"
+  response response_number_primality_below_two_zh
+    intent number_primality_below_two
+    language zh
+    text "不是，{n} 不是质数：质数是大于 1 且约数只有 1 和它本身的整数。"
+  response response_number_primality_below_two_es
+    intent number_primality_below_two
+    language es
+    text "No, {n} no es un número primo: un primo es un entero mayor que 1 cuyos únicos divisores son 1 y él mismo."

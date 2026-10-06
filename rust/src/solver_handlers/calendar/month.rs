@@ -163,7 +163,7 @@ fn render_unresolved(
 /// The month number (1–12) a prompt names. Every `calendar_month_name`
 /// surface is tried and the longest match wins, so "十一月" reads as November
 /// rather than as the "一月" inside it; ties keep the earlier month.
-fn detect_month(normalized: &str) -> Option<i64> {
+pub(super) fn detect_month(normalized: &str) -> Option<i64> {
     let mut best: Option<(usize, i64)> = None;
     for meaning in lexicon().meanings_with_role(ROLE_CALENDAR_MONTH_NAME) {
         let Some(position) = MONTH_SLUGS.iter().position(|slug| *slug == meaning.slug) else {
@@ -220,8 +220,10 @@ fn month_span_days(months: i64) -> (i64, i64) {
 
 /// Days since 1970-01-01 of a proleptic Gregorian date (days-from-civil,
 /// Howard Hinnant, public domain); the inverse of `days_to_date`. Callers pass
-/// years from 2000 on, so every division here is on non-negative values.
-const fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
+/// years from 1 on (the month-span scan from 2000, the date-weekday reader in
+/// `date_weekday.rs` from year 1), so every division here is on non-negative
+/// values.
+pub(super) const fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
     let shifted_year = if month <= 2 { year - 1 } else { year };
     let era = shifted_year / 400;
     let year_of_era = shifted_year - era * 400;

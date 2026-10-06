@@ -15,6 +15,7 @@ use super::calendar_create::try_calendar_create_event;
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+mod date_weekday;
 mod month;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -257,6 +258,11 @@ pub fn try_calendar_reasoning(
     // Monday") is read before the weekday gate, since a month name carries no
     // day reference and a weekday plus months has no fixed day count.
     if let Some(answer) = month::try_month_offset(prompt, normalized, log) {
+        return Some(answer);
+    }
+    // R1017: "What day of the week was 2024-02-29?" names a date, not a
+    // weekday, and is answered by counting days from the epoch.
+    if let Some(answer) = date_weekday::try_date_weekday(prompt, normalized, log) {
         return Some(answer);
     }
     if !mentions_weekday_context(normalized) {

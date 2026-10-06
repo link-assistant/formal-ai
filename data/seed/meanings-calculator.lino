@@ -657,3 +657,21 @@ meanings
     lexeme zh
       surface
         text 自然对数
+  math_function_argument
+    defined-by mathematical_function
+    role math_function_argument_marker
+    lexeme en
+      surface
+        text of
+    lexeme ru
+      surface
+        text из
+    lexeme hi
+      surface
+        text का
+    lexeme zh
+      surface
+        text 的
+    lexeme es
+      surface
+        text de

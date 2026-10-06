@@ -443,6 +443,13 @@ function tokenizeArithmetic(input) {
       if (hasDecimal && Number.isNaN(value)) throw new Error("unparseable");
       tokens.push({ kind: "num", value });
       i = j;
+    } else if (/\p{L}/u.test(ch)) {
+      // R1017: a function name ("sqrt", "корень") applied to a parenthesized
+      // argument; the parser resolves it through the seed lexicon.
+      let j = i;
+      while (j < input.length && /\p{L}/u.test(input[j])) j += 1;
+      tokens.push({ kind: "fn", name: input.slice(i, j) });
+      i = j;
     } else {
       throw new Error("unparseable");
     }
@@ -466,6 +473,7 @@ const ROLE_POLITENESS_CUE = "politeness_cue";
 const ROLE_QUANTITY_CONVERSION_CUE = "quantity_conversion_cue";
 const ROLE_CALCULATION_DOMAIN_TERM = "calculation_domain_term";
 const ROLE_MATH_FUNCTION_NAME = "math_function_name";
+const ROLE_MATH_FUNCTION_ARGUMENT_MARKER = "math_function_argument_marker";
 const ROLE_MEASUREMENT_UNIT = "measurement_unit";
 const ROLE_PHYSICAL_DIMENSION = "physical_dimension";
 
@@ -899,6 +907,33 @@ function arithmeticPow(left, right) {
   );
 }
 
+// R1017: evaluators keyed by the math_function_name meaning slug; the name a
+// prompt uses (any seeded surface) resolves to its meaning. A perfect square
+// keeps an exact integer root. link-calculator evaluates these natively.
+const MATH_FUNCTION_EVALUATORS = {
+  square_root: Math.sqrt,
+  sine: Math.sin,
+  cosine: Math.cos,
+  tangent: Math.tan,
+  logarithm: Math.log10,
+  natural_logarithm: Math.log,
+};
+
+function applyMathFunction(name, argument) {
+  const lowered = String(name).toLowerCase();
+  const meaning = meaningsWithRole(ROLE_MATH_FUNCTION_NAME).find((candidate) =>
+    candidate.words.some((word) => word.toLowerCase() === lowered));
+  const evaluate = meaning ? MATH_FUNCTION_EVALUATORS[meaning.slug] : null;
+  if (!evaluate) throw new Error("unparseable");
+  if (meaning.slug === "square_root" && isArithmeticBigInt(argument) && argument >= 0n) {
+    const root = BigInt(Math.round(Math.sqrt(Number(argument))));
+    if (root * root === argument) return root;
+  }
+  const value = evaluate(arithmeticToNumber(argument));
+  if (Number.isNaN(value)) throw new Error("domain");
+  return arithmeticEnsureFinite(value);
+}
+
 function evaluateArithmetic(expression) {
   const normalized = normalizeArithmeticWords(expression);
   const tokens = tokenizeArithmetic(normalized);
@@ -912,6 +947,13 @@ function evaluateArithmetic(expression) {
     const tok = advance();
     if (!tok) throw new Error("unparseable");
     if (tok.kind === "num") return tok.value;
+    if (tok.kind === "fn" && peek() && peek().kind === "(") {
+      advance();
+      const argument = parseAdditive();
+      const close = advance();
+      if (!close || close.kind !== ")") throw new Error("unbalanced");
+      return applyMathFunction(tok.name, argument);
+    }
     if (tok.kind === "(") {
       const inner = parseAdditive();
       const close = advance();

@@ -464,3 +464,107 @@ function tryCalendarMonthOffset(prompt, normalized) {
     ],
   };
 }
+
+// The weekday a stated date falls on (R1017), mirroring
+// rust/src/solver_handlers/calendar/date_weekday.rs: the question is the
+// `calendar_weekday_query` role, the date an ISO-like YYYY-MM-DD read from the
+// raw prompt or a seeded month name with a day and a year, and the answer the
+// `calendar_date_weekday` template, counting days from 1970-01-01.
+
+const ROLE_CALENDAR_WEEKDAY_QUERY = "calendar_weekday_query";
+
+/**
+ * Every run of ASCII digits in `text` with its offsets (Rust `digit_runs`).
+ * @param {string} text
+ * @returns {Array<{start: number, end: number, value: number}>}
+ */
+function calendarDigitRuns(text) {
+  const runs = [];
+  for (const match of String(text || "").matchAll(/[0-9]+/gu)) {
+    const value = match[0].length > 18 ? -1 : Number(match[0]);
+    runs.push({ start: match.index, end: match.index + match[0].length, value: value });
+  }
+  return runs;
+}
+
+/**
+ * The stated date as {year, month, day}, validated, or null (Rust `stated_date`).
+ * @param {string} prompt
+ * @param {string} normalized
+ * @returns {{year: number, month: number, day: number}|null}
+ */
+function calendarStatedDate(prompt, normalized) {
+  const text = String(prompt || "");
+  const runs = calendarDigitRuns(text);
+  const width = (run) => run.end - run.start;
+  let date = null;
+  if (runs.length === 3) {
+    const [year, month, day] = runs;
+    const first = text.slice(year.end, month.start);
+    const second = text.slice(month.end, day.start);
+    if (width(year) === 4 && width(month) <= 2 && width(day) <= 2 && first === second &&
+      ["-", "/", "."].includes(first)) {
+      date = { year: year.value, month: month.value, day: day.value };
+    }
+  } else if (runs.length === 2) {
+    const month = detectCalendarMonth(normalized);
+    const [first, second] = runs;
+    if (month !== null && width(first) === 4 && width(second) <= 2) {
+      date = { year: first.value, month: month, day: second.value };
+    } else if (month !== null && width(first) <= 2 && width(second) === 4) {
+      date = { year: second.value, month: month, day: first.value };
+    }
+  }
+  if (date === null || date.year < 1 || date.year > 9999 || date.month < 1 || date.month > 12) {
+    return null;
+  }
+  const next = date.month === 12 ? [date.year + 1, 1] : [date.year, date.month + 1];
+  const length = calendarDaysFromCivil(next[0], next[1], 1) - calendarDaysFromCivil(date.year, date.month, 1);
+  return date.day >= 1 && date.day <= length ? date : null;
+}
+
+/**
+ * Answer "which weekday is <date>?" (Rust `try_date_weekday`), or null.
+ * @param {string} prompt
+ * @param {string} normalized
+ * @returns {{intent: string, content: string, confidence: number, evidence: Array<string>}|null}
+ */
+function tryCalendarDateWeekday(prompt, normalized) {
+  const asks = wordsForRole(ROLE_CALENDAR_WEEKDAY_QUERY).some((word) => containsCalendarTerm(normalized, word));
+  const direction = [ROLE_CALENDAR_DIRECTION_NEXT, ROLE_CALENDAR_DIRECTION_PREVIOUS].some((role) =>
+    wordsForRole(role).some((marker) => normalized.includes(marker)));
+  if (!asks || direction) return null;
+  const date = calendarStatedDate(prompt, normalized);
+  if (date === null) return null;
+  const days = calendarDaysFromCivil(date.year, date.month, date.day);
+  const weekdayAt = (count) => WEEKDAY_CYCLE[(((count + 3) % 7) + 7) % 7];
+  const weekday = weekdayAt(days);
+  const iso = `${String(date.year).padStart(4, "0")}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+  const weeks = Math.floor(days / 7);
+  const rest = days - weeks * 7;
+  const language = detectLanguage(prompt);
+  const template = calendarOffsetLocalizedResponse("calendar_date_weekday", language);
+  if (template === null) return null;
+  const content = template
+    .split("{date}").join(iso)
+    .split("{epoch_weekday}").join(calendarOffsetWeekdayLabel(language, weekdayAt(0)))
+    .split("{epoch}").join("1970-01-01")
+    .split("{weekday}").join(calendarOffsetWeekdayLabel(language, weekday))
+    .split("{days}").join(String(days))
+    .split("{weeks}").join(String(weeks))
+    .split("{rest}").join(String(rest));
+  return {
+    intent: "calendar_date_weekday",
+    content: content,
+    confidence: 1.0,
+    evidence: [
+      `calendar:date:${iso}`,
+      "calendar:epoch:1970-01-01",
+      `calendar:days_since_epoch:${days}`,
+      `calendar:offset_derivation:${days} = 7 × ${weeks} + ${rest}`,
+      `calendar:result_weekday:${weekday.slug}`,
+      `language:${language}`,
+      "response:calendar_date_weekday",
+    ],
+  };
+}
