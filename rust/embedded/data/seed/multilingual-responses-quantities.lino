@@ -34,19 +34,19 @@ multilingual_responses_quantities
   response response_unit_conversion_divide_en
     intent unit_conversion_divide
     language en
-    text "{value} {source_unit} is {result} {target_unit}. {value} ÷ {factor} {equals} {result}, because 1 {target_unit} = {factor} {source_unit}."
+    text "{value} {source_unit} is {result} {target_unit}. {derivation}, because 1 {target_unit} = {factor} {source_unit}."
   response response_unit_conversion_divide_ru
     intent unit_conversion_divide
     language ru
-    text "{value} {source_unit} — это {result} {target_unit}. {value} ÷ {factor} {equals} {result}, потому что 1 {target_unit} = {factor} {source_unit}."
+    text "{value} {source_unit} — это {result} {target_unit}. {derivation}, потому что 1 {target_unit} = {factor} {source_unit}."
   response response_unit_conversion_divide_hi
     intent unit_conversion_divide
     language hi
-    text "{value} {source_unit} = {result} {target_unit}। {value} ÷ {factor} {equals} {result}, क्योंकि 1 {target_unit} = {factor} {source_unit}।"
+    text "{value} {source_unit} = {result} {target_unit}। {derivation}, क्योंकि 1 {target_unit} = {factor} {source_unit}।"
   response response_unit_conversion_divide_zh
     intent unit_conversion_divide
     language zh
-    text "{value} {source_unit} 是 {result} {target_unit}。{value} ÷ {factor} {equals} {result}，因为 1 {target_unit} = {factor} {source_unit}。"
+    text "{value} {source_unit} 是 {result} {target_unit}。{derivation}，因为 1 {target_unit} = {factor} {source_unit}。"
   response response_unit_conversion_formula_en
     intent unit_conversion_formula
     language en
@@ -210,7 +210,7 @@ multilingual_responses_quantities
   response response_unit_conversion_divide_es
     intent unit_conversion_divide
     language es
-    text "{value} {source_unit} equivale a {result} {target_unit}. {value} ÷ {factor} {equals} {result}, porque 1 {target_unit} = {factor} {source_unit}."
+    text "{value} {source_unit} equivale a {result} {target_unit}. {derivation}, porque 1 {target_unit} = {factor} {source_unit}."
   response response_unit_conversion_formula_es
     intent unit_conversion_formula
     language es

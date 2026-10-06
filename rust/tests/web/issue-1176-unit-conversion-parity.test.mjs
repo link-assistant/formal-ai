@@ -49,15 +49,15 @@ test("unit conversion multiplies by the seed factor", async () => {
 test("the reverse direction divides by the same factor", async () => {
   const answer = await solve("10 kilometers in miles");
   assert.equal(answer.intent, "unit_conversion");
-  // The derivation the native handler logs; its divide template renders the
-  // already-marked result after {equals}, so the prose reads "≈ ≈6.2137119".
+  // The divide template renders the derivation itself after the marked
+  // result, so the quotient carries exactly one ≈ in the prose.
   assert.ok(
     answer.evidence.includes("unit_conversion:derivation:10 ÷ 1.609344 ≈ 6.2137119"),
     JSON.stringify(answer.evidence),
   );
   assert.equal(
     answer.content,
-    "10 kilometers is ≈6.2137119 miles. 10 ÷ 1.609344 ≈ ≈6.2137119, because 1 miles = 1.609344 kilometers.",
+    "10 kilometers is ≈6.2137119 miles. 10 ÷ 1.609344 ≈ 6.2137119, because 1 miles = 1.609344 kilometers.",
   );
 });
 
@@ -168,12 +168,8 @@ test("surfaces in four languages resolve to canonical units", () => {
 });
 
 test("multilingual prompts resolve both surfaces and convert through SI", () => {
-  // The native case list opens with "Сколько метров в 5 километрах?", but
-  // the prepositional form "километрах" is not a surface of
-  // data/seed/si-unit-dimensions.lino, so neither engine resolves it; the
-  // shared seed gap is pinned here instead of a conversion.
-  assert.equal(evaluate(worker, 'siUnitNamedBy("километрах")'), null);
   const cases = [
+    ["Сколько метров в 5 километрах?", 5, "километрах", "метров", 5000.0],
     ["How many watts is 3 horsepower?", 3, "horsepower", "watts", 3.0 * 745.699872],
     ["5 मील कितने किलोमीटर हैं?", 5, "मील", "किलोमीटर", (5.0 * 1609.344) / 1000.0],
     ["3 马力是多少瓦?", 3, "马力", "瓦", 3.0 * 745.699872],
