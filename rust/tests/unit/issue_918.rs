@@ -215,37 +215,36 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
         .collect::<BTreeSet<_>>();
 
     assert_eq!(active, actual);
-    // 46 until issue #1085 moved `github_repository_traffic.rs` into
-    // `data/seed/handler-rules.lino`; the ledger and the tree dropped together.
-    // 45 until issue #1138 B9, plan 09 leaf 1: the gate scanned
-    // `src/solver_handlers` only, so `solver_handler_how.rs`,
-    // `solver_handler_how_synthesis.rs`, `solver_handler_units.rs` and
-    // `solver_handler_oracle.rs` — four handler files one directory up — were
-    // neither counted nor ledgered, and a migration could have lowered the
-    // ratchet by moving a file out of the scanned directory. The rise to 49 is a
-    // corrected undercount recorded in the ledger's `note`, not new debt.
-    // Plan 08 then added one generic interpreter of seed-declared verifiable
-    // tasks. It is compiled core machinery rather than another domain handler.
-    // The URL parsing split then exposed another generic interpreter. Its
-    // structural parser reads language evidence from seed roles, so recursive
-    // source count rises while migration debt continues to fall.
-    // The plan 16 L1 re-measure then ledgered the calendar-create split and the
-    // previously unledgered policy_gates.rs, so the honest census is 53 files.
-    assert_eq!(actual.len(), 53);
+    // The census history (46 before issue #1085, the plan 09 leaf 1 corrected
+    // undercount, the plan 08 and URL-parsing promotions, the plan 16 L1
+    // re-measure, the PR #1188 interpreters) lives in the ledger's `note` rows.
+    // Restating the totals here froze 53 / 51 / 2 long after the ledger moved
+    // on, so the expected counts are the ledger's own reviewed ceilings: the
+    // gate proves those equal to the tree, and this test proves the rows agree.
+    let ceiling = |field: &str| -> usize {
+        ledger
+            .lines()
+            .find_map(|line| line.trim().strip_prefix(field))
+            .and_then(|value| value.trim().parse().ok())
+            .unwrap_or_else(|| panic!("the ledger records {field}"))
+    };
+    let source_files = ceiling("source_file_count_max ");
+    let outside_core_files = ceiling("outside_core_file_count_max ");
+    assert_eq!(actual.len(), source_files);
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "migrate")
             .count(),
-        51
+        outside_core_files
     );
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "promote")
             .count(),
-        2,
-        "both generic seed-driven interpreters are promoted"
+        source_files - outside_core_files,
+        "every active row is either migration debt or a promoted interpreter"
     );
     for entry in entries
         .iter()
