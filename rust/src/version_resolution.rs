@@ -16,7 +16,7 @@
 
 use crate::seed::parser::{LinoNode, parse_lino};
 use crate::source_fetch::{
-    CachedSourceClient, CurlSourceTransport, FetchError, SourceCapture, SourceTransport,
+    CachedSourceClient, CurlSourceTransport, SourceCapture, SourceTransport,
 };
 
 /// The seed carrying the measured offline baseline.
@@ -311,7 +311,7 @@ fn baseline(id: &str) -> Option<ResolvedVersion> {
     nodes
         .iter()
         .find(|node| node.name == "generated_version" && node.id == id)
-        .map(ResolvedVersion::from_baseline)
+        .map(|node| ResolvedVersion::from_baseline(node))
 }
 
 fn descend<'a>(node: &'a LinoNode, out: &mut Vec<&'a LinoNode>) {
@@ -331,7 +331,7 @@ fn descend<'a>(node: &'a LinoNode, out: &mut Vec<&'a LinoNode>) {
 /// `version:` key in the same workflow is left alone.
 #[must_use]
 pub fn fill_workflow_versions(template: &str, versions: &VersionSet) -> String {
-    let mut text = template
+    let text = template
         .replace("{checkout_ref}", versions.checkout.pinned_ref())
         .replace("{checkout_tag}", &versions.checkout.tag)
         .replace("{setup_java_ref}", versions.setup_java.pinned_ref())
@@ -422,6 +422,7 @@ fn replace_quoted_value(line: &str, value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    use crate::source_fetch::FetchError;
     use std::collections::HashMap;
     use std::fs;
     use std::path::PathBuf;
