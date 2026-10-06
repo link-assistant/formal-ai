@@ -48,13 +48,49 @@ test("a relative path is the search root (R1017)", () => {
   assert.ok(answer.includes("    find data/meta -name '*.lino'\n"), answer);
 });
 
+test("an ending suffix names the -name pattern under the shell-command framing", async () => {
+  const prompt = "Write a shell command that finds files ending in .lino under data/meta";
+  const engine = await solve(prompt);
+  assert.equal(engine.intent, "shell_command_compose");
+  for (const answer of [engine.content, handle(prompt)]) {
+    assert.ok(answer.includes("    find data/meta -name '*.lino'\n"), answer);
+    assert.ok(answer.includes("Not executed"), answer);
+  }
+});
+
+test("a seeded counting cue pipes the find into wc -l", async () => {
+  for (const prompt of [
+    "count .lino files under data/meta",
+    "Write a shell command that counts files ending in .lino under data/meta",
+  ]) {
+    const engine = await solve(prompt);
+    assert.equal(engine.intent, "shell_command_compose", prompt);
+    for (const answer of [engine.content, handle(prompt)]) {
+      assert.ok(answer.includes("    find data/meta -name '*.lino' | wc -l\n"), answer);
+      assert.ok(answer.includes("https://www.gnu.org/software/coreutils/manual/html_node/wc-invocation.html"), answer);
+      assert.ok(answer.includes("`-l`"), answer);
+      assert.ok(answer.includes("Not executed"), answer);
+    }
+  }
+});
+
 test("content searches compose grep with the requested flags", () => {
   const answer = handle("search for TODO in files under /src ignoring case");
   assert.ok(answer.includes("    grep -r -i 'TODO' /src\n"), answer);
 });
 
+test("a seeded Russian containment cue composes grep", () => {
+  const answer = handle("найди файлы содержащие TODO в /src");
+  assert.ok(answer.includes("    grep -r 'TODO' /src\n"), answer);
+});
+
 test("a more specific code-task cue makes the composer step aside", () => {
   const prompt = "Write a SQL query that selects all files";
+  assert.equal(worker.handleShellCommandCompose(prompt, worker.normalizePrompt(prompt)), null);
+});
+
+test("a requested function or program is left to program synthesis", () => {
+  const prompt = "Write a JavaScript function that counts the lines of a text";
   assert.equal(worker.handleShellCommandCompose(prompt, worker.normalizePrompt(prompt)), null);
 });
 

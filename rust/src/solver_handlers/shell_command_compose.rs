@@ -6,7 +6,10 @@
 //! composes a command from the manual-page flag table in
 //! `data/seed/manual-pages.lino` — so every emitted flag is explained and
 //! cites the upstream GNU manual. Covers `find` (-name/-size/-mtime/-type),
-//! `ls` (-l/-a/-R), `head`/`tail` (-n) and `grep` (-r/-i/-l).
+//! `ls` (-l/-a/-R), `head`/`tail` (-n) and `grep` (-r/-i/-l); a counting
+//! request pipes a find into `wc -l`. Every request word the composer reads
+//! (line-slice directions, containment, directory, count, "ending in" ...)
+//! comes from the `shell_cue` word map, keyed by role.
 //!
 //! Nothing is executed: the answer (a template from
 //! `data/seed/multilingual-responses.lino`) is a composed suggestion and
@@ -37,9 +40,9 @@ const OTHER_INTENTS: &[&str] = &[
     "code_refactoring",
     "format_conversion",
 ];
-/// Size-test qualifiers: they turn a bare "10 MB" mention into a
-/// strictly-greater find test.
-const SIZE_QUALIFIERS: &[&str] = &["larger", "bigger", "over", "more", "least", "больше"];
+/// The word map holding every shell-request word with the role the
+/// composer reads it in (`last`, `containment`, `count`, ...).
+const SHELL_CUE_MAP: &str = "shell_cue";
 
 /// Look up embedded seed content by its registered path.
 fn seed_text(path: &str) -> Option<&'static str> {
@@ -132,6 +135,39 @@ fn word_entries(map: &str) -> Vec<LinoNode> {
     out
 }
 
+/// The words the `shell_cue` map reads in one role, in seed order.
+fn role_words(role: &str) -> Vec<String> {
+    word_entries(SHELL_CUE_MAP)
+        .iter()
+        .filter(|entry| entry.find_child_value("value") == role)
+        .map(|entry| entry.find_child_value("word").to_owned())
+        .collect()
+}
+
+/// Index of the first request token that is one of the role's words.
+fn role_position(normalized_tokens: &[&str], role: &str) -> Option<usize> {
+    let words = role_words(role);
+    normalized_tokens
+        .iter()
+        .position(|token| words.iter().any(|word| word == token))
+}
+
+/// The first raw word after the first seeded lead phrase of a role (case
+/// kept); `Some("")` when the lead closes the prompt.
+fn word_after_lead(prompt: &str, role: &str) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    role_words(role).iter().find_map(|lead| {
+        let spaced = format!("{lead} ");
+        lower.find(spaced.as_str()).map(|at| {
+            prompt[at + spaced.len()..]
+                .split_whitespace()
+                .next()
+                .unwrap_or_default()
+                .to_owned()
+        })
+    })
+}
+
 /// Fill a localized response template's `{placeholder}` slots.
 fn template(intent: &str, values: &[(&str, &str)]) -> String {
     let mut out = crate::seed::localized_response(intent, "en").unwrap_or_default();
@@ -210,6 +246,50 @@ struct Composed {
     rows: Vec<(String, String)>,
     /// (actual flag text, manual meaning) per emitted flag.
     explained: Vec<(String, String)>,
+    /// The pipe stage a counting request appends (`| wc -l`).
+    pipe: Option<PipeStage>,
+}
+
+/// One pipe stage: the tool, its manual record, and its explained flags.
+struct PipeStage {
+    tool: String,
+    manual: ManualCommand,
+    explained: Vec<(String, String)>,
+}
+
+/// A counting request ("count .lino files") pipes the composition into
+/// `wc -l`, explained from wc's manual record.
+fn counted(normalized_tokens: &[&str], composed: Option<Composed>) -> Option<Composed> {
+    let mut composed = composed?;
+    let Some(count_at) = role_position(normalized_tokens, "count") else {
+        return Some(composed);
+    };
+    let Some(manual) = manual_pages()
+        .into_iter()
+        .find(|command| command.name == "wc")
+    else {
+        return Some(composed);
+    };
+    composed.command.push_str(" | wc -l");
+    composed.rows.push((
+        echo(normalized_tokens, count_at, count_at),
+        "| wc -l".to_owned(),
+    ));
+    let explained = explained_flags(&manual, &["-l".to_owned()]);
+    composed.pipe = Some(PipeStage {
+        tool: "wc".to_owned(),
+        manual,
+        explained,
+    });
+    Some(composed)
+}
+
+/// Render explained flag rows through the shared `flag_line` template.
+fn flag_lines(explained: &[(String, String)]) -> String {
+    explained
+        .iter()
+        .map(|(flag, meaning)| template("flag_line", &[("flag", flag), ("meaning", meaning)]))
+        .collect()
 }
 
 /// The manual meaning rows for the flags a composition actually used.
@@ -279,6 +359,13 @@ fn number_value(word: &str, numbers: &[LinoNode]) -> Option<u32> {
 /// The `-name` pattern: a raw ".ext" mention, or the word before "files"
 /// ("log files", "python files") looked up in the extension word map.
 fn name_pattern(prompt: &str, normalized_tokens: &[&str]) -> Option<String> {
+    // "ending in .lino" / "ending with _test.go": the suffix itself.
+    let suffix = word_after_lead(prompt, "suffix_lead").unwrap_or_default();
+    let suffix =
+        suffix.trim_matches(|c: char| !c.is_alphanumeric() && c != '.' && c != '_' && c != '-');
+    if !suffix.is_empty() {
+        return Some(format!("*{suffix}"));
+    }
     for word in prompt.split_whitespace() {
         let trimmed = word.trim_matches(|c: char| !c.is_alphanumeric() && c != '.');
         if let Some(ext) = trimmed.strip_prefix('.')
@@ -289,8 +376,9 @@ fn name_pattern(prompt: &str, normalized_tokens: &[&str]) -> Option<String> {
         }
     }
     let extensions = word_entries("extension");
+    let files_nouns = role_words("files_noun");
     for (index, token) in normalized_tokens.iter().enumerate() {
-        if matches!(*token, "files" | "файлы" | "файлов")
+        if files_nouns.iter().any(|noun| noun == token)
             && index > 0
             && let Some(entry) = extensions
                 .iter()
@@ -305,9 +393,7 @@ fn name_pattern(prompt: &str, normalized_tokens: &[&str]) -> Option<String> {
 /// The size test: a number with a unit word ("10 mb", "10mb") qualified by
 /// a larger-than word. Returns (number, unit letter, request token span).
 fn size_test(normalized_tokens: &[&str]) -> Option<(u32, String, usize, usize)> {
-    let qualifier_at = normalized_tokens
-        .iter()
-        .position(|token| SIZE_QUALIFIERS.contains(token))?;
+    let qualifier_at = role_position(normalized_tokens, "size_qualifier")?;
     let units = word_entries("size_unit");
     let numbers = word_entries("number");
     for (index, token) in normalized_tokens.iter().enumerate() {
@@ -349,13 +435,9 @@ fn size_test(normalized_tokens: &[&str]) -> Option<(u32, String, usize, usize)> 
 /// in the last 3 days" → -3).
 fn mtime_test(normalized_tokens: &[&str]) -> Option<String> {
     let numbers = word_entries("number");
-    let days_at = normalized_tokens
-        .iter()
-        .position(|token| matches!(*token, "days" | "day" | "дней" | "дня"))?;
+    let days_at = role_position(normalized_tokens, "day")?;
     let count = number_value(normalized_tokens[days_at.checked_sub(1)?], &numbers)?;
-    let older = normalized_tokens
-        .iter()
-        .any(|token| matches!(*token, "older" | "старше"));
+    let older = role_position(normalized_tokens, "older").is_some();
     let sign = if older { "+" } else { "-" };
     Some(format!("{sign}{count}"))
 }
@@ -363,28 +445,15 @@ fn mtime_test(normalized_tokens: &[&str]) -> Option<String> {
 /// "last/first N lines of FILE" → head/tail.
 fn line_slice(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     let numbers = word_entries("number");
-    let last = normalized_tokens
-        .iter()
-        .any(|token| matches!(*token, "last" | "последние" | "последних"));
-    let first = normalized_tokens
-        .iter()
-        .any(|token| matches!(*token, "first" | "первые" | "первых"));
-    if !last && !first {
+    let last_at = role_position(normalized_tokens, "last");
+    let first_at = role_position(normalized_tokens, "first");
+    let last = last_at.is_some();
+    if !last && first_at.is_none() {
         return None;
     }
-    let lines_at = normalized_tokens
-        .iter()
-        .position(|token| matches!(*token, "lines" | "line" | "строк" | "строки"))?;
+    let lines_at = role_position(normalized_tokens, "line")?;
     let count = number_value(normalized_tokens[lines_at.checked_sub(1)?], &numbers)?;
-    let direction_at = if last {
-        normalized_tokens
-            .iter()
-            .position(|token| matches!(*token, "last" | "последние" | "последних"))?
-    } else {
-        normalized_tokens
-            .iter()
-            .position(|token| matches!(*token, "first" | "первые" | "первых"))?
-    };
+    let direction_at = last_at.or(first_at)?;
     let tool = if last { "tail" } else { "head" };
     let file = file_argument(prompt)?;
     let manual = manual_pages()
@@ -408,52 +477,29 @@ fn line_slice(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
             (file.clone(), file),
         ],
         explained: vec![("-n N".to_owned(), meaning)],
+        pipe: None,
     })
 }
 
 /// "search for X" / "files containing X" → grep.
 fn grep_search(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
-    let containment_at = normalized_tokens.iter().position(|token| {
-        matches!(
-            *token,
-            "contain" | "contains" | "containing" | "содержат" | "содержит"
-        )
-    });
-    let search_at = normalized_tokens
-        .iter()
-        .position(|token| matches!(*token, "search" | "поищи"))
-        .filter(|_| normalized_tokens.contains(&"for"));
+    let containment_at = role_position(normalized_tokens, "containment");
+    let search_at = role_position(normalized_tokens, "search")
+        .filter(|_| role_position(normalized_tokens, "search_object").is_some());
     let cue_at = containment_at.or(search_at)?;
-    // The pattern: the raw word after "for " / "containing " (case kept).
-    let lower = prompt.to_lowercase();
-    let pattern = ["for ", "containing ", "contains ", "contain "]
-        .iter()
-        .find_map(|lead| {
-            lower.find(lead).map(|at| {
-                prompt[at + lead.len()..]
-                    .split_whitespace()
-                    .next()
-                    .unwrap_or_default()
-                    .trim_matches(|c: char| !c.is_alphanumeric() && c != '_' && c != '-')
-                    .to_owned()
-            })
-        })
-        .filter(|pattern| !pattern.is_empty())?;
+    // The pattern: the raw word after the first seeded lead (case kept).
+    let pattern = word_after_lead(prompt, "pattern_lead")?
+        .trim_matches(|c: char| !c.is_alphanumeric() && c != '_' && c != '-')
+        .to_owned();
+    if pattern.is_empty() {
+        return None;
+    }
     let path = root_path(prompt);
     let mut flags = vec!["-r".to_owned()];
-    if normalized_tokens
-        .iter()
-        .any(|token| matches!(*token, "ignore" | "insensitive" | "регистр"))
-        || normalized_tokens
-            .iter()
-            .any(|token| *token == "case" || *token == "регистру")
-    {
+    if role_position(normalized_tokens, "ignore_case").is_some() {
         flags.push("-i".to_owned());
     }
-    if normalized_tokens
-        .iter()
-        .any(|token| matches!(*token, "which" | "names" | "имена"))
-    {
+    if role_position(normalized_tokens, "names_only").is_some() {
         flags.push("-l".to_owned());
     }
     let manual = manual_pages()
@@ -475,6 +521,7 @@ fn grep_search(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
         url: manual.url,
         rows,
         explained,
+        pipe: None,
     })
 }
 
@@ -483,12 +530,7 @@ fn find_files(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     let pattern = name_pattern(prompt, normalized_tokens);
     let size = size_test(normalized_tokens);
     let mtime = mtime_test(normalized_tokens);
-    let directories_at = normalized_tokens.iter().position(|token| {
-        matches!(
-            *token,
-            "directories" | "directory" | "dirs" | "директории" | "папки"
-        )
-    });
+    let directories_at = role_position(normalized_tokens, "directory");
     if pattern.is_none() && size.is_none() && mtime.is_none() && directories_at.is_none() {
         return None;
     }
@@ -532,6 +574,7 @@ fn find_files(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
         url: manual.url,
         rows,
         explained,
+        pipe: None,
     })
 }
 
@@ -539,29 +582,17 @@ fn find_files(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
 fn ls_listing(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     let mut flags: Vec<String> = Vec::new();
     let mut rows: Vec<(String, String)> = Vec::new();
-    if let Some(at) = normalized_tokens
-        .iter()
-        .position(|token| matches!(*token, "long" | "detailed" | "подробно"))
-    {
+    if let Some(at) = role_position(normalized_tokens, "long") {
         flags.push("-l".to_owned());
         rows.push((echo(normalized_tokens, at, at), "-l".to_owned()));
     }
-    if let Some(at) = normalized_tokens
-        .iter()
-        .position(|token| matches!(*token, "hidden" | "скрыт" | "скрытые"))
-        .or_else(|| {
-            normalized_tokens
-                .iter()
-                .position(|token| *token == "all" || *token == "все")
-        })
+    if let Some(at) = role_position(normalized_tokens, "hidden")
+        .or_else(|| role_position(normalized_tokens, "all"))
     {
         flags.push("-a".to_owned());
         rows.push((echo(normalized_tokens, at, at), "-a".to_owned()));
     }
-    if let Some(at) = normalized_tokens
-        .iter()
-        .position(|token| matches!(*token, "recursive" | "рекурсив" | "поддиректории"))
-    {
+    if let Some(at) = role_position(normalized_tokens, "recursive") {
         flags.push("-R".to_owned());
         rows.push((echo(normalized_tokens, at, at), "-R".to_owned()));
     }
@@ -582,6 +613,7 @@ fn ls_listing(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
         url: manual.url,
         rows,
         explained,
+        pipe: None,
     })
 }
 
@@ -611,6 +643,10 @@ pub fn handle_shell_command_compose(
     if !has_context {
         return None;
     }
+    // A requested function/program is program synthesis, not a shell command.
+    if role_position(&normalized_tokens, "program_artifact").is_some() {
+        return None;
+    }
     // A more specific code-task intent cued? Step aside.
     if OTHER_INTENTS
         .iter()
@@ -631,26 +667,34 @@ pub fn handle_shell_command_compose(
 
     let composition = line_slice(&normalized_tokens, prompt)
         .or_else(|| grep_search(&normalized_tokens, prompt))
-        .or_else(|| find_files(&normalized_tokens, prompt))
+        .or_else(|| counted(&normalized_tokens, find_files(&normalized_tokens, prompt)))
         .or_else(|| ls_listing(&normalized_tokens, prompt));
 
     let (body, confidence) = if let Some(composed) = composition {
         log.append("shell_command_compose:command", composed.command.clone());
-        let mut flags = String::new();
-        for (flag, meaning) in &composed.explained {
-            flags.push_str(&template(
-                "flag_line",
-                &[("flag", flag), ("meaning", meaning)],
-            ));
-        }
+        let flags = flag_lines(&composed.explained);
+        let (intent, pipe_tool, pipe_package, pipe_flags, pipe_manual) = match &composed.pipe {
+            Some(pipe) => (
+                "shell_command_piped",
+                pipe.tool.as_str(),
+                pipe.manual.package.as_str(),
+                flag_lines(&pipe.explained),
+                pipe.manual.url.as_str(),
+            ),
+            None => ("shell_command_composed", "", "", String::new(), ""),
+        };
         (
             template(
-                "shell_command_composed",
+                intent,
                 &[
                     ("command", &composed.command),
                     ("package", &composed.package),
                     ("flags", &flags),
                     ("manual", &composed.url),
+                    ("pipe_tool", pipe_tool),
+                    ("pipe_package", pipe_package),
+                    ("pipe_flags", &pipe_flags),
+                    ("pipe_manual", pipe_manual),
                     ("derivation", &mapping_rows(&composed.rows)),
                 ],
             ),

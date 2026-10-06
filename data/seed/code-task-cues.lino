@@ -10,6 +10,12 @@
 # `map` records hold the word→value vocabulary the composers consult —
 # numbers, regex separators and classes, SQL comparatives, shell extensions,
 # size units, and the test-property slugs. Rust holds no cue literals.
+# `shell_cue` maps each shell-request word to the role the shell composer
+# reads it in (`last`/`first` line slices, `containment`, `directory`,
+# `count` for a `| wc -l` pipe, `suffix_lead` for "ending in .ext",
+# `program_artifact` for a requested function/program the composer leaves
+# to program synthesis, ...);
+# both runtimes read the role words in seed order.
 #
 # `test_cases` records hold the sample inputs the test generator renders for
 # each recognized problem shape.
@@ -71,11 +77,18 @@ cues
     phrase "print"
     phrase "search"
     phrase "count"
+    phrase "finds"
+    phrase "lists"
+    phrase "shows"
+    phrase "searches"
+    phrase "counts"
     phrase "найди"
     phrase "покажи"
     phrase "выведи"
     phrase "перечисли"
     phrase "поищи"
+    phrase "посчитай"
+    phrase "подсчитай"
 cues
   intent format_conversion
     role to_yaml
@@ -460,6 +473,281 @@ map
       word строк
     entry
       word журнал
+map
+  name shell_cue
+    entry
+      word larger
+      value size_qualifier
+    entry
+      word bigger
+      value size_qualifier
+    entry
+      word over
+      value size_qualifier
+    entry
+      word more
+      value size_qualifier
+    entry
+      word least
+      value size_qualifier
+    entry
+      word больше
+      value size_qualifier
+    entry
+      word days
+      value day
+    entry
+      word day
+      value day
+    entry
+      word дней
+      value day
+    entry
+      word дня
+      value day
+    entry
+      word older
+      value older
+    entry
+      word старше
+      value older
+    entry
+      word last
+      value last
+    entry
+      word последние
+      value last
+    entry
+      word последних
+      value last
+    entry
+      word first
+      value first
+    entry
+      word первые
+      value first
+    entry
+      word первых
+      value first
+    entry
+      word lines
+      value line
+    entry
+      word line
+      value line
+    entry
+      word строк
+      value line
+    entry
+      word строки
+      value line
+    entry
+      word contain
+      value containment
+    entry
+      word contains
+      value containment
+    entry
+      word containing
+      value containment
+    entry
+      word содержат
+      value containment
+    entry
+      word содержит
+      value containment
+    entry
+      word содержащие
+      value containment
+    entry
+      word содержащих
+      value containment
+    entry
+      word search
+      value search
+    entry
+      word поищи
+      value search
+    entry
+      word for
+      value search_object
+    entry
+      word for
+      value pattern_lead
+    entry
+      word containing
+      value pattern_lead
+    entry
+      word contains
+      value pattern_lead
+    entry
+      word contain
+      value pattern_lead
+    entry
+      word содержащие
+      value pattern_lead
+    entry
+      word содержащих
+      value pattern_lead
+    entry
+      word "ending in"
+      value suffix_lead
+    entry
+      word "ending with"
+      value suffix_lead
+    entry
+      word "ends in"
+      value suffix_lead
+    entry
+      word "ends with"
+      value suffix_lead
+    entry
+      word "заканчивающиеся на"
+      value suffix_lead
+    entry
+      word "заканчивающихся на"
+      value suffix_lead
+    entry
+      word "оканчивающиеся на"
+      value suffix_lead
+    entry
+      word "оканчивающихся на"
+      value suffix_lead
+    entry
+      word ignore
+      value ignore_case
+    entry
+      word insensitive
+      value ignore_case
+    entry
+      word регистр
+      value ignore_case
+    entry
+      word case
+      value ignore_case
+    entry
+      word регистру
+      value ignore_case
+    entry
+      word which
+      value names_only
+    entry
+      word names
+      value names_only
+    entry
+      word имена
+      value names_only
+    entry
+      word files
+      value files_noun
+    entry
+      word файлы
+      value files_noun
+    entry
+      word файлов
+      value files_noun
+    entry
+      word directories
+      value directory
+    entry
+      word directory
+      value directory
+    entry
+      word dirs
+      value directory
+    entry
+      word директории
+      value directory
+    entry
+      word папки
+      value directory
+    entry
+      word long
+      value long
+    entry
+      word detailed
+      value long
+    entry
+      word подробно
+      value long
+    entry
+      word hidden
+      value hidden
+    entry
+      word скрыт
+      value hidden
+    entry
+      word скрытые
+      value hidden
+    entry
+      word all
+      value all
+    entry
+      word все
+      value all
+    entry
+      word recursive
+      value recursive
+    entry
+      word рекурсив
+      value recursive
+    entry
+      word поддиректории
+      value recursive
+    entry
+      word function
+      value program_artifact
+    entry
+      word functions
+      value program_artifact
+    entry
+      word method
+      value program_artifact
+    entry
+      word class
+      value program_artifact
+    entry
+      word program
+      value program_artifact
+    entry
+      word функцию
+      value program_artifact
+    entry
+      word функция
+      value program_artifact
+    entry
+      word функции
+      value program_artifact
+    entry
+      word метод
+      value program_artifact
+    entry
+      word класс
+      value program_artifact
+    entry
+      word программу
+      value program_artifact
+    entry
+      word программа
+      value program_artifact
+    entry
+      word count
+      value count
+    entry
+      word counts
+      value count
+    entry
+      word counting
+      value count
+    entry
+      word посчитай
+      value count
+    entry
+      word подсчитай
+      value count
+    entry
+      word посчитать
+      value count
 map
   name test_property
     entry

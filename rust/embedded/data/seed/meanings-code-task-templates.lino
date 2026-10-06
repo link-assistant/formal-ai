@@ -175,6 +175,14 @@ meanings
     unit "not applicable"
     example "log files larger than a size under a path compose to a find command"
     grounding "data/seed/multilingual-responses.lino"
+  shell_command_piped
+    defined-by method
+    role action
+    precondition "a counting shell request composes a covered command and the seed covers the counting pipe stage"
+    effect "answers with the composed pipeline, each stage's flags quoted from its manual, and the derivation"
+    unit "not applicable"
+    example "counting files of an extension under a path composes to a find command piped into wc"
+    grounding "data/seed/multilingual-responses.lino"
   shell_compose_refusal
     defined-by method
     role action

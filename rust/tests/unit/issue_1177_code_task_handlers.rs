@@ -235,6 +235,76 @@ fn handler_shell_compose_reads_a_relative_root() {
     assert!(answer.contains("find data/meta -name '*.lino'"), "{answer}");
 }
 
+/// "files ending in .lino" names the `-name` suffix, and the "write a shell
+/// command that finds ..." framing reads the third-person action cue.
+#[test]
+fn handler_shell_compose_reads_an_ending_suffix() {
+    let answer = answer_of!(
+        formal_ai::handle_shell_command_compose,
+        "Write a shell command that finds files ending in .lino under data/meta"
+    );
+    assert!(answer.contains("find data/meta -name '*.lino'"), "{answer}");
+    assert!(!answer.contains("wc -l"), "{answer}");
+    assert!(answer.contains("Not executed"), "{answer}");
+}
+
+/// A seeded counting cue pipes the find into `wc -l`, explained from wc's
+/// manual record.
+#[test]
+fn handler_shell_compose_pipes_a_count_into_wc() {
+    for prompt in [
+        "count .lino files under data/meta",
+        "Write a shell command that counts files ending in .lino under data/meta",
+    ] {
+        let answer = answer_of!(formal_ai::handle_shell_command_compose, prompt);
+        assert!(
+            answer.contains("find data/meta -name '*.lino' | wc -l"),
+            "{answer}"
+        );
+        assert!(
+            answer.contains(
+                "https://www.gnu.org/software/coreutils/manual/html_node/wc-invocation.html"
+            ),
+            "{answer}"
+        );
+        assert!(answer.contains("`-l`"), "{answer}");
+        assert!(answer.contains("Not executed"), "{answer}");
+    }
+}
+
+/// A requested function/program (a seeded `program_artifact` word) is
+/// program synthesis, not a shell command.
+#[test]
+fn handler_shell_compose_leaves_program_requests() {
+    let prompt = "Write a JavaScript function that counts the lines of a text";
+    let normalized = normalize_prompt(prompt);
+    let mut log = EventLog::new();
+    assert!(
+        formal_ai::handle_shell_command_compose(prompt, &normalized, &mut log).is_none(),
+        "shell compose must not claim: {prompt}"
+    );
+}
+
+/// The containment cue words are seed data, Russian forms included.
+#[test]
+fn handler_shell_compose_reads_a_russian_containment_cue() {
+    let answer = answer_of!(
+        formal_ai::handle_shell_command_compose,
+        "найди файлы содержащие TODO в /src"
+    );
+    assert!(answer.contains("grep -r 'TODO' /src"), "{answer}");
+}
+
+#[test]
+fn engine_answers_counting_shell_request() {
+    let answer = solved("Write a shell command that counts files ending in .lino under data/meta");
+    assert!(
+        answer.contains("find data/meta -name '*.lino' | wc -l"),
+        "{answer}"
+    );
+    assert!(answer.contains("Not executed"), "{answer}");
+}
+
 /// R1017: an inline quoted text payload under a seeded text operation is the
 /// text handler's; "lines" alone is no filesystem operand for the composer.
 #[test]

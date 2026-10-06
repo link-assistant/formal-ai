@@ -38,6 +38,10 @@ multilingual_responses
     intent shell_command_composed
     language en
     text "Composed shell command:\n\n    {command}\n\nFlags, from the {package} manual:\n{flags}Manual: {manual}\n\nDerivation: {derivation}\nNot executed: this is a composed suggestion — run it yourself and inspect the output."
+  response response_shell_command_piped_en
+    intent shell_command_piped
+    language en
+    text "Composed shell command:\n\n    {command}\n\nFlags, from the {package} manual:\n{flags}Manual: {manual}\n\nPiped into {pipe_tool}, flags from the {pipe_package} manual:\n{pipe_flags}Manual: {pipe_manual}\n\nDerivation: {derivation}\nNot executed: this is a composed suggestion — run it yourself and inspect the output."
   response response_shell_compose_refusal_en
     intent shell_compose_refusal
     language en

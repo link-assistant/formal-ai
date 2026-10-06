@@ -5,7 +5,8 @@
 # cite its source. Only the small flag set the composer actually uses lives
 # here; the full manuals remain the authority. Read by
 # `rust/src/solver_handlers/shell_command_compose.rs` through
-# `crate::seed::seed_files()`.
+# `crate::seed::seed_files()`. `wc` is the pipe stage a counting request
+# (a `count` role word in data/seed/code-task-cues.lino) appends.
 command
   name find
     package findutils
@@ -67,3 +68,11 @@ command
     flag
       spelling "-l"
       meaning "suppress normal output; print only the name of each file with a match"
+command
+  name wc
+    package coreutils
+    summary "print newline, word, and byte counts"
+    url "https://www.gnu.org/software/coreutils/manual/html_node/wc-invocation.html"
+    flag
+      spelling "-l"
+      meaning "print only the newline counts; fed one path per line, that is the number of paths"

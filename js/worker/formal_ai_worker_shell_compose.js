@@ -24,11 +24,34 @@ function shellComposeOtherIntents() {
 }
 
 /**
- * Size-test qualifiers (Rust `SIZE_QUALIFIERS`).
- * @returns {Array<string>} qualifier tokens
+ * The words the `shell_cue` map of data/seed/code-task-cues.lino reads in one
+ * role, in seed order (Rust `role_words`).
+ * @param {string} role cue role
+ * @returns {Array<string>} words
  */
-function shellComposeSizeQualifiers() {
-  return ["larger", "bigger", "over", "more", "least", "больше"];
+function shellComposeRoleWords(role) {
+  const out = [];
+  for (const entry of codeTaskWordEntries("shell_cue")) {
+    if (codeTaskChildValue(entry, "value") === role) out.push(codeTaskChildValue(entry, "word"));
+  }
+  return out;
+}
+
+/**
+ * The first raw word after the first seeded lead phrase of a role, or null.
+ * @param {string} prompt raw prompt
+ * @param {string} role lead role
+ * @returns {string|null} the raw word (case kept)
+ */
+function shellComposeWordAfterLead(prompt, role) {
+  const lower = prompt.toLowerCase();
+  for (const lead of shellComposeRoleWords(role)) {
+    const at = lower.indexOf(lead + " ");
+    if (at === -1) continue;
+    const words = codeTaskWords(prompt.slice(at + lead.length + 1));
+    return words.length > 0 ? words[0] : "";
+  }
+  return null;
 }
 
 /**
@@ -136,6 +159,11 @@ function shellComposeFileArgument(prompt) {
  * @returns {string|null} shell pattern
  */
 function shellComposeNamePattern(prompt, tokens) {
+  // "ending in .lino" / "ending with _test.go": the suffix itself.
+  const suffix = codeTaskTrimMatches(shellComposeWordAfterLead(prompt, "suffix_lead") || "", function (c) {
+    return !codeTaskIsAlphanumeric(c) && c !== "." && c !== "_" && c !== "-";
+  });
+  if (suffix !== "") return "*" + suffix;
   for (const word of codeTaskWords(prompt)) {
     const trimmed = codeTaskTrimMatches(word, function (c) { return !codeTaskIsAlphanumeric(c) && c !== "."; });
     if (!trimmed.startsWith(".")) continue;
@@ -144,7 +172,7 @@ function shellComposeNamePattern(prompt, tokens) {
   }
   const extensions = codeTaskWordEntries("extension");
   for (let index = 1; index < tokens.length; index += 1) {
-    if (!["files", "файлы", "файлов"].includes(tokens[index])) continue;
+    if (!shellComposeRoleWords("files_noun").includes(tokens[index])) continue;
     const entry = codeTaskEntryFor(extensions, tokens[index - 1]);
     if (entry !== null) return codeTaskChildValue(entry, "value");
   }
@@ -157,7 +185,7 @@ function shellComposeNamePattern(prompt, tokens) {
  * @returns {object|null} {count, unit, from, to}
  */
 function shellComposeSizeTest(tokens) {
-  const qualifierAt = shellComposeFind(tokens, shellComposeSizeQualifiers());
+  const qualifierAt = shellComposeFind(tokens, shellComposeRoleWords("size_qualifier"));
   if (qualifierAt === -1) return null;
   const units = codeTaskWordEntries("size_unit");
   const numbers = codeTaskWordEntries("number");
@@ -188,11 +216,11 @@ function shellComposeSizeTest(tokens) {
  * @returns {string|null} signed day count
  */
 function shellComposeMtimeTest(tokens) {
-  const daysAt = shellComposeFind(tokens, ["days", "day", "дней", "дня"]);
+  const daysAt = shellComposeFind(tokens, shellComposeRoleWords("day"));
   if (daysAt < 1) return null;
   const count = codeTaskNumberValue(tokens[daysAt - 1], codeTaskWordEntries("number"));
   if (count === null) return null;
-  const older = shellComposeFind(tokens, ["older", "старше"]) !== -1;
+  const older = shellComposeFind(tokens, shellComposeRoleWords("older")) !== -1;
   return (older ? "+" : "-") + count;
 }
 
@@ -205,7 +233,38 @@ function shellComposeMtimeTest(tokens) {
  * @returns {object} the composition
  */
 function shellComposeComposed(command, manual, rows, explained) {
-  return { command: command, packageName: manual.packageName, url: manual.url, rows: rows, explained: explained };
+  return { command: command, packageName: manual.packageName, url: manual.url, rows: rows, explained: explained, pipe: null };
+}
+
+/**
+ * A counting request ("count .lino files") pipes the composition into
+ * `wc -l`, explained from wc's manual record (Rust `counted`).
+ * @param {Array<string>} tokens request tokens
+ * @param {object|null} composed the composition
+ * @returns {object|null} the composition, piped when counted
+ */
+function shellComposeCounted(tokens, composed) {
+  if (composed === null) return null;
+  const countAt = shellComposeFind(tokens, shellComposeRoleWords("count"));
+  const manual = shellComposeManual("wc");
+  if (countAt === -1 || manual === null) return composed;
+  composed.command += " | wc -l";
+  composed.rows.push([codeTaskEcho(tokens, countAt, countAt), "| wc -l"]);
+  composed.pipe = { tool: "wc", manual: manual, explained: shellComposeExplainedFlags(manual, ["-l"]) };
+  return composed;
+}
+
+/**
+ * Render explained flag rows through the shared `flag_line` template.
+ * @param {Array<Array<string>>} explained [flag, meaning] rows
+ * @returns {string} the concatenated lines
+ */
+function shellComposeFlagLines(explained) {
+  let out = "";
+  for (const row of explained) {
+    out += codeTaskTemplate("flag_line", [["flag", row[0]], ["meaning", row[1]]]);
+  }
+  return out;
 }
 
 /**
@@ -215,12 +274,12 @@ function shellComposeComposed(command, manual, rows, explained) {
  * @returns {object|null} the composition
  */
 function shellComposeLineSlice(tokens, prompt) {
-  const lastWords = ["last", "последние", "последних"];
-  const firstWords = ["first", "первые", "первых"];
+  const lastWords = shellComposeRoleWords("last");
+  const firstWords = shellComposeRoleWords("first");
   const last = shellComposeFind(tokens, lastWords) !== -1;
   const first = shellComposeFind(tokens, firstWords) !== -1;
   if (!last && !first) return null;
-  const linesAt = shellComposeFind(tokens, ["lines", "line", "строк", "строки"]);
+  const linesAt = shellComposeFind(tokens, shellComposeRoleWords("line"));
   if (linesAt < 1) return null;
   const count = codeTaskNumberValue(tokens[linesAt - 1], codeTaskWordEntries("number"));
   if (count === null) return null;
@@ -250,25 +309,19 @@ function shellComposeLineSlice(tokens, prompt) {
  * @returns {object|null} the composition
  */
 function shellComposeGrepSearch(tokens, prompt) {
-  let cueAt = shellComposeFind(tokens, ["contain", "contains", "containing", "содержат", "содержит"]);
-  if (cueAt === -1 && tokens.includes("for")) cueAt = shellComposeFind(tokens, ["search", "поищи"]);
-  if (cueAt === -1) return null;
-  const lower = prompt.toLowerCase();
-  let pattern = null;
-  for (const lead of ["for ", "containing ", "contains ", "contain "]) {
-    const at = lower.indexOf(lead);
-    if (at === -1) continue;
-    const words = codeTaskWords(prompt.slice(at + lead.length));
-    pattern = codeTaskTrimMatches(words.length > 0 ? words[0] : "", function (c) {
-      return !codeTaskIsAlphanumeric(c) && c !== "_" && c !== "-";
-    });
-    break;
+  let cueAt = shellComposeFind(tokens, shellComposeRoleWords("containment"));
+  if (cueAt === -1 && shellComposeFind(tokens, shellComposeRoleWords("search_object")) !== -1) {
+    cueAt = shellComposeFind(tokens, shellComposeRoleWords("search"));
   }
-  if (pattern === null || pattern === "") return null;
+  if (cueAt === -1) return null;
+  const pattern = codeTaskTrimMatches(shellComposeWordAfterLead(prompt, "pattern_lead") || "", function (c) {
+    return !codeTaskIsAlphanumeric(c) && c !== "_" && c !== "-";
+  });
+  if (pattern === "") return null;
   const path = shellComposeRootPath(prompt);
   const flags = ["-r"];
-  if (shellComposeFind(tokens, ["ignore", "insensitive", "регистр", "case", "регистру"]) !== -1) flags.push("-i");
-  if (shellComposeFind(tokens, ["which", "names", "имена"]) !== -1) flags.push("-l");
+  if (shellComposeFind(tokens, shellComposeRoleWords("ignore_case")) !== -1) flags.push("-i");
+  if (shellComposeFind(tokens, shellComposeRoleWords("names_only")) !== -1) flags.push("-l");
   const manual = shellComposeManual("grep");
   if (manual === null) return null;
   return shellComposeComposed("grep " + flags.join(" ") + " '" + pattern + "' " + path, manual, [
@@ -288,7 +341,7 @@ function shellComposeFindFiles(tokens, prompt) {
   const pattern = shellComposeNamePattern(prompt, tokens);
   const size = shellComposeSizeTest(tokens);
   const mtime = shellComposeMtimeTest(tokens);
-  const directoriesAt = shellComposeFind(tokens, ["directories", "directory", "dirs", "директории", "папки"]);
+  const directoriesAt = shellComposeFind(tokens, shellComposeRoleWords("directory"));
   if (pattern === null && size === null && mtime === null && directoriesAt === -1) return null;
   const path = shellComposeRootPath(prompt);
   const parts = ["find " + path];
@@ -329,18 +382,18 @@ function shellComposeFindFiles(tokens, prompt) {
 function shellComposeLsListing(tokens, prompt) {
   const flags = [];
   const rows = [];
-  const longAt = shellComposeFind(tokens, ["long", "detailed", "подробно"]);
+  const longAt = shellComposeFind(tokens, shellComposeRoleWords("long"));
   if (longAt !== -1) {
     flags.push("-l");
     rows.push([codeTaskEcho(tokens, longAt, longAt), "-l"]);
   }
-  let hiddenAt = shellComposeFind(tokens, ["hidden", "скрыт", "скрытые"]);
-  if (hiddenAt === -1) hiddenAt = shellComposeFind(tokens, ["all", "все"]);
+  let hiddenAt = shellComposeFind(tokens, shellComposeRoleWords("hidden"));
+  if (hiddenAt === -1) hiddenAt = shellComposeFind(tokens, shellComposeRoleWords("all"));
   if (hiddenAt !== -1) {
     flags.push("-a");
     rows.push([codeTaskEcho(tokens, hiddenAt, hiddenAt), "-a"]);
   }
-  const recursiveAt = shellComposeFind(tokens, ["recursive", "рекурсив", "поддиректории"]);
+  const recursiveAt = shellComposeFind(tokens, shellComposeRoleWords("recursive"));
   if (recursiveAt !== -1) {
     flags.push("-R");
     rows.push([codeTaskEcho(tokens, recursiveAt, recursiveAt), "-R"]);
@@ -366,6 +419,8 @@ function handleShellCommandCompose(prompt, normalized) {
   if (!tokens.some(function (token) { return actions.includes(token); })) return null;
   const fileContext = codeTaskMapWords("file_context");
   if (!tokens.some(function (token) { return fileContext.includes(token); })) return null;
+  // A requested function/program is program synthesis, not a shell command.
+  if (shellComposeFind(tokens, shellComposeRoleWords("program_artifact")) !== -1) return null;
   for (const intent of shellComposeOtherIntents()) {
     if (codeTaskAnyCueMatches(intent, prompt, normalized)) return null;
   }
@@ -376,7 +431,7 @@ function handleShellCommandCompose(prompt, normalized) {
   codeTaskLogAppend(log, "shell_command_compose:request", "action + file context");
   let composed = shellComposeLineSlice(tokens, prompt);
   if (composed === null) composed = shellComposeGrepSearch(tokens, prompt);
-  if (composed === null) composed = shellComposeFindFiles(tokens, prompt);
+  if (composed === null) composed = shellComposeCounted(tokens, shellComposeFindFiles(tokens, prompt));
   if (composed === null) composed = shellComposeLsListing(tokens, prompt);
   if (composed === null) {
     codeTaskLogAppend(log, "shell_command_compose:refusal", "no manual-page entry covers the request");
@@ -384,15 +439,16 @@ function handleShellCommandCompose(prompt, normalized) {
       codeTaskTemplate("shell_compose_refusal", []), 0.4);
   }
   codeTaskLogAppend(log, "shell_command_compose:command", composed.command);
-  let flags = "";
-  for (const row of composed.explained) {
-    flags += codeTaskTemplate("flag_line", [["flag", row[0]], ["meaning", row[1]]]);
-  }
-  const body = codeTaskTemplate("shell_command_composed", [
+  const pipe = composed.pipe;
+  const body = codeTaskTemplate(pipe === null ? "shell_command_composed" : "shell_command_piped", [
     ["command", composed.command],
     ["package", composed.packageName],
-    ["flags", flags],
+    ["flags", shellComposeFlagLines(composed.explained)],
     ["manual", composed.url],
+    ["pipe_tool", pipe === null ? "" : pipe.tool],
+    ["pipe_package", pipe === null ? "" : pipe.manual.packageName],
+    ["pipe_flags", pipe === null ? "" : shellComposeFlagLines(pipe.explained)],
+    ["pipe_manual", pipe === null ? "" : pipe.manual.url],
     ["derivation", codeTaskMappingRows(composed.rows)],
   ]);
   return codeTaskAnswer(log, "shell_command_compose", "response:shell_command_compose", body, 0.7);
