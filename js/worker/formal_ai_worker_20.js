@@ -983,19 +983,19 @@ function workerHandlerRegistryDefinition() {
     summarization: workerHandlerAliases.summarization,
     verifiable_task: "tryVerifiableTask",
     text_manipulation: "tryTextManipulation",
-    brainstorm_composition: null, // native surface only: constrained name composition
+    brainstorm_composition: "tryBrainstormComposition",
     brainstorming: workerHandlerAliases.brainstorming,
     conversation_topic: null, // inline opener machinery in the conversation module
-    advice_request: null, // native surface only: cited advice composition
+    advice_request: "tryAdviceRequest",
     fact_lookup: "tryFactLookup",
     coreference: workerHandlerAliases.coreference,
     roleplay: workerHandlerAliases.roleplay,
-    creative_writing: null, // native surface only: constrained verse composition
+    creative_writing: "tryCreativeWritingRequest",
     translation: "tryTranslation", // async: runs inline ahead of the synchronous table
     text_rewrite: "tryTextRewrite",
     response_language_followup: "tryResponseLanguageFollowup", // async: replays the previous turn inline
     capabilities: "tryCapabilities",
-    planning_request: null, // native surface only: feasible itinerary composition
+    planning_request: "tryPlanningRequest",
     calendar_reasoning: "tryCalendarReasoning",
     calendar_create_event: "tryCalendarCreateEvent",
     compound_interest: "tryCompoundInterest",

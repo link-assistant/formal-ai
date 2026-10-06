@@ -17,6 +17,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/concept-contexts.lino",
   "seed/concepts.lino",
   "seed/coreference.lino",
+  "seed/creative-composition-rules.lino",
   "seed/demo-dialogs.lino",
   "seed/entity-names.lino",
   "seed/environments.lino",

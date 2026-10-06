@@ -104,7 +104,7 @@ handler_migration_ledger
   handler brainstorm_composition
     status "justified-native"
     primitive "rust/src/solver_handlers/creative_composition.rs"
-    justification "Issue 1178 composes and ranks topic-bound names from seeded morphology and constraint rules."
+    justification "Issue 1178 composes and ranks topic-bound names from seeded morphology and constraint rules. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_creative.js answers the same seed records in the worker."
   handler brainstorming
     status pending
   handler conversation_topic
@@ -112,7 +112,7 @@ handler_migration_ledger
   handler advice_request
     status "justified-native"
     primitive "rust/src/solver_handlers/creative_composition.rs"
-    justification "Issue 1178 orders seeded, cited advice by evidence grade and renders localized responses."
+    justification "Issue 1178 orders seeded, cited advice by evidence grade and renders localized responses. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_creative.js answers the same seed records in the worker."
   handler fact_lookup
     status pending
   handler coreference
@@ -122,7 +122,7 @@ handler_migration_ledger
   handler creative_writing
     status "justified-native"
     primitive "rust/src/solver_handlers/creative_writing.rs"
-    justification "Issue 1178 generates and checks constrained verse against seeded rhyme classes and form rules."
+    justification "Issue 1178 generates and checks constrained verse against seeded rhyme classes and form rules. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_creative_writing.js answers the same seed records in the worker."
   handler translation
     status pending
   handler text_rewrite
@@ -140,7 +140,7 @@ handler_migration_ledger
   handler planning_request
     status "justified-native"
     primitive "rust/src/solver_handlers/creative_writing.rs"
-    justification "Issue 1178 builds feasible cited itineraries from seeded place, duration, and travel constraints."
+    justification "Issue 1178 builds feasible cited itineraries from seeded place, duration, and travel constraints. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_creative_writing.js answers the same seed records in the worker."
   handler calendar_reasoning
     status pending
   handler calendar_create_event

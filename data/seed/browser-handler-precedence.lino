@@ -51,14 +51,26 @@ browser_handler_precedence
   handler trySummarizationText
     argument_prompt
     argument_normalized
+  handler tryBrainstormComposition
+    argument_prompt
+    argument_normalized
   handler tryBrainstormingRequest
+    argument_prompt
+    argument_normalized
+  handler tryAdviceRequest
     argument_prompt
     argument_normalized
   handler tryRoleplayRequest
     argument_prompt
     argument_normalized
+  handler tryCreativeWritingRequest
+    argument_prompt
+    argument_normalized
   handler tryTextRewrite
     argument_prompt
+  handler tryPlanningRequest
+    argument_prompt
+    argument_normalized
   handler tryKupiSlona
     argument_prompt
     argument_normalized

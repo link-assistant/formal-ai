@@ -79,6 +79,7 @@ seed_registry
     web true
   seed creative-composition-rules
     bundle true
+    web true
   seed demo-dialogs
     bundle true
     web true

@@ -62,6 +62,37 @@ creative_composition_rules
     hi सॉनेट
     zh 十四行诗
     es soneto
+  # ---------------------------------------------------------- request cues
+  # Recognition words the handlers test the request against beyond the role
+  # lexicon: a stated line count (substring), a stated rhyme scheme literal,
+  # a bare rhyme request (falls back to its scheme), the brainstorm length
+  # cap, and the exclusion marker whose following tokens name excluded words.
+  request_cue
+    cue line_count
+    word line
+    word lines
+    word строка
+    word строки
+    word पंक्ति
+    word 行
+    word línea
+    word líneas
+  request_cue
+    cue stated_scheme
+    word aabb
+    word abab
+  request_cue
+    cue rhyme_request
+    scheme aabb
+    word rhyming
+    word rhyme
+  request_cue
+    cue short_names
+    max_length 12
+    word short
+  request_cue
+    cue exclusion
+    word without
   # ------------------------------------------------------- spelled numbers
   spelled_number
     language en
@@ -396,6 +427,7 @@ creative_composition_rules
     word имя
     word имена
     word идеи
+    word идей
     word короткое
     word о
     word напиши
@@ -493,9 +525,9 @@ creative_composition_rules
     note "the definite article over the two topic words"
   distinctness_metric
     name "pairwise normalized levenshtein ratio"
-    floor 0.5
+    floor 0.3
     share_rule "no two returned candidates may share both of their content words"
-    statement "candidates are ranked by the stated pairwise normalized levenshtein ratio (floor 0.5, nearest duplicates dropped, first kept) and no two returned candidates share both content words"
+    statement "candidates are ranked by the stated pairwise normalized levenshtein ratio (floor 0.3, nearest duplicates dropped, first kept) and no two returned candidates share both content words"
   # ---------------------------------------------------- planning knowledge
   destination_surface
     destination rome
