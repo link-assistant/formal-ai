@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_06.js"
-  ceiling 810
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker."
+  ceiling 812
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 810 to 812 for server parity (R1013): tryArithmetic records the calculator events `try_arithmetic` logs in Rust (`solverEvents`), which the JavaScript server projects into the native thinking trace."

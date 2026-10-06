@@ -249,6 +249,7 @@ export class WorkerHost {
     this.context = null;
     this.ready = null;
     this.queue = Promise.resolve();
+    this.readers = null;
   }
 
   /** Boot the worker and load the seed once. */
@@ -272,6 +273,33 @@ export class WorkerHost {
     });
     this.queue = task.catch(() => undefined);
     return task;
+  }
+
+  /**
+   * The worker's seed readers, for server modules that mirror a native
+   * protocol step ahead of the solver (rust/src/protocol_memory.rs): the
+   * prompt normalizer, the language detector, the lexicon role queries and
+   * the raw `response_for` table lookup (`null` when the intent has no text
+   * in that language, like `seed::response_for`). They are pure reads of the
+   * loaded seed, so they run outside the solve queue.
+   */
+  async seedReaders() {
+    const context = await this.boot();
+    if (!this.readers) {
+      this.readers = evaluate(context, `({
+        normalizePrompt,
+        detectLanguage,
+        lexiconMentionsRole,
+        roleWordForms,
+        responseFor(intent, language) {
+          const table = MULTILINGUAL_ANSWERS[intent];
+          const raw = table && Object.prototype.hasOwnProperty.call(table, language) ? table[language] : null;
+          if (raw === null || raw === undefined) return null;
+          return typeof raw === "string" ? raw : String(raw.text ?? "");
+        },
+      })`);
+    }
+    return this.readers;
   }
 
   /** The worker's answer to `prompt` after `history` turns. */

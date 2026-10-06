@@ -88,10 +88,15 @@ fn test_path(text: &str, root: &Path) -> String {
             || matches!(character, '`' | '|' | ',' | ';' | '(' | ')' | '[' | ']')
     }) {
         let candidate = token.trim_matches(|character| matches!(character, '.' | ':' | '"'));
-        let Some(end) = candidate.find(".rs") else {
+        // JavaScript is the first root (R997): a browser-worker test under
+        // `rust/tests/web/` pins a requirement as well as a Rust test does.
+        let Some(candidate) = [".test.mjs", ".rs"].iter().find_map(|suffix| {
+            candidate
+                .find(suffix)
+                .map(|end| &candidate[..end + suffix.len()])
+        }) else {
             continue;
         };
-        let candidate = &candidate[..end + 3];
         // The workspace move (plan 16 L1) put the Rust tests under `rust/`;
         // shards name the new location, older trace rows the old one.
         if (candidate.starts_with("tests/") || candidate.starts_with("rust/tests/"))

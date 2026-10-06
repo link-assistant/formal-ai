@@ -1,0 +1,108 @@
+// Answers that hand back a file the request already supplied in the
+// conversation (rust/src/agentic_coding/file_read/supplied.rs).
+
+import { latestUserRequest, plainText, rustLines } from '../content.mjs';
+import { detect } from '../crate/language.mjs';
+import { replaceAllLiteral, trim, trimEnd, trimStart } from '../crate/rust_str.mjs';
+import { localizedResponse } from '../crate/seed.mjs';
+import { jsonText } from '../plan.mjs';
+import { fileReadTaskFor, samePath } from '../file_read.mjs';
+import { fileReadFinalAnswer } from './audit.mjs';
+
+/**
+ * Mirrors `fn extract_jsonish_value` in rust/src/agentic_coding/file_read/supplied.rs.
+ * @param {string} content
+ * @param {string} key
+ * @returns {string|null}
+ */
+export function extractJsonishValue(content, key) {
+  const linePrefix = `${key}=`;
+  for (const line of rustLines(content).map(trim)) {
+    if (line.startsWith(linePrefix)) return line.slice(linePrefix.length);
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(content);
+  } catch {
+    parsed = undefined;
+  }
+  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+    && Object.prototype.hasOwnProperty.call(parsed, key)) {
+    const found = parsed[key];
+    return typeof found === 'string' ? found : jsonText(found);
+  }
+  const quotedKey = `"${key}"`;
+  const start = content.indexOf(quotedKey);
+  if (start < 0) return null;
+  const afterKey = content.slice(start + quotedKey.length);
+  const colon = afterKey.indexOf(':');
+  if (colon < 0) return null;
+  const afterColon = trimStart(afterKey.slice(colon + 1));
+  if (afterColon.startsWith('"')) {
+    const rest = afterColon.slice(1);
+    const end = rest.indexOf('"');
+    return end < 0 ? null : rest.slice(0, end);
+  }
+  const match = /[,}\p{White_Space}]/u.exec(afterColon);
+  return match ? afterColon.slice(0, match.index) : afterColon;
+}
+
+/**
+ * Mirrors `fn supplied_file_answer` in rust/src/agentic_coding/file_read/supplied.rs:
+ * answer a direct read from file bytes the client already put in the
+ * conversation (issue #671), or null.
+ * @param {Array<object>} messages
+ */
+export function suppliedFileAnswer(messages) {
+  const task = latestUserRequest(messages);
+  if (task === null) return null;
+  const fileTask = fileReadTaskFor(task);
+  if (!fileTask || fileTask.kind !== 'direct') return null;
+  const content = suppliedFileContent(messages, fileTask.path);
+  if (content === null) return null;
+  return suppliedFileFinalAnswer(fileTask.mode, fileTask.path, content, task);
+}
+
+/** Mirrors `fn supplied_file_final_answer`. */
+function suppliedFileFinalAnswer(mode, path, content, request) {
+  if (mode.kind === 'full') {
+    const body = rustLines(content)
+      .map((line, index) => `${String(index + 1).padStart(4)} | ${line}`)
+      .join('\n');
+    return suppliedFileTemplate('supplied_file_contents', request, [['{body}', body]], path);
+  }
+  if (mode.kind === 'first_line') {
+    return suppliedFileTemplate('supplied_file_first_line', request, [['{line}', rustLines(content)[0] ?? '']], path);
+  }
+  return fileReadFinalAnswer(mode, [[path, content]], request);
+}
+
+/** Mirrors `fn supplied_file_template`. */
+function suppliedFileTemplate(intent, request, substitutions, path) {
+  let rendered = localizedResponse(intent, detect(request)) ?? '';
+  rendered = replaceAllLiteral(rendered, '{path}', path);
+  for (const [placeholder, value] of substitutions) rendered = replaceAllLiteral(rendered, placeholder, value);
+  return rendered;
+}
+
+/** Mirrors `fn supplied_file_content`: the last fenced block labelled with `path`. */
+function suppliedFileContent(messages, path) {
+  let found = null;
+  for (const message of messages) {
+    const lines = rustLines(plainText(message.content));
+    for (let index = 0; index < lines.length; index += 1) {
+      const label = trim(lines[index]);
+      if (label === '' || !samePath(label, path)) continue;
+      if (index + 1 >= lines.length) continue;
+      const fence = trimEnd(lines[index + 1]);
+      if (!trimStart(fence).startsWith('```')) continue;
+      const body = [];
+      for (const line of lines.slice(index + 2)) {
+        if (trimStart(trimEnd(line)).startsWith('```')) break;
+        body.push(line);
+      }
+      if (body.length) found = body.join('\n');
+    }
+  }
+  return found;
+}

@@ -1,0 +1,118 @@
+// Verified mutating filesystem actions (issues #824 and #944): the JavaScript
+// twin of rust/src/agentic_coding/mutating_action.rs.
+//
+// A mutating command is planned as the ordered recipe its seed intent declares
+// (preconditions, preparation, the action, postconditions), each step observed
+// before the next is planned.
+
+import { Capability } from './capability.mjs';
+import { toolFor } from './capability_router.mjs';
+import { finalAnswer, jsonText, planOne } from './plan.mjs';
+import { Progress } from './progress.mjs';
+import { StepOutcome, render, reportedExitCode, responseLanguage, stepOutcome } from './tool_result.mjs';
+import { localizedResponse } from './crate/seed.mjs';
+import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
+import { maxByKey, replaceAllLiteral, rsplitOnce, splitWhitespace } from './crate/rust_str.mjs';
+
+const SOURCE_PLACEHOLDER = '{source}';
+const DESTINATION_PLACEHOLDER = '{destination}';
+const DESTINATION_PARENT_PLACEHOLDER = '{destination_parent}';
+const ACTION_PLACEHOLDER = '{action}';
+const CHECK_PLACEHOLDER = '{check}';
+const CHECKS_PLACEHOLDER = '{checks}';
+const EXIT_CODE_PLACEHOLDER = '{exit_code}';
+const CURRENT_DIRECTORY = '.';
+
+/**
+ * Mirrors `fn expand` in rust/src/agentic_coding/mutating_action.rs:
+ * `{steps, action}` (the action's index) or null.
+ * @param {string} command
+ */
+export function expand(command) {
+  return expandWith(command, shellIntentVocabulary());
+}
+
+function expandWith(command, vocab) {
+  const candidates = [];
+  for (const intent of vocab.intents) {
+    if (!effectIsDeclared(intent.effect)) continue;
+    if (!command.startsWith(intent.command)) continue;
+    const rest = command.slice(intent.command.length);
+    if (!rest.startsWith(' ')) continue;
+    candidates.push([intent.effect, splitWhitespace(rest)]);
+  }
+  const best = maxByKey(candidates, ([, operands]) => operands.length);
+  if (best === undefined) return null;
+  const [effect, operands] = best;
+  if (operands.length !== 2) return null;
+  const [source, destination] = operands;
+  const fill = (template) => replaceAllLiteral(
+    replaceAllLiteral(replaceAllLiteral(template, SOURCE_PLACEHOLDER, source), DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)),
+    DESTINATION_PLACEHOLDER,
+    destination,
+  );
+  const steps = [...effect.before.map(fill), ...effect.prepare.map(fill)];
+  const action = steps.length;
+  steps.push(command);
+  steps.push(...effect.after.map(fill));
+  return { steps, action };
+}
+
+/** Mirrors `fn parent_of`. */
+function parentOf(path) {
+  const split = rsplitOnce(path, '/');
+  if (split === null) return CURRENT_DIRECTORY;
+  return split[0] === '' ? '/' : split[0];
+}
+
+/**
+ * Mirrors `fn plan_step` in rust/src/agentic_coding/mutating_action.rs.
+ * @param {string} command
+ * @param {object[]} messages
+ * @param {string[]} toolNames
+ * @param {string} prompt
+ */
+export function planStep(command, messages, toolNames, prompt) {
+  const recipe = expand(command);
+  if (recipe === null) return null;
+  const tool = toolFor(toolNames, Capability.Run);
+  if (tool === null) return null;
+  const progress = Progress.scan(messages);
+  const taken = progress.run_outputs.length;
+  if (taken > 0) {
+    const index = taken - 1;
+    const observed = progress.run_outputs[index];
+    if (stepOutcome(observed) === StepOutcome.Failed) {
+      return finalAnswer(blockedReport(recipe, recipe.steps[index] ?? command, observed, prompt));
+    }
+  }
+  if (taken < recipe.steps.length) return planOne(tool, jsonText({ command: recipe.steps[taken] }));
+  return finalAnswer(completedReport(recipe, prompt));
+}
+
+function blockedReport(recipe, check, observed, prompt) {
+  const language = responseLanguage(prompt);
+  let answer = localizedResponse('mutating_action_blocked', language);
+  if (answer === null) return render(check, observed, prompt);
+  answer = replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]);
+  answer = replaceAllLiteral(answer, CHECK_PLACEHOLDER, check);
+  const code = reportedExitCode(observed);
+  return replaceAllLiteral(answer, EXIT_CODE_PLACEHOLDER, code === null ? '' : String(code));
+}
+
+function completedReport(recipe, prompt) {
+  const language = responseLanguage(prompt);
+  const checks = recipe.steps.slice(recipe.action + 1).map((check) => `\`${check}\``).join(', ');
+  const answer = localizedResponse('mutating_action_completed', language);
+  if (answer === null) return recipe.steps[recipe.action];
+  return replaceAllLiteral(replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]), CHECKS_PLACEHOLDER, checks);
+}
+
+/**
+ * Mirrors `fn verified_recipe` in rust/src/agentic_coding/mutating_action.rs.
+ * @param {string} command
+ * @returns {string[]|null}
+ */
+export function verifiedRecipe(command) {
+  return expand(command)?.steps ?? null;
+}

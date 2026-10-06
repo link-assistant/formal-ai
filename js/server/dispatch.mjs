@@ -5,7 +5,7 @@
 import { handleAnthropicMessages } from './anthropic.mjs';
 import { handleChatCompletions } from './openai.mjs';
 import { handleConversationContext, handleConversationLearn } from './conversations.mjs';
-import { recordApiExchangeIfEnabled } from './dialog-log.mjs';
+import { recordApiExchangeIfEnabled, withDialogScope } from './dialog-log.mjs';
 import { handleGeminiGenerateContent, handleGeminiModel, handleGeminiModels, handleVertexModels } from './gemini.mjs';
 import { handleMcp } from './mcp.mjs';
 import { handleMemory, handleMemoryImport, handleMemorySince } from './memory.mjs';
@@ -103,9 +103,13 @@ export function mcpOriginAllowed(headers) {
 export async function dispatch(ctx, request) {
   const normalized = request.path.split('?')[0];
   const authorized = !requiresBearerAuth(request.method, normalized) || authAllows(ctx.bearerToken, request.headers);
-  const response = await dispatchRoute(ctx, request);
-  recordApiExchangeIfEnabled(request, response, authorized, ctx.env || process.env);
-  return response;
+  // The planner reads the session id back when it writes a report command
+  // (`DialogScope::begin` in `handle_api_request_with_auth`).
+  return withDialogScope(request.headers, async () => {
+    const response = await dispatchRoute(ctx, request);
+    recordApiExchangeIfEnabled(request, response, authorized, ctx.env || process.env);
+    return response;
+  });
 }
 
 /** `dispatch_api_request_with_auth`. */

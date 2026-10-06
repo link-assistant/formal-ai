@@ -6,17 +6,26 @@
 // rust/src/shared_memory.rs (`shared_memory_path`, `ensure_shared_memory_file`)
 // and rust/src/context_capacity.rs (`ContextCapacity::current`).
 //
-// Omitted from the Rust store: the native link-cli `.links` sidecar
-// projection (doublets-native only), the consent-gated auto-free-space pass on
-// import (it runs only when `<memory>.auto-free-space` records consent), and
-// the anticipation `prediction_hit` event (only emitted once idle dreaming has
-// written prediction events).
+// Omitted from the Rust store: the anticipation `prediction_hit` event (only
+// emitted once idle dreaming has written prediction events), and the native
+// link-cli projection `SyncStore::persist` / `open_at` keep beside the log
+// (rust/src/link_store/projection_sync.rs `synchronize_memory_events`: the
+// 64 MiB memory-mapped doublets file `<memory>.links`, its `.links.nodes`
+// address map, `.links.projected` marker and `.transitions.links` log). That
+// file is the link-cli crate's binary doublets store, whose bytes and node
+// addresses come from its size-balanced-tree allocator; no server route reads
+// it back, and `.lino` stays the recovery source the Rust store rebuilds the
+// projection from on its next open, so a log this store writes is complete
+// for both servers. The consent-gated auto-free-space pass on import is
+// js/server/storage-policy.mjs.
 
 import fs from 'node:fs';
 import path from 'node:path';
 
 import { stableId } from './ids.mjs';
 import { serverMessage } from './messages.mjs';
+import { LEARNED_CHUNK_KIND, importLearned, takeLearned } from './meta-learned.mjs';
+import { applyAutoFreeSpaceForWrite } from './storage-policy.mjs';
 
 export const ROOT_HEADER = 'demo_memory';
 export const MINIMUM_READABLE_SCHEMA = 1;
@@ -437,13 +446,10 @@ export class SyncStore {
       return new SyncStore(file, [], TARGET_SCHEMA, false, env);
     }
     const status = inspectMemoryBytes(text, true);
-    return new SyncStore(
-      file,
-      parseLinksNotation(decoded),
-      status.detected_schema_version ?? TARGET_SCHEMA,
-      status.compatible,
-      env,
-    );
+    const events = parseLinksNotation(decoded);
+    // R1012: chunks learned in earlier sessions return to the meta reasoner.
+    importLearned(events);
+    return new SyncStore(file, events, status.detected_schema_version ?? TARGET_SCHEMA, status.compatible, env);
   }
 
   toLinksNotation() {
@@ -460,6 +466,10 @@ export class SyncStore {
     this.events = mergeUnionById(this.events, parseLinksNotation(text));
     for (const event of this.events) if (event.write_count === 0) event.write_count = 1;
     const added = this.events.length - before;
+    if (this.path) {
+      const freed = applyAutoFreeSpaceForWrite(this.events, this.path, Buffer.byteLength(String(text), 'utf8'));
+      if (freed) this.events = freed.events;
+    }
     this.persist();
     return added;
   }
@@ -486,6 +496,10 @@ export class SyncStore {
         evidence: [userId],
         write_count: 1,
       }));
+    }
+    const learned = takeLearned();
+    if (learned !== null) {
+      recorded.push(memoryEvent({ id: stableId(LEARNED_CHUNK_KIND, learned), kind: LEARNED_CHUNK_KIND, role: 'assistant', content: learned, write_count: 1 }));
     }
     recorded.push(memoryEvent({
       id: stableId('chat_task', seed),

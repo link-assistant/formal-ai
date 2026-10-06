@@ -11,11 +11,13 @@
 // below fails too, naming the lower ceiling to commit, so the numbers only
 // fall. The meta reasoner's modules have their own, separate ceiling, and
 // the JavaScript server (js/server/*.mjs, R1013) has a ceiling of zero: its
-// wording lives in data/meta/server-messages.lino.
+// wording lives in data/meta/server-messages.lino. The agentic planner port
+// (js/agentic/**/*.mjs, R1015) is held at zero too: its wording lives in
+// data/meta/agentic-messages.lino and the seed response files.
 //
 // Usage: node scripts/check-js-literals.mjs [--list]
 
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,6 +27,16 @@ const WORKER_DIR = 'js/worker';
 const RATCHET_FILE = 'data/meta/js-literal-ratchet.lino';
 const META_MODULE = /^formal_ai_worker_meta_/;
 const SERVER_DIR = 'js/server';
+const AGENTIC_DIR = 'js/agentic';
+
+/** Every `.mjs` file under `dir`, recursively, as repository-relative paths. */
+function moduleFiles(repo, dir) {
+  return readdirSync(join(repo, dir)).sort().flatMap((name) => {
+    const relative = `${dir}/${name}`;
+    if (statSync(join(repo, relative)).isDirectory()) return moduleFiles(repo, relative);
+    return name.endsWith('.mjs') ? [relative] : [];
+  });
+}
 
 /**
  * Whether a literal's text reads as natural language: three or more words
@@ -79,7 +91,7 @@ export function ceilingFrom(lino, name) {
 function main(argv) {
   const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
   const lino = readFileSync(join(repo, RATCHET_FILE), 'utf8');
-  const totals = { worker: 0, meta: 0, server: 0 };
+  const totals = { worker: 0, meta: 0, server: 0, agentic: 0 };
   const perFile = [];
   for (const name of readdirSync(join(repo, WORKER_DIR)).filter((file) => file.endsWith('.js')).sort()) {
     const count = naturalLiterals(readFileSync(join(repo, WORKER_DIR, name), 'utf8')).length;
@@ -91,8 +103,13 @@ function main(argv) {
     totals.server += count;
     perFile.push([`server/${name}`, count]);
   }
+  for (const relative of moduleFiles(repo, AGENTIC_DIR)) {
+    const count = naturalLiterals(readFileSync(join(repo, relative), 'utf8')).length;
+    totals.agentic += count;
+    perFile.push([relative.slice('js/'.length), count]);
+  }
   let status = 0;
-  for (const [key, name] of [['worker', 'worker_ceiling'], ['meta', 'meta_ceiling'], ['server', 'server_ceiling']]) {
+  for (const [key, name] of [['worker', 'worker_ceiling'], ['meta', 'meta_ceiling'], ['server', 'server_ceiling'], ['agentic', 'agentic_ceiling']]) {
     const ceiling = ceilingFrom(lino, name);
     console.log(`natural-language literals (${key}): ${totals[key]} (ceiling ${ceiling})`);
     if (totals[key] > ceiling) {

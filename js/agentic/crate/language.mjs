@@ -1,0 +1,257 @@
+// Seed-driven language detection: a port of rust/src/language.rs.
+//
+// Every rule lives in data/seed/language-detection.lino and the language
+// ledger in data/seed/languages.lino, exactly the files the Rust module
+// embeds. A `Language` is its slug string; `Language::Unknown` is 'unknown'.
+// The forced response language (issue #556) is a per-solve native slot the
+// planner never sets, so `detect` here never honours one.
+
+import { cached, readText } from '../host.mjs';
+import { rustLines } from '../content.mjs';
+
+export const UNKNOWN = 'unknown';
+export const ENGLISH = 'en';
+
+const ALPHABETIC = /\p{Alphabetic}/u;
+const isAlphabetic = (character) => ALPHABETIC.test(character);
+
+/** Mirrors `fn unquote` in rust/src/language.rs. */
+function unquote(value) {
+  return value.length >= 2 && value.startsWith('"') && value.endsWith('"') ? value.slice(1, -1) : value;
+}
+
+/** Rust `str::split_once(' ')`. */
+function splitOnce(text, separator) {
+  const at = text.indexOf(separator);
+  return at < 0 ? null : [text.slice(0, at), text.slice(at + separator.length)];
+}
+
+/** Mirrors `fn parse_codepoint`. */
+function parseCodepoint(value) {
+  const digits = value.startsWith('0x') || value.startsWith('0X') ? value.slice(2) : null;
+  if (digits === null || !/^[0-9a-fA-F]+$/.test(digits)) return 0;
+  return parseInt(digits, 16);
+}
+
+/** Mirrors `fn parse_quoted_list`. */
+function parseQuotedList(value) {
+  const items = [];
+  let rest = value;
+  for (let open = rest.indexOf('"'); open >= 0; open = rest.indexOf('"')) {
+    const after = rest.slice(open + 1);
+    const close = after.indexOf('"');
+    if (close < 0) break;
+    items.push(after.slice(0, close));
+    rest = after.slice(close + 1);
+  }
+  return items;
+}
+
+/** Mirrors `fn parse_rules` (cached like the Rust `OnceLock`). */
+function rules() {
+  return cached('language-detection-rules', () => {
+    const out = [];
+    for (const line of rustLines(readText('data/seed/language-detection.lino'))) {
+      const trimmed = line.trimStart();
+      if (!trimmed) continue;
+      const [key, value] = splitOnce(trimmed, ' ') ?? [trimmed, ''];
+      if (key === 'rule') {
+        out.push({ language: '', script: '', start: 0, end: 0, alphabetic_only: false, fallback: false, markers: [] });
+        continue;
+      }
+      const rule = out[out.length - 1];
+      if (!rule) continue;
+      if (key === 'language') rule.language = unquote(value);
+      else if (key === 'script') rule.script = unquote(value);
+      else if (key === 'label' && !rule.script) rule.script = unquote(value);
+      else if (key === 'start') rule.start = parseCodepoint(value);
+      else if (key === 'end') rule.end = parseCodepoint(value);
+      else if (key === 'alphabetic-only') rule.alphabetic_only = value === 'yes';
+      else if (key === 'fallback') rule.fallback = value === 'yes';
+      else if (key === 'markers') rule.markers = parseQuotedList(value);
+    }
+    return out.filter((rule) => rule.language);
+  });
+}
+
+function ruleClaims(rule, character) {
+  const codepoint = character.codePointAt(0);
+  return codepoint >= rule.start && codepoint <= rule.end && (!rule.alphabetic_only || isAlphabetic(character));
+}
+
+/** Mirrors `fn from_slug`: the slug when the registry declares it, else null. */
+export function languageFromSlug(slug) {
+  return rules().find((rule) => rule.language === slug)?.language ?? null;
+}
+
+/** Mirrors `fn registered_languages`. */
+export function registeredLanguages() {
+  return rules().map((rule) => rule.language);
+}
+
+/** Mirrors `fn fallback_language`. */
+export function fallbackLanguage() {
+  return fallbackOf(rules());
+}
+
+function ledgerLines() {
+  return cached('language-ledger-lines', () => rustLines(readText('data/seed/languages.lino')));
+}
+
+/** Mirrors `fn uses_postpositions` in rust/src/language.rs. */
+export function usesPostpositions(slug) {
+  let current = null;
+  for (const line of ledgerLines()) {
+    const split = splitOnce(line.trimStart(), ' ');
+    if (!split) continue;
+    const [key, value] = split;
+    if (key === 'language') current = unquote(value);
+    else if (key === 'adposition' && current === slug) return unquote(value) === 'postposition';
+  }
+  return false;
+}
+
+/** Mirrors `fn language_name` in rust/src/language.rs. */
+export function languageName(slug) {
+  let current = null;
+  for (const line of ledgerLines()) {
+    const trimmed = line.trimStart();
+    const [key, value] = splitOnce(trimmed, ' ') ?? [trimmed, ''];
+    if (key === 'language') current = unquote(value);
+    else if (key === 'name' && current === slug) return unquote(value);
+  }
+  return null;
+}
+
+/** Mirrors `fn surface_matches_language` in rust/src/language.rs. */
+export function surfaceMatchesLanguage(surface, slug) {
+  const all = rules();
+  const rule = all.find((candidate) => candidate.language === slug);
+  if (!rule) return false;
+  return all
+    .filter((candidate) => candidate.script === rule.script)
+    .some((candidate) => Array.from(surface).some((character) => ruleClaims(candidate, character)));
+}
+
+function fallbackOf(all) {
+  return all.find((rule) => rule.fallback)?.language ?? ENGLISH;
+}
+
+function fallbackScriptOf(all) {
+  return all.find((rule) => rule.fallback)?.script ?? '';
+}
+
+/** Mirrors `fn default_language_of`. */
+function defaultLanguageOf(all, script) {
+  const rule = all.find((candidate) => candidate.script === script && candidate.fallback)
+    ?? all.find((candidate) => candidate.script === script);
+  return rule ? rule.language : fallbackOf(all);
+}
+
+/** Mirrors `struct ScriptCounts` + `fn count_scripts`. */
+function countScripts(prompt, all) {
+  const counts = { counts: [], other: 0, first: null };
+  for (const character of prompt) {
+    const matched = all.find((rule) => ruleClaims(rule, character));
+    if (matched) {
+      const entry = counts.counts.find(([name]) => name === matched.script);
+      if (entry) entry[1] += 1;
+      else counts.counts.push([matched.script, 1]);
+      if (counts.first === null) counts.first = matched.script;
+    } else if (isAlphabetic(character)) {
+      counts.other += 1;
+      if (counts.first === null) counts.first = '';
+    }
+  }
+  return counts;
+}
+
+const countOf = (counts, script) => counts.counts.find(([name]) => name === script)?.[1] ?? 0;
+const maxExcluding = (counts, script) =>
+  counts.counts.filter(([name]) => name !== script).reduce((max, [, count]) => Math.max(max, count), 0);
+const total = (counts) => counts.counts.reduce((sum, [, count]) => sum + count, 0) + counts.other;
+
+/** Mirrors `fn marker_present`. */
+function markerPresent(normalized, marker, all, fallbackScript) {
+  const first = Array.from(marker)[0];
+  if (first === undefined) return false;
+  const needsWordStart = all.some((rule) => rule.script === fallbackScript && ruleClaims(rule, first));
+  let from = 0;
+  for (;;) {
+    const at = normalized.indexOf(marker, from);
+    if (at < 0) return false;
+    const previous = Array.from(normalized.slice(0, at)).pop();
+    const wordStart = previous === undefined || !isAlphabetic(previous);
+    if (wordStart || !needsWordStart) return true;
+    from = at + marker.length;
+  }
+}
+
+/** Mirrors `fn marker_language`. */
+function markerLanguage(prompt, all, counts, fallbackScript) {
+  const normalized = prompt.toLowerCase();
+  let best = null;
+  for (const rule of all.filter((candidate) => candidate.markers.length)) {
+    const count = countOf(counts, rule.script);
+    if (count === 0) continue;
+    const contested = all.some((other) =>
+      other.script !== rule.script && other.script !== fallbackScript && countOf(counts, other.script) > 0);
+    if (contested) continue;
+    if (!rule.markers.some((marker) => markerPresent(normalized, marker.toLowerCase(), all, fallbackScript))) continue;
+    if (best && count <= best[0]) continue;
+    best = [count, rule.language];
+  }
+  return best ? best[1] : null;
+}
+
+/** Mirrors `fn detect_with`. */
+function detectWith(prompt, all) {
+  const fallback = fallbackOf(all);
+  const fallbackScript = fallbackScriptOf(all);
+  const counts = countScripts(prompt, all);
+  if (total(counts) === 0) return fallback;
+  const fallbackCount = countOf(counts, fallbackScript);
+  if (counts.other > fallbackCount && counts.other >= maxExcluding(counts, fallbackScript)) return UNKNOWN;
+  if (fallbackCount > 0) {
+    const language = markerLanguage(prompt, all, counts, fallbackScript);
+    if (language !== null) return language;
+    const first = counts.first;
+    if (first !== null && first !== '' && first !== fallbackScript) {
+      const rival = counts.counts
+        .filter(([name]) => name !== fallbackScript && name !== first)
+        .reduce((max, [, count]) => Math.max(max, count), 0);
+      if (countOf(counts, first) >= rival) return defaultLanguageOf(all, first);
+    }
+  }
+  for (const rule of all.filter((candidate) => !candidate.fallback)) {
+    const count = countOf(counts, rule.script);
+    if (count > 0 && count >= maxExcluding(counts, rule.script)) return defaultLanguageOf(all, rule.script);
+  }
+  return fallback;
+}
+
+/**
+ * Mirrors `fn detect` in rust/src/language.rs: the dominant language's slug,
+ * or 'unknown'. The forced-language slot is never set on the planner path.
+ * @param {string} prompt
+ * @returns {string}
+ */
+export function detect(prompt) {
+  return detectWith(String(prompt), rules());
+}
+
+/** Mirrors `fn language_for_concept_slug` in rust/src/language.rs. */
+export function languageForConceptSlug(conceptSlug) {
+  if (!conceptSlug.startsWith('language_')) return null;
+  const name = conceptSlug.slice('language_'.length);
+  const rule = rules().find((candidate) => {
+    const declared = languageName(candidate.language);
+    if (declared === null) return false;
+    const left = Array.from(declared);
+    const right = Array.from(name);
+    return new TextEncoder().encode(declared).length === new TextEncoder().encode(name).length
+      && left.every((character, index) => right[index] !== undefined
+        && character.replace(/[A-Z]/g, (letter) => letter.toLowerCase()) === right[index]);
+  });
+  return rule ? rule.language : null;
+}

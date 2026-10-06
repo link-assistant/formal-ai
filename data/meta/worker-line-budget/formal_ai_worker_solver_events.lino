@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_solver_events.js"
+  ceiling 269
+  rationale "Server parity (R1013): the native solver's event log for a turn - the impulse and language prelude, the intent-formalization route (intent routing table, declared role surfaces, data/seed/handler-promotions.lino through the shared rule interpreter), the calculator events with the link-calculator lino and step count for the numeric subset, and the finalize_simple / meta projection tail - so js/server/solver-trace.mjs projects the same thinking trace EventLog::thinking_steps_for_answer narrates."

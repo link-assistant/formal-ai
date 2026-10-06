@@ -164,3 +164,4 @@ order: together they are the whole register.
    - Standing Doctrine: The JavaScript Server Has Full Parity With the Rust Server (2026-10-07)
    - Standing Doctrine: The Recursive Meta Algorithm Is the Main Path (2026-10-06)
    - Standing Doctrine: Three Roots, Full Parity, Through The Meta Language (2026-09-24)
+   - Standing Doctrine: Work Is Delegated to Formal AI Itself (2026-10-07)

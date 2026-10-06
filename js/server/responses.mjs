@@ -4,18 +4,18 @@
 // `response_reasoning_item`, `responses_input_tokens`) and the
 // `ResponseObject` wire shape of rust/src/protocol/output.rs.
 //
-// The deterministic agentic planner is native-only: a tool-bearing request
-// without agent mode is refused exactly as natively (`AgenticOutcome::Refused`);
-// with agent mode on the request is answered symbolically, as the Chat
-// Completions port does.
+// A tool-bearing request goes through the agentic outcome
+// (js/server/agentic.mjs): refused without agent mode, planned by the
+// deterministic planner port (js/agentic/) with it, as natively.
 
-import { RequestShapeError, chatPromptAndHistory, requestsToolExecution } from './chat-request.mjs';
+import { agenticOutcome, commandReroutePlan, responseFromPlan } from './agentic.mjs';
+import { RequestShapeError, chatPromptAndHistory } from './chat-request.mjs';
 import { messageInputTokens, responseTimestamp, unsupportedModelResponse } from './openai.mjs';
 import { jsonResponse, messageError } from './response.mjs';
 import { parseResponsesRequest, responsePrompt, toChatCompletionRequest } from './responses-input.mjs';
 import { responsesSse } from './responses-stream.mjs';
 import { resolveModelId } from './seed.mjs';
-import { estimateTokens, solveSymbolic, stableId, toolCallRefusalAnswer } from './solve.mjs';
+import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRefusalAnswer } from './solve.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
 
 /** `response_reasoning_item`: the rendered trace as a `reasoning` output item. */
@@ -71,10 +71,14 @@ export async function createResponse(ctx, request) {
   const chatRequest = toChatCompletionRequest(request);
   const { prompt: chatPrompt, history } = chatPromptAndHistory(chatRequest.messages);
   const memoryPrompt = chatPrompt.trim() ? chatPrompt : prompt;
-  if (requestsToolExecution(chatRequest) && !ctx.agentMode) {
-    return responseFromSymbolic(request, chatRequest, prompt, toolCallRefusalAnswer());
-  }
-  const symbolic = await solveSymbolic(ctx, memoryPrompt, history);
+  const remembered = await answerFromMemory(ctx, memoryPrompt, history, prompt);
+  if (remembered) return responseFromSymbolic(request, chatRequest, prompt, remembered);
+  const outcome = await agenticOutcome(ctx, chatRequest, toolCallRefusalAnswer);
+  if (outcome.kind === 'refused') return responseFromSymbolic(request, chatRequest, prompt, outcome.answer);
+  if (outcome.kind === 'planned') return responseFromPlan(ctx, request, chatRequest, prompt, outcome.plan, responseTimestamp());
+  const symbolic = await solveWithMemory(ctx, memoryPrompt, history);
+  const reroute = await commandReroutePlan(ctx, chatRequest, symbolic);
+  if (reroute) return responseFromPlan(ctx, request, chatRequest, prompt, reroute, responseTimestamp());
   return responseFromSymbolic(request, chatRequest, prompt, symbolic);
 }
 

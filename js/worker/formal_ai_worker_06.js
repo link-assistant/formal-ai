@@ -148,6 +148,7 @@ function tryArithmetic(prompt) {
       confidence: 1.0,
       evidence,
       interpretations,
+      solverEvents: solverCalculationEvents(expression, content, backend),
     };
   } catch (error) {
     const message = String(error && error.message ? error.message : error);
@@ -157,6 +158,7 @@ function tryArithmetic(prompt) {
       confidence: 0.4,
       evidence: [`calculation_error:${message}`],
       interpretations,
+      solverEvents: [solverEvent("calculation:request", expression)],
     };
   }
 }

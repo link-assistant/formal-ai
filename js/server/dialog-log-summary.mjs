@@ -3,16 +3,19 @@
 // `collect_request_tool_names`; rust/src/proxy/summary.rs; and
 // rust/src/protocol_policy.rs `tool_definition_names`).
 //
-// JSON values are parsed into plain objects; the caller serializes them with
-// sorted keys, as a serde_json `Value` (a B-tree map) prints.
+// JSON values are parsed into plain objects (floats kept as float markers,
+// js/server/json.mjs `parseJson`); the caller serializes them with sorted
+// keys, as a serde_json `Value` (a B-tree map) prints.
 
-const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+import { isFloat, parseJson as parseJsonValue } from './json.mjs';
+
+const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value) && !isFloat(value);
 const get = (value, key) => (isObject(value) && Object.prototype.hasOwnProperty.call(value, key) ? value[key] : undefined);
 const asString = (value) => (typeof value === 'string' ? value : null);
 
 function parseJson(text) {
   try {
-    return { ok: true, value: JSON.parse(text) };
+    return { ok: true, value: parseJsonValue(text) };
   } catch {
     return { ok: false, value: null };
   }

@@ -1,0 +1,412 @@
+# The wording the JavaScript agentic planner (js/agentic/*.mjs) answers with,
+# keyed by language-neutral id.
+#
+# Each `text` is the exact string a `format!` / `String::from` literal in
+# rust/src/agentic_coding/ (or the protocol modules around it) writes for the
+# same case, so a client driving either server reads one sentence. The
+# JavaScript twins hold no prose of their own - scripts/check-js-literals.mjs
+# keeps js/agentic/ at zero natural-language literals - and the server parity
+# runner compares both servers' bodies, so a Rust literal that changes
+# without this file shows up as a divergence. `{name}` is a placeholder;
+# `\n` is a newline.
+agentic_messages
+  message shell_tool_missing
+    text "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
+  message tool_permission_refused
+    text "Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool."
+  message package_permission_missing
+    text "no installed associative package grants {capability}"
+  message planner_precedence_count
+    text "planner-precedence.lino lists {declared} arms but the cascade runs {coded}; the seed must name every route arm exactly once"
+  message planner_precedence_order
+    text "planner-precedence.lino declares arm `{declared}` where the cascade runs `{function}`'s `{name}`; the seed must be an exact ordered permutation of the coded arms"
+  message tool_result_no_output_markers
+    text "(empty)|(no output)|(bash completed with no output)|no output|command completed with no output|command completed without output|command produced no output"
+  message tool_result_working_directory_phrase
+    text "working directory"
+  message file_read_tool_missing
+    text "I can read `{path}` when the client advertises a file read tool or a shell tool."
+  message file_read_listing_tool_missing
+    text "I can resolve that file selection when the client advertises a shell tool for listing files."
+  message file_read_listing_empty
+    text "No files were listed in `{directory}`."
+  message file_read_selected_tool_missing
+    text "I can read the selected file after listing when the client advertises a read or shell tool."
+  message file_read_first_line
+    text "First line of `{path}`:\n\n```text\n{first}\n```"
+  message file_read_value_of
+    text "Value of `{key}` in `{path}`: {value}"
+  message file_read_summary_heading
+    text "Read {count} file(s):"
+  message file_read_contents
+    text "Contents of `{path}`:\n\n```text\n{content}\n```"
+  message file_read_no_files_found
+    text "No files found"
+  message progress_rest_answer_not_issue_text
+    text "the REST answer was not issue text"
+  message progress_output_not_work_item_shape
+    text "the output did not have the title-and-body shape of a work item"
+  message note_composition_requested_parts
+    text "Requested parts:"
+  message note_composition_observed_heading
+    text "Observed in this session:"
+  message note_composition_nothing_observed
+    text "nothing: no tool result was recorded before this note."
+  message note_composition_unbacked
+    text "No requested part above is backed by an observation from this session."
+  message report_issue_target_harness_log
+    text "harness log export"
+  message report_issue_target_server_log
+    text "server log export"
+  message report_issue_target_github_issue
+    text "GitHub issue"
+  message report_issue_target_formal_ai
+    text "Formal AI learning"
+  message report_issue_report_body_command
+    text "formal-ai report body"
+  message report_issue_context_export_command
+    text "formal-ai context export"
+  message report_issue_context_learn_command
+    text "formal-ai context learn"
+  message report_issue_issue_create_command
+    text "gh issue create --repo "
+  message report_script_preflight
+    text "command -v {command} >/dev/null 2>&1 || { printf '%s\\n' {message} >&2; exit 1; }"
+  message file_read_cue_read_every_file
+    text "read every file"
+  message file_read_cue_read_all_files
+    text "read all files"
+  message file_read_cue_list_the_files
+    text "list the files"
+  message file_read_cue_ls_the_folder
+    text "ls the folder"
+  message file_read_cue_read_the_file
+    text "read the file"
+  message file_read_cue_line_beginning_exactly
+    text "line beginning exactly"
+  message file_read_cue_line_that_begins_exactly
+    text "line that begins exactly"
+  message file_read_cue_line_starting_exactly
+    text "line starting exactly"
+  message file_read_cue_line_that_starts_exactly
+    text "line that starts exactly"
+  message web_search_conversation_search_openers
+    text "search conversations|search my conversations|search my chats"
+  message harness_envelope_summarize_lead
+    text "The following is the text to summarize:"
+  message restart_feedback_uncommitted_marker
+    text "UNCOMMITTED CHANGES DETECTED"
+  message restart_feedback_commit_subject
+    text "fix: complete prepared work"
+  message restart_feedback_diff_check_command
+    text "git diff --check && git diff --cached --check"
+  message general_planner_append_plan_action
+    text "append the composed plan to {plan_path}"
+  message general_planner_plan_event_evidence
+    text "written plan event {impulse_id}"
+  message general_planner_write_content_action
+    text "write the requested content to {target}"
+  message general_planner_workspace_file_evidence
+    text "workspace file {target}"
+  message general_planner_verification_action
+    text "run the request-derived verification command"
+  message command_reroute_created_and_verified
+    text "Created and verified `{path}` through the agentic CLI harness.\n\n```{language}\n{source}\n```\n\nCommands executed by the harness:\n"
+  message command_reroute_completed_without_output
+    text "(command completed without output)"
+  message command_reroute_actual_output
+    text "\nActual tool output:\n\n```text\n{actual}\n```"
+  message command_reroute_committed_and_pushed
+    text "\n\nCommitted and pushed to `{branch}` for {reference}:\n\n```text\n{output}\n```"
+  message command_reroute_exit_code_labels
+    text "exit code:|exit status:|command exited with status|process exited with code"
+  message command_reroute_failure_markers
+    text "command timed out|command terminated without an exit status|permission denied|no such file or directory"
+  message code_artifact_updated
+    text "Updated `{path}` through the workspace file tools.\n\n{links}\n{result}"
+  message code_artifact_step_limit
+    text "Rewrite of `{path}` reached its {max_steps}-step safety bound; no partial bytes were written.\n\n{links}"
+  message code_artifact_no_match
+    text "No matching source fragment was found in `{path}`."
+  message code_artifact_created
+    text "Created `{path}` through the workspace file tools."
+  message tool_result_process_group_field
+    text "Process Group PGID"
+  message tool_result_env_bash_shebang
+    text "#!/usr/bin/env bash"
+  message tool_result_env_python_shebang
+    text "#!/usr/bin/env python"
+  message structured_document_write_failed
+    text "The structured document could not be written to `{output}`."
+  message structured_document_no_content
+    text "The client reported writing `{output}`, but returned no inspectable content."
+  message structured_document_verified
+    text "Derived `{output}` from `{input}` and verified the written Links Notation byte-for-byte."
+  message structured_document_mismatch
+    text "The read-back of `{output}` did not match the derived Links Notation."
+  message evidence_record_recorded
+    text "Recorded the findings in `{target}`."
+  message evidence_record_write_failed
+    text "The findings could not be recorded in `{target}`: the write step failed."
+  message evidence_record_command_output_suffix
+    text "command completed. Output:"
+  message prerequisite_recovery_not_found_marker
+    text "command not found"
+  message formalization_recipe_search_query
+    text "Пушкин Сказка о рыбаке и рыбке полный текст"
+  message formalization_recipe_fisherman_subject
+    text "«Сказка о рыбаке и рыбке»"
+  message formalization_recipe_source_subject
+    text "the source text ({doc_id})"
+  message meaning_detail_tomato_search_query
+    text "Wikidata lexemes tomato помидор томат grammatical number forms"
+  message meaning_detail_potato_search_query
+    text "Wikidata lexemes potato картофель картошка grammatical number forms"
+  message meaning_detail_keywords
+    text "grammatical number|more detailed|singular or plural|part of speech|detailed meaning|detailed word"
+  message meaning_detail_defined_by_line
+    text "    defined-by entity"
+  message meaning_detail_source_lexeme_line
+    text "    source-lexeme {id} # wikidata {name} source lexeme{lemma_suffix}"
+  message meaning_detail_language_line
+    text "      language {item} # wikidata language {name}"
+  message meaning_detail_category_line
+    text "      lexical-category {category} # wikidata category noun"
+  message meaning_detail_form_line
+    text "      form {id}-{suffix} # wikidata form {text}"
+  message meaning_detail_feature_line
+    text "        feature {feature} # wikidata grammatical feature {number}"
+  message meaning_detail_sense_line
+    text "      sense {sense} # wikidata grounded sense"
+  message meaning_detail_surface_line
+    text "    surface {id}-{suffix} # wikidata {name} {number} surface{comment_text}"
+  message meaning_detail_final_answer
+    text "Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}"
+  message diagram_formalize_title
+    text "Formalize a text into a knowledge base"
+  message diagram_formalize_route
+    text "formaliz / knowledge base / fisherman"
+  message diagram_formalize_step_0
+    text "find the source text"
+  message diagram_formalize_step_1
+    text "read it; a tool error falls back to the canonical synopsis"
+  message diagram_formalize_step_2
+    text "formalize prose into Links Notation"
+  message diagram_formalize_step_3
+    text "cat the file to verify the write landed"
+  message diagram_meaning_title
+    text "Make a meaning more detailed"
+  message diagram_meaning_route
+    text "more detailed / grammatical number / a known concept"
+  message diagram_meaning_step_0
+    text "find the concept's Wikidata lexemes"
+  message diagram_meaning_step_1
+    text "read the forms; recover the missing plural"
+  message diagram_meaning_step_2
+    text "re-derive the grounded block, byte-for-byte the seed"
+  message diagram_meaning_step_3
+    text "cat the block to verify"
+  message diagram_diagram_title
+    text "Generate these diagrams"
+  message diagram_diagram_route
+    text "mermaid / diagram / visual overview"
+  message diagram_diagram_step_0
+    text "render the mermaid parts from the recipe table"
+  message diagram_diagram_step_1
+    text "cat the document to verify"
+  message diagram_self_ast_title
+    text "Store the CST/AST of the meta algorithm"
+  message diagram_self_ast_route
+    text "cst/ast / abstract-syntax / reason about itself"
+  message diagram_self_ast_step_0
+    text "parse the planner via meta-language; write the AST node census"
+  message diagram_self_ast_step_1
+    text "cat the census to verify"
+  message diagram_overview_heading
+    text "## Part 1 — Overview: how a task is routed\n"
+  message diagram_overview_router_line
+    text `    user["user task"] --> router{"plan_chat_step<br/>routes by keywords"}`
+  message diagram_overview_otherwise_line
+    text `    router -->|"otherwise"| solver["ordinary solver text"]`
+  message diagram_recipe_heading
+    text "## Part {part} — Recipe: {title} ({issue})\n"
+  message diagram_recipe_task_line
+    text `    {previous}["user task<br/>({route})"]`
+  message diagram_recipe_final_line
+    text `    {previous} --> {final_node}(["final answer<br/>the artifact inline"])`
+  message diagram_document_heading
+    text "# Formal AI agentic recipes (generated)\n"
+  message diagram_document_comment
+    text "<!-- Generated by the Formal AI Agent CLI (`formal-ai agent`) from the planner's own\n     recipe table (rust/src/agentic_coding/diagram.rs). Do not hand-edit; regenerate. -->\n"
+  message diagram_document_intro
+    text "A high-level, split-into-parts visual overview of how Formal AI drives its own agentic\nCLI to complete a task. Part 1 shows how a request is routed to a recipe; each later part\ndetails what happens for input handled by that recipe — the deterministic\n`search -> fetch -> write -> verify -> final` state machine in `rust/src/agentic_coding/`.\n\nScope: these diagrams cover the issue #468/#538 recipe slice. The planner also routes\nself-heal, dreaming-audit, source-graph, ledger, explain, change-request, repair-strategy,\nrebuild, Google-Trends learning/catalog, question-catalog, and the general capability\nrouter — the `otherwise` edge in Part 1 stands for all of them.\n"
+  message diagram_final_answer
+    text "Generated the agentic-recipe mermaid diagrams, split into {parts} parts, from the planner's own recipe table — a visual overview of how Formal AI drives its own tools.\n\nGenerated document ({path}):\n\n{document}"
+  message self_heal_repair_phrases
+    text "fix it yourself|fix yourself|fix your self|fix your own|fix them yourself|fix this yourself|solve it yourself|solve this yourself|debug yourself|debug it yourself|heal yourself|repair yourself|correct yourself|fix on your own|fix it on your own|learn from your mistake"
+  message self_heal_final_answer
+    text "Ran the self-healing loop on an input the system could not answer directly: reasoned about the failure trace, mapped it onto {module} with a verified source-to-links round-trip, learned a benchmark-gated lesson, and recorded an auditable repair case ({outcome}). Nothing was applied — adoption stays a human-approved review step.\n\nGenerated document ({path}):\n\n{document}"
+  message ledger_keywords
+    text "learning ledger|promotion ledger|promote the lesson|promote the approved|approved learning record"
+  message ledger_final_answer
+    text "Recorded the approved learning ledger: {count} lesson(s) that passed their benchmark gate and were approved by a human are now durable learning records, so a repeated failure is answered from the ledger instead of re-derived. Promotion stayed human-gated — only green, approved, faithfully round-tripping cases were recorded.\n\nGenerated document ({path}):\n\n{document}"
+  message repair_strategy_keywords
+    text "classify the failure|classify a failure|repair strategy|repair strategies|which part to repair|solver method, a data record, or a test"
+  message repair_strategy_final_answer
+    text "Classified {count} failure traces, one per repair class ({targets}), and composed a grounded, human-gated repair strategy for each: the general repair loop now decides *which part* to change — a solver method, a data record, or a test — for every failure, not just one canonical case. Nothing is applied — each strategy is a reviewable plan that merges only through the same human-gated loop. Neural inference is not used; every classification and plan is a deterministic function of the trace.\n\nGenerated document ({path}):\n\n{document}"
+  message explain_keywords
+    text "how formal ai works|how does formal ai work|how formal ai itself works|how the system itself works|explain how formal ai"
+  message explain_final_answer
+    text "Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({path}):\n\n{document}"
+  message source_links_final_answer
+    text "Translated the entire source code of our system to the links / meta language and back: content-addressed all {files} owned source files under one manifest id, and verified a representative slice of {slice} modules round-trips byte-for-byte through the meta-language links network (the sole CST/AST engine here). The exhaustive whole-repository round-trip is the library invariant (SourceLinks::owned) — a real step toward recompiling ourselves. Nothing was written back; the projection is a read-only, auditable artifact.\n\nGenerated document ({path}):\n\n{document}"
+  message change_request_keywords
+    text "change formal ai|modify formal ai|add a capability to formal ai|add a new capability to the system|change the ai system|change formal ai itself"
+  message change_request_final_answer
+    text 'Turned your change request into a reviewable pull request: it derives the requirement "{requirement}", proposes the test `{test}`, and a {steps}-step patch plan against the grounded module {target}. Nothing is applied — the change merges only through the same human-gated loop: a green benchmark gate and your explicit approval. Neural inference is not used; the requirement, test, and patch plan are a deterministic function of your request and its grounded target.\n\nGenerated document ({path}):\n\n{document}'
+  message change_request_canonical_request
+    text "Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output."
+  message change_request_requirement_prefixes
+    text "please |can you please |can you |could you please |could you |i want you to |i would like you to |i want |i would like |we need to |we need "
+  message change_request_requirement
+    text "The system must {core}."
+  message change_request_step_record
+    text "Record the derived requirement for review: {requirement}"
+  message change_request_step_test
+    text "Add the failing test `{test}` that pins the requested behaviour"
+  message change_request_step_edit
+    text "Edit the grounded target module `{target_module}` until the test passes"
+  message change_request_step_gate
+    text "Run the benchmark gate; only a green run is reviewable"
+  message change_request_step_review
+    text "Open a reviewable pull request; a human approves before it merges"
+  message rebuild_plan_keywords
+    text "reattach|rebuild and reattach|reattach the improved|reattach it to the ui|rebuild the wasm worker|hot-swap the local server"
+  message rebuild_plan_final_answer
+    text "Composed the rebuild-and-reattach plan for accepted change `{change}` (approved by {reviewer}): a {steps}-step, reversible pipeline that recompiles Formal AI, regenerates the WebAssembly worker, reattaches it to {artifacts} grounded UI artifacts, hot-swaps the local server, and verifies the UI uses the accepted version. Nothing is rebuilt or restarted — the plan is the reviewable product, and every step is observable and reversible, so keeping the swap stays a human decision. Neural inference is not used; the plan is a deterministic function of the accepted change and the grounded artifacts.\n\nGenerated document ({path}):\n\n{document}"
+  message rebuild_plan_role_cargo
+    text "crate manifest recompiled into the new binary and worker"
+  message rebuild_plan_role_server
+    text "server/CLI entry that serves the reattached UI"
+  message rebuild_plan_role_worker
+    text "worker glue that loads the recompiled WebAssembly and reattaches it to the UI"
+  message rebuild_plan_role_ui
+    text "UI entry that mounts the reattached worker"
+  message rebuild_plan_verification
+    text "The rebuilt binary must pass the whole test suite, the UI smoke test must load the regenerated worker, and the version the UI reports must match the accepted change before the hot-swap is kept; otherwise the prior binary is restored."
+  message rebuild_plan_step_1_action
+    text "Recompile Formal AI from the accepted source."
+  message rebuild_plan_step_1_command
+    text "cargo build --release --locked"
+  message rebuild_plan_step_1_observable
+    text "a fresh target/release/formal-ai binary whose build is reproducible from the accepted source"
+  message rebuild_plan_step_1_reversible
+    text "the prior release binary is retained until the swap is kept"
+  message rebuild_plan_step_2_action
+    text "Regenerate the WebAssembly worker the browser UI runs."
+  message rebuild_plan_step_2_command
+    text "cargo build --release --target wasm32-unknown-unknown && wasm-bindgen (project worker build)"
+  message rebuild_plan_step_2_observable
+    text "a new js/formal_ai_worker.wasm whose content id differs from the shipped one"
+  message rebuild_plan_step_2_reversible
+    text "git restore js/formal_ai_worker.wasm rolls back to the prior worker"
+  message rebuild_plan_step_3_action
+    text "Reattach the regenerated worker to the UI."
+  message rebuild_plan_step_3_command
+    text "serve js/index.html with the worker glue pointing at the new formal_ai_worker.wasm"
+  message rebuild_plan_step_3_observable
+    text "the UI loads the new worker and reports the rebuilt version"
+  message rebuild_plan_step_3_reversible
+    text "revert the worker glue to the prior worker reference"
+  message rebuild_plan_step_4_action
+    text "Hot-swap the local server/worker to the rebuilt binary."
+  message rebuild_plan_step_4_command
+    text "restart `formal-ai serve` with the new binary (or hot-swap the running worker)"
+  message rebuild_plan_step_4_observable
+    text "the server's version endpoint reports the accepted change id"
+  message rebuild_plan_step_4_reversible
+    text "restart the prior binary to restore the previous version"
+  message rebuild_plan_step_5_action
+    text "Verify the UI uses the accepted version, then keep or roll back."
+  message rebuild_plan_step_5_command
+    text "run the UI smoke test and compare the reported version to the accepted change"
+  message rebuild_plan_step_5_observable
+    text "the UI smoke test passes and the reported version matches the accepted change"
+  message rebuild_plan_step_5_reversible
+    text "if any check fails, restore the prior binary and worker — the swap is never kept on a red check"
+  message change_request_system_targets
+    text "formal ai|the ai system|the system itself"
+  message learning_report_final_gated
+    text "Formal AI ranked {expressions} {subject}; the human-review-gated report is in {path}."
+  message learning_report_final_ungated
+    text "Formal AI persisted and ranked {expressions} {subject} through the associative auto-learning pipeline; the reproducible Links Notation report is in {path}."
+  message learning_report_retention_formula
+    text "reads + writes + incoming_links + outgoing_links"
+  message learning_report_task_associative_learning
+    text "Use Formal AI auto-learning to inspect the persisted issue 686 memory as an associative links network, perform bounded multi-hop recall, rank expressions by reads, writes, incoming links, and outgoing links, retain validation warnings, and write associative-learning-report.lino."
+  message learning_report_task_tool_routing_learning
+    text "Use Formal AI auto-learning to inspect the persisted issue 712 tool-routing failures as an associative links network, rank the observations and semantic-frame amendments, keep the result human-review gated, and write tool-routing-learning-report.lino."
+  message learning_report_task_code_rewrite_learning
+    text "Use Formal AI auto-learning to inspect the persisted issue 715 workspace-rewrite failures as an associative links network, rank the observations and normal-algorithm amendments, keep promotion human-review gated, and write code-rewrite-learning-report.lino."
+  message learning_report_task_client_execution_learning
+    text "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
+  message learning_report_task_handler_precedence_learning
+    text "Use Formal AI auto-learning to read the persisted issue 663 specialized-handler precedence rationale as an associative links network, rank the ordering observations and the precedence-is-data amendment, keep the result human-review gated, and write handler-precedence-learning-report.lino."
+  message learning_report_task_self_hosting_learning
+    text "Use Formal AI auto-learning to inspect the persisted issue 657 self-hosting attribution observations as an associative links network, rank the observations and attribution amendments, keep promotion human-review gated, and write self-hosting-learning-report.lino."
+  message self_ast_task
+    text "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation."
+  message dreaming_audit_task
+    text "Audit issue 540 dreaming through Formal AI: inspect the grounded dreaming meta-algorithm, identify every implementation gap from amendment application through replay, pattern learning, storage consent, and idle runtime, then record the generalization that resolves each gap as Links Notation in dreaming-gap-analysis.lino."
+  message google_trends_learning_task
+    text "Collect the Google Trends learning frontier — the trending searches Formal AI cannot yet resolve — route them through the human-gated self-improvement loop, and record the learning report in Links Notation."
+  message google_trends_catalog_task
+    text "Convert the Google Trends top 10 searches into multilingual Formal AI test prompts, include two request variations in every supported language, answer each request, and record the Google Trends catalog in Links Notation."
+  message question_catalog_task
+    text "Generate all possible questions from smallest to largest, drawing words from the frequency-tiered vocabulary, classify each candidate as grammatical or not and, among the grammatical ones, logically meaningful or not, then answer the meaningful ones and record the whole question catalog in Links Notation."
+  message learning_report_subject_associative_learning
+    text "expressions"
+  message learning_report_subject_tool_routing_learning
+    text "routing observations and amendments"
+  message learning_report_subject_code_rewrite_learning
+    text "workspace-rewrite observations and amendments"
+  message learning_report_subject_client_execution_learning
+    text "client-execution observations and amendments"
+  message learning_report_subject_external_benchmark_learning
+    text "external benchmark failure observations and evaluator-boundary amendments"
+  message learning_report_subject_context_hierarchy_learning
+    text "nested-context observations and hierarchy amendments"
+  message learning_report_subject_handler_precedence_learning
+    text "handler-precedence observations and the precedence-is-data amendment"
+  message learning_report_subject_hardcoded_language_learning
+    text "R379"
+  message learning_report_subject_lexeme_import_learning
+    text "bulk-import observations and amendments"
+  message learning_report_subject_search_fusion_learning
+    text "search-fusion execution observations and reusable corrections"
+  message learning_report_subject_self_hosting_learning
+    text "self-hosting attribution observations and amendments"
+  message self_ast_final_answer
+    text "Stored the CST/AST of our Rust meta algorithm ({target}) in our data, parsed through the meta-language links network (the sole CST/AST engine here) and recorded as an abstract-syntax node census — a real step toward the system reasoning about itself.\n\nGenerated document ({path}):\n\n{document}"
+  message dreaming_audit_method
+    text "derived at runtime by cross-referencing meta_step, meta_function, and meta_test records of the grounded recipe"
+  message dreaming_audit_conclusion_grounded
+    text "every recipe stage is grounded in named functions; no open gaps"
+  message dreaming_audit_conclusion_open
+    text "ungrounded stages remain; see resolution records with status open_gap"
+  message dreaming_audit_final_answer
+    text "Audited the grounded issue-#540 dreaming meta-algorithm through Formal AI by cross-referencing its recipe stages against the functions and test suites the recipe itself declares. {stage_count} stages analyzed, {open_gaps} open gap(s) found.\n\nGenerated document ({path}):\n\n{document}"
+  message google_trends_learning_final_answer
+    text "Routed the Google Trends learning frontier through the human-gated self-improvement loop: of {total} trending prompts, the engine already resolves {handled} and leaves {frontier} on the learning frontier. Every frontier trace was handed to the issue-#558 learner, which — because trending searches are open-domain questions, not program-plan modifiers — proposed {proposals} rules and adopted {adopted}: nothing changes without human review. The report is a pure function of the committed catalog.\n\nGenerated document ({path}):\n\n{document}"
+  message google_trends_catalog_final_answer
+    text "Generated the Google Trends catalog from {topic_count} top searches in {geo}: produced {prompt_count} multilingual request variants and answered {answer_count} of them through the standard Formal AI engine. The catalog is generated from the checked-in Trends RSS snapshot, so tests stay offline while the converter can refresh the seed from the live RSS feed.\n\nGenerated document ({path}):\n\n{document}"
+  message question_catalog_final_answer
+    text "Generated the question catalog from a frequency-tiered vocabulary of {vocabulary} words: classified {candidates} candidates smallest-first into the four-way distinction (grammatical-and-meaningful, grammatical open-slot, fragment, ungrammatical) and answered the first {answers} grammatical-and-meaningful questions with the deterministic engine. The answered questions are a reviewable recall table — a repeated question is answered from the catalog instead of re-derived — and nothing changes solver behaviour without the human-gated learning ledger. Neural inference is not used; every candidate, class, and answer is a deterministic function of the lexicon.\n\nGenerated document ({path}):\n\n{document}"
+  message associative_persistence_unresolved_evidence
+    text "unresolved evidence link: {reference}"
+  message self_ast_keywords
+    text "cst/ast|cst / ast|abstract-syntax|reason about itself"
+  message google_trends_learning_frontier_cues
+    text "learning frontier|self-improvement loop"
+  message question_catalog_keywords
+    text "question catalog|all possible questions|generate every possible question|generate all questions|enumerate questions"

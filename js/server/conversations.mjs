@@ -7,17 +7,18 @@
 // rust/src/dialog_conversation.rs (`<id>.conversation.jsonl` records,
 // `append_with_overlap`, `turns_in_exchange`), rust/src/json_lino.rs
 // (`json_to_lino`) and rust/src/self_improvement.rs
-// (`learn_from_reported_conversation`, counted down to the proposals).
+// (`learn_from_reported_conversation`, ported in ./self-improvement.mjs).
 
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { sortedKeys } from './json.mjs';
+import { isFloat, parseJson as parseJsonValue, renderFloat, sortedKeys } from './json.mjs';
 import { queryParam } from './memory.mjs';
 import { serverMessage } from './messages.mjs';
 import { SyncStore, parseBoolEnv, rustLines, sharedMemoryPath } from './memory-store.mjs';
 import { errorResponse, jsonResponse, linksNotationResponse, messageError } from './response.mjs';
 import { agentInfo } from './seed.mjs';
+import { learnFromReportedConversation } from './self-improvement.mjs';
 
 const DIALOG_LOG_DIRECTORY_ENV = 'FORMAL_AI_DIALOG_LOG_DIR';
 const CONVERSATION_LOG_SUFFIX = '.conversation.jsonl';
@@ -57,7 +58,7 @@ function readJsonLines(file) {
     .filter((line) => line.trim())
     .map((line) => {
       try {
-        return JSON.parse(line);
+        return parseJsonValue(line);
       } catch (error) {
         throw new ConversationError('other', error.message);
       }
@@ -117,6 +118,7 @@ function conversationRecord(record) {
 /** `serde_json::Value` equality (objects compare by key set). */
 function jsonEqual(left, right) {
   if (left === right) return true;
+  if (isFloat(left) || isFloat(right)) return isFloat(left) && isFloat(right) && left.value === right.value;
   if (Array.isArray(left) || Array.isArray(right)) {
     return Array.isArray(left) && Array.isArray(right) && left.length === right.length
       && left.every((item, index) => jsonEqual(item, right[index]));
@@ -143,7 +145,7 @@ function appendWithOverlap(transcript, incoming) {
 
 function parseJson(text) {
   try {
-    return { ok: true, value: JSON.parse(text) };
+    return { ok: true, value: parseJsonValue(text) };
   } catch {
     return { ok: false, value: null };
   }
@@ -279,7 +281,7 @@ export function loadConversationContext(dialogId, env = process.env) {
 
 // ---- json_lino::json_to_lino (the native document form) -------------------
 
-const isObjectValue = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+const isObjectValue = (value) => value !== null && typeof value === 'object' && !Array.isArray(value) && !isFloat(value);
 const isScalar = (value) => !Array.isArray(value) && !isObjectValue(value);
 
 function nativeBareReference(value) {
@@ -305,7 +307,9 @@ function nativeStringToken(value) {
 function nativeScalarToken(value) {
   if (value === null || value === undefined) return 'null';
   if (typeof value === 'boolean') return String(value);
+  if (isFloat(value)) return renderFloat(value.value);
   if (typeof value === 'number') return numberToken(value);
+  if (typeof value === 'bigint') return value.toString();
   if (typeof value === 'string') return nativeStringToken(value);
   return '';
 }
@@ -384,100 +388,6 @@ export function conversationContextToLino(dialogId, context) {
   return output;
 }
 
-// ---- self_improvement::learn_from_reported_conversation -------------------
-
-/** `find_learning_trace`: `[prompt|null, events]` or null. */
-function findLearningTrace(value) {
-  if (isObjectValue(value)) {
-    const trace = value.learning_trace;
-    if (trace !== undefined && isObjectValue(trace) && Array.isArray(trace.events)) {
-      return [typeof trace.prompt === 'string' ? trace.prompt : null, trace.events];
-    }
-    for (const key of Object.keys(value)) {
-      const found = findLearningTrace(value[key]);
-      if (found) return found;
-    }
-    return null;
-  }
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const found = findLearningTrace(item);
-      if (found) return found;
-    }
-    return null;
-  }
-  if (typeof value === 'string') {
-    const parsed = parseJson(value);
-    return parsed.ok ? findLearningTrace(sortedKeys(parsed.value)) : null;
-  }
-  return null;
-}
-
-function unquote(value) {
-  const inner = value.length >= 2 && value.startsWith('"') && value.endsWith('"') ? value.slice(1, -1) : value;
-  let out = '';
-  const chars = [...inner];
-  for (let index = 0; index < chars.length; index += 1) {
-    if (chars[index] !== '\\') {
-      out += chars[index];
-      continue;
-    }
-    index += 1;
-    const next = chars[index];
-    if (next === 'n') out += '\n';
-    else if (next === '"') out += '"';
-    else if (next === '\\' || next === undefined) out += '\\';
-    else out += `\\${next}`;
-  }
-  return out;
-}
-
-/** `field_value`. */
-function fieldValue(block, name) {
-  for (const line of rustLines(block)) {
-    const trimmed = line.trim();
-    if (!trimmed.startsWith(name)) continue;
-    const rest = trimmed.slice(name.length);
-    if (!rest) continue;
-    if (/^\s/u.test(rest)) return unquote(rest.trim());
-  }
-  return null;
-}
-
-const LEARNABLE_KINDS = ['selected_rule', 'rule_synthesis_candidate', 'rule_verification', 'write_program_plan'];
-
-/** Whether `propose_rule_from_trace` yields a proposal (the count is all the route reports). */
-function proposalAccepted(events) {
-  const candidate = [...events].reverse().find((event) => event.kind === 'rule_synthesis_candidate');
-  const verification = [...events].reverse().find((event) => event.kind === 'rule_verification');
-  if (!candidate || !verification) return false;
-  if ((fieldValue(verification.payload, 'status') ?? '') !== 'passed') return false;
-  return ['id', 'base_task', 'modifier', 'resolved_task'].every((name) => {
-    const value = fieldValue(candidate.payload, name);
-    return value !== null && /^[A-Za-z0-9_-]+$/.test(value);
-  });
-}
-
-/** `learn_from_reported_conversation`, reduced to what the learn route reports. */
-function learnFromReportedConversation(context) {
-  const found = findLearningTrace(context);
-  if (!found) return null;
-  const [tracePrompt, events] = found;
-  let prompt = tracePrompt;
-  if (prompt === null) {
-    const messages = Array.isArray(context.messages) ? context.messages : [];
-    const user = [...messages].reverse().find((message) => isObjectValue(message) && message.role === 'user');
-    prompt = user && typeof user.content === 'string' ? user.content : null;
-  }
-  if (prompt === null) return null;
-  const log = [];
-  for (const event of events) {
-    if (!isObjectValue(event) || typeof event.kind !== 'string' || typeof event.payload !== 'string') return null;
-    if (LEARNABLE_KINDS.includes(event.kind)) log.push({ kind: event.kind, payload: event.payload });
-  }
-  return { proposals: proposalAccepted(log) ? 1 : 0, awaitingHumanReview: true };
-}
-
 /** `learn_from_conversation`. */
 export function learnFromConversation(dialogId, env = process.env) {
   const context = loadConversationContext(dialogId, env);
@@ -495,8 +405,8 @@ export function learnFromConversation(dialogId, env = process.env) {
     learned: true,
     events_recorded: eventsRecorded,
     learning_trace_found: staged !== null,
-    rule_proposals: staged ? staged.proposals : 0,
-    awaiting_human_review: staged ? staged.awaitingHumanReview : false,
+    rule_proposals: staged ? staged.learning.proposals.length : 0,
+    awaiting_human_review: staged ? staged.awaiting_human_review : false,
     promoted: false,
   });
 }

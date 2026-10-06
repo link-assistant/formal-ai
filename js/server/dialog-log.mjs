@@ -8,9 +8,12 @@
 // conversation record to `<dir>/<dialog_id>.conversation.jsonl`. Logging is
 // best-effort: failures go to stderr and never change the response.
 //
-// Not ported: the `DialogScope` thread-local the Rust planner reads back when
-// it writes a report command (the JavaScript planner has no such reader).
+// `DialogScope` (the thread-local the Rust server sets around one request) is
+// an `AsyncLocalStorage` scope here: `withDialogScope` enters it, and the
+// agentic planner reads it back through `currentDialogId` when it writes a
+// report command (rust/src/agentic_coding/report_issue.rs).
 
+import { AsyncLocalStorage } from 'node:async_hooks';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -37,6 +40,30 @@ export function explicitDialogId(headers) {
   if (!found) return null;
   const value = String(found[1]).trim();
   return /^[A-Za-z0-9_-]+$/.test(value) ? value : null;
+}
+
+const dialogScope = new AsyncLocalStorage();
+
+/**
+ * Mirrors rust/src/dialog_log.rs `DialogScope::begin` (and its `Drop`): run
+ * `body` with the caller's declared session id in scope; the scope ends, and
+ * the enclosing one is current again, when `body` settles.
+ * @template T
+ * @param {Array<[string, string]>} headers
+ * @param {() => T} body
+ * @returns {T}
+ */
+export function withDialogScope(headers, body) {
+  return dialogScope.run({ dialogId: explicitDialogId(headers) }, body);
+}
+
+/**
+ * Mirrors rust/src/dialog_log.rs `current_dialog_id`: the session id the
+ * request being served declared, or null.
+ * @returns {string|null}
+ */
+export function currentDialogId() {
+  return dialogScope.getStore()?.dialogId ?? null;
 }
 
 /** `first_user_prompt`: the first user message's text, for the fallback dialog id. */

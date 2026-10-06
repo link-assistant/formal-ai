@@ -9,16 +9,10 @@
 # run exactly, so the ceiling only falls - regenerate it with
 # `node scripts/check-server-parity.mjs --write-ratchet` once a twin closes.
 server_parity_ratchet
-  answer_divergence_ceiling 12
-  divergence chat_basic
-  divergence chat_openai_path
-  divergence chat_alias_model
-  divergence chat_content_parts
-  divergence chat_null_content
-  divergence chat_stream
-  divergence chat_stream_usage
+  answer_divergence_ceiling 6
   divergence responses_basic
   divergence responses_openai_path
   divergence responses_input_items
   divergence responses_stream
   divergence telegram_message
+  divergence chat_learning_trace

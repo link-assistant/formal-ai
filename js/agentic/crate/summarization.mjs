@@ -1,0 +1,57 @@
+// `crate::summarization::formalize` (rust/src/summarization/mod.rs): the
+// sentence split. The planner reads only each statement's `text`, so the
+// per-sentence kind/weight classification is not carried.
+
+const ALPHANUMERIC = /^[\p{Alphabetic}\p{N}]$/u;
+const ALPHABETIC = /^\p{Alphabetic}$/u;
+const TERMINALS = new Set(['.', '!', '?', '。', '…', '।', '॥', '\n']);
+
+/** Mirrors `fn period_belongs_to_token` in rust/src/summarization/mod.rs. */
+function periodBelongsToToken(buffer, next) {
+  const chars = Array.from(buffer);
+  const previous = chars[chars.length - 1];
+  if (previous !== undefined && ALPHANUMERIC.test(previous) && next !== undefined && ALPHANUMERIC.test(next)) {
+    return true;
+  }
+  const words = buffer.split(/\p{White_Space}+/u).filter(Boolean);
+  const last = words[words.length - 1] ?? '';
+  const keep = (character) => ALPHABETIC.test(character) || character === '.';
+  const tokenChars = Array.from(last);
+  let start = 0;
+  let end = tokenChars.length;
+  while (start < end && !keep(tokenChars[start])) start += 1;
+  while (end > start && !keep(tokenChars[end - 1])) end -= 1;
+  const segments = tokenChars.slice(start, end).join('').split('.');
+  const isLetter = (segment) => {
+    const letters = Array.from(segment);
+    return letters.length === 1 && ALPHABETIC.test(letters[0]);
+  };
+  if (!isLetter(segments[0])) return false;
+  for (const segment of segments.slice(1)) if (!isLetter(segment)) return false;
+  return segments.length >= 2;
+}
+
+/**
+ * Mirrors `fn formalize` in rust/src/summarization/mod.rs: the text split into
+ * sentences, each `{text}`.
+ * @param {string} text
+ * @returns {Array<{text: string}>}
+ */
+export function formalize(text) {
+  const out = [];
+  const chars = Array.from(text);
+  let buffer = '';
+  const push = () => {
+    const sentence = buffer.replaceAll('\n', '').replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '');
+    buffer = '';
+    if (sentence) out.push({ text: sentence });
+  };
+  for (let index = 0; index < chars.length; index += 1) {
+    const character = chars[index];
+    const internalPeriod = character === '.' && periodBelongsToToken(buffer, chars[index + 1]);
+    buffer += character;
+    if (!internalPeriod && TERMINALS.has(character)) push();
+  }
+  push();
+  return out;
+}

@@ -101,7 +101,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   steps.push({ step: "meta_reason", detail: `${meta.goal} ${meta.status}`, derivation: meta.derivationLino });
   if (meta.status === "solved" && (meta.program || meta.subgoals)) {
     events.push("handler:meta_reasoner");
-    return finalize(events, steps, toolCalls, metaAnswer(meta), formalizationContext);
+    return finalize(events, steps, toolCalls, solverMetaProjection(metaAnswer(meta)), formalizationContext);
   }
 
   const compound = await FormalAiSeed.solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solve);
@@ -758,7 +758,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     meta = await metaReasonTurn(prompt, language, preferences);
     formalizationContext.meta = meta;
     steps.push({ step: "meta_discover", detail: `${meta.goal} ${meta.status} after ${meta.lookups.length} lookup round(s)`, derivation: meta.derivationLino });
-    const discovered = metaAnswer(meta);
+    const discovered = solverMetaProjection(metaAnswer(meta));
     if (discovered) {
       events.push("handler:meta_reasoner");
       return finalize(events, steps, toolCalls, discovered, formalizationContext);
@@ -946,6 +946,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
     steps: withThinkingLevels(steps),
     toolCalls,
   };
+  if (formalizationContext && formalizationContext.initial) result.solverEvents = solverEventLog(formalizationContext.initial.raw, answer); // R1013
   if (formalizationContext && formalizationContext.meta) {
     result.derivation = formalizationContext.meta.derivationLino;
   }

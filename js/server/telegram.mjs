@@ -2,17 +2,14 @@
 // `handle_telegram_webhook` (update parsing, the public-chat gate,
 // `compose_telegram_reply`, `telegram_html_from_markdown`, reply splitting and
 // the thinking blockquote), rust/src/attachment_context.rs
-// (`compose_prompt_with_attachments`) and the no-backend branch of
+// (`compose_prompt_with_attachments`) and, through ./telegram-execution.mjs,
 // rust/src/telegram_runtime.rs `execute_telegram_code_request_from_environment`.
 
-import { readdirSync } from 'node:fs';
-import path from 'node:path';
-
-import { REPO_ROOT, childValue, childrenNamed, parseLino, readRepoFile } from './lino.mjs';
 import { serverMessage } from './messages.mjs';
 import { JSON_TYPE, errorResponse, jsonResponse, rawResponse } from './response.mjs';
 import { packageVersion } from './seed.mjs';
 import { solveSymbolic } from './solve.mjs';
+import { executeTelegramCodeRequestFromEnvironment } from './telegram-execution.mjs';
 import { naturalizeThinkingStep, thinkingAnswerLanguage } from './thinking.mjs';
 
 const TELEGRAM_MAX_MESSAGE_LEN = 4096;
@@ -178,70 +175,15 @@ function composePromptWithAttachments(text, attachments) {
 
 // ---------------------------------------------------------------- code execution
 
-let responseTable = null;
-
-/** `seed::response_for` over every multilingual-responses file. */
-function responseFor(intent, language) {
-  if (!responseTable) {
-    responseTable = new Map();
-    const files = readdirSync(path.join(REPO_ROOT, 'data/seed'))
-      .filter((name) => name.startsWith('multilingual-responses') && name.endsWith('.lino'))
-      .sort();
-    for (const file of files) {
-      for (const record of childrenNamed(parseLino(readRepoFile(`data/seed/${file}`)), 'response')) {
-        const key = `${childValue(record, 'intent')}\u0000${childValue(record, 'language')}`;
-        if (!responseTable.has(key)) responseTable.set(key, childValue(record, 'text'));
-      }
-    }
-  }
-  const text = responseTable.get(`${intent}\u0000${language}`);
-  return text === undefined ? null : text;
-}
-
-/** `split_pipe_list`. */
-function splitPipeList(raw) {
-  const trimmed = raw.trim();
-  if (!trimmed) return [];
-  if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
-    return [...trimmed.slice(1, -1).matchAll(/"((?:[^"\\]|\\.)*)"|(\S+)/g)].map((match) => match[1] ?? match[2]);
-  }
-  return trimmed.split('|').map((part) => part.trim()).filter(Boolean);
-}
-
-/** `requested_python`: whether the prompt asks to run supplied code. */
-function requestedPython(prompt, language) {
-  const normalized = prompt.toLowerCase();
-  const markers = splitPipeList(responseFor('code_execution_request_markers', language) ?? '');
-  if (!markers.some((marker) => normalized.includes(marker))) return null;
-  const open = prompt.indexOf('```');
-  if (open >= 0) {
-    const after = prompt.slice(open + 3);
-    const body = after.startsWith('python') ? after.slice(6) : after.startsWith('py') ? after.slice(2) : after;
-    const close = body.indexOf('```');
-    if (close >= 0) {
-      const code = body.slice(0, close).trim();
-      return code || null;
-    }
-  }
-  const separator = Math.max(prompt.lastIndexOf(':'), prompt.lastIndexOf('：'));
-  if (separator < 0) return null;
-  const code = prompt.slice(separator + 1).trim();
-  return code && code.includes('(') ? code : null;
-}
-
-function localizedResponse(intent, language) {
-  return responseFor(intent, language) ?? responseFor(intent, 'unknown') ?? responseFor(intent, 'en') ?? intent;
-}
-
 /**
- * `execute_telegram_code_request_from_environment`: the answer for an explicit
- * code-execution request, or null. The JavaScript server has no execution box,
- * so a request is always refused honestly, as natively without a backend.
+ * Mirrors rust/src/telegram_runtime.rs `execute_telegram_code_request_from_environment`
+ * as rust/src/telegram.rs `compose_telegram_reply` reads it: the answer for an
+ * explicit code-execution request (refused, failed or observed), or null.
  */
 async function codeExecutionAnswer(ctx, prompt) {
   const language = String(await ctx.worker.run('detectLanguage(__telegramPrompt)', { __telegramPrompt: prompt }));
-  if (requestedPython(prompt, language) === null) return null;
-  return localizedResponse('code_execution_refused', language);
+  const execution = await executeTelegramCodeRequestFromEnvironment(prompt, language);
+  return execution.kind === 'not_requested' ? null : execution.answer;
 }
 
 // ---------------------------------------------------------------- HTML

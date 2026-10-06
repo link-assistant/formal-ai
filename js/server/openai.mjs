@@ -8,12 +8,13 @@ import {
   chatPromptAndHistory,
   parseChatRequest,
   plainText,
-  requestsToolExecution,
 } from './chat-request.mjs';
+import { agenticOutcome, chatCompletionFromPlan, commandReroutePlan } from './agentic.mjs';
 import { sortedKeys, toCompactJson } from './json.mjs';
 import { jsonResponse, messageError, sseResponse } from './response.mjs';
+import { learningTraceFromSymbolicAnswer } from './self-improvement.mjs';
 import { canonicalModelId, resolveModelId, tryResolveModelId } from './seed.mjs';
-import { estimateTokens, solveSymbolic, stableId, toolCallRefusalAnswer } from './solve.mjs';
+import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRefusalAnswer } from './solve.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
 
 /** Seconds since the epoch, never 0 (`response_timestamp`). */
@@ -68,6 +69,7 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
       completion_tokens: completionTokens,
       total_tokens: promptTokens + completionTokens,
     },
+    learning_trace: learningTraceFromSymbolicAnswer(prompt, symbolic),
   };
 }
 
@@ -75,18 +77,21 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
  * `create_chat_completion_with_solver_and_memory`.
  *
  * A tool-bearing request without agent mode is refused by policy, exactly as
- * natively. With agent mode on, the JavaScript server answers symbolically:
- * the deterministic agentic planner is native-only today, which the parity
- * ratchet counts.
+ * natively; with agent mode on, the deterministic agentic planner port
+ * (js/agentic/, through js/server/agentic.mjs) emits the next tool calls.
  * @param {{worker: object, agentMode: boolean}} ctx
  * @param {object} request a parsed `ChatCompletionRequest`
  */
 export async function createChatCompletion(ctx, request) {
   const { prompt, history } = chatPromptAndHistory(request.messages);
-  if (requestsToolExecution(request) && !ctx.agentMode) {
-    return chatCompletionFromSymbolic(request, prompt, toolCallRefusalAnswer());
-  }
-  const symbolic = await solveSymbolic(ctx, prompt, history);
+  const remembered = await answerFromMemory(ctx, prompt, history);
+  if (remembered) return chatCompletionFromSymbolic(request, prompt, remembered);
+  const outcome = await agenticOutcome(ctx, request, toolCallRefusalAnswer);
+  if (outcome.kind === 'refused') return chatCompletionFromSymbolic(request, prompt, outcome.answer);
+  if (outcome.kind === 'planned') return chatCompletionFromPlan(ctx, request, prompt, outcome.plan, responseTimestamp());
+  const symbolic = await solveWithMemory(ctx, prompt, history);
+  const reroute = await commandReroutePlan(ctx, request, symbolic);
+  if (reroute) return chatCompletionFromPlan(ctx, request, prompt, reroute, responseTimestamp());
   return chatCompletionFromSymbolic(request, prompt, symbolic);
 }
 

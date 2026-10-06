@@ -22,9 +22,15 @@
 // the crate `version`, `{prefix}_{16 hex}` stable ids, disk and memory byte
 // counts, and the parser's own wording after an error message's first colon.
 //
+// A request marked `agent_mode true` is sent to a second pair of servers
+// started with `--agent-mode` (R1015: the deterministic agentic planner, which
+// only answers tool-bearing requests in agent mode); that pair starts only
+// when such a request is selected.
+//
 // Usage:
 //   node scripts/check-server-parity.mjs [--rust-binary PATH] [--list]
 //          [--only id,id] [--write-ratchet] [--rust-url URL --js-url URL]
+//          [--rust-agent-url URL --js-agent-url URL]
 // The binary defaults to $FORMAL_AI_RUST_BINARY, then
 // rust/target/release/formal-ai, then target/release/formal-ai.
 
@@ -79,6 +85,7 @@ export function loadCorpus(text) {
       auth: childValue(node, 'auth') || 'bearer',
       headers: childrenNamed(node, 'header').map((header) => header.value),
       body: childrenNamed(node, 'body').length ? childValue(node, 'body') : null,
+      agentMode: childValue(node, 'agent_mode') === 'true',
     })),
   };
 }
@@ -402,7 +409,9 @@ function firstDifference(left, right, at = '$') {
 }
 
 function parseArgs(argv) {
-  const options = { list: false, write: false, only: null, rustBinary: null, rustUrl: null, jsUrl: null };
+  const options = {
+    list: false, write: false, only: null, rustBinary: null, rustUrl: null, jsUrl: null, rustAgentUrl: null, jsAgentUrl: null,
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === '--list') options.list = true;
@@ -411,6 +420,8 @@ function parseArgs(argv) {
     else if (arg === '--rust-binary') options.rustBinary = argv[++index];
     else if (arg === '--rust-url') options.rustUrl = argv[++index];
     else if (arg === '--js-url') options.jsUrl = argv[++index];
+    else if (arg === '--rust-agent-url') options.rustAgentUrl = argv[++index];
+    else if (arg === '--js-agent-url') options.jsAgentUrl = argv[++index];
     else throw new Error(`unknown argument ${arg}`);
   }
   return options;
@@ -442,23 +453,29 @@ async function main(argv) {
 
   const servers = [];
   try {
-    let rustBase = options.rustUrl;
-    let jsBase = options.jsUrl;
-    if (!rustBase) {
-      const binary = resolveBinary(options.rustBinary);
-      if (!binary) {
-        console.error('::error::no Rust server binary; build it or pass --rust-binary / FORMAL_AI_RUST_BINARY');
-        return 1;
+    const selected = corpus.requests.filter((request) => !options.only || options.only.has(request.id));
+    const pair = async (agentMode) => {
+      const suffix = agentMode ? '-agent' : '';
+      const extra = agentMode ? ['--agent-mode'] : [];
+      let rustBase = agentMode ? options.rustAgentUrl : options.rustUrl;
+      let jsBase = agentMode ? options.jsAgentUrl : options.jsUrl;
+      if (!rustBase) {
+        const binary = resolveBinary(options.rustBinary);
+        if (!binary) throw new Error('no Rust server binary; build it or pass --rust-binary / FORMAL_AI_RUST_BINARY');
+        const rust = await startServer(`rust${suffix}`, binary, ['serve', ...extra], corpus.token);
+        servers.push(rust);
+        rustBase = rust.base;
       }
-      const rust = await startServer('rust', binary, ['serve'], corpus.token);
-      servers.push(rust);
-      rustBase = rust.base;
-    }
-    if (!jsBase) {
-      const js = await startServer('js', process.execPath, ['js/server/main.mjs'], corpus.token);
-      servers.push(js);
-      jsBase = js.base;
-    }
+      if (!jsBase) {
+        const js = await startServer(`js${suffix}`, process.execPath, ['js/server/main.mjs', ...extra], corpus.token);
+        servers.push(js);
+        jsBase = js.base;
+      }
+      return { rustBase, jsBase };
+    };
+    const bases = {};
+    if (selected.some((request) => !request.agentMode)) bases.plain = await pair(false);
+    if (selected.some((request) => request.agentMode)) bases.agent = await pair(true);
 
     const protocol = [];
     const content = [];
@@ -466,6 +483,7 @@ async function main(argv) {
     for (const request of corpus.requests) {
       if (options.only && !options.only.has(request.id)) continue;
       const prepared = { ...request, authHeader: authHeader(request, corpus.token) };
+      const { rustBase, jsBase } = request.agentMode ? bases.agent : bases.plain;
       const rust = await send(rustBase, prepared);
       const js = await send(jsBase, prepared);
       const verdict = compareResponses(rust, js, request.method);

@@ -116,3 +116,89 @@ server_messages
     text "[dialog-log] appended exchange to {path}"
   message dialog_log_failed
     text "[dialog-log] failed to record exchange: {error}"
+  message memory_recall_none_en
+    text 'No mentions of "{term}" found in memory.'
+  message memory_recall_none_ru
+    text 'Упоминаний "{term}" в памяти не найдено.'
+  message memory_recall_none_zh
+    text '在记忆中没有找到 "{term}"。'
+  message memory_recall_none_hi
+    text 'स्मृति में "{term}" नहीं मिला.'
+  message memory_recall_found_en
+    text 'Found {count} mention(s) of "{term}" across {conversations} conversation(s) in memory.'
+  message memory_recall_found_ru
+    text 'Найдено упоминаний "{term}" в памяти: {count} (бесед: {conversations}).'
+  message memory_recall_found_zh
+    text '在记忆中找到 "{term}" 的记录: {count} (对话: {conversations})。'
+  message memory_recall_found_hi
+    text 'स्मृति में "{term}" के उल्लेख मिले: {count} (बातचीत: {conversations}).'
+  message memory_recall_conversation
+    text "- conversation {label}"
+  message memory_recall_link_line
+    text "link{stamp}: {from} -> {to}"
+  message standing_requirement_turn
+    text "Standing requirement ({topic}): {rule}"
+  message standing_requirement_line
+    text "Learned standing requirement ({topic}): {rule}"
+  message memory_request_history_title
+    text "Current request"
+  message execution_unsupported_start_isolation
+    text "unsupported start isolation"
+  message execution_runner_pair_required
+    text "start isolation and runner must be configured together"
+  message execution_start_runner_empty
+    text "the start runner is empty"
+  message execution_unknown_backend
+    text "unknown execution backend"
+  message execution_no_box_language_contract
+    text "no box-language contract for"
+  message execution_unsafe_image
+    text "container image is not a safe Docker reference"
+  message execution_missing_closing_quote
+    text "missing closing quote"
+  message execution_browser_runtime_unavailable
+    text "browser runtime is unavailable to the native executor"
+  message execution_command_not_found
+    text "command not found"
+  message execution_os_error
+    text "{description} (os error {code})"
+  message execution_os_error_ENOENT
+    text "No such file or directory"
+  message execution_os_error_EACCES
+    text "Permission denied"
+  message execution_os_error_EPIPE
+    text "Broken pipe"
+  message execution_os_error_ENOEXEC
+    text "Exec format error"
+  message execution_os_error_ENOTDIR
+    text "Not a directory"
+  message execution_os_error_EISDIR
+    text "Is a directory"
+  message execution_os_error_E2BIG
+    text "Argument list too long"
+  message learning_no_event
+    text "no {kind} event"
+  message learning_verification_failed
+    text "rule verification did not pass: {status}"
+  message learning_missing_field
+    text "missing `{name}` in candidate"
+  message learning_invalid_slug
+    text "invalid {name} `{value}`"
+  message learning_proposal_summary
+    text "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{suite}` is {status} ({passed}/{minimum})."
+  message dreaming_reason_deleted_conversation
+    text "event belongs to a conversation already marked deleted"
+  message dreaming_reason_duplicate
+    text "duplicate recomputable event; retained {id} with usage {usage}"
+  message dreaming_reason_covered_specific
+    text "specific task/test-run record reproducible from a retained meta-algorithm amendment"
+  message dreaming_reason_low_use
+    text "lowest-use recomputable event selected to satisfy the free-space target"
+  message dreaming_candidate_failure
+    text "Replay of {source} on topic {topic} diverged from the stored output; kept for refinement. Simulated: {simulated}"
+  message dreaming_trial
+    text "Trial synthesized from recurring structure {structure} on most-used topic {topic}"
+  message dreaming_pattern
+    text "Recurring structure {structure} observed {occurrences} time(s)"
+  message dreaming_replay_timeout
+    text "dreaming replay did not answer within {seconds} seconds"

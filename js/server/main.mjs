@@ -13,6 +13,7 @@ import { pathToFileURL } from 'node:url';
 import { createServer } from './http.mjs';
 import { createMemory, memoryPath } from './memory.mjs';
 import { serverMessage } from './messages.mjs';
+import { setLearnedImporter } from './meta-learned.mjs';
 import { WorkerHost } from './worker-host.mjs';
 
 const TOKEN_ENV = ['FORMAL_AI_API_BEARER_TOKEN', 'FORMAL_AI_HTTP_BEARER_TOKEN', 'FORMAL_AI_API_TOKEN'];
@@ -64,6 +65,7 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
     env,
   };
   await ctx.worker.boot();
+  setLearnedImporter((statements) => ctx.worker.run('metaImportLearned(__learned)', { __learned: statements }));
   const server = createServer(ctx);
   await new Promise((resolve, reject) => {
     server.once('error', reject);
