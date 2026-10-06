@@ -428,7 +428,7 @@ pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> 
     }
     let needs = core::mem::take(&mut context.needs);
     let catalog = catalog();
-    let mut evidence = vec![0.0; catalog.ops.len()];
+    let mut evidence: Vec<f64> = vec![0.0; catalog.ops.len()];
     for grounding in &groundings {
         for hypothesis in &grounding.hypotheses {
             if let Some(op) = catalog.op(&hypothesis.operation)

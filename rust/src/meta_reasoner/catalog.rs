@@ -273,7 +273,7 @@ impl Catalog {
                 }
                 if let Some(element) = name.strip_prefix("list_")
                     && let Some(mapped) = apply_type(&primitive.from, &primitive.to, element)
-                    && !is_list_type(mapped)
+                    && !is_list_type(&mapped)
                 {
                     pending.push(["list_", &mapped].concat());
                 }
@@ -412,7 +412,7 @@ impl Catalog {
             }
             if let Some(element) = element
                 && let Some(mapped) = apply_type(&primitive.from, &primitive.to, element)
-                && !is_list_type(mapped)
+                && !is_list_type(&mapped)
                 && let Some(to) = self.type_id(&["list_", &mapped].concat())
             {
                 out.push(Extension {
