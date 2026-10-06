@@ -20,7 +20,7 @@ test("production manifests and focused fallback limitations stay mapped", () => 
 
   assert.equal(desktopManifest.dependencies["command-stream"], "1.2.0");
   assert.equal(vscodeManifest.dependencies["command-stream"], undefined);
-  assert.match(cargoManifest, /^command-stream = "=0\.16\.0"$/m);
+  assert.match(cargoManifest, /^command-stream = "1\.1"$/m);
   // Issue #189 is that a CommonJS host could not reach this library at all.
   // The guard used to grep the CommonJS entry for its `terminal-capture.mjs`
   // re-export, but 0.19.0 turned that entry into a thin `require(esm)` wrapper
