@@ -13,7 +13,7 @@
 # last run happened to measure -- see the "Why the enforced floor is 80%" section
 # of docs/case-studies/issue-893/README.md.
 #
-# This lives outside release.yml because that file is at the 2000-line ceiling
+# This lives outside release.yml because that file was at the then 2000-line ceiling (now 1500)
 # `scripts/check-file-size.rs` enforces; the `paths` filters below replace what
 # its `detect-changes` job would have provided.
 name: Summarization Ratchet

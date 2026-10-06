@@ -38,7 +38,7 @@ run_step "seed inventory (src/seed/embedded_registry.rs, js/seed-files.js)" \
   rust-script scripts/generate-seed-registry.rs --write
 run_step "trusted-source recurrence cache (js/source-cache/wikifunctions-recurrences.lino)" \
   cargo run --manifest-path rust/Cargo.toml --quiet --example generate_recurrence_source_cache -- --write
-run_step "requirements document (REQUIREMENTS.md)" \
+run_step "requirements document (REQUIREMENTS.md, docs/requirements/assembled/)" \
   rust-script scripts/assemble-requirements.rs --write
 run_step "requirement status ledger (data/meta/requirement-status-ledger/)" \
   rust-script scripts/generate-requirement-status.rs --write

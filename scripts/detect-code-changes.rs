@@ -241,6 +241,11 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
     let js_tier_input = |file: &str| {
         file.starts_with("js/")
             || file.starts_with("data/seed/")
+            // The JavaScript server's route table, wording and parity corpus
+            // (R1013) are js-tier inputs read by every tier below it.
+            || file.starts_with("data/meta/server-")
+            || file.starts_with("rust/tests/fixtures/server-parity/")
+            || file == "scripts/check-server-parity.mjs"
             || file == LAYERED_WORKFLOW
             || file == LAYER_CLASSIFIER
     };
@@ -552,6 +557,18 @@ mod tests {
             !rust_only.js_changed && !rust_only.ts_changed,
             "a rust change lets the js and ts tiers carry their last green runs forward"
         );
+
+        for path in [
+            "data/meta/server-routes.lino",
+            "scripts/check-server-parity.mjs",
+            "rust/tests/fixtures/server-parity/requests.lino",
+        ] {
+            let flags = classify_changes(&[path.to_string()]);
+            assert!(
+                flags.js_changed && flags.ts_changed && flags.rust_changed,
+                "{path} is a server-parity input, so every tier re-runs"
+            );
+        }
 
         let js_only = classify_changes(&["js/app.js".to_string()]);
         assert!(

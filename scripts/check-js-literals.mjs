@@ -9,7 +9,9 @@
 // language can carry it; the code keeps only the reasoning. The totals are
 // held to the ceilings in data/meta/js-literal-ratchet.lino: above fails,
 // below fails too, naming the lower ceiling to commit, so the numbers only
-// fall. The meta reasoner's modules have their own, separate ceiling.
+// fall. The meta reasoner's modules have their own, separate ceiling, and
+// the JavaScript server (js/server/*.mjs, R1013) has a ceiling of zero: its
+// wording lives in data/meta/server-messages.lino.
 //
 // Usage: node scripts/check-js-literals.mjs [--list]
 
@@ -22,6 +24,7 @@ import { tokenize } from './translate-es.mjs';
 const WORKER_DIR = 'js/worker';
 const RATCHET_FILE = 'data/meta/js-literal-ratchet.lino';
 const META_MODULE = /^formal_ai_worker_meta_/;
+const SERVER_DIR = 'js/server';
 
 /**
  * Whether a literal's text reads as natural language: three or more words
@@ -76,15 +79,20 @@ export function ceilingFrom(lino, name) {
 function main(argv) {
   const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
   const lino = readFileSync(join(repo, RATCHET_FILE), 'utf8');
-  const totals = { worker: 0, meta: 0 };
+  const totals = { worker: 0, meta: 0, server: 0 };
   const perFile = [];
   for (const name of readdirSync(join(repo, WORKER_DIR)).filter((file) => file.endsWith('.js')).sort()) {
     const count = naturalLiterals(readFileSync(join(repo, WORKER_DIR, name), 'utf8')).length;
     totals[META_MODULE.test(name) ? 'meta' : 'worker'] += count;
     perFile.push([name, count]);
   }
+  for (const name of readdirSync(join(repo, SERVER_DIR)).filter((file) => file.endsWith('.mjs')).sort()) {
+    const count = naturalLiterals(readFileSync(join(repo, SERVER_DIR, name), 'utf8')).length;
+    totals.server += count;
+    perFile.push([`server/${name}`, count]);
+  }
   let status = 0;
-  for (const [key, name] of [['worker', 'worker_ceiling'], ['meta', 'meta_ceiling']]) {
+  for (const [key, name] of [['worker', 'worker_ceiling'], ['meta', 'meta_ceiling'], ['server', 'server_ceiling']]) {
     const ceiling = ceilingFrom(lino, name);
     console.log(`natural-language literals (${key}): ${totals[key]} (ceiling ${ceiling})`);
     if (totals[key] > ceiling) {

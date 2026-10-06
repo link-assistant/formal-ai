@@ -8,7 +8,7 @@ fn issue_468_agentic_coding_case_study_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R306-R319: the requirements rows cite the shipped src/agentic_coding/ loop.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,

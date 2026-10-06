@@ -9,7 +9,7 @@ fn issue_922_case_study_and_release_metadata_are_traceable() {
 
     assert_contains_all(
         "REQUIREMENTS.md",
-        &read(root.join("REQUIREMENTS.md")),
+        &crate::assembled_docs::requirements_at(&root),
         &[
             "Issue #922 Method Learning From Experience",
             "| R922-1 ",
@@ -125,7 +125,7 @@ fn issue_922_case_study_and_release_metadata_are_traceable() {
     let release_notes = if fragment.is_file() {
         read(fragment)
     } else {
-        read(root.join("CHANGELOG.md"))
+        crate::assembled_docs::changelog_at(&root)
     };
     assert_contains_all(
         "issue 922 release metadata",

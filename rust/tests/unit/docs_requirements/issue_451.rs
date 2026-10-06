@@ -31,7 +31,7 @@ fn issue_451_symbolic_ai_reference_documents_are_present_and_traceable() {
         ],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,
@@ -44,7 +44,7 @@ fn issue_451_symbolic_ai_reference_documents_are_present_and_traceable() {
     );
 
     // R302: every issue requirement is enumerated in the matrix.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,

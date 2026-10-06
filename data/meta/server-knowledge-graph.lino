@@ -1,0 +1,143 @@
+# The links-network projection the server answers GET /v1/network, /v1/graph,
+# /v1/links and POST /v1/links/query with (rust/src/engine.rs knowledge_graph
+# and rust/src/associative_package.rs default_associative_packages).
+#
+# The JavaScript server (js/server/network-graph.mjs) reads this file in order
+# and holds no wording of its own. Each rule node renders as `<id> answer=<text>`
+# where the text is the English seed response for its `answer` intent, read from
+# data/seed/multilingual-responses*.lino. A rule with a `response_link` also gets
+# a response_link edge. The write_program rule lists the program languages and
+# tasks the coding meanings in data/seed/meanings-coding-catalog.lino declare.
+# Package node labels are the `*_label` templates with `{capability}` or
+# `{kind}` filled in. The order of every list is the order Rust emits.
+server_knowledge_graph
+  root formal_ai_knowledge
+    label "formal-ai knowledge root"
+  rule rule_greeting
+    label "Greeting rule"
+    answer greeting
+    response_link "response:greeting"
+  rule rule_identity
+    label "Identity rule"
+    answer identity
+    response_link "response:identity"
+  rule rule_assistant_name
+    label "Assistant name rule"
+    answer assistant_name
+    response_link "response:assistant_name"
+  rule rule_courtesy_response
+    label "Courtesy response rule"
+    answer courtesy_response
+    response_link "response:courtesy_response"
+  rule rule_assistant_free_time
+    label "Assistant free-time rule"
+    answer assistant_free_time
+    response_link "response:assistant_free_time"
+  rule rule_test_status
+    label "Test status rule"
+    answer test_status
+    response_link "response:test_status"
+  rule rule_unknown
+    label "Unknown fallback rule"
+    answer unknown
+  write_program rule_write_program
+    label "Write-program rule"
+    response_link "response:write_program"
+  knowledge_schema_version "0.2.0"
+  package_source "R65 Deep.Foundation-inspired local package model"
+  handler_label "Package handler: {capability}"
+  trigger_label "Package trigger: {kind}"
+  permission_label "Package permission: {capability}"
+  package pkg_formal_ai_core
+    name "formal-ai core package"
+    handler handler_calculator
+      kind rust_handler
+      capability "tool:calculator"
+    handler handler_web_search
+      kind rust_handler
+      capability "tool:web_search"
+    handler handler_javascript_execution
+      kind rust_handler
+      capability "tool:javascript_execution"
+    trigger trigger_calculator_tool_call
+      kind tool_invocation
+      match_prompt calculator
+      handler handler_calculator
+    trigger trigger_web_search_tool_call
+      kind tool_invocation
+      match_prompt web_search
+      handler handler_web_search
+    trigger trigger_javascript_execution_tool_call
+      kind tool_invocation
+      match_prompt javascript_execution
+      handler handler_javascript_execution
+    permission "tool:calculator"
+      description "local deterministic calculator tool"
+    permission "tool:web_search"
+      description "browser-backed web search API"
+    permission "tool:javascript_execution"
+      description "bounded deterministic JavaScript expression execution"
+    permission "tool:concept_lookup"
+      description "seed-backed concept lookup"
+    permission "tool:write_program"
+      description "seed-backed program template renderer"
+  package pkg_agentic_coding
+    name "agentic-coding capability package"
+    permission "tool:web_fetch"
+      description "agentic-coding HTTP source fetch (client-executed)"
+    permission "tool:write_file"
+      description "agentic-coding workspace file write (client-executed)"
+    permission "tool:run_command"
+      description "agentic-coding sandboxed command runner (client-executed)"
+    permission "tool:capability:search"
+      description "agentic-coding web search (any CLI naming, client-executed)"
+    permission "tool:capability:fetch"
+      description "agentic-coding source fetch (any CLI naming, client-executed)"
+    permission "tool:capability:read"
+      description "agentic-coding file read (any CLI naming, client-executed)"
+    permission "tool:capability:write"
+      description "agentic-coding file write (any CLI naming, client-executed)"
+    permission "tool:capability:edit"
+      description "agentic-coding file edit (any CLI naming, client-executed)"
+    permission "tool:capability:run"
+      description "agentic-coding command runner (any CLI naming, client-executed)"
+    permission "tool:capability:grep"
+      description "agentic-coding code search (any CLI naming, client-executed)"
+    permission "tool:capability:glob"
+      description "agentic-coding file glob (any CLI naming, client-executed)"
+    permission "tool:capability:list_dir"
+      description "agentic-coding directory listing (any CLI naming, client-executed)"
+    permission "tool:capability:todo"
+      description "agentic-coding planning scratchpad (any CLI naming, client-executed)"
+    permission "tool:capability:subagent"
+      description "agentic-coding delegation (any CLI naming, client-executed)"
+    permission "tool:capability:read_many"
+      description "agentic-coding multi-file read (any CLI naming, client-executed)"
+    permission "tool:capability:multi_edit"
+      description "agentic-coding multi-file edit (any CLI naming, client-executed)"
+    permission "tool:capability:ask_user"
+      description "agentic-coding structured user confirmation (any CLI naming)"
+    permission "tool:computer:fs.read"
+      description "permissioned isolated workspace file read"
+    permission "tool:computer:fs.write"
+      description "permissioned isolated workspace file write"
+    permission "tool:computer:fs.list"
+      description "permissioned isolated workspace directory list"
+    permission "tool:computer:fs.move"
+      description "permissioned isolated workspace path move"
+    permission "tool:computer:shell.run"
+      description "permissioned allowlisted isolated operation"
+    permission "tool:computer:http.fetch"
+      description "permissioned structured HTTP GET with provenance"
+    permission "tool:computer:http.post"
+      description "permissioned structured HTTP POST with provenance"
+    permission "tool:computer:dom.query"
+      description "permissioned non-visual structured HTML query"
+    permission "tool:computer:dom.extract"
+      description "permissioned non-visual structured JSON extraction"
+    permission "tool:computer:archive.pack"
+      description "permissioned deterministic workspace archive pack"
+    permission "tool:computer:archive.unpack"
+      description "permissioned deterministic workspace archive unpack"
+    permission "tool:computer:process.status"
+      description "permissioned isolated process status"

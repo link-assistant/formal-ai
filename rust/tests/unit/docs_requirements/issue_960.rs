@@ -12,7 +12,7 @@ fn issue_960_conventions_are_documented_and_enforced() {
 
     assert_contains_all(
         "REQUIREMENTS.md",
-        &read(root.join("REQUIREMENTS.md")),
+        &crate::assembled_docs::requirements_at(&root),
         &[
             "Issue #960 Enforcing Recorded-But-Unenforced Conventions",
             "| R960-1 ",

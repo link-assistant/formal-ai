@@ -19,7 +19,7 @@ pub use crate::ci_gates::{ci_surface, release_workflow};
 /// Issue #895: the two coverage denominators live in their own workflow. They
 /// are a leaf of the release graph -- nothing `needs:` them -- so moving them
 /// out of `release.yml` changed no ordering, and it keeps that file under the
-/// 2000-line ceiling `scripts/check-file-size.rs` enforces.
+/// 1500-line ceiling `scripts/check-file-size.rs` enforces.
 pub fn coverage_workflow() -> String {
     fs::read_to_string(format!(
         "{}/../.github/workflows/coverage.yml",

@@ -695,7 +695,7 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
             "missing R848-{index}"
         );
     }
-    let global = read("REQUIREMENTS.md");
+    let global = crate::assembled_docs::requirements();
     assert!(global.contains("## Issue #848"));
     assert!(global.contains("R848-10"));
 
@@ -709,7 +709,7 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
         assert!(fragment.contains("#848"));
     } else {
         assert!(
-            read("CHANGELOG.md").contains("issue #848's 130-task coding ladder"),
+            crate::assembled_docs::changelog().contains("issue #848's 130-task coding ladder"),
             "issue #848 must have either its unreleased minor-bump fragment or its released CHANGELOG entry"
         );
         assert!(

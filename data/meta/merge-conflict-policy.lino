@@ -173,6 +173,7 @@ merge_conflict_policy
     cause append_only_document
     merge union
     path "REQUIREMENTS.md"
+    path "docs/requirements/assembled/*.md"
     shard_directory "docs/requirements"
     regenerate "rust-script scripts/assemble-requirements.rs --write"
     verify "rust-script scripts/assemble-requirements.rs"

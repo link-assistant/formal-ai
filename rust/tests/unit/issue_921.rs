@@ -13,7 +13,7 @@ fn issue_921_both_directions_are_committed_and_traceable() {
         .expect("the repository root sits one level above the crate");
     assert_contains_all(
         "issue 921 requirements",
-        &read(root.join("REQUIREMENTS.md")),
+        &crate::assembled_docs::requirements_at(&root),
         &[
             "Issue #921 Hive-Mind Full-Circle Integration Gate",
             "| R921-1 ",
@@ -71,7 +71,7 @@ fn issue_921_both_directions_are_committed_and_traceable() {
     let release_notes = if fragment.is_file() {
         read(fragment)
     } else {
-        read(root.join("CHANGELOG.md"))
+        crate::assembled_docs::changelog_at(&root)
     };
     assert_contains_all(
         "issue 921 release metadata",

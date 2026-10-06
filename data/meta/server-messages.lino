@@ -1,0 +1,118 @@
+# The wording the JavaScript server answers with, keyed by language-neutral id.
+#
+# Each `text` is the exact string the Rust server writes for the same case
+# (the literals in rust/src/server.rs and the modules it calls), so a client
+# sees one message whichever server it reaches. The JavaScript server
+# (js/server/messages.mjs) holds no prose of its own - scripts/check-js-literals.mjs
+# keeps its natural-language literal count at zero - and the parity runner
+# (scripts/check-server-parity.mjs) compares both servers' bodies, so a Rust
+# literal that changes without this file fails CI. `{name}` is a placeholder.
+server_messages
+  message route_not_found
+    text "route not found"
+  message bearer_token_invalid
+    text "missing or invalid bearer token"
+  message mcp_origin_not_allowed
+    text "MCP origin is not allowed"
+  message mcp_sse_unsupported
+    text "MCP SSE streams are not supported"
+  message hello
+    text "hello"
+  message invalid_chat_request
+    text "invalid chat request: {error}"
+  message invalid_responses_request
+    text "invalid responses request: {error}"
+  message invalid_messages_request
+    text "invalid messages request: {error}"
+  message invalid_generate_content_request
+    text "invalid generateContent request: {error}"
+  message unsupported_model
+    text "unsupported model `{model}`; use `{canonical}` or a configured alias"
+  message memory_persist_failed
+    text "failed to persist memory: {error}"
+  message tool_call_refused
+    text "Tool calls and function execution are not allowed without explicit agent mode. Enable agent mode only for an isolated execution environment."
+  message serde_untagged_message_content
+    text "{field}: data did not match any variant of untagged enum MessageContent"
+  message serde_missing_field
+    text "missing field `{field}`"
+  message status_text_405
+    text "Method Not Allowed"
+  message status_text_500
+    text "Internal Server Error"
+  message server_shared_memory
+    text "formal-ai shared memory: {path}"
+  message server_listening
+    text "formal-ai server listening on {url}"
+  message worker_network_disabled
+    text "network disabled in unit tests"
+  message gemini_model_description
+    text "Formal AI symbolic solver exposed through the Gemini generateContent envelope."
+  message gemini_vertex_model_description
+    text "Formal AI symbolic solver exposed through the Vertex AI generateContent envelope."
+  message mcp_method_not_found
+    text "Method not found"
+  message mcp_tool_name_not_string
+    text "tool name must be a string"
+  message mcp_tool_not_found
+    text "Tool not found"
+  message mcp_prompt_not_string
+    text "prompt must be a string"
+  message mcp_workspace_creation_failed
+    text "computer-use workspace creation failed"
+  message mcp_invalid_utf8
+    text "stream did not contain valid UTF-8"
+  message telegram_invalid_update
+    text "invalid Telegram update JSON: {message}"
+  message telegram_text_only
+    text "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption."
+  message telegram_attached_files
+    text "Attached files:"
+  message network_unknown_trace
+    text "unknown trace id"
+  message links_query_missing
+    text "request must provide a `query` string"
+  message links_query_invalid
+    text "invalid LinksQL query: {error}"
+  message links_query_match_missing
+    text "query must contain a MATCH clause"
+  message links_query_return_missing
+    text "query must contain a RETURN clause"
+  message links_query_return_order
+    text "RETURN must follow MATCH"
+  message links_query_return_empty
+    text "RETURN must name at least one variable"
+  message links_query_pattern_open
+    text "pattern must open with a node like (a)"
+  message links_query_edge_arrow
+    text "edge pattern must end with ->"
+  message links_query_node_invalid
+    text "invalid node pattern: {text}"
+  message links_query_node_variable
+    text "node pattern needs a variable name"
+  message links_query_edge_invalid
+    text "invalid edge pattern: {text}"
+  message links_query_filter_operator
+    text "filter needs `=` or CONTAINS: {clause}"
+  message links_query_filter_target
+    text "filter target must be `var.field`: {clause}"
+  message links_query_field_unknown
+    text "unknown field `{field}`"
+  message memory_schema_write_refused
+    text "refusing to write an incompatible persisted-memory schema"
+  message memory_record_failed
+    text "[memory] failed to record live chat exchange: {error}"
+  message memory_debug_init_failed
+    text "[memory] could not initialize {path}: {error}"
+  message memory_debug_read_failed
+    text "[memory] could not read {path}: {error}"
+  message conversation_unsafe_id
+    text "dialog id contains unsafe path characters"
+  message conversation_no_exchanges
+    text "dialog log contains no exchanges"
+  message conversation_include_invalid
+    text "include must be harness, server, or both"
+  message dialog_log_appended
+    text "[dialog-log] appended exchange to {path}"
+  message dialog_log_failed
+    text "[dialog-log] failed to record exchange: {error}"

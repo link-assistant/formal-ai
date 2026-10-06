@@ -9,7 +9,7 @@ fn issue_649_world_model_case_study_documents_are_present_and_traceable() {
     let rml_url = "https://github.com/link-foundation/relative-meta-logic";
 
     // R428–R434: every issue requirement is enumerated in the global matrix.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -37,7 +37,7 @@ fn issue_649_world_model_case_study_documents_are_present_and_traceable() {
         &["docs/case-studies/issue-649", "world models"],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,

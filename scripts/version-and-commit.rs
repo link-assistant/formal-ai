@@ -51,6 +51,9 @@ use prepared_release::PreparedRelease;
 
 const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
 const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release-map.tsv";
+/// Where the rebuild script rolls the releases CHANGELOG.md no longer keeps,
+/// so that no changelog file exceeds the 1500-line cap.
+const CHANGELOG_ARCHIVE_DIR: &str = "docs/changelog";
 const STATUS_RENDER_SCRIPT: &str = "scripts/render-status.rs";
 const STATUS_SURFACES: &[&str] = &["docs/status.md", "docs/benchmarks.md", "README.md"];
 
@@ -812,9 +815,9 @@ fn main() {
         exit(1);
     }
 
-    // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md, the release
-    // metric ledger, the status surfaces projected from it, and consumed
-    // fragments.
+    // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md and its
+    // archive, the release metric ledger, the status surfaces projected from
+    // it, and consumed fragments.
     let package_manifest_str = package_manifest.to_string_lossy().to_string();
     let cargo_lock_str = cargo_lock_path.to_string_lossy().to_string();
     let self_hosting_ledger_str = self_hosting_ledger.to_string_lossy().to_string();
@@ -842,6 +845,14 @@ fn main() {
         if let Err(e) = exec("git", &["add", FRAGMENT_RELEASE_MAP]) {
             eprintln!("Error staging fragment release map: {}", e);
             exit(1);
+        }
+        // The rebuild rolls older releases out of CHANGELOG.md into the
+        // archive; `-A` also stages an archive file it removed or renumbered.
+        if Path::new(CHANGELOG_ARCHIVE_DIR).exists() {
+            if let Err(e) = exec("git", &["add", "-A", CHANGELOG_ARCHIVE_DIR]) {
+                eprintln!("Error staging the changelog archive: {}", e);
+                exit(1);
+            }
         }
     }
 

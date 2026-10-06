@@ -43,6 +43,22 @@ function readRepoFile(relativePath) {
   return sources.join('\n');
 }
 
+// The browser multilingual suite is split across `multilingual-*.spec.js`
+// (plus their shared `support/multilingual.js`) to satisfy the repository line
+// budget. Coverage belongs to the suite, not to one physical file.
+const browserMultilingualSpecGlob = 'rust/tests/e2e/tests/multilingual-*.spec.js';
+function readBrowserMultilingualTests() {
+  const testsDirectory = path.join(repoRoot, 'rust/tests/e2e/tests');
+  const files = fs
+    .readdirSync(testsDirectory)
+    .filter((name) => /^multilingual-.*\.spec\.js$/u.test(name))
+    .sort()
+    .map((name) => path.join(testsDirectory, name));
+  assert(files.length > 0, `no browser multilingual specs match ${browserMultilingualSpecGlob}`);
+  files.push(path.join(testsDirectory, 'support/multilingual.js'));
+  return files.map((file) => fs.readFileSync(file, 'utf8')).join('\n');
+}
+
 function readWorkerSource() {
   const wrapperPath = path.join(repoRoot, 'js/worker/formal_ai_worker.js');
   const workerDir = path.join(repoRoot, 'js/worker');
@@ -641,7 +657,7 @@ assertBalancedLanguageCaseCounts(
 assertPromptPatternCoverageGroups('wikipedia_article_question');
 
 {
-  const browserMultilingualTests = readRepoFile('rust/tests/e2e/tests/multilingual.spec.js');
+  const browserMultilingualTests = readBrowserMultilingualTests();
   for (const [language, entries] of Object.entries(wikipediaArticleQuestionCases)) {
     for (const entry of entries) {
       assert(
@@ -658,7 +674,7 @@ assertPromptPatternCoverageGroups('wikipedia_article_question');
       assert(
         browserMultilingualTests.includes(entry.prompt) &&
           browserMultilingualTests.includes(entry.expectedTitle),
-        `tests/e2e/tests/multilingual.spec.js must cover ${language} wikipedia_article_question prompt ${JSON.stringify(entry.prompt)} and expected title ${JSON.stringify(entry.expectedTitle)}`,
+        `${browserMultilingualSpecGlob} must cover ${language} wikipedia_article_question prompt ${JSON.stringify(entry.prompt)} and expected title ${JSON.stringify(entry.expectedTitle)}`,
       );
     }
   }
@@ -713,7 +729,7 @@ assertBalancedLanguageCaseCounts(
 );
 
 {
-  const browserMultilingualTests = readRepoFile('rust/tests/e2e/tests/multilingual.spec.js');
+  const browserMultilingualTests = readBrowserMultilingualTests();
   for (const [language, entries] of Object.entries(definitionStyleDisambiguationCases)) {
     for (const entry of entries) {
       assert(
@@ -722,7 +738,7 @@ assertBalancedLanguageCaseCounts(
           browserMultilingualTests.includes(entry.expectedText) &&
           browserMultilingualTests.includes(entry.expectedHost) &&
           browserMultilingualTests.includes(entry.rejectedText),
-        `tests/e2e/tests/multilingual.spec.js must cover ${language} definition-style disambiguation prompt ${JSON.stringify(entry.prompt)} with expected Wikipedia title ${JSON.stringify(entry.expectedTitle)} before Wikidata fallback`,
+        `${browserMultilingualSpecGlob} must cover ${language} definition-style disambiguation prompt ${JSON.stringify(entry.prompt)} with expected Wikipedia title ${JSON.stringify(entry.expectedTitle)} before Wikidata fallback`,
       );
     }
   }
@@ -877,7 +893,7 @@ assertBalancedLanguageCaseCounts(
 
 {
   const rustReasoningTests = readRepoFile('rust/tests/unit/specification/reasoning_paths.rs');
-  const browserMultilingualTests = readRepoFile('rust/tests/e2e/tests/multilingual.spec.js');
+  const browserMultilingualTests = readBrowserMultilingualTests();
   for (const [language, prompts] of Object.entries(currentDayCalendarCases)) {
     for (const prompt of prompts) {
       assert(
@@ -886,7 +902,7 @@ assertBalancedLanguageCaseCounts(
       );
       assert(
         browserMultilingualTests.includes(prompt),
-        `tests/e2e/tests/multilingual.spec.js must cover ${language} current-day calendar prompt ${JSON.stringify(prompt)}`,
+        `${browserMultilingualSpecGlob} must cover ${language} current-day calendar prompt ${JSON.stringify(prompt)}`,
       );
     }
   }
@@ -911,7 +927,7 @@ assertBalancedLanguageCaseCounts(
 
 {
   const rustReasoningTests = readRepoFile('rust/tests/unit/specification/reasoning_paths.rs');
-  const browserMultilingualTests = readRepoFile('rust/tests/e2e/tests/multilingual.spec.js');
+  const browserMultilingualTests = readBrowserMultilingualTests();
   for (const [language, prompts] of Object.entries(calendarCreateEventCases)) {
     for (const prompt of prompts) {
       assert(
@@ -920,7 +936,7 @@ assertBalancedLanguageCaseCounts(
       );
       assert(
         browserMultilingualTests.includes(prompt),
-        `tests/e2e/tests/multilingual.spec.js must cover ${language} calendar create event prompt ${JSON.stringify(prompt)}`,
+        `${browserMultilingualSpecGlob} must cover ${language} calendar create event prompt ${JSON.stringify(prompt)}`,
       );
     }
   }

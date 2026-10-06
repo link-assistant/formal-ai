@@ -20,7 +20,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const REQUIREMENTS: &str = "REQUIREMENTS.md";
+/// The assembled register, split into parts under the 1500-line cap.
+const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
 const REQUIREMENT_SHARDS: &str = "docs/requirements";
 const TRACEABILITY: &str = "docs/requirements-traceability.md";
 const MANIFEST: &str = "data/meta/requirement-status-ledger.lino";
@@ -158,9 +159,38 @@ fn verdict(line: &str, automated_test: &str) -> String {
     "partial".to_owned()
 }
 
+/// The assembled requirement register: `REQUIREMENTS.md` is an index, and the
+/// register itself is `docs/requirements/assembled/part-NN.md`, read in name
+/// order (`scripts/assemble-requirements.rs` writes both).
+fn read_register(root: &Path) -> Result<String, String> {
+    let directory = root.join(REQUIREMENT_PARTS);
+    let mut parts: Vec<PathBuf> = fs::read_dir(&directory)
+        .map_err(|error| format!("cannot read {REQUIREMENT_PARTS}: {error}"))?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| {
+            path.file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name.starts_with("part-") && name.ends_with(".md"))
+        })
+        .collect();
+    parts.sort();
+    if parts.is_empty() {
+        return Err(format!("{REQUIREMENT_PARTS} holds no part-NN.md files"));
+    }
+    let mut register = String::new();
+    for part in parts {
+        register.push_str(
+            &fs::read_to_string(&part)
+                .map_err(|error| format!("cannot read {}: {error}", part.display()))?,
+        );
+        register.push('\n');
+    }
+    Ok(register)
+}
+
 fn requirement_rows(root: &Path) -> Result<Vec<Requirement>, String> {
-    let assembled = fs::read_to_string(root.join(REQUIREMENTS))
-        .map_err(|error| format!("cannot read {REQUIREMENTS}: {error}"))?;
+    let assembled = read_register(root)?;
     let expected: BTreeSet<String> = requirement_ids(&assembled).into_iter().collect();
     let trace = trace_rows(
         &fs::read_to_string(root.join(TRACEABILITY)).unwrap_or_default(),

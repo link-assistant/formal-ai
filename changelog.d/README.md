@@ -116,7 +116,8 @@ Using changelog fragments (similar to [Changesets](https://github.com/changesets
 2. **On merge to main**: The release workflow automatically:
    - Reads all fragment files and determines the highest bump type
    - Bumps the version in `Cargo.toml` accordingly
-   - Collects fragments into `CHANGELOG.md`
+   - Collects fragments into `CHANGELOG.md`, rolling the oldest releases it no
+     longer keeps into `docs/changelog/archive-NN.md` (1500-line cap)
    - Creates a git tag and GitHub release
    - Removes processed fragment files
 

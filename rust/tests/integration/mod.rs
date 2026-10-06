@@ -86,3 +86,7 @@ mod with_formal_ai_argv;
 mod with_formal_ai_global;
 mod with_formal_ai_grok;
 mod with_formal_ai_headless_global;
+
+// Readers for the split REQUIREMENTS.md register and the archived CHANGELOG.md.
+#[path = "../support/assembled_docs.rs"]
+mod assembled_docs;

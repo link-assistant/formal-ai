@@ -209,7 +209,7 @@ fn issue_894_revalidation_evidence_is_preserved() {
 fn issue_894_requirements_are_traceable() {
     let root = repository_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,

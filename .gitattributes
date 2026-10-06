@@ -41,6 +41,7 @@ rust/tests/unit/specification/mod.rs merge=union
 # Derived artifacts — `bash scripts/regenerate-derived-artifacts.sh` rebuilds them
 # from the merged sources, and each one's own verifier fails until it is rerun.
 REQUIREMENTS.md merge=union
+docs/requirements/assembled/*.md merge=union
 data/meta/requirement-status-ledger.lino merge=union
 data/meta/requirement-status-ledger/*.lino merge=union
 data/meta/seed-metadata-gaps-*.lino merge=union

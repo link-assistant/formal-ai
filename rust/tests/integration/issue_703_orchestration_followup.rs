@@ -35,7 +35,7 @@ fn formal_ai_authored_invariant_is_byte_pinned_to_its_session_evidence() {
 
 #[test]
 fn documentation_traces_the_maintainer_followup_without_overclaiming_fact_or_learning_gates() {
-    let requirements = include_str!("../../../REQUIREMENTS.md");
+    let requirements = crate::assembled_docs::requirements();
     let guide = include_str!("../../../docs/configuration/orchestration.md");
     let case_study = include_str!("../../../docs/case-studies/issue-703/README.md");
     let evidence =

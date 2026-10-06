@@ -117,7 +117,7 @@ fn changelog_bytes_match_the_agent_cli_write_call() {
         .expect("Agent write call for the changelog");
 
     assert!(
-        include_str!("../../../CHANGELOG.md").contains(authored),
+        crate::assembled_docs::changelog().contains(authored),
         "the released changelog must preserve the exact Agent-authored entry"
     );
 }

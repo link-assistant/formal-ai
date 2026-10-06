@@ -1,7 +1,6 @@
 //! Documentation contracts for the issue #710 closure audit.
 
 const CASE_STUDY: &str = include_str!("../../../../docs/case-studies/issue-710/README.md");
-const REQUIREMENTS: &str = include_str!("../../../../REQUIREMENTS.md");
 const ROADMAP: &str = include_str!("../../../../ROADMAP.md");
 const AGENT_AUTHORED_VERDICT: &str = include_str!(
     "../../../../docs/case-studies/issue-710/agent-cli-evidence/verdict-contract/agent-authored-verdict-definition.md"
@@ -88,7 +87,8 @@ fn no_conversational_gap_is_left_without_a_green_specification() {
 
 #[test]
 fn requirements_and_roadmap_report_the_same_current_reality() {
-    let rows = REQUIREMENTS
+    let requirements = crate::assembled_docs::requirements();
+    let rows = requirements
         .lines()
         .filter(|line| {
             line.split('|')
@@ -129,11 +129,12 @@ fn requirements_and_roadmap_report_the_same_current_reality() {
 fn formerly_open_gaps_have_current_production_evidence() {
     assert!(CASE_STUDY.contains("[#990](https://github.com/link-assistant/formal-ai/issues/990)"));
     assert!(CASE_STUDY.contains("[#991](https://github.com/link-assistant/formal-ai/issues/991)"));
-    assert!(REQUIREMENTS.contains(
+    let requirements = crate::assembled_docs::requirements();
+    assert!(requirements.contains(
         "R710-20 | How-to multi-source synthesis and seven-day availability cache. | `works-now`"
     ));
     assert!(
-        REQUIREMENTS
+        requirements
             .contains("R710-30 | link-foundation/start and command-stream adoption. | `works-now`")
     );
     assert!(CASE_STUDY.contains("issue_991_how_to_http.rs"));

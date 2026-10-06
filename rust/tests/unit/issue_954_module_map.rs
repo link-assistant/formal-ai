@@ -1,4 +1,5 @@
-//! Issue #954 (E102): ARCHITECTURE.md carries a generated "Module map"
+//! Issue #954 (E102): the architecture docs carry a generated "Module map"
+//! (`docs/architecture/module-map.md`, §18 of the ARCHITECTURE.md contents)
 //! covering every `pub mod` in `rust/src/lib.rs`, pinned so drift fails CI
 //! — a new module fails until documented, a removed one leaves a stale row
 //! behind that this test also catches. The companion generator is
@@ -21,6 +22,8 @@ fn read(path: &str) -> String {
     fs::read_to_string(&full).unwrap_or_else(|error| panic!("{} should be readable: {error}", path))
 }
 
+/// The architecture topic file that owns §18 (ARCHITECTURE.md links to it).
+const MODULE_MAP: &str = "docs/architecture/module-map.md";
 const BEGIN: &str = "<!-- module-map:begin";
 const END: &str = "<!-- module-map:end -->";
 
@@ -38,13 +41,13 @@ fn declared_modules() -> Vec<String> {
 /// The map's first column: every table row whose first cell is a bare
 /// `` `name` `` between the generated markers.
 fn mapped_modules() -> Vec<String> {
-    let architecture = read("ARCHITECTURE.md");
+    let architecture = read(MODULE_MAP);
     let begin = architecture
         .find(BEGIN)
-        .expect("ARCHITECTURE.md carries the module-map begin marker");
+        .expect("the module map carries the module-map begin marker");
     let end = architecture
         .find(END)
-        .expect("ARCHITECTURE.md carries the module-map end marker");
+        .expect("the module map carries the module-map end marker");
     architecture[begin..end]
         .lines()
         .filter_map(|line| {
@@ -82,13 +85,13 @@ fn the_module_map_equals_the_librs_mod_list() {
         .collect();
     assert!(
         missing.is_empty() && stale.is_empty(),
-        "ARCHITECTURE.md §18 is out of sync with rust/src/lib.rs -- missing {missing:?}, stale {stale:?}; run `rust-script scripts/generate-module-map.rs --write`"
+        "{MODULE_MAP} (ARCHITECTURE.md §18) is out of sync with rust/src/lib.rs -- missing {missing:?}, stale {stale:?}; run `rust-script scripts/generate-module-map.rs --write`"
     );
 }
 
 #[test]
 fn every_row_carries_a_responsibility_and_an_owning_section() {
-    let architecture = read("ARCHITECTURE.md");
+    let architecture = read(MODULE_MAP);
     let begin = architecture.find(BEGIN).expect("begin marker");
     let end = architecture.find(END).expect("end marker");
     let mut rows = 0usize;

@@ -12,7 +12,7 @@ const ARTIFACT_SHA256: &str = "a7d58aa0003dd965f4fc53d3e02f5fbeb93fece526c3803e0
 #[test]
 fn issue_705_requirements_and_grounded_recipe_are_traceable() {
     let root = root();
-    let requirements = read(root, "REQUIREMENTS.md");
+    let requirements = crate::assembled_docs::requirements_at(root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -48,7 +48,7 @@ fn issue_705_requirements_and_grounded_recipe_are_traceable() {
         ],
     );
 
-    let architecture = read(root, "ARCHITECTURE.md");
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,

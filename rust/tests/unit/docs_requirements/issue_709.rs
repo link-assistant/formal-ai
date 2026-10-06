@@ -110,7 +110,7 @@ fn case_study_release_and_agent_authorship_evidence_are_committed() {
         fs::read_to_string(entry.path())
             .is_ok_and(|body| body.contains("#709") && body.contains("bump: minor"))
     });
-    assert!(unreleased || read("CHANGELOG.md").contains("#709"));
+    assert!(unreleased || crate::assembled_docs::changelog().contains("#709"));
     let decomposition =
         read("docs/case-studies/issue-709/self-hosting-authorship/decomposition.lino");
     assert!(decomposition.contains("reviewed_smallest_leaves 13"));

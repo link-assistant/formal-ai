@@ -15,7 +15,7 @@ fn issue_559_problem_frame_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R330: the requirements section and row exist and cite the shipped frame.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -65,7 +65,7 @@ fn issue_559_recursive_work_units_are_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R332: the requirements row exists and cites the shipped recursive core.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -114,7 +114,7 @@ fn issue_559_need_ledger_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R333: the requirements row exists and cites the shipped ledger.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -156,7 +156,7 @@ fn issue_559_method_registry_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R331: the requirements row exists and cites the shipped registry.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -222,7 +222,7 @@ fn issue_559_recursive_core_recipe_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R335: the requirements row exists and cites the shipped self-description.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -254,7 +254,7 @@ fn issue_559_solution_evidence_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R334: the requirements row exists and cites the shipped evidence pipeline.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -297,7 +297,7 @@ fn issue_559_route_method_alias_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R336: the requirements row exists and cites the shipped alias bridge.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -359,7 +359,7 @@ fn issue_559_work_unit_reasoning_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R337: the requirements row exists and cites the shipped white-box reasoning.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -402,7 +402,7 @@ fn issue_559_upward_construction_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R338: the requirements row exists and cites the upward construction pass.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -461,7 +461,7 @@ fn issue_559_selection_trace_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R339: the requirements row exists and cites the registry selection trace.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -530,7 +530,7 @@ fn issue_559_meta_self_improvement_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R340: the requirements row exists and cites the self-improvement loop.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -589,7 +589,7 @@ fn issue_559_cue_lexicon_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R341: the requirements row exists and cites the shipped cue lexicon.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -669,7 +669,7 @@ fn issue_559_skill_ledger_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R342: the requirements row exists and cites the shipped skill ledger.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -733,7 +733,7 @@ fn issue_559_recipe_interpreter_is_traceable() {
         .expect("the repository root sits one level above the crate");
 
     // R343: the requirements row exists and cites the shipped recipe interpreter.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -792,7 +792,7 @@ fn issue_559_legacy_dispatch_authority_is_fully_retired() {
     // parity certificate proved the registry was a behavior-preserving replacement,
     // so the legacy route mapper and its audit scaffolding were removed outright and
     // the data-driven registry is now the sole dispatch authority.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,

@@ -11,7 +11,7 @@ fn issue_917_case_study_and_release_metadata_are_traceable() {
 
     assert_contains_all(
         "REQUIREMENTS.md",
-        &read(root.join("REQUIREMENTS.md")),
+        &crate::assembled_docs::requirements_at(&root),
         &[
             "Issue #917 General Natural-Formal Translation",
             "| R917-1 ",
@@ -28,7 +28,7 @@ fn issue_917_case_study_and_release_metadata_are_traceable() {
     );
     assert_contains_all(
         "ARCHITECTURE.md",
-        &read(root.join("ARCHITECTURE.md")),
+        &crate::architecture_docs::read_all(),
         &[
             "Issue #917 makes formal languages first-class projections",
             "src/translation/formal_statement.rs",
@@ -113,7 +113,7 @@ fn issue_917_case_study_and_release_metadata_are_traceable() {
     let release_notes = if fragment.is_file() {
         read(fragment)
     } else {
-        read(root.join("CHANGELOG.md"))
+        crate::assembled_docs::changelog_at(&root)
     };
     assert_contains_all(
         "issue 917 release metadata",

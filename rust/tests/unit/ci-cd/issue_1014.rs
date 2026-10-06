@@ -455,7 +455,7 @@ fn issue_and_pull_request_delivery_documents_target_the_prepared_pull_request() 
             repository_file("changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md"),
         )
     } else {
-        ("CHANGELOG.md", repository_file("CHANGELOG.md"))
+        ("CHANGELOG.md", crate::assembled_docs::changelog())
     };
     for marker in ["#1014", "#1015", "test", "evidence"] {
         assert!(
@@ -467,7 +467,7 @@ fn issue_and_pull_request_delivery_documents_target_the_prepared_pull_request() 
 
 #[test]
 fn whole_issue_contract_composes_all_nine_requirements() {
-    let requirements = repository_file("REQUIREMENTS.md");
+    let requirements = crate::assembled_docs::requirements();
     for requirement in 1..=9 {
         assert!(requirements.contains(&format!("R1014-{requirement}")));
     }

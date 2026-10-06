@@ -10,6 +10,9 @@
 #   ts   -- the js<->ts file-set parity: every .js has its .ts sibling and
 #           the ts tree holds no extras. The fast tier-2 rung; it fails in
 #           seconds before the rust tier spends minutes.
+#   server-parity -- beside the rust tier, on the same cached binary: the
+#           JavaScript server (js/server/) and `formal-ai serve` answer the
+#           corpus in rust/tests/fixtures/server-parity/ alike (R1013).
 #   rust -- the plan 16 L3 dogfood gate in CI, not only in the unit suite:
 #           delete ts/**/*.ts, regenerate with
 #           `formal-ai translate --from js --to ts --write`, then
@@ -116,7 +119,14 @@ jobs:
           echo "all ${#files[@]} js files parse"
       - name: Native-only handler rows only fall (R998)
         run: node scripts/check-js-parity.mjs --list
-      - name: Natural-language literals in the worker only fall (R1010)
+      - name: Syntax-check the JavaScript server and its parity runner (R1013)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in js/server/*.mjs scripts/check-server-parity.mjs; do
+            node --check "$file"
+          done
+      - name: Natural-language literals in the worker and server only fall (R1010, R1013)
         run: node scripts/check-js-literals.mjs --list
       - name: The JavaScript suites pass
         run: node --test rust/tests/web/*.test.mjs
@@ -204,3 +214,26 @@ jobs:
           # The tree was just regenerated natively; the js twin must render
           # the same bytes, so the two translators cannot drift apart.
           node scripts/translate-es.mjs --check
+
+  server-parity:
+    name: server parity (JavaScript server vs Rust server)
+    needs: [changes, js, ts]
+    # The JavaScript server (js/server/) must answer every route in
+    # data/meta/server-routes.lino exactly as the Rust server does (R1013).
+    # The same gate as the rust tier: it wakes on any js, seed, server-manifest
+    # or rust change, and js and ts must be green or carried first.
+    if: needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      # The same cached release binary the rust tier builds: one build per
+      # source change, shared by both jobs.
+      - uses: ./.github/actions/formal-ai-binary
+      - name: Both servers answer the parity corpus alike (R1013)
+        run: node scripts/check-server-parity.mjs --rust-binary rust/target/release/formal-ai --list

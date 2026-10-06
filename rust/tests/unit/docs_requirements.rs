@@ -75,7 +75,7 @@ fn issue_16_followup_documents_capture_universal_seed_and_memory_migration() {
     // cannot silently drift apart.
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -121,7 +121,7 @@ fn issue_16_followup_documents_capture_universal_seed_and_memory_migration() {
 fn issue_103_test_matrix_and_architecture_documents_are_present_and_traceable() {
     let root = repo_root();
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,
@@ -153,7 +153,7 @@ fn issue_103_test_matrix_and_architecture_documents_are_present_and_traceable() 
         ],
     );
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -190,7 +190,7 @@ fn issue_103_test_matrix_and_architecture_documents_are_present_and_traceable() 
 fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -253,7 +253,7 @@ fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
 fn issue_115_github_log_collection_documents_are_present_and_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -271,7 +271,7 @@ fn issue_115_github_log_collection_documents_are_present_and_traceable() {
         ],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,
@@ -311,7 +311,7 @@ fn issue_115_github_log_collection_documents_are_present_and_traceable() {
 fn issue_63_definition_fusion_requirements_and_examples_are_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -350,7 +350,7 @@ fn issue_63_definition_fusion_requirements_and_examples_are_traceable() {
 fn issue_80_software_project_dialogue_requirements_are_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -389,7 +389,7 @@ fn issue_80_software_project_dialogue_requirements_are_traceable() {
 
     // Release fragments are consumed after collection; the durable trace is
     // the released entry in CHANGELOG.md.
-    let changelog = read(root.join("CHANGELOG.md"));
+    let changelog = crate::assembled_docs::changelog_at(&root);
     assert_contains_all(
         "CHANGELOG.md issue #80 release entry",
         &changelog,
@@ -407,7 +407,7 @@ fn issue_80_software_project_dialogue_requirements_are_traceable() {
 fn issue_207_natural_translation_documents_are_present_and_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -423,7 +423,7 @@ fn issue_207_natural_translation_documents_are_present_and_traceable() {
         ],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,
@@ -464,7 +464,7 @@ fn issue_207_natural_translation_documents_are_present_and_traceable() {
 fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -498,7 +498,7 @@ fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
         ],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,
@@ -541,7 +541,7 @@ fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
 fn issue_438_prebuilt_telegram_image_documents_are_present_and_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -576,7 +576,7 @@ fn issue_438_prebuilt_telegram_image_documents_are_present_and_traceable() {
         ],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,
@@ -646,7 +646,7 @@ fn issue_438_prebuilt_telegram_image_documents_are_present_and_traceable() {
 fn issue_278_default_native_doublets_store_is_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -699,7 +699,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         ],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,
@@ -786,7 +786,7 @@ fn issue_356_rule_synthesis_design_is_traceable() {
 fn issue_398_pr_review_standards_are_recorded_and_traceable() {
     let root = repo_root();
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -918,11 +918,12 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
 
     // Released changelog text and its provenance map are immutable historical
     // records. They can quote old project terminology without reintroducing it
-    // into current product documentation.
+    // into current product documentation; `docs/changelog/` is its archive.
     if matches!(
         relative.as_str(),
-        "CHANGELOG.md" | "docs/case-studies/issue-711/fragment-release-map.tsv"
-    ) {
+        "CHANGELOG.md" | "docs/changelog" | "docs/case-studies/issue-711/fragment-release-map.tsv"
+    ) || relative.starts_with("docs/changelog/")
+    {
         return true;
     }
 

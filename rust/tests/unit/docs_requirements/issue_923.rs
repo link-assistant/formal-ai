@@ -12,7 +12,7 @@ fn issue_923_case_study_and_release_metadata_are_traceable() {
 
     assert_contains_all(
         "REQUIREMENTS.md",
-        &read(root.join("REQUIREMENTS.md")),
+        &crate::assembled_docs::requirements_at(&root),
         &[
             "Issue #923 Symbolic-Kernel Coverage Growth",
             "| R923-1 ",
@@ -26,7 +26,7 @@ fn issue_923_case_study_and_release_metadata_are_traceable() {
     );
     assert_contains_all(
         "ARCHITECTURE.md",
-        &read(root.join("ARCHITECTURE.md")),
+        &crate::architecture_docs::read_all(),
         &[
             "Issue #923",
             "decision/equality.rs",
@@ -116,7 +116,7 @@ fn issue_923_case_study_and_release_metadata_are_traceable() {
     let release_notes = if fragment.is_file() {
         read(fragment)
     } else {
-        read(root.join("CHANGELOG.md"))
+        crate::assembled_docs::changelog_at(&root)
     };
     assert_contains_all(
         "issue 923 release metadata",

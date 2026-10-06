@@ -8,7 +8,7 @@ const BASE_URL = `${ORIGIN}/app/`;
 
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: ['**/demo.spec.js', '**/multilingual.spec.js'],
+  testMatch: ['**/demo.spec.js', '**/multilingual-*.spec.js'],
   timeout: 30_000,
   retries: 0,
   reporter: [['list']],

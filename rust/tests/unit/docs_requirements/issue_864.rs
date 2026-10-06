@@ -97,12 +97,16 @@ fn r864_03_invitation_language_and_failure_state_survive_every_ui_path() {
     let ui_catalog = read("js/i18n-catalog-messages.lino");
     assert_eq!(ui_catalog.matches("detectedFailureReport ").count(), 4);
     assert_contains_all(
-        "js/app/main.jsx",
-        &[
-            "detectedFailure: event.detectedFailure === true",
-            "detectedFailure = detectedFailure || answerHasDetectedFailure(answer)",
-            "data-testid=\"detected-failure-report\"",
-        ],
+        "js/app/conversations.jsx",
+        &["detectedFailure: event.detectedFailure === true"],
+    );
+    assert_contains_all(
+        "js/app/app-conversation-hooks.jsx",
+        &["detectedFailure = detectedFailure || answerHasDetectedFailure(answer)"],
+    );
+    assert_contains_all(
+        "js/app/message-view.jsx",
+        &["data-testid=\"detected-failure-report\""],
     );
 }
 

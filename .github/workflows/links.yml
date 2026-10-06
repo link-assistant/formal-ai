@@ -65,9 +65,18 @@ jobs:
             scripts/recheck-broken-links.test.mjs
 
       - name: Prepare reconstructable release history for link checking
+        # Older releases roll out of CHANGELOG.md into docs/changelog/ (every
+        # file stays under the 1500-line cap); each archive gets the same
+        # placeholder substitution, written beside it so its relative links
+        # still resolve, and the originals are excluded below.
         run: |
           sed 's|https://…|https://example.com/placeholder|g' CHANGELOG.md \
             > LYCHEE_CHANGELOG.md
+          for archive in docs/changelog/archive-*.md; do
+            [ -e "$archive" ] || continue
+            sed 's|https://…|https://example.com/placeholder|g' "$archive" \
+              > "docs/changelog/LYCHEE_$(basename "$archive")"
+          done
 
       - name: Check links with lychee
         id: lychee
@@ -150,6 +159,7 @@ jobs:
             --host-request-interval 100ms
             --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)'
             --exclude-path '^CHANGELOG\.md$'
+            --exclude-path '^docs/changelog/archive-[0-9]+\.md$'
             --exclude-path docs/case-studies
             --exclude-path dev/log
             --exclude-path experiments/issue-1021-link-checker-false-positive

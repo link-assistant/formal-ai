@@ -6,7 +6,7 @@ name: Coverage
 # must never be averaged into a single number, and a workflow named "Coverage"
 # with one job per denominator makes that visible in the checks list instead of
 # burying it among twenty release jobs. The second is the repository's own file
-# size gate (scripts/check-file-size.rs), which caps a workflow at 2000 lines
+# size gate (scripts/check-file-size.rs), which caps a workflow at 1500 lines
 # and documents release.yml as debt that "cannot grow": these jobs are a leaf of
 # the release graph -- nothing `needs:` them -- so moving them out is
 # behaviour-preserving and pays some of that debt down.

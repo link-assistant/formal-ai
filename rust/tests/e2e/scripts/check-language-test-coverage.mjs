@@ -44,7 +44,6 @@ const languageFacingFiles = new Set([
   'rust/src/language.rs',
   'rust/src/solver.rs',
   'rust/src/solver_helpers.rs',
-  'js/app/main.jsx',
   'js/worker/formal_ai_worker.js',
   'js/i18n-catalog.lino',
   'js/i18n-catalog-permissions.lino',
@@ -113,9 +112,14 @@ function changedFiles(baseRef) {
     .filter(Boolean);
 }
 
+// The web front-end is split into JSX feature modules under js/app/ (entry:
+// main.jsx); every one of them renders or recognises user-language text.
+const languageFacingPatterns = [/^js\/app\/[^/]+\.jsx$/];
+
 function isLanguageFacingPath(relativePath) {
   if (languageNeutralFiles.has(relativePath)) return false;
   if (languageFacingFiles.has(relativePath)) return true;
+  if (languageFacingPatterns.some((pattern) => pattern.test(relativePath))) return true;
   return languageFacingPrefixes.some((prefix) => relativePath.startsWith(prefix));
 }
 

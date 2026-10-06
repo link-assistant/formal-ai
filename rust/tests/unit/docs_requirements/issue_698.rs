@@ -25,7 +25,7 @@ fn issue_698_case_study_and_external_benchmark_contract_are_traceable() {
     }
 
     // The repository-wide requirement register carries the issue too.
-    let register = read("REQUIREMENTS.md");
+    let register = crate::assembled_docs::requirements();
     assert!(
         register.contains("## Issue #698 Real External Benchmark Harness"),
         "REQUIREMENTS.md has no issue #698 section"

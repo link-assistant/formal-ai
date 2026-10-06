@@ -37,8 +37,8 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../../../..");
-// Issue #550: the front-end source is authored as JSX at js/app/main.jsx
-// and bundled by bun into the served js/app.js. JSX render code does not
+// Issue #550: the front-end source is authored as JSX modules under js/app/
+// (entry: js/app/main.jsx) and bundled by bun into the served js/app.js. JSX render code does not
 // contain literal `h(...)` calls in source, so this guard scans the bun-compiled
 // output instead: the project's tsconfig pins the classic JSX runtime with `h`
 // as the factory, so every <Tag>…</Tag> element — exactly like the hand-written
@@ -192,14 +192,14 @@ while ((match = hCallRe.exec(source)) !== null) {
 
 if (violations.length > 0) {
   console.error(
-    "check-web-hardcoded-ui-strings: found hardcoded user-facing string(s) in the front-end (js/app/main.jsx).",
+    "check-web-hardcoded-ui-strings: found hardcoded user-facing string(s) in the front-end (js/app/*.jsx).",
   );
   console.error(
     "Route user-facing text through the i18n catalog via t(\"<key>\", params); see",
   );
   console.error("docs/design/no-hardcoded-natural-language.md and CONTRIBUTING.md.");
   console.error(
-    "(Line numbers below are in the bun-compiled output; grep the quoted text in main.jsx.)",
+    "(Line numbers below are in the bun-compiled output; grep the quoted text in js/app/*.jsx.)",
   );
   for (const v of violations) {
     console.error(`- compiled:${v.line}: ${JSON.stringify(v.text)}`);
@@ -208,5 +208,5 @@ if (violations.length > 0) {
 }
 
 console.log(
-  `check-web-hardcoded-ui-strings: OK — no hardcoded user-facing strings in h() children of the front-end (js/app/main.jsx, allowlist: ${ALLOWED_LITERALS.size} legacy labels).`,
+  `check-web-hardcoded-ui-strings: OK — no hardcoded user-facing strings in h() children of the front-end (js/app/*.jsx, allowlist: ${ALLOWED_LITERALS.size} legacy labels).`,
 );

@@ -11,6 +11,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 const LEDGER_DIRECTORY: &str = "data/meta/requirement-status-ledger";
+/// The assembled register, split into parts under the 1500-line cap.
+const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
 
 #[derive(Default)]
 struct Row {
@@ -124,10 +126,39 @@ fn ledger_rows(root: &Path, failures: &mut Vec<String>) -> BTreeMap<String, Row>
     rows
 }
 
+/// The assembled requirement register: `REQUIREMENTS.md` is an index, and the
+/// register itself is `docs/requirements/assembled/part-NN.md`, read in name
+/// order (`scripts/assemble-requirements.rs` writes both).
+fn read_register(root: &Path) -> Result<String, String> {
+    let directory = root.join(REQUIREMENT_PARTS);
+    let mut parts: Vec<PathBuf> = fs::read_dir(&directory)
+        .map_err(|error| format!("cannot read {REQUIREMENT_PARTS}: {error}"))?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| {
+            path.file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name.starts_with("part-") && name.ends_with(".md"))
+        })
+        .collect();
+    parts.sort();
+    if parts.is_empty() {
+        return Err(format!("{REQUIREMENT_PARTS} holds no part-NN.md files"));
+    }
+    let mut register = String::new();
+    for part in parts {
+        register.push_str(
+            &fs::read_to_string(&part)
+                .map_err(|error| format!("cannot read {}: {error}", part.display()))?,
+        );
+        register.push('\n');
+    }
+    Ok(register)
+}
+
 fn main() {
     let root = std::env::current_dir().expect("current directory");
-    let requirements =
-        fs::read_to_string(root.join("REQUIREMENTS.md")).expect("REQUIREMENTS.md readable");
+    let requirements = read_register(&root).unwrap_or_else(|error| panic!("{error}"));
     let expected = requirement_ids(&requirements);
     let mut failures = Vec::new();
     let rows = ledger_rows(&root, &mut failures);
@@ -137,7 +168,7 @@ fn main() {
         failures.push(format!("{missing}: absent from the status ledger"));
     }
     for stale in actual.difference(&expected) {
-        failures.push(format!("{stale}: absent from REQUIREMENTS.md"));
+        failures.push(format!("{stale}: absent from the assembled REQUIREMENTS.md parts"));
     }
     let allowed = [
         "implemented",

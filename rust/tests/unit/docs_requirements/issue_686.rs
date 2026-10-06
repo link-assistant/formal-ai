@@ -9,7 +9,7 @@ fn issue_686_associative_persistence_case_study_documents_are_present_and_tracea
     let paper_url = "https://huggingface.co/papers/2512.00590";
 
     // R445–R458: issue body plus maintainer follow-up are in the global matrix.
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -47,7 +47,7 @@ fn issue_686_associative_persistence_case_study_documents_are_present_and_tracea
         &["docs/case-studies/issue-686", "usage-weighted persistence"],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,

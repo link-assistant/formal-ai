@@ -2,6 +2,7 @@ mod agentic_coding;
 mod agentic_general_planner;
 mod agentic_surfaces;
 mod architect_notes;
+mod architecture_docs;
 mod assistant_name;
 mod benchmark_release_capability;
 mod budget_search;
@@ -242,6 +243,7 @@ mod sequences_inference;
 mod sequences_patterns_1d;
 mod sequences_store;
 mod sequences_symbols;
+mod server_route_manifest;
 mod shared_dialog;
 mod shared_memory_isolation;
 mod software_project;
@@ -342,3 +344,7 @@ mod issue_872_app_store_search;
 mod issue_901_triz_solver;
 mod issue_954_module_map;
 mod verifiable_task;
+
+// Readers for the split REQUIREMENTS.md register and the archived CHANGELOG.md.
+#[path = "../support/assembled_docs.rs"]
+mod assembled_docs;

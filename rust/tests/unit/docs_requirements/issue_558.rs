@@ -7,7 +7,7 @@ fn issue_558_auto_learning_case_study_is_traceable() {
         .parent()
         .expect("the repository root sits one level above the crate");
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,

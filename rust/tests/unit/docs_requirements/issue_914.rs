@@ -9,7 +9,7 @@ fn issue_914_case_study_and_planning_docs_are_traceable() {
 
     assert_contains_all(
         "REQUIREMENTS.md",
-        &read(root.join("REQUIREMENTS.md")),
+        &crate::assembled_docs::requirements_at(&root),
         &[
             "Issue #914 Vision Implementation Planning, Coding First",
             "| R914-1 ",

@@ -10,7 +10,7 @@ fn issue_656_promotion_documents_are_traceable() {
         .parent()
         .expect("the repository root sits one level above the crate");
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -96,7 +96,7 @@ fn issue_656_promotion_documents_are_traceable() {
         );
     } else {
         assert!(
-            read(root.join("CHANGELOG.md")).contains("issue #656"),
+            crate::assembled_docs::changelog_at(&root).contains("issue #656"),
             "the issue #656 changelog fragment was consumed by a release, so \
              CHANGELOG.md must carry its entry for traceability",
         );

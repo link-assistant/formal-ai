@@ -13,7 +13,7 @@ module.exports = defineConfig({
   testDir: './tests',
   testMatch: [
     '**/demo.spec.js',
-    '**/multilingual.spec.js',
+    '**/multilingual-*.spec.js',
     '**/connectivity.spec.js',
     '**/issue-135.spec.js',
     '**/issue-157.spec.js',

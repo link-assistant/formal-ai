@@ -163,8 +163,7 @@ fn every_issue_1138_shard_declares_ids_that_name_a_test_that_exists() {
 
 #[test]
 fn every_issue_1138_id_in_requirements_exists_in_a_shard() {
-    let requirements =
-        fs::read_to_string(repo_root().join("REQUIREMENTS.md")).expect("REQUIREMENTS.md readable");
+    let requirements = crate::assembled_docs::requirements_at(&repo_root());
     let ids = requirement_ids(&requirements);
     assert!(
         !ids.is_empty(),
@@ -274,7 +273,7 @@ fn an_implemented_verdict_names_a_test_that_exists() {
         .map(|pair| pair[0].clone())
         .collect();
     duplicates.dedup();
-    let mut expected = all_requirement_ids(&read_repo("REQUIREMENTS.md"));
+    let mut expected = all_requirement_ids(&crate::assembled_docs::requirements());
     expected.sort();
     assert_eq!(
         checked, expected,

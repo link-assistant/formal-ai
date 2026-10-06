@@ -137,3 +137,58 @@ mod unit_incompatibility;
 mod unknown_reasoning;
 mod vscode_surface;
 mod world_state_benchmarks;
+
+/// Every JSX module of the web front-end (`js/app/*.jsx`), concatenated. The
+/// front-end is split into feature modules and bundled by bun into the served
+/// `js/app.js`; source-level surface assertions read all of them so they hold
+/// wherever a helper lives. `web_app_sources_cover_every_jsx_module` keeps
+/// this list in step with the directory.
+pub(crate) const WEB_APP_SOURCES: &str = concat!(
+    include_str!("../../../../js/app/agent-plan.jsx"),
+    include_str!("../../../../js/app/app-constants.jsx"),
+    include_str!("../../../../js/app/app-conversation-hooks.jsx"),
+    include_str!("../../../../js/app/app-desktop-hooks.jsx"),
+    include_str!("../../../../js/app/app-layout-hooks.jsx"),
+    include_str!("../../../../js/app/app-memory-hooks.jsx"),
+    include_str!("../../../../js/app/app-worker-hooks.jsx"),
+    include_str!("../../../../js/app/app.jsx"),
+    include_str!("../../../../js/app/attachments.jsx"),
+    include_str!("../../../../js/app/conversations.jsx"),
+    include_str!("../../../../js/app/debugger-view.jsx"),
+    include_str!("../../../../js/app/demo-mode.jsx"),
+    include_str!("../../../../js/app/desktop-bridge.jsx"),
+    include_str!("../../../../js/app/glyphs.jsx"),
+    include_str!("../../../../js/app/interface-commands.jsx"),
+    include_str!("../../../../js/app/issue-reporting.jsx"),
+    include_str!("../../../../js/app/local-behavior-rules.jsx"),
+    include_str!("../../../../js/app/local-fallback.jsx"),
+    include_str!("../../../../js/app/local-prompts.jsx"),
+    include_str!("../../../../js/app/local-self-knowledge.jsx"),
+    include_str!("../../../../js/app/main.jsx"),
+    include_str!("../../../../js/app/markdown-render.jsx"),
+    include_str!("../../../../js/app/memory-events.jsx"),
+    include_str!("../../../../js/app/message-view.jsx"),
+    include_str!("../../../../js/app/preferences.jsx"),
+    include_str!("../../../../js/app/recall-query.jsx"),
+    include_str!("../../../../js/app/sidebar-section.jsx"),
+    include_str!("../../../../js/app/thinking-steps.jsx"),
+    include_str!("../../../../js/app/toolbar-icons.jsx"),
+    include_str!("../../../../js/app/user-context.jsx"),
+);
+
+#[test]
+fn web_app_sources_cover_every_jsx_module() {
+    let app_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/../js/app");
+    for entry in std::fs::read_dir(app_dir).unwrap() {
+        let path = entry.unwrap().path();
+        if path.extension().and_then(|ext| ext.to_str()) != Some("jsx") {
+            continue;
+        }
+        let source = std::fs::read_to_string(&path).unwrap();
+        assert!(
+            WEB_APP_SOURCES.contains(&source),
+            "{} must be listed in WEB_APP_SOURCES",
+            path.display()
+        );
+    }
+}

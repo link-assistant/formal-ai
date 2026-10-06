@@ -1,5 +1,6 @@
 #!/usr/bin/env rust-script
-//! Check Rust files for maximum and warning line-count thresholds
+//! Check maintained files (Rust at 1000 lines, every other authored text
+//! format at 1500) for maximum and warning line-count thresholds
 //! Exits with error code 1 if any files exceed the hard limit
 //!
 //! Usage: rust-script scripts/check-file-size.rs
@@ -52,11 +53,35 @@ const WORKER_JS_LIMIT: FileLimit = FileLimit {
 /// template's ceiling, so the debt is visible on every run and cannot grow.
 const WORKFLOW_YAML_LIMIT: FileLimit = FileLimit {
     extension: "yml",
-    max_lines: 2_000,
-    warn_lines: 1_500,
+    max_lines: 1_500,
+    warn_lines: 1_400,
     label: "GitHub Actions workflow",
 };
-const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
+/// The maintainer's rule (2026-10-07): no maintained source, data or document
+/// file may be larger than 1500 lines, or it cannot be maintained. Every text
+/// format the repository authors is measured at that ceiling; Rust keeps its
+/// stricter 1000.
+const MAINTAINED_LIMIT: FileLimit = FileLimit {
+    extension: "*",
+    max_lines: 1_500,
+    warn_lines: 1_400,
+    label: "Maintained",
+};
+const MAINTAINED_EXTENSIONS: &[&str] = &[
+    "js", "mjs", "cjs", "jsx", "ts", "tsx", "css", "html", "md", "py", "sh", "json", "toml", "yml",
+    "yaml", "txt", "tsv", "csv",
+];
+/// Files nobody edits by hand are not maintained text: dependency lock files,
+/// verbatim captures of upstream sources (kept byte-for-byte as evidence, often
+/// checked by sha256), and minified build outputs.
+const UNMAINTAINED_FILE_NAMES: &[&str] = &["package-lock.json", "bun.lock", "yarn.lock"];
+const UNMAINTAINED_PATH_FRAGMENTS: &[&str] = &[
+    "docs/case-studies/",
+    "rust/tests/fixtures/coding-discovery/python-docs/",
+    "rust/tests/fixtures/meta-reasoner/captures/",
+];
+const UNMAINTAINED_SUFFIXES: &[&str] = &[".bundle.js", ".min.js", ".min.css"];
+const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules", ".claude"];
 /// Issue #960 (R222-1): `data/cache/wikidata/` used to sit outside the gate, so
 /// the one hard number the maintainer gave for cached data — "each .lino file
 /// cannot be larger than 1500 lines" — was unenforced exactly where the
@@ -132,7 +157,29 @@ fn file_limit(path: &Path) -> Option<&'static FileLimit> {
 
     let ext = path.extension().and_then(|ext| ext.to_str())?;
 
-    FILE_LIMITS.iter().find(|limit| limit.extension == ext)
+    FILE_LIMITS
+        .iter()
+        .find(|limit| limit.extension == ext)
+        .or_else(|| is_maintained_text(path, ext).then_some(&MAINTAINED_LIMIT))
+}
+
+/// Whether a file is authored text the 1500-line rule applies to.
+fn is_maintained_text(path: &Path, ext: &str) -> bool {
+    let path_str = normalized_path(path);
+    let name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("");
+    let data_cache_capture = path_str.contains("data/cache/") && ext == "json";
+    MAINTAINED_EXTENSIONS.contains(&ext)
+        && !data_cache_capture
+        && !UNMAINTAINED_FILE_NAMES.contains(&name)
+        && !UNMAINTAINED_SUFFIXES
+            .iter()
+            .any(|suffix| name.ends_with(suffix))
+        && !UNMAINTAINED_PATH_FRAGMENTS
+            .iter()
+            .any(|fragment| path_str.contains(fragment))
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -398,7 +445,7 @@ fn print_embedded_data_violations(violations: &[EmbeddedDataFinding]) {
 #[cfg(not(test))]
 fn main() {
     println!(
-        "\nChecking configured file line limits for Rust, Links Notation, worker JavaScript, and GitHub Actions workflow files...\n"
+        "\nChecking file line limits: Rust 1000, every other maintained text format 1500...\n"
     );
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
@@ -473,6 +520,34 @@ mod tests {
         assert_eq!(
             classify_line_count(rust_limit.max_lines, rust_limit),
             LineStatus::Warning
+        );
+    }
+
+    #[test]
+    fn maintained_text_is_measured_and_captures_are_not() {
+        assert_eq!(
+            file_limit(Path::new("js/app/main.jsx")),
+            Some(&MAINTAINED_LIMIT)
+        );
+        assert_eq!(
+            file_limit(Path::new("CHANGELOG.md")),
+            Some(&MAINTAINED_LIMIT)
+        );
+        assert_eq!(
+            file_limit(Path::new("js/styles.css")),
+            Some(&MAINTAINED_LIMIT)
+        );
+        assert_eq!(file_limit(Path::new("vscode/package-lock.json")), None);
+        assert_eq!(file_limit(Path::new("js/vendor.bundle.js")), None);
+        assert_eq!(
+            file_limit(Path::new("data/cache/wikidata/lexeme/L3302.json")),
+            None
+        );
+        assert_eq!(
+            file_limit(Path::new(
+                "rust/tests/fixtures/coding-discovery/python-docs/stdtypes.html"
+            )),
+            None
         );
     }
 
@@ -601,16 +676,24 @@ mod tests {
     }
 
     #[test]
-    fn check_directory_does_not_apply_worker_limit_to_legacy_js() {
-        let repo = temp_dir("legacy-js-thresholds");
+    fn check_directory_applies_the_maintained_limit_to_app_js() {
+        let repo = temp_dir("app-js-thresholds");
         let app_dir = repo.join("js/app");
         fs::create_dir_all(&app_dir).unwrap();
-        write_js_file_with_lines(&app_dir.join("main.js"), WORKER_JS_LIMIT.max_lines + 1);
+        write_js_file_with_lines(&app_dir.join("main.js"), MAINTAINED_LIMIT.max_lines + 1);
 
         let result = check_directory(&repo);
 
-        assert_eq!(result.violations, Vec::new());
-        assert_eq!(result.warnings, Vec::new());
+        assert_eq!(
+            result.violations,
+            vec![Finding {
+                file: "js/app/main.js".to_string(),
+                lines: MAINTAINED_LIMIT.max_lines + 1,
+                max_lines: MAINTAINED_LIMIT.max_lines,
+                warn_lines: MAINTAINED_LIMIT.warn_lines,
+                label: MAINTAINED_LIMIT.label,
+            }]
+        );
     }
 
     #[test]

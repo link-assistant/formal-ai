@@ -17,8 +17,14 @@ fn root() -> PathBuf {
 }
 
 fn read(relative: &str) -> String {
-    fs::read_to_string(root().join(relative))
-        .unwrap_or_else(|error| panic!("read {relative}: {error}"))
+    // `REQUIREMENTS.md` indexes the assembled register and `CHANGELOG.md` keeps
+    // only the newest releases, so each is read whole, parts and archive too.
+    match relative {
+        GLOBAL_REQUIREMENTS => crate::assembled_docs::requirements(),
+        "CHANGELOG.md" => crate::assembled_docs::changelog(),
+        _ => fs::read_to_string(root().join(relative))
+            .unwrap_or_else(|error| panic!("read {relative}: {error}")),
+    }
 }
 
 fn assert_contains_all(relative: &str, needles: &[&str]) {

@@ -169,16 +169,21 @@ def summarize():
             "by_level": by_level}
 
 def write_results():
+    # One result per line keeps the committed file reviewable and under the
+    # repository's 1500-line ceiling; the JSON is identical to an indented dump.
+    head = {
+        "measurement": {
+            "dataset_total": len(all_tasks),
+            "measured_total": len(tasks),
+            "complete": not only and len(tasks) == len(all_tasks),
+            "filter": only or None,
+        },
+        "summary": summarize(),
+    }
+    body = json.dumps(head, indent=2, ensure_ascii=False)[:-2]
+    rows = ",\n".join("    " + json.dumps(r, ensure_ascii=False) for r in results)
     with open(out_path, "w") as handle:
-        json.dump({
-                  "measurement": {
-                      "dataset_total": len(all_tasks),
-                      "measured_total": len(tasks),
-                      "complete": not only and len(tasks) == len(all_tasks),
-                      "filter": only or None,
-                  },
-                  "summary": summarize(), "results": results},
-                  handle, indent=2, ensure_ascii=False)
+        handle.write(body + ',\n  "results": [\n' + rows + "\n  ]\n}\n")
 for task in tasks:
     structural = ""
     reset_repo()

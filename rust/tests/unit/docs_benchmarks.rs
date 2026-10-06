@@ -49,14 +49,21 @@ fn curated_pass_ratios_publish_an_upstream_comparison_beside_them() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    for relative in [
-        "VISION.md",
-        "ROADMAP.md",
-        "ARCHITECTURE.md",
-        "README.md",
-        "docs/benchmarks.md",
-    ] {
-        let source = read(root.join(relative));
+    // ARCHITECTURE.md is an overview; its detailed sections live in
+    // docs/architecture/, and each topic file is scanned in its own right.
+    let mut documents: Vec<std::path::PathBuf> = ["VISION.md", "ROADMAP.md"]
+        .iter()
+        .map(std::path::PathBuf::from)
+        .collect();
+    documents.extend(crate::architecture_docs::architecture_paths());
+    documents.extend(
+        ["README.md", "docs/benchmarks.md"]
+            .iter()
+            .map(std::path::PathBuf::from),
+    );
+    for document in documents {
+        let relative = document.display();
+        let source = read(root.join(&document));
         for claim in claim_units(&source) {
             let lower = claim.to_ascii_lowercase();
             if lower.contains("minimum_pass_count") && ratio_count(claim) > 0 {
@@ -92,7 +99,7 @@ fn latest_external_rows_are_published_from_the_ledger() {
     let catalog = read(root.join("docs/benchmarks.md"));
     let vision = read(root.join("VISION.md"));
     let roadmap = read(root.join("ROADMAP.md"));
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     let readme = read(root.join("README.md"));
     let labels = [
         ("humaneval", "HumanEval"),
@@ -166,7 +173,7 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         .parent()
         .expect("the repository root sits one level above the crate");
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -202,7 +209,7 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         ],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,

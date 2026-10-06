@@ -1238,7 +1238,9 @@ Use these categories in your fragments:
 Fragments are automatically collected into CHANGELOG.md during the release process. The release workflow:
 
 1. Collects all fragments
-2. Updates CHANGELOG.md with the new version entry
+2. Updates CHANGELOG.md with the new version entry; CHANGELOG.md keeps only
+   the newest releases, and older ones roll into `docs/changelog/archive-NN.md`
+   so no changelog file exceeds the 1500-line cap
 3. Removes processed fragment files
 4. Bumps the version in Cargo.toml
 5. Creates a git tag and GitHub release

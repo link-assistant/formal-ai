@@ -218,10 +218,19 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
     .unwrap();
     let demo_spec =
         fs::read_to_string(format!("{manifest_dir}/rust/tests/e2e/tests/demo.spec.js")).unwrap();
-    let multilingual_spec = fs::read_to_string(format!(
-        "{manifest_dir}/rust/tests/e2e/tests/multilingual.spec.js"
-    ))
-    .unwrap();
+    // The multilingual suite is split across `multilingual-*.spec.js`
+    // (repository line budget); every part must keep the relative navigation.
+    let multilingual_specs = [
+        "multilingual-chat.spec.js",
+        "multilingual-wikipedia.spec.js",
+        "multilingual-memory-settings.spec.js",
+        "multilingual-issue-27.spec.js",
+    ]
+    .map(|name| {
+        let spec =
+            fs::read_to_string(format!("{manifest_dir}/rust/tests/e2e/tests/{name}")).unwrap();
+        (format!("tests/e2e/tests/{name}"), spec)
+    });
     let connectivity_spec = fs::read_to_string(format!(
         "{manifest_dir}/rust/tests/e2e/tests/connectivity.spec.js"
     ))
@@ -241,15 +250,10 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
     // reaches its sibling harness with a relative '../tests/' (→ /tests/). Both
     // are relative, so the /formal-ai/ repository subpath is always preserved;
     // an absolute '/…' would drop it.
-    for (path, spec, expected_nav) in [
+    let mut navigation_cases = vec![
         (
             "tests/e2e/tests/demo.spec.js",
             demo_spec.as_str(),
-            "page.goto('./')",
-        ),
-        (
-            "tests/e2e/tests/multilingual.spec.js",
-            multilingual_spec.as_str(),
             "page.goto('./')",
         ),
         (
@@ -257,7 +261,11 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
             connectivity_spec.as_str(),
             "page.goto('../tests/')",
         ),
-    ] {
+    ];
+    for (path, spec) in &multilingual_specs {
+        navigation_cases.push((path.as_str(), spec.as_str(), "page.goto('./')"));
+    }
+    for (path, spec, expected_nav) in navigation_cases {
         assert!(
             !spec.contains("page.goto('/');"),
             "{path} should not navigate to / because URL resolution drops the /formal-ai/ subpath"

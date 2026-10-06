@@ -11,7 +11,7 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
 
     assert_contains_all(
         "REQUIREMENTS.md",
-        &read(root.join("REQUIREMENTS.md")),
+        &crate::assembled_docs::requirements_at(&root),
         &[
             "Issue #918 Minimal-Core Boundary And Seed-Metadata Audit",
             "| R918-1 ",
@@ -27,7 +27,7 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
     );
     assert_contains_all(
         "ARCHITECTURE.md",
-        &read(root.join("ARCHITECTURE.md")),
+        &crate::architecture_docs::read_all(),
         &[
             "Minimal Compiled Core (Issue #918)",
             "Meta algorithm",
@@ -113,7 +113,7 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
     let release_notes = if fragment.is_file() {
         read(fragment)
     } else {
-        read(root.join("CHANGELOG.md"))
+        crate::assembled_docs::changelog_at(&root)
     };
     assert_contains_all(
         "issue 918 release metadata",

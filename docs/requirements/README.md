@@ -1,12 +1,26 @@
 # Requirement shards
 
-`REQUIREMENTS.md` in the repository root is **generated** from this directory.
-Edit the shard for your issue; never edit the root document.
+`REQUIREMENTS.md` in the repository root and the parts under
+[`assembled/`](assembled/) are **generated** from this directory. Edit the shard
+for your issue; never edit the generated files.
 
 ```bash
-rust-script scripts/assemble-requirements.rs           # check the root document is current
-rust-script scripts/assemble-requirements.rs --write   # rebuild it from these shards
+rust-script scripts/assemble-requirements.rs           # check the index and parts are current
+rust-script scripts/assemble-requirements.rs --write   # rebuild them from these shards
 ```
+
+## The assembled register
+
+No maintained file may exceed 1500 lines, and the assembled register is larger
+than that, so it is written as ordered parts: `assembled/part-01.md`,
+`assembled/part-02.md`, and so on, each at most 1400 lines. Sections are packed
+into parts in assembly order and never cut in half. `REQUIREMENTS.md` is the
+index: it links every part and lists the sections each part holds.
+
+Anything that reads "the requirements document" reads every part in file-name
+order — `scripts/generate-requirement-status.rs`,
+`scripts/check-requirement-status.rs`, `scripts/check-issue-citations.rs`, and
+the Rust tests through `rust/tests/support/assembled_docs.rs`.
 
 ## Why this directory exists
 
@@ -33,8 +47,8 @@ Create `issue-NNNN-<subject>.md`, where `NNNN` is the zero-padded issue number:
 | R900 | ... | ... |
 ```
 
-Then run `rust-script scripts/assemble-requirements.rs --write` and commit both
-the shard and the regenerated `REQUIREMENTS.md`.
+Then run `rust-script scripts/assemble-requirements.rs --write` and commit the
+shard together with the regenerated `REQUIREMENTS.md` and `assembled/` parts.
 
 An issue may have several shards — issue #398, for example, has one for its
 original requirements and one per review comment. Give each a distinct subject
@@ -44,8 +58,8 @@ slug; they assemble in file-name order.
 
 Write links relative to the shard, because a shard is read on its own page as
 well as through the assembled document: `../upload-memory.md`, not
-`docs/upload-memory.md`. Assembly rebases them to the repository root, so the
-generated `REQUIREMENTS.md` carries `docs/upload-memory.md` and `--split`
+`docs/upload-memory.md`. Assembly rebases them to the parts directory, so the
+generated `assembled/part-NN.md` carries `../../upload-memory.md`, and `--split`
 rebases them back. Absolute URLs, in-page anchors, and root-anchored paths mean
 the same thing from both places and are left untouched.
 

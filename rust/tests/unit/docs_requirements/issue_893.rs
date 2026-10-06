@@ -11,7 +11,7 @@ fn issue_893_summarization_validation_documents_are_traceable() {
         .parent()
         .expect("the repository root sits one level above the crate");
 
-    let requirements = read(root.join("REQUIREMENTS.md"));
+    let requirements = crate::assembled_docs::requirements_at(&root);
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
@@ -60,7 +60,7 @@ fn issue_893_summarization_validation_documents_are_traceable() {
         &["R893-1", "R893-5", "SamplingProtocol", "bound_reached"],
     );
 
-    let architecture = read(root.join("ARCHITECTURE.md"));
+    let architecture = crate::architecture_docs::read_all();
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,

@@ -14,7 +14,7 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
         .expect("the repository root sits one level above the crate");
     assert_contains_all(
         "issue 924 root requirements",
-        &read(root.join("REQUIREMENTS.md")),
+        &crate::assembled_docs::requirements_at(&root),
         &[
             "Issue #924 Formal AI Self-Development Loop",
             "| R924-1 ",
@@ -102,7 +102,7 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
     let release_notes = if fragment.is_file() {
         read(fragment)
     } else {
-        read(root.join("CHANGELOG.md"))
+        crate::assembled_docs::changelog_at(&root)
     };
     assert_contains_all(
         "issue 924 release metadata",

@@ -428,11 +428,12 @@ fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
         );
     }
 
-    // `scripts/check-file-size.rs` hard-caps workflow files at 2000 lines.
+    // `scripts/check-file-size.rs` hard-caps every maintained file, workflows
+    // included, at 1500 lines.
     let lines = workflow.lines().count();
     assert!(
-        lines <= 2_000,
-        "release.yml is {lines} lines, over the 2000-line ceiling enforced by \
+        lines <= 1_500,
+        "release.yml is {lines} lines, over the 1500-line ceiling enforced by \
          scripts/check-file-size.rs"
     );
 }
