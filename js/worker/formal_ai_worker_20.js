@@ -99,7 +99,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   formalizationContext.meta = meta;
   events.push(`meta:${meta.goal}:${meta.status}`);
   steps.push({ step: "meta_reason", detail: `${meta.goal} ${meta.status}`, derivation: meta.derivationLino });
-  if (meta.status === "solved" && (meta.program || meta.subgoals)) {
+  // A bare imperative after earlier turns refines their artifact: it never takes the turn ahead of the handlers.
+  if (meta.status === "solved" && (meta.program || meta.subgoals) && !(meta.imperative && history?.length)) {
     events.push("handler:meta_reasoner");
     return finalize(events, steps, toolCalls, solverMetaProjection(metaAnswer(meta)), formalizationContext);
   }

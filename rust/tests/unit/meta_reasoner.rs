@@ -50,6 +50,19 @@ fn senses_from(body: &str, url: &str) -> Vec<Sense> {
     out
 }
 
+/// True when a real capture of `word` is committed or pre-cached.
+fn captured(word: &str) -> bool {
+    let file = format!("{word}.json");
+    manifest_dir()
+        .join("tests/fixtures/meta-reasoner/captures")
+        .join(&file)
+        .exists()
+        || manifest_dir()
+            .join("../data/cache/wiktionary/en")
+            .join(&file)
+            .exists()
+}
+
 /// The dictionary the JavaScript test replays: committed captures first,
 /// then the repository's pre-cached Wiktionary entries.
 fn dictionary(word: &str, _language: &str) -> Vec<Sense> {
@@ -192,6 +205,13 @@ fn every_rung_of_the_task_ladder_is_derived() {
         else {
             continue;
         };
+        // A rung that awaits a word's capture is walked once it is committed.
+        let awaited = lines
+            .get(index + 2)
+            .and_then(|next| next.strip_prefix("    awaits "));
+        if awaited.is_some_and(|word| !captured(word)) {
+            continue;
+        }
         let prompt: String = serde_json::from_str(&format!("\"{quoted}\"")).expect("rung prompt");
         rungs.push((prompt, expected.to_owned()));
     }
@@ -223,6 +243,47 @@ fn every_rung_of_the_task_ladder_is_derived() {
 }
 
 #[test]
+fn a_question_word_is_never_a_defined_term() {
+    let asked = reason("What is the capital of Australia?");
+    assert_eq!(asked.goal, "explain");
+    assert_ne!(asked.status, "solved", "{}", events(&asked).join("\n"));
+    let defined = reason("A zorp is a number times two. What is a zorp?");
+    assert_eq!(defined.status, "solved", "{}", events(&defined).join("\n"));
+}
+
+#[test]
+fn a_symbol_a_gloss_defines_is_a_value_the_program_reads() {
+    if !captured("colon") {
+        return;
+    }
+    let result = reason("replace every colon with a dash");
+    assert_eq!(
+        steps(&result),
+        ["replace_text"],
+        "{}",
+        events(&result).join("\n")
+    );
+    let probe = result.probe.as_ref().expect("probe");
+    assert_eq!(probe.input.to_json(), "\"hello:world\"");
+}
+
+#[test]
+fn a_superlative_is_its_stems_measure_and_the_degrees_selection() {
+    if !captured("long") {
+        return;
+    }
+    let result = reason("write a function that returns the longest word");
+    assert_eq!(
+        steps(&result),
+        ["split_words", "maximum_by(text_length)"],
+        "{}",
+        events(&result).join("\n")
+    );
+    let probe = result.probe.as_ref().expect("probe");
+    assert_eq!(probe.output.to_json(), "\"hello\"");
+}
+
+#[test]
 fn a_derived_file_program_runs_and_agrees_with_a_direct_count() {
     let unique = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -240,7 +301,7 @@ fn a_derived_file_program_runs_and_agrees_with_a_direct_count() {
         catalog(),
         &program.step_refs,
         &Value::Path(folder_text.clone()),
-        program.parameter,
+        &program.parameter,
         Runtime::Node,
     );
     let _ = std::fs::remove_dir_all(&folder);

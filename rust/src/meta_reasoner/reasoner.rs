@@ -11,9 +11,11 @@ use super::catalog::{Step, catalog};
 use super::grounding::{Chunk, Context, Grounding, Knowledge, ground, ground_text, meta_clauses};
 use super::interpreter::{Param, Runtime, run_program};
 use super::phrases::{ARROW, COMPOSE, LEARNED as LEARNED_PHRASE, NO_PROBE, NONE, fill};
+use super::request::{Operand, location_operands, names_operation, word_position};
 use super::seed::{Hypothesis, meta_seed};
 use super::synthesis::{
-    MeaningGoal, Verification, synthesize_from_examples, synthesize_from_meaning, verify,
+    MeaningGoal, NamedValue, Verification, synthesize_from_examples, synthesize_from_meaning,
+    verify,
 };
 use super::text::{
     Definition, Example, LiteralKind, js_trim, locale_compare, meta_examples,
@@ -99,6 +101,9 @@ pub struct MetaResult {
     pub derivation_lino: String,
     /// Sub-goals of a decomposed message.
     pub subgoals: Option<Vec<Self>>,
+    /// True when the request is an imperative that opens with an operation
+    /// rather than asking for an artifact.
+    pub imperative: bool,
 }
 
 static LEARNED_CHUNKS: Mutex<BTreeMap<String, Chunk>> = Mutex::new(BTreeMap::new());
@@ -311,6 +316,7 @@ struct Request<'a> {
     lowered: String,
     language: &'a str,
     literals: Vec<super::text::Literal>,
+    located: Vec<Operand>,
 }
 
 /// The synchronous core: parse, open unknowns, ground them, plan and verify.
@@ -329,6 +335,12 @@ pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> 
     for literal in literals.iter().rev() {
         unquoted = [&unquoted[..literal.start], " ", &unquoted[literal.end..]].concat();
     }
+    // A bare name after a locative cue that follows a file noun ("any file
+    // in data") is a location operand, a path like "js/worker".
+    let located = location_operands(&unquoted, language);
+    for operand in located.iter().rev() {
+        unquoted = [&unquoted[..operand.start], " ", &unquoted[operand.end..]].concat();
+    }
     let lowered = [" ", &unquoted.to_lowercase(), " "].concat();
     let artifact = seed
         .cue_markers("artifact")
@@ -346,9 +358,20 @@ pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> 
         .any(|word| !seed.is_grammatical(word));
     let specified = !examples.is_empty()
         && (artifact || !prose || examples.iter().any(|example| example.symbolic));
+    // An imperative that opens with an operation its documentation names and
+    // gives no data to act on asks for the procedure itself.
+    let opening = meta_words(&unquoted).into_iter().next();
+    let imperative = !artifact
+        && !question
+        && literals
+            .iter()
+            .all(|literal| literal.kind == LiteralKind::Path)
+        && opening
+            .as_deref()
+            .is_some_and(|word| names_operation(word, language));
     let goal = if specified {
         "synthesize_from_examples"
-    } else if artifact {
+    } else if artifact || imperative {
         "synthesize_from_meaning"
     } else if question {
         "explain"
@@ -366,6 +389,22 @@ pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> 
             ],
         ),
     );
+    if let Some(word) = opening.as_deref()
+        && imperative
+        && !artifact
+        && goal == "synthesize_from_meaning"
+    {
+        trace.emit("evidence", seed.note("imperative", &[("word", word)]));
+    }
+    for operand in &located {
+        trace.emit(
+            "evidence",
+            seed.note(
+                "location",
+                &[("word", &operand.value), ("cue", &operand.cue)],
+            ),
+        );
+    }
     let chunks = learned_snapshot();
     let artifact_words = seed.cue_markers("artifact");
     let mut content_words: Vec<String> = Vec::new();
@@ -417,13 +456,12 @@ pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> 
         for definition in &definitions {
             let stack = [definition.term.clone()];
             for hypothesis in ground_text(&definition.definition, &mut context, 1, &stack) {
-                groundings.push(Grounding {
-                    word: definition.term.clone(),
-                    status: "grounded",
-                    origin: "request",
-                    hypotheses: vec![hypothesis],
-                    needs: Vec::new(),
-                });
+                groundings.push(Grounding::new(
+                    &definition.term,
+                    "grounded",
+                    "request",
+                    vec![hypothesis],
+                ));
             }
         }
     }
@@ -463,6 +501,7 @@ pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> 
         lookups: Vec::new(),
         derivation_lino: String::new(),
         subgoals: None,
+        imperative,
     };
     match goal {
         "explain" => {
@@ -488,6 +527,7 @@ pub fn meta_reason_core(prompt: &str, language: &str, knowledge: &Knowledge) -> 
                 lowered,
                 language,
                 literals,
+                located,
             };
             solve_from_meaning(&mut result, &request, &groundings, &evidence);
         }
@@ -505,8 +545,8 @@ fn solve_from_examples(result: &mut MetaResult, groundings: &[Grounding], eviden
     else {
         return;
     };
-    let source = catalog.render(&found.steps, &found.parameter.to_js());
-    let verification = verify(catalog, &found.steps, found.parameter, &result.examples);
+    let source = catalog.render(&found.steps, &found.parameter);
+    let verification = verify(catalog, &found.steps, &found.parameter, &result.examples);
     let failed = !verification.failures.is_empty();
     result.trace.emit(
         if failed { "impasse" } else { "verified" },
@@ -525,7 +565,7 @@ fn solve_from_examples(result: &mut MetaResult, groundings: &[Grounding], eviden
             .map(|step| catalog.step_label(*step))
             .collect(),
         step_refs: found.steps.clone(),
-        parameter: found.parameter,
+        parameter: found.parameter.clone(),
         source,
         alternatives: found.alternatives,
         evaluated: found.evaluated,
@@ -607,6 +647,43 @@ fn solve_from_meaning(
         Value::Number(number) => Some(number),
         _ => None,
     });
+    // The values the request names, in order: the numbers and texts it
+    // states, and the symbols its words name ("a colon": ":").
+    let mut values: Vec<(usize, NamedValue)> = request
+        .literals
+        .iter()
+        .filter(|literal| literal.kind != LiteralKind::Path)
+        .filter_map(|literal| match &literal.value {
+            Value::Number(number) => Some((
+                literal.start,
+                NamedValue {
+                    value: Param::Number(*number),
+                    kind: "number",
+                },
+            )),
+            Value::Text(text) => Some((
+                literal.start,
+                NamedValue {
+                    value: Param::Text(text.clone()),
+                    kind: "text",
+                },
+            )),
+            _ => None,
+        })
+        .collect();
+    for grounding in groundings {
+        if let Some(symbol) = &grounding.value {
+            values.push((
+                word_position(request.prompt, &grounding.word),
+                NamedValue {
+                    value: Param::Text(symbol.clone()),
+                    kind: "text",
+                },
+            ));
+        }
+    }
+    values.sort_by_key(|(at, _)| *at);
+    let values: Vec<NamedValue> = values.into_iter().map(|(_, value)| value).collect();
     // Words that tie across many operations describe data; they neither
     // require nor credit an operation.
     let words: Vec<(usize, Vec<Hypothesis>)> = groundings
@@ -652,7 +729,8 @@ fn solve_from_meaning(
         .literals
         .iter()
         .find(|literal| literal.kind == LiteralKind::Path)
-        .and_then(|literal| literal.value.as_str().map(str::to_owned));
+        .and_then(|literal| literal.value.as_str().map(str::to_owned))
+        .or_else(|| request.located.first().map(|operand| operand.value.clone()));
     if let Some(path) = &stated_path
         && !input_types.iter().any(|kind| kind == "path")
     {
@@ -691,10 +769,20 @@ fn solve_from_meaning(
         })
         .filter(|hypotheses| !hypotheses.is_empty())
         .collect();
-    let quantifier = seed
-        .cue_markers("universal")
-        .into_iter()
-        .find(|marker| request.lowered.contains(marker.as_str()));
+    // A quantifier over a value ("every colon") ranges over its
+    // occurrences, which the operation reading the value handles; over
+    // anything else ("every file") it asks the program to iterate.
+    let quantifier = seed.cue_markers("universal").into_iter().find(|marker| {
+        let Some(at) = request.lowered.find(marker.as_str()) else {
+            return false;
+        };
+        let quantified = meta_words(&request.lowered[at + marker.len()..])
+            .into_iter()
+            .next();
+        !groundings.iter().any(|grounding| {
+            quantified.as_ref() == Some(&grounding.word) && grounding.status == "value"
+        })
+    });
     if let Some(marker) = &quantifier {
         trace.emit(
             "evidence",
@@ -731,12 +819,21 @@ fn solve_from_meaning(
         .filter(|(index, _)| Some(*index) != unit)
         .map(|(_, hypotheses)| hypotheses.clone())
         .collect();
-    let measure_words: Option<Vec<Vec<Hypothesis>>> =
-        unit.map(|index| vec![groundings[index].hypotheses.clone()]);
+    // A superlative's stem names the measure its selection compares.
+    let mut measure_words: Vec<Vec<Hypothesis>> = unit
+        .map(|index| vec![groundings[index].hypotheses.clone()])
+        .unwrap_or_default();
+    measure_words.extend(
+        groundings
+            .iter()
+            .filter(|grounding| !grounding.measures.is_empty())
+            .map(|grounding| grounding.measures.clone()),
+    );
+    let measure_words = (!measure_words.is_empty()).then_some(measure_words);
     let goal = MeaningGoal {
         groups: &groups,
         evidence,
-        parameter: stated_value,
+        values: &values,
         words: &main_words,
         input_types: &input_types,
         clauses: &clauses,
@@ -754,7 +851,7 @@ fn solve_from_meaning(
             meta_seed().note("parameter", &[("value", &found.parameter.to_js())]),
         );
     }
-    let source = catalog.render(&found.steps, &found.parameter.to_js());
+    let source = catalog.render(&found.steps, &found.parameter);
     let open_unknowns = result
         .unknowns
         .iter()
@@ -783,7 +880,7 @@ fn solve_from_meaning(
         result.program = Some(ProgramInfo {
             steps: labels,
             step_refs: found.steps.clone(),
-            parameter: found.parameter,
+            parameter: found.parameter.clone(),
             source,
             alternatives: 0,
             evaluated: 0,
@@ -797,13 +894,33 @@ fn solve_from_meaning(
     }
     // Probe with the seeded samples of the argument type; the first one the
     // program changes is shown. A program no sample changes is a no-op.
-    let mut probe: Option<Probe> = None;
-    for sample in seed
+    // A program reading a value from the request is also probed with
+    // samples holding that value ("hello:world" for a colon).
+    let mut samples: Vec<String> = seed
         .probes
         .get(&found.from_type)
-        .map(Vec::as_slice)
-        .unwrap_or_default()
+        .cloned()
+        .unwrap_or_default();
+    let first_text = found
+        .parameter
+        .slots()
+        .into_iter()
+        .find_map(Param::as_text)
+        .map(str::to_owned);
+    if let Some(text) = first_text
+        && found.from_type == "text"
     {
+        for sample in seed
+            .probes
+            .get("text")
+            .map(Vec::as_slice)
+            .unwrap_or_default()
+        {
+            samples.push(sample.replace(' ', &text));
+        }
+    }
+    let mut probe: Option<Probe> = None;
+    for sample in &samples {
         let input = if found.from_type == "text" {
             Some(Value::Text(sample.clone()))
         } else {
@@ -816,7 +933,7 @@ fn solve_from_meaning(
             catalog,
             &found.steps,
             &input,
-            found.parameter,
+            &found.parameter,
             Runtime::Worker,
         ) else {
             continue;

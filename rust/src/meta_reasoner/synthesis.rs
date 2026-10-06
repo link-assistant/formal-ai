@@ -115,7 +115,7 @@ pub fn evidence_score(catalog: &Catalog, steps: &[Step], evidence: &[f64]) -> f6
 pub fn verify(
     catalog: &Catalog,
     steps: &[Step],
-    parameter: Param,
+    parameter: &Param,
     examples: &[Example],
 ) -> Verification {
     let mut failures = Vec::new();
@@ -252,7 +252,7 @@ pub fn synthesize_from_examples(
             let mut counterexample: Option<(&Example, Option<Value>)> = None;
             for example in examples {
                 let actual =
-                    run_program(catalog, &steps, &example.input, parameter, Runtime::Worker);
+                    run_program(catalog, &steps, &example.input, &parameter, Runtime::Worker);
                 let same = actual
                     .as_ref()
                     .is_some_and(|value| value.to_json() == example.output.to_json());
@@ -349,8 +349,8 @@ pub struct MeaningGoal<'a> {
     pub groups: &'a [Vec<String>],
     /// Evidence per operation (indexed by [`OpId`]).
     pub evidence: &'a [f64],
-    /// A number the request states, bound to a parametric step.
-    pub parameter: Option<f64>,
+    /// The values the request names, in order, bound to a parametric step.
+    pub values: &'a [NamedValue],
     /// Every grounded word's top hypotheses.
     pub words: &'a [Vec<Hypothesis>],
     /// Argument types the request's data words name.
@@ -365,6 +365,37 @@ pub struct MeaningGoal<'a> {
     pub universal: bool,
     /// The bound's unit word, naming a filter's measure.
     pub measure_words: Option<&'a [Vec<Hypothesis>]>,
+}
+
+/// One value the request names: a number or text it states, or the symbol
+/// one of its words names.
+#[derive(Debug, Clone, PartialEq)]
+pub struct NamedValue {
+    /// The value.
+    pub value: Param,
+    /// Its type (`number` or `text`).
+    pub kind: &'static str,
+}
+
+/// The request's values a parametric step reads, by type in the order the
+/// request names them, or `None` when one is missing. One value is bound as
+/// itself, several as a list.
+///
+/// Mirrors `metaBindValues` in `js/worker/formal_ai_worker_meta_synthesis.js`.
+#[must_use]
+pub fn bind_values(types: &[String], values: &[NamedValue]) -> Option<Param> {
+    let mut used: Vec<usize> = Vec::new();
+    let mut out: Vec<Param> = Vec::new();
+    for kind in types {
+        let at = (0..values.len())
+            .find(|index| !used.contains(index) && values[*index].kind == kind.as_str())?;
+        used.push(at);
+        out.push(values[at].value.clone());
+    }
+    if out.len() == 1 {
+        return out.pop();
+    }
+    Some(Param::Values(out))
 }
 
 struct InternedClause {
@@ -552,7 +583,7 @@ pub fn synthesize_from_meaning(
         .map(|primitive| primitive.to.clone())
         .filter(|to| !to.is_empty())
         .collect();
-    let allowed_parametric = usize::from(goal.parameter.is_some());
+    let allowed_parametric = usize::from(!goal.values.is_empty());
     let evidence_of = |op: OpId| goal.evidence.get(op as usize).copied().unwrap_or(0.0);
     let mut best: Option<(MeaningProgram, [f64; 14])> = None;
     let mut used = Vec::new();
@@ -565,13 +596,23 @@ pub fn synthesize_from_meaning(
         for length in 1..BOUNDS.program_length {
             let mut ceiling = ENUMERATION_CEILING;
             catalog.for_each_program(from, length, &mut ceiling, &mut |steps, types| {
-                let parametric = steps
+                let parametric: Vec<Step> = steps
                     .iter()
-                    .filter(|step| catalog.is_parametric(**step))
-                    .count();
-                if parametric > allowed_parametric {
+                    .copied()
+                    .filter(|step| catalog.is_parametric(*step))
+                    .collect();
+                if parametric.len() > allowed_parametric {
                     return;
                 }
+                let bound = if let Some(step) = parametric.first() {
+                    let Some(bound) = bind_values(&catalog.parameter_types(*step), goal.values)
+                    else {
+                        return;
+                    };
+                    bound
+                } else {
+                    Param::Null
+                };
                 // A measure's parts serve the words they ground ("80 characters").
                 distinct_ops(catalog, steps, false, &mut used);
                 for step in steps.iter().filter(|step| step.filter.is_some()) {
@@ -676,11 +717,7 @@ pub fn synthesize_from_meaning(
                         MeaningProgram {
                             steps: steps.to_vec(),
                             from_type: from_name.to_owned(),
-                            parameter: if parametric > 0 {
-                                goal.parameter.map_or(Param::Null, Param::Number)
-                            } else {
-                                Param::Null
-                            },
+                            parameter: bound,
                             uncovered,
                         },
                         rank,

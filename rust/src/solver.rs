@@ -397,9 +397,12 @@ impl UniversalSolver {
             // program verified against the request's examples, or one every
             // word of the request grounds, answers here (`metaReason` at the
             // top of `solveImpl`, js/worker/formal_ai_worker_20.js).
-            if let Some(answer) =
-                crate::meta_reasoner::try_meta_answer(prompt, language.slug(), &mut log)
-            {
+            if let Some(answer) = crate::meta_reasoner::try_meta_answer(
+                prompt,
+                language.slug(),
+                !history.is_empty(),
+                &mut log,
+            ) {
                 return answer;
             }
 

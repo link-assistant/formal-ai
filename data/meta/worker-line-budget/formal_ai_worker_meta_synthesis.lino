@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_meta_synthesis.js"
-  ceiling 520
-  rationale "Synthesis half of the meta reasoner (2026-10-06 meta-algorithm doctrine): typed program enumeration over the seeded instruction set, parameter and threshold inference from the request's examples, rendering, and verification of the exact source the answer shows. Split from formal_ai_worker_meta_reasoner.js to stay under the 1000-line file limit. Ceiling moved 472 to 520 for rewrite-head fitting, measure parts covering their words, and the tied-word and plural-view tie-breaks."
+  ceiling 620
+  rationale "Synthesis half of the meta reasoner (2026-10-06 meta-algorithm doctrine): typed program enumeration over the seeded instruction set, parameter and threshold inference from the request's examples, rendering, and verification of the exact source the answer shows. Split from formal_ai_worker_meta_reasoner.js to stay under the 1000-line file limit. Ceiling moved 472 to 520 for rewrite-head fitting, measure parts covering their words, and the tied-word and plural-view tie-breaks. Ceiling moved 520 to 620 for binding the values a request names by type and order, text-measure filters (containment), selectors over a measure (maximum_by), and rendering text parameters as literals."

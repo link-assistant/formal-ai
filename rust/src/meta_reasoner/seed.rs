@@ -33,6 +33,21 @@ pub struct Primitive {
     pub environment: String,
     /// True when the operation acts on the world (`effect true`).
     pub effect: bool,
+    /// The types of the values the operation reads from the request
+    /// (`{k0}`, `{k1}` in its code), in the order the request names them.
+    pub takes: Vec<String>,
+}
+
+/// A degree of comparison (`superlative`) of one language.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct Degree {
+    /// Degree id.
+    pub id: String,
+    /// Its endings `(ending, replacement)`, as the affix endings are read.
+    pub endings: Vec<(String, String)>,
+    /// The documentation wording naming the selection, empty when the
+    /// language shares the English record's.
+    pub gloss: String,
 }
 
 /// A higher-order operation (`map_each`, `rewrite_file`).
@@ -55,6 +70,9 @@ pub struct Filter {
     pub doc: String,
     /// Its JavaScript test `(measure, threshold) => ...`.
     pub test: String,
+    /// The measure's result type: `number`, or `text` for a filter that
+    /// compares the element's content with a value.
+    pub measure: String,
 }
 
 /// One documented operation of the doc index with its word forms.
@@ -88,12 +106,17 @@ pub struct MetaSeed {
     pub grammatical: Vec<(String, BTreeSet<String>)>,
     /// Inflection endings `(ending, replacement)` by language.
     pub affixes: Vec<(String, Vec<(String, String)>)>,
+    /// Degrees of comparison by language.
+    pub degrees: Vec<(String, Vec<Degree>)>,
     /// The instruction set.
     pub primitives: Vec<Primitive>,
     /// Higher-order operations.
     pub combinators: Vec<Combinator>,
     /// Filters.
     pub filters: Vec<Filter>,
+    /// Selectors: a choice of one element by its measure (`test` compares a
+    /// measure with the best one so far).
+    pub selectors: Vec<Filter>,
     /// Probe samples by type.
     pub probes: BTreeMap<String, Vec<String>>,
     /// Response templates by id, then by language.
@@ -131,6 +154,25 @@ fn field(record: &LinoNode, name: &str) -> String {
     record.find_child_value(name).to_owned()
 }
 
+/// The `ending` fields of a record as `(ending, replacement)` pairs.
+///
+/// Mirrors the `ending` parsing of the `affix` and `degree` records in
+/// `metaSeed` (`js/worker/formal_ai_worker_meta_reasoner.js`).
+fn endings(record: &LinoNode) -> Vec<(String, String)> {
+    fields(record, "ending")
+        .iter()
+        .map(|value| {
+            let mut parts = value.split_whitespace();
+            let ending = parts.next().unwrap_or_default().to_owned();
+            let replacement = match parts.next() {
+                None | Some("\"\"") => String::new(),
+                Some(other) => other.to_owned(),
+            };
+            (ending, replacement)
+        })
+        .collect()
+}
+
 impl MetaSeed {
     /// Parse the seed text.
     ///
@@ -164,19 +206,19 @@ impl MetaSeed {
                 );
             }
             "affix" => {
-                let pairs = fields(record, "ending")
-                    .iter()
-                    .map(|value| {
-                        let mut parts = value.split_whitespace();
-                        let ending = parts.next().unwrap_or_default().to_owned();
-                        let replacement = match parts.next() {
-                            None | Some("\"\"") => String::new(),
-                            Some(other) => other.to_owned(),
-                        };
-                        (ending, replacement)
-                    })
-                    .collect();
-                upsert(&mut self.affixes, &language, pairs);
+                upsert(&mut self.affixes, &language, endings(record));
+            }
+            "degree" => {
+                let degree = Degree {
+                    id: record.id.clone(),
+                    endings: endings(record),
+                    gloss: field(record, "gloss"),
+                };
+                if let Some(index) = self.degrees.iter().position(|(name, _)| *name == language) {
+                    self.degrees[index].1.push(degree);
+                } else {
+                    self.degrees.push((language, vec![degree]));
+                }
             }
             "primitive" => self.primitives.push(Primitive {
                 id: record.id.clone(),
@@ -187,16 +229,34 @@ impl MetaSeed {
                 infer: field(record, "infer"),
                 environment: field(record, "environment"),
                 effect: field(record, "effect") == "true",
+                takes: field(record, "takes")
+                    .split_whitespace()
+                    .map(str::to_owned)
+                    .collect(),
             }),
             "combinator" => self.combinators.push(Combinator {
                 id: record.id.clone(),
                 doc: field(record, "doc"),
                 code: field(record, "code"),
             }),
-            "filter" => self.filters.push(Filter {
+            "filter" => {
+                let measure = field(record, "measure");
+                self.filters.push(Filter {
+                    id: record.id.clone(),
+                    doc: field(record, "doc"),
+                    test: field(record, "test"),
+                    measure: if measure.is_empty() {
+                        String::from("number")
+                    } else {
+                        measure
+                    },
+                });
+            }
+            "selector" => self.selectors.push(Filter {
                 id: record.id.clone(),
                 doc: field(record, "doc"),
                 test: field(record, "test"),
+                measure: String::from("number"),
             }),
             "impasse" => {
                 self.impasse_intents.extend(fields(record, "intent"));
@@ -233,6 +293,9 @@ impl MetaSeed {
         }
         for filter in &self.filters {
             operations.push((filter.id.clone(), "filter", filter.doc.clone()));
+        }
+        for selector in &self.selectors {
+            operations.push((selector.id.clone(), "selector", selector.doc.clone()));
         }
         let mut indexed = Vec::new();
         let mut frequency: BTreeMap<String, usize> = BTreeMap::new();
@@ -412,6 +475,51 @@ impl MetaSeed {
     #[must_use]
     pub fn primitive(&self, id: &str) -> Option<&Primitive> {
         self.primitives.iter().find(|primitive| primitive.id == id)
+    }
+
+    /// True when an operation is a measure: a parameter-free primitive to a
+    /// number with no effect on the world.
+    ///
+    /// Mirrors `metaIsMeasure` in `js/worker/formal_ai_worker_meta_reasoner.js`.
+    #[must_use]
+    pub fn is_measure(&self, id: &str) -> bool {
+        self.primitive(id).is_some_and(|primitive| {
+            primitive.to == "number"
+                && !primitive.effect
+                && primitive.infer.is_empty()
+                && primitive.takes.is_empty()
+        })
+    }
+
+    /// The degrees of comparison of a language, the English ones otherwise.
+    ///
+    /// Mirrors `seed.degrees[context.language] || seed.degrees.en` in
+    /// `metaGroundDegree` (`js/worker/formal_ai_worker_meta_reasoner.js`).
+    #[must_use]
+    pub fn degrees_of(&self, language: &str) -> &[Degree] {
+        self.degrees
+            .iter()
+            .find(|(name, _)| name == language)
+            .or_else(|| self.degrees.iter().find(|(name, _)| name == "en"))
+            .map(|(_, list)| list.as_slice())
+            .unwrap_or_default()
+    }
+
+    /// The gloss of a degree, falling back to the English record of the same
+    /// degree.
+    ///
+    /// Mirrors the `gloss` fallback of `metaGroundDegree` in
+    /// `js/worker/formal_ai_worker_meta_reasoner.js`.
+    #[must_use]
+    pub fn degree_gloss<'a>(&'a self, degree: &'a Degree) -> &'a str {
+        if !degree.gloss.is_empty() {
+            return &degree.gloss;
+        }
+        self.degrees
+            .iter()
+            .find(|(name, _)| name == "en")
+            .and_then(|(_, list)| list.iter().find(|item| item.id == degree.id))
+            .map_or("", |item| item.gloss.as_str())
     }
 
     /// True when an operation only changes representation between a text and

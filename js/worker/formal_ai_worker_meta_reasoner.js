@@ -45,7 +45,7 @@ const metaCompiled = new Map();
 function metaSeed() {
   if (metaSeedCache) return metaSeedCache;
   const text = typeof SEED_RAW === "object" ? seedRawText(SEED_RAW, META_REASONING_FILE) : "";
-  const seed = { cues: {}, grammatical: {}, affixes: {}, primitives: [], combinators: [], filters: [], probes: {}, responses: {}, notes: {}, impasse: { intents: [], suffixes: [] } };
+  const seed = { cues: {}, grammatical: {}, affixes: {}, degrees: {}, primitives: [], combinators: [], filters: [], selectors: [], probes: {}, responses: {}, notes: {}, impasse: { intents: [], suffixes: [] } };
   if (!text) return seed;
   const root = parseLinoTree(text);
   for (const top of root.children) {
@@ -67,6 +67,16 @@ function metaSeed() {
           const parts = String(value).split(/\s+/u);
           return [parts[0], parts[1] === "\"\"" || parts[1] === undefined ? "" : parts[1]];
         });
+      } else if (record.name === "degree") {
+        seed.degrees[language] = seed.degrees[language] || [];
+        seed.degrees[language].push({
+          id: record.value,
+          endings: fields("ending").map((value) => {
+            const parts = String(value).split(/\s+/u);
+            return [parts[0], parts[1] === "\"\"" || parts[1] === undefined ? "" : parts[1]];
+          }),
+          gloss: field("gloss"),
+        });
       } else if (record.name === "primitive") {
         seed.primitives.push({
           id: record.value,
@@ -77,11 +87,14 @@ function metaSeed() {
           infer: field("infer"),
           environment: field("environment"),
           effect: field("effect") === "true",
+          takes: field("takes").split(/\s+/u).filter(Boolean),
         });
       } else if (record.name === "combinator") {
         seed.combinators.push({ id: record.value, doc: field("doc"), code: field("code") });
       } else if (record.name === "filter") {
-        seed.filters.push({ id: record.value, doc: field("doc"), test: field("test") });
+        seed.filters.push({ id: record.value, doc: field("doc"), test: field("test"), measure: field("measure") || "number" });
+      } else if (record.name === "selector") {
+        seed.selectors.push({ id: record.value, doc: field("doc"), test: field("test") });
       } else if (record.name === "impasse") {
         seed.impasse.intents.push(...fields("intent"));
         seed.impasse.suffixes.push(...fields("suffix"));
@@ -254,6 +267,16 @@ function metaExamples(prompt, literals) {
 }
 
 /**
+ * True when a word is a question word: a surface of the seed lexicon's
+ * `interrogative_opener` meaning, in any language.
+ * @param {string} word
+ * @returns {boolean}
+ */
+function metaIsInterrogative(word) {
+  return typeof wordsForRole === "function" && wordsForRole("interrogative_opener").includes(word);
+}
+
+/**
  * Definitions the request gives itself: "<term> is <definition>".
  * @param {string} prompt
  * @returns {Array<{term: string, definition: string}>}
@@ -268,7 +291,9 @@ function metaRequestDefinitions(prompt) {
       if (at < 0) continue;
       const head = metaWords(padded.slice(0, at)).filter((word) => !metaIsGrammatical(word));
       const definition = padded.slice(at + marker.length).trim();
-      if (head.length === 1 && definition) out.push({ term: head[0], definition });
+      // A question word ("what is ...") asks for the unknown; it is never a
+      // term the request defines.
+      if (head.length === 1 && definition && !metaIsInterrogative(head[0])) out.push({ term: head[0], definition });
       break;
     }
   }
@@ -286,7 +311,8 @@ function metaDocIndex() {
   const operations = seed.primitives
     .map((primitive) => ({ id: primitive.id, kind: "primitive", text: `${primitive.id.replace(/_/gu, " ")} ${primitive.doc}` }))
     .concat(seed.combinators.map((combinator) => ({ id: combinator.id, kind: "combinator", text: `${combinator.id.replace(/_/gu, " ")} ${combinator.doc}` })))
-    .concat(seed.filters.map((filter) => ({ id: filter.id, kind: "filter", text: `${filter.id.replace(/_/gu, " ")} ${filter.doc}` })));
+    .concat(seed.filters.map((filter) => ({ id: filter.id, kind: "filter", text: `${filter.id.replace(/_/gu, " ")} ${filter.doc}` })))
+    .concat(seed.selectors.map((selector) => ({ id: selector.id, kind: "selector", text: `${selector.id.replace(/_/gu, " ")} ${selector.doc}` })));
   const frequency = new Map();
   for (const operation of operations) {
     const forms = new Set();
@@ -363,6 +389,10 @@ function metaGround(word, context, depth, stack) {
     trace.emit("hypothesis", `${indent}${word} → ${documented.slice(0, 3).map((item) => `${item.operation}:${item.score.toFixed(2)}`).join(" | ")} (documentation)`);
     return { word, status: "grounded", origin: "documentation", hypotheses: documented.map((item) => ({ ...item, via: "documentation" })), needs: [] };
   }
+  // A word in a degree of comparison is its stem's measure and the degree's
+  // selection ("longest": long, superlative), read before its own entry.
+  const degree = depth === 0 ? metaGroundDegree(word, context, stack, indent) : { grounding: null, needs: [] };
+  if (degree.grounding) return degree.grounding;
   const senses = context.knowledge.get(word) || [];
   // Captures ground only the request's own words. A gloss word is grounded
   // from documentation and the request alone, so meaning cannot drift
@@ -417,16 +447,122 @@ function metaGround(word, context, depth, stack) {
       trace.emit("grounded", `${indent}${word} → ${hypotheses[0].operation} via ${via}`);
       return { word, status: "grounded", origin: "capture", hypotheses, needs: [] };
     }
+    // A gloss that quotes a symbol ("The punctuation mark ( : )") defines
+    // the word as that symbol: the word names a value, not an operation.
+    const symbol = metaGlossSymbol(senses);
+    if (symbol) {
+      trace.emit("grounded", metaNote("symbol", { indent, word, value: JSON.stringify(symbol.value) }));
+      return { word, status: "value", origin: "capture", hypotheses: [], value: symbol.value, via: symbol.via, needs: [] };
+    }
     // Lazy grounding: a gloss word is worth a lookup only when no gloss of
     // its parent reached an operation.
     trace.emit("impasse", metaNote("no_gloss", { indent, word }));
-    return { word, status: "open", origin: "capture", hypotheses: [], needs: deeperNeeds };
+    return { word, status: "open", origin: "capture", hypotheses: [], needs: deeperNeeds.concat(degree.needs.filter((need) => !deeperNeeds.includes(need))) };
   }
-  if (!context.knowledge.has(word) && depth === 0) {
-    if (depth === 0) trace.emit("impasse", metaNote("lookup_needed", { word }));
-    return { word, status: "open", origin: "none", hypotheses: [], needs: [word] };
+  if (depth > 0) return { word, status: "open", origin: "none", hypotheses: [], needs: [] };
+  if (!context.knowledge.has(word)) {
+    trace.emit("impasse", metaNote("lookup_needed", { word }));
+    return { word, status: "open", origin: "none", hypotheses: [], needs: [word].concat(degree.needs) };
   }
-  return { word, status: "open", origin: "none", hypotheses: [], needs: [] };
+  return { word, status: "open", origin: "none", hypotheses: [], needs: degree.needs };
+}
+
+/**
+ * The symbol a dictionary gloss defines its word as: a token of the gloss's
+ * first sentence that, stripped of enclosing brackets and quotation marks,
+ * is one character that is neither a letter, a digit nor a space ("The
+ * punctuation mark ( : )"). A symbol a later sentence mentions in passing
+ * does not define the word. The first salient gloss defining one decides.
+ * @param {Array<{gloss: string, sourceUrl?: string}>} senses
+ * @returns {{value: string, via: string}|null}
+ */
+function metaGlossSymbol(senses) {
+  for (const sense of senses.slice(0, META_BOUNDS.glossesPerWord)) {
+    const head = String(sense.gloss || "").split(/[.;](?:\s|$)/u)[0];
+    for (const token of head.split(/\s+/u)) {
+      const core = token.replace(/^[()[\]{}"'“”‘’«»⟨⟩]+|[()[\]{}"'“”‘’«»⟨⟩]+$/gu, "");
+      if (Array.from(core).length === 1 && !/[\p{L}\p{N}\s]/u.test(core)) return { value: core, via: sense.sourceUrl || sense.gloss };
+    }
+  }
+  return null;
+}
+
+/**
+ * A word in a degree of comparison ("longest" = long + superlative): its stem
+ * names a measure, grounded like any word but kept only where it reaches an
+ * operation to a number; the degree's seeded gloss ("the greatest") names the
+ * selection by that measure. Returns the grounding, or the stems a lookup
+ * would have to open.
+ * @param {string} word
+ * @param {object} context
+ * @param {Array<string>} stack
+ * @param {string} indent
+ * @returns {{grounding: object|null, needs: Array<string>}}
+ */
+function metaGroundDegree(word, context, stack, indent) {
+  const seed = metaSeed();
+  const needs = [];
+  for (const degree of seed.degrees[context.language] || seed.degrees.en || []) {
+    const gloss = degree.gloss || ((seed.degrees.en || []).find((item) => item.id === degree.id) || {}).gloss || "";
+    for (const [ending, replacement] of degree.endings) {
+      if (!gloss || word.length <= ending.length + 2 || !word.endsWith(ending)) continue;
+      const stem = word.slice(0, word.length - ending.length) + replacement;
+      if (stem === word || metaIsGrammatical(stem) || stack.includes(stem)) continue;
+      const measures = metaGroundMeasure(stem, context, stack.concat(word), indent);
+      if (measures === null) {
+        if (!needs.includes(stem)) needs.push(stem);
+        continue;
+      }
+      if (!measures.length) continue;
+      const hypotheses = metaGroundText(gloss, context, 1, stack.concat(word), []);
+      if (!hypotheses.length) continue;
+      context.trace.emit("hypothesis", metaNote("degree", { word, stem, degree: degree.id }));
+      return { grounding: { word, status: "grounded", origin: "degree", hypotheses, measures, needs: [] }, needs: [] };
+    }
+  }
+  return { grounding: null, needs };
+}
+
+/**
+ * True when an operation is a measure: a parameter-free primitive from some
+ * type to a number with no effect on the world.
+ * @param {string} id
+ * @returns {boolean}
+ */
+function metaIsMeasure(id) {
+  const primitive = metaSeed().primitives.find((item) => item.id === id);
+  return Boolean(primitive && primitive.to === "number" && !primitive.effect && !primitive.infer && !primitive.takes.length);
+}
+
+/**
+ * The measures a word names: its documentation, or the words of its first
+ * gloss that reaches one, kept only where they are measures. Null when the
+ * word has neither and was not looked up yet.
+ * @param {string} stem
+ * @param {object} context
+ * @param {Array<string>} stack
+ * @param {string} indent
+ * @returns {Array<object>|null}
+ */
+function metaGroundMeasure(stem, context, stack, indent) {
+  const documented = metaDocHypotheses(stem, context.language).filter((item) => metaIsMeasure(item.operation));
+  if (documented.length) return documented.map((item) => ({ ...item, via: "documentation" }));
+  if (!context.knowledge.has(stem)) return null;
+  for (const sense of context.knowledge.get(stem).slice(0, META_BOUNDS.glossesPerWord)) {
+    const scores = new Map();
+    for (const token of new Set(metaWords(sense.gloss).filter((item) => !metaIsGrammatical(item)))) {
+      for (const hypothesis of metaGround(token, context, 1, stack.concat(stem)).hypotheses) {
+        if (hypothesis.score < META_BOUNDS.specificGloss || !metaIsMeasure(hypothesis.operation)) continue;
+        if (hypothesis.score > (scores.get(hypothesis.operation) || 0)) scores.set(hypothesis.operation, hypothesis.score);
+      }
+    }
+    if (!scores.size) continue;
+    const measures = Array.from(scores, ([operation, score]) => ({ operation, score, via: sense.sourceUrl || sense.gloss }))
+      .sort((a, b) => b.score - a.score || a.operation.localeCompare(b.operation));
+    context.trace.emit("grounded", metaNote("degree_measure", { indent: `${indent}↳ `, stem, operations: measures.map((item) => item.operation).join(" | ") }));
+    return measures;
+  }
+  return [];
 }
 
 /**
@@ -544,16 +680,30 @@ function metaReasonCore(prompt, language, knowledge) {
   const definitions = metaRequestDefinitions(prompt);
   let unquoted = String(prompt);
   for (const literal of literals.slice().reverse()) unquoted = unquoted.slice(0, literal.start) + " " + unquoted.slice(literal.end);
+  // A bare name after a locative cue that follows a file noun ("any file in
+  // data") is a location operand, a path like "js/worker".
+  const located = metaLocationOperands(unquoted, language);
+  for (const operand of located.slice().reverse()) unquoted = unquoted.slice(0, operand.start) + " " + unquoted.slice(operand.end);
   const lowered = ` ${unquoted.toLowerCase()} `;
   const artifact = metaCueMarkers("artifact").some((marker) => lowered.includes(marker));
   const question = metaCueMarkers("question").find((marker) => lowered.includes(marker));
+  // An imperative that opens with an operation its documentation names
+  // ("replace every colon ...") and gives no data to act on asks for the
+  // procedure itself, as an artifact request does.
+  const opening = metaWords(unquoted)[0];
+  const openingOperations = opening && !metaIsGrammatical(opening) ? metaDocHypotheses(opening, language) : [];
+  const openingTop = openingOperations.filter((item) => item.score >= openingOperations[0].score * 0.99).map((item) => item.operation);
+  const imperative = !artifact && !question && literals.every((literal) => literal.kind === "path")
+    && openingTop.length > 0 && openingTop.length <= META_BOUNDS.requiredGroupSize && !openingTop.every(metaIsView);
   // Examples embedded in prose that asks for no artifact ("on the 18th at
   // 17:00") are not a specification: an arrow, an artifact request or bare
   // examples make the examples the goal.
   const prose = metaWords(unquoted).some((word) => !metaIsGrammatical(word));
   const specified = examples.length && (artifact || !prose || examples.some((example) => example.symbolic));
-  const goal = specified ? "synthesize_from_examples" : artifact ? "synthesize_from_meaning" : question ? "explain" : "understand";
+  const goal = specified ? "synthesize_from_examples" : artifact || imperative ? "synthesize_from_meaning" : question ? "explain" : "understand";
   trace.emit("formalize", metaNote("formalized", { goal, examples: examples.length, definitions: definitions.length }));
+  if (imperative && !artifact && goal === "synthesize_from_meaning") trace.emit("evidence", metaNote("imperative", { word: opening }));
+  for (const operand of located) trace.emit("evidence", metaNote("location", { word: operand.value, cue: operand.cue }));
   const context = { trace, definitions, knowledge, language, needs: [] };
   const artifactWords = metaCueMarkers("artifact");
   const contentWords = [];
@@ -588,6 +738,7 @@ function metaReasonCore(prompt, language, knowledge) {
     program: null,
     verification: null,
     status: "open",
+    imperative,
     trace,
   };
   if (goal === "explain") {
@@ -636,6 +787,13 @@ function metaReasonCore(prompt, language, knowledge) {
       return result;
     }
     const stated = literals.find((literal) => literal.kind !== "path" && typeof literal.value === "number");
+    // The values the request names, in order: the numbers and texts it
+    // states, and the symbols its words name ("a colon": ":").
+    const values = literals
+      .filter((literal) => literal.kind !== "path" && (typeof literal.value === "number" || typeof literal.value === "string"))
+      .map((literal) => ({ value: literal.value, type: typeof literal.value === "number" ? "number" : "text", at: literal.start }))
+      .concat(groundings.filter((grounding) => grounding.status === "value").map((grounding) => ({ value: grounding.value, type: "text", at: metaWordPosition(prompt, grounding.word) })))
+      .sort((a, b) => a.at - b.at);
     // Words that tie across many operations describe data; they neither
     // require nor credit an operation.
     const words = groundings
@@ -656,7 +814,7 @@ function metaReasonCore(prompt, language, knowledge) {
         }
       }
     }
-    const statedPath = literals.find((literal) => literal.kind === "path");
+    const statedPath = literals.find((literal) => literal.kind === "path") || located[0];
     if (statedPath && !inputTypes.includes("path")) {
       inputTypes.unshift("path");
       trace.emit("evidence", metaNote("stated_path", { path: statedPath.value }));
@@ -674,7 +832,15 @@ function metaReasonCore(prompt, language, knowledge) {
       .filter((item) => metaLemmas(item.word, language).some((lemma) => lemma !== item.word))
       .map((item) => item.hypotheses.filter((hypothesis) => metaIsView(hypothesis.operation)))
       .filter((hypotheses) => hypotheses.length);
-    const quantifier = metaCueMarkers("universal").find((marker) => ` ${unquoted.toLowerCase()} `.includes(marker));
+    // A quantifier over a value ("every colon") ranges over its occurrences,
+    // which the operation reading the value handles; over anything else
+    // ("every file") it asks the program to iterate.
+    const quantifier = metaCueMarkers("universal").find((marker) => {
+      const at = lowered.indexOf(marker);
+      if (at < 0) return false;
+      const quantified = metaWords(lowered.slice(at + marker.length))[0];
+      return !groundings.some((grounding) => grounding.word === quantified && grounding.status === "value");
+    });
     if (quantifier) trace.emit("evidence", metaNote("universal", { word: quantifier.trim() }));
     // The grounded word right after a stated bound is its unit ("longer
     // than 80 characters"): it names what a filter measures.
@@ -683,14 +849,16 @@ function metaReasonCore(prompt, language, knowledge) {
     if (unit) trace.emit("evidence", metaNote("measure_unit", { word: unit.word, bound: stated.value }));
     // The unit credits the measure, not the main program.
     const mainWords = unit ? words.filter((hypotheses) => !hypotheses.every((hypothesis) => unit.hypotheses.includes(hypothesis))) : words;
-    const found = metaSynthesizeFromMeaning(groups, evidence, trace, stated ? stated.value : null, mainWords, inputTypes, clauses, {
+    // A superlative's stem names the measure its selection compares.
+    const measureWords = (unit ? [unit.hypotheses] : []).concat(groundings.filter((grounding) => grounding.measures).map((grounding) => grounding.measures));
+    const found = metaSynthesizeFromMeaning(groups, evidence, trace, values, mainWords, inputTypes, clauses, {
       weakWords,
       weakViews,
       universal: Boolean(quantifier),
-      measureWords: unit ? [unit.hypotheses] : null,
+      measureWords: measureWords.length ? measureWords : null,
     });
     if (found) {
-      if (found.parameter !== null) trace.emit("bind", metaNote("parameter", { value: found.parameter }));
+      if (found.parameter !== null) trace.emit("bind", metaNote("parameter", { value: metaLiteral(found.parameter) }));
       const source = metaRender(found.steps, found.parameter);
       // Probe with the seeded samples of the argument type; the first one the
       // program changes is shown. A program no sample changes is a no-op.
@@ -709,7 +877,12 @@ function metaReasonCore(prompt, language, knowledge) {
         metaLearn(groundings, found.steps, trace);
         return result;
       }
-      for (const sample of metaSeed().probes[found.fromType] || []) {
+      // A program reading a value from the request is also probed with
+      // samples holding that value ("hello:world" for a colon).
+      const samples = (metaSeed().probes[found.fromType] || []).slice();
+      const texts = [].concat(found.parameter === null ? [] : found.parameter).filter((value) => typeof value === "string");
+      if (found.fromType === "text" && texts.length) for (const sample of metaSeed().probes.text || []) samples.push(sample.split(" ").join(texts[0]));
+      for (const sample of samples) {
         try {
           const input = found.fromType === "text" ? sample : JSON.parse(sample);
           const output = solution(input);
@@ -735,6 +908,52 @@ function metaReasonCore(prompt, language, knowledge) {
     return result;
   }
   return result;
+}
+
+/**
+ * Location operands: the bare name right after a locative cue ("in", "в")
+ * that follows a file noun, a word whose documented operations all take or
+ * give a path. A name with no determiner is a proper name ("in data"); "in a
+ * folder" names no operand.
+ * @param {string} text the request with its literals blanked
+ * @param {string} language
+ * @returns {Array<{start: number, end: number, value: string, cue: string}>}
+ */
+function metaLocationOperands(text, language) {
+  const out = [];
+  const lowered = String(text).toLowerCase();
+  for (const marker of metaCueMarkers("location")) {
+    let from = 0;
+    for (;;) {
+      const at = lowered.indexOf(marker, from);
+      if (at < 0) break;
+      from = at + 1;
+      const before = metaWords(lowered.slice(0, at));
+      const noun = before[before.length - 1];
+      const after = /^[\p{L}\p{N}_]+(?:[.-][\p{L}\p{N}_]+)*/u.exec(text.slice(at + marker.length));
+      if (!noun || !after || metaIsGrammatical(after[0].toLowerCase())) continue;
+      const types = metaDocHypotheses(noun, language)
+        .map((item) => metaSeed().primitives.find((primitive) => primitive.id === item.operation))
+        .filter(Boolean);
+      if (!types.length || !types.every((primitive) => [primitive.from, primitive.to].some((type) => type === "path" || type === "list_path"))) continue;
+      const start = at + marker.length;
+      if (out.some((operand) => operand.start === start)) continue;
+      out.push({ start, end: start + after[0].length, value: after[0], cue: marker.trim() });
+    }
+  }
+  return out.sort((a, b) => a.start - b.start);
+}
+
+/**
+ * Where a word first stands in the request, so values named by words and
+ * values stated as literals keep the request's order.
+ * @param {string} prompt
+ * @param {string} word
+ * @returns {number}
+ */
+function metaWordPosition(prompt, word) {
+  const match = new RegExp(`(?<![\\p{L}\\p{N}_])${word}(?![\\p{L}\\p{N}_])`, "u").exec(String(prompt).toLowerCase());
+  return match ? match.index : String(prompt).length;
 }
 
 /**
@@ -846,6 +1065,9 @@ async function metaReason(prompt, language, options) {
  */
 function metaAnswer(result, allowOpen) {
   if (result.subgoals) return metaCompositeAnswer(result, allowOpen);
+  // An imperative names a procedure only when every word of it is
+  // understood; otherwise the turn is not evidently a request for one.
+  if (result.imperative && result.status !== "solved") return null;
   const language = result.language === "ru" ? "ru" : "en";
   const reasoning = [metaResponse("reasoning_heading", language, {})];
   for (const event of result.trace.events) {

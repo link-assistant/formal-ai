@@ -7,7 +7,9 @@
 #
 #   cue          request-shape markers (how a definition, an example, an
 #                artifact request, a question or a universal quantifier is
-#                written) per language. A universal quantifier ("every file")
+#                written) per language. The object of a `location` cue after
+#                a file noun ("files in data") is a location operand, a path.
+#                A universal quantifier ("every file")
 #                says the program iterates — it ranks programs that pass
 #                through a list above ones that never do.
 #   grammatical  words whose dictionary part of speech is a closed class
@@ -16,6 +18,10 @@
 #                missing here is looked up like any other unknown.
 #   affix        inflection endings stripped when matching a surface to a
 #                documented name (reverses -> reverse).
+#   degree       comparison endings per language (longest = long + est). A
+#                superlative word is its stem, which names a measure, plus the
+#                degree's `gloss` (the English documentation wording, shared
+#                by every language), which names the selection by it.
 #   primitive    the instruction set programs are composed from. `doc` is the
 #                operation's own documentation (the wording its language
 #                reference uses), never a list of request words — a request
@@ -27,9 +33,15 @@
 #                the file system), so it is not probed where that is absent;
 #                `effect true` marks an operation that acts on the world
 #                (prints, exits, runs), which never serves as a measure.
+#                `takes` lists the types of the values an operation reads from
+#                the request ({k0}, {k1} in its code), in the order named.
 #   filter       a comparison a list is filtered by — the element's measure
 #                (any primitive to a number, or the number itself) against a
 #                threshold inferred from the examples or read from the request.
+#                `measure text` compares the element's content (the element
+#                itself, or what one operation reads from it) with a value.
+#   selector     a choice of one element of a list by its measure (`test`
+#                compares an element's measure with the best one so far).
 #   probe        sample inputs per type, run when a request gives no example;
 #                the first one the program changes is shown.
 #   response     answer templates per language; {name} slots are filled from
@@ -121,6 +133,17 @@ meta_reasoning
     marker " все "
     marker " всех "
     marker " любой "
+  cue
+    role location
+    language en
+    marker " in "
+    marker " under "
+    marker " inside "
+  cue
+    role location
+    language ru
+    marker " в "
+    marker " внутри "
   cue
     role question
     language en
@@ -227,6 +250,15 @@ meta_reasoning
     ending ой ""
     ending ый ""
     ending ая ""
+  degree superlative
+    language en
+    ending est ""
+    ending iest y
+    gloss "the greatest"
+  degree superlative
+    language ru
+    ending ейший ""
+    ending айший ""
   primitive split_words
     from text
     to list_text
@@ -392,6 +424,12 @@ meta_reasoning
     to list_number
     doc "Filters a list, keeping only the odd numbers (not divisible by two)."
     code "(input) => input.filter((value) => value % 2 !== 0)"
+  primitive replace_text
+    from text
+    to text
+    takes "text text"
+    doc "Replaces every occurrence of a value in a string with a replacement value."
+    code "(input) => input.split({k0}).join({k1})"
   combinator map_each
     doc "Applies an operation to each element of a list, to every item in turn, and returns the list of results."
   combinator rewrite_file
@@ -403,6 +441,13 @@ meta_reasoning
   filter keep_less
     doc "Filters a list, keeping the elements whose measure is less than a threshold (fewer, shorter, smaller, below)."
     test "(measure, threshold) => measure < threshold"
+  filter keep_containing
+    measure text
+    doc "Filters a list, keeping the elements whose content contains a value (includes it as a substring)."
+    test "(measure, threshold) => measure.includes(threshold)"
+  selector maximum_by
+    doc "Returns the element of a list whose measure is the greatest (the maximum by a measure); the first such element on a tie."
+    test "(measure, best) => measure > best"
   impasse
     intent calculation_error
     intent unknown
@@ -467,6 +512,16 @@ meta_reasoning
     text "skipped: the program needs the {environment} environment"
   note no_op
     text "no probe input is changed by the program; it does nothing the request asked for"
+  note location
+    text "{word} follows “{cue}” after a file noun: a location operand, so the program takes a path"
+  note symbol
+    text "{indent}{word} names the symbol {value}: its gloss quotes it"
+  note degree
+    text "{word} is {stem} in the {degree} degree"
+  note degree_measure
+    text "{indent}{stem} names the measure {operations}"
+  note imperative
+    text "the request opens with an operation ({word}) and names no data to act on: it asks for the procedure"
   response solved_by_examples
     language en
     text "I composed this program from the operations I could ground and checked it against every example you gave ({passed}/{total} pass):"

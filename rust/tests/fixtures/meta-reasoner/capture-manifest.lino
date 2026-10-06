@@ -1,10 +1,14 @@
-# Real Free Dictionary API (Wiktionary) responses, fetched 2026-10-06 through
+# Real Free Dictionary API (Wiktionary) responses, fetched 2026-10-06/07 through
 # the URL the sources registry declares for source wiktionary. Bytes unedited.
 capture_manifest
   capture backwards
     url "https://api.dictionaryapi.dev/api/v2/entries/en/backwards"
     sha256 a13995b7e6ba7dbce941908a44752fd079ca749e072bbfde09d544a76fd5d9dd
     fetched_at 2026-10-06
+  capture dash
+    url "https://api.dictionaryapi.dev/api/v2/entries/en/dash"
+    sha256 be88aaba772ca5811ce1f2730d2f0e7f8511ce26e250f8c1f6adfd78f03d8869
+    fetched_at 2026-10-07
   capture double
     url "https://api.dictionaryapi.dev/api/v2/entries/en/double"
     sha256 87032cdbb6cc5b25a484f3d7c883720a1c326af0ac328766684d77477cb1d90d

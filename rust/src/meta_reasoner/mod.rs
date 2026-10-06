@@ -29,6 +29,7 @@ pub mod integration;
 pub mod interpreter;
 pub mod phrases;
 pub mod reasoner;
+pub mod request;
 pub mod seed;
 pub mod synthesis;
 pub mod text;

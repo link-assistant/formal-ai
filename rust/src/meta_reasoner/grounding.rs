@@ -12,8 +12,8 @@ use super::phrases::{
     RECALL, REQUEST_DEFINITION, UNDERSTAND, fill,
 };
 use super::seed::{Hypothesis, meta_seed, sort_hypotheses};
-use super::text::{Definition, meta_words};
-use super::value::to_fixed2;
+use super::text::{Definition, is_letter, is_number, meta_words, utf16_len};
+use super::value::{json_string, to_fixed2};
 use super::{BOUNDS, Trace};
 
 /// One dictionary sense of a word.
@@ -45,24 +45,46 @@ pub struct Chunk {
 pub struct Grounding {
     /// The word.
     pub word: String,
-    /// `grounded`, `defined`, `structural`, `frame` or `open`.
+    /// `grounded`, `defined`, `structural`, `frame`, `value` or `open`.
     pub status: &'static str,
-    /// `request`, `chunk`, `documentation`, `capture`, `cycle` or `none`.
+    /// `request`, `chunk`, `documentation`, `degree`, `capture`, `cycle` or
+    /// `none`.
     pub origin: &'static str,
     /// Operation hypotheses, strongest first.
     pub hypotheses: Vec<Hypothesis>,
     /// Words a lookup would have to open.
     pub needs: Vec<String>,
+    /// The symbol a `value` word names (its gloss quotes it).
+    pub value: Option<String>,
+    /// The measures a word in a degree of comparison names through its stem.
+    pub measures: Vec<Hypothesis>,
 }
 
 impl Grounding {
-    fn open(word: &str, origin: &'static str, needs: Vec<String>) -> Self {
+    /// A grounding with the given status and hypotheses, naming no value
+    /// and no measure.
+    #[must_use]
+    pub fn new(
+        word: &str,
+        status: &'static str,
+        origin: &'static str,
+        hypotheses: Vec<Hypothesis>,
+    ) -> Self {
         Self {
             word: word.to_owned(),
-            status: "open",
+            status,
             origin,
-            hypotheses: Vec::new(),
+            hypotheses,
+            needs: Vec::new(),
+            value: None,
+            measures: Vec::new(),
+        }
+    }
+
+    fn open(word: &str, origin: &'static str, needs: Vec<String>) -> Self {
+        Self {
             needs,
+            ..Self::new(word, "open", origin, Vec::new())
         }
     }
 
@@ -138,17 +160,12 @@ pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[Stri
         let mut deeper = stack.to_vec();
         deeper.push(word.to_owned());
         let hypotheses = ground_text(&definition.definition, context, depth + 1, &deeper);
-        return Grounding {
-            word: word.to_owned(),
-            status: if hypotheses.is_empty() {
-                "defined"
-            } else {
-                "grounded"
-            },
-            origin: "request",
-            hypotheses,
-            needs: Vec::new(),
+        let status = if hypotheses.is_empty() {
+            "defined"
+        } else {
+            "grounded"
         };
+        return Grounding::new(word, status, "request", hypotheses);
     }
     let lemmas = seed.lemmas(word, context.language);
     let chunks = context.chunks;
@@ -158,17 +175,12 @@ pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[Stri
                 "recall",
                 fill(RECALL, &[&indent, word, &chunk.operation, &chunk.via]),
             );
-            return Grounding {
-                word: word.to_owned(),
-                status: "grounded",
-                origin: "chunk",
-                hypotheses: vec![Hypothesis {
-                    operation: chunk.operation.clone(),
-                    score: chunk.score,
-                    via: chunk.via.clone(),
-                }],
-                needs: Vec::new(),
+            let recalled = Hypothesis {
+                operation: chunk.operation.clone(),
+                score: chunk.score,
+                via: chunk.via.clone(),
             };
+            return Grounding::new(word, "grounded", "chunk", vec![recalled]);
         }
     }
     let structural_limit = seed.structural_limit();
@@ -180,13 +192,7 @@ pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[Stri
             "known",
             meta_seed().note("structural", &[("indent", &indent), ("word", word)]),
         );
-        return Grounding {
-            word: word.to_owned(),
-            status: "structural",
-            origin: "documentation",
-            hypotheses: Vec::new(),
-            needs: Vec::new(),
-        };
+        return Grounding::new(word, "structural", "documentation", Vec::new());
     }
     let documented = seed.doc_hypotheses(word, context.language);
     if !documented.is_empty() {
@@ -199,19 +205,25 @@ pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[Stri
         context
             .trace
             .emit("hypothesis", fill(DOCUMENTED, &[&indent, word, &shown]));
-        return Grounding {
-            word: word.to_owned(),
-            status: "grounded",
-            origin: "documentation",
-            hypotheses: documented
-                .into_iter()
-                .map(|item| Hypothesis {
-                    via: String::from("documentation"),
-                    ..item
-                })
-                .collect(),
-            needs: Vec::new(),
-        };
+        let hypotheses = documented
+            .into_iter()
+            .map(|item| Hypothesis {
+                via: String::from("documentation"),
+                ..item
+            })
+            .collect();
+        return Grounding::new(word, "grounded", "documentation", hypotheses);
+    }
+    // A word in a degree of comparison is its stem's measure and the
+    // degree's selection ("longest": long, superlative), read before its own
+    // entry.
+    let (degree, degree_needs) = if depth == 0 {
+        ground_degree(word, context, stack, &indent)
+    } else {
+        (None, Vec::new())
+    };
+    if let Some(grounding) = degree {
+        return grounding;
     }
     let knowledge = context.knowledge;
     let senses = knowledge.get(word).map(Vec::as_slice).unwrap_or_default();
@@ -219,16 +231,233 @@ pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[Stri
     // from documentation and the request alone, so meaning cannot drift
     // through chains of loosely related senses.
     if !senses.is_empty() && depth == 0 {
-        return ground_through_glosses(word, senses, context, depth, stack, &indent);
+        let mut grounding = ground_through_glosses(word, senses, context, depth, stack, &indent);
+        if grounding.status == "open" {
+            push_unique(&mut grounding.needs, &degree_needs);
+        }
+        return grounding;
     }
-    if !knowledge.contains_key(word) && depth == 0 {
+    if depth > 0 {
+        return Grounding::open(word, "none", Vec::new());
+    }
+    if !knowledge.contains_key(word) {
         context.trace.emit(
             "impasse",
             meta_seed().note("lookup_needed", &[("word", word)]),
         );
-        return Grounding::open(word, "none", vec![word.to_owned()]);
+        let mut needs = vec![word.to_owned()];
+        needs.extend(degree_needs);
+        return Grounding::open(word, "none", needs);
     }
-    Grounding::open(word, "none", Vec::new())
+    Grounding::open(word, "none", degree_needs)
+}
+
+/// The first sentence of a gloss: the text before the first `.` or `;`
+/// followed by a space or the end.
+///
+/// Mirrors `gloss.split(/[.;](?:\s|$)/u)[0]` in `metaGlossSymbol`
+/// (`js/worker/formal_ai_worker_meta_reasoner.js`).
+fn first_sentence(gloss: &str) -> &str {
+    let mut characters = gloss.char_indices().peekable();
+    while let Some((index, character)) = characters.next() {
+        if matches!(character, '.' | ';')
+            && characters
+                .peek()
+                .is_none_or(|(_, next)| next.is_whitespace())
+        {
+            return &gloss[..index];
+        }
+    }
+    gloss
+}
+
+/// The symbol a dictionary gloss defines its word as: a token of the
+/// gloss's first sentence that, stripped of enclosing brackets and quotation
+/// marks, is one character that is neither a letter, a digit nor a space.
+///
+/// Mirrors `metaGlossSymbol` in `js/worker/formal_ai_worker_meta_reasoner.js`.
+fn gloss_symbol(senses: &[Sense]) -> Option<String> {
+    let enclosing = |character: char| {
+        matches!(
+            character,
+            '(' | ')'
+                | '['
+                | ']'
+                | '{'
+                | '}'
+                | '"'
+                | '\''
+                | '“'
+                | '”'
+                | '‘'
+                | '’'
+                | '«'
+                | '»'
+                | '⟨'
+                | '⟩'
+        )
+    };
+    for sense in senses.iter().take(BOUNDS.glosses_per_word) {
+        for token in first_sentence(&sense.gloss).split_whitespace() {
+            let mut characters = token.trim_matches(enclosing).chars();
+            if let (Some(only), None) = (characters.next(), characters.next())
+                && !is_letter(only)
+                && !is_number(only)
+                && !only.is_whitespace()
+            {
+                return Some(only.to_string());
+            }
+        }
+    }
+    None
+}
+
+/// A word in a degree of comparison: its stem names a measure, its degree's
+/// seeded gloss names the selection by it. Returns the grounding, or the
+/// stems a lookup would have to open.
+///
+/// Mirrors `metaGroundDegree` in `js/worker/formal_ai_worker_meta_reasoner.js`.
+fn ground_degree(
+    word: &str,
+    context: &mut Context<'_>,
+    stack: &[String],
+    indent: &str,
+) -> (Option<Grounding>, Vec<String>) {
+    let seed = meta_seed();
+    let mut needs: Vec<String> = Vec::new();
+    let mut deeper = stack.to_vec();
+    deeper.push(word.to_owned());
+    for degree in seed.degrees_of(context.language) {
+        let gloss = seed.degree_gloss(degree);
+        for (ending, replacement) in &degree.endings {
+            if gloss.is_empty()
+                || utf16_len(word) <= utf16_len(ending) + 2
+                || !word.ends_with(ending.as_str())
+            {
+                continue;
+            }
+            let stem = [&word[..word.len() - ending.len()], replacement.as_str()].concat();
+            if stem == word || seed.is_grammatical(&stem) || stack.contains(&stem) {
+                continue;
+            }
+            let Some(measures) = ground_measure(&stem, context, &deeper, indent) else {
+                if !needs.contains(&stem) {
+                    needs.push(stem);
+                }
+                continue;
+            };
+            if measures.is_empty() {
+                continue;
+            }
+            let hypotheses = ground_text(gloss, context, 1, &deeper);
+            if hypotheses.is_empty() {
+                continue;
+            }
+            context.trace.emit(
+                "hypothesis",
+                seed.note(
+                    "degree",
+                    &[("word", word), ("stem", &stem), ("degree", &degree.id)],
+                ),
+            );
+            let grounding = Grounding {
+                measures,
+                ..Grounding::new(word, "grounded", "degree", hypotheses)
+            };
+            return (Some(grounding), Vec::new());
+        }
+    }
+    (None, needs)
+}
+
+/// The measures a word names: its documentation, or the words of its first
+/// gloss that reaches one, kept only where they are measures. `None` when
+/// the word has neither and was not looked up yet.
+///
+/// Mirrors `metaGroundMeasure` in `js/worker/formal_ai_worker_meta_reasoner.js`.
+fn ground_measure(
+    stem: &str,
+    context: &mut Context<'_>,
+    stack: &[String],
+    indent: &str,
+) -> Option<Vec<Hypothesis>> {
+    let seed = meta_seed();
+    let documented: Vec<Hypothesis> = seed
+        .doc_hypotheses(stem, context.language)
+        .into_iter()
+        .filter(|item| seed.is_measure(&item.operation))
+        .map(|item| Hypothesis {
+            via: String::from("documentation"),
+            ..item
+        })
+        .collect();
+    if !documented.is_empty() {
+        return Some(documented);
+    }
+    let knowledge = context.knowledge;
+    let senses = knowledge.get(stem)?;
+    let mut deeper = stack.to_vec();
+    deeper.push(stem.to_owned());
+    for sense in senses.iter().take(BOUNDS.glosses_per_word) {
+        let mut scores: Vec<(String, f64)> = Vec::new();
+        let mut seen: Vec<String> = Vec::new();
+        for token in meta_words(&sense.gloss) {
+            if seed.is_grammatical(&token) || seen.contains(&token) {
+                continue;
+            }
+            for hypothesis in ground(&token, context, 1, &deeper).hypotheses {
+                if hypothesis.score < BOUNDS.specific_gloss
+                    || !seed.is_measure(&hypothesis.operation)
+                {
+                    continue;
+                }
+                if let Some(entry) = scores
+                    .iter_mut()
+                    .find(|(id, _)| *id == hypothesis.operation)
+                {
+                    entry.1 = entry.1.max(hypothesis.score);
+                } else {
+                    scores.push((hypothesis.operation, hypothesis.score));
+                }
+            }
+            seen.push(token);
+        }
+        if scores.is_empty() {
+            continue;
+        }
+        let via = if sense.source_url.is_empty() {
+            sense.gloss.clone()
+        } else {
+            sense.source_url.clone()
+        };
+        let mut measures: Vec<Hypothesis> = scores
+            .into_iter()
+            .map(|(operation, score)| Hypothesis {
+                operation,
+                score,
+                via: via.clone(),
+            })
+            .collect();
+        sort_hypotheses(&mut measures);
+        let shown = measures
+            .iter()
+            .map(|item| item.operation.as_str())
+            .collect::<Vec<_>>()
+            .join(ALTERNATIVES);
+        context.trace.emit(
+            "grounded",
+            seed.note(
+                "degree_measure",
+                &[
+                    ("indent", &[indent, "↳ "].concat()),
+                    ("stem", stem),
+                    ("operations", &shown),
+                ],
+            ),
+        );
+        return Some(measures);
+    }
+    Some(Vec::new())
 }
 
 /// The capture branch of `metaGround`: the word names the artifact's frame,
@@ -277,13 +506,7 @@ fn ground_through_glosses(
                 &[("indent", indent), ("word", word), ("gloss", &frame.gloss)],
             ),
         );
-        return Grounding {
-            word: word.to_owned(),
-            status: "frame",
-            origin: "capture",
-            hypotheses: Vec::new(),
-            needs: Vec::new(),
-        };
+        return Grounding::new(word, "frame", "capture", Vec::new());
     }
     let mut scores: Vec<(String, f64)> = Vec::new();
     let mut deeper_needs: Vec<String> = Vec::new();
@@ -375,12 +598,25 @@ fn ground_through_glosses(
             "grounded",
             fill(GROUNDED_VIA, &[indent, word, &best.operation, &via]),
         );
+        return Grounding::new(word, "grounded", "capture", hypotheses);
+    }
+    // A gloss that quotes a symbol defines the word as that symbol: the word
+    // names a value, not an operation.
+    if let Some(symbol) = gloss_symbol(senses) {
+        context.trace.emit(
+            "grounded",
+            meta_seed().note(
+                "symbol",
+                &[
+                    ("indent", indent),
+                    ("word", word),
+                    ("value", &json_string(&symbol)),
+                ],
+            ),
+        );
         return Grounding {
-            word: word.to_owned(),
-            status: "grounded",
-            origin: "capture",
-            hypotheses,
-            needs: Vec::new(),
+            value: Some(symbol),
+            ..Grounding::new(word, "value", "capture", Vec::new())
         };
     }
     // Lazy grounding: a gloss word is worth a lookup only when no gloss of

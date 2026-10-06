@@ -30,6 +30,11 @@ function captures() {
 }
 
 const replay = captures();
+
+/** True when a real capture of `word` is committed or pre-cached. */
+function captured(word) {
+  return existsSync(path.join(FIXTURES, "captures", `${word}.json`)) || existsSync(path.join(REPO_ROOT, "data/cache/wiktionary/en", `${word}.json`));
+}
 const worker = createWorkerContext({
   fetch: async (url) => {
     const target = String(url);
@@ -148,9 +153,10 @@ test("the same request yields the same derivation", async () => {
 
 test("every rung of the task ladder is derived, never handled", async () => {
   const ladder = readFileSync(path.join(FIXTURES, "ladder.lino"), "utf8");
-  const rungs = [...ladder.matchAll(/^ {2}rung "((?:[^"\\]|\\.)*)"\n {4}steps "([^"]*)"/gmu)];
+  const rungs = [...ladder.matchAll(/^ {2}rung "((?:[^"\\]|\\.)*)"\n {4}steps "([^"]*)"(?:\n {4}awaits (\S+))?/gmu)];
   assert.ok(rungs.length >= 10, `${rungs.length} rungs`);
-  for (const [, quoted, steps] of rungs) {
+  for (const [, quoted, steps, awaits] of rungs) {
+    if (awaits && !captured(awaits)) continue;
     const prompt = JSON.parse(`"${quoted}"`);
     const answer = await solve(prompt);
     assert.match(answer.intent, /^meta_reasoned_program/u, `${prompt}: ${answer.intent}`);
@@ -185,6 +191,32 @@ test("a message holding several requests is decomposed into sub-goals, each deri
   assert.match(String(answer.derivation), /\n {2}goal decompose/u);
   const subgoals = [...String(answer.derivation).matchAll(/\n {2}subgoal \d+\n {4}goal [\s\S]*?\n {4}program "([^"]*)"/gu)];
   assert.deepEqual(subgoals.map((match) => match[1]), ["split_lines ∘ sort_list", "split_words ∘ each(reverse_text) ∘ join_words"], answer.derivation);
+});
+
+test("a question word is asked for, never a term the request defines", async () => {
+  const asked = await reason("What is the capital of Australia?");
+  assert.equal(asked.goal, "explain");
+  assert.notEqual(asked.status, "solved", asked.events.join("\n"));
+  const answer = await solve("What is the capital of Australia?");
+  assert.notEqual(answer.intent, "meta_reasoned_definition", answer.content);
+  const defined = await reason("A zorp is a number times two. What is a zorp?");
+  assert.equal(defined.status, "solved", defined.events.join("\n"));
+});
+
+test("a symbol a gloss defines is a value the program reads, probed with that value", { skip: !captured("colon") && "awaits a real colon capture" }, async () => {
+  const result = await reason("replace every colon with a dash");
+  assert.deepEqual(result.program.steps, ["replace_text"], result.events.join("\n"));
+  assert.ok(result.events.some((event) => /^grounded: colon names the symbol ":"/u.test(event)), result.events.join("\n"));
+  assert.equal(result.program.parameter[0], ":");
+  assert.equal(result.probe.input, "hello:world");
+  assert.equal(result.probe.output, `hello${result.program.parameter[1]}world`);
+});
+
+test("a superlative is its stem's measure and the degree's selection", { skip: !captured("long") && "awaits a real long capture" }, async () => {
+  const result = await reason("write a function that returns the longest word");
+  assert.deepEqual(result.program.steps, ["split_words", "maximum_by(text_length)"], result.events.join("\n"));
+  assert.ok(result.events.some((event) => event.startsWith("hypothesis: longest is long in the superlative degree")), result.events.join("\n"));
+  assert.equal(result.probe.output, "hello");
 });
 
 test("a learned meaning leaves as a memory append and comes back through memory", async () => {

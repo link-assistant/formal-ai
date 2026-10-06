@@ -1,9 +1,12 @@
-# The task ladder the meta reasoner climbs (2026-10-06): real requests put to
+# The task ladder the meta reasoner climbs (2026-10-06), real requests put to
 # Formal AI itself, smallest first. Every rung is answered by derivation —
 # grounding the request's words in the instruction set's documentation and
 # composing typed operations — never by a handler written for it. A rung is
 # added when the next bigger request is made to work; `steps` is the program
 # the derivation must reach. Walked by rust/tests/web/meta-reasoner.test.mjs.
+# A rung that `awaits` a word grounds it through that word's dictionary
+# capture; it is walked once a real capture of the word is committed under
+# captures (or cached under data/cache/wiktionary), never a hand-written one.
 ladder
   rung "'a b c' -> 3"
     steps "split_words count_items"
@@ -41,3 +44,16 @@ ladder
     steps "list_files each(rewrite(upper_case))"
   rung "Write a script that fails when any file in js/worker has more than 1000 lines"
     steps "list_files keep_greater(read_file∘split_lines∘count_items) fail_when_any"
+  rung "Write a script that fails when any file in data has more than 1500 lines"
+    steps "list_files keep_greater(read_file∘split_lines∘count_items) fail_when_any"
+  rung "write a script that prints the files in data/seed that contain a colon"
+    steps "list_files keep_containing(read_file) print_lines"
+    awaits colon
+  rung "replace every colon with a dash"
+    steps "replace_text"
+    awaits colon
+  rung "remove duplicate lines and sort them"
+    steps "split_lines unique_items sort_list"
+  rung "write a function that returns the longest word"
+    steps "split_words maximum_by(text_length)"
+    awaits long

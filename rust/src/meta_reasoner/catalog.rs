@@ -11,6 +11,7 @@
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
+use super::interpreter::Param;
 use super::seed::{MetaSeed, meta_seed};
 
 /// Index of an operation id in [`Catalog::ops`].
@@ -38,6 +39,8 @@ pub struct Prim {
     /// True when the operation acts on the world (prints, runs, fails the
     /// process); such an operation is never part of a measure.
     pub effect: bool,
+    /// The types of the values the operation reads from the request.
+    pub takes: Vec<String>,
     /// For a measure: the primitive ids it composes (`["value"]` for the
     /// identity measure); for a seed primitive: empty.
     pub parts: Vec<OpId>,
@@ -61,7 +64,7 @@ pub struct Step {
     pub rewrite: bool,
 }
 
-/// A filter with its comparison read from the seed's `test`.
+/// A filter or a selector with its comparison read from the seed's `test`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FilterDef {
     /// Filter id.
@@ -70,6 +73,11 @@ pub struct FilterDef {
     pub op: OpId,
     /// The JavaScript test.
     pub test: String,
+    /// The measure's result type (`number` or `text`).
+    pub measure: String,
+    /// True for a selector: the step picks one element by its measure
+    /// (`step.select` in `js/worker/formal_ai_worker_meta_synthesis.js`).
+    pub select: bool,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -86,7 +94,7 @@ pub struct Catalog {
     op_index: HashMap<String, OpId>,
     /// Seed primitives first (same order as the seed), then measures.
     pub prims: Vec<Prim>,
-    /// The seed's filters.
+    /// The seed's filters, then its selectors.
     pub filters: Vec<FilterDef>,
     /// Every type a program can have.
     pub types: Vec<String>,
@@ -205,17 +213,25 @@ impl Catalog {
                 infer: primitive.infer.clone(),
                 environment: primitive.environment.clone(),
                 effect: primitive.effect,
+                takes: primitive.takes.clone(),
                 parts: Vec::new(),
                 chain: Vec::new(),
                 measure: false,
             });
         }
-        for filter in &seed.filters {
+        for (filter, select) in seed
+            .filters
+            .iter()
+            .map(|filter| (filter, false))
+            .chain(seed.selectors.iter().map(|selector| (selector, true)))
+        {
             let op = catalog.intern_op(&filter.id);
             catalog.filters.push(FilterDef {
                 id: filter.id.clone(),
                 op,
                 test: filter.test.clone(),
+                measure: filter.measure.clone(),
+                select,
             });
         }
         catalog.close_types(seed);
@@ -227,18 +243,26 @@ impl Catalog {
             .cloned()
             .collect();
         let mut measures_by_element: HashMap<String, Vec<u32>> = HashMap::new();
+        let mut text_measures: HashMap<String, Vec<u32>> = HashMap::new();
         for list in list_types {
             let element = list["list_".len()..].to_owned();
             if measures_by_element.contains_key(&element) {
                 continue;
             }
             let measures = catalog.build_measures(&element, seed_count);
-            measures_by_element.insert(element, measures);
+            measures_by_element.insert(element.clone(), measures);
+            let contents = catalog.build_text_measures(&element, seed_count);
+            text_measures.insert(element, contents);
         }
         let names = catalog.types.clone();
         let mut extensions = Vec::with_capacity(names.len());
         for name in &names {
-            extensions.push(catalog.build_extensions(name, seed_count, &measures_by_element));
+            extensions.push(catalog.build_extensions(
+                name,
+                seed_count,
+                &measures_by_element,
+                &text_measures,
+            ));
         }
         catalog.extensions = extensions;
         catalog.view = catalog.ops.iter().map(|id| seed.is_view(id)).collect();
@@ -303,6 +327,7 @@ impl Catalog {
                 infer: String::new(),
                 environment: String::new(),
                 effect: false,
+                takes: Vec::new(),
                 parts: vec![op],
                 chain: Vec::new(),
                 measure: true,
@@ -315,7 +340,9 @@ impl Catalog {
             .iter()
             .take(seed_count)
             .enumerate()
-            .filter(|(_, primitive)| primitive.infer.is_empty() && !primitive.effect)
+            .filter(|(_, primitive)| {
+                primitive.infer.is_empty() && !primitive.effect && primitive.takes.is_empty()
+            })
             .map(|(index, primitive)| {
                 (
                     index,
@@ -374,10 +401,62 @@ impl Catalog {
             infer: String::new(),
             environment,
             effect: false,
+            takes: Vec::new(),
             parts,
             chain: chain.to_vec(),
             measure: true,
         })
+    }
+
+    /// The text measures of an element: the element itself when it is
+    /// text, or what one operation reads from it (`read_file` for a path).
+    ///
+    /// Mirrors `metaMeasures(element, "text")` in
+    /// `js/worker/formal_ai_worker_meta_synthesis.js`.
+    fn build_text_measures(&mut self, element: &str, seed_count: usize) -> Vec<u32> {
+        let mut out = Vec::new();
+        if element == "text" {
+            let op = self.intern_op("value");
+            out.push(self.push_measure(Prim {
+                id: String::from("value"),
+                op,
+                from: String::from("text"),
+                to: String::from("text"),
+                code: String::from("(input) => input"),
+                infer: String::new(),
+                environment: String::new(),
+                effect: false,
+                takes: Vec::new(),
+                parts: vec![op],
+                chain: Vec::new(),
+                measure: true,
+            }));
+            return out;
+        }
+        let readers: Vec<usize> = self
+            .prims
+            .iter()
+            .take(seed_count)
+            .enumerate()
+            .filter(|(_, primitive)| {
+                primitive.from == element
+                    && primitive.to == "text"
+                    && primitive.infer.is_empty()
+                    && !primitive.effect
+                    && primitive.takes.is_empty()
+            })
+            .map(|(index, _)| index)
+            .collect();
+        for index in readers {
+            let primitive = self.prims[index].clone();
+            out.push(self.push_measure(Prim {
+                parts: vec![primitive.op],
+                chain: vec![index],
+                measure: true,
+                ..primitive
+            }));
+        }
+        out
     }
 
     fn push_measure(&mut self, prim: Prim) -> u32 {
@@ -393,6 +472,7 @@ impl Catalog {
         name: &str,
         seed_count: usize,
         measures: &HashMap<String, Vec<u32>>,
+        text_measures: &HashMap<String, Vec<u32>>,
     ) -> Vec<Extension> {
         let mut out = Vec::new();
         let element = name.strip_prefix("list_");
@@ -433,7 +513,10 @@ impl Catalog {
             && let Some(to) = self.type_id(name)
         {
             for (index, primitive) in self.prims.iter().enumerate().take(seed_count) {
-                if primitive.from != "text" || primitive.to != "text" || !primitive.infer.is_empty()
+                if primitive.from != "text"
+                    || primitive.to != "text"
+                    || !primitive.infer.is_empty()
+                    || !primitive.takes.is_empty()
                 {
                     continue;
                 }
@@ -451,21 +534,53 @@ impl Catalog {
         if let Some(element) = element
             && let Some(to) = self.type_id(name)
         {
-            for measure in measures.get(element).map(Vec::as_slice).unwrap_or_default() {
-                for filter in 0..self.filters.len() {
-                    out.push(Extension {
-                        step: Step {
-                            prim: *measure,
-                            filter: u16::try_from(filter).ok(),
-                            mapped: false,
-                            rewrite: false,
-                        },
-                        to,
-                    });
+            let numeric = measures.get(element).map(Vec::as_slice).unwrap_or_default();
+            for measure in numeric {
+                for (filter, definition) in self.filters.iter().enumerate() {
+                    if definition.select || definition.measure != "number" {
+                        continue;
+                    }
+                    out.push(Self::chooser(*measure, filter, to));
+                }
+            }
+            // A filter comparing the element's content with a value.
+            for (filter, definition) in self.filters.iter().enumerate() {
+                if definition.select || definition.measure == "number" {
+                    continue;
+                }
+                for measure in text_measures
+                    .get(element)
+                    .map(Vec::as_slice)
+                    .unwrap_or_default()
+                {
+                    out.push(Self::chooser(*measure, filter, to));
+                }
+            }
+            // A selector picks one element by its measure ("the longest word").
+            if let Some(picked) = self.type_id(element) {
+                for measure in numeric {
+                    for (filter, definition) in self.filters.iter().enumerate() {
+                        if definition.select {
+                            out.push(Self::chooser(*measure, filter, picked));
+                        }
+                    }
                 }
             }
         }
         out
+    }
+
+    /// A filter or selector step over a measure.
+    fn chooser(measure: u32, filter: usize, to: TypeId) -> Extension {
+        Extension {
+            step: Step {
+                prim: measure,
+                filter: u16::try_from(filter).ok(),
+                mapped: false,
+                rewrite: false,
+            },
+            to,
+        }
     }
 
     /// Visit every typed program from `from` of exactly `length` steps, in
@@ -553,12 +668,38 @@ impl Catalog {
         }
     }
 
+    /// The filter or selector of a step.
+    #[must_use]
+    pub fn chooser_of(&self, step: Step) -> Option<&FilterDef> {
+        step.filter.map(|index| &self.filters[usize::from(index)])
+    }
+
     /// True when a step takes the program's parameter.
     ///
     /// Mirrors `metaStepIsParametric` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
     pub fn is_parametric(&self, step: Step) -> bool {
-        step.filter.is_some() || !self.prim(step).infer.is_empty()
+        let prim = self.prim(step);
+        self.chooser_of(step).is_some_and(|chooser| !chooser.select)
+            || !prim.infer.is_empty()
+            || !prim.takes.is_empty()
+    }
+
+    /// The types of the values a parametric step reads: a filter's threshold
+    /// (its measure type), an inferred number, or the values an operation
+    /// takes.
+    ///
+    /// Mirrors `metaStepParameterTypes` in `js/worker/formal_ai_worker_meta_synthesis.js`.
+    #[must_use]
+    pub fn parameter_types(&self, step: Step) -> Vec<String> {
+        let prim = self.prim(step);
+        if let Some(chooser) = self.chooser_of(step).filter(|chooser| !chooser.select) {
+            return vec![chooser.measure.clone()];
+        }
+        if !prim.infer.is_empty() {
+            return vec![String::from("number")];
+        }
+        prim.takes.clone()
     }
 
     /// The environment one program step needs (`node` for the file system).
@@ -605,18 +746,37 @@ impl Catalog {
     }
 
     /// Render a program as the JavaScript the answer shows and the verifier
-    /// runs. `parameter` is the JavaScript text of the parameter.
+    /// runs.
     ///
     /// Mirrors `metaRender` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
-    pub fn render(&self, steps: &[Step], parameter: &str) -> String {
+    pub fn render(&self, steps: &[Step], parameter: &Param) -> String {
+        let literal = parameter.to_js();
         let mut lines = vec![
             String::from("function solution(input) {"),
             String::from("  let value = input;"),
         ];
         for step in steps {
             let prim = self.prim(*step);
-            let code = prim.code.replace("{k}", parameter);
+            let code = parameter.substitute(&prim.code);
+            if let Some(selector) = self.chooser_of(*step).filter(|chooser| chooser.select) {
+                lines.push(
+                    [
+                        "  value = value.reduce((best, item) => ((",
+                        &selector.test,
+                        ")((",
+                        &code,
+                        ")(item), (",
+                        &code,
+                        ")(best)) ? item : best)); // ",
+                        &selector.id,
+                        " by ",
+                        &prim.id,
+                    ]
+                    .concat(),
+                );
+                continue;
+            }
             if step.rewrite {
                 let rewrite = self.rewrite_code_for(&code);
                 lines.push(if step.mapped {
@@ -649,7 +809,7 @@ impl Catalog {
                         "  value = value.filter((item) => { const measure = (",
                         &code,
                         ")(item); const threshold = ",
-                        parameter,
+                        &literal,
                         "; return ",
                         test,
                         "; }); // ",

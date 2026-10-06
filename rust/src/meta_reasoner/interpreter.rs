@@ -13,46 +13,91 @@
 
 use std::cmp::Ordering;
 
-use super::catalog::{Catalog, Prim, Step};
+use super::catalog::{Catalog, FilterDef, Prim, Step};
 use super::text::{Example, js_trim};
 use super::value::{Value, js_join, js_less, same_value_zero};
 
 /// The parameter of a program: `undefined` (inference failed), `null` (the
-/// program takes none) or a number.
-#[derive(Debug, Clone, Copy, PartialEq)]
+/// program takes none), a number, a text, or the values of an operation that
+/// takes several.
+#[derive(Debug, Clone, PartialEq)]
 pub enum Param {
     /// No parameter could be inferred.
     Undefined,
     /// The program takes no parameter.
     Null,
-    /// The parameter's value.
+    /// A numeric parameter.
     Number(f64),
+    /// A text parameter (a symbol or a quoted value the request names).
+    Text(String),
+    /// Several values, in the order the request names them.
+    Values(Vec<Self>),
 }
 
 impl Param {
-    /// The parameter as the JavaScript text `String(parameter)` substitutes
-    /// into `{k}`.
+    /// The parameter as the JavaScript literal its code is given.
     ///
-    /// Mirrors `String(parameter)` in `metaRender` (`js/worker/formal_ai_worker_meta_synthesis.js`).
+    /// Mirrors `metaLiteral` in `js/worker/formal_ai_worker_meta_synthesis.js`.
     #[must_use]
-    pub fn to_js(self) -> String {
+    pub fn to_js(&self) -> String {
         match self {
             Self::Undefined => String::from("undefined"),
             Self::Null => String::from("null"),
-            Self::Number(number) => super::value::js_number(number),
+            Self::Number(number) => super::value::js_number(*number),
+            Self::Text(text) => super::value::json_string(text),
+            Self::Values(values) => [
+                "[",
+                &values.iter().map(Self::to_js).collect::<Vec<_>>().join(","),
+                "]",
+            ]
+            .concat(),
         }
     }
 
     /// The numeric value the substituted literal evaluates to in arithmetic.
     #[must_use]
-    pub const fn numeric(self) -> f64 {
+    pub const fn numeric(&self) -> f64 {
         match self {
-            Self::Undefined => f64::NAN,
             Self::Null => 0.0,
-            Self::Number(number) => number,
+            Self::Number(number) => *number,
+            Self::Undefined | Self::Text(_) | Self::Values(_) => f64::NAN,
         }
     }
+
+    /// The text of a text parameter.
+    #[must_use]
+    pub fn as_text(&self) -> Option<&str> {
+        match self {
+            Self::Text(text) => Some(text),
+            _ => None,
+        }
+    }
+
+    /// The values a code's `{k0}`, `{k1}` ... slots take: a list
+    /// parameter's values, or the parameter itself.
+    #[must_use]
+    pub fn slots(&self) -> Vec<&Self> {
+        match self {
+            Self::Values(values) => values.iter().collect(),
+            other => vec![other],
+        }
+    }
+
+    /// An operation's code with its parameter slots filled.
+    ///
+    /// Mirrors `metaSubstitute` in `js/worker/formal_ai_worker_meta_synthesis.js`.
+    #[must_use]
+    pub fn substitute(&self, code: &str) -> String {
+        let mut out = code.replace("{k}", &self.to_js());
+        for (index, value) in self.slots().into_iter().enumerate() {
+            out = out.replace(&["{k", &index.to_string(), "}"].concat(), &value.to_js());
+        }
+        out
+    }
 }
+
+/// The parameter of a step that takes none.
+static NO_PARAMETER: Param = Param::Null;
 
 /// Where a program runs.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -82,7 +127,7 @@ fn numbers(input: &Value) -> Option<Vec<f64>> {
 pub fn apply_primitive(
     id: &str,
     input: &Value,
-    parameter: Param,
+    parameter: &Param,
     runtime: Runtime,
 ) -> Option<Value> {
     let k = parameter.numeric();
@@ -209,11 +254,28 @@ pub fn apply_primitive(
                 .collect();
             Some(Value::List(kept))
         }
+        "replace_text" => {
+            let slots = parameter.slots();
+            let from = slots.first()?.as_text()?;
+            let to = slots.get(1)?.as_text()?;
+            Some(Value::Text(split_join(input.as_str()?, from, to)))
+        }
         "list_files" | "read_file" | "run_command" | "fail_when_any" => {
             node_primitive(id, input, runtime)
         }
         _ => None,
     }
+}
+
+/// `text.split(from).join(to)`: an empty separator splits between
+/// characters.
+///
+/// Mirrors the `replace_text` code of data/seed/meta-reasoning.lino.
+fn split_join(text: &str, from: &str, to: &str) -> String {
+    if from.is_empty() {
+        return text.chars().map(String::from).collect::<Vec<_>>().join(to);
+    }
+    text.replace(from, to)
 }
 
 /// The primitives that need the `node` environment.
@@ -310,13 +372,20 @@ fn compare(test: &str, measure: f64, threshold: f64) -> Option<bool> {
     None
 }
 
-/// A filter's test applied to one measured element.
+/// A filter's test applied to one measured element. A filter on a text
+/// measure is implemented by id, as the primitives are.
 ///
 /// Mirrors running a filter's compiled `test` (`metaRun` in
 /// `js/worker/formal_ai_worker_meta_synthesis.js`).
 #[must_use]
-pub fn filter_test(test: &str, measure: &Value, threshold: Param) -> Option<bool> {
-    compare(test, measure.to_js_number(), threshold.numeric())
+pub fn filter_test(filter: &FilterDef, measure: &Value, threshold: &Param) -> Option<bool> {
+    if filter.measure == "number" {
+        return compare(&filter.test, measure.to_js_number(), threshold.numeric());
+    }
+    match filter.id.as_str() {
+        "keep_containing" => Some(measure.as_str()?.contains(threshold.as_text()?)),
+        _ => None,
+    }
 }
 
 /// A program operation (a primitive or a composed measure) applied to a value.
@@ -328,7 +397,7 @@ pub fn apply_prim(
     catalog: &Catalog,
     prim: &Prim,
     input: &Value,
-    parameter: Param,
+    parameter: &Param,
     runtime: Runtime,
 ) -> Option<Value> {
     if !prim.measure {
@@ -337,7 +406,7 @@ pub fn apply_prim(
     let mut value = input.clone();
     for index in &prim.chain {
         let part = catalog.prims.get(*index)?;
-        value = apply_primitive(&part.id, &value, Param::Null, runtime)?;
+        value = apply_primitive(&part.id, &value, &Param::Null, runtime)?;
     }
     Some(value)
 }
@@ -349,7 +418,7 @@ fn rewrite(catalog: &Catalog, prim: &Prim, input: &Value, runtime: Runtime) -> O
     let path = input.as_str()?;
     let text = std::fs::read(path).ok()?;
     let original = Value::Text(String::from_utf8_lossy(&text).into_owned());
-    let changed = apply_prim(catalog, prim, &original, Param::Null, runtime)?;
+    let changed = apply_prim(catalog, prim, &original, &Param::Null, runtime)?;
     std::fs::write(path, changed.as_str()?).ok()?;
     Some(input.clone())
 }
@@ -362,18 +431,23 @@ pub fn run_program(
     catalog: &Catalog,
     steps: &[Step],
     input: &Value,
-    parameter: Param,
+    parameter: &Param,
     runtime: Runtime,
 ) -> Option<Value> {
     let mut value = input.clone();
     for step in steps {
         let prim = catalog.prim(*step);
-        let own = if prim.infer.is_empty() {
-            Param::Null
+        let own = if prim.infer.is_empty() && prim.takes.is_empty() {
+            &NO_PARAMETER
         } else {
             parameter
         };
-        value = if step.rewrite {
+        let chooser = step
+            .filter
+            .map(|index| &catalog.filters[usize::from(index)]);
+        value = if let Some(selector) = chooser.filter(|chooser| chooser.select) {
+            select(catalog, prim, &selector.test, value.as_list()?, runtime)?
+        } else if step.rewrite {
             if step.mapped {
                 Value::List(
                     value
@@ -385,12 +459,11 @@ pub fn run_program(
             } else {
                 rewrite(catalog, prim, &value, runtime)?
             }
-        } else if let Some(filter) = step.filter {
-            let test = &catalog.filters[usize::from(filter)].test;
+        } else if let Some(filter) = chooser {
             let mut kept = Vec::new();
             for item in value.as_list()? {
-                let measured = apply_prim(catalog, prim, item, Param::Null, runtime)?;
-                if filter_test(test, &measured, parameter)? {
+                let measured = apply_prim(catalog, prim, item, &Param::Null, runtime)?;
+                if filter_test(filter, &measured, parameter)? {
                     kept.push(item.clone());
                 }
             }
@@ -408,6 +481,31 @@ pub fn run_program(
         };
     }
     Some(value)
+}
+
+/// The element of a list whose measure the selector's test prefers to the
+/// best so far, the first one on a tie; an empty list throws (`None`).
+///
+/// Mirrors the `step.select` branch of `metaRun`
+/// (`js/worker/formal_ai_worker_meta_synthesis.js`):
+/// `value.reduce((best, item) => (test(fn(item), fn(best)) ? item : best))`.
+fn select(
+    catalog: &Catalog,
+    prim: &Prim,
+    test: &str,
+    items: &[Value],
+    runtime: Runtime,
+) -> Option<Value> {
+    let (first, rest) = items.split_first()?;
+    let mut best = first;
+    for item in rest {
+        let measured = apply_prim(catalog, prim, item, &Param::Null, runtime)?.to_js_number();
+        let top = apply_prim(catalog, prim, best, &Param::Null, runtime)?.to_js_number();
+        if compare(test, measured, top)? {
+            best = item;
+        }
+    }
+    Some(best.clone())
 }
 
 /// One parameter inference rule of the seed applied to an example pair:
@@ -444,10 +542,21 @@ pub fn infer_parameter(catalog: &Catalog, steps: &[Step], examples: &[Example]) 
     if before_steps.iter().any(|step| catalog.is_parametric(*step)) {
         return Param::Undefined;
     }
-    if last.filter.is_some() {
-        return infer_threshold(catalog, steps, examples);
+    if let Some(filter) = last
+        .filter
+        .map(|index| &catalog.filters[usize::from(index)])
+        && !filter.select
+    {
+        return if filter.measure == "number" {
+            infer_threshold(catalog, steps, examples)
+        } else {
+            Param::Undefined
+        };
     }
     let prim = catalog.prim(*last);
+    if !prim.takes.is_empty() {
+        return Param::Undefined;
+    }
     if prim.infer.is_empty() {
         return Param::Null;
     }
@@ -455,7 +564,7 @@ pub fn infer_parameter(catalog: &Catalog, steps: &[Step], examples: &[Example]) 
         catalog,
         before_steps,
         &example.input,
-        Param::Null,
+        &Param::Null,
         Runtime::Worker,
     ) else {
         return Param::Undefined;
@@ -499,7 +608,7 @@ pub fn infer_threshold(catalog: &Catalog, steps: &[Step], examples: &[Example]) 
             catalog,
             before_steps,
             &example.input,
-            Param::Null,
+            &Param::Null,
             Runtime::Worker,
         ) else {
             return Param::Undefined;
@@ -509,7 +618,7 @@ pub fn infer_threshold(catalog: &Catalog, steps: &[Step], examples: &[Example]) 
         };
         let mut cursor = 0;
         for item in items {
-            let Some(measured) = apply_prim(catalog, prim, item, Param::Null, Runtime::Worker)
+            let Some(measured) = apply_prim(catalog, prim, item, &Param::Null, Runtime::Worker)
             else {
                 return Param::Undefined;
             };

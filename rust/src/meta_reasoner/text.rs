@@ -430,6 +430,18 @@ fn chars_until(text: &str, until: usize) -> &str {
         .map_or(text, |(byte, _)| &text[..byte])
 }
 
+/// True when a word is a question word: a surface of the seed lexicon's
+/// `interrogative_opener` meaning, in any language.
+///
+/// Mirrors `metaIsInterrogative` in `js/worker/formal_ai_worker_meta_reasoner.js`.
+#[must_use]
+pub fn is_interrogative(word: &str) -> bool {
+    crate::seed::lexicon()
+        .words_for_role(crate::seed::ROLE_INTERROGATIVE_OPENER)
+        .iter()
+        .any(|surface| surface == word)
+}
+
 /// Definitions the request gives itself: `<term> is <definition>`.
 ///
 /// Mirrors `metaRequestDefinitions` in `js/worker/formal_ai_worker_meta_reasoner.js`.
@@ -452,7 +464,9 @@ pub fn meta_request_definitions(prompt: &str) -> Vec<Definition> {
                 .collect();
             let rest = chars_from(&padded, at_chars + marker.chars().count());
             let definition = js_trim(rest);
-            if head.len() == 1 && !definition.is_empty() {
+            // A question word ("what is ...") asks for the unknown; it is
+            // never a term the request defines.
+            if head.len() == 1 && !definition.is_empty() && !is_interrogative(&head[0]) {
                 out.push(Definition {
                     term: head[0].clone(),
                     definition: definition.to_owned(),

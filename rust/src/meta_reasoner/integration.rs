@@ -92,12 +92,24 @@ fn project(prompt: &str, log: &mut EventLog, answer: MetaAnswer) -> SymbolicAnsw
 /// verified against the request's examples, or one every word grounds, answers
 /// ahead of any handler.
 ///
+/// A bare imperative after earlier turns (`follows_turns`) refines the
+/// artifact those turns produced, which the request does not carry, so it
+/// never takes the turn ahead of the handlers.
+///
 /// Mirrors the `metaReason(prompt, language, {})` step at the top of
 /// `solveImpl` in `js/worker/formal_ai_worker_20.js`.
-pub fn try_meta_answer(prompt: &str, language: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+pub fn try_meta_answer(
+    prompt: &str,
+    language: &str,
+    follows_turns: bool,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
     let mut knowledge = Knowledge::new();
     let meta = meta_reason(prompt, language, &mut knowledge, None);
-    if meta.status != "solved" || (meta.program.is_none() && meta.subgoals.is_none()) {
+    if meta.status != "solved"
+        || (meta.program.is_none() && meta.subgoals.is_none())
+        || (meta.imperative && follows_turns)
+    {
         return None;
     }
     let answer = meta_answer(&meta, false)?;

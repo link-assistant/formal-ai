@@ -236,6 +236,7 @@ fn meta_reason_composite(
             .collect(),
         derivation_lino: String::new(),
         subgoals: Some(subgoals),
+        imperative: false,
     };
     result.derivation_lino = meta_derivation_lino(&result);
     result
@@ -283,6 +284,11 @@ fn open_unknowns_text(language: &str, terms: &str) -> String {
 pub fn meta_answer(result: &MetaResult, allow_open: bool) -> Option<MetaAnswer> {
     if result.subgoals.is_some() {
         return meta_composite_answer(result, allow_open);
+    }
+    // An imperative names a procedure only when every word of it is
+    // understood; otherwise the turn is not evidently a request for one.
+    if result.imperative && result.status != "solved" {
+        return None;
     }
     let seed = meta_seed();
     let language = answer_language(result);
