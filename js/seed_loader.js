@@ -75,11 +75,18 @@
   // (e.g. `\\n`, an escaped backslash followed by `n`, must stay `\n`, not a
   // newline). Mirrors `rust/src/seed/parser.rs::unescape_value` and serves every
   // quote style emitted by the seed migration (`"`, `'`, and backticks).
-  function unescapeQuoted(value) {
+  function unescapeQuoted(value, doubled) {
     var source = String(value || "");
     var out = "";
     for (var i = 0; i < source.length; i += 1) {
       var ch = source[i];
+      // Links Notation's own escape: a doubled delimiter is one literal
+      // delimiter (`take_doubled` in rust/src/seed/parser.rs).
+      if (doubled && ch === doubled && source[i + 1] === doubled) {
+        out += doubled;
+        i += 1;
+        continue;
+      }
       if (ch !== "\\") {
         out += ch;
         continue;
@@ -230,13 +237,17 @@
           continue;
         }
         if (rest[i] === delimiter) {
+          if (rest[i + 1] === delimiter) {
+            i += 1;
+            continue;
+          }
           closing = i;
           break;
         }
       }
       // Only treat it as a quoted scalar when the quote spans the whole value.
       if (closing !== -1 && rest.slice(closing + 1).trim().length === 0) {
-        node.id = unescapeQuoted(rest.slice(1, closing));
+        node.id = unescapeQuoted(rest.slice(1, closing), delimiter === "'" ? "'" : '"');
         node.value = node.id;
         return node;
       }

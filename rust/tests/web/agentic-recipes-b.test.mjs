@@ -102,7 +102,10 @@ test('the memory reader round-trips the issue-531 observation document', () => {
   const store = new MemoryStore();
   store.replaceFromLinksNotation(text);
   assert.ok(store.len() > 0);
-  assert.equal(exportLinksNotationWithSchema(parseLinksNotation(store.exportLinksNotation()), 2), store.exportLinksNotation());
+  const again = new MemoryStore();
+  again.replaceFromLinksNotation(store.exportLinksNotation());
+  assert.equal(again.exportLinksNotation(), store.exportLinksNotation());
+  assert.deepEqual(parseLinksNotation(store.exportLinksNotation()), store.events());
 });
 
 test('Agent CLI algorithm learning: write, discover, read back, conformance', () => {
@@ -175,10 +178,16 @@ test('an uncompilable step reports a named gap and compiles nothing', () => {
   const { error } = compileProcedureResult(withGap);
   assert.equal(error.kind, 'uncompilable_step');
   assert.equal(error.step, 'print it on my printer');
-  assert.equal(error.gap, 'no compiled capability for "print it on my printer"');
   assert.equal(bytes(withGap, error.span), error.step);
   assert.equal(procedure.compileTask(withGap), null);
   assert.equal(procedure.compileTask('What is the capital of France?'), null);
+});
+
+// The seed spells this gap name with doubled-quote escapes, which both Links
+// Notation readers (rust/src/seed/parser.rs, js/seed_loader.js) collapse.
+test('the gap name collapses the seed quote escape', () => {
+  const { error } = compileProcedureResult('When I paste a link, fetch its title, print it on my printer, and reply with the title.');
+  assert.equal(error.gap, 'no compiled capability for "print it on my printer"');
 });
 
 test('the compiler records every ordered requirement under the solver impulse', () => {
