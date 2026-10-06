@@ -20,6 +20,9 @@
 //! Usage:
 //!   rust-script scripts/check-generated-version-literals.rs [--repo <path>]
 
+// The unit crate includes this file as a module and drives `scan` directly.
+#![cfg_attr(test, allow(dead_code))]
+
 use std::fs;
 use std::path::{Path, PathBuf};
 

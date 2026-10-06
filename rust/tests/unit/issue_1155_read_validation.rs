@@ -63,13 +63,6 @@ fn issue_body() -> String {
     "Implement Hello World in Rust\n\n## Task\nPlease implement a \"Hello World\" program in Rust.\n\n## Requirements\n1. Create a file with the appropriate extension for Rust\n2. The program should print exactly: `Hello, World!`\n3. **Create a GitHub Actions workflow that automatically runs and tests the program on every push and pull request**\n".to_owned()
 }
 
-fn calls(plan: Option<AgenticPlan>) -> Vec<PlannedToolCall> {
-    match plan {
-        Some(AgenticPlan::ToolCalls(calls)) => calls,
-        other => panic!("expected tool calls, got {other:?}"),
-    }
-}
-
 fn command_of(call: &PlannedToolCall) -> String {
     call.arguments
         .parse::<serde_json::Value>()
