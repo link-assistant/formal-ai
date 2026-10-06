@@ -1,6 +1,9 @@
 //! Captured GitHub issues, reviews, and CI runs for repository history (issue #1180).
 
-use super::*;
+use super::{
+    BTreeMap, HistoryRules, MemoryEvent, NUMBER_PLACEHOLDER, Path, RepositoryHistoryImportError,
+    effective_record, fs, pattern_number, rule_event,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum LogFile {
@@ -79,7 +82,7 @@ fn value_items(root: serde_json::Value) -> Vec<serde_json::Value> {
 }
 
 /// The first present field among `names`, covering both the gh CLI's
-/// camelCase and the raw REST API's snake_case spellings.
+/// camelCase and the raw REST API's `snake_case` spellings.
 fn field_str<'a>(value: &'a serde_json::Value, names: &[&str]) -> Option<&'a str> {
     names
         .iter()
@@ -88,10 +91,10 @@ fn field_str<'a>(value: &'a serde_json::Value, names: &[&str]) -> Option<&'a str
 
 fn nested_login(value: &serde_json::Value) -> String {
     for holder in ["author", "user"] {
-        if let Some(login) = value.get(holder).and_then(|holder| holder.get("login")) {
-            if let Some(login) = login.as_str() {
-                return login.to_owned();
-            }
+        if let Some(login) = value.get(holder).and_then(|holder| holder.get("login"))
+            && let Some(login) = login.as_str()
+        {
+            return login.to_owned();
         }
     }
     String::new()
@@ -144,13 +147,12 @@ pub(super) fn import_issues_and_pulls_inner(
     // content (the view) wins, and the watermark tracks the newest
     // updatedAt that passed.
     let mut record = |imported: ImportedIssuePr, watermark: &mut Option<String>| {
-        if let Some(updated) = &imported.updated_at {
-            if watermark
+        if let Some(updated) = &imported.updated_at
+            && watermark
                 .as_deref()
                 .is_none_or(|current| updated.as_str() > current)
-            {
-                *watermark = Some(updated.clone());
-            }
+        {
+            *watermark = Some(updated.clone());
         }
         let id = imported.event.id.clone();
         match by_id.get(&id) {
@@ -179,10 +181,10 @@ pub(super) fn import_issues_and_pulls_inner(
             let is_pull = matches!(classified, LogFile::PullList | LogFile::Pull(_));
             if let Some(root) = json_root(&text) {
                 for item in value_items(root) {
-                    if let Some(imported) = formalize_issue_or_pull(&item, is_pull, rules) {
-                        if imported_passes(&imported, since_updated_at) {
-                            record(imported, &mut watermark);
-                        }
+                    if let Some(imported) = formalize_issue_or_pull(&item, is_pull, rules)
+                        && imported_passes(&imported, since_updated_at)
+                    {
+                        record(imported, &mut watermark);
                     }
                 }
             }
@@ -255,7 +257,7 @@ fn sorted_entries(dir: &Path) -> Result<Vec<fs::DirEntry>, RepositoryHistoryImpo
             entries.push(entry);
         }
     }
-    entries.sort_by_key(|entry| entry.file_name());
+    entries.sort_by_key(std::fs::DirEntry::file_name);
     Ok(entries)
 }
 
@@ -272,10 +274,10 @@ fn formalize_issue_or_pull(
     let body = field_str(value, &["body"]).unwrap_or_default();
     let mut evidence = Vec::new();
     if let Some(url) = field_str(value, &["url"]) {
-        evidence.push(format!("url:{}", url));
+        evidence.push(format!("url:{url}"));
     }
     for label in label_names(value) {
-        evidence.push(format!("label:{}", label));
+        evidence.push(format!("label:{label}"));
     }
     for trailer in &rules.trailers {
         if let Some(number) = pattern_number(body, &trailer.pattern) {
@@ -288,7 +290,7 @@ fn formalize_issue_or_pull(
     let content = if body.is_empty() {
         title.to_owned()
     } else {
-        format!("{}\n\n{}", title, body)
+        format!("{title}\n\n{body}")
     };
     let event = rule_event(
         rule,
@@ -296,7 +298,7 @@ fn formalize_issue_or_pull(
         field_str(value, &["state"]).map(ToOwned::to_owned),
         content,
         stamped(value, &["createdAt", "created_at"]),
-        Some(format!("issue-{}", number)),
+        Some(format!("issue-{number}")),
         evidence,
     );
     Some(ImportedIssuePr {
@@ -320,7 +322,7 @@ fn formalize_review(
     let defaults = HistoryRules::defaults();
     let rule = effective_record(rules, "review", &defaults);
     let parent_kind = if parent_is_pull { "pr" } else { "issue" };
-    let parent = format!("{}-{}", parent_kind, parent_number);
+    let parent = format!("{parent_kind}-{parent_number}");
     let own_id = value
         .get("id")
         .and_then(serde_json::Value::as_u64)
@@ -330,8 +332,8 @@ fn formalize_review(
     let author = nested_login(value);
     let content = match (body.is_empty(), state.is_empty()) {
         (true, true) => author,
-        (true, false) => format!("{}: {}", author, state),
-        _ => format!("{}: {}: {}", author, state, body),
+        (true, false) => format!("{author}: {state}"),
+        _ => format!("{author}: {state}: {body}"),
     };
     let event = rule_event(
         rule,
@@ -386,14 +388,14 @@ pub fn import_ci_runs(
             }
             let workflow = field_str(&run, &["workflowName", "workflow_name"]).unwrap_or_default();
             let conclusion = field_str(&run, &["conclusion"]).unwrap_or_default();
-            let mut content = format!("{}: {}", workflow, conclusion);
+            let mut content = format!("{workflow}: {conclusion}");
             for line in failing_step_lines(&run) {
                 content.push('\n');
                 content.push_str(&line);
             }
             let mut evidence = Vec::new();
             if let Some(head_sha) = field_str(&run, &["headSha", "head_sha"]) {
-                evidence.push(format!("commit:{}", head_sha));
+                evidence.push(format!("commit:{head_sha}"));
             }
             let event = rule_event(
                 rule,
@@ -445,7 +447,7 @@ fn failing_step_lines(run: &serde_json::Value) -> Vec<String> {
         {
             if field_str(step, &["conclusion"]) == Some("failure") {
                 let step_name = field_str(step, &["name"]).unwrap_or_default();
-                failing_steps.push(format!("{}/{}", job_name, step_name));
+                failing_steps.push(format!("{job_name}/{step_name}"));
             }
         }
         if failing_steps.is_empty() {

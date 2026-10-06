@@ -1,0 +1,25 @@
+language en
+lemma vector
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a variable quantity that can be resolved into components"
+    id oewn-05873161-n
+    partOfSpeech n
+  entry
+    definition "a straight line segment whose length is magnitude and whose orientation in space is direction"
+    id oewn-13936278-n
+    partOfSpeech n
+  entry
+    definition "any agent (person or animal or microorganism) that carries and transmits a disease"
+    examples ("mosquitos are vectors of malaria and yellow fever" "fleas are vectors of the plague" "aphids are transmitters of plant diseases" "when medical scientists talk about vectors they are usually talking about insects")
+    id oewn-09492415-n
+    partOfSpeech n
+    synonyms (transmitter)
+  entry
+    definition "(genetics) a virus or other agent that is used to deliver DNA to a cell"
+    id oewn-01374679-n
+    partOfSpeech n
+source "oewn:2024"

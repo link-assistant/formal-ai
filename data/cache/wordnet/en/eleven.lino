@@ -1,0 +1,22 @@
+language en
+lemma eleven
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the cardinal number that is the sum of ten and one"
+    id oewn-13768812-n
+    partOfSpeech n
+    synonyms ("11" XI)
+  entry
+    definition "a team that plays football"
+    id oewn-08096902-n
+    partOfSpeech n
+    synonyms ("football team")
+  entry
+    definition "being one more than ten"
+    id oewn-02195018-s
+    partOfSpeech s
+    synonyms ("11" xi)
+source "oewn:2024"

@@ -1,0 +1,42 @@
+language en
+lemma rendering
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a performance of a musical composition or a dramatic role etc."
+    examples ("they heard a live rendition of three pieces by Schubert")
+    id oewn-06906604-n
+    partOfSpeech n
+    synonyms (rendition)
+  entry
+    definition "an explanation of something that is not immediately obvious"
+    examples ("the edict was subject to many interpretations" "he annoyed us with his interpreting of parables" "often imitations are extended to provide a more accurate rendition of the child's intended meaning")
+    id oewn-05774244-n
+    partOfSpeech n
+    synonyms (interpretation interpreting rendition)
+  entry
+    definition "the act of interpreting something as expressed in an artistic performance"
+    examples ("her rendition of Milton's verse was extraordinarily moving")
+    id oewn-00101363-n
+    partOfSpeech n
+    synonyms (rendition interpretation)
+  entry
+    definition "a written communication in a second language having the same meaning as the written communication in a first language"
+    id oewn-06548380-n
+    partOfSpeech n
+    synonyms (translation "interlingual rendition" version)
+  entry
+    definition "a coat of stucco applied to a masonry wall"
+    id oewn-04082827-n
+    partOfSpeech n
+  entry
+    definition "perspective drawing of an architect's design"
+    id oewn-04082727-n
+    partOfSpeech n
+  entry
+    definition "giving in acknowledgment of obligation"
+    id oewn-01124358-n
+    partOfSpeech n
+source "oewn:2024"

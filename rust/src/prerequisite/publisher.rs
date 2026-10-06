@@ -172,6 +172,7 @@ fn procedure_from_sense(
 }
 
 /// Parse a fetched, pinned publisher document without running any process.
+///
 /// Ordinary prose cannot authorize a setup command; the document must carry
 /// the same typed setup grammar and postcondition used by source discovery.
 #[must_use]

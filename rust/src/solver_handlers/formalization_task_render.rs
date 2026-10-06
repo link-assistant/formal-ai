@@ -3,11 +3,7 @@
 // ---------------------------------------------------------------------------
 
 /// Render one atom (`Name(x)` / `Name(x, object)`) in a target language.
-fn render_atom(
-    language: &FormalLanguage,
-    predicate: &AppliedPredicate,
-    variable: &str,
-) -> String {
+fn render_atom(language: &FormalLanguage, predicate: &AppliedPredicate, variable: &str) -> String {
     let template = if predicate.object.is_some() {
         &language.atom_with_object
     } else {
@@ -99,7 +95,10 @@ fn parse_atom(text: &str, variable: &str) -> Option<AppliedPredicate> {
     let open = text.find('(')?;
     let close = text.rfind(')')?;
     let name = capitalize(text[..open].trim());
-    let args = text[open + 1..close].split(',').map(str::trim).collect::<Vec<_>>();
+    let args = text[open + 1..close]
+        .split(',')
+        .map(str::trim)
+        .collect::<Vec<_>>();
     let object = args
         .iter()
         .find(|argument| **argument != variable)
@@ -117,17 +116,21 @@ pub fn parse_fol_clause(text: &str) -> Option<QuantifiedClause> {
     let mut rest = text;
     // Rocq-style ASCII word surfaces first (they are prefixes of nothing
     // the symbol table carries), then the FOL symbol table.
-    for (kind, surface) in [("no", "~ exists"), ("forall", "forall"), ("exists", "exists")] {
-        if text.starts_with(surface) {
-            quantifier = kind.to_owned();
-            rest = &text[surface.len()..];
+    for (kind, surface) in [
+        ("no", "~ exists"),
+        ("forall", "forall"),
+        ("exists", "exists"),
+    ] {
+        if let Some(stripped) = text.strip_prefix(surface) {
+            kind.clone_into(&mut quantifier);
+            rest = stripped;
             break;
         }
     }
     if quantifier.is_empty() {
         for (kind, symbol) in &fol.quantifiers {
             if text.starts_with(symbol.as_str()) {
-                quantifier = kind.clone();
+                quantifier.clone_from(kind);
                 rest = &text[symbol.len()..];
                 break;
             }
@@ -212,9 +215,13 @@ pub fn render_clause_natural(clause: &QuantifiedClause, language: &str) -> Optio
     };
     let words_of = |predicate: &AppliedPredicate| -> String {
         let head = decapitalize(&predicate.name);
+        // The predicate's words in order: head, the seed's object
+        // introducer when the language declares one, then the object.
         match (&predicate.object, natural.object_introducers.first()) {
-            (Some(object), Some(introducer)) => format!("{head} {introducer} {object}"),
-            (Some(object), None) => format!("{head} {object}"),
+            (Some(object), Some(introducer)) => {
+                [head.as_str(), introducer.as_str(), object.as_str()].join(" ")
+            }
+            (Some(object), None) => [head.as_str(), object.as_str()].join(" "),
             (None, _) => head,
         }
     };
@@ -224,7 +231,7 @@ pub fn render_clause_natural(clause: &QuantifiedClause, language: &str) -> Optio
         .iter()
         .map(|predicate| decapitalize(&predicate.name))
         .collect::<Vec<_>>()
-        .join(&format!(" {join_word} "));
+        .join(&[" ", join_word.as_str(), " "].concat());
     Some(fill(
         template,
         &[
@@ -246,22 +253,23 @@ pub fn render_clause_natural(clause: &QuantifiedClause, language: &str) -> Optio
 /// the unambiguous symbols count: the ASCII words `forall`/`exists` are
 /// ordinary English words, so they never trigger on their own.
 fn carries_formal_surface(prompt: &str) -> bool {
-    ["∀", "∃", "¬∃"].iter().any(|symbol| prompt.contains(symbol))
+    ["∀", "∃", "¬∃"]
+        .iter()
+        .any(|symbol| prompt.contains(symbol))
 }
 
 /// The `lean`/`coqc` presence sentence for the honesty block. The binary
 /// is looked up in PATH and never executed.
 fn prover_check(binary: &str, label: &str) -> String {
-    let present = std::env::var_os("PATH")
-        .map(|paths| {
-            std::env::split_paths(&paths).any(|directory| directory.join(binary).is_file())
-        })
-        .unwrap_or(false);
-    if present {
-        format!("{label} is present in PATH; compilation was not run in this answer path and is delegated to CI.")
+    let present = std::env::var_os("PATH").is_some_and(|paths| {
+        std::env::split_paths(&paths).any(|directory| directory.join(binary).is_file())
+    });
+    let intent = if present {
+        "formalization_prover_present"
     } else {
-        format!("{label} was not found in PATH, so the {label} text was not compiled.")
-    }
+        "formalization_prover_absent"
+    };
+    crate::seed::report_text(intent, &[("label", label)])
 }
 
 /// The language of a cue role suffix (`command_ru` → `ru`).
@@ -279,17 +287,17 @@ fn matched_roles(prompt: &str, normalized: &str) -> Vec<(String, String)> {
         let Some(intent_node) = named_child(record, "intent") else {
             continue;
         };
-        for role_node in intent_node.children.iter().filter(|child| child.name == "role") {
+        for role_node in intent_node
+            .children
+            .iter()
+            .filter(|child| child.name == "role")
+        {
             let role = role_node.id.clone();
             let hit = child_values(role_node, "phrase").iter().any(|phrase| {
                 normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str())
             });
             if hit {
-                let family = role
-                    .split('_')
-                    .next()
-                    .unwrap_or("command")
-                    .to_owned();
+                let family = role.split('_').next().unwrap_or("command").to_owned();
                 out.push((family, role_language(&role).to_owned()));
             }
         }
@@ -305,8 +313,7 @@ fn named_target(prompt: &str, normalized: &str) -> Option<String> {
         .iter()
         .find(|language| {
             language.aliases.iter().any(|alias| {
-                normalized.contains(alias.as_str())
-                    || lower.contains(&alias.to_lowercase())
+                normalized.contains(alias.as_str()) || lower.contains(&alias.to_lowercase())
             })
         })
         .map(|language| language.slug.clone())
@@ -325,6 +332,7 @@ fn sentence_under_discussion(prompt: &str) -> String {
 }
 
 /// Recognize and answer a formalization or deformalization request.
+///
 /// Returns `None` when the prompt is neither, so the dispatch chain
 /// continues (issue requirement R1: the canned search paragraph must
 /// never answer a formalization prompt again).
@@ -345,11 +353,15 @@ pub fn handle_formalization_request(
     }
     let request_language = roles
         .first()
-        .map(|(_, language)| language.clone())
-        .unwrap_or_else(|| "en".to_owned());
+        .map_or_else(|| "en".to_owned(), |(_, language)| language.clone());
     log.append(
         "formalization:direction",
-        if formalize { "formalize" } else { "deformalize" }.to_owned(),
+        if formalize {
+            "formalize"
+        } else {
+            "deformalize"
+        }
+        .to_owned(),
     );
     log.append("formalization:language", request_language.clone());
 
@@ -369,11 +381,7 @@ pub fn handle_formalization_request(
 }
 
 /// Compose the formalize-direction answer body.
-fn formalize_answer(
-    prompt: &str,
-    language: &str,
-    log: &mut EventLog,
-) -> (String, f32) {
+fn formalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String, f32) {
     let sentence = sentence_under_discussion(prompt);
     let natural = grammar()
         .natural
@@ -388,81 +396,87 @@ fn formalize_answer(
                 .cloned()
                 .unwrap_or_default()
         });
-    match parse_quantified_clause(&sentence, &natural) {
-        Some(clause) => {
-            log.append(
-                "formalization:clause",
-                format!(
-                    "{} {} antecedents {} consequent {}",
-                    clause.quantifier,
-                    clause.variable,
-                    clause.antecedent.len(),
-                    clause.consequent.name
-                ),
-            );
-            let slugs: Vec<String> = {
-                let mut all: Vec<String> = grammar()
-                    .formal
-                    .iter()
-                    .map(|item| item.slug.clone())
-                    .collect();
-                // A named target renders first; the others follow, because
-                // every declared target is a legitimate rendering of the
-                // same parsed clause (issue requirement R4).
-                if let Some(one) = named_target(prompt, &sentence.to_lowercase()) {
-                    all.sort_by_key(|slug| slug != &one);
-                }
-                all
-            };
-            let mut blocks = Vec::new();
-            for slug in &slugs {
-                if let Some(rendered) = render_clause(&clause, slug) {
-                    blocks.push(format!("```{slug}\n{rendered}\n```"));
-                }
+    if let Some(clause) = parse_quantified_clause(&sentence, &natural) {
+        log.append_fields(
+            "formalization:clause",
+            &[
+                ("quantifier", &clause.quantifier),
+                ("variable", &clause.variable),
+                ("antecedents", &clause.antecedent.len().to_string()),
+                ("consequent", &clause.consequent.name),
+            ],
+        );
+        let slugs: Vec<String> = {
+            let mut all: Vec<String> = grammar()
+                .formal
+                .iter()
+                .map(|item| item.slug.clone())
+                .collect();
+            // A named target renders first; the others follow, because
+            // every declared target is a legitimate rendering of the
+            // same parsed clause (issue requirement R4).
+            if let Some(one) = named_target(prompt, &sentence.to_lowercase()) {
+                all.sort_by_key(|slug| slug != &one);
             }
-            let statement_block = blocks.join("\n\n");
-            let derivation = [
-                format!("sentence: {sentence}"),
-                format!("parsed clause: {} {} ({})", clause.quantifier, clause.variable, {
-                    let names: Vec<String> = clause.antecedent.iter().map(|p| p.name.clone()).collect();
-                    names.join(", ")
-                }),
-                format!("consequent: {}", clause.consequent.name),
-                format!("templates: {}", slugs.join(", ")),
-            ]
-            .join("\n");
-            let honesty = fill(
-                &response("formalization_honesty", language),
+            all
+        };
+        let mut blocks = Vec::new();
+        for slug in &slugs {
+            if let Some(rendered) = render_clause(&clause, slug) {
+                blocks.push(format!("```{slug}\n{rendered}\n```"));
+            }
+        }
+        let statement_block = blocks.join("\n\n");
+        let antecedents = clause
+            .antecedent
+            .iter()
+            .map(|predicate| predicate.name.as_str())
+            .collect::<Vec<_>>()
+            .join(", ");
+        let derivation = crate::seed::report_text(
+            "formalization_derivation",
+            &[
+                ("sentence", &sentence),
+                ("quantifier", &clause.quantifier),
+                ("variable", &clause.variable),
+                ("antecedents", &antecedents),
+                ("consequent", &clause.consequent.name),
+                ("templates", &slugs.join(", ")),
+            ],
+        );
+        let honesty = fill(
+            &response("formalization_honesty", language),
+            &[
+                ("lean_check", &prover_check("lean", "lean")),
+                ("rocq_check", &prover_check("coqc", "coqc")),
+            ],
+        );
+        (
+            fill(
+                &response("formalization_result", language),
                 &[
-                    ("lean_check", &prover_check("lean", "lean")),
-                    ("rocq_check", &prover_check("coqc", "coqc")),
+                    ("statement_block", &statement_block),
+                    ("honesty", &honesty),
+                    ("derivation", &derivation),
                 ],
-            );
-            (
-                fill(
-                    &response("formalization_result", language),
-                    &[
-                        ("statement_block", &statement_block),
-                        ("honesty", &honesty),
-                        ("derivation", &derivation),
-                    ],
-                ),
-                0.7,
-            )
-        }
-        None => {
-            log.append(
-                "formalization:clause",
-                "no quantified clause recognized".to_owned(),
-            );
-            (
-                fill(
-                    &response("formalization_unparsed", language),
-                    &[("reason", "no quantifier word or symbol matched the seed grammar")],
-                ),
-                0.4,
-            )
-        }
+            ),
+            0.7,
+        )
+    } else {
+        log.append(
+            "formalization:clause",
+            "no quantified clause recognized".to_owned(),
+        );
+        (
+            fill(
+                &response("formalization_unparsed", language),
+                &[(
+                    "reason",
+                    "no quantifier word or symbol matched the seed grammar",
+                )],
+            ),
+            0.4,
+        )
     }
 }
 
@@ -479,24 +493,30 @@ fn formal_span(prompt: &str) -> &str {
 
 /// Compose the deformalize-direction answer body, including the
 /// structural round-trip check (requirement R5).
-fn deformalize_answer(
-    prompt: &str,
-    language: &str,
-    log: &mut EventLog,
-) -> (String, f32) {
+fn deformalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String, f32) {
     let Some(clause) = parse_fol_clause(formal_span(prompt)) else {
-        log.append("formalization:clause", "no formal clause recognized".to_owned());
+        log.append(
+            "formalization:clause",
+            "no formal clause recognized".to_owned(),
+        );
         return (
             fill(
                 &response("formalization_unparsed", language),
-                &[("reason", "no formal quantifier surface matched the seed grammar")],
+                &[(
+                    "reason",
+                    "no formal quantifier surface matched the seed grammar",
+                )],
             ),
             0.4,
         );
     };
-    log.append(
+    log.append_fields(
         "formalization:clause",
-        format!("{} {} from formal text", clause.quantifier, clause.variable),
+        &[
+            ("quantifier", &clause.quantifier),
+            ("variable", &clause.variable),
+            ("source", "formal_text"),
+        ],
     );
     let natural = grammar()
         .natural

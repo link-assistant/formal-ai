@@ -165,7 +165,7 @@ fn named_child<'a>(node: &'a LinoNode, name: &str) -> Option<&'a LinoNode> {
 /// record (`cues`, `variable`, `formal_language`, `natural_language`)
 /// under one `formal_targets` root, so the records are the children of the
 /// top-level nodes — mirroring `formalTargetRecords` in
-/// js/worker/formal_ai_worker_formalization_request.js.
+/// `js/worker/formal_ai_worker_formalization_request.js`.
 fn target_records(tree: &LinoNode) -> impl Iterator<Item = &LinoNode> {
     tree.children.iter().flat_map(|top| top.children.iter())
 }
@@ -395,7 +395,7 @@ fn parse_quantified_clause(
         antecedent.extend(
             relatives
                 .iter()
-                .map(|word| AppliedPredicate::from_words(&[word.clone()])),
+                .map(|word| AppliedPredicate::from_words(std::slice::from_ref(word))),
         );
         return Some(QuantifiedClause {
             quantifier: kind,
@@ -434,32 +434,7 @@ fn parse_quantified_clause(
     // for article languages an object introducer starts the object span,
     // and otherwise the final token is the main predicate.
     let (relative_words, main_words): (Vec<String>, Vec<String>) =
-        if !language.object_introducers.is_empty() {
-            if let Some(introducer) = span_tokens
-                .iter()
-                .position(|token| language.object_introducers.contains(token))
-            {
-                if introducer == 0 {
-                    // An article directly after the marker: no verb to
-                    // read; the shape this parser covers does not match.
-                    return None;
-                }
-                let before = &span_tokens[..introducer];
-                let object_words = &span_tokens[introducer + 1..];
-                let mut main = vec![before
-                    .last()
-                    .cloned()
-                    .unwrap_or_default()];
-                main.extend(object_words.iter().cloned());
-                (
-                    before[..before.len() - 1].to_vec(),
-                    main,
-                )
-            } else {
-                let main = vec![span_tokens.last()?.clone()];
-                (span_tokens[..span_tokens.len() - 1].to_vec(), main)
-            }
-        } else {
+        if language.object_introducers.is_empty() {
             let tail = &after_head[marker_offset + 1..];
             let comma_positions: Vec<usize> = tail
                 .iter()
@@ -485,11 +460,34 @@ fn parse_quantified_clause(
                 let main = vec![span_tokens.last()?.clone()];
                 (span_tokens[..span_tokens.len() - 1].to_vec(), main)
             }
+        } else if let Some(introducer) = span_tokens
+            .iter()
+            .position(|token| language.object_introducers.contains(token))
+        {
+            if introducer == 0 {
+                // An article directly after the marker: no verb to
+                // read; the shape this parser covers does not match.
+                return None;
+            }
+            let before = &span_tokens[..introducer];
+            let object_words = &span_tokens[introducer + 1..];
+            let mut main = vec![before
+                .last()
+                .cloned()
+                .unwrap_or_default()];
+            main.extend(object_words.iter().cloned());
+            (
+                before[..before.len() - 1].to_vec(),
+                main,
+            )
+        } else {
+            let main = vec![span_tokens.last()?.clone()];
+            (span_tokens[..span_tokens.len() - 1].to_vec(), main)
         };
     let relatives: Vec<AppliedPredicate> = relative_words
         .iter()
         .filter(|word| !join_words.contains(word))
-        .map(|word| AppliedPredicate::from_words(&[word.clone()]))
+        .map(|word| AppliedPredicate::from_words(std::slice::from_ref(word)))
         .collect();
     let mut antecedent = vec![AppliedPredicate::from_words(&[head])];
     antecedent.extend(relatives);

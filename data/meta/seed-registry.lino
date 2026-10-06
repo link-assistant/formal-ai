@@ -245,6 +245,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-engine-report-intents
+    bundle true
+    lexicon meaning
   seed meanings-facts
     bundle true
     lexicon meaning
@@ -503,6 +506,9 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-engine-reports
+    bundle true
+    lexicon response
   seed multilingual-responses-entities
     bundle true
     lexicon response

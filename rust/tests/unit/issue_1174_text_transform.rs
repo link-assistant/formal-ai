@@ -42,6 +42,13 @@ fn summarization_selects_the_weightiest_statements() {
          masts surround the living quarters.",
     );
     assert_eq!(answer.intent, "summarization_free_text");
+    // Five statements under the ~30% bound keep two: the purpose statement
+    // (weight 100) then the feature statement (weight 70), joined as prose.
+    assert_eq!(
+        answer.answer,
+        "The Halley research station, opened in 1956, is used to study the Antarctic ice \
+         shelf. It provides year-round measurements of ozone and sea temperature."
+    );
     // The purpose and feature statements outrank the misc ones.
     assert!(
         answer.answer.contains("is used to study"),
@@ -72,6 +79,10 @@ fn register_rewrite_substitutes_every_informal_token() {
         "Rewrite this formally: can u send me the report asap thx",
     );
     assert_eq!(answer.intent, "text_transform_register");
+    assert_eq!(
+        answer.answer,
+        "could you please send me the report as soon as possible thank you"
+    );
     assert!(
         answer.answer.contains("could you please"),
         "the phrase rule must splice the politeness form: {}",
@@ -101,6 +112,10 @@ fn register_rewrite_reports_an_already_formal_text() {
         "Rewrite this formally: please send the report tomorrow",
     );
     assert_eq!(answer.intent, "text_transform_register");
+    assert_eq!(
+        answer.answer,
+        "please send the report tomorrow\n\nThe text already uses a formal register."
+    );
     assert!(
         answer.answer.contains("please send the report tomorrow"),
         "the formal text must pass through unchanged: {}",
@@ -120,6 +135,14 @@ fn grammar_correction_reagrees_subjects_and_pluralizes() {
         "Correct the grammar: She don't like apples and he have two cat.",
     );
     assert_eq!(answer.intent, "text_transform_grammar");
+    assert_eq!(
+        answer.answer,
+        "Corrected text: She doesn't like apples and he has two cats.\n\n\
+         Corrections:\n\
+         don't → doesn't (rule: third_person_do_not)\n\
+         have → has (rule: third_person_have)\n\
+         cat → cats (rule: plural_noun_after_numeral)"
+    );
     for corrected in ["doesn't", "has", "cats"] {
         assert!(
             answer.answer.contains(corrected),
@@ -147,6 +170,10 @@ fn grammar_correction_reports_an_already_clean_text() {
         "Correct the grammar: She likes apples and he has two cats.",
     );
     assert_eq!(answer.intent, "text_transform_grammar");
+    assert_eq!(
+        answer.answer,
+        "No agreement errors found; the text is already grammatical."
+    );
     assert!(
         answer.answer.contains("already grammatical"),
         "a clean text must be reported honestly: {}",
@@ -161,6 +188,7 @@ fn commit_message_composes_the_conventional_line() {
         "Write a commit message: correct an off-by-one error in the pagination helper",
     );
     assert_eq!(answer.intent, "text_transform_genre_commit_message");
+    assert_eq!(answer.answer, "fix(pagination): correct off-by-one error");
     assert!(
         answer
             .answer
@@ -177,6 +205,10 @@ fn commit_message_names_its_missing_slots() {
         "Write a commit message: in the pagination helper",
     );
     assert_eq!(answer.intent, "text_transform_genre_commit_message");
+    assert_eq!(
+        answer.answer,
+        "Not enough information to write a commit_message yet; missing: verb, effect."
+    );
     assert!(
         answer.answer.contains("missing") && answer.answer.contains("verb"),
         "the missing slots must be named, not fabricated: {}",
@@ -191,6 +223,16 @@ fn email_composes_every_declared_part() {
         "Write an email to my team: I am taking a day off on Friday because I am tired.",
     );
     assert_eq!(answer.intent, "text_transform_genre_email");
+    // The reason slot keeps the request's own full stop, and the seeded
+    // reason frame appends another, so that line ends with "tired..".
+    assert_eq!(
+        answer.answer,
+        "Hello team,\n\n\
+         I am writing to let you know that I am taking a day off on Friday.\n\n\
+         The reason is that I am tired..\n\n\
+         When: Friday\n\n\
+         Best regards,"
+    );
     for part in [
         "Hello team,",
         "I am writing to let you know that I am taking a day off on Friday.",
@@ -213,6 +255,12 @@ fn translation_translates_a_free_sentence_word_by_word() {
         "Translate to Russian: The weather is nice today, let's go for a walk.",
     );
     assert_eq!(answer.intent, "translate_en_to_ru");
+    // Function words (the, is, for, a) are dropped; every content word takes
+    // its seeded lemma; the sentence's capital and full stop are restored.
+    assert_eq!(
+        answer.answer,
+        "Погода приятный сегодня давай идти прогулка."
+    );
     let lower = answer.answer.to_lowercase();
     for word in ["погода", "приятный", "сегодня", "давай", "идти", "прогулка"]
     {

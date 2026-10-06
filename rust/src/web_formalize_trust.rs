@@ -17,20 +17,20 @@ pub fn trust_score(features: &TrustFeatures) -> u8 {
         if let Ok(weight) = record.find_child_value("weight").parse::<f64>() {
             weights.insert(name.clone(), weight);
         }
-        if name == "cross_page_agreement" {
-            if let Ok(scale) = record.find_child_value("agreement_scale").parse::<f64>() {
-                agreement_scale = scale.max(1.0);
-            }
+        if name == "cross_page_agreement"
+            && let Ok(scale) = record.find_child_value("agreement_scale").parse::<f64>()
+        {
+            agreement_scale = scale.max(1.0);
         }
         for grade in &record.children {
             if grade.name != "grade" {
                 continue;
             }
             let grade_name = grade.find_child_value("name").to_owned();
-            if let Ok(factor) = grade.find_child_value("factor").parse::<f64>() {
-                if !grade_name.is_empty() {
-                    grades.insert(grade_name, factor);
-                }
+            if let Ok(factor) = grade.find_child_value("factor").parse::<f64>()
+                && !grade_name.is_empty()
+            {
+                grades.insert(grade_name, factor);
             }
         }
     }
@@ -43,18 +43,31 @@ pub fn trust_score(features: &TrustFeatures) -> u8 {
     }
     if let Some(primacy) = &features.primacy {
         let factor = grades.get(primacy).copied().unwrap_or(0.0);
-        score += weights.get("primacy").copied().unwrap_or(0.0) * factor;
+        score = f64::mul_add(weights.get("primacy").copied().unwrap_or(0.0), factor, score);
     }
     if features.open_license {
         score += weights.get("open_license").copied().unwrap_or(0.0);
     }
-    let agreement = features.agreement_pages.min(agreement_scale as u32) as f64 / agreement_scale;
-    score += weights.get("cross_page_agreement").copied().unwrap_or(0.0) * agreement;
-    (score.clamp(0.0, 1.0) * 100.0).round() as u8
+    // `agreement_scale` is at least 1.0, so its floor is the whole-page cap.
+    let agreement = f64::from(features.agreement_pages).min(agreement_scale.floor()) / agreement_scale;
+    score = f64::mul_add(
+        weights.get("cross_page_agreement").copied().unwrap_or(0.0),
+        agreement,
+        score,
+    );
+    // The rounded percentage is a whole number in 0..=100: pick the matching
+    // `u8` without a lossy float-to-int cast (NaN falls through to 0).
+    let percent = (score.clamp(0.0, 1.0) * 100.0).round();
+    (0..=100u8)
+        .rev()
+        .find(|candidate| f64::from(*candidate) <= percent)
+        .unwrap_or(0)
 }
 
 /// Attach a trust score and the rediscovery procedure to a just-formalized
-/// network (issue #1163 R9): a `rediscovery` node carrying the query text,
+/// network (issue #1163 R9).
+///
+/// It adds a `rediscovery` node carrying the query text,
 /// the rank at fetch time, the URL, the SHA-256, the timestamp, and whether
 /// the bytes came from the cache, so the record can be dropped under
 /// storage pressure and re-fetched deterministically.
@@ -79,10 +92,10 @@ pub fn annotate_capture(network: &mut LinkNetwork, capture: &SourceCapture, quer
 pub fn network_statements(network: &LinkNetwork) -> Vec<String> {
     let mut out = Vec::new();
     for link in network.links() {
-        if let Some(term) = link.metadata().term() {
-            if !term.is_empty() {
-                out.push(term.to_owned());
-            }
+        if let Some(term) = link.metadata().term()
+            && !term.is_empty()
+        {
+            out.push(term.to_owned());
         }
     }
     out

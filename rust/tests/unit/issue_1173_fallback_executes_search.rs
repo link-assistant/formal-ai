@@ -62,6 +62,46 @@ impl SourceTransport for FallbackProbeTransport {
     }
 }
 
+/// The exact executed answer. Each captured statement is its own meaning
+/// (one source each, equal weight), so the fusion ranks them by signature
+/// key: the statement carrying `42` first, then the two handbook sentences.
+const EXECUTED_ANSWER: &str = concat!(
+    "Fused 3 statement(s) from 2 captured source(s) for `snorflax calibration`:\n",
+    "\n",
+    "1. The snorflax reads 42 in quiet weather.\n",
+    "   `posterior=0.800000 source_count=1 source_tier=independent_corroboration`\n",
+    "   - [Independent report](https://e138.invalid/report)\n",
+    "     > The snorflax reads 42 in quiet weather.\n",
+    "     [Read more](https://e138.invalid/report)\n",
+    "\n",
+    "2. The snorflax is calibrated against quiet teal weather.\n",
+    "   `posterior=0.800000 source_count=1 source_tier=independent_corroboration`\n",
+    "   - [Calibration handbook](https://e138.invalid/handbook)\n",
+    "     > The snorflax is calibrated against quiet teal weather.\n",
+    "     [Read more](https://e138.invalid/handbook)\n",
+    "\n",
+    "3. The calibration handbook keeps one rule.\n",
+    "   `posterior=0.800000 source_count=1 source_tier=independent_corroboration`\n",
+    "   - [Calibration handbook](https://e138.invalid/handbook)\n",
+    "     > The calibration handbook keeps one rule.\n",
+    "     [Read more](https://e138.invalid/handbook)",
+);
+
+/// The exact offline answer for the explicit request: the localized
+/// `web_search_unavailable` response naming the extracted query.
+const OFFLINE_ANSWER: &str = "No captured provider response is available for `snorflax calibration`. \
+Live fetching is off by default; enable it explicitly to populate the replayable source cache. \
+The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and \
+Wikinews.";
+
+/// The exact fallback answer: the same response naming the whole unresolved
+/// instruction, which is the fallback's focus.
+const FALLBACK_ANSWER: &str = "No captured provider response is available for \
+`Calibrate the snorflax against silent teal weather`. \
+Live fetching is off by default; enable it explicitly to populate the replayable source cache. \
+The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and \
+Wikinews.";
+
 fn temp_cache(label: &str) -> PathBuf {
     let path = std::env::temp_dir().join(format!(
         "formal-ai-issue-1173-{label}-{}-{}",
@@ -87,6 +127,8 @@ fn executed_search_answers_from_captured_sources_with_citations() {
         &client,
     )
     .expect("the explicit search request must still route");
+
+    assert_eq!(answer.answer, EXECUTED_ANSWER);
 
     assert_eq!(answer.intent, "web_search");
     assert!(
@@ -148,6 +190,8 @@ fn offline_cache_miss_answers_unavailable_not_a_description() {
     )
     .expect("the request must route even when nothing is captured");
 
+    assert_eq!(answer.answer, OFFLINE_ANSWER);
+
     assert_eq!(answer.intent, "web_search");
     assert!(
         answer.answer.contains("No captured provider response"),
@@ -193,6 +237,8 @@ fn offline_cache_miss_answers_unavailable_not_a_description() {
 fn unknown_reasoning_fallback_executes_instead_of_describing() {
     let response = UniversalSolver::new(SolverConfig::default())
         .solve("Calibrate the snorflax against silent teal weather");
+
+    assert_eq!(response.answer, FALLBACK_ANSWER);
 
     assert_eq!(response.intent, "web_search", "{}", response.answer);
     assert!(

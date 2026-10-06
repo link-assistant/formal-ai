@@ -7,6 +7,7 @@ program_cache_policy
   version "1"
   purpose "A stored coding procedure is a cache entry, not knowledge. Every row names the query and the documented source a rediscovery starts from, so deleting the cache and re-running research reproduces each row with the same content_id."
   cache_file "data/cache/coding-procedure-cache.lino"
+  cache_file_header "The rediscoverable coding-procedure cache (issue #1165, E130).\n\nRuntime cache, not knowledge. The policy that governs every row lives in\ndata/seed/program-cache-policy.lino. A row appears here only after\nresearch_coding_skill_gap verified a procedure against its expected\noutput, and the committed rows may be deleted by a test that then\nreproduces them through the same research path."
   content_hash "fnv1a64 of the entry program bytes"
   grammar_seed "data/seed/program-cst-grammars.lino"
   entry_requires

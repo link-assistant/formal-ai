@@ -514,17 +514,20 @@ impl CstRenderGap {
     #[must_use]
     pub fn describe(&self) -> String {
         match self {
-            Self::NoGrammarEntry { language_slug } => format!(
-                "no cst_grammar entry in program-cst-grammars.lino names `{language_slug}`, so it is not a registered render target"
+            Self::NoGrammarEntry { language_slug } => crate::seed::report_text(
+                "cst_render_gap_no_grammar_entry",
+                &[("language", language_slug)],
             ),
             Self::UnknownEngine {
                 language_slug,
                 engine,
-            } => format!(
-                "`{language_slug}` names engine `{engine}`, and only the meta_language engine renders"
+            } => crate::seed::report_text(
+                "cst_render_gap_unknown_engine",
+                &[("language", language_slug), ("engine", engine)],
             ),
-            Self::EngineDisabled { language_slug } => format!(
-                "the meta-language engine (feature `meta-language`) is disabled, so `{language_slug}` cannot render"
+            Self::EngineDisabled { language_slug } => crate::seed::report_text(
+                "cst_render_gap_engine_disabled",
+                &[("language", language_slug)],
             ),
             Self::NotNetworkLino { reason } => format!(
                 "cst render legs read only the network serialization dialect of lino (the output side of LinkNetwork::to_lino): {reason}"
@@ -550,7 +553,6 @@ pub fn render_cst_source(network_text: &str, language_slug: &str) -> Option<Stri
 }
 
 /// The named-gap shape of [`render_cst_source`].
-#[must_use]
 pub fn try_render_cst_source(
     network_text: &str,
     language_slug: &str,

@@ -2,7 +2,10 @@
 
 use super::commits::run_git;
 use super::github::import_issues_and_pulls_inner;
-use super::*;
+use super::{
+    BTreeSet, CURSOR_ROOT, HistoryRules, MemoryEvent, Path, PathBuf, RepositoryHistoryImportError,
+    effective_record, escape_value, fs, import_ci_runs, import_commits, parse_lino,
+};
 
 /// Append `events` to the store at `store_path`, skipping ids already
 /// present, and return how many were appended.
@@ -78,7 +81,7 @@ impl RepositoryHistoryCursor {
             use std::fmt::Write as _;
             let _ = writeln!(out, "  {} \"{}\"", name, escape_value(value));
         }
-        let mut out = format!("{}\n", CURSOR_ROOT);
+        let mut out = format!("{CURSOR_ROOT}\n");
         if let Some(sha) = &self.last_commit_sha {
             row(&mut out, "last_commit_sha", sha);
         }
@@ -109,17 +112,16 @@ impl RepositoryHistoryCursor {
                 if let Some(sha) = event.id.strip_prefix(commit.id_prefix.as_str()) {
                     self.last_commit_sha = Some(sha.to_owned());
                 }
-            } else if kind == Some(ci.kind.as_str()) {
-                if let Some(number) = event
+            } else if kind == Some(ci.kind.as_str())
+                && let Some(number) = event
                     .id
                     .strip_prefix(ci.id_prefix.as_str())
                     .and_then(|number| number.parse::<u64>().ok())
-                {
-                    self.last_ci_run_database_id = Some(
-                        self.last_ci_run_database_id
-                            .map_or(number, |current| current.max(number)),
-                    );
-                }
+            {
+                self.last_ci_run_database_id = Some(
+                    self.last_ci_run_database_id
+                        .map_or(number, |current| current.max(number)),
+                );
             }
         }
     }
@@ -168,7 +170,9 @@ pub fn store_paths(memory_dir: &Path, repo_root: &Path) -> (PathBuf, PathBuf) {
     (base.join("events.lino"), base.join("cursor.lino"))
 }
 
-/// One incremental import pass: commits from the working repository, then
+/// One incremental import pass.
+///
+/// Commits from the working repository, then
 /// issues/pull requests/reviews and Actions runs from a github-logs
 /// directory (when given), appended to the store under `memory_dir`.
 /// Returns the number of events appended.

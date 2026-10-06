@@ -1,0 +1,22 @@
+{
+  "lemma": "mebibyte",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13649517-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1024 kibibytes or 2^20 (1,048,576) bytes",
+      "synonyms": [
+        "megabyte",
+        "M",
+        "MB",
+        "MiB"
+      ]
+    }
+  ]
+}

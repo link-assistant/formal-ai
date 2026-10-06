@@ -1,0 +1,53 @@
+language en
+lemma commit
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "perform an act, usually with a negative connotation"
+    examples ("perpetrate a crime" "pull a bank robbery")
+    id oewn-02588700-v
+    partOfSpeech v
+    synonyms (perpetrate pull)
+  entry
+    definition "make a set of changes permanent"
+    examples ("We committed the changes to the Git repository")
+    id oewn-85001475-v
+    partOfSpeech v
+  entry
+    definition "give entirely to a specific person, activity, or cause"
+    examples ("She committed herself to the work of God" "give one's talents to a good cause" "consecrate your life to the church")
+    id oewn-00888984-v
+    partOfSpeech v
+    synonyms (give dedicate consecrate devote)
+  entry
+    definition "cause to be admitted; of persons to an institution"
+    examples ("After the second episode, she had to be committed" "he was committed to prison")
+    id oewn-02353564-v
+    partOfSpeech v
+    synonyms (institutionalize institutionalise send charge)
+  entry
+    definition "confer a trust upon"
+    examples ("The messenger was entrusted with the general's secret" "I commit my soul to God")
+    id oewn-02354208-v
+    partOfSpeech v
+    synonyms (entrust intrust trust confide)
+  entry
+    definition "make an investment"
+    examples ("Put money into bonds")
+    id oewn-02275982-v
+    partOfSpeech v
+    synonyms (invest put place)
+  entry
+    definition "engage in or perform"
+    examples ("practice safe sex" "commit a random act of kindness")
+    id oewn-02380559-v
+    partOfSpeech v
+    synonyms (practice)
+  entry
+    definition "transfer to another place so something can be kept or preserved"
+    examples ("He committed the poem to memory" "she committed her thoughts to paper")
+    id oewn-80672114-v
+    partOfSpeech v
+source "oewn:2024"

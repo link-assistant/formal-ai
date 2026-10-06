@@ -609,7 +609,7 @@ pub struct MetaComposedDraft {
 /// candidate is lowered, its parse is serialized into the network dialect of
 /// lino — so the composition exists in the meta language, not only in the
 /// emitted text — and the draft survives only when
-/// [`crate::coding::cst::compose_and_validate`] renders that network back
+/// `crate::coding::cst::compose_and_validate` renders that network back
 /// and the rendered source re-serializes to the same wire. The
 /// CST-equality assertion sits in front of every success, which is R6.
 ///
@@ -640,15 +640,16 @@ pub fn compose_in_meta_language(
         .collect()
 }
 
-/// The R6 gate as a single predicate, so the composition paths that render a
-/// draft (`crate::coding::composition::syntax_is_valid` is the remaining
-/// call site) can route through the render leg with one line: a draft passes
+/// The R6 gate as a single predicate.
+///
+/// The composition paths that render a draft
+/// (`crate::coding::composition::syntax_is_valid` is the remaining call site)
+/// can route through the render leg with one line: a draft passes
 /// exactly when its parse serializes to a network whose render is
 /// CST-equal to it.
 #[must_use]
 pub fn draft_passes_render_leg(language_slug: &str, source: &str) -> bool {
-    match crate::coding::cst::network_lino(language_slug, source) {
-        Some(wire) => crate::coding::cst::compose_and_validate(&wire, language_slug).is_some(),
-        None => false,
-    }
+    crate::coding::cst::network_lino(language_slug, source).is_some_and(|wire| {
+        crate::coding::cst::compose_and_validate(&wire, language_slug).is_some()
+    })
 }

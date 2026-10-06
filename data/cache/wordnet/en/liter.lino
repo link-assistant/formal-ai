@@ -1,0 +1,12 @@
+language en
+lemma liter
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a metric unit of capacity, formerly defined as the volume of one kilogram of pure water under standard conditions; now equal to 1,000 cubic centimeters (or approximately 1.75 pints)"
+    id oewn-13645547-n
+    partOfSpeech n
+    synonyms (litre l "cubic decimeter" "cubic decimetre")
+source "oewn:2024"

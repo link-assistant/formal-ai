@@ -231,7 +231,7 @@ pub fn answer_web_search_query(
     let cache_dir =
         std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
     let client = CachedSourceClient::new(cache_dir, CurlSourceTransport)
-        .with_online(!(runtime_offline || !live_search::live_fetch_enabled()));
+        .with_online(!runtime_offline && live_search::live_fetch_enabled());
     live_search::execute_web_search_answer(prompt, query, query_kind, log, &client)
 }
 

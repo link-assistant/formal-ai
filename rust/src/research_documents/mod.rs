@@ -182,15 +182,16 @@ impl ResearchDocument {
             let html = lines
                 .iter()
                 .enumerate()
-                .map(|(index, line)| {
+                .fold(String::new(), |mut html, (index, line)| {
+                    use std::fmt::Write as _;
                     let tag = if index == 0 { "h1" } else { "p" };
                     let escaped = line
                         .replace('&', "&amp;")
                         .replace('<', "&lt;")
                         .replace('>', "&gt;");
-                    format!("<{tag}>{escaped}</{tag}>")
-                })
-                .collect::<String>();
+                    let _ = write!(html, "<{tag}>{escaped}</{tag}>");
+                    html
+                });
             let target = if format == ArtifactFormat::Pdf {
                 "PDF"
             } else {
@@ -217,38 +218,39 @@ impl ResearchDocument {
 fn pdf_text_width_units(text: &str) -> usize {
     text.bytes()
         .map(|character| match character {
-            b' ' => 278,
-            b'!' | b'.' | b',' | b':' | b';' => 278,
+            b' ' | b'!' | b'.' | b',' | b':' | b';' | b'I' => 278,
             b'"' => 355,
-            b'#' | b'$' | b'%' | b'&' | b'0'..=b'9' | b'?' => 556,
+            b'#'
+            | b'$'
+            | b'%'
+            | b'&'
+            | b'0'..=b'9'
+            | b'?'
+            | b'L'
+            | b'_'
+            | b'a'
+            | b'b'
+            | b'd'
+            | b'e'
+            | b'g'
+            | b'h'
+            | b'n'
+            | b'o'
+            | b'p'
+            | b'q'
+            | b'u' => 556,
             b'@' => 1_015,
-            b'A' => 667,
-            b'B' | b'E' | b'P' | b'R' | b'S' | b'X' => 667,
-            b'C' | b'D' => 722,
-            b'F' => 611,
+            b'A' | b'B' | b'E' | b'P' | b'R' | b'S' | b'X' | b'K' | b'V' | b'Y' => 667,
+            b'C' | b'D' | b'H' | b'N' | b'U' | b'w' => 722,
+            b'F' | b'T' | b'Z' => 611,
             b'G' | b'O' | b'Q' => 778,
-            b'H' | b'N' | b'U' => 722,
-            b'I' => 278,
-            b'J' => 500,
-            b'K' => 667,
-            b'L' => 556,
-            b'M' => 833,
-            b'T' => 611,
-            b'V' | b'Y' => 667,
+            b'J' | b'c' | b's' | b'v' | b'x' | b'z' | b'k' | b'y' => 500,
+            b'M' | b'm' => 833,
             b'W' => 944,
-            b'Z' => 611,
-            b'\'' | b'(' | b')' | b'[' | b']' | b'{' | b'}' => 333,
+            b'\'' | b'(' | b')' | b'[' | b']' | b'{' | b'}' | b'-' | b'/' | b'\\' | b'f' | b'r'
+            | b't' => 333,
             b'*' | b'+' | b'<' | b'=' | b'>' => 584,
-            b'-' | b'/' | b'\\' => 333,
-            b'_' => 556,
-            b'a' | b'b' | b'd' | b'e' | b'g' | b'h' | b'n' | b'o' | b'p' | b'q' | b'u' => 556,
-            b'c' | b's' | b'v' | b'x' | b'z' => 500,
-            b'f' | b'r' | b't' => 333,
             b'i' | b'j' | b'l' => 222,
-            b'k' => 500,
-            b'm' => 833,
-            b'w' => 722,
-            b'y' => 500,
             _ => 1_000,
         })
         .sum()

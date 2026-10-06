@@ -158,10 +158,7 @@ fn function_intents() -> Vec<FunctionIntent> {
 fn code_block(prompt: &str) -> Option<String> {
     if let Some(start) = prompt.find("```") {
         let rest = &prompt[start + 3..];
-        let after_open = match rest.find('\n') {
-            Some(nl) => &rest[nl + 1..],
-            None => rest,
-        };
+        let after_open = rest.find('\n').map_or(rest, |nl| &rest[nl + 1..]);
         if let Some(end) = after_open.find("```") {
             let code = &after_open[..end];
             if !code.trim().is_empty() {
@@ -169,13 +166,13 @@ fn code_block(prompt: &str) -> Option<String> {
             }
         }
     }
-    if let Some(start) = prompt.find('`') {
-        if let Some(end) = prompt[start + 1..].find('`') {
-            let code = &prompt[start + 1..start + 1 + end];
-            let code_markers = ["(", "def ", "=>", "return "];
-            if code_markers.iter().any(|marker| code.contains(marker)) {
-                return Some(code.to_owned());
-            }
+    if let Some(start) = prompt.find('`')
+        && let Some(end) = prompt[start + 1..].find('`')
+    {
+        let code = &prompt[start + 1..start + 1 + end];
+        let code_markers = ["(", "def ", "=>", "return "];
+        if code_markers.iter().any(|marker| code.contains(marker)) {
+            return Some(code.to_owned());
         }
     }
     let markers = ["def ", "function ", "fn ", "=>", "return "];
@@ -230,9 +227,13 @@ fn inside_parens(line: &str, open_at: usize) -> &str {
     ""
 }
 
+/// One explained code line: the construct, the meaning's placeholder values,
+/// and whether the line is a loop.
+type LineExplanation = (&'static str, Vec<(&'static str, String)>, bool);
+
 /// Match one code line against the construct table, filling the meaning's
-/// placeholders from the line. Returns (construct, meaning, loop_seen).
-fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>, bool)> {
+/// placeholders from the line. Returns (construct, meaning, `loop_seen`).
+fn explain_line(line: &str) -> Option<LineExplanation> {
     let trimmed = line.trim();
     if trimmed.is_empty() {
         return None;
@@ -256,17 +257,17 @@ fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>
             false,
         ));
     }
-    if let Some(rest) = trimmed.strip_prefix("const ") {
-        if let Some((name, value)) = rest.split_once(" = ") {
-            return Some((
-                "const_declaration",
-                vec![
-                    ("name", name.trim().to_owned()),
-                    ("value", value.trim().to_owned()),
-                ],
-                false,
-            ));
-        }
+    if let Some(rest) = trimmed.strip_prefix("const ")
+        && let Some((name, value)) = rest.split_once(" = ")
+    {
+        return Some((
+            "const_declaration",
+            vec![
+                ("name", name.trim().to_owned()),
+                ("value", value.trim().to_owned()),
+            ],
+            false,
+        ));
     }
     for keyword in ["def ", "fn ", "function ", "async function "] {
         if let Some(rest) = trimmed.strip_prefix(keyword) {
@@ -286,7 +287,7 @@ fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>
         }
     }
     // Python compound constructs.
-    if trimmed.starts_with('[') && trimmed.find(" for ").is_some() {
+    if trimmed.starts_with('[') && trimmed.contains(" for ") {
         let for_at = trimmed.find(" for ")?;
         let expr = trimmed[1..for_at].trim();
         let after_for = &trimmed[for_at + 5..];
@@ -303,16 +304,16 @@ fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>
             true,
         ));
     }
-    if let Some(rest) = trimmed.strip_prefix("for ") {
-        if let Some(in_at) = rest.find(" in ") {
-            let item = rest[..in_at].trim();
-            let items = rest[in_at + 4..].trim().trim_end_matches(':');
-            return Some((
-                "for_loop",
-                vec![("item", item.to_owned()), ("items", items.to_owned())],
-                true,
-            ));
-        }
+    if let Some(rest) = trimmed.strip_prefix("for ")
+        && let Some(in_at) = rest.find(" in ")
+    {
+        let item = rest[..in_at].trim();
+        let items = rest[in_at + 4..].trim().trim_end_matches(':');
+        return Some((
+            "for_loop",
+            vec![("item", item.to_owned()), ("items", items.to_owned())],
+            true,
+        ));
     }
     if let Some(rest) = trimmed.strip_prefix("if ") {
         let condition = rest.trim().trim_end_matches(':');
@@ -335,7 +336,7 @@ fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>
             false,
         ));
     }
-    if trimmed.find(" == ").is_some() || trimmed.find(" != ").is_some() {
+    if trimmed.contains(" == ") || trimmed.contains(" != ") {
         return Some(("comparison", Vec::new(), false));
     }
     if let Some((name, value)) = trimmed.split_once(" = ") {
@@ -358,35 +359,34 @@ fn explain_line(line: &str) -> Option<(&'static str, Vec<(&'static str, String)>
             .chars()
             .last()
             .is_some_and(|c| c.is_alphanumeric() || c == '_')
+            && let Some(close) = trimmed[open..].find(']')
         {
-            if let Some(close) = trimmed[open..].find(']') {
-                let items = before;
-                let index = &trimmed[open + 1..open + close];
-                return Some((
-                    "indexing",
-                    vec![("items", items.to_owned()), ("index", index.to_owned())],
-                    false,
-                ));
-            }
+            let items = before;
+            let index = &trimmed[open + 1..open + close];
+            return Some((
+                "indexing",
+                vec![("items", items.to_owned()), ("index", index.to_owned())],
+                false,
+            ));
         }
     }
     // method call: `receiver.method(...)`
-    if let Some(dot) = trimmed.find('.') {
-        if let Some(open) = trimmed[dot..].find('(') {
-            let value = trimmed[..dot].trim();
-            let method = identifier_at(&trimmed[dot + 1..]);
-            let args = inside_parens(trimmed, dot + open);
-            if !method.is_empty() && !value.is_empty() {
-                return Some((
-                    "method_call",
-                    vec![
-                        ("value", value.to_owned()),
-                        ("method", method.to_owned()),
-                        ("args", args.to_owned()),
-                    ],
-                    false,
-                ));
-            }
+    if let Some(dot) = trimmed.find('.')
+        && let Some(open) = trimmed[dot..].find('(')
+    {
+        let value = trimmed[..dot].trim();
+        let method = identifier_at(&trimmed[dot + 1..]);
+        let args = inside_parens(trimmed, dot + open);
+        if !method.is_empty() && !value.is_empty() {
+            return Some((
+                "method_call",
+                vec![
+                    ("value", value.to_owned()),
+                    ("method", method.to_owned()),
+                    ("args", args.to_owned()),
+                ],
+                false,
+            ));
         }
     }
     None
@@ -447,22 +447,27 @@ pub fn handle_code_explanation(
     } else {
         let intents = function_intents();
         let name = function_name(&code);
-        let overall = match name.as_deref().and_then(|name| {
-            intents
-                .iter()
-                .find(|intent| intent.names.iter().any(|n| name.contains(n.as_str())))
-        }) {
-            Some(intent) => template(
-                "code_explanation_overall",
-                &[
-                    ("name", name.as_deref().unwrap_or_default()),
-                    ("property", &intent.property),
-                    ("correct_form", &intent.correct_form),
-                    ("grounding", &intent.grounding),
-                ],
-            ),
-            None => template("code_explanation_no_overall", &[]),
-        };
+        let overall = name
+            .as_deref()
+            .and_then(|name| {
+                intents
+                    .iter()
+                    .find(|intent| intent.names.iter().any(|n| name.contains(n.as_str())))
+            })
+            .map_or_else(
+                || template("code_explanation_no_overall", &[]),
+                |intent| {
+                    template(
+                        "code_explanation_overall",
+                        &[
+                            ("name", name.as_deref().unwrap_or_default()),
+                            ("property", &intent.property),
+                            ("correct_form", &intent.correct_form),
+                            ("grounding", &intent.grounding),
+                        ],
+                    )
+                },
+            );
         let cost = if loop_seen {
             template("code_explanation_cost_linear", &[])
         } else {

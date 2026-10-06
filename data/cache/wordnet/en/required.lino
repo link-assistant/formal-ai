@@ -1,0 +1,19 @@
+language en
+lemma required
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "necessary for relief or supply"
+    examples ("provided them with all things needful")
+    id oewn-01585183-s
+    partOfSpeech s
+    synonyms (needed needful requisite)
+  entry
+    definition "required by rule"
+    examples ("in most schools physical education is compulsory" "attendance is mandatory" "required reading")
+    id oewn-00851890-s
+    partOfSpeech s
+    synonyms (compulsory mandatory)
+source "oewn:2024"

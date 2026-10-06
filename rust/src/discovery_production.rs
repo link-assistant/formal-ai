@@ -28,6 +28,7 @@
 //! `documented_source` fields) retire once every row they covered is
 //! reproduced by a rediscovery run.
 
+use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
 use crate::coding_research_learning::{
@@ -112,6 +113,26 @@ pub fn bootstrap_cache_active() -> bool {
         .first()
         .and_then(|root| root.children.iter().find(|node| node.name == "bootstrap"))
         .is_some_and(|bootstrap| bootstrap.find_child_value("active") == "true")
+}
+
+/// The comment block a written cache file opens with: the policy seed's
+/// `cache_file_header`, one `# ` line per header line.
+fn cache_file_header() -> String {
+    let policy = parse_lino(POLICY);
+    let header = policy
+        .children
+        .first()
+        .map_or("", |root| root.find_child_value("cache_file_header"));
+    header
+        .lines()
+        .map(|line| {
+            if line.is_empty() {
+                "#\n".to_owned()
+            } else {
+                ["# ", line, "\n"].concat()
+            }
+        })
+        .collect()
 }
 
 /// Whether a grammar exists for `language` in the CST grammar seed.
@@ -268,17 +289,9 @@ impl ProcedureCache {
     }
 
     fn write(&self) -> Result<(), String> {
-        let mut out = String::from(
-            "# The rediscoverable coding-procedure cache (issue #1165, E130).\n\
-             #\n\
-             # Runtime cache, not knowledge. The policy that governs every row lives in\n\
-             # data/seed/program-cache-policy.lino. A row appears here only after\n\
-             # research_coding_skill_gap verified a procedure against its expected\n\
-             # output, and the committed rows may be deleted by a test that then\n\
-             # reproduces them through the same research path.\n",
-        );
-        out.push_str("coding_procedure_cache\n");
-        out.push_str("  version \"1\"\n");
+        let mut out = cache_file_header();
+        crate::links_format::push_lino_field(&mut out, 0, "coding_procedure_cache", None);
+        crate::links_format::push_lino_field(&mut out, 2, "version", Some("\"1\""));
         for recipe in &self.recipes {
             let slug = format!("procedure_{}_{}", recipe.language, recipe.task)
                 .chars()
@@ -290,26 +303,26 @@ impl ProcedureCache {
                     }
                 })
                 .collect::<String>();
-            out.push_str(&format!("  {slug}\n"));
-            out.push_str(&format!("    language {}\n", quote(&recipe.language)));
-            out.push_str(&format!("    task {}\n", quote(&recipe.task)));
-            out.push_str(&format!(
-                "    rediscovery_query {}\n",
+            let _ = writeln!(out, "  {slug}");
+            let _ = writeln!(out, "    language {}", quote(&recipe.language));
+            let _ = writeln!(out, "    task {}", quote(&recipe.task));
+            let _ = writeln!(
+                out,
+                "    rediscovery_query {}",
                 quote(&recipe.rediscovery_query)
-            ));
-            out.push_str(&format!(
-                "    rediscovery_source {}\n",
+            );
+            let _ = writeln!(
+                out,
+                "    rediscovery_source {}",
                 quote(&recipe.rediscovery_source)
-            ));
-            out.push_str(&format!("    entry {}\n", quote(&recipe.entry)));
-            out.push_str(&format!(
-                "    verified_output {}\n",
+            );
+            let _ = writeln!(out, "    entry {}", quote(&recipe.entry));
+            let _ = writeln!(
+                out,
+                "    verified_output {}",
                 quote(&recipe.verified_output)
-            ));
-            out.push_str(&format!(
-                "    content_id \"0x{:016x}\"\n",
-                recipe.content_id
-            ));
+            );
+            let _ = writeln!(out, "    content_id \"0x{:016x}\"", recipe.content_id);
         }
         if let Some(parent) = self.path.parent() {
             std::fs::create_dir_all(parent)
@@ -331,7 +344,7 @@ pub enum CachedOrDiscovered {
 impl CachedOrDiscovered {
     /// The row either way.
     #[must_use]
-    pub fn recipe(&self) -> &RediscoverableRecipe {
+    pub const fn recipe(&self) -> &RediscoverableRecipe {
         match self {
             Self::Cached(recipe) | Self::Discovered(recipe) => recipe,
         }
@@ -344,7 +357,9 @@ impl CachedOrDiscovered {
     }
 }
 
-/// The production miss path (R1165-1/R1165-2): answer a `(language, task)`
+/// The production miss path (R1165-1/R1165-2).
+///
+/// Answer a `(language, task)`
 /// request from the cache when a row exists, otherwise run
 /// [`research_coding_skill_gap`] with the caller's transport, store the
 /// verified procedure, and return it.
@@ -398,7 +413,7 @@ pub fn cached_or_research<T: SourceTransport>(
     if let Err(reason) = cache.store(recipe.clone()) {
         return Err(CodingResearchError {
             reason,
-            cycle: execution.cycle.clone(),
+            cycle: execution.cycle,
         });
     }
     Ok(CachedOrDiscovered::Discovered(recipe))

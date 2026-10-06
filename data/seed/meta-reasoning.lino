@@ -6,7 +6,10 @@
 # examples. Everything it *reads* lives here:
 #
 #   cue          request-shape markers (how a definition, an example, an
-#                artifact request or a question is written) per language.
+#                artifact request, a question or a universal quantifier is
+#                written) per language. A universal quantifier ("every file")
+#                says the program iterates: it ranks programs that pass
+#                through a list above ones that never do.
 #   grammatical  words whose dictionary part of speech is a closed class
 #                (article, preposition, conjunction, pronoun, auxiliary). It is
 #                a pre-computed cache of what a capture would say; a word
@@ -21,7 +24,9 @@
 #                `code` is the JavaScript the answer shows and the verifier
 #                runs; `infer` derives a parameter from one example pair;
 #                `environment` names a runtime the operation needs (node:
-#                the file system), so it is not probed where that is absent.
+#                the file system), so it is not probed where that is absent;
+#                `effect true` marks an operation that acts on the world
+#                (prints, exits, runs), which never serves as a measure.
 #   filter       a comparison a list is filtered by: the element's measure
 #                (any primitive to a number, or the number itself) against a
 #                threshold inferred from the examples or read from the request.
@@ -29,6 +34,8 @@
 #                the first one the program changes is shown.
 #   response     answer templates per language; {name} slots are filled from
 #                the derivation.
+#   note         the derivation trace's wording, one template per decision
+#                kind; {name} slots are filled from the decision.
 #   impasse      answer intents by which a specialized handler admits it could
 #                not do the task (an exact intent, or a `suffix`). Such an
 #                answer is an impasse, not a result: the turn is handed to the
@@ -99,6 +106,22 @@ meta_reasoning
     marker "код"
     marker "алгоритм"
   cue
+    role universal
+    language en
+    marker " every "
+    marker " each "
+    marker " all "
+    marker " any "
+  cue
+    role universal
+    language ru
+    marker " каждый "
+    marker " каждого "
+    marker " каждую "
+    marker " все "
+    marker " всех "
+    marker " любой "
+  cue
     role question
     language en
     marker "what is"
@@ -158,6 +181,8 @@ meta_reasoning
     word write
     word make
     word create
+    word implement
+    word new
     word give
     word turns
     word turn
@@ -234,6 +259,27 @@ meta_reasoning
     environment node
     doc "Reads a file from disk and returns its contents as text."
     code "(input) => require('fs').readFileSync(input, 'utf8')"
+  primitive run_command
+    from text
+    to text
+    environment node
+    effect true
+    doc "Runs a shell command and returns the output it prints (its standard output)."
+    code "(input) => require('child_process').execSync(input, { encoding: 'utf8' })"
+  primitive print_lines
+    from list_any
+    to text
+    environment node
+    effect true
+    doc "Prints every item of a list on its own line to the standard output (shows, outputs, displays, reports them)."
+    code "(input) => { const text = input.join(String.fromCharCode(10)); console.log(text); return text; }"
+  primitive fail_when_any
+    from list_any
+    to number
+    environment node
+    effect true
+    doc "Fails the process (exits with a non-zero status code) when the list has any item, and succeeds when it is empty; returns the number of items."
+    code "(input) => { process.exitCode = input.length > 0 ? 1 : 0; return input.length; }"
   primitive split_characters
     from text
     to list_text
@@ -348,6 +394,9 @@ meta_reasoning
     code "(input) => input.filter((value) => value % 2 !== 0)"
   combinator map_each
     doc "Applies an operation to each element of a list, to every item in turn, and returns the list of results."
+  combinator rewrite_file
+    doc "Rewrites a file in place: reads its text, transforms it, and writes the result back to the same file (edits, updates, modifies, converts the file)."
+    code "(input) => { const fs = require('fs'); fs.writeFileSync(input, ({f})(fs.readFileSync(input, 'utf8'))); return input; }"
   filter keep_greater
     doc "Filters a list, keeping the elements whose measure is greater than a threshold (more, longer, larger, above)."
     test "(measure, threshold) => measure > threshold"
@@ -372,6 +421,52 @@ meta_reasoning
   probe
     type number
     value "7"
+  note subgoals_programmed
+    text "{done}/{total} sub-goals have a program"
+  note examples_goal
+    text "program {from} → {to} with difference 0 over {count} example(s)"
+  note tie
+    text "{count} equally evidenced programs; kept {kept}"
+  note no_program
+    text "no program up to length {length} reaches difference 0 ({evaluated} evaluated)"
+  note no_head_program
+    text "no typed program serves the last clause's head"
+  note uncovered
+    text "{count} grounded word group(s) left unexplained by the chosen program"
+  note structural
+    text "{indent}{word} is structural vocabulary of the instruction set"
+  note frame
+    text "{indent}{word} names the artifact's frame: \"{gloss}\""
+  note no_gloss
+    text "{indent}{word}: no gloss reaches an operation"
+  note lookup_needed
+    text "{word}: unknown, lookup needed"
+  note formalized
+    text "goal {goal}; {examples} example(s); {definitions} definition(s) in the request"
+  note self_defined
+    text "{term} is defined by the request itself"
+  note verified
+    text "rendered source passes {passed}/{total}"
+  note evidence_only
+    text "{word} ties {count} operations; evidence only"
+  note nothing_grounded
+    text "no word of the request grounds an operation"
+  note open_outweigh
+    text "{open} open unknown(s) outweigh {grounded} grounded operation(s); no program is claimed"
+  note argument_type
+    text "{word} names the argument type {type}"
+  note stated_path
+    text "{path} is a path: the program takes a path"
+  note universal
+    text "\"{word}\" quantifies universally: the program iterates"
+  note measure_unit
+    text "{word} follows the bound {bound}: it names the measure"
+  note parameter
+    text "parameter {value} from the request"
+  note probe_skipped
+    text "skipped: the program needs the {environment} environment"
+  note no_op
+    text "no probe input is changed by the program; it does nothing the request asked for"
   response solved_by_examples
     language en
     text "I composed this program from the operations I could ground and checked it against every example you gave ({passed}/{total} pass):"
@@ -390,6 +485,30 @@ meta_reasoning
   response defined_in_request
     language ru
     text "Из вашего сообщения: {term} — {definition}."
+  response usage
+    language en
+    text "Call it as {call}."
+  response usage
+    language ru
+    text "Вызов: {call}."
+  response environment_note
+    language en
+    text "It needs the {environment} environment (the file system), so it was not run here; run it with Node."
+  response environment_note
+    language ru
+    text "Ей нужна среда {environment} (файловая система), поэтому здесь она не запускалась; запустите её в Node."
+  response subrequest
+    language en
+    text "Request {index}: {request}"
+  response subrequest
+    language ru
+    text "Запрос {index}: {request}"
+  response decomposed
+    language en
+    text "Your message holds {count} separate requests; I solved each as its own goal."
+  response decomposed
+    language ru
+    text "В вашем сообщении {count} отдельных запроса; каждый я решил как отдельную цель."
   response reasoning_heading
     language en
     text "How I got there:"

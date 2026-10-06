@@ -48,6 +48,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_format_conversion.js",
   "worker/formal_ai_worker_handler_rules.js",
   "worker/formal_ai_worker_how_to_guide.js",
+  "worker/formal_ai_worker_meta_composite.js",
   "worker/formal_ai_worker_meta_reasoner.js",
   "worker/formal_ai_worker_meta_synthesis.js",
   "worker/formal_ai_worker_number_constraints.js",

@@ -1,0 +1,13 @@
+language en
+lemma within
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "on the inside"
+    examples ("inside, the car is a mess")
+    id oewn-00111558-r
+    partOfSpeech r
+    synonyms (inside)
+source "oewn:2024"

@@ -96,40 +96,49 @@ pub(super) fn plan_restart(
     let commit = super::work_item_steps::fill(
         "recipe_commit_command",
         &[
-            ("{files}", &files),
+            (concat!("{", "files}"), &files),
             ("{subject}", &quote("fix: complete prepared work")),
             (
-                "{body}",
+                concat!("{", "body}"),
                 &quote(&super::git_commit::resolves_body(reference)),
             ),
-            ("{branch}", &quote(&branch)),
+            (concat!("{", "branch}"), &quote(&branch)),
         ],
     );
-    let body = format!(
-        "Updated prepared work on `{branch}`.\n\nChanged files:\n{}\n\nGit diff whitespace validation completed.\n\nResolves {reference}",
-        paths
-            .iter()
-            .map(|path| format!("- `{path}`"))
-            .collect::<Vec<_>>()
-            .join("\n")
+    let changed = paths
+        .iter()
+        .map(|path| format!("- `{path}`"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let body = super::work_item_steps::fill(
+        "prepared_work_pr_body",
+        &[
+            (concat!("{", "branch}"), branch.as_str()),
+            (concat!("{", "reference}"), reference),
+            (concat!("{", "paths}"), changed.as_str()),
+        ],
     );
     let commands = [
-        super::work_item_steps::fill("pr_comments_command", &[("{target}", &target)]),
+        super::work_item_steps::fill("pr_comments_command", &[(concat!("{", "target}"), &target)]),
         "git diff --check && git diff --cached --check".to_owned(),
         commit,
         super::work_item_steps::fill(
             "pr_edit_command",
-            &[("{target}", &target), ("{body}", &quote(&body))],
+            &[
+                (concat!("{", "target}"), &target),
+                (concat!("{", "body}"), &quote(&body)),
+            ],
         ),
-        super::work_item_steps::fill("pr_ready_command", &[("{target}", &target)]),
+        super::work_item_steps::fill("pr_ready_command", &[(concat!("{", "target}"), &target)]),
     ];
     let progress = Progress::scan(messages);
     let run = tool_for(tools, Capability::Run)?;
     if let Some(output) = progress.latest_successful_run_output_for(&commands[0])
         && feedback_needs_changes(output)
     {
-        return Some(AgenticPlan::Final(format!(
-            "Pull request feedback needs source review before this prepared work can be marked ready:\n{output}"
+        return Some(AgenticPlan::Final(super::work_item_steps::fill(
+            "prepared_work_feedback_report",
+            &[(concat!("{", "output}"), output)],
         )));
     }
     for command in &commands {
@@ -137,14 +146,22 @@ pub(super) fn plan_restart(
             continue;
         }
         if let Some(output) = progress.latest_run_output_for(command) {
-            return Some(AgenticPlan::Final(format!(
-                "Prepared-work continuation stopped at `{command}`:\n{output}"
+            return Some(AgenticPlan::Final(super::work_item_steps::fill(
+                "prepared_work_stopped_report",
+                &[
+                    (concat!("{", "command}"), command.as_str()),
+                    (concat!("{", "output}"), output.as_str()),
+                ],
             )));
         }
         return Some(plan_one(run, json!({"command": command}).to_string()));
     }
-    Some(AgenticPlan::Final(format!(
-        "Committed the prepared changes, pushed `{branch}`, updated {reference}, and marked the pull request ready. Review feedback was retrieved; source changes still require review against that feedback."
+    Some(AgenticPlan::Final(super::work_item_steps::fill(
+        "prepared_work_ready_report",
+        &[
+            (concat!("{", "branch}"), branch.as_str()),
+            (concat!("{", "reference}"), reference),
+        ],
     )))
 }
 

@@ -1,0 +1,54 @@
+{
+  "lemma": "traffic",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08442260-n",
+      "partOfSpeech": "n",
+      "definition": "the aggregation of things (pedestrians or vehicles) coming and going in a particular locality during a specified period of time"
+    },
+    {
+      "id": "oewn-01115977-n",
+      "partOfSpeech": "n",
+      "definition": "buying and selling; especially illicit trade"
+    },
+    {
+      "id": "oewn-07294158-n",
+      "partOfSpeech": "n",
+      "definition": "the amount of activity over a communication system during a given period of time",
+      "examples": [
+        "heavy traffic overloaded the trunk lines",
+        "traffic on the internet is lightest during the night"
+      ]
+    },
+    {
+      "id": "oewn-00041542-n",
+      "partOfSpeech": "n",
+      "definition": "social or verbal interchange (usually followed by ‘with’)",
+      "synonyms": [
+        "dealings"
+      ]
+    },
+    {
+      "id": "oewn-02265930-v",
+      "partOfSpeech": "v",
+      "definition": "deal illegally",
+      "examples": [
+        "traffic drugs"
+      ]
+    },
+    {
+      "id": "oewn-02265577-v",
+      "partOfSpeech": "v",
+      "definition": "trade or deal a commodity",
+      "examples": [
+        "They trafficked with us for gold"
+      ]
+    }
+  ]
+}

@@ -190,9 +190,10 @@ pub fn prior_for_context(context: &str) -> f64 {
 /// to independent corroboration when the context is not registered.
 #[must_use]
 pub fn tier_for_context(context: &str) -> SourceTier {
-    let tier = source_registry_row(context)
-        .map(|row| row.find_child_value("tier").to_owned())
-        .unwrap_or_else(|| "independent_corroboration".to_owned());
+    let tier = source_registry_row(context).map_or_else(
+        || "independent_corroboration".to_owned(),
+        |row| row.find_child_value("tier").to_owned(),
+    );
     match tier.as_str() {
         "original_first_party" => SourceTier::OriginalFirstParty,
         "original_journalism" => SourceTier::OriginalJournalism,

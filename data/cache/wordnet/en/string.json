@@ -1,0 +1,159 @@
+{
+  "lemma": "string",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04345112-n",
+      "partOfSpeech": "n",
+      "definition": "a lightweight cord",
+      "synonyms": [
+        "twine"
+      ]
+    },
+    {
+      "id": "oewn-02883788-n",
+      "partOfSpeech": "n",
+      "definition": "stringed instruments that are played with a bow",
+      "examples": [
+        "the strings played superlatively well"
+      ],
+      "synonyms": [
+        "bowed stringed instrument"
+      ]
+    },
+    {
+      "id": "oewn-04345281-n",
+      "partOfSpeech": "n",
+      "definition": "a tightly stretched cord of wire or gut, as a part of an instrument or a tennis racket"
+    },
+    {
+      "id": "oewn-08476659-n",
+      "partOfSpeech": "n",
+      "definition": "a sequentially ordered set of things or events or ideas in which each successive member is related to the preceding",
+      "examples": [
+        "a string of islands",
+        "train of mourners",
+        "a train of thought"
+      ],
+      "synonyms": [
+        "train"
+      ]
+    },
+    {
+      "id": "oewn-07026665-n",
+      "partOfSpeech": "n",
+      "definition": "a linear sequence (as of characters, words, proteins, etc.)"
+    },
+    {
+      "id": "oewn-03240263-n",
+      "partOfSpeech": "n",
+      "definition": "a tie consisting of a cord that goes through a seam around an opening",
+      "examples": [
+        "he pulled the drawstring and closed the bag"
+      ],
+      "synonyms": [
+        "drawstring",
+        "drawing string"
+      ]
+    },
+    {
+      "id": "oewn-14891516-n",
+      "partOfSpeech": "n",
+      "definition": "a tough piece of fiber in vegetables, meat, or other food (especially the tough fibers connecting the two halves of a bean pod)"
+    },
+    {
+      "id": "oewn-09472431-n",
+      "partOfSpeech": "n",
+      "definition": "(cosmology) a hypothetical one-dimensional subatomic particle having a concentration of energy and the dynamic properties of a flexible loop",
+      "synonyms": [
+        "cosmic string"
+      ]
+    },
+    {
+      "id": "oewn-04345456-n",
+      "partOfSpeech": "n",
+      "definition": "a collection of things threaded on a single strand, or as if threaded on a single strand"
+    },
+    {
+      "id": "oewn-03003364-n",
+      "partOfSpeech": "n",
+      "definition": "a necklace made by stringing objects together",
+      "examples": [
+        "a string of beads",
+        "a strand of pearls"
+      ],
+      "synonyms": [
+        "chain",
+        "strand"
+      ]
+    },
+    {
+      "id": "oewn-01362135-v",
+      "partOfSpeech": "v",
+      "definition": "thread on or as if on a string",
+      "examples": [
+        "string pearls on a string",
+        "the child drew glass beads on a string",
+        "thread dried cranberries"
+      ],
+      "synonyms": [
+        "thread",
+        "draw"
+      ]
+    },
+    {
+      "id": "oewn-00190721-v",
+      "partOfSpeech": "v",
+      "definition": "add as if on a string",
+      "examples": [
+        "string these ideas together",
+        "string up these songs and you'll have a musical"
+      ],
+      "synonyms": [
+        "string up"
+      ]
+    },
+    {
+      "id": "oewn-01997837-v",
+      "partOfSpeech": "v",
+      "definition": "move or come along",
+      "synonyms": [
+        "string along"
+      ]
+    },
+    {
+      "id": "oewn-01363274-v",
+      "partOfSpeech": "v",
+      "definition": "stretch out or arrange like a string"
+    },
+    {
+      "id": "oewn-01363126-v",
+      "partOfSpeech": "v",
+      "definition": "string together; tie or fasten with a string",
+      "examples": [
+        "string the package"
+      ]
+    },
+    {
+      "id": "oewn-01363019-v",
+      "partOfSpeech": "v",
+      "definition": "remove the stringy parts of",
+      "examples": [
+        "string beans"
+      ]
+    },
+    {
+      "id": "oewn-01361848-v",
+      "partOfSpeech": "v",
+      "definition": "provide with strings",
+      "examples": [
+        "string my guitar"
+      ]
+    }
+  ]
+}

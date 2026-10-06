@@ -117,10 +117,7 @@ fn rhyme_coverage() -> (Vec<String>, String) {
         return (Vec::new(), String::new());
     };
     (
-        crate::seed::parser::split_pipe_list(record.find_child_value("rhyme_languages"))
-            .into_iter()
-            .map(|language| language.to_string())
-            .collect(),
+        crate::seed::parser::split_pipe_list(record.find_child_value("rhyme_languages")),
         record.find_child_value("gap").to_string(),
     )
 }
@@ -157,14 +154,18 @@ fn detect_form(normalized: &str) -> WritingForm {
     let forms = writing_forms();
     forms
         .iter()
-        .find(|form| form.surfaces.iter().any(|surface| normalized.contains(surface)))
+        .find(|form| {
+            form.surfaces
+                .iter()
+                .any(|surface| normalized.contains(surface))
+        })
         .cloned()
         .unwrap_or_else(|| {
             forms
                 .iter()
                 .find(|form| form.form == "poem")
                 .cloned()
-                .unwrap_or(WritingForm {
+                .unwrap_or_else(|| WritingForm {
                     form: "poem".to_owned(),
                     default_lines: 4,
                     default_scheme: "abcb".to_owned(),
@@ -188,8 +189,7 @@ fn form_constraints(normalized: &str, language: &str) -> FormConstraints {
             || crate::coding::contains_cjk(normalized)
     });
     let lines = stated
-        .map(|count| count as usize)
-        .unwrap_or(form.default_lines)
+        .map_or(form.default_lines, |count| count as usize)
         .clamp(1, 14);
     // A stated rhyme scheme: the literal scheme (the `stated_scheme` cue),
     // else a bare rhyme request (the `rhyme_request` cue and its scheme).
@@ -242,10 +242,13 @@ fn end_word(line: &str) -> String {
 fn check_scheme(poem: &[String], scheme: &str, classes: &[RhymeClass]) -> Vec<String> {
     let letters: Vec<char> = scheme.chars().filter(|c| c.is_alphabetic()).collect();
     if letters.len() != poem.len() {
-        return vec![format!(
-            "scheme {scheme} names {} positions but the poem has {} lines",
-            letters.len(),
-            poem.len()
+        return vec![template(
+            "creative_writing_scheme_length_mismatch",
+            &[
+                ("scheme", scheme),
+                ("positions", &letters.len().to_string()),
+                ("lines", &poem.len().to_string()),
+            ],
         )];
     }
     let class_of = |word: &str| -> Option<&str> {
@@ -256,34 +259,43 @@ fn check_scheme(poem: &[String], scheme: &str, classes: &[RhymeClass]) -> Vec<St
     };
     let mut failures = Vec::new();
     for (i, letter_i) in letters.iter().enumerate() {
-        let repeats_i = letters.iter().filter(|letter| **letter == *letter_i).count();
+        let repeats_i = letters
+            .iter()
+            .filter(|letter| **letter == *letter_i)
+            .count();
         if repeats_i < 2 {
             continue;
         }
         for (j, letter_j) in letters.iter().enumerate().skip(i + 1) {
-            let repeats_j = letters.iter().filter(|letter| **letter == *letter_j).count();
+            let repeats_j = letters
+                .iter()
+                .filter(|letter| **letter == *letter_j)
+                .count();
             if repeats_j < 2 {
                 continue;
             }
             let (word_i, word_j) = (end_word(&poem[i]), end_word(&poem[j]));
             let (class_i, class_j) = (class_of(&word_i), class_of(&word_j));
+            let (first, second) = ((i + 1).to_string(), (j + 1).to_string());
             match (letter_i == letter_j, class_i, class_j) {
-                (true, Some(a), Some(b)) if a != b => failures.push(format!(
-                    "positions {} and {} must rhyme but '{word_i}' ({a}) and '{word_j}' ({b}) are different classes",
-                    i + 1,
-                    j + 1
+                (true, Some(a), Some(b)) if a != b => failures.push(template(
+                    "creative_writing_rhyme_class_mismatch",
+                    &[
+                        ("first", &first),
+                        ("second", &second),
+                        ("first_word", &word_i),
+                        ("first_class", a),
+                        ("second_word", &word_j),
+                        ("second_class", b),
+                    ],
                 )),
-                (true, None, _) | (true, _, None) => {
-                    failures.push(format!(
-                        "position {} or {} ends in a word outside every rhyme class",
-                        i + 1,
-                        j + 1
-                    ));
-                }
-                (false, Some(a), Some(b)) if a == b => failures.push(format!(
-                    "positions {} and {} must NOT rhyme but both end in class {a}",
-                    i + 1,
-                    j + 1
+                (true, None, _) | (true, _, None) => failures.push(template(
+                    "creative_writing_rhyme_outside_classes",
+                    &[("first", &first), ("second", &second)],
+                )),
+                (false, Some(a), Some(b)) if a == b => failures.push(template(
+                    "creative_writing_rhyme_unwanted",
+                    &[("first", &first), ("second", &second), ("class", a)],
                 )),
                 _ => {}
             }
@@ -294,7 +306,9 @@ fn check_scheme(poem: &[String], scheme: &str, classes: &[RhymeClass]) -> Vec<St
 
 /// Fill a skeleton's `{topic}` and `{rhyme}` slots.
 fn fill_skeleton(skeleton: &str, topic: &str, rhyme: &str) -> String {
-    skeleton.replace("{topic}", topic).replace("{rhyme}", rhyme)
+    skeleton
+        .replace(concat!("{", "topic}"), topic)
+        .replace(concat!("{", "rhyme}"), rhyme)
 }
 
 /// One composition attempt over the rhyme classes, rotated by `offset`.
@@ -338,8 +352,8 @@ fn compose_poem(
     let topic_lower = constraints.topic.to_lowercase();
     let primary_index = classes
         .iter()
-        .position(|class| class.words.iter().any(|word| *word == topic_lower))
-        .unwrap_or(offset % classes.len().max(1));
+        .position(|class| class.words.contains(&topic_lower))
+        .unwrap_or_else(|| offset % classes.len().max(1));
     let primary = classes.get(primary_index)?;
     let partner = classes.get((primary_index + 1 + offset) % classes.len().max(1))?;
 
@@ -350,8 +364,8 @@ fn compose_poem(
         .filter(|word| **word != topic_lower)
         .cloned()
         .collect();
-    if primary.words.iter().any(|word| *word == topic_lower) {
-        primary_words.insert(0, topic_lower.clone());
+    if primary.words.contains(&topic_lower) {
+        primary_words.insert(0, topic_lower);
     }
     let partner_words: Vec<String> = partner
         .words
@@ -422,10 +436,12 @@ fn compose_poem(
 fn check_poem(poem: &[String], constraints: &FormConstraints) -> Vec<String> {
     let mut failures = Vec::new();
     if poem.len() != constraints.lines {
-        failures.push(format!(
-            "line count {} but {} wanted",
-            poem.len(),
-            constraints.lines
+        failures.push(template(
+            "creative_writing_line_count_mismatch",
+            &[
+                ("lines_got", &poem.len().to_string()),
+                ("lines_want", &constraints.lines.to_string()),
+            ],
         ));
     }
     if poem.iter().any(|line| line.trim().is_empty()) {
@@ -437,7 +453,10 @@ fn check_poem(poem: &[String], constraints: &FormConstraints) -> Vec<String> {
             .iter()
             .any(|line| line.to_lowercase().contains(&topic_lower))
     {
-        failures.push(format!("topic word '{}' absent", constraints.topic));
+        failures.push(template(
+            "creative_writing_topic_absent",
+            &[("topic", &constraints.topic)],
+        ));
     }
     if constraints.rhymes && constraints.scheme != "none" {
         failures.extend(check_scheme(poem, &constraints.scheme, &rhyme_classes()));
@@ -445,8 +464,10 @@ fn check_poem(poem: &[String], constraints: &FormConstraints) -> Vec<String> {
     failures
 }
 
-/// Recognize a creative-writing request, compose verse under its form
-/// constraints, and return it only after the rendered output passes the
+/// Recognize a creative-writing request and compose verse under its form
+/// constraints.
+///
+/// The verse is returned only after the rendered output passes the
 /// constraint check. Returns `None` when the prompt is not a
 /// creative-writing request.
 pub fn handle_creative_writing_request(
@@ -458,17 +479,16 @@ pub fn handle_creative_writing_request(
         return None;
     }
     let language = crate::language::detect(prompt).slug();
-    let constraints = form_constraints(normalized, &language);
-    log.append(
+    let constraints = form_constraints(normalized, language);
+    log.append_fields(
         "creative_writing:constraints",
-        format!(
-            "lines {} scheme {} topic {} rhymes {} syllables {}",
-            constraints.lines,
-            constraints.scheme,
-            constraints.topic,
-            constraints.rhymes,
-            constraints.syllables
-        ),
+        &[
+            ("lines", &constraints.lines.to_string()),
+            ("scheme", &constraints.scheme),
+            ("topic", &constraints.topic),
+            ("rhymes", &constraints.rhymes.to_string()),
+            ("syllables", &constraints.syllables),
+        ],
     );
     if constraints.topic.is_empty() {
         log.append("creative_writing:refusal", "no topic".to_owned());
@@ -494,7 +514,7 @@ pub fn handle_creative_writing_request(
     let mut poem = None;
     let mut failures = Vec::new();
     for offset in 0..2 {
-        if let Some(candidate) = compose_poem(&constraints, &language, offset) {
+        if let Some(candidate) = compose_poem(&constraints, language, offset) {
             let candidate_failures = check_poem(&candidate, &constraints);
             if candidate_failures.is_empty() {
                 poem = Some(candidate);
@@ -508,8 +528,8 @@ pub fn handle_creative_writing_request(
     }
     let Some(poem) = poem else {
         log.append(
-            "creative_writing:refusal",
-            format!("constraint check failed: {}", failures.join("; ")),
+            "creative_writing:constraint_check_failed",
+            failures.join("; "),
         );
         return Some(finalize_simple(
             prompt,
@@ -534,9 +554,8 @@ pub fn handle_creative_writing_request(
         let topic_lower = constraints.topic.to_lowercase();
         let class = rhyme_classes()
             .into_iter()
-            .find(|class| class.words.iter().any(|word| *word == topic_lower))
-            .map(|class| class.id)
-            .unwrap_or_else(|| "rotated".to_owned());
+            .find(|class| class.words.contains(&topic_lower))
+            .map_or_else(|| "rotated".to_owned(), |class| class.id);
         let body = template(
             "creative_writing_poem",
             &[
@@ -545,7 +564,10 @@ pub fn handle_creative_writing_request(
                 ("lines_want", &constraints.lines.to_string()),
                 ("lines_check", "holds"),
                 ("scheme", &constraints.scheme),
-                ("rhyme_check", "holds — every rhyming pair ends in one rhyme class"),
+                (
+                    "rhyme_check",
+                    "holds — every rhyming pair ends in one rhyme class",
+                ),
                 ("topic_check", "yes"),
                 ("rhyme_class", &class),
             ],
@@ -558,11 +580,7 @@ pub fn handle_creative_writing_request(
             &body,
             0.6,
         ))
-    } else if rhyme_coverage()
-        .0
-        .iter()
-        .any(|covered| covered == &language)
-    {
+    } else if rhyme_coverage().0.iter().any(|covered| covered == language) {
         // No rhyme was requested in a language whose pronunciation data is
         // grounded: the honest report is the line-count and topic check
         // plus the unverified-meter statement, not a coverage gap.

@@ -1,0 +1,17 @@
+language en
+lemma micrometer
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a metric unit of length equal to one millionth of a meter"
+    id oewn-13680266-n
+    partOfSpeech n
+    synonyms (micron micrometre)
+  entry
+    definition "caliper for measuring small distances"
+    id oewn-03765190-n
+    partOfSpeech n
+    synonyms ("micrometer gauge" "micrometer caliper")
+source "oewn:2024"

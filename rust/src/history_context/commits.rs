@@ -1,6 +1,9 @@
 //! Git commit capture and syntax deltas for repository history (issue #1180).
 
-use super::*;
+use super::{
+    BTreeMap, BTreeSet, Command, HistoryRules, MemoryEvent, NUMBER_PLACEHOLDER, Path, RawCommit,
+    RepositoryHistoryImportError, SymbolChange, effective_record, pattern_number, rule_event,
+};
 
 pub(super) fn run_git(
     repo_root: &Path,
@@ -90,7 +93,7 @@ fn import_commits_impl(
     path: Option<&str>,
     rules: &HistoryRules,
 ) -> Result<Vec<MemoryEvent>, RepositoryHistoryImportError> {
-    let range = since_sha.map_or_else(|| String::from("HEAD"), |sha| format!("{}..HEAD", sha));
+    let range = since_sha.map_or_else(|| String::from("HEAD"), |sha| format!("{sha}..HEAD"));
     let mut args: Vec<String> = vec![
         String::from("log"),
         String::from("--no-show-signature"),
@@ -125,6 +128,7 @@ fn formalize_raw_commit(repo_root: &Path, raw: &RawCommit, rules: &HistoryRules)
 }
 
 /// Map one raw commit onto a memory event using the seed's `commit` record.
+///
 /// `merge` is the subject of the merge commit that delivered this commit
 /// into the default branch (when one exists), scanned for the merge
 /// pattern's pull-request number.
@@ -159,12 +163,12 @@ pub fn formalize_commit(
             }
         }
     }
-    if let Some(subject) = merge {
-        if let Some(number) = pattern_number(subject, &rules.merge.pattern) {
-            let filled = rules.merge.evidence.replace(NUMBER_PLACEHOLDER, &number);
-            if !filled.is_empty() && !evidence.contains(&filled) {
-                evidence.push(filled);
-            }
+    if let Some(subject) = merge
+        && let Some(number) = pattern_number(subject, &rules.merge.pattern)
+    {
+        let filled = rules.merge.evidence.replace(NUMBER_PLACEHOLDER, &number);
+        if !filled.is_empty() && !evidence.contains(&filled) {
+            evidence.push(filled);
         }
     }
     let content = if raw.body.is_empty() {
@@ -187,7 +191,7 @@ pub fn formalize_commit(
 /// for pull-request workflows this is the merge that delivered the commit.
 /// Commits pushed directly to the default branch have none.
 fn merge_subject_for(repo_root: &Path, sha: &str) -> Option<String> {
-    let range = format!("{}..HEAD", sha);
+    let range = format!("{sha}..HEAD");
     let out = run_git(
         repo_root,
         &["log", "--merges", "--ancestry-path", "--format=%s", &range],
@@ -195,8 +199,7 @@ fn merge_subject_for(repo_root: &Path, sha: &str) -> Option<String> {
     .ok()?;
     out.lines()
         .map(str::trim)
-        .filter(|line| !line.is_empty())
-        .next_back()
+        .rfind(|line| !line.is_empty())
         .map(ToOwned::to_owned)
 }
 
@@ -204,7 +207,7 @@ fn merge_subject_for(repo_root: &Path, sha: &str) -> Option<String> {
 /// (added files, the root commit's parent). Subprocess failures are read
 /// the same way: an unreadable pre-image is no pre-image.
 fn blob_at(repo_root: &Path, rev: &str, path: &str) -> Option<String> {
-    let spec = format!("{}:{}", rev, path);
+    let spec = format!("{rev}:{path}");
     run_git(repo_root, &["show", &spec]).ok()
 }
 
@@ -222,7 +225,7 @@ pub fn diff_symbols(
         .iter()
         .any(|suffix| name.ends_with(suffix.as_str()))
     {
-        let before = blob_at(repo_root, &format!("{}^", sha), path).unwrap_or_default();
+        let before = blob_at(repo_root, &format!("{sha}^"), path).unwrap_or_default();
         let after = blob_at(repo_root, sha, path).unwrap_or_default();
         return diff_census(path, &before, &after);
     }
@@ -231,7 +234,7 @@ pub fn diff_symbols(
         .iter()
         .any(|suffix| name.ends_with(suffix.as_str()))
     {
-        let before = blob_at(repo_root, &format!("{}^", sha), path).unwrap_or_default();
+        let before = blob_at(repo_root, &format!("{sha}^"), path).unwrap_or_default();
         let after = blob_at(repo_root, sha, path).unwrap_or_default();
         return diff_es(path, &before, &after);
     }
@@ -276,15 +279,18 @@ fn census_kinds(_source: &str) -> Vec<(String, i64)> {
 
 fn diff_es(path: &str, before: &str, after: &str) -> Vec<SymbolChange> {
     let lower = path.to_ascii_lowercase();
-    let language = if lower.ends_with(".ts") {
+    let language = if Path::new(&lower)
+        .extension()
+        .is_some_and(|ext| ext.eq_ignore_ascii_case("ts"))
+    {
         crate::es_meta::SourceLanguage::TypeScript
     } else {
         crate::es_meta::SourceLanguage::JavaScript
     };
     let tokens = |source: &str| {
-        crate::es_meta::extract(path, language, source)
-            .map(|document| i64::try_from(document.token_count).unwrap_or(0))
-            .unwrap_or(0)
+        crate::es_meta::extract(path, language, source).map_or(0, |document| {
+            i64::try_from(document.token_count).unwrap_or(0)
+        })
     };
     let (before_tokens, after_tokens) = (tokens(before), tokens(after));
     if before_tokens == after_tokens {

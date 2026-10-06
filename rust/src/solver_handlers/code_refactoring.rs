@@ -80,10 +80,7 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
 fn code_block(prompt: &str) -> Option<String> {
     if let Some(start) = prompt.find("```") {
         let rest = &prompt[start + 3..];
-        let after_open = match rest.find('\n') {
-            Some(nl) => &rest[nl + 1..],
-            None => rest,
-        };
+        let after_open = rest.find('\n').map_or(rest, |nl| &rest[nl + 1..]);
         if let Some(end) = after_open.find("```") {
             let code = &after_open[..end];
             if !code.trim().is_empty() {
@@ -91,13 +88,13 @@ fn code_block(prompt: &str) -> Option<String> {
             }
         }
     }
-    if let Some(start) = prompt.find('`') {
-        if let Some(end) = prompt[start + 1..].find('`') {
-            let code = &prompt[start + 1..start + 1 + end];
-            let code_markers = ["(", "def ", "=>", "return "];
-            if code_markers.iter().any(|marker| code.contains(marker)) {
-                return Some(code.to_owned());
-            }
+    if let Some(start) = prompt.find('`')
+        && let Some(end) = prompt[start + 1..].find('`')
+    {
+        let code = &prompt[start + 1..start + 1 + end];
+        let code_markers = ["(", "def ", "=>", "return "];
+        if code_markers.iter().any(|marker| code.contains(marker)) {
+            return Some(code.to_owned());
         }
     }
     let markers = ["def ", "function ", "fn ", "=>", "return "];
@@ -246,7 +243,7 @@ fn render_async(chain: &Chain) -> String {
             ]
             .concat(),
         );
-        previous = handler.body.clone();
+        previous.clone_from(&handler.body);
     }
     lines.push([indent, "await ", &previous, ";"].concat());
     if let Some(catch) = &chain.catch {
@@ -286,22 +283,19 @@ pub fn handle_code_refactoring(
         parse_chain(&flat)
     });
 
-    let (body, confidence) = match chain {
-        Some(chain) => {
-            log.append(
-                "code_refactoring:chain",
-                format!("then={}", chain.thens.len()),
-            );
-            let rewritten = render_async(&chain);
-            (
-                template("code_refactoring_async", &[("code", &rewritten)]),
-                0.7,
-            )
-        }
-        None => {
-            log.append("code_refactoring:refusal", "chain=none".to_owned());
-            (template("code_refactoring_refusal", &[]), 0.4)
-        }
+    let (body, confidence) = if let Some(chain) = chain {
+        log.append(
+            "code_refactoring:chain",
+            format!("then={}", chain.thens.len()),
+        );
+        let rewritten = render_async(&chain);
+        (
+            template("code_refactoring_async", &[("code", &rewritten)]),
+            0.7,
+        )
+    } else {
+        log.append("code_refactoring:refusal", "chain=none".to_owned());
+        (template("code_refactoring_refusal", &[]), 0.4)
     };
 
     Some(finalize_simple(

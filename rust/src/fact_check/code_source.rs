@@ -195,11 +195,16 @@ pub fn code_evidence_for(query: &CodeQuery, root: &Path) -> Vec<RelativeEvidence
             }
             let evidence = if total.production > 0 {
                 RelativeEvidence::new(
-                    format!(
-                        "code:{} ({} production, {} test references)",
-                        first_production_site.as_deref().unwrap_or("<unlocated>"),
-                        total.production,
-                        total.test
+                    crate::seed::report_text(
+                        "fact_check_code_references",
+                        &[
+                            (
+                                "site",
+                                first_production_site.as_deref().unwrap_or("<unlocated>"),
+                            ),
+                            ("production", &total.production.to_string()),
+                            ("test", &total.test.to_string()),
+                        ],
                     ),
                     tier,
                     Stance::Supports,
@@ -207,9 +212,9 @@ pub fn code_evidence_for(query: &CodeQuery, root: &Path) -> Vec<RelativeEvidence
                 )
             } else {
                 RelativeEvidence::new(
-                    format!(
-                        "code: symbol {symbol} referenced only from test scope ({} sites)",
-                        total.test
+                    crate::seed::report_text(
+                        "fact_check_code_test_only",
+                        &[("symbol", symbol), ("sites", &total.test.to_string())],
                     ),
                     tier,
                     Stance::Contradicts,
@@ -244,7 +249,7 @@ pub fn code_evidence_for(query: &CodeQuery, root: &Path) -> Vec<RelativeEvidence
 /// The support strength for `n` production references, saturating at `1`.
 #[allow(clippy::cast_precision_loss)]
 fn production_strength(production: usize) -> f64 {
-    (0.5 + 0.1 * production as f64).min(1.0)
+    0.1f64.mul_add(production as f64, 0.5).min(1.0)
 }
 
 /// Whether a repository-relative path sits in the test tree.
@@ -306,7 +311,7 @@ fn rust_files(root: &Path) -> Vec<String> {
                 && entry
                     .file_name()
                     .to_str()
-                    .is_some_and(|name| name.ends_with(".rs"))
+                    .is_some_and(|name| name.as_bytes().ends_with(b".rs"))
                 && let Ok(relative) = path.strip_prefix(root)
             {
                 files.push(relative.to_string_lossy().replace('\\', "/"));

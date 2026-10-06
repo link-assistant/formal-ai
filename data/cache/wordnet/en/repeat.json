@@ -1,0 +1,94 @@
+{
+  "lemma": "repeat",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07356649-n",
+      "partOfSpeech": "n",
+      "definition": "an event that repeats",
+      "examples": [
+        "the events today were a repeat of yesterday's"
+      ],
+      "synonyms": [
+        "repetition"
+      ]
+    },
+    {
+      "id": "oewn-00960366-v",
+      "partOfSpeech": "v",
+      "definition": "to say, state, or perform again",
+      "examples": [
+        "She kept reiterating her request"
+      ],
+      "synonyms": [
+        "reiterate",
+        "ingeminate",
+        "iterate",
+        "restate",
+        "retell"
+      ]
+    },
+    {
+      "id": "oewn-01738383-v",
+      "partOfSpeech": "v",
+      "definition": "make or do or perform again",
+      "examples": [
+        "He could never replicate his brilliant performance of the magic trick"
+      ],
+      "synonyms": [
+        "duplicate",
+        "reduplicate",
+        "double",
+        "replicate"
+      ]
+    },
+    {
+      "id": "oewn-00343988-v",
+      "partOfSpeech": "v",
+      "definition": "happen or occur again",
+      "examples": [
+        "This is a recurring story"
+      ],
+      "synonyms": [
+        "recur"
+      ]
+    },
+    {
+      "id": "oewn-00959711-v",
+      "partOfSpeech": "v",
+      "definition": "to say again or imitate",
+      "examples": [
+        "followers echoing the cries of their leaders"
+      ],
+      "synonyms": [
+        "echo"
+      ]
+    },
+    {
+      "id": "oewn-02601659-v",
+      "partOfSpeech": "v",
+      "definition": "do over",
+      "examples": [
+        "They would like to take it over again"
+      ],
+      "synonyms": [
+        "take over"
+      ]
+    },
+    {
+      "id": "oewn-01731369-v",
+      "partOfSpeech": "v",
+      "definition": "repeat an earlier theme of a composition",
+      "synonyms": [
+        "reprise",
+        "reprize",
+        "recapitulate"
+      ]
+    }
+  ]
+}

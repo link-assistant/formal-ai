@@ -141,6 +141,8 @@ pub const MEANINGS_DECOMPOSITION_LINO: &str =
 pub const MEANINGS_DEFINITION_MERGE_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-definition-merge.lino");
 pub const MEANINGS_DOCS_LINO: &str = include_str!("../../embedded/data/seed/meanings-docs.lino");
+pub const MEANINGS_ENGINE_REPORT_INTENTS_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-engine-report-intents.lino");
 pub const MEANINGS_FACTS_LINO: &str = include_str!("../../embedded/data/seed/meanings-facts.lino");
 pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-feature-capability.lino");
@@ -272,6 +274,8 @@ pub const MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-creative-tasks.lino");
 pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-decomposition.lino");
+pub const MULTILINGUAL_RESPONSES_ENGINE_REPORTS_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-engine-reports.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-entities.lino");
 pub const MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO: &str =
@@ -472,6 +476,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-decomposition.lino", MEANINGS_DECOMPOSITION_LINO),
         ("data/seed/meanings-definition-merge.lino", MEANINGS_DEFINITION_MERGE_LINO),
         ("data/seed/meanings-docs.lino", MEANINGS_DOCS_LINO),
+        ("data/seed/meanings-engine-report-intents.lino", MEANINGS_ENGINE_REPORT_INTENTS_LINO),
         ("data/seed/meanings-facts.lino", MEANINGS_FACTS_LINO),
         ("data/seed/meanings-feature-capability.lino", MEANINGS_FEATURE_CAPABILITY_LINO),
         ("data/seed/meanings-file-edit.lino", MEANINGS_FILE_EDIT_LINO),
@@ -560,6 +565,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-decomposition.lino",
             MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-engine-reports.lino",
+            MULTILINGUAL_RESPONSES_ENGINE_REPORTS_LINO,
         ),
         ("data/seed/multilingual-responses-entities.lino", MULTILINGUAL_RESPONSES_ENTITIES_LINO),
         (
@@ -677,6 +686,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
     MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+    MULTILINGUAL_RESPONSES_ENGINE_REPORTS_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
     MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO,
     MULTILINGUAL_RESPONSES_FORMALIZATION_LINO,
@@ -731,6 +741,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_DECOMPOSITION_LINO,
     MEANINGS_DEFINITION_MERGE_LINO,
     MEANINGS_DOCS_LINO,
+    MEANINGS_ENGINE_REPORT_INTENTS_LINO,
     MEANINGS_FACTS_LINO,
     MEANINGS_FEATURE_CAPABILITY_LINO,
     MEANINGS_FILE_EDIT_LINO,

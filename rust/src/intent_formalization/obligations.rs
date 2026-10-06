@@ -35,9 +35,14 @@
 
 use crate::engine::{normalize_prompt, stable_id};
 use crate::implementation_language;
+use crate::links_format::push_lino_field;
 use crate::normal_markov::quoted_segment_spans;
 use crate::obligation_ledger::{ObligationExpectation, ObligationNode};
 use crate::seed;
+
+/// The record head of the obligation graph's Links Notation rendering, and
+/// the prefix of its stable id.
+const GRAPH_RECORD: &str = "request_obligation_graph";
 
 /// Bound handed to [`ObligationNode::build`], matching the agentic root.
 const SPLIT_DEPTH_BOUND: u8 = crate::recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND;
@@ -260,10 +265,16 @@ impl ObligationGraph {
                     ObligationExpectation::Underivable { reason } => reason.clone(),
                     _ => String::new(),
                 };
-                format!(
-                    "obligation {} span {}:{} underivable {}",
-                    node.node_id, node.span.0, node.span.1, reason
-                )
+                let span = format!("{}:{}", node.span.0, node.span.1);
+                [
+                    ("obligation", node.node_id.as_str()),
+                    ("span", span.as_str()),
+                    ("underivable", reason.as_str()),
+                ]
+                .iter()
+                .map(|(name, value)| [*name, *value].join(" "))
+                .collect::<Vec<_>>()
+                .join(" ")
             })
             .collect()
     }
@@ -279,30 +290,27 @@ impl ObligationGraph {
     #[must_use]
     pub fn links_notation(&self) -> String {
         let mut out = String::new();
-        out.push_str("request_obligation_graph\n");
+        push_lino_field(&mut out, 0, GRAPH_RECORD, None);
         if let Some(language) = &self.language {
-            out.push_str(&format!("  language {language}\n"));
+            push_lino_field(&mut out, 2, "language", Some(language.as_str()));
         }
         for node in &self.nodes {
             let kind = self
                 .classifications
                 .iter()
                 .find(|(node_id, _)| *node_id == node.node_id)
-                .map(|(_, kind)| kind.slug())
-                .unwrap_or("unclassified");
-            out.push_str(&format!(
-                "  obligation {}\n    kind {kind}\n    span {}:{}\n",
-                node.node_id, node.span.0, node.span.1
-            ));
+                .map_or("unclassified", |(_, kind)| kind.slug());
+            push_lino_field(&mut out, 2, "obligation", Some(node.node_id.as_str()));
+            push_lino_field(&mut out, 4, "kind", Some(kind));
+            let span = format!("{}:{}", node.span.0, node.span.1);
+            push_lino_field(&mut out, 4, "span", Some(span.as_str()));
             if let Some((_, literal)) = self
                 .literal_by_node
                 .iter()
                 .find(|(node_id, _)| *node_id == node.node_id)
             {
-                out.push_str(&format!(
-                    "    literal \"{}\"\n",
-                    literal.replace('\\', "\\\\").replace('"', "\\\"")
-                ));
+                let quoted = format!("\"{}\"", literal.replace('\\', "\\\\").replace('"', "\\\""));
+                push_lino_field(&mut out, 4, "literal", Some(quoted.as_str()));
             }
         }
         out
@@ -499,5 +507,5 @@ fn classify_clause(clause: &str) -> Option<(ObligationKind, Option<String>)> {
 #[must_use]
 #[allow(dead_code)] // drafted for the obligation parity fixtures, not yet read
 pub fn graph_id(text: &str) -> String {
-    stable_id("request_obligation_graph", text)
+    stable_id(GRAPH_RECORD, text)
 }

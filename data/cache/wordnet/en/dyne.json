@@ -1,0 +1,16 @@
+{
+  "lemma": "dyne",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13669116-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of force equal to the force that imparts an acceleration of 1 cm/sec/sec to a mass of 1 gram"
+    }
+  ]
+}

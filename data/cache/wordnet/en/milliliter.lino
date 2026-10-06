@@ -1,0 +1,12 @@
+language en
+lemma milliliter
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a metric unit of volume equal to one thousandth of a liter"
+    id oewn-13644955-n
+    partOfSpeech n
+    synonyms (millilitre mil ml "cubic centimeter" "cubic centimetre" cc)
+source "oewn:2024"

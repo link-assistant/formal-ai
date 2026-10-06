@@ -1,0 +1,37 @@
+{
+  "lemma": "briefly",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00093232-r",
+      "partOfSpeech": "r",
+      "definition": "for a short time",
+      "examples": [
+        "she visited him briefly",
+        "was briefly associated with IBM"
+      ]
+    },
+    {
+      "id": "oewn-00291174-r",
+      "partOfSpeech": "r",
+      "definition": "in a concise manner; in a few words",
+      "examples": [
+        "the history is summed up concisely in this book",
+        "she replied briefly",
+        "briefly, we have a problem",
+        "to put it shortly"
+      ],
+      "synonyms": [
+        "concisely",
+        "shortly",
+        "in brief",
+        "in short"
+      ]
+    }
+  ]
+}

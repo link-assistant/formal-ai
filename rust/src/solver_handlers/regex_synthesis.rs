@@ -15,6 +15,7 @@
 //! than guessing.
 
 use super::finalize_simple;
+use std::fmt::Write as _;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
@@ -171,7 +172,7 @@ fn scan_mentions(lower: &str) -> (Vec<ClassMention>, Vec<SeparatorMention>) {
         let mut cursor = index + 1;
         while matches!(
             words.get(cursor).map(|(_, word)| *word),
-            Some("or") | Some("more")
+            Some("or" | "more")
         ) {
             at_least = true;
             cursor += 1;
@@ -231,13 +232,12 @@ fn compose(classes: &[ClassMention], separators: &[SeparatorMention]) -> Option<
     for mention in classes.iter().skip(1) {
         let previous_position = classes
             .iter()
-            .filter(|other| other.position < mention.position)
-            .next_back()
+            .rfind(|other| other.position < mention.position)
             .map(|other| other.position);
         let separator = separator_between(separators, previous_position, mention.position);
         let body = format!("{}{}", separator.unwrap_or_default(), render_class(mention));
         if mention.optional {
-            pattern.push_str(&format!("({body})?"));
+            let _ = write!(pattern, "({body})?");
         } else {
             pattern.push_str(&body);
         }
@@ -390,7 +390,7 @@ pub fn handle_regex_synthesis(
                 .map(|code| problem_text(code))
                 .collect::<Vec<_>>()
                 .join("; ");
-            log.append("regex_synthesis:refusal", format!("problems: {}", problems));
+            log.append("regex_synthesis:refusal", format!("problems: {problems}"));
             (
                 template(
                     "regex_synthesis_broken",

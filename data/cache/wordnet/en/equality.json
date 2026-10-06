@@ -1,0 +1,29 @@
+{
+  "lemma": "equality",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04755139-n",
+      "partOfSpeech": "n",
+      "definition": "the quality of being the same in quantity or measure or value or status"
+    },
+    {
+      "id": "oewn-13969940-n",
+      "partOfSpeech": "n",
+      "definition": "a state of being essentially equal or equivalent; equally balanced",
+      "examples": [
+        "on a par with the best"
+      ],
+      "synonyms": [
+        "equivalence",
+        "equation",
+        "par"
+      ]
+    }
+  ]
+}

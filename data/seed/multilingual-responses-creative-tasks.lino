@@ -50,3 +50,71 @@ multilingual_responses
     intent advice_refusal
     language en
     text "This reads as an advice request, but the topic '{topic}' has no formalized recommendations in the seeded table (currently: sleep), and uncited advice is not returned. Name the topic in the table, or say what a good answer would cite and I will ground it when the source is registered."
+  response response_creative_writing_scheme_length_mismatch_en
+    intent creative_writing_scheme_length_mismatch
+    language en
+    text "scheme {scheme} names {positions} positions but the poem has {lines} lines"
+  response response_creative_writing_rhyme_class_mismatch_en
+    intent creative_writing_rhyme_class_mismatch
+    language en
+    text "positions {first} and {second} must rhyme but '{first_word}' ({first_class}) and '{second_word}' ({second_class}) are different classes"
+  response response_creative_writing_rhyme_outside_classes_en
+    intent creative_writing_rhyme_outside_classes
+    language en
+    text "position {first} or {second} ends in a word outside every rhyme class"
+  response response_creative_writing_rhyme_unwanted_en
+    intent creative_writing_rhyme_unwanted
+    language en
+    text "positions {first} and {second} must NOT rhyme but both end in class {class}"
+  response response_creative_writing_line_count_mismatch_en
+    intent creative_writing_line_count_mismatch
+    language en
+    text "line count {lines_got} but {lines_want} wanted"
+  response response_creative_writing_topic_absent_en
+    intent creative_writing_topic_absent
+    language en
+    text "topic word '{topic}' absent"
+  response response_planning_skip_over_cap_en
+    intent planning_skip_over_cap
+    language en
+    text "{place} (over the daily cap)"
+  response response_planning_skip_repeat_category_en
+    intent planning_skip_repeat_category
+    language en
+    text "{place} (would repeat the {category} category consecutively)"
+  response response_planning_skip_past_closing_en
+    intent planning_skip_past_closing
+    language en
+    text "{place} (would run past its {hours} closing)"
+  response response_planning_day_over_cap_en
+    intent planning_day_over_cap
+    language en
+    text "day {day} carries {items} items, over the cap of {cap}"
+  response response_planning_overlap_en
+    intent planning_overlap
+    language en
+    text "day {day}: {second} starts before {first} ends plus travel"
+  response response_planning_repeat_category_en
+    intent planning_repeat_category
+    language en
+    text "day {day}: two consecutive {category} items"
+  response response_planning_outside_hours_en
+    intent planning_outside_hours
+    language en
+    text "{place} falls outside {hours}"
+  response response_planning_feasibility_en
+    intent planning_feasibility
+    language en
+    text "no overlapping items; travel time accounted between consecutive items ({travel_intra} min intra-district, {travel_cross} min cross-district); every item inside its opening hours; at most {max_items} items a day"
+  response response_brainstorming_constraints_en
+    intent brainstorming_constraints
+    language en
+    text "at most {max_length} characters, pronounceable (carries a vowel, no digits)"
+  response response_brainstorming_constraints_excluding_en
+    intent brainstorming_constraints_excluding
+    language en
+    text "at most {max_length} characters, pronounceable (carries a vowel, no digits), excluding words containing {excluded}"
+  response response_advice_forward_note_en
+    intent advice_forward_note
+    language en
+    text "Competing recommendations are ordered by grade weight; where two disagree, the higher grade wins here, and full relative probabilities are the relative-meta-logic work of issue #1179."

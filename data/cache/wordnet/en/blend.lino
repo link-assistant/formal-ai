@@ -1,0 +1,40 @@
+language en
+lemma blend
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an occurrence of thorough mixing"
+    id oewn-07390005-n
+    partOfSpeech n
+  entry
+    definition "a new word formed by joining two others and combining their meanings"
+    examples ("‘smog’ is a blend of ‘smoke’ and ‘fog’" "‘motel’ is a portmanteau word made by combining ‘motor’ and ‘hotel’" "‘brunch’ is a well-known portmanteau")
+    id oewn-06299307-n
+    partOfSpeech n
+    synonyms ("portmanteau word" portmanteau)
+  entry
+    definition "the act of blending components together thoroughly"
+    id oewn-00381504-n
+    partOfSpeech n
+    synonyms (blending)
+  entry
+    definition "combine into one"
+    examples ("blend the nuts and raisins together" "he blends in with the crowd" "We don't intermingle much")
+    id oewn-01465097-v
+    partOfSpeech v
+    synonyms (intermix immingle intermingle)
+  entry
+    definition "blend or harmonize"
+    examples ("This flavor will blend with those in your dish" "This sofa won't go with the chairs")
+    id oewn-02706315-v
+    partOfSpeech v
+    synonyms (go "blend in")
+  entry
+    definition "mix together different elements"
+    examples ("The colors blend well")
+    id oewn-00395719-v
+    partOfSpeech v
+    synonyms (flux mix conflate commingle immix fuse coalesce meld combine merge)
+source "oewn:2024"

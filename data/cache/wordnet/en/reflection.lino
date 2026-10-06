@@ -1,0 +1,48 @@
+language en
+lemma reflection
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a calm, lengthy, intent consideration"
+    id oewn-05793513-n
+    partOfSpeech n
+    synonyms (contemplation reflexion rumination musing thoughtfulness)
+  entry
+    definition "the phenomenon of a propagating wave (light or sound) being thrown back from a surface"
+    id oewn-11523478-n
+    partOfSpeech n
+    synonyms (reflexion)
+  entry
+    definition "expression without words"
+    examples ("tears are an expression of grief" "the pulse is a reflection of the heart's condition")
+    id oewn-06893299-n
+    partOfSpeech n
+    synonyms (expression manifestation reflexion)
+  entry
+    definition "a likeness in which left and right are reversed"
+    id oewn-04754355-n
+    partOfSpeech n
+    synonyms ("mirror image" reflexion)
+  entry
+    definition "the image of something as reflected by a mirror (or other reflective material)"
+    examples ("he studied his reflection in the mirror")
+    id oewn-04076088-n
+    partOfSpeech n
+    synonyms (reflexion)
+  entry
+    definition "(mathematics) a transformation in which the direction of one axis is reversed"
+    id oewn-13807616-n
+    partOfSpeech n
+  entry
+    definition "a remark expressing careful consideration"
+    id oewn-06779826-n
+    partOfSpeech n
+    synonyms (observation reflexion)
+  entry
+    definition "the ability to reflect beams or rays"
+    id oewn-05017811-n
+    partOfSpeech n
+    synonyms (reflexion reflectivity)
+source "oewn:2024"

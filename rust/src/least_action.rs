@@ -60,6 +60,7 @@ impl ActionCost {
 
     /// Lexicographic least-action comparison: `self < other` when self
     /// acts less — fewer steps, or equal steps and less code, and so on.
+    #[must_use]
     pub fn is_less_action_than(&self, other: &Self) -> bool {
         (self.steps, self.code_units, self.compute_ms, self.memory_kb)
             < (
@@ -121,6 +122,7 @@ pub struct WorkPlan {
 /// 8 ladder; any other count keeps the ladder regular down to 2^k and
 /// holds the remainder at the final level, so the highest abstraction is
 /// always the powers of two.
+#[must_use]
 pub fn plan(subtasks: &[Subtask]) -> WorkPlan {
     let mut level_counts = Vec::new();
     let mut level = 1usize;
@@ -155,6 +157,7 @@ pub fn plan(subtasks: &[Subtask]) -> WorkPlan {
 ///
 /// `None` when the plans cover different subtask counts (comparing a
 /// plan against a coarser plan is not a least-action question).
+#[must_use]
 pub fn least_action_plan<'a>(a: &'a WorkPlan, b: &'a WorkPlan) -> Option<&'a WorkPlan> {
     if a.smallest_subtasks != b.smallest_subtasks {
         return None;
@@ -164,9 +167,8 @@ pub fn least_action_plan<'a>(a: &'a WorkPlan, b: &'a WorkPlan) -> Option<&'a Wor
     let a_cost = (a.planned_steps, a.unhandled.len());
     let b_cost = (b.planned_steps, b.unhandled.len());
     match a_cost.cmp(&b_cost) {
-        core::cmp::Ordering::Less => Some(a),
         core::cmp::Ordering::Greater => Some(b),
-        core::cmp::Ordering::Equal => Some(a),
+        core::cmp::Ordering::Less | core::cmp::Ordering::Equal => Some(a),
     }
 }
 
@@ -183,6 +185,7 @@ pub struct SolutionCandidate {
 /// Rank generated solutions by least action: only candidates that solve
 /// the entire input range, best (least action) first. Lexicographic on
 /// (steps, code units, compute, memory), stable for equal costs.
+#[must_use]
 pub fn rank_by_least_action(candidates: &[SolutionCandidate]) -> Vec<&SolutionCandidate> {
     let mut viable: Vec<&SolutionCandidate> = candidates
         .iter()
@@ -207,6 +210,7 @@ pub fn rank_by_least_action(candidates: &[SolutionCandidate]) -> Vec<&SolutionCa
 }
 
 /// The least-action solution, if any candidate solves the entire range.
+#[must_use]
 pub fn least_action_solution(candidates: &[SolutionCandidate]) -> Option<&SolutionCandidate> {
     rank_by_least_action(candidates).into_iter().next()
 }

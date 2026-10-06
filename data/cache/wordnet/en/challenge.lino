@@ -1,0 +1,50 @@
+language en
+lemma challenge
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a demanding or stimulating situation"
+    examples ("they reacted irrationally to the challenge of Russian power")
+    id oewn-13955981-n
+    partOfSpeech n
+  entry
+    definition "a call to engage in a contest or fight"
+    id oewn-07245954-n
+    partOfSpeech n
+  entry
+    definition "questioning a statement and demanding an explanation"
+    examples ("his challenge of the assumption that Japan is still our enemy")
+    id oewn-07208065-n
+    partOfSpeech n
+  entry
+    definition "a formal objection to the selection of a particular person as a juror"
+    id oewn-07223225-n
+    partOfSpeech n
+  entry
+    definition "a demand by a sentry for a password or identification"
+    id oewn-07206229-n
+    partOfSpeech n
+  entry
+    definition "take exception to"
+    examples ("She challenged his claims")
+    id oewn-00870790-v
+    partOfSpeech v
+    synonyms (dispute gainsay)
+  entry
+    definition "issue a challenge to"
+    examples ("Fischer challenged Spassky to a match")
+    id oewn-00870255-v
+    partOfSpeech v
+  entry
+    definition "ask for identification"
+    examples ("The illegal immigrant was challenged by the border guard")
+    id oewn-00810005-v
+    partOfSpeech v
+  entry
+    definition "raise a formal objection in a court of law"
+    id oewn-00809824-v
+    partOfSpeech v
+    synonyms ("take exception")
+source "oewn:2024"

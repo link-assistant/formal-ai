@@ -217,7 +217,7 @@ fn explained_flags(manual: &ManualCommand, used: &[String]) -> Vec<(String, Stri
     manual
         .flags
         .iter()
-        .filter(|flag| used.iter().any(|spelling| flag.spelling == *spelling))
+        .filter(|flag| used.contains(&flag.spelling))
         .map(|flag| (flag.spelling.clone(), flag.meaning.clone()))
         .collect()
 }
@@ -276,21 +276,22 @@ fn number_value(word: &str, numbers: &[LinoNode]) -> Option<u32> {
 fn name_pattern(prompt: &str, normalized_tokens: &[&str]) -> Option<String> {
     for word in prompt.split_whitespace() {
         let trimmed = word.trim_matches(|c: char| !c.is_alphanumeric() && c != '.');
-        if let Some(ext) = trimmed.strip_prefix('.') {
-            if !ext.is_empty() && ext.chars().all(|c| c.is_alphanumeric()) {
-                return Some(format!("*.{ext}"));
-            }
+        if let Some(ext) = trimmed.strip_prefix('.')
+            && !ext.is_empty()
+            && ext.chars().all(char::is_alphanumeric)
+        {
+            return Some(format!("*.{ext}"));
         }
     }
     let extensions = word_entries("extension");
     for (index, token) in normalized_tokens.iter().enumerate() {
-        if matches!(*token, "files" | "файлы" | "файлов") && index > 0 {
-            if let Some(entry) = extensions
+        if matches!(*token, "files" | "файлы" | "файлов")
+            && index > 0
+            && let Some(entry) = extensions
                 .iter()
                 .find(|entry| entry.find_child_value("word") == normalized_tokens[index - 1])
-            {
-                return Some(entry.find_child_value("value").to_owned());
-            }
+        {
+            return Some(entry.find_child_value("value").to_owned());
         }
     }
     None
@@ -305,37 +306,34 @@ fn size_test(normalized_tokens: &[&str]) -> Option<(u32, String, usize, usize)> 
     let units = word_entries("size_unit");
     let numbers = word_entries("number");
     for (index, token) in normalized_tokens.iter().enumerate() {
-        if let Some(value) = number_value(token, &numbers) {
-            if let Some(next) = normalized_tokens.get(index + 1) {
-                if let Some(unit) = units
-                    .iter()
-                    .find(|entry| entry.find_child_value("word") == *next)
-                {
-                    return Some((
-                        value,
-                        unit.find_child_value("value").to_owned(),
-                        qualifier_at,
-                        index + 1,
-                    ));
-                }
-            }
+        if let Some(value) = number_value(token, &numbers)
+            && let Some(next) = normalized_tokens.get(index + 1)
+            && let Some(unit) = units
+                .iter()
+                .find(|entry| entry.find_child_value("word") == *next)
+        {
+            return Some((
+                value,
+                unit.find_child_value("value").to_owned(),
+                qualifier_at,
+                index + 1,
+            ));
         }
         // joined form "10mb"
-        let digits: String = token.chars().take_while(|c| c.is_ascii_digit()).collect();
+        let digits: String = token.chars().take_while(char::is_ascii_digit).collect();
         if !digits.is_empty() {
             let rest = &token[digits.len()..];
             if let Some(unit) = units
                 .iter()
                 .find(|entry| entry.find_child_value("word") == rest)
+                && let Ok(value) = digits.parse::<u32>()
             {
-                if let Ok(value) = digits.parse::<u32>() {
-                    return Some((
-                        value,
-                        unit.find_child_value("value").to_owned(),
-                        qualifier_at,
-                        index,
-                    ));
-                }
+                return Some((
+                    value,
+                    unit.find_child_value("value").to_owned(),
+                    qualifier_at,
+                    index,
+                ));
             }
         }
     }
@@ -354,7 +352,7 @@ fn mtime_test(normalized_tokens: &[&str]) -> Option<String> {
         .iter()
         .any(|token| matches!(*token, "older" | "старше"));
     let sign = if older { "+" } else { "-" };
-    Some(format!("{}{}", sign, count))
+    Some(format!("{sign}{count}"))
 }
 
 /// "last/first N lines of FILE" → head/tail.
@@ -394,13 +392,13 @@ fn line_slice(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
         .map(|flag| flag.meaning.clone())
         .unwrap_or_default();
     Some(Composed {
-        command: format!("{} -n {} {}", tool, count, file),
+        command: format!("{tool} -n {count} {file}"),
         package: manual.package,
         url: manual.url,
         rows: vec![
             (
                 echo(normalized_tokens, direction_at, lines_at),
-                format!("{} -n {}", tool, count),
+                format!("{tool} -n {count}"),
             ),
             (file.clone(), file),
         ],
@@ -419,7 +417,7 @@ fn grep_search(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     let search_at = normalized_tokens
         .iter()
         .position(|token| matches!(*token, "search" | "поищи"))
-        .filter(|_| normalized_tokens.iter().any(|token| *token == "for"));
+        .filter(|_| normalized_tokens.contains(&"for"));
     let cue_at = containment_at.or(search_at)?;
     // The pattern: the raw word after "for " / "containing " (case kept).
     let lower = prompt.to_lowercase();
@@ -467,7 +465,7 @@ fn grep_search(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
         (path.clone(), path.clone()),
     ];
     Some(Composed {
-        command: format!("grep {} '{}' {}", flag_list, pattern, path),
+        command: format!("grep {flag_list} '{pattern}' {path}"),
         package: manual.package,
         url: manual.url,
         rows,
@@ -491,24 +489,24 @@ fn find_files(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     }
     let path = root_path(prompt);
     let mut parts = vec![format!("find {}", path)];
-    let mut rows: Vec<(String, String)> = vec![(path.clone(), format!("find {}", path))];
+    let mut rows: Vec<(String, String)> = vec![(path.clone(), format!("find {path}"))];
     let mut used_flags: Vec<String> = Vec::new();
     if let Some(pattern) = &pattern {
-        parts.push(format!("-name '{}'", pattern));
-        rows.push((pattern.clone(), format!("-name '{}'", pattern)));
+        parts.push(format!("-name '{pattern}'"));
+        rows.push((pattern.clone(), format!("-name '{pattern}'")));
         used_flags.push("-name pattern".to_owned());
     }
     if let Some((count, unit, span_from, span_to)) = &size {
-        parts.push(format!("-size +{}{}", count, unit));
+        parts.push(format!("-size +{count}{unit}"));
         rows.push((
             echo(normalized_tokens, *span_from, *span_to),
-            format!("-size +{}{}", count, unit),
+            format!("-size +{count}{unit}"),
         ));
         used_flags.push("-size +N[kMG]".to_owned());
     }
     if let Some(mtime) = &mtime {
-        parts.push(format!("-mtime {}", mtime));
-        rows.push((mtime.clone(), format!("-mtime {}", mtime)));
+        parts.push(format!("-mtime {mtime}"));
+        rows.push((mtime.clone(), format!("-mtime {mtime}")));
         used_flags.push("-mtime N".to_owned());
     }
     if let Some(dir_at) = directories_at {
@@ -574,7 +572,7 @@ fn ls_listing(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     rows.push((path.clone(), path.clone()));
     let explained = explained_flags(&manual, &flags);
     Some(Composed {
-        command: format!("ls {}{}", flag_list, path),
+        command: format!("ls {flag_list}{path}"),
         package: manual.package,
         url: manual.url,
         rows,
@@ -625,37 +623,34 @@ pub fn handle_shell_command_compose(
         .or_else(|| find_files(&normalized_tokens, prompt))
         .or_else(|| ls_listing(&normalized_tokens, prompt));
 
-    let (body, confidence) = match composition {
-        Some(composed) => {
-            log.append("shell_command_compose:command", composed.command.clone());
-            let mut flags = String::new();
-            for (flag, meaning) in &composed.explained {
-                flags.push_str(&template(
-                    "flag_line",
-                    &[("flag", flag), ("meaning", meaning)],
-                ));
-            }
-            (
-                template(
-                    "shell_command_composed",
-                    &[
-                        ("command", &composed.command),
-                        ("package", &composed.package),
-                        ("flags", &flags),
-                        ("manual", &composed.url),
-                        ("derivation", &mapping_rows(&composed.rows)),
-                    ],
-                ),
-                0.7,
-            )
+    let (body, confidence) = if let Some(composed) = composition {
+        log.append("shell_command_compose:command", composed.command.clone());
+        let mut flags = String::new();
+        for (flag, meaning) in &composed.explained {
+            flags.push_str(&template(
+                "flag_line",
+                &[("flag", flag), ("meaning", meaning)],
+            ));
         }
-        None => {
-            log.append(
-                "shell_command_compose:refusal",
-                "no manual-page entry covers the request".to_owned(),
-            );
-            (template("shell_compose_refusal", &[]), 0.4)
-        }
+        (
+            template(
+                "shell_command_composed",
+                &[
+                    ("command", &composed.command),
+                    ("package", &composed.package),
+                    ("flags", &flags),
+                    ("manual", &composed.url),
+                    ("derivation", &mapping_rows(&composed.rows)),
+                ],
+            ),
+            0.7,
+        )
+    } else {
+        log.append(
+            "shell_command_compose:refusal",
+            "no manual-page entry covers the request".to_owned(),
+        );
+        (template("shell_compose_refusal", &[]), 0.4)
     };
 
     Some(finalize_simple(

@@ -473,9 +473,17 @@ mod tests {
     use super::*;
 
     fn fixture() -> tempdir::TempDir {
-        // rust-script tests cannot add dependencies; use a stable scratch
-        // path under the system temp directory instead.
-        let dir = std::env::temp_dir().join(format!("cross-org-fixture-{}", std::process::id()));
+        // rust-script tests cannot add dependencies; use a scratch path under
+        // the system temp directory instead. The test harness runs tests on
+        // parallel threads of one process, so the path carries a per-call
+        // sequence number as well as the process id: a shared path let one
+        // test's `remove_dir_all` delete another test's fixture mid-write.
+        static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+        let sequence = NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let dir = std::env::temp_dir().join(format!(
+            "cross-org-fixture-{}-{sequence}",
+            std::process::id()
+        ));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(dir.join("dependency/src")).expect("dependency dir");
         fs::create_dir_all(dir.join("consumer-a/src")).expect("consumer-a dir");

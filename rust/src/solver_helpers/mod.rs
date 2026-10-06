@@ -678,7 +678,7 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
         cmd,
         output_label,
         expected_output,
-        execution.notes
+        program.language.execution_notes()
     )
 }
 

@@ -1,0 +1,138 @@
+language en
+lemma square
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "having four equal sides and four right angles or forming a right angle"
+    examples ("a square peg in a round hole" "a square corner")
+    id oewn-02050637-a
+    partOfSpeech a
+  entry
+    definition "characterized by honesty and fairness"
+    examples ("straight dealing" "a square deal")
+    id oewn-02326142-a
+    partOfSpeech a
+    synonyms (straight)
+  entry
+    definition "(geometry) a plane rectangle with four equal sides and four right angles; a four-sided regular polygon"
+    examples ("you can compute the area of a square if you know the length of its sides")
+    id oewn-13901273-n
+    partOfSpeech n
+    synonyms (foursquare)
+  entry
+    definition "the product of two equal terms"
+    examples ("nine is the second power of three" "gravity is inversely proportional to the square of the distance")
+    id oewn-13753131-n
+    partOfSpeech n
+    synonyms ("second power")
+  entry
+    definition "an open area at the meeting of two or more streets"
+    id oewn-08637195-n
+    partOfSpeech n
+    synonyms ("public square")
+  entry
+    definition "something approximating the shape of a square"
+    id oewn-13901590-n
+    partOfSpeech n
+  entry
+    definition "someone who doesn't understand what is going on"
+    id oewn-10662386-n
+    partOfSpeech n
+    synonyms (lame)
+  entry
+    definition "a formal and conservative person with old-fashioned views"
+    id oewn-10662243-n
+    partOfSpeech n
+    synonyms ("square toes")
+  entry
+    definition "any artifact having a shape similar to a plane geometric figure with four equal sides and four right angles"
+    examples ("a checkerboard has 64 squares")
+    id oewn-04298649-n
+    partOfSpeech n
+  entry
+    definition "a hand tool consisting of two straight arms at right angles; used to construct or test right angles"
+    examples ("the carpenter who built this room must have lost his square")
+    id oewn-04298380-n
+    partOfSpeech n
+  entry
+    definition "in a straight direct way"
+    examples ("looked him squarely in the eye" "ran square into me")
+    id oewn-00052564-r
+    partOfSpeech r
+    synonyms (squarely)
+  entry
+    definition "in a square shape"
+    examples ("a squarely cut piece of paper" "folded the sheet of paper square")
+    id oewn-00051978-r
+    partOfSpeech r
+    synonyms (squarely)
+  entry
+    definition "firmly and solidly"
+    examples ("hit the ball squarely" "the bat met the ball squarely" "planted his great bulk square before his enemy")
+    id oewn-00051806-r
+    partOfSpeech r
+    synonyms (squarely)
+  entry
+    definition "providing abundant nourishment"
+    examples ("a hearty meal" "good solid food" "ate a substantial breakfast" "four square meals a day")
+    id oewn-02569298-s
+    partOfSpeech s
+    synonyms (hearty satisfying solid substantial)
+  entry
+    definition "leaving no balance"
+    examples ("my account with you is now all square")
+    id oewn-01714134-s
+    partOfSpeech s
+  entry
+    definition "without evasion or compromise"
+    examples ("a square contradiction" "he is not being as straightforward as it appears")
+    id oewn-00769662-s
+    partOfSpeech s
+    synonyms (straightforward straight)
+  entry
+    definition "rigidly conventional or old-fashioned"
+    id oewn-00610234-s
+    partOfSpeech s
+    synonyms (straight)
+  entry
+    definition "make square"
+    examples ("Square the circle" "square the wood with a file")
+    id oewn-00145268-v
+    partOfSpeech v
+    synonyms ("square up")
+  entry
+    definition "raise to the second power"
+    id oewn-00641798-v
+    partOfSpeech v
+  entry
+    definition "cause to match, as of ideas or acts"
+    id oewn-02665734-v
+    partOfSpeech v
+  entry
+    definition "position so as to be square"
+    examples ("He squared his shoulders")
+    id oewn-01991507-v
+    partOfSpeech v
+  entry
+    definition "be compatible with"
+    examples ("one idea squares with another")
+    id oewn-02665619-v
+    partOfSpeech v
+  entry
+    definition "pay someone and settle a debt"
+    examples ("I squared with him")
+    id oewn-02258149-v
+    partOfSpeech v
+  entry
+    definition "turn the paddle; in canoeing"
+    id oewn-01127390-v
+    partOfSpeech v
+    synonyms (feather)
+  entry
+    definition "turn the oar, while rowing"
+    id oewn-01127254-v
+    partOfSpeech v
+    synonyms (feather)
+source "oewn:2024"

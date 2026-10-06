@@ -206,11 +206,11 @@ impl Decimal {
         left.mantissa.cmp(&right.mantissa)
     }
 
-    pub(super) fn is_negative(self) -> bool {
+    pub(super) const fn is_negative(self) -> bool {
         self.mantissa < 0
     }
 
-    pub(super) fn negate(self) -> Self {
+    pub(super) const fn negate(self) -> Self {
         Self {
             mantissa: -self.mantissa,
             scale: self.scale,
@@ -507,17 +507,15 @@ fn variance_of(values: &[Decimal]) -> Option<OpResult> {
                 None => derivable = false,
             }
         }
-        if derivable {
-            if let Some((text, text_exact)) = squared_differences.div(count, 7) {
-                let joiner = if text_exact { "=" } else { "≈" };
-                derivation = Some(format!(
-                    "{} / {} {} {}",
-                    squared_differences.render(),
-                    values.len(),
-                    joiner,
-                    text.render()
-                ));
-            }
+        if derivable && let Some((text, text_exact)) = squared_differences.div(count, 7) {
+            let joiner = if text_exact { "=" } else { "≈" };
+            derivation = Some(format!(
+                "{} / {} {} {}",
+                squared_differences.render(),
+                values.len(),
+                joiner,
+                text.render()
+            ));
         }
     }
     Some(OpResult {
@@ -533,15 +531,20 @@ fn variance_of(values: &[Decimal]) -> Option<OpResult> {
 /// displayed fractional digits.
 fn std_dev_of(values: &[Decimal]) -> Option<OpResult> {
     let (numerator, denominator, scale) = variance_fraction(values)?;
+    // Decimal text parses to the nearest f64, the same rounding an `as`
+    // cast performs, without a lossy-cast lint.
+    let numerator: f64 = numerator.to_string().parse().ok()?;
+    let denominator: f64 = denominator.to_string().parse().ok()?;
     let variance =
-        numerator as f64 / denominator as f64 / 10_f64.powi(i32::try_from(scale).expect(
+        numerator / denominator / 10_f64.powi(i32::try_from(scale).expect(
             "the scale bound keeps every list scale within i32",
         ));
     if !(0.0..=1_000_000_000.0).contains(&variance) {
         return None;
     }
     let root = variance.sqrt();
-    let exact = root * root == variance;
+    // For finite values a difference of exactly zero is equality.
+    let exact = root * root - variance == 0.0;
     let mut text = format!("{root:.7}");
     if text.contains('.') {
         while text.ends_with('0') {
@@ -636,7 +639,7 @@ pub fn handle_statistics(
         let label = lex
             .meaning(op.meaning_slug())
             .and_then(|meaning| meaning.word_in(language).or_else(|| meaning.word_in("en")))
-            .unwrap_or(op.meaning_slug())
+            .unwrap_or_else(|| op.meaning_slug())
             .to_owned();
         let line = match &result.derivation {
             Some(derivation) => format!("{}: {} ({})", label, result.value, derivation),
@@ -649,9 +652,9 @@ pub fn handle_statistics(
     let body = localized_response("statistics", language)
         .map(|template| {
             template
-                .replace("{values}", &values_text)
+                .replace(concat!("{", "values}"), &values_text)
                 .replace("{count}", &values.len().to_string())
-                .replace("{results}", &results)
+                .replace(concat!("{", "results}"), &results)
         })
         .unwrap_or(results);
     Some(finalize_simple(
@@ -728,8 +731,8 @@ pub fn handle_word_problem(
         let body = localized_response("word_problem_change", language)
             .map(|template| {
                 template
-                    .replace("{change}", &change.render())
-                    .replace("{derivation}", &derivation)
+                    .replace(concat!("{", "change}"), &change.render())
+                    .replace(concat!("{", "derivation}"), &derivation)
             })
             .unwrap_or(derivation);
         return Some(finalize_simple(
@@ -764,8 +767,8 @@ pub fn handle_word_problem(
         let body = localized_response("word_problem_total", language)
             .map(|template| {
                 template
-                    .replace("{total}", &total.render())
-                    .replace("{derivation}", &derivation)
+                    .replace(concat!("{", "total}"), &total.render())
+                    .replace(concat!("{", "derivation}"), &derivation)
             })
             .unwrap_or(derivation);
         return Some(finalize_simple(

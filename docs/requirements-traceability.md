@@ -845,14 +845,14 @@ line number, which had gone stale for every row.
 | R1002 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | grounding chain with recursive gloss subgoals | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
 | R1003 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | example-driven typed synthesis with counterexamples | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
 | R1004 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | shown source is the verified source | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
-| R1005 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | reasoner vocabulary is seed data | data/seed/meta-reasoning.lino | not yet confirmed |
+| R1005 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | reasoner vocabulary and trace wording are seed data | scripts/check-js-literals.mjs | not yet confirmed |
 | R1006 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | handler impasse handed to the general loop | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
-| R1007 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | learned chunks (in memory) | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
+| R1007 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | learned chunks persisted through memory operations | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
 | R1008 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | derivation on every answer (JS) | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
 | R1009 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | task ladder kept and walked | rust/tests/fixtures/meta-reasoner/ladder.lino | not yet confirmed |
-| R1010 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | open: js/worker literal ratchet | — | not yet confirmed |
-| R1011 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | open: coding blockers (files, decomposition) | — | not yet confirmed |
-| R1012 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | open: Rust twin | — | not yet confirmed |
+| R1010 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | js/worker natural-language literal ratchet | scripts/check-js-literals.mjs | not yet confirmed |
+| R1011 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | file instruction set, prose-example guard, sub-goal decomposition | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
+| R1012 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | hand-ported Rust twin (rust/src/meta_reasoner) | rust/tests/unit/meta_reasoner.rs | not yet confirmed |
 | R894-1 | docs/requirements/issue-0894-ci-template-upstream-filings.md | PR #971 (issue #894) | rust/tests/unit/docs_requirements_issue_894.rs | revalidated 2026-08-05 against the four template default branches; commands and verbatim output kept in docs/case-studies/issue-894/raw-data/revalidation-greps.txt and revalidation-greps-2.txt |
 | R894-2 | docs/requirements/issue-0894-ci-template-upstream-filings.md | PR #971 (issue #894) | rust/tests/unit/docs_requirements_issue_894.rs | eight issues filed upstream 2026-08-05; bodies and API snapshot kept in docs/case-studies/issue-894/raw-data/ |
 | R894-3 | docs/requirements/issue-0894-ci-template-upstream-filings.md | PR #971 (issue #894) | rust/tests/unit/docs_requirements_issue_894.rs | ledger rendered and links opened 2026-08-05 in docs/case-studies/issue-479/template-comparison/REPORT.md |

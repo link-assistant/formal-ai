@@ -78,7 +78,7 @@ fn genre_cues(path: &str) -> Vec<(String, String)> {
 /// Does the normalized command head carry one cue phrase as whole words?
 fn head_cue_matches(normalized_head: &str, cue: &str) -> bool {
     let cue_normalized = crate::web_engine_core::normalize_prompt(cue);
-    format!(" {} ", normalized_head).contains(&format!(" {} ", cue_normalized))
+    format!(" {normalized_head} ").contains(&format!(" {cue_normalized} "))
 }
 
 /// The command head: the text before the command colon, the first newline, or
@@ -90,10 +90,7 @@ fn command_head(prompt: &str) -> &str {
             cut = Some(cut.map_or(index, |current: usize| current.min(index)));
         }
     }
-    match cut {
-        Some(index) => &prompt[..index],
-        None => prompt,
-    }
+    cut.map_or(prompt, |index| &prompt[..index])
 }
 
 /// The colon that separates a command head from its free-text payload, if the
@@ -133,7 +130,7 @@ fn command_colon(prompt: &str) -> Option<(usize, usize)> {
 /// colon, or after the first newline, or the first double-quoted or
 /// guillemet-quoted span — whichever shape the prompt has. Apostrophes never
 /// delimit a payload, so contractions survive intact.
-pub(crate) fn free_text_payload(prompt: &str) -> Option<String> {
+pub fn free_text_payload(prompt: &str) -> Option<String> {
     if let Some((_, tail_start)) = command_colon(prompt) {
         let tail = strip_outer_quotes(prompt[tail_start..].trim());
         if tail.split_whitespace().count() >= 3 {
@@ -196,10 +193,9 @@ fn token_core(token: &str) -> (&str, &str, &str) {
 /// Capitalize the first character of a text.
 fn capitalize_first(text: &str) -> String {
     let mut characters = text.chars();
-    match characters.next() {
-        Some(first) => first.to_uppercase().collect::<String>() + characters.as_str(),
-        None => String::new(),
-    }
+    characters.next().map_or_else(String::new, |first| {
+        first.to_uppercase().collect::<String>() + characters.as_str()
+    })
 }
 
 /// Rebuild a matched core's replacement with the source core's casing: an
@@ -218,7 +214,7 @@ fn rebuild_core(core: &str, replacement: &str) -> String {
     }
     if alphabetic && !lowercase {
         replacement.to_uppercase()
-    } else if core.chars().next().is_some_and(|c| c.is_uppercase()) {
+    } else if core.chars().next().is_some_and(char::is_uppercase) {
         capitalize_first(replacement)
     } else {
         replacement.to_owned()
@@ -296,7 +292,7 @@ pub fn handle_rewrite_register(
         let body = if note.is_empty() {
             payload
         } else {
-            format!("{}\n\n{}", payload, note)
+            format!("{payload}\n\n{note}")
         };
         return Some(finalize_simple(
             prompt,
@@ -308,7 +304,7 @@ pub fn handle_rewrite_register(
         ));
     }
     for (informal, formal) in &substitutions {
-        log.append("register_rewrite", format!("{} -> {}", informal, formal));
+        log.append("register_rewrite", format!("{informal} -> {formal}"));
     }
     let body = tokens.join(" ");
     Some(finalize_simple(
@@ -347,11 +343,10 @@ fn apply_phrase_rule(
                 let source = window.join(" ");
                 let leads_capitalized = window
                     .first()
-                    .map(|token| {
+                    .is_some_and(|token| {
                         let (_, core, _) = token_core(token);
-                        core.chars().next().is_some_and(|c| c.is_uppercase())
-                    })
-                    .unwrap_or(false);
+                        core.chars().next().is_some_and(char::is_uppercase)
+                    });
                 let rebuilt = if leads_capitalized {
                     capitalize_first(replacement)
                 } else {
@@ -427,7 +422,7 @@ pub fn handle_grammar_correction(
         .filter_map(|record| {
             let singular = record.find_child_value("singular").to_lowercase();
             let plural = record.find_child_value("plural").to_owned();
-            (!singular.is_empty() && !plural.is_empty()).then(|| (singular, plural))
+            (!singular.is_empty() && !plural.is_empty()).then_some((singular, plural))
         })
         .collect();
     let uncountables: Vec<String> = records
@@ -449,7 +444,7 @@ pub fn handle_grammar_correction(
         for index in 0..tokens.len().saturating_sub(1) {
             let (_, numeral_core, _) = token_core(&tokens[index]);
             let numeral_lower = numeral_core.to_lowercase();
-            let names_a_numeral = numerals.iter().any(|numeral| *numeral == numeral_lower)
+            let names_a_numeral = numerals.contains(&numeral_lower)
                 || (numeral_lower.parse::<f64>().is_ok() && numeral_lower != "1");
             if !names_a_numeral {
                 continue;
@@ -465,10 +460,10 @@ pub fn handle_grammar_correction(
                 tokens[index + 1] = format!("{prefix}{replacement}{noun_suffix}");
                 continue;
             }
-            if uncountables.iter().any(|noun| *noun == noun_lower) {
+            if uncountables.contains(&noun_lower) {
                 continue;
             }
-            let replacement = format!("{}{}", noun_core, suffix);
+            let replacement = format!("{noun_core}{suffix}");
             corrections.push((noun_core.to_owned(), replacement.clone(), rule.clone()));
             tokens[index + 1] = format!("{prefix}{replacement}{noun_suffix}");
         }
@@ -488,7 +483,7 @@ pub fn handle_grammar_correction(
         ));
     }
     for (wrong, right, rule) in &corrections {
-        log.append("grammar_correction", format!("{} -> {} ({})", wrong, right, rule));
+        log.append("grammar_correction", format!("{wrong} -> {right} ({rule})"));
     }
     let corrected = tokens.join(" ");
     let lines: String = corrections
@@ -496,7 +491,7 @@ pub fn handle_grammar_correction(
         .map(|(wrong, right, rule)| {
             render_line(
                 "text_transform_grammar_line",
-                &language,
+                language,
                 &[("wrong", wrong), ("right", right), ("rule", rule)],
             )
         })
@@ -504,11 +499,11 @@ pub fn handle_grammar_correction(
         .join("\n");
     let body = render_line(
         "text_transform_grammar_result",
-        &language,
+        language,
         &[("corrected", &corrected), ("corrections", &lines)],
     );
     let body = if body.is_empty() {
-        format!("{}\n\n{}", corrected, lines)
+        format!("{corrected}\n\n{lines}")
     } else {
         body
     };
@@ -527,9 +522,8 @@ fn unsatisfied_requirements(requires: &[String], unsatisfied: &[bool]) -> Vec<St
     requires
         .iter()
         .zip(unsatisfied.iter().chain(std::iter::repeat(&false)))
-        .filter_map(|(requirement, unsatisfied)| {
-            unsatisfied.then(|| requirement.clone())
-        })
+        .filter(|&(_, unsatisfied)| *unsatisfied)
+        .map(|(requirement, _)| requirement.clone())
         .collect()
 }
 
@@ -543,20 +537,13 @@ fn finalize_genre_incomplete(
     language: &str,
     genre: &str,
     missing: &[String],
-) -> Option<SymbolicAnswer> {
+) -> SymbolicAnswer {
     let body = render_line(
         "text_transform_genre_incomplete",
         language,
         &[("genre", genre), ("missing", &missing.join(", "))],
     );
-    Some(finalize_simple(
-        prompt,
-        log,
-        intent,
-        response_link,
-        &body,
-        0.5,
-    ))
+    finalize_simple(prompt, log, intent, response_link, &body, 0.5)
 }
 
 /// Compose one piece of genre writing from a described change or intent
@@ -580,8 +567,8 @@ pub fn handle_genre_writing(
         .iter()
         .find(|record| record.name == "genre" && record.find_child_value("name") == genre)?;
     let language = crate::language::detect(&payload).slug();
-    let intent = format!("{}_{}", INTENT_GENRE_PREFIX, genre);
-    let response_link = format!("response:{}_{}", INTENT_GENRE_PREFIX, genre);
+    let intent = format!("{INTENT_GENRE_PREFIX}_{genre}");
+    let response_link = format!("response:{INTENT_GENRE_PREFIX}_{genre}");
     let styleguide = guide.find_child_value("styleguide").to_owned();
     if !styleguide.is_empty() {
         log.append("genre_styleguide", styleguide);
@@ -621,12 +608,14 @@ pub fn handle_genre_writing(
                     token_core(token).1.to_lowercase() == preposition
                 })
             };
-            let effect_range: Vec<&str> = match preposition_index {
-                Some(preposition_index) => tokens
-                    .get(1..preposition_index)
-                    .map_or_else(Vec::new, |range| range.to_vec()),
-                None => tokens[1..].to_vec(),
-            };
+            let effect_range: Vec<&str> = preposition_index.map_or_else(
+                || tokens[1..].to_vec(),
+                |preposition_index| {
+                    tokens
+                        .get(1..preposition_index)
+                        .map_or_else(Vec::new, <[&str]>::to_vec)
+                },
+            );
             let effect_tokens: Vec<&str> = effect_range
                 .into_iter()
                 .skip_while(|token| {
@@ -652,37 +641,41 @@ pub fn handle_genre_writing(
                 &[commit_type.is_none(), effect_tokens.is_empty()],
             );
             if !missing_slots.is_empty() {
-                return finalize_genre_incomplete(
+                return Some(finalize_genre_incomplete(
                     prompt,
                     log,
                     &intent,
                     &response_link,
-                    &language,
+                    language,
                     &genre,
                     &missing_slots,
-                );
+                ));
             }
             let imperative = verb_core.unwrap_or_default();
             let effect = effect_tokens.join(" ");
-            let body = match component {
-                Some(component) => fill_template(
-                    guide.find_child_value("template"),
-                    &[
-                        ("type", commit_type.as_deref().unwrap_or_default()),
-                        ("component", &component),
-                        ("imperative", &imperative),
-                        ("effect", &effect),
-                    ],
-                ),
-                None => fill_template(
-                    guide.find_child_value("template_no_scope"),
-                    &[
-                        ("type", commit_type.as_deref().unwrap_or_default()),
-                        ("imperative", &imperative),
-                        ("effect", &effect),
-                    ],
-                ),
-            };
+            let body = component.map_or_else(
+                || {
+                    fill_template(
+                        guide.find_child_value("template_no_scope"),
+                        &[
+                            ("type", commit_type.as_deref().unwrap_or_default()),
+                            ("imperative", &imperative),
+                            ("effect", &effect),
+                        ],
+                    )
+                },
+                |component| {
+                    fill_template(
+                        guide.find_child_value("template"),
+                        &[
+                            ("type", commit_type.as_deref().unwrap_or_default()),
+                            ("component", &component),
+                            ("imperative", &imperative),
+                            ("effect", &effect),
+                        ],
+                    )
+                },
+            );
             log.append("genre_composition", body.clone());
             Some(finalize_simple(
                 prompt,
@@ -728,22 +721,22 @@ pub fn handle_genre_writing(
                     .iter()
                     .position(|token| token_core(token).1.to_lowercase() == reason_cue)
             };
-            let intent_range: Vec<&str> = match reason_index {
-                Some(reason_index) => tokens[..reason_index].to_vec(),
-                None => tokens.to_vec(),
-            };
+            let intent_range: Vec<&str> = reason_index.map_or_else(
+                || tokens.clone(),
+                |reason_index| tokens[..reason_index].to_vec(),
+            );
             let intent_text = intent_range.join(" ");
             if intent_text.is_empty() {
                 let missing_slots = unsatisfied_requirements(&requires, &[true]);
-                return finalize_genre_incomplete(
+                return Some(finalize_genre_incomplete(
                     prompt,
                     log,
                     &intent,
                     &response_link,
-                    &language,
+                    language,
                     &genre,
                     &missing_slots,
-                );
+                ));
             }
             let reason: Option<String> = reason_index.map(|reason_index| {
                 tokens[reason_index + 1..].join(" ")
@@ -766,13 +759,15 @@ pub fn handle_genre_writing(
             for part in record_values(guide, "part") {
                 match part.as_str() {
                     "greeting" => {
-                        let greeting = match &recipient {
-                            Some(recipient) => fill_template(
-                                guide.find_child_value("greeting"),
-                                &[("recipient", recipient)],
-                            ),
-                            None => guide.find_child_value("greeting_default").to_owned(),
-                        };
+                        let greeting = recipient.as_ref().map_or_else(
+                            || guide.find_child_value("greeting_default").to_owned(),
+                            |recipient| {
+                                fill_template(
+                                    guide.find_child_value("greeting"),
+                                    &[("recipient", recipient)],
+                                )
+                            },
+                        );
                         parts.push(greeting);
                     }
                     "intent_frame" => {
@@ -818,7 +813,9 @@ pub fn handle_genre_writing(
     }
 }
 
-/// The text-transform umbrella (issue #1174): register rewriting, then
+/// The text-transform umbrella (issue #1174).
+///
+/// Register rewriting, then
 /// grammar correction, then genre writing — the three cue families are
 /// disjoint, so the order only decides precedence for a prompt that carries
 /// more than one.

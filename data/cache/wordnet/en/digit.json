@@ -1,0 +1,40 @@
+{
+  "lemma": "digit",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13763162-n",
+      "partOfSpeech": "n",
+      "definition": "one of the elements that collectively form a system of numeration",
+      "examples": [
+        "0 and 1 are digits"
+      ],
+      "synonyms": [
+        "figure"
+      ]
+    },
+    {
+      "id": "oewn-13675079-n",
+      "partOfSpeech": "n",
+      "definition": "the length of breadth of a finger used as a linear measure",
+      "synonyms": [
+        "finger",
+        "fingerbreadth",
+        "finger's breadth"
+      ]
+    },
+    {
+      "id": "oewn-05573730-n",
+      "partOfSpeech": "n",
+      "definition": "a finger or toe in human beings or corresponding body part in other vertebrates",
+      "synonyms": [
+        "dactyl"
+      ]
+    }
+  ]
+}

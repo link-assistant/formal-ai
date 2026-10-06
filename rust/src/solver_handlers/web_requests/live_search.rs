@@ -80,7 +80,7 @@ pub fn execute_web_search_answer<T: SourceTransport>(
             );
             let body = seed::localized_response("web_search_unavailable", language)
                 .unwrap_or_else(|| String::from("web_search_unavailable"))
-                .replace("{query}", query);
+                .replace(concat!("{", "query}"), query);
             finalize_simple(
                 prompt,
                 log,

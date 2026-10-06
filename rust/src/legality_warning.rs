@@ -43,7 +43,7 @@ impl LegalityDisposition {
     }
 
     /// The word the evidence log carries.
-    fn as_str(self) -> &'static str {
+    const fn as_str(self) -> &'static str {
         match self {
             Self::Refuse => "refuse",
             Self::Warn => "warn",
@@ -80,6 +80,7 @@ fn seed_text(path: &str) -> Option<&'static str> {
 }
 
 /// The seeded pattern catalogue, in file order.
+#[must_use]
 pub fn legality_patterns() -> Vec<LegalityPattern> {
     let Some(text) = seed_text(PATTERNS_PATH) else {
         return Vec::new();
@@ -94,7 +95,7 @@ pub fn legality_patterns() -> Vec<LegalityPattern> {
         .filter(|record| record.name == "pattern")
     {
         let Some(disposition) =
-            LegalityDisposition::from_seed(&record.find_child_value("disposition"))
+            LegalityDisposition::from_seed(record.find_child_value("disposition"))
         else {
             continue;
         };
@@ -123,6 +124,7 @@ pub fn legality_patterns() -> Vec<LegalityPattern> {
 }
 
 /// The seeded exemption framings, in file order.
+#[must_use]
 pub fn legality_exemptions() -> Vec<LegalityExemption> {
     let Some(text) = seed_text(PATTERNS_PATH) else {
         return Vec::new();
@@ -237,7 +239,9 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
 }
 
 /// Assess the request and, when the catalogue says warn or refuse, return
-/// the advisory answer. `None` when the request is unflagged or its warn
+/// the advisory answer.
+///
+/// `None` when the request is unflagged or its warn
 /// was suppressed by a legitimate framing — the caller then proceeds to
 /// its normal handling.
 pub fn handle_legality_warning(

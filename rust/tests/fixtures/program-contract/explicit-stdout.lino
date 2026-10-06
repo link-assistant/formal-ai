@@ -1,0 +1,7 @@
+explicit_stdout_cases
+  case repeated_mentions_are_one_output_obligation
+    prompt "Print `Hello, World!`. The program must print `Hello, World!`."
+    expected "Hello, World!"
+  case distinct_output_literals_preserve_request_order
+    prompt "Print `first`. Print `second`."
+    expected "first\nsecond"

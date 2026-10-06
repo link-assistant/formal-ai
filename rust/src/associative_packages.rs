@@ -101,8 +101,10 @@ impl SharedPackage {
     }
 }
 
-/// Import atomically with respect to validation: any rejection leaves both the
-/// package registry and memory unchanged. Availability checks also cover
+/// Import atomically with respect to validation.
+///
+/// Any rejection leaves both the package registry and memory unchanged.
+/// Availability checks also cover
 /// untriggered handlers, so dormant references cannot bypass the review.
 pub fn import_package(
     artifact: &str,

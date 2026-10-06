@@ -1,0 +1,25 @@
+language en
+lemma sleeping
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the state of being asleep"
+    id oewn-05688958-n
+    partOfSpeech n
+  entry
+    definition "quiet and inactive restfulness"
+    id oewn-01066787-n
+    partOfSpeech n
+    synonyms (quiescence quiescency dormancy)
+  entry
+    definition "the suspension of consciousness and decrease in metabolic rate"
+    id oewn-00859826-n
+    partOfSpeech n
+  entry
+    definition "lying with head on paws as if sleeping"
+    id oewn-01241787-s
+    partOfSpeech s
+    synonyms (dormant)
+source "oewn:2024"

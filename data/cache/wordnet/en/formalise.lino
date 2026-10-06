@@ -1,0 +1,18 @@
+language en
+lemma formalise
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "make formal or official"
+    examples ("We formalized the appointment and gave him a title")
+    id oewn-02484525-v
+    partOfSpeech v
+    synonyms (formalize)
+  entry
+    definition "declare or make legally valid"
+    id oewn-02484290-v
+    partOfSpeech v
+    synonyms (validate formalize)
+source "oewn:2024"

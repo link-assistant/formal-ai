@@ -1,0 +1,35 @@
+{
+  "lemma": "repetition",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07356649-n",
+      "partOfSpeech": "n",
+      "definition": "an event that repeats",
+      "examples": [
+        "the events today were a repeat of yesterday's"
+      ],
+      "synonyms": [
+        "repeat"
+      ]
+    },
+    {
+      "id": "oewn-01020572-n",
+      "partOfSpeech": "n",
+      "definition": "the act of doing or performing again",
+      "synonyms": [
+        "repeating"
+      ]
+    },
+    {
+      "id": "oewn-07113937-n",
+      "partOfSpeech": "n",
+      "definition": "the repeated use of the same word or word pattern as a rhetorical device"
+    }
+  ]
+}

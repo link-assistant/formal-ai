@@ -60,7 +60,7 @@ pub enum PageMime {
 impl PageMime {
     /// Resolve the mime kind from a `Content-Type` style hint, falling back
     /// to plain text (sniffing needs the bytes; see
-    /// [`PageMime::from_hint_or_sniff`]).
+    /// `PageMime::from_hint_or_sniff`).
     #[must_use]
     pub fn from_hint(hint: Option<&str>) -> Self {
         let rules = FormalizationRules::load();
@@ -193,10 +193,8 @@ impl FormalizationRules {
                         rules.extensions.push((suffix, language));
                     }
                 }
-                "command_verb" => {
-                    if !record.id.is_empty() {
-                        rules.command_verbs.push(record.id.clone());
-                    }
+                "command_verb" if !record.id.is_empty() => {
+                    rules.command_verbs.push(record.id.clone());
                 }
                 _ => {}
             }
@@ -434,7 +432,11 @@ fn markdown_blocks(
     let mut lines = text.lines();
     while let Some(line) = lines.next() {
         let trimmed = line.trim_start();
-        if trimmed.starts_with("```") || trimmed.starts_with("~~~") {
+        // A fence is three backticks or three tildes (CommonMark).
+        if trimmed
+            .get(..3)
+            .is_some_and(|opening| opening == "```" || opening == "~~~")
+        {
             flush_paragraph(&mut paragraph, rules, &mut out);
             let fence = trimmed.chars().next().unwrap_or('`');
             let info = trimmed.trim_start_matches(fence).trim().to_owned();
@@ -466,14 +468,13 @@ fn markdown_blocks(
         if heading_level > 0 && trimmed[heading_level..].starts_with(' ') {
             flush_paragraph(&mut paragraph, rules, &mut out);
             out.push(PageBlock::Heading {
-                level: heading_level.min(6) as u8,
+                level: u8::try_from(heading_level.min(6)).unwrap_or(6),
                 text: trimmed[heading_level + 1..].trim().to_owned(),
             });
             continue;
         }
-        if (trimmed.starts_with("- ") || trimmed.starts_with("* ") || trimmed.starts_with("+ "))
-            && trimmed.len() > 2
-        {
+        // A bullet marker (`-`, `*` or `+`) followed by a space (CommonMark).
+        if matches!(trimmed.as_bytes(), [b'-' | b'*' | b'+', b' ', _, ..]) {
             flush_paragraph(&mut paragraph, rules, &mut out);
             out.push(PageBlock::ListItem {
                 text: trimmed[2..].trim().to_owned(),
@@ -623,10 +624,10 @@ fn resolve_language(
                 if let Some(language) = shebang_language(rules, code_text) {
                     return language;
                 }
-                if let Some(url) = url_hint {
-                    if let Some(language) = extension_language(rules, url) {
-                        return language;
-                    }
+                if let Some(url) = url_hint
+                    && let Some(language) = extension_language(rules, url)
+                {
+                    return language;
                 }
             }
             _ => {}
@@ -715,10 +716,10 @@ fn cell_texts(row: &str) -> Vec<String> {
             .next()
             .unwrap_or_default()
             .to_owned();
-        if name == "td" || name == "th" {
-            if let Some(close) = lower[tag_end + 1..].find("</t") {
-                cells.push(strip_tags(&row[tag_end + 1..tag_end + 1 + close]));
-            }
+        if (name == "td" || name == "th")
+            && let Some(close) = lower[tag_end + 1..].find("</t")
+        {
+            cells.push(strip_tags(&row[tag_end + 1..tag_end + 1 + close]));
         }
         cursor = tag_end + 1;
     }

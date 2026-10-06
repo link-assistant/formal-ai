@@ -83,6 +83,22 @@ pub fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option
     out.push('\n');
 }
 
+/// Write one `name value` line at `indent` spaces, the value already in its
+/// notation form: a bare atom, or a string the caller quoted. A node with no
+/// value is a bare group header. Use [`push_lino_node`] when the value is free
+/// text the notation must quote.
+pub fn push_lino_field(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
+    for _ in 0..indent {
+        out.push(' ');
+    }
+    out.push_str(name);
+    if let Some(value) = value {
+        out.push(' ');
+        out.push_str(value);
+    }
+    out.push('\n');
+}
+
 /// Escape a value so that [`crate::seed::parser::unescape_value`] decodes back
 /// to exactly this input. Use it only where the value is *quoted* and read back.
 ///

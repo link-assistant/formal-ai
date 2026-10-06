@@ -49,7 +49,9 @@ pub struct RawCommit {
     pub changed_paths: Vec<String>,
 }
 
-/// One syntax-item delta a commit caused in one changed path: a grammar
+/// One syntax-item delta a commit caused in one changed path.
+///
+/// A grammar
 /// node kind for Rust paths (the `ast_census` histogram) or `token_count`
 /// for ECMAScript paths, so a lineage query can ask which meanings changed,
 /// not only which files.
@@ -61,7 +63,7 @@ pub struct SymbolChange {
     pub delta: i64,
 }
 
-/// Import failures carry a stable snake_case code plus runtime detail;
+/// Import failures carry a stable `snake_case` code plus runtime detail;
 /// they never carry prose typed into this file.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RepositoryHistoryImportError {
@@ -256,13 +258,13 @@ impl HistoryRules {
                 "path_evidence" => {
                     let prefix = node.find_child_value("prefix");
                     if !prefix.is_empty() {
-                        rules.path_evidence_prefix = prefix.to_owned();
+                        prefix.clone_into(&mut rules.path_evidence_prefix);
                     }
                 }
                 "symbol_evidence" => {
                     let prefix = node.find_child_value("prefix");
                     if !prefix.is_empty() {
-                        rules.symbol_evidence_prefix = prefix.to_owned();
+                        prefix.clone_into(&mut rules.symbol_evidence_prefix);
                     }
                 }
                 "source" => {
@@ -295,10 +297,10 @@ impl HistoryRules {
         {
             return Self::from_seed_text(text);
         }
-        if let Some(root) = repo_root {
-            if let Ok(text) = fs::read_to_string(root.join(SEED_PATH)) {
-                return Self::from_seed_text(&text);
-            }
+        if let Some(root) = repo_root
+            && let Ok(text) = fs::read_to_string(root.join(SEED_PATH))
+        {
+            return Self::from_seed_text(&text);
         }
         Self::defaults()
     }
@@ -363,9 +365,7 @@ fn rule_event(
 /// a line-prefix match would miss real trailers) and requiring the suffix
 /// after the digits.
 fn pattern_number(haystack: &str, pattern: &str) -> Option<String> {
-    let Some((prefix, suffix)) = pattern.split_once(NUMBER_PLACEHOLDER) else {
-        return None;
-    };
+    let (prefix, suffix) = pattern.split_once(NUMBER_PLACEHOLDER)?;
     let mut from = 0;
     while let Some(at) = haystack[from..].find(prefix) {
         let rest = &haystack[from + at + prefix.len()..];

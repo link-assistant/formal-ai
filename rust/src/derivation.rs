@@ -69,7 +69,9 @@ pub struct FetchRecord {
     pub fetched_at: String,
 }
 
-/// The inspectable triple of one executed verification. The full
+/// The inspectable triple of one executed verification.
+///
+/// The full
 /// [`Evidence`] record (argv, observation kind, source) stays recoverable
 /// through `evidence_id` in the obligation ledger; this projection keeps
 /// what an `explain` reader needs on one line.
@@ -96,10 +98,9 @@ impl VerificationRecord {
     /// on one spelling.
     #[must_use]
     pub fn payload(&self) -> String {
-        let exit = match self.exit_code {
-            Some(code) => code.to_string(),
-            None => String::from("none"),
-        };
+        let exit = self
+            .exit_code
+            .map_or_else(|| String::from("none"), |code| code.to_string());
         format!(
             "evidence_id={};command={};exit={}",
             self.evidence_id, self.command, exit
@@ -146,7 +147,9 @@ pub struct Derivation {
     pub verification: Vec<VerificationRecord>,
 }
 
-/// The content-addressed id every answer carries (R1), computed exactly the
+/// The content-addressed id every answer carries (R1).
+///
+/// Computed exactly the
 /// way `SymbolicAnswer::derivation_id` does: `stable_id("answer", &answer)`
 /// over the answer text, using the same FNV-1a scheme that
 /// `VerifiedAnswer::derivation_id` generalizes.
@@ -232,7 +235,7 @@ impl Derivation {
     /// Render the canonical Links Notation record, styled like the
     /// `sources-registry` documents: absent stages are omitted entirely, so
     /// the file never carries a fabricated value (R5). Values are quoted by
-    /// the notation's own encoder ([`push_lino_node`]), never hand-rolled.
+    /// the notation's own encoder (`push_lino_node`), never hand-rolled.
     #[must_use]
     pub fn to_lino(&self) -> String {
         let mut out = String::new();
@@ -263,10 +266,9 @@ impl Derivation {
             push_lino_node(&mut out, 2, "verification", None);
             push_lino_node(&mut out, 4, "evidence_id", Some(&record.evidence_id));
             push_lino_node(&mut out, 4, "command", Some(&record.command));
-            let exit = match record.exit_code {
-                Some(code) => code.to_string(),
-                None => String::from("none"),
-            };
+            let exit = record
+                .exit_code
+                .map_or_else(|| String::from("none"), |code| code.to_string());
             push_lino_node(&mut out, 4, "exit", Some(&exit));
         }
         out
@@ -381,10 +383,9 @@ impl Derivation {
             let _ = writeln!(out, "    {NOT_RECORDED}");
         } else {
             for record in &self.verification {
-                let exit = match record.exit_code {
-                    Some(code) => code.to_string(),
-                    None => String::from("none"),
-                };
+                let exit = record
+                    .exit_code
+                    .map_or_else(|| String::from("none"), |code| code.to_string());
                 let _ = writeln!(out, "    {} exit={}", record.command, exit);
             }
         }
@@ -415,8 +416,9 @@ impl Derivation {
     }
 }
 
-/// The `data/cache/derivations/<answer_id>.lino` path for one answer id, or
-/// `None` when the id is not a `[A-Za-z0-9_-]` token — a caller-supplied id
+/// The `data/cache/derivations/<answer_id>.lino` path for one answer id.
+///
+/// Returns `None` when the id is not a `[A-Za-z0-9_-]` token — a caller-supplied id
 /// that could traverse the tree (`../`) is refused, not normalized.
 #[must_use]
 pub fn store_path(repository_root: &Path, answer_id: &str) -> Option<PathBuf> {
@@ -433,7 +435,6 @@ pub fn store_path(repository_root: &Path, answer_id: &str) -> Option<PathBuf> {
 
 /// The `explain` entry (R4): load a durable record and render it,
 /// reporting a miss honestly.
-#[must_use]
 pub fn explain_answer(repository_root: &Path, answer_id: &str) -> Result<String, String> {
     Derivation::load(repository_root, answer_id)
         .map(|derivation| derivation.explain_text())
@@ -444,11 +445,10 @@ pub fn explain_answer(repository_root: &Path, answer_id: &str) -> Result<String,
 /// the API cannot disagree about what a caller should do next.
 #[must_use]
 pub fn miss_message(repository_root: &Path, answer_id: &str) -> String {
-    format!(
-        "no derivation record for `{answer_id}` under {} (an answer id has the \
-         shape `answer_<16 hex digits>` and is created when the answer is \
-         returned)",
-        repository_root.join(DERIVATIONS_DIR).display()
+    let directory = repository_root.join(DERIVATIONS_DIR).display().to_string();
+    crate::seed::report_text(
+        "derivation_record_missing",
+        &[("answer_id", answer_id), ("directory", &directory)],
     )
 }
 

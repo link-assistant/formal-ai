@@ -38,10 +38,9 @@ fn explicit_stdout(prompt: &str) -> Option<String> {
         if seed::lexicon()
             .meaning("print_stdout")
             .is_some_and(|meaning| meaning.evidenced_in(&clause.to_lowercase()))
+            && !outputs.contains(&literal.text)
         {
-            if !outputs.contains(&literal.text) {
-                outputs.push(literal.text);
-            }
+            outputs.push(literal.text);
         }
     }
     (!outputs.is_empty()).then(|| outputs.join("\n"))
@@ -198,18 +197,29 @@ fn string_literal(value: &str, extra_escapes: &str, unicode_escape: &str) -> Str
 #[cfg(test)]
 mod stdout_requirement_tests {
     use super::explicit_stdout;
+    use crate::seed::parser::parse_lino;
+
+    /// The request/expectation pairs live beside the other test fixtures,
+    /// one `case` per behaviour: repeated mentions of one literal are one
+    /// output obligation, and distinct literals keep the request's order.
+    const CASES: &str = include_str!("../../tests/fixtures/program-contract/explicit-stdout.lino");
+
     #[test]
-    fn repeated_mentions_are_one_output_obligation() {
-        assert_eq!(
-            explicit_stdout("Print `Hello, World!`. The program must print `Hello, World!`."),
-            Some("Hello, World!".to_owned())
-        );
-    }
-    #[test]
-    fn distinct_output_literals_preserve_request_order() {
-        assert_eq!(
-            explicit_stdout("Print `first`. Print `second`."),
-            Some("first\nsecond".to_owned())
-        );
+    fn explicit_stdout_reads_every_fixture_case() {
+        let root = parse_lino(CASES);
+        let cases = &root
+            .children
+            .first()
+            .expect("the fixture has a root")
+            .children;
+        assert_eq!(cases.len(), 2, "both fixture cases are read");
+        for case in cases {
+            assert_eq!(
+                explicit_stdout(case.find_child_value("prompt")),
+                Some(case.find_child_value("expected").to_owned()),
+                "fixture case {}",
+                case.id
+            );
+        }
     }
 }

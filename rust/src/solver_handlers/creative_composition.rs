@@ -81,14 +81,14 @@ fn rules_records() -> &'static [LinoNode] {
 }
 
 /// Every rules record named `name`, in seed order.
-pub(crate) fn rules_records_named(name: &str) -> impl Iterator<Item = &'static LinoNode> {
+pub fn rules_records_named(name: &str) -> impl Iterator<Item = &'static LinoNode> {
     rules_records()
         .iter()
         .filter(move |record| record.name == name)
 }
 
 /// The non-empty values of a record's children named `name`.
-pub(crate) fn child_values(record: &LinoNode, name: &str) -> Vec<String> {
+pub fn child_values(record: &LinoNode, name: &str) -> Vec<String> {
     record
         .children
         .iter()
@@ -104,14 +104,14 @@ fn cue_record(cue: &str) -> Option<&'static LinoNode> {
 }
 
 /// The words of the `request_cue` record named `cue`.
-pub(crate) fn cue_words(cue: &str) -> Vec<String> {
+pub fn cue_words(cue: &str) -> Vec<String> {
     cue_record(cue)
         .map(|record| child_values(record, "word"))
         .unwrap_or_default()
 }
 
 /// The value of child `name` on the `request_cue` record named `cue`.
-pub(crate) fn cue_field(cue: &str, name: &str) -> String {
+pub fn cue_field(cue: &str, name: &str) -> String {
     cue_record(cue)
         .map(|record| record.find_child_value(name).to_owned())
         .unwrap_or_default()
@@ -142,7 +142,11 @@ fn spelled_numbers(language: &str) -> Vec<(String, u32)> {
     for record in rules_records_named("spelled_number")
         .filter(|record| record.find_child_value("language") == language)
     {
-        for pair in record.children.iter().filter(|child| child.name == "number") {
+        for pair in record
+            .children
+            .iter()
+            .filter(|child| child.name == "number")
+        {
             let mut parts = pair.id.split_whitespace();
             let word = parts.next().unwrap_or_default();
             let inline = parts.next().unwrap_or_default();
@@ -188,7 +192,7 @@ fn cjk_remainder(normalized: &str, removed: &[String]) -> Vec<String> {
 /// the topic words there are the meaning-lexicon surfaces present in the
 /// prompt, minus the same stop words and numerals, and when the lexicon
 /// names none, the runs the request vocabulary leaves behind.
-pub(crate) fn topic_words(normalized: &str, language: &str) -> Vec<String> {
+pub fn topic_words(normalized: &str, language: &str) -> Vec<String> {
     let stops = stop_words(language);
     let numbers: Vec<String> = spelled_numbers(language)
         .into_iter()
@@ -237,7 +241,7 @@ pub(crate) fn topic_words(normalized: &str, language: &str) -> Vec<String> {
 /// once the language's stop words are removed, the longest numeral
 /// winning; other scripts as whole tokens), else the first standalone
 /// decimal number when it lies in 1..=12.
-pub(crate) fn requested_count(normalized: &str, language: &str) -> Option<u32> {
+pub fn requested_count(normalized: &str, language: &str) -> Option<u32> {
     let mut stripped = normalized.to_owned();
     for stop in stop_words(language) {
         if crate::coding::contains_cjk(&stop) {
@@ -317,7 +321,7 @@ fn distinctness_metric() -> DistinctnessMetric {
 }
 
 /// Classic Levenshtein distance over characters.
-pub(crate) fn levenshtein(a: &str, b: &str) -> usize {
+pub fn levenshtein(a: &str, b: &str) -> usize {
     let a: Vec<char> = a.chars().collect();
     let b: Vec<char> = b.chars().collect();
     let mut previous: Vec<usize> = (0..=b.len()).collect();
@@ -325,7 +329,11 @@ pub(crate) fn levenshtein(a: &str, b: &str) -> usize {
         let mut current = vec![i + 1];
         for (j, cb) in b.iter().enumerate() {
             let cost = usize::from(ca != cb);
-            current.push((previous[j] + cost).min(previous[j + 1] + 1).min(current[j] + 1));
+            current.push(
+                (previous[j] + cost)
+                    .min(previous[j + 1] + 1)
+                    .min(current[j] + 1),
+            );
         }
         previous = current;
     }
@@ -335,9 +343,19 @@ pub(crate) fn levenshtein(a: &str, b: &str) -> usize {
 /// True when the two strings are distinct enough for the metric: the
 /// distance is at least `floor` times the longer length.
 fn distinct_enough(a: &str, b: &str, floor: f32) -> bool {
-    let longer = a.chars().count().max(b.chars().count()).max(1) as f32;
-    let distance = levenshtein(a, b) as f32;
+    let longer = count_as_f32(a.chars().count().max(b.chars().count()).max(1));
+    let distance = count_as_f32(levenshtein(a, b));
     distance / longer >= floor
+}
+
+/// A character count as `f32`, rounded to nearest like an `as` cast: the
+/// high and low 16-bit halves convert exactly and the fused multiply-add
+/// rounds once. Counts beyond `u32::MAX` saturate.
+fn count_as_f32(count: usize) -> f32 {
+    let count = u32::try_from(count).unwrap_or(u32::MAX);
+    let high = f32::from(u16::try_from(count >> 16).unwrap_or(u16::MAX));
+    let low = f32::from(u16::try_from(count & 0xFFFF).unwrap_or(u16::MAX));
+    high.mul_add(65536.0, low)
 }
 
 /// True when a candidate is pronounceable: it carries a vowel (Latin or
@@ -348,7 +366,9 @@ fn pronounceable(candidate: &str) -> bool {
         return false;
     }
     if crate::coding::contains_cjk(candidate)
-        || candidate.chars().any(|c| ('\u{0900}'..='\u{097F}').contains(&c))
+        || candidate
+            .chars()
+            .any(|c| ('\u{0900}'..='\u{097F}').contains(&c))
     {
         return true;
     }
@@ -365,7 +385,11 @@ fn exclusions(normalized: &str) -> Vec<String> {
         .split_whitespace()
         .skip_while(|token| !markers.iter().any(|marker| marker.as_str() == *token))
         .skip(1)
-        .map(|token| token.trim_matches(|c: char| !c.is_alphanumeric()).to_lowercase())
+        .map(|token| {
+            token
+                .trim_matches(|c: char| !c.is_alphanumeric())
+                .to_lowercase()
+        })
         .filter(|token| token.chars().count() >= 2)
         .collect()
 }
@@ -373,10 +397,9 @@ fn exclusions(normalized: &str) -> Vec<String> {
 /// Capitalize the first character of a composed piece.
 fn capitalize(word: &str) -> String {
     let mut chars = word.chars();
-    match chars.next() {
-        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
-        None => String::new(),
-    }
+    chars.next().map_or_else(String::new, |first| {
+        first.to_uppercase().collect::<String>() + chars.as_str()
+    })
 }
 
 /// Compose the raw candidate pool from the topic words: every rule applied
@@ -402,7 +425,7 @@ fn compose_candidates(topics: &[String], rules: &[BrainstormRule]) -> Vec<String
                         }
                         let a_chars: Vec<char> = a.chars().collect();
                         let b_chars: Vec<char> = b.chars().collect();
-                        let front = (a_chars.len() + 1) / 2;
+                        let front = a_chars.len().div_ceil(2);
                         let back_start = b_chars.len() / 2;
                         if front >= 2 && b_chars.len() - back_start >= 2 {
                             let blend: String = a_chars[..front]
@@ -498,7 +521,9 @@ fn select_candidates(
 }
 
 /// Recognize a topic-bearing brainstorming request and compose ranked name
-/// candidates from its formalized topic. Returns `None` when the prompt is
+/// candidates from its formalized topic.
+///
+/// Returns `None` when the prompt is
 /// not a brainstorming request or names no topic — bare topic-less
 /// "brainstorm" prompts stay with the legacy brainstorm-seeds path.
 pub fn handle_brainstorm_request(
@@ -510,7 +535,7 @@ pub fn handle_brainstorm_request(
         return None;
     }
     let language = crate::language::detect(prompt).slug();
-    let topics = topic_words(normalized, &language);
+    let topics = topic_words(normalized, language);
     if topics.is_empty() {
         log.append("brainstorming:refusal", "no topic words".to_owned());
         return Some(finalize_simple(
@@ -525,7 +550,7 @@ pub fn handle_brainstorm_request(
     for topic in &topics {
         log.append("brainstorming:topic", topic.clone());
     }
-    let count = requested_count(normalized, &language).unwrap_or(5);
+    let count = requested_count(normalized, language).unwrap_or(5);
     log.append("brainstorming:count", count.to_string());
     let short_cued = cue_words("short_names")
         .iter()
@@ -543,7 +568,14 @@ pub fn handle_brainstorm_request(
     let metric = distinctness_metric();
     let pool = compose_candidates(&topics, &rules);
     log.append("brainstorming:pool", pool.len().to_string());
-    let candidates = select_candidates(pool, &topics, count as usize, max_length, &excluded, &metric);
+    let candidates = select_candidates(
+        pool,
+        &topics,
+        count as usize,
+        max_length,
+        &excluded,
+        &metric,
+    );
     if candidates.is_empty() {
         log.append("brainstorming:refusal", "no candidate passed".to_owned());
         return Some(finalize_simple(
@@ -568,12 +600,19 @@ pub fn handle_brainstorm_request(
         .map(|rule| rule.kind.as_str())
         .collect::<Vec<_>>()
         .join(", ");
+    let max_length_text = max_length.to_string();
     let constraints = if excluded.is_empty() {
-        format!("at most {max_length} characters, pronounceable (carries a vowel, no digits)")
+        template(
+            "brainstorming_constraints",
+            &[("max_length", &max_length_text)],
+        )
     } else {
-        format!(
-            "at most {max_length} characters, pronounceable (carries a vowel, no digits), excluding words containing {}",
-            excluded.join(", ")
+        template(
+            "brainstorming_constraints_excluding",
+            &[
+                ("max_length", &max_length_text),
+                ("excluded", &excluded.join(", ")),
+            ],
         )
     };
     let body = template(
@@ -657,7 +696,9 @@ fn advice_topics() -> Vec<(String, Vec<String>)> {
 }
 
 /// Recognize an advice request and render its evidence-graded
-/// recommendations, each with citation and strength. Uncited items are
+/// recommendations, each with citation and strength.
+///
+/// Uncited items are
 /// never returned; the ordinal weighting states its forward dependency on
 /// issue #1179's relative meta logic.
 pub fn handle_advice_request(
@@ -673,7 +714,7 @@ pub fn handle_advice_request(
         .into_iter()
         .find(|(_, surfaces)| surfaces.iter().any(|surface| normalized.contains(surface)));
     let Some((topic, _)) = matched else {
-        let fallback_topic = topic_words(normalized, &language)
+        let fallback_topic = topic_words(normalized, language)
             .into_iter()
             .next()
             .unwrap_or_default();
@@ -701,9 +742,9 @@ pub fn handle_advice_request(
         .collect();
     items.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap_or(std::cmp::Ordering::Equal));
     for (weight, item) in &items {
-        log.append(
+        log.append_fields(
             "advice:item",
-            format!("weight {:.2} grade {}", weight, item.grade),
+            &[("weight", &format!("{weight:.2}")), ("grade", &item.grade)],
         );
     }
     let listed = items
@@ -713,8 +754,7 @@ pub fn handle_advice_request(
             let label = grades
                 .iter()
                 .find(|grade| grade.grade == item.grade)
-                .map(|grade| grade.label.as_str())
-                .unwrap_or("ungraded");
+                .map_or("ungraded", |grade| grade.label.as_str());
             format!(
                 "{}. {} [{} — {}] ({})",
                 index + 1,
@@ -731,14 +771,14 @@ pub fn handle_advice_request(
         .map(|grade| format!("{} {:.2}", grade.grade, grade.weight))
         .collect::<Vec<_>>()
         .join(" > ");
-    let forward_note = "Competing recommendations are ordered by grade weight; where two disagree, the higher grade wins here, and full relative probabilities are the relative-meta-logic work of issue #1179.";
+    let forward_note = template("advice_forward_note", &[]);
     let body = template(
         "advice_guidance",
         &[
             ("topic", &topic),
             ("items", &listed),
             ("weighting", &weighting),
-            ("forward_note", forward_note),
+            ("forward_note", &forward_note),
         ],
     );
     Some(finalize_simple(

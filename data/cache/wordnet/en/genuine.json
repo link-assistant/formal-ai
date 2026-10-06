@@ -1,0 +1,52 @@
+{
+  "lemma": "genuine",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01119091-a",
+      "partOfSpeech": "a",
+      "definition": "not fake or counterfeit",
+      "examples": [
+        "a genuine Picasso",
+        "genuine leather"
+      ],
+      "synonyms": [
+        "echt"
+      ]
+    },
+    {
+      "id": "oewn-02187907-s",
+      "partOfSpeech": "s",
+      "definition": "not pretended; sincerely felt or expressed",
+      "examples": [
+        "genuine emotion",
+        "her interest in people was unfeigned",
+        "true grief"
+      ],
+      "synonyms": [
+        "true",
+        "unfeigned"
+      ]
+    },
+    {
+      "id": "oewn-02470192-s",
+      "partOfSpeech": "s",
+      "definition": "being or reflecting the essential or genuine character of something",
+      "examples": [
+        "her actual motive",
+        "a literal solitude like a desert",
+        "a genuine dilemma"
+      ],
+      "synonyms": [
+        "actual",
+        "literal",
+        "real"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "lemma": "within",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00111558-r",
+      "partOfSpeech": "r",
+      "definition": "on the inside",
+      "examples": [
+        "inside, the car is a mess"
+      ],
+      "synonyms": [
+        "inside"
+      ]
+    }
+  ]
+}

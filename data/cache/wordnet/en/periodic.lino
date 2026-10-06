@@ -1,0 +1,19 @@
+language en
+lemma periodic
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "happening or recurring at regular intervals"
+    examples ("the periodic appearance of the seventeen-year locust")
+    id oewn-01974305-a
+    partOfSpeech a
+    synonyms (periodical)
+  entry
+    definition "recurring or reappearing from time to time"
+    examples ("periodic feelings of anxiety")
+    id oewn-00596641-s
+    partOfSpeech s
+    synonyms (occasional)
+source "oewn:2024"

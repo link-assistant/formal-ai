@@ -27,6 +27,18 @@ self.addEventListener("fetch", event => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const cached = await cache.match(new URL(key, ROOT).href, { ignoreSearch: true });
-    return cached || fetch(event.request);
+    return cached ? unredirected(cached) : fetch(event.request);
   })());
 });
+// A static server may answer `app/index.html` with a redirect to `app/` (clean
+// URLs), so the precached response is marked `redirected`. A navigation's
+// redirect mode is `manual`, and the browser rejects a redirected response for
+// it with net::ERR_FAILED; serve the same bytes as a fresh, unredirected body.
+async function unredirected(response) {
+  if (!response.redirected) return response;
+  return new Response(await response.blob(), {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}

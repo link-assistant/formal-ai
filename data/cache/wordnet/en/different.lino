@@ -1,0 +1,27 @@
+language en
+lemma different
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "unlike in nature or quality or form or degree"
+    examples ("took different approaches to the problem" "came to a different conclusion" "different parts of the country" "on different sides of the issue" "this meeting was different from the earlier one")
+    id oewn-02072149-a
+    partOfSpeech a
+  entry
+    definition "distinctly separate from the first"
+    examples ("that's another (or different) issue altogether")
+    id oewn-02077434-s
+    partOfSpeech s
+  entry
+    definition "differing from all others; not ordinary"
+    examples ("advertising that strives continually to be different" "this new music is certainly different but I don't really like it")
+    id oewn-00492404-s
+    partOfSpeech s
+  entry
+    definition "distinct or separate"
+    examples ("each interviewed different members of the community")
+    id oewn-02077746-s
+    partOfSpeech s
+source "oewn:2024"

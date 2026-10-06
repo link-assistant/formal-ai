@@ -1,0 +1,18 @@
+language en
+lemma factual
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of or relating to or characterized by facts"
+    examples ("factual considerations")
+    id oewn-02910364-a
+    partOfSpeech a
+  entry
+    definition "existing in act or fact"
+    examples ("rocks and trees … the actual world" "actual heroism" "the actual things that produced the emotion you experienced")
+    id oewn-01940178-s
+    partOfSpeech s
+    synonyms (actual)
+source "oewn:2024"

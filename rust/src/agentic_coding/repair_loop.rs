@@ -3,12 +3,12 @@
 //! The architect's vision is the traditional way of coding by hand: build or
 //! run, *read* the compiler/runtime error, search the error text, read the
 //! fix, apply it, retry. The executor today detects a failed step honestly
-//! ([`super::tool_result`]) and reports it ([`super::command_reroute`]'s
+//! ([`super::tool_result`]) and reports it (`super::command_reroute`'s
 //! `StepFailure`), but the recipe stops at the first failed step — nothing
 //! closes the loop back to a fix.
 //!
 //! This module is that loop, as a deterministic planner step like
-//! [`super::web_research`]: formalize the failed output into structured
+//! `super::web_research`: formalize the failed output into structured
 //! diagnostics (R1), search the diagnostic (R2), retain a fetched fragment
 //! that addresses the exact error code or message as a candidate fix (R2),
 //! express the fix as a Links Notation `repair_edit` record rather than a raw
@@ -26,7 +26,7 @@
 //! anywhere: the fix always comes from a fetched, matched source (R2/R3).
 //!
 //! Neural inference stays a NON-GOAL: matching is symbolic token overlap, the
-//! same non-neural measure [`super::web_research`] ranks pages with.
+//! same non-neural measure `super::web_research` ranks pages with.
 //!
 //! ## Integration seam (wired by the main session)
 //!
@@ -70,7 +70,7 @@ use crate::seed::parser::parse_lino;
 /// bound exists because the loop's own stopping rule — a fetched source that
 /// addresses the diagnostic — can be unreachable when the fix simply is not
 /// on the open web, and a repair loop must terminate either way (R6). Three
-/// rungs mirror the search→fetch research budget in [`super::web_research`].
+/// rungs mirror the search→fetch research budget in `super::web_research`.
 pub const MAX_REPAIR_RUNGS: u8 = 3;
 
 /// How many sources one rung's search may read (mirrors the research round's
@@ -122,7 +122,7 @@ struct DiagnosticShapes {
 }
 
 impl DiagnosticShapes {
-    fn is_empty(&self) -> bool {
+    const fn is_empty(&self) -> bool {
         self.patterns.is_empty()
     }
 }
@@ -318,8 +318,9 @@ pub fn formalize_diagnostic(language: &str, raw_output: &str) -> Vec<Diagnostic>
 // R2 — the diagnostic becomes a search query; fetched sources are matched
 // ---------------------------------------------------------------------------
 
-/// The search query a diagnostic becomes: the language, the error code when
-/// the language has one, and the head of the message, punctuation-stripped
+/// The search query a diagnostic becomes.
+///
+/// It joins the language, the error code when the language has one, and the head of the message, punctuation-stripped
 /// and bounded so the query stays what a source can actually answer.
 #[must_use]
 pub fn search_query(language: &str, diagnostic: &Diagnostic) -> String {
@@ -339,7 +340,7 @@ pub fn search_query(language: &str, diagnostic: &Diagnostic) -> String {
 }
 
 /// The fraction of the diagnostic's message content tokens that `text`
-/// carries — the same symbolic, non-neural aboutness [`super::web_research`]
+/// carries — the same symbolic, non-neural aboutness `super::web_research`
 /// scores sentences with, applied to a whole page.
 fn message_coverage(text: &str, diagnostic: &Diagnostic) -> f32 {
     let page = text.to_lowercase();
@@ -347,7 +348,7 @@ fn message_coverage(text: &str, diagnostic: &Diagnostic) -> f32 {
         .message
         .split(|character: char| !character.is_alphanumeric())
         .filter(|token| token.chars().count() >= 2)
-        .map(|token| token.to_lowercase())
+        .map(str::to_lowercase)
         .collect();
     if tokens.is_empty() {
         return 0.0;
@@ -425,7 +426,7 @@ fn fix_fragment(page: &str, diagnostic: &Diagnostic) -> Option<String> {
     }
     // Pages without fences: the best single addressing sentence.
     let mut best_sentence: Option<(f32, String)> = None;
-    for sentence in page.split(|character: char| matches!(character, '.' | '\n')) {
+    for sentence in page.split(['.', '\n']) {
         let trimmed = sentence.trim();
         if trimmed.is_empty() || !page_addresses(trimmed, diagnostic) {
             continue;
@@ -464,9 +465,11 @@ pub fn repair_document_path(artifact_path: &str, diagnostic: &Diagnostic) -> Str
     format!("{stem}.repair.lino")
 }
 
-/// Render the meta-language `repair_edit` record (R3): the diagnostic, the
-/// matched source, and the retained fix fragment — a Links Notation document
-/// the renderer (E132/#1167) lowers into the target language. It is never a
+/// Render the meta-language `repair_edit` record (R3).
+///
+/// It holds the diagnostic, the matched source, and the retained fix
+/// fragment — a Links Notation document the renderer (E132/#1167) lowers
+/// into the target language. It is never a
 /// raw text patch pasted over the previous source.
 #[must_use]
 pub fn repair_edit_document(
@@ -475,33 +478,34 @@ pub fn repair_edit_document(
     fix: Option<&str>,
     source_url: &str,
 ) -> String {
-    let mut out = String::from("repair_edit\n");
-    let _ = writeln!(out, "  language {}", shape_language(language));
+    use crate::links_format::push_lino_field;
+    let quoted = |value: &str| format!("\"{}\"", lino_escape(value));
+    let mut out = String::new();
+    push_lino_field(&mut out, 0, "repair_edit", None);
+    push_lino_field(&mut out, 2, "language", Some(&shape_language(language)));
     if let Some(file) = &diagnostic.file {
-        let _ = writeln!(out, "  file \"{}\"", lino_escape(file));
+        push_lino_field(&mut out, 2, "file", Some(&quoted(file)));
     }
     if let Some(line) = diagnostic.line {
-        let _ = writeln!(out, "  line {line}");
+        push_lino_field(&mut out, 2, "line", Some(&line.to_string()));
     }
     if let Some(code) = &diagnostic.code {
-        let _ = writeln!(out, "  error_code \"{}\"", lino_escape(code));
+        push_lino_field(&mut out, 2, "error_code", Some(&quoted(code)));
     }
-    let _ = writeln!(out, "  message \"{}\"", lino_escape(&diagnostic.message));
-    let _ = writeln!(out, "  source \"{}\"", lino_escape(source_url));
-    match fix {
-        Some(fix) => {
-            out.push_str("  fix\n");
-            let _ = writeln!(out, "    retained \"{}\"", lino_escape(fix));
-        }
-        None => out.push_str("  fix\n    retained none\n"),
-    }
-    out.push_str("  rendering meta_language\n");
-    out.push_str("  applied false\n");
+    push_lino_field(&mut out, 2, "message", Some(&quoted(&diagnostic.message)));
+    push_lino_field(&mut out, 2, "source", Some(&quoted(source_url)));
+    push_lino_field(&mut out, 2, "fix", None);
+    // An absent fix is the bare `none` atom, not a quoted string (R6).
+    let retained = fix.map_or_else(|| String::from("none"), quoted);
+    push_lino_field(&mut out, 4, "retained", Some(&retained));
+    push_lino_field(&mut out, 2, "rendering", Some("meta_language"));
+    push_lino_field(&mut out, 2, "applied", Some("false"));
     format!("{}\n", out.trim_end())
 }
 
-/// One repair attempt, kept for the answer's derivation (R5): the diagnostic
-/// that started it, the query that searched for it, the candidate fix a
+/// One repair attempt, kept for the answer's derivation (R5).
+///
+/// It records the diagnostic that started it, the query that searched for it, the candidate fix a
 /// fetched source supplied (when one did), and whether it was applied and
 /// resolved the failure.
 #[derive(Debug, Clone)]
@@ -541,7 +545,9 @@ impl RepairAttempt {
 
 /// Reconstruct the repair-attempt chain from the transcript, so a repair
 /// that took three tries is auditable rather than silently absorbed into a
-/// single "succeeded" report (R5). Statelessly derivable: the executor calls
+/// single "succeeded" report (R5).
+///
+/// Statelessly derivable: the executor calls
 /// this when composing the derivation record, with the same failure data it
 /// passed to [`plan_repair`].
 #[must_use]
@@ -639,8 +645,10 @@ impl RepairOutcome {
     }
 }
 
-/// The failed step as plain data, mirroring `command_reroute::StepFailure`
-/// plus what the repair loop needs that the report does not: the language
+/// The failed step as plain data.
+///
+/// It mirrors `command_reroute::StepFailure` plus what the repair loop
+/// needs that the report does not: the language
 /// the artifact was emitted in, the command that failed, and the artifact's
 /// path. Built by the executor at the failure branch.
 #[derive(Debug, Clone)]
@@ -678,13 +686,13 @@ impl FailedStep {
 
     #[must_use]
     pub fn with_artifact_path(mut self, path: &str) -> Self {
-        self.artifact_path = path.to_owned();
+        path.clone_into(&mut self.artifact_path);
         self
     }
 }
 
 /// Rank a search result's URLs: deduped, capped, first read next — the same
-/// URL extraction [`super::web_research`] ranks with.
+/// URL extraction `super::web_research` ranks with.
 fn source_urls(text: &str) -> Vec<String> {
     let mut urls = super::web_research::urls_in(text);
     let mut seen = BTreeSet::new();
@@ -793,8 +801,9 @@ fn template(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
     out
 }
 
-/// The note appended to the failure report when the ladder is spent (R4):
-/// the rung reached is named, so the bound is reported honestly rather than
+/// The note appended to the failure report when the ladder is spent (R4).
+///
+/// The rung reached is named, so the bound is reported honestly rather than
 /// silently truncating. Empty when the response seed is not registered, in
 /// which case today's report already stands on its own.
 #[must_use]

@@ -14,6 +14,9 @@
 //! "a" appear in the question vocabulary, so no conjunct alone can claim a
 //! prompt.
 
+use super::calendar::{contains_term, term_position};
+use super::numeric_list::parse_numbers;
+use super::statistics::Decimal;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -22,9 +25,6 @@ use crate::seed::{
 };
 use crate::solver_handlers::finalize_simple;
 use std::sync::OnceLock;
-use super::calendar::{contains_term, term_position};
-use super::numeric_list::parse_numbers;
-use super::statistics::Decimal;
 
 /// Semantic role of the question vocabulary that opens a conversion
 /// ("how many", "convert", "in", "to", and translations), stated in
@@ -127,7 +127,9 @@ fn conversions() -> &'static Vec<(String, String, Conversion)> {
 /// Parse the `multiply 9/5 add 32` tail of a formula conversion record.
 fn parse_formula_steps(tokens: &[&str]) -> Option<Vec<FormulaStep>> {
     tokens
-        .chunks_exact(2)
+        .as_chunks::<2>()
+        .0
+        .iter()
         .map(|pair| FormulaStep::parse(pair[0], pair[1]))
         .collect()
 }
@@ -232,7 +234,7 @@ fn apply_formula(start: Decimal, steps: &[FormulaStep]) -> Option<(Decimal, bool
                 if derivation.contains(' ') {
                     derivation = format!("({derivation})");
                 }
-                derivation = format!("{} × {}/{}", derivation, numerator, denominator);
+                derivation = format!("{derivation} × {numerator}/{denominator}");
                 value = scaled;
                 exact &= step_exact;
             }
@@ -287,32 +289,40 @@ pub fn handle_unit_conversion(
     let source = mentions
         .iter()
         .min_by_key(|mention| mention.position.abs_diff(number_position))?;
-    let target = mentions.iter().find(|mention| mention.slug != source.slug)?;
+    let target = mentions
+        .iter()
+        .find(|mention| mention.slug != source.slug)?;
     let direction = find_conversion(&source.slug, &target.slug);
 
     if direction.is_none() {
         let (numerator, denominator) = value.ratio()?;
-        let outcome = crate::si_units::convert_through_si(
-            numerator,
-            denominator,
-            &source.slug,
-            &target.slug,
-        );
-        let body = match outcome {
-            crate::si_units::SiConversion::Converted { value_num, value_den } => {
-                log.append("unit_conversion:si_path", format!("{} -> {}", source.slug, target.slug));
-                format!("{} {} = {}/{} {}", value.render(), source.surface, value_num, value_den, target.surface)
+        let outcome =
+            crate::si_units::convert_through_si(numerator, denominator, &source.slug, &target.slug);
+        // The refusals read the same here as everywhere else the SI path
+        // is reported: `SiConversion::describe` renders them from the seed.
+        let body = match &outcome {
+            crate::si_units::SiConversion::Converted {
+                value_num,
+                value_den,
+            } => {
+                log.append(
+                    "unit_conversion:si_path",
+                    format!("{} -> {}", source.slug, target.slug),
+                );
+                format!(
+                    "{} {} = {}/{} {}",
+                    value.render(),
+                    source.surface,
+                    value_num,
+                    value_den,
+                    target.surface
+                )
             }
             crate::si_units::SiConversion::UnknownUnit(unit) => {
-                crate::si_units::note_unknown_unit(log, &unit);
-                format!("unknown unit: {unit}")
+                crate::si_units::note_unknown_unit(log, unit);
+                outcome.describe()
             }
-            crate::si_units::SiConversion::Incompatible { from, to } => {
-                format!("incompatible dimensions: {} vs {}", from.as_string(), to.as_string())
-            }
-            crate::si_units::SiConversion::Overflow => {
-                String::from("value out of range for exact conversion")
-            }
+            _ => outcome.describe(),
         };
         return Some(finalize_simple(
             prompt,
@@ -333,9 +343,19 @@ pub fn handle_unit_conversion(
     let (result, exact, derivation, intent, factor_text) = match direction {
         Direction::Forward(Conversion::Linear(factor)) => {
             let result = value.mul(factor)?;
-            let derivation =
-                format!("{} × {} = {}", value.render(), factor.render(), result.render());
-            (result, true, derivation, "unit_conversion_multiply", factor.render())
+            let derivation = format!(
+                "{} × {} = {}",
+                value.render(),
+                factor.render(),
+                result.render()
+            );
+            (
+                result,
+                true,
+                derivation,
+                "unit_conversion_multiply",
+                factor.render(),
+            )
         }
         Direction::ReverseLinear(factor) => {
             let (result, exact) = value.div(factor, 7)?;
@@ -347,11 +367,23 @@ pub fn handle_unit_conversion(
                 equals,
                 result.render()
             );
-            (result, exact, derivation, "unit_conversion_divide", factor.render())
+            (
+                result,
+                exact,
+                derivation,
+                "unit_conversion_divide",
+                factor.render(),
+            )
         }
         Direction::Forward(Conversion::Formula(steps)) => {
             let (result, exact, derivation) = apply_formula(value, &steps)?;
-            (result, exact, derivation, "unit_conversion_formula", String::new())
+            (
+                result,
+                exact,
+                derivation,
+                "unit_conversion_formula",
+                String::new(),
+            )
         }
     };
     let result_text = if exact {
@@ -367,12 +399,12 @@ pub fn handle_unit_conversion(
     let body = localized_response(intent, language)
         .map(|template| {
             template
-                .replace("{value}", &value.render())
+                .replace(concat!("{", "value}"), &value.render())
                 .replace("{source_unit}", &source.surface)
                 .replace("{target_unit}", &target.surface)
                 .replace("{result}", &result_text)
                 .replace("{factor}", &factor_text)
-                .replace("{derivation}", &derivation)
+                .replace(concat!("{", "derivation}"), &derivation)
                 .replace("{equals}", if exact { "=" } else { "≈" })
         })
         .unwrap_or(derivation);

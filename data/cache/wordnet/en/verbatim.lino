@@ -1,0 +1,19 @@
+language en
+lemma verbatim
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "using exactly the same words"
+    examples ("he repeated her remarks verbatim")
+    id oewn-00259374-r
+    partOfSpeech r
+    synonyms ("word for word")
+  entry
+    definition "in precisely the same words used by a writer or speaker"
+    examples ("a direct quotation" "repeated their dialog verbatim")
+    id oewn-00917922-s
+    partOfSpeech s
+    synonyms (direct)
+source "oewn:2024"

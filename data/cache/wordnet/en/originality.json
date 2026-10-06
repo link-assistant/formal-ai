@@ -1,0 +1,21 @@
+{
+  "lemma": "originality",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05642458-n",
+      "partOfSpeech": "n",
+      "definition": "the ability to think and act independently"
+    },
+    {
+      "id": "oewn-04807608-n",
+      "partOfSpeech": "n",
+      "definition": "the quality of being new and original (not derived from something else)"
+    }
+  ]
+}

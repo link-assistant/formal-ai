@@ -19,8 +19,9 @@
 //! `data/seed/code-node-decomposition.lino` (R1164-10), and promotion of a
 //! generalized procedure into an adopted one goes through the existing
 //! execution-and-approval gate in `coding_research_learning.rs`;
-//! [`procedure_step_records`] produces the records that gate consumes, so
-//! wiring cannot bypass its license and approval checks (R1164-7).
+//! [`GeneralizedProcedure::procedure_step_records`] produces the records that
+//! gate consumes, so wiring cannot bypass its license and approval checks
+//! (R1164-7).
 #![cfg(feature = "meta-language")]
 
 use std::collections::BTreeMap;
@@ -28,7 +29,7 @@ use std::collections::BTreeMap;
 use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
 
 use crate::procedure_text::ProcedureStepRecord;
-use crate::seed::parser::parse_lino;
+use crate::seed::parser::{LinoNode, parse_lino};
 
 /// The part vocabulary seed, mirrored into the embedded bundle.
 const PARTS_TEXT: &str = include_str!("../embedded/data/seed/code-example-parts.lino");
@@ -168,10 +169,19 @@ impl PartVocabulary {
         let tree = parse_lino(PARTS_TEXT);
         let mut vocabulary = Self::default();
         let mut current_language = String::new();
-        for record in &tree.children {
+        // The rows nest under `code_example_parts` and their `part_language`
+        // headers, so the records are read in document order at every
+        // depth; a header sets the language its children belong to.
+        let mut records: Vec<&LinoNode> = Vec::new();
+        let mut pending: Vec<&LinoNode> = tree.children.iter().rev().collect();
+        while let Some(node) = pending.pop() {
+            records.push(node);
+            pending.extend(node.children.iter().rev());
+        }
+        for record in records {
             match record.name.as_str() {
                 "part_language" => {
-                    current_language = record.id.clone();
+                    current_language.clone_from(&record.id);
                 }
                 "output_call" => {
                     if !current_language.is_empty() && !record.id.is_empty() {
@@ -202,10 +212,10 @@ impl PartVocabulary {
                         "run_command" => Some(CodePartKind::RunCommand),
                         _ => None,
                     };
-                    if let Some(kind) = kind {
-                        if !relation.is_empty() {
-                            vocabulary.prose_relations.push((relation, kind));
-                        }
+                    if let Some(kind) = kind
+                        && !relation.is_empty()
+                    {
+                        vocabulary.prose_relations.push((relation, kind));
                     }
                 }
                 "program_shape" => {
@@ -261,14 +271,15 @@ pub fn decompose_code_node(
             continue;
         };
         match link.metadata().link_type() {
-            Some(LinkType::Grammar) | Some(LinkType::Syntax) => kinds.push(term.to_owned()),
+            Some(LinkType::Grammar | LinkType::Syntax) => kinds.push(term.to_owned()),
             Some(LinkType::Token) => tokens.push(term.to_owned()),
             _ => {}
         }
     }
     if kinds.is_empty() && tokens.is_empty() {
-        return Err(DecomposeError::ParseFailed(format!(
-            "the meta-language parse recognized nothing in the {language_slug} example"
+        return Err(DecomposeError::ParseFailed(crate::seed::report_text(
+            "code_example_parse_recognized_nothing",
+            &[("language", language_slug)],
         )));
     }
     let mut parts = Vec::new();
@@ -300,21 +311,20 @@ pub fn decompose_code_node(
                 .any(|hint| kind.contains(hint.as_str()))
         })
         .cloned();
-    if let Some(entry) = entry_name {
-        if entry != "none" {
-            let named = tokens.iter().any(|token| token == &entry)
-                || source
-                    .split_whitespace()
-                    .any(|word| word.trim_matches(|c: char| c == '(' || c == '!') == entry);
-            if named {
-                parts.push(CodePart {
-                    kind: CodePartKind::EntryPoint,
-                    source_text: entry,
-                    cst_node_kind: function_kind
-                        .unwrap_or_else(|| "function_declaration".to_owned()),
-                    source_url: String::new(),
-                });
-            }
+    if let Some(entry) = entry_name
+        && entry != "none"
+    {
+        let named = tokens.iter().any(|token| token == &entry)
+            || source
+                .split_whitespace()
+                .any(|word| word.trim_matches(|c: char| c == '(' || c == '!') == entry);
+        if named {
+            parts.push(CodePart {
+                kind: CodePartKind::EntryPoint,
+                source_text: entry,
+                cst_node_kind: function_kind.unwrap_or_else(|| "function_declaration".to_owned()),
+                source_url: String::new(),
+            });
         }
     }
     // Output operation: the seed's output calls for the language.
@@ -339,11 +349,11 @@ pub fn decompose_code_node(
         if present {
             parts.push(CodePart {
                 kind: CodePartKind::OutputOperation,
-                source_text: (*call).to_owned(),
-                cst_node_kind: call_kind.clone(),
+                source_text: call.clone(),
+                cst_node_kind: call_kind,
                 source_url: String::new(),
             });
-            matched_call = Some((*call).to_owned());
+            matched_call = Some(call.clone());
             break;
         }
     }
@@ -548,7 +558,9 @@ pub fn generalize_examples(examples: &[DecomposedCodeNode]) -> GeneralizedProced
 }
 
 /// Bind requirement-supplied values into a generalized procedure and
-/// recompose for one language (R1164-6). The recomposition carries the
+/// recompose for one language (R1164-6).
+///
+/// The recomposition carries the
 /// source URL of every contributing `CodePart`. A target with no program
 /// shape in the seed is [`DecomposeError::ParseFailed`], never a guessed
 /// program.
@@ -559,7 +571,10 @@ pub fn recompose_for_requirement(
 ) -> Result<CodeRecomposition, DecomposeError> {
     let vocabulary = PartVocabulary::load();
     let shape = vocabulary.shapes.get(target_language).ok_or_else(|| {
-        DecomposeError::ParseFailed(format!("no program shape registered for {target_language}"))
+        DecomposeError::ParseFailed(crate::seed::report_text(
+            "code_example_no_program_shape",
+            &[("language", target_language)],
+        ))
     })?;
     let literal = bindings
         .0
@@ -572,10 +587,18 @@ pub fn recompose_for_requirement(
                 .find(|parameter| parameter.name == "output_literal")
                 .and_then(|parameter| parameter.per_language.get(target_language).cloned())
         })
-        .unwrap_or_else(|| "Hello, World!".to_owned());
+        // The literal is bound from the requirement (or the examples'
+        // per-language binding), never invented: an unbound literal is a
+        // refusal naming the language, not a guessed greeting (R1164-6).
+        .ok_or_else(|| {
+            DecomposeError::ParseFailed(crate::seed::report_text(
+                "code_example_unbound_output_literal",
+                &[("language", target_language)],
+            ))
+        })?;
     Ok(CodeRecomposition {
         language_slug: target_language.to_owned(),
-        source: shape.replace("{literal}", &literal),
+        source: shape.replace(concat!("{", "literal}"), &literal),
         part_source_urls: template.source_urls.clone(),
     })
 }
@@ -593,7 +616,10 @@ impl GeneralizedProcedure {
             .enumerate()
             .map(|(ordinal, kind)| ProcedureStepRecord {
                 ordinal,
-                text: format!("provide the {} of the procedure", kind.as_str()),
+                text: crate::seed::report_text(
+                    "code_example_procedure_step",
+                    &[("part", kind.as_str())],
+                ),
                 source_id: self.id.clone(),
                 source_url: String::new(),
                 sha256: String::new(),

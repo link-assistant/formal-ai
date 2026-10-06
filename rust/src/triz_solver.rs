@@ -1,7 +1,7 @@
 //! User-facing TRIZ/contradiction solver (issue #901).
 //!
 //! Issue #1138 seeded the forty inventive principles and four separation
-//! principles; rust/src/selection_heuristics.rs consumes them as
+//! principles; `rust/src/selection_heuristics.rs` consumes them as
 //! contradiction links with a basis-point value counted from the
 //! requirement's clauses. Issue #901 asks for the rest of the ask: the
 //! *general* ways paradoxes and contradictions dissolve — other
@@ -71,7 +71,7 @@ fn seed_text(path: &str) -> Option<&'static str> {
 /// (`triz_family_range_selection`, `triz_task_umbrella_crowd`) and types
 /// them with a `record_type` field, so the type is read from that field;
 /// a record literally named `name` is accepted as well — mirroring
-/// `trizRecordsOfType` in js/worker/formal_ai_worker_triz.js.
+/// `trizRecordsOfType` in `js/worker/formal_ai_worker_triz.js`.
 fn records_of_type(record_type: &str, name: &str) -> Vec<crate::seed::parser::LinoNode> {
     let Some(text) = seed_text(SEED_PATH) else {
         return Vec::new();
@@ -112,6 +112,7 @@ fn records_named_by_type(record_type: &str) -> Vec<String> {
 }
 
 /// The general resolution families, in seed order.
+#[must_use]
 pub fn triz_families() -> Vec<ResolutionFamily> {
     records_of_type("triz_resolution_family", "triz_resolution_family")
         .iter()
@@ -132,6 +133,7 @@ pub fn triz_families() -> Vec<ResolutionFamily> {
 }
 
 /// The top-20 benchmark corpus, in seed order.
+#[must_use]
 pub fn triz_benchmark_tasks() -> Vec<BenchmarkTask> {
     records_of_type("triz_benchmark_task", "triz_benchmark_task")
         .iter()
@@ -148,7 +150,7 @@ pub fn triz_benchmark_tasks() -> Vec<BenchmarkTask> {
                 methods: record
                     .find_child_value("methods")
                     .split_whitespace()
-                    .map(|method| method.to_owned())
+                    .map(std::borrow::ToOwned::to_owned)
                     .collect(),
                 notes: record.find_child_value("notes").to_string(),
             })
@@ -224,9 +226,9 @@ fn precedents_text(tasks: &[&BenchmarkTask]) -> String {
         .join("\n")
 }
 
-/// The range-selection note, tying this answer to what
-/// rust/src/selection_heuristics.rs computes for candidate sets.
-const LINK_NOTE: &str = "A contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.";
+/// The response intent of the range-selection note, tying this answer to
+/// what `rust/src/selection_heuristics.rs` computes for candidate sets.
+const LINK_NOTE_INTENT: &str = "triz_link_note";
 
 /// Try to recognize a contradiction/invention question and answer with
 /// the seeded resolution families and relevant benchmark precedents.
@@ -259,7 +261,7 @@ pub fn handle_triz(prompt: &str, normalized: &str, log: &mut EventLog) -> Option
         for (key, value) in [
             ("families", families_text(&families)),
             ("precedents", precedents_text(&cited)),
-            ("link_note", LINK_NOTE.to_owned()),
+            ("link_note", crate::seed::report_text(LINK_NOTE_INTENT, &[])),
         ] {
             out = out.replace(&format!("{{{key}}}"), &value);
         }
@@ -319,13 +321,18 @@ mod tests {
         }
     }
 
+    // The prompt is the corpus row's own statement, read from the seed: a
+    // statement shares every one of its content words with itself, so no
+    // other row can outrank it. The prose-prompt version of this check is
+    // the handler test in rust/tests/unit/issue_901_triz_solver.rs.
     #[test]
     fn umbrella_prompt_finds_the_umbrella_precedent_first() {
         let tasks = triz_benchmark_tasks();
-        let relevant = relevant_tasks(
-            "How do I design an umbrella that is big enough in rain but small in a crowded bus?",
-            &tasks,
-        );
+        let umbrella = tasks
+            .iter()
+            .find(|task| task.task_id == "umbrella_crowd")
+            .expect("the corpus carries the umbrella task");
+        let relevant = relevant_tasks(&umbrella.statement, &tasks);
         assert_eq!(
             relevant.first().map(|task| task.task_id.as_str()),
             Some("umbrella_crowd")

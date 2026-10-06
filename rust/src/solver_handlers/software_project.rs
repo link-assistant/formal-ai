@@ -116,10 +116,7 @@ impl SoftwareProjectMeaning {
         // modifies another noun — "an optional 4-digit extension" of a ZIP
         // code — must not turn a regex request into an extension project.
         let subject = prompt.to_lowercase();
-        let Some((action, artifact)) = object_phrase_artifact(&subject, &actions, &artifacts)
-        else {
-            return None;
-        };
+        let (action, artifact) = object_phrase_artifact(&subject, &actions, &artifacts)?;
         let target = extract_target(prompt, artifact);
         let requirements = extract_requirements(prompt);
         let game_tracker = is_game_unit_tracker(normalized);

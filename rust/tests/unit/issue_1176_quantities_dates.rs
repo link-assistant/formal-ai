@@ -36,6 +36,10 @@ fn stated_day_offset_shifts_by_the_stated_count() {
         "the answer should derive the offset as weeks plus days, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        "100 days after Monday is Wednesday. 100 days = 14 weeks + 2 days, and Monday + 2 days = Wednesday in the seven-day calendar cycle."
+    );
 }
 
 // A bare "the day after X" states no offset and keeps its original ±1
@@ -49,6 +53,10 @@ fn bare_day_after_keeps_the_plus_one_reading() {
         response.answer.contains("The day after Monday is Tuesday"),
         "the bare day-after reading should be unchanged, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        "The day after Monday is Tuesday. I move Monday by +1 in the seven-day calendar cycle."
     );
 }
 
@@ -69,6 +77,10 @@ fn stated_offset_before_shifts_backward() {
         "the answer should split the stated offset, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        "30 days before Friday is Wednesday. 30 days = 4 weeks + 2 days, and Friday - 2 days = Wednesday in the seven-day calendar cycle."
+    );
 }
 
 // A whole number of weeks cannot move the weekday, and the answer says so
@@ -87,6 +99,10 @@ fn whole_week_offset_leaves_the_weekday_unchanged() {
         response.answer.contains("14 days exactly"),
         "the answer should state the exact week count, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        "2 weeks after Monday is Monday. 2 weeks = 14 days exactly, so the weekday is unchanged in the seven-day calendar cycle."
     );
 }
 
@@ -107,6 +123,10 @@ fn cjk_stated_offset_reads_the_day_unit_character() {
         "the answer should derive the offset in Chinese, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        "星期一之后100天是星期三。100天 = 14周 + 2天；星期一 + 2天 = 星期三（七天日历循环）。"
+    );
 }
 
 // Russian answers inflect the source weekday (genitive after «после») and
@@ -125,6 +145,10 @@ fn russian_stated_offset_answers_in_russian() {
         response.answer.contains("14 недель + 2 дня"),
         "the answer should split the offset in Russian, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        "Через 100 дней после понедельника — среда. 100 дней = 14 недель + 2 дня; понедельник + 2 дня = среда в семидневном календарном цикле."
     );
 }
 
@@ -152,6 +176,10 @@ fn mean_and_median_are_computed_exactly() {
         "the median should state the halving, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nmean: 18 (108 / 6 = 18)\nmedian: 15.5 ((15 + 16) / 2 = 15.5)"
+    );
 }
 
 #[test]
@@ -169,6 +197,10 @@ fn mode_and_range_read_from_the_seed_vocabulary() {
         response.answer.contains("range: 3 (5 - 2 = 3)"),
         "the range should show largest minus smallest, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        "The values are 2, 3, 3, 5 (n = 4).\nmode: 3\nrange: 3 (5 - 2 = 3)"
     );
 }
 
@@ -193,6 +225,10 @@ fn variance_and_standard_deviation_derive_from_exact_fractions() {
         "the standard deviation should carry the ≈ marker, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nvariance: ≈151.6666667 (910 / 6 ≈ 151.6666667)\nstandard deviation: ≈12.3153021"
+    );
 }
 
 // Operation names come from the seed lexicon, so the same computation
@@ -206,6 +242,10 @@ fn statistics_labels_follow_the_prompt_language() {
         response.answer.contains("среднее: 18 (108 / 6 = 18)"),
         "the mean line should be labelled in Russian, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        "Значения: 4, 8, 15, 16, 23, 42 (n = 6).\nсреднее: 18 (108 / 6 = 18)"
     );
 }
 
@@ -225,6 +265,10 @@ fn unit_conversion_multiplies_by_the_seed_factor() {
         "the answer should show the multiplication, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        "26.2 miles is 42.1648128 kilometers. 26.2 × 1.609344 = 42.1648128, because 1 miles = 1.609344 kilometers."
+    );
 }
 
 // The reverse direction divides by the same factor and marks the
@@ -239,6 +283,10 @@ fn unit_conversion_divides_when_the_factor_inverts() {
         "the reverse conversion should divide by the factor, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        "10 kilometers is ≈6.2137119 miles. 10 ÷ 1.609344 ≈ 6.2137119, because 1 miles = 1.609344 kilometers."
+    );
 }
 
 // Temperature conversion is a formula, not a factor: each exact step is
@@ -252,6 +300,10 @@ fn temperature_formula_shows_every_step() {
         response.answer.contains("25 × 9/5 + 32 = 77"),
         "the formula steps should be visible, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        "25 celsius is 77 fahrenheit. 25 × 9/5 + 32 = 77."
     );
 }
 
@@ -298,6 +350,7 @@ fn change_word_problem_shows_the_arithmetic() {
         "the answer should state and derive the change, got: {}",
         response.answer
     );
+    assert_eq!(response.answer, "The change is 8: 20 - 4 × 3 = 8.");
 }
 
 #[test]
@@ -310,6 +363,7 @@ fn total_word_problem_multiplies_price_by_count() {
         "the answer should state and derive the total, got: {}",
         response.answer
     );
+    assert_eq!(response.answer, "The total is 12: 4 × 3 = 12.");
 }
 
 // The markers are seed data in every language, so a Spanish purchase reads
@@ -329,6 +383,7 @@ fn spanish_change_word_problem_reads_the_seed_markers() {
         "the derivation is language-neutral, got: {}",
         response.answer
     );
+    assert_eq!(response.answer, "El cambio es 8: 20 - 4 × 3 = 8.");
 }
 
 // Questions without a statistics operation or a unit conversion must not be

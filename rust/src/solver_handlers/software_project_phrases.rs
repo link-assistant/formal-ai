@@ -33,7 +33,7 @@ pub(super) struct ArtifactMatch {
 fn object_phrase_boundary_tokens() -> Vec<&'static str> {
     seed::lexicon()
         .meanings_with_role(ROLE_SOFTWARE_OBJECT_BOUNDARY_WORD)
-        .flat_map(|meaning| meaning.words())
+        .flat_map(seed::Meaning::words)
         .collect()
 }
 
@@ -44,7 +44,7 @@ fn object_phrase_boundary_tokens() -> Vec<&'static str> {
 fn object_phrase_lead_words() -> Vec<&'static str> {
     seed::lexicon()
         .meanings_with_role(ROLE_SOFTWARE_OBJECT_LEAD_WORD)
-        .flat_map(|meaning| meaning.words())
+        .flat_map(seed::Meaning::words)
         .collect()
 }
 
@@ -54,7 +54,7 @@ fn object_phrase_lead_words() -> Vec<&'static str> {
 fn object_phrase_lead_bigrams() -> Vec<&'static str> {
     seed::lexicon()
         .meanings_with_role(ROLE_SOFTWARE_OBJECT_LEAD_BIGRAM)
-        .flat_map(|meaning| meaning.words())
+        .flat_map(seed::Meaning::words)
         .collect()
 }
 
@@ -67,7 +67,7 @@ fn object_phrase_lead_bigrams() -> Vec<&'static str> {
 fn object_phrase_boundary_characters() -> Vec<char> {
     seed::lexicon()
         .meanings_with_role(ROLE_SOFTWARE_OBJECT_BOUNDARY_CHARACTER)
-        .flat_map(|meaning| meaning.words())
+        .flat_map(seed::Meaning::words)
         .flat_map(str::chars)
         .collect()
 }
@@ -77,7 +77,7 @@ fn object_phrase_boundary_characters() -> Vec<char> {
 fn word_internal_boundary_characters() -> Vec<char> {
     seed::lexicon()
         .meanings_with_role(ROLE_SOFTWARE_OBJECT_WORD_INTERNAL_CHARACTER)
-        .flat_map(|meaning| meaning.words())
+        .flat_map(seed::Meaning::words)
         .flat_map(str::chars)
         .collect()
 }
@@ -90,7 +90,7 @@ fn word_internal_boundary_characters() -> Vec<char> {
 fn sentence_end_characters() -> Vec<char> {
     let mut characters: Vec<char> = seed::lexicon()
         .meanings_with_role(ROLE_SOFTWARE_SENTENCE_END_CHARACTER)
-        .flat_map(|meaning| meaning.words())
+        .flat_map(seed::Meaning::words)
         .flat_map(str::chars)
         .collect();
     characters.push('\n');
@@ -298,10 +298,10 @@ pub(super) fn object_phrase_artifact(
             if let Some(sentence_end) = prefix
                 .rfind(|character: char| sentence_ends.contains(&character))
             {
-                let after = match prefix[sentence_end..].chars().next() {
-                    Some(character) => sentence_end + character.len_utf8(),
-                    None => sentence_end,
-                };
+                let after = prefix[sentence_end..]
+                    .chars()
+                    .next()
+                    .map_or(sentence_end, |character| sentence_end + character.len_utf8());
                 prefix = &prefix[after..];
             }
             // Politeness or a determiner may trail the object ("a browser

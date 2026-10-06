@@ -9,8 +9,11 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
       : null;
   const previousForced = setForcedResponseLanguage(forced);
   try {
+    // Meanings learned in earlier sessions come back through memory; the
+    // ones learned now leave as this answer's memory operation.
+    metaImportLearned(memory);
     const answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
-    return await metaResolveImpasse(prompt, answer, prefs);
+    return metaAttachLearned(await metaResolveImpasse(prompt, answer, prefs));
   } finally {
     setForcedResponseLanguage(previousForced);
   }
@@ -96,7 +99,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   formalizationContext.meta = meta;
   events.push(`meta:${meta.goal}:${meta.status}`);
   steps.push({ step: "meta_reason", detail: `${meta.goal} ${meta.status}`, derivation: meta.derivationLino });
-  if (meta.status === "solved" && meta.program) {
+  if (meta.status === "solved" && (meta.program || meta.subgoals)) {
     events.push("handler:meta_reasoner");
     return finalize(events, steps, toolCalls, metaAnswer(meta), formalizationContext);
   }
@@ -751,7 +754,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       return finalize(events, steps, toolCalls, bareTermSearch, formalizationContext);
     }
   }
-  if (meta.goal.startsWith("synthesize")) {
+  if (meta.goal.startsWith("synthesize") || meta.goal === "decompose") {
     meta = await metaReasonTurn(prompt, language, preferences);
     formalizationContext.meta = meta;
     steps.push({ step: "meta_discover", detail: `${meta.goal} ${meta.status} after ${meta.lookups.length} lookup round(s)`, derivation: meta.derivationLino });

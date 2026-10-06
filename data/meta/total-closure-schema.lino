@@ -14,6 +14,7 @@ total_closure_schema
   declaration_identity_head family
   declaration_identity_head field
   declaration_identity_head flow
+  declaration_identity_head generated_version
   declaration_identity_head handler
   declaration_identity_head id
   declaration_identity_head intent
@@ -27,6 +28,7 @@ total_closure_schema
   declaration_identity_head primitive
   declaration_identity_head promotion
   declaration_identity_head response
+  declaration_identity_head note
   declaration_identity_head rule
   declaration_identity_head section
   declaration_identity_head source
@@ -41,7 +43,12 @@ total_closure_schema
   declaration_identity_head topic
   declaration_identity_head ts_construct
   literal_operand_head column
+  literal_operand_head command_verb
+  literal_operand_head cst_node_kind
   literal_operand_head cue
+  literal_operand_head entry_name
+  literal_operand_head key
+  literal_operand_head output_call
   literal_operand_head prefix
   literal_operand_head severity
   literal_operand_head signature

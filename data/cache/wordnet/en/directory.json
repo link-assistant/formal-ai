@@ -1,0 +1,21 @@
+{
+  "lemma": "directory",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06435262-n",
+      "partOfSpeech": "n",
+      "definition": "an alphabetical list of names and addresses"
+    },
+    {
+      "id": "oewn-06502442-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) a listing of the files stored in memory (usually on a hard disk)"
+    }
+  ]
+}

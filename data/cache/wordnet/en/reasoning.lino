@@ -1,0 +1,17 @@
+language en
+lemma reasoning
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "thinking that is coherent and logical"
+    id oewn-05780353-n
+    partOfSpeech n
+    synonyms ("logical thinking" "abstract thought")
+  entry
+    definition "endowed with the capacity to reason"
+    id oewn-01932488-s
+    partOfSpeech s
+    synonyms (intelligent thinking)
+source "oewn:2024"

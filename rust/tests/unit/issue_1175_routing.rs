@@ -80,21 +80,49 @@ fn natural_language_starting_with_a_shell_word_is_not_a_command() {
 /// all-dots path argument, quoted prose, and file names with dots.
 #[test]
 fn argument_shaped_prompts_after_a_shell_token_stay_terminal_commands() {
-    for (prompt, command) in [
-        ("ls ~", "ls ~"),
+    // The seeded agent-suggestion template ends its third paragraph with a
+    // permission question ("Switch to Agent mode … so I can run `{command}`?")
+    // that `question_necessity::enforce_questions` refuses and strips from the
+    // sentence start to the `?`, leaving the paragraph's leading space. A
+    // stop inside the inline command (`find . -name …`) is code, not a
+    // sentence end, so the whole question goes there too.
+    for (prompt, command, expected) in [
+        (
+            "ls ~",
+            "ls ~",
+            "It looks like you want to run a terminal command: `ls ~`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\n Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically).",
+        ),
         (
             "find . -name '*.log' -size +10M",
             "find . -name '*.log' -size +10M",
+            "It looks like you want to run a terminal command: `find . -name '*.log' -size +10M`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\n Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically).",
         ),
-        ("make test", "make test"),
-        ("head -n 5 main.rs", "head -n 5 main.rs"),
-        ("export FOO=bar", "export FOO=bar"),
-        ("touch newfile.txt", "touch newfile.txt"),
+        (
+            "make test",
+            "make test",
+            "It looks like you want to run a terminal command: `make test`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\n Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically).",
+        ),
+        (
+            "head -n 5 main.rs",
+            "head -n 5 main.rs",
+            "It looks like you want to run a terminal command: `head -n 5 main.rs`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\n Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically).",
+        ),
+        (
+            "export FOO=bar",
+            "export FOO=bar",
+            "It looks like you want to run a terminal command: `export FOO=bar`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\n Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically).",
+        ),
+        (
+            "touch newfile.txt",
+            "touch newfile.txt",
+            "It looks like you want to run a terminal command: `touch newfile.txt`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\n Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically).",
+        ),
         // Quoted words are data, not prose: the natural-language markers
         // inside the quotes must not reject the command line.
         (
             "git commit -m 'fix the parser bug'",
             "git commit -m 'fix the parser bug'",
+            "It looks like you want to run a terminal command: `git commit -m 'fix the parser bug'`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\n Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically).",
         ),
     ] {
         let answer = FormalAiEngine.answer(prompt);
@@ -102,6 +130,7 @@ fn argument_shaped_prompts_after_a_shell_token_stay_terminal_commands() {
             answer.intent, "agent_suggestion",
             "prompt: {prompt:?} answer: {answer:?}"
         );
+        assert_eq!(answer.answer, expected, "prompt: {prompt:?}");
         assert!(
             answer.answer.contains(command),
             "prompt {prompt:?} should name the command: {}",

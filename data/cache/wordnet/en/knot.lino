@@ -1,0 +1,57 @@
+language en
+lemma knot
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a tight cluster of people or things"
+    examples ("a small knot of women listened to his sermon" "the bird had a knot of feathers forming a crest")
+    id oewn-07976998-n
+    partOfSpeech n
+  entry
+    definition "any of various fastenings formed by looping and tying a rope (or cord) upon itself or to another rope or to another object"
+    id oewn-03632523-n
+    partOfSpeech n
+  entry
+    definition "a hard cross-grained round piece of wood in a board where a branch emerged"
+    examples ("the saw buckled when it hit a knot")
+    id oewn-15127279-n
+    partOfSpeech n
+  entry
+    definition "(of ships and wind) a unit of speed equal to one nautical mile per hour or about 1.15 statute miles per hour"
+    id oewn-15304617-n
+    partOfSpeech n
+  entry
+    definition "something twisted and tight and swollen"
+    examples ("their muscles stood out in knots" "the old man's fists were two great gnarls" "his stomach was in knots")
+    id oewn-13908529-n
+    partOfSpeech n
+    synonyms (gnarl)
+  entry
+    definition "soft lump or unevenness in a yarn; either an imperfection or created by design"
+    id oewn-04956082-n
+    partOfSpeech n
+    synonyms (slub burl)
+  entry
+    definition "a sandpiper that breeds in the Arctic and winters in the Southern Hemisphere"
+    id oewn-02031554-n
+    partOfSpeech n
+    synonyms (greyback grayback "Calidris canutus")
+  entry
+    definition "make into knots; make knots out of"
+    examples ("She knotted her fingers")
+    id oewn-01677627-v
+    partOfSpeech v
+  entry
+    definition "tie or fasten into a knot"
+    examples ("knot the shoelaces")
+    id oewn-01302730-v
+    partOfSpeech v
+  entry
+    definition "tangle or complicate"
+    examples ("a ravelled story")
+    id oewn-01523757-v
+    partOfSpeech v
+    synonyms (ravel tangle)
+source "oewn:2024"

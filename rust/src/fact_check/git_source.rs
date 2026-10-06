@@ -83,12 +83,9 @@ pub fn git_log_for_path(root: &Path, path: &str) -> Vec<GitHistoryEntry> {
 /// binary-sized or unreadable revisions are skipped rather than guessed at.
 #[must_use]
 pub fn last_revision_containing(root: &Path, path: &str, needle: &str) -> Option<GitHistoryEntry> {
-    for entry in git_log_for_path(root, path) {
-        if revision_contains(root, &entry.commit, path, needle) {
-            return Some(entry);
-        }
-    }
-    None
+    git_log_for_path(root, path)
+        .into_iter()
+        .find(|entry| revision_contains(root, &entry.commit, path, needle))
 }
 
 /// The commit that last touched `path:path` at `line` (1-based), from
@@ -138,9 +135,9 @@ pub fn git_history_evidence_for(query: &GitQuery, root: &Path) -> Vec<RelativeEv
                     TruthValue::new(0.8),
                 )],
                 None => vec![RelativeEvidence::new(
-                    format!(
-                        "git:log:{path} (no revision in the newest {} ever contained the value)",
-                        history.len()
+                    crate::seed::report_text(
+                        "fact_check_git_value_never_present",
+                        &[("path", path), ("revisions", &history.len().to_string())],
                     ),
                     tier,
                     Stance::Contradicts,
@@ -153,7 +150,14 @@ pub fn git_history_evidence_for(query: &GitQuery, root: &Path) -> Vec<RelativeEv
             entry
                 .map(|entry| {
                     RelativeEvidence::new(
-                        format!("git:log:{path}@{} {}", entry.commit, entry.date),
+                        crate::seed::report_text(
+                            "fact_check_git_last_touched",
+                            &[
+                                ("path", path),
+                                ("commit", &entry.commit),
+                                ("date", &entry.date),
+                            ],
+                        ),
                         tier,
                         Stance::Supports,
                         TruthValue::new(0.7),

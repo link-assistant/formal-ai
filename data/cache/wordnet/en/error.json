@@ -1,0 +1,76 @@
+{
+  "lemma": "error",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00071785-n",
+      "partOfSpeech": "n",
+      "definition": "a wrong action attributable to bad judgment or ignorance or inattention",
+      "examples": [
+        "he made a bad mistake",
+        "she was quick to point out my errors",
+        "I could understand his English in spite of his grammatical faults"
+      ],
+      "synonyms": [
+        "mistake",
+        "fault"
+      ]
+    },
+    {
+      "id": "oewn-04809878-n",
+      "partOfSpeech": "n",
+      "definition": "inadvertent incorrectness",
+      "synonyms": [
+        "erroneousness"
+      ]
+    },
+    {
+      "id": "oewn-05904072-n",
+      "partOfSpeech": "n",
+      "definition": "a misconception resulting from incorrect information",
+      "synonyms": [
+        "erroneous belief"
+      ]
+    },
+    {
+      "id": "oewn-00072888-n",
+      "partOfSpeech": "n",
+      "definition": "(baseball) a failure of a defensive player to make an out when normal play would have sufficed",
+      "synonyms": [
+        "misplay"
+      ]
+    },
+    {
+      "id": "oewn-04860996-n",
+      "partOfSpeech": "n",
+      "definition": "departure from what is ethically acceptable",
+      "synonyms": [
+        "wrongdoing"
+      ]
+    },
+    {
+      "id": "oewn-07314187-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) the occurrence of an incorrect result produced by a computer",
+      "synonyms": [
+        "computer error"
+      ]
+    },
+    {
+      "id": "oewn-06782183-n",
+      "partOfSpeech": "n",
+      "definition": "part of a statement that is not correct",
+      "examples": [
+        "the book was full of errors"
+      ],
+      "synonyms": [
+        "mistake"
+      ]
+    }
+  ]
+}

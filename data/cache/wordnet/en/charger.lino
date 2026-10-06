@@ -1,0 +1,17 @@
+language en
+lemma charger
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "formerly a strong swift horse ridden into battle"
+    id oewn-02381277-n
+    partOfSpeech n
+    synonyms (courser)
+  entry
+    definition "a device that can hold a rechargeable battery by means of an electrical cable"
+    id oewn-03012598-n
+    partOfSpeech n
+    synonyms ("battery charger")
+source "oewn:2024"

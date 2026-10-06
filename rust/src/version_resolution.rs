@@ -198,14 +198,14 @@ impl VersionSet {
         })
         .map(|mut resolved| {
             let commit = captures.last().expect("just pushed");
-            resolved.fetched_at = commit.fetched_at().to_owned();
-            resolved.response_sha256 = commit.sha256().to_owned();
+            commit.fetched_at().clone_into(&mut resolved.fetched_at);
+            commit.sha256().clone_into(&mut resolved.response_sha256);
             resolved
         })
     }
 
     /// Every pin beside its `generated_version` id in the toolchains seed.
-    fn pins(&self) -> [(&'static str, &ResolvedVersion); 7] {
+    const fn pins(&self) -> [(&'static str, &ResolvedVersion); 7] {
         [
             ("actions_checkout", &self.checkout),
             ("actions_setup_java", &self.setup_java),
@@ -232,14 +232,14 @@ impl VersionSet {
             capture.record(log);
         }
         for (name, pin) in self.pins() {
-            log.append(
+            log.append_fields(
                 "version_resolution",
-                format!(
-                    "{name} tag={} sha={} origin={}",
-                    pin.tag,
-                    pin.sha,
-                    pin.origin.label()
-                ),
+                &[
+                    ("pin", name),
+                    ("tag", &pin.tag),
+                    ("sha", &pin.sha),
+                    ("origin", pin.origin.label()),
+                ],
             );
         }
     }
@@ -260,19 +260,19 @@ impl VersionSet {
         .into_iter()
         .filter(|(_, pin)| pin.origin != Origin::Live)
         .map(|(name, pin)| {
-            if pin.origin == Origin::Cache {
-                format!(
-                    "{name} {tag}: (version resolved from cache; fetched_at={fetched_at})",
-                    tag = pin.tag,
-                    fetched_at = pin.fetched_at,
-                )
+            let intent = if pin.origin == Origin::Cache {
+                "version_provenance_cache"
             } else {
-                format!(
-                    "{name} {tag}: (version resolved from the shipped baseline measured {measured})",
-                    tag = pin.tag,
-                    measured = pin.fetched_at,
-                )
-            }
+                "version_provenance_baseline"
+            };
+            crate::seed::report_text(
+                intent,
+                &[
+                    ("name", name),
+                    ("tag", &pin.tag),
+                    ("fetched_at", &pin.fetched_at),
+                ],
+            )
         })
         .collect()
     }
@@ -480,9 +480,10 @@ fn replace_quoted_value(line: &str, value: &str) -> String {
     };
     let (head, tail) = line.split_at(colon + 1);
     let trimmed = tail.trim_start();
-    let quote = trimmed.chars().next().filter(|c| *c == '\'' || *c == '"');
-    match quote {
-        Some(q) => format!("{head} {q}{value}{q}"),
-        None => format!("{head} {value}"),
-    }
+    // The value keeps the quote character the line already used, if any.
+    let quote = match trimmed.chars().next() {
+        Some(mark @ ('\'' | '"')) => mark.to_string(),
+        _ => String::new(),
+    };
+    [head, " ", quote.as_str(), value, quote.as_str()].concat()
 }

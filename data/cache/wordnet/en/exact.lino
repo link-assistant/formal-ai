@@ -1,0 +1,36 @@
+language en
+lemma exact
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "marked by strict and particular and complete accordance with fact"
+    examples ("an exact mind" "an exact copy" "hit the exact center of the target")
+    id oewn-00917535-a
+    partOfSpeech a
+  entry
+    definition "(of ideas, images, representations, expressions) characterized by perfect conformity to fact or truth; strictly correct"
+    examples ("a precise image" "a precise measurement")
+    id oewn-00634639-s
+    partOfSpeech s
+    synonyms (accurate precise)
+  entry
+    definition "lacking compromising or mitigating elements"
+    examples ("the direct opposite")
+    id oewn-00005472-s
+    partOfSpeech s
+    synonyms (direct)
+  entry
+    definition "claim as due or just"
+    examples ("The bank demanded payment of the loan")
+    id oewn-01019835-v
+    partOfSpeech v
+    synonyms (demand)
+  entry
+    definition "take as an undesirable consequence of some event or state of affairs"
+    examples ("the accident claimed three lives" "The hard work took its toll on her")
+    id oewn-00758121-v
+    partOfSpeech v
+    synonyms (claim take)
+source "oewn:2024"

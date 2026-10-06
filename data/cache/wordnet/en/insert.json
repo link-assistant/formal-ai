@@ -1,0 +1,93 @@
+{
+  "lemma": "insert",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06408455-n",
+      "partOfSpeech": "n",
+      "definition": "a folded section placed between the leaves of another publication"
+    },
+    {
+      "id": "oewn-03578433-n",
+      "partOfSpeech": "n",
+      "definition": "an artifact that is inserted or is to be inserted",
+      "synonyms": [
+        "inset"
+      ]
+    },
+    {
+      "id": "oewn-00385318-n",
+      "partOfSpeech": "n",
+      "definition": "(broadcasting) a local announcement inserted into a network program",
+      "synonyms": [
+        "cut-in"
+      ]
+    },
+    {
+      "id": "oewn-00385137-n",
+      "partOfSpeech": "n",
+      "definition": "(film) a still picture that is introduced and that interrupts the action of a film",
+      "synonyms": [
+        "cut-in"
+      ]
+    },
+    {
+      "id": "oewn-01424276-v",
+      "partOfSpeech": "v",
+      "definition": "put or introduce into something",
+      "examples": [
+        "insert a picture into the text"
+      ],
+      "synonyms": [
+        "infix",
+        "enter",
+        "introduce"
+      ]
+    },
+    {
+      "id": "oewn-00187671-v",
+      "partOfSpeech": "v",
+      "definition": "place, fit, or thrust (something) into another thing",
+      "examples": [
+        "Insert your ticket here"
+      ],
+      "synonyms": [
+        "enclose",
+        "inclose",
+        "stick in",
+        "put in",
+        "introduce"
+      ]
+    },
+    {
+      "id": "oewn-01392430-v",
+      "partOfSpeech": "v",
+      "definition": "fit snugly into",
+      "examples": [
+        "insert your ticket into the slot",
+        "tuck your shirttail in"
+      ],
+      "synonyms": [
+        "tuck"
+      ]
+    },
+    {
+      "id": "oewn-01027611-v",
+      "partOfSpeech": "v",
+      "definition": "insert casually",
+      "examples": [
+        "She slipped in a reference to her own work"
+      ],
+      "synonyms": [
+        "slip in",
+        "stick in",
+        "sneak in"
+      ]
+    }
+  ]
+}

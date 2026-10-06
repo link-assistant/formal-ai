@@ -1,0 +1,54 @@
+{
+  "lemma": "document",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06481744-n",
+      "partOfSpeech": "n",
+      "definition": "writing that provides information (especially information of an official nature)",
+      "synonyms": [
+        "written document",
+        "papers"
+      ]
+    },
+    {
+      "id": "oewn-03222161-n",
+      "partOfSpeech": "n",
+      "definition": "anything serving as a representation of a person's thinking by means of symbolic marks"
+    },
+    {
+      "id": "oewn-13424504-n",
+      "partOfSpeech": "n",
+      "definition": "a written account of ownership or obligation"
+    },
+    {
+      "id": "oewn-06522968-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) a computer file that contains text (and possibly formatting instructions) using seven-bit ASCII characters",
+      "synonyms": [
+        "text file"
+      ]
+    },
+    {
+      "id": "oewn-01004342-v",
+      "partOfSpeech": "v",
+      "definition": "record in detail",
+      "examples": [
+        "The parents documented every step of their child's development"
+      ]
+    },
+    {
+      "id": "oewn-00668428-v",
+      "partOfSpeech": "v",
+      "definition": "support or supply with references",
+      "examples": [
+        "Can you document your claims?"
+      ]
+    }
+  ]
+}

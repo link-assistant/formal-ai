@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_meta_reasoner.js"
-  ceiling      864
-  rationale "The recursive meta reasoner (2026-10-06 meta-algorithm doctrine), JavaScript first: opens every request word as an unknown, grounds it from request definitions, learned chunks, instruction-set documentation and dictionary captures (recursing into glosses), plans, and keeps a links-notation derivation. Domain-free; its vocabulary, instruction set and response templates are data/seed/meta-reasoning.lino. New capability with no native counterpart yet; Rust follows by translation."
+  ceiling 953
+  rationale "The recursive meta reasoner (2026-10-06 meta-algorithm doctrine), JavaScript first: opens every request word as an unknown, grounds it from request definitions, learned chunks, instruction-set documentation and dictionary captures (recursing into glosses), plans, and keeps a links-notation derivation. Domain-free; its vocabulary, instruction set and response templates are data/seed/meta-reasoning.lino. New capability with no native counterpart yet; Rust follows by translation. Ceiling moved 864 to 953 for universal quantifiers, the bound's unit naming a measure, prose-embedded examples, effect-free measures and the seeded trace wording (note records)."

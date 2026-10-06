@@ -1,0 +1,23 @@
+{
+  "lemma": "kibibyte",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13648977-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1024 bytes",
+      "synonyms": [
+        "kilobyte",
+        "K",
+        "KB",
+        "kB",
+        "KiB"
+      ]
+    }
+  ]
+}

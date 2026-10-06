@@ -1,0 +1,346 @@
+# Response-template intents of the English report records (R379). Each
+# record names one `intent` key a response shard carries, so the closure audit
+# resolves the key to an authored definition rather than an open reference.
+# The shape follows meanings-response-intents.lino; lexeme blocks are
+# deliberately absent because these are template identifiers, not
+# conversational vocabulary. The `grounding` path names the shard the record
+# lives in -- engine diagnostics and evidence labels in the engine-reports
+# shard, constraint-check reasons in the creative-tasks shard, and the range
+# note in the TRIZ shard.
+meanings
+  advice_forward_note
+    defined-by answer
+    role localized_response_template
+    precondition "evidence-graded advice lists competing recommendations"
+    effect "the ordering rule between disagreeing recommendations is stated and the open relative-probability work is named"
+    unit "not applicable"
+    example "Competing recommendations are ordered by grade weight; where two disagree, the higher grade wins here."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  brainstorming_constraints
+    defined-by answer
+    role localized_response_template
+    precondition "name candidates were composed under a length cap"
+    effect "the constraints every candidate satisfies are stated with the cap"
+    unit "not applicable"
+    example "at most 18 characters, pronounceable (carries a vowel, no digits)"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  brainstorming_constraints_excluding
+    defined-by answer
+    role localized_response_template
+    precondition "name candidates were composed under a length cap and excluded words"
+    effect "the constraints every candidate satisfies are stated with the cap and the excluded words"
+    unit "not applicable"
+    example "at most 18 characters, pronounceable (carries a vowel, no digits), excluding words containing cafe"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_scheme_length_mismatch
+    defined-by answer
+    role localized_response_template
+    precondition "a composed poem is checked against a rhyme scheme of a different length"
+    effect "the mismatch between scheme positions and poem lines is reported as a failed constraint"
+    unit "not applicable"
+    example "scheme abab names 4 positions but the poem has 3 lines"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_rhyme_class_mismatch
+    defined-by answer
+    role localized_response_template
+    precondition "two positions sharing a scheme letter end in words of different rhyme classes"
+    effect "the failed rhyme constraint names both positions, words and classes"
+    unit "not applicable"
+    example "positions 1 and 3 must rhyme but 'night' (ight) and 'day' (ay) are different classes"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_rhyme_outside_classes
+    defined-by answer
+    role localized_response_template
+    precondition "a position under a repeated scheme letter ends in a word no rhyme class carries"
+    effect "the failed rhyme constraint names the positions"
+    unit "not applicable"
+    example "position 1 or 3 ends in a word outside every rhyme class"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_rhyme_unwanted
+    defined-by answer
+    role localized_response_template
+    precondition "two positions with different scheme letters end in one rhyme class"
+    effect "the failed non-rhyme constraint names both positions and the shared class"
+    unit "not applicable"
+    example "positions 1 and 2 must NOT rhyme but both end in class ight"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_line_count_mismatch
+    defined-by answer
+    role localized_response_template
+    precondition "a composed poem has a different line count than requested"
+    effect "the failed line-count constraint states both counts"
+    unit "not applicable"
+    example "line count 3 but 4 wanted"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_topic_absent
+    defined-by answer
+    role localized_response_template
+    precondition "a composed poem does not carry the requested topic word"
+    effect "the failed topic constraint names the missing word"
+    unit "not applicable"
+    example "topic word 'sea' absent"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_skip_over_cap
+    defined-by answer
+    role localized_response_template
+    precondition "a day already holds the maximum number of items"
+    effect "the place left out is reported as over the daily cap"
+    unit "not applicable"
+    example "Colosseum (over the daily cap)"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_skip_repeat_category
+    defined-by answer
+    role localized_response_template
+    precondition "the next place shares the category of the previous item on that day"
+    effect "the place left out is reported with the repeated category"
+    unit "not applicable"
+    example "Vatican Museums (would repeat the museum category consecutively)"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_skip_past_closing
+    defined-by answer
+    role localized_response_template
+    precondition "a visit would end after the place closes"
+    effect "the place left out is reported with its opening hours"
+    unit "not applicable"
+    example "Pantheon (would run past its 09:00-19:00 closing)"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_day_over_cap
+    defined-by answer
+    role localized_response_template
+    precondition "a finished schedule holds more items on a day than the cap allows"
+    effect "the infeasible day is reported with its item count and the cap"
+    unit "not applicable"
+    example "day 2 carries 5 items, over the cap of 4"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_overlap
+    defined-by answer
+    role localized_response_template
+    precondition "two consecutive items overlap once travel time is counted"
+    effect "the infeasible pair is reported with its day"
+    unit "not applicable"
+    example "day 1: Pantheon starts before Colosseum ends plus travel"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_repeat_category
+    defined-by answer
+    role localized_response_template
+    precondition "two consecutive items on a day share a category"
+    effect "the infeasible pair is reported with its day and category"
+    unit "not applicable"
+    example "day 1: two consecutive museum items"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_outside_hours
+    defined-by answer
+    role localized_response_template
+    precondition "a scheduled item falls outside its opening hours"
+    effect "the infeasible item is reported with its hours"
+    unit "not applicable"
+    example "Pantheon falls outside 09:00-19:00"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_feasibility
+    defined-by answer
+    role localized_response_template
+    precondition "a schedule passed every feasibility check"
+    effect "the checked constraints are stated with the travel times and the daily cap"
+    unit "not applicable"
+    example "no overlapping items; travel time accounted between consecutive items (20 min intra-district, 40 min cross-district); every item inside its opening hours; at most 4 items a day"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  triz_link_note
+    defined-by answer
+    role localized_response_template
+    precondition "a contradiction question is answered with the resolution families"
+    effect "the answer ties the contradiction to the range-selection value the requirements choose"
+    unit "not applicable"
+    example "A contradiction is a link whose value (0-1) is chosen from the requirement's own clauses."
+    grounding "data/seed/multilingual-responses-triz.lino"
+  formalization_prover_present
+    defined-by answer
+    role localized_response_template
+    precondition "the prover binary is found in PATH"
+    effect "the honesty block states that compilation is delegated to CI"
+    unit "not applicable"
+    example "lean is present in PATH; compilation was not run in this answer path and is delegated to CI."
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  formalization_prover_absent
+    defined-by answer
+    role localized_response_template
+    precondition "the prover binary is not found in PATH"
+    effect "the honesty block states that the rendered text was not compiled"
+    unit "not applicable"
+    example "coqc was not found in PATH, so the coqc text was not compiled."
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  formalization_derivation
+    defined-by answer
+    role localized_response_template
+    precondition "a sentence was parsed into a quantified clause"
+    effect "the derivation lists the sentence, the parsed clause, the consequent and the rendered templates"
+    unit "not applicable"
+    example "sentence: Every dog barks.\nparsed clause: forall x (Dog)\nconsequent: Barks\ntemplates: fol, lean"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  version_provenance_cache
+    defined-by answer
+    role localized_response_template
+    precondition "a generated pin was resolved from the replayable cache"
+    effect "the generated file names the pin and the cache timestamp"
+    unit "not applicable"
+    example "kotlin v2.4.20: (version resolved from cache; fetched_at=1800000000)"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  version_provenance_baseline
+    defined-by answer
+    role localized_response_template
+    precondition "a generated pin fell back to the shipped baseline"
+    effect "the generated file names the pin and when the baseline was measured"
+    unit "not applicable"
+    example "kotlin v2.4.20: (version resolved from the shipped baseline measured 2026-09-12)"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  code_example_parse_recognized_nothing
+    defined-by answer
+    role localized_response_template
+    precondition "a retrieved code example parses to no recognizable node"
+    effect "decomposition fails naming the language"
+    unit "not applicable"
+    example "the meta-language parse recognized nothing in the rust example"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  code_example_no_program_shape
+    defined-by answer
+    role localized_response_template
+    precondition "recomposition targets a language without a program shape in the seed"
+    effect "recomposition fails naming the language"
+    unit "not applicable"
+    example "no program shape registered for zig"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  code_example_unbound_output_literal
+    defined-by answer
+    role localized_response_template
+    precondition "recomposition has no output literal bound for the target language"
+    effect "recomposition fails naming the language instead of guessing a literal"
+    unit "not applicable"
+    example "no output literal is bound for go: the requirement states none and no example in that language supplies one"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  code_example_procedure_step
+    defined-by answer
+    role localized_response_template
+    precondition "a generalized procedure shares a part kind across examples"
+    effect "one adoption step names the part kind to provide"
+    unit "not applicable"
+    example "provide the entry_point of the procedure"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  compose_gap_render
+    defined-by answer
+    role localized_response_template
+    precondition "the render leg of a composition refused"
+    effect "the composition gap carries the render leg's reason"
+    unit "not applicable"
+    example "the render leg refused: no cst_grammar entry names pascal"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  compose_gap_syntax_invalid
+    defined-by answer
+    role localized_response_template
+    precondition "the rendered source does not parse in its language"
+    effect "the composition gap names the language"
+    unit "not applicable"
+    example "the rendered source is not a valid `rust` parse"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  compose_gap_not_cst_equal
+    defined-by answer
+    role localized_response_template
+    precondition "the rendered source re-serializes to a different network"
+    effect "the composition gap reports the failed CST-equality round trip"
+    unit "not applicable"
+    example "the rendered `rust` source parses, but its network serialization differs from the composed one, so the round trip is not CST-equal"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  cst_render_gap_no_grammar_entry
+    defined-by answer
+    role localized_response_template
+    precondition "a render target names no cst_grammar entry"
+    effect "the render gap names the unregistered language"
+    unit "not applicable"
+    example "no cst_grammar entry in program-cst-grammars.lino names `pascal`, so it is not a registered render target"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  cst_render_gap_unknown_engine
+    defined-by answer
+    role localized_response_template
+    precondition "a grammar entry names an engine other than meta_language"
+    effect "the render gap names the language and its engine"
+    unit "not applicable"
+    example "`cobol` names engine `tree_sitter`, and only the meta_language engine renders"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  cst_render_gap_engine_disabled
+    defined-by answer
+    role localized_response_template
+    precondition "the meta-language feature is compiled out"
+    effect "the render gap names the language that cannot render"
+    unit "not applicable"
+    example "the meta-language engine (feature `meta-language`) is disabled, so `rust` cannot render"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  derivation_record_missing
+    defined-by answer
+    role localized_response_template
+    precondition "an explain request names an answer id with no stored derivation"
+    effect "the miss names the id, the directory searched and the id shape"
+    unit "not applicable"
+    example "no derivation record for `answer_0000000000000000` under data/derivations (an answer id has the shape `answer_<16 hex digits>` and is created when the answer is returned)"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  fact_check_code_references
+    defined-by answer
+    role localized_response_template
+    precondition "a fact-checked symbol has production references"
+    effect "the evidence label names the first production site and both reference counts"
+    unit "not applicable"
+    example "code:rust/src/engine.rs (3 production, 2 test references)"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  fact_check_code_test_only
+    defined-by answer
+    role localized_response_template
+    precondition "a fact-checked symbol is referenced only from tests"
+    effect "the contradicting evidence label names the symbol and the test site count"
+    unit "not applicable"
+    example "code: symbol answer referenced only from test scope (2 sites)"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  fact_check_git_value_never_present
+    defined-by answer
+    role localized_response_template
+    precondition "no revision in the scanned history contained the checked value"
+    effect "the contradicting evidence label names the path and how many revisions were scanned"
+    unit "not applicable"
+    example "git:log:Cargo.toml (no revision in the newest 50 ever contained the value)"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  fact_check_git_last_touched
+    defined-by answer
+    role localized_response_template
+    precondition "the git log names the last commit that touched a path"
+    effect "the supporting evidence label names the path, commit and date"
+    unit "not applicable"
+    example "git:log:Cargo.toml@0f8760572 2026-10-06"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  si_conversion_incompatible
+    defined-by answer
+    role localized_response_template
+    precondition "an SI conversion pairs units of different dimensions"
+    effect "the refusal names both dimensions"
+    unit "not applicable"
+    example "incompatible dimensions: L vs M"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  si_conversion_unknown_unit
+    defined-by answer
+    role localized_response_template
+    precondition "an SI conversion names a unit the dimension seed does not carry"
+    effect "the refusal names the unit"
+    unit "not applicable"
+    example "unknown unit: furlong"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  program_execution_notes_swift
+    defined-by answer
+    role localized_response_template
+    precondition "a Swift program is returned"
+    effect "the execution note states what was observed and which check is still owed"
+    unit "not applicable"
+    example "hello.swift printed exactly `Hello, World!` on 2026-09-12."
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  program_execution_notes_r
+    defined-by answer
+    role localized_response_template
+    precondition "an R program is returned"
+    effect "the execution note states that the run is owed to the CI ladder"
+    unit "not applicable"
+    example "no R toolchain was installed on the 2026-09-12 reference machine."
+    grounding "data/seed/multilingual-responses-engine-reports.lino"

@@ -1,0 +1,57 @@
+{
+  "lemma": "church",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08099479-n",
+      "partOfSpeech": "n",
+      "definition": "one of the groups of Christians who have their own beliefs and forms of worship",
+      "synonyms": [
+        "Christian church"
+      ]
+    },
+    {
+      "id": "oewn-03031762-n",
+      "partOfSpeech": "n",
+      "definition": "a place for public (especially Christian) worship",
+      "examples": [
+        "the church was empty"
+      ],
+      "synonyms": [
+        "church building"
+      ]
+    },
+    {
+      "id": "oewn-01034400-n",
+      "partOfSpeech": "n",
+      "definition": "a service conducted in a house of worship",
+      "examples": [
+        "don't be late for church"
+      ],
+      "synonyms": [
+        "church service"
+      ]
+    },
+    {
+      "id": "oewn-08099776-n",
+      "partOfSpeech": "n",
+      "definition": "the body of people who attend or belong to a particular local church",
+      "examples": [
+        "our church is hosting a picnic next week"
+      ]
+    },
+    {
+      "id": "oewn-02083398-v",
+      "partOfSpeech": "v",
+      "definition": "perform a special church rite or service for",
+      "examples": [
+        "church a woman after childbirth"
+      ]
+    }
+  ]
+}

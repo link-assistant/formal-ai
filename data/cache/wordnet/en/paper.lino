@@ -1,0 +1,55 @@
+language en
+lemma paper
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a material made of cellulose pulp derived mainly from wood or rags or certain grasses"
+    id oewn-14998823-n
+    partOfSpeech n
+  entry
+    definition "an essay (especially one written as an assignment)"
+    examples ("he got an A on his composition")
+    id oewn-06421395-n
+    partOfSpeech n
+    synonyms (composition report theme)
+  entry
+    definition "a daily or weekly publication on folded sheets; contains news and articles and advertisements"
+    examples ("he read his newspaper at breakfast")
+    id oewn-06277798-n
+    partOfSpeech n
+    synonyms (newspaper)
+  entry
+    definition "a medium for written communication"
+    examples ("the notion of an office running without paper is absurd")
+    id oewn-06266190-n
+    partOfSpeech n
+  entry
+    definition "a scholarly article describing the results of observations or stating hypotheses"
+    examples ("he has written many scientific papers")
+    id oewn-06280609-n
+    partOfSpeech n
+  entry
+    definition "a business firm that publishes newspapers"
+    examples ("Murdoch owns many newspapers")
+    id oewn-08079806-n
+    partOfSpeech n
+    synonyms (newspaper "newspaper publisher")
+  entry
+    definition "the physical object that is the product of a newspaper publisher"
+    examples ("when it began to rain he covered his head with a newspaper")
+    id oewn-03827711-n
+    partOfSpeech n
+    synonyms (newspaper)
+  entry
+    definition "cover with paper"
+    examples ("paper the box")
+    id oewn-01271021-v
+    partOfSpeech v
+  entry
+    definition "cover with wallpaper"
+    id oewn-01270676-v
+    partOfSpeech v
+    synonyms (wallpaper)
+source "oewn:2024"

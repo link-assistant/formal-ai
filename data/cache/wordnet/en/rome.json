@@ -1,0 +1,27 @@
+{
+  "lemma": "rome",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08824749-n",
+      "partOfSpeech": "n",
+      "definition": "capital and largest city of Italy; on the Tiber; seat of the Roman Catholic Church; formerly the capital of the Roman Republic and the Roman Empire",
+      "synonyms": [
+        "Roma",
+        "Eternal City",
+        "Italian capital",
+        "capital of Italy"
+      ]
+    },
+    {
+      "id": "oewn-08102450-n",
+      "partOfSpeech": "n",
+      "definition": "the leadership of the Roman Catholic Church"
+    }
+  ]
+}

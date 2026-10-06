@@ -1,0 +1,21 @@
+language en
+lemma pascal
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "French mathematician and philosopher and Jansenist; invented an adding machine; contributed (with Fermat) to the theory of probability (1623-1662)"
+    id oewn-11244409-n
+    partOfSpeech n
+    synonyms ("Blaise Pascal")
+  entry
+    definition "a unit of pressure equal to one newton per square meter"
+    id oewn-13733408-n
+    partOfSpeech n
+    synonyms (Pa)
+  entry
+    definition "a programing language designed to teach programming through a top-down modular approach"
+    id oewn-06915891-n
+    partOfSpeech n
+source "oewn:2024"

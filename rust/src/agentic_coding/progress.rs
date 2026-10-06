@@ -104,10 +104,9 @@ impl Progress {
             );
             let arguments =
                 result_tool_call(messages, index).map(|call| call.function.arguments.clone());
-            let tool = message
-                .name
-                .clone()
-                .or_else(|| result_tool_call(messages, index).map(|call| call.function.name.clone()));
+            let tool = message.name.clone().or_else(|| {
+                result_tool_call(messages, index).map(|call| call.function.name.clone())
+            });
             attempts.push(ToolAttempt {
                 capability,
                 succeeded: failure.is_none(),
@@ -119,9 +118,10 @@ impl Progress {
                 let payload = super::tool_result::normalized_payload(&raw);
                 let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
                 if let Some(url) = fetch_url.as_ref()
-                    && !attempted_fetches.contains(url) {
-                        attempted_fetches.push(url.clone());
-                    }
+                    && !attempted_fetches.contains(url)
+                {
+                    attempted_fetches.push(url.clone());
+                }
                 if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
                     if let Some(url) = fetch_url {
                         fetched_pages.push((url, text.clone()));
@@ -158,10 +158,9 @@ impl Progress {
                     // (issue #1155): clients echo tool output with the status
                     // dropped, which once let an unauthenticated `gh`'s
                     // how-to-authenticate banner pass for an issue body.
-                    if let Some(reason) = command
-                        .as_deref()
-                        .and_then(|command| work_item_read_failure_reason(command, &raw, failure.as_deref()))
-                    {
+                    if let Some(reason) = command.as_deref().and_then(|command| {
+                        work_item_read_failure_reason(command, &raw, failure.as_deref())
+                    }) {
                         failed_work_item_reads.push((url.clone(), reason));
                     } else if failure.is_none()
                         && let Some(text) = super::tool_result::normalized_payload(&raw)
@@ -197,7 +196,9 @@ impl Progress {
     /// that names no URL was the attempt on that page. Reading only the echoed
     /// URL is what let issue #1133's Kotlin run plan the same call 547 times.
     pub(super) fn attempted_fetch_of(&self, url: &str) -> bool {
-        self.attempted_fetches.iter().any(|attempted| attempted == url)
+        self.attempted_fetches
+            .iter()
+            .any(|attempted| attempted == url)
             || self.attempts.iter().any(|attempt| {
                 attempt.capability == Capability::Fetch
                     && attempt
@@ -254,10 +255,27 @@ impl Progress {
                     if targets_url {
                         let outcome = attempt.detail.lines().next().unwrap_or("").trim();
                         let reason = reasons.next().map(|(_, reason)| reason.as_str());
-                        lines.push(match reason {
-                            Some(reason) => format!("- `{command}` — {reason} (answered: {outcome})"),
-                            None => format!("- `{command}` — {outcome}"),
-                        });
+                        lines.push(reason.map_or_else(
+                            || {
+                                super::work_item_steps::fill(
+                                    "read_attempt_run_line",
+                                    &[
+                                        (concat!("{", "command}"), command.as_str()),
+                                        (concat!("{", "outcome}"), outcome),
+                                    ],
+                                )
+                            },
+                            |reason| {
+                                super::work_item_steps::fill(
+                                    "read_attempt_run_reason_line",
+                                    &[
+                                        (concat!("{", "command}"), command.as_str()),
+                                        (concat!("{", "reason}"), reason),
+                                        (concat!("{", "outcome}"), outcome),
+                                    ],
+                                )
+                            },
+                        ));
                     }
                 }
                 Capability::Fetch => {
@@ -283,7 +301,13 @@ impl Progress {
                             && fetches == 1;
                     if for_this_url {
                         let outcome = attempt.detail.lines().next().unwrap_or("").trim();
-                        lines.push(format!("- fetch {url} — {outcome}"));
+                        lines.push(super::work_item_steps::fill(
+                            "read_attempt_fetch_line",
+                            &[
+                                (concat!("{", "url}"), url),
+                                (concat!("{", "outcome}"), outcome),
+                            ],
+                        ));
                     }
                 }
                 _ => {}
@@ -294,9 +318,7 @@ impl Progress {
 
     /// Whether this turn already ran `command` exactly as given.
     pub(super) fn has_run(&self, command: &str) -> bool {
-        self.run_observations
-            .iter()
-            .any(|(ran, _)| ran == command)
+        self.run_observations.iter().any(|(ran, _)| ran == command)
     }
 
     /// The prior attempt one planned call would repeat, if any (issue #1154).
@@ -312,11 +334,18 @@ impl Progress {
     /// byte-identical arguments or the same canonical operand, because the
     /// protocol layer may project the planner's `command` key onto the
     /// client's `cmd` before the transcript echoes the call back.
+    ///
+    /// A completed call is a loop only when the transcript made no progress
+    /// since it: every attempt after the latest matching one must itself
+    /// repeat an earlier attempt. A recipe that re-checks a precondition after
+    /// a state-changing step (`test -e a.txt` again once `cp a.txt b.txt` ran,
+    /// confirming the copy kept its source) asks the same question of a
+    /// changed workspace, which is a plan, not a loop.
     pub(super) fn repeated_call(
         &self,
         call: &super::planner::PlannedToolCall,
     ) -> Option<&ToolAttempt> {
-        self.attempts.iter().find(|attempt| {
+        let index = self.attempts.iter().rposition(|attempt| {
             if !attempt.succeeded {
                 return false;
             }
@@ -328,13 +357,36 @@ impl Progress {
                     && super::planner::tool_capability(&call.tool) == Some(attempt.capability);
             same_tool
                 && (attempt.arguments.as_deref() == Some(call.arguments.as_str())
-                    || self.same_run_operand(attempt, call))
-        })
+                    || Self::same_run_operand(attempt, call))
+        })?;
+        let progressed = self.attempts[index + 1..]
+            .iter()
+            .enumerate()
+            .any(|(offset, later)| {
+                !self.attempts[..=index + offset]
+                    .iter()
+                    .any(|earlier| Self::same_attempt(earlier, later))
+            });
+        if progressed {
+            None
+        } else {
+            self.attempts.get(index)
+        }
+    }
+
+    /// Whether two recorded attempts made the same call: one tool (or one
+    /// capability when a tool name is unknown) with the same arguments.
+    fn same_attempt(earlier: &ToolAttempt, later: &ToolAttempt) -> bool {
+        let same_tool = match (earlier.tool.as_deref(), later.tool.as_deref()) {
+            (Some(first), Some(second)) => first.eq_ignore_ascii_case(second),
+            _ => earlier.capability == later.capability,
+        };
+        same_tool && earlier.arguments == later.arguments
     }
 
     /// Whether an attempt and a planned call address one shell command or one
     /// URL under the client's own argument spellings.
-    fn same_run_operand(&self, attempt: &ToolAttempt, call: &super::planner::PlannedToolCall) -> bool {
+    fn same_run_operand(attempt: &ToolAttempt, call: &super::planner::PlannedToolCall) -> bool {
         let attempted_command = attempt
             .arguments
             .as_deref()
@@ -345,13 +397,9 @@ impl Progress {
         {
             return true;
         }
-        let attempted_url = attempt
-            .arguments
-            .as_deref()
-            .and_then(argument_url);
-        attempted_url.is_some_and(|url| {
-            argument_url(&call.arguments).is_some_and(|planned| planned == url)
-        })
+        let attempted_url = attempt.arguments.as_deref().and_then(argument_url);
+        attempted_url
+            .is_some_and(|url| argument_url(&call.arguments).is_some_and(|planned| planned == url))
     }
 
     /// The latest failed attempt that came back under `tool`.
@@ -578,8 +626,10 @@ fn argument_content(arguments: &str) -> Option<String> {
 /// lowered by the protocol adapter. Tool success alone cannot bind operands.
 pub(super) fn write_matches(arguments: &str, path: &str, content: &str) -> bool {
     (argument_targets(arguments, path) && argument_content(arguments).as_deref() == Some(content))
-        || crate::protocol_responses::apply_patch_input(&super::planner::write_arguments(path, content))
-            .is_some_and(|patch| arguments.trim() == patch.trim())
+        || crate::protocol_responses::apply_patch_input(&super::planner::write_arguments(
+            path, content,
+        ))
+        .is_some_and(|patch| arguments.trim() == patch.trim())
 }
 
 fn argument_targets(arguments: &str, path: &str) -> bool {
@@ -596,9 +646,10 @@ fn argument_targets(arguments: &str, path: &str) -> bool {
 pub(super) fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capability> {
     let message = &messages[index];
     if let Some(name) = &message.name
-        && let Some(capability) = classify_tool(name) {
-            return Some(capability);
-        }
+        && let Some(capability) = classify_tool(name)
+    {
+        return Some(capability);
+    }
     result_tool_call(messages, index).and_then(|call| classify_tool(&call.function.name))
 }
 
@@ -687,7 +738,7 @@ fn rest_read_url(command: &str) -> Option<String> {
     let number: String = segments
         .next()?
         .chars()
-        .take_while(|character| character.is_ascii_digit())
+        .take_while(char::is_ascii_digit)
         .collect();
     if number.is_empty() {
         return None;
@@ -739,7 +790,10 @@ fn work_item_read_failure_reason(
     if let Some(status) = exit_sentinel(raw)
         && status != 0
     {
-        return Some(format!("exit status {status}"));
+        return Some(super::work_item_steps::fill(
+            "read_failure_exit_status",
+            &[(concat!("{", "status}"), status.to_string().as_str())],
+        ));
     }
     let text = without_exit_sentinel(raw);
     let shaped = if command.starts_with("curl ") {

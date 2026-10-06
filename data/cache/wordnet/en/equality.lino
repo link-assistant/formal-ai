@@ -1,0 +1,17 @@
+language en
+lemma equality
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the quality of being the same in quantity or measure or value or status"
+    id oewn-04755139-n
+    partOfSpeech n
+  entry
+    definition "a state of being essentially equal or equivalent; equally balanced"
+    examples ("on a par with the best")
+    id oewn-13969940-n
+    partOfSpeech n
+    synonyms (equivalence equation par)
+source "oewn:2024"

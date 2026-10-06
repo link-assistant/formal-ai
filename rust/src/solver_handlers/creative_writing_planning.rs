@@ -153,14 +153,14 @@ struct ScheduledItem {
 /// of its own category consecutively. Skipped items and their reasons are
 /// returned alongside, so the caller can log every scheduling decision.
 fn schedule_days(
-    available: Vec<Place>,
+    available: &[Place],
     days: usize,
     limits: &PlanConstraints,
 ) -> (Vec<Vec<ScheduledItem>>, Vec<String>) {
     let mut skips: Vec<String> = Vec::new();
     // Group the places by district, preserving seed order.
     let mut district_order: Vec<String> = Vec::new();
-    for place in &available {
+    for place in available {
         if !district_order.contains(&place.district) {
             district_order.push(place.district.clone());
         }
@@ -191,7 +191,7 @@ fn schedule_days(
     for mut day_places in day_plans {
         if day_places.len() > limits.max_items {
             for place in day_places.drain(limits.max_items..) {
-                skips.push(format!("{} (over the daily cap)", place.name));
+                skips.push(template("planning_skip_over_cap", &[("place", &place.name)]));
             }
         }
         let mut items: Vec<ScheduledItem> = Vec::new();
@@ -206,9 +206,9 @@ fn schedule_days(
                     .last()
                     .is_some_and(|item| item.place.category == place.category)
                 {
-                    skips.push(format!(
-                        "{} (would repeat the {} category consecutively)",
-                        place.name, place.category
+                    skips.push(template(
+                        "planning_skip_repeat_category",
+                        &[("place", &place.name), ("category", &place.category)],
                     ));
                     continue;
                 }
@@ -239,9 +239,9 @@ fn schedule_days(
             }
             let end = start + place.visit_minutes;
             if end > close.min(limits.day_end) {
-                skips.push(format!(
-                    "{} (would run past its {} closing)",
-                    place.name, place.hours
+                skips.push(template(
+                    "planning_skip_past_closing",
+                    &[("place", &place.name), ("hours", &place.hours)],
                 ));
                 continue;
             }
@@ -264,12 +264,15 @@ fn schedule_days(
 fn check_schedule(schedule: &[Vec<ScheduledItem>], limits: &PlanConstraints) -> Vec<String> {
     let mut failures = Vec::new();
     for (day_index, items) in schedule.iter().enumerate() {
+        let day = (day_index + 1).to_string();
         if items.len() > limits.max_items {
-            failures.push(format!(
-                "day {} carries {} items, over the cap of {}",
-                day_index + 1,
-                items.len(),
-                limits.max_items
+            failures.push(template(
+                "planning_day_over_cap",
+                &[
+                    ("day", &day),
+                    ("items", &items.len().to_string()),
+                    ("cap", &limits.max_items.to_string()),
+                ],
             ));
         }
         for pair in items.windows(2) {
@@ -280,18 +283,19 @@ fn check_schedule(schedule: &[Vec<ScheduledItem>], limits: &PlanConstraints) -> 
                 limits.travel_cross
             };
             if second.start < first.end + travel {
-                failures.push(format!(
-                    "day {}: {} starts before {} ends plus travel",
-                    day_index + 1,
-                    second.place.name,
-                    first.place.name
+                failures.push(template(
+                    "planning_overlap",
+                    &[
+                        ("day", &day),
+                        ("second", &second.place.name),
+                        ("first", &first.place.name),
+                    ],
                 ));
             }
             if first.place.category == second.place.category {
-                failures.push(format!(
-                    "day {}: two consecutive {} items",
-                    day_index + 1,
-                    first.place.category
+                failures.push(template(
+                    "planning_repeat_category",
+                    &[("day", &day), ("category", &first.place.category)],
                 ));
             }
         }
@@ -311,9 +315,9 @@ fn check_schedule(schedule: &[Vec<ScheduledItem>], limits: &PlanConstraints) -> 
                 .and_then(parse_hhmm)
                 .unwrap_or(limits.day_end);
             if item.start < open || item.end > close {
-                failures.push(format!(
-                    "{} falls outside {}",
-                    item.place.name, item.place.hours
+                failures.push(template(
+                    "planning_outside_hours",
+                    &[("place", &item.place.name), ("hours", &item.place.hours)],
                 ));
             }
         }
@@ -321,8 +325,10 @@ fn check_schedule(schedule: &[Vec<ScheduledItem>], limits: &PlanConstraints) -> 
     failures
 }
 
-/// Recognize a planning request and answer with a cited, feasibility-
-/// checked schedule. Returns `None` when the prompt is not a planning
+/// Recognize a planning request and answer with a cited, feasibility-checked
+/// schedule.
+///
+/// Returns `None` when the prompt is not a planning
 /// request; a destination without seeded places gets the honest refusal,
 /// never the canned web-search paragraph or a terminal command.
 pub fn handle_planning_request(
@@ -343,7 +349,7 @@ pub fn handle_planning_request(
         })
         .map(|(destination, _)| destination);
     let Some(destination) = destination else {
-        let fallback = topic_words(normalized, &language)
+        let fallback = topic_words(normalized, language)
             .into_iter()
             .next()
             .unwrap_or_default();
@@ -369,7 +375,7 @@ pub fn handle_planning_request(
         ));
     };
     log.append("planning:destination", destination.clone());
-    let days = requested_count(normalized, &language)
+    let days = requested_count(normalized, language)
         .unwrap_or(3)
         .clamp(1, 7) as usize;
     log.append("planning:days", days.to_string());
@@ -381,7 +387,7 @@ pub fn handle_planning_request(
             format!("{} ({} min, {})", place.name, place.visit_minutes, place.hours),
         );
     }
-    let (schedule, skips) = schedule_days(available, days, &limits);
+    let (schedule, skips) = schedule_days(&available, days, &limits);
     for skip in &skips {
         log.append("planning:skipped", skip.clone());
     }
@@ -426,9 +432,13 @@ pub fn handle_planning_request(
         })
         .collect::<Vec<_>>()
         .join("\n\n");
-    let feasibility = format!(
-        "no overlapping items; travel time accounted between consecutive items ({} min intra-district, {} min cross-district); every item inside its opening hours; at most {} items a day",
-        limits.travel_intra, limits.travel_cross, limits.max_items
+    let feasibility = template(
+        "planning_feasibility",
+        &[
+            ("travel_intra", &limits.travel_intra.to_string()),
+            ("travel_cross", &limits.travel_cross.to_string()),
+            ("max_items", &limits.max_items.to_string()),
+        ],
     );
     let body = template(
         "planning_itinerary",

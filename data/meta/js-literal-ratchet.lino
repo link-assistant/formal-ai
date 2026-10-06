@@ -1,0 +1,13 @@
+# Natural-language literal ratchet for the JavaScript worker (R1010,
+# 2026-10-06 meta-algorithm doctrine).
+#
+# The ceilings on string literals and template chunks in js/worker/*.js that
+# read as natural language (three or more words, no code punctuation),
+# counted by scripts/check-js-literals.mjs with the ts twin's tokenizer.
+# Wording belongs in seed data, where every language can carry it. The meta
+# reasoner's modules (formal_ai_worker_meta_*) hold none: their answers come
+# from `response` records and their trace from `note` records in
+# data/seed/meta-reasoning.lino. Both numbers only fall.
+js_literal_ratchet
+  worker_ceiling 1106
+  meta_ceiling 0

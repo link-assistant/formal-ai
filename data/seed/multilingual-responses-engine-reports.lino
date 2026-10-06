@@ -1,0 +1,104 @@
+# English report templates rendered by `report_text` in rust/src/seed/reports.rs (R379).
+#
+# Engine diagnostics, evidence labels, refusal reasons and execution notes
+# that used to be typed into Rust as format strings. Each `{slot}` is filled
+# by the caller in one pass; a missing record renders as its intent id, never
+# as invented prose. They are English-only because the surfaces that print
+# them (error paths, evidence-log labels, generated-file notes) are.
+multilingual_responses
+  response response_formalization_prover_present_en
+    intent formalization_prover_present
+    language en
+    text "{label} is present in PATH; compilation was not run in this answer path and is delegated to CI."
+  response response_formalization_prover_absent_en
+    intent formalization_prover_absent
+    language en
+    text "{label} was not found in PATH, so the {label} text was not compiled."
+  response response_formalization_derivation_en
+    intent formalization_derivation
+    language en
+    text "sentence: {sentence}\nparsed clause: {quantifier} {variable} ({antecedents})\nconsequent: {consequent}\ntemplates: {templates}"
+  response response_version_provenance_cache_en
+    intent version_provenance_cache
+    language en
+    text "{name} {tag}: (version resolved from cache; fetched_at={fetched_at})"
+  response response_version_provenance_baseline_en
+    intent version_provenance_baseline
+    language en
+    text "{name} {tag}: (version resolved from the shipped baseline measured {fetched_at})"
+  response response_code_example_parse_recognized_nothing_en
+    intent code_example_parse_recognized_nothing
+    language en
+    text "the meta-language parse recognized nothing in the {language} example"
+  response response_code_example_no_program_shape_en
+    intent code_example_no_program_shape
+    language en
+    text "no program shape registered for {language}"
+  response response_code_example_unbound_output_literal_en
+    intent code_example_unbound_output_literal
+    language en
+    text "no output literal is bound for {language}: the requirement states none and no example in that language supplies one"
+  response response_code_example_procedure_step_en
+    intent code_example_procedure_step
+    language en
+    text "provide the {part} of the procedure"
+  response response_compose_gap_render_en
+    intent compose_gap_render
+    language en
+    text "the render leg refused: {reason}"
+  response response_compose_gap_syntax_invalid_en
+    intent compose_gap_syntax_invalid
+    language en
+    text "the rendered source is not a valid `{language}` parse"
+  response response_compose_gap_not_cst_equal_en
+    intent compose_gap_not_cst_equal
+    language en
+    text "the rendered `{language}` source parses, but its network serialization differs from the composed one, so the round trip is not CST-equal"
+  response response_cst_render_gap_no_grammar_entry_en
+    intent cst_render_gap_no_grammar_entry
+    language en
+    text "no cst_grammar entry in program-cst-grammars.lino names `{language}`, so it is not a registered render target"
+  response response_cst_render_gap_unknown_engine_en
+    intent cst_render_gap_unknown_engine
+    language en
+    text "`{language}` names engine `{engine}`, and only the meta_language engine renders"
+  response response_cst_render_gap_engine_disabled_en
+    intent cst_render_gap_engine_disabled
+    language en
+    text "the meta-language engine (feature `meta-language`) is disabled, so `{language}` cannot render"
+  response response_derivation_record_missing_en
+    intent derivation_record_missing
+    language en
+    text "no derivation record for `{answer_id}` under {directory} (an answer id has the shape `answer_<16 hex digits>` and is created when the answer is returned)"
+  response response_fact_check_code_references_en
+    intent fact_check_code_references
+    language en
+    text "code:{site} ({production} production, {test} test references)"
+  response response_fact_check_code_test_only_en
+    intent fact_check_code_test_only
+    language en
+    text "code: symbol {symbol} referenced only from test scope ({sites} sites)"
+  response response_fact_check_git_value_never_present_en
+    intent fact_check_git_value_never_present
+    language en
+    text "git:log:{path} (no revision in the newest {revisions} ever contained the value)"
+  response response_fact_check_git_last_touched_en
+    intent fact_check_git_last_touched
+    language en
+    text "git:log:{path}@{commit} {date}"
+  response response_si_conversion_incompatible_en
+    intent si_conversion_incompatible
+    language en
+    text "incompatible dimensions: {from} vs {to}"
+  response response_si_conversion_unknown_unit_en
+    intent si_conversion_unknown_unit
+    language en
+    text "unknown unit: {unit}"
+  response response_program_execution_notes_swift_en
+    intent program_execution_notes_swift
+    language en
+    text "hello.swift printed exactly `Hello, World!` on 2026-09-12 (data/meta/hello-world-languages.lino); a swiftc-backed check profile is still owed, so the check above is the interpreter's own parse."
+  response response_program_execution_notes_r_en
+    intent program_execution_notes_r
+    language en
+    text "no R toolchain was installed on the 2026-09-12 reference machine (data/meta/hello-world-languages.lino lists r among the nine unverified); the run is owed to the CI ladder."

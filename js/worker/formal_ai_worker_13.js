@@ -250,12 +250,14 @@ function operationVocabulary() {
     if (operationNode.name !== "operation") continue;
     const phrases = [];
     const combos = [];
+    const exclusions = [];
     let inverse = null;
     for (const child of operationNode.children) {
       if (child.name === "inverse") inverse = child.value;
       else if (child.name === "language") {
         for (const form of child.children) {
           if (form.name === "phrase") phrases.push(form.value);
+          else if (form.name === "exclude") exclusions.push(form.value);
           else if (form.name === "combo") {
             combos.push(
               form.value
@@ -267,7 +269,7 @@ function operationVocabulary() {
         }
       }
     }
-    const operation = { slug: operationNode.value, phrases, combos };
+    const operation = { slug: operationNode.value, phrases, combos, exclusions };
     if (inverse) operation.inverse = inverse;
     operations.push(operation);
   }
@@ -294,8 +296,12 @@ function programModifierSlugs() {
   return slugs;
 }
 
+// An `exclude` phrase names a sense of the trigger word that is not this
+// operation ("smallest first" orders a list; it does not ask for the minimum).
+// Mirrors OperationTrigger::matches in src/seed/operation_vocabulary.rs.
 function operationFormMatches(normalized, operation) {
   const source = String(normalized || "");
+  if ((operation.exclusions || []).some((phrase) => source.includes(phrase))) return false;
   return (
     (operation.phrases || []).some((phrase) => source.includes(phrase)) ||
     (operation.combos || []).some((combo) =>

@@ -1,0 +1,26 @@
+{
+  "lemma": "inventive",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00646885-s",
+      "partOfSpeech": "s",
+      "definition": "(used of persons or artifacts) marked by independence and creativity in thought or action",
+      "examples": [
+        "an imaginative use of material",
+        "the invention of the knitting frame by another ingenious English clergyman",
+        "had an inventive turn of mind",
+        "inventive ceramics",
+        "an inventive device"
+      ],
+      "synonyms": [
+        "imaginative"
+      ]
+    }
+  ]
+}

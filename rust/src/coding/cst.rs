@@ -197,13 +197,16 @@ impl ComposeGap {
     #[allow(dead_code)]
     pub fn describe(&self) -> String {
         match self {
-            Self::Render { reason } => format!("the render leg refused: {reason}"),
-            Self::SyntaxInvalid { language_slug } => {
-                format!("the rendered source is not a valid `{language_slug}` parse")
+            Self::Render { reason } => {
+                crate::seed::report_text("compose_gap_render", &[("reason", reason)])
             }
-            Self::NotCstEqual { language_slug } => format!(
-                "the rendered `{language_slug}` source parses, but its network serialization \
-                 differs from the composed one, so the round trip is not CST-equal"
+            Self::SyntaxInvalid { language_slug } => crate::seed::report_text(
+                "compose_gap_syntax_invalid",
+                &[("language", language_slug)],
+            ),
+            Self::NotCstEqual { language_slug } => crate::seed::report_text(
+                "compose_gap_not_cst_equal",
+                &[("language", language_slug)],
             ),
             Self::EngineDisabled => {
                 "the meta-language engine (feature `meta-language`) is disabled, so \
@@ -233,7 +236,6 @@ pub fn compose_and_validate(network_text: &str, language_slug: &str) -> Option<P
 }
 
 /// The named-gap shape of [`compose_and_validate`].
-#[must_use]
 pub fn try_compose_and_validate(
     network_text: &str,
     language_slug: &str,
@@ -287,7 +289,7 @@ fn try_compose_and_validate_impl(
 /// The meta-language label a grammar's language parses under: the recorded
 /// label when present, the slug itself otherwise.
 #[cfg(feature = "meta-language")]
-fn grammar_label(grammar: &CstGrammar) -> &str {
+const fn grammar_label(grammar: &CstGrammar) -> &str {
     if grammar.meta_language_label.is_empty() {
         grammar.language_slug.as_str()
     } else {

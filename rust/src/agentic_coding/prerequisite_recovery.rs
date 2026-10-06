@@ -2,6 +2,7 @@
 //! Fetch, installation, probe and retry stay visible in the transcript.
 use super::planner::{AgenticPlan, Capability, fetch_arguments, plan_one, tool_for};
 use super::progress::Progress;
+use super::work_item_steps::fill;
 use crate::protocol::ChatMessage;
 use serde_json::json;
 
@@ -20,9 +21,13 @@ pub(super) fn plan_recovery(
         return None;
     }
     if std::env::var("FORMAL_AI_INSTALL_GRANT").ok().as_deref() != Some("workspace") {
-        return Some(AgenticPlan::Final(format!(
-            "Missing prerequisite `{}`. Workspace installation requires FORMAL_AI_INSTALL_GRANT=workspace. Failed command: `{command}`\n{output}",
-            need.program,
+        return Some(AgenticPlan::Final(fill(
+            "prerequisite_grant_required_report",
+            &[
+                (concat!("{", "program}"), need.program.as_str()),
+                (concat!("{", "command}"), command),
+                (concat!("{", "output}"), output),
+            ],
         )));
     }
     let publisher = crate::prerequisite::publisher::seed_publishers()
@@ -43,9 +48,12 @@ pub(super) fn plan_recovery(
     let Some(procedure) =
         crate::prerequisite::publisher::parse_setup_document(&need, &publisher, &url, document)
     else {
-        return Some(AgenticPlan::Final(format!(
-            "Publisher `{url}` provided no typed, verifiable setup recipe for `{}`; installation was not planned.",
-            need.program,
+        return Some(AgenticPlan::Final(fill(
+            "prerequisite_no_recipe_report",
+            &[
+                (concat!("{", "program}"), need.program.as_str()),
+                (concat!("{", "url}"), url.as_str()),
+            ],
         )));
     };
     let quote = super::git_commit::shell_quote;
@@ -63,9 +71,10 @@ pub(super) fn plan_recovery(
                 "sudo" | "sh" | "bash" | "zsh" | "cmd" | "powershell"
             )
         {
-            return Some(AgenticPlan::Final(
-                "The publisher setup recipe exceeds the workspace installation grant.".to_owned(),
-            ));
+            return Some(AgenticPlan::Final(fill(
+                "prerequisite_grant_exceeded_report",
+                &[],
+            )));
         }
         let invocation = std::iter::once(step.program.as_str())
             .chain(step.arguments.iter().map(String::as_str))
@@ -90,10 +99,17 @@ pub(super) fn plan_recovery(
         .into_iter()
         .collect::<Vec<_>>()
         .join(":");
-    let prefix = format!("PATH={}:\"$PATH\"; export PATH", quote(&bins));
-    let recovery = format!(
-        "{prefix} && {} &&\n# __formal_ai_prerequisite_retry\n{command}",
-        commands.join(" && ")
+    let prefix = fill(
+        "prerequisite_path_prefix",
+        &[(concat!("{", "bins}"), quote(&bins).as_str())],
+    );
+    let recovery = fill(
+        "prerequisite_retry_command",
+        &[
+            (concat!("{", "prefix}"), prefix.as_str()),
+            (concat!("{", "steps}"), commands.join(" && ").as_str()),
+            (concat!("{", "command}"), command),
+        ],
     );
     if progress.run_count_for(&recovery) > 0 {
         return None;

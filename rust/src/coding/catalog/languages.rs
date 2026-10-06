@@ -195,7 +195,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some("swiftc -parse hello.swift"),
             run_command: "swift hello.swift",
-            notes: "hello.swift printed exactly `Hello, World!` on 2026-09-12 (data/meta/hello-world-languages.lino); a swiftc-backed check profile is still owed, so the check above is the interpreter's own parse.",
+            // Stated in the response seed: `program_execution_notes_swift`.
+            notes: "",
         },
         source: "local Links Notation write-program seed",
         save_as: "hello.swift",
@@ -212,7 +213,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some("Rscript -e 'invisible(parse(\"hello.R\"))'"),
             run_command: "Rscript hello.R",
-            notes: "no R toolchain was installed on the 2026-09-12 reference machine (data/meta/hello-world-languages.lino lists r among the nine unverified); the run is owed to the CI ladder.",
+            // Stated in the response seed: `program_execution_notes_r`.
+            notes: "",
         },
         source: "local Links Notation write-program seed",
         save_as: "hello.R",

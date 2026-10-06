@@ -1,0 +1,12 @@
+language en
+lemma kibibyte
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a unit of information equal to 1024 bytes"
+    id oewn-13648977-n
+    partOfSpeech n
+    synonyms (kilobyte K KB kB KiB)
+source "oewn:2024"

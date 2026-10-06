@@ -208,7 +208,7 @@ fn filters(tokens: &[&str]) -> Vec<Filter> {
                 let column = entry.find_child_value("column");
                 let operator = entry.find_child_value("operator");
                 out.push(Filter {
-                    clause: format!("{} {} {}", column, operator, value),
+                    clause: format!("{column} {operator} {value}"),
                     request: echo(tokens, index, index + 2),
                 });
             }
@@ -236,19 +236,19 @@ fn filters(tokens: &[&str]) -> Vec<Filter> {
                 let column = identifier(column);
                 if !column.is_empty() {
                     out.push(Filter {
-                        clause: format!("{} {} {}", column, operator, value),
+                        clause: format!("{column} {operator} {value}"),
                         request: echo(tokens, index - 1, index + 2),
                     });
                 }
             }
         }
-        if *token == "named" || *token == "имени" {
-            if let Some(value) = tokens.get(index + 1) {
-                out.push(Filter {
-                    clause: format!("name = '{}'", value),
-                    request: echo(tokens, index, index + 1),
-                });
-            }
+        if (*token == "named" || *token == "имени")
+            && let Some(value) = tokens.get(index + 1)
+        {
+            out.push(Filter {
+                clause: format!("name = '{value}'"),
+                request: echo(tokens, index, index + 1),
+            });
         }
     }
     out
@@ -275,7 +275,7 @@ fn aggregate(tokens: &[&str]) -> Option<(String, String)> {
             return None;
         }
         return Some((
-            format!("{}({})", function, column),
+            format!("{function}({column})"),
             echo(tokens, index, index + 1),
         ));
     }
@@ -314,13 +314,12 @@ fn order_clause(tokens: &[&str]) -> Option<(String, String)> {
 /// LIMIT from "top N" / "first N" / "limit N".
 fn limit_clause(tokens: &[&str], numbers: &[LinoNode]) -> Option<(String, String)> {
     for (index, token) in tokens.iter().enumerate() {
-        if matches!(*token, "top" | "first" | "limit" | "первые" | "топ") {
-            if let Some(value) = tokens
+        if matches!(*token, "top" | "first" | "limit" | "первые" | "топ")
+            && let Some(value) = tokens
                 .get(index + 1)
                 .and_then(|word| number_value(word, numbers))
-            {
-                return Some((format!(" LIMIT {}", value), echo(tokens, index, index + 1)));
-            }
+        {
+            return Some((format!(" LIMIT {value}"), echo(tokens, index, index + 1)));
         }
     }
     None
@@ -332,23 +331,21 @@ fn select_columns(tokens: &[&str]) -> (String, String) {
     if let Some(start) = tokens
         .iter()
         .position(|t| matches!(*t, "select" | "selects" | "выбери" | "выберет"))
-    {
-        if let Some(end) = tokens
+        && let Some(end) = tokens
             .iter()
             .skip(start + 1)
             .position(|t| *t == "from" || *t == "из")
             .map(|offset| start + 1 + offset)
-        {
-            let columns: Vec<String> = tokens[start + 1..end]
-                .iter()
-                .filter(|t| !matches!(**t, "all" | "the" | "and" | "все" | "всех"))
-                .map(|t| identifier(t))
-                .filter(|t| !t.is_empty())
-                .collect();
-            if !columns.is_empty() {
-                let list = columns.join(", ");
-                return (list.clone(), echo(tokens, start, end - 1));
-            }
+    {
+        let columns: Vec<String> = tokens[start + 1..end]
+            .iter()
+            .filter(|t| !matches!(**t, "all" | "the" | "and" | "все" | "всех"))
+            .map(|t| identifier(t))
+            .filter(|t| !t.is_empty())
+            .collect();
+        if !columns.is_empty() {
+            let list = columns.join(", ");
+            return (list, echo(tokens, start, end - 1));
         }
     }
     let all_at = tokens
@@ -425,7 +422,7 @@ pub fn handle_sql_synthesis(
     let (columns, columns_request) = if aggregate.is_empty() {
         select_columns(&tokens)
     } else {
-        (aggregate.clone(), aggregate_request.unwrap_or_default())
+        (aggregate, aggregate_request.unwrap_or_default())
     };
     let filter_list = filters(&tokens);
     let where_clause = if filter_list.is_empty() {
@@ -456,8 +453,8 @@ pub fn handle_sql_synthesis(
     .concat();
     log.append("sql_synthesis:statement", statement.clone());
 
-    let mut rows: Vec<(String, String)> = vec![(columns_request, format!("SELECT {}", columns))];
-    rows.push((table.clone(), format!("FROM {}", table)));
+    let mut rows: Vec<(String, String)> = vec![(columns_request, format!("SELECT {columns}"))];
+    rows.push((table.clone(), format!("FROM {table}")));
     for filter in &filter_list {
         rows.push((filter.request.clone(), filter.clause.clone()));
     }

@@ -1,0 +1,30 @@
+{
+  "lemma": "remaining",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00929746-s",
+      "partOfSpeech": "s",
+      "definition": "not used up",
+      "examples": [
+        "leftover meatloaf",
+        "she had a little money left over so she went to a movie",
+        "some odd dollars left",
+        "saved the remaining sandwiches for supper",
+        "unexpended provisions"
+      ],
+      "synonyms": [
+        "leftover",
+        "left over",
+        "left",
+        "odd",
+        "unexpended"
+      ]
+    }
+  ]
+}

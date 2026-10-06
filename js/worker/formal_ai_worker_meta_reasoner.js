@@ -33,6 +33,8 @@ const META_BOUNDS = Object.freeze({
 
 let metaSeedCache = null;
 const metaLearnedChunks = new Map();
+// Chunks learned since the app last persisted them (see metaTakeLearned).
+const metaNewChunks = new Map();
 const metaCompiled = new Map();
 
 /**
@@ -43,7 +45,7 @@ const metaCompiled = new Map();
 function metaSeed() {
   if (metaSeedCache) return metaSeedCache;
   const text = typeof SEED_RAW === "object" ? seedRawText(SEED_RAW, META_REASONING_FILE) : "";
-  const seed = { cues: {}, grammatical: {}, affixes: {}, primitives: [], combinators: [], filters: [], probes: {}, responses: {}, impasse: { intents: [], suffixes: [] } };
+  const seed = { cues: {}, grammatical: {}, affixes: {}, primitives: [], combinators: [], filters: [], probes: {}, responses: {}, notes: {}, impasse: { intents: [], suffixes: [] } };
   if (!text) return seed;
   const root = parseLinoTree(text);
   for (const top of root.children) {
@@ -74,9 +76,10 @@ function metaSeed() {
           code: field("code"),
           infer: field("infer"),
           environment: field("environment"),
+          effect: field("effect") === "true",
         });
       } else if (record.name === "combinator") {
-        seed.combinators.push({ id: record.value, doc: field("doc") });
+        seed.combinators.push({ id: record.value, doc: field("doc"), code: field("code") });
       } else if (record.name === "filter") {
         seed.filters.push({ id: record.value, doc: field("doc"), test: field("test") });
       } else if (record.name === "impasse") {
@@ -84,6 +87,8 @@ function metaSeed() {
         seed.impasse.suffixes.push(...fields("suffix"));
       } else if (record.name === "probe") {
         seed.probes[field("type")] = (seed.probes[field("type")] || []).concat(fields("value"));
+      } else if (record.name === "note") {
+        seed.notes[record.value] = field("text");
       } else if (record.name === "response") {
         seed.responses[record.value] = seed.responses[record.value] || {};
         seed.responses[record.value][language] = field("text");
@@ -104,6 +109,21 @@ function metaSeed() {
 function metaResponse(id, language, slots) {
   const variants = metaSeed().responses[id] || {};
   let text = variants[language] || variants.en || "";
+  for (const name of Object.keys(slots || {})) text = text.split(`{${name}}`).join(String(slots[name]));
+  return text;
+}
+
+/**
+ * One trace detail from its seeded template (`note` records): the
+ * derivation's wording is data, like every answer's.
+ * @param {string} id
+ * @param {object} slots
+ * @returns {string}
+ */
+function metaNote(id, slots) {
+  const template = metaSeed().notes[id];
+  if (template === undefined) return id;
+  let text = template;
   for (const name of Object.keys(slots || {})) text = text.split(`{${name}}`).join(String(slots[name]));
   return text;
 }
@@ -179,27 +199,35 @@ function metaCueMarkers(role) {
 
 /**
  * The value literals of a request with their positions: quoted strings,
- * bracketed lists and bare numbers.
+ * bracketed lists, paths and bare numbers.
  * @param {string} prompt
  * @returns {Array<{start: number, end: number, value: *}>}
  */
 function metaValueLiterals(prompt) {
-  const pattern = /(?<![\p{L}\p{N}])'([^'\n]*)'(?![\p{L}\p{N}])|"([^"\n]*)"|“([^”\n]*)”|«([^»\n]*)»|(\[[^\]\n]*\])|(?<![\p{L}\p{N}.])(-?\d+(?:\.\d+)?)(?![\p{L}\p{N}])/gu;
+  const pattern = /(?<![\p{L}\p{N}])'([^'\n]*)'(?![\p{L}\p{N}])|"([^"\n]*)"|“([^”\n]*)”|«([^»\n]*)»|(\[[^\]\n]*\])|(?<![\p{L}\p{N}_./-])((?:\.{1,2}\/|\/)?[\p{L}\p{N}_.-]+(?:\/[\p{L}\p{N}_.-]+)+\/?)(?![\p{L}\p{N}_/])|(?<![\p{L}\p{N}.])(-?\d+(?:\.\d+)?)(?![\p{L}\p{N}])/gu;
   const out = [];
   for (const match of String(prompt).matchAll(pattern)) {
     let value;
-    if (match[5] !== undefined) {
+    let kind = "value";
+    if (match[6] !== undefined) {
+      // A slash-separated name is a path ("js/worker"), unless every segment
+      // is a grammatical word ("and/or").
+      const segments = match[6].split("/").filter(Boolean);
+      if (segments.every((segment) => metaIsGrammatical(segment.toLowerCase()))) continue;
+      kind = "path";
+      value = match[6];
+    } else if (match[5] !== undefined) {
       try {
         value = JSON.parse(match[5].replace(/'/gu, "\""));
       } catch {
         continue;
       }
-    } else if (match[6] !== undefined) {
-      value = Number(match[6]);
+    } else if (match[7] !== undefined) {
+      value = Number(match[7]);
     } else {
       value = match[1] ?? match[2] ?? match[3] ?? match[4];
     }
-    out.push({ start: match.index, end: match.index + match[0].length, value });
+    out.push({ start: match.index, end: match.index + match[0].length, value, kind });
   }
   return out;
 }
@@ -208,7 +236,7 @@ function metaValueLiterals(prompt) {
  * Input/output examples: two adjacent values joined by an example marker.
  * @param {string} prompt
  * @param {Array<object>} literals
- * @returns {Array<{input: *, output: *}>}
+ * @returns {Array<{input: *, output: *, symbolic: boolean}>}
  */
 function metaExamples(prompt, literals) {
   const markers = metaCueMarkers("example");
@@ -216,8 +244,10 @@ function metaExamples(prompt, literals) {
   for (let index = 0; index + 1 < literals.length; index += 1) {
     const between = ` ${prompt.slice(literals[index].end, literals[index + 1].start).toLowerCase()} `;
     if (between.length > 28) continue;
-    if (!markers.some((marker) => between.includes(marker))) continue;
-    examples.push({ input: literals[index].value, output: literals[index + 1].value });
+    const marker = markers.find((item) => between.includes(item));
+    if (!marker) continue;
+    // An arrow is unambiguous; a word marker ("into", "в") may be prose.
+    examples.push({ input: literals[index].value, output: literals[index + 1].value, symbolic: !/\p{L}/u.test(marker) });
     index += 1;
   }
   return examples;
@@ -325,7 +355,7 @@ function metaGround(word, context, depth, stack) {
   const index = metaDocIndex();
   const structuralLimit = Math.max(2, Math.floor(index.operations.length / 4));
   if (metaLemmas(word, context.language).some((lemma) => (index.frequency.get(lemma) || 0) > structuralLimit)) {
-    trace.emit("known", `${indent}${word} is structural vocabulary of the instruction set`);
+    trace.emit("known", metaNote("structural", { indent, word }));
     return { word, status: "structural", origin: "documentation", hypotheses: [], needs: [] };
   }
   const documented = metaDocHypotheses(word, context.language);
@@ -349,7 +379,7 @@ function metaGround(word, context, depth, stack) {
       return content.length > 0 && framing / content.length >= META_BOUNDS.glossSupport;
     });
     if (frame) {
-      trace.emit("grounded", `${indent}${word} names the artifact's frame: "${frame.gloss}"`);
+      trace.emit("grounded", metaNote("frame", { indent, word, gloss: frame.gloss }));
       return { word, status: "frame", origin: "capture", hypotheses: [], needs: [] };
     }
     const scores = new Map();
@@ -389,11 +419,11 @@ function metaGround(word, context, depth, stack) {
     }
     // Lazy grounding: a gloss word is worth a lookup only when no gloss of
     // its parent reached an operation.
-    trace.emit("impasse", `${indent}${word}: no gloss reaches an operation`);
+    trace.emit("impasse", metaNote("no_gloss", { indent, word }));
     return { word, status: "open", origin: "capture", hypotheses: [], needs: deeperNeeds };
   }
   if (!context.knowledge.has(word) && depth === 0) {
-    if (depth === 0) trace.emit("impasse", `${word}: unknown, lookup needed`);
+    if (depth === 0) trace.emit("impasse", metaNote("lookup_needed", { word }));
     return { word, status: "open", origin: "none", hypotheses: [], needs: [word] };
   }
   return { word, status: "open", origin: "none", hypotheses: [], needs: [] };
@@ -421,6 +451,16 @@ function metaGroundText(text, context, depth, stack, needs) {
     }
   }
   return Array.from(scores.values()).sort((a, b) => b.score - a.score || a.operation.localeCompare(b.operation));
+}
+
+/**
+ * The environment one program step needs ("node" for the file system).
+ * @param {object} step
+ * @returns {string}
+ */
+function metaStepEnvironment(step) {
+  if (step.rewrite) return "node";
+  return step.primitive.environment || "";
 }
 
 /**
@@ -507,8 +547,13 @@ function metaReasonCore(prompt, language, knowledge) {
   const lowered = ` ${unquoted.toLowerCase()} `;
   const artifact = metaCueMarkers("artifact").some((marker) => lowered.includes(marker));
   const question = metaCueMarkers("question").find((marker) => lowered.includes(marker));
-  const goal = examples.length ? "synthesize_from_examples" : artifact ? "synthesize_from_meaning" : question ? "explain" : "understand";
-  trace.emit("formalize", `goal ${goal}; ${examples.length} example(s); ${definitions.length} definition(s) in the request`);
+  // Examples embedded in prose that asks for no artifact ("on the 18th at
+  // 17:00") are not a specification: an arrow, an artifact request or bare
+  // examples make the examples the goal.
+  const prose = metaWords(unquoted).some((word) => !metaIsGrammatical(word));
+  const specified = examples.length && (artifact || !prose || examples.some((example) => example.symbolic));
+  const goal = specified ? "synthesize_from_examples" : artifact ? "synthesize_from_meaning" : question ? "explain" : "understand";
+  trace.emit("formalize", metaNote("formalized", { goal, examples: examples.length, definitions: definitions.length }));
   const context = { trace, definitions, knowledge, language, needs: [] };
   const artifactWords = metaCueMarkers("artifact");
   const contentWords = [];
@@ -550,7 +595,7 @@ function metaReasonCore(prompt, language, knowledge) {
     if (defined) {
       result.status = "solved";
       result.explanation = defined;
-      trace.emit("goal_achieved", `${defined.term} is defined by the request itself`);
+      trace.emit("goal_achieved", metaNote("self_defined", { term: defined.term }));
     }
     return result;
   }
@@ -559,7 +604,7 @@ function metaReasonCore(prompt, language, knowledge) {
     if (found) {
       const source = metaRender(found.steps, found.parameter);
       const verification = metaVerify(source, examples);
-      trace.emit(verification.failures.length ? "impasse" : "verified", `rendered source passes ${verification.passed}/${verification.total}`);
+      trace.emit(verification.failures.length ? "impasse" : "verified", metaNote("verified", { passed: verification.passed, total: verification.total }));
       result.program = { steps: found.steps.map(metaStepLabel), parameter: found.parameter, source, alternatives: found.alternatives, evaluated: found.evaluated };
       result.verification = verification;
       result.status = verification.failures.length ? "open" : "solved";
@@ -576,21 +621,21 @@ function metaReasonCore(prompt, language, knowledge) {
       // A word that ties between many operations describes data, not an
       // action; it stays evidence instead of a required operation.
       if (group.length > META_BOUNDS.requiredGroupSize) {
-        trace.emit("evidence", `${grounding.word} ties ${group.length} operations; evidence only`);
+        trace.emit("evidence", metaNote("evidence_only", { word: grounding.word, count: group.length }));
         continue;
       }
       if (!groups.some((existing) => existing.join() === group.join())) groups.push(group);
     }
     if (!groups.length) {
-      trace.emit("impasse", "no word of the request grounds an operation");
+      trace.emit("impasse", metaNote("nothing_grounded", {}));
       return result;
     }
     const open = groundings.filter((grounding) => grounding.status === "open").length;
     if (open > groups.length) {
-      trace.emit("impasse", `${open} open unknown(s) outweigh ${groups.length} grounded operation(s); no program is claimed`);
+      trace.emit("impasse", metaNote("open_outweigh", { open, grounded: groups.length }));
       return result;
     }
-    const stated = literals.find((literal) => typeof literal.value === "number");
+    const stated = literals.find((literal) => literal.kind !== "path" && typeof literal.value === "number");
     // Words that tie across many operations describe data; they neither
     // require nor credit an operation.
     const words = groundings
@@ -607,14 +652,45 @@ function metaReasonCore(prompt, language, knowledge) {
         const type = Array.from(froms)[0];
         if (type && !inputTypes.includes(type)) {
           inputTypes.push(type);
-          trace.emit("evidence", `${grounding.word} names the argument type ${type}`);
+          trace.emit("evidence", metaNote("argument_type", { word: grounding.word, type }));
         }
       }
     }
+    const statedPath = literals.find((literal) => literal.kind === "path");
+    if (statedPath && !inputTypes.includes("path")) {
+      inputTypes.unshift("path");
+      trace.emit("evidence", metaNote("stated_path", { path: statedPath.value }));
+    }
     const clauses = metaClauses(unquoted, groundings, trace);
-    const found = metaSynthesizeFromMeaning(groups, evidence, trace, stated ? stated.value : null, words, inputTypes, clauses);
+    // Words tied across many operations still break ties among programs
+    // equal in everything else, and may name a filter's measure.
+    const tied = groundings
+      .map((grounding) => ({ word: grounding.word, hypotheses: grounding.hypotheses.filter((hypothesis) => hypothesis.score >= grounding.hypotheses[0].score * 0.99) }))
+      .filter((item) => item.hypotheses.length > META_BOUNDS.requiredGroupSize);
+    const weakWords = tied.map((item) => item.hypotheses);
+    // A tied plural noun names a representation ("the lines"): the view
+    // producing it should be taken, ahead of a shorter program.
+    const weakViews = tied
+      .filter((item) => metaLemmas(item.word, language).some((lemma) => lemma !== item.word))
+      .map((item) => item.hypotheses.filter((hypothesis) => metaIsView(hypothesis.operation)))
+      .filter((hypotheses) => hypotheses.length);
+    const quantifier = metaCueMarkers("universal").find((marker) => ` ${unquoted.toLowerCase()} `.includes(marker));
+    if (quantifier) trace.emit("evidence", metaNote("universal", { word: quantifier.trim() }));
+    // The grounded word right after a stated bound is its unit ("longer
+    // than 80 characters"): it names what a filter measures.
+    const byWord = new Map(groundings.map((grounding) => [grounding.word, grounding]));
+    const unit = stated ? metaWords(prompt.slice(stated.end)).map((word) => byWord.get(word)).find((grounding) => grounding && grounding.hypotheses.length) : null;
+    if (unit) trace.emit("evidence", metaNote("measure_unit", { word: unit.word, bound: stated.value }));
+    // The unit credits the measure, not the main program.
+    const mainWords = unit ? words.filter((hypotheses) => !hypotheses.every((hypothesis) => unit.hypotheses.includes(hypothesis))) : words;
+    const found = metaSynthesizeFromMeaning(groups, evidence, trace, stated ? stated.value : null, mainWords, inputTypes, clauses, {
+      weakWords,
+      weakViews,
+      universal: Boolean(quantifier),
+      measureWords: unit ? [unit.hypotheses] : null,
+    });
     if (found) {
-      if (found.parameter !== null) trace.emit("bind", `parameter ${found.parameter} from the request`);
+      if (found.parameter !== null) trace.emit("bind", metaNote("parameter", { value: found.parameter }));
       const source = metaRender(found.steps, found.parameter);
       // Probe with the seeded samples of the argument type; the first one the
       // program changes is shown. A program no sample changes is a no-op.
@@ -623,10 +699,11 @@ function metaReasonCore(prompt, language, knowledge) {
       let probe = null;
       // An operation that needs an environment this runtime lacks (the file
       // system outside Node) is not probed here; the answer says so.
-      const needs = found.steps.map((step) => step.primitive.environment).find(Boolean);
+      const needs = found.steps.map(metaStepEnvironment).find(Boolean);
+      const argument = statedPath ? statedPath.value : null;
       if (needs && !metaEnvironmentAvailable(needs)) {
-        trace.emit("probe", `skipped: the program needs the ${needs} environment`);
-        result.program = { steps: found.steps.map(metaStepLabel), parameter: found.parameter, source, alternatives: 0, evaluated: 0, environment: needs };
+        trace.emit("probe", metaNote("probe_skipped", { environment: needs }));
+        result.program = { steps: found.steps.map(metaStepLabel), parameter: found.parameter, source, alternatives: 0, evaluated: 0, environment: needs, argument };
         result.probe = null;
         result.status = result.unknowns.some((unknown) => unknown.status === "open") ? "partial" : "solved";
         metaLearn(groundings, found.steps, trace);
@@ -647,10 +724,10 @@ function metaReasonCore(prompt, language, knowledge) {
       }
       trace.emit("probe", probe ? `${JSON.stringify(probe.input)} → ${JSON.stringify(probe.output)}` : "no probe");
       if (!probe || JSON.stringify(probe.input) === JSON.stringify(probe.output)) {
-        trace.emit("impasse", "no probe input is changed by the program; it does nothing the request asked for");
+        trace.emit("impasse", metaNote("no_op", {}));
         return result;
       }
-      result.program = { steps: found.steps.map(metaStepLabel), parameter: found.parameter, source, alternatives: 0, evaluated: 0 };
+      result.program = { steps: found.steps.map(metaStepLabel), parameter: found.parameter, source, alternatives: 0, evaluated: 0, argument };
       result.probe = probe;
       result.status = result.unknowns.some((unknown) => unknown.status === "open") ? "partial" : "solved";
       metaLearn(groundings, found.steps, trace);
@@ -674,7 +751,9 @@ function metaLearn(groundings, steps, trace) {
     if (grounding.origin !== "capture") continue;
     const hypothesis = grounding.hypotheses.find((item) => used.has(item.operation));
     if (!hypothesis) continue;
-    metaLearnedChunks.set(grounding.word, { operation: hypothesis.operation, score: hypothesis.score, via: hypothesis.via });
+    const chunk = { operation: hypothesis.operation, score: hypothesis.score, via: hypothesis.via };
+    metaLearnedChunks.set(grounding.word, chunk);
+    metaNewChunks.set(grounding.word, chunk);
     trace.emit("chunk", `learned ${grounding.word} → ${hypothesis.operation}`);
   }
 }
@@ -706,6 +785,10 @@ function metaDerivationLino(result) {
   if (result.program) lines.push(`  program ${JSON.stringify(result.program.steps.join(" ∘ "))}`);
   if (result.verification) lines.push(`  verified ${result.verification.passed}/${result.verification.total}`);
   for (const event of result.trace.events) lines.push(`  event ${event.seq}`, `    kind ${event.kind}`, `    detail ${JSON.stringify(event.detail)}`);
+  for (const [index, sub] of (result.subgoals || []).entries()) {
+    lines.push(`  subgoal ${index + 1}`);
+    for (const line of metaDerivationLino(sub).split("\n").slice(1)) lines.push(`  ${line}`);
+  }
   return lines.join("\n");
 }
 
@@ -721,6 +804,8 @@ function metaDerivationLino(result) {
 async function metaReason(prompt, language, options) {
   const settings = options || {};
   const knowledge = settings.knowledge instanceof Map ? settings.knowledge : new Map();
+  const requests = metaSubRequests(prompt);
+  if (requests.length > 1) return metaReasonComposite(prompt, requests, language, { ...settings, knowledge });
   let result = metaReasonCore(prompt, language, knowledge);
   const rounds = [];
   for (let round = 0; round < META_BOUNDS.lookupRounds; round += 1) {
@@ -760,6 +845,7 @@ async function metaReason(prompt, language, options) {
  * @returns {{intent: string, content: string, confidence: number, evidence: Array<string>}|null}
  */
 function metaAnswer(result, allowOpen) {
+  if (result.subgoals) return metaCompositeAnswer(result, allowOpen);
   const language = result.language === "ru" ? "ru" : "en";
   const reasoning = [metaResponse("reasoning_heading", language, {})];
   for (const event of result.trace.events) {
@@ -791,7 +877,10 @@ function metaAnswer(result, allowOpen) {
   const head = result.verification
     ? metaResponse("solved_by_examples", language, { passed: result.verification.passed, total: result.verification.total })
     : metaResponse("solved_by_meaning", language, { probe: result.probe ? `${JSON.stringify(result.probe.input)} → ${JSON.stringify(result.probe.output)}` : "—" });
-  const parts = [head, "", "```javascript", result.program.source, "```", "", reasoning.join("\n")];
+  const parts = [head, "", "```javascript", result.program.source, "```"];
+  if (result.program.argument) parts.push("", metaResponse("usage", language, { call: `solution(${JSON.stringify(result.program.argument)})` }));
+  if (result.program.environment) parts.push("", metaResponse("environment_note", language, { environment: result.program.environment }));
+  parts.push("", reasoning.join("\n"));
   if (open.length && !result.verification) {
     parts.push("", metaResponse("open_unknowns", language, { terms: open.join(", "), question: metaResponse("decide_question", language, {}) }));
   }

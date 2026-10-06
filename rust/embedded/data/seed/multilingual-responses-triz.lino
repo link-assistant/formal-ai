@@ -30,3 +30,7 @@ multilingual_responses
     intent triz_resolution_map
     language es
     text "Una contradicción es un enlace con valor, no un muro. Salidas:\n{families}\nPrecedentes del corpus de referencia:\n{precedents}\n{link_note}"
+  response response_triz_link_note_en
+    intent triz_link_note
+    language en
+    text "A contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows."

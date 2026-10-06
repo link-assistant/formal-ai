@@ -343,7 +343,7 @@ meanings
       surface
         text swift
   program_language_r
-    grounded-in Q734168
+    grounded-in Q206904
     defined-by program_language
     role program_language_alias
     precondition "a coding request contains this language surface"

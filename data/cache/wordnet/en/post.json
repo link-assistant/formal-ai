@@ -1,0 +1,247 @@
+{
+  "lemma": "post",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-11263897-n",
+      "partOfSpeech": "n",
+      "definition": "United States aviator who in 1933 made the first solo flight around the world (1899-1935)",
+      "synonyms": [
+        "Wiley Post"
+      ]
+    },
+    {
+      "id": "oewn-08641960-n",
+      "partOfSpeech": "n",
+      "definition": "the position where someone (as a guard or sentry) stands or is assigned to stand",
+      "examples": [
+        "a soldier manned the entrance post",
+        "a sentry station"
+      ],
+      "synonyms": [
+        "station"
+      ]
+    },
+    {
+      "id": "oewn-11263710-n",
+      "partOfSpeech": "n",
+      "definition": "United States female author who wrote a book and a syndicated newspaper column on etiquette (1872-1960)",
+      "synonyms": [
+        "Emily Post",
+        "Emily Price Post"
+      ]
+    },
+    {
+      "id": "oewn-03768938-n",
+      "partOfSpeech": "n",
+      "definition": "military installation at which a body of troops is stationed",
+      "examples": [
+        "this military post provides an important source of income for the town nearby",
+        "there is an officer's club on the post"
+      ],
+      "synonyms": [
+        "military post"
+      ]
+    },
+    {
+      "id": "oewn-11263552-n",
+      "partOfSpeech": "n",
+      "definition": "United States manufacturer of breakfast cereals and Postum (1854-1914)",
+      "synonyms": [
+        "C. W. Post",
+        "Charles William Post"
+      ]
+    },
+    {
+      "id": "oewn-00587299-n",
+      "partOfSpeech": "n",
+      "definition": "a job in an organization",
+      "examples": [
+        "he occupied a post in the treasury"
+      ],
+      "synonyms": [
+        "position",
+        "berth",
+        "office",
+        "place",
+        "situation"
+      ]
+    },
+    {
+      "id": "oewn-03994528-n",
+      "partOfSpeech": "n",
+      "definition": "an upright consisting of a piece of timber or metal fixed firmly in an upright position",
+      "examples": [
+        "he set a row of posts in the ground and strung barbwire between them"
+      ]
+    },
+    {
+      "id": "oewn-08480074-n",
+      "partOfSpeech": "n",
+      "definition": "any particular collection of letters or packages that is delivered",
+      "examples": [
+        "your mail is on the table",
+        "is there any post for me?",
+        "she was opening her post"
+      ],
+      "synonyms": [
+        "mail"
+      ]
+    },
+    {
+      "id": "oewn-07272483-n",
+      "partOfSpeech": "n",
+      "definition": "a pole or stake set up to mark something (as the start or end of a race track)",
+      "examples": [
+        "a pair of posts marked the goal",
+        "the corner of the lot was indicated by a stake"
+      ],
+      "synonyms": [
+        "stake"
+      ]
+    },
+    {
+      "id": "oewn-90000031-n",
+      "partOfSpeech": "n",
+      "definition": "A message on a social media website"
+    },
+    {
+      "id": "oewn-06275051-n",
+      "partOfSpeech": "n",
+      "definition": "the system whereby messages are transmitted via the post office",
+      "examples": [
+        "the mail handles billions of items every day",
+        "he works for the United States mail service",
+        "in England they call mail ‘the post’"
+      ],
+      "synonyms": [
+        "mail",
+        "mail service",
+        "postal service"
+      ]
+    },
+    {
+      "id": "oewn-00319012-n",
+      "partOfSpeech": "n",
+      "definition": "the delivery and collection of letters and packages",
+      "examples": [
+        "it came by the first post",
+        "if you hurry you'll catch the post"
+      ]
+    },
+    {
+      "id": "oewn-01594542-v",
+      "partOfSpeech": "v",
+      "definition": "affix in a public place or for public notice",
+      "examples": [
+        "post a warning"
+      ]
+    },
+    {
+      "id": "oewn-00993715-v",
+      "partOfSpeech": "v",
+      "definition": "publicize with, or as if with, a poster",
+      "examples": [
+        "I'll post the news on the bulletin board"
+      ]
+    },
+    {
+      "id": "oewn-02390776-v",
+      "partOfSpeech": "v",
+      "definition": "assign to a post; put into a post",
+      "examples": [
+        "The newspaper posted him in Timbuktu"
+      ]
+    },
+    {
+      "id": "oewn-01091334-v",
+      "partOfSpeech": "v",
+      "definition": "assign to a station",
+      "synonyms": [
+        "station",
+        "send",
+        "place"
+      ]
+    },
+    {
+      "id": "oewn-01001760-v",
+      "partOfSpeech": "v",
+      "definition": "display, as of records in sports games"
+    },
+    {
+      "id": "oewn-02478754-v",
+      "partOfSpeech": "v",
+      "definition": "enter on a public list"
+    },
+    {
+      "id": "oewn-02237977-v",
+      "partOfSpeech": "v",
+      "definition": "transfer (entries) from one account book to another",
+      "synonyms": [
+        "carry"
+      ]
+    },
+    {
+      "id": "oewn-01963964-v",
+      "partOfSpeech": "v",
+      "definition": "ride Western style and bob up and down in the saddle in rhythm with a horse's trotting gait"
+    },
+    {
+      "id": "oewn-01594397-v",
+      "partOfSpeech": "v",
+      "definition": "mark with a stake",
+      "examples": [
+        "stake out the path"
+      ],
+      "synonyms": [
+        "stake"
+      ]
+    },
+    {
+      "id": "oewn-01573231-v",
+      "partOfSpeech": "v",
+      "definition": "place so as to be noticed",
+      "examples": [
+        "post a sign",
+        "post a warning at the dump"
+      ],
+      "synonyms": [
+        "put up"
+      ]
+    },
+    {
+      "id": "oewn-01033289-v",
+      "partOfSpeech": "v",
+      "definition": "cause to be directed or transmitted to another place",
+      "examples": [
+        "send me your latest results",
+        "I'll mail you the paper when it's written"
+      ],
+      "synonyms": [
+        "mail",
+        "send"
+      ]
+    },
+    {
+      "id": "oewn-01033142-v",
+      "partOfSpeech": "v",
+      "definition": "mark or expose as infamous",
+      "examples": [
+        "She was branded a loose woman"
+      ],
+      "synonyms": [
+        "brand"
+      ]
+    },
+    {
+      "id": "oewn-90000041-v",
+      "partOfSpeech": "v",
+      "definition": "To post a message on a social media website"
+    }
+  ]
+}

@@ -25,7 +25,9 @@ use super::text_rewrite::free_text_payload;
 const ROLE_TEXT_SUMMARIZATION_ACTION: &str = "text_summarization_action";
 
 /// Recognize a summarization request that carries its own text and answer
-/// with a weight-ranked selection of its statements. Returns `None` when
+/// with a weight-ranked selection of its statements.
+///
+/// Returns `None` when
 /// the prompt names no text to summarize — the seeded-topic and
 /// conversation-summary handlers keep those prompts.
 pub fn handle_summarization_request(

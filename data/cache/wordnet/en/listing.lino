@@ -1,0 +1,17 @@
+language en
+lemma listing
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a database containing an ordered array of items (names or topics)"
+    id oewn-06492991-n
+    partOfSpeech n
+    synonyms (list)
+  entry
+    definition "the act of making a list of items"
+    id oewn-01013108-n
+    partOfSpeech n
+    synonyms (itemization itemisation)
+source "oewn:2024"

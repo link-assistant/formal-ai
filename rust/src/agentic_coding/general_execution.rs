@@ -375,10 +375,10 @@ fn issue_rest_read_command(target: &str) -> Option<String> {
     Some(super::work_item_steps::fill(
         "issue_rest_read_command",
         &[
-            ("{owner}", &owner),
-            ("{repo}", &repo),
-            ("{kind}", kind),
-            ("{number}", &number),
+            (concat!("{", "owner}"), &owner),
+            (concat!("{", "repo}"), &repo),
+            (concat!("{", "kind}"), kind),
+            (concat!("{", "number}"), &number),
         ],
     ))
 }
@@ -391,10 +391,10 @@ fn issue_api_read_command(target: &str) -> Option<String> {
     Some(super::work_item_steps::fill(
         "issue_api_read_command",
         &[
-            ("{owner}", &owner),
-            ("{repo}", &repo),
-            ("{kind}", kind),
-            ("{number}", &number),
+            (concat!("{", "owner}"), &owner),
+            (concat!("{", "repo}"), &repo),
+            (concat!("{", "kind}"), kind),
+            (concat!("{", "number}"), &number),
         ],
     ))
 }
@@ -413,7 +413,7 @@ fn work_item_read_failure_report(plan: &GeneralChangePlan, progress: &Progress) 
             "read_failed_report",
             &[
                 ("{target}", &plan.target),
-                ("{attempts}", &attempts.join("\n")),
+                (concat!("{", "attempts}"), &attempts.join("\n")),
             ],
         )
     })

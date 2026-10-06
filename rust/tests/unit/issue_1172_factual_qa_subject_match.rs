@@ -145,6 +145,7 @@ fn keyword_inside_a_longer_word_does_not_route_to_a_fact() {
 fn engine_answers_seeded_capitals_from_their_own_facts() {
     let japan = FormalAiEngine.answer("What is the capital of Japan?");
     assert_eq!(japan.intent, "fact_lookup");
+    assert_eq!(japan.answer, "The capital of Japan is Tokyo.");
     assert!(
         japan.answer.contains("Tokyo"),
         "Japan prompt should answer with the seeded summary, got: {}",
@@ -153,6 +154,10 @@ fn engine_answers_seeded_capitals_from_their_own_facts() {
 
     let usa = FormalAiEngine.answer("What is the capital of the United States?");
     assert_eq!(usa.intent, "fact_lookup");
+    assert_eq!(
+        usa.answer,
+        "The capital of the United States is Washington, D.C."
+    );
     assert!(
         usa.answer.contains("Washington"),
         "United States prompt should answer with the seeded summary, got: {}",
@@ -169,6 +174,19 @@ fn engine_no_longer_answers_australia_with_washington() {
     assert_ne!(
         response.intent, "fact_lookup",
         "an unseeded subject must not route to a seeded fact (issue #1172)"
+    );
+    // Offline (no `FORMAL_AI_LIVE_FETCH`), the concept lookup walks every
+    // bound source, misses, and says so honestly instead of guessing. The
+    // consulted list repeats once per unresolved `concept_lookup:miss` event.
+    assert_eq!(response.intent, "concept_lookup_unresolved");
+    assert_eq!(
+        response.answer,
+        "No consulted source defined \"capital of Australia\". Consulted: github \
+         unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet \
+         offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss; \
+         github unbound_template wikidata unbound_template wiktionary offline_cache_miss \
+         wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange \
+         offline_cache_miss."
     );
     assert!(
         !response.answer.contains("Washington"),

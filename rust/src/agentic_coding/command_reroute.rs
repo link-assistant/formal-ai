@@ -65,8 +65,9 @@ pub fn plan_symbolic_command_reroute(
             && let Some(output) = observed.latest_successful_run_output_for(comments)
             && super::restart_feedback::feedback_needs_changes(output)
         {
-            return Some(AgenticPlan::Final(format!(
-                "Pull request feedback requires review before readiness:\n{output}"
+            return Some(AgenticPlan::Final(super::work_item_steps::fill(
+                "pr_feedback_review_report",
+                &[(concat!("{", "output}"), output)],
             )));
         }
     }
@@ -85,8 +86,7 @@ pub fn plan_symbolic_command_reroute(
         let step = if failure.from_run {
             expected_commands
                 .get(progress.commands_done)
-                .map(String::as_str)
-                .unwrap_or(write_tool)
+                .map_or(write_tool, String::as_str)
         } else {
             write_tool
         };
@@ -151,20 +151,29 @@ fn pr_completion_commands(recipe: &ExecutionRecipe, target: &CommitTarget) -> Ve
         "pr_body_template",
         &[
             ("{path}", &recipe.path),
-            ("{commands}", &commands),
+            (concat!("{", "commands}"), &commands),
             ("{reference}", &target.reference),
         ],
     );
     vec![
-        super::work_item_steps::fill("pr_comments_command", &[("{target}", &target_url)]),
+        super::work_item_steps::fill(
+            "pr_comments_command",
+            &[(concat!("{", "target}"), &target_url)],
+        ),
         super::work_item_steps::fill(
             "pr_edit_command",
             &[
-                ("{target}", &target_url),
-                ("{body}", &super::git_commit::shell_quote(&body)),
+                (concat!("{", "target}"), &target_url),
+                (
+                    concat!("{", "body}"),
+                    &super::git_commit::shell_quote(&body),
+                ),
             ],
         ),
-        super::work_item_steps::fill("pr_ready_command", &[("{target}", &target_url)]),
+        super::work_item_steps::fill(
+            "pr_ready_command",
+            &[(concat!("{", "target}"), &target_url)],
+        ),
     ]
 }
 

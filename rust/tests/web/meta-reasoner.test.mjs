@@ -171,8 +171,32 @@ test("a derived file program runs in node and agrees with a direct count", async
     const source = /```javascript\n([\s\S]*?)```/u.exec(answer.content)[1];
     // eslint-disable-next-line no-new-func -- running the derived answer is the check.
     const solution = new Function("require", `${source}\nreturn solution;`)(createRequire(import.meta.url));
-    assert.deepEqual(solution(folder), [path.join(folder, "long.txt")]);
+    // It prints the kept files, one per line, and returns what it printed.
+    assert.equal(solution(folder), path.join(folder, "long.txt"));
   } finally {
     rmSync(folder, { recursive: true, force: true });
   }
+});
+
+test("a message holding several requests is decomposed into sub-goals, each derived", async () => {
+  const answer = await solve("Write a function that sorts the lines of a text. Write a function that reverses each word.");
+  assert.match(answer.intent, /^meta_reasoned_program/u, answer.content);
+  assert.match(answer.content, /2 separate requests/u);
+  assert.match(String(answer.derivation), /\n {2}goal decompose/u);
+  const subgoals = [...String(answer.derivation).matchAll(/\n {2}subgoal \d+\n {4}goal [\s\S]*?\n {4}program "([^"]*)"/gu)];
+  assert.deepEqual(subgoals.map((match) => match[1]), ["split_lines ∘ sort_list", "split_words ∘ each(reverse_text) ∘ join_words"], answer.derivation);
+});
+
+test("a learned meaning leaves as a memory append and comes back through memory", async () => {
+  await ready;
+  const statement = 'meta_learned_chunk\n  word "glorp"\n  operation reverse_text\n  score 0.9\n  via "memory test"';
+  const loaded = await evaluate(worker, `metaImportLearned(${JSON.stringify([statement])})`);
+  assert.equal(loaded, 1);
+  const recalled = await reason("write a function that glorps each word");
+  assert.ok(recalled.events.some((event) => event.startsWith("recall: glorp")), recalled.events.join("\n"));
+  assert.deepEqual(recalled.lookups.filter((round) => round.includes("glorp")), []);
+  await evaluate(worker, "metaNewChunks.set('zib', { operation: 'sort_list', score: 0.8, via: 'test' })");
+  const answer = await worker.solve("'b a' -> 'a b'", [], {}, {}, [], {});
+  assert.equal(answer.memoryOperation.kind, "meta_learned_chunk", JSON.stringify(answer.memoryOperation));
+  assert.match(answer.memoryOperation.statement, /word "zib"\n {2}operation sort_list/u);
 });

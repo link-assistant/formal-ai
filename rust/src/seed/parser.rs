@@ -25,6 +25,7 @@ pub struct LinoNode {
 }
 
 impl LinoNode {
+    #[must_use]
     pub fn find_child_value(&self, name: &str) -> &str {
         for child in &self.children {
             if child.name == name {
@@ -35,6 +36,7 @@ impl LinoNode {
     }
 }
 
+#[must_use]
 pub fn parse_lino(text: &str) -> LinoNode {
     let mut root = LinoNode::default();
     let mut stack: Vec<(Option<usize>, Vec<usize>)> = vec![(None, Vec::new())];

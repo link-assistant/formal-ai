@@ -38,7 +38,7 @@ pub struct WordTranslation {
 ///
 /// Partial by design and honest about it: each content word resolves through
 /// [`TranslationPipeline::translate`] on its own, function words named by
-/// [`ROLE_TRANSLATION_STOP_WORD`] are dropped, numerals pass through
+/// `ROLE_TRANSLATION_STOP_WORD` are dropped, numerals pass through
 /// unchanged, and words that resolve to no target surface keep their source
 /// form and are reported by [`SentenceTranslation::unknown_words`]. The
 /// rendering joins words with the separator the target language's statement
@@ -93,6 +93,7 @@ impl SentenceTranslation {
 
     /// The content words that resolved to no target surface, in source
     /// order. Callers report them instead of hiding the gap.
+    #[must_use]
     pub fn unknown_words(&self) -> Vec<&str> {
         self.words
             .iter()
@@ -102,12 +103,12 @@ impl SentenceTranslation {
     }
 }
 
-impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
+impl<T: HttpClient + ?Sized> TranslationPipeline<'_, T> {
     /// Translate one sentence word by word (issue #1174).
     ///
     /// Segmentation belongs to the caller (`crate::formalization::segment`);
     /// this method walks the sentence's whitespace tokens, drops the function
-    /// words [`ROLE_TRANSLATION_STOP_WORD`] names in the source language,
+    /// words `ROLE_TRANSLATION_STOP_WORD` names in the source language,
     /// passes numerals through unchanged, and translates every remaining
     /// content word through [`Self::translate`] on its own. A word that
     /// resolves to no target surface stays in the source language and is
@@ -121,17 +122,11 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
     ) -> SentenceTranslation {
         let stop_words = crate::seed::lexicon()
             .words_for_role_in_languages(ROLE_TRANSLATION_STOP_WORD, &[source_lang]);
-        let leads_capitalized = source
-            .chars()
-            .next()
-            .is_some_and(|first| first.is_uppercase());
+        let leads_capitalized = source.chars().next().is_some_and(char::is_uppercase);
         let mut words = Vec::new();
         for core in sentence_tokens(source) {
             let lower = core.to_lowercase();
-            let capitalized = core
-                .chars()
-                .next()
-                .is_some_and(|first| first.is_uppercase());
+            let capitalized = core.chars().next().is_some_and(char::is_uppercase);
             if stop_words.iter().any(|word| word == &lower) {
                 words.push(WordTranslation {
                     source: core,

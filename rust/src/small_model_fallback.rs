@@ -48,7 +48,10 @@ use crate::seed::parser::parse_lino;
 const SEED_PATH: &str = "data/seed/small-model-catalog.lino";
 
 /// User-controlled options; the experimental flag defaults to OFF.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+///
+/// The default state is off with nothing fitting: it performs no work and
+/// reports no models, even if a caller forgets to check `enabled`.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct SmallModelOptions {
     /// The explicit user opt-in from settings. Default `false`.
     pub enabled: bool,
@@ -59,24 +62,12 @@ pub struct SmallModelOptions {
     pub min_rating: u8,
 }
 
-impl Default for SmallModelOptions {
-    fn default() -> Self {
-        // Off, and nothing fits: the default state performs no work and
-        // reports no models, even if a caller forgets to check
-        // `enabled`.
-        Self {
-            enabled: false,
-            available_ram_mb: 0,
-            min_rating: 0,
-        }
-    }
-}
-
 impl SmallModelOptions {
     /// The options a user's explicit enable produces for a machine with
     /// `available_ram_mb` of RAM. Enabling alone changes nothing until
     /// the RAM figure is stated — there is no "run anything" mode.
-    pub fn enabled_for(available_ram_mb: u32) -> Self {
+    #[must_use]
+    pub const fn enabled_for(available_ram_mb: u32) -> Self {
         Self {
             enabled: true,
             available_ram_mb,
@@ -112,6 +103,7 @@ fn seed_text(path: &str) -> Option<&'static str> {
 }
 
 /// The whole catalog, in seed order.
+#[must_use]
 pub fn catalog() -> Vec<CatalogModel> {
     let mut out = Vec::new();
     let Some(text) = seed_text(SEED_PATH) else {
@@ -127,7 +119,7 @@ pub fn catalog() -> Vec<CatalogModel> {
     {
         return out;
     }
-    for record in document.children.iter() {
+    for record in &document.children {
         if record.name != "small_model" {
             continue;
         }
@@ -170,11 +162,14 @@ pub fn catalog() -> Vec<CatalogModel> {
     out
 }
 
-/// The models worth showing: only hardware-fitting rows at or above the
+/// The models worth showing.
+///
+/// Only hardware-fitting rows at or above the
 /// rating floor, sorted by public rating (best first; smaller params
 /// break ties — among equal standings, the smaller download wins, which
 /// is the on-demand-friendly order). Owned clones of the catalog rows:
 /// the catalog is tiny and callers keep a plain value.
+#[must_use]
 pub fn eligible(options: &SmallModelOptions) -> Vec<CatalogModel> {
     if !options.enabled {
         return Vec::new();
@@ -196,6 +191,7 @@ pub fn eligible(options: &SmallModelOptions) -> Vec<CatalogModel> {
 
 /// The recommended model: the best-rated hardware-fitting row. `None`
 /// when the feature is off or nothing fits.
+#[must_use]
 pub fn recommend(options: &SmallModelOptions) -> Option<CatalogModel> {
     eligible(options).into_iter().next()
 }
@@ -212,6 +208,7 @@ pub struct DownloadPlan {
 /// The download plan for a model, for the runtime that performs it at
 /// the user's explicit request. This function builds a record; it does
 /// no I/O.
+#[must_use]
 pub fn download_manifest(model: &CatalogModel) -> DownloadPlan {
     DownloadPlan {
         model_id: model.model_id.clone(),
@@ -243,7 +240,8 @@ pub struct ModelProposal {
 
 impl ModelProposal {
     /// The steering-wheel rule: proposals never commit themselves.
-    pub fn is_advisory(&self) -> bool {
+    #[must_use]
+    pub const fn is_advisory(&self) -> bool {
         self.needs_review
     }
 }
@@ -270,11 +268,15 @@ fn lexical_affinity(target: &str, candidate: &FormalizationCandidate) -> f32 {
             label.contains(*token) || candidate.description.to_lowercase().contains(*token)
         })
         .count();
-    overlap as f32 / (target_tokens.len().max(1) as f32) * 0.5
+    let overlap = f32::from(u16::try_from(overlap).unwrap_or(u16::MAX));
+    let total = f32::from(u16::try_from(target_tokens.len().max(1)).unwrap_or(u16::MAX));
+    overlap / total * 0.5
 }
 
 /// Ask the (enabled, fitting) model to pick the best match among the
-/// offered options. Returns `None` unless the feature is enabled, a
+/// offered options.
+///
+/// Returns `None` unless the feature is enabled, a
 /// model fits the hardware, and some candidate scores above zero — the
 /// fallback stays silent rather than guessing when it cannot help.
 ///
@@ -303,7 +305,7 @@ pub fn propose_best_match(
     log.append("small_model:proposal", model.model_id.clone());
     log.append("small_model:candidate", candidates[best.0].qid.clone());
     Some(ModelProposal {
-        model_id: model.model_id.clone(),
+        model_id: model.model_id,
         candidate_index: best.0,
         confidence: best.1,
         needs_review: true,
@@ -313,7 +315,8 @@ pub fn propose_best_match(
 /// The formal-first gate: a proposal becomes a match only when the
 /// formal rule layer independently agrees (`rule_agrees`), whatever the
 /// model said. The model never confirms itself.
-pub fn confirm_proposal(proposal: &ModelProposal, rule_agrees: bool) -> bool {
+#[must_use]
+pub const fn confirm_proposal(proposal: &ModelProposal, rule_agrees: bool) -> bool {
     proposal.needs_review && rule_agrees
 }
 

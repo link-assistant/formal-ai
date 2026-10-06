@@ -1,0 +1,59 @@
+language en
+lemma substitute
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a person or thing that takes or can take the place of another"
+    id oewn-05704390-n
+    partOfSpeech n
+    synonyms (replacement)
+  entry
+    definition "an athlete who plays only when a starter on the team is replaced"
+    id oewn-10690481-n
+    partOfSpeech n
+    synonyms (reserve second-stringer)
+  entry
+    definition "someone who takes the place of another (as when things get dangerous or difficult)"
+    examples ("the star had a stand-in for dangerous scenes" "we need extra employees for summer fill-ins")
+    id oewn-10667676-n
+    partOfSpeech n
+    synonyms (stand-in relief reliever backup fill-in)
+  entry
+    definition "capable of substituting in any of several positions on a team"
+    examples ("a utility infielder")
+    id oewn-01861341-s
+    partOfSpeech s
+    synonyms (utility)
+  entry
+    definition "serving or used in place of another"
+    examples ("an alternative plan")
+    id oewn-01859862-s
+    partOfSpeech s
+    synonyms (alternate alternative)
+  entry
+    definition "artificial and inferior"
+    examples ("ersatz coffee" "substitute coffee")
+    id oewn-01577367-s
+    partOfSpeech s
+    synonyms (ersatz)
+  entry
+    definition "put in the place of another; switch seemingly equivalent items"
+    examples ("the con artist replaced the original with a fake Rembrandt" "substitute regular milk for fat-free milk" "synonyms can be interchanged without changing the context's meaning")
+    id oewn-02262575-v
+    partOfSpeech v
+    synonyms (replace interchange exchange)
+  entry
+    definition "be a substitute"
+    examples ("The young teacher had to substitute for the sick colleague" "The skim milk substitutes for cream — we are on a strict diet")
+    id oewn-02263424-v
+    partOfSpeech v
+    synonyms (sub "stand in" "fill in")
+  entry
+    definition "act as a substitute"
+    examples ("She stood in for the soprano who suffered from a cold")
+    id oewn-02399804-v
+    partOfSpeech v
+    synonyms (deputize deputise "step in")
+source "oewn:2024"

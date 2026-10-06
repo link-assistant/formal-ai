@@ -1,0 +1,17 @@
+language en
+lemma occurrence
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an event that happens"
+    id oewn-07298313-n
+    partOfSpeech n
+    synonyms (happening occurrent "natural event")
+  entry
+    definition "an instance of something occurring"
+    examples ("a disease of frequent occurrence" "the occurrence (or presence) of life on other planets")
+    id oewn-13982355-n
+    partOfSpeech n
+source "oewn:2024"

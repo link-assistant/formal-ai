@@ -67,7 +67,7 @@ function metaMeasures(element) {
     const next = [];
     for (const partial of frontier) {
       for (const primitive of seed.primitives) {
-        if (primitive.infer) continue;
+        if (primitive.infer || primitive.effect) continue;
         const type = metaApply(primitive, partial.type);
         if (!type) continue;
         const grown = {
@@ -113,6 +113,14 @@ function metaPrograms(fromType, length) {
           if (mapped && !mapped.startsWith("list_")) next.push({ steps: program.steps.concat({ primitive, mapped: true }), type: `list_${mapped}` });
         }
       }
+      // A file is edited in place by any text transformation: read it,
+      // transform the text, write it back ("rewrite_file").
+      if (program.type === "path" || program.type === "list_path") {
+        for (const primitive of primitives) {
+          if (primitive.from !== "text" || primitive.to !== "text" || primitive.infer) continue;
+          next.push({ steps: program.steps.concat({ primitive, mapped: program.type === "list_path", rewrite: true }), type: program.type });
+        }
+      }
       if (program.type.startsWith("list_")) {
         for (const measure of metaMeasures(program.type.slice(5))) {
           for (const filter of metaSeed().filters) next.push({ steps: program.steps.concat({ primitive: measure, mapped: false, filter }), type: program.type });
@@ -131,6 +139,7 @@ function metaPrograms(fromType, length) {
  * @returns {Array<string>}
  */
 function metaStepOperations(step) {
+  if (step.rewrite) return step.mapped ? [step.primitive.id, "rewrite_file", "map_each"] : [step.primitive.id, "rewrite_file"];
   if (step.filter) return step.primitive.id === "value" ? [step.filter.id] : [step.primitive.id, step.filter.id];
   return step.mapped ? [step.primitive.id, "map_each"] : [step.primitive.id];
 }
@@ -155,7 +164,10 @@ function metaRun(steps, input, parameter) {
   let value = input;
   for (const step of steps) {
     const fn = metaCompile(step.primitive, step.primitive.infer ? parameter : null);
-    if (step.filter) {
+    if (step.rewrite) {
+      const rewrite = metaCompile({ code: metaRewriteCode(step.primitive.code) }, null);
+      value = step.mapped ? value.map((item) => rewrite(item)) : rewrite(value);
+    } else if (step.filter) {
       const test = metaCompile({ code: step.filter.test }, null);
       value = value.filter((item) => test(fn(item), parameter));
     } else {
@@ -232,6 +244,11 @@ function metaRender(steps, parameter) {
   const lines = ["function solution(input) {", "  let value = input;"];
   for (const step of steps) {
     const code = step.primitive.code.split("{k}").join(String(parameter));
+    if (step.rewrite) {
+      const rewrite = metaRewriteCode(code);
+      lines.push(step.mapped ? `  value = value.map(${rewrite}); // each: rewrite_file by ${step.primitive.id}` : `  value = (${rewrite})(value); // rewrite_file by ${step.primitive.id}`);
+      continue;
+    }
     if (step.filter) {
       const test = step.filter.test.replace(/^\(measure, threshold\) => /u, "");
       lines.push(`  value = value.filter((item) => { const measure = (${code})(item); const threshold = ${parameter}; return ${test}; }); // ${step.filter.id} by ${step.primitive.id}`);
@@ -308,7 +325,7 @@ function metaCoverageScore(steps, words) {
 function metaSynthesizeFromExamples(examples, evidence, trace) {
   const fromType = metaTypeOf(examples[0].input);
   const toType = metaTypeOf(examples[0].output);
-  trace.emit("goal", `program ${fromType} → ${toType} with difference 0 over ${examples.length} example(s)`);
+  trace.emit("goal", metaNote("examples_goal", { from: fromType, to: toType, count: examples.length }));
   let evaluated = 0;
   let rejected = 0;
   for (let length = 1; length <= META_BOUNDS.programLength; length += 1) {
@@ -354,11 +371,11 @@ function metaSynthesizeFromExamples(examples, evidence, trace) {
       passing.sort((a, b) => b.evidence - a.evidence);
       const best = passing[0];
       const ties = passing.filter((item) => item.evidence === best.evidence);
-      if (ties.length > 1) trace.emit("tie", `${ties.length} equally evidenced programs; kept ${ties.slice(0, 3).map((item) => item.steps.map(metaStepLabel).join(" ∘ ")).join(" | ")}`);
+      if (ties.length > 1) trace.emit("tie", metaNote("tie", { count: ties.length, kept: ties.slice(0, 3).map((item) => item.steps.map(metaStepLabel).join(" ∘ ")).join(" | ") }));
       return { steps: best.steps, parameter: best.parameter, alternatives: ties.length - 1, evaluated };
     }
   }
-  trace.emit("impasse", `no program up to length ${META_BOUNDS.programLength} reaches difference 0 (${evaluated} evaluated)`);
+  trace.emit("impasse", metaNote("no_program", { length: META_BOUNDS.programLength, evaluated }));
   return null;
 }
 
@@ -368,6 +385,7 @@ function metaSynthesizeFromExamples(examples, evidence, trace) {
  * @returns {string}
  */
 function metaStepLabel(step) {
+  if (step.rewrite) return step.mapped ? `each(rewrite(${step.primitive.id}))` : `rewrite(${step.primitive.id})`;
   if (step.filter) return `${step.filter.id}(${step.primitive.id})`;
   return step.mapped ? `each(${step.primitive.id})` : step.primitive.id;
 }
@@ -382,9 +400,14 @@ function metaStepLabel(step) {
  * @param {Array<Array<object>>} words every grounded word's hypotheses
  * @param {Array<string>} inputTypes argument types the request's data words name
  * @param {Array<object>} clauses the request's clauses (see metaClauses)
+ * @param {{weakWords?: Array<Array<object>>, weakViews?: Array<Array<object>>, universal?: boolean, measureWords?: Array<Array<object>>|null}} [hints]
+ *   words tied across many operations, the views tied plural nouns name,
+ *   whether the request quantifies
+ *   universally ("every file"), and the bound's unit word naming a measure
  * @returns {object|null}
  */
-function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, inputTypes, clauses) {
+function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, inputTypes, clauses, hints) {
+  const { weakWords = [], weakViews = [], universal = false, measureWords = null } = hints || {};
   trace.emit("goal", `program serving ${groups.map((group) => `{${group.join("|")}}`).join(" ")}`);
   const types = ["text", "list_number", "list_text", "number", "path"];
   const operations = metaSeed().primitives;
@@ -393,11 +416,17 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, in
   const lastHead = clauses.length ? clauses[clauses.length - 1].head : groups[0];
   const headTypes = lastHead.map((id) => (operations.find((primitive) => primitive.id === id) || {}).to).filter(Boolean);
   let best = null;
+  const allWords = words.concat(weakWords);
+  const strongest = new Map();
+  for (const hypotheses of allWords) {
+    for (const hypothesis of hypotheses) strongest.set(hypothesis.operation, Math.max(strongest.get(hypothesis.operation) || 0, hypothesis.score));
+  }
   for (const fromType of types) {
     for (const program of metaPrograms(fromType, META_BOUNDS.programLength - 1)) {
       const parametric = program.steps.filter(metaStepIsParametric).length;
       if (parametric > (parameter === null ? 0 : 1)) continue;
-      const used = new Set(program.steps.flatMap(metaStepOperations));
+      // A measure's parts serve the words they ground ("80 characters").
+      const used = new Set(program.steps.flatMap((step) => metaStepOperations(step).concat(step.filter ? step.primitive.parts || [] : [])));
       if (!lastHead.some((operation) => used.has(operation))) continue;
       const uncovered = groups.filter((group) => !group.some((operation) => used.has(operation))).length;
       // A filter's measure is internal to the filter: it is not charged as
@@ -408,17 +437,25 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, in
       const main = new Set(program.steps.flatMap((step) => (step.filter ? [step.filter.id] : metaStepOperations(step))));
       const parts = new Set(program.steps.filter((step) => step.filter).flatMap((step) => step.primitive.parts || [step.primitive.id]));
       let measureEvidence = 0;
-      for (const hypotheses of words) {
-        if (hypotheses.some((hypothesis) => main.has(hypothesis.operation))) continue;
+      // A word the main program already explains (it is that operation's
+      // strongest word) does not name the measure; a word whose meaning the
+      // main program owes to another word may ("prints ... lines").
+      for (const hypotheses of measureWords || allWords) {
+        if (!measureWords && hypotheses.some((hypothesis) => main.has(hypothesis.operation) && hypothesis.score >= strongest.get(hypothesis.operation) * 0.99)) continue;
         measureEvidence += Math.max(0, ...hypotheses.filter((hypothesis) => parts.has(hypothesis.operation)).map((hypothesis) => hypothesis.score));
       }
       const measureSize = parts.size;
       const order = metaClauseOrder(program, fromType, clauses);
       const statedInput = inputTypes.length && !inputTypes.includes(fromType) ? 1 : 0;
-      const headFits = headTypes.some((type) => type === program.type || (type === "list_any" && program.type.startsWith("list_"))) ? 0 : 1;
+      // A rewrite writes the head's result back to the file: it fits there.
+      const rewritesHead = program.steps.some((step) => step.rewrite && lastHead.includes(step.primitive.id));
+      const headFits = rewritesHead || headTypes.some((type) => type === program.type || (type === "list_any" && program.type.startsWith("list_"))) ? 0 : 1;
       // Grounded evidence decides first (every operation asked for, none
       // invented), then the request's own composition order, then shape.
-      const rank = [ungrounded, uncovered, -metaCoverageScore(program.steps, words), -measureEvidence, order.violations, order.objectMismatch, statedInput, headFits, program.type === fromType ? 0 : 1, program.steps.length, measureSize];
+      // "every file" asks for iteration: a program never holding a list
+      // does not quantify over anything.
+      const unquantified = universal && !order.types.some((type) => type.startsWith("list_")) ? 1 : 0;
+      const rank = [ungrounded, uncovered, -metaCoverageScore(program.steps, words), -measureEvidence, order.violations, order.objectMismatch, unquantified, statedInput, headFits, -metaCoverageScore(program.steps, weakViews), program.type === fromType ? 0 : 1, program.steps.length, -metaCoverageScore(program.steps, weakWords), measureSize];
       let better = !best;
       for (let position = 0; !better && position < rank.length; position += 1) {
         if (rank[position] !== best.rank[position]) {
@@ -431,8 +468,8 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, in
       }
     }
   }
-  if (!best) trace.emit("impasse", "no typed program serves the last clause's head");
-  else if (best.uncovered) trace.emit("evidence", `${best.uncovered} grounded word group(s) left unexplained by the chosen program`);
+  if (!best) trace.emit("impasse", metaNote("no_head_program", {}));
+  else if (best.uncovered) trace.emit("evidence", metaNote("uncovered", { count: best.uncovered }));
   return best;
 }
 
@@ -444,14 +481,14 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, parameter, words, in
  * @param {{steps: Array<object>}} program
  * @param {string} fromType
  * @param {Array<object>} clauses
- * @returns {{violations: number, objectMismatch: number}}
+ * @returns {{violations: number, objectMismatch: number, types: Array<string>}}
  */
 function metaClauseOrder(program, fromType, clauses) {
   const inputs = [];
   let type = fromType;
   for (const step of program.steps) {
-    inputs.push(step.mapped ? type.slice(5) : type);
-    type = step.filter ? type : step.mapped ? `list_${step.primitive.to}` : metaApply(step.primitive, type);
+    inputs.push(step.rewrite ? "text" : step.mapped ? type.slice(5) : type);
+    type = step.filter || step.rewrite ? type : step.mapped ? `list_${step.primitive.to}` : metaApply(step.primitive, type);
   }
   const positionOf = (ids) => program.steps.findIndex((step) => metaStepOperations(step).some((id) => ids.includes(id) && !metaIsView(id)));
   let violations = 0;
@@ -468,5 +505,16 @@ function metaClauseOrder(program, fromType, clauses) {
     }
     if (clause.objectType && inputs[head] !== clause.objectType && !(clause.objectType.startsWith("list_") && inputs[head] === "list_any")) objectMismatch += 1;
   }
-  return { violations, objectMismatch };
+  return { violations, objectMismatch, types: inputs.concat(type) };
+}
+
+/**
+ * The in-place edit of one file by a text transformation: the seeded
+ * combinator `rewrite_file` applied to an operation's code.
+ * @param {string} code a text -> text function source
+ * @returns {string}
+ */
+function metaRewriteCode(code) {
+  const combinator = metaSeed().combinators.find((item) => item.id === "rewrite_file");
+  return String(combinator ? combinator.code : "").split("{f}").join(code);
 }

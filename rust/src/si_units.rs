@@ -1,6 +1,6 @@
 //! SI dimension algebra for unit conversion (issue #700, E58).
 //!
-//! Issue #1176's engine (rust/src/unit_conversion.rs) converts pairs that
+//! Issue #1176's engine (`rust/src/unit_conversion.rs`) converts pairs that
 //! have an explicit `conversion` record in data/seed/meanings-units.lino
 //! and inverts linear ones. Every pair the seed does not state — miles to
 //! kilometers, horsepower to watts, psi to pascals — fell through, and
@@ -29,6 +29,8 @@
 //! maintainer's integration; `ENGINE_NAME` is the evidence-link token to
 //! attach when it lands.
 
+use std::fmt::Write as _;
+
 use crate::seed::parser::parse_lino;
 
 const SEED_PATH: &str = "data/seed/si-unit-dimensions.lino";
@@ -51,6 +53,7 @@ pub struct Dimension {
 
 impl Dimension {
     /// The dimensionless dimension `1`.
+    #[must_use]
     pub const fn dimensionless() -> Self {
         Self { exponents: [0; 7] }
     }
@@ -59,6 +62,7 @@ impl Dimension {
     ///
     /// Returns `None` for unknown symbols or exponents that do not fit
     /// in an `i8`.
+    #[must_use]
     pub fn parse(expr: &str) -> Option<Self> {
         let trimmed = expr.trim();
         if trimmed == "1" {
@@ -81,7 +85,7 @@ impl Dimension {
             while index < chars.len() && chars[index].is_ascii_digit() {
                 magnitude = magnitude
                     .checked_mul(10)?
-                    .checked_add((chars[index] as u8 - b'0') as i8)?;
+                    .checked_add(i8::try_from(chars[index] as u8 - b'0').ok()?)?;
                 digits = true;
                 index += 1;
             }
@@ -92,11 +96,13 @@ impl Dimension {
     }
 
     /// Whether this is the dimensionless dimension.
+    #[must_use]
     pub fn is_dimensionless(&self) -> bool {
         self.exponents == [0; 7]
     }
 
     /// The exponent of one base dimension symbol, if it is one of the seven.
+    #[must_use]
     pub fn exponent(&self, symbol: char) -> Option<i8> {
         BASE_SYMBOLS
             .iter()
@@ -105,6 +111,7 @@ impl Dimension {
     }
 
     /// Render back to the seed's exponent-string notation.
+    #[must_use]
     pub fn as_string(&self) -> String {
         if self.is_dimensionless() {
             return "1".to_owned();
@@ -115,8 +122,9 @@ impl Dimension {
             match exponent {
                 0 => {}
                 1 => out.push(*symbol),
-                n if n > 1 => out.push_str(&format!("{symbol}{n}")),
-                n => out.push_str(&format!("{symbol}{n}")),
+                n => {
+                    let _ = write!(out, "{symbol}{n}");
+                }
             }
         }
         out
@@ -124,20 +132,22 @@ impl Dimension {
 
     /// The product of two dimensions (exponents add): speed `LT-1` times
     /// time `T` is length `L`.
+    #[must_use]
     pub fn multiply(&self, other: &Self) -> Option<Self> {
         let mut exponents = [0i8; 7];
-        for slot in 0..7 {
-            exponents[slot] = self.exponents[slot].checked_add(other.exponents[slot])?;
+        for (slot, exponent) in exponents.iter_mut().enumerate() {
+            *exponent = self.exponents[slot].checked_add(other.exponents[slot])?;
         }
         Some(Self { exponents })
     }
 
     /// The reciprocal dimension (exponents negate): time `T` inverted is
     /// frequency `T-1`.
+    #[must_use]
     pub fn inverse(&self) -> Option<Self> {
         let mut exponents = [0i8; 7];
-        for slot in 0..7 {
-            exponents[slot] = self.exponents[slot].checked_neg()?;
+        for (slot, exponent) in exponents.iter_mut().enumerate() {
+            *exponent = self.exponents[slot].checked_neg()?;
         }
         Some(Self { exponents })
     }
@@ -174,6 +184,7 @@ fn seed_text(path: &str) -> Option<&'static str> {
 /// Parse a factor written as a terminating decimal (`0.0254`) or a
 /// fraction (`254/10000`) into an exact reduced rational. Negative
 /// factors are rejected: a unit's magnitude to SI is positive.
+#[must_use]
 pub fn parse_factor(text: &str) -> Option<(i128, i128)> {
     let trimmed = text.trim();
     if let Some((num, den)) = trimmed.split_once('/') {
@@ -200,7 +211,7 @@ pub fn parse_factor(text: &str) -> Option<(i128, i128)> {
     for digit in fractional.chars() {
         num = num
             .checked_mul(10)?
-            .checked_add((digit as u8 - b'0') as i128)?;
+            .checked_add(i128::from(digit as u8 - b'0'))?;
         den = den.checked_mul(10)?;
     }
     if num <= 0 {
@@ -210,7 +221,7 @@ pub fn parse_factor(text: &str) -> Option<(i128, i128)> {
 }
 
 /// Greatest common divisor of two positive integers.
-fn gcd(mut a: i128, mut b: i128) -> i128 {
+const fn gcd(mut a: i128, mut b: i128) -> i128 {
     while b != 0 {
         let remainder = a % b;
         a = b;
@@ -229,6 +240,7 @@ fn reduce(num: i128, den: i128) -> (i128, i128) {
 }
 
 /// Every `base_dimension` record in the seed.
+#[must_use]
 pub fn base_dimensions() -> Vec<BaseDimension> {
     let mut out = Vec::new();
     let Some(text) = seed_text(SEED_PATH) else {
@@ -238,7 +250,7 @@ pub fn base_dimensions() -> Vec<BaseDimension> {
     let Some(root) = tree.children.iter().find(|child| child.name == "si_units") else {
         return out;
     };
-    for record in root.children.iter() {
+    for record in &root.children {
         if record.name != "base_dimension" {
             continue;
         }
@@ -259,6 +271,7 @@ pub fn base_dimensions() -> Vec<BaseDimension> {
 }
 
 /// Every `si_unit` record in the seed (dimensions parsed, factors exact).
+#[must_use]
 pub fn si_units() -> Vec<SiUnitEntry> {
     let mut out = Vec::new();
     let Some(text) = seed_text(SEED_PATH) else {
@@ -268,7 +281,7 @@ pub fn si_units() -> Vec<SiUnitEntry> {
     let Some(root) = tree.children.iter().find(|child| child.name == "si_units") else {
         return out;
     };
-    for record in root.children.iter() {
+    for record in &root.children {
         if record.name != "si_unit" {
             continue;
         }
@@ -305,12 +318,13 @@ pub fn si_units() -> Vec<SiUnitEntry> {
 
 /// The canonical unit name for a surface word or canonical name
 /// (`"метров"` → `"meter"`, `"马力"` → `"horsepower_mechanical"`).
+#[must_use]
 pub fn unit_named_by(surface: &str) -> Option<String> {
     let needle = surface.trim().to_lowercase();
     let units = si_units();
     units
         .iter()
-        .find(|entry| entry.unit == needle || entry.surfaces.iter().any(|s| *s == needle))
+        .find(|entry| entry.unit == needle || entry.surfaces.contains(&needle))
         .map(|entry| entry.unit.clone())
 }
 
@@ -330,30 +344,39 @@ pub enum SiConversion {
 
 impl SiConversion {
     /// The converted value as `f64` (for display and closeness checks).
+    #[must_use]
     pub fn as_f64(&self) -> Option<f64> {
         match self {
             Self::Converted {
                 value_num,
                 value_den,
-            } => Some(*value_num as f64 / *value_den as f64),
+            } => {
+                // Decimal text parses to the nearest f64, the same rounding
+                // an `as` cast performs, without a lossy-cast lint.
+                let num: f64 = value_num.to_string().parse().ok()?;
+                let den: f64 = value_den.to_string().parse().ok()?;
+                Some(num / den)
+            }
             _ => None,
         }
     }
 
     /// A human-readable form (the localized response template renders
     /// around it).
+    #[must_use]
     pub fn describe(&self) -> String {
         match self {
             Self::Converted {
                 value_num,
                 value_den,
             } => format!("{value_num}/{value_den}"),
-            Self::Incompatible { from, to } => format!(
-                "incompatible dimensions: {} vs {}",
-                from.as_string(),
-                to.as_string()
+            Self::Incompatible { from, to } => crate::seed::report_text(
+                "si_conversion_incompatible",
+                &[("from", &from.as_string()), ("to", &to.as_string())],
             ),
-            Self::UnknownUnit(unit) => format!("unknown unit: {unit}"),
+            Self::UnknownUnit(unit) => {
+                crate::seed::report_text("si_conversion_unknown_unit", &[("unit", unit)])
+            }
             Self::Overflow => "value out of range for exact conversion".to_owned(),
         }
     }
@@ -369,13 +392,14 @@ impl SiConversion {
 /// convert_through_si(1, 1, "meter", "second")   == Incompatible { L, T }
 /// convert_through_si(1, 1, "furlong", "meter")  == UnknownUnit("furlong")
 /// ```
+#[must_use]
 pub fn convert_through_si(value_num: i128, value_den: i128, from: &str, to: &str) -> SiConversion {
     let units = si_units();
     let resolve = |name: &str| -> Option<&SiUnitEntry> {
         let needle = name.trim().to_lowercase();
         units
             .iter()
-            .find(|entry| entry.unit == needle || entry.surfaces.iter().any(|s| *s == needle))
+            .find(|entry| entry.unit == needle || entry.surfaces.contains(&needle))
     };
     let Some(from_entry) = resolve(from) else {
         return SiConversion::UnknownUnit(from.trim().to_owned());

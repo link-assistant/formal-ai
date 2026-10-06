@@ -1,0 +1,19 @@
+{
+  "lemma": "milligram",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13745171-n",
+      "partOfSpeech": "n",
+      "definition": "one thousandth (1/1,000) gram",
+      "synonyms": [
+        "mg"
+      ]
+    }
+  ]
+}

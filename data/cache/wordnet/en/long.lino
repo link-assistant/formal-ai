@@ -1,0 +1,68 @@
+language en
+lemma long
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "primarily temporal sense; being or indicating a relatively great or greater than average duration or passage of time or a duration as specified"
+    examples ("a long life" "a long boring speech" "a long time" "a long friendship" "a long game" "long ago" "an hour long")
+    id oewn-01440837-a
+    partOfSpeech a
+  entry
+    definition "primarily spatial sense; of relatively great or greater than average spatial extension or extension as specified"
+    examples ("a long road" "a long distance" "contained many long words" "ten miles long")
+    id oewn-01436368-a
+    partOfSpeech a
+  entry
+    definition "good at remembering"
+    examples ("a retentive mind" "tenacious memory")
+    id oewn-02012852-a
+    partOfSpeech a
+    synonyms (retentive recollective tenacious)
+  entry
+    definition "holding securities or commodities in expectation of a rise in prices"
+    examples ("is long on coffee" "a long position in gold")
+    id oewn-01447325-a
+    partOfSpeech a
+  entry
+    definition "(of speech sounds or syllables) of relatively long duration"
+    examples ("the English vowel sounds in ‘bate’, ‘beat’, ‘bite’, ‘boat’, ‘boot’ are long")
+    id oewn-01446913-a
+    partOfSpeech a
+  entry
+    definition "for an extended time or at a distant time"
+    examples ("a promotion long overdue" "something long hoped for" "his name has long been forgotten" "talked all night long" "how long will you be gone?" "arrived long before he was expected" "it is long after your bedtime")
+    id oewn-00167240-r
+    partOfSpeech r
+  entry
+    definition "for an extended distance"
+    id oewn-00167533-r
+    partOfSpeech r
+  entry
+    definition "of relatively great height"
+    examples ("a race of long gaunt men" "looked out the long French windows")
+    id oewn-02394693-s
+    partOfSpeech s
+  entry
+    definition "involving substantial risk"
+    examples ("long odds")
+    id oewn-02282618-s
+    partOfSpeech s
+  entry
+    definition "planning prudently for the future"
+    examples ("large goals that required farsighted policies" "took a long view of the geopolitical issues")
+    id oewn-01901363-s
+    partOfSpeech s
+    synonyms (farseeing farsighted foresighted foresightful prospicient longsighted)
+  entry
+    definition "having or being more than normal or necessary"
+    examples ("long on brains" "in long supply")
+    id oewn-00015626-s
+    partOfSpeech s
+  entry
+    definition "desire strongly or persistently"
+    id oewn-01832347-v
+    partOfSpeech v
+    synonyms (hanker yearn)
+source "oewn:2024"

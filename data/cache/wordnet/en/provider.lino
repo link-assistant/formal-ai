@@ -1,0 +1,16 @@
+language en
+lemma provider
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "someone whose business is to supply a particular service or commodity"
+    id oewn-10696710-n
+    partOfSpeech n
+    synonyms (supplier)
+  entry
+    definition "someone who provides the means for subsistence"
+    id oewn-10505934-n
+    partOfSpeech n
+source "oewn:2024"

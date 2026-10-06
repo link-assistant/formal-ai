@@ -206,27 +206,26 @@ fn inside_parens(text: &str, open_at: usize) -> &str {
 /// The function under test: a backtick span like `is_palindrome(s)`, else
 /// the word after "for". Returns (name, parameter list).
 fn function_spec(prompt: &str) -> Option<(String, String)> {
-    if let Some(start) = prompt.find('`') {
-        if let Some(end) = prompt[start + 1..].find('`') {
-            let span = &prompt[start + 1..start + 1 + end];
-            let name = identifier_at(span);
-            if !name.is_empty() {
-                let args = span
-                    .find('(')
-                    .map(|open| inside_parens(span, open))
-                    .unwrap_or("s");
-                return Some((name.to_owned(), args.to_owned()));
-            }
+    if let Some(start) = prompt.find('`')
+        && let Some(end) = prompt[start + 1..].find('`')
+    {
+        let span = &prompt[start + 1..start + 1 + end];
+        let name = identifier_at(span);
+        if !name.is_empty() {
+            let args = span
+                .find('(')
+                .map_or("s", |open| inside_parens(span, open));
+            return Some((name.to_owned(), args.to_owned()));
         }
     }
     let words: Vec<&str> = prompt.split_whitespace().collect();
     for (index, word) in words.iter().enumerate() {
-        if *word == "for" || *word == "для" {
-            if let Some(next) = words.get(index + 1) {
-                let name = identifier_at(next);
-                if !name.is_empty() {
-                    return Some((name.to_owned(), "s".to_owned()));
-                }
+        if (*word == "for" || *word == "для")
+            && let Some(next) = words.get(index + 1)
+        {
+            let name = identifier_at(next);
+            if !name.is_empty() {
+                return Some((name.to_owned(), "s".to_owned()));
             }
         }
     }
@@ -273,13 +272,13 @@ fn case_lines(
             [normalize, "(", &python_literal(&case.input), ")"].concat()
         };
         let call = [function, "(", &argument, ")"].concat();
-        let assertion = if let Some(outcome) = &case.outcome {
-            let expected = if outcome == "true" { "True" } else { "False" };
-            ["    assert ", &call, " is ", expected].concat()
-        } else if let Some(output) = &case.output {
-            ["    assert ", &call, " == ", output].concat()
-        } else {
-            ["    assert ", &call].concat()
+        let assertion = match (&case.outcome, &case.output) {
+            (Some(outcome), _) => {
+                let expected = if outcome == "true" { "True" } else { "False" };
+                ["    assert ", &call, " is ", expected].concat()
+            }
+            (None, Some(output)) => ["    assert ", &call, " == ", output].concat(),
+            (None, None) => ["    assert ", &call].concat(),
         };
         lines.push(assertion.clone());
         rows.push((case.input.clone(), assertion));
@@ -332,7 +331,9 @@ fn normalize_helper(properties: &[String]) -> (Vec<String>, String) {
 }
 
 /// Try to recognize a test-writing request and generate a pytest suite for
-/// the function under test. Returns `None` when the prompt is not a
+/// the function under test.
+///
+/// Returns `None` when the prompt is not a
 /// test-generation request; refuses by name when no function is identifiable.
 pub fn handle_test_generation(
     prompt: &str,
@@ -382,35 +383,32 @@ pub fn handle_test_generation(
     });
 
     let mut normalize_applied = false;
-    let (mut lines, mut rows): (Vec<String>, Vec<(String, String)>) = match shape {
-        Some(shape) => {
-            log.append("test_generation:shape", shape.name.clone());
-            let (helper, mut call_prefix) = normalize_helper(&properties);
-            // When every sample input is a list, normalize() would never be
-            // called: drop it so the suite carries no dead helper.
-            if !shape.cases.iter().any(|case| !case.input.starts_with('[')) {
-                call_prefix.clear();
-            }
-            normalize_applied = !call_prefix.is_empty();
-            let mut lines = Vec::new();
-            if normalize_applied {
-                lines.extend(helper);
-                lines.push(String::new());
-            }
-            let (case_lines, case_rows) = case_lines(shape, &function, &call_prefix);
-            lines.extend(case_lines);
-            (lines, case_rows)
+    let (mut lines, mut rows): (Vec<String>, Vec<(String, String)>) = if let Some(shape) = shape {
+        log.append("test_generation:shape", shape.name.clone());
+        let (helper, mut call_prefix) = normalize_helper(&properties);
+        // When every sample input is a list, normalize() would never be
+        // called: drop it so the suite carries no dead helper.
+        if !shape.cases.iter().any(|case| !case.input.starts_with('[')) {
+            call_prefix.clear();
         }
-        None => {
-            log.append("test_generation:shape", "none".to_owned());
-            (
-                vec![
-                    ["def ", "test_smoke():"].concat(),
-                    ["    assert ", &function, " is not None"].concat(),
-                ],
-                Vec::new(),
-            )
+        normalize_applied = !call_prefix.is_empty();
+        let mut lines = Vec::new();
+        if normalize_applied {
+            lines.extend(helper);
+            lines.push(String::new());
         }
+        let (case_lines, case_rows) = case_lines(shape, &function, &call_prefix);
+        lines.extend(case_lines);
+        (lines, case_rows)
+    } else {
+        log.append("test_generation:shape", "none".to_owned());
+        (
+            vec![
+                ["def ", "test_smoke():"].concat(),
+                ["    assert ", &function, " is not None"].concat(),
+            ],
+            Vec::new(),
+        )
     };
     if normalize_applied {
         for word in &property_words {

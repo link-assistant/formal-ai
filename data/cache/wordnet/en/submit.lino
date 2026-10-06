@@ -1,0 +1,63 @@
+language en
+lemma submit
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "refer for judgment or consideration"
+    examples ("The lawyers submitted the material to the court")
+    id oewn-00880167-v
+    partOfSpeech v
+  entry
+    definition "put before"
+    examples ("I submit to you that the accused is guilty")
+    id oewn-00879667-v
+    partOfSpeech v
+    synonyms (state "put forward" posit)
+  entry
+    definition "yield to the control of another"
+    id oewn-01120499-v
+    partOfSpeech v
+  entry
+    definition "hand over formally"
+    id oewn-02267560-v
+    partOfSpeech v
+    synonyms (present)
+  entry
+    definition "refer to another person for decision or judgment"
+    examples ("She likes to relegate difficult questions to her colleagues")
+    id oewn-02595169-v
+    partOfSpeech v
+    synonyms (relegate "pass on")
+  entry
+    definition "yield to another's wish or opinion"
+    examples ("The government bowed to the military pressure")
+    id oewn-00879879-v
+    partOfSpeech v
+    synonyms (bow defer accede "give in")
+  entry
+    definition "accept or undergo, often unwillingly"
+    examples ("We took a pay cut")
+    id oewn-00671680-v
+    partOfSpeech v
+    synonyms (take)
+  entry
+    definition "make an application as for a job or funding"
+    examples ("We put in a grant to the NSF")
+    id oewn-01075052-v
+    partOfSpeech v
+    synonyms ("put in")
+  entry
+    definition "make over as a return"
+    examples ("They had to render the estate")
+    id oewn-02315308-v
+    partOfSpeech v
+    synonyms (render)
+  entry
+    definition "accept as inevitable"
+    examples ("He resigned himself to his fate")
+    id oewn-00734417-v
+    partOfSpeech v
+    synonyms (resign reconcile)
+source "oewn:2024"

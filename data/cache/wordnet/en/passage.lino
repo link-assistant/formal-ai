@@ -1,0 +1,59 @@
+language en
+lemma passage
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of passing from one state or place to the next"
+    id oewn-00201907-n
+    partOfSpeech n
+    synonyms (transition)
+  entry
+    definition "a section of text; particularly a section of medium length"
+    id oewn-06411914-n
+    partOfSpeech n
+  entry
+    definition "a way through or along which someone or something may pass"
+    id oewn-03900990-n
+    partOfSpeech n
+  entry
+    definition "the passing of a law by a legislative body"
+    id oewn-01129177-n
+    partOfSpeech n
+    synonyms (enactment)
+  entry
+    definition "a journey usually by ship"
+    examples ("the outward passage took 10 days")
+    id oewn-00309941-n
+    partOfSpeech n
+    synonyms (transit)
+  entry
+    definition "a short section of a musical composition"
+    id oewn-07058663-n
+    partOfSpeech n
+    synonyms ("musical passage")
+  entry
+    definition "a path or channel or duct through or along which something may pass"
+    examples ("the nasal passages")
+    id oewn-05255524-n
+    partOfSpeech n
+    synonyms (passageway)
+  entry
+    definition "a bodily reaction of changing from one place or stage to another"
+    examples ("the passage of air from the lungs" "the passing of flatus")
+    id oewn-00867278-n
+    partOfSpeech n
+    synonyms (passing)
+  entry
+    definition "the motion of one object relative to another"
+    examples ("stellar passings can perturb the orbits of comets")
+    id oewn-07325260-n
+    partOfSpeech n
+    synonyms (passing)
+  entry
+    definition "the act of passing something to another person"
+    id oewn-00318861-n
+    partOfSpeech n
+    synonyms ("handing over")
+source "oewn:2024"

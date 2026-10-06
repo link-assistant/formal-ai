@@ -219,6 +219,7 @@ mod local_surface;
 mod memory_learning;
 mod memory_maintenance;
 mod memory_retention_origin;
+mod meta_reasoner;
 mod multilingual_variations;
 mod offline_replay;
 mod overrides;

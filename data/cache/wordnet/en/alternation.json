@@ -1,0 +1,19 @@
+{
+  "lemma": "alternation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01012626-n",
+      "partOfSpeech": "n",
+      "definition": "successive change from one thing or state to another and back again",
+      "examples": [
+        "a trill is a rapid alternation between the two notes"
+      ]
+    }
+  ]
+}

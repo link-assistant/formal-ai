@@ -1,0 +1,189 @@
+{
+  "lemma": "high",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01213526-a",
+      "partOfSpeech": "a",
+      "definition": "greater than normal in quantity or amount",
+      "examples": [
+        "a high temperature",
+        "a high price",
+        "the high point of his career",
+        "high risks",
+        "has high hopes",
+        "the river is high",
+        "he has a high opinion of himself"
+      ]
+    },
+    {
+      "id": "oewn-01207229-a",
+      "partOfSpeech": "a",
+      "definition": "(literal meaning) being at or having a relatively great or specific elevation or upward extension (sometimes used in combinations like ‘knee-high’)",
+      "examples": [
+        "a high mountain",
+        "high ceilings",
+        "high buildings",
+        "a high forehead",
+        "a high incline",
+        "a foot high"
+      ]
+    },
+    {
+      "id": "oewn-01215869-a",
+      "partOfSpeech": "a",
+      "definition": "used of sounds and voices; high in pitch or frequency",
+      "synonyms": [
+        "high-pitched"
+      ]
+    },
+    {
+      "id": "oewn-05104798-n",
+      "partOfSpeech": "n",
+      "definition": "a lofty level or position or degree",
+      "examples": [
+        "summer temperatures reached an all-time high"
+      ]
+    },
+    {
+      "id": "oewn-14544272-n",
+      "partOfSpeech": "n",
+      "definition": "an air mass of higher than normal pressure",
+      "examples": [
+        "the east coast benefits from a Bermuda high"
+      ]
+    },
+    {
+      "id": "oewn-14429025-n",
+      "partOfSpeech": "n",
+      "definition": "a state of sustained elation",
+      "examples": [
+        "I'm on a permanent high these days"
+      ]
+    },
+    {
+      "id": "oewn-14428856-n",
+      "partOfSpeech": "n",
+      "definition": "a state of altered consciousness induced by alcohol or narcotics",
+      "examples": [
+        "they took drugs to get a high on"
+      ]
+    },
+    {
+      "id": "oewn-08602145-n",
+      "partOfSpeech": "n",
+      "definition": "a high place",
+      "examples": [
+        "they stood on high and observed the countryside",
+        "he doesn't like heights"
+      ],
+      "synonyms": [
+        "heights"
+      ]
+    },
+    {
+      "id": "oewn-08426574-n",
+      "partOfSpeech": "n",
+      "definition": "a public secondary school usually including grades 9 through 12",
+      "examples": [
+        "he goes to the neighborhood highschool"
+      ],
+      "synonyms": [
+        "senior high school",
+        "senior high",
+        "highschool",
+        "high school"
+      ]
+    },
+    {
+      "id": "oewn-03523794-n",
+      "partOfSpeech": "n",
+      "definition": "a forward gear with a gear ratio that gives the greatest vehicle velocity for a given engine speed",
+      "synonyms": [
+        "high gear"
+      ]
+    },
+    {
+      "id": "oewn-00358753-r",
+      "partOfSpeech": "r",
+      "definition": "at a great altitude",
+      "examples": [
+        "he climbed high on the ladder"
+      ],
+      "synonyms": [
+        "high up"
+      ]
+    },
+    {
+      "id": "oewn-00358935-r",
+      "partOfSpeech": "r",
+      "definition": "in or to a high position, amount, or degree",
+      "examples": [
+        "prices have gone up far too high"
+      ]
+    },
+    {
+      "id": "oewn-00359047-r",
+      "partOfSpeech": "r",
+      "definition": "in a rich manner",
+      "examples": [
+        "he lives high"
+      ],
+      "synonyms": [
+        "richly",
+        "luxuriously"
+      ]
+    },
+    {
+      "id": "oewn-00358848-r",
+      "partOfSpeech": "r",
+      "definition": "far up toward the source",
+      "examples": [
+        "he lives high up the river"
+      ]
+    },
+    {
+      "id": "oewn-02347190-s",
+      "partOfSpeech": "s",
+      "definition": "standing above others in quality or position",
+      "examples": [
+        "people in high places",
+        "the high priest",
+        "eminent members of the community"
+      ],
+      "synonyms": [
+        "eminent"
+      ]
+    },
+    {
+      "id": "oewn-00708942-s",
+      "partOfSpeech": "s",
+      "definition": "happy and excited and energetic",
+      "synonyms": [
+        "in high spirits"
+      ]
+    },
+    {
+      "id": "oewn-01057746-s",
+      "partOfSpeech": "s",
+      "definition": "(used of the smell of meat) smelling spoiled or tainted",
+      "synonyms": [
+        "gamey",
+        "gamy"
+      ]
+    },
+    {
+      "id": "oewn-00802795-s",
+      "partOfSpeech": "s",
+      "definition": "slightly and pleasantly intoxicated from alcohol or a drug (especially marijuana)",
+      "synonyms": [
+        "mellow"
+      ]
+    }
+  ]
+}

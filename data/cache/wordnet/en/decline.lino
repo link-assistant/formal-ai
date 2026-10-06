@@ -1,0 +1,67 @@
+language en
+lemma decline
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "change toward something smaller or lower"
+    id oewn-13478551-n
+    partOfSpeech n
+    synonyms (diminution)
+  entry
+    definition "a condition inferior to an earlier condition; a gradual falling off from a better state; decline"
+    id oewn-14445892-n
+    partOfSpeech n
+    synonyms (declination)
+  entry
+    definition "a gradual decrease; as of stored charge or current"
+    id oewn-13477740-n
+    partOfSpeech n
+    synonyms (decay)
+  entry
+    definition "a downward slope or bend"
+    id oewn-09288526-n
+    partOfSpeech n
+    synonyms (descent declivity fall declination declension downslope)
+  entry
+    definition "grow worse"
+    examples ("Conditions in the slum worsened")
+    id oewn-00204228-v
+    partOfSpeech v
+    synonyms (worsen)
+  entry
+    definition "not accept as true"
+    examples ("He refused to accept what she said")
+    id oewn-02242120-v
+    partOfSpeech v
+    synonyms (refuse reject "pass up" "turn down")
+  entry
+    definition "show unwillingness towards"
+    examples ("he declined to join the group on a hike")
+    id oewn-00799092-v
+    partOfSpeech v
+    synonyms (refuse)
+  entry
+    definition "grow smaller"
+    examples ("Interest in the project waned")
+    id oewn-00432779-v
+    partOfSpeech v
+    synonyms ("go down" wane)
+  entry
+    definition "go down"
+    examples ("The roof declines here")
+    id oewn-02043721-v
+    partOfSpeech v
+  entry
+    definition "fall in value"
+    examples ("the stock market corrected" "prices slumped")
+    id oewn-01975617-v
+    partOfSpeech v
+    synonyms (slump correct)
+  entry
+    definition "inflect for number, gender, case, etc."
+    examples ("in many languages, speakers decline nouns, pronouns, and adjectives")
+    id oewn-00984945-v
+    partOfSpeech v
+source "oewn:2024"

@@ -55,7 +55,18 @@ impl Weekday {
     /// ("30 days before Friday") inside the cycle without a manual wrap, so
     /// every offset a prompt can state lands on a real weekday (issue #1176).
     const fn shifted_by(self, days: i64) -> Self {
-        Self::from_index(((self.index() as i64 + days).rem_euclid(7)) as usize)
+        // `rem_euclid(7)` is always in 0..7, so each residue maps to its
+        // `usize` without a cast.
+        let offset: usize = match days.rem_euclid(7) {
+            0 => 0,
+            1 => 1,
+            2 => 2,
+            3 => 3,
+            4 => 4,
+            5 => 5,
+            _ => 6,
+        };
+        Self::from_index(self.index() + offset)
     }
 
     const fn slug(self) -> &'static str {
@@ -432,7 +443,7 @@ fn detect_offset(normalized: &str, language: &str) -> Option<Offset> {
         .flatten()
         .collect();
     // Longest surfaces first so "weeks" is not read as the tail of "week".
-    units.sort_by(|left, right| right.1.len().cmp(&left.1.len()));
+    units.sort_by_key(|unit| std::cmp::Reverse(unit.1.len()));
 
     for quantity in crate::verifiable_task::quantities::extract_quantities(normalized, language) {
         let Ok(count) = quantity.value.parse::<i64>() else {
@@ -714,9 +725,9 @@ fn render_offset_answer(
     };
     template
         .replace("{n}", &total.to_string())
-        .replace("{weeks}", &weeks.to_string())
-        .replace("{days}", &days.to_string())
-        .replace("{source}", weekday_direction_label(language, operation, source))
+        .replace(concat!("{", "weeks}"), &weeks.to_string())
+        .replace(concat!("{", "days}"), &days.to_string())
+        .replace(concat!("{", "source}"), weekday_direction_label(language, operation, source))
         .replace("{source_plain}", weekday_label(language, source))
-        .replace("{result}", weekday_label(language, result))
+        .replace(concat!("{", "result}"), weekday_label(language, result))
 }

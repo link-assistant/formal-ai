@@ -856,6 +856,18 @@ operation_vocabulary
       phrase minimum
       phrase smallest
       phrase lowest
+      exclude "smallest first"
+      exclude "lowest first"
+      exclude "largest first"
+      exclude "biggest first"
+      exclude "highest first"
+      exclude "greatest first"
+      exclude "smallest to largest"
+      exclude "smallest to biggest"
+      exclude "lowest to highest"
+      exclude "largest to smallest"
+      exclude "biggest to smallest"
+      exclude "highest to lowest"
     language ru
       phrase минимум
       phrase минимальн
@@ -873,6 +885,18 @@ operation_vocabulary
       phrase greatest
       phrase biggest
       phrase highest
+      exclude "smallest first"
+      exclude "lowest first"
+      exclude "largest first"
+      exclude "biggest first"
+      exclude "highest first"
+      exclude "greatest first"
+      exclude "smallest to largest"
+      exclude "smallest to biggest"
+      exclude "lowest to highest"
+      exclude "largest to smallest"
+      exclude "biggest to smallest"
+      exclude "highest to lowest"
     language ru
       phrase максимум
       phrase максимальн

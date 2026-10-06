@@ -1,0 +1,34 @@
+language en
+lemma constant
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "steadfast in purpose or devotion or affection"
+    examples ("a man constant in adherence to his ideals" "a constant lover" "constant as the northern star")
+    id oewn-00585590-a
+    partOfSpeech a
+  entry
+    definition "a quantity that does not vary"
+    id oewn-05867520-n
+    partOfSpeech n
+    synonyms ("constant quantity" invariable)
+  entry
+    definition "a number representing a quantity assumed to have a fixed value in a specified mathematical context"
+    examples ("the velocity of light is a constant")
+    id oewn-13606632-n
+    partOfSpeech n
+  entry
+    definition "unvarying in nature"
+    examples ("maintained a constant temperature" "principles of unvarying validity")
+    id oewn-02516074-s
+    partOfSpeech s
+    synonyms (changeless invariant unvarying)
+  entry
+    definition "uninterrupted in time and indefinitely long continuing"
+    examples ("the ceaseless thunder of surf" "in constant pain" "night and day we live with the incessant noise of the city" "the never-ending search for happiness" "the perpetual struggle to maintain standards in a democracy" "man's unceasing warfare with drought and isolation" "unremitting demands of hunger")
+    id oewn-00597981-s
+    partOfSpeech s
+    synonyms (ceaseless incessant never-ending perpetual unceasing unremitting)
+source "oewn:2024"

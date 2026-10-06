@@ -577,7 +577,11 @@ const fn is_equation_operator(character: char) -> bool {
 fn sentence_start(body: &str, question_index: usize) -> usize {
     let prefix = &body[..question_index];
     for (index, character) in prefix.char_indices().rev() {
-        if is_sentence_terminator(character) {
+        // A stop inside an inline code span (`find . -name`) is part of the
+        // code, not the end of a sentence.
+        if is_sentence_terminator(character)
+            && (character == '\n' || prefix[..index].matches('`').count() % 2 == 0)
+        {
             let boundary = index + character.len_utf8();
             if character == '\n'
                 || body[boundary..question_index]

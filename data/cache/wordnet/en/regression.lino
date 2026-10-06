@@ -1,0 +1,26 @@
+language en
+lemma regression
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an abnormal state in which development has stopped prematurely"
+    id oewn-14526956-n
+    partOfSpeech n
+    synonyms ("arrested development" fixation "infantile fixation")
+  entry
+    definition "(psychiatry) a defense mechanism in which you flee from reality by assuming a more infantile state"
+    id oewn-13570134-n
+    partOfSpeech n
+  entry
+    definition "the relation between selected values of x and observed values of y (from which the most probable value of y can be predicted for any value of x)"
+    id oewn-06036794-n
+    partOfSpeech n
+    synonyms ("simple regression" "regression toward the mean" "statistical regression")
+  entry
+    definition "returning to a former state"
+    id oewn-00236075-n
+    partOfSpeech n
+    synonyms (regress reversion retrogression retroversion)
+source "oewn:2024"

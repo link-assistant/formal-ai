@@ -1,0 +1,81 @@
+language en
+lemma draft
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a document ordering the payment of money; drawn by one person or bank on another"
+    id oewn-13398441-n
+    partOfSpeech n
+    synonyms ("bill of exchange" "order of payment")
+  entry
+    definition "a current of air (usually coming into a chimney or room or vehicle)"
+    id oewn-11542881-n
+    partOfSpeech n
+    synonyms (draught)
+  entry
+    definition "a preliminary sketch of a design or picture"
+    id oewn-03235488-n
+    partOfSpeech n
+    synonyms ("rough drawing")
+  entry
+    definition "a serving of drink (usually alcoholic) drawn from a keg"
+    examples ("they served beer on draft")
+    id oewn-07899955-n
+    partOfSpeech n
+    synonyms (draught potation tipple)
+  entry
+    definition "any of the various versions in the development of a written work"
+    examples ("a preliminary draft" "the final draft of the constitution")
+    id oewn-06402605-n
+    partOfSpeech n
+    synonyms ("draft copy")
+  entry
+    definition "the depth of a vessel's keel below the surface (especially when loaded)"
+    id oewn-05142420-n
+    partOfSpeech n
+    synonyms (draught)
+  entry
+    definition "a regulator for controlling the flow of air in a fireplace"
+    id oewn-03235617-n
+    partOfSpeech n
+  entry
+    definition "a dose of liquid medicine"
+    examples ("he took a sleeping draft")
+    id oewn-03235373-n
+    partOfSpeech n
+    synonyms (draught)
+  entry
+    definition "compulsory military service"
+    id oewn-01160337-n
+    partOfSpeech n
+    synonyms (conscription muster "selective service")
+  entry
+    definition "a large and hurried swallow"
+    examples ("he finished it at a single gulp")
+    id oewn-00841850-n
+    partOfSpeech n
+    synonyms (gulp draught swig)
+  entry
+    definition "the act of moving a load by drawing or pulling"
+    id oewn-00116487-n
+    partOfSpeech n
+    synonyms (draught drawing)
+  entry
+    definition "draw up an outline or sketch for something"
+    examples ("draft a speech")
+    id oewn-01705493-v
+    partOfSpeech v
+    synonyms (outline)
+  entry
+    definition "engage somebody to enter the army"
+    id oewn-01099911-v
+    partOfSpeech v
+    synonyms (enlist "muster in")
+  entry
+    definition "make a blueprint of"
+    id oewn-01687477-v
+    partOfSpeech v
+    synonyms (blueprint draught)
+source "oewn:2024"

@@ -37,15 +37,26 @@ pub struct OperationTrigger {
     /// *derived* from this declaration (issue #386), so adding a "cancel X"
     /// operation stays pure seed data rather than new control flow.
     pub inverse_of: Option<String>,
+    /// Phrases, declared via `exclude` children in any language block, in
+    /// which this operation's trigger word carries another sense: "smallest"
+    /// names the minimum, but "smallest first" orders a list. When one is
+    /// present the operation does not match, whatever its phrases say.
+    pub exclusions: Vec<String>,
 }
 
 impl OperationTrigger {
-    /// Does any phrase or combo for this operation appear in `normalized`?
+    /// Does any phrase or combo for this operation appear in `normalized`,
+    /// outside every phrase that gives its trigger another sense?
     #[must_use]
     pub fn matches(&self, normalized: &str) -> bool {
-        self.languages
-            .values()
-            .any(|forms| forms.matches(normalized))
+        !self
+            .exclusions
+            .iter()
+            .any(|phrase| normalized.contains(phrase.as_str()))
+            && self
+                .languages
+                .values()
+                .any(|forms| forms.matches(normalized))
     }
 }
 
@@ -127,6 +138,7 @@ pub fn operation_vocabulary() -> OperationVocabulary {
     if let Some(root) = tree.children.first() {
         for operation_node in root.children.iter().filter(|c| c.name == "operation") {
             let mut languages = BTreeMap::new();
+            let mut exclusions = Vec::new();
             for language_node in operation_node
                 .children
                 .iter()
@@ -137,6 +149,7 @@ pub fn operation_vocabulary() -> OperationVocabulary {
                     match entry.name.as_str() {
                         "phrase" => forms.phrases.push(entry.id.clone()),
                         "combo" => forms.combos.push(split_combo(&entry.id)),
+                        "exclude" => exclusions.push(entry.id.clone()),
                         _ => {}
                     }
                 }
@@ -150,6 +163,7 @@ pub fn operation_vocabulary() -> OperationVocabulary {
                 canonical: operation_node.id.clone(),
                 languages,
                 inverse_of,
+                exclusions,
             });
         }
     }

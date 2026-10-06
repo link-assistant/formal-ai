@@ -102,9 +102,9 @@ fn fenced(prompt: &str, tag: &str) -> Option<String> {
 fn fenced_any(prompt: &str) -> Option<String> {
     let start = prompt.find("```")? + 3;
     let rest = &prompt[start..];
-    let after_tag = match rest.find('\n') {
-        Some(nl) => &rest[nl + 1..],
-        None => return None,
+    let after_tag = {
+        let nl = rest.find('\n')?;
+        &rest[nl + 1..]
     };
     let end = after_tag.find("```")?;
     let body = &after_tag[..end];
@@ -129,7 +129,7 @@ fn backtick_span(prompt: &str) -> Option<String> {
 
 /// The first brace-balanced JSON document in the prompt (string-aware).
 fn json_span(prompt: &str) -> Option<String> {
-    let start = prompt.find(|c| c == '{' || c == '[')?;
+    let start = prompt.find(['{', '['])?;
     let bytes = prompt.as_bytes();
     let mut depth = 0i32;
     let mut in_string = false;
@@ -149,7 +149,7 @@ fn json_span(prompt: &str) -> Option<String> {
             b'}' | b']' => {
                 depth -= 1;
                 if depth == 0 {
-                    return Some(prompt[start..index + 1].to_owned());
+                    return Some(prompt[start..=index].to_owned());
                 }
             }
             _ => {}
@@ -183,7 +183,7 @@ fn yaml_text(prompt: &str) -> Option<String> {
         let start = seen;
         seen += line.len() + 1;
         let trimmed = line.trim();
-        if trimmed.find(": ").is_some()
+        if trimmed.contains(": ")
             || trimmed.strip_prefix("- ").is_some()
             || trimmed.ends_with(':')
         {
@@ -232,19 +232,26 @@ fn scalar_yaml(value: &Value) -> String {
         Value::Null => "null".to_owned(),
         Value::Bool(flag) => flag.to_string(),
         Value::Number(number) => {
-            if let Some(int) = number.as_i64() {
-                int.to_string()
-            } else if let Some(uint) = number.as_u64() {
-                uint.to_string()
-            } else if let Some(float) = number.as_f64() {
-                if float.fract() == 0.0 {
-                    [float.trunc().to_string(), ".0".to_owned()].concat()
-                } else {
-                    float.to_string()
-                }
-            } else {
-                number.to_string()
-            }
+            number.as_i64().map_or_else(
+                || {
+                    number.as_u64().map_or_else(
+                        || {
+                            number.as_f64().map_or_else(
+                                || number.to_string(),
+                                |float| {
+                                    if float.fract() == 0.0 {
+                                        [float.trunc().to_string(), ".0".to_owned()].concat()
+                                    } else {
+                                        float.to_string()
+                                    }
+                                },
+                            )
+                        },
+                        |uint| uint.to_string(),
+                    )
+                },
+                |int| int.to_string(),
+            )
         }
         Value::String(text) => {
             if plain_safe(text) {
@@ -345,18 +352,21 @@ fn parse_scalar(token: &str) -> Value {
         "true" => Value::Bool(true),
         "false" => Value::Bool(false),
         _ => {
-            if let Ok(int) = token.parse::<i64>() {
-                Value::Number(int.into())
-            } else if let Ok(uint) = token.parse::<u64>() {
-                Value::Number(uint.into())
-            } else if let Ok(float) = token.parse::<f64>() {
-                match serde_json::Number::from_f64(float) {
-                    Some(number) => Value::Number(number),
-                    None => Value::String(token.to_owned()),
-                }
-            } else {
-                Value::String(token.to_owned())
-            }
+            token.parse::<i64>().map_or_else(
+                |_| {
+                    token.parse::<u64>().map_or_else(
+                        |_| {
+                            token
+                                .parse::<f64>()
+                                .ok()
+                                .and_then(serde_json::Number::from_f64)
+                                .map_or_else(|| Value::String(token.to_owned()), Value::Number)
+                        },
+                        |uint| Value::Number(uint.into()),
+                    )
+                },
+                |int| Value::Number(int.into()),
+            )
         }
     }
 }
@@ -370,7 +380,7 @@ fn split_mapping_line(content: &str) -> Option<(String, String)> {
             match bytes[index] {
                 b'\\' => index += 2,
                 b'"' => {
-                    let key_token = &content[..index + 1];
+                    let key_token = &content[..=index];
                     if let Some(rest) = content[index + 1..].strip_prefix(':') {
                         let key: String = serde_json::from_str(key_token).ok()?;
                         return Some((key, rest.trim().to_owned()));
@@ -423,7 +433,7 @@ fn parse_block(lines: &[YamlLine], start: usize, indent: usize) -> Option<(Value
                         index += 1;
                     }
                 }
-            } else if rest.find(": ").is_some() || rest.ends_with(':') {
+            } else if rest.contains(": ") || rest.ends_with(':') {
                 // `- key: value`: a mapping whose first pair sits after the
                 // dash; continuation lines align with the key column.
                 let item_indent = indent + 2;
@@ -546,7 +556,7 @@ pub fn handle_format_conversion(
         return None;
     }
     let direction = if to_yaml { "yaml" } else { "json" };
-    log.append("format_conversion:request", format!("dir={}", direction));
+    log.append("format_conversion:request", format!("dir={direction}"));
 
     let (body, confidence) = if to_yaml {
         match json_text(prompt) {

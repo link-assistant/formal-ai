@@ -1,0 +1,77 @@
+{
+  "lemma": "restore",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02558146-v",
+      "partOfSpeech": "v",
+      "definition": "return to its original or usable and functioning condition",
+      "examples": [
+        "restore the forest to its original pristine condition"
+      ],
+      "synonyms": [
+        "reconstruct"
+      ]
+    },
+    {
+      "id": "oewn-00168396-v",
+      "partOfSpeech": "v",
+      "definition": "get or give new life or energy; return to life, regain energy, recuperate",
+      "examples": [
+        "The week at the spa restored me"
+      ],
+      "synonyms": [
+        "regenerate",
+        "rejuvenate"
+      ]
+    },
+    {
+      "id": "oewn-02315462-v",
+      "partOfSpeech": "v",
+      "definition": "give or bring back",
+      "examples": [
+        "Restore the stolen painting to its rightful owner"
+      ],
+      "synonyms": [
+        "restitute"
+      ]
+    },
+    {
+      "id": "oewn-00261534-v",
+      "partOfSpeech": "v",
+      "definition": "restore by replacing a part or putting together what is torn or broken",
+      "examples": [
+        "She repaired her TV set",
+        "Repair my shoes please"
+      ],
+      "synonyms": [
+        "repair",
+        "mend",
+        "fix",
+        "bushel",
+        "doctor",
+        "furbish up",
+        "touch on"
+      ]
+    },
+    {
+      "id": "oewn-02431646-v",
+      "partOfSpeech": "v",
+      "definition": "bring back into original existence, use, function, or position",
+      "examples": [
+        "restore law and order",
+        "reestablish peace in the region",
+        "restore the emperor to the throne"
+      ],
+      "synonyms": [
+        "reinstate",
+        "reestablish"
+      ]
+    }
+  ]
+}

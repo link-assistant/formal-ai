@@ -83,7 +83,9 @@ pub enum TelemetryError {
 }
 
 /// Configure from already resolved .lenv / `formal-ai with` / environment
-/// values. Resolution belongs to the existing configuration surfaces, so this
+/// values.
+///
+/// Resolution belongs to the existing configuration surfaces, so this
 /// function neither reads unrelated environment data nor uploads it.
 #[derive(Debug, Default, Clone)]
 pub struct Telemetry {
@@ -152,15 +154,21 @@ impl Telemetry {
         let item =
             json!({ "type": "event", "length": payload.len(), "content_type": "application/json" })
                 .to_string();
-        let envelope = format!("{header}\n{item}\n{payload}\n");
+        // A Sentry envelope is newline-terminated lines: header, item
+        // header, then the item payload.
+        let envelope: String = [header, item, payload]
+            .iter()
+            .flat_map(|line| [line.as_str(), "\n"])
+            .collect();
         self.once_available = false;
         transport.send(target, &envelope)?;
         Ok(event_id)
     }
 }
 
-/// Deliberately limited modern DSN parser: HTTPS and a public key only; legacy
-/// secret-bearing DSNs are rejected. Prefix paths are retained for self-hosted
+/// Deliberately limited modern DSN parser: HTTPS and a public key only.
+///
+/// Legacy secret-bearing DSNs are rejected. Prefix paths are retained for self-hosted
 /// servers. Private fields prevent callers bypassing validation.
 #[derive(Debug, Clone)]
 pub struct SentryTarget {

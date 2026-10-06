@@ -5,6 +5,12 @@
 # than an open reference. The shape follows the localized_response_template
 # records in meanings-intent.lino; lexeme blocks are deliberately absent
 # because these are template identifiers, not conversational vocabulary.
+#
+# The later records define the response intents of the creative-composition,
+# formalization, legality, repair, product-search and TRIZ response files
+# (issues #1178, #1186, #836, #1185, #800, #901), plus the two routing intents
+# product_search and triz_resolution that product-search-cues.lino and
+# triz-principles.lino name, each pointing at the file that uses it.
 
 meanings
   statistics
@@ -87,3 +93,187 @@ meanings
     unit "not applicable"
     example "1 week before Friday is Friday. 1 week = 7 days exactly."
     grounding "data/seed/multilingual-responses-quantities.lino"
+  brainstorming_candidates
+    defined-by answer
+    role localized_response_template
+    precondition "a brainstorming request yields topic words from which candidates were composed"
+    effect "the composed name candidates are listed with the stated ranking metric, constraints, and composition rules"
+    unit "not applicable"
+    example "5 name candidates for the concepts coffee, university: ..."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  brainstorming_refusal
+    defined-by answer
+    role localized_response_template
+    precondition "a brainstorming request leaves no topic words after extraction"
+    effect "the request is declined without guessing and the user is asked to name the subject"
+    unit "not applicable"
+    example "This reads as a brainstorming request, but no topic words survived extraction, so I will not guess."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_poem
+    defined-by answer
+    role localized_response_template
+    precondition "a rhymed poem was composed and passed its line-count, rhyme-scheme, and topic checks"
+    effect "the poem is returned with the constraint check that was run on it and the method that composed it"
+    unit "not applicable"
+    example "a four-line poem about the sea followed by its line, rhyme, and topic checks"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_unrhymed
+    defined-by answer
+    role localized_response_template
+    precondition "a poem was requested with no rhyme scheme and passed its line-count and topic checks"
+    effect "the poem is returned with its constraint check and no rhyme claim"
+    unit "not applicable"
+    example "an unrhymed three-line poem about autumn with its line and topic checks"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_gap
+    defined-by answer
+    role localized_response_template
+    precondition "a rhymed poem was requested but the rhyme lexicon could not fill the scheme"
+    effect "free verse meeting the other constraints is returned with the rhyme gap stated"
+    unit "not applicable"
+    example "a free-verse poem with a note that the requested rhyme scheme could not be filled"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_refusal
+    defined-by answer
+    role localized_response_template
+    precondition "no composition satisfied the stated form constraints"
+    effect "no constraint-violating poem is returned and the user is asked to relax a constraint"
+    unit "not applicable"
+    example "I could not satisfy the stated form constraints (lines: 14, scheme: ABAB, topic: sleep)."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_itinerary
+    defined-by answer
+    role localized_response_template
+    precondition "a trip-planning request names a cached destination and the schedule passed its feasibility check"
+    effect "a day-by-day itinerary is returned with each item citing the fact it depends on"
+    unit "not applicable"
+    example "2-day itinerary for Rome: ..."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_refusal
+    defined-by answer
+    role localized_response_template
+    precondition "a trip-planning request names a destination with no places in the seeded cache"
+    effect "no uncited plan is returned and the cached destinations are listed"
+    unit "not applicable"
+    example "This reads as a planning request, but the destination has no places in the seeded cache."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_infeasible
+    defined-by answer
+    role localized_response_template
+    precondition "a composed schedule failed its own feasibility check"
+    effect "the failing schedule is withheld and the failed checks are reported"
+    unit "not applicable"
+    example "The 5-day schedule for Rome did not pass its own feasibility check."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  advice_guidance
+    defined-by answer
+    role localized_response_template
+    precondition "an advice request names a topic with formalized recommendations in the seeded table"
+    effect "evidence-graded recommendations are listed with their citations and stated weighting"
+    unit "not applicable"
+    example "Evidence-graded guidance for sleep: ..."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  advice_refusal
+    defined-by answer
+    role localized_response_template
+    precondition "an advice request names a topic with no formalized recommendations"
+    effect "no uncited advice is returned and the covered topics are named"
+    unit "not applicable"
+    example "This reads as an advice request, but the topic has no formalized recommendations in the seeded table."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  formalization_result
+    defined-by answer
+    role localized_response_template
+    precondition "a natural-language statement was parsed into a quantified formula"
+    effect "the rendered formal statement is returned with its honesty note and derivation"
+    unit "not applicable"
+    example "Formalized statement: forall x (human(x) -> mortal(x))"
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_unparsed
+    defined-by answer
+    role localized_response_template
+    precondition "a formalization request contained no parseable quantified clause"
+    effect "the parse failure reason is stated with what a formalizable sentence needs"
+    unit "not applicable"
+    example "no quantified clause could be parsed from it: no quantifier word found."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_deformalized
+    defined-by answer
+    role localized_response_template
+    precondition "a formal statement was read back into natural language"
+    effect "the natural-language reading is returned with its round-trip result and honesty note"
+    unit "not applicable"
+    example "Natural-language reading: every human is mortal."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_honesty
+    defined-by answer
+    role localized_response_template
+    precondition "a formalization or deformalization answer is rendered"
+    effect "the answer states that no theorem prover was invoked and what the Lean and Rocq texts are"
+    unit "not applicable"
+    example "No theorem prover was invoked."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  legality_warn
+    defined-by answer
+    role localized_response_template
+    precondition "a request matched a warn-disposition pattern of the seeded legality catalogue"
+    effect "an advisory caution names the matched category, its jurisdiction note, and leaves the decision to the user"
+    unit "not applicable"
+    example "A caution before I continue: this request appears to touch copyright."
+    grounding "data/seed/multilingual-responses-legality.lino"
+  legality_refuse
+    defined-by answer
+    role localized_response_template
+    precondition "a request matched a refuse-disposition pattern of the narrow prohibited set"
+    effect "the request is declined with the matched category and reason, stating it is not legal advice"
+    unit "not applicable"
+    example "I will not help with this: it falls under a category the seeded catalogue refuses without exception."
+    grounding "data/seed/multilingual-responses-legality.lino"
+  repair_ladder_exhausted
+    defined-by answer
+    role localized_response_template
+    precondition "the error-driven repair loop reached its rung bound without resolving the failure"
+    effect "the loop stops and reports the rungs climbed instead of retrying without a bound"
+    unit "not applicable"
+    example "The error-driven repair loop climbed rung 3 of at most 3 without resolving the failure."
+    grounding "data/seed/multilingual-responses-repair.lino"
+  repair_unresolved_need
+    defined-by answer
+    role localized_response_template
+    precondition "the diagnostic search found no fetched source addressing the exact error"
+    effect "no candidate fix is retained and the gap is reported as an unresolved need"
+    unit "not applicable"
+    example "The diagnostic search found no fetched source that addresses this exact error."
+    grounding "data/seed/multilingual-responses-repair.lino"
+  product_search_result
+    defined-by answer
+    role localized_response_template
+    precondition "a product-search request named a product and a marketplace"
+    effect "the composed site-scoped search link is returned with the constraints and buying advice, stated as not fetched"
+    unit "not applicable"
+    example "Here is the search I composed for a laptop charger on the named marketplace."
+    grounding "data/seed/multilingual-responses-product-search.lino"
+  triz_resolution_map
+    defined-by answer
+    role localized_response_template
+    precondition "a contradiction or paradox request was recognized by the TRIZ cues"
+    effect "the resolution families and benchmark precedents are listed with the link-value note"
+    unit "not applicable"
+    example "A contradiction is a link with a value, not a wall. Ways through: ..."
+    grounding "data/seed/multilingual-responses-triz.lino"
+  product_search
+    defined-by method
+    role action
+    precondition "a request asks to find or choose a product to buy"
+    effect "routes the request to the product-search handler that composes a site-scoped search"
+    unit "not applicable"
+    example "find me a laptop charger on the marketplace"
+    grounding "data/seed/product-search-cues.lino"
+  triz_resolution
+    defined-by method
+    role action
+    precondition "a request states a contradiction, paradox, or trade-off to resolve"
+    effect "routes the request to the TRIZ solver that maps it to resolution families"
+    unit "not applicable"
+    example "how do I resolve the trade-off between strength and weight"
+    grounding "data/seed/triz-principles.lino"

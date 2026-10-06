@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q17118377": {
+      "type": "item",
+      "id": "Q17118377",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "Swift語言"
+        },
+        "en": {
+          "language": "en",
+          "value": "Swift"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्विफ्ट"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования, созданный компанией Apple"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "en": {
+          "language": "en",
+          "value": "general-purpose, multi-paradigm, compiled programming language"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蘋果公司開發的編程語言"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Swift语言"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Apple Swift"
+          },
+          {
+            "language": "en",
+            "value": "Swift programming language"
+          },
+          {
+            "language": "en",
+            "value": "Swift language"
+          },
+          {
+            "language": "en",
+            "value": "Swift (Apple programming language)"
+          },
+          {
+            "language": "en",
+            "value": "Swiftlang"
+          },
+          {
+            "language": "en",
+            "value": "Swift.org"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

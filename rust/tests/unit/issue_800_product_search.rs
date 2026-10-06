@@ -23,10 +23,24 @@ fn handled(prompt: &str) -> Option<formal_ai::engine::SymbolicAnswer> {
     handle_product_search(prompt, &normalize_prompt(prompt), &mut EventLog::new())
 }
 
+/// The exact answer for the reported prompt: the matched noun's surface
+/// stem, the site-scoped link (stem, other product terms, model code, brand
+/// words, percent-encoded), no stated constraints, and the charger advice.
+const EXPECTED_ANSWER: &str = concat!(
+    "Here is the search I composed for зарядк on amazon in:\n",
+    "\n",
+    "https://www.amazon.in/s?k=%D0%B7%D0%B0%D1%80%D1%8F%D0%B4%D0%BA%20laptop%20A325-45%20Aspire%20Acer\n",
+    "\n",
+    "Constraints you asked for: (none stated)\n",
+    "Before you buy: match the laptop model exactly (the model number is on the underside), then the connector type and the wattage; a lower-wattage charger throttles or refuses to charge\n",
+    "This was not fetched — the link is the exact query I would run, and I ran it in offline mode.",
+);
+
 #[test]
 fn the_reported_amazon_in_prompt_composes_the_search() {
     let answer = handled("Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in")
         .expect("the reported shopping request must be handled");
+    assert_eq!(answer.answer, EXPECTED_ANSWER);
     assert!(
         answer.answer.contains("amazon.in/s?k="),
         "the site-scoped link must be composed: {}",
@@ -43,6 +57,7 @@ fn the_reported_amazon_in_prompt_composes_the_search() {
 fn the_answer_states_offline_honesty_and_buying_advice() {
     let answer = handled("Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in")
         .expect("handled");
+    assert_eq!(answer.answer, EXPECTED_ANSWER);
     assert!(
         answer.answer.contains("не загружал") || answer.answer.contains("not fetched"),
         "offline honesty is mandatory: {}",

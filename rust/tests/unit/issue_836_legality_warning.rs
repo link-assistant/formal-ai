@@ -25,6 +25,21 @@ fn assessed(prompt: &str) -> Option<formal_ai::legality_warning::LegalityAssessm
     assess(prompt, &normalize_prompt(prompt))
 }
 
+/// The exact caution for a `property_crime` match. The seeded pattern carries
+/// no `reason`, so the `{reason}` slot renders empty after the category
+/// sentence; the template is the English one for both the English and the
+/// Russian prompt.
+const WARN_ANSWER: &str = concat!(
+    "A caution before I continue: this request appears to touch property crime. \n",
+    "Why I flag it: the phrase matched the property_crime pattern in the seeded legality catalogue.\n",
+    "Where it applies: unauthorized entry is a crime in every jurisdiction; the phrase is what triggered this\n",
+    "You can rephrase, explain a legitimate purpose, or withdraw the request — the choice is yours. If you continue, I will answer within these limits.\n",
+    "This warning is not legal advice and may be imperfect.",
+);
+
+/// The exact refusal for a `child_safety` match, with the seeded reason.
+const REFUSE_ANSWER: &str = "I will not help with this: it falls under child safety, which the seeded catalogue marks as refused without exception (sexual content involving minors is unlawful essentially everywhere and is not produced or assisted with). Everything else stays open to you, and this judgment is not legal advice.";
+
 #[test]
 fn the_seeded_catalogue_carries_both_dispositions() {
     let patterns = legality_patterns();
@@ -50,6 +65,7 @@ fn breaking_in_warns_with_category_reason_and_disclaimer() {
         &mut EventLog::new(),
     )
     .expect("a property-crime request must be flagged");
+    assert_eq!(answer.answer, WARN_ANSWER);
     assert_eq!(answer.intent, "legality_warn");
     assert!(
         answer.answer.contains("property crime"),
@@ -76,6 +92,7 @@ fn the_narrow_refuse_set_refuses() {
         &mut EventLog::new(),
     )
     .expect("the refuse set must fire");
+    assert_eq!(answer.answer, REFUSE_ANSWER);
     assert_eq!(answer.intent, "legality_refuse");
     assert!(
         answer.answer.to_lowercase().contains("will not"),
@@ -135,6 +152,7 @@ fn the_russian_twin_warns_too() {
         &mut EventLog::new(),
     )
     .expect("the Russian phrase is seeded too");
+    assert_eq!(answer.answer, WARN_ANSWER);
     assert!(
         answer
             .answer

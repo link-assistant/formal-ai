@@ -1,0 +1,29 @@
+{
+  "lemma": "verification",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05833569-n",
+      "partOfSpeech": "n",
+      "definition": "additional proof that something that was believed (some fact or hypothesis or theory) is correct",
+      "examples": [
+        "fossils provided further confirmation of the evolutionary theory"
+      ],
+      "synonyms": [
+        "confirmation",
+        "check",
+        "substantiation"
+      ]
+    },
+    {
+      "id": "oewn-06749518-n",
+      "partOfSpeech": "n",
+      "definition": "(law) an affidavit attached to a statement confirming the truth of that statement"
+    }
+  ]
+}

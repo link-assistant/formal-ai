@@ -1,0 +1,82 @@
+language en
+lemma note
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a brief written record"
+    examples ("he made a note of the appointment")
+    id oewn-06516453-n
+    partOfSpeech n
+  entry
+    definition "a short personal letter"
+    examples ("drop me a line when you get there")
+    id oewn-06638793-n
+    partOfSpeech n
+    synonyms ("short letter" line billet)
+  entry
+    definition "a notation representing the pitch and duration of a musical sound"
+    examples ("the singer held the note too long")
+    id oewn-06878395-n
+    partOfSpeech n
+    synonyms ("musical note" tone)
+  entry
+    definition "a tone of voice that shows what the speaker is feeling"
+    examples ("there was a note of uncertainty in his voice")
+    id oewn-07097011-n
+    partOfSpeech n
+  entry
+    definition "a characteristic emotional quality"
+    examples ("it ended on a sour note" "there was a note of gaiety in her manner" "he detected a note of sarcasm")
+    id oewn-04734952-n
+    partOfSpeech n
+  entry
+    definition "a piece of paper money (especially one issued by a central bank)"
+    examples ("he peeled off five one-thousand-zloty notes")
+    id oewn-13414935-n
+    partOfSpeech n
+    synonyms (bill "government note" "bank bill" "banker's bill" "bank note" banknote "Federal Reserve note" greenback)
+  entry
+    definition "a comment or instruction (usually added)"
+    examples ("his notes were appended at the end of the article" "he added a short notation to the address on the envelope")
+    id oewn-06775984-n
+    partOfSpeech n
+    synonyms (annotation notation)
+  entry
+    definition "high status importance owing to marked superiority"
+    examples ("a scholar of great eminence")
+    id oewn-14458911-n
+    partOfSpeech n
+    synonyms (eminence distinction preeminence)
+  entry
+    definition "a promise to pay a specified amount on demand or at a certain time"
+    examples ("I had to co-sign his note at the bank")
+    id oewn-13419642-n
+    partOfSpeech n
+    synonyms ("promissory note" "note of hand")
+  entry
+    definition "make mention of"
+    examples ("She observed that his presentation took up too much time" "They noted that it was a fine day to go sailing")
+    id oewn-01022014-v
+    partOfSpeech v
+    synonyms (observe mention remark)
+  entry
+    definition "notice or perceive"
+    examples ("She noted that someone was following her" "mark my words")
+    id oewn-02122959-v
+    partOfSpeech v
+    synonyms (notice mark)
+  entry
+    definition "observe with care or pay close attention to"
+    examples ("Take note of this chemical reaction")
+    id oewn-02123398-v
+    partOfSpeech v
+    synonyms ("take note" observe)
+  entry
+    definition "make a written note of"
+    examples ("she noted everything the teacher said that morning")
+    id oewn-01022943-v
+    partOfSpeech v
+    synonyms ("take down")
+source "oewn:2024"

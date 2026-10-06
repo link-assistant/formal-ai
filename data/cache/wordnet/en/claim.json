@@ -1,0 +1,122 @@
+{
+  "lemma": "claim",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06742613-n",
+      "partOfSpeech": "n",
+      "definition": "an assertion of a right (as to money or property)",
+      "examples": [
+        "his claim asked for damages"
+      ]
+    },
+    {
+      "id": "oewn-06743312-n",
+      "partOfSpeech": "n",
+      "definition": "an assertion that something is true or factual",
+      "examples": [
+        "his claim that he was innocent",
+        "evidence contradicted the government's claims"
+      ]
+    },
+    {
+      "id": "oewn-01063869-n",
+      "partOfSpeech": "n",
+      "definition": "demand for something as rightful or due",
+      "examples": [
+        "they struck in support of their claim for a shorter work day"
+      ]
+    },
+    {
+      "id": "oewn-05183431-n",
+      "partOfSpeech": "n",
+      "definition": "an informal right to something",
+      "examples": [
+        "his claim on her attentions",
+        "his title to fame"
+      ],
+      "synonyms": [
+        "title"
+      ]
+    },
+    {
+      "id": "oewn-05188726-n",
+      "partOfSpeech": "n",
+      "definition": "an established or recognized right",
+      "examples": [
+        "a strong legal claim to the property",
+        "he had no documents confirming his title to his father's estate",
+        "he staked his claim"
+      ],
+      "synonyms": [
+        "title"
+      ]
+    },
+    {
+      "id": "oewn-07206789-n",
+      "partOfSpeech": "n",
+      "definition": "a demand",
+      "synonyms": [
+        "call"
+      ]
+    },
+    {
+      "id": "oewn-00758383-v",
+      "partOfSpeech": "v",
+      "definition": "assert or affirm strongly; state to be true or existing",
+      "examples": [
+        "He claimed that he killed the burglar"
+      ]
+    },
+    {
+      "id": "oewn-02280210-v",
+      "partOfSpeech": "v",
+      "definition": "demand as being one's due or property; assert one's right or title to",
+      "examples": [
+        "He claimed his suitcases at the airline counter",
+        "Mr. Smith claims special tax exemptions because he is a foreign resident"
+      ],
+      "synonyms": [
+        "lay claim",
+        "arrogate"
+      ]
+    },
+    {
+      "id": "oewn-01020361-v",
+      "partOfSpeech": "v",
+      "definition": "ask for legally or make a legal claim to, as of debts, for example",
+      "examples": [
+        "They claimed on the maximum allowable amount"
+      ]
+    },
+    {
+      "id": "oewn-00760378-v",
+      "partOfSpeech": "v",
+      "definition": "lay claim to; as of an idea",
+      "examples": [
+        "She took credit for the whole idea"
+      ],
+      "synonyms": [
+        "take"
+      ]
+    },
+    {
+      "id": "oewn-00758121-v",
+      "partOfSpeech": "v",
+      "definition": "take as an undesirable consequence of some event or state of affairs",
+      "examples": [
+        "the accident claimed three lives",
+        "The hard work took its toll on her"
+      ],
+      "synonyms": [
+        "take",
+        "exact"
+      ]
+    }
+  ]
+}

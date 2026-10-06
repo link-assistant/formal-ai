@@ -393,6 +393,16 @@ impl UniversalSolver {
             record_intent_formalization(&mut log, &intent_entry);
             let intent_formalization = intent_entry.formalization;
 
+            // R1012: the general loop runs ahead of the handler table. A
+            // program verified against the request's examples, or one every
+            // word of the request grounds, answers here (`metaReason` at the
+            // top of `solveImpl`, js/worker/formal_ai_worker_20.js).
+            if let Some(answer) =
+                crate::meta_reasoner::try_meta_answer(prompt, language.slug(), &mut log)
+            {
+                return answer;
+            }
+
             // Issue #661 (R384): before any contextual handler runs (a language
             // directive would otherwise be replayed by the response-language
             // follow-up), check whether this newly formalized requirement
@@ -751,6 +761,9 @@ impl UniversalSolver {
                 execution_recipe,
             }
         })();
+        // R1012: a handler that admits an impasse hands the turn to the
+        // general loop (`metaResolveImpasse`, js/worker/formal_ai_worker_20.js).
+        crate::meta_reasoner::resolve_impasse(prompt, &mut answer, &mut log);
         crate::derivation::finalize_answer(&mut answer, &mut log);
         answer
     }

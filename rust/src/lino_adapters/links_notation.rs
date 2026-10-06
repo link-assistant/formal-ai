@@ -49,15 +49,14 @@ pub fn convert(link: &Link) -> Result<LinoNode, ParseError> {
             .clone()
             .ok_or_else(|| ParseError::SyntaxError(String::from("missing_scalar")))
     };
-    let (name, values) = match &link.id {
-        Some(name) => (name.clone(), link.values.as_slice()),
-        None => {
-            let (head, tail) = link
-                .values
-                .split_first()
-                .ok_or_else(|| ParseError::SyntaxError(String::from("missing_head")))?;
-            (scalar(head)?, tail)
-        }
+    let (name, values) = if let Some(name) = &link.id {
+        (name.clone(), link.values.as_slice())
+    } else {
+        let (head, tail) = link
+            .values
+            .split_first()
+            .ok_or_else(|| ParseError::SyntaxError(String::from("missing_head")))?;
+        (scalar(head)?, tail)
     };
     let id = values
         .iter()
@@ -72,8 +71,9 @@ pub fn convert(link: &Link) -> Result<LinoNode, ParseError> {
     Ok(LinoNode { name, id, children })
 }
 
-/// Render indentation with the crate's scalar encoder. Calling LiNo's Display
+/// Render indentation with the crate's scalar encoder. Calling `LiNo`'s Display
 /// would omit escaping, and flattening children would erase the seed hierarchy.
+#[must_use]
 pub fn format_lino(root: &LinoNode) -> String {
     fn emit(node: &LinoNode, depth: usize, config: &FormatConfig, out: &mut String) {
         out.push_str(&"  ".repeat(depth));

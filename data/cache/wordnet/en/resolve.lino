@@ -1,0 +1,58 @@
+language en
+lemma resolve
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the trait of being resolute"
+    examples ("his resoluteness carried him through the battle" "it was his unshakeable resolution to finish the work")
+    id oewn-04868717-n
+    partOfSpeech n
+    synonyms (resoluteness firmness "firmness of purpose" resolution)
+  entry
+    definition "a formal expression by a meeting; agreed to by a vote"
+    id oewn-06523865-n
+    partOfSpeech n
+    synonyms (resolution declaration)
+  entry
+    definition "bring to an end; settle conclusively"
+    examples ("The case was decided" "The judge decided the case in favor of the plaintiff" "The father adjudicated when the sons were quarreling over their inheritance")
+    id oewn-00700621-v
+    partOfSpeech v
+    synonyms (decide settle adjudicate)
+  entry
+    definition "reach a conclusion after a discussion or deliberation"
+    id oewn-01023429-v
+    partOfSpeech v
+    synonyms (conclude)
+  entry
+    definition "reach a decision"
+    examples ("he resolved never to drink again")
+    id oewn-00701392-v
+    partOfSpeech v
+    synonyms (purpose)
+  entry
+    definition "understand the meaning of"
+    examples ("The question concerning the meaning of life cannot be answered")
+    id oewn-00637185-v
+    partOfSpeech v
+    synonyms (answer)
+  entry
+    definition "make clearly visible"
+    examples ("can this image be resolved?")
+    id oewn-02198058-v
+    partOfSpeech v
+  entry
+    definition "find the solution"
+    examples ("solve an equation" "solve for x")
+    id oewn-00735067-v
+    partOfSpeech v
+    synonyms (solve)
+  entry
+    definition "cause to go into a solution"
+    examples ("The recipe says that we should dissolve a cup of sugar in two cups of water")
+    id oewn-00448264-v
+    partOfSpeech v
+    synonyms (dissolve "break up")
+source "oewn:2024"

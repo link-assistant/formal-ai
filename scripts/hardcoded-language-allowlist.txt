@@ -51,13 +51,10 @@ rust/src/agentic_coding/file_read.rs	I can read the selected file after listing 
 rust/src/agentic_coding/file_read.rs	I can resolve that file selection when the client advertises a shell tool for listing files.
 rust/src/agentic_coding/file_read.rs	No files were listed in `{directory}`.
 rust/src/agentic_coding/file_read.rs	find {} -maxdepth 1 -type f | sed 's#^.*/##' | sort
-rust/src/agentic_coding/file_read/audit.rs	- `{path}`: {summary}
 rust/src/agentic_coding/file_read/audit.rs	Read {} file(s):
 rust/src/agentic_coding/file_read/audit.rs	Value of `{key}` in `{path}`: {value}
-rust/src/agentic_coding/formalization_recipe.rs	cat {KB_PATH}
 rust/src/agentic_coding/formalization_recipe.rs	the source text ({})
 rust/src/agentic_coding/general_planner.rs	append the composed plan to {PLAN_PATH}
-rust/src/agentic_coding/general_planner.rs	cat {target}
 rust/src/agentic_coding/general_planner.rs	workspace file {target}
 rust/src/agentic_coding/general_planner.rs	write the requested content to {target}
 rust/src/agentic_coding/general_planner.rs	written plan event {}
@@ -106,13 +103,11 @@ rust/src/agentic_coding/structured_document.rs	Derived `{}` from `{}` and verifi
 rust/src/agentic_coding/structured_document.rs	The client reported writing `{}`, but returned no inspectable content.
 rust/src/agentic_coding/structured_document.rs	The read-back of `{}` did not match the derived Links Notation.
 rust/src/agentic_coding/structured_document.rs	The structured document could not be written to `{}`.
-rust/src/agentic_coding/write_request.rs	{line}\n\n{body}\n
 rust/src/associative_package.rs	Package handler: {}
 rust/src/associative_package.rs	Package permission: {}
 rust/src/associative_package.rs	Package trigger: {}
 rust/src/associative_package.rs	no installed associative package grants {capability}
 rust/src/associative_persistence.rs	unresolved evidence link: {reference}
-rust/src/attachment_context.rs	{message}\n\n{context}
 rust/src/authoring_loop.rs	--pull-request must be a canonical GitHub pull-request URL: {pull_request}
 rust/src/authoring_loop.rs	--seed is not a directory: {}
 rust/src/authoring_loop.rs	Formal-AI-Session: {session_marker}\nFormal-AI-Model: {model}\nFormal-AI-Evidence: {evidence_relative}\nFormal-AI-Pull-Request: {pull_request}\n
@@ -123,20 +118,14 @@ rust/src/authoring_loop.rs	no artifact contains: {expected}
 rust/src/authoring_loop.rs	the Agent CLI did not write {produced}
 rust/src/authoring_loop.rs	the Agent CLI exited {agent_status}
 rust/src/authoring_loop.rs	the stderr classifier is missing: {}
-rust/src/authoring_loop.rs	{message}\n\n{trailers}
 rust/src/authoring_loop.rs	{{\"provider\":{{\"formalai\":{{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{{\"baseURL\":\"http://127.0.0.1:{port}/api/openai/v1\",\"apiKey\":\"local\"}},\"models\":{{\"formal-ai\":{{\"name\":\"Formal AI\"}}}}}},\"model\":\"formalai/formal-ai\"}}}}
 rust/src/calculation.rs	Interpreted \"{}\" as \"{}\".
-rust/src/calculation_word_problem.rs	Box {id} = {factor} * {source_value} = {value} {result_label}.
-rust/src/calculation_word_problem.rs	Box {id} = {source_value} + {addend} = {value} {result_label}.
-rust/src/calculation_word_problem.rs	Box {id} = {value} {result_label}.
-rust/src/calculation_word_problem.rs	Total = {expression} {result_label}.
 rust/src/calculation_word_problem.rs	[COMPARE] Formal-ai uses the same relative-speed equation as the direct solution; the verification tags make each assumption and arithmetic check explicit.
 rust/src/calculation_word_problem.rs	[STEP 1] Define variables: distance = {distance_text} km, {} train speed = {first_speed_text} km/h, {} train speed = {second_speed_text} km/h, and t = meeting time in hours. [VERIFY] Units are consistent: kilometers divided by kilometers per hour gives hours.
 rust/src/calculation_word_problem.rs	[STEP 2] Write equation: ({first_speed_text} + {second_speed_text}) * t = {distance_text}. [VERIFY] The trains move toward each other, so their relative speed is {relative_speed_text} km/h.
 rust/src/calculation_word_problem.rs	[STEP 3] Solve algebraically: t = {distance_text} / ({first_speed_text} + {second_speed_text}) = {time_text} hours. [VERIFY] {first_speed_text} + {second_speed_text} = {relative_speed_text} and {distance_text} / {relative_speed_text} = {time_text}.
 rust/src/calculation_word_problem.rs	[STEP 4] Interpret result: the {} train travels {first_speed_text} * {time_text} = {first_distance_text} km; the {} train travels {second_speed_text} * {time_text} = {second_distance_text} km. [VERIFY] {first_distance_text} + {second_distance_text} = {distance_text} km.
 rust/src/calculation_word_problem.rs	[STEP 5] Convert to user-friendly format: they meet after {time_text} hours, {first_distance_text} km from {} and {second_distance_text} km from {}. [VERIFY] Both distances add to the stated route length.
-rust/src/calculation_word_problem.rs	{distance_text} / ({first_speed_text} + {second_speed_text})
 rust/src/change_request.rs	  reviewable_pull_request\n
 rust/src/change_request.rs	Accepted change `{}` for request \"{}\": requirement \"{}\", test `{}`, mapped onto {}, gated by {} passing case(s), approved by {}.
 rust/src/change_request.rs	Add the failing test `{test}` that pins the requested behaviour
@@ -149,7 +138,6 @@ rust/src/cli_benchmark.rs	failed to read {}: {error}
 rust/src/cli_benchmark.rs	failed to write {}: {error}
 rust/src/cli_benchmark.rs	formal-ai benchmark run --suite {} --slice {slice}{}
 rust/src/cli_benchmark.rs	ledger ratchet violated:\n{}
-rust/src/cli_benchmark.rs	unavailable: {reason}
 rust/src/cli_benchmark.rs	unknown suite `{selector}`; known suites: {}
 rust/src/cli_bundle.rs	Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.
 rust/src/cli_bundle.rs	{} does not appear to be a formal_ai_bundle Links Notation document
@@ -211,12 +199,9 @@ rust/src/coding/catalog/languages.rs	The Ruby seed is returned with this warning
 rust/src/coding/catalog/languages.rs	The Scala seed is returned with this warning until a scalac-backed execution profile is available.
 rust/src/coding/catalog/languages.rs	The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.
 rust/src/coding/catalog/tasks.rs	Hello, world!
-rust/src/coding/catalog/types.rs	printf '{}' | {run_command}
 rust/src/coding/catalog/types.rs	write_program(language={}, task={})
-rust/src/coding/composition_search.rs	{first}, {second}
 rust/src/coding/guidance.rs	Check that it compiles: `{check_command}`.
 rust/src/coding/guidance.rs	Compare the output with the expected output shown above.
-rust/src/coding/guidance.rs	Install {setup_hint}.
 rust/src/coding/guidance.rs	Run it: `{run_command}`.
 rust/src/coding/guidance.rs	Save the code above to a file named `{save_as}`.
 rust/src/coding/guidance.rs	Test the updated program the same way as before: save the code to `{save_as}` and run `{run_command}` again.
@@ -232,7 +217,6 @@ rust/src/coding/guidance.rs	The program reads the entries of the current directo
 rust/src/coding/guidance.rs	The program takes the directory path from the first command-line argument (falling back to the current directory when none is given), reads that directory's entries, keeps only the regular files, sorts their names alphabetically, and prints each name on its own line.
 rust/src/coding/guidance.rs	The program takes the directory path from the first command-line argument (falling back to the current directory when none is given), reads that directory's entries, keeps only the regular files, sorts their names in reverse alphabetical order, and prints each name on its own line.
 rust/src/coding/guidance.rs	The program takes the string `hello`, reverses the order of its characters, and prints the result, `olleh`.
-rust/src/coding/guidance.rs	{heading}\n{numbered}
 rust/src/coding/guidance.rs	Запустите программу: `{run_command}`.
 rust/src/coding/guidance.rs	Проверьте обновлённую программу так же, как и раньше: сохраните код в файл `{save_as}` и снова выполните `{run_command}`.
 rust/src/coding/guidance.rs	Проверьте, что код компилируется: `{check_command}`.
@@ -257,12 +241,6 @@ rust/src/coding/guidance.rs	जाँचें कि कोड संकलि�
 rust/src/coding/guidance.rs	टूलचेन इंस्टॉल करें: {setup_hint}।
 rust/src/coding/guidance.rs	प्रोग्राम चलाएँ: `{run_command}`।
 rust/src/coding/guidance.rs	像之前一样测试更新后的程序：将代码保存到文件 `{save_as}`，然后再次运行 `{run_command}`。
-rust/src/coding/guidance.rs	将上面的代码保存到文件 `{save_as}`。
-rust/src/coding/ir_lowering/python.rs	dict[{key}, {value}]
-rust/src/coding/ir_lowering/python.rs	tuple[{left}, {right}]
-rust/src/coding/ir_lowering/python.rs	{imports}\n\n{function}
-rust/src/coding/ir_lowering/python.rs	{imports}\n{program}
-rust/src/coding/recurrence.rs	def {function_name}({}):\n
 rust/src/coding/recurrence.rs	invalid {operation:?} boundary operands
 rust/src/coding/recurrence.rs	missing descriptor for source function {function_zid}
 rust/src/coding/recurrence.rs	no seeded operation matches fetched label for {}
@@ -270,10 +248,7 @@ rust/src/coding/recurrence.rs	source call is missing argument {key}
 rust/src/coding/recurrence.rs	unknown source reference {key}
 rust/src/coding/recurrence.rs	unsupported non-integer literal {value}
 rust/src/coding/recurrence.rs	{} if {} else {}
-rust/src/coding/task_spec.rs	def {function_name}(
 rust/src/concepts.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
-rust/src/concepts.rs	{normalized} {context}
-rust/src/concepts.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
 rust/src/dreaming.rs	  action {:?} event={} bytes={} usage={} reason={}
 rust/src/dreaming.rs	  candidate_task topic={} source={} passed={}
 rust/src/dreaming.rs	  free_bytes: {free}
@@ -310,7 +285,6 @@ rust/src/engine.rs	rule_identity answer={}
 rust/src/engine.rs	rule_test_status answer={}
 rust/src/engine.rs	rule_unknown answer={}
 rust/src/engine.rs	rule_write_program parameters=language,task languages={} tasks={}
-rust/src/engine.rs	step_{index} {} {}
 rust/src/engine.rs	Вот минимальная программа на языке {language_name} ({task_label}):
 rust/src/engine.rs	Статус выполнения: {status_phrase} в среде «{environment}».
 rust/src/engine.rs	निष्पादन स्थिति: {status_phrase} ({environment} में)।
@@ -351,8 +325,6 @@ rust/src/external_benchmarks/grade.rs	failed to create {}: {error}
 rust/src/external_benchmarks/grade.rs	failed to run python3: {error}
 rust/src/external_benchmarks/grade.rs	failed to write {}: {error}
 rust/src/external_benchmarks/grade.rs	python exited with {}: {}
-rust/src/external_benchmarks/grade.rs	{code}\n\n{setup}\n\n{}\n
-rust/src/external_benchmarks/grade.rs	{code}\n\n{test_code}\n\ncheck({entry_point})\n
 rust/src/external_benchmarks/learning.rs	  frontier_prompt\n
 rust/src/external_benchmarks/learning.rs	the frontier needs {} continuation parts but only {provisioned_parts} are provisioned; widen the embedding before writing
 rust/src/external_benchmarks/ledger.rs	line {}: expected `key \"value\"`, got `{line}`
@@ -372,7 +344,6 @@ rust/src/external_benchmarks/ratchet.rs	{} {}: the recorded result row at slice 
 rust/src/external_benchmarks/ratchet.rs	{} {}: total={} does not equal slice={}
 rust/src/gemini.rs	Formal AI symbolic solver exposed through the Gemini generateContent envelope.
 rust/src/gemini.rs	Formal AI symbolic solver exposed through the Vertex AI generateContent envelope.
-rust/src/gemini.rs	data: {response}\n\n
 rust/src/github_logs.rs	# GitHub log capture plan\n
 rust/src/github_logs.rs	GitHub repository must use OWNER/REPO format, got `{repo}`
 rust/src/github_logs.rs	GitHub repository {label} contains unsupported characters: `{value}`
@@ -381,7 +352,6 @@ rust/src/github_logs.rs	failed to create output directory {}: {error}
 rust/src/github_logs.rs	failed to format manifest: {error}
 rust/src/github_logs.rs	failed to start {program}: {error}
 rust/src/github_logs.rs	failed to write {}: {error}
-rust/src/github_logs.rs	{} failed: {error}
 rust/src/google_trends_catalog.rs	    record_type \"google_trend_news_item\"\n
 rust/src/google_trends_catalog.rs	  news_item\n
 rust/src/google_trends_catalog.rs	  record_type \"google_trend_topic\"\n
@@ -393,7 +363,6 @@ rust/src/google_trends_learning.rs	Trending searches are open-domain questions, 
 rust/src/intent_formalization.rs	intent_formalization {}
 rust/src/intent_formalization.rs	referent=active_program_artifact task={} language={}
 rust/src/intent_formalization.rs	write_program task={task_slug} language={language_slug}
-rust/src/intent_formalization.rs	{cache_state} {}
 rust/src/json_lino.rs	aliases `{}` is not a list
 rust/src/json_lino.rs	invalid quoted string `{raw}`
 rust/src/json_lino.rs	invalid quoted string `{raw}`: {error}
@@ -425,19 +394,15 @@ rust/src/links_query.rs	unknown field `{other}`
 rust/src/links_substitution_query/links.rs	`${unbound}` is used on the substitution side but never bound on the matching side
 rust/src/links_substitution_query/links.rs	operand count must match across sides, or one side must be `()`; the matching side has {} and the substitution side has {}
 rust/src/links_substitution_query/links.rs	unbalanced parentheses, or too many slots: {LINK_SLOTS}
-rust/src/links_substitution_query/links.rs	unexpected `{unexpected}`; {LINK_SLOTS}
 rust/src/links_substitution_query/links.rs	{TWO_SIDES}; each side opens with `(`
 rust/src/links_substitution_query/links.rs	{TWO_SIDES}; found only one
 rust/src/links_substitution_query/links.rs	{TWO_SIDES}; found trailing input
-rust/src/links_substitution_query/links.rs	{matching} {substituting}
 rust/src/links_substitution_query/mod.rs	unknown escape `\\{unknown}` in a quoted operand
 rust/src/links_substitution_query/text.rs	`{name}:` is not a recognized operand name; only `terminal:` marks a terminal rule
 rust/src/links_substitution_query/text.rs	operand count must match across sides, or one side must be `()`; the matching side has {} and the substitution side has {}
-rust/src/links_substitution_query/text.rs	unexpected `{unexpected}`; {MUST_QUOTE}
 rust/src/links_substitution_query/text.rs	{TWO_SIDES}; each side opens with `(`
 rust/src/links_substitution_query/text.rs	{TWO_SIDES}; found only one
 rust/src/links_substitution_query/text.rs	{TWO_SIDES}; found trailing input
-rust/src/links_substitution_query/text.rs	{matching} {substituting}
 rust/src/main.rs	Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base covering all nine protocol primitives.
 rust/src/main.rs	the agentic loop did not finish within its turn cap after {} tool call(s)
 rust/src/memory/bundle.rs	  exported_at \"
@@ -482,7 +447,6 @@ rust/src/number_constraints.rs	На вещественных числах тож
 rust/src/number_constraints.rs	На вещественных числах эти ограничения несовместимы.
 rust/src/probability.rs	{} fetched_at={} sha256={} cached={}
 rust/src/program_plan.rs	program_plan\n
-rust/src/program_plan.rs	{MODIFIER_NODE} -> {cancel_op}
 rust/src/promotion.rs	  branch_plan\n
 rust/src/promotion.rs	Materialized seed edit for {} into {}
 rust/src/promotion.rs	Promote learned `reverse` modifier for the list-files program plan.
@@ -500,7 +464,6 @@ rust/src/promotion/gates.rs	canonical gate `{}` succeeded without a parseable pa
 rust/src/promotion/gates.rs	could not execute canonical gate `{}`: {error}
 rust/src/promotion/gates.rs	failed to start `{runner}`: {error}
 rust/src/promotion/gates.rs	suite={}\nrunner={}\nsucceeded={}\nstdout:\n{}\nstderr:\n{}
-rust/src/promotion/gates.rs	{stdout}\n{stderr}
 rust/src/promotion/materialize.rs	Create file {seed_file} containing\n{desired}
 rust/src/promotion/materialize.rs	Formal AI Agent write did not match the promotion target exactly: expected {seed_file} ({} bytes), got {authored_path} ({} bytes)
 rust/src/promotion/materialize.rs	could not read existing seed {}: {error}
@@ -517,8 +480,6 @@ rust/src/proof_engine/arithmetic.rs	Interpret \"{statement}\" as an arithmetic c
 rust/src/proof_engine/arithmetic.rs	The arithmetic evaluator returned no value. Please rewrite the claim using concrete numeric literals.
 rust/src/proof_engine/arithmetic.rs	The evaluated values contradict the asserted relation \"{}\", so the original claim is false.
 rust/src/proof_engine/arithmetic.rs	Therefore {lhs} {} {rhs}, so the claim holds. ∎
-rust/src/proof_engine/arithmetic.rs	{lhs} {} {rhs}
-rust/src/proof_engine/decision/boolean.rs	({premise}) implies ({conclusion})
 rust/src/proof_engine/decision/boolean.rs	Because ¬({formula}) is unsatisfiable, every assignment satisfies {formula}, so it is a tautology. ∎
 rust/src/proof_engine/decision/boolean.rs	DPLL returns the satisfying assignment {}, a countermodel.
 rust/src/proof_engine/decision/boolean.rs	DPLL with unit propagation, pure-literal elimination, and backtracking finds the negation unsatisfiable.
@@ -545,7 +506,6 @@ rust/src/proof_engine/decision/linear.rs	{} is false
 rust/src/proof_engine/decision/linear.rs	{} makes {} false.
 rust/src/proof_engine/decision/linear.rs	{} satisfies every listed constraint.
 rust/src/proof_engine/decision/linear.rs	{} satisfies the premises but makes {} false.
-rust/src/proof_engine/decision/linear.rs	{}: {lower} and {upper}
 rust/src/proof_engine/decision/linear/proofs.rs	A model search over the free variables found {}.
 rust/src/proof_engine/decision/linear/proofs.rs	Adding the negation of the goal makes the interval system unsatisfiable; equivalently, every model of the premises satisfies {}.
 rust/src/proof_engine/decision/linear/proofs.rs	All variable coefficients cancel, so the decision procedure checks a constant relation instead of looking up a named theorem.
@@ -670,12 +630,6 @@ rust/src/proof_engine/presenter.rs	the prompt parses as a claim but did not redu
 rust/src/proof_engine/presenter.rs	treating the request as a claim to be refuted; applying {} and producing a counterexample.
 rust/src/proof_engine/presenter.rs	treating the request as the formal claim \"{}\" and discharging it by {} inside relative-meta-logic.
 rust/src/proof_engine/presenter.rs	which exact statement do you want checked (one sentence)?
-rust/src/proof_engine/presenter.rs	{heading} ({method_intro}: {method_label}).\n\n
-rust/src/proof_engine/presenter.rs	{heading} ({method_intro}: {method_label}).\n\n{counter_label}: {counterexample}
-rust/src/proof_engine/presenter.rs	{heading} ({method_intro}: {method_label}).\n\n{statement_label}: {statement}\n
-rust/src/proof_engine/presenter.rs	{heading}.\n\n{reason}
-rust/src/proof_engine/presenter.rs	{label}: {detail}
-rust/src/proof_engine/presenter.rs	{label}\n{intro}\n
 rust/src/proof_engine/presenter.rs	в какой системе аксиом (PA, ZFC, ньютоновская механика, …)?
 rust/src/proof_engine/presenter.rs	если требуется ровно это утверждение, нужно ли добавить аксиому, при которой контрпример исключается?
 rust/src/proof_engine/presenter.rs	есть ли предпочитаемая техника доказательства?
@@ -730,7 +684,6 @@ rust/src/retrieval_procedures.rs	Here is what I know about '{concept}':\n\ninten
 rust/src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
 rust/src/retrieval_procedures.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
 rust/src/retrieval_procedures.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
-rust/src/retrieval_procedures.rs	{intro}\n\n{summary}
 rust/src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 rust/src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
 rust/src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm
@@ -738,7 +691,6 @@ rust/src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown 
 rust/src/rule_synthesis.rs	rustc --edition=2024 {primary} -o substitution_program
 rust/src/rule_synthesis.rs	write_program task={} language={}
 rust/src/seed.rs	formal_ai_seed_bundle\n
-rust/src/seed/meanings/parse.rs	{surface} denotes {parent_meaning}
 rust/src/seed/meanings/parse.rs	{} defined by {}
 rust/src/self_explanation.rs	An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning.
 rust/src/self_explanation.rs	Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests.
@@ -753,15 +705,12 @@ rust/src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); {} les
 rust/src/self_improvement.rs	  learned_rule\n
 rust/src/self_improvement.rs	  rejected_trace\n
 rust/src/self_improvement.rs	Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{}` is {} ({}/{}).
-rust/src/self_improvement.rs	invalid {name} `{value}`
 rust/src/self_improvement.rs	learned rule does not parse: {error}
 rust/src/self_improvement.rs	missing `{name}` in candidate
 rust/src/self_improvement.rs	rule verification did not pass: {status}
 rust/src/self_improvement.rs	substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"{rule_id}\"\n    order \"90\"\n    event \"learned\"\n    when \"request:modifier -> {modifier}\"\n    replace \"request:task -> {base_task}\"\n      with \"request:task -> {resolved_task}\"
-rust/src/self_improvement.rs	{prompt}\n{fingerprint}
 rust/src/self_source_links.rs	Projected {faithful}/{total} owned source modules losslessly through the meta-language links network ({permille}‰ round-trip coverage, {nodes} named AST nodes).
 rust/src/server.rs	data: [DONE]\n\n
-rust/src/server.rs	data: {merged}\n\n
 rust/src/server.rs	failed to persist memory: {error}
 rust/src/server.rs	failed to serialize response: {error}
 rust/src/server.rs	invalid chat request: {error}
@@ -771,8 +720,6 @@ rust/src/server.rs	invalid responses request: {error}
 rust/src/server.rs	unsupported model `{model}`; use `{}` or a configured alias
 rust/src/shared_dialog.rs	failed to decode ChatGPT React Router stream string: {error}
 rust/src/shared_dialog.rs	failed to parse ChatGPT React Router payload as JSON: {error}
-rust/src/skill_compiler.rs	{normalized_trigger}\n{response}
-rust/src/skill_compiler.rs	{trigger}\n{response}
 rust/src/skill_compiler/structured.rs	export function {name}(input) {{\n
 rust/src/skill_compiler/structured.rs	native_handler {name}\n
 rust/src/skill_compiler/structured.rs	permission `{capability}` must include a capability namespace
@@ -786,7 +733,6 @@ rust/src/skill_compiler/structured.rs	{}({args}) -> deterministic_response
 rust/src/skill_ledger.rs	A method exists but the need's chain did not connect end to end; recorded as a gap to close.
 rust/src/skill_ledger.rs	No catalogued method resolves this need; recorded as a gap to close.
 rust/src/skill_ledger.rs	The need resolved to a method but was not satisfied; recorded as a gap to close.
-rust/src/solver_diagnostics.rs	{answer}\n\n[diagnostic]\n{}
 rust/src/solver_formalization.rs	formalization:{index} score={} probability={probability:.6} {}
 rust/src/solver_formalization.rs	selected=formalization:{index} probability={probability:.6} margin={margin:.6} epsilon={epsilon:.6} reason={}
 rust/src/solver_formalization.rs	top=formalization:{top_index} runner_up=formalization:{runner_up_index} margin={margin:.6} epsilon={epsilon:.6}
@@ -810,7 +756,6 @@ rust/src/solver_handler_how.rs	इंस्टॉल वाले कामो�
 rust/src/solver_handler_how.rs	对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行官方来源 web search query `{search_query}`，并把通用 how-to query `{fallback_query}` 保留为 fallback。
 rust/src/solver_handler_oracle.rs	Here is a minimal {} program ({}):\n\n```{}\n{}\n```\n\nOutput:\n```text\n{}\n```\nSource: {} ({}), cached locally as a popular example.
 rust/src/solver_handler_units.rs	{unit_a} measures {dim_a}; {unit_b} measures {dim_b}. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network.
-rust/src/solver_handler_units.rs	{unit_a}:{dim_a} vs {unit_b}:{dim_b}
 rust/src/solver_handlers/agent_workspace.rs	Execution status: failed in isolated sandbox.\nWorkspace isolation: could not create the temp workspace.\nError: {error}
 rust/src/solver_handlers/agent_workspace.rs	Execution status: {status} in isolated sandbox.\nWorkspace isolation: {} (paths are confined to this workspace; command environment is cleared).\n\nAction log:
 rust/src/solver_handlers/agent_workspace.rs	\nTimed out: true
@@ -898,7 +843,6 @@ rust/src/solver_handlers/benchmark_prompts.rs	हम बात कर सकत�
 rust/src/solver_handlers/benchmark_prompts.rs	可以聊。主题: {topic}。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。
 rust/src/solver_handlers/calculator_rate.rs	For currency calculations I use link-calculator. For USD/RUB it returns: {calculation_body}.
 rust/src/solver_handlers/calculator_rate.rs	I recognized this as a question about the USD/RUB rate used for calculations, but link-calculator could not evaluate it: {error}.
-rust/src/solver_handlers/calculator_rate.rs	{USD_RUB_RATE_EXPRESSION} = {}
 rust/src/solver_handlers/calculator_rate.rs	При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: {calculation_body}.
 rust/src/solver_handlers/calculator_rate.rs	Я распознал вопрос о курсе USD/RUB для расчетов, но link-calculator не смог его вычислить: {error}.
 rust/src/solver_handlers/calculator_rate.rs	मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: {calculation_body}.
@@ -910,15 +854,11 @@ rust/src/solver_handlers/calendar.rs	{} के बाद {} आता है। 
 rust/src/solver_handlers/calendar.rs	{} से पहले {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।
 rust/src/solver_handlers/calendar.rs	Перед {} идёт {}. Я сдвинул {} на {} в семидневном календарном цикле.
 rust/src/solver_handlers/calendar.rs	После {} наступает {}. Я сдвинул {} на {} в семидневном календарном цикле.
-rust/src/solver_handlers/calendar.rs	Сегодня {}, {iso_date} ({time_zone}).
 rust/src/solver_handlers/calendar.rs	आज {} है, {iso_date} ({time_zone}).
 rust/src/solver_handlers/calendar_create.rs	Create event «{title}» on {iso}. Time: {time}, timezone: {tz}. Duration {minutes} minutes.\nImport this .ics file into any calendar:\n{ics}\nOr open it in Google Calendar (no login required):\n{google_url}\nReply 'yes' to confirm.
 rust/src/solver_handlers/calendar_create.rs	{iso} ({time}, समय क्षेत्र {tz}) पर «{title}» कार्यक्रम बनाएँ। अवधि {minutes} मिनट।\nइस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\nया Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{google_url}\nपुष्टि के लिए «हाँ» उत्तर दें।
 rust/src/solver_handlers/calendar_create.rs	Создать событие «{title}» на {day} число ({iso}). Время: {time}, часовой пояс: {tz}. Длительность {minutes} минут.\nИмпортируйте этот файл .ics в любой календарь:\n{ics}\nИли откройте в Google Календаре (вход не требуется):\n{google_url}\nОтветьте «да», чтобы подтвердить.
 rust/src/solver_handlers/calendar_create.rs	在 {iso}（{time}，时区 {tz}）创建事件「{title}」。时长 {minutes} 分钟。\n将此 .ics 文件导入任何日历：\n{ics}\n或在 Google 日历中打开（无需登录）：\n{google_url}\n回复「是」以确认。
-rust/src/solver_handlers/compound_interest.rs	1 {source_currency} in {target_currency}
-rust/src/solver_handlers/compound_interest.rs	1 {target_currency}
-rust/src/solver_handlers/compound_interest.rs	Conversion: {source_currency} -> {target_currency}
 rust/src/solver_handlers/compound_interest.rs	Final amount: {} USD
 rust/src/solver_handlers/compound_interest.rs	I calculated the USD amount, but no {source_currency}->{target_currency} exchange rate is available locally.
 rust/src/solver_handlers/compound_interest.rs	Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.
@@ -937,7 +877,6 @@ rust/src/solver_handlers/conversation_memory/memory_write.rs	append content={sta
 rust/src/solver_handlers/conversation_memory/memory_write.rs	replace {old_value} with {new_value} in memory
 rust/src/solver_handlers/conversation_memory/memory_write.rs	substitute old={old_value} new={new_value}
 rust/src/solver_handlers/conversation_memory/memory_write.rs	Заменил \"{old_value}\" на \"{new_value}\" в памяти (обновлено вхождений: {applied}).
-rust/src/solver_handlers/conversation_memory/memory_write.rs	Запомнил: {statement}
 rust/src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में \"{old_value}\" को \"{new_value}\" से बदला ({applied})।
 rust/src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में सहेजा गया: {statement}
 rust/src/solver_handlers/conversation_memory/memory_write.rs	已在记忆中将\"{old_value}\"替换为\"{new_value}\"(更新 {applied} 处)。
@@ -951,11 +890,8 @@ rust/src/solver_handlers/conversation_memory/mod.rs	Your name is {name}.
 rust/src/solver_handlers/conversation_memory/mod.rs	Your previous question was: {content}
 rust/src/solver_handlers/conversation_memory/mod.rs	event={} conversation={} title={} role={} {}
 rust/src/solver_handlers/conversation_memory/mod.rs	field={name} value={value}
-rust/src/solver_handlers/conversation_memory/mod.rs	link{stamp}: {from} -> {to}
 rust/src/solver_handlers/conversation_memory/mod.rs	previous_message role={role}
 rust/src/solver_handlers/conversation_memory/mod.rs	turn={} role={} content={}
-rust/src/solver_handlers/conversation_memory/mod.rs	{name}{stamp}: {value}
-rust/src/solver_handlers/conversation_memory/mod.rs	{title} ({conversation_id})
 rust/src/solver_handlers/conversation_memory/mod.rs	В прошлом сообщении ({role_label}) было написано: \"{content}\"
 rust/src/solver_handlers/conversation_memory/mod.rs	Вы спрашивали: \"{content}\"
 rust/src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в истории разговора: {}\n
@@ -975,11 +911,9 @@ rust/src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" �
 rust/src/solver_handlers/document_originality.rs	Recognized an originality and plagiarism check for `{target}`.
 rust/src/solver_handlers/document_originality.rs	\"{sample}\" plagiarism originality
 rust/src/solver_handlers/document_originality.rs	asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}
-rust/src/solver_handlers/document_originality.rs	{body}\n\n{heading}:\n{summaries}
 rust/src/solver_handlers/document_originality.rs	{name} plagiarism originality uniqueness
 rust/src/solver_handlers/document_request.rs	 ({label} प्रारूप में)
 rust/src/solver_handlers/document_request.rs	 in {label} format
-rust/src/solver_handlers/document_request.rs	 в формате {label}
 rust/src/solver_handlers/document_request.rs	Document format conversion via link-foundation/meta-language ({DOCUMENT_FORMAT_ENGINE}).
 rust/src/solver_handlers/document_request.rs	Native target concepts: {}.
 rust/src/solver_handlers/document_request.rs	Package layer: {} bytes in the DOCX OPC stored-entry profile.
@@ -989,7 +923,6 @@ rust/src/solver_handlers/document_request.rs	This is a document-generation reque
 rust/src/solver_handlers/document_request.rs	Это запрос на создание документа{format_suffix}. Я детерминированный символьный решатель: у меня нет доступа к произвольным актуальным данным в вебе и я не рендерю бинарные файлы напрямую, поэтому я раскладываю задачу на формальный план по универсальному алгоритму (декомпозиция → проверки → черновики → композиция):\n\n1. Уточнить объём и критерии документа: какие элементы включать и по каким признакам их различать.\n2. Собрать список элементов из проверяемых источников и зафиксировать ссылки на эти источники.\n3. Классифицировать каждый элемент по заявленным критериям.\n4. Собрать структуру документа: заголовок, разделы и таблицу или список.\n5. Экспортировать готовую структуру в запрошенный формат.\n\nПодтвердите план или уточните критерии и источники — и я продолжу с конкретными шагами. Если нужны фактические данные, которых нет в локальной памяти Links Notation, укажите источник, и я добавлю его как правило связей.
 rust/src/solver_handlers/document_request.rs	यह एक दस्तावेज़ बनाने का अनुरोध है{format_suffix}. मैं एक नियतात्मक प्रतीकात्मक हल करने वाला हूँ: मैं वेब पर मनमाना सजीव डेटा नहीं खोज सकता और बाइनरी फ़ाइलें सीधे नहीं बनाता, इसलिए मैं इस कार्य को सार्वभौमिक एल्गोरिदम की औपचारिक योजना में विभाजित करता हूँ (विभाजन → जाँच → मसौदे → रचना):\n\n1. दस्तावेज़ और उसके मानदंड का दायरा तय करें: कौन-सी वस्तुएँ शामिल करनी हैं और कौन-से गुण उन्हें अलग करते हैं।\n2. सत्यापन योग्य स्रोतों से वस्तुओं की सूची एकत्र करें और उन स्रोतों के लिंक दर्ज करें।\n3. प्रत्येक वस्तु को बताए गए मानदंड के अनुसार वर्गीकृत करें।\n4. दस्तावेज़ की संरचना बनाएँ: शीर्षक, अनुभाग और एक तालिका या सूची।\n5. तैयार संरचना को अनुरोधित प्रारूप में निर्यात करें।\n\nयोजना की पुष्टि करें या मानदंड और स्रोत स्पष्ट करें, और मैं ठोस चरणों के साथ आगे बढ़ूँगा।
 rust/src/solver_handlers/document_request.rs	这是一个生成文档的请求{format_suffix}。我是一个确定性的符号求解器：我无法在网络上检索任意实时数据，也不会直接渲染二进制文件，因此我把任务分解为通用算法生成的形式化计划（分解 → 校验 → 草稿 → 组合）：\n\n1. 界定文档及其标准：包含哪些条目以及用哪些属性区分它们。\n2. 从可验证的来源收集条目清单，并记录这些来源的链接。\n3. 根据所述标准对每个条目进行分类。\n4. 组装文档结构：标题、章节以及表格或列表。\n5. 将完成的结构导出为所请求的格式。\n\n请确认计划或细化标准与来源，我将继续给出具体步骤。
-rust/src/solver_handlers/document_request.rs	（{label} 格式）
 rust/src/solver_handlers/feature_capability.rs	2 + 2 क्या है?
 rust/src/solver_handlers/feature_capability.rs	No. Web search is disabled by this configuration's offline mode or there are no configured search providers. I can still answer from local rules and cache, but I will not call search engines.
 rust/src/solver_handlers/feature_capability.rs	No. {label} is not available in this configuration: {reason}. Example message after enabling it: `{example}`.
@@ -1028,9 +961,7 @@ rust/src/solver_handlers/mod.rs	I could not identify a source phrase to translat
 rust/src/solver_handlers/mod.rs	I could not translate \"{surface}\" from {source_slug} to {target_slug} with the available formalization data. I recorded this as a translation gap for follow-up.
 rust/src/solver_handlers/mod.rs	I do not embed a JavaScript runtime in this build, so I cannot execute the program for you. The deterministic solver only runs code that has been verified offline; running arbitrary JavaScript would violate that contract. Here is the program you asked me to run, copy-paste reviewable:\n\n```js\n{program}\n```\n\nTo execute it yourself, save the snippet as `program.js` and run `node program.js` (or `deno run program.js`).
 rust/src/solver_handlers/mod.rs	I parsed '{expression}' as an arithmetic request but could not evaluate it: {error}.
-rust/src/solver_handlers/mod.rs	Step {}: {step}
 rust/src/solver_handlers/mod.rs	Therefore, there are {formatted} {label} in total.
-rust/src/solver_handlers/mod.rs	{expression} = {formatted}
 rust/src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}
 rust/src/solver_handlers/natural_language_tools.rs	Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}
 rust/src/solver_handlers/natural_language_tools.rs	Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
@@ -1194,7 +1125,6 @@ rust/src/solver_handlers/software_project_followup.rs	The plan is approved, so t
 rust/src/solver_handlers/software_project_followup.rs	\nVerification plan:\n
 rust/src/solver_handlers/software_project_followup.rs	software_project_followup\n
 rust/src/solver_handlers/text_manipulation.rs	bytes={} chars={}
-rust/src/solver_handlers/text_manipulation.rs	stage:{index} -> {}
 rust/src/solver_handlers/text_manipulation.rs	stage:{} -> operation:{}
 rust/src/solver_handlers/user_intent.rs	\n\nSupported pipeline: impulse → formalize (Wikidata-backed) → context → proof plan → verification in relative-meta-logic → deformalize → finalize.
 rust/src/solver_handlers/user_intent.rs	\n\nПоддерживаемый конвейер: impulse → formalize (Викиданные) → context → план доказательства → проверка в relative-meta-logic → deformalize → finalize.
@@ -1213,12 +1143,9 @@ rust/src/solver_handlers/web_requests.rs	这是 {label} 上的仓库查询：[{s
 rust/src/solver_handlers/web_requests.rs	这是一个关于项目或仓库的通用 project_lookup 请求。\n\n我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。下一步是在 {provider_summary} 和类似托管平台中搜索并汇总匹配项目。
 rust/src/solver_helpers/code.rs	Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.
 rust/src/solver_helpers/code.rs	Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.
-rust/src/solver_helpers/code.rs	from {lang}
-rust/src/solver_helpers/code.rs	to {lang}
 rust/src/solver_helpers/code.rs	{} translation gap for `{subject}` from {source} to {target}
 rust/src/solver_helpers/mod.rs	Check command: `{check}`\nRun command: `{}`
 rust/src/solver_helpers/mod.rs	Run command: `{}`
-rust/src/solver_synthesis.rs	({total} - {consumed}) * {price}
 rust/src/solver_synthesis.rs	composition:{} from={}
 rust/src/solver_synthesis.rs	parts={} from={}
 rust/src/solver_synthesis.rs	sub_impulse={} independent={} intent={} answer={}
@@ -1227,7 +1154,6 @@ rust/src/solver_unknown_reasoning.rs	From link memory: {} is {}.
 rust/src/solver_unknown_reasoning.rs	Missing localized response seed: {intent}/{language}
 rust/src/solver_unknown_reasoning.rs	gave up after {} reasoning steps; legacy_unknown_fallback
 rust/src/solver_unknown_reasoning.rs	language={} local_search=complete prompt_state={} questioning_rigor={:.2}
-rust/src/solver_unknown_reasoning.rs	{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).
 rust/src/source_capability.rs	Every statement below is carried by a cited source; nothing was added beyond them.
 rust/src/source_capability.rs	No verified source statement was captured for this request, so nothing was composed.
 rust/src/source_research.rs	provider={} rank={} url={}
@@ -1243,15 +1169,10 @@ rust/src/substitution_compiler/mod.rs	substitution_compilation {identity}\n  tar
 rust/src/substitution_compiler/rust_runtime.rs	    Rule { conditions: &[\n
 rust/src/substitution_compiler/rust_runtime.rs	Pattern {{ from: {}, to: {} }}
 rust/src/substitution_compiler/webassembly.rs	// Generated JavaScript interop; substitution semantics remain in Rust/WASM.\n// Compile {wasm_source} to a WebAssembly module before loading this file.\n{WASM_INTEROP}
-rust/src/summarization/file.rs	Defines {symbol}.
 rust/src/summarization/file.rs	It has embedded grammar blocks: {}.
 rust/src/summarization/file.rs	Key content: {content_summary}
 rust/src/summarization/file.rs	Top-level keys: {}.
-rust/src/summarization/file.rs	class {name}
-rust/src/summarization/file.rs	enum {name}
-rust/src/summarization/file.rs	function {name}
 rust/src/summarization/file.rs	go function {name}
-rust/src/summarization/file.rs	interface {name}
 rust/src/summarization/file.rs	javascript binding {name}
 rust/src/summarization/file.rs	javascript class {name}
 rust/src/summarization/file.rs	javascript function {name}
@@ -1259,7 +1180,6 @@ rust/src/summarization/file.rs	meta-language parsed it as {} with {} syntax link
 rust/src/summarization/file.rs	python symbol {name}
 rust/src/summarization/file.rs	ruby symbol {name}
 rust/src/summarization/file.rs	rust impl {name}
-rust/src/summarization/file.rs	rust {label} {name}
 rust/src/summarization/file.rs	{path} is a {} data file
 rust/src/summarization/file.rs	{path} is a {} source file
 rust/src/summarization/file.rs	{path} is an empty {} file
@@ -1270,16 +1190,12 @@ rust/src/telegram.rs	</code></pre>\n
 rust/src/telegram.rs	<blockquote expandable>💭 {body}</blockquote>
 rust/src/telegram.rs	<pre><code class=\"{class}\">
 rust/src/telegram.rs	I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.
-rust/src/telegram.rs	\n\n/trace {trace}
 rust/src/telegram.rs	formal-ai {FORMAL_AI_VERSION}
-rust/src/telegram.rs	{first}\n\n[part 1/{total}]
 rust/src/telegram_runtime.rs	curl exited with {status}: {stderr}
-rust/src/thinking.rs	{label}: {trimmed}
 rust/src/translation/cache.rs	failed to create cache directory {}: {error}
 rust/src/translation/cache.rs	failed to write cache body {}: {error}
 rust/src/translation/cache.rs	failed to write cache url marker {}: {error}
 rust/src/translation/cache.rs	translation cache miss for {url} and offline mode is active; set FORMAL_AI_LIVE_API=1 to fetch and populate the cache
-rust/src/translation/formalization.rs	please {stem}\x20
 rust/src/translation/http.rs	curl exited with {status}: {stderr}
 rust/src/translation/http.rs	failed to parse curl status sentinel ({status_tail:?}): {error}
 rust/src/translation/pipeline.rs	done candidates={} primary={:?} meaning={:?}
@@ -1289,5 +1205,4 @@ rust/src/translation/pipeline.rs	start surface={surface:?} {source_lang}->{targe
 rust/src/translation/pipeline.rs	wikidata:sparql:{}->{} ({} lemmas)
 rust/src/translation/selection.rs	Should I read \"{}\" as \"{} {} {}\" or \"{} {} {}\"?
 rust/src/translation/selection.rs	Which interpretation did you mean: {} or {}?
-rust/src/translation/selection.rs	{impulse}\n{seed}
 rust/src/translation/wikidata.rs	SELECT DISTINCT ?lemma WHERE {{ wd:{source_lexeme_id} ontolex:sense ?source_sense . wd:{source_lexeme_id} wikibase:lexicalCategory ?category . ?source_sense wdt:P5137 ?meaning . ?lexeme ontolex:sense ?sense . ?sense wdt:P5137 ?meaning . ?lexeme wikibase:lexicalCategory ?category . ?lexeme dct:language ?language . ?language wdt:P218 \"{target_lang_iso}\" . ?lexeme wikibase:lemma ?lemma . }}

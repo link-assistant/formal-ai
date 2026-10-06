@@ -101,7 +101,7 @@ impl Catalogue {
             product_nouns: Vec::new(),
             cues: Vec::new(),
         };
-        for record in root.children.iter() {
+        for record in &root.children {
             match record.name.as_str() {
                 "marketplace" => {
                     let name = record.id.clone();
@@ -137,10 +137,8 @@ impl Catalogue {
                         advice: record.find_child_value("advice").to_string(),
                     });
                 }
-                "intent_cues" => {
-                    if record.find_child_value("intent") == INTENT {
-                        out.cues = record_phrases(record);
-                    }
+                "intent_cues" if record.find_child_value("intent") == INTENT => {
+                    out.cues = record_phrases(record);
                 }
                 _ => {}
             }
@@ -152,6 +150,8 @@ impl Catalogue {
 /// Percent-encode a query for a URL path slot (unreserved characters
 /// stay; everything else becomes `%XX` per byte).
 fn percent_encode(value: &str) -> String {
+    use std::fmt::Write as _;
+
     let mut out = String::new();
     for byte in value.bytes() {
         match byte {
@@ -159,7 +159,9 @@ fn percent_encode(value: &str) -> String {
                 out.push(byte as char);
             }
             b' ' => out.push_str("%20"),
-            other => out.push_str(&format!("%{other:02X}")),
+            other => {
+                let _ = write!(out, "%{other:02X}");
+            }
         }
     }
     out
@@ -208,9 +210,9 @@ fn product_terms(prompt: &str, nouns: &[ProductNoun]) -> Vec<String> {
             for lookback in (index.saturating_sub(3)..index).rev() {
                 let word = tokens[lookback];
                 let candidate = word.trim_matches(|c: char| !c.is_ascii_alphanumeric());
-                if candidate.chars().all(|c| c.is_alphabetic())
+                if candidate.chars().all(char::is_alphabetic)
                     && candidate.len() >= 3
-                    && candidate.chars().next().is_some_and(|c| c.is_uppercase())
+                    && candidate.chars().next().is_some_and(char::is_uppercase)
                     && !terms.iter().any(|term| term.eq_ignore_ascii_case(candidate))
                 {
                     terms.push(candidate.to_owned());
@@ -245,7 +247,9 @@ fn matched_noun_surface(lower: &str, nouns: &[ProductNoun]) -> Option<String> {
 }
 
 /// Try to recognize a shopping request with a marketplace and compose the
-/// site-scoped search. Returns `None` when neither an intent cue nor the
+/// site-scoped search.
+///
+/// Returns `None` when neither an intent cue nor the
 /// structural shopping shape (a marketplace phrase plus a product noun)
 /// matches, or no marketplace phrase is present.
 pub fn handle_product_search(
@@ -315,7 +319,7 @@ pub fn handle_product_search(
     let query = query_terms.join(" ");
     let link = marketplace
         .link_template
-        .replace("{query}", &percent_encode(&query));
+        .replace(concat!("{", "query}"), &percent_encode(&query));
     let constraints_text = if constraints.is_empty() {
         "(none stated)".to_owned()
     } else {
@@ -325,9 +329,10 @@ pub fn handle_product_search(
             .collect::<Vec<_>>()
             .join(", ")
     };
-    let advice = matched_noun
-        .map(|noun| noun.advice.clone())
-        .unwrap_or_else(|| "confirm the exact model and seller region before ordering".to_owned());
+    let advice = matched_noun.map_or_else(
+        || "confirm the exact model and seller region before ordering".to_owned(),
+        |noun| noun.advice.clone(),
+    );
     let mut advice = advice;
     for constraint in &constraints {
         if !constraint.advice.is_empty() {
@@ -337,7 +342,6 @@ pub fn handle_product_search(
     }
 
     let product_display = noun_surface
-        .clone()
         .or_else(|| terms.first().cloned())
         .unwrap_or_else(|| prompt.trim().to_owned());
     let body = template(

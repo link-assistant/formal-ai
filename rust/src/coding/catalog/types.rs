@@ -72,6 +72,20 @@ impl ProgramLanguage {
         crate::prerequisite::probe::seed_setup_hint(self.slug)
     }
 
+    /// The execution note shown under this language's programs.
+    ///
+    /// A row whose `notes` is empty states it in the response seed instead,
+    /// as `program_execution_notes_<slug>`, so the sentence lives with the
+    /// other answer prose rather than in this table.
+    #[must_use]
+    pub fn execution_notes(&self) -> String {
+        if self.execution.notes.is_empty() {
+            crate::seed::report_text(&format!("program_execution_notes_{}", self.slug), &[])
+        } else {
+            self.execution.notes.to_owned()
+        }
+    }
+
     /// The environment the recorded verification ran in.
     #[must_use]
     pub fn environment(&self) -> String {

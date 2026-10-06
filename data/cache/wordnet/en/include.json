@@ -1,0 +1,48 @@
+{
+  "lemma": "include",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02639021-v",
+      "partOfSpeech": "v",
+      "definition": "have as a part, be made up out of",
+      "examples": [
+        "The list includes the names of many famous writers"
+      ]
+    },
+    {
+      "id": "oewn-00686739-v",
+      "partOfSpeech": "v",
+      "definition": "consider as part of something",
+      "examples": [
+        "I include you in the list of culprits"
+      ]
+    },
+    {
+      "id": "oewn-00184024-v",
+      "partOfSpeech": "v",
+      "definition": "add as part of something else; put in as part of a set, group, or category",
+      "examples": [
+        "We must include this chemical element in the group"
+      ]
+    },
+    {
+      "id": "oewn-02454712-v",
+      "partOfSpeech": "v",
+      "definition": "allow participation in or the right to be part of; permit to exercise the rights, functions, and responsibilities of",
+      "examples": [
+        "admit someone to the profession",
+        "She was admitted to the New Jersey Bar"
+      ],
+      "synonyms": [
+        "admit",
+        "let in"
+      ]
+    }
+  ]
+}

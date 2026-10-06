@@ -125,10 +125,7 @@ fn function_intents() -> Vec<FunctionIntent> {
 fn code_block(prompt: &str) -> Option<String> {
     if let Some(start) = prompt.find("```") {
         let rest = &prompt[start + 3..];
-        let after_open = match rest.find('\n') {
-            Some(nl) => &rest[nl + 1..],
-            None => rest,
-        };
+        let after_open = rest.find('\n').map_or(rest, |nl| &rest[nl + 1..]);
         if let Some(end) = after_open.find("```") {
             let code = &after_open[..end];
             if !code.trim().is_empty() {
@@ -136,13 +133,13 @@ fn code_block(prompt: &str) -> Option<String> {
             }
         }
     }
-    if let Some(start) = prompt.find('`') {
-        if let Some(end) = prompt[start + 1..].find('`') {
-            let code = &prompt[start + 1..start + 1 + end];
-            let code_markers = ["(", "def ", "=>", "return "];
-            if code_markers.iter().any(|marker| code.contains(marker)) {
-                return Some(code.to_owned());
-            }
+    if let Some(start) = prompt.find('`')
+        && let Some(end) = prompt[start + 1..].find('`')
+    {
+        let code = &prompt[start + 1..start + 1 + end];
+        let code_markers = ["(", "def ", "=>", "return "];
+        if code_markers.iter().any(|marker| code.contains(marker)) {
+            return Some(code.to_owned());
         }
     }
     let markers = ["def ", "function ", "fn ", "=>", "return "];
@@ -302,48 +299,46 @@ pub fn handle_code_debugging(
         log.append("code_debugging:intent_property", intent.property.clone());
     }
 
-    let (body, confidence) = match (intent, scan_for_defect(&code)) {
-        (Some(intent), Some(defect)) => {
-            log.append(
-                "code_debugging:defect",
-                format!("line {}: `{}`", defect.line_number, defect.shift),
-            );
-            (
-                template(
-                    "code_debugging_defect",
-                    &[
-                        ("name", name.as_deref().unwrap_or_default()),
-                        ("property", &intent.property),
-                        ("grounding", &intent.grounding),
-                        ("line_no", &defect.line_number.to_string()),
-                        ("line", &defect.line),
-                        ("shift", &defect.shift),
-                        ("fixed", &defect.fixed),
-                        ("parenthesized", &defect.parenthesized),
-                        ("correct_form", &intent.correct_form),
-                    ],
-                ),
-                0.8,
+    let (body, confidence) = if let (Some(intent), Some(defect)) = (intent, scan_for_defect(&code))
+    {
+        log.append(
+            "code_debugging:defect",
+            format!("line {}: `{}`", defect.line_number, defect.shift),
+        );
+        (
+            template(
+                "code_debugging_defect",
+                &[
+                    ("name", name.as_deref().unwrap_or_default()),
+                    ("property", &intent.property),
+                    ("grounding", &intent.grounding),
+                    ("line_no", &defect.line_number.to_string()),
+                    ("line", &defect.line),
+                    ("shift", &defect.shift),
+                    ("fixed", &defect.fixed),
+                    ("parenthesized", &defect.parenthesized),
+                    ("correct_form", &intent.correct_form),
+                ],
+            ),
+            0.8,
+        )
+    } else {
+        log.append(
+            "code_debugging:defect",
+            "no recognized defect pattern".to_owned(),
+        );
+        let intent_note = if intent.is_none() {
+            template(
+                "code_debugging_no_intent",
+                &[("name", name.as_deref().unwrap_or_default())],
             )
-        }
-        _ => {
-            log.append(
-                "code_debugging:defect",
-                "no recognized defect pattern".to_owned(),
-            );
-            let intent_note = if intent.is_none() {
-                template(
-                    "code_debugging_no_intent",
-                    &[("name", name.as_deref().unwrap_or_default())],
-                )
-            } else {
-                String::new()
-            };
-            (
-                template("code_debugging_no_defect", &[("intent_note", &intent_note)]),
-                0.5,
-            )
-        }
+        } else {
+            String::new()
+        };
+        (
+            template("code_debugging_no_defect", &[("intent_note", &intent_note)]),
+            0.5,
+        )
     };
 
     Some(finalize_simple(

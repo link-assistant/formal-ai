@@ -1,0 +1,37 @@
+{
+  "lemma": "eleven",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13768812-n",
+      "partOfSpeech": "n",
+      "definition": "the cardinal number that is the sum of ten and one",
+      "synonyms": [
+        "11",
+        "XI"
+      ]
+    },
+    {
+      "id": "oewn-08096902-n",
+      "partOfSpeech": "n",
+      "definition": "a team that plays football",
+      "synonyms": [
+        "football team"
+      ]
+    },
+    {
+      "id": "oewn-02195018-s",
+      "partOfSpeech": "s",
+      "definition": "being one more than ten",
+      "synonyms": [
+        "11",
+        "xi"
+      ]
+    }
+  ]
+}

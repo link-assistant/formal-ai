@@ -1,0 +1,28 @@
+{
+  "lemma": "literally",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00341857-r",
+      "partOfSpeech": "r",
+      "definition": "in a literal sense",
+      "examples": [
+        "literally translated",
+        "he said so literally"
+      ]
+    },
+    {
+      "id": "oewn-00112012-r",
+      "partOfSpeech": "r",
+      "definition": "(intensifier before a figurative expression) without exaggeration",
+      "examples": [
+        "our eyes were literally pinned to TV during the Gulf War"
+      ]
+    }
+  ]
+}

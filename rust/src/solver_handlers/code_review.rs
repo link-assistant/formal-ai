@@ -131,10 +131,7 @@ fn rules() -> Vec<Rule> {
 fn code_block(prompt: &str) -> Option<String> {
     if let Some(start) = prompt.find("```") {
         let rest = &prompt[start + 3..];
-        let after_open = match rest.find('\n') {
-            Some(nl) => &rest[nl + 1..],
-            None => rest,
-        };
+        let after_open = rest.find('\n').map_or(rest, |nl| &rest[nl + 1..]);
         if let Some(end) = after_open.find("```") {
             let code = &after_open[..end];
             if !code.trim().is_empty() {
@@ -142,13 +139,13 @@ fn code_block(prompt: &str) -> Option<String> {
             }
         }
     }
-    if let Some(start) = prompt.find('`') {
-        if let Some(end) = prompt[start + 1..].find('`') {
-            let code = &prompt[start + 1..start + 1 + end];
-            let code_markers = ["(", "def ", "=>", "return "];
-            if code_markers.iter().any(|marker| code.contains(marker)) {
-                return Some(code.to_owned());
-            }
+    if let Some(start) = prompt.find('`')
+        && let Some(end) = prompt[start + 1..].find('`')
+    {
+        let code = &prompt[start + 1..start + 1 + end];
+        let code_markers = ["(", "def ", "=>", "return "];
+        if code_markers.iter().any(|marker| code.contains(marker)) {
+            return Some(code.to_owned());
         }
     }
     let markers = ["def ", "function ", "fn ", "=>", "return "];
@@ -278,7 +275,7 @@ pub fn handle_code_review(
     } else {
         "python"
     };
-    log.append("code_review:request", format!("lang={}", language));
+    log.append("code_review:request", format!("lang={language}"));
     let table = rules();
     let findings = review(&code, language, &table);
     log.append("code_review:findings", format!("n={}", findings.len()));

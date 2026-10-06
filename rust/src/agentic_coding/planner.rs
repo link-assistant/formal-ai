@@ -172,7 +172,17 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(summary) = harness_envelope::summarize_request(&received) {
         return Some(AgenticPlan::Final(summary));
     }
-    let plan = plan_chat_step_routes(messages, tool_names, received)?;
+    // A restart over prepared work (changed paths plus a pull request link)
+    // is the whole turn's shape, not one arm of the precedence cascade: it is
+    // decided on the same effective request the cascade reads, ahead of it,
+    // and its plan still passes the repeated-call and repeated-failure stops.
+    let effective = continued_agent_task(messages, &received);
+    let restart = super::restart_feedback::plan_restart(
+        effective.as_deref().unwrap_or(&received),
+        messages,
+        tool_names,
+    );
+    let plan = restart.or_else(|| plan_chat_step_routes(messages, tool_names, received))?;
     Some(stop_repeated_failure(stop_repeated_call(plan, messages), messages))
 }
 
@@ -374,9 +384,6 @@ fn plan_chat_step_routes(
     // that followed. The general planner already read the objective this way
     // (issue #904); every other route now reads it the same way, so one
     // boundary serves the whole router rather than one recipe.
-    if let Some(plan) = super::restart_feedback::plan_restart(&effective, messages, tool_names) {
-        return Some(plan);
-    }
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
     // A bare continuation cue with nothing to resume is still the cue here,

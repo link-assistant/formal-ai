@@ -1,0 +1,46 @@
+{
+  "lemma": "deferred",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02648898-v",
+      "partOfSpeech": "v",
+      "definition": "hold back to a later time",
+      "examples": [
+        "let's postpone the exam"
+      ],
+      "synonyms": [
+        "postpone",
+        "prorogue",
+        "hold over",
+        "put over",
+        "table",
+        "shelve",
+        "set back",
+        "defer",
+        "remit",
+        "put off"
+      ]
+    },
+    {
+      "id": "oewn-00879879-v",
+      "partOfSpeech": "v",
+      "definition": "yield to another's wish or opinion",
+      "examples": [
+        "The government bowed to the military pressure"
+      ],
+      "synonyms": [
+        "submit",
+        "bow",
+        "defer",
+        "accede",
+        "give in"
+      ]
+    }
+  ]
+}

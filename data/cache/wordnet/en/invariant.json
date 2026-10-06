@@ -1,0 +1,35 @@
+{
+  "lemma": "invariant",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05858959-n",
+      "partOfSpeech": "n",
+      "definition": "a feature (quantity or property or function) that remains unchanged when a particular transformation is applied to it"
+    },
+    {
+      "id": "oewn-02516453-s",
+      "partOfSpeech": "s",
+      "definition": "unaffected by a designated operation or transformation"
+    },
+    {
+      "id": "oewn-02516074-s",
+      "partOfSpeech": "s",
+      "definition": "unvarying in nature",
+      "examples": [
+        "maintained a constant temperature",
+        "principles of unvarying validity"
+      ],
+      "synonyms": [
+        "changeless",
+        "constant",
+        "unvarying"
+      ]
+    }
+  ]
+}

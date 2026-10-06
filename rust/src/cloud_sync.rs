@@ -3,7 +3,7 @@
 //! Each remote object is one canonical event addressed by SHA-256. Transport
 //! implementations must publish objects atomically and never replace an object.
 //! The filesystem implementation is suitable for fixture remotes and mounted
-//! user-owned storage. Git, WebDAV and S3 adapters can implement the same trait.
+//! user-owned storage. Git, `WebDAV` and S3 adapters can implement the same trait.
 //! Local counters are not transferred: recalling an event must not create a new
 //! remote event or overwrite another machine's usage accounting.
 
@@ -51,7 +51,9 @@ impl From<io::Error> for SyncError {
     }
 }
 
-/// Remote storage contract. `put_if_absent` must return true for a newly
+/// Remote storage contract.
+///
+/// `put_if_absent` must return true for a newly
 /// published object, false for the same existing bytes, and error for different
 /// bytes under the same key. `keys` may be eventually consistent: another sync
 /// pass will pull objects published after this pass's listing.
@@ -184,7 +186,9 @@ fn decode(key: &str, text: &str) -> Result<MemoryEvent, SyncError> {
     Ok(events.into_iter().next().expect("validated one event"))
 }
 
-/// Merge remote events without shrinking or reordering the local prefix. All
+/// Merge remote events without shrinking or reordering the local prefix.
+///
+/// All
 /// remote objects and identities are validated before any local append or push.
 /// A transport failure can leave acknowledged immutable remote objects behind;
 /// rerunning safely retries them and the local store remains unchanged.
@@ -205,10 +209,10 @@ pub fn sync_memory(
         }
         let canonical = canonical(event);
         let bytes = encode(&canonical);
-        if let Some(previous) = by_identity.insert(canonical.id.clone(), bytes.clone()) {
-            if previous != bytes {
-                return Err(SyncError::IdentityConflict(canonical.id));
-            }
+        if let Some(previous) = by_identity.insert(canonical.id.clone(), bytes.clone())
+            && previous != bytes
+        {
+            return Err(SyncError::IdentityConflict(canonical.id));
         }
         outgoing.insert(digest(&bytes), bytes);
     }
@@ -245,7 +249,9 @@ pub fn sync_memory(
     Ok(report)
 }
 
-/// A directory path is the supported backend today. URL transport selection is
+/// A directory path is the supported backend today.
+///
+/// URL transport selection is
 /// left to the CLI/server integration rather than silently treating a URL as a
 /// local directory or claiming that WebDAV/S3 authentication is implemented.
 #[must_use]

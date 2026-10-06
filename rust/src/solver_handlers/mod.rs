@@ -465,12 +465,19 @@ pub fn try_translation(
     // the text to translate (`Translate to Russian: The weather is nice
     // today, let's go for a walk.`): take the free text after the command
     // head and translate it word by word (issue #1174).
+    let no_backticked_text = backticked.is_none();
     if surface.is_empty()
-        && backticked.is_none()
+        && no_backticked_text
         && source_slug != target_slug
         && let Some(free_sentence) = text_rewrite::free_text_payload(prompt)
     {
-        return translate_free_sentence(prompt, log, source_slug, target_slug, &free_sentence);
+        return Some(translate_free_sentence(
+            prompt,
+            log,
+            source_slug,
+            target_slug,
+            &free_sentence,
+        ));
     }
 
     log.append("language_from", source_slug.to_owned());
@@ -562,7 +569,7 @@ fn translate_free_sentence(
     source_slug: &str,
     target_slug: &str,
     sentence: &str,
-) -> Option<SymbolicAnswer> {
+) -> SymbolicAnswer {
     let client = crate::translation::CachedHttpClient::new(
         crate::translation::cache::DEFAULT_CACHE_DIR,
         crate::translation::CurlClient::default(),
@@ -591,23 +598,16 @@ fn translate_free_sentence(
         rendered.push(translation.surface());
     }
     let mut body = rendered.join(" ");
-    if rendered.iter().all(|segment| segment.is_empty()) {
+    if rendered.iter().all(String::is_empty) {
         log.append("translation_gap", sentence.to_owned());
         let gap_body = render_translation_gap(sentence, source_slug, target_slug);
         let intent = format!("translate_{source_slug}_to_{target_slug}");
-        return Some(finalize_simple(
-            prompt,
-            log,
-            &intent,
-            "response:translate",
-            &gap_body,
-            1.0,
-        ));
+        return finalize_simple(prompt, log, &intent, "response:translate", &gap_body, 1.0);
     }
     // Keep the source's terminal punctuation when the rendering dropped it.
     if let Some(last) = sentence.trim_end().chars().next_back()
         && matches!(last, '.' | '!' | '?')
-        && body.chars().next_back() != Some(last)
+        && !body.ends_with(last)
     {
         body.push(last);
     }
@@ -627,18 +627,18 @@ fn translate_free_sentence(
         })
         .unwrap_or_default();
         if !note.is_empty() {
-            body = format!("{}\n\n{}", body, note);
+            body = format!("{body}\n\n{note}");
         }
     }
     let intent = format!("translate_{source_slug}_to_{target_slug}");
-    Some(finalize_simple(
+    finalize_simple(
         prompt,
         log,
         &intent,
         "response:translate_sentence",
         &body,
         1.0,
-    ))
+    )
 }
 
 pub fn try_write_script(
