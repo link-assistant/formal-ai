@@ -619,6 +619,29 @@ jobs:
         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
       - name: Check crate package size
         run: rust-script scripts/check-crate-package-size.rs
+  server-parity:
+    name: Server parity (JavaScript vs Rust)
+    runs-on: ubuntu-latest
+    # R1015: the JavaScript server must answer the parity corpus exactly as the
+    # release binary does before that binary ships; it reuses the binary
+    # build-artifacts already built (issue #1055), so no extra compile.
+    timeout-minutes: 15
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-server-parity
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    needs: [build-artifacts]
+    if: ${{ !cancelled() && needs.build-artifacts.result == 'success' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - uses: ./.github/actions/download-formal-ai-binary
+      - name: Both servers answer the parity corpus alike (R1013-R1015)
+        run: node scripts/check-server-parity.mjs --rust-binary rust/target/release/formal-ai --list
   auto-release:
     name: Auto Release
     concurrency:
@@ -633,6 +656,7 @@ jobs:
         test-e2e-local,
         test-agent-cli-e2e,
         release-preflight,
+        server-parity,
       ]
     if: |
       !cancelled() &&
@@ -642,7 +666,8 @@ jobs:
       needs.release-preflight.result == 'success' &&
       (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
-      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
+      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
+      (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
     runs-on: ubuntu-latest
     # Issue #1076 (D5): 50.6 min worst case was 84.4% of the old 60m cap, and
     # the 45m GHCR budget below must fire before the cap. 90m puts it at 56.2%.
@@ -883,6 +908,7 @@ jobs:
         test-e2e-local,
         test-agent-cli-e2e,
         release-preflight,
+        server-parity,
       ]
     if: |
       !cancelled() &&
@@ -892,7 +918,8 @@ jobs:
       needs.release-preflight.result == 'success' &&
       (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
-      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
+      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
+      (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
     runs-on: ubuntu-latest
     # Issue #1076 (D5): same shape as `auto-release` -- publishes the same
     # image with the same 45m budget, so the same 90m backstop applies.
@@ -1425,7 +1452,7 @@ jobs:
             auto-release, manual-release,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
             build-artifacts, box-language-projects, deploy-pages,
-            test-e2e-pages]
+            test-e2e-pages, server-parity]
     steps:
       - uses: actions/checkout@v7
         with:
