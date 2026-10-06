@@ -217,6 +217,12 @@ describe('program contract, CI workflow and command reroute', () => {
     assert.match(recipe.source, /println\("Hello, World!"\)/u);
     attach(recipe);
     assert.equal(recipe.supporting_files[1].path, '.github/workflows/Main.yml');
+    // Every step opens its own line: no fragment is glued onto the last line
+    // of the one before it (checkout, setup, then each command).
+    for (const line of recipe.supporting_files[1].source.split('\n')) {
+      const markers = (line.match(/- (uses|run):/gu) ?? []).length;
+      assert.ok(markers === 0 || (markers === 1 && line.trimStart().startsWith('-')), `glued step line: ${line}`);
+    }
     const plan = planSymbolicCommandReroute([{ role: 'user', content: 'hi' }], ['write', 'bash'], answer);
     assert.equal(plan.calls[0].tool, 'write');
     assert.equal(JSON.parse(plan.calls[0].arguments).path, 'Main.kt');

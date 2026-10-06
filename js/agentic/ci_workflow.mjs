@@ -45,9 +45,11 @@ export function render(recipe) {
   let out = '';
   for (const note of provenanceNote(versions)) out += `# ${note}\n`;
   out += fill('workflow_template', [['{path}', recipe.path]]);
-  out = fillWorkflowVersions(out, versions);
+  // Filling versions trims the fragment's final newline; each fragment is a
+  // whole line block, so it is restored before the next one is appended.
+  out = `${fillWorkflowVersions(out, versions)}\n`;
   const setup = runtimeSteps(recipe.language);
-  if (setup !== null) out += fillWorkflowVersions(setup, versions);
+  if (setup !== null) out += `${fillWorkflowVersions(setup, versions)}\n`;
   for (const command of recipe.commands) out += fill('workflow_command_step', [['{command}', command]]);
   return out;
 }

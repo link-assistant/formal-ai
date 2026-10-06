@@ -157,6 +157,16 @@ fn repository_workflows_include_runtime_setup_and_output_verification() {
             workflow.arguments.to_lowercase().contains(setup),
             "{language}: {workflow:?}"
         );
+        // Every step opens its own line: the rendered fragments are line
+        // blocks, never glued onto the previous step's last line.
+        let written: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
+        for line in written["content"].as_str().unwrap_or_default().lines() {
+            let markers = line.matches("- uses:").count() + line.matches("- run:").count();
+            assert!(
+                markers == 0 || (markers == 1 && line.trim_start().starts_with('-')),
+                "{language}: glued step line `{line}`"
+            );
+        }
         let verifier = planned
             .iter()
             .find(|call| path_of(call) == "tests/verify-output.sh")

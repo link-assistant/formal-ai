@@ -69,11 +69,15 @@ pub(super) fn render(recipe: &ExecutionRecipe) -> String {
         "workflow_template",
         &[("{path}", &recipe.path)],
     ));
+    // Filling versions trims the fragment's final newline; each fragment is a
+    // whole line block, so it is restored before the next one is appended.
     out = crate::version_resolution::fill_workflow_versions(&out, &versions);
+    out.push('\n');
     if let Some(setup) = crate::coding::program_contract::runtime_steps(&recipe.language) {
         out.push_str(&crate::version_resolution::fill_workflow_versions(
             &setup, &versions,
         ));
+        out.push('\n');
     }
     for command in &recipe.commands {
         out.push_str(&super::work_item_steps::fill(
