@@ -43,6 +43,11 @@ test("line slices compose head/tail with the manual meaning of -n", () => {
   assert.ok(answer.includes("`-n N`"), answer);
 });
 
+test("a relative path is the search root (R1017)", () => {
+  const answer = handle("find .lino files under data/meta");
+  assert.ok(answer.includes("    find data/meta -name '*.lino'\n"), answer);
+});
+
 test("content searches compose grep with the requested flags", () => {
   const answer = handle("search for TODO in files under /src ignoring case");
   assert.ok(answer.includes("    grep -r -i 'TODO' /src\n"), answer);

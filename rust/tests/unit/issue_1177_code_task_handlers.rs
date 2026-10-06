@@ -225,6 +225,16 @@ fn handler_shell_compose_builds_find_command() {
     assert!(answer.contains("Not executed"), "{answer}");
 }
 
+/// R1017: a relative path ("data/meta") is the search root, not ".".
+#[test]
+fn handler_shell_compose_reads_a_relative_root() {
+    let answer = answer_of!(
+        formal_ai::handle_shell_command_compose,
+        "find .lino files under data/meta"
+    );
+    assert!(answer.contains("find data/meta -name '*.lino'"), "{answer}");
+}
+
 /// R1017: an inline quoted text payload under a seeded text operation is the
 /// text handler's; "lines" alone is no filesystem operand for the composer.
 #[test]

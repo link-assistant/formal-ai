@@ -107,6 +107,9 @@ function shellComposeRootPath(prompt) {
       return !codeTaskIsAlphanumeric(c) && c !== "/" && c !== "~";
     });
     if (trimmed.startsWith("/") || trimmed.startsWith("~/")) return trimmed;
+    // A relative path names its segments around an inner slash ("data/meta").
+    const segments = trimmed.split("/");
+    if (segments.length > 1 && segments.every((segment) => segment !== "")) return trimmed;
   }
   return ".";
 }

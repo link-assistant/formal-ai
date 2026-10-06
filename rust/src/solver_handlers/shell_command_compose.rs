@@ -243,6 +243,11 @@ fn root_path(prompt: &str) -> String {
         if trimmed.starts_with('/') || trimmed.strip_prefix("~/").is_some() {
             return trimmed.to_owned();
         }
+        // A relative path names its segments around an inner slash ("data/meta").
+        let mut segments = trimmed.split('/');
+        if trimmed.split('/').count() > 1 && segments.all(|segment| !segment.is_empty()) {
+            return trimmed.to_owned();
+        }
     }
     ".".to_owned()
 }
