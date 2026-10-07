@@ -916,36 +916,8 @@ rust/src/solver_handlers/natural_language_tools.rs	Execution status: refused. To
 rust/src/solver_handlers/natural_language_tools.rs	Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor.
 rust/src/solver_handlers/natural_language_tools.rs	Execution status: {status}.\nTool call: javascript_execution\nOutput: {result}
 rust/src/solver_handlers/numeric_list/mod.rs	(@USER OP:{} values:[{}] value_type:{} language:{} result_kind:{} request:[code result])
-rust/src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that finds the largest of the {noun} {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that finds the smallest of the {noun} {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that multiplies the {noun} {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that reverses the {noun} {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that sorts the {noun} {given} in ascending order:
-rust/src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that sorts the {noun} {given} in descending order:
-rust/src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that sums the {noun} {given}:
 rust/src/solver_handlers/numeric_list/mod.rs	inherited_language={} inherited_code_request={}
 rust/src/solver_handlers/numeric_list/mod.rs	language={} task=numeric_list operation={} family={} result_kind={} value_type={}
-rust/src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который находит наибольшее из чисел {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который находит наименьшее из чисел {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который переворачивает числа {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который перемножает числа {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который сортирует числа {given} по возрастанию:
-rust/src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который сортирует числа {given} по убыванию:
-rust/src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который суммирует числа {given}:
-rust/src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} का गुणनफल निकालता है:
-rust/src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} का योग करता है:
-rust/src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} को अवरोही क्रम में क्रमबद्ध करता है:
-rust/src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} को आरोही क्रम में क्रमबद्ध करता है:
-rust/src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} को उलट देता है:
-rust/src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} में से सबसे छोटी ढूँढता है:
-rust/src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} में से सबसे बड़ी ढूँढता है:
-rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的对数字 {given} 求和的代码:
-rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的将数字 {given} 反转的代码:
-rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的将数字 {given} 按升序排序的代码:
-rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的将数字 {given} 按降序排序的代码:
-rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的求数字 {given} 最大值的代码:
-rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的求数字 {given} 最小值的代码:
-rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的计算数字 {given} 乘积的代码:
 rust/src/solver_handlers/policy_gates.rs	Flushing the source cache is an auditable action. Confirm explicitly.
 rust/src/solver_handlers/policy_gates.rs	That message contains inappropriate content. Please keep the conversation respectful.
 rust/src/solver_handlers/policy_gates.rs	The action will run inside an isolated sandbox once confirmed.

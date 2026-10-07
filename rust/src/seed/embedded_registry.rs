@@ -206,6 +206,8 @@ pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-research-table.lino");
 pub const MEANINGS_RESPONSE_INTENTS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-response-intents.lino");
+pub const MEANINGS_RESPONSE_INTENTS_HANDLERS_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-response-intents-handlers.lino");
 pub const MEANINGS_ROUTING_VOCABULARY_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-routing-vocabulary.lino");
 pub const MEANINGS_SEARCH_LINO: &str =
@@ -297,6 +299,8 @@ pub const MULTILINGUAL_RESPONSES_LEGALITY_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-legality.lino");
 pub const MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-memory-program.lino");
+pub const MULTILINGUAL_RESPONSES_NUMERIC_LIST_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-numeric-list.lino");
 pub const MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-orchestration.lino");
 pub const MULTILINGUAL_RESPONSES_PARITY_LINO: &str =
@@ -520,6 +524,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-repository-workflow.lino", MEANINGS_REPOSITORY_WORKFLOW_LINO),
         ("data/seed/meanings-research-table.lino", MEANINGS_RESEARCH_TABLE_LINO),
         ("data/seed/meanings-response-intents.lino", MEANINGS_RESPONSE_INTENTS_LINO),
+        (
+            "data/seed/meanings-response-intents-handlers.lino",
+            MEANINGS_RESPONSE_INTENTS_HANDLERS_LINO,
+        ),
         ("data/seed/meanings-routing-vocabulary.lino", MEANINGS_ROUTING_VOCABULARY_LINO),
         ("data/seed/meanings-selection-criteria.lino", MEANINGS_SELECTION_CRITERIA_LINO),
         ("data/seed/meanings-semantic-meta.lino", MEANINGS_SEMANTIC_META_LINO),
@@ -604,6 +612,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-memory-program.lino",
             MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-numeric-list.lino",
+            MULTILINGUAL_RESPONSES_NUMERIC_LIST_LINO,
         ),
         (
             "data/seed/multilingual-responses-orchestration.lino",
@@ -712,6 +724,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_LEGALITY_LINO,
     MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
+    MULTILINGUAL_RESPONSES_NUMERIC_LIST_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
     MULTILINGUAL_RESPONSES_PARITY_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO,
@@ -791,6 +804,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_REPOSITORY_WORKFLOW_LINO,
     MEANINGS_RESEARCH_TABLE_LINO,
     MEANINGS_RESPONSE_INTENTS_LINO,
+    MEANINGS_RESPONSE_INTENTS_HANDLERS_LINO,
     MEANINGS_ROUTING_VOCABULARY_LINO,
     MEANINGS_SEARCH_LINO,
     MEANINGS_SELECTION_CRITERIA_LINO,

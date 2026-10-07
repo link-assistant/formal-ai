@@ -294,3 +294,22 @@ test("feature capability questions answer from the seeded table", async () => {
     assert.equal(response.content, expected, prompt);
   }
 });
+
+// Issue #918 (R914-6): numeric-list code answers introduce their program and
+// label their result with seeded numeric_list_* responses in both runtimes
+// (the native pins are rust/tests/integration/issue_395_sort_numbers.rs and
+// its siblings), filled in one pass so a list item with braces stays as
+// given. Every answer is unchanged.
+test("numeric-list answers render their seeded intro and result label", async () => {
+  for (const [prompt, expected] of [
+    ["Write Python code to sort the numbers 3, 1, 2", "Here is Python code that sorts the numbers 3, 1, 2 in ascending order:\n\n```python\nnumbers = [3, 1, 2]\nsorted_numbers = sorted(numbers)\nprint(\", \".join(str(n) for n in sorted_numbers))\n```\n\nResult: 1, 2, 3"],
+    ["Напиши код на Python, который сортирует числа 3, 1, 2", "Вот код на Python, который сортирует числа 3, 1, 2 по возрастанию:\n\n```python\nnumbers = [3, 1, 2]\nsorted_numbers = sorted(numbers)\nprint(\", \".join(str(n) for n in sorted_numbers))\n```\n\nРезультат: 1, 2, 3"],
+    ["Python में संख्याओं 3, 1, 2 को क्रमबद्ध करने का कोड लिखो", "यह Python कोड है जो संख्याओं 3, 1, 2 को आरोही क्रम में क्रमबद्ध करता है:\n\n```python\nnumbers = [3, 1, 2]\nsorted_numbers = sorted(numbers)\nprint(\", \".join(str(n) for n in sorted_numbers))\n```\n\nपरिणाम: 1, 2, 3"],
+    ["用 Python 对数字 3, 1, 2 排序", "这是用 Python 编写的将数字 3, 1, 2 按升序排序的代码:\n\n```python\nnumbers = [3, 1, 2]\nsorted_numbers = sorted(numbers)\nprint(\", \".join(str(n) for n in sorted_numbers))\n```\n\n结果: 1, 2, 3"],
+    ["Sort the strings \"b\", \"a\", \"{lang}\" in Python", "Here is Python code that sorts the strings b, a, {lang} in ascending order:\n\n```python\nnumbers = [\"b\", \"a\", \"{lang}\"]\nsorted_numbers = sorted(numbers)\nprint(\", \".join(str(n) for n in sorted_numbers))\n```\n\nResult: a, b, {lang}"],
+  ]) {
+    const response = await solveWith(prompt, []);
+    assert.equal(response.intent, "write_program", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+});

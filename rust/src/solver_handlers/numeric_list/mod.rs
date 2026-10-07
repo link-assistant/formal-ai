@@ -40,8 +40,8 @@ use std::{cmp::Ordering, fmt::Write as _};
 use crate::coding::ProgramLanguage;
 use crate::language::{Language, detect as detect_language};
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
-use crate::seed::NUMERIC_LIST_OPERATIONS_LINO;
 use crate::seed::parser::{LinoNode, parse_lino};
+use crate::seed::{self, NUMERIC_LIST_OPERATIONS_LINO};
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::{engine::SymbolicAnswer, event_log::EventLog};
 
@@ -541,8 +541,25 @@ impl NumericListSolution {
     #[must_use]
     pub fn render(&self, language: Language) -> String {
         let given = self.given.join(", ");
-        let parts = Localization::for_language(language);
-        let intro = parts.intro(self.operation, self.language_name, &given, self.value_type);
+        // Issue #918: the intro, the value noun and the result label are the
+        // seeded numeric_list_* responses the browser twin renders too.
+        let noun_intent = if self.value_type == "string" {
+            "numeric_list_noun_strings"
+        } else {
+            "numeric_list_noun_numbers"
+        };
+        let noun = seed::localized_response(noun_intent, "en").unwrap_or_default();
+        let intro = seed::render_localized_once(
+            &format!("numeric_list_intro_{}", self.operation.canonical()),
+            language.slug(),
+            &[
+                ("lang", self.language_name),
+                ("given", &given),
+                ("noun", &noun),
+            ],
+        );
+        let result_label = seed::localized_response("numeric_list_result_label", language.slug())
+            .unwrap_or_default();
         // The seed ontology decides how the result reads: a transformation lists
         // the reordered numbers, a reduction shows a single value.
         let shown = if self.result_kind == "scalar" {
@@ -554,152 +571,9 @@ impl NumericListSolution {
         let _ = write!(
             body,
             "{}\n\n```{}\n{}\n```\n\n{} {}",
-            intro, self.code_fence, self.code, parts.result_label, shown
+            intro, self.code_fence, self.code, result_label, shown
         );
         body
-    }
-}
-
-/// Localized phrasing for the four supported UI languages. The numbers, code,
-/// and result are language-independent; only the surrounding prose differs.
-///
-/// The `sort` / `reverse_sort` sentences are kept byte-identical to the original
-/// issue #395 handler so existing golden assertions stay green.
-struct Localization {
-    result_label: &'static str,
-    language: Language,
-}
-
-impl Localization {
-    fn for_language(language: Language) -> Self {
-        let result_label = match language {
-            Language::Russian => "Результат:",
-            Language::Hindi => "परिणाम:",
-            Language::Chinese => "结果:",
-            _ => "Result:",
-        };
-        Self {
-            result_label,
-            language,
-        }
-    }
-
-    fn intro(&self, operation: Operation, lang: &str, given: &str, value_type: &str) -> String {
-        match self.language {
-            Language::Russian => Self::intro_ru(operation, lang, given),
-            Language::Hindi => Self::intro_hi(operation, lang, given),
-            Language::Chinese => Self::intro_zh(operation, lang, given),
-            _ => Self::intro_en(operation, lang, given, value_type),
-        }
-    }
-
-    fn intro_en(operation: Operation, lang: &str, given: &str, value_type: &str) -> String {
-        let noun = if value_type == "string" {
-            "strings"
-        } else {
-            "numbers"
-        };
-        match operation {
-            Operation::Transform(Transform::SortAscending) => {
-                format!("Here is {lang} code that sorts the {noun} {given} in ascending order:")
-            }
-            Operation::Transform(Transform::SortDescending) => {
-                format!("Here is {lang} code that sorts the {noun} {given} in descending order:")
-            }
-            Operation::Transform(Transform::Reverse) => {
-                format!("Here is {lang} code that reverses the {noun} {given}:")
-            }
-            Operation::Reduce(Reduce::Sum) => {
-                format!("Here is {lang} code that sums the {noun} {given}:")
-            }
-            Operation::Reduce(Reduce::Product) => {
-                format!("Here is {lang} code that multiplies the {noun} {given}:")
-            }
-            Operation::Reduce(Reduce::Minimum) => {
-                format!("Here is {lang} code that finds the smallest of the {noun} {given}:")
-            }
-            Operation::Reduce(Reduce::Maximum) => {
-                format!("Here is {lang} code that finds the largest of the {noun} {given}:")
-            }
-        }
-    }
-
-    fn intro_ru(operation: Operation, lang: &str, given: &str) -> String {
-        match operation {
-            Operation::Transform(Transform::SortAscending) => {
-                format!("Вот код на {lang}, который сортирует числа {given} по возрастанию:")
-            }
-            Operation::Transform(Transform::SortDescending) => {
-                format!("Вот код на {lang}, который сортирует числа {given} по убыванию:")
-            }
-            Operation::Transform(Transform::Reverse) => {
-                format!("Вот код на {lang}, который переворачивает числа {given}:")
-            }
-            Operation::Reduce(Reduce::Sum) => {
-                format!("Вот код на {lang}, который суммирует числа {given}:")
-            }
-            Operation::Reduce(Reduce::Product) => {
-                format!("Вот код на {lang}, который перемножает числа {given}:")
-            }
-            Operation::Reduce(Reduce::Minimum) => {
-                format!("Вот код на {lang}, который находит наименьшее из чисел {given}:")
-            }
-            Operation::Reduce(Reduce::Maximum) => {
-                format!("Вот код на {lang}, который находит наибольшее из чисел {given}:")
-            }
-        }
-    }
-
-    fn intro_hi(operation: Operation, lang: &str, given: &str) -> String {
-        match operation {
-            Operation::Transform(Transform::SortAscending) => {
-                format!("यह {lang} कोड है जो संख्याओं {given} को आरोही क्रम में क्रमबद्ध करता है:")
-            }
-            Operation::Transform(Transform::SortDescending) => {
-                format!("यह {lang} कोड है जो संख्याओं {given} को अवरोही क्रम में क्रमबद्ध करता है:")
-            }
-            Operation::Transform(Transform::Reverse) => {
-                format!("यह {lang} कोड है जो संख्याओं {given} को उलट देता है:")
-            }
-            Operation::Reduce(Reduce::Sum) => {
-                format!("यह {lang} कोड है जो संख्याओं {given} का योग करता है:")
-            }
-            Operation::Reduce(Reduce::Product) => {
-                format!("यह {lang} कोड है जो संख्याओं {given} का गुणनफल निकालता है:")
-            }
-            Operation::Reduce(Reduce::Minimum) => {
-                format!("यह {lang} कोड है जो संख्याओं {given} में से सबसे छोटी ढूँढता है:")
-            }
-            Operation::Reduce(Reduce::Maximum) => {
-                format!("यह {lang} कोड है जो संख्याओं {given} में से सबसे बड़ी ढूँढता है:")
-            }
-        }
-    }
-
-    fn intro_zh(operation: Operation, lang: &str, given: &str) -> String {
-        match operation {
-            Operation::Transform(Transform::SortAscending) => {
-                format!("这是用 {lang} 编写的将数字 {given} 按升序排序的代码:")
-            }
-            Operation::Transform(Transform::SortDescending) => {
-                format!("这是用 {lang} 编写的将数字 {given} 按降序排序的代码:")
-            }
-            Operation::Transform(Transform::Reverse) => {
-                format!("这是用 {lang} 编写的将数字 {given} 反转的代码:")
-            }
-            Operation::Reduce(Reduce::Sum) => {
-                format!("这是用 {lang} 编写的对数字 {given} 求和的代码:")
-            }
-            Operation::Reduce(Reduce::Product) => {
-                format!("这是用 {lang} 编写的计算数字 {given} 乘积的代码:")
-            }
-            Operation::Reduce(Reduce::Minimum) => {
-                format!("这是用 {lang} 编写的求数字 {given} 最小值的代码:")
-            }
-            Operation::Reduce(Reduce::Maximum) => {
-                format!("这是用 {lang} 编写的求数字 {given} 最大值的代码:")
-            }
-        }
     }
 }
 

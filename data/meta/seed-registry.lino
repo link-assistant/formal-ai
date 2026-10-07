@@ -383,6 +383,9 @@ seed_registry
   seed meanings-response-intents
     bundle true
     lexicon meaning
+  seed meanings-response-intents-handlers
+    bundle true
+    lexicon meaning
   seed meanings-routing-vocabulary
     bundle true
     lexicon meaning
@@ -556,6 +559,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-memory-program
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-numeric-list
     bundle true
     lexicon response
     web true

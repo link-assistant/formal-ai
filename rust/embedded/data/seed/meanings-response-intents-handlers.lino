@@ -1,0 +1,87 @@
+# Response-template intents of the handlers issue #918 (R914-6) moved from
+# compiled prose to seed responses. Each record names one `intent` key a
+# multilingual-responses-*.lino file carries response records for, so the
+# closure audit resolves the key to an authored definition rather than an
+# open reference. The shape follows the localized_response_template records
+# of data/seed/meanings-response-intents.lino.
+meanings
+  numeric_list_intro_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that sorts the list in ascending order"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that sorts the numbers 3, 1, 2 in ascending order:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_reverse_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that sorts the list in descending order"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is JavaScript code that sorts the numbers 5, 2, 9 in descending order:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_reverse
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that reverses the given order of the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Go code that reverses the numbers 1, 2, 3:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_sum
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that sums the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that sums the numbers 1, 2, 3:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_product
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that multiplies the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that multiplies the numbers 2, 3, 4:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_minimum
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that finds the smallest item of the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that finds the smallest of the numbers 7, 3, 9:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_maximum
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that finds the largest item of the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that finds the largest of the numbers 4, 8, 2:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_result_label
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list answer shows the computed result"
+    effect "the answer labels the result line"
+    unit "not applicable"
+    example "Result: 1, 2, 3"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_noun_strings
+    defined-by answer
+    role localized_response_template
+    precondition "an English numeric-list answer works on a list of strings"
+    effect "the intro names the items as strings"
+    unit "not applicable"
+    example "strings"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_noun_numbers
+    defined-by answer
+    role localized_response_template
+    precondition "an English numeric-list answer works on a list of numbers"
+    effect "the intro names the items as numbers"
+    unit "not applicable"
+    example "numbers"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"

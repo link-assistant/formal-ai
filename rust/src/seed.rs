@@ -369,6 +369,44 @@ pub fn response_variant_for(intent: &str, language: &str, prompt: &str) -> Optio
         })
 }
 
+/// Look up one localized response (see [`localized_response`]) and fill its
+/// `{name}` slots in a single pass, so a value that itself contains braces —
+/// a user's task text, a quoted list item — is never re-filled (issue #918).
+#[must_use]
+pub fn render_localized_once(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    fill_template_once(
+        &localized_response(intent, language).unwrap_or_default(),
+        values,
+    )
+}
+
+/// Fill the `{name}` slots of `template` in a single left-to-right pass;
+/// a slot whose name is not among `values` stays as written.
+#[must_use]
+pub fn fill_template_once(template: &str, values: &[(&str, &str)]) -> String {
+    let mut out = String::with_capacity(template.len());
+    let mut rest = template;
+    while let Some(open) = rest.find('{') {
+        out.push_str(&rest[..open]);
+        let after = &rest[open + 1..];
+        let filled = after.find('}').and_then(|close| {
+            values
+                .iter()
+                .find(|(name, _)| after.get(..close) == Some(*name))
+                .map(|(_, value)| (close, *value))
+        });
+        if let Some((close, value)) = filled {
+            out.push_str(value);
+            rest = &after[close + 1..];
+        } else {
+            out.push('{');
+            rest = after;
+        }
+    }
+    out.push_str(rest);
+    out
+}
+
 /// Look up one response and substitute its named template fields.
 #[must_use]
 pub fn render_response(intent: &str, language: &str, values: &[(&str, &str)]) -> Option<String> {

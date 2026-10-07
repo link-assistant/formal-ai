@@ -775,43 +775,16 @@ fn render_procedural_how_to_body(
 /// Issue #918: the how-to and how-it-works wording is seed data the browser
 /// twin renders too.
 fn how_response(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
-    fill_once(
-        &seed::localized_response(intent, language).unwrap_or_default(),
-        values,
-    )
+    seed::render_localized_once(intent, language, values)
 }
 
 /// A `policy <handler>` template of `data/seed/handler-rules.lino` (the
 /// search-query and concept-query frames), filled in one pass.
 fn how_policy(handler: &str, key: &str, values: &[(&str, &str)]) -> String {
-    fill_once(
+    seed::fill_template_once(
         &crate::rule_interpreter::handler_policy(handler, key).unwrap_or_default(),
         values,
     )
-}
-
-fn fill_once(template: &str, values: &[(&str, &str)]) -> String {
-    let mut out = String::with_capacity(template.len());
-    let mut rest = template;
-    while let Some(open) = rest.find('{') {
-        out.push_str(&rest[..open]);
-        let after = &rest[open + 1..];
-        let filled = after.find('}').and_then(|close| {
-            values
-                .iter()
-                .find(|(name, _)| after.get(..close) == Some(*name))
-                .map(|(_, value)| (close, *value))
-        });
-        if let Some((close, value)) = filled {
-            out.push_str(value);
-            rest = &after[close + 1..];
-        } else {
-            out.push('{');
-            rest = after;
-        }
-    }
-    out.push_str(rest);
-    out
 }
 
 fn capitalize_word(word: &str) -> String {

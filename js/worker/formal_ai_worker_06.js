@@ -611,66 +611,29 @@ function numericListLiterals(items, valueType) {
   });
 }
 
-// Issue #395: localized phrasing for the four supported UI languages. The
-// numbers, code, and result are language-independent; only the surrounding prose
-// differs. Mirrors Localization in src/solver_handlers/numeric_list/mod.rs; the
-// `sort` / `reverse_sort` sentences are byte-identical to the original handler so
-// existing golden assertions stay green.
-const NUMERIC_LIST_LOCALIZATION = {
-  ru: {
-    resultLabel: "Результат:",
-    intro: (canonical, lang, given) =>
-      ({
-        sort: `Вот код на ${lang}, который сортирует числа ${given} по возрастанию:`,
-        reverse_sort: `Вот код на ${lang}, который сортирует числа ${given} по убыванию:`,
-        reverse: `Вот код на ${lang}, который переворачивает числа ${given}:`,
-        sum: `Вот код на ${lang}, который суммирует числа ${given}:`,
-        product: `Вот код на ${lang}, который перемножает числа ${given}:`,
-        minimum: `Вот код на ${lang}, который находит наименьшее из чисел ${given}:`,
-        maximum: `Вот код на ${lang}, который находит наибольшее из чисел ${given}:`,
-      })[canonical],
-  },
-  hi: {
-    resultLabel: "परिणाम:",
-    intro: (canonical, lang, given) =>
-      ({
-        sort: `यह ${lang} कोड है जो संख्याओं ${given} को आरोही क्रम में क्रमबद्ध करता है:`,
-        reverse_sort: `यह ${lang} कोड है जो संख्याओं ${given} को अवरोही क्रम में क्रमबद्ध करता है:`,
-        reverse: `यह ${lang} कोड है जो संख्याओं ${given} को उलट देता है:`,
-        sum: `यह ${lang} कोड है जो संख्याओं ${given} का योग करता है:`,
-        product: `यह ${lang} कोड है जो संख्याओं ${given} का गुणनफल निकालता है:`,
-        minimum: `यह ${lang} कोड है जो संख्याओं ${given} में से सबसे छोटी ढूँढता है:`,
-        maximum: `यह ${lang} कोड है जो संख्याओं ${given} में से सबसे बड़ी ढूँढता है:`,
-      })[canonical],
-  },
-  zh: {
-    resultLabel: "结果:",
-    intro: (canonical, lang, given) =>
-      ({
-        sort: `这是用 ${lang} 编写的将数字 ${given} 按升序排序的代码:`,
-        reverse_sort: `这是用 ${lang} 编写的将数字 ${given} 按降序排序的代码:`,
-        reverse: `这是用 ${lang} 编写的将数字 ${given} 反转的代码:`,
-        sum: `这是用 ${lang} 编写的对数字 ${given} 求和的代码:`,
-        product: `这是用 ${lang} 编写的计算数字 ${given} 乘积的代码:`,
-        minimum: `这是用 ${lang} 编写的求数字 ${given} 最小值的代码:`,
-        maximum: `这是用 ${lang} 编写的求数字 ${given} 最大值的代码:`,
-      })[canonical],
-  },
-  en: {
-    resultLabel: "Result:",
-    intro: (canonical, lang, given, valueTypeLabel) => {
-      const noun = valueTypeLabel === "string" ? "strings" : "numbers";
-      return ({
-        sort: `Here is ${lang} code that sorts the ${noun} ${given} in ascending order:`,
-        reverse_sort: `Here is ${lang} code that sorts the ${noun} ${given} in descending order:`,
-        reverse: `Here is ${lang} code that reverses the ${noun} ${given}:`,
-        sum: `Here is ${lang} code that sums the ${noun} ${given}:`,
-        product: `Here is ${lang} code that multiplies the ${noun} ${given}:`,
-        minimum: `Here is ${lang} code that finds the smallest of the ${noun} ${given}:`,
-        maximum: `Here is ${lang} code that finds the largest of the ${noun} ${given}:`,
-      })[canonical];
+// Issue #918: the intro sentence per operation, the English value noun and
+// the result label are the seeded numeric_list_* responses
+// (data/seed/multilingual-responses-numeric-list.lino), filled in one pass as
+// Solution::render in src/solver_handlers/numeric_list/mod.rs fills them.
+function numericListLocalization(language) {
+  return {
+    get resultLabel() {
+      return answerFor("numeric_list_result_label", language);
     },
-  },
+    intro: (canonical, lang, given, valueTypeLabel) => {
+      const noun = answerFor(valueTypeLabel === "string" ? "numeric_list_noun_strings" : "numeric_list_noun_numbers", "en");
+      const values = { lang, given, noun };
+      return answerFor(`numeric_list_intro_${canonical}`, language).replace(/\{([^{}]*)\}/gu, (whole, name) =>
+        Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : whole);
+    },
+  };
+}
+
+const NUMERIC_LIST_LOCALIZATION = {
+  ru: numericListLocalization("ru"),
+  hi: numericListLocalization("hi"),
+  zh: numericListLocalization("zh"),
+  en: numericListLocalization("en"),
 };
 
 // Issue #395: recognize which numeric-list operation the prompt asks for, in
