@@ -19,27 +19,30 @@ async function admits(handler, prompt) {
 test("the claim rows are read from the capability table", async () => {
   await seeded;
   assert.deepEqual(plain(evaluate(worker, "claimRouteRows()")), [
-    { handler: "software_project", browserHandler: "trySoftwareProjectRequest", admitsOn: ["object_phrase_artifact", "approval_of_a_proposal"] },
-    { handler: "terminal_command", browserHandler: "tryTerminalCommand", admitsOn: ["shell_command_shape", "semantic_shell_task"] },
-    { handler: "repository_lineage", browserHandler: "", admitsOn: ["repository_subject"] },
-    { handler: "page_query_text", browserHandler: "tryPageQueryText", admitsOn: ["supplied_page"] },
-    { handler: "javascript_execution", browserHandler: "tryJavaScriptExecution", admitsOn: ["javascript_program"] },
-    { handler: "incompatible_units", browserHandler: "tryIncompatibleUnits", admitsOn: ["incompatible_unit_pair"] },
-    { handler: "http_fetch", browserHandler: "", admitsOn: ["fetch_url"] },
-    { handler: "url_navigate", browserHandler: "", admitsOn: ["navigation_url"] },
-    { handler: "calendar_create_event", browserHandler: "", admitsOn: ["calendar_date_signal"] },
-    { handler: "code_debugging", browserHandler: "tryCodeDebugging", admitsOn: ["code_artifact"] },
-    { handler: "code_explanation", browserHandler: "tryCodeExplanation", admitsOn: ["code_artifact"] },
-    { handler: "code_review", browserHandler: "tryCodeReview", admitsOn: ["code_artifact"] },
-    { handler: "summarization_text", browserHandler: "trySummarizationText", admitsOn: ["supplied_text"] },
-    { handler: "text_rewrite", browserHandler: "tryTextRewrite", admitsOn: ["supplied_text"] },
-    { handler: "statistics", browserHandler: "tryStatistics", admitsOn: ["stated_number"] },
-    { handler: "word_problem", browserHandler: "tryWordProblem", admitsOn: ["stated_number"] },
-    { handler: "arithmetic", browserHandler: "tryArithmetic", admitsOn: ["calculation_expression", "currency_rate_basis"] },
-    { handler: "compound_interest", browserHandler: "tryCompoundInterest", admitsOn: ["investment_terms", "conversion_target_currency"] },
-    { handler: "number_constraint_reasoning", browserHandler: "tryNumberConstraintReasoning", admitsOn: ["interval_bounds"] },
-    { handler: "unit_conversion", browserHandler: "tryUnitConversion", admitsOn: ["measured_quantity"] },
-    { handler: "calendar_reasoning", browserHandler: "tryCalendarReasoning", admitsOn: ["calendar_date_signal", "calendar_anchor"] },
+    { handler: "software_project", browserHandler: "trySoftwareProjectRequest", admitsOn: ["object_phrase_artifact", "approval_of_a_proposal"], refusalEvents: [] },
+    { handler: "terminal_command", browserHandler: "tryTerminalCommand", admitsOn: ["shell_command_shape", "semantic_shell_task"], refusalEvents: [] },
+    { handler: "repository_lineage", browserHandler: "", admitsOn: ["repository_subject"], refusalEvents: [] },
+    { handler: "page_query_text", browserHandler: "tryPageQueryText", admitsOn: ["supplied_page"], refusalEvents: [] },
+    { handler: "javascript_execution", browserHandler: "tryJavaScriptExecution", admitsOn: ["javascript_program"], refusalEvents: [] },
+    { handler: "incompatible_units", browserHandler: "tryIncompatibleUnits", admitsOn: ["incompatible_unit_pair"], refusalEvents: [] },
+    { handler: "http_fetch", browserHandler: "", admitsOn: ["fetch_url"], refusalEvents: [] },
+    { handler: "url_navigate", browserHandler: "", admitsOn: ["navigation_url"], refusalEvents: [] },
+    { handler: "calendar_create_event", browserHandler: "", admitsOn: ["calendar_date_signal"], refusalEvents: [] },
+    { handler: "code_debugging", browserHandler: "tryCodeDebugging", admitsOn: ["code_artifact"], refusalEvents: [] },
+    { handler: "code_explanation", browserHandler: "tryCodeExplanation", admitsOn: ["code_artifact"], refusalEvents: [] },
+    { handler: "code_review", browserHandler: "tryCodeReview", admitsOn: ["code_artifact"], refusalEvents: [] },
+    { handler: "summarization_text", browserHandler: "trySummarizationText", admitsOn: ["supplied_text"], refusalEvents: [] },
+    { handler: "text_rewrite", browserHandler: "tryTextRewrite", admitsOn: ["supplied_text"], refusalEvents: [] },
+    { handler: "statistics", browserHandler: "tryStatistics", admitsOn: ["stated_number"], refusalEvents: [] },
+    { handler: "word_problem", browserHandler: "tryWordProblem", admitsOn: ["stated_number"], refusalEvents: [] },
+    { handler: "arithmetic", browserHandler: "tryArithmetic", admitsOn: ["calculation_expression", "currency_rate_basis"], refusalEvents: [] },
+    { handler: "compound_interest", browserHandler: "tryCompoundInterest", admitsOn: ["investment_terms", "conversion_target_currency"], refusalEvents: [] },
+    { handler: "number_constraint_reasoning", browserHandler: "tryNumberConstraintReasoning", admitsOn: ["interval_bounds"], refusalEvents: [] },
+    { handler: "unit_conversion", browserHandler: "tryUnitConversion", admitsOn: ["measured_quantity"], refusalEvents: [] },
+    { handler: "calendar_reasoning", browserHandler: "tryCalendarReasoning", admitsOn: ["calendar_date_signal", "calendar_anchor"], refusalEvents: [] },
+    { handler: "test_generation", browserHandler: "tryTestGeneration", admitsOn: ["function_under_test"], refusalEvents: ["test_generation:refusal"] },
+    { handler: "code_refactoring", browserHandler: "tryCodeRefactoring", admitsOn: ["code_artifact"], refusalEvents: ["code_refactoring:refusal"] },
+    { handler: "format_conversion", browserHandler: "tryFormatConversion", admitsOn: ["structured_document"], refusalEvents: ["format_conversion:refusal"] },
   ]);
 });
 
@@ -133,4 +136,32 @@ test("a numeric handler answers only where its row admits", async () => {
 
 test("a handler with no claim row is admitted as before", async () => {
   assert.equal(await admits("tryConceptLookup", "What is a monad?"), true);
+});
+
+test("R1175-3 refusal lane: a cued request without its operand keeps only its named refusal", async () => {
+  await seeded;
+  const admission = (handler, prompt) => plain(evaluate(worker, `claimRouteAdmission(${JSON.stringify(handler)}, ${JSON.stringify(prompt)})`));
+  // Without the operand the handler is admitted to refuse only.
+  assert.equal(await admission("tryTestGeneration", "Write unit tests"), "refusal");
+  assert.equal(await admission("tryCodeRefactoring", "Refactor my morning routine"), "refusal");
+  assert.equal(await admission("tryFormatConversion", "Convert this JSON to YAML"), "refusal");
+  // With it, every answer the handler gives is admitted.
+  assert.equal(await admission("tryTestGeneration", "Write tests for `square(n)`: square(3) returns 9"), "full");
+  assert.equal(await admission("tryCodeRefactoring", "Refactor this promise chain with async/await:\n```javascript\nfetch(url).then(r => r.json());\n```"), "full");
+  assert.equal(await admission("tryFormatConversion", "Convert this JSON to YAML:\n```json\n{\"a\": 1}\n```"), "full");
+  // A refusal recorded by the handler stands; an answer without one is dropped.
+  const refused = (handler, hit) => plain(evaluate(worker, `claimRouteRefused(${JSON.stringify(handler)}, ${JSON.stringify(hit)})`));
+  assert.equal(await refused("tryTestGeneration", { evidence: ["test_generation:request:cued", "test_generation:refusal:function=none"] }), true);
+  assert.equal(await refused("tryTestGeneration", { evidence: ["test_generation:request:cued", "test_generation:suite:case=3"] }), false);
+  // End to end the named refusal is still the answer.
+  const answer = plain(await evaluate(worker, "solve(\"Write unit tests\", [], {}, {}, [], {})"));
+  assert.equal(answer.intent, "test_generation", JSON.stringify(answer));
+  assert.ok(answer.content.startsWith("Recognized a test-writing request, but no function under test could be identified"), answer.content);
+});
+
+test("R1175-3: the refusal-group evidence reads the handlers' own operands", async () => {
+  assert.equal(await evidence("function_under_test", "Write tests for `is_palindrome(s)`"), true);
+  assert.equal(await evidence("function_under_test", "Write unit tests"), false);
+  assert.equal(await evidence("structured_document", "Convert this YAML to JSON:\n```yaml\nname: formal-ai\n```"), true);
+  assert.equal(await evidence("structured_document", "Convert this YAML to JSON"), false);
 });

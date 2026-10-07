@@ -7,8 +7,8 @@
 //! `rust/tests/web/issue-1175-claim-routing.test.mjs`.
 
 use formal_ai::capability_routing::{
-    CLAIM_EVIDENCE_KINDS, ClaimRow, claim_admitted, claim_evidence_holds, claim_rows,
-    claim_rows_from,
+    CLAIM_EVIDENCE_KINDS, ClaimAdmission, ClaimRow, claim_admission, claim_admitted,
+    claim_evidence_holds, claim_rows, claim_rows_from,
 };
 
 #[test]
@@ -91,6 +91,35 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 "tryCalendarReasoning",
                 vec!["calendar_date_signal", "calendar_anchor"],
             ),
+            (
+                "test_generation",
+                "tryTestGeneration",
+                vec!["function_under_test"]
+            ),
+            ("code_refactoring", "tryCodeRefactoring", vec!["code_artifact"]),
+            (
+                "format_conversion",
+                "tryFormatConversion",
+                vec!["structured_document"],
+            ),
+        ]
+    );
+    let refusal_rows: Vec<(&str, Vec<&str>)> = claim_rows()
+        .iter()
+        .filter(|row| !row.refusal_events.is_empty())
+        .map(|row| {
+            (
+                row.handler.as_str(),
+                row.refusal_events.iter().map(String::as_str).collect(),
+            )
+        })
+        .collect();
+    assert_eq!(
+        refusal_rows,
+        vec![
+            ("test_generation", vec!["test_generation:refusal"]),
+            ("code_refactoring", vec!["code_refactoring:refusal"]),
+            ("format_conversion", vec!["format_conversion:refusal"]),
         ]
     );
 }
@@ -276,7 +305,66 @@ fn a_handler_without_a_row_is_admitted_and_a_fixture_row_routes_without_code() {
             handler: "concept_lookup".to_owned(),
             browser_handler: String::new(),
             admits_on: vec!["shell_command_shape".to_owned()],
+            refusal_events: Vec::new(),
             because: "fixture".to_owned(),
         }]
+    );
+}
+
+// Issue #1175 R3, refusal group: without its operand a refusal-group handler
+// is admitted to refuse only (the dispatcher keeps its answer only when it
+// recorded the row's refusal event), and with it every answer is admitted.
+#[test]
+fn a_refusal_group_handler_without_its_operand_may_only_refuse() {
+    for (handler, prompt) in [
+        ("test_generation", "Write unit tests"),
+        ("code_refactoring", "Refactor my morning routine"),
+        ("format_conversion", "Convert this JSON to YAML"),
+    ] {
+        assert_eq!(
+            claim_admission(handler, prompt, &prompt.to_lowercase()),
+            ClaimAdmission::RefusalOnly,
+            "{handler}: {prompt}"
+        );
+        assert!(claim_admitted(handler, prompt, &prompt.to_lowercase()));
+    }
+    for (handler, prompt) in [
+        (
+            "test_generation",
+            "Write tests for `square(n)`: square(3) returns 9",
+        ),
+        (
+            "code_refactoring",
+            "Refactor this promise chain with async/await:\n```javascript\nfetch(url).then(r => r.json());\n```",
+        ),
+        (
+            "format_conversion",
+            "Convert this JSON to YAML:\n```json\n{\"a\": 1}\n```",
+        ),
+    ] {
+        assert_eq!(
+            claim_admission(handler, prompt, &prompt.to_lowercase()),
+            ClaimAdmission::Full,
+            "{handler}: {prompt}"
+        );
+    }
+    // A row without a refusal event still denies a prompt without evidence.
+    assert_eq!(
+        claim_admission(
+            "code_review",
+            "Review my essay about the ocean",
+            "review my essay about the ocean"
+        ),
+        ClaimAdmission::Denied
+    );
+}
+
+#[test]
+fn the_named_refusal_of_a_refusal_group_request_is_still_the_answer() {
+    let response = formal_ai::FormalAiEngine.answer("Write unit tests");
+    assert_eq!(response.intent, "test_generation");
+    assert_eq!(
+        response.answer,
+        "Recognized a test-writing request, but no function under test could be identified \u{2014} name it, ideally in backticks like `is_palindrome(s)` \u{2014} so I will not guess test cases."
     );
 }

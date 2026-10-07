@@ -407,6 +407,46 @@ meanings
     unit "boolean"
     example "schedule a meeting with anna tomorrow at 3pm"
     grounding "data/seed/capability-routing.lino"
+  test_generation
+    defined-by method
+    role action
+    precondition "a request asks for tests of a function"
+    effect "names the handler whose claim row admits a suite only with a named function under test and keeps only its refusal otherwise"
+    unit "not applicable"
+    example "write tests for is_palindrome(s)"
+    grounding "data/seed/capability-routing.lino"
+  code_refactoring
+    defined-by method
+    role action
+    precondition "a request asks to restructure code it carries"
+    effect "names the handler whose claim row admits a rewrite only with a code artifact and keeps only its refusal otherwise"
+    unit "not applicable"
+    example "refactor this promise chain with async/await"
+    grounding "data/seed/capability-routing.lino"
+  format_conversion
+    defined-by method
+    role action
+    precondition "a request asks to convert a document between notations"
+    effect "names the handler whose claim row admits a conversion only with the document and keeps only its refusal otherwise"
+    unit "not applicable"
+    example "convert this json to yaml"
+    grounding "data/seed/capability-routing.lino"
+  function_under_test
+    defined-by concept
+    role action
+    precondition "a test request names the function it tests, in backticks or after the word for"
+    effect "admits the test generation handler claim to a suite"
+    unit "boolean"
+    example "write tests for is_palindrome(s)"
+    grounding "data/seed/capability-routing.lino"
+  structured_document
+    defined-by concept
+    role action
+    precondition "a conversion request carries the JSON or YAML document it converts"
+    effect "admits the format conversion handler claim to a converted document"
+    unit "boolean"
+    example "convert this json to yaml: {a: 1}"
+    grounding "data/seed/capability-routing.lino"
   code_debugging
     defined-by method
     role action

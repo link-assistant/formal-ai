@@ -40,7 +40,7 @@ pub use formalization_task::{
     AppliedPredicate, QuantifiedClause, RmlExport, handle_formalization_request, rml_source,
     run_rml_export_with,
 };
-pub use format_conversion::handle_format_conversion;
+pub use format_conversion::{carries_structured_document, handle_format_conversion};
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
@@ -69,7 +69,7 @@ pub use sql_synthesis::handle_sql_synthesis;
 pub use statistics::{handle_statistics, handle_word_problem};
 pub use summarization_request::handle_summarization_request;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
-pub use test_generation::handle_test_generation;
+pub use test_generation::{handle_test_generation, names_function_under_test};
 pub use text_manipulation::{
     names_a_quoted_replacement, names_text_operation, text_outside_quoted_segments,
 };

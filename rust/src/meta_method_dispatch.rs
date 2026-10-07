@@ -198,11 +198,27 @@ pub fn try_dispatch(
         // Issue #1175 R3: the claim-routing rows of the capability table are
         // consulted before the handler runs, so a handler whose row admits on
         // none of its evidence kinds is never offered the prompt.
-        if crate::capability_routing::claim_admitted(&name, prompt, &normalized)
+        // A row naming a refusal event admits its handler without the
+        // evidence to the refusal lane only: the answer stands when the
+        // handler recorded that event, and is dropped (with its events)
+        // otherwise, so no answer is claimed on the cue alone.
+        let admission = crate::capability_routing::claim_admission(&name, prompt, &normalized);
+        let refusal_only = admission == crate::capability_routing::ClaimAdmission::RefusalOnly;
+        if admission != crate::capability_routing::ClaimAdmission::Denied
             && let Some(handler) = handler_for_method(&name)
-            && let Some(answer) = handler.call(prompt, &normalized, log)
         {
-            return Some(record_method_answer(prompt, log, answer, &name));
+            let before = refusal_only.then(|| log.clone());
+            let mark = log.events().len();
+            if let Some(answer) = handler.call(prompt, &normalized, log) {
+                let appended = log.events().get(mark..).unwrap_or_default();
+                if !refusal_only || crate::capability_routing::refusal_recorded(&name, appended) {
+                    return Some(record_method_answer(prompt, log, answer, &name));
+                }
+                if let Some(before) = before {
+                    *log = before;
+                }
+                log.append("claim_routing:refusal_lane_dropped", name.clone());
+            }
         }
         if execution.project_lookup == Some(ProjectLookupPhase::Fallback) {
             let answer = if let Some(language) = forced_response_language {

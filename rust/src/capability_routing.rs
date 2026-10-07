@@ -42,8 +42,8 @@ use crate::web_engine_core::normalize_prompt;
 mod claims;
 mod evidence;
 pub use claims::{
-    CLAIM_EVIDENCE_KINDS, ClaimRow, claim_admitted, claim_evidence_holds, claim_rows,
-    claim_rows_from,
+    CLAIM_EVIDENCE_KINDS, ClaimAdmission, ClaimRow, claim_admission, claim_admitted,
+    claim_evidence_holds, claim_rows, claim_rows_from, refusal_recorded,
 };
 pub use evidence::*;
 

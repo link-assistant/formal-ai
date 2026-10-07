@@ -252,6 +252,14 @@ fn function_spec(prompt: &str) -> Option<(String, String)> {
     None
 }
 
+/// Whether the prompt names a function under test (issue #1175 R3: the
+/// `function_under_test` claim evidence, read by the same reader the handler
+/// uses).
+#[must_use]
+pub fn names_function_under_test(prompt: &str) -> bool {
+    function_spec(prompt).is_some()
+}
+
 /// The Python literal for a sample input: bracketed inputs pass through,
 /// everything else becomes an escaped quoted string.
 fn python_literal(input: &str) -> String {

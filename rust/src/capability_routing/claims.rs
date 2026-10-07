@@ -11,6 +11,11 @@
 //! with no row is admitted as before; the rows are where the issue #1175
 //! classes of misroute live, and new rows are added there, not in code.
 //!
+//! A row may also name a `refusal_event`: without its evidence the handler is
+//! then admitted to the refusal lane only, where its answer stands only when
+//! it recorded that event — a cued request without its operand keeps its
+//! named refusal, and no answer is claimed on the cue alone.
+//!
 //! Mirrored by `claimRouteAdmits` in `js/worker/formal_ai_worker_dispatch.js`.
 
 use std::sync::OnceLock;
@@ -23,6 +28,10 @@ pub struct ClaimRow {
     pub handler: String,
     pub browser_handler: String,
     pub admits_on: Vec<String>,
+    /// The event a handler records when it refuses by name. A row naming one
+    /// admits the handler without its evidence to refuse only: the answer is
+    /// kept when the handler recorded this event, and dropped otherwise.
+    pub refusal_events: Vec<String>,
     pub because: String,
 }
 
@@ -52,6 +61,8 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "interval_bounds",
     "measured_quantity",
     "calendar_anchor",
+    "function_under_test",
+    "structured_document",
 ];
 
 /// Parse the `claim` rows of a capability-routing document.
@@ -71,6 +82,12 @@ pub fn claim_rows_from(text: &str) -> Vec<ClaimRow> {
                     .children
                     .iter()
                     .filter(|child| child.name == "admits_on" && !child.id.is_empty())
+                    .map(|child| child.id.clone())
+                    .collect(),
+                refusal_events: record
+                    .children
+                    .iter()
+                    .filter(|child| child.name == "refusal_event" && !child.id.is_empty())
                     .map(|child| child.id.clone())
                     .collect(),
                 because: record.find_child_value("because").to_owned(),
@@ -163,21 +180,68 @@ pub fn claim_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Optio
                 || calendar::date_weekday::stated_date(prompt, normalized).is_some()
                 || calendar::mentions_current_day_question(normalized)
         }
+        // Issue #1175 R3, refusal group: the operand each handler's own
+        // reader extracts before it composes anything.
+        "function_under_test" => crate::solver_handlers::names_function_under_test(prompt),
+        "structured_document" => crate::solver_handlers::carries_structured_document(prompt),
         _ => return None,
     };
     Some(holds)
 }
 
-/// Whether the router offers `prompt` to `handler`.
-///
-/// A handler with no `claim` row is admitted; a handler with one is admitted
-/// when any evidence kind its row lists holds.
+/// How the router offers a prompt to a handler.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ClaimAdmission {
+    /// The handler's evidence holds (or it has no row): any answer is kept.
+    Full,
+    /// The evidence is absent but the row names a refusal event: the handler
+    /// may only refuse, so its answer is kept only when it recorded that
+    /// event.
+    RefusalOnly,
+    /// The handler is not offered the prompt.
+    Denied,
+}
+
+/// How the router offers `prompt` to `handler`.
 #[must_use]
-pub fn claim_admitted(handler: &str, prompt: &str, normalized: &str) -> bool {
+pub fn claim_admission(handler: &str, prompt: &str, normalized: &str) -> ClaimAdmission {
     let Some(row) = claim_rows().iter().find(|row| row.handler == handler) else {
-        return true;
+        return ClaimAdmission::Full;
     };
-    row.admits_on
+    if row
+        .admits_on
         .iter()
         .any(|kind| claim_evidence_holds(kind, prompt, normalized) == Some(true))
+    {
+        ClaimAdmission::Full
+    } else if row.refusal_events.is_empty() {
+        ClaimAdmission::Denied
+    } else {
+        ClaimAdmission::RefusalOnly
+    }
+}
+
+/// Whether the router offers `prompt` to `handler` at all (fully or to the
+/// refusal lane).
+///
+/// A handler with no `claim` row is admitted; a handler with one is admitted
+/// when any evidence kind its row lists holds, or to refuse only when its row
+/// names a refusal event.
+#[must_use]
+pub fn claim_admitted(handler: &str, prompt: &str, normalized: &str) -> bool {
+    claim_admission(handler, prompt, normalized) != ClaimAdmission::Denied
+}
+
+/// Whether a refusal-lane answer may stand: the handler recorded one of its
+/// row's refusal events among `events` (the events it appended).
+#[must_use]
+pub fn refusal_recorded(handler: &str, events: &[crate::event_log::Event]) -> bool {
+    claim_rows()
+        .iter()
+        .find(|row| row.handler == handler)
+        .is_some_and(|row| {
+            events
+                .iter()
+                .any(|event| row.refusal_events.iter().any(|kind| *kind == event.kind))
+        })
 }

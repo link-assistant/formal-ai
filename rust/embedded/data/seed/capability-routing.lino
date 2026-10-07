@@ -362,6 +362,7 @@ capability_routing
     capability subagent
     because "issue 758: assigning a task to an agent is recorded as delegation"
   claim_note "Issue 1175 R3: claim rows are consulted after formalization and before a handler runs. A handler with a row is offered the prompt only when one of its admits_on evidence kinds holds in the prompt's structure, so no surface word alone can claim it; a handler with no row is admitted as before."
+  claim_note "Issue 1175 R3 refusal lane: a row that names a refusal_event admits its handler without the evidence to refuse only. The handler runs, and its answer is kept only when the handler recorded that refusal event, so a cued request without its operand keeps its honest named refusal while no answer can be claimed on the cue alone."
   claim
     handler software_project
     browser_handler trySoftwareProjectRequest
@@ -469,3 +470,21 @@ capability_routing
     admits_on calendar_anchor
     because "issue 1175 R3: calendar arithmetic claims only with the day it starts from, a weekday, a month, a stated date or today, or with an event's date signal"
   default ask
+  claim
+    handler test_generation
+    browser_handler tryTestGeneration
+    admits_on function_under_test
+    refusal_event test_generation:refusal
+    because "issue 1175 R3: a test request claims a suite only with the function under test it names; without one it is admitted to the refusal lane, where only its named refusal is kept"
+  claim
+    handler code_refactoring
+    browser_handler tryCodeRefactoring
+    admits_on code_artifact
+    refusal_event code_refactoring:refusal
+    because "issue 1175 R3: a refactoring request claims a rewrite only with the code it rewrites; without code it is admitted to the refusal lane, where only its named refusal is kept"
+  claim
+    handler format_conversion
+    browser_handler tryFormatConversion
+    admits_on structured_document
+    refusal_event format_conversion:refusal
+    because "issue 1175 R3: a conversion request claims a converted document only with the document it converts; without one it is admitted to the refusal lane, where only its named refusal is kept"

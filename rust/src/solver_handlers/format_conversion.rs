@@ -183,9 +183,7 @@ fn yaml_text(prompt: &str) -> Option<String> {
         let start = seen;
         seen += line.len() + 1;
         let trimmed = line.trim();
-        if trimmed.contains(": ")
-            || trimmed.strip_prefix("- ").is_some()
-            || trimmed.ends_with(':')
+        if trimmed.contains(": ") || trimmed.strip_prefix("- ").is_some() || trimmed.ends_with(':')
         {
             return Some(prompt[start..].to_owned());
         }
@@ -231,28 +229,26 @@ fn scalar_yaml(value: &Value) -> String {
     match value {
         Value::Null => "null".to_owned(),
         Value::Bool(flag) => flag.to_string(),
-        Value::Number(number) => {
-            number.as_i64().map_or_else(
-                || {
-                    number.as_u64().map_or_else(
-                        || {
-                            number.as_f64().map_or_else(
-                                || number.to_string(),
-                                |float| {
-                                    if float.fract() == 0.0 {
-                                        [float.trunc().to_string(), ".0".to_owned()].concat()
-                                    } else {
-                                        float.to_string()
-                                    }
-                                },
-                            )
-                        },
-                        |uint| uint.to_string(),
-                    )
-                },
-                |int| int.to_string(),
-            )
-        }
+        Value::Number(number) => number.as_i64().map_or_else(
+            || {
+                number.as_u64().map_or_else(
+                    || {
+                        number.as_f64().map_or_else(
+                            || number.to_string(),
+                            |float| {
+                                if float.fract() == 0.0 {
+                                    [float.trunc().to_string(), ".0".to_owned()].concat()
+                                } else {
+                                    float.to_string()
+                                }
+                            },
+                        )
+                    },
+                    |uint| uint.to_string(),
+                )
+            },
+            |int| int.to_string(),
+        ),
         Value::String(text) => {
             if plain_safe(text) {
                 text.clone()
@@ -351,23 +347,21 @@ fn parse_scalar(token: &str) -> Value {
         "null" | "~" => Value::Null,
         "true" => Value::Bool(true),
         "false" => Value::Bool(false),
-        _ => {
-            token.parse::<i64>().map_or_else(
-                |_| {
-                    token.parse::<u64>().map_or_else(
-                        |_| {
-                            token
-                                .parse::<f64>()
-                                .ok()
-                                .and_then(serde_json::Number::from_f64)
-                                .map_or_else(|| Value::String(token.to_owned()), Value::Number)
-                        },
-                        |uint| Value::Number(uint.into()),
-                    )
-                },
-                |int| Value::Number(int.into()),
-            )
-        }
+        _ => token.parse::<i64>().map_or_else(
+            |_| {
+                token.parse::<u64>().map_or_else(
+                    |_| {
+                        token
+                            .parse::<f64>()
+                            .ok()
+                            .and_then(serde_json::Number::from_f64)
+                            .map_or_else(|| Value::String(token.to_owned()), Value::Number)
+                    },
+                    |uint| Value::Number(uint.into()),
+                )
+            },
+            |int| Value::Number(int.into()),
+        ),
     }
 }
 
@@ -540,6 +534,14 @@ fn parse_yaml(text: &str) -> Option<Value> {
 fn refusal(reason: &str) -> String {
     let reason_text = template(&["format_conversion_reason_", reason].concat(), &[]);
     template("format_conversion_refusal", &[("reason", &reason_text)])
+}
+
+/// Whether the prompt carries a JSON or YAML document to convert (issue
+/// #1175 R3: the `structured_document` claim evidence, read by the same
+/// extractors the handler uses).
+#[must_use]
+pub fn carries_structured_document(prompt: &str) -> bool {
+    json_text(prompt).is_some() || yaml_text(prompt).is_some()
 }
 
 /// Try to recognize a JSON↔YAML conversion request and perform it within
