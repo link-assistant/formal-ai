@@ -201,6 +201,65 @@ jobs:
             "$TEST_BUDGET_SECONDS" "JavaScript suites shard $SHARD/$SHARDS" \
             node --test --test-shard="$SHARD/$SHARDS" rust/tests/web/*.test.mjs
 
+  # Issue #1186 R4: the Lean and Rocq texts a formalization answer renders
+  # must compile when the provers are present. The js tier pins the prover
+  # step with stand-in executables; this job installs the real ones (Lean
+  # from its pinned release archive, Rocq from the runner's packages) and
+  # runs rust/tests/provers/, which fails when either is missing.
+  provers:
+    name: provers (real Lean 4 and Rocq compile, R1186-4)
+    needs: [changes]
+    if: needs.changes.outputs.js-changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-provers
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    env:
+      LEAN_VERSION: 4.34.1
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      # Each fetch owns its deadline (issue #1017): a hung mirror fails the
+      # step with an ::error instead of burning the job cap into `cancelled`.
+      # Budgets 250 + 90 + 120 = 460s stay under 70% of the 720s cap.
+      - name: Install Rocq
+        env:
+          TEST_BUDGET_SECONDS: 250
+          FORMAL_AI_APT_ATTEMPTS: 2
+          FORMAL_AI_APT_ATTEMPT_SECONDS: 120
+          FORMAL_AI_APT_RETRY_DELAY_SECONDS: 5
+        run: >-
+          scripts/run-with-budget-warning.sh
+          "$TEST_BUDGET_SECONDS" "Install Rocq"
+          scripts/apt-install-with-retry.sh coq zstd
+      - name: Download Lean 4
+        env:
+          TEST_BUDGET_SECONDS: 90
+        run: >-
+          scripts/run-with-budget-warning.sh
+          "$TEST_BUDGET_SECONDS" "Download Lean 4"
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/lean.tar.zst"
+          "https://github.com/leanprover/lean4/releases/download/v${LEAN_VERSION}/lean-${LEAN_VERSION}-linux.tar.zst"
+      - name: Put Lean 4 on PATH
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/lean-${LEAN_VERSION}-linux/bin" >> "$GITHUB_PATH"
+      - name: Report the prover versions
+        run: |
+          lean --version
+          coqc --version
+      - name: Compile the rendered Lean and Rocq units
+        env:
+          TEST_BUDGET_SECONDS: 120
+        run: >-
+          scripts/run-with-budget-warning.sh
+          "$TEST_BUDGET_SECONDS" "Compile the rendered Lean and Rocq units"
+          node --test rust/tests/provers/issue-1186-real-provers.test.mjs
+
   ts:
     name: ts tier (js<->ts file-set parity)
     needs: [changes, js]
