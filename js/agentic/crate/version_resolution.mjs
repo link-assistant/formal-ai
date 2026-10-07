@@ -8,10 +8,11 @@
 // a capture `{source_url, text, fetched_at, sha256, cached}` — the fields of
 // Rust's `SourceCapture` the resolution reads — or null where Rust's
 // `client.fetch(url)` errs. `forGeneration(fetch)` walks the same ladder over
-// a host-supplied `fetch`; without one it answers from the shipped baseline,
-// because no JavaScript host owns a source cache to replay yet.
+// a host-supplied `fetch`; by default the installed host's `sourceFetch`
+// (crate/source_cache.mjs over the Node io), and from the shipped baseline
+// when the host has none.
 
-import { cached, readText } from '../host.mjs';
+import { cached, hasHost, host, readText } from '../host.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
 import { reportText } from './seed_reports.mjs';
 import { lines, trimStart } from '../write_str.mjs';
@@ -180,8 +181,20 @@ export function recordVersionSet(versions) {
  * network and the cache are unavailable.
  * @param {((url: string) => object|null)} [fetch]
  */
-export function forGeneration(fetch) {
+export function forGeneration(fetch = hostSourceFetch()) {
   return typeof fetch === 'function' ? resolveVersionSet(fetch) : baselineVersionSet();
+}
+
+/**
+ * The installed host's source fetch (`host().sourceFetch()`), the twin of
+ * the `CachedSourceClient` `for_generation` builds: `FORMAL_AI_SOURCE_CACHE_DIR`
+ * (default `data`), online only under `FORMAL_AI_LIVE_FETCH`. A host without
+ * one (the browser) answers from the shipped baseline.
+ */
+function hostSourceFetch() {
+  if (!hasHost()) return null;
+  const make = host().sourceFetch;
+  return typeof make === 'function' ? make() : null;
 }
 
 function pin(versions, id) {

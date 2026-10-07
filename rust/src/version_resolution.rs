@@ -25,6 +25,8 @@ const TOOLCHAINS: &str = include_str!("../embedded/data/seed/toolchains.lino");
 /// The environment override for the source cache, matching the convention of
 /// `solver_handler_how_synthesis`.
 const CACHE_ENV_VAR: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
+/// The opt-in that lets generation reach the publishers' APIs.
+const LIVE_FETCH_ENV_VAR: &str = "FORMAL_AI_LIVE_FETCH";
 
 /// Where a resolved version came from.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -162,12 +164,17 @@ impl VersionSet {
         }
     }
 
-    /// What generation uses when no client is handed in: cached captures if
-    /// the source cache has them, otherwise the shipped baseline.
+    /// What generation uses when no client is handed in (R1168-1, R1168-5):
+    /// the publisher's live API when `FORMAL_AI_LIVE_FETCH` opts the run into
+    /// the network (the repository's one live-retrieval switch), captured into
+    /// the source cache; the cached capture when the network is off or
+    /// unreachable; otherwise the shipped baseline. Each origin is named by
+    /// `provenance_note`.
     #[must_use]
     pub fn for_generation() -> Self {
         let cache_dir = std::env::var(CACHE_ENV_VAR).unwrap_or_else(|_| String::from("data"));
-        let client = CachedSourceClient::new(cache_dir, CurlSourceTransport);
+        let client = CachedSourceClient::new(cache_dir, CurlSourceTransport)
+            .with_online(crate::cli_env::flag_enabled(LIVE_FETCH_ENV_VAR));
         Self::resolve(&client)
     }
 
