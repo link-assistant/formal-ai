@@ -169,7 +169,14 @@ export function composeGeneralChangePlan(fullRequest) {
 
 function composeRepositoryWorkPlan(request) {
   const target = repositoryWorkReference(request);
-  if (target === null || !mentionsBareRole(request, 'software_authoring_action')) return null;
+  if (target === null) return null;
+  // Mirrors `opens_with_reference`: Hive Mind's objective field (`Issue to
+  // solve: <url>`, the prepared branch, "Proceed.") carries its verb in the
+  // delimiter `objectiveText` already stripped, so an objective that opens
+  // with the work-item reference is that field (issues #1154 and #1155).
+  const first = splitWhitespace(request)[0];
+  const opensWithReference = first !== undefined && repositoryWorkReference(first) !== null;
+  if (!opensWithReference && !mentionsBareRole(request, 'software_authoring_action')) return null;
   const responseLanguage = detect(request);
   const intent = formalizeIntent(request, responseLanguage);
   return {
