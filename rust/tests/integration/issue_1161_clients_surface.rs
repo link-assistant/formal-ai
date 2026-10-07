@@ -114,7 +114,10 @@ fn clients_text_prints_the_relocation_variables_on_each_global_line() {
                         && line.contains(&format!(": {} (", config.path))
                 })
                 .unwrap_or_else(|| {
-                    panic!("{} prints a global line for {}", integration.id, config.path)
+                    panic!(
+                        "{} prints a global line for {}",
+                        integration.id, config.path
+                    )
                 });
             if config.config_env.is_empty() {
                 assert!(!line.contains(" via "), "{line} declares no variable");
