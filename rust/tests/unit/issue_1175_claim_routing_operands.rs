@@ -98,26 +98,30 @@ fn last_five_rows_the_idiom_claims_only_as_the_whole_utterance() {
 
 #[test]
 fn last_five_rows_a_source_conflict_names_its_attributed_alternatives() {
-    for (prompt, first, second) in [
+    for (prompt, first, second, expected) in [
         (
             "The sources conflict: Wikipedia says Tesla was born in 1856, but an old almanac says 1857.",
             "Wikipedia says Tesla was born in 1856",
             "an old almanac says 1857",
+            "The sources you cite disagree: Wikipedia says Tesla was born in 1856; an old almanac says 1857. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.",
         ),
         (
             "Источники противоречат друг другу: по данным Википедии он родился в 1880 году, а по данным Британники в 1881.",
             "по данным Википедии он родился в 1880 году",
             "по данным Британники в 1881",
+            "Указанные вами источники расходятся: по данным Википедии он родился в 1880 году; по данным Британники в 1881. Расхождение записано в сети как связь conflict:source_disagreement, а не разрешено молча.",
         ),
         (
             "स्रोतों में विरोधाभास है: विकिपीडिया के अनुसार वह 1880 में पैदा हुआ, लेकिन ब्रिटानिका के अनुसार 1881 में।",
             "विकिपीडिया के अनुसार वह 1880 में पैदा हुआ",
             "ब्रिटानिका के अनुसार 1881 में",
+            "आपके बताए स्रोत असहमत हैं: विकिपीडिया के अनुसार वह 1880 में पैदा हुआ; ब्रिटानिका के अनुसार 1881 में। असहमति को चुपचाप सुलझाने के बजाय नेटवर्क में conflict:source_disagreement लिंक के रूप में दर्ज किया गया है।",
         ),
         (
             "来源之间有矛盾：维基百科说他生于1880年，大英百科说他生于1881年。",
             "维基百科说他生于1880年",
             "大英百科说他生于1881年",
+            "你引用的来源说法不一致：维基百科说他生于1880年；大英百科说他生于1881年。这一分歧作为 conflict:source_disagreement 链接记录在网络中，而不是被悄悄消解。",
         ),
     ] {
         assert_eq!(
@@ -128,6 +132,7 @@ fn last_five_rows_a_source_conflict_names_its_attributed_alternatives() {
         let mut log = EventLog::new();
         let answer = run_handler("source_conflict", prompt, &prompt.to_lowercase(), &mut log)
             .unwrap_or_else(|| panic!("an attributed conflict is answered: {prompt}"));
+        assert_eq!(answer.answer, expected, "{prompt}");
         assert!(
             answer.answer.contains(first) && answer.answer.contains(second),
             "the answer names both alternatives: {}",
@@ -161,27 +166,32 @@ fn last_five_rows_a_source_conflict_names_its_attributed_alternatives() {
 
 #[test]
 fn last_five_rows_a_traffic_answer_names_the_repository_the_prompt_names() {
-    for (prompt, repository) in [
+    for (prompt, repository, expected) in [
         (
             "Can I see who visited my GitHub repository konard/formal-ai?",
             "konard/formal-ai",
+            "Partly. For a GitHub repository such as konard/formal-ai, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository; https://docs.github.com/en/rest/metrics/traffic.",
         ),
         (
             "Можно ли узнать, кто заходил в репозиторий facebook/react на GitHub?",
             "facebook/react",
+            "Частично. Для репозитория GitHub, например facebook/react, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository; https://docs.github.com/en/rest/metrics/traffic.",
         ),
         (
             "क्या मैं जान सकता हूँ कि GitHub रेपो rust-lang/rust में कौन आया?",
             "rust-lang/rust",
+            "आंशिक रूप से। rust-lang/rust जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository; https://docs.github.com/en/rest/metrics/traffic.",
         ),
         (
             "能知道谁访问过 GitHub 仓库 vercel/next.js 吗？",
             "vercel/next.js",
+            "部分可以。对于 vercel/next.js 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository; https://docs.github.com/en/rest/metrics/traffic.",
         ),
         // The assistant's own repository, addressed by a second-person possessive.
         (
             "можно ли узнать заходил ли кто либо в твое репо на github?",
             "link-assistant/formal-ai",
+            "Частично. Для репозитория GitHub, например link-assistant/formal-ai, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository; https://docs.github.com/en/rest/metrics/traffic.",
         ),
     ] {
         assert_eq!(
@@ -197,6 +207,7 @@ fn last_five_rows_a_traffic_answer_names_the_repository_the_prompt_names() {
             &mut log,
         )
         .unwrap_or_else(|| panic!("a traffic question is answered: {prompt}"));
+        assert_eq!(answer.answer, expected, "{prompt}");
         assert!(answer.answer.contains(repository), "{}", answer.answer);
     }
     // "My repository" names none: the answer stays generic, through the
