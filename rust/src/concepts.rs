@@ -15,6 +15,7 @@
 //! (`iir`) and a context term (`ml`); the ranker then prefers a record whose
 //! `contexts` list contains the parsed context.
 
+use std::collections::BTreeMap;
 use std::sync::OnceLock;
 
 use crate::engine::SymbolicAnswer;
@@ -49,6 +50,42 @@ pub fn resolve_context_label(raw_context: &str) -> Option<&'static ContextRecord
     concept_contexts()
         .iter()
         .find(|record| record.matches(&normalized))
+}
+
+/// The roles of the concept-query vocabulary in `data/seed/code-task-cues.lino`.
+const QUERY_CUE_ROLES: [&str; 11] = [
+    "request_prefix",
+    "question_start",
+    "inverted_who_lead",
+    "inverted_who_tail",
+    "inverted_who_copula",
+    "meaning_prefix",
+    "meaning_suffix",
+    "meaning_stem_prefix",
+    "meaning_non_subject",
+    "idiom_suffix",
+    "article",
+];
+
+/// The concept-query vocabulary for `role`, in seed order: the request leads,
+/// question starts, inverted-who frame, meaning-question leads and tails,
+/// non-subject words, idiom tails and articles are the `concept_lookup` cue
+/// records of `data/seed/code-task-cues.lino` (issue #918), read once.
+fn query_cues(role: &str) -> &'static [String] {
+    static CELL: OnceLock<BTreeMap<&'static str, Vec<String>>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        QUERY_CUE_ROLES
+            .iter()
+            .map(|role| {
+                (
+                    *role,
+                    crate::solver_handlers::code_task_cue_phrases("concept_lookup", role),
+                )
+            })
+            .collect()
+    })
+    .get(role)
+    .map_or(&[][..], Vec::as_slice)
 }
 
 fn concept_prefixes() -> &'static [(String, String)] {
@@ -194,19 +231,17 @@ pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
 }
 
 fn strip_leading_request(input: &str) -> &str {
-    const REQUEST_PREFIXES: &[&str] = &["please tell me,", "please tell me", "tell me,", "tell me"];
-    const QUESTION_STARTS: &[&str] = &["who ", "what ", "what's ", "who's "];
     let lower = input.to_lowercase();
-    for prefix in REQUEST_PREFIXES {
-        let Some(rest_lower) = lower.strip_prefix(prefix) else {
+    for prefix in query_cues("request_prefix") {
+        let Some(rest_lower) = lower.strip_prefix(prefix.as_str()) else {
             continue;
         };
         let rest_start = input.len() - rest_lower.len();
         let rest = input[rest_start..].trim_start();
         let rest_lower = rest.to_lowercase();
-        if QUESTION_STARTS
+        if query_cues("question_start")
             .iter()
-            .any(|question_start| rest_lower.starts_with(question_start))
+            .any(|question_start| rest_lower.starts_with(question_start.as_str()))
         {
             return rest;
         }
@@ -215,12 +250,12 @@ fn strip_leading_request(input: &str) -> &str {
 }
 
 fn strip_inverted_who_is<'a>(input: &'a str, lower: &str) -> Option<&'a str> {
-    let rest_lower = lower.strip_prefix("who ")?;
-    let body_lower = rest_lower.strip_suffix(" is")?;
+    let rest_lower = lower.strip_prefix(query_cues("inverted_who_lead").first()?.as_str())?;
+    let body_lower = rest_lower.strip_suffix(query_cues("inverted_who_tail").first()?.as_str())?;
     let body_start = input.len() - rest_lower.len();
     let body_end = body_start + body_lower.len();
     let body = input[body_start..body_end].trim();
-    if body.is_empty() || matches!(body.to_lowercase().as_str(), "is" | "was" | "are") {
+    if body.is_empty() || query_cues("inverted_who_copula").contains(&body.to_lowercase()) {
         return None;
     }
     Some(body)
@@ -240,34 +275,20 @@ pub fn meaning_question_subject(prompt: &str) -> Option<String> {
 }
 
 fn strip_meaning_question_body<'a>(input: &'a str, lower: &str) -> Option<&'a str> {
-    for prefix in [
-        "what is the meaning of ",
-        "what's the meaning of ",
-        "what is meaning of ",
-        "meaning of ",
-    ] {
-        if lower.starts_with(prefix) {
+    for prefix in query_cues("meaning_prefix") {
+        if lower.starts_with(prefix.as_str()) {
             return clean_meaning_candidate(&input[prefix.len()..]);
         }
     }
 
-    for suffix in [" mean", " means", " meaning"] {
-        if !lower.ends_with(suffix) {
+    for suffix in query_cues("meaning_suffix") {
+        if !lower.ends_with(suffix.as_str()) {
             continue;
         }
         let stem = input[..input.len() - suffix.len()].trim();
         let stem_lower = stem.to_lowercase();
-        for prefix in [
-            "what does the word ",
-            "what does ",
-            "what do ",
-            "what did ",
-            "what is the word ",
-            "what is ",
-            "what's ",
-            "what i ",
-        ] {
-            if stem_lower.starts_with(prefix) {
+        for prefix in query_cues("meaning_stem_prefix") {
+            if stem_lower.starts_with(prefix.as_str()) {
                 return clean_meaning_candidate(&stem[prefix.len()..]);
             }
         }
@@ -284,11 +305,7 @@ fn clean_meaning_candidate(value: &str) -> Option<&str> {
     if body.is_empty() {
         return None;
     }
-    let lower = body.to_lowercase();
-    if matches!(
-        lower.as_str(),
-        "it" | "that" | "this" | "word" | "the word" | "mean" | "means" | "meaning" | "i"
-    ) {
+    if query_cues("meaning_non_subject").contains(&body.to_lowercase()) {
         return None;
     }
     Some(body)
@@ -330,8 +347,9 @@ fn finalize_concept_query_with_response_language(
 }
 
 fn strip_concept_idiom_suffix(body: &str) -> &str {
-    body.strip_suffix(" mean")
-        .or_else(|| body.strip_suffix(" stand for"))
+    query_cues("idiom_suffix")
+        .iter()
+        .find_map(|suffix| body.strip_suffix(suffix.as_str()))
         .unwrap_or(body)
         .trim()
 }
@@ -554,8 +572,8 @@ fn record_has_context(record: &ConceptRecord, context_normalized: &str) -> bool 
 fn normalize_concept_term(value: &str) -> String {
     let lower = value.to_lowercase();
     let mut stripped = lower.as_str();
-    for prefix in ["the ", "a ", "an "] {
-        if let Some(rest) = stripped.strip_prefix(prefix) {
+    for prefix in query_cues("article") {
+        if let Some(rest) = stripped.strip_prefix(prefix.as_str()) {
             stripped = rest;
             break;
         }
@@ -725,12 +743,7 @@ fn render_concept_in_context(language: &str, context: &str, record: &ConceptReco
         .or_else(|| response_for(intent_variant, "en"))
         .or_else(|| response_for("concept_lookup_in_context", language))
         .or_else(|| response_for("concept_lookup_in_context", "en"))
-        .unwrap_or_else(|| {
-            String::from(
-                "In the context of {context} ({context_label}), {term} ({category}) means: \
-                 {summary}\n\nSource: {source} ({source_kind}).",
-            )
-        });
+        .unwrap_or_default();
     let localized = record.localized_for(language);
     let term = localized
         .map(|loc| loc.term.as_str())

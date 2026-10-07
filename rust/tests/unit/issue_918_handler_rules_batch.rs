@@ -445,3 +445,17 @@ fn a_release_timeline_fact_renders_the_same_snapshot_answer() {
     assert_eq!(response.intent, "fact_lookup");
     assert_eq!(response.answer, expected);
 }
+
+const CONCEPT_WIKIDATA: &str = "Wikidata (structured-knowledge): Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It stores structured data items that power Wikipedia infoboxes and external knowledge applications.\n\nSource: https://en.wikipedia.org/wiki/Wikidata (wikipedia).";
+
+/// The concept-query reader takes its request leads, question starts,
+/// inverted-who frame, meaning-question leads and tails, non-subject words,
+/// idiom tails and articles from the `concept_lookup` cue records of
+/// `data/seed/code-task-cues.lino` in both runtimes. A meaning question
+/// ("What does X mean?") walks the meaning-tail and stem-lead lists.
+#[test]
+fn a_meaning_question_resolves_through_the_seeded_query_vocabulary() {
+    let response = FormalAiEngine.answer("What does Wikidata mean?");
+    assert_eq!(response.intent, "concept_lookup");
+    assert_eq!(response.answer, CONCEPT_WIKIDATA);
+}

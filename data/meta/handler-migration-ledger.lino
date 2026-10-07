@@ -266,7 +266,11 @@ handler_migration_ledger
     primitive "rust/src/triz_solver.rs"
     justification "Issue 901 resolves seeded contradiction families and benchmark methods through the native scoring interpreter. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_triz.js answers the same seed records in the worker."
   handler concept_lookup
-    status pending
+    status migrated
+    data "data/seed/concepts.lino|data/seed/concept-contexts.lino|data/seed/prompt-patterns.lino|data/seed/code-task-cues.lino|data/seed/multilingual-responses-concept-lookup.lino"
+    primitive "rust/src/concepts.rs"
+    justification "issue #918 (R914-6): the concept prefixes, suffixes and context delimiters were already prompt-pattern data and the records, contexts and wording seed data; the last English vocabulary in the query reader, the request leads, question starts, inverted-who frame and copulas, meaning-question leads and tails, non-subject words, idiom tails and articles, are now concept_lookup cue records of data/seed/code-task-cues.lino read in seed order, and the dead in-context template fallback is gone. The native part parses the query shape and ranks registry records. Browser twin: extractConceptQuery and normalizeConceptTerm (js/worker/formal_ai_worker_00.js, formal_ai_worker_01.js) read the same records, and the worker's bootstrap concept prefix and suffix lists are gone; the browser's extraction is byte-identical before and after on the probe set of rust/tests/web/issue-0918-handler-rules-batch.test.mjs. Pinned in both runtimes, beside rust/tests/unit/specification/multilingual.rs and reasoning_paths.rs."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler who_is
     status migrated
     data "data/seed/entity-names.lino|data/seed/multilingual-responses.lino"

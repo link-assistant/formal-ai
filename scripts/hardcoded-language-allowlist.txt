@@ -248,7 +248,6 @@ rust/src/coding/recurrence.rs	source call is missing argument {key}
 rust/src/coding/recurrence.rs	unknown source reference {key}
 rust/src/coding/recurrence.rs	unsupported non-integer literal {value}
 rust/src/coding/recurrence.rs	{} if {} else {}
-rust/src/concepts.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
 rust/src/dreaming.rs	  action {:?} event={} bytes={} usage={} reason={}
 rust/src/dreaming.rs	  candidate_task topic={} source={} passed={}
 rust/src/dreaming.rs	  free_bytes: {free}

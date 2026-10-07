@@ -284,6 +284,7 @@ pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<Symb
 // Plan 09 leaf 18: learn-from-source lives beside the M2 retrieval interpreter;
 // network query, source refresh and source conflict are seed rules (#918).
 pub use crate::retrieval_procedures::try_learn_from_source;
+pub use shell_command_compose::cue_phrases as code_task_cue_phrases;
 
 pub fn try_translation(
     prompt: &str,

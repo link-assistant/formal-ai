@@ -1,10 +1,11 @@
 // Worker module 2 of 21. Loaded by ../formal_ai_worker.js.
 function extractInvertedWhoIs(input, lower) {
-  if (!lower.startsWith("who ") || !lower.endsWith(" is")) return null;
-  const body = input.slice("who ".length, input.length - " is".length).trim();
+  const lead = conceptQueryCues("inverted_who_lead")[0];
+  const tail = conceptQueryCues("inverted_who_tail")[0];
+  if (!lead || !tail || !lower.startsWith(lead) || !lower.endsWith(tail)) return null;
+  const body = input.slice(lead.length, input.length - tail.length).trim();
   if (!body) return null;
-  const normalized = body.toLowerCase();
-  if (["is", "was", "are"].includes(normalized)) return null;
+  if (conceptQueryCues("inverted_who_copula").includes(body.toLowerCase())) return null;
   return body;
 }
 
@@ -130,38 +131,22 @@ function cleanMeaningCandidate(value) {
     .replace(/^[«»"“”‘’'`]+|[«»"“”‘’'`]+$/gu, "")
     .trim();
   if (!cleaned) return null;
-  if (/^(?:it|that|this|word|the word|mean|means|meaning|i)$/iu.test(cleaned)) {
-    return null;
-  }
+  if (conceptQueryCues("meaning_non_subject").includes(cleaned.toLowerCase())) return null;
   return cleaned;
 }
 
 function extractMeaningQuestionBody(original, lower) {
-  for (const prefix of [
-    "what is the meaning of ",
-    "what's the meaning of ",
-    "what is meaning of ",
-    "meaning of ",
-  ]) {
+  for (const prefix of conceptQueryCues("meaning_prefix")) {
     if (lower.startsWith(prefix)) {
       return cleanMeaningCandidate(original.slice(prefix.length));
     }
   }
 
-  for (const suffix of [" mean", " means", " meaning"]) {
+  for (const suffix of conceptQueryCues("meaning_suffix")) {
     if (!lower.endsWith(suffix)) continue;
     const stem = original.slice(0, -suffix.length).trim();
     const stemLower = stem.toLowerCase();
-    for (const prefix of [
-      "what does the word ",
-      "what does ",
-      "what do ",
-      "what did ",
-      "what is the word ",
-      "what is ",
-      "what's ",
-      "what i ",
-    ]) {
+    for (const prefix of conceptQueryCues("meaning_stem_prefix")) {
       if (stemLower.startsWith(prefix)) {
         return cleanMeaningCandidate(stem.slice(prefix.length));
       }
@@ -349,7 +334,7 @@ function renderSourceLink(source) {
 }
 
 function stripConceptIdiomSuffix(original, lower) {
-  for (const suffix of [" mean", " stand for"]) {
+  for (const suffix of conceptQueryCues("idiom_suffix")) {
     if (lower.endsWith(suffix)) {
       return {
         original: original.slice(0, -suffix.length).trim(),

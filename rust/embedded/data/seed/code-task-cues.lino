@@ -287,6 +287,87 @@ map
     entry
       word prompt_marker
       value "% "
+# The concept-lookup query reader (rust/src/concepts.rs and the worker's
+# extractConceptQuery, issue #918): the request leads it strips ahead of a
+# question, the inverted "who X is" frame and the copulas it refuses as a
+# subject, the meaning-question leads and tails, the words that are never the
+# interrogated subject, the idiom tails and the articles a term sheds. Every
+# list is read in seed order.
+cues
+  intent concept_lookup
+    role request_prefix
+    phrase "please tell me,"
+    phrase "please tell me"
+    phrase "tell me,"
+    phrase "tell me"
+cues
+  intent concept_lookup
+    role question_start
+    phrase "who "
+    phrase "what "
+    phrase "what's "
+    phrase "who's "
+cues
+  intent concept_lookup
+    role inverted_who_lead
+    phrase "who "
+cues
+  intent concept_lookup
+    role inverted_who_tail
+    phrase " is"
+cues
+  intent concept_lookup
+    role inverted_who_copula
+    phrase "is"
+    phrase "was"
+    phrase "are"
+cues
+  intent concept_lookup
+    role meaning_prefix
+    phrase "what is the meaning of "
+    phrase "what's the meaning of "
+    phrase "what is meaning of "
+    phrase "meaning of "
+cues
+  intent concept_lookup
+    role meaning_suffix
+    phrase " mean"
+    phrase " means"
+    phrase " meaning"
+cues
+  intent concept_lookup
+    role meaning_stem_prefix
+    phrase "what does the word "
+    phrase "what does "
+    phrase "what do "
+    phrase "what did "
+    phrase "what is the word "
+    phrase "what is "
+    phrase "what's "
+    phrase "what i "
+cues
+  intent concept_lookup
+    role meaning_non_subject
+    phrase "it"
+    phrase "that"
+    phrase "this"
+    phrase "word"
+    phrase "the word"
+    phrase "mean"
+    phrase "means"
+    phrase "meaning"
+    phrase "i"
+cues
+  intent concept_lookup
+    role idiom_suffix
+    phrase " mean"
+    phrase " stand for"
+cues
+  intent concept_lookup
+    role article
+    phrase "the "
+    phrase "a "
+    phrase "an "
 # The network snapshot (the network_query rules of handler-rules.lino) renders
 # the link network; the browser's rule records are the seeded intents
 # knowledge_links_notation (engine.rs) renders, in that order.

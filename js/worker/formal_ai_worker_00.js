@@ -914,7 +914,7 @@ function normalizePrompt(prompt) {
 
 function normalizeConceptTerm(value) {
   let lower = String(value || "").toLowerCase();
-  for (const prefix of ["the ", "a ", "an "]) {
+  for (const prefix of conceptQueryCues("article")) {
     if (lower.startsWith(prefix)) {
       lower = lower.slice(prefix.length);
       break;
@@ -1065,67 +1065,16 @@ function lookupConcept(term) {
   return hit ? hit.record : null;
 }
 
-// Default concept-lookup patterns when seed/prompt-patterns.lino is missing.
-// Sorted longest-first so "what is a " beats "what is " when both match.
-const DEFAULT_CONCEPT_SUFFIXES = [
-  " का अर्थ बताओ",
-  " क्या होता है",
-  " क्या है",
-  " कौन हैं",
-  " कौन है",
-  "的意思是什么",
-  "是什么意思",
-  "是甚麼",
-  "是什么",
-  "是誰",
-  "是谁",
-];
-const DEFAULT_CONCEPT_PREFIXES = [
-  "what is a ",
-  "what is an ",
-  "what is the ",
-  "what is ",
-  "what's a ",
-  "what's an ",
-  "what's the ",
-  "what's ",
-  "what do ",
-  "what does ",
-  "tell me about ",
-  "tell me what ",
-  "define ",
-  "explain ",
-  "describe ",
-  "who is ",
-  "who was ",
-  "что такое ",
-  "что это ",
-  "что означает слово ",
-  "кто такой ",
-  "кто такая ",
-  "кто это ",
-  "расскажи о ",
-  "расскажи про ",
-  "назови ",
-  "опиши ",
-  "объясни ",
-  "什么是",
-  "甚麼是",
-  "请解释",
-  "请说说",
-  "介绍一下",
-];
-
+// The concept-lookup patterns of data/seed/prompt-patterns.lino, longest-first
+// so "what is a " beats "what is " when both match. There is no bootstrap
+// copy: the seed is the only place these words live (issue #918).
 function conceptPatternsByKind(kind) {
   const matches = PROMPT_PATTERNS.filter(
     (p) => p && p.intent === "concept_lookup" && p.kind === kind && p.text,
   ).map((p) => p.text);
   // Sort longest-first so more specific patterns win.
   matches.sort((a, b) => b.length - a.length);
-  if (matches.length > 0) return matches;
-  if (kind === "suffix") return DEFAULT_CONCEPT_SUFFIXES;
-  if (kind === "prefix") return DEFAULT_CONCEPT_PREFIXES;
-  return [];
+  return matches;
 }
 
 let cachedConceptResponseLanguageMarkers = null;
@@ -1228,15 +1177,21 @@ function splitTermAndContext(bodyOriginal, bodyLower) {
   };
 }
 
+/**
+ * The concept-query vocabulary for `role`, in seed order: the `concept_lookup`
+ * cue records of data/seed/code-task-cues.lino (issue #918). Mirrors
+ * query_cues in rust/src/concepts.rs.
+ * @param {string} role
+ * @returns {string[]}
+ */
+function conceptQueryCues(role) {
+  return codeTaskCuePhrases("concept_lookup", role);
+}
+
 function stripLeadingRequest(input) {
   const lower = input.toLowerCase();
-  const prefixes = [
-    "please tell me,",
-    "please tell me",
-    "tell me,",
-    "tell me",
-  ];
-  const questionStarts = ["who ", "what ", "what's ", "who's "];
+  const prefixes = conceptQueryCues("request_prefix");
+  const questionStarts = conceptQueryCues("question_start");
   for (const prefix of prefixes) {
     if (!lower.startsWith(prefix)) continue;
     const rest = input.slice(prefix.length).trimStart();

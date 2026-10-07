@@ -55,7 +55,8 @@ fn seed_text(path: &str) -> Option<&'static str> {
 
 /// Trigger phrases for one intent (optionally one named role) from
 /// `data/seed/code-task-cues.lino`.
-pub(super) fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
+#[must_use]
+pub fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
     let Some(text) = seed_text(CUES_PATH) else {
         return Vec::new();
     };

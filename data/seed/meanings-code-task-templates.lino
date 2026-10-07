@@ -671,3 +671,83 @@ meanings
     unit "not applicable"
     example "find all log files"
     grounding "data/seed/code-task-cues.lino"
+  request_prefix
+    defined-by method
+    role action
+    precondition "a concept question opens with a polite request lead"
+    effect "strips the request lead when a question start follows it, so the question itself is read"
+    unit "not applicable"
+    example "please tell me, what is an algorithm"
+    grounding "data/seed/code-task-cues.lino"
+  question_start
+    defined-by method
+    role action
+    precondition "a stripped request lead is followed by a question"
+    effect "confirms that the rest of the prompt is the question the lead introduced"
+    unit "not applicable"
+    example "what is an algorithm after tell me"
+    grounding "data/seed/code-task-cues.lino"
+  inverted_who_lead
+    defined-by method
+    role action
+    precondition "a who question puts the subject before its copula"
+    effect "opens the inverted frame whose middle is the subject"
+    unit "not applicable"
+    example "who Ada Lovelace is"
+    grounding "data/seed/code-task-cues.lino"
+  inverted_who_tail
+    defined-by method
+    role action
+    precondition "a who question ends with its copula"
+    effect "closes the inverted frame whose middle is the subject"
+    unit "not applicable"
+    example "who Ada Lovelace is"
+    grounding "data/seed/code-task-cues.lino"
+  inverted_who_copula
+    defined-by method
+    role action
+    precondition "the middle of an inverted who frame is itself a copula"
+    effect "refuses the copula as a subject"
+    unit "not applicable"
+    example "who is is"
+    grounding "data/seed/code-task-cues.lino"
+  meaning_prefix
+    defined-by method
+    role action
+    precondition "a prompt asks for the meaning of a term up front"
+    effect "reads the term after the lead as the interrogated subject"
+    unit "not applicable"
+    example "what is the meaning of recursion"
+    grounding "data/seed/code-task-cues.lino"
+  meaning_suffix
+    defined-by method
+    role action
+    precondition "a prompt ends by asking what a term means"
+    effect "reads the stem before the tail as a meaning question"
+    unit "not applicable"
+    example "what does API mean"
+    grounding "data/seed/code-task-cues.lino"
+  meaning_stem_prefix
+    defined-by method
+    role action
+    precondition "a meaning question stem opens with an interrogative lead"
+    effect "reads the term after the lead as the interrogated subject"
+    unit "not applicable"
+    example "what does the word lambda mean"
+    grounding "data/seed/code-task-cues.lino"
+  meaning_non_subject
+    defined-by method
+    role action
+    precondition "the interrogated slot of a meaning question holds a pronoun or the question words themselves"
+    effect "refuses the word as a subject"
+    unit "not applicable"
+    example "meaning of it"
+    grounding "data/seed/code-task-cues.lino"
+  idiom_suffix
+    defined-by method
+    role action
+    precondition "a concept term ends with an idiomatic tail asking what it means or stands for"
+    effect "sheds the tail from the term"
+    unit "not applicable"
+    example "what does LOL stand for"
+    grounding "data/seed/code-task-cues.lino"

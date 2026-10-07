@@ -269,3 +269,23 @@ test("a release-timeline fact renders the snapshot against the day it is asked",
   assert.equal(response.content,
     plain(evaluate(worker, `renderReleaseTimeline("spider_man_title_role_films", "en", "${today}")`)).text);
 });
+
+test("the concept-query reader takes its vocabulary from the seed cue records", async () => {
+  const response = await solve("What does Wikidata mean?");
+  assert.equal(response.intent, "concept_lookup");
+  assert.equal(response.content,
+    "Wikidata (structured-knowledge): Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It stores structured data items that power Wikipedia infoboxes and external knowledge applications.\n\nSource: https://en.wikipedia.org/wiki/Wikidata (wikipedia).");
+  await ready;
+  for (const [prompt, term] of [
+    ["Please tell me, what is an algorithm?", "algorithm"],
+    ["What does the word lambda mean", "lambda"],
+    ["What is the meaning of recursion?", "recursion"],
+    ["What does LOL stand for?", "lol"],
+    ["Who Ada Lovelace is", "ada lovelace"],
+  ]) {
+    assert.equal(plain(evaluate(worker, `extractConceptQuery(${JSON.stringify(prompt)})`)).term, term, prompt);
+  }
+  // A non-subject word is never the interrogated subject of a meaning question.
+  assert.equal(evaluate(worker, 'extractMeaningQuestionBody("meaning of it", "meaning of it")'), null);
+  assert.equal(evaluate(worker, 'normalizeConceptTerm("The Rust language")'), "rust language");
+});
