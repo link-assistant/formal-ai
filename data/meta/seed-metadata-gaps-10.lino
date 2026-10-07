@@ -31,10 +31,6 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "monday"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_ab5ff433a965102a
-    source "data/seed/meanings-coding-request.lino"
-    record "code_example_decomposition"
-    missing "role"
   gap seed_metadata_gap_f1d727a1f206af4a
     source "data/seed/meanings-coding-structure.lino"
     record "ordering"

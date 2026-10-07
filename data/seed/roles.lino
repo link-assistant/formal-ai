@@ -149,6 +149,10 @@ roles
     kind predicate
   clause_continuation_marker
     kind meaning
+  code_example_decomposition_answer
+    kind predicate
+  code_example_decomposition_cue
+    kind predicate
   code_method_noun
     kind predicate
   code_style_obligation

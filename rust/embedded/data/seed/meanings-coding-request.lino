@@ -261,6 +261,7 @@ meanings
         text ejecutar
   code_example_decomposition_request
     defined-by request
+    role code_example_decomposition_cue
     precondition "the first line of a prompt asks for the parts of the code examples on the page the following lines supply"
     effect "the supplied-page route decomposes each code block in a registered grammar into its meaningful parts (issue 1164 R1164-11)"
     unit "not applicable"
@@ -290,6 +291,7 @@ meanings
         text "partes del ejemplo de código"
   code_example_decomposition
     defined-by answer
+    role code_example_decomposition_answer
     precondition "a supplied page carries a code block in a language with a registered grammar"
     effect "the answer lists each decomposed part as its kind and source text, one per line"
     unit "not applicable"
