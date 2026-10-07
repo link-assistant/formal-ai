@@ -439,6 +439,23 @@ map
       column price
       operator ">"
 map
+  name index_bound_past_end
+    entry
+      word "range(len({c}) + 1)"
+      fix "range(len({c}))"
+    entry
+      word "<= len({c})"
+      fix "< len({c})"
+    entry
+      word "<= {c}.length"
+      fix "< {c}.length"
+    entry
+      word "<= {c}.size()"
+      fix "< {c}.size()"
+    entry
+      word "<= {c}.len()"
+      fix "< {c}.len()"
+map
   name sql_grouping
     entry
       word per

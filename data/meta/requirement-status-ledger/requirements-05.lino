@@ -67,10 +67,10 @@ requirement_status_ledger_shard requirements_05
   requirement
     id "R1177-1"
     shard "docs/requirements/issue-1177-code-tasks-formal-answers.md"
-    verdict "implemented"
-    delivered "2026-09-30 (this pull request) — quotient-shift debugging grounded in the name-promise table; other defect classes honestly declined"
+    verdict "partial"
+    delivered "2026-09-30 (this pull request) — quotient-shift debugging grounded in the name-promise table; loop bounds past the end of an indexed collection from a seeded table (2026-10-07); other defect classes honestly declined"
     issue "1177"
-    automated_test "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1177-10"
@@ -116,7 +116,7 @@ requirement_status_ledger_shard requirements_05
     id "R1177-4"
     shard "docs/requirements/issue-1177-code-tasks-formal-answers.md"
     verdict "partial"
-    delivered "2026-09-30 (this pull request) — `find` composition with cited manual; other shell verbs refused by name"
+    delivered "2026-09-30 (this pull request) — `find` composition with cited manual; head/tail, grep, ls and wc -l families from seed cues (pinned 2026-10-07); sed, awk, xargs and archive tools refused by name"
     issue "1177"
     automated_test "rust/tests/unit/issue_1177_code_task_handlers.rs"
     manual "not yet confirmed"

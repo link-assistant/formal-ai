@@ -100,6 +100,58 @@ function codeDebuggingScanForDefect(code) {
 }
 
 /**
+ * The collection a seeded bound template names in `line`; mirrors `bound_in_line`.
+ * @param {string} line code line
+ * @param {string} bound template with a `{c}` collection slot
+ * @returns {Array<string>|null} [collection, matched text]
+ */
+function codeDebuggingBoundInLine(line, bound) {
+  const slot = bound.indexOf("{c}");
+  if (slot === -1) return null;
+  const prefix = bound.slice(0, slot);
+  const suffix = bound.slice(slot + 3);
+  let from = 0;
+  while (from <= line.length) {
+    const at = line.indexOf(prefix, from);
+    if (at === -1) return null;
+    const start = at + prefix.length;
+    const collection = (/^[\p{L}\p{N}_]*/u.exec(line.slice(start)) || [""])[0];
+    const end = start + collection.length;
+    if (collection !== "" && line.startsWith(suffix, end)) return [collection, line.slice(at, end + suffix.length)];
+    from = start;
+  }
+  return null;
+}
+
+/**
+ * Scan for a seeded loop bound one past the end of an indexed collection;
+ * mirrors `scan_for_index_bound`.
+ * @param {string} code the code under discussion
+ * @returns {object|null} the bound defect, or null
+ */
+function codeDebuggingScanForIndexBound(code) {
+  const pairs = codeTaskWordEntries("index_bound_past_end")
+    .map((entry) => [codeTaskChildValue(entry, "word"), codeTaskChildValue(entry, "fix")])
+    .filter(([bound, fix]) => bound.includes("{c}") && fix !== "");
+  const lines = codeTaskLines(code);
+  for (let index = 0; index < lines.length; index += 1) {
+    for (const [bound, fix] of pairs) {
+      const found = codeDebuggingBoundInLine(lines[index], bound);
+      if (found === null || !code.includes(found[0] + "[")) continue;
+      const replacement = fix.split("{c}").join(found[0]);
+      return {
+        lineNumber: index + 1,
+        line: lines[index].trim(),
+        collection: found[0],
+        bad: found[1],
+        fixed: lines[index].replace(found[1], replacement).trim(),
+      };
+    }
+  }
+  return null;
+}
+
+/**
  * Recognize a debugging request and locate a shifted-quotient defect.
  * Mirrors `handle_code_debugging` in rust/src/solver_handlers/code_debugging.rs.
  * @param {string} prompt raw prompt
@@ -117,6 +169,7 @@ function handleCodeDebugging(prompt, normalized) {
   const intent = codeTaskIntentForName(name);
   if (intent !== null) codeTaskLogAppend(log, "code_debugging:intent_property", intent.property);
   const defect = codeDebuggingScanForDefect(code);
+  let bound = null;
   let body = "";
   let confidence = 0.5;
   if (intent !== null && defect !== null) {
@@ -131,6 +184,16 @@ function handleCodeDebugging(prompt, normalized) {
       ["fixed", defect.fixed],
       ["parenthesized", defect.parenthesized],
       ["correct_form", intent.correctForm],
+    ]);
+    confidence = 0.8;
+  } else if ((bound = codeDebuggingScanForIndexBound(code)) !== null) {
+    codeTaskLogAppend(log, "code_debugging:defect", "line " + bound.lineNumber + ": `" + bound.bad + "`");
+    body = codeTaskTemplate("code_debugging_index_bound", [
+      ["collection", bound.collection],
+      ["line_no", String(bound.lineNumber)],
+      ["line", bound.line],
+      ["bad", bound.bad],
+      ["fixed", bound.fixed],
     ]);
     confidence = 0.8;
   } else {

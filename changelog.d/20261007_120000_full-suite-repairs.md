@@ -27,3 +27,4 @@ bump: patch
 - A manual dispatch of the CI/CD pipeline now runs the checks only unless a release mode is chosen, and every release, publish and tag job also requires the main branch (#1187 R3).
 - The i18n catalog check registers the glass-opacity and material-skin settings keys added with the configurable skins.
 - The JavaScript coding oracle reads the bootstrap gate of the cache policy correctly (it treated every language as unknown), and the Rust procedure cache reads its required fields from the policy seed, so both roots require `verified_output` (#1165 R10).
+- The code debugger reports a second defect class: a loop bound that lets an index reach the length of a collection the code indexes ("range(len(xs) + 1)", "i <= arr.length"), with the bound that stops one position earlier (#1177 R1).

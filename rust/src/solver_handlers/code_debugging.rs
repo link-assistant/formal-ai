@@ -10,9 +10,12 @@
 //! The defect scan is structural: a binary `+`/`-` applied at top level
 //! AFTER a division shifts the quotient (e.g. `sum(xs) / len(xs) - 1`
 //! computes mean-minus-one, because `/` binds tighter than `-`), which
-//! contradicts what a name like `average` promises. No code is executed and
-//! the answer (a template from `data/seed/multilingual-responses.lino`)
-//! says so.
+//! contradicts what a name like `average` promises. A second class needs no
+//! name: a loop bound from the seeded `index_bound_past_end` table
+//! (`range(len(xs) + 1)`, `i <= xs.length`) lets the index reach the
+//! collection's length, and the code indexes that collection. No code is
+//! executed and the answer (a template from
+//! `data/seed/multilingual-responses.lino`) says so.
 
 use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
@@ -22,6 +25,9 @@ use crate::seed::parser::parse_lino;
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const INTENTS_PATH: &str = "data/seed/meanings-code-structure-explanations.lino";
 const INTENT: &str = "code_debugging";
+/// The word map of loop bounds one past the end, and its collection slot.
+const INDEX_BOUND_MAP: &str = "index_bound_past_end";
+const COLLECTION_SLOT: &str = "{c}";
 
 /// Look up embedded seed content by its registered path.
 fn seed_text(path: &str) -> Option<&'static str> {
@@ -272,6 +278,88 @@ fn scan_for_defect(code: &str) -> Option<Defect> {
     None
 }
 
+/// A loop bound that lets an index reach the collection's length.
+struct IndexBound {
+    line_number: usize,
+    line: String,
+    collection: String,
+    bad: String,
+    fixed: String,
+}
+
+/// The `(bound, fix)` template pairs of the seeded `index_bound_past_end`
+/// map, each with a `{c}` collection slot.
+fn index_bound_pairs() -> Vec<(String, String)> {
+    let Some(text) = seed_text(CUES_PATH) else {
+        return Vec::new();
+    };
+    parse_lino(text)
+        .children
+        .iter()
+        .filter(|record| record.name == "map")
+        .filter(|record| record.find_child_value("name") == INDEX_BOUND_MAP)
+        .flat_map(|record| record.children.iter())
+        .flat_map(|child| child.children.iter())
+        .filter(|entry| entry.name == "entry")
+        .map(|entry| {
+            (
+                entry.find_child_value("word").to_owned(),
+                entry.find_child_value("fix").to_owned(),
+            )
+        })
+        .filter(|(bound, fix)| bound.contains(COLLECTION_SLOT) && !fix.is_empty())
+        .collect()
+}
+
+/// The collection a bound template names in `line`, with the matched text.
+fn bound_in_line(line: &str, bound: &str) -> Option<(String, String)> {
+    let (prefix, suffix) = bound.split_once(COLLECTION_SLOT)?;
+    let mut from = 0;
+    while let Some(at) = line.get(from..)?.find(prefix) {
+        let start = from + at + prefix.len();
+        let collection: String = line[start..]
+            .chars()
+            .take_while(|character| character.is_alphanumeric() || *character == '_')
+            .collect();
+        let end = start + collection.len();
+        if !collection.is_empty() && line[end..].starts_with(suffix) {
+            return Some((collection, line[from + at..end + suffix.len()].to_owned()));
+        }
+        from = start;
+    }
+    None
+}
+
+/// Scan the code for a seeded loop bound one past the end of a collection
+/// the code also indexes (`name[`), so a bound alone is never reported.
+fn scan_for_index_bound(code: &str) -> Option<IndexBound> {
+    let pairs = index_bound_pairs();
+    for (index, line) in code.lines().enumerate() {
+        for (bound, fix) in &pairs {
+            let Some((collection, matched)) = bound_in_line(line, bound) else {
+                continue;
+            };
+            if !code.contains(&format!("{collection}[")) {
+                continue;
+            }
+            let replacement = fix.replace(COLLECTION_SLOT, &collection);
+            return Some(IndexBound {
+                line_number: index + 1,
+                line: line.trim().to_owned(),
+                fixed: line.replacen(&matched, &replacement, 1).trim().to_owned(),
+                bad: matched,
+                collection,
+            });
+        }
+    }
+    None
+}
+
+/// The evidence entry naming where a defect sits and what it is.
+fn defect_event(line_number: usize, text: &str) -> String {
+    format!("line {line_number}: `{text}`")
+}
+
 /// True when any cue phrase for the intent occurs in the normalized prompt
 /// or the raw prompt lowercased.
 fn triggered(prompt: &str, normalized: &str) -> bool {
@@ -311,7 +399,7 @@ pub fn handle_code_debugging(
     {
         log.append(
             "code_debugging:defect",
-            format!("line {}: `{}`", defect.line_number, defect.shift),
+            defect_event(defect.line_number, &defect.shift),
         );
         (
             template(
@@ -326,6 +414,24 @@ pub fn handle_code_debugging(
                     ("fixed", &defect.fixed),
                     ("parenthesized", &defect.parenthesized),
                     ("correct_form", &intent.correct_form),
+                ],
+            ),
+            0.8,
+        )
+    } else if let Some(bound) = scan_for_index_bound(&code) {
+        log.append(
+            "code_debugging:defect",
+            defect_event(bound.line_number, &bound.bad),
+        );
+        (
+            template(
+                "code_debugging_index_bound",
+                &[
+                    ("collection", &bound.collection),
+                    ("line_no", &bound.line_number.to_string()),
+                    ("line", &bound.line),
+                    ("bad", &bound.bad),
+                    ("fixed", &bound.fixed),
                 ],
             ),
             0.8,

@@ -15,6 +15,14 @@ meanings
     unit "not applicable"
     example "a mean function that subtracts after the division is reported with its parenthesized repair"
     grounding "data/seed/multilingual-responses.lino"
+  code_debugging_index_bound
+    defined-by method
+    role action
+    precondition "a debugging request names code whose loop bound lets an index reach a collection's length, and the code indexes that collection"
+    effect "answers with the offending line, why the final pass reads out of range, and the bound that stops one position earlier"
+    unit "not applicable"
+    example "for i in range(len(xs) + 1) with xs[i] in the body is reported with the fix range(len(xs))"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
   code_debugging_no_defect
     defined-by method
     role action

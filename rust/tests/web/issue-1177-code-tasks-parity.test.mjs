@@ -65,6 +65,15 @@ test("a comparison after a division is not a shifted quotient", () => {
   assert.ok(answer.startsWith("No recognized defect pattern."), answer);
 });
 
+test("a loop bound past the end of an indexed collection is the second defect class", () => {
+  assert.equal(handle("handleCodeDebugging", "Find the bug in this code:\n```python\ndef total(xs):\n    s = 0\n    for i in range(len(xs) + 1):\n        s += xs[i]\n    return s\n```"), "A loop bound past the end of `xs`.\n\nDetected defect (code line 3): `for i in range(len(xs) + 1):`\nThe bound `range(len(xs) + 1)` lets the index reach the length of `xs`, one past its last valid position, so the final pass reads `xs[…]` out of range.\n\nFix — stop one position earlier:\n    for i in range(len(xs)):\n\nMethod, stated honestly: a structural scan against the index-bound table (`index_bound_past_end` in data/seed/code-task-cues.lino), confirmed by an index into `xs` in the same code. No code was executed and no test was run.");
+  const bounded = handle("handleCodeDebugging", "Debug this:\n```js\nfunction last(arr) {\n  let out = 0;\n  for (let i = 0; i <= arr.length; i++) { out = arr[i]; }\n  return out;\n}\n```");
+  assert.ok(bounded.includes("The bound `<= arr.length` lets the index reach the length of `arr`"), bounded);
+  assert.ok(bounded.includes("    for (let i = 0; i < arr.length; i++) { out = arr[i]; }\n"), bounded);
+  const unindexed = handle("handleCodeDebugging", "Find the bug: `def count(xs): return len(xs) + 1`");
+  assert.ok(unindexed.startsWith("No recognized defect pattern."), unindexed);
+});
+
 test("engine and handler explain the function and its promise", async () => {
   const engine = await solve(EXPLAIN_PROMPT);
   assert.equal(engine.intent, "code_explanation");

@@ -245,6 +245,43 @@ fn handler_sql_synthesis_groups_an_aggregate_by_the_seeded_cue() {
 }
 
 #[test]
+fn handler_code_debugging_reports_a_loop_bound_past_the_end() {
+    let answer = answer_of!(
+        formal_ai::handle_code_debugging,
+        "Find the bug in this code:\n```python\ndef total(xs):\n    s = 0\n    for i in range(len(xs) + 1):\n        s += xs[i]\n    return s\n```"
+    );
+    assert_eq!(
+        answer,
+        "A loop bound past the end of `xs`.\n\nDetected defect (code line 3): `for i in range(len(xs) + 1):`\nThe bound `range(len(xs) + 1)` lets the index reach the length of `xs`, one past its last valid position, so the final pass reads `xs[…]` out of range.\n\nFix — stop one position earlier:\n    for i in range(len(xs)):\n\nMethod, stated honestly: a structural scan against the index-bound table (`index_bound_past_end` in data/seed/code-task-cues.lino), confirmed by an index into `xs` in the same code. No code was executed and no test was run."
+    );
+    let bounded = answer_of!(
+        formal_ai::handle_code_debugging,
+        "Debug this:\n```js\nfunction last(arr) {\n  let out = 0;\n  for (let i = 0; i <= arr.length; i++) { out = arr[i]; }\n  return out;\n}\n```"
+    );
+    assert!(
+        bounded.contains("    for (let i = 0; i < arr.length; i++) { out = arr[i]; }\n"),
+        "{bounded}"
+    );
+}
+
+#[test]
+fn handler_shell_compose_slices_lines_and_searches_content() {
+    let sliced = answer_of!(
+        formal_ai::handle_shell_command_compose,
+        "show the last 20 lines of app.log"
+    );
+    assert!(sliced.contains("    tail -n 20 app.log\n"), "{sliced}");
+    let searched = answer_of!(
+        formal_ai::handle_shell_command_compose,
+        "search for TODO in files under /src ignoring case"
+    );
+    assert!(
+        searched.contains("    grep -r -i 'TODO' /src\n"),
+        "{searched}"
+    );
+}
+
+#[test]
 fn handler_shell_compose_builds_find_command() {
     let answer = answer_of!(
         formal_ai::handle_shell_command_compose,
