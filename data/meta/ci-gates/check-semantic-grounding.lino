@@ -1,4 +1,5 @@
-# PR #1188: lane 2 of the parallel `lint` matrix -- it reuses the default-feature unit build lane 2 already compiles.
+# PR #1188 runs this gate in lane 2 of the parallel `lint` matrix, where it
+# reuses the default-feature unit build that lane already compiles.
 # One CI gate, one file. Issue #991 moved the gate list out of
 # `.github/workflows/release.yml`, the repository's third most conflicted path,
 # because its step list was append-only. A gate lives here instead, so two

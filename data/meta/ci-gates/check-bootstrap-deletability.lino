@@ -1,4 +1,6 @@
-# PR #1188: lane 2 of the parallel `lint` matrix -- the first `cargo test --test unit` build, ~8 minutes with its run, beside the other lanes instead of before them.
+# PR #1188 runs this gate in lane 2 of the parallel `lint` matrix. It pays for
+# the first `cargo test --test unit` build, about eight minutes with its run,
+# so it runs beside the other lanes instead of before them.
 # One CI gate, one file. The deletability half of plan 02 L18 -- the fragment
 # bootstrap is a runtime seed, so the suite must stay green when the seed is
 # moved aside, and a forgotten fragment must rediscover to the same content id.

@@ -1,4 +1,5 @@
-# PR #1188: lane 4 of the parallel `lint` matrix -- the one `--all-features` unit build, which no other gate shares.
+# PR #1188 runs this gate in lane 4 of the parallel `lint` matrix. It needs the
+# one `--all-features` unit build, which no other gate shares.
 ci_gate check_condition_source_parity
   stage rust
   lane 4
