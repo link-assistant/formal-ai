@@ -239,6 +239,9 @@ function handlerRulesParseValue(node) {
     case "role_slot":
       if (node.args.length < 3) throw new Error("handler_rules:role_slot_without_role");
       return { name, source, text: "", key: node.args[2] };
+    case "operand": // #1175 R3: the operand a claim-evidence reader extracts, by index (Rust ValueSource::Operand)
+      if (node.args.length < 3) throw new Error("handler_rules:operand_without_kind");
+      return { name, source, text: node.args[3] || "0", key: node.args[2] };
     default:
       throw new Error("handler_rules:unknown_value_source");
   }
@@ -629,6 +632,14 @@ function handlerRulesResolveValues(rule, context) {
       case "network_snapshot":
         text = networkSnapshotLinksNotation();
         break;
+      case "operand": {
+        const reader = typeof CLAIM_OPERANDS === "object" ? CLAIM_OPERANDS[value.key] : null;
+        const operands = typeof reader === "function" ? reader(context.prompt) : [];
+        const operand = operands[Number(value.text)];
+        if (operand === undefined) return null;
+        text = operand;
+        break;
+      }
       default:
         text = context.prompt.trim();
         break;
