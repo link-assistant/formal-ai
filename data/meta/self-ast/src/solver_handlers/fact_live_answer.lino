@@ -8,7 +8,7 @@ self_ast_census
   symbol_count 17
   symbols
     const MAX_SUBJECT_WORDS 41 41
-    const CACHE_DIR_ENV 43 43
+    const LIVE_FACT_CACHE_DIR_ENV 43 43
     const LIVE_FACT_INTENT 45 45
     const EXPLANATION_INTENT 48 48
     struct LiveFactQuestion 54 57

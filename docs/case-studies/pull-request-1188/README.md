@@ -179,6 +179,9 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     batch file read and answered with a missing-`shell` gap before the
     `page_query_text` handler ran. `page_query_text_claims` now makes the gap
     yield, the same way `software_project_claims` does.
+    Run 37594789849 found the same preemption for "Which issue introduced
+    scripts/…?": `repository_lineage_claims` makes the gap yield to a cued
+    lineage question that names an existing path.
 18. **A gate failure no longer hides the suite.** The full lane's data and
     census gates ran before the unit tests, and their failure skipped the
     tests. That is how 33 metadata-gap rows went unpinned (item 12). The
@@ -190,6 +193,31 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     was cancelled at the job cap. The runner now prints each case before
     and after it is solved, and the dataset download has connect and
     transfer timeouts.
+
+20. **The first sharded run found what the census step had hidden.**
+    Run 37594789849 was the first full run in which every shard reached the
+    unit tests.
+    - A derivation test expected `kind grammar_correction`, but the record
+      writer quotes every value.
+    - The module map lacked `fact_live`.
+    - `data/cache/unit-conversion/` read as an unregistered source. The
+      P2370 table is a test fixture, not a source, and moved to
+      `rust/tests/fixtures/unit-conversion/`.
+    - The native-handler count did not include `repository_lineage`, which
+      reads git history.
+21. **A generic template must not read a cue as a noun.** The live-fact
+    template filled `{relation}` with the relation's first cue phrase, so
+    the answer read "the who wrote of War and Peace". A relation now seeds
+    its own phrasing (`fact_live_answer_author_of_book`), and the generic
+    template is the fallback in both runtimes. The browser test's source
+    expectation moved from the value's Wikipedia page to the Wikidata
+    snapshot, as R1172-3 specifies.
+22. **The relocated agent ran on its own default model.** The matrix
+    showed that `LINK_ASSISTANT_AGENT_CONFIG` really relocates the
+    config. The CLI loaded the relocated file and found the `formalai`
+    provider, but its built-in default model outranks the config's
+    `model`. The case now passes the model as `formal-ai with` does, read
+    from new `model_arg` fields of `formal-ai clients --format json`.
 
 ## Constraints
 

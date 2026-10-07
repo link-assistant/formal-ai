@@ -175,6 +175,25 @@ pub(super) fn working_repository() -> Option<PathBuf> {
     (!root.is_empty()).then(|| PathBuf::from(root))
 }
 
+/// Whether the prompt is a cued lineage question naming an existing path.
+///
+/// The capability table reads the path such a question names as a file
+/// read; the repository's history answers it instead, so the capability-gap
+/// refusal yields to this route (issue #1180 R10).
+#[must_use]
+pub fn repository_lineage_claims(prompt: &str) -> bool {
+    let rules = HistoryRules::load(None);
+    let candidates = lineage_subjects(prompt, &rules);
+    if candidates.is_empty() {
+        return false;
+    }
+    working_repository().is_some_and(|root| {
+        candidates
+            .iter()
+            .any(|candidate| root.join(candidate).exists())
+    })
+}
+
 /// The solver route: a cued lineage question naming an existing repository
 /// path is answered from that path's `git log --follow` history.
 pub fn handle_repository_lineage(

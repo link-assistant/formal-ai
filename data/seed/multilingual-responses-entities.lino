@@ -283,6 +283,26 @@ multilingual_responses
     intent fact_live_answer
     language es
     text "Según Wikidata, {relation} de {subject}: {value}. Fuente: {reference}"
+  response response_fact_live_answer_author_of_book_en
+    intent fact_live_answer_author_of_book
+    language en
+    text "{subject} was written by {value}. Source: {reference}"
+  response response_fact_live_answer_author_of_book_ru
+    intent fact_live_answer_author_of_book
+    language ru
+    text "Автор произведения «{subject}»: {value}. Источник: {reference}"
+  response response_fact_live_answer_author_of_book_hi
+    intent fact_live_answer_author_of_book
+    language hi
+    text "{subject} को {value} ने लिखा था। स्रोत: {reference}"
+  response response_fact_live_answer_author_of_book_zh
+    intent fact_live_answer_author_of_book
+    language zh
+    text "《{subject}》由{value}创作。来源：{reference}"
+  response response_fact_live_answer_author_of_book_es
+    intent fact_live_answer_author_of_book
+    language es
+    text "La obra «{subject}» fue escrita por {value}. Fuente: {reference}"
   response response_explanation_research_answer_en
     intent explanation_research_answer
     language en

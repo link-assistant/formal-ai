@@ -281,6 +281,24 @@ case_relocated() {
   mapfile -t args < <(matrix_client_values "$CLIENT" non_interactive_args)
   mapfile -t prompt_args < <(matrix_client_values "$CLIENT" prompt_args)
   [ "${prompt_args[*]}" = "${args[*]}" ] || args+=("${prompt_args[@]}")
+  # The client's own default model outranks the `model` its config names,
+  # so the model is passed the way `formal-ai with` passes it.
+  local model_arg selector
+  model_arg="$("$BIN" clients --format json | jq -r --arg id "$CLIENT" \
+    '.[] | select(.id == $id) | .model_arg // ""')"
+  if [ -n "$model_arg" ]; then
+    selector="$("$BIN" clients --format json | jq -r --arg id "$CLIENT" \
+      '.[] | select(.id == $id) | .model_selector // ""')"
+    selector="${selector:-{model\}}"
+    selector="${selector//\{provider_id\}/$(matrix_client_field "$CLIENT" provider_id)}"
+    selector="${selector//\{model\}/$MODEL}"
+    if [ "$("$BIN" clients --format json | jq -r --arg id "$CLIENT" \
+      '.[] | select(.id == $id) | .model_arg_after_first_arg // false')" = true ]; then
+      args=("${args[0]}" "$model_arg" "$selector" "${args[@]:1}")
+    else
+      args=("$model_arg" "$selector" "${args[@]}")
+    fi
+  fi
   local command key_env
   command="$(matrix_client_field "$CLIENT" command)"
   key_env="$(matrix_client_field "$CLIENT" api_key_env)"

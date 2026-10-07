@@ -350,7 +350,12 @@ fn blocks_to_network(
             PageBlock::TableRow { cells } => ("table_row", cells.as_str()),
             PageBlock::CodeBlock { text, .. } => ("code_block", text.as_str()),
         };
-        let node = network.insert_object(kind);
+        // `insert_object` interns by term, so every block of one kind would
+        // share a single link; each block is its own instance of its kind
+        // (the JS twin's per-block `id`), so a page query's link names
+        // exactly one block.
+        let kind_id = network.insert_object(kind);
+        let node = network.insert_object_instance(kind_id);
         let text_id = network.insert_point(text);
         network.insert_field(node, "text", text_id);
         match block {

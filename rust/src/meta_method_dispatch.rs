@@ -82,6 +82,17 @@ pub fn try_dispatch(
         // handler can reinterpret a URL, path, clock, language or local scope.
         if !capability_route_checked && !PRELUDE_METHOD_NAMES.contains(&name.as_str()) {
             capability_route_checked = true;
+            // Issue #1172 R7: a question over a quoted, prompt-supplied
+            // passage carries its own answer, so it precedes the table and
+            // every promoted reading of the passage's words (a time in it
+            // is no calendar entry). The browser twin runs
+            // `tryPromptTextQuestion` as early, right after the summary. A
+            // page query over a supplied page keeps its own row (#1163).
+            if !crate::solver_handlers::page_query_text::page_query_text_claims(prompt)
+                && let Some(answer) = crate::solver_handlers::try_prompt_text_question(prompt, log)
+            {
+                return Some(record_method_answer(prompt, log, answer, "fact_lookup"));
+            }
             if let Some(answer) =
                 try_capability_route(solver, prompt, history, &promoted_methods, log)
             {
@@ -452,10 +463,12 @@ fn try_capability_route(
                 return None;
             }
             // A page query over a page the prompt supplies is answered from
-            // that page; the file names it mentions are not a read request
-            // (issue #1163 R10).
+            // that page, and a lineage question from the repository's
+            // history; the file names they mention are not a read request
+            // (issues #1163 R10, #1180 R10).
             if !commit_anchored_gap
-                && crate::solver_handlers::page_query_text::page_query_text_claims(prompt)
+                && (crate::solver_handlers::page_query_text::page_query_text_claims(prompt)
+                    || crate::history_context::repository_lineage_claims(prompt))
             {
                 return None;
             }

@@ -392,7 +392,7 @@ pub fn decompose_code_node_from(
         .filter(|(call, _)| !call.is_empty());
     let mut matched_call: Option<String> = None;
     for (call, call_url) in seed_calls.chain(prose_calls) {
-        let present = tokens.iter().any(|token| *token == call) || source.contains(call.as_str());
+        let present = tokens.contains(&call) || source.contains(call.as_str());
         if present {
             parts.push(CodePart {
                 kind: CodePartKind::OutputOperation,

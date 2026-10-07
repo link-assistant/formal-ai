@@ -562,6 +562,14 @@ meanings
     unit "not applicable"
     example "Wikidata states that the capital of Australia is Canberra, with the page its claim cites as the source."
     grounding "data/seed/multilingual-responses-entities.lino"
+  fact_live_answer_author_of_book
+    defined-by answer
+    role localized_response_template
+    precondition "no seeded fact answers an authorship question and Wikidata states the author of the work"
+    effect "the author is stated as the writer of the work, with the reference URL the claim cites, else the work snapshot it was read from"
+    unit "not applicable"
+    example "War and Peace was written by Leo Tolstoy, with the page its claim cites as the source."
+    grounding "data/seed/multilingual-responses-entities.lino"
   explanation_research_answer
     defined-by answer
     role localized_response_template

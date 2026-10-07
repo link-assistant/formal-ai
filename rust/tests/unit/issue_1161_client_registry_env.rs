@@ -213,6 +213,10 @@ fn the_matrix_leg_serves_a_session_from_each_declared_relocation_variable() {
         "env HOME=\"$clean\"",
         "\"$variable=$value\"",
         "matrix_assert_proxy_ok",
+        // The client's own default model outranks its config's `model`
+        // (agentic CLI matrix run 37594789426), so the model is passed.
+        ".model_arg",
+        ".model_arg_after_first_arg",
     ] {
         assert!(body.contains(needle), "the relocated case lost `{needle}`");
     }

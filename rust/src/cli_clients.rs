@@ -164,6 +164,21 @@ fn client_json(integration: &ClientIntegration) -> Value {
     // sits at the json! macro's expansion depth.
     if let Some(object) = record.as_object_mut() {
         object.insert("prompt_args".to_string(), json!(invocation.prompt_args));
+        // Issue #1161 R7: a CLI started without `formal-ai with` needs the
+        // model chosen the way `with` chooses it, because a client's own
+        // default model outranks the `model` its config file names.
+        object.insert("model_arg".to_string(), json!(invocation.model_arg));
+        object.insert(
+            "model_selector".to_string(),
+            json!(integration.model_selector),
+        );
+        object.insert(
+            "model_arg_after_first_arg".to_string(),
+            json!(
+                invocation.model_arg_position
+                    == Some(formal_ai::seed::ModelArgPosition::AfterFirstArg)
+            ),
+        );
         // Issue #1161: the same declaration for one-shot invocations — which
         // env vars carry (or relocate) the client's config for a single run.
         object.insert("config_env".to_string(), json!(invocation.config_env));

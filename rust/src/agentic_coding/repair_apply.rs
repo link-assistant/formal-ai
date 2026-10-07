@@ -8,7 +8,7 @@
 //! target language: the retained fragment takes the place of the line the
 //! diagnostic located, re-indented to that line's indentation, and the result
 //! is accepted only when the meta-language CST engine (the issue #1167
-//! renderer seam, [`crate::coding::cst::parse_program_cst`]) parses it into a
+//! renderer seam, `crate::coding::cst::parse_program_cst`) parses it into a
 //! valid concrete syntax tree for the record's language. Every refusal is a
 //! named [`RepairApplyGap`], never a silent text patch: a record without a
 //! retained fix or a location, a line past the end of the source, a language

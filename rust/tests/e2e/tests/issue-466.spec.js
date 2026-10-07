@@ -6,6 +6,10 @@ const { test, expect } = require('@playwright/test');
 
 const WAR_AND_PEACE_QID = 'Q161531';
 const TOLSTOY_QID = 'Q7243';
+// Issue #1172 R3: a live answer cites the claim's reference URL, else the
+// subject's Wikidata snapshot (it no longer cites the value's Wikipedia
+// sitelink); the mocked P50 claim carries no reference.
+const WAR_AND_PEACE_SNAPSHOT_SOURCE = `source:https://www.wikidata.org/wiki/Special:EntityData/${WAR_AND_PEACE_QID}.json`;
 const WAR_AND_PEACE_LABELS = {
   en: 'War and Peace',
   ru: 'Война и мир',
@@ -197,7 +201,7 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await expect(evidence).toContainText('fact_query:relation:author_of_book');
     await expect(evidence).toContainText(`wikidata:${WAR_AND_PEACE_QID}`);
     await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
-    await expect(evidence).toContainText('source:https://en.wikipedia.org/wiki/Leo_Tolstoy');
+    await expect(evidence).toContainText(WAR_AND_PEACE_SNAPSHOT_SOURCE);
     expect(requests.some((request) => request.search === 'War and Peace')).toBe(true);
     expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
     expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);
@@ -217,7 +221,7 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await expect(evidence).toContainText('language:ru');
     await expect(evidence).toContainText(`wikidata:${WAR_AND_PEACE_QID}`);
     await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
-    await expect(evidence).toContainText('source:https://ru.wikipedia.org/wiki/Лев_Толстой');
+    await expect(evidence).toContainText(WAR_AND_PEACE_SNAPSHOT_SOURCE);
     expect(requests.some((request) => request.search === 'Войну и мир')).toBe(true);
     expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
     expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);
@@ -237,7 +241,7 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await expect(evidence).toContainText('language:hi');
     await expect(evidence).toContainText(`wikidata:${WAR_AND_PEACE_QID}`);
     await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
-    await expect(evidence).toContainText('source:https://hi.wikipedia.org/wiki/लेव_तोलस्तोय');
+    await expect(evidence).toContainText(WAR_AND_PEACE_SNAPSHOT_SOURCE);
     expect(requests.some((request) => request.search === 'युद्ध और शान्ति')).toBe(true);
     expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
     expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);
@@ -257,7 +261,7 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await expect(evidence).toContainText('language:zh');
     await expect(evidence).toContainText(`wikidata:${WAR_AND_PEACE_QID}`);
     await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
-    await expect(evidence).toContainText('source:https://zh.wikipedia.org/wiki/列夫·托尔斯泰');
+    await expect(evidence).toContainText(WAR_AND_PEACE_SNAPSHOT_SOURCE);
     expect(requests.some((request) => request.search === '战争与和平')).toBe(true);
     expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
     expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);

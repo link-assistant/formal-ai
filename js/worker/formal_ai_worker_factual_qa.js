@@ -556,8 +556,8 @@ function factClaimReference(claim, property) {
 }
 
 /**
- * The live answer and its source: the claim's reference URL, else the
- * subject's snapshot URL from the registry's Wikidata row.
+ * The live answer (`fact_live_answer_<relation>` when seeded, else the generic
+ * one) citing the claim's reference URL, else the registry's subject snapshot.
  * @param {{relation: string, language: string}} query
  * @param {string} subjectQid
  * @param {string} subjectLabel
@@ -570,7 +570,7 @@ function factLiveSummary(query, subjectQid, subjectLabel, claim, valueLabel) {
     .find((record) => record.name === "source" && record.value === "wikidata") || { children: [] };
   const source = factClaimReference(claim, childValue(row, "reference_url_property")) ||
     childValue(row, "api").split("{id}").join(subjectQid);
-  const relation = factRelationLabel(query.relation, query.language);
-  const summary = factualQaRender("fact_live_answer", query.language, { relation, subject: subjectLabel, value: valueLabel, reference: source });
+  const relation = factRelationLabel(query.relation, query.language), own = `fact_live_answer_${query.relation}`;
+  const summary = factualQaRender(MULTILINGUAL_ANSWERS[own] ? own : "fact_live_answer", query.language, { relation, subject: subjectLabel, value: valueLabel, reference: source });
   return { summary, source };
 }

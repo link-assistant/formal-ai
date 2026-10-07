@@ -609,7 +609,9 @@ pub use cursor::{
 };
 pub use github::{import_ci_runs, import_issues_and_pulls};
 pub use items::{coauthors, diff_named_items, named_items};
-pub use lineage::{handle_repository_lineage, lineage_answer, lineage_subjects};
+pub use lineage::{
+    handle_repository_lineage, lineage_answer, lineage_subjects, repository_lineage_claims,
+};
 pub use query::query_repository_history;
 pub use repository_qa::{
     CensusSymbol, census_symbols, definition_answer, definition_subjects, status_answer,

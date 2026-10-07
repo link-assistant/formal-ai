@@ -40,7 +40,7 @@ use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTranspo
 /// A longer remainder is a sentence, not an entity name.
 const MAX_SUBJECT_WORDS: usize = 4;
 /// Environment override for the capture cache, shared with web search.
-const CACHE_DIR_ENV: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
+const LIVE_FACT_CACHE_DIR_ENV: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
 /// The intent of a live Wikidata resolution, as the browser names it.
 const LIVE_FACT_INTENT: &str = "fact_query";
 /// The intent of an explanation composed from retrieved pages.
@@ -165,16 +165,24 @@ pub fn try_fact_live_answer<T: SourceTransport>(
     }
     log.append("source", statement.reference_url.as_str());
     let relation = relation_label(&question.relation, language);
-    let body = render_template(
-        "fact_live_answer",
+    let slots = [
+        ("relation", relation.as_str()),
+        ("subject", statement.subject_label.as_str()),
+        ("value", statement.value.as_str()),
+        ("reference", statement.reference_url.as_str()),
+    ];
+    // A relation may seed its own phrasing (`fact_live_answer_<relation>`);
+    // the generic template is the fallback, as in the browser twin.
+    let own = render_template(
+        &format!("fact_live_answer_{}", question.relation),
         language,
-        &[
-            ("relation", relation.as_str()),
-            ("subject", statement.subject_label.as_str()),
-            ("value", statement.value.as_str()),
-            ("reference", statement.reference_url.as_str()),
-        ],
+        &slots,
     );
+    let body = if own.is_empty() {
+        render_template("fact_live_answer", language, &slots)
+    } else {
+        own
+    };
     if body.is_empty() {
         return None;
     }
@@ -312,7 +320,7 @@ pub fn try_fact_lookup_with_offline(
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
-    let cache_dir = std::env::var(CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
+    let cache_dir = std::env::var(LIVE_FACT_CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
     let client = CachedSourceClient::new(&cache_dir, CurlSourceTransport).with_online(!offline);
     try_fact_lookup_with_client(prompt, normalized, log, &client)
 }

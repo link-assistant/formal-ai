@@ -23,6 +23,7 @@ new module fails CI until this map documents it.
 | `discovery_production` | Discovery on the production path: a rediscoverable coding-procedure cache. | §2 |
 | `engine` | Engine entry: formalize, solve, and compose the answer. | §2 |
 | `fact_check` | Fact checking over code, Git, GitHub, and the internet (issue #1179). | §2 |
+| `fact_live` | Live Wikidata resolution of a fact question (issue #1172 R3). | §2 |
 | `file_legality` | Evidence-oriented, multi-jurisdiction file-legality assessments. | §2 |
 | `gemini` | Gemini API adapter for live engine calls. | §2 |
 | `history_context` | Repository history as formal context for reasoning (issue #1180, E145). | §2 |
