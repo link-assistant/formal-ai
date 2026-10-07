@@ -238,7 +238,7 @@ pub const SOLVER_CAPABILITIES: &[&str] = &[
 /// Whether `prompt` names a file-type filter: a `.ext` or `*.ext` operand.
 fn names_file_type_filter(prompt: &str) -> bool {
     prompt.split_whitespace().any(|token| {
-        let token = token.trim_end_matches(|c: char| matches!(c, ',' | ';' | '?' | '!' | ')'));
+        let token = token.trim_end_matches([',', ';', '?', '!', ')']);
         let extension = token.trim_start_matches('*').strip_prefix('.');
         extension.is_some_and(|ext| !ext.is_empty() && ext.chars().all(char::is_alphanumeric))
     })
