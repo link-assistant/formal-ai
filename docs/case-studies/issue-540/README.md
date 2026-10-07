@@ -158,7 +158,7 @@ Automated tests cover the policy directly:
   pressure, and idempotent amendment materialization.
 - `tests/unit/specification/dreaming_meta_algorithm.rs` keeps the dreaming
   recipe grounded: the live source still defines every named function and lists
-  thirteen contiguously ordered steps.
+  seventeen contiguously ordered steps.
 - `desktop/scripts/dreaming.test.mjs` verifies default desktop scheduling,
   plan-only CLI arguments, low-priority wrapping, and output capture.
 - `tests/unit/docs_requirements_issue_540.rs` verifies that this issue's
