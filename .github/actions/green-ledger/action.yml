@@ -31,6 +31,16 @@ inputs:
       here would be parsed as one and fail the manifest to load.)
     required: false
     default: 'true'
+  record:
+    description: >-
+      Whether this job's success records the inputs green. A sharded check
+      whose verdict is decided by a later job passes false here, so the job
+      that only plans the shards can skip on a hit but never marks the inputs
+      green itself; the verdict job then calls this action with enabled set
+      to false and record left on, and its own success writes the marker
+      (PR #1188).
+    required: false
+    default: 'true'
 
 outputs:
   already-green:
@@ -58,7 +68,17 @@ runs:
 
     - name: Look up a previous green result for these inputs
       id: cache
+      if: inputs.record != 'false'
       uses: actions/cache@v6
+      with:
+        path: .green-ledger/${{ inputs.check }}.txt
+        key: green-ledger-${{ inputs.check }}-${{ runner.os }}-${{ steps.key.outputs.digest }}
+
+    # Restore only: no post step, so this job's success saves no marker.
+    - name: Look up a previous green result without recording one
+      id: lookup
+      if: inputs.record == 'false'
+      uses: actions/cache/restore@v6
       with:
         path: .green-ledger/${{ inputs.check }}.txt
         key: green-ledger-${{ inputs.check }}-${{ runner.os }}-${{ steps.key.outputs.digest }}
@@ -69,7 +89,8 @@ runs:
       env:
         CHECK: ${{ inputs.check }}
         ENABLED: ${{ inputs.enabled }}
-        HIT: ${{ steps.cache.outputs.cache-hit }}
+        HIT: ${{ steps.cache.outputs.cache-hit || steps.lookup.outputs.cache-hit }}
+        RECORD: ${{ inputs.record }}
         DIGEST: ${{ steps.key.outputs.digest }}
       run: |
         set -euo pipefail
@@ -92,6 +113,10 @@ runs:
           echo "$CHECK: identical inputs passed before, but skipping is disabled on this ref; running"
         else
           echo "$CHECK: no previous green result for these inputs; running"
+        fi
+        if [[ "$RECORD" == 'false' ]]; then
+          echo "$CHECK: a later job records the verdict for these inputs"
+          exit 0
         fi
         # Written now, saved by actions/cache's post step only if the job
         # succeeds (post-if: success()). A failing job leaves no marker.
