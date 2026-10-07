@@ -295,6 +295,38 @@ meanings
         text "al final de"
       surface
         text "añade al final"
+  file_edit_blank_line
+    defined-by concept
+    role file_edit_blank_line
+    precondition "an additive edit names no quoted text, only an empty line, for a named file"
+    effect "the file keeps its content and gains one empty line at the named end"
+    unit "not applicable"
+    example "append an empty line to the file"
+    lexeme en
+      surface
+        text "an empty line"
+      surface
+        text "a blank line"
+      surface
+        text "empty line"
+      surface
+        text "blank line"
+    lexeme ru
+      surface
+        text "пустую строку"
+      surface
+        text "пустая строка"
+    lexeme hi
+      surface
+        text "खाली पंक्ति"
+    lexeme zh
+      surface
+        text 空行
+    lexeme es
+      surface
+        text "una línea vacía"
+      surface
+        text "línea en blanco"
   file_edit_position_start
     defined-by concept
     role file_edit_position_start

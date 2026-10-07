@@ -200,6 +200,15 @@ fn line_anchored(text: &str, start: usize) -> bool {
 #[must_use]
 pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePlan> {
     let request = objective_text(full_request);
+    // An additive edit (append, prepend) never rewrites the whole file: the
+    // workspace-change arm owns it, and a request it cannot ground is declined.
+    let lowered = request.to_lowercase();
+    let lexicon = crate::seed::lexicon();
+    if lexicon.mentions_role("file_edit_position_end", &lowered)
+        || lexicon.mentions_role("file_edit_position_start", &lowered)
+    {
+        return None;
+    }
     let command_output = parse_command_output_request(request);
     let file_request = command_output.as_ref().map_or_else(
         || parse_write_request(request),

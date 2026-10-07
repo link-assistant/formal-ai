@@ -95,7 +95,8 @@ fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
     if at_end == mentions("file_edit_position_start", task) {
         return None;
     }
-    let (target, text) = quoted_payload_and_path(task)?;
+    let (target, text) = quoted_payload_and_path(task).or_else(|| blank_line_and_path(task))?;
+    let text = super::positional_edit::unescape_prose_newlines(&text);
     Some(ComputedChange {
         target,
         intent: if at_end {
@@ -373,4 +374,23 @@ pub(super) fn plan_computed_change_step(
         return Some(plan_one(tool, write_arguments(target, &updated)));
     }
     plan_digest_verification(task, current_turn, tool_names, &verified)
+}
+
+/// The seeded `file_edit_blank_line` with one named path and no quoted text:
+/// the payload is the empty string (mirrors `blankLineAndPath`).
+fn blank_line_and_path(task: &str) -> Option<(String, String)> {
+    if !quoted_segment_spans(task).is_empty() || !mentions("file_edit_blank_line", task) {
+        return None;
+    }
+    let mut paths: Vec<String> = super::positional_edit::unquoted_path_tokens(task)
+        .iter()
+        .map(|token| clean_path_token(token.text).to_owned())
+        .filter(|path| looks_like_file_path(path) && safe_relative_path(path))
+        .collect();
+    paths.sort();
+    paths.dedup();
+    match paths.as_slice() {
+        [path] => Some((path.clone(), String::new())),
+        _ => None,
+    }
 }

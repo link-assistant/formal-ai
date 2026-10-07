@@ -10,7 +10,7 @@ import { composeEditRequest } from './general_planner.mjs';
 import { editArguments } from './intent_router.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
-import { composePositionalInsert } from './positional_edit.mjs';
+import { composePositionalInsert, unescapeProseNewlines, unquotedPathTokens } from './positional_edit.mjs';
 import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
 import { commandArgument, failureMessage } from './tool_result.mjs';
 import { quotedSegmentSpans, quotedSegments, unwrapTransportQuotes } from './crate/normal_markov.mjs';
@@ -242,11 +242,11 @@ function groundedEndInsertion(task) {
   const lowered = task.toLowerCase();
   const atEnd = mentionsRole('file_edit_position_end', lowered);
   if (atEnd === mentionsRole('file_edit_position_start', lowered)) return null;
-  const named = quotedPayloadAndPath(task);
+  const named = quotedPayloadAndPath(task) ?? blankLineAndPath(task);
   if (!named) return null;
   return {
     target: named.target,
-    compute: (source) => insertedAtEnd(source, named.text, atEnd),
+    compute: (source) => insertedAtEnd(source, unescapeProseNewlines(named.text), atEnd),
     edit: (source, updated) => (source === '' ? null : compactEndEdit(source, updated, atEnd)),
     intent: atEnd ? 'file_edit_position_end' : 'file_edit_position_start',
     slots: [['{new}', named.text]],
@@ -533,4 +533,15 @@ function matchingResult(messages, matches) {
 
 function readArguments(path) {
   return jsonText({ path, filePath: path, file_path: path });
+}
+
+/**
+ * `Append an empty line to notes.txt`: the seeded `file_edit_blank_line` and
+ * one named path, with no quoted text, adds one empty line at the named end.
+ */
+function blankLineAndPath(task) {
+  if (quotedSegmentSpans(task).length > 0 || !mentionsRole('file_edit_blank_line', task.toLowerCase())) return null;
+  const paths = [...new Set(unquotedPathTokens(task).map((token) => cleanPathToken(token.text))
+    .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
+  return paths.length === 1 ? { target: paths[0], text: '' } : null;
 }

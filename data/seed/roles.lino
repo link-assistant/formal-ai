@@ -349,6 +349,8 @@ roles
     kind meaning
   file_edit_action_cue
     kind predicate
+  file_edit_blank_line
+    kind meaning
   file_edit_new_lead_cue
     kind predicate
   file_edit_position_after

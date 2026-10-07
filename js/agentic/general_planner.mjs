@@ -146,6 +146,10 @@ function lineAnchored(text, start) {
  */
 export function composeGeneralChangePlan(fullRequest) {
   const request = objectiveText(fullRequest);
+  // An additive edit (append, prepend) never rewrites the whole file: the
+  // workspace-change arm owns it, and a request it cannot ground is declined.
+  const lowered = request.toLowerCase();
+  if (mentionsRole('file_edit_position_end', lowered) || mentionsRole('file_edit_position_start', lowered)) return null;
   const commandOutput = parseCommandOutputRequest(request);
   const fileRequest = commandOutput ? [commandOutput[0], ''] : parseWriteRequest(request);
   if (!fileRequest) return composeRepositoryWorkPlan(request);

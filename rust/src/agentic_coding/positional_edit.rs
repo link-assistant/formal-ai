@@ -195,6 +195,6 @@ pub(super) fn names_local_edit(task: &str) -> bool {
 
 /// A newline an author spelled as `\n` inside prose means a newline in the
 /// file (issue #1116); the edit tool would otherwise write the two characters.
-fn unescape_prose_newlines(text: &str) -> String {
+pub(super) fn unescape_prose_newlines(text: &str) -> String {
     text.replace("\\n", "\n").replace("\\t", "\t")
 }
