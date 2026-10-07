@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_units.js"
-  ceiling 551
-  rationale "Exact conversion between the measurement units the seed knows (issues #1176 and #700). JavaScript-first twin of native handler keys (unit_conversion), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling 551 (2026-10-07, #1175 routing probes): a dimensionally incompatible pair declines to incompatible_units, twin of unit_conversion.rs."
+  ceiling 646
+  rationale "Exact conversion between the measurement units the seed knows (issues #1176 and #700). JavaScript-first twin of native handler keys (unit_conversion), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling 551 (2026-10-07, #1175 routing probes): a dimensionally incompatible pair declines to incompatible_units, twin of unit_conversion.rs. Ceiling moved 551 to 646 for issue #1176 R1 (2026-10-07): each unit resolves to its Wikidata item from data/seed/wikidata-conversion-to-si.lino and the factor is the exact quotient of the two captured P2370 amounts, with a localized citation sentence in five languages; the seed factor is the fallback (twin of the native unit_conversion grounding)."

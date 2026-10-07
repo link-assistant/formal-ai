@@ -352,15 +352,14 @@ fn miss_route_names_what_research_lacks_on_a_solve() {
 fn a_supplied_code_fence_is_not_bound_as_the_hello_world_literal() {
     let response = formal_ai::UniversalSolver::default()
         .solve("write me hello world program in Rust, like this one:\n```rust\nfn main() {}\n```");
-    assert!(
-        response.answer.contains("println!(\"Hello, world!\")"),
-        "{}",
-        response.answer
-    );
-    assert!(
-        !response.answer.contains("println!(\"rust"),
-        "the fence body is not an output literal: {}",
-        response.answer
+    // The program is asserted through the execution recipe, exactly; the
+    // answer text around it reports host-dependent execution status.
+    let recipe = response
+        .execution_recipe
+        .expect("a program answer carries its execution recipe");
+    assert_eq!(
+        recipe.source, "fn main() {\n    println!(\"Hello, world!\");\n}",
+        "the fence body is not an output literal"
     );
 }
 
@@ -508,7 +507,6 @@ fn write_program_miss_answers_from_the_documentation() {
         "{}",
         response.links_notation
     );
-    assert!(response.answer.contains(program), "{}", response.answer);
     let recipe = response
         .execution_recipe
         .expect("a program answer carries its execution recipe");

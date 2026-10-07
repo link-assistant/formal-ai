@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_05.js"
-  ceiling 1466
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker."
+  ceiling 1471
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1466 to 1471 for issue #1173 R3 (2026-10-07): the year-count reader no longer stops at the "year" of "compounded yearly", and the CSV-to-JSON request gets its reader, so probes p069 and p119 reach their handlers in both runtimes."

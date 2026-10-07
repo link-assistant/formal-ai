@@ -324,8 +324,9 @@ fn runtime_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
     let output = command_output(
         root,
         "cargo",
+        // The active toolchain (CI installs stable); a pinned `+1.x.y` broke
+        // the gate the day `rust-version` moved past it.
         &[
-            "+1.98.1",
             "run",
             "--quiet",
             "--manifest-path",
