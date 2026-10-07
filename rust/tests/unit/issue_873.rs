@@ -406,3 +406,40 @@ fn formal_ai_and_the_real_agent_cli_authored_one_of_five_smallest_leaves() {
             .contains("ses_01c561b3bffeG2Bl3eBvtDHYzq")
     );
 }
+
+/// R873-10: the plan landed as one delivery. The code is exercised above; the
+/// data, the runnable example, the requirement matrix, the case study and the
+/// release note that shipped with it are still present, so the delivery is not
+/// reduced to the code alone.
+#[test]
+fn the_plan_landed_with_its_data_example_documentation_and_release_note() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate");
+    for relative in [
+        "data/meta/research-learning-recovery-invariant.lino",
+        "rust/examples/issue_873_research_learning.rs",
+        "docs/case-studies/issue-873/README.md",
+        "docs/case-studies/issue-873/requirements.md",
+        "docs/case-studies/issue-873/online-research.md",
+    ] {
+        assert!(
+            root.join(relative).is_file(),
+            "{relative} belongs to the issue #873 delivery"
+        );
+    }
+    let matrix = std::fs::read_to_string(root.join("docs/case-studies/issue-873/requirements.md"))
+        .expect("the issue #873 requirement matrix is readable");
+    for id in 1..=10 {
+        assert!(
+            matrix.contains(&format!("| R873-{id} |")),
+            "the matrix keeps R873-{id}"
+        );
+    }
+    let changelog =
+        std::fs::read_to_string(root.join("CHANGELOG.md")).expect("CHANGELOG.md is readable");
+    assert!(
+        changelog.contains("issue #873"),
+        "the release note for issue #873 shipped"
+    );
+}

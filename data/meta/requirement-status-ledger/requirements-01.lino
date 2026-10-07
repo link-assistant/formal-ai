@@ -315,10 +315,10 @@ requirement_status_ledger_shard requirements_01
   requirement
     id "R1017"
     shard "docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "development tasks put to Formal AI, kept as ladder rungs"
     issue ""
-    automated_test "rust/tests/web/r1017-delegated-tasks.test.mjs"
+    automated_test "rust/tests/web/meta-reasoner.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1017-1"
