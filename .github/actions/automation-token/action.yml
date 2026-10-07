@@ -34,6 +34,20 @@
 name: automation-token
 description: "Resolve the one GitHub credential: GitHub App, then AUTOMATION_TOKEN, then github.token"
 inputs:
+  # A composite action cannot read `secrets`, so each caller passes the
+  # three optional credentials in; an unset secret arrives empty.
+  app-id:
+    description: secrets.AUTOMATION_APP_ID (optional)
+    required: false
+    default: ""
+  app-private-key:
+    description: secrets.AUTOMATION_APP_PRIVATE_KEY (optional)
+    required: false
+    default: ""
+  automation-token:
+    description: secrets.AUTOMATION_TOKEN (optional)
+    required: false
+    default: ""
   github-token:
     description: The workflow's github.token to fall back to
     required: false
@@ -59,9 +73,9 @@ runs:
     - id: resolve
       shell: bash
       env:
-        APP_ID: ${{ secrets.AUTOMATION_APP_ID }}
-        APP_PRIVATE_KEY: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-        AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+        APP_ID: ${{ inputs.app-id }}
+        APP_PRIVATE_KEY: ${{ inputs.app-private-key }}
+        AUTOMATION_TOKEN: ${{ inputs.automation-token }}
         FALLBACK_TOKEN: ${{ inputs.github-token }}
         REPOSITORIES: ${{ inputs.repositories }}
       run: |
@@ -122,8 +136,8 @@ runs:
       if: ${{ steps.resolve.outputs.layer == 'app' }}
       uses: actions/create-github-app-token@v2
       with:
-        app-id: ${{ secrets.AUTOMATION_APP_ID }}
-        private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+        app-id: ${{ inputs.app-id }}
+        private-key: ${{ inputs.app-private-key }}
         owner: ${{ github.repository_owner }}
         repositories: ${{ inputs.repositories != '' && inputs.repositories || github.event.repository.name }}
         # Scope the installation token to the writes callers perform

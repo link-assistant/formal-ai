@@ -23,6 +23,11 @@ struct CrossRuntimeParityCase {
     forbidden_answer_fragments: Vec<String>,
     expected_evidence_prefixes: Vec<String>,
     expected_trace_fragments: Vec<String>,
+    /// The exact `derivation:<answer id>` evidence link (issue #1184 R1184-9).
+    ///
+    /// The JavaScript root computes the same id from the browser's answer.
+    #[serde(default)]
+    expected_derivation_evidence: Option<String>,
 }
 
 fn synthesis_solver() -> UniversalSolver {
@@ -57,6 +62,7 @@ fn documented_answer(id: &str) -> &'static str {
             "The capital of the United States is Washington, D.C."
         }
         "e1163_supplied_page_command_query" => "kotlinc hello.kt -include-runtime -d hello.jar",
+        "e1184_derivation_answer_id" => "DERIVATION ANSWER EVERY",
         other => panic!("fixture lacks a complete documented answer for {other}"),
     }
 }
@@ -107,6 +113,14 @@ fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
                     .iter()
                     .any(|link| link.starts_with(prefix)),
                 "{} missing evidence prefix {prefix:?}: {:?}",
+                case.id,
+                response.evidence_links
+            );
+        }
+        if let Some(derivation) = &case.expected_derivation_evidence {
+            assert!(
+                response.evidence_links.contains(derivation),
+                "{} should carry the derivation link {derivation:?}: {:?}",
                 case.id,
                 response.evidence_links
             );

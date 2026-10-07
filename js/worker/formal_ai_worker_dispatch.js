@@ -71,10 +71,41 @@ function synchronousHandlerCandidates(context, registry = promotedHandlerOrder(b
   return registry.map((record) => ({
     name: record.name,
     run: () => {
+      if (!claimRouteAdmits(record.name, context.prompt)) return null;
       const implementation = handlerImplementation(record, context);
       const args = (record.arguments || []).map((path) => handlerContextValue(context, path));
       const hit = implementation(...args);
       return handlerResultMatches(record, hit) ? hit : null;
     },
   }));
+}
+
+// Claim routing (issue #1175 R3), twin of rust/src/capability_routing/claims.rs:
+// the `claim` rows of data/seed/capability-routing.lino name a handler's
+// browser function and the evidence kinds any one of which admits it; a
+// handler whose row admits on none is never offered the prompt.
+let CLAIM_ROUTE_ROWS = null;
+const CLAIM_EVIDENCE = Object.freeze({
+  object_phrase_artifact: (prompt) => detectSoftwareObjectPhrase(normalizePrompt(prompt)) !== null,
+  approval_of_a_proposal: (prompt) => isSoftwareApprovalPrompt(normalizePrompt(prompt)),
+  shell_command_shape: (prompt) => detectTerminalCommand(prompt) !== null,
+  semantic_shell_task: (prompt) => detectSemanticShellCommand(prompt) !== null,
+  repository_subject: () => false,
+});
+
+function claimRouteRows() {
+  if (CLAIM_ROUTE_ROWS !== null) return CLAIM_ROUTE_ROWS;
+  const text = typeof SEED_RAW === "object" && SEED_RAW ? seedRawText(SEED_RAW, "capability-routing.lino") : "";
+  const values = (record, name) => record.children.filter((child) => child.name === name && child.value).map((child) => child.value);
+  const records = text ? parseLinoTree(text).children.flatMap((document) => document.children) : [];
+  const rows = records.filter((record) => record.name === "claim").map((record) => ({
+    handler: values(record, "handler")[0] || "", browserHandler: values(record, "browser_handler")[0] || "", admitsOn: values(record, "admits_on"),
+  }));
+  if (text) CLAIM_ROUTE_ROWS = rows;
+  return rows;
+}
+
+function claimRouteAdmits(browserHandler, prompt) {
+  const row = claimRouteRows().find((candidate) => candidate.browserHandler === browserHandler);
+  return !row || row.admitsOn.some((kind) => Boolean(CLAIM_EVIDENCE[kind] && CLAIM_EVIDENCE[kind](prompt)));
 }

@@ -20,6 +20,9 @@ const PAGE_OPAQUE_TAGS = ["script", "style", "template", "noscript"];
 const PAGE_COMMENT_OPEN = "<!--";
 const PAGE_COMMENT_CLOSE = "-->";
 const PAGE_HEADING_TAGS = ["h1", "h2", "h3", "h4", "h5", "h6"];
+// Openers of block children: a list item holding one is a container the walker
+// steps into (kotlinlang's numbered steps hold paragraphs and code blocks).
+const PAGE_NESTED_BLOCK_OPENERS = ["<p>", "<p ", "<pre", "<div", "<ul", "<ol", "<table"];
 const PAGE_CELL_TAGS = ["td", "th"];
 const PAGE_FENCES = ["```", "~~~"];
 const PAGE_BULLETS = ["-", "*", "+"];
@@ -62,6 +65,7 @@ function pageFormalizationRules() {
     tagSources: [],
     tagFallback: "unknown",
     classPrefixes: [],
+    codeAttributes: [],
     shebangs: [],
     extensions: [],
     commandVerbs: [],
@@ -87,6 +91,7 @@ function pageFormalizationRules() {
       for (const child of record.children) {
         if (child.name === "tag_source" && child.value) rules.tagSources.push(child.value);
         if (child.name === "html_class_prefix" && child.value) rules.classPrefixes.push(child.value);
+        if (child.name === "html_code_attribute" && child.value) rules.codeAttributes.push(child.value);
       }
       const fallback = childValue(record, "fallback");
       if (fallback) rules.tagFallback = fallback;
@@ -250,6 +255,9 @@ function pageHtmlBlocks(text, rules) {
   const lower = pageAsciiLower(text);
   const out = [];
   let cursor = 0;
+  // The nearest enclosing element whose class names a language (a
+  // `language-scala` wrapper around a bare `<pre>`), and where it closes.
+  let container = null;
   for (;;) {
     const open = lower.indexOf("<", cursor);
     if (open === -1) break;
@@ -277,15 +285,27 @@ function pageHtmlBlocks(text, rules) {
       } else if (name === "p") {
         block = pageParagraphBlock(pageStripTags(inner), rules);
       } else if (name === "li" || name === "dt") {
-        block = { kind: "list_item", text: pageDecodeEntities(pageStripTags(inner)) };
+        // A list item holding block children is a container instead.
+        const nested = PAGE_NESTED_BLOCK_OPENERS.some((opener) => pageAsciiLower(inner).includes(opener));
+        if (!nested) block = { kind: "list_item", text: pageDecodeEntities(pageStripTags(inner)) };
       } else if (name === "tr") {
         block = { kind: "table_row", text: pageDecodeEntities(pageCellTexts(inner).join(" | ")) };
       } else if (name === "pre") {
+        const inherited = container && open < container.end ? container.classAttr : null;
         block = {
           kind: "code_block",
-          language: pageResolveLanguage(rules, null, pagePreClass(innerTag, inner), inner, null),
+          language: pageResolveLanguage(rules, null, pagePreClass(rules, innerTag, inner, inherited), inner, null),
           text: pageDecodeEntities(pageStripTagsKeepLines(inner)),
         };
+      } else {
+        // An element annotated with a seed `html_code_attribute` (kotlinlang's
+        // `data-lang`) is a code block in that language.
+        const annotated = rules.codeAttributes.map((attr) => pageTagAttr(innerTag, attr)).find((value) => value);
+        if (annotated) block = { kind: "code_block", language: annotated, text: pageDecodeEntities(pageStripTagsKeepLines(inner)) };
+      }
+      const containerClass = block === null ? pageTagAttr(innerTag, "class") : null;
+      if (containerClass && rules.classPrefixes.some((prefix) => containerClass.includes(prefix))) {
+        container = { classAttr: containerClass, end: innerEnd };
       }
     }
     const consumed = block !== null || PAGE_OPAQUE_TAGS.includes(name);
@@ -296,20 +316,21 @@ function pageHtmlBlocks(text, rules) {
 }
 
 /**
- * The class a `<pre>` block's language is read from: its own, else its
- * inner `<code>` tag's.
+ * The class a `<pre>` block's language is read from: the first of its own,
+ * its inner `<code>` tag's and the enclosing container's that carries a seed
+ * class prefix, else null.
+ * @param {object} rules
  * @param {string} innerTag
  * @param {string} raw
+ * @param {string|null} inherited
  * @returns {string|null}
  */
-function pagePreClass(innerTag, raw) {
-  const own = pageTagAttr(innerTag, "class");
-  if (own !== null) return own;
+function pagePreClass(rules, innerTag, raw, inherited) {
   const codeOpen = raw.indexOf("<code");
-  if (codeOpen === -1) return null;
-  const tagClose = raw.indexOf(">", codeOpen);
-  if (tagClose === -1) return null;
-  return pageTagAttr(raw.slice(codeOpen + 1, tagClose), "class");
+  const tagClose = codeOpen === -1 ? -1 : raw.indexOf(">", codeOpen);
+  const code = tagClose === -1 ? null : pageTagAttr(raw.slice(codeOpen + 1, tagClose), "class");
+  const candidates = [pageTagAttr(innerTag, "class"), code, inherited];
+  return candidates.find((value) => value !== null && rules.classPrefixes.some((prefix) => value.includes(prefix))) || null;
 }
 
 /**

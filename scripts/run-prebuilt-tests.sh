@@ -26,7 +26,27 @@ bash scripts/install-rust-script.sh
 # twenty-six seconds in). "${CORPUS_GATE_SKIP[@]}" expands to the two words.
 CORPUS_GATE_SKIP=(--skip issue_1138_no_silent_unknown)
 
+# Sharding (PR #1188): the full lane runs as SHARD_TOTAL parallel jobs, each
+# taking every SHARD_TOTAL-th test (round-robin by listed index) of every
+# target, so the ~25-minute suite finishes in a fraction of the time. Every
+# target runs even after one fails, so a single run reports every failure
+# instead of stopping at the first red target.
+SHARD_INDEX="${SHARD_INDEX:-1}"
+SHARD_TOTAL="${SHARD_TOTAL:-1}"
+status=0
 for target in unit integration source; do
-  "dist/tests/$target" \
-    --skip data_files:: --skip self_ast_census --skip specification:: "${CORPUS_GATE_SKIP[@]}"
+  skips=(--skip data_files:: --skip self_ast_census --skip specification:: "${CORPUS_GATE_SKIP[@]}")
+  if [ "$SHARD_TOTAL" -gt 1 ]; then
+    mapfile -t names < <("dist/tests/$target" --list --format terse "${skips[@]}" \
+      | sed -n 's/: test$//p' \
+      | awk -v index_="$SHARD_INDEX" -v total="$SHARD_TOTAL" '(NR - 1) % total == index_ - 1')
+    if [ "${#names[@]}" -eq 0 ]; then
+      continue
+    fi
+    echo "shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} ${target} test(s)"
+    "dist/tests/$target" --exact "${names[@]}" || status=1
+  else
+    "dist/tests/$target" "${skips[@]}" || status=1
+  fi
 done
+exit "$status"

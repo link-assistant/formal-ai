@@ -72,6 +72,10 @@ jobs:
       # AUTOMATION_TOKEN, then github.token. Nothing is mandatory; the layer
       # is printed to the log and the job summary.
       - uses: ./.github/actions/automation-token
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
         id: automation
 
       - uses: ./.github/actions/cache-cargo-registry

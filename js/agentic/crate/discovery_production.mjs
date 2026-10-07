@@ -32,7 +32,10 @@
 // `cachedWriteProgram` is here, but no JavaScript root carries that catalog
 // `write_program` recipe arm yet (js/agentic/general_execution.mjs ports only
 // the program-contract arm, and the browser worker has no cache file), so no
-// JavaScript solver path calls either function yet.
+// JavaScript solver path calls either function yet. The browser worker's
+// catalog arm does log the native miss: js/worker/formal_ai_worker_solver_events.js
+// appends `procedure_cache outcome=miss ... research_missing=...` for an
+// unmodified request, reading the same `miss_route` rows as `missResearchMissing`.
 
 import { cached, readText as hostReadText, realm } from '../host.mjs';
 import { pushLinoField } from './links_format.mjs';
@@ -121,6 +124,18 @@ export function isValidCacheEntry(recipe) {
 export function bootstrapCacheActive() {
   const bootstrap = (policyRoot()?.children || []).find((node) => node.name === 'bootstrap');
   return Boolean(bootstrap) && findChildValue(bootstrap, 'active') === 'true';
+}
+
+/**
+ * Mirrors `fn miss_research_missing`: the policy seed's `miss_route`
+ * `research_requires` values no `solve_carries` row supplies, in seed order
+ * (R1165-1: the inputs a solve-time cache miss lacks for research).
+ */
+export function missResearchMissing() {
+  const route = (policyRoot()?.children || []).find((node) => node.name === 'miss_route');
+  const values = (name) => (route?.children || []).filter((node) => node.name === name).map((node) => node.value);
+  const carried = values('solve_carries');
+  return values('research_requires').filter((input) => !carried.includes(input));
 }
 
 /** Rust `str::lines`: split on `\n`, drop a trailing `\r`, no final empty line. @param {string} text */

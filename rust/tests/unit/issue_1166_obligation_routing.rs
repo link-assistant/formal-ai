@@ -15,8 +15,10 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use formal_ai::EventLog;
 use formal_ai::intent_formalization::{
-    ObligationKind, formalize_request, request_carries_work_obligations, request_demands,
+    OBLIGATION_GAP_KIND, ObligationKind, formalize_request, record_obligation_gaps,
+    request_carries_work_obligations, request_demands,
 };
 
 fn fixture_dir() -> PathBuf {
@@ -255,4 +257,38 @@ fn ci_workflow_demand_is_read_from_the_obligation_graph() {
     ]
     .map(|request| request_demands(request, ObligationKind::CiWorkflow));
     assert_eq!(demands, [true, false, false]);
+}
+
+/// R1166-3/R1166-4: the executor records every undischargeable clause.
+///
+/// `record_obligation_gaps` writes one `obligation_gap` event per
+/// `gap_report` line, and the program-contract executor calls it, so a run
+/// over the canonical body carries each of the body's gap lines in its
+/// derivation trace.
+#[test]
+fn undischargeable_clauses_are_recorded_in_the_run() {
+    let body = "First, print exactly: \"Hi\"\nThen, harmonize the quantum flux\n";
+    let mut log = EventLog::default();
+    let recorded = record_obligation_gaps(body, &mut log);
+    assert_eq!(recorded, formalize_request(body).gap_report());
+    assert!(!recorded.is_empty(), "the unreadable clause is reported");
+    let logged: Vec<&str> = log
+        .events()
+        .iter()
+        .filter(|event| event.kind == OBLIGATION_GAP_KIND)
+        .map(|event| event.payload.as_str())
+        .collect();
+    assert_eq!(logged, recorded);
+
+    let canonical = fixture(CANONICAL);
+    let response = formal_ai::UniversalSolver::default().solve(&canonical);
+    for gap in formalize_request(&canonical).gap_report() {
+        assert!(
+            response
+                .links_notation
+                .contains(&format!("{OBLIGATION_GAP_KIND} {gap}")),
+            "{gap} is missing from {}",
+            response.links_notation
+        );
+    }
 }

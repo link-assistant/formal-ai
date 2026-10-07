@@ -114,7 +114,7 @@
         },
         "formal-ai.docker.image": {
           "type": "string",
-          "default": "konard/box-dind:2.1.1",
+          "default": "konard/box-dind:2.10.2",
           "description": "Docker image used to sandbox code-execution tool calls (desktop host only, when a permitted tool runs)."
         },
         "formal-ai.tools.allowByDefault": {

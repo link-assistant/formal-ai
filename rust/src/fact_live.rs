@@ -155,8 +155,14 @@ pub fn resolve_fact_live<T: SourceTransport>(
         language
     };
     let search_url = search_template
-        .replace("{query}", &crate::seed::percent_encode(subject_term))
-        .replace("{language}", &crate::seed::percent_encode(language));
+        .replace(
+            concat!("{", "query}"),
+            &crate::seed::percent_encode(subject_term),
+        )
+        .replace(
+            concat!("{", "language}"),
+            &crate::seed::percent_encode(language),
+        );
     let search = client.fetch(&search_url)?;
     let Some(subject_qid) = first_search_hit(search.bytes()) else {
         return Ok(None);

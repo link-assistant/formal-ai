@@ -635,6 +635,9 @@ pub enum RepairOutcome {
     Fetch(AgenticPlan),
     /// Write the `repair_edit` record for a matched fix (R3).
     RecordFix(AgenticPlan),
+    /// Write the artifact with the recorded fix rendered into it (R3's
+    /// apply half, [`super::repair_apply::render_repair_edit`]).
+    ApplyFix(AgenticPlan),
     /// Re-run the failed command (R4's retry).
     Retry(AgenticPlan),
     /// Declined, with the honest stop reason.
@@ -646,9 +649,11 @@ impl RepairOutcome {
     #[must_use]
     pub fn plan(self) -> Option<AgenticPlan> {
         match self {
-            Self::Search(plan) | Self::Fetch(plan) | Self::RecordFix(plan) | Self::Retry(plan) => {
-                Some(plan)
-            }
+            Self::Search(plan)
+            | Self::Fetch(plan)
+            | Self::RecordFix(plan)
+            | Self::ApplyFix(plan)
+            | Self::Retry(plan) => Some(plan),
             Self::Stop(_) => None,
         }
     }
@@ -777,6 +782,9 @@ pub fn repair_step(
             write_arguments(&document_path, &document),
         ));
     }
+    if let Some(plan) = apply_fix_plan(&progress, tool_names, failure, &document_path) {
+        return RepairOutcome::ApplyFix(plan);
+    }
     let Some(command) = failure.failed_command.clone() else {
         // The step that failed was not a command (a file write, say), so
         // there is nothing to re-run: the recorded fix is the rung's result.
@@ -786,6 +794,39 @@ pub fn repair_step(
         return RepairOutcome::Stop(RepairStop::NoTools);
     };
     RepairOutcome::Retry(plan_one(tool, json!({ "command": command }).to_string()))
+}
+
+/// The write that renders the recorded fix into the artifact (R3's apply
+/// half), when the record and the artifact's own source are both in this
+/// turn's writes, the fix has not been rendered into it yet, and the
+/// rendering is a valid program in the artifact's language. Any refusal
+/// ([`super::repair_apply::RepairApplyGap`]) leaves the artifact untouched
+/// and the loop goes on to the retry, as before the apply half existed.
+fn apply_fix_plan(
+    progress: &Progress,
+    tool_names: &[&str],
+    failure: &FailedStep,
+    document_path: &str,
+) -> Option<AgenticPlan> {
+    if failure.artifact_path.is_empty() {
+        return None;
+    }
+    let record_at = progress.latest_successful_write_index(document_path)?;
+    let artifact_at = progress.latest_successful_write_index(&failure.artifact_path)?;
+    if artifact_at > record_at {
+        return None;
+    }
+    let document = progress.successful_write_content_for(document_path)?;
+    let source = progress.successful_write_content_for(&failure.artifact_path)?;
+    let rendered = super::repair_apply::render_repair_edit(&document, &source).ok()?;
+    if rendered == source {
+        return None;
+    }
+    let tool = tool_for(tool_names, Capability::Write)?;
+    Some(plan_one(
+        tool,
+        write_arguments(&failure.artifact_path, &rendered),
+    ))
 }
 
 /// [`repair_step`] as the issue's signature: the plan when a rung has one,

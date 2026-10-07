@@ -643,6 +643,11 @@ impl UniversalSolver {
                 // #511) before falling through to the unknown answer, so a shell
                 // request returns an agent_suggestion intent in both engines.
                 if crate::verifiable_task::recognise_verifiable(prompt).is_none()
+                    && crate::capability_routing::claim_admitted(
+                        "terminal_command",
+                        prompt,
+                        &prompt.to_lowercase(),
+                    )
                     && let Some(answer) =
                         crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
                 {
@@ -720,26 +725,47 @@ impl UniversalSolver {
                         spec.template.code,
                         *spec,
                     );
-                    crate::discovery_production::cached_write_program(
+                    match crate::discovery_production::cached_write_program(
                         &cache,
                         spec.language.slug,
                         spec.task.slug,
                         spec.template.code,
                         &rendered,
-                    )
-                    .map(|recipe| {
-                        let content_id = format!("0x{:016x}", recipe.content_id);
-                        log.append_fields(
-                            "procedure_cache",
-                            &[
-                                ("outcome", "hit"),
-                                ("language", &recipe.language),
-                                ("task", &recipe.task),
-                                ("content_id", &content_id),
-                            ],
-                        );
-                        recipe.entry.clone()
-                    })
+                    ) {
+                        Some(recipe) => {
+                            let content_id = format!("0x{:016x}", recipe.content_id);
+                            log.append_fields(
+                                "procedure_cache",
+                                &[
+                                    ("outcome", "hit"),
+                                    ("language", &recipe.language),
+                                    ("task", &recipe.task),
+                                    ("content_id", &content_id),
+                                ],
+                            );
+                            Some(recipe.entry.clone())
+                        }
+                        // An unmodified request the cache has no row for is
+                        // a miss: research cannot run on it without the
+                        // inputs the policy seed's `miss_route` names, so the
+                        // gap is recorded instead of hidden behind the
+                        // template (R1165-1).
+                        None if rendered == spec.template.code => {
+                            let missing =
+                                crate::discovery_production::miss_research_missing().join(",");
+                            log.append_fields(
+                                "procedure_cache",
+                                &[
+                                    ("outcome", "miss"),
+                                    ("language", spec.language.slug),
+                                    ("task", spec.task.slug),
+                                    ("research_missing", &missing),
+                                ],
+                            );
+                            None
+                        }
+                        None => None,
+                    }
                 }
                 _ => None,
             };
@@ -782,7 +808,7 @@ impl UniversalSolver {
             let execution_recipe = match &rule {
                 SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
                     language: spec.language.code_fence.to_owned(),
-                    source: cached_program.clone().unwrap_or_else(|| {
+                    source: cached_program.unwrap_or_else(|| {
                         crate::code_editing::apply_inline_hello_world_source_replacement(
                             prompt,
                             spec.template.code,

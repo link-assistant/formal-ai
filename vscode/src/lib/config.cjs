@@ -17,7 +17,7 @@
 const DEFAULT_SHELL = "VS Code";
 const DEFAULT_HOST = "127.0.0.1";
 const DEFAULT_PORT = 18080;
-const DEFAULT_IMAGE = "konard/box-dind:2.1.1";
+const DEFAULT_IMAGE = "konard/box-dind:2.10.2";
 const MEMORY_BUNDLE = "formal_ai_bundle";
 
 // Accept either a VS Code `WorkspaceConfiguration` (which exposes

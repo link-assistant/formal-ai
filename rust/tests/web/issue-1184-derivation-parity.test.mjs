@@ -6,15 +6,23 @@
 
 import { before, test } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { REPO_ROOT, createWorkerContext, evaluate, plain } from './support/browser-runtime.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import {
   answerDerivationId,
   appliedRule,
   appliedRuleKinds,
+  explainAnswer,
   explainText,
   fetchRecord,
   fromLino,
+  load,
+  persist,
+  UNUSABLE_ANSWER_ID,
   parseVerificationPayload,
   recordFor,
   storePath,
@@ -162,6 +170,44 @@ test('the store path refuses ids that could traverse the tree', () => {
   assert.equal(storePath('/repo', 'a/b'), null);
 });
 
+/** The `node:fs` io a node caller injects into `persist` / `load`. */
+const nodeIo = {
+  readText: (file) => readFileSync(file, 'utf8'),
+  writeText: (file, text) => writeFileSync(file, text),
+  createDirAll: (dir) => mkdirSync(dir, { recursive: true }),
+};
+
+test('durable record round-trips by answer id (Derivation::persist / load / explain_answer)', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'formal-ai-1184-'));
+  try {
+    const derivation = recordFor(onlineAnswerLog(), 'answer_0123456789abcdef');
+    derivation.recomposition = 'bound literal=Hello, Formal AI!';
+    derivation.rendering = 'kotlin';
+    derivation.verification.push(verificationRecord('evidence_0000000000000000', 'python3 solution.py', 0));
+    const persisted = persist(derivation, root, nodeIo);
+    assert.deepEqual(persisted, { ok: true, path: `${root}/data/cache/derivations/answer_0123456789abcdef.lino` });
+    assert.equal(readFileSync(persisted.path, 'utf8'), toLino(derivation), 'the file holds the to_lino bytes');
+    assert.deepEqual(load(root, 'answer_0123456789abcdef', nodeIo), derivation, 'the lino round-trip is lossless');
+    const explained = explainAnswer(root, 'answer_0123456789abcdef', nodeIo);
+    assert.equal(explained.ok, true);
+    assert.equal(explained.text, explainText(derivation));
+    assert.ok(explained.text.includes('sha256 9f86d0'));
+    assert.ok(explained.text.includes('python3 solution.py exit=0'));
+    assert.equal(load(root, 'answer_ffffffffffffffff', nodeIo), null, 'an unknown id is an honest miss');
+    assert.deepEqual(explainAnswer(root, 'answer_ffffffffffffffff', nodeIo), {
+      ok: false,
+      error: `no derivation record for \`answer_ffffffffffffffff\` under ${root}/data/cache/derivations `
+        + '(an answer id has the shape `answer_<16 hex digits>` and is created when the answer is returned)',
+    });
+    writeFileSync(`${root}/data/cache/derivations/answer_1111111111111111.lino`, toLino(derivation));
+    assert.equal(load(root, 'answer_1111111111111111', nodeIo), null, 'a record filed under another id is a miss');
+    assert.deepEqual(persist({ ...derivation, answer_id: '../x' }, root, nodeIo), { ok: false, error: UNUSABLE_ANSWER_ID });
+    assert.equal(load(root, '../x', nodeIo), null);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('lino values survive quoting and line breaks', () => {
   const derivation = recordFor([], 'answer_0123456789abcdef');
   derivation.search_queries.push('what is "1 + 1"?\nsecond line');
@@ -203,4 +249,18 @@ test('applied rules are projected from the schema, round-tripped and explained',
   const explanation = explainText(derivation);
   assert.ok(explanation.includes('stage applied_rules') && explanation.includes("grammar_correction don't -> doesn't"));
   assert.ok(explainText(recordFor([], 'answer_00000000000000ab')).includes('stage applied_rules\n    not recorded'));
+});
+
+test('cross-runtime derivation cases: the browser answer carries the Rust derivation id', async () => {
+  const corpus = JSON.parse(readFileSync(path.join(REPO_ROOT, 'data/parity/cross-runtime-synthesis.json'), 'utf8'));
+  const cases = corpus.filter((entry) => entry.expectedDerivationEvidence);
+  assert.deepEqual(cases.map((entry) => entry.id), ['e1184_derivation_answer_id']);
+  const worker = createWorkerContext();
+  await evaluate(worker, 'loadSeed()');
+  for (const entry of cases) {
+    const answer = plain(await worker.solve(entry.prompt, [], {}, {}, [], {}));
+    assert.equal(answer.intent, entry.expectedIntent);
+    assert.equal(answer.content, 'DERIVATION ANSWER EVERY');
+    assert.equal(`derivation:${answerDerivationId(answer.content)}`, entry.expectedDerivationEvidence);
+  }
 });

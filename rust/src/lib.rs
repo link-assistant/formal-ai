@@ -494,11 +494,25 @@ pub use solver_handlers::{
     handle_test_generation, handle_text_rewrite, handle_word_problem, try_translation,
     try_web_search_with_client,
 };
+// Issue #1186 R4/R6: the relative-meta-logic export step of the formalization
+// task, public so the unit suite pins the rendered source and the recorded run.
+pub use solver_handlers::{
+    AppliedPredicate, QuantifiedClause, RmlExport, rml_source, run_rml_export_with,
+};
 // Issue #1172 R2/R6/R7: the subject-verified fact gate, seeded comparisons and
 // questions over prompt-supplied text, public so the unit suite pins them.
 pub use solver_handlers::{
     ResolvedSubject, SubjectGate, fact_subject_gate, gated_fact_record, resolve_fact_subject,
     try_fact_comparison, try_prompt_text_question,
+};
+// Issue #1172 R3/R8: the live Wikidata answer and the researched explanation
+// of the `fact_lookup` row, public so the unit suite drives them through a
+// fixture transport.
+#[cfg(feature = "meta-language")]
+pub use solver_handlers::try_explanation_research;
+pub use solver_handlers::{
+    LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
+    try_fact_lookup_with_client, try_fact_lookup_with_offline,
 };
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{

@@ -306,6 +306,38 @@ meanings
     unit "not applicable"
     example "(not recorded in the history)"
     grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_status_explanation
+    defined-by answer
+    role localized_response_template
+    precondition "a status question named the self-development status of the working repository"
+    effect "the status rule is explained from its checking script, the measured commit range and the self-hosting ledger"
+    unit "not applicable"
+    example "The self-development status is checked by scripts/check-self-development-release.rs, introduced for issue #1014."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_definition
+    defined-by answer
+    role localized_response_template
+    precondition "a definition question named a symbol the self-AST census records"
+    effect "the symbol is located in its file and described from its documentation comment and the commit that introduced it"
+    unit "not applicable"
+    example "`evaluate_calculation` is a function in rust/src/calculation.rs, lines 427 to 445."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_definition_documented
+    defined-by answer
+    role localized_response_template
+    precondition "the located symbol carries a documentation comment"
+    effect "the comment is quoted as what the symbol does"
+    unit "not applicable"
+    example "Its documentation comment reads: Evaluate an expression."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_definition_undocumented
+    defined-by answer
+    role localized_response_template
+    precondition "the located symbol carries no documentation comment"
+    effect "the answer says so instead of inventing a description"
+    unit "not applicable"
+    example "It carries no documentation comment, so what it does is stated only by its source."
+    grounding "data/seed/multilingual-responses-formalization.lino"
   product_search_result
     defined-by answer
     role localized_response_template
@@ -521,4 +553,28 @@ meanings
     effect "the answer says the text does not say, naming the uncovered words"
     unit "not applicable"
     example "The given text does not say: none of its sentences mentions ceo."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_live_answer
+    defined-by answer
+    role localized_response_template
+    precondition "no seeded fact answers the question and Wikidata states a value for the asked relation of the subject"
+    effect "the value is stated with the reference URL the claim cites, else the subject snapshot it was read from"
+    unit "not applicable"
+    example "Wikidata states that the capital of Australia is Canberra, with the page its claim cites as the source."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  explanation_research_answer
+    defined-by answer
+    role localized_response_template
+    precondition "an explanation request names a concept and retrieved pages state something about it"
+    effect "the statements of the retrieved pages that mention the concept are listed"
+    unit "not applicable"
+    example "What the retrieved pages say about kotlin compiler, followed by one row per statement"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  explanation_research_row
+    defined-by answer
+    role localized_response_template
+    precondition "a retrieved page states something about the explained concept"
+    effect "the statement is quoted with the page URL and the SHA-256 of its bytes"
+    unit "not applicable"
+    example "One retrieved statement about the compiler, followed by its page address and digest."
     grounding "data/seed/multilingual-responses-entities.lino"

@@ -16,6 +16,7 @@ import { sha256Hex } from '../../../js/agentic/crate/source_fetch.mjs';
 import {
   baselineVersionSet,
   fillWorkflowVersions,
+  forGeneration,
   provenanceNote,
   recordVersionSet,
   resolveVersionSet,
@@ -131,4 +132,16 @@ test('fills_the_scala_ci_setup_placeholders', () => {
     fillWorkflowVersions(template, baselineVersionSet()),
     '      - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3  # v3.0.4\n        with:\n          jvm: temurin:25\n          apps: scala:2.13.18 scalac:2.13.18',
   );
+});
+
+test('for_generation_walks_live_then_cache_then_baseline', () => {
+  const cache = new Map();
+  const live = forGeneration(onlineFetch(cache));
+  assert.equal(live.checkout.origin, 'live');
+  assert.deepEqual(live, resolveVersionSet(onlineFetch(new Map())));
+  const replayed = forGeneration(offlineFetch(cache));
+  assert.equal(replayed.checkout.origin, 'cache');
+  assert.equal(replayed.scala.tag, '2.13.18');
+  assert.deepEqual(forGeneration(offlineFetch(new Map())), { ...baselineVersionSet(), captures: [] });
+  assert.deepEqual(forGeneration(), baselineVersionSet());
 });

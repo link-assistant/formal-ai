@@ -163,5 +163,16 @@
     "expectedEvidencePrefixes": ["page_query:", "page_query_page:", "page_query_answer:", "intent:page_query", "response:page_query"],
     "expectedTraceFragments": ["page_query"],
     "browserExpectedEvidencePrefixes": ["page_query:", "page_query_page:", "page_query_answer:", "response:page_query"]
+  },
+  {
+    "id": "e1184_derivation_answer_id",
+    "prompt": "Uppercase and reverse words: 'every answer derivation'",
+    "expectedIntent": "text_manipulation",
+    "expectedAnswerFragments": ["DERIVATION ANSWER EVERY"],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": ["text_operation:uppercase", "text_operation:reverse_words", "derivation:answer_"],
+    "expectedTraceFragments": ["text_substitution_trace", "answer_id"],
+    "expectedDerivationEvidence": "derivation:answer_bd135b956ecb31f1",
+    "browserExpectedEvidencePrefixes": ["text_operation:uppercase", "text_operation:reverse_words", "text_result:DERIVATION ANSWER EVERY"]
   }
 ]

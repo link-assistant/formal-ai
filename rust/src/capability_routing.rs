@@ -39,7 +39,12 @@ use crate::seed::{
 };
 use crate::web_engine_core::normalize_prompt;
 
+mod claims;
 mod evidence;
+pub use claims::{
+    CLAIM_EVIDENCE_KINDS, ClaimRow, claim_admitted, claim_evidence_holds, claim_rows,
+    claim_rows_from,
+};
 pub use evidence::*;
 
 /// The capability table rows the symbolic solver itself can place a prompt on.

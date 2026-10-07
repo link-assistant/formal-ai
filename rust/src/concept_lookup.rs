@@ -298,10 +298,11 @@ pub fn extractor_gloss_texts(extractor: &str, bytes: &[u8], surface: &str) -> Ve
         .collect()
 }
 
-/// What a registry extractor yields from a payload, as statement text (issue
-/// #1163 R3): the lexical extractors' glosses, the OEIS reader's record
-/// statements, and the Python-docs reader's signatures and descriptions --
-/// the bespoke side of the generic-covers-bespoke comparison.
+/// What a registry extractor yields from a payload, as statement text.
+///
+/// Issue #1163 R3: the lexical extractors' glosses, the OEIS reader's record
+/// statements, and the Python-docs reader's signatures and descriptions -- the
+/// bespoke side of the generic-covers-bespoke comparison.
 #[must_use]
 pub fn extractor_statements(extractor: &str, bytes: &[u8], surface: &str) -> Vec<String> {
     match extractor {
@@ -650,42 +651,30 @@ impl<'a, T: SourceTransport> RegistrySourceLookup<'a, T> {
         self.bounds
     }
 
-    /// Research a need no registered source covers (issue #1163 R4): web
-    /// search through [`crate::source_research::research_unmatched_need`],
-    /// each captured page read by the registry row whose extractor is the
-    /// generic page formalizer, so every sense keeps the page's URL, digest
-    /// and that row's license and tier.
+    /// Research a need no registered source covers (issue #1163 R4).
+    ///
+    /// Web search and the generic page formalizer run through
+    /// [`research_page_senses`], so every sense keeps the page's URL, digest
+    /// and the generic page row's license and tier.
     #[cfg(feature = "meta-language")]
     fn research_unmatched(&mut self, need: &Need, bounds: &LookupBounds) -> LookupOutcome {
         let not_found = || LookupOutcome::NotFound {
             consulted: Vec::new(),
         };
-        let Some(record) = crate::seed::source_registry()
-            .into_iter()
-            .find(|record| record.extractor == GENERIC_PAGE_EXTRACTOR)
-        else {
+        if !crate::source_research::need_routes_to_web_search(need.kind) {
             return not_found();
-        };
-        let Some(Ok(research)) = crate::source_research::research_unmatched_need(
-            self.client,
-            need.kind,
-            &need.subject,
-            bounds.max_pages_per_service,
-        ) else {
-            return not_found();
-        };
-        self.consulted.insert(record.id.clone());
+        }
         let language = if need.language.is_empty() {
             self.language.clone()
         } else {
             need.language.clone()
         };
-        let extractor = SenseExtractor::new(&need.subject, &language);
-        let mut senses = Vec::new();
-        for page in research.pages_by_trust() {
-            let read = extractor.read(&record, &page.capture, 0, senses.len(), bounds);
-            senses.extend(read.items);
-        }
+        let Some((source_id, senses)) =
+            research_page_senses(self.client, &need.subject, &language, bounds)
+        else {
+            return not_found();
+        };
+        self.consulted.insert(source_id);
         if senses.is_empty() {
             not_found()
         } else {
@@ -743,6 +732,42 @@ impl<T: SourceTransport> SourceLookup for RegistrySourceLookup<'_, T> {
         let subject = need.subject.clone();
         self.resolve(&subject, &language, bounds)
     }
+}
+
+/// Retrieve and formalize pages about `subject` (issue #1163 R4).
+///
+/// The explanation handler of issue #1172 R8 reuses it. Web search runs
+/// through [`crate::source_research::execute_source_research`]; each captured
+/// page, most trusted first, is read by the registry row whose extractor is
+/// the generic page formalizer, so every sense is a statement of the page that
+/// mentions the subject and keeps the page URL, SHA-256, license and tier.
+///
+/// `None` when the registry declares no generic page row or the search
+/// itself could not be read (offline cache miss, transport failure); the
+/// returned id is that row's, the source the senses are attributed to.
+#[cfg(feature = "meta-language")]
+pub fn research_page_senses<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    subject: &str,
+    language: &str,
+    bounds: &LookupBounds,
+) -> Option<(String, Vec<ConceptSense>)> {
+    let record = crate::seed::source_registry()
+        .into_iter()
+        .find(|record| record.extractor == GENERIC_PAGE_EXTRACTOR)?;
+    let research = crate::source_research::execute_source_research(
+        client,
+        subject,
+        bounds.max_pages_per_service,
+    )
+    .ok()?;
+    let extractor = SenseExtractor::new(subject, language);
+    let mut senses = Vec::new();
+    for page in research.pages_by_trust() {
+        let read = extractor.read(&record, &page.capture, 0, senses.len(), bounds);
+        senses.extend(read.items);
+    }
+    Some((record.id, senses))
 }
 
 /// Look one surface up, as the trait does, but returning every sense instead of

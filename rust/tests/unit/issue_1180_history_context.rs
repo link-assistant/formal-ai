@@ -427,6 +427,7 @@ fn rules_seed_round_trips_through_the_parser() {
         state_evidence_prefix: String::new(),
         requirement: history_context::RequirementRule::default(),
         lineage_cues: Vec::new(),
+        repository_qa: history_context::RepositoryQaRules::default(),
         ..rules.clone()
     };
     assert_eq!(structural, HistoryRules::defaults());

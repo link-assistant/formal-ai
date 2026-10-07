@@ -27,6 +27,7 @@ mod curated_project_fetch;
 mod document_originality;
 mod document_request;
 mod fact_checking;
+mod fact_live_answer;
 mod factual_qa;
 mod feature_capability;
 mod formalization_task;

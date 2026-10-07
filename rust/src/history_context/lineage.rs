@@ -72,19 +72,32 @@ pub fn lineage_subjects(prompt: &str, rules: &HistoryRules) -> Vec<String> {
 
 /// The number a seed pattern such as `issue-%number%` or `pr:%number%`
 /// carries in `value`, when `value` has the pattern's shape.
-fn pattern_value<'a>(value: &'a str, pattern: &str) -> Option<&'a str> {
+pub(super) fn pattern_value<'a>(value: &'a str, pattern: &str) -> Option<&'a str> {
     let (prefix, suffix) = pattern.split_once(NUMBER_PLACEHOLDER)?;
     let number = value.strip_prefix(prefix)?.strip_suffix(suffix)?;
     (!number.is_empty() && number.bytes().all(|byte| byte.is_ascii_digit())).then_some(number)
 }
 
 /// Fill a seed response's `{placeholder}` slots.
-fn template(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+pub(super) fn template(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
     let mut out = crate::seed::localized_response(intent, language).unwrap_or_default();
     for (key, value) in values {
         out = out.replace(&format!("{{{key}}}"), value);
     }
     out
+}
+
+/// The issue a commit was made for, read through the seed's trailer patterns.
+pub(super) fn introducing_issue<'a>(
+    first: &'a MemoryEvent,
+    rules: &HistoryRules,
+) -> Option<&'a str> {
+    rules.trailers.iter().find_map(|trailer| {
+        first
+            .conversation_id
+            .as_deref()
+            .and_then(|conversation| pattern_value(conversation, &trailer.conversation))
+    })
 }
 
 /// Render the lineage of `path` from its formalized commits (chronological),
@@ -126,12 +139,7 @@ pub fn lineage_answer(
             format!("- {} {date} {subject}", short(event))
         })
         .collect();
-    let issue = rules.trailers.iter().find_map(|trailer| {
-        first
-            .conversation_id
-            .as_deref()
-            .and_then(|conversation| pattern_value(conversation, &trailer.conversation))
-    });
+    let issue = introducing_issue(first, rules);
     let pull = first
         .evidence
         .iter()
@@ -155,7 +163,7 @@ pub fn lineage_answer(
 }
 
 /// The top level of the working repository the process runs in.
-fn working_repository() -> Option<PathBuf> {
+pub(super) fn working_repository() -> Option<PathBuf> {
     let output = Command::new("git")
         .args(["rev-parse", "--show-toplevel"])
         .output()
@@ -177,7 +185,9 @@ pub fn handle_repository_lineage(
     let rules = HistoryRules::load(None);
     let candidates = lineage_subjects(prompt, &rules);
     if candidates.is_empty() {
-        return None;
+        // R1180-10: a status or definition question about the repository is
+        // answered from the same history, else the prompt is not claimed.
+        return super::repository_qa::answer_repository_question(prompt, &rules, log);
     }
     let root = working_repository()?;
     let path = candidates

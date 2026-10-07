@@ -147,6 +147,27 @@ jobs:
           done
       - name: Natural-language literals in the worker and server only fall (R1010, R1013)
         run: node scripts/check-js-literals.mjs --list
+      # Issue #1186 R4/R6: the relative-meta-logic crate is unpublished
+      # (link-foundation/relative-meta-logic#185), so its `rml` exporter is
+      # checked out at a pinned commit and named by RML_BIN; the suite's
+      # issue-1186-rml-export test runs `rml export lean` on the rendered
+      # clause and requires exit status 0.
+      - name: Check out relative-meta-logic for the rml export step (R1186-4)
+        uses: actions/checkout@v7
+        with:
+          repository: link-foundation/relative-meta-logic
+          ref: c5513f2b958a8bd160b58c7054d408d4c446bf98
+          path: .rml
+          persist-credentials: false
+      - name: Install rml and name it in RML_BIN (R1186-6)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci --prefix .rml/js --no-audit --no-fund
+          rml_script="$(realpath .rml/js/src/rml-links.mjs)"
+          printf '#!/bin/sh\nexec node "%s" "$@"\n' "$rml_script" > "$RUNNER_TEMP/rml"
+          chmod +x "$RUNNER_TEMP/rml"
+          echo "RML_BIN=$RUNNER_TEMP/rml" >> "$GITHUB_ENV"
       - name: The JavaScript suites pass
         run: node --test rust/tests/web/*.test.mjs
 

@@ -117,10 +117,11 @@ fn import_commits_impl(
         .collect())
 }
 
-/// The lineage of one path (issue #1180 R10): `git log --follow` on the
-/// working repository, chronological, each commit formalized with its
-/// trailers and delivering merge but without the per-path syntax diff, so a
-/// chat answer runs only the history it reports.
+/// The lineage of one path (issue #1180 R10).
+///
+/// `git log --follow` on the working repository, chronological, each commit
+/// formalized with its trailers and delivering merge but without the per-path
+/// syntax diff, so a chat answer runs only the history it reports.
 ///
 /// # Errors
 ///
@@ -142,6 +143,45 @@ pub fn lineage_for_path(
             "HEAD",
             "--",
             path,
+        ],
+    )?;
+    Ok(parse_log_output(&output)
+        .iter()
+        .map(|raw| {
+            let merge = merge_subject_for(repo_root, &raw.sha);
+            formalize_commit(raw, &[], merge.as_deref(), rules)
+        })
+        .collect())
+}
+
+/// The commits whose diff adds or removes `symbol` under `pathspec`,
+/// formalized chronologically like [`lineage_for_path`] (R1180-10).
+///
+/// This is `git log -S`, so the oldest commit is the one that first wrote the
+/// symbol's name into a file the pathspec matches.
+///
+/// # Errors
+///
+/// Returns [`RepositoryHistoryImportError`] when `git log` cannot run.
+pub fn lineage_for_symbol(
+    repo_root: &Path,
+    pathspec: &str,
+    symbol: &str,
+    rules: &HistoryRules,
+) -> Result<Vec<MemoryEvent>, RepositoryHistoryImportError> {
+    let format = format!("--format={LOG_FORMAT}");
+    let output = run_git(
+        repo_root,
+        &[
+            "log",
+            "--no-show-signature",
+            &format,
+            "--name-only",
+            "-S",
+            symbol,
+            "HEAD",
+            "--",
+            pathspec,
         ],
     )?;
     Ok(parse_log_output(&output)

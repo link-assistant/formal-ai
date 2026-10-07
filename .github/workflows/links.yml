@@ -27,7 +27,21 @@ on:
       - 'scripts/check-web-archive.test.mjs'
       - 'scripts/recheck-broken-links.mjs'
       - 'scripts/recheck-broken-links.test.mjs'
+  # Issue #1187 R2: a bot pull request's checks start through dispatch
+  # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
 
 # Least-privilege default; jobs escalate individually when needed.
 permissions:

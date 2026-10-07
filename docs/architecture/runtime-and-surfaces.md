@@ -97,7 +97,7 @@ The same `FormalAiEngine` answers prompts in every surface:
   `TELEGRAM_BOT_TOKEN` required, while `FORMAL_AI_DOCKER_IMAGE` lets operators
   point the same compose file at a local build or mirror. The image builds the
   Docker-in-Docker Telegram image: it builds the Rust binary, copies it into
-  `konard/box-dind:2.1.1`, keeps
+  `konard/box-dind:2.10.2`, keeps
   `/usr/local/bin/dind-entrypoint.sh` as the entrypoint, and defaults to
   `formal-ai telegram --mode polling`. Commands that need nested execution
   use the bundled `$ --isolated docker --auto-remove-docker-container --`

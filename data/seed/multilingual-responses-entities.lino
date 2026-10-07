@@ -263,3 +263,63 @@ multilingual_responses
     intent prompt_text_gap
     language es
     text "El texto dado no lo dice: ninguna de sus frases menciona {focus}."
+  response response_fact_live_answer_en
+    intent fact_live_answer
+    language en
+    text "Wikidata states that the {relation} of {subject} is {value}. Source: {reference}"
+  response response_fact_live_answer_ru
+    intent fact_live_answer
+    language ru
+    text "По данным Викиданных, {relation} для {subject}: {value}. Источник: {reference}"
+  response response_fact_live_answer_hi
+    intent fact_live_answer
+    language hi
+    text "विकिडेटा के अनुसार {subject} का {relation} {value} है। स्रोत: {reference}"
+  response response_fact_live_answer_zh
+    intent fact_live_answer
+    language zh
+    text "根据维基数据，{subject}的{relation}是{value}。来源：{reference}"
+  response response_fact_live_answer_es
+    intent fact_live_answer
+    language es
+    text "Según Wikidata, {relation} de {subject}: {value}. Fuente: {reference}"
+  response response_explanation_research_answer_en
+    intent explanation_research_answer
+    language en
+    text "What the retrieved pages say about {concept}:\n{rows}"
+  response response_explanation_research_answer_ru
+    intent explanation_research_answer
+    language ru
+    text "Что говорят найденные страницы о «{concept}»:\n{rows}"
+  response response_explanation_research_answer_hi
+    intent explanation_research_answer
+    language hi
+    text "{concept} के बारे में मिले पृष्ठ यह कहते हैं:\n{rows}"
+  response response_explanation_research_answer_zh
+    intent explanation_research_answer
+    language zh
+    text "检索到的页面关于{concept}的说法：\n{rows}"
+  response response_explanation_research_answer_es
+    intent explanation_research_answer
+    language es
+    text "Lo que dicen las páginas recuperadas sobre {concept}:\n{rows}"
+  response response_explanation_research_row_en
+    intent explanation_research_row
+    language en
+    text "- {statement} (source: {url}, sha256 {sha256})"
+  response response_explanation_research_row_ru
+    intent explanation_research_row
+    language ru
+    text "- {statement} (источник: {url}, sha256 {sha256})"
+  response response_explanation_research_row_hi
+    intent explanation_research_row
+    language hi
+    text "- {statement} (स्रोत: {url}, sha256 {sha256})"
+  response response_explanation_research_row_zh
+    intent explanation_research_row
+    language zh
+    text "- {statement}（来源：{url}，sha256 {sha256}）"
+  response response_explanation_research_row_es
+    intent explanation_research_row
+    language es
+    text "- {statement} (fuente: {url}, sha256 {sha256})"

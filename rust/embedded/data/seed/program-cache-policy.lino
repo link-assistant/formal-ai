@@ -22,3 +22,8 @@ program_cache_policy
     owner "rust/src/knowledge.rs ORACLE_SNAPSHOTS"
     purpose "The embedded snapshots are the record of discovery that ran before the cache file existed, so offline lookups keep answering while the first live refresh materializes rows."
     retirement "Delete the bootstrap record in this seed to stop serving the snapshots with no Rust change, then delete ORACLE_SNAPSHOTS once every language row it covered is reproduced by a rediscovery run."
+  miss_route
+    purpose "What a write_program cache miss needs before research_coding_skill_gap can run on it. Research verifies a candidate against an expected output under a reviewer's approval; a solve call carries the task's expected output from the program seed but no reviewer approval, so the solver records the miss with every input it lacks instead of answering as if research had run."
+    research_requires "expected_output"
+    research_requires "reviewer_approval"
+    solve_carries "expected_output"

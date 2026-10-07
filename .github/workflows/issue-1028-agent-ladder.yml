@@ -5,8 +5,21 @@ name: Issue 1028 Agent CLI binary-tree ladder
 # dispatch. The deepest level whose nodes all pass is compared with
 # data/meta/ladder-ratchet.lino and may only move deeper.
 on:
+  # Issue #1187 R2: a bot pull request's checks start through dispatch
+  # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
     inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
       depth:
         description: 'Tree depth to verify: 0=root, 1=2 nodes, 2=4, 3=8, 4=16, 5=32, all=5..0'
         required: false

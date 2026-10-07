@@ -54,7 +54,7 @@ controls. Browser memory export is user initiated.
 | `formal-ai.server.enabled` | `false` | Start a local OpenAI-compatible server and route chat through it (desktop host only). |
 | `formal-ai.server.host` | `127.0.0.1` | Loopback host the server binds to. |
 | `formal-ai.server.port` | `18080` | Port the server binds to. |
-| `formal-ai.docker.image` | `konard/box-dind:2.1.1` | Image used to sandbox code-execution tool calls. |
+| `formal-ai.docker.image` | `konard/box-dind:2.10.2` | Image used to sandbox code-execution tool calls. |
 | `formal-ai.tools.allowByDefault` | `false` | Grant tool calls by default (off = default-deny). |
 | `formal-ai.agent.defaultOn` | `false` | Open the chat with agent mode on. |
 

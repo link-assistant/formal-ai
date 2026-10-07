@@ -107,6 +107,7 @@ struct FormalizationRules {
     tag_sources: Vec<String>,
     tag_fallback: String,
     class_prefixes: Vec<String>,
+    code_attributes: Vec<String>,
     shebangs: Vec<(String, String)>,
     extensions: Vec<(String, String)>,
     command_verbs: Vec<String>,
@@ -148,6 +149,7 @@ impl FormalizationRules {
             tag_sources: Vec::new(),
             tag_fallback: "unknown".to_owned(),
             class_prefixes: Vec::new(),
+            code_attributes: Vec::new(),
             shebangs: Vec::new(),
             extensions: Vec::new(),
             command_verbs: Vec::new(),
@@ -182,6 +184,9 @@ impl FormalizationRules {
                             }
                             "html_class_prefix" if !child.id.is_empty() => {
                                 rules.class_prefixes.push(child.id.clone());
+                            }
+                            "html_code_attribute" if !child.id.is_empty() => {
+                                rules.code_attributes.push(child.id.clone());
                             }
                             _ => {}
                         }
@@ -373,6 +378,10 @@ fn blocks_to_network(
 /// close tag instead of stepping into them.
 const OPAQUE_HTML_TAGS: [&str; 4] = ["script", "style", "template", "noscript"];
 
+/// Openers of block children: a list item holding one is a container the
+/// walker steps into (kotlinlang's numbered steps hold paragraphs and code).
+const NESTED_BLOCK_OPENERS: [&str; 7] = ["<p>", "<p ", "<pre", "<div", "<ul", "<ol", "<table"];
+
 /// HTML comment delimiters: a comment is markup, never page text.
 const HTML_COMMENT_OPEN: &str = "<!--";
 const HTML_COMMENT_CLOSE: &str = "-->";
@@ -402,6 +411,9 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
     let lower = text.to_ascii_lowercase();
     let mut out = Vec::new();
     let mut cursor = 0usize;
+    // The nearest enclosing element whose class names a language (a
+    // `language-scala` wrapper around a bare `<pre>`), and where it closes.
+    let mut container: Option<(String, usize)> = None;
     while let Some(rel) = lower[cursor..].find('<') {
         let open = cursor + rel;
         if lower[open..].starts_with(HTML_COMMENT_OPEN) {
@@ -442,9 +454,17 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
             // A definition term (`<dt>`, the signature line of reference
             // docs) is a list item of its definition list; its `<dd>` is a
             // container whose paragraphs are reached by stepping in.
-            "li" | "dt" => inner_end.map(|end| PageBlock::ListItem {
-                text: decode_entities(&strip_tags(&text[tag_end + 1..end])),
-            }),
+            // A list item holding block children is a container instead.
+            "li" | "dt" => inner_end
+                .filter(|&end| {
+                    let inner = &lower[tag_end + 1..end];
+                    !NESTED_BLOCK_OPENERS
+                        .iter()
+                        .any(|opener| inner.contains(opener))
+                })
+                .map(|end| PageBlock::ListItem {
+                    text: decode_entities(&strip_tags(&text[tag_end + 1..end])),
+                }),
             "tr" => inner_end.map(|end| {
                 let cells = cell_texts(&text[tag_end + 1..end]).join(" | ");
                 PageBlock::TableRow {
@@ -453,25 +473,44 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
             }),
             "pre" => inner_end.map(|end| {
                 let raw = &text[tag_end + 1..end];
-                let attrs = tag_attr(inner_tag, "class");
                 let code_attrs = raw.find("<code").and_then(|code_open| {
                     let after = &raw[code_open..];
                     let tag_close = after.find('>').map(|offset| code_open + offset)?;
                     tag_attr(&raw[code_open + 1..tag_close], "class")
                 });
+                let inherited = container
+                    .as_ref()
+                    .filter(|(_, close)| open < *close)
+                    .map(|(class, _)| class.clone());
+                let class_attr =
+                    language_class(rules, [tag_attr(inner_tag, "class"), code_attrs, inherited]);
                 PageBlock::CodeBlock {
-                    language: resolve_language(
-                        rules,
-                        None,
-                        attrs.or(code_attrs).as_deref(),
-                        raw,
-                        None,
-                    ),
+                    language: resolve_language(rules, None, class_attr.as_deref(), raw, None),
                     text: decode_entities(&strip_tags_keep_lines(raw)),
                 }
             }),
-            _ => None,
+            // An element annotated with a seed `html_code_attribute`
+            // (kotlinlang's `data-lang`) is a code block in that language.
+            _ => inner_end.and_then(|end| {
+                rules
+                    .code_attributes
+                    .iter()
+                    .find_map(|attribute| {
+                        tag_attr(inner_tag, attribute).filter(|value| !value.is_empty())
+                    })
+                    .map(|language| PageBlock::CodeBlock {
+                        language,
+                        text: decode_entities(&strip_tags_keep_lines(&text[tag_end + 1..end])),
+                    })
+            }),
         };
+        if block.is_none()
+            && let Some(end) = inner_end
+            && let Some(class) = tag_attr(inner_tag, "class")
+            && has_class_prefix(rules, &class)
+        {
+            container = Some((class, end));
+        }
         let consumed = block.is_some() || OPAQUE_HTML_TAGS.contains(&name.as_str());
         if let Some(block) = block {
             out.push(block);
@@ -482,6 +521,25 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
         };
     }
     out
+}
+
+/// Whether `class` carries one of the seed's language class prefixes.
+fn has_class_prefix(rules: &FormalizationRules, class: &str) -> bool {
+    rules
+        .class_prefixes
+        .iter()
+        .any(|prefix| class.contains(prefix.as_str()))
+}
+
+/// The first class attribute that names a language.
+///
+/// The candidates are the `<pre>` tag's own class, its inner `<code>` tag's
+/// and the enclosing container's, nearest first.
+fn language_class(rules: &FormalizationRules, candidates: [Option<String>; 3]) -> Option<String> {
+    candidates
+        .into_iter()
+        .flatten()
+        .find(|class| has_class_prefix(rules, class))
 }
 
 /// Markdown walking: ATX headings, fenced code, list items, table rows,

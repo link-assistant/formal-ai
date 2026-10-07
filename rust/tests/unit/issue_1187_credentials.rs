@@ -85,6 +85,12 @@ fn orphan_branch_isolation_needs_no_credential() {
         workflow.contains("e2e/${PURPOSE}/${run_id}/${name}"),
         "R4: the branch layout is e2e/<purpose>/<run_id>/<name>"
     );
+    assert!(
+        workflow.contains("steps.creds.outputs.can-create-repositories")
+            && workflow.contains("gh repo create")
+            && workflow.contains("gh repo delete"),
+        "R4: only when the resolver reports can-create-repositories does the run get a separate repository, deleted at cleanup"
+    );
 }
 
 #[test]
@@ -281,6 +287,78 @@ fn the_named_workflows_declare_the_checks_mode_the_dispatcher_passes() {
         dispatcher.contains("headRefName"),
         "the dispatch API takes a branch, so the runs go to the pull request's head branch"
     );
+}
+
+#[test]
+fn every_pull_request_workflow_declares_the_checks_mode_or_a_reason_not_to() {
+    // R2: the dispatcher starts every `pull_request` workflow that declares
+    // the checks mode. The only exclusions are workflows whose non-pull-request
+    // runs publish or spend credentials, so dispatching them from a bot branch
+    // would release or leak; and the authoring workflow itself.
+    let excluded = [
+        // A dispatch builds and publishes desktop release assets.
+        "desktop-release.yml",
+        // A dispatch runs the credentialed full-slice benchmark jobs.
+        "external-benchmarks.yml",
+        // Its dispatch modes are release modes; `checks` is its default.
+        "release.yml",
+        // The workflow that opens the bot pull request and dispatches.
+        "self-authored-pull-request.yml",
+    ];
+    let mut missing = Vec::new();
+    for (path, body) in workflow_and_action_files() {
+        let block = trigger_block(&body);
+        if pull_request_trigger(&block).is_none()
+            || excluded.iter().any(|name| path.ends_with(name))
+        {
+            continue;
+        }
+        let joined = block.join("\n");
+        if !(joined.contains("options: [checks]") && joined.contains("pull-request:")) {
+            missing.push(path);
+        }
+    }
+    assert_eq!(missing, Vec::<String>::new());
+}
+
+#[test]
+fn cross_repository_work_keeps_one_tracking_issue_at_the_default_layer() {
+    // R5: at layer default the scan opens nothing in the owning
+    // repositories and keeps one tracking issue in this repository.
+    let workflow = read(".github/workflows/cross-org-duplication.yml");
+    assert!(
+        workflow.contains("--open requested at the default credential layer"),
+        "R5: --open degrades at the default layer"
+    );
+    assert!(
+        workflow.contains("steps.token.outputs.layer == 'default'")
+            && workflow.contains("gh issue edit")
+            && workflow.contains("gh issue create")
+            && workflow.contains("issues: write"),
+        "R5: the default layer updates one tracking issue, opening it only when none exists"
+    );
+}
+
+#[test]
+fn the_resolver_takes_its_secrets_as_inputs_from_every_caller() {
+    // A composite action cannot read `secrets` (the runner refuses to load
+    // it), so the resolver declares the three credentials as inputs and each
+    // workflow that uses it passes them.
+    let action = read(".github/actions/automation-token/action.yml");
+    assert!(
+        !action.contains("${{ secrets."),
+        "a composite action that reads secrets fails to load"
+    );
+    for (path, body) in workflow_and_action_files() {
+        if !body.contains("uses: ./.github/actions/automation-token") {
+            continue;
+        }
+        assert!(
+            body.contains("app-id: ${{ secrets.AUTOMATION_APP_ID }}")
+                && body.contains("automation-token: ${{ secrets.AUTOMATION_TOKEN }}"),
+            "{path} passes the AUTOMATION_* secrets to the resolver"
+        );
+    }
 }
 
 #[test]

@@ -103,6 +103,16 @@ pub fn software_project_claims(normalized: &str) -> bool {
     object_phrase_artifact(normalized, &actions, &artifacts).is_some()
 }
 
+/// Whether the whole prompt is a go-ahead for a proposed software project.
+///
+/// The claim-routing table (issue #1175 R3) admits the handler on this
+/// evidence as well as on [`software_project_claims`]: an approval carries no
+/// artifact of its own, it moves the dialogue's earlier plan forward.
+#[must_use]
+pub fn software_project_approval_claims(normalized: &str) -> bool {
+    is_approval_prompt(normalized)
+}
+
 impl SoftwareProjectMeaning {
     pub(super) fn from_prompt(prompt: &str, normalized: &str) -> Option<Self> {
         if normalized.contains("hello") && normalized.contains("world") {

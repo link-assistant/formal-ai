@@ -122,5 +122,27 @@ trust score (R1163-7), and the JS/TS roots (R1163-10).
   the walker or the seed-wrapper fix regresses.
 - The #1164 tests read code blocks out of five more captured pages through the
   same formalizer (`rust/tests/unit/issue_1164_code_example_knowledge.rs`).
-- Not yet verified: a live fetch (R1163-11), routing from a real need
-  (R1163-4), and any JS/TS parity (R1163-10).
+- Byte-for-byte captures (R1163-14) of kotlinlang.org's command-line page,
+  the Rust Book chapter source and the Scala 3 book page, fetched 2026-10-07,
+  live under `rust/tests/fixtures/coding-discovery/captured/issue-1163/` and
+  are pinned by SHA-256 and language tags in
+  `rust/tests/unit/issue_1163_1164_captured_pages.rs` and its JS twin
+  `rust/tests/web/issue-1163-1164-captured-pages.test.mjs`.
+- R1163-11: `live_kotlinlang_compile_command_with_url_and_hash` fetches
+  kotlinlang.org when `FORMAL_AI_LIVE_FETCH=1` and checks the `kotlinc …
+  -include-runtime -d …` command plus the URL and SHA-256 in the
+  `source:http` trace; its offline half
+  (`captured_kotlinlang_page_answers_the_compile_command`) runs in CI on the
+  capture.
+- `plans/00-formalizer-design.md` records the design;
+  `agent-cli-evidence/kotlinlang-formalization/README.md` is a real Agent CLI
+  run against this branch's JavaScript server — it retrieves the right page
+  but answers from plain-text sentences and drops the command, because the
+  agentic research path does not formalize fetched pages yet;
+  `self-use/kotlinlang-compile/` is the engine's own solve trace for the same
+  question (the served answer and its thinking steps, which route to the
+  procedural how-to handler and find no CORS-enabled search result, and the
+  formalizer run on the live page, which finds the command).
+- Not yet verified: routing from a real need (R1163-4) end to end in the
+  served engine, and the Rust side of the live test (drafted without a local
+  `cargo` run; CI is its first compile).

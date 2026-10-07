@@ -372,7 +372,7 @@ fn join_role(word: &str, entries: &[LinoNode]) -> String {
 }
 
 /// JOIN from the seeded `sql_join` roles ("joined with the orders table on
-/// user_id"): the first non-filler word after a `join` word names the
+/// `user_id`"): the first non-filler word after a `join` word names the
 /// joined table, and the first non-filler word after a `key` word the
 /// shared column, emitted as `JOIN t USING (column)`. Without a key no
 /// join is guessed. Returns the clause, the request echo and the token span.

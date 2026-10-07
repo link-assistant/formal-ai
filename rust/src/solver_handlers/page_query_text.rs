@@ -20,6 +20,17 @@ const PAGE_QUERY_INTENT: &str = "page_query";
 /// The response link of that intent.
 const PAGE_QUERY_RESPONSE: &str = "response:page_query";
 
+/// Whether the prompt is a page query over a page it supplies.
+///
+/// The capability table reads the file names such a page mentions as a batch
+/// read; the page the prompt carries is the source instead, so the
+/// capability-gap refusal yields to this handler.
+#[must_use]
+pub fn page_query_text_claims(prompt: &str) -> bool {
+    crate::web_formalize::split_supplied_page(prompt)
+        .is_some_and(|(query, _)| crate::memory_query_language::parse_page_query(&query).is_some())
+}
+
 /// Answer a page query over a page the prompt supplies, or decline.
 #[must_use]
 pub fn handle_page_query_text(
@@ -42,7 +53,7 @@ pub fn handle_page_query_text(
     if texts.is_empty() {
         return None;
     }
-    log.append("page_query", query.clone());
+    log.append("page_query", query);
     log.append("page_query_page", format!("{key} blocks={blocks}"));
     for text in &texts {
         log.append("page_query_answer", (*text).to_owned());

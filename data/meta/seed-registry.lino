@@ -41,6 +41,8 @@ seed_registry
     web true
   seed caller-context
     bundle true
+  seed capability-routing
+    web true
   seed client-completion-contracts
     bundle true
   seed client-integrations
@@ -626,6 +628,7 @@ seed_registry
     web true
   seed program-cache-policy
     bundle true
+    web true
   seed program-cst-grammars
     bundle true
     web true
@@ -703,9 +706,6 @@ seed_registry
   seed writing-genre-styleguides
     bundle true
     web true
-  unregistered capability-routing
-    owner "src/capability_routing.rs"
-    reason "Wave T skeleton for issue 1138 plan 10 leaf 8: the decision table is read from disk by the routing module and its tests. Leaf 8 moves it into the bundle and regenerates the embedded registry."
   unregistered coding-composition-fragments
     owner "src/coding/fragment_catalog.rs"
     reason "The composition fragment catalog reads these fragments from the seed directory, and the web worker feeds them to the program-ir checker through its own seed list."

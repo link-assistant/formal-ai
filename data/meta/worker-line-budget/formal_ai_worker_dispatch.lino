@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_dispatch.js"
-  ceiling 80
-  rationale "Synchronous browser-handler capability bindings extracted from the universal dispatcher; this table disappears when the Rust-to-WASM dispatcher replaces the JavaScript mirror."
+  ceiling 111
+  rationale "Synchronous browser-handler capability bindings extracted from the universal dispatcher; this table disappears when the Rust-to-WASM dispatcher replaces the JavaScript mirror. Ceiling moved 80 to 111 for issue #1175 R3 (2026-10-07): claimRouteAdmits, the browser twin of rust/src/capability_routing/claims.rs, reads the claim rows of data/seed/capability-routing.lino and offers a handler the prompt only when one of its admits_on evidence kinds holds."

@@ -287,3 +287,93 @@ function formalTargetRoundTripHolds(grammar, clause, slug) {
   const again = formalParseAnyFormalClause(grammar, rendered);
   return again !== null && formalStructureKey(again[1]) === formalStructureKey(clause);
 }
+
+// The relative-meta-logic export step (issue #1186 R4/R6), browser twin of
+// rust/src/solver_handlers/formalization_task_rml.rs. The source is the same
+// typed fragment `rml export lean` reads, built from the `export_target rml`
+// templates of data/seed/formal-targets.lino; the browser has no process to
+// run it in, so its step is outside the subset or absent, never run.
+
+/**
+ * The `export_target rml` templates (`rml_templates`), or null.
+ * @returns {object|null}
+ */
+function formalRmlTemplates() {
+  const record = formalTargetRecords().find((candidate) => candidate.name === "export_target" && candidate.value === "rml");
+  if (record === undefined) return null;
+  const names = ["domain", "domain_declaration", "predicate", "predicate_with_object", "constant", "atom", "atom_with_object", "hypothesis", "clause"];
+  return Object.fromEntries(names.map((name) => [name, childValue(record, name)]));
+}
+
+/**
+ * An identifier safe in RML's notation (`rml_identifier`).
+ * @param {string} text
+ * @returns {string}
+ */
+function formalRmlIdentifier(text) {
+  return Array.from(text.trim(), (character) => (/\s/u.test(character) || "():\"'".includes(character) ? "_" : character)).join("");
+}
+
+/**
+ * @param {object} templates
+ * @param {{name: string, object: string|null}} predicate
+ * @param {string} variable
+ * @returns {string}
+ */
+function formalRmlAtom(templates, predicate, variable) {
+  const name = formalRmlIdentifier(predicate.name);
+  return predicate.object === null
+    ? textTransformFill(templates.atom, [["name", name], ["variable", variable]])
+    : textTransformFill(templates.atom_with_object, [["name", name], ["variable", variable], ["object", formalRmlIdentifier(predicate.object)]]);
+}
+
+/**
+ * The RML source of a universal conditional clause, or null (`rml_source`).
+ * @param {object} clause
+ * @returns {string|null}
+ */
+function formalRmlSource(clause) {
+  const templates = formalRmlTemplates();
+  if (clause.quantifier !== "forall" || templates === null || !templates.clause) return null;
+  const domain = templates.domain;
+  const variable = formalRmlIdentifier(clause.variable);
+  const second = `${variable}${variable}`;
+  const lines = [textTransformFill(templates.domain_declaration, [["domain", domain]])];
+  const declared = [];
+  const objectConstants = [];
+  for (const predicate of clause.antecedent.concat([clause.consequent])) {
+    const name = formalRmlIdentifier(predicate.name);
+    if (!declared.includes(name)) {
+      const template = predicate.object === null ? templates.predicate : templates.predicate_with_object;
+      lines.push(textTransformFill(template, [["name", name], ["domain", domain], ["variable", variable], ["second", second]]));
+      declared.push(name);
+    }
+    if (predicate.object !== null) {
+      const constant = formalRmlIdentifier(predicate.object);
+      if (!objectConstants.includes(constant)) objectConstants.push(constant);
+    }
+  }
+  for (const constant of objectConstants) lines.push(textTransformFill(templates.constant, [["constant", constant], ["domain", domain]]));
+  let body = formalRmlAtom(templates, clause.consequent, variable);
+  for (let index = clause.antecedent.length - 1; index >= 0; index -= 1) {
+    const atom = formalRmlAtom(templates, clause.antecedent[index], variable);
+    body = textTransformFill(templates.hypothesis, [["atom", atom], ["index", String(index + 1)], ["body", body]]);
+  }
+  lines.push(textTransformFill(templates.clause, [["domain", domain], ["variable", variable], ["body", body]]));
+  return `${lines.join("\n")}\n`;
+}
+
+/**
+ * The rml step's honesty sentence in the browser, with its trace line.
+ * @param {object} clause
+ * @param {Array<string>} trace
+ * @returns {string}
+ */
+function formalRmlCheck(clause, trace) {
+  if (formalRmlSource(clause) === null) {
+    trace.push("formalization:rml_export:outside_subset");
+    return textTransformFill(formalResponse("formalization_rml_outside_subset", "en"), [["quantifier", clause.quantifier]]);
+  }
+  trace.push("formalization:rml_export:absent");
+  return formalResponse("formalization_rml_absent", "en");
+}

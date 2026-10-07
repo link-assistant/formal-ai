@@ -108,7 +108,22 @@ Status on this branch, from the shard:
   (fourteen tests). One of them reads the code block out of a captured page
   through the #1163 formalizer, so it also guards the HTML walker fix.
 - The schema seed carries one worked generalized procedure in Links Notation.
-  A decomposition rendered by an actual run is still to be captured (`R1164-14`);
-  it has to come from the code, not be written by hand.
+  `decomposed-example/hello-world-run.lino` (`R1164-14`) is the verbatim output
+  of an actual run on 2026-10-07: the branch's browser engine formalized the
+  byte-for-byte captures under
+  `rust/tests/fixtures/coding-discovery/captured/` (SHA-256 in the file),
+  decomposed each page's Hello World block (`decomposeCodeExample`), generalized
+  the five nodes (`generalizeCodeExamples`) and rendered both through
+  `decomposedCodeExampleNotation` / `generalizedCodeExampleNotation`. The run
+  shows two limits: the HTML walker drops code indentation, and the Kotlin and
+  Swift program bodies keep a trailing comment that repeats the original
+  literal (`// Hello, world!`), so a recomposition with another literal would
+  carry a stale comment. Swift's guided-tour block has no entry point, so the
+  shared structure is `output_operation` and `string_literal` only.
+- Byte-for-byte captures (`R1164-12`): the five Hello World pages (Kotlin tour,
+  Rust Book, go.dev, Swift book source, Scala 3 book) are pinned by SHA-256,
+  language tags and decomposition in
+  `rust/tests/unit/issue_1163_1164_captured_pages.rs` and
+  `rust/tests/web/issue-1163-1164-captured-pages.test.mjs`.
 - Not yet verified: compiling or running any recomposed program (`R1164-8`),
   the Pascal online path (`R1164-13`), and JS/TS parity (`R1164-11`).

@@ -580,12 +580,14 @@ function formalSentenceUnderDiscussion(prompt) {
 /**
  * The honesty block: no prover runs in the browser and there is no PATH.
  * @param {string} language
+ * @param {string} rmlCheck the rml step's sentence (formalRmlCheck)
  * @returns {string}
  */
-function formalHonesty(language) {
+function formalHonesty(language, rmlCheck) {
   return textTransformFill(formalResponse("formalization_honesty", language), [
     ["lean_check", "lean was not found in PATH, so the lean text was not compiled."],
     ["rocq_check", "coqc was not found in PATH, so the coqc text was not compiled."],
+    ["rml_check", rmlCheck],
   ]);
 }
 
@@ -632,7 +634,7 @@ function formalFormalizeAnswer(grammar, prompt, language, trace) {
   return [
     textTransformFill(formalResponse("formalization_result", language), [
       ["statement_block", blocks.join("\n\n")],
-      ["honesty", formalHonesty(language)],
+      ["honesty", formalHonesty(language, formalRmlCheck(clause, trace))],
       ["derivation", derivation],
     ]),
     0.7,
@@ -689,7 +691,7 @@ function formalDeformalizeAnswer(grammar, prompt, language, trace) {
     textTransformFill(formalResponse("formalization_deformalized", language), [
       ["sentence", sentence],
       ["round_trip", roundTrip],
-      ["honesty", formalHonesty(language)],
+      ["honesty", formalHonesty(language, formalRmlCheck(clause, trace))],
     ]),
     0.7,
   ];

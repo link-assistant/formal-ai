@@ -565,6 +565,20 @@ impl Progress {
         })
     }
 
+    /// The arrival index of the latest successful write of `path`, so a
+    /// caller can tell which of two files was written last (issue #1185 R3:
+    /// a fix already rendered into the artifact is not rendered twice).
+    pub(super) fn latest_successful_write_index(&self, path: &str) -> Option<usize> {
+        self.attempts.iter().rposition(|attempt| {
+            attempt.capability == Capability::Write
+                && attempt.succeeded
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
     /// The capability of the most recent tool result in this turn.
     ///
     /// `completed` is in arrival order, so this distinguishes *which phase* a

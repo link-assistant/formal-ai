@@ -7,8 +7,9 @@
 // (the JavaScript root has no `CachedSourceClient` twin): `fetch(url)` returns
 // a capture `{source_url, text, fetched_at, sha256, cached}` — the fields of
 // Rust's `SourceCapture` the resolution reads — or null where Rust's
-// `client.fetch(url)` errs. `forGeneration` still answers from the shipped
-// baseline, because no JavaScript host owns a source cache to replay.
+// `client.fetch(url)` errs. `forGeneration(fetch)` walks the same ladder over
+// a host-supplied `fetch`; without one it answers from the shipped baseline,
+// because no JavaScript host owns a source cache to replay yet.
 
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
@@ -170,13 +171,17 @@ export function recordVersionSet(versions) {
 }
 
 /**
- * Mirrors `VersionSet::for_generation`.
- * native-only: rust/src/version_resolution.rs VersionSet::resolve; the live
- * and cached release captures need the network / source cache, so every pin
- * comes from the shipped baseline (as Rust does when both are unavailable).
+ * Mirrors `VersionSet::for_generation`: every pin through the same
+ * live → cache → baseline ladder as `resolveVersionSet`, over an injected
+ * `fetch` that stands in for Rust's `CachedSourceClient` (a live capture
+ * carries `cached: false`, a replayed one `cached: true`, a miss is null).
+ * A host that owns no source cache passes no `fetch`, and every pin then
+ * comes from the shipped baseline, as Rust's ladder ends when both the
+ * network and the cache are unavailable.
+ * @param {((url: string) => object|null)} [fetch]
  */
-export function forGeneration() {
-  return baselineVersionSet();
+export function forGeneration(fetch) {
+  return typeof fetch === 'function' ? resolveVersionSet(fetch) : baselineVersionSet();
 }
 
 function pin(versions, id) {

@@ -50,6 +50,7 @@ page_formalization_rules
     fallback unknown
     html_class_prefix "language-"
     html_class_prefix "highlight "
+    html_code_attribute "data-lang"
     fence_info_first_token true
   heuristic
     kind shebang

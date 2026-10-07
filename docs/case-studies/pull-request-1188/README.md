@@ -64,6 +64,7 @@ The full list is [`raw-data/commits.txt`](raw-data/commits.txt).
 | 2026-10-07 | requirement-drafting batch | Every planned open row drafted: #1163/#1164 JS twins and working memory, #1172 subject-verified facts, #1176 word relations and Wikidata-checked unit factors, #1177 GROUP BY, #1180 history store, #1184 rule stage and JS twin, #1185 honest repair stops, #1186 deformalization and probe set, #1187 optional credentials. |
 | 2026-10-07 | `a3340286e`, `065cb49af` and the next commit | #1177 breadth. The code debugger gets two more defect classes, a loop bound past the end of an indexed collection and an assignment inside an `if`/`while` condition (R1). The SQL composer reads a threshold after the grouping as HAVING, no longer emits a bogus `WHERE with > 5`, and joins on a stated shared column, keeping identifier underscores in both runtimes (R3). The shell composer gets a literal `sed -i` substitution from seeded cues (R4). |
 | 2026-10-07 | fourth-pass bulk batch | Open rows drafted again in one batch. #1163: the six extractors on fixtures, the unmatched-need research route, the fetch path reading working memory, computed trust features, the `page_query_text` route, and HTML/Markdown document sources. #1172-3: a live Wikidata resolver (not yet wired). #1165-1/2: the procedure cache in the solver's write-program path. #1166-3: obligation-graph clause reading. #1168-6/8: no literal version left, and a JS live resolver. #1180-3/10/11: requirement and state evidence, a `repository_lineage` route, and JS twins. #1184-1/8: `derivation_id` on worker and server answers. #1185-1/2/7/8: a 14-language diagnostic table that found a PHP location bug, plus the TS root for `js/agentic` (175 `.mts` files). CI's first full run found a Wikidata-cache convention break in the P2370 table, so it moved to `data/cache/unit-conversion/`. |
+| 2026-10-07 | fifth-pass batch | CI run 37587719623 on `1935f8f0d` was read in full before the next push. Lint failed on 21 clippy lints and a missing P856 cache pair; the specification lane failed on two pins; the full lane stopped at the census step. All are fixed in one commit. Same batch: #1187 R2/R4/R5 completed (the checks mode on every pull_request workflow except four with named reasons, a separate private repository at the App layer, one tracking issue at the default layer) and #1161 R7 drafted as a matrix case that starts each CLI from its relocated config. The full test lane now runs as four parallel shards. The drafting agents of this pass added the following. #1164: a Pascal CST grammar and a decomposition from freepascal.org, plus compile-and-run tests. #1172-3: live Wikidata facts wired into `fact_lookup`, and #1172-8 explanation research. #1163/#1164: byte-exact real captures pinned by SHA-256, and Agent CLI evidence. #1175-3: claim rows in the capability table. #1180-10: repository questions (status failure, function lineage). #1185-3: an applied, CST-validated repair. #1186-4/6: a real `rml` step recorded in the derivation. #1169-4: box-dind 2.10.2. JS mirrors: derivation persist/load (#1184-9) and the procedure-cache miss evidence (#1165-10). |
 
 ## CI history
 
@@ -160,6 +161,35 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     unresolved-need notes and its attempt chain existed but never reached an
     answer; the executor now appends them to the failure report in both roots
     (#1185 R4 to R6).
+
+15. **A composite action cannot read `secrets`.** The credential resolver
+    referenced `secrets.AUTOMATION_*` inside `.github/actions/automation-token`.
+    GitHub rejects that at load time ("Unrecognized named-value: 'secrets'"),
+    so the self-authored pull request workflow failed before its first step.
+    The four callers now pass the secrets as inputs, and a test asserts the
+    action reads none.
+16. **One key per registry line.** `repository_lineage` was appended to
+    another key's line in the worker's handler registry, probably to keep
+    `formal_ai_worker_20.js` within its line ceiling. The registry reader
+    takes one key per line, so the seed/worker permutation failed. The key
+    has its own line now, and a comment line was folded to hold the ceiling.
+17. **A supplied page outranks the capability table.** "The command in the
+    paragraph that mentions compiler:" followed by a page mentions
+    `hello.kt` and `hello.jar`. The capability table read those names as a
+    batch file read and answered with a missing-`shell` gap before the
+    `page_query_text` handler ran. `page_query_text_claims` now makes the gap
+    yield, the same way `software_project_claims` does.
+18. **A gate failure no longer hides the suite.** The full lane's data and
+    census gates ran before the unit tests, and their failure skipped the
+    tests. That is how 33 metadata-gap rows went unpinned (item 12). The
+    test steps now run `!cancelled()`, the lane is split into four shards
+    over the prebuilt executables, and the runner reports every failing
+    target before it exits.
+19. **A silent 90-minute benchmark hang.** HumanEval at its full 164-case
+    slice (run 37578344303) printed nothing after the dataset download and
+    was cancelled at the job cap. The runner now prints each case before
+    and after it is solved, and the dataset download has connect and
+    transfer timeouts.
 
 ## Constraints
 

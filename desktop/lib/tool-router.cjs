@@ -31,7 +31,7 @@ const crypto = require("node:crypto");
 // where the endpoint has not landed yet.
 const confinement = require("./confinement.cjs");
 
-const SANDBOX_IMAGE = "konard/box-dind:2.1.1";
+const SANDBOX_IMAGE = "konard/box-dind:2.10.2";
 
 // The tool vocabulary mirrors the browser environment (see app.js); each maps to
 // a local executor here. `code_exec` / `eval_js` are sandboxed, `shell` is host

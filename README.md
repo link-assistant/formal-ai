@@ -20,7 +20,7 @@ The current implementation covers the surface area requested in issue #1:
   `/api/anthropic/v1`, `/api/gemini/v1beta`, and `/api/vertex/v1`
 - Telegram bot CLI with long polling by default and an opt-in webhook server, configured through [`lino-arguments`](https://github.com/link-foundation/lino-arguments)
 - human-readable Links Notation knowledge and dataset export through `lino-objects-codec`
-- Prepared Docker-in-Docker Telegram bot image published as `ghcr.io/link-assistant/formal-ai:latest` and based on `konard/box-dind:2.1.1`
+- Prepared Docker-in-Docker Telegram bot image published as `ghcr.io/link-assistant/formal-ai:latest` and based on `konard/box-dind:2.10.2`
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
@@ -776,7 +776,7 @@ so Telegram, API, Agent CLI, desktop, and host CLI writes converge on the same
 the full desktop + server walkthrough.
 
 The root image is intentionally the only supported Docker runtime: it inherits
-from `konard/box-dind:2.1.1`, starts `/usr/local/bin/dind-entrypoint.sh`, and
+from `konard/box-dind:2.10.2`, starts `/usr/local/bin/dind-entrypoint.sh`, and
 defaults to `formal-ai telegram --mode polling`. Do not bind-mount the host
 `/var/run/docker.sock`; the image expects its own inner Docker daemon and uses
 `/var/lib/docker` for that daemon's storage.

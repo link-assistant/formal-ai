@@ -6,7 +6,8 @@
 // output call and the printed literal, prose supplies build and run
 // commands with their URL, alignment shares the entry-output-literal
 // structure, and recomposition builds from the aligned example bodies, so
-// Pascal stays held out.
+// Pascal stays held out until its Free Pascal documentation page supplies the
+// example and the prose naming its output call (R1164-9).
 
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -35,13 +36,12 @@ const decompose = (source, language, prose, url) =>
 const procedureOf = (...examples) =>
   `generalizeCodeExamples([${examples.map((example) => `${example}.ok`).join(", ")}])`;
 
-test("an unregistered grammar is refused by name, Pascal included", async () => {
+test("an unregistered grammar is refused by name; Pascal is registered", async () => {
   assert.deepEqual(await call(decompose('print("hello")', "zig")), {
     error: { kind: "unknown_grammar", language: "zig" },
   });
-  assert.deepEqual(await call(decompose("program HelloWorld;\nbegin\nend.", "pascal")), {
-    error: { kind: "unknown_grammar", language: "pascal" },
-  });
+  const pascal = await call(decompose("program HelloWorld;\nbegin\nend.", "pascal"));
+  assert.deepEqual(pascal, { ok: { languageSlug: "pascal", parts: [], programBody: "" } });
 });
 
 test("Rust decomposes into entry point, output operation and literal", async () => {
@@ -126,4 +126,36 @@ test("records render as Links Notation", async () => {
   assert.ok(procedure.includes("  shared_structure output_operation\n"));
   assert.ok(procedure.includes("    name output_literal\n"));
   assert.ok(procedure.includes('    source "fn main() {\\n    println!(\\"{literal}\\");\\n}\\n"'), procedure);
+});
+
+const FPC_QUICK_START = "https://www.freepascal.org/_new/docs/quick-start/";
+const FPC_WRITELN = "https://www.freepascal.org/docs-html/rtl/system/writeln.html";
+const PASCAL_PAGE = readFileSync(path.join(FIXTURES, "pascal-quick-start.html"), "utf8");
+const PASCAL_PROSE = [
+  { relation: "print", text: "WriteLn", sourceUrl: FPC_WRITELN },
+  { relation: "compile with", text: "fpc hello.pas", sourceUrl: FPC_QUICK_START },
+];
+
+test("R1164-9: held-out Pascal is recomposed from the Free Pascal documentation alone", async () => {
+  const blocks = await call(`formalizePage(${literal(PASCAL_PAGE)}, "text/html", null).blocks.filter((block) => block.kind === "code_block").map((block) => block.text)`);
+  // The formalizer keeps the lines and drops their indentation; Pascal is free-form.
+  assert.deepEqual(blocks, ["program Hello;\n\nbegin\nWriteLn('Hello, Free Pascal!');\nend.", "fpc hello.pas"]);
+  const example = decompose(blocks[0], "pascal", PASCAL_PROSE, FPC_QUICK_START);
+  const node = (await call(example)).ok;
+  assert.deepEqual(node.parts.map((part) => [part.kind, part.sourceText, part.sourceUrl]), [
+    ["output_operation", "WriteLn", FPC_WRITELN],
+    ["string_literal", "Hello, Free Pascal!", FPC_QUICK_START],
+    ["build_command", "fpc hello.pas", FPC_QUICK_START],
+  ]);
+  const without = (await call(decompose(blocks[0], "pascal", [], FPC_QUICK_START))).ok;
+  assert.deepEqual(without.parts.map((part) => part.kind), ["string_literal"]);
+  const bound = literal({ output_literal: "Hello, Formal AI!" });
+  const recomposed = await call(`recomposeCodeExample(${procedureOf(example)}, ${bound}, "pascal")`);
+  assert.deepEqual(recomposed, {
+    ok: {
+      languageSlug: "pascal",
+      source: "program Hello;\n\nbegin\nWriteLn('Hello, Formal AI!');\nend.",
+      partSourceUrls: [FPC_WRITELN, FPC_QUICK_START],
+    },
+  });
 });

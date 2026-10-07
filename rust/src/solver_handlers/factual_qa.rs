@@ -130,7 +130,7 @@ pub fn resolve_fact_subject(slot: &str) -> Option<ResolvedSubject> {
 
 /// The relation the question asks about: the first `fact_relation` meaning
 /// (declaration order) whose surface appears as a whole word.
-fn question_relation(normalized: &str) -> Option<&'static Meaning> {
+pub(super) fn question_relation(normalized: &str) -> Option<&'static Meaning> {
     seed::lexicon()
         .meanings_with_role(seed::ROLE_FACT_RELATION)
         .find(|meaning| {
@@ -142,7 +142,7 @@ fn question_relation(normalized: &str) -> Option<&'static Meaning> {
 
 /// The clause of `text` that carries the relation (the whole text when no
 /// clause does), so "the capital of Canada, not the USA" keeps "Canada".
-fn relation_clause<'a>(text: &'a str, relation: Option<&Meaning>) -> &'a str {
+pub(super) fn relation_clause<'a>(text: &'a str, relation: Option<&Meaning>) -> &'a str {
     let Some(relation) = relation else {
         return text;
     };
@@ -337,7 +337,7 @@ const fn or_missing<'a>(value: &'a str, missing: &'a str) -> &'a str {
 }
 
 /// The relation's word in `language` (the `fact_relation` meaning's surface).
-fn relation_label(relation: &str, language: &str) -> String {
+pub(super) fn relation_label(relation: &str, language: &str) -> String {
     seed::lexicon()
         .meaning(relation)
         .and_then(|meaning| meaning.word_in(language).or_else(|| meaning.word_in("en")))

@@ -35,10 +35,11 @@ impl TrustFeatureRules {
     }
 }
 
-/// The official websites a Wikidata entity payload (`Special:EntityData`
-/// JSON) states through the seed's `claim_property` (P856), so the
-/// official-site feature is resolved from data rather than asserted by a
-/// caller (issue #1163 R7).
+/// The official websites a Wikidata entity payload states.
+///
+/// The payload is `Special:EntityData` JSON, read through the seed's
+/// `claim_property` (P856), so the official-site feature is resolved from data
+/// rather than asserted by a caller (issue #1163 R7).
 #[must_use]
 pub fn official_websites(entity_json: &[u8]) -> Vec<String> {
     let property = TrustFeatureRules::load().official_site_property;
@@ -115,11 +116,12 @@ fn agreeing_pages(url: &str, bytes: &[u8], store: &FormalizedPageStore) -> u32 {
     u32::try_from(count).unwrap_or(u32::MAX)
 }
 
-/// Compute a page's trust features from what is known about it (issue
-/// #1163 R7): HTTPS from the URL, the primacy of a registered source on the
-/// same domain, an open license from the seed's markers in the bytes,
-/// agreement from the other pages in `store`, and the official site from
-/// the `official_sites` a Wikidata entity states (see [`official_websites`]).
+/// Compute a page's trust features from what is known about it.
+///
+/// Issue #1163 R7: HTTPS from the URL, the primacy of a registered source on
+/// the same domain, an open license from the seed's markers in the bytes,
+/// agreement from the other pages in `store`, and the official site from the
+/// `official_sites` a Wikidata entity states (see [`official_websites`]).
 #[must_use]
 pub fn trust_features_for(
     url: &str,
@@ -143,11 +145,12 @@ pub fn trust_features_for(
     }
 }
 
-/// The seed's `document_source` row a document format names, as `(name,
-/// mime hint)`: the format is formalized under that hint as a
-/// document-conversion source (issue #1163 R13). The row's name or one of its
-/// `alias` children must equal the format, ASCII case-insensitively; `None`
-/// for a format the seed does not list.
+/// The seed's `document_source` row a document format names.
+///
+/// Returned as `(name, mime hint)`: the format is formalized under that hint as
+/// a document-conversion source (issue #1163 R13). The row's name or one of its
+/// `alias` children must equal the format, ASCII case-insensitively; `None` for
+/// a format the seed does not list.
 #[must_use]
 pub fn document_source(format: &str) -> Option<(String, String)> {
     let wanted = format.trim().to_ascii_lowercase();
@@ -174,8 +177,9 @@ pub fn document_source(format: &str) -> Option<(String, String)> {
         .filter(|(_, hint)| !hint.is_empty())
 }
 
-/// Split a prompt that asks a page query over a page it supplies (issue
-/// #1163 R10): the first line is the query, with the seed's
+/// Split a prompt that asks a page query over a page it supplies.
+///
+/// Issue #1163 R10: the first line is the query, with the seed's
 /// `supplied_page_separator` trimmed from its end, and the rest is the page.
 /// `None` when either half is empty.
 #[must_use]

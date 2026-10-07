@@ -29,6 +29,12 @@ fn grammar_languages() -> Vec<CstGrammar> {
 /// list shrink — it has, to nothing.
 const LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR: &[&str] = &[];
 
+/// Grammars registered for a held-out language: the decomposer of issue
+/// #1164 parses its documentation's examples, but the catalog carries no
+/// stored program for it on purpose (R1164-9), so the grammar names no
+/// catalog language.
+const HELD_OUT_GRAMMARS: &[&str] = &["pascal"];
+
 #[test]
 fn every_catalog_language_has_cst_metadata_or_is_a_declared_gap() {
     for language in PROGRAM_LANGUAGES {
@@ -65,6 +71,14 @@ fn the_uncovered_language_list_holds_only_catalog_languages_without_metadata() {
 #[test]
 fn every_cst_metadata_entry_names_a_catalog_language() {
     for grammar in grammar_languages() {
+        if HELD_OUT_GRAMMARS.contains(&grammar.language_slug.as_str()) {
+            assert!(
+                program_language_by_slug(&grammar.language_slug).is_none(),
+                "`{}` is held out and must stay out of the catalog",
+                grammar.language_slug
+            );
+            continue;
+        }
         assert!(
             program_language_by_slug(&grammar.language_slug).is_some(),
             "`{}` metadata names an unknown language",
@@ -167,6 +181,8 @@ fn meta_language_handles_every_covered_language() {
             "scala" => "@main def hello(): Unit = ()\n",
             "swift" => "func f() {}\n",
             "r" => "x <- 1\n",
+            // Issue #1164: the held-out Free Pascal path.
+            "pascal" => "program A;\nbegin\nend.\n",
             other => panic!("no snippet for meta-language language `{other}`"),
         };
         let cst = parse_program_cst(&grammar.language_slug, snippet)

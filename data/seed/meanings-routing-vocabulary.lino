@@ -279,3 +279,67 @@ meanings
     unit "not applicable"
     example "the table ends in the explicit default ask"
     grounding "data/seed/capability-routing.lino"
+  software_project
+    defined-by method
+    role action
+    precondition "a request asks for a software artifact to be built or a proposal to be approved"
+    effect "names the handler whose claim row admits it on an artifact object phrase or an approval"
+    unit "not applicable"
+    example "make a todo app in rust"
+    grounding "data/seed/capability-routing.lino"
+  terminal_command
+    defined-by method
+    role action
+    precondition "a request is a shell command or a task with a known shell command"
+    effect "names the handler whose claim row admits it only on a command shape or a semantic shell task"
+    unit "not applicable"
+    example "ls -la"
+    grounding "data/seed/capability-routing.lino"
+  object_phrase_artifact
+    defined-by concept
+    role action
+    precondition "the verb's object phrase names a software artifact"
+    effect "admits the software project handler's claim"
+    unit "boolean"
+    example "build a calculator app"
+    grounding "data/seed/capability-routing.lino"
+  approval_of_a_proposal
+    defined-by concept
+    role action
+    precondition "the prompt approves a project the assistant proposed"
+    effect "admits the software project handler's claim"
+    unit "boolean"
+    example "yes, build it"
+    grounding "data/seed/capability-routing.lino"
+  shell_command_shape
+    defined-by concept
+    role action
+    precondition "the leading token is a command and the rest parses as its arguments"
+    effect "admits the terminal command handler's claim"
+    unit "boolean"
+    example "git status --short"
+    grounding "data/seed/capability-routing.lino"
+  semantic_shell_task
+    defined-by concept
+    role action
+    precondition "the prompt describes a task a known shell command performs"
+    effect "admits the terminal command handler's claim"
+    unit "boolean"
+    example "list the files in this folder"
+    grounding "data/seed/capability-routing.lino"
+  repository_subject
+    defined-by concept
+    role action
+    precondition "the prompt names an existing path, a status phrase or a census symbol"
+    effect "admits the repository lineage handler's claim"
+    unit "boolean"
+    example "what does evaluate_calculation do"
+    grounding "data/seed/capability-routing.lino"
+  rml
+    defined-by concept
+    role action
+    precondition "a universal conditional clause is formalized"
+    effect "names the relative-meta-logic export target whose rml command renders the clause as Lean"
+    unit "not applicable"
+    example "rml export lean clause.lino -o clause.lean"
+    grounding "data/seed/formal-targets.lino"

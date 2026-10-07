@@ -145,6 +145,26 @@ pub struct HistoryRules {
     pub requirement: RequirementRule,
     /// R1180-10: per language, the phrases that ask for a path's lineage.
     pub lineage_cues: Vec<(String, Vec<String>)>,
+    /// R1180-10: the status and definition questions the repository answers.
+    pub repository_qa: RepositoryQaRules,
+}
+
+/// The status and definition questions the repository answers (R1180-10).
+///
+/// Every field is seed-only: the cue phrases per language, the script,
+/// ledger and tag pattern of the self-development status rule, and where
+/// the self-AST census and the sources its targets name live.
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct RepositoryQaRules {
+    pub status_cues: Vec<(String, Vec<String>)>,
+    pub status_script: String,
+    pub status_ledger: String,
+    pub status_tag_match: String,
+    pub definition_cues: Vec<(String, Vec<String>)>,
+    pub census_dir: String,
+    pub source_root: String,
+    pub doc_prefix: String,
+    pub attribute_prefix: String,
 }
 
 /// One `state_transition` row: a lifecycle state and the timestamp fields
@@ -284,6 +304,7 @@ impl HistoryRules {
             state_evidence_prefix: String::new(),
             requirement: RequirementRule::default(),
             lineage_cues: Vec::new(),
+            repository_qa: RepositoryQaRules::default(),
         }
     }
 
@@ -400,6 +421,39 @@ impl HistoryRules {
                             .lineage_cues
                             .push((node.find_child_value("language").to_owned(), phrases));
                     }
+                }
+                "status_cue" | "definition_cue" => {
+                    let phrases = child_ids(node, "phrase");
+                    if !phrases.is_empty() {
+                        let language = node.find_child_value("language").to_owned();
+                        let qa = &mut rules.repository_qa;
+                        let cues = if node.name == "status_cue" {
+                            &mut qa.status_cues
+                        } else {
+                            &mut qa.definition_cues
+                        };
+                        cues.push((language, phrases));
+                    }
+                }
+                "status_rule" => {
+                    let qa = &mut rules.repository_qa;
+                    node.find_child_value("script")
+                        .clone_into(&mut qa.status_script);
+                    node.find_child_value("ledger")
+                        .clone_into(&mut qa.status_ledger);
+                    node.find_child_value("tag_match")
+                        .clone_into(&mut qa.status_tag_match);
+                }
+                "definition_source" => {
+                    let qa = &mut rules.repository_qa;
+                    node.find_child_value("census")
+                        .clone_into(&mut qa.census_dir);
+                    node.find_child_value("source_root")
+                        .clone_into(&mut qa.source_root);
+                    node.find_child_value("doc_prefix")
+                        .clone_into(&mut qa.doc_prefix);
+                    node.find_child_value("attribute_prefix")
+                        .clone_into(&mut qa.attribute_prefix);
                 }
                 "source" => {
                     let suffixes: Vec<String> = node
@@ -542,11 +596,12 @@ mod github;
 mod items;
 mod lineage;
 mod query;
+mod repository_qa;
 mod statements;
 
 pub use commits::{
     diff_symbols, formalize_commit, import_commits, import_commits_for_path, lineage_for_path,
-    parse_log_output,
+    lineage_for_symbol, parse_log_output,
 };
 pub use cursor::{
     RepositoryHistoryCursor, import_incremental, repository_slug, store_paths,
@@ -556,4 +611,8 @@ pub use github::{import_ci_runs, import_issues_and_pulls};
 pub use items::{coauthors, diff_named_items, named_items};
 pub use lineage::{handle_repository_lineage, lineage_answer, lineage_subjects};
 pub use query::query_repository_history;
+pub use repository_qa::{
+    CensusSymbol, census_symbols, definition_answer, definition_subjects, status_answer,
+    status_subject, symbol_doc,
+};
 pub use statements::{requirement_statements, state_transitions};

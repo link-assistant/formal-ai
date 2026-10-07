@@ -21,7 +21,13 @@
 # and a number (after any `lead`) as one requirement statement. The
 # `lineage_cue` rows are the phrases, per language, that ask for the
 # history of a repository path; the lineage route answers them from
-# `git log --follow` on the working repository (R1180-10).
+# `git log --follow` on the working repository (R1180-10). The
+# `status_cue` rows name the self-development status a question asks
+# about, and `status_rule` names the script that checks it, the ledger that
+# records its floor and target, and the release tags its range starts at.
+# The `definition_cue` rows ask what a symbol does, and `definition_source`
+# says where the self-AST census lives, which directory its targets are
+# relative to, and how a documentation comment and an attribute line open.
 history_formalization
   record
     kind commit
@@ -119,6 +125,49 @@ history_formalization
     phrase "qué pull request"
     phrase "qué commit"
     phrase "historia de"
+  status_cue
+    language en
+    phrase "self-development status"
+    phrase "self-development floor"
+  status_cue
+    language ru
+    phrase "статус саморазработки"
+  status_cue
+    language hi
+    phrase "स्व-विकास स्थिति"
+  status_cue
+    language zh
+    phrase "自我开发状态"
+  status_cue
+    language es
+    phrase "estado de autodesarrollo"
+  status_rule
+    script "scripts/check-self-development-release.rs"
+    ledger "data/meta/self-hosting-ledger.lino"
+    tag_match "v[0-9]*"
+  definition_cue
+    language en
+    phrase "what does"
+    phrase "what is the purpose of"
+  definition_cue
+    language ru
+    phrase "что делает"
+  definition_cue
+    language hi
+    phrase "क्या करता है"
+    phrase "क्या करती है"
+  definition_cue
+    language zh
+    phrase "做什么"
+    phrase "有什么用"
+  definition_cue
+    language es
+    phrase "qué hace"
+  definition_source
+    census "data/meta/self-ast/src"
+    source_root "rust"
+    doc_prefix "///"
+    attribute_prefix "#["
   path_evidence
     prefix "path:"
   symbol_evidence

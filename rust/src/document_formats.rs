@@ -214,9 +214,10 @@ pub struct FormalizedDocumentSource {
     pub code_languages: Vec<String>,
 }
 
-/// Read a document as a conversion source through the generic page
-/// formalizer (issue #1163 R13). The formats it accepts, and the mime hint
-/// each is parsed under, are the `document_source` rows of
+/// Read a document as a conversion source through the generic page formalizer.
+///
+/// Issue #1163 R13: the formats it accepts, and the mime hint each is parsed
+/// under, are the `document_source` rows of
 /// `data/seed/page-formalization-rules.lino` (HTML and Markdown); any other
 /// format yields `None`, and so does a build without `meta-language`.
 #[must_use]

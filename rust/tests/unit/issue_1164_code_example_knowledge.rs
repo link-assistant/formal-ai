@@ -10,16 +10,16 @@
 //!
 //! Meanings derive from CST node kinds plus the seed vocabulary (R1164-3);
 //! a slug without a registered grammar is named in an
-//! `UnknownGrammar` error and never guessed (R1164-1). Pascal is held out
-//! exactly that way today: no grammar row exists, so decompose refuses it
-//! while the seed already carries the vocabulary and shape that will serve
-//! it the day the row lands (R1164-9).
+//! `UnknownGrammar` error and never guessed (R1164-1). Pascal is held out of
+//! the seed vocabulary: its grammar row is registered, but its output call
+//! and program body come only from the Free Pascal documentation
+//! (`issue_1164_pascal_from_docs`, R1164-9).
 //!
-//! Compiling and running the recomposed programs (R1164-8's execution
-//! half, the fpc run for Pascal) is the gated workspace execution named in
-//! the issue; here the recompositions are proved structurally -- the held
-//! out literal is present, the call is the language's own from the seed,
-//! and the meta-language parse accepts the source.
+//! Here the recompositions are proved structurally -- the held out literal
+//! is present, the call is the language's own from the seed, and the
+//! meta-language parse accepts the source. Compiling and running them
+//! (R1164-8's execution half, the fpc run for Pascal) lives in
+//! `issue_1164_pascal_from_docs`.
 
 #![cfg(feature = "meta-language")]
 
@@ -124,17 +124,24 @@ fn decompose_python_script_has_no_entry_point() {
 }
 
 /// R1164-1/R1164-9: an unregistered slug is named in the error, never
-/// guessed. Zig has no grammar in the dependency; Pascal is the held-out
-/// language -- no grammar row is registered yet, so it refuses today and
-/// answers the need honestly.
+/// guessed. Zig has no grammar in the dependency. Pascal's grammar row is
+/// registered (meta-language ships tree-sitter-pascal), yet with no seed
+/// vocabulary a bare Pascal program yields no output operation: the call
+/// has to come from the documentation's prose.
 #[test]
 fn unknown_grammar_slug_returns_unknown_grammar_error() {
     let error =
         decompose_code_node("print(\"hello\")", "zig", &[]).expect_err("zig has no grammar");
     assert_eq!(error, DecomposeError::UnknownGrammar("zig".to_owned()));
-    let error = decompose_code_node("program HelloWorld;\nbegin\nend.", "pascal", &[])
-        .expect_err("pascal grammar row is not registered yet");
-    assert_eq!(error, DecomposeError::UnknownGrammar("pascal".to_owned()));
+    let pascal = decompose_code_node("program HelloWorld;\nbegin\nend.", "pascal", &[])
+        .expect("the pascal grammar row is registered");
+    assert_eq!(pascal.language_slug, "pascal");
+    assert!(
+        pascal
+            .parts
+            .iter()
+            .all(|part| part.kind != CodePartKind::OutputOperation)
+    );
 }
 
 /// The full internet path: the #1163 formalizer extracts the code block

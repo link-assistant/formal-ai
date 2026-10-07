@@ -463,9 +463,10 @@ pub fn with_working_memory<R>(action: impl FnOnce(&mut FormalizedPageStore) -> R
     WORKING_MEMORY.with(|store| action(&mut store.borrow_mut()))
 }
 
-/// Formalize a captured page into working memory unless the same URL and
-/// SHA-256 is already there. Returns the key and whether the stored network
-/// was reused instead of formalizing the bytes again (issue #1163 R6).
+/// Formalize a captured page into working memory once per URL and SHA-256.
+///
+/// Returns the key and whether the stored network was reused instead of
+/// formalizing the bytes again (issue #1163 R6).
 #[must_use]
 pub fn remember_capture(capture: &SourceCapture, query: &str, rank: u32) -> (String, bool) {
     let key = page_key(capture.source_url(), capture.sha256());
@@ -483,9 +484,10 @@ pub fn remember_capture(capture: &SourceCapture, query: &str, rank: u32) -> (Str
     })
 }
 
-/// The capture of a page already formalized into working memory from `url`,
-/// replayed as a cache hit, so the fetch path consults working memory before
-/// it fetches (issue #1163 R6). `None` when no stored page came from the URL.
+/// The stored capture of a page already formalized from `url`, as a cache hit.
+///
+/// The fetch path consults working memory before it fetches (issue #1163 R6).
+/// `None` when no stored page came from the URL.
 #[must_use]
 pub fn remembered_capture(url: &str) -> Option<SourceCapture> {
     with_working_memory(|store| {

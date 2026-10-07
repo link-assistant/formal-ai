@@ -78,6 +78,7 @@ const UNMAINTAINED_FILE_NAMES: &[&str] = &["package-lock.json", "bun.lock", "yar
 const UNMAINTAINED_PATH_FRAGMENTS: &[&str] = &[
     "docs/case-studies/",
     "rust/tests/fixtures/coding-discovery/python-docs/",
+    "rust/tests/fixtures/coding-discovery/captured/",
     "rust/tests/fixtures/meta-reasoner/captures/",
 ];
 const UNMAINTAINED_SUFFIXES: &[&str] = &[".bundle.js", ".min.js", ".min.css"];

@@ -248,6 +248,66 @@ $(diff <(printf '%s\n' "$baseline") <(printf '%s\n' "$after_undo") || true)"
 }
 
 # ---------------------------------------------------------------------------
+# relocated — issue #1161 R7: the declared config variable really relocates
+# ---------------------------------------------------------------------------
+# A client whose global config declares `config_env` variables is configured
+# once with `--globally` into a scratch home, the written directory is moved
+# to a temporary one, and the CLI is then started *directly* -- not through
+# `formal-ai with`, which would hand it a one-shot config -- with an empty
+# HOME and only the declared variable pointing at the moved config. A session
+# that reaches the server through the proxy was served from the relocated
+# file, because nothing else on that host names the server.
+case_relocated() {
+  local config_path variables variable scratch relocated clean value
+  config_path="$("$BIN" clients --format json | jq -r --arg id "$CLIENT" \
+    '.[] | select(.id == $id) | .global_configs[0].path // empty')"
+  variables="$("$BIN" clients --format json | jq -r --arg id "$CLIENT" \
+    '.[] | select(.id == $id) | .global_configs[0].config_env // [] | .[]')"
+  if [ -z "$config_path" ] || [ -z "$variables" ]; then
+    matrix_note "relocated: $CLIENT declares no relocation variable (issue #1161 R5)"
+    return 0
+  fi
+  local port=$((BASE_PORT + 55))
+  matrix_start_stack relocated "$port"
+  scratch="$WORKDIR/relocate-scratch-$CLIENT"
+  mkdir -p "$scratch"
+  HOME="$scratch" timeout 60 "$BIN" with --globally --no-start-server \
+    --base-url "$BASE_URL" "$CLIENT" > "$ARTIFACTS/relocated/setup.log" 2>&1 < /dev/null \
+    || matrix_fail "relocated: --globally could not write $config_path"
+  [ -f "$scratch/$config_path" ] \
+    || matrix_fail "relocated: --globally wrote no $config_path"
+
+  local args=() prompt_args=()
+  mapfile -t args < <(matrix_client_values "$CLIENT" non_interactive_args)
+  mapfile -t prompt_args < <(matrix_client_values "$CLIENT" prompt_args)
+  [ "${prompt_args[*]}" = "${args[*]}" ] || args+=("${prompt_args[@]}")
+  local command key_env
+  command="$(matrix_client_field "$CLIENT" command)"
+  key_env="$(matrix_client_field "$CLIENT" api_key_env)"
+  while IFS= read -r variable; do
+    relocated="$WORKDIR/relocated-$CLIENT-$variable"
+    clean="$WORKDIR/relocated-home-$CLIENT-$variable"
+    mkdir -p "$relocated" "$clean"
+    cp -a "$(dirname "$scratch/$config_path")/." "$relocated/"
+    # A variable that names a directory gets the directory; one that names
+    # the file gets the file, as the seed's `config_env` order declares.
+    case "$variable" in
+      *_DIR | *_HOME) value="$relocated" ;;
+      *) value="$relocated/$(basename "$config_path")" ;;
+    esac
+    MATRIX_CLIENT_LOG="$ARTIFACTS/relocated/client-$variable.log"
+    : > "$PROXY_LOG"
+    env HOME="$clean" "$key_env=formal-ai" "$variable=$value" \
+      timeout "${CASE_TIMEOUT:-180}" "$command" "${args[@]}" "hi" \
+      > "$MATRIX_CLIENT_LOG" 2>&1 < /dev/null
+    matrix_assert_proxy_ok "relocated ($variable)"
+    [ ! -e "$clean/$config_path" ] \
+      || matrix_fail "relocated: $CLIENT wrote $config_path back into HOME instead of $variable"
+    matrix_pass "relocated: $CLIENT served a session from $variable=$value"
+  done <<< "$variables"
+}
+
+# ---------------------------------------------------------------------------
 # constraints — documented upstream limitations, asserted not skipped
 # ---------------------------------------------------------------------------
 case_constraints() {
@@ -442,6 +502,7 @@ else
   run_case launch case_launch "$SHAPE"
 fi
 run_case globally case_globally
+[ "$SHAPE" = cli ] && [ "$HEADLESS" = yes ] && run_case relocated case_relocated
 
 matrix_stop_stack
 [ "$FAILED" -eq 0 ] || { echo "!! $CLIENT leg failed" >&2; exit 1; }

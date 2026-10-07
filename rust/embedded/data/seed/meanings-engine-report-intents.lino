@@ -168,6 +168,30 @@ meanings
     unit "not applicable"
     example "coqc was not found in PATH, so the coqc text was not compiled."
     grounding "data/seed/multilingual-responses-engine-reports.lino"
+  formalization_rml_absent
+    defined-by answer
+    role localized_response_template
+    precondition "no rml command is found in PATH or named by FORMAL_AI_RML"
+    effect "the honesty block states that the relative-meta-logic export did not run"
+    unit "not applicable"
+    example "rml was not found in PATH and FORMAL_AI_RML names no executable, so the clause was not exported through relative-meta-logic."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_rml_outside_subset
+    defined-by answer
+    role localized_response_template
+    precondition "the parsed clause is an existential or negative reading"
+    effect "the honesty block states that the reading is outside the relative-meta-logic export subset"
+    unit "not applicable"
+    example "The exists reading is outside the relative-meta-logic export subset, which has no binder for it, so rml was not run."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_rml_ran
+    defined-by answer
+    role localized_response_template
+    precondition "the rml command ran the Lean export on the clause"
+    effect "the honesty block states the exit status and the output path"
+    unit "not applicable"
+    example "rml export lean ran on clause.lino and exited with status 0; its Lean output path is clause.lean."
+    grounding "data/seed/multilingual-responses-formalization.lino"
   formalization_derivation
     defined-by answer
     role localized_response_template

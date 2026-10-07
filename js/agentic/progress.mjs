@@ -276,6 +276,16 @@ export class Progress {
       && attempt.arguments !== null && argumentTargets(attempt.arguments, path));
   }
 
+  /** Mirrors `Progress::latest_successful_write_index`. */
+  latestSuccessfulWriteIndex(path) {
+    for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
+      const attempt = this.attempts[index];
+      if (attempt.capability === Capability.Write && attempt.succeeded
+        && attempt.arguments !== null && argumentTargets(attempt.arguments, path)) return index;
+    }
+    return null;
+  }
+
   /** Mirrors `Progress::successful_write_content_for`. */
   successfulWriteContentFor(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {

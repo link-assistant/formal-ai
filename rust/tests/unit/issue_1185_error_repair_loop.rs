@@ -19,10 +19,10 @@
 //!   the offline fixtures pin the same decision chain,
 //! - the three-roots parity translation (R8, `formal-ai translate --to js|ts`)
 //!   needs the translator built, which the no-build drafting constraint
-//!   forbids; the Rust root is the reference implementation,
-//! - rendering the retained fix into the target language and applying it
-//!   (R3's apply half) is the E132/#1167 renderer's seam; the loop delivers
-//!   the `repair_edit` meta-language record it renders.
+//!   forbids; the Rust root is the reference implementation.
+//!
+//! R3's apply half (rendering the retained fix back into source) is pinned
+//! by `issue_1185_repair_apply.rs`.
 
 use formal_ai::agentic_coding::repair_loop::{
     self, FailedStep, MAX_REPAIR_RUNGS, RepairOutcome, RepairStop,

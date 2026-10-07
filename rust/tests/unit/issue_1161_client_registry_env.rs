@@ -192,3 +192,36 @@ fn embedded_mirror_of_the_seed_file_stays_in_sync() {
         );
     }
 }
+
+/// R7: the relocation is exercised end to end, not only declared. The matrix
+/// leg configures the client into a scratch home, moves the written directory
+/// out, and starts the real CLI with an empty `HOME` and only the declared
+/// variable pointing at the moved config; the session must then reach the
+/// server through the recording proxy. The case reads the variables from the
+/// registry (`global_configs[0].config_env`), so every client that declares
+/// one is covered and none is named in the script.
+#[test]
+fn the_matrix_leg_serves_a_session_from_each_declared_relocation_variable() {
+    let leg = read("experiments/agentic_cli_matrix/run_leg.sh");
+    let start = leg
+        .find("case_relocated() {")
+        .expect("run_leg.sh defines the relocated case");
+    let body = &leg[start..start + leg[start..].find("\n}\n").expect("case body ends")];
+    for needle in [
+        ".global_configs[0].config_env",
+        "with --globally",
+        "env HOME=\"$clean\"",
+        "\"$variable=$value\"",
+        "matrix_assert_proxy_ok",
+    ] {
+        assert!(body.contains(needle), "the relocated case lost `{needle}`");
+    }
+    assert!(
+        !body.contains("XDG_CONFIG_HOME"),
+        "the relocated case must not fall back to relocating XDG_CONFIG_HOME (issue #1161)"
+    );
+    assert!(
+        leg.contains("run_case relocated case_relocated"),
+        "run_leg.sh never runs the relocated case"
+    );
+}

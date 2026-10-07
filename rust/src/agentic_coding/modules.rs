@@ -55,6 +55,7 @@ pub mod procedure;
 mod progress;
 pub mod question_catalog;
 pub mod rebuild_plan;
+pub mod repair_apply;
 pub mod repair_loop;
 pub mod repair_strategy;
 mod report_issue;

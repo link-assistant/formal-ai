@@ -32,6 +32,7 @@ import {
   isValidCacheEntry,
   knowsLanguage,
   loadAt,
+  missResearchMissing,
   oracleKnowsLanguage,
   lookup,
   recipes,
@@ -224,4 +225,8 @@ test('write_program_reuses_the_cached_procedure_only_for_an_unmodified_request',
   const answers = [['kotlin', template], ['kotlin', customised], ['pascal', template]]
     .map(([language, rendered]) => cachedWriteProgram(cache, language, 'hello_world', template, rendered)?.entry ?? null);
   assert.deepEqual(answers, [kotlinHelloRecipe().entry, null, null]);
+});
+
+test('miss_route_names_what_research_lacks_on_a_solve', () => {
+  assert.deepEqual(missResearchMissing(), ['reviewer_approval']);
 });

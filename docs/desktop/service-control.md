@@ -196,7 +196,7 @@ CLI + agent-commander setup. The implemented desktop/container contract applies
 the relevant practices directly:
 
 - **Docker/VM boundary for autonomous tools.** The Agent environment is a
-  Formal-AI-owned Docker container derived from `konard/box-dind:2.1.1`.
+  Formal-AI-owned Docker container derived from `konard/box-dind:2.10.2`.
 - **No host Docker socket.** Containers use their own DinD daemon and named
   `/var/lib/docker` volumes; the host `/var/run/docker.sock` is never mounted.
 - **No host agent binaries.** Desktop tests statically guard against direct

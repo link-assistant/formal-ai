@@ -56,7 +56,7 @@ fn docker_microservice_seed_declares_dind_start_command_contract() {
         "docker_microservice label should describe the only supported image variant: {record:?}"
     );
     assert!(
-        record.runtime.contains("konard/box-dind:2.1.1"),
+        record.runtime.contains("konard/box-dind:2.10.2"),
         "docker_microservice runtime should pin the Box DinD image: {record:?}"
     );
     assert!(

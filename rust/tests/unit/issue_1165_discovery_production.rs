@@ -18,7 +18,7 @@ use formal_ai::coding_research_learning::{
 };
 use formal_ai::discovery_production::{
     CachedOrDiscovered, ProcedureCache, RediscoverableRecipe, bootstrap_cache_active,
-    cached_write_program, fnv1a64, grammar_exists, knows_language,
+    cached_write_program, fnv1a64, grammar_exists, knows_language, miss_research_missing,
 };
 
 /// An isolated cache file per test, so a failing test never destroys the
@@ -312,4 +312,25 @@ fn write_program_reuses_the_cached_procedure_only_for_an_unmodified_request() {
             .map(|recipe| recipe.entry.clone())
     });
     assert_eq!(answers, [Some(kotlin_hello_recipe().entry), None, None]);
+}
+
+/// R1165-1/R1165-2: a solve-time cache miss names what research lacks.
+///
+/// The policy seed's `miss_route` says research needs an expected output and
+/// a reviewer's approval while a solve carries only the expected output, so
+/// the solver's `WriteProgram` branch records the miss with the approval it
+/// lacks instead of answering as if research had run.
+#[test]
+fn miss_route_names_what_research_lacks_on_a_solve() {
+    assert_eq!(miss_research_missing(), ["reviewer_approval"]);
+    let response =
+        formal_ai::UniversalSolver::default().solve("write me hello world program in Rust");
+    assert!(
+        response.links_notation.contains(
+            "procedure_cache outcome=miss language=rust task=hello_world \
+             research_missing=reviewer_approval"
+        ),
+        "{}",
+        response.links_notation
+    );
 }

@@ -8,7 +8,7 @@ show the real container start path.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R220 | The root Docker image must use Link Foundation Box Docker-in-Docker as its only supported runtime image. | Implemented by the final stage of `Dockerfile` using `konard/box-dind:2.1.1`, preserving `/usr/local/bin/dind-entrypoint.sh`, and rejecting the previous Debian HTTP-server runtime in `rust/tests/unit/docker_runtime.rs`. |
+| R220 | The root Docker image must use Link Foundation Box Docker-in-Docker as its only supported runtime image. | Implemented by the final stage of `Dockerfile` using `konard/box-dind:2.10.2`, preserving `/usr/local/bin/dind-entrypoint.sh`, and rejecting the previous Debian HTTP-server runtime in `rust/tests/unit/docker_runtime.rs`. |
 | R221 | The Docker image must start the Telegram bot by default, with HTTP webhook mode only as an explicit override. | Implemented by `CMD ["formal-ai", "telegram", "--mode", "polling"]`; README documents the webhook override command. |
 | R222 | Coding-task commands in the container must be launched through `start-command` with Docker isolation so command output and metadata are tracked. | Implemented by installing the `start-command` package, exposing the `$` CLI, setting `FORMAL_AI_START_RUNNER` to `$ --isolated docker --auto-remove-docker-container --`, and verifying it in `scripts/verify-docker-runtime.sh`. The issue's `--isolation docker` wording maps to the current Start CLI flag `--isolated docker`. |
 | R223 | The seed environment directory must describe the Docker-in-Docker Telegram runtime rather than the stale HTTP-server container. | Implemented in `data/seed/environments.lino` and pinned by `docker_microservice_seed_declares_dind_start_command_contract`. |

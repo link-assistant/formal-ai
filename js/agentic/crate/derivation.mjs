@@ -15,11 +15,14 @@
 // The applied-rule kinds come from `data/seed/derivation-schema.lino` (its
 // `stage ... collects rule` rows), never from a list in this file.
 //
-// `Derivation::persist`, `Derivation::load` and `explain_answer` are not
-// mirrored: the JavaScript root (browser worker and node host alike) has no
-// filesystem write convention for `data/cache/`. `storePath` and
-// `missMessage` are mirrored so the path and the miss wording stay one
-// spelling across roots.
+// `Derivation::persist`, `Derivation::load` and `explain_answer` are mirrored
+// over an injected `io` — `{ readText(path), writeText(path, text),
+// createDirAll?(path) }` — because the agentic host offers `readText` for
+// repository files only and no write (the same convention as the procedure
+// cache in discovery_production.mjs). A node caller passes `node:fs`
+// wrappers; the browser worker has no `data/cache/` and passes none, so it
+// neither persists nor loads. `storePath` and `missMessage` keep the path and
+// the miss wording one spelling across roots.
 
 import { cached, readText } from '../host.mjs';
 import { trim } from '../write_str.mjs';
@@ -258,6 +261,61 @@ function joinPath(root, relative) {
 export function storePath(repositoryRoot, answerId) {
   if (!/^[A-Za-z0-9_-]+$/u.test(answerId)) return null;
   return joinPath(joinPath(repositoryRoot, DERIVATIONS_DIR), `${answerId}.lino`);
+}
+
+/** The refusal `persist` returns for an id `storePath` will not address. */
+export const UNUSABLE_ANSWER_ID = 'derivation_answer_id_unusable';
+
+/** The parent directory of a `/`-separated path (`Path::parent`). @param {string} file */
+function parentPath(file) {
+  const index = file.lastIndexOf('/');
+  return index <= 0 ? '' : file.slice(0, index);
+}
+
+/**
+ * Mirrors `fn Derivation::persist`: writes `toLino` at `storePath`, creating
+ * the directory first when `io.createDirAll` is given. Returns
+ * `{ ok: true, path }` or `{ ok: false, error }`.
+ */
+export function persist(derivation, repositoryRoot, io = {}) {
+  const path = storePath(repositoryRoot, derivation.answer_id);
+  if (path === null) return { ok: false, error: UNUSABLE_ANSWER_ID };
+  if (typeof io.writeText !== 'function') return { ok: false, error: 'derivation_store_has_no_writer' };
+  try {
+    const parent = parentPath(path);
+    if (parent !== '' && typeof io.createDirAll === 'function') io.createDirAll(parent);
+    io.writeText(path, toLino(derivation));
+    return { ok: true, path };
+  } catch (error) {
+    return { ok: false, error: `derivation_write_failed:${error?.message ?? error}` };
+  }
+}
+
+/**
+ * Mirrors `fn Derivation::load`: the persisted record, or `null` for a miss —
+ * an unusable id, an unreadable file, a non-record, or a record filed under
+ * another answer id.
+ */
+export function load(repositoryRoot, answerId, io = {}) {
+  const path = storePath(repositoryRoot, answerId);
+  if (path === null || typeof io.readText !== 'function') return null;
+  let text;
+  try {
+    text = io.readText(path);
+  } catch {
+    return null;
+  }
+  if (typeof text !== 'string') return null;
+  const derivation = fromLino(text);
+  return derivation !== null && derivation.answer_id === answerId ? derivation : null;
+}
+
+/** Mirrors `fn explain_answer`: `{ ok: true, text }` or `{ ok: false, error }` (the miss message). */
+export function explainAnswer(repositoryRoot, answerId, io = {}) {
+  const derivation = load(repositoryRoot, answerId, io);
+  return derivation === null
+    ? { ok: false, error: missMessage(repositoryRoot, answerId) }
+    : { ok: true, text: explainText(derivation) };
 }
 
 /** Mirrors `fn miss_message`. */

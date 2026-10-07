@@ -439,6 +439,7 @@ fn formalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String
             }
         }
         record_prover_fragment(log);
+        let rml_check = record_rml_fragment(log, &clause);
         let statement_block = blocks.join("\n\n");
         let antecedents = clause
             .antecedent
@@ -462,6 +463,7 @@ fn formalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String
             &[
                 ("lean_check", &prover_check("lean", "lean")),
                 ("rocq_check", &prover_check("coqc", "coqc")),
+                ("rml_check", &rml_check),
             ],
         );
         (
@@ -551,6 +553,7 @@ fn deformalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (Stri
         None => "re-parse failed (stated honestly)",
     };
     log.append("formalization:round_trip", round_trip.to_owned());
+    let rml_check = record_rml_fragment(log, &clause);
     log.append_fields(
         crate::derivation::FORMALIZE_FRAGMENT_KIND,
         &[
@@ -564,6 +567,7 @@ fn deformalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (Stri
         &[
             ("lean_check", &prover_check("lean", "lean")),
             ("rocq_check", &prover_check("coqc", "coqc")),
+            ("rml_check", &rml_check),
         ],
     );
     (

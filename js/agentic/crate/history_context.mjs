@@ -48,6 +48,17 @@ export function historyRulesFromSeedText(text) {
     stateEvidencePrefix: '',
     requirement: { marker: '', leads: [], evidencePrefix: '' },
     lineageCues: [],
+    repositoryQa: {
+      statusCues: [],
+      statusScript: '',
+      statusLedger: '',
+      statusTagMatch: '',
+      definitionCues: [],
+      censusDir: '',
+      sourceRoot: '',
+      docPrefix: '',
+      attributePrefix: '',
+    },
   };
   const nodes = [];
   for (const top of parseRoot(text).children || []) {
@@ -101,6 +112,19 @@ export function historyRulesFromSeedText(text) {
     } else if (node.name === 'lineage_cue') {
       const phrases = childValues(node, 'phrase');
       if (phrases.length > 0) rules.lineageCues.push([findChildValue(node, 'language'), phrases]);
+    } else if (node.name === 'status_cue' || node.name === 'definition_cue') {
+      const phrases = childValues(node, 'phrase');
+      const cues = node.name === 'status_cue' ? rules.repositoryQa.statusCues : rules.repositoryQa.definitionCues;
+      if (phrases.length > 0) cues.push([findChildValue(node, 'language'), phrases]);
+    } else if (node.name === 'status_rule') {
+      rules.repositoryQa.statusScript = findChildValue(node, 'script');
+      rules.repositoryQa.statusLedger = findChildValue(node, 'ledger');
+      rules.repositoryQa.statusTagMatch = findChildValue(node, 'tag_match');
+    } else if (node.name === 'definition_source') {
+      rules.repositoryQa.censusDir = findChildValue(node, 'census');
+      rules.repositoryQa.sourceRoot = findChildValue(node, 'source_root');
+      rules.repositoryQa.docPrefix = findChildValue(node, 'doc_prefix');
+      rules.repositoryQa.attributePrefix = findChildValue(node, 'attribute_prefix');
     } else if (node.name === 'item_modifier' && node.value) {
       rules.itemModifiers.push(node.value);
     } else if (node.name === 'source') {

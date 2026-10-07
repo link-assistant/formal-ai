@@ -361,4 +361,21 @@ capability_routing
     locus dialogue
     capability subagent
     because "issue 758: assigning a task to an agent is recorded as delegation"
+  claim_note "Issue 1175 R3: claim rows are consulted after formalization and before a handler runs. A handler with a row is offered the prompt only when one of its admits_on evidence kinds holds in the prompt's structure, so no surface word alone can claim it; a handler with no row is admitted as before."
+  claim
+    handler software_project
+    browser_handler trySoftwareProjectRequest
+    admits_on object_phrase_artifact
+    admits_on approval_of_a_proposal
+    because "issue 1175 R2: the artifact kind is the head noun of the authoring verb's object phrase, never an artifact word elsewhere in the prompt; a bare go-ahead moves an earlier plan forward"
+  claim
+    handler terminal_command
+    browser_handler tryTerminalCommand
+    admits_on shell_command_shape
+    admits_on semantic_shell_task
+    because "issue 1175 R1: a leading shell token claims only when the rest parses as command arguments, so a sentence that opens with an English word that is also a command is prose"
+  claim
+    handler repository_lineage
+    admits_on repository_subject
+    because "issue 1180 R10: a history cue claims only with an existing path, a status phrase or a census symbol to answer about"
   default ask

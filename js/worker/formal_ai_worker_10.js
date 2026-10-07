@@ -560,90 +560,6 @@ async function wikidataResolveLabel(qid, language) {
   }
 }
 
-function wikipediaSitelinkUrl(sitelinks, language) {
-  if (!sitelinks || typeof sitelinks !== "object") return "";
-  const key = `${language}wiki`;
-  const fallback = "enwiki";
-  const entry = sitelinks[key] || sitelinks[fallback];
-  if (!entry) return "";
-  if (entry.url) return entry.url;
-  if (entry.title) {
-    const lang = sitelinks[key] ? language : "en";
-    return `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(
-      String(entry.title).replace(/\s+/g, "_"),
-    ).replace(/%2F/gi, "/")}`;
-  }
-  return "";
-}
-
-// Localized templates for rendering the final answer. The seed value is
-// inserted via `{value}`; the subject is inserted via `{subject}`.
-const FACT_RESPONSE_TEMPLATES = {
-  capital: {
-    en: "The capital of {subject} is {value}.",
-    ru: "Столица {subject} — {value}.",
-    hi: "{subject} की राजधानी {value} है।",
-    zh: "{subject}的首都是{value}。",
-  },
-  population: {
-    en: "The population of {subject} is approximately {value}.",
-    ru: "Население {subject} составляет примерно {value}.",
-    hi: "{subject} की जनसंख्या लगभग {value} है।",
-    zh: "{subject}的人口约为 {value}。",
-  },
-  currency: {
-    en: "The currency of {subject} is the {value}.",
-    ru: "Валюта {subject} — {value}.",
-    hi: "{subject} की मुद्रा {value} है।",
-    zh: "{subject}的货币是{value}。",
-  },
-  official_language: {
-    en: "The official language of {subject} is {value}.",
-    ru: "Государственный язык {subject} — {value}.",
-    hi: "{subject} की राजभाषा {value} है।",
-    zh: "{subject}的官方语言是{value}。",
-  },
-  continent: {
-    en: "{subject} is located on the continent of {value}.",
-    ru: "{subject} расположена на континенте {value}.",
-    hi: "{subject} {value} महाद्वीप पर स्थित है।",
-    zh: "{subject}位于{value}。",
-  },
-  author_of_book: {
-    en: "{subject} was written by {value}.",
-    ru: "Автор произведения «{subject}»: {value}.",
-    hi: "{subject} को {value} ने लिखा था।",
-    zh: "《{subject}》由{value}创作。",
-  },
-  area: {
-    en: "The area of {subject} is approximately {value}.",
-    ru: "Площадь {subject} составляет примерно {value}.",
-    hi: "{subject} का क्षेत्रफल लगभग {value} है।",
-    zh: "{subject}的面积约为 {value}。",
-  },
-  head_of_state: {
-    en: "The head of state of {subject} is {value}.",
-    ru: "Глава государства {subject} — {value}.",
-    hi: "{subject} के राष्ट्राध्यक्ष {value} हैं।",
-    zh: "{subject}的国家元首是{value}。",
-  },
-  head_of_government: {
-    en: "The head of government of {subject} is {value}.",
-    ru: "Глава правительства {subject} — {value}.",
-    hi: "{subject} के सरकार के प्रमुख {value} हैं।",
-    zh: "{subject}的政府首脑是{value}。",
-  },
-};
-
-function renderFactSummary(relation, subjectLabel, valueLabel, language) {
-  const templates =
-    FACT_RESPONSE_TEMPLATES[relation] || FACT_RESPONSE_TEMPLATES.capital;
-  const template = templates[language] || templates.en;
-  return template
-    .replace("{subject}", subjectLabel || "")
-    .replace("{value}", valueLabel || "");
-}
-
 function factQueryEvidence(record, language) {
   const evidence = [
     `fact_query:relation:${record.relation}`,
@@ -708,25 +624,17 @@ async function resolveFactQueryViaWikidata(query, log) {
     }
     valueLabel = labelResult.label;
     if (log) log.push(`fact_query:label_resolve:${valueLabel}`);
-    // Capture the Wikipedia sitelink for the value entity as the canonical
-    // evidence source — that's the human-readable artifact users can verify.
-    const url =
-      wikipediaSitelinkUrl(labelResult.sitelinks, query.language) ||
-      wikipediaSitelinkUrl(claimData.sitelinks, query.language);
+    // Issue #1172 R3: the answer cites the claim's own reference URL (else
+    // the subject snapshot) through the seeded fact_live_answer template.
+    const subjectLabel = claimData.subjectLabel || subject.label;
     return {
       relation: query.relation,
       subjectTerm: query.subjectTerm,
-      subjectLabel: claimData.subjectLabel || subject.label,
+      subjectLabel,
       subjectQid: subject.qid,
       valueLabel,
       valueQid,
-      summary: renderFactSummary(
-        query.relation,
-        claimData.subjectLabel || subject.label,
-        valueLabel,
-        query.language,
-      ),
-      source: url,
+      ...factLiveSummary(query, subject.qid, subjectLabel, claim, valueLabel),
       sourceKind: "wikidata",
       language: query.language,
       fromCache: false,
@@ -743,21 +651,15 @@ async function resolveFactQueryViaWikidata(query, log) {
   }
   valueLabel = rawAmount;
   if (log) log.push(`fact_query:quantity:${valueLabel}`);
-  const url = wikipediaSitelinkUrl(claimData.sitelinks, query.language);
+  const subjectLabel = claimData.subjectLabel || subject.label;
   return {
     relation: query.relation,
     subjectTerm: query.subjectTerm,
-    subjectLabel: claimData.subjectLabel || subject.label,
+    subjectLabel,
     subjectQid: subject.qid,
     valueLabel,
     valueQid: "",
-    summary: renderFactSummary(
-      query.relation,
-      claimData.subjectLabel || subject.label,
-      valueLabel,
-      query.language,
-    ),
-    source: url,
+    ...factLiveSummary(query, subject.qid, subjectLabel, claim, valueLabel),
     sourceKind: "wikidata",
     language: query.language,
     fromCache: false,

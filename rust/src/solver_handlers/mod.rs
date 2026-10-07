@@ -25,12 +25,21 @@ pub use creative_writing::{handle_creative_writing_request, handle_planning_requ
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
+#[cfg(feature = "meta-language")]
+pub use fact_live_answer::try_explanation_research;
+pub use fact_live_answer::{
+    LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
+    try_fact_lookup_with_client, try_fact_lookup_with_offline,
+};
 pub use factual_qa::{
     ResolvedSubject, SubjectGate, fact_subject_gate, gated_fact_record, resolve_fact_subject,
     try_fact_comparison,
 };
 pub use feature_capability::{CapabilityRuntime, try_feature_capability};
-pub use formalization_task::handle_formalization_request;
+pub use formalization_task::{
+    AppliedPredicate, QuantifiedClause, RmlExport, handle_formalization_request, rml_source,
+    run_rml_export_with,
+};
 pub use format_conversion::handle_format_conversion;
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
@@ -52,7 +61,9 @@ pub use shell_command_compose::handle_shell_command_compose;
 pub use shell_command_transform::{
     try_shell_command_transform, try_shell_command_transform_with_history,
 };
-pub use software_project::{software_project_claims, try_software_project_request};
+pub use software_project::{
+    software_project_approval_claims, software_project_claims, try_software_project_request,
+};
 pub use software_project_followup::try_software_project_followup;
 pub use sql_synthesis::handle_sql_synthesis;
 pub use statistics::{handle_statistics, handle_word_problem};

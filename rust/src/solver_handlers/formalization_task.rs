@@ -515,3 +515,4 @@ fn parse_quantified_clause(text: &str, language: &NaturalLanguage) -> Option<Qua
 
 include!("formalization_task_render.rs");
 include!("formalization_task_targets.rs");
+include!("formalization_task_rml.rs");

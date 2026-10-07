@@ -167,14 +167,28 @@ pub fn run_suite_with_options(
 
     let workspace = cache_root.join("run").join(manifest.id);
     let solver = benchmark_solver_with(online);
+    let total_cases = cases.len();
     let responses = cases
         .iter()
-        .map(|case| {
-            if case.repository.is_some() {
+        .enumerate()
+        .map(|(index, case)| {
+            // One line per case on stderr, written before the case starts, so
+            // a run cut off by its job cap names the case it was stuck in
+            // (run 37578344303 hung for 80 minutes without saying where).
+            eprintln!("case {}/{total_cases} {}", index + 1, case.id);
+            let started = std::time::Instant::now();
+            let response = if case.repository.is_some() {
                 solve_repository_case(case, &workspace)
             } else {
                 solver.solve(&case.prompt)
-            }
+            };
+            eprintln!(
+                "case {}/{total_cases} {} solved in {}ms",
+                index + 1,
+                case.id,
+                started.elapsed().as_millis()
+            );
+            response
         })
         .collect::<Vec<_>>();
     let answers = responses

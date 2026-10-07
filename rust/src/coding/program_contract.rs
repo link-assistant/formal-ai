@@ -125,6 +125,9 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     log.append("program_parameter:language", language.clone());
     log.append("program_parameter:expected_stdout", output.clone());
     log.append("knowledge_source_url", source_url.to_owned());
+    // R1166-3: clauses the obligation graph cannot read are reported in the
+    // run's derivation, never dropped.
+    crate::intent_formalization::record_obligation_gaps(prompt, log);
     let mut answer = crate::solver_handlers::finalize_simple(
         prompt,
         log,

@@ -473,3 +473,104 @@ function tryPromptTextQuestion(prompt, normalized) {
     ),
   };
 }
+
+// Issue #1172 R3: the live answer, twin of
+// rust/src/solver_handlers/fact_live_answer.rs. The question is formalized
+// from seed data alone (the relation's fact_relation surfaces, the
+// interrogative openers and the function words are removed from the
+// relation's clause; what remains is the subject term), and the answer is the
+// seeded fact_live_answer template citing the claim's reference URL.
+const FACT_LIVE_MAX_SUBJECT_WORDS = 4;
+let FACT_LIVE_PROPERTIES = null;
+
+/**
+ * The Wikidata property a meaning is `grounded-in` ("" when none).
+ * @param {string} slug
+ * @returns {string}
+ */
+function factRelationProperty(slug) {
+  if (!FACT_LIVE_PROPERTIES) {
+    FACT_LIVE_PROPERTIES = new Map();
+    for (const container of parseLinoTree(MEANINGS_LINO).children) {
+      for (const node of container.children || []) {
+        const grounded = (node.children || []).find((child) => child.name === "grounded-in");
+        if (grounded) FACT_LIVE_PROPERTIES.set(meaningSlug(node), grounded.value);
+      }
+    }
+  }
+  return FACT_LIVE_PROPERTIES.get(slug) || "";
+}
+
+/**
+ * The content words of `text` without `removed` surfaces and stop words, or
+ * null when nothing (or a whole sentence) is left.
+ * @param {string} text
+ * @param {Array<string>} removed
+ * @returns {string|null}
+ */
+function factLiveContentWords(text, removed) {
+  let tokens = normalizePrompt(text).split(" ").filter(Boolean);
+  for (const surface of removed) {
+    const parts = surface.split(" ").filter(Boolean);
+    if (parts.length === 0) continue;
+    for (let index = 0; index + parts.length <= tokens.length; ) {
+      if (parts.every((part, offset) => tokens[index + offset] === part)) tokens.splice(index, parts.length);
+      else index += 1;
+    }
+  }
+  const stop = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD).concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE));
+  tokens = tokens.filter((token) => !stop.includes(token));
+  return tokens.length > 0 && tokens.length <= FACT_LIVE_MAX_SUBJECT_WORDS ? tokens.join(" ") : null;
+}
+
+/**
+ * Formalize a fact question for the live path: the relation (whose
+ * grounded-in must be a Wikidata property) and the subject term.
+ * @param {string} prompt
+ * @returns {{relation: string, subjectTerm: string}|null}
+ */
+function factLiveQuestion(prompt) {
+  const normalized = normalizePrompt(prompt);
+  if (!normalized || containsCjk(normalized)) return null;
+  const mentions = (text, meaning) => meaning.words.some((word) => surfacePresent(text, normalizePrompt(word)));
+  const relation = meaningsWithRole("fact_relation").find((meaning) => mentions(normalized, meaning));
+  if (!relation || !/^P\d+$/.test(factRelationProperty(relation.slug))) return null;
+  const clause = String(prompt).split(/[,;:()—!?，；：。？]/).find((part) => mentions(normalizePrompt(part), relation));
+  const subjectTerm = factLiveContentWords(clause === undefined ? prompt : clause, relation.words.map(normalizePrompt));
+  return subjectTerm ? { relation: relation.slug, subjectTerm } : null;
+}
+
+/**
+ * The URL a Wikidata claim cites through `property` ("" when it cites none).
+ * @param {object} claim
+ * @param {string} property
+ * @returns {string}
+ */
+function factClaimReference(claim, property) {
+  for (const reference of (claim && claim.references) || []) {
+    const snak = ((reference.snaks || {})[property] || [])[0];
+    const value = snak && snak.datavalue && snak.datavalue.value;
+    if (typeof value === "string" && value) return value;
+  }
+  return "";
+}
+
+/**
+ * The live answer and its source: the claim's reference URL, else the
+ * subject's snapshot URL from the registry's Wikidata row.
+ * @param {{relation: string, language: string}} query
+ * @param {string} subjectQid
+ * @param {string} subjectLabel
+ * @param {object} claim
+ * @param {string} valueLabel
+ * @returns {{summary: string, source: string}}
+ */
+function factLiveSummary(query, subjectQid, subjectLabel, claim, valueLabel) {
+  const row = pageSeedRecords(seedRawText(SEED_RAW, "sources-registry.lino"))
+    .find((record) => record.name === "source" && record.value === "wikidata") || { children: [] };
+  const source = factClaimReference(claim, childValue(row, "reference_url_property")) ||
+    childValue(row, "api").split("{id}").join(subjectQid);
+  const relation = factRelationLabel(query.relation, query.language);
+  const summary = factualQaRender("fact_live_answer", query.language, { relation, subject: subjectLabel, value: valueLabel, reference: source });
+  return { summary, source };
+}

@@ -477,6 +477,23 @@ pub fn request_demands(text: &str, kind: ObligationKind) -> bool {
             .any(|node| authoring_kind(&node.clause) == Some(kind))
 }
 
+/// The event kind an executor records one undischargeable clause under.
+pub const OBLIGATION_GAP_KIND: &str = "obligation_gap";
+
+/// Record every undischargeable clause of `text` in the executor's log.
+///
+/// One `obligation_gap` event per [`ObligationGraph::gap_report`] line (node
+/// id, byte span, reason), so a completed run names each clause it could not
+/// read instead of omitting it (R1166-3, R1166-4). Returns the lines it
+/// recorded.
+pub fn record_obligation_gaps(text: &str, log: &mut crate::event_log::EventLog) -> Vec<String> {
+    let gaps = formalize_request(text).gap_report();
+    for gap in &gaps {
+        log.append(OBLIGATION_GAP_KIND, gap.clone());
+    }
+    gaps
+}
+
 /// Classify one clause against the seed lexicon and the fallback tables.
 ///
 /// Returns the kind plus, for `OutputLiteral`, the anchored quoted value.

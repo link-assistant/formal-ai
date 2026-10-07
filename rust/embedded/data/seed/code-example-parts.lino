@@ -66,11 +66,12 @@ code_example_parts
     output_call print
     output_call cat
     entry_name none
-  # Pascal is held out (R1164-9). No grammar row is registered in
-  # program-cst-grammars.lino, so decompose_code_node answers
-  # UnknownGrammar("pascal"), and on purpose no Pascal vocabulary and no
-  # Pascal program sits here either. A Pascal program may only come from a
-  # decomposed Free Pascal documentation example, never from stored text.
+  # Pascal is held out (R1164-9). Its grammar row is registered in
+  # program-cst-grammars.lino (meta-language ships tree-sitter-pascal), but
+  # on purpose no Pascal vocabulary and no Pascal program sits here. The
+  # output call is learned from the Free Pascal documentation's own prose
+  # (the print relation below), and the program body from the
+  # documentation's decomposed example, never from stored text.
   entry_hint_kind function
   entry_hint_kind func
   entry_hint_kind method
@@ -87,4 +88,10 @@ code_example_parts
   prose_relation
     relation run_with
     kind run_command
+  # A documentation page that says which call prints to standard output
+  # teaches the decomposer that call for the page's language, so a held-out
+  # language needs no output_call row above.
+  prose_relation
+    relation print
+    kind print_stdout
   note "Recomposition builds every program from a decomposed example's own body with its output literal slotted, so this file stores no program templates. A language with no contributing example cannot be recomposed."

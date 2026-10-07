@@ -184,7 +184,11 @@ pub fn try_dispatch(
         {
             return Some(answer);
         }
-        if let Some(handler) = handler_for_method(&name)
+        // Issue #1175 R3: the claim-routing rows of the capability table are
+        // consulted before the handler runs, so a handler whose row admits on
+        // none of its evidence kinds is never offered the prompt.
+        if crate::capability_routing::claim_admitted(&name, prompt, &normalized)
+            && let Some(handler) = handler_for_method(&name)
             && let Some(answer) = handler.call(prompt, &normalized, log)
         {
             return Some(record_method_answer(prompt, log, answer, &name));
@@ -444,6 +448,14 @@ fn try_capability_route(
             // but a scaffolded build is a plan, not a read (issue #1138
             // software-project corpus).
             if crate::solver_handlers::software_project_claims(&normalized) && !commit_anchored_gap
+            {
+                return None;
+            }
+            // A page query over a page the prompt supplies is answered from
+            // that page; the file names it mentions are not a read request
+            // (issue #1163 R10).
+            if !commit_anchored_gap
+                && crate::solver_handlers::page_query_text::page_query_text_claims(prompt)
             {
                 return None;
             }

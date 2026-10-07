@@ -129,9 +129,11 @@ pub fn diff_named_items(
     changes
 }
 
-/// The co-authors a commit body names on its co-author trailer lines (the
-/// seed's prefix, case-insensitive), by name without the e-mail address.
-/// Bodies that still carry literal `\n` escapes are split on them too.
+/// The co-authors a commit body names on its co-author trailer lines.
+///
+/// Matched by the seed's prefix, case-insensitive, and returned by name without
+/// the e-mail address. Bodies that still carry literal `\n` escapes are split
+/// on them too.
 #[must_use]
 pub fn coauthors(body: &str, rules: &HistoryRules) -> Vec<String> {
     let prefix = rules.coauthor_prefix.to_lowercase();

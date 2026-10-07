@@ -384,7 +384,7 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/run-ci-gates.rs --stage web
   test:
-    name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})
+    name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/4', matrix.shard) || '' }}
     runs-on: ${{ matrix.os }}
     # Issue #1017: run 31937348472 used 1415s of a 1500s cap with 455s outside
     # the budgeted step, so the 1200s budget could never expire first. The cap
@@ -404,7 +404,7 @@ jobs:
     # backstop again.
     timeout-minutes: 90
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
+      group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, base, build-artifacts]
     if: |
@@ -420,6 +420,10 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, test-suite: full }
+          # Four parallel shards; the entry above is shard 1 (data + census gates), shard 2 runs doc tests.
+          - { os: ubuntu-latest, test-suite: full, shard: 2 }
+          - { os: ubuntu-latest, test-suite: full, shard: 3 }
+          - { os: ubuntu-latest, test-suite: full, shard: 4 }
           # The specification suite ran only on macOS while the rest of the
           # matrix ran on ubuntu, so a linux-only failure in it could not turn
           # any required check red. A third leg closes that blind spot; the
@@ -454,7 +458,7 @@ jobs:
         if: ${{ steps.non_linux.outputs.skip != 'true' }}
         uses: ./.github/actions/green-ledger
         with:
-          check: unit-tests-${{ matrix.os }}-${{ matrix.test-suite }}
+          check: unit-tests-${{ matrix.os }}-${{ matrix.test-suite }}${{ matrix.shard && format('-shard-{0}', matrix.shard) || '' }}
           paths: >-
             rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
@@ -477,7 +481,7 @@ jobs:
       # the job cap, whose expiry reports `cancelled` rather than `failure`
       # (issue #977).
       - name: Check LiNo data integrity
-        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
         env:
           TEST_BUDGET_SECONDS: 780
           TEST_WARN_RATIO_PERCENT: 70
@@ -489,7 +493,7 @@ jobs:
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         run: sccache --show-stats
       - name: Check self-AST census freshness
-        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
         env:
           # Issue #1081: 153s worst measured over 39 runs.
           TEST_BUDGET_SECONDS: 300
@@ -503,7 +507,7 @@ jobs:
       # into each executable at compile time -- 109 call sites across 36 test
       # files spawn it -- so the path has to exist here as well.
       - name: Download test executables
-        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
@@ -511,9 +515,9 @@ jobs:
           name: formal-ai-test-executables
           path: dist/tests
       - uses: ./.github/actions/download-formal-ai-binary
-        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
       - name: Run tests
-        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
           # Issue #1081: 961s worst measured over 38 runs was 80.1% of the old
           # 1200s budget -- inside the band the step audit now warns on, and
@@ -532,6 +536,8 @@ jobs:
           # showed it needs more than the 1154s this step had left after the
           # unit phase, alone; it is skipped via run-prebuilt-tests.sh.
           TEST_BUDGET_SECONDS: 2400
+          SHARD_INDEX: ${{ matrix.shard || 1 }}
+          SHARD_TOTAL: 4
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           chmod +x dist/tests/*
@@ -585,7 +591,7 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
             cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification::
       - name: Run doc tests
-        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && matrix.shard == 2 }}
         env:
           # Issue #1081: 28s worst measured; budgeted because an unbudgeted
           # step is one the audit cannot see.

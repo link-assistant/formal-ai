@@ -32,6 +32,11 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # #1187 R5: at layer default the findings go to one tracking issue in
+    # this repository, which github.token may write.
+    permissions:
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@v7
         with:
@@ -40,6 +45,10 @@ jobs:
       - name: Resolve the automation credential
         id: token
         uses: ./.github/actions/automation-token
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
 
       - uses: dtolnay/rust-toolchain@stable
 
@@ -71,3 +80,29 @@ jobs:
           name: cross-org-duplication
           path: data/meta/cross-org-duplication.lino
           if-no-files-found: warn
+
+      # #1187 R5: without a credential that writes to the owning
+      # repositories, keep exactly one tracking issue here: update it when
+      # it exists, open it otherwise. The report artifact stays the record.
+      - name: Update the tracking issue at the default layer
+        if: ${{ always() && steps.token.outputs.layer == 'default' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "cross-org duplication findings (default credential layer)"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          report="data/meta/cross-org-duplication.lino"
+          {
+            echo "Findings of ${RUN_URL} at the default credential layer, where issues in the owning repositories cannot be opened."
+            echo
+            echo '```lino'
+            if [ -f "$report" ]; then head -c 60000 "$report"; else echo "no report was written"; fi
+            echo '```'
+          } > "${RUNNER_TEMP}/body.md"
+          number="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"${TITLE}\" in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --repo "$GITHUB_REPOSITORY" --body-file "${RUNNER_TEMP}/body.md"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body-file "${RUNNER_TEMP}/body.md"
+          fi

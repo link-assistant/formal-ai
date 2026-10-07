@@ -80,13 +80,14 @@ pub(super) fn relation_word_problem(
     log.append("word_problem:derivation", derivation.clone());
     let language = detect_language(prompt).slug();
     let rendered = render_approx(result, exact);
-    let body = localized_response(INTENT, language)
-        .map(|template| {
+    let body = localized_response(INTENT, language).map_or_else(
+        || derivation.clone(),
+        |template| {
             template
                 .replace(concat!("{", "result}"), &rendered)
                 .replace(concat!("{", "derivation}"), &derivation)
-        })
-        .unwrap_or_else(|| derivation.clone());
+        },
+    );
     Some(finalize_simple(
         prompt,
         log,

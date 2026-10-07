@@ -814,10 +814,11 @@ fn marker_position(lowered: &str, slug: &str) -> Option<usize> {
     })
 }
 
-/// Word-problem entry point: the price×count pattern of issue #1176 —
-/// "buys 4 pens at 3 dollars each and pays with 20; what is the change?" →
-/// 20 − 4 × 3 = 8 — and its total sibling ("what is the total?" → 4 × 3 = 12).
-/// The markers are seed vocabulary; the arithmetic is shown in the answer.
+/// Word-problem entry point for the price×count pattern of issue #1176.
+///
+/// "buys 4 pens at 3 dollars each and pays with 20; what is the change?" → 20 −
+/// 4 × 3 = 8 — and its total sibling ("what is the total?" → 4 × 3 = 12). The
+/// markers are seed vocabulary; the arithmetic is shown in the answer.
 pub fn handle_word_problem(
     prompt: &str,
     normalized: &str,

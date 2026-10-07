@@ -715,7 +715,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, whoIs, formalizationContext);
   }
   // Route literal and seeded semantic shell requests before unknown fallback.
-  const terminal = tryTerminalCommand(prompt, language, preferences);
+  const terminal = claimRouteAdmits("tryTerminalCommand", prompt) ? tryTerminalCommand(prompt, language, preferences) : null;
   if (terminal) {
     events.push(`handler:${terminal.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
@@ -858,8 +858,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
 // the mechanical `try` + CamelCase convention. A slug resolving to `null` is a
 // row the worker does not run in the synchronous handler phase — the native
 // surface runs it, or the browser answers it in the async phase the seed's
-// `phase async` note declares. A `@name` value is a per-turn context binding
-// the dispatcher supplies, not a global symbol.
+// `phase async` note declares. A `@name` value is a per-turn context binding.
 function workerHandlerRegistryDefinition() {
   const workerHandlerAliases = {
     conversation_memory: "tryMemoryWrite",
@@ -888,7 +887,8 @@ function workerHandlerRegistryDefinition() {
     http_fetch: null, // phase async
     url_navigate: null, // phase async
     github_repository_traffic: "tryGithubRepositoryTraffic",
-    document_originality_check: "tryDocumentOriginalityCheck", repository_lineage: null, // native: git history of the working repository (#1180 R10)
+    document_originality_check: "tryDocumentOriginalityCheck",
+    repository_lineage: null, // native: git history of the working repository (#1180 R10)
     formalization_request: "tryFormalizationRequest",
     product_search: "tryProductSearch",
     web_search: null, // phase async

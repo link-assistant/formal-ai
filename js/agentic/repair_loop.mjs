@@ -4,7 +4,7 @@
 // A `Diagnostic` is `{file, line, code, message, raw}`; a `FailedStep` is
 // `{language, reported, exit_code, failed_command, artifact_path}` (see
 // `failedStep`). `RepairOutcome` is `{kind: 'search'|'fetch'|'record_fix'|
-// 'retry', plan}` or `{kind: 'stop', reason: 'no_diagnostic'|'no_tools'|
+// 'apply_fix'|'retry', plan}` or `{kind: 'stop', reason: 'no_diagnostic'|'no_tools'|
 // 'exhausted'|'no_match'}`.
 
 import { Capability } from './capability.mjs';
@@ -18,6 +18,7 @@ import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { findChildValue, parseLinoRoot } from './write_lino.mjs';
 import { readText } from './host.mjs';
+import { renderRepairEdit } from './repair_apply.mjs';
 import { trim, trimEnd, trimStart } from './write_str.mjs';
 
 /** Mirrors `const MAX_REPAIR_RUNGS`. */
@@ -278,7 +279,7 @@ export function evidenceDocument(attempts) {
  * Mirrors `FailedStep::new` plus its builders.
  * @param {string} language
  * @param {string} reported
- * @param {{exit_code?: number|null, failed_command?: string|null, artifact_path?: string}} [rest]
+ * @param {{exit_code?: number|null, failed_command?: string|null, artifact_path?: string, validate_program?: Function|null}} [rest]
  */
 export function failedStep(language, reported, rest = {}) {
   return {
@@ -287,6 +288,7 @@ export function failedStep(language, reported, rest = {}) {
     exit_code: rest.exit_code ?? null,
     failed_command: rest.failed_command ?? null,
     artifact_path: rest.artifact_path ?? '',
+    validate_program: rest.validate_program ?? null,
   };
 }
 
@@ -324,10 +326,30 @@ export function repairStep(messages, toolNames, failure, ladderRung, maxRungs) {
     const document = repairEditDocument(failure.language, primary, fixFragment(page, primary), url);
     return { kind: 'record_fix', plan: planOne(tool, writeArguments(documentPath, document)) };
   }
+  const applied = applyFixPlan(progress, toolNames, failure, documentPath);
+  if (applied !== null) return { kind: 'apply_fix', plan: applied };
   if (failure.failed_command === null) return stop('no_match');
   const tool = toolFor(toolNames, Capability.Run);
   if (!tool) return stop('no_tools');
   return { kind: 'retry', plan: planOne(tool, jsonText({ command: failure.failed_command })) };
+}
+
+/**
+ * Mirrors `fn apply_fix_plan`. This root has no CST engine, so the rendering
+ * is refused as `unvalidated` unless `failure.validate_program` supplies one.
+ */
+function applyFixPlan(progress, toolNames, failure, documentPath) {
+  if (!failure.artifact_path) return null;
+  const recordAt = progress.latestSuccessfulWriteIndex(documentPath);
+  const artifactAt = progress.latestSuccessfulWriteIndex(failure.artifact_path);
+  if (recordAt === null || artifactAt === null || artifactAt > recordAt) return null;
+  const document = progress.successfulWriteContentFor(documentPath);
+  const source = progress.successfulWriteContentFor(failure.artifact_path);
+  if (document === null || source === null) return null;
+  const rendered = renderRepairEdit(document, source, failure.validate_program ?? null);
+  if (rendered.gap || rendered.source === source) return null;
+  const tool = toolFor(toolNames, Capability.Write);
+  return tool ? planOne(tool, writeArguments(failure.artifact_path, rendered.source)) : null;
 }
 
 /** Mirrors `fn plan_repair`: the plan, or null. */

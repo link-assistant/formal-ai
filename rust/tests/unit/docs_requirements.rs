@@ -477,7 +477,7 @@ fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
             "| R224 ",
             "| R225 ",
             "| R195-7 ",
-            "konard/box-dind:2.1.1",
+            "konard/box-dind:2.10.2",
             "FORMAL_AI_START_ISOLATION",
             "FORMAL_AI_START_RUNNER",
         ],
@@ -489,7 +489,7 @@ fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
         &readme,
         &[
             "Docker-in-Docker Telegram bot image",
-            "konard/box-dind:2.1.1",
+            "konard/box-dind:2.10.2",
             "TELEGRAM_BOT_TOKEN",
             "--runtime=sysbox-runc",
             "Do not bind-mount the host",
@@ -504,7 +504,7 @@ fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
         &architecture,
         &[
             "Docker-in-Docker Telegram image",
-            "konard/box-dind:2.1.1",
+            "konard/box-dind:2.10.2",
             "formal-ai telegram --mode polling",
             "/tmp/start-command/logs/",
         ],

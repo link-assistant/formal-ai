@@ -18,6 +18,9 @@
 # the object (Hindi object-verb order reads as a two-place relation). A
 # head-final language without a `都` boundary separates the head noun from
 # its predicate with a space, which the Chinese conjunctive template renders.
+# The `export_target` record is the typed fragment the relative-meta-logic
+# exporter reads (`rml export lean`), one template per declaration shape, so
+# a universal conditional clause is exported as data, not as Rust text.
 # Nothing here is keyed to a particular probe sentence — predicate symbols
 # derive from the sentence's own words at parse time.
 #
@@ -134,6 +137,17 @@ formal_targets
       text "exists"
     quantifier no
       text "no"
+  export_target rml
+    name "Relative Meta-Logic"
+    domain "U"
+    domain_declaration "({domain}: (Type 0) {domain})"
+    predicate "({name}: (Pi ({domain} {variable}) Prop))"
+    predicate_with_object "({name}: (Pi ({domain} {variable}) (Pi ({domain} {second}) Prop)))"
+    constant "({constant}: {domain} {constant})"
+    atom "({name} {variable})"
+    atom_with_object "({name} {variable} {object})"
+    hypothesis "(Pi ({atom} h{index}) {body})"
+    clause "(formalized: (Pi ({domain} {variable}) {body}))"
   natural_language en
     quantifier forall
       text "every"

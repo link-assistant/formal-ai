@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- Trimmed capture of https://www.freepascal.org/_new/docs/quick-start/
+     fetched 2026-10-07 (issue #1164 R1164-9 fixture): the "Your first
+     program" section and its compile step, markup kept verbatim, the
+     page chrome, copy buttons and other sections dropped. -->
+<html lang="en">
+<head><title>Quick Start - Free Pascal</title></head>
+<body>
+<main>
+<h2>Your first program<span class="hx:absolute hx:-mt-20" id="your-first-program"></span>
+    <a href="#your-first-program" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>Create a source file named <code>hello.pas</code> in a text editor:</p>
+<div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code">
+
+<div class="hextra-code-filename not-prose" dir="auto">hello.pas</div><div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-objectpascal" data-lang="objectpascal"><span class="line"><span class="cl"><span class="kr">program</span><span class="w"> </span>Hello<span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">begin</span>
+</span></span><span class="line"><span class="cl"><span class="w">  </span>WriteLn<span class="o">(</span><span class="s">&#39;Hello, Free Pascal!&#39;</span><span class="o">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span><span class="p">.</span></span></span></code></pre></div></div>
+</div>
+<h3>Compile the source code</h3><p>In your terminal, navigate to the folder containing <code>hello.pas</code> and run:</p>
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">fpc hello.pas</span></span></code></pre></div></div>
+<p>The compiler generates a standalone native executable in the same directory (<code>hello</code> on Linux/macOS or <code>hello.exe</code> on Windows) along with an object file <code>hello.o</code>.</p>
+</main>
+</body>
+</html>

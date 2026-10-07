@@ -28,6 +28,7 @@ const SOLVER_RESPONSE_PREFIX = "response:";
 const SOLVER_META_RESPONSE_LINK = "response:meta_reasoner";
 const SOLVER_ENGINE_LINK_CALCULATOR = "link-calculator";
 const SOLVER_PROMOTIONS_FILE = "handler-promotions.lino";
+const SOLVER_CACHE_POLICY_FILE = "program-cache-policy.lino";
 
 function solverEvent(kind, payload) {
   return { kind, payload: String(payload === undefined || payload === null ? "" : payload) };
@@ -232,7 +233,7 @@ function solverIntentRoute(prompt) {
 // The `SelectedRule::WriteProgram` tail `solve` logs after `intent`
 // (`program_parameter:*`, `program_parameters`, `legacy_intent`), read back
 // from the parameters the program answer already carries as evidence.
-function solverWriteProgramEvents(answer) {
+function solverWriteProgramEvents(answer, prompt) {
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const parameter = (name) => {
     const prefix = `program_parameter:${name}:`;
@@ -248,7 +249,28 @@ function solverWriteProgramEvents(answer) {
     solverEvent("program_parameter:task", task),
     solverEvent("program_parameters", `write_program(language=${language}, task=${task})`),
     solverEvent("legacy_intent", legacy),
+    ...solverProcedureCacheEvents(prompt, language, task),
   ];
+}
+
+// The `procedure_cache` event of the native `WriteProgram` branch (R1165-10).
+// The worker ships no cache rows (data/cache/coding-procedure-cache.lino is
+// committed empty), so an unmodified catalog request is the miss Rust logs,
+// naming the policy seed's `miss_route` inputs a solve does not carry.
+function solverProcedureCacheEvents(prompt, language, task) {
+  const template = typeof WRITE_PROGRAM_TEMPLATES === "object" ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
+  if (!template || applyInlineHelloWorldOutputReplacement(prompt, task, template) !== template) return [];
+  const missing = solverMissResearchMissing().join(",");
+  return [solverEvent("procedure_cache", `outcome=miss language=${language} task=${task} research_missing=${missing}`)];
+}
+
+// Mirrors `discovery_production::miss_research_missing`.
+function solverMissResearchMissing() {
+  const text = typeof SEED_RAW === "object" ? seedRawText(SEED_RAW, SOLVER_CACHE_POLICY_FILE) : "";
+  const route = (parseLinoTree(text).children[0]?.children || []).find((node) => node.name === "miss_route");
+  const values = (name) => (route?.children || []).filter((node) => node.name === name).map((node) => node.value);
+  const carried = values("solve_carries");
+  return values("research_requires").filter((input) => !carried.includes(input));
 }
 
 // Marks a meta-reasoner answer, which `project` finishes without validation.
@@ -268,7 +290,7 @@ function solverEventLog(prompt, answer) {
   const handlerEvents = Array.isArray(answer.solverEvents) ? answer.solverEvents : [];
   for (const event of handlerEvents) events.push(event);
   events.push(solverEvent("intent", answer.intent));
-  for (const event of solverWriteProgramEvents(answer)) events.push(event);
+  for (const event of solverWriteProgramEvents(answer, prompt)) events.push(event);
   if (answer.solverMetaProjection) {
     events.push(solverEvent("response", SOLVER_META_RESPONSE_LINK));
     events.push(solverEvent("trace", answer.intent));

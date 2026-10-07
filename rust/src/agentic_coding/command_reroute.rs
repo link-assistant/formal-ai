@@ -109,9 +109,9 @@ pub fn plan_symbolic_command_reroute(
             let rung = progress.repair_rung.saturating_sub(1);
             let max_rungs = super::repair_loop::MAX_REPAIR_RUNGS;
             match super::repair_loop::repair_step(messages, tool_names, &failed, rung, max_rungs) {
-                super::repair_loop::RepairOutcome::Stop(stop) => {
+                super::repair_loop::RepairOutcome::Stop(reason) => {
                     repair_note =
-                        super::repair_loop::stop_note(messages, &failed, stop, rung, max_rungs);
+                        super::repair_loop::stop_note(messages, &failed, reason, rung, max_rungs);
                 }
                 outcome => return outcome.plan(),
             }

@@ -72,26 +72,38 @@ multilingual_responses
     intent formalization_deformalized
     language es
     text "Lectura en lenguaje natural:\n\n{sentence}\n\nRecorrido de ida y vuelta: {round_trip}\n\n{honesty}"
+  response response_formalization_rml_absent_en
+    intent formalization_rml_absent
+    language en
+    text "rml was not found in PATH and FORMAL_AI_RML names no executable, so the clause was not exported through relative-meta-logic."
+  response response_formalization_rml_outside_subset_en
+    intent formalization_rml_outside_subset
+    language en
+    text "The {quantifier} reading is outside the relative-meta-logic export subset, which has no binder for it, so rml was not run."
+  response response_formalization_rml_ran_en
+    intent formalization_rml_ran
+    language en
+    text "rml export lean ran on {source} and exited with status {exit}; its Lean output path is {output}."
   response response_formalization_honesty_en
     intent formalization_honesty
     language en
-    text "No theorem prover was invoked. {lean_check} {rocq_check} The Lean and Rocq texts are seed-grammar renderings, and their in-process export through the relative-meta-logic crate is recorded as follow-up until it is published (link-foundation/relative-meta-logic#185)."
+    text "No theorem prover was invoked. {lean_check} {rocq_check} {rml_check} The Lean and Rocq texts are seed-grammar renderings, and their in-process export through the relative-meta-logic crate is recorded as follow-up until it is published (link-foundation/relative-meta-logic#185)."
   response response_formalization_honesty_ru
     intent formalization_honesty
     language ru
-    text "Теорем-прувер не вызывался. {lean_check} {rocq_check} Тексты Lean и Rocq — порождения сид-грамматики; их экспорт внутри процесса через relative-meta-logic записан как последующая работа до публикации crates.io (link-foundation/relative-meta-logic#185)."
+    text "Теорем-прувер не вызывался. {lean_check} {rocq_check} {rml_check} Тексты Lean и Rocq — порождения сид-грамматики; их экспорт внутри процесса через relative-meta-logic записан как последующая работа до публикации crates.io (link-foundation/relative-meta-logic#185)."
   response response_formalization_honesty_hi
     intent formalization_honesty
     language hi
-    text "कोई थीरम प्रोवर नहीं चलाया गया। {lean_check} {rocq_check} Lean और Rocq पाठ सीड-व्याकरण से बने हैं; relative-meta-logic के crates.io प्रकाशन तक उनका इन-प्रोसेस निर्यात आगामी कार्य के रूप में दर्ज है (link-foundation/relative-meta-logic#185)।"
+    text "कोई थीरम प्रोवर नहीं चलाया गया। {lean_check} {rocq_check} {rml_check} Lean और Rocq पाठ सीड-व्याकरण से बने हैं; relative-meta-logic के crates.io प्रकाशन तक उनका इन-प्रोसेस निर्यात आगामी कार्य के रूप में दर्ज है (link-foundation/relative-meta-logic#185)।"
   response response_formalization_honesty_zh
     intent formalization_honesty
     language zh
-    text "未调用任何定理证明器。{lean_check} {rocq_check} Lean 与 Rocq 文本由种子文法生成；在 relative-meta-logic 发布到 crates.io 之前，其进程内导出被记录为后续工作（link-foundation/relative-meta-logic#185）。"
+    text "未调用任何定理证明器。{lean_check} {rocq_check} {rml_check} Lean 与 Rocq 文本由种子文法生成；在 relative-meta-logic 发布到 crates.io 之前，其进程内导出被记录为后续工作（link-foundation/relative-meta-logic#185）。"
   response response_formalization_honesty_es
     intent formalization_honesty
     language es
-    text "No se invocó ningún demostrador de teoremas. {lean_check} {rocq_check} Los textos Lean y Rocq son producciones de la gramática semilla; su exportación en proceso a través de relative-meta-logic queda registrada como trabajo posterior hasta su publicación en crates.io (link-foundation/relative-meta-logic#185)."
+    text "No se invocó ningún demostrador de teoremas. {lean_check} {rocq_check} {rml_check} Los textos Lean y Rocq son producciones de la gramática semilla; su exportación en proceso a través de relative-meta-logic queda registrada como trabajo posterior hasta su publicación en crates.io (link-foundation/relative-meta-logic#185)."
   response response_repository_lineage_en
     intent repository_lineage
     language en
@@ -132,3 +144,83 @@ multilingual_responses
     intent repository_lineage_unrecorded
     language es
     text "(no registrado en la historia)"
+  response response_repository_status_explanation_en
+    intent repository_status_explanation
+    language en
+    text "The {status} is checked by {script}, introduced for issue {issue}. It measures the commit range {range}: {commits} commits, {sessions} of them carrying the {trailer} trailer. The floor is {floor} {unit} per release cycle ({attribution}), and the self-hosting share may not fall below the target of {target} recorded for {target_tag} ({policy}). The status fails when the range holds no {unit}, or when its projected share falls below that target; this answer reads the range and the ledger {ledger} and does not run the measurement, so run {script} to see which of the two applies."
+  response response_repository_status_explanation_ru
+    intent repository_status_explanation
+    language ru
+    text "{status} проверяет {script}, добавленный для задачи {issue}. Он измеряет диапазон коммитов {range}: {commits} коммитов, из них {sessions} несут трейлер {trailer}. Нижняя граница — {floor} ({unit}) на цикл выпуска ({attribution}), а доля самостоятельной разработки не может опуститься ниже цели {target}, записанной для {target_tag} ({policy}). Статус не проходит, когда в диапазоне нет ни одного слитого пулл-реквеста этого вида или когда прогнозная доля ниже цели; этот ответ читает диапазон и журнал {ledger} и не запускает измерение, поэтому запустите {script}, чтобы узнать, какое из двух условий сработало."
+  response response_repository_status_explanation_hi
+    intent repository_status_explanation
+    language hi
+    text "{status} की जाँच {script} करता है, जो इश्यू {issue} के लिए जोड़ा गया। यह कमिट सीमा {range} मापता है: {commits} कमिट, जिनमें से {sessions} पर {trailer} ट्रेलर है। निचली सीमा प्रति रिलीज़ चक्र {floor} ({unit}) है ({attribution}), और स्व-विकास का हिस्सा {target_tag} के लिए दर्ज लक्ष्य {target} से नीचे नहीं जा सकता ({policy})। स्थिति तब विफल होती है जब सीमा में ऐसा कोई मर्ज हुआ पुल रिक्वेस्ट न हो, या अनुमानित हिस्सा लक्ष्य से नीचे हो; यह उत्तर सीमा और लेजर {ledger} पढ़ता है और माप नहीं चलाता, इसलिए कौन सी शर्त लागू है यह जानने के लिए {script} चलाएँ।"
+  response response_repository_status_explanation_zh
+    intent repository_status_explanation
+    language zh
+    text "{status} 由 {script} 检查，它是为问题 {issue} 引入的。它度量提交范围 {range}：共 {commits} 个提交，其中 {sessions} 个带有 {trailer} 尾注。下限是每个发布周期 {floor} 个（{unit}）（{attribution}），自我开发占比不得低于为 {target_tag} 记录的目标 {target}（{policy}）。当该范围内没有已合并的此类拉取请求，或预计占比低于该目标时，状态失败；本回答只读取范围和账本 {ledger}，并不运行度量，请运行 {script} 查看是哪一种情况。"
+  response response_repository_status_explanation_es
+    intent repository_status_explanation
+    language es
+    text "El {status} lo comprueba {script}, introducido para el issue {issue}. Mide el rango de commits {range}: {commits} commits, {sessions} de ellos con el trailer {trailer}. El mínimo es {floor} ({unit}) por ciclo de publicación ({attribution}), y la proporción de autodesarrollo no puede bajar del objetivo {target} registrado para {target_tag} ({policy}). El estado falla cuando el rango no contiene ningún pull request fusionado de ese tipo, o cuando su proporción proyectada queda por debajo del objetivo; esta respuesta lee el rango y el registro {ledger} y no ejecuta la medición, así que ejecute {script} para ver cuál de las dos condiciones se cumple."
+  response response_repository_definition_en
+    intent repository_definition
+    language en
+    text "`{name}` is a {kind} in {file}, lines {start} to {end}. {doc} The symbol was introduced by commit {first} for issue {issue} (read from `git log -S`, with the issue from the commit's trailer)."
+  response response_repository_definition_ru
+    intent repository_definition
+    language ru
+    text "`{name}` — {kind} в {file}, строки с {start} по {end}. {doc} Символ добавлен коммитом {first} для задачи {issue} (прочитано из `git log -S`, задача — из трейлера коммита)."
+  response response_repository_definition_hi
+    intent repository_definition
+    language hi
+    text "`{name}` {file} में एक {kind} है, पंक्ति {start} से {end} तक। {doc} यह प्रतीक कमिट {first} द्वारा इश्यू {issue} के लिए जोड़ा गया (`git log -S` से पढ़ा गया, इश्यू कमिट के ट्रेलर से)।"
+  response response_repository_definition_zh
+    intent repository_definition
+    language zh
+    text "`{name}` 是 {file} 中的一个 {kind}，位于第 {start} 到 {end} 行。{doc} 该符号由提交 {first} 为问题 {issue} 引入（读取自 `git log -S`，问题来自提交的尾注）。"
+  response response_repository_definition_es
+    intent repository_definition
+    language es
+    text "`{name}` es un {kind} en {file}, líneas {start} a {end}. {doc} El símbolo lo introdujo el commit {first} para el issue {issue} (leído de `git log -S`, con el issue tomado del trailer del commit)."
+  response response_repository_definition_documented_en
+    intent repository_definition_documented
+    language en
+    text "Its documentation comment reads: {doc}"
+  response response_repository_definition_documented_ru
+    intent repository_definition_documented
+    language ru
+    text "Его документирующий комментарий гласит: {doc}"
+  response response_repository_definition_documented_hi
+    intent repository_definition_documented
+    language hi
+    text "इसकी प्रलेखन टिप्पणी कहती है: {doc}"
+  response response_repository_definition_documented_zh
+    intent repository_definition_documented
+    language zh
+    text "它的文档注释写道：{doc}"
+  response response_repository_definition_documented_es
+    intent repository_definition_documented
+    language es
+    text "Su comentario de documentación dice: {doc}"
+  response response_repository_definition_undocumented_en
+    intent repository_definition_undocumented
+    language en
+    text "It carries no documentation comment, so what it does is stated only by its source."
+  response response_repository_definition_undocumented_ru
+    intent repository_definition_undocumented
+    language ru
+    text "У него нет документирующего комментария, поэтому что он делает, говорит только его исходный код."
+  response response_repository_definition_undocumented_hi
+    intent repository_definition_undocumented
+    language hi
+    text "इस पर कोई प्रलेखन टिप्पणी नहीं है, इसलिए यह क्या करता है यह केवल इसका स्रोत बताता है।"
+  response response_repository_definition_undocumented_zh
+    intent repository_definition_undocumented
+    language zh
+    text "它没有文档注释，因此它做什么只能由其源代码说明。"
+  response response_repository_definition_undocumented_es
+    intent repository_definition_undocumented
+    language es
+    text "No tiene comentario de documentación, así que lo que hace solo lo dice su código fuente."

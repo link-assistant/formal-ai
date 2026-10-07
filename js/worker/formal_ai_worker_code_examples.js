@@ -41,10 +41,10 @@ const CODE_EXAMPLE_KIND_ORDER = [
 /**
  * The part vocabulary, read in document order at every depth: a
  * `part_language` header sets the language its rows belong to.
- * @returns {{outputCalls: object, entryNames: object, proseRelations: Array<Array<string>>}}
+ * @returns {{outputCalls: object, entryNames: object, proseRelations: Array<Array<string>>, outputCallRelations: Array<string>}}
  */
 function codeExampleVocabulary() {
-  const vocabulary = { outputCalls: {}, entryNames: {}, proseRelations: [] };
+  const vocabulary = { outputCalls: {}, entryNames: {}, proseRelations: [], outputCallRelations: [] };
   const pending = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_PARTS_FILE)).children.slice().reverse();
   let language = "";
   while (pending.length > 0) {
@@ -60,7 +60,7 @@ function codeExampleVocabulary() {
       const kind = childValue(record, "kind");
       if (relation && (kind === "build_command" || kind === "run_command")) {
         vocabulary.proseRelations.push([relation, kind]);
-      }
+      } else if (relation && kind === "print_stdout") vocabulary.outputCallRelations.push(relation);
     }
   }
   return vocabulary;
@@ -169,15 +169,21 @@ function decomposeCodeExample(source, languageSlug, proseLinks, sourceUrl) {
   if (entry && entry !== CODE_EXAMPLE_NO_ENTRY && tokens.includes(entry)) {
     part("entry_point", entry, CODE_EXAMPLE_DEFAULT_KINDS.entry_point, url);
   }
-  const call = (vocabulary.outputCalls[languageSlug] || []).find((candidate) => source.includes(candidate));
-  if (call !== undefined) part("output_operation", call, CODE_EXAMPLE_DEFAULT_KINDS.output_operation, url);
+  const relationOf = (prose) => pageAsciiLower(prose.relation).replace(/\s/g, "_");
+  // Seed calls first, then a call the page's prose names (kind print_stdout), cited at the prose URL (R1164-9).
+  const candidates = (vocabulary.outputCalls[languageSlug] || []).map((candidate) => [candidate, url]).concat(
+    (proseLinks || []).filter((prose) => vocabulary.outputCallRelations.includes(relationOf(prose)))
+      .map((prose) => [prose.text.trim(), prose.sourceUrl]).filter((pair) => pair[0] !== ""));
+  const matched = candidates.find((pair) => tokens.includes(pair[0]) || source.includes(pair[0]));
+  const call = matched === undefined ? undefined : matched[0];
+  if (call !== undefined) part("output_operation", call, CODE_EXAMPLE_DEFAULT_KINDS.output_operation, matched[1]);
   const callLines = call === undefined ? [] : pageLines(source).filter((line) => line.includes(call));
   let literals = codeExampleQuotedLiterals(callLines.length > 0 ? callLines.join("\n") : source);
   const programBody = call !== undefined && literals.length > 0 ? codeExampleSlotLiteral(source, call, literals[0]) : "";
   if (literals.length === 0) literals = codeExampleQuotedLiterals(source);
   for (const literal of literals) part("string_literal", literal, CODE_EXAMPLE_DEFAULT_KINDS.string_literal, url);
   for (const prose of proseLinks || []) {
-    const relation = pageAsciiLower(prose.relation).replace(/\s/g, "_");
+    const relation = relationOf(prose);
     const found = vocabulary.proseRelations.find((pair) => pair[0] === relation);
     if (found) part(found[1], prose.text, CODE_EXAMPLE_DEFAULT_KINDS.prose, prose.sourceUrl);
   }

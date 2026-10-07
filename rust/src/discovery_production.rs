@@ -165,6 +165,38 @@ pub fn bootstrap_cache_active() -> bool {
         .is_some_and(|bootstrap| bootstrap.find_child_value("active") == "true")
 }
 
+/// The inputs a `write_program` cache miss lacks for research on a solve.
+///
+/// Read from the policy seed's `miss_route` (R1165-1/R1165-2): every
+/// `research_requires` value no `solve_carries` row supplies, in seed order. The solver records them on the miss, so the gap
+/// that keeps research off the solve path is named in the derivation instead
+/// of the template answering as if research had run. An empty list means the
+/// solve carries everything research needs.
+#[must_use]
+pub fn miss_research_missing() -> Vec<String> {
+    let policy = parse_lino(POLICY);
+    let Some(route) = policy
+        .children
+        .first()
+        .and_then(|root| root.children.iter().find(|node| node.name == "miss_route"))
+    else {
+        return Vec::new();
+    };
+    let values = |name: &str| -> Vec<String> {
+        route
+            .children
+            .iter()
+            .filter(|node| node.name == name)
+            .map(|node| node.id.clone())
+            .collect()
+    };
+    let carried = values("solve_carries");
+    values("research_requires")
+        .into_iter()
+        .filter(|input| !carried.contains(input))
+        .collect()
+}
+
 /// The comment block a written cache file opens with: the policy seed's
 /// `cache_file_header`, one `# ` line per header line.
 fn cache_file_header() -> String {

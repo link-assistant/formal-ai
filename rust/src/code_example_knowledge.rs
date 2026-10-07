@@ -180,6 +180,12 @@ struct PartVocabulary {
     import_hint_kinds: Vec<String>,
     assert_hint_kinds: Vec<String>,
     prose_relations: Vec<(String, CodePartKind)>,
+    /// Prose relations whose text names the page's output call.
+    ///
+    /// The seed's `print` relation (kind `print_stdout`): a page teaches the
+    /// call, so a held-out language needs no stored `output_call` row
+    /// (R1164-9).
+    output_call_relations: Vec<String>,
 }
 
 impl PartVocabulary {
@@ -225,15 +231,18 @@ impl PartVocabulary {
                 "prose_relation" => {
                     let relation = record.find_child_value("relation").to_owned();
                     let kind = record.find_child_value("kind").to_owned();
-                    let kind = match kind.as_str() {
-                        "build_command" => Some(CodePartKind::BuildCommand),
-                        "run_command" => Some(CodePartKind::RunCommand),
-                        _ => None,
-                    };
-                    if let Some(kind) = kind
-                        && !relation.is_empty()
-                    {
-                        vocabulary.prose_relations.push((relation, kind));
+                    if relation.is_empty() {
+                        continue;
+                    }
+                    match kind.as_str() {
+                        "build_command" => vocabulary
+                            .prose_relations
+                            .push((relation, CodePartKind::BuildCommand)),
+                        "run_command" => vocabulary
+                            .prose_relations
+                            .push((relation, CodePartKind::RunCommand)),
+                        "print_stdout" => vocabulary.output_call_relations.push(relation),
+                        _ => {}
                     }
                 }
                 _ => {}
@@ -269,9 +278,10 @@ pub fn decompose_code_node(
     decompose_code_node_from(source, language_slug, prose_links, "")
 }
 
-/// [`decompose_code_node`] for an example read from a known page: every
-/// part derived from the code carries `source_url`, so a recomposition can
-/// cite the page each contributing part came from (R1164-6). Prose parts
+/// [`decompose_code_node`] for an example read from a known page.
+///
+/// Every part derived from the code carries `source_url`, so a recomposition
+/// can cite the page each contributing part came from (R1164-6). Prose parts
 /// keep the prose's own URL.
 pub fn decompose_code_node_from(
     source: &str,
@@ -361,22 +371,36 @@ pub fn decompose_code_node_from(
         })
         .cloned()
         .unwrap_or_else(|| "call_expression".to_owned());
-    let mut matched_call: Option<String> = None;
-    for call in vocabulary
+    // The seed's calls come first; a prose link the seed marks as naming
+    // the output call (kind `print_stdout`) adds the page's own call, keeping the
+    // prose's URL as the part's source (R1164-9: a held-out language learns
+    // its output call from its documentation).
+    let seed_calls = vocabulary
         .output_calls
         .get(language_slug)
         .into_iter()
         .flatten()
-    {
-        let present = tokens.iter().any(|token| token == call) || source.contains(call.as_str());
+        .map(|call| (call.clone(), source_url.to_owned()));
+    let prose_calls = prose_links
+        .iter()
+        .filter(|prose| {
+            vocabulary
+                .output_call_relations
+                .contains(&normalize_relation(&prose.relation))
+        })
+        .map(|prose| (prose.text.trim().to_owned(), prose.source_url.clone()))
+        .filter(|(call, _)| !call.is_empty());
+    let mut matched_call: Option<String> = None;
+    for (call, call_url) in seed_calls.chain(prose_calls) {
+        let present = tokens.iter().any(|token| *token == call) || source.contains(call.as_str());
         if present {
             parts.push(CodePart {
                 kind: CodePartKind::OutputOperation,
                 source_text: call.clone(),
                 cst_node_kind: call_kind,
-                source_url: source_url.to_owned(),
+                source_url: call_url,
             });
-            matched_call = Some(call.clone());
+            matched_call = Some(call);
             break;
         }
     }

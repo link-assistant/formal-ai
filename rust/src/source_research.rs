@@ -165,7 +165,7 @@ impl SourceResearchExecution {
             .iter()
             .map(|page| (trust_of(page), page))
             .collect();
-        ranked.sort_by(|left, right| right.0.cmp(&left.0));
+        ranked.sort_by_key(|entry| std::cmp::Reverse(entry.0));
         ranked.into_iter().map(|(_, page)| page).collect()
     }
 }
@@ -214,10 +214,11 @@ pub fn execute_source_research<T: SourceTransport>(
     })
 }
 
-/// Whether a need of `kind` has no registered source to ask (issue #1163
-/// R4): no row of `data/seed/sources-registry.lino` declares the kind, so
-/// web search is the only entry point left. `NeedKind::None` is no need at
-/// all and never routes anywhere.
+/// Whether a need of `kind` has no registered source to ask (issue #1163 R4).
+///
+/// No row of `data/seed/sources-registry.lino` declares the kind, so web search
+/// is the only entry point left. `NeedKind::None` is no need at all and never
+/// routes anywhere.
 #[must_use]
 pub fn need_routes_to_web_search(kind: crate::needs::NeedKind) -> bool {
     kind != crate::needs::NeedKind::None
@@ -226,11 +227,12 @@ pub fn need_routes_to_web_search(kind: crate::needs::NeedKind) -> bool {
             .any(|record| record.answers(kind))
 }
 
-/// Research a need no registered source covers through the web-search
-/// boundary (issue #1163 R4): the fused results are captured and each page
-/// is formalized into working memory, exactly as [`execute_source_research`]
-/// does. `None` when a registered source declares the kind, so the registry
-/// walk stays that need's route and nothing here changes it.
+/// Research a need no registered source covers through the web-search boundary.
+///
+/// Issue #1163 R4: the fused results are captured and each page is formalized
+/// into working memory, exactly as [`execute_source_research`] does. `None`
+/// when a registered source declares the kind, so the registry walk stays that
+/// need's route and nothing here changes it.
 pub fn research_unmatched_need<T: SourceTransport>(
     client: &CachedSourceClient<T>,
     kind: crate::needs::NeedKind,
