@@ -880,17 +880,10 @@ export function App() {
       return;
     }
     appendAssistantMessage(answer);
-    // Issue #529: persist any natural-language memory write (append/substitution)
-    // the worker recognised, giving the user full read+write control over the
-    // associative memory through chat.
-    if (answer.memoryOperation) {
-      await handleMemoryOperation(answer.memoryOperation);
-    }
-    // Issue #1184 R1184-9: file the answer's derivation record in the memory
-    // log, where `explain <answer id>` reads it back.
-    if (answer.derivationRecord) {
-      await handleMemoryOperation(answer.derivationRecord);
-    }
+    // Issue #529: persist any natural-language memory write the worker
+    // recognised; issue #1184 R1184-9: file the answer's derivation record in
+    // the memory log, where `explain <answer id>` reads it back.
+    for (const op of [answer.memoryOperation, answer.derivationRecord]) if (op) await handleMemoryOperation(op);
     setPending(false);
   }
 
