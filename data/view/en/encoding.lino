@@ -1,0 +1,9 @@
+view
+  id M-5ed9f197e69b
+  lemma encoding
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the activity of converting data or information into code"
+    provenance (wordnet)

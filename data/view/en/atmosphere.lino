@@ -1,0 +1,29 @@
+view
+  id M-f41769c2b3e9
+  lemma atmosphere
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a particular environment or surrounding influence"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of pressure: the pressure that will support a column of mercury 760 mm high at sea level and 0 degrees centigrade"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the mass of air surrounding the Earth"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the weather or climate at some place"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the envelope of gases surrounding any celestial body"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a distinctive but intangible quality surrounding a person or thing"
+    provenance (wordnet)

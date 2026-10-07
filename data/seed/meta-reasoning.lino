@@ -55,6 +55,9 @@
 #                A `named_suffix` intent already names the missing skill, its
 #                language and its task, so only a derived program replaces it;
 #                an open reply naming what is still unknown would lose it.
+#                The same holds for a clarifying question about an unfilled
+#                slot (`_unspecified`) and for an arithmetic error that names
+#                what failed to evaluate (`calculation_error`).
 
 meta_reasoning
   cue
@@ -457,6 +460,8 @@ meta_reasoning
     suffix _skill_gap
     suffix _unspecified
     named_suffix _skill_gap
+    named_suffix _unspecified
+    named_suffix calculation_error
   probe
     type text
     value "hello world"

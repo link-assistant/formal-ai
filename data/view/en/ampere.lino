@@ -1,0 +1,13 @@
+view
+  id M-e1333d9ccd86
+  lemma ampere
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a former unit of electric current (slightly smaller than the SI ampere)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the basic unit of electric current adopted under the Systeme International d'Unites"
+    provenance (wordnet)

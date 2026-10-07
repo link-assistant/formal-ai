@@ -1,0 +1,13 @@
+view
+  id M-088515e6183d
+  lemma plagiarism
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a piece of writing that has been copied from someone else and is presented as being your own work"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of plagiarizing; taking someone's words or ideas as if they were your own"
+    provenance (wordnet)

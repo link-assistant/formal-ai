@@ -5,7 +5,8 @@ use crate::protocol::ChatMessage;
 use serde_json::json;
 
 /// Only the explicitly marked fenced porcelain listing is authoritative.
-fn changed_paths(task: &str) -> Option<Vec<String>> {
+#[must_use]
+pub fn changed_paths(task: &str) -> Option<Vec<String>> {
     let (_, rest) = task.split_once("UNCOMMITTED CHANGES DETECTED")?;
     let (_, fenced) = rest.split_once("```")?;
     let (_, body) = fenced.split_once('\n')?;
@@ -39,7 +40,10 @@ fn changed_paths(task: &str) -> Option<Vec<String>> {
     (!paths.is_empty()).then_some(paths)
 }
 
-pub(super) fn feedback_needs_changes(output: &str) -> bool {
+/// Whether a pull request's comment/review feedback still asks for changes;
+/// unreadable feedback counts as asking, so readiness is never assumed.
+#[must_use]
+pub fn feedback_needs_changes(output: &str) -> bool {
     let text =
         super::tool_result::shell_step(output).map_or_else(|| output.to_owned(), |step| step.text);
     let Ok(value) = serde_json::from_str::<serde_json::Value>(&text) else {
@@ -163,40 +167,4 @@ pub(super) fn plan_restart(
             (concat!("{", "reference}"), reference),
         ],
     )))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::changed_paths;
-    #[test]
-    fn only_the_marked_fenced_listing_is_consumed() {
-        assert_eq!(
-            changed_paths(
-                "⚠️ UNCOMMITTED CHANGES DETECTED\n```text\n?? Main.kt\n M README.md\n```"
-            ),
-            Some(vec!["Main.kt".to_owned(), "README.md".to_owned()])
-        );
-        assert_eq!(
-            changed_paths("UNCOMMITTED CHANGES DETECTED\n```\n?? ../outside\n```"),
-            None
-        );
-        assert_eq!(changed_paths("?? Main.kt"), None);
-    }
-}
-
-#[cfg(test)]
-mod feedback_tests {
-    use super::feedback_needs_changes;
-    #[test]
-    fn unreadable_or_requested_feedback_blocks_readiness() {
-        assert!(!feedback_needs_changes(r#"{"comments":[],"reviews":[]}"#));
-        assert!(feedback_needs_changes(
-            r#"{"comments":[{"body":"Fix the output"}],"reviews":[]}"#
-        ));
-        assert!(feedback_needs_changes(
-            r#"{"comments":[],"reviews":[{"state":"CHANGES_REQUESTED"}]}"#
-        ));
-        assert!(feedback_needs_changes("{}"));
-        assert!(feedback_needs_changes("authentication failed"));
-    }
 }

@@ -95,7 +95,7 @@ fn routing_requires_both_a_directive_and_a_known_source() {
         .expect("the seed must declare the Google Trends learnable source");
     assert_eq!(google.capability, "google_trends_learning");
     assert_eq!(google.host, "trends.google.com");
-    assert!(!registry.directive_cues.is_empty());
+    assert_ne!(registry.directive_cues, [] as [std::string::String; 0]);
 }
 
 // R499-4: the acknowledgement is rendered in the prompt's language.

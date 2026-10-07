@@ -427,7 +427,10 @@ mod tests {
         assert_eq!(gate.name, "check_formatting");
         assert_eq!(gate.stage, "rust");
         assert_eq!(gate.run, "cargo fmt --all -- --check");
-        assert!(gate.env.is_empty());
+        assert_eq!(
+            gate.env,
+            [] as [(std::string::String, std::string::String); 0]
+        );
     }
 
     #[test]
@@ -492,7 +495,10 @@ mod tests {
             "      - run: rust-script scripts/run-ci-gates.rs --stage rust\n",
             "      - run: rust-script scripts/check-version-modification.rs\n",
         );
-        assert!(registry_problems(&[gate()], &source).is_empty());
+        assert_eq!(
+            registry_problems(&[gate()], &source),
+            [] as [std::string::String; 0]
+        );
     }
 
     #[test]
@@ -512,7 +518,10 @@ mod tests {
             "      - run: rust-script scripts/run-ci-gates.rs --stage rust\n",
             "",
         );
-        assert!(registry_problems(&[gate()], &source).is_empty());
+        assert_eq!(
+            registry_problems(&[gate()], &source),
+            [] as [std::string::String; 0]
+        );
     }
 
     #[test]

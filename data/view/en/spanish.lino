@@ -1,0 +1,17 @@
+view
+  id M-aa8af84b1269
+  lemma spanish
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to or characteristic of Spain or the people of Spain"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the Romance language spoken in most of Spain and the countries colonized by Spain"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the people of Spain"
+    provenance (wordnet)

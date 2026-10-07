@@ -1359,3 +1359,26 @@ meanings
         text 山 # source Q8502 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+  mouth
+    grounded-in Q9635
+    defined-by entity
+    lexeme en
+      surface
+        text mouth # source Q9635 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text рот # source Q9635 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme hi
+      surface
+        text मुँह # source Q9635 labels.hi.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme zh
+      surface
+        text 口腔 # source Q9635 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular

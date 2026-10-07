@@ -1,0 +1,29 @@
+view
+  id M-792901689f8a
+  lemma education
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the United States federal department that administers all federal programs dealing with education (including federal aid to educational institutions and students); created 1979"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the activities of educating or instructing; activities that impart knowledge or skill"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "knowledge acquired by learning and instruction"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the gradual process of acquiring knowledge"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the profession of teaching (especially at a school or college or university)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the result of good upbringing (especially knowledge of correct social behavior)"
+    provenance (wordnet)

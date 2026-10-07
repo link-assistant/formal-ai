@@ -1,0 +1,21 @@
+view
+  id M-f9ad13af4004
+  lemma rolling
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a deep prolonged sound (as of thunder or large bells)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of robbing a helpless person"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "propelling something on wheels"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "uttered with a trill"
+    provenance (wordnet)

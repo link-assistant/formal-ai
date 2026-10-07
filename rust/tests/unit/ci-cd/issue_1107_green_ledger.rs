@@ -87,7 +87,7 @@ fn steps(job: &[&str]) -> Vec<(String, Option<String>)> {
 fn the_action_saves_only_on_success_and_announces_a_skip() {
     let action = read(ACTION);
     assert!(
-        action.contains("uses: actions/cache@v4"),
+        action.contains("uses: actions/cache@v6"),
         "the marker rides on actions/cache, whose post step has post-if: success()"
     );
     assert!(

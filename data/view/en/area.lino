@@ -1,0 +1,29 @@
+view
+  id M-41cfd5cdbea1
+  lemma area
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a particular geographical region of indefinite boundary (usually serving some special purpose or distinguished by its people or culture or geography)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a subject of study"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a part of an animal that has a special function or is supplied by a given artery or nerve"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a particular environment or walk of life"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a part of a structure having some specific characteristic or function"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the extent of a 2-dimensional surface enclosed within a boundary"
+    provenance (wordnet)

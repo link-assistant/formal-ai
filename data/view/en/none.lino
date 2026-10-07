@@ -1,0 +1,21 @@
+view
+  id M-6d6d4451f6b9
+  lemma none
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a canonical hour that is the ninth hour of the day counting from sunrise"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a service in the Roman Catholic Church formerly read or chanted at 3 PM (the ninth hour counting from sunrise) but now somewhat earlier"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "not at all or in no way"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not any; entity, negative pronoun"
+    provenance (wordnet)

@@ -61,7 +61,7 @@ pub use parser::parse_lino;
 use parser::{
     LinoNode, escape_value, find_closing_quote, parse_codepoint, split_pipe_list, unescape_value,
 };
-pub use reports::report_text;
+pub use reports::{fill_slots, report_text};
 
 pub use agentic_tool_capabilities::{AgenticToolCapability, agentic_tool_capabilities};
 pub use brainstorm::{BrainstormCategory, BrainstormSeeds, brainstorm_seeds};

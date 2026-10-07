@@ -151,11 +151,17 @@ fn config_env_is_additive_to_the_existing_file_contract() {
     let agent = default_global("agent");
     assert_eq!(agent.format, ConfigFormat::Json);
     assert_eq!(agent.backup_suffix, ".formal-ai.bak");
-    assert!(!agent.json_settings.is_empty());
+    assert_ne!(
+        agent.json_settings,
+        [] as [(std::string::String, std::string::String); 0]
+    );
 
     let codex = default_global("codex");
     assert_eq!(codex.format, ConfigFormat::Toml);
-    assert!(!codex.toml_settings.is_empty());
+    assert_ne!(
+        codex.toml_settings,
+        [] as [(std::string::String, std::string::String); 0]
+    );
 }
 
 #[test]

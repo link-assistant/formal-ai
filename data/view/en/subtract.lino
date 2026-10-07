@@ -1,0 +1,13 @@
+view
+  id M-ef7bc4359ca5
+  lemma subtract
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a subtraction"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "take off or away"
+    provenance (wordnet)

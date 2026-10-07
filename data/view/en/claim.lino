@@ -1,0 +1,49 @@
+view
+  id M-80b664f18bbe
+  lemma claim
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an assertion of a right (as to money or property)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an assertion that something is true or factual"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "demand for something as rightful or due"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an informal right to something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an established or recognized right"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a demand"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "assert or affirm strongly; state to be true or existing"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "demand as being one's due or property; assert one's right or title to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "ask for legally or make a legal claim to, as of debts, for example"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "lay claim to; as of an idea"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "take as an undesirable consequence of some event or state of affairs"
+    provenance (wordnet)

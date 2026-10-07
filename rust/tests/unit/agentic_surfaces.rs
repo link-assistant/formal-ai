@@ -429,7 +429,10 @@ fn responses_returns_final_message_once_recipe_is_exhausted() {
 
     let response = create_response_with_solver(&request, &agent_solver());
 
-    assert!(response.function_calls().is_empty());
+    assert_eq!(
+        response.function_calls(),
+        [] as [&formal_ai::ResponseFunctionToolCall; 0]
+    );
     let messages = response.output_messages();
     assert_eq!(messages.len(), 1);
     let body = &messages[0].content[0].text;
@@ -453,7 +456,10 @@ fn responses_refuses_tools_without_agent_mode() {
 
     let response = create_response_with_solver(&request, &UniversalSolver::default());
 
-    assert!(response.function_calls().is_empty());
+    assert_eq!(
+        response.function_calls(),
+        [] as [&formal_ai::ResponseFunctionToolCall; 0]
+    );
     let messages = response.output_messages();
     assert!(
         messages[0].content[0].text.contains("agent mode"),
@@ -474,7 +480,10 @@ fn responses_non_agentic_task_with_tools_falls_through_to_symbolic() {
 
     let response = create_response_with_solver(&request, &agent_solver());
 
-    assert!(response.function_calls().is_empty());
+    assert_eq!(
+        response.function_calls(),
+        [] as [&formal_ai::ResponseFunctionToolCall; 0]
+    );
     assert!(
         !response.output_messages().is_empty(),
         "a non-agentic task should still produce a symbolic answer"

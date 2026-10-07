@@ -1,0 +1,29 @@
+view
+  id M-aa884dc3e5df
+  lemma sleep
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a natural and periodic state of rest during which consciousness of the world is suspended"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a torpid state resembling deep sleep"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a period of time spent sleeping"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "euphemisms for death (based on an analogy between lying in a bed and in a tomb)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be asleep"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be able to accommodate for sleeping"
+    provenance (wordnet)

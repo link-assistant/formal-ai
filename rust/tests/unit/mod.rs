@@ -247,6 +247,7 @@ mod server_route_manifest;
 mod shared_dialog;
 mod shared_memory_isolation;
 mod software_project;
+mod source_module_contracts;
 mod specification;
 mod test_status;
 mod tool_scope;

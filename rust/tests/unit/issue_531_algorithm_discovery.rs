@@ -104,7 +104,10 @@ fn held_out_constant_drift_is_preserved_as_a_failed_candidate() {
         trace("run-gamma", "gamma", "xml"),
     ]);
 
-    assert!(run.validated_candidates().is_empty());
+    assert_eq!(
+        run.validated_candidates(),
+        [] as [&formal_ai::algorithm_discovery::AlgorithmCandidate; 0]
+    );
     let candidate = run
         .candidates
         .iter()
@@ -249,7 +252,10 @@ fn oversized_observation_sets_fail_closed_without_partial_candidates() {
     let run = discover_algorithms(&[trace]);
 
     assert!(run.observation_limit_exceeded);
-    assert!(run.candidates.is_empty());
+    assert_eq!(
+        run.candidates,
+        [] as [formal_ai::algorithm_discovery::AlgorithmCandidate; 0]
+    );
     assert!(!run.associative_compression_lossless);
     assert!(
         run.links_notation()

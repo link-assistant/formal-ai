@@ -59,7 +59,11 @@ fn init_repo(dir: &Path) {
 }
 
 fn commit(dir: &Path, path: &str, contents: &str, subject: &str, body: Option<&str>) -> String {
-    std::fs::write(dir.join(path), contents).expect("write fixture file");
+    let file = dir.join(path);
+    if let Some(parent) = file.parent() {
+        std::fs::create_dir_all(parent).expect("create fixture directory");
+    }
+    std::fs::write(file, contents).expect("write fixture file");
     git(dir, &["add", path]);
     let mut args: Vec<&str> = vec!["-c", "commit.gpgsign=false", "commit", "-q", "-m", subject];
     if let Some(body) = body {
@@ -318,7 +322,9 @@ fn issue_and_pr_import_links_commit_to_source_issue() {
     // Everything is queryable through the existing memory query language.
     let mut store = MemoryStore::from_events(events);
     let query = compile_memory_query(
-        "SELECT id FROM memory WHERE kind = 'pull_request' AND evidence CONTAINS 'issue:1014'",
+        // `CONTAINS` is not ANSI, and the exact sql-ansi grammar rejects it;
+        // `LIKE` with `%` wildcards is the standard spelling of the same test.
+        "SELECT id FROM memory WHERE kind = 'pull_request' AND evidence LIKE '%issue:1014%'",
         QueryDialect::SqlAnsi,
         LIMITS,
     )
@@ -395,8 +401,8 @@ fn ci_run_import_carries_failing_steps() {
             .any(|e| e == "commit:e4193a615c2a0788a2f7e1067a1a55d4c5d7912d")
     );
 
-    let newer_only =
-        history_context::import_ci_runs(&logs, Some(36266423193), &rules).expect("filtered runs");
+    let newer_only = history_context::import_ci_runs(&logs, Some(36_266_423_193), &rules)
+        .expect("filtered runs");
     let ids: Vec<&str> = newer_only.iter().map(|event| event.id.as_str()).collect();
     assert!(
         !ids.contains(&"ci_run:36266423193"),

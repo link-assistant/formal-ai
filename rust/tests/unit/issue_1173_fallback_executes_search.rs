@@ -35,7 +35,7 @@ fn no_canned_description(answer: &str) -> bool {
     !CANNED_OPENERS.iter().any(|opener| answer.contains(opener))
 }
 
-/// A fixture source transport: one DuckDuckGo Instant Answer payload and two
+/// A fixture source transport: one `DuckDuckGo` Instant Answer payload and two
 /// plain pages, mirroring the captured-provider fixtures of issue #709.
 #[derive(Clone, Default)]
 struct FallbackProbeTransport;

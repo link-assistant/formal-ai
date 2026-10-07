@@ -285,3 +285,14 @@ sources_registry
     license_url "https://creativecommons.org/licenses/by/3.0/"
     cache_path data/cache/conventional-commits/
     note "The styleguide URL the commit-message genre cites (data/seed/writing-genre-styleguides.lino, issue #1174 R4); the genre templates are the seed's and this page is the named authority behind them. No runtime fetch path binds it; registered so the citation is provenance-tracked like every other named source, as the issue's design asked."
+  source derivations
+    name "Formal AI derivation records"
+    kind local_record_store
+    default_enabled true
+    how_to_role none
+    primacy first_hand_record
+      basis "Each record is written by the engine that produced the answer, from the same event log the thinking trace is projected from, so it is the first-hand account of that derivation."
+    license_name "Unlicense"
+    license_url "https://unlicense.org/"
+    cache_path data/cache/derivations/
+    note "One Links Notation file per answer id, written by `rust/src/derivation.rs` (issue #1184 R3) so `explain` reads the derivation back without replaying the request. Never fetched and never a retrieval source: no need kinds and no service group, so the source walker never visits it."

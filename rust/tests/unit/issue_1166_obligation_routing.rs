@@ -20,10 +20,7 @@ use formal_ai::intent_formalization::{
 };
 
 fn fixture_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("the repository root sits one level above the crate")
-        .join("tests/fixtures/issue-1166")
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/issue-1166")
 }
 
 fn fixture(name: &str) -> String {

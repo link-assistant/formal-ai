@@ -1,0 +1,9 @@
+view
+  id M-3300a7cdc7db
+  lemma vatican
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the residence of the Catholic Pope in the Vatican City"
+    provenance (wordnet)

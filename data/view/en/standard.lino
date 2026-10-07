@@ -1,0 +1,49 @@
+view
+  id M-1b8632a00542
+  lemma standard
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "conforming to or constituting a standard of measurement or value; or of the usual or regularized or accepted kind"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "established or well-known or widely recognized as a model of authority or excellence"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "conforming to the established language usage of educated native speakers"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a basis for comparison; a reference point against which other things can be evaluated"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the ideal in terms of which something can be judged"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a board measure = 1980 board feet"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the value behind the money in a monetary system"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an upright pole or beam (especially one used as a support)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any distinctive flag"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "commonly used or supplied"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "regularly and widely used or sold"
+    provenance (wordnet)

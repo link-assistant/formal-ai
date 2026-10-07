@@ -100,6 +100,7 @@ mod probabilistic_reasoning;
 mod procedural_howto_benchmarks;
 mod project_lookups;
 mod prompt_variations;
+mod prompt_variations_facts;
 mod question_generation_lexicon;
 mod reasoning_loop;
 mod reasoning_paths;
@@ -143,7 +144,7 @@ mod world_state_benchmarks;
 /// `js/app.js`; source-level surface assertions read all of them so they hold
 /// wherever a helper lives. `web_app_sources_cover_every_jsx_module` keeps
 /// this list in step with the directory.
-pub(crate) const WEB_APP_SOURCES: &str = concat!(
+pub const WEB_APP_SOURCES: &str = concat!(
     include_str!("../../../../js/app/agent-plan.jsx"),
     include_str!("../../../../js/app/app-constants.jsx"),
     include_str!("../../../../js/app/app-conversation-hooks.jsx"),

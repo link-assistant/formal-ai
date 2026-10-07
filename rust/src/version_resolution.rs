@@ -24,7 +24,7 @@ const TOOLCHAINS: &str = include_str!("../embedded/data/seed/toolchains.lino");
 
 /// The environment override for the source cache, matching the convention of
 /// `solver_handler_how_synthesis`.
-const CACHE_DIR_ENV: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
+const CACHE_ENV_VAR: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
 
 /// Where a resolved version came from.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -148,7 +148,7 @@ impl VersionSet {
     /// the source cache has them, otherwise the shipped baseline.
     #[must_use]
     pub fn for_generation() -> Self {
-        let cache_dir = std::env::var(CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
+        let cache_dir = std::env::var(CACHE_ENV_VAR).unwrap_or_else(|_| String::from("data"));
         let client = CachedSourceClient::new(cache_dir, CurlSourceTransport);
         Self::resolve(&client)
     }

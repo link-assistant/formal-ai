@@ -1,0 +1,9 @@
+view
+  id M-71483bb8f8ce
+  lemma shebang
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an entire system; used in the phrase ‘the whole shebang’"
+    provenance (wordnet)

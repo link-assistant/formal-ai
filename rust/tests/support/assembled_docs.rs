@@ -42,7 +42,12 @@ fn numbered_files(directory: &Path, prefix: &str) -> Vec<PathBuf> {
                 .filter(|path| {
                     path.file_name()
                         .and_then(|name| name.to_str())
-                        .is_some_and(|name| name.starts_with(prefix) && name.ends_with(".md"))
+                        .is_some_and(|name| {
+                            name.starts_with(prefix)
+                                && std::path::Path::new(name)
+                                    .extension()
+                                    .is_some_and(|ext| ext.eq_ignore_ascii_case("md"))
+                        })
                 })
                 .collect()
         })

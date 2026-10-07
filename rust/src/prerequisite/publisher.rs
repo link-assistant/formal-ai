@@ -168,7 +168,16 @@ fn procedure_from_sense(
     publisher: &SetupPublisher,
     sense: &crate::concept_lookup::ConceptSense,
 ) -> Option<SetupProcedure> {
-    parse_setup_document(need, publisher, &sense.source_url, &sense.gloss)
+    // A retrieved sense already carries its provenance: the source that
+    // answered and the digest of the bytes it returned. Those outrank the
+    // publisher's default id and a digest recomputed from the gloss alone.
+    parse_setup_document(need, publisher, &sense.source_url, &sense.gloss).map(|procedure| {
+        SetupProcedure {
+            source_id: sense.source_id.clone(),
+            content_id: sense.sha256.clone(),
+            ..procedure
+        }
+    })
 }
 
 /// Parse a fetched, pinned publisher document without running any process.

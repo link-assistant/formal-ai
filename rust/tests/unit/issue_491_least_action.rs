@@ -9,7 +9,7 @@
 //! solutions are generated, the least-action one (shortest path/steps,
 //! then shortest code that still solves the entire range of inputs,
 //! then least compute and memory) is the one to keep. These tests pin
-//! rust/src/least_action.rs.
+//! `rust/src/least_action.rs`.
 
 use formal_ai::least_action::{
     ActionCost, SolutionCandidate, Subtask, least_action_plan, least_action_solution, plan,

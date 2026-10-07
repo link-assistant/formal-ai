@@ -121,8 +121,17 @@ fn exact_crud_executes_with_permissions_and_append_only_retraction() {
         &mut store,
         MemoryProgramAuthorization::ReadOnly,
     );
-    assert!(selected_after_delete.rows.is_empty());
-    assert!(selected_after_delete.matched_ids.is_empty());
+    assert_eq!(
+        selected_after_delete.rows,
+        [] as [std::collections::BTreeMap<
+            std::string::String,
+            formal_ai::memory_query_language::MemoryQueryValue,
+        >; 0]
+    );
+    assert_eq!(
+        selected_after_delete.matched_ids,
+        [] as [std::string::String; 0]
+    );
 }
 
 #[test]
@@ -225,7 +234,10 @@ fn lowered_programs_execute_over_projected_doublets_and_drift_is_refused() {
     for (source, expected) in cases {
         let query = compile(source, QueryDialect::SqlAnsi);
         if expected == CrudEvent::Read {
-            assert!(!query.link_program.matched_links(&links).is_empty());
+            assert_ne!(
+                query.link_program.matched_links(&links),
+                [] as [formal_ai::DoubletLink; 0]
+            );
         } else {
             let outcome = query.link_program.execute(&links);
             assert!(

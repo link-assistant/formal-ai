@@ -1,0 +1,17 @@
+view
+  id M-4fe4444b1031
+  lemma symmetry
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(mathematics) an attribute of a shape or relation; exact reflection of form on opposite sides of a dividing line or plane"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "balance among the parts of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(physics) the property of being isotropic; having the same value when measured in different directions"
+    provenance (wordnet)

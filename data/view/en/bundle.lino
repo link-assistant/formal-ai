@@ -1,0 +1,33 @@
+view
+  id M-b4a5b8e7c04b
+  lemma bundle
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a collection of things wrapped or boxed together"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a package of several things tied together for carrying or storing"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a large sum of money (especially as pay or profit)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make into a bundle"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "gather or cause to gather into a cluster"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "compress into a wad"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "sleep fully clothed in the same bed with one's betrothed"
+    provenance (wordnet)

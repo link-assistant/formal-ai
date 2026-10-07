@@ -117,7 +117,7 @@ fn native_search_executes_both_published_component_boundaries() {
         live.component_boundaries,
         ["web-capture:search", "web-search:merger"]
     );
-    assert!(live.component_diagnostics.is_empty());
+    assert_eq!(live.component_diagnostics, [] as [std::string::String; 0]);
 
     let offline = CachedSourceClient::new(&cache, transport);
     let replay = execute_duckduckgo_search(&offline, "formal ai")

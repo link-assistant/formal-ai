@@ -1,0 +1,105 @@
+{
+  "lemma": "hidden",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02527874-s",
+      "partOfSpeech": "s",
+      "definition": "not accessible to view",
+      "examples": [
+        "concealed (or hidden) damage",
+        "in stormy weather the stars are out of sight"
+      ],
+      "synonyms": [
+        "concealed",
+        "out of sight"
+      ]
+    },
+    {
+      "id": "oewn-02096659-s",
+      "partOfSpeech": "s",
+      "definition": "designed to elude detection",
+      "examples": [
+        "a hidden room or place of concealment such as a priest hole",
+        "a secret passage",
+        "the secret compartment in the desk"
+      ],
+      "synonyms": [
+        "secret"
+      ]
+    },
+    {
+      "id": "oewn-02096522-s",
+      "partOfSpeech": "s",
+      "definition": "difficult to find",
+      "examples": [
+        "hidden valleys",
+        "a hidden cave",
+        "an obscure retreat"
+      ],
+      "synonyms": [
+        "obscure"
+      ]
+    },
+    {
+      "id": "oewn-02149298-v",
+      "partOfSpeech": "v",
+      "definition": "prevent from being seen or discovered",
+      "examples": [
+        "hide the money"
+      ],
+      "synonyms": [
+        "hide",
+        "conceal"
+      ]
+    },
+    {
+      "id": "oewn-02150244-v",
+      "partOfSpeech": "v",
+      "definition": "be or go into hiding; keep out of sight, as for protection and safety",
+      "examples": [
+        "Probably his horse would be close to where he was hiding",
+        "She is hiding out in a cabin in Montana"
+      ],
+      "synonyms": [
+        "hide",
+        "hide out"
+      ]
+    },
+    {
+      "id": "oewn-01585121-v",
+      "partOfSpeech": "v",
+      "definition": "cover as if with a shroud",
+      "examples": [
+        "The origins of this civilization are shrouded in mystery"
+      ],
+      "synonyms": [
+        "shroud",
+        "enshroud",
+        "hide",
+        "cover"
+      ]
+    },
+    {
+      "id": "oewn-00314788-v",
+      "partOfSpeech": "v",
+      "definition": "make undecipherable or imperceptible by obscuring or concealing",
+      "examples": [
+        "a hidden message",
+        "a veiled threat"
+      ],
+      "synonyms": [
+        "obscure",
+        "blot out",
+        "obliterate",
+        "veil",
+        "hide"
+      ]
+    }
+  ]
+}

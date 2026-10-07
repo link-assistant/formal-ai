@@ -1,14 +1,14 @@
 //! Issue #901: automate TRIZ principles and general paradox resolution.
 //!
 //! The ask, in three parts: (1) contradictions are links carrying a 0-1
-//! value chosen from the requirements, which rust/src/selection_heuristics.rs
+//! value chosen from the requirements, which `rust/src/selection_heuristics.rs`
 //! already computes for candidate sets; (2) collect the *other* common
 //! ways paradoxes and contradictions dissolve — different dimensions,
 //! alternation, points on the range — as data; (3) replay it on a top-20
 //! corpus of commonly discussed invention tasks and expose it from a
 //! prompt. These tests pin the seed additions (twelve resolution
 //! families, the twenty-task benchmark, the cues) and the user-facing
-//! entry in rust/src/triz_solver.rs.
+//! entry in `rust/src/triz_solver.rs`.
 
 use formal_ai::event_log::EventLog;
 use formal_ai::triz_solver::{handle_triz, triz_benchmark_tasks, triz_families};

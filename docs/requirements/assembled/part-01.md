@@ -1319,7 +1319,7 @@ ratchet that starts honestly at 0%.
 | Fresh-store round-trip and permission gates | Tests drafted, not run | issue_668_associative_package_sharing.rs covers transfer, missing handlers, agent consent and stale approval. |
 | CLI export/import commands | Pending integration | Register module and connect the library to the CLI package command. |
 | Web file picker and CLI/web e2e round-trip | Pending integration | Reuse identical artifact format; browser port and e2e fixture remain. |
-| Document real example in main README | Pending integration | examples/packages/greeting.lino supplied; dedicated case study documents use. |
+| Document real example in main README | Pending integration | rust/examples/packages/greeting.lino supplied; dedicated case study documents use. |
 
 No execution or build verification was performed under the bulk-work directive.
 

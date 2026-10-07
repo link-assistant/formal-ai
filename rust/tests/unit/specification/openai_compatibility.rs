@@ -133,7 +133,7 @@ fn chat_completion_includes_standard_reasoning_content() {
     let completion = create_chat_completion(&request);
     let message = &completion.choices[0].message;
 
-    assert!(!message.reasoning_content.is_empty());
+    assert_ne!(message.reasoning_content, "");
     assert_eq!(message.reasoning, message.reasoning_content);
     assert!(
         message.reasoning_content.contains("Read the request"),
@@ -194,7 +194,7 @@ fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
     let response = create_response(&request);
     let messages = response.output_messages();
 
-    assert!(!response.thinking_steps.is_empty());
+    assert_ne!(response.thinking_steps, [] as [formal_ai::ThinkingStep; 0]);
     assert_eq!(messages[0].thinking_steps, response.thinking_steps);
     assert!(
         response

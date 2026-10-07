@@ -74,10 +74,10 @@ pub fn version_key_of_inline_table(value: &str) -> Option<String> {
         return None;
     }
     for part in split_top_level_commas(&value[1..value.len().saturating_sub(1)]) {
-        if let Some((key, item)) = split_once(&part, '=') {
-            if key.trim() == "version" {
-                return quoted_value(item.trim());
-            }
+        if let Some((key, item)) = split_once(&part, '=')
+            && key.trim() == "version"
+        {
+            return quoted_value(item.trim());
         }
     }
     None
@@ -117,11 +117,11 @@ pub fn parse_cargo_lock(text: &str) -> BTreeMap<String, String> {
     for line in text.lines() {
         let line = line.trim();
         if let Some(value) = line.strip_prefix("name = ") {
-            name = quoted_value(value).filter(|_| !line.starts_with("#"));
-        } else if let Some(value) = line.strip_prefix("version = ") {
-            if let (Some(name), Some(version)) = (name.take(), quoted_value(value)) {
-                out.insert(name, version);
-            }
+            name = quoted_value(value).filter(|_| !line.starts_with('#'));
+        } else if let Some(value) = line.strip_prefix("version = ")
+            && let (Some(name), Some(version)) = (name.take(), quoted_value(value))
+        {
+            out.insert(name, version);
         }
     }
     out
@@ -134,13 +134,13 @@ pub fn parse_package_json(text: &str) -> Vec<(String, String, usize, Option<Stri
         let Some((key, value)) = json_member(line) else {
             continue;
         };
-        if let Some(name) = key.strip_suffix("//") {
-            if let Some(url) = json_string(value) {
-                blocked.insert(
-                    name.to_string(),
-                    url.trim_start_matches("blocked:").trim().to_string(),
-                );
-            }
+        if let Some(name) = key.strip_suffix("//")
+            && let Some(url) = json_string(value)
+        {
+            blocked.insert(
+                name.to_string(),
+                url.trim_start_matches("blocked:").trim().to_string(),
+            );
         }
     }
     let mut out = Vec::new();
@@ -148,7 +148,7 @@ pub fn parse_package_json(text: &str) -> Vec<(String, String, usize, Option<Stri
     for (index, line) in text.lines().enumerate() {
         let trimmed = line.trim();
         // A section header opens an object on the same line: `"key": {`.
-        if trimmed.starts_with('"') && trimmed.ends_with("{") {
+        if trimmed.starts_with('"') && trimmed.ends_with('{') {
             if let Some((key, _)) = json_member(trimmed.trim_end_matches('{').trim_end()) {
                 in_dependencies = matches!(
                     key.as_str(),

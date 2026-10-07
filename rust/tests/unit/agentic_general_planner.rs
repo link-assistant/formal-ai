@@ -40,7 +40,7 @@ fn agentic_general_planner_is_deterministic() {
 fn agentic_general_planner_accepts_three_unpinned_phrasings_in_two_languages() {
     for request in [EN_TASK, EN_TASK_ALT, RU_TASK] {
         let plan = compose_general_change_plan(request).expect(request);
-        assert!(!plan.goal.is_empty());
+        assert_ne!(plan.goal, "");
         assert!(plan.links_notation().contains("expected_evidence"));
     }
 }
@@ -84,8 +84,7 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     assert!(calls[0].arguments.contains("issues/698"), "{calls:?}");
 
     // A client with a shell but no fetch tool reads the work item through
-    // `gh issue view` before anything is recorded (issue #1133); the record
-    // follows once that read has been tried.
+    // `gh issue view` before anything is recorded (issue #1133).
     let write_only = plan_chat_step(&messages, &["write_file", "run_command"]);
     let Some(AgenticPlan::ToolCalls(write_only)) = write_only else {
         panic!("a write-only client still reads the work item")
@@ -95,27 +94,40 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
         write_only[0].arguments.contains("gh issue view"),
         "{write_only:?}"
     );
-    // With the read tried and empty, the record is written as before.
+    // An empty read is a failed read (issue #1155): the REST fallbacks are
+    // walked next, and once every route has answered nothing the run closes
+    // with the reads it tried instead of spending its write on a plan record
+    // for an issue it never saw.
     let mut after_read = messages;
-    after_read.push(ChatMessage::assistant_tool_calls(vec![
-        formal_ai::ToolCall::function(
-            "c0".to_owned(),
-            "run_command".to_owned(),
-            write_only[0].arguments.clone(),
-        ),
-    ]));
-    after_read.push(ChatMessage::tool_result("c0".to_owned(), "run_command", ""));
-    let Some(AgenticPlan::ToolCalls(recorded)) =
-        plan_chat_step(&after_read, &["write_file", "run_command"])
-    else {
-        panic!("a write-only client still records the reference")
+    let mut planned = vec![write_only[0].clone()];
+    let report = loop {
+        let step = planned.len();
+        let call = &planned[step - 1];
+        after_read.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            format!("c{step}"),
+            call.tool.clone(),
+            call.arguments.clone(),
+        )]));
+        after_read.push(ChatMessage::tool_result(format!("c{step}"), &call.tool, ""));
+        match plan_chat_step(&after_read, &["write_file", "run_command"]) {
+            Some(AgenticPlan::ToolCalls(calls)) if step < 6 => planned.push(calls[0].clone()),
+            Some(AgenticPlan::Final(report)) => break report,
+            other => panic!("the exhausted read closes with a report, got {other:?}"),
+        }
     };
-    assert_eq!(recorded[0].tool, "write_file");
-    assert!(recorded[0].arguments.contains(PLAN_PATH));
     assert!(
-        recorded[0].arguments.contains("repository_work_item"),
-        "the plan must preserve the work-item execution boundary"
+        planned
+            .iter()
+            .any(|call| call.tool == "run_command" && call.arguments.contains("curl -fsSL")),
+        "the credential-free REST read is a fallback: {planned:?}"
     );
+    assert!(
+        planned
+            .iter()
+            .all(|call| call.tool == "run_command" && !call.arguments.contains(PLAN_PATH)),
+        "no plan record is written for an unread work item: {planned:?}"
+    );
+    assert!(report.contains("could not be read"), "{report}");
 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);

@@ -36,7 +36,9 @@ fn handler_answer(prompt: &str) -> String {
         .answer
 }
 
-/// The fenced block with the given tag, extracted from an answer body.
+/// The fenced block with the given tag, extracted from an answer body, without
+/// the line break that closes its last line before the closing fence (the
+/// renderer emits "```tag\n{text}\n```", as the browser parity test pins).
 fn fenced(answer: &str, tag: &str) -> String {
     let open = ["```", tag, "\n"].concat();
     let start = answer
@@ -47,7 +49,8 @@ fn fenced(answer: &str, tag: &str) -> String {
         + answer[start..]
             .find("```")
             .unwrap_or_else(|| panic!("the `{tag}` fence should be closed: {answer}"));
-    answer[start..end].to_owned()
+    let block = &answer[start..end];
+    block.strip_suffix('\n').unwrap_or(block).to_owned()
 }
 
 // ---------------------------------------------------------------------------

@@ -83,8 +83,14 @@ fn a_failing_benchmark_gate_blocks_promotion_but_still_records_the_case() {
         formal_ai::BenchmarkGateReport::issue_362_from_counts(3, 1),
     );
     assert_eq!(case.outcome, RepairOutcome::BlockedByBenchmark);
-    assert!(case.learning.adoptable_rules().is_empty());
-    assert!(!case.learning.proposals.is_empty());
+    assert_eq!(
+        case.learning.adoptable_rules(),
+        [] as [&formal_ai::LearnedRuleProposal; 0]
+    );
+    assert_ne!(
+        case.learning.proposals,
+        [] as [formal_ai::LearnedRuleProposal; 0]
+    );
     assert!(case.links_notation().contains("blocked_by_benchmark"));
 }
 

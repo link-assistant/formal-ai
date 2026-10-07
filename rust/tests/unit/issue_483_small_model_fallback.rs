@@ -7,7 +7,7 @@
 //! only — nothing in the application package or web UI; the model picks
 //! the best match from offered options; confirmed by unit tests; and
 //! LLMs never at the steering wheel (formal first). These integration
-//! tests pin rust/src/small_model_fallback.rs end to end (the module
+//! tests pin `rust/src/small_model_fallback.rs` end to end (the module
 //! also carries in-crate unit tests).
 
 use formal_ai::event_log::EventLog;

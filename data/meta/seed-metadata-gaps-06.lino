@@ -19,9 +19,17 @@ seed_metadata_gaps
     source "data/seed/meanings-calculator.lino"
     record "multiplication"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_d9d089ad3cd1cc96
+    source "data/seed/meanings-calendar.lino"
+    record "april"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_832a301ae1ffd0a6
     source "data/seed/meanings-calendar.lino"
     record "calendar_preceding"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_c6d15edaa22ea5f6
+    source "data/seed/meanings-calendar.lino"
+    record "calendar_weekday_query"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_0a648d58402379b6
     source "data/seed/meanings-calendar.lino"

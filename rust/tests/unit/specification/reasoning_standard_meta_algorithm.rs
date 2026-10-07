@@ -232,7 +232,7 @@ fn reasoning_standard_recipe_pins_its_fixture_registry_and_tests() {
             read(path).contains("reasoning_episode"),
             "{path} should hold a reasoning episode"
         );
-        assert!(!fixture.require("purpose").is_empty());
+        assert_ne!(fixture.require("purpose"), "");
     }
 
     for registry in of_kind(&records, "meta_registry") {
@@ -257,7 +257,7 @@ fn reasoning_standard_recipe_pins_its_fixture_registry_and_tests() {
             source.contains("#[test]"),
             "{path} should contain the tests the recipe cites"
         );
-        assert!(!test.require("pins").is_empty());
+        assert_ne!(test.require("pins"), "");
     }
 }
 

@@ -1,0 +1,29 @@
+view
+  id M-f3236fb02c92
+  lemma tall
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "great in vertical dimension; high in stature"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a garment size for a tall person"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "lofty in style"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "having a specified height"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "impressively difficult"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "too improbable to admit of belief"
+    provenance (wordnet)

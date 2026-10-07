@@ -1,0 +1,37 @@
+view
+  id M-0facfc122276
+  lemma produce
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "fresh fruits and vegetable grown for the market"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring forth or yield"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "create or manufacture a man-made product"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to happen, occur or exist"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring out for display"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cultivate by growing, often involving improvements by means of agricultural techniques"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring onto the market or release"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "come to have or undergo a change of (physical features and attributes)"
+    provenance (wordnet)

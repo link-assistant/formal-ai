@@ -1,0 +1,13 @@
+view
+  id M-b52ccf36e77c
+  lemma directory
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an alphabetical list of names and addresses"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a listing of the files stored in memory (usually on a hard disk)"
+    provenance (wordnet)

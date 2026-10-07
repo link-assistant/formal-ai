@@ -19,6 +19,14 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_day"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_e0b912a1fd45df11
+    source "data/seed/meanings-calendar.lino"
+    record "calendar_month"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_9e17265cfb8533c1
+    source "data/seed/meanings-calendar.lino"
+    record "december"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_a0b8e6cb273dcf11
     source "data/seed/meanings-calendar.lino"
     record "saturday"

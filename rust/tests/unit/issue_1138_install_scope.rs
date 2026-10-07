@@ -378,5 +378,12 @@ fn a_network_step_needs_explicit_network_consent() {
     );
 
     assert_eq!(outcome, Err(PrerequisiteError::NetworkCapabilityNotGranted));
-    assert!(executor.calls.is_empty());
+    assert_eq!(
+        executor.calls,
+        [] as [(
+            std::string::String,
+            std::vec::Vec<std::string::String>,
+            std::path::PathBuf
+        ); 0]
+    );
 }

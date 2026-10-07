@@ -292,7 +292,10 @@ fn unknown_openers_are_seed_data_on_every_surface() {
         formal_ai::web_engine_core::unknown_openers_for("es"),
         formal_ai::web_engine_core::unknown_openers_for("en")
     );
-    assert!(!formal_ai::web_engine_core::unknown_opener_sentence_separators().is_empty());
+    assert_ne!(
+        formal_ai::web_engine_core::unknown_opener_sentence_separators(),
+        [] as [&str; 0]
+    );
 }
 
 #[test]

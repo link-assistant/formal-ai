@@ -88,7 +88,10 @@ fn bundle_route_returns_links_notation() {
     assert!(response.content_type.starts_with("text/plain"));
     // The full bundle is a parseable multi-record Links-Notation document.
     let records = parse_bundle(&response.body);
-    assert!(!records.is_empty());
+    assert_ne!(
+        records,
+        [] as [(std::string::String, std::string::String); 0]
+    );
 }
 
 #[test]
@@ -122,7 +125,7 @@ fn links_query_route_filters_edges_by_role() {
     // /v1/graph edges carrying that role.
     let filtered = run_links_query(&query).expect("role query");
     assert!(filtered.edges.iter().all(|edge| edge.role == role));
-    assert!(!filtered.edges.is_empty());
+    assert_ne!(filtered.edges, [] as [formal_ai::engine::GraphEdge; 0]);
 }
 
 #[test]

@@ -94,10 +94,8 @@ fn every_seed_file_parses_to_the_same_tree_with_both_parsers() {
             .to_string();
         match formal_ai::lino_adapters::links_notation::parse_lino(&text) {
             Ok(adapted) => {
-                if canonical(&local, 0) != canonical(&adapted, 0) {
-                    if !gaps.contains(&relative) {
-                        mismatches.push(relative);
-                    }
+                if canonical(&local, 0) != canonical(&adapted, 0) && !gaps.contains(&relative) {
+                    mismatches.push(relative);
                 }
             }
             Err(error) => {

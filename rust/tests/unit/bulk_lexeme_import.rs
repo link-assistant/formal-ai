@@ -317,8 +317,11 @@ fn invalid_concepts_are_rejected_not_written() {
     };
     let mut events = EventLog::new();
     let report = lexeme_import::run(&config, None, &mut events);
-    assert!(report.accepted.is_empty());
-    assert!(report.shards.is_empty());
+    assert_eq!(
+        report.accepted,
+        [] as [formal_ai::lexeme_import::GroundedLexeme; 0]
+    );
+    assert_eq!(report.shards, [] as [formal_ai::lexeme_import::Shard; 0]);
     assert_eq!(report.rejected.len(), 1);
     assert!(
         events

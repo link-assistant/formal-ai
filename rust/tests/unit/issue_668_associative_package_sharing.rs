@@ -6,7 +6,7 @@ use formal_ai::associative_packages::{
 use formal_ai::memory::MemoryStore;
 use std::collections::{BTreeMap, BTreeSet};
 
-const EXAMPLE: &str = include_str!("../../../examples/packages/greeting.lino");
+const EXAMPLE: &str = include_str!("../../examples/packages/greeting.lino");
 fn catalog(agent: bool) -> BTreeMap<String, AvailableHandler> {
     BTreeMap::from([(
         String::from("greeting-response"),
@@ -66,8 +66,11 @@ fn associative_package_sharing_rejects_missing_handler_without_mutation() {
         ),
         Err(SharingError::UnavailableHandler(_))
     ));
-    assert!(registry.packages().is_empty());
-    assert!(memory.events().is_empty());
+    assert_eq!(
+        registry.packages(),
+        [] as [&formal_ai::AssociativePackage; 0]
+    );
+    assert_eq!(memory.events(), []);
 }
 #[test]
 fn associative_package_sharing_requires_explicit_agent_approval() {
@@ -125,5 +128,8 @@ fn associative_package_sharing_agent_handler_cannot_omit_its_permission_to_bypas
         ),
         Err(SharingError::AgentApprovalRequired(_))
     ));
-    assert!(registry.packages().is_empty());
+    assert_eq!(
+        registry.packages(),
+        [] as [&formal_ai::AssociativePackage; 0]
+    );
 }

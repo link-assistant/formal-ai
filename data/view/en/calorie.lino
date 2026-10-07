@@ -1,0 +1,13 @@
+view
+  id M-e9f73c79ed06
+  lemma calorie
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of heat equal to the amount of heat required to raise the temperature of one kilogram of water by one degree at one atmosphere pressure; used by nutritionists to characterize the energy-producing potential in food"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "unit of heat defined as the quantity of heat required to raise the temperature of 1 gram of water by 1 degree centigrade at atmospheric pressure"
+    provenance (wordnet)

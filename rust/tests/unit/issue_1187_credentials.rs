@@ -26,7 +26,7 @@ fn repo_root() -> PathBuf {
 
 fn read(path: &str) -> String {
     let full = repo_root().join(path);
-    fs::read_to_string(&full).unwrap_or_else(|error| panic!("{} should be readable: {error}", path))
+    fs::read_to_string(&full).unwrap_or_else(|error| panic!("{path} should be readable: {error}"))
 }
 
 #[test]
@@ -118,7 +118,10 @@ fn no_workflow_reads_a_foreign_token_secret() {
         .expect("the workflows directory should list");
     for entry in workflows.flatten() {
         let name = entry.file_name().to_string_lossy().to_string();
-        if !name.ends_with(".yml") {
+        if !std::path::Path::new(&name)
+            .extension()
+            .is_some_and(|ext| ext.eq_ignore_ascii_case("yml"))
+        {
             continue;
         }
         let body = fs::read_to_string(entry.path()).unwrap_or_default();

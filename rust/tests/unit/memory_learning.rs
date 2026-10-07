@@ -349,7 +349,7 @@ fn dreaming_synthesizes_new_trials_from_numeric_patterns_on_top_topics() {
         .find(|trial| trial.topic == "math")
         .expect("numeric pattern must synthesize a trial");
     assert_eq!(trial.input, "add 2 3", "advances numbers past seen inputs");
-    assert!(!trial.answer.is_empty());
+    assert_ne!(trial.answer, "");
 
     let outcome = apply_dreaming_plan(&mut store, &plan);
     assert_eq!(outcome.recorded_trials, 1);

@@ -454,7 +454,10 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // unverified, masked by a run whose census-freshness step died before the
     // unit tests executed. The floor is 101; none of the nine records became
     // an unreviewed metadata gap.
-    assert_eq!(coding_records, 101, "coding-path regression floor");
+    // Issue #1167 added `program_language_swift` and `program_language_r` to
+    // the catalog, each with role, precondition, effect, unit and example, so
+    // the catalog carries 30 and the floor moves from 101 to 103.
+    assert_eq!(coding_records, 103, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the

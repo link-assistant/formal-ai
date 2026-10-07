@@ -262,7 +262,17 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
 }
 fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
     let target = repository_work_reference(request)?;
-    if !mentions_bare_role(request, seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
+    // Hive Mind's objective field (`Issue to solve: <url>`, then the prepared
+    // branch and "Proceed.") carries its verb in the delimiter, which
+    // `objective_text` has already stripped. An objective that opens with the
+    // work-item reference itself is therefore that field: the reference is
+    // the request (issues #1154 and #1155 replay this exact prompt).
+    let opens_with_reference = request
+        .split_whitespace()
+        .next()
+        .and_then(repository_work_reference)
+        .is_some();
+    if !opens_with_reference && !mentions_bare_role(request, seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
         return None;
     }
     let response_language = language(request);

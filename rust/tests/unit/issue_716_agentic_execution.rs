@@ -240,7 +240,10 @@ fn code_generation_does_not_fabricate_calls_when_required_harness_tools_are_abse
     );
     let completion = create_chat_completion_with_solver(&request, &solver());
     assert_eq!(completion.choices[0].finish_reason, "stop");
-    assert!(completion.choices[0].message.tool_calls.is_empty());
+    assert_eq!(
+        completion.choices[0].message.tool_calls,
+        [] as [formal_ai::ToolCall; 0]
+    );
 }
 
 #[test]
@@ -266,7 +269,10 @@ fn failed_compile_is_reported_and_the_run_command_is_not_attempted() {
     let completion =
         create_chat_completion_with_solver(&request(messages, &["write", "bash"]), &solver());
     assert_eq!(completion.choices[0].finish_reason, "stop");
-    assert!(completion.choices[0].message.tool_calls.is_empty());
+    assert_eq!(
+        completion.choices[0].message.tool_calls,
+        [] as [formal_ai::ToolCall; 0]
+    );
     let answer = completion.choices[0].message.content.plain_text();
     // Issue #908: the report names the failed step and its exit code rather
     // than blaming the harness that ran the command exactly as asked.

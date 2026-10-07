@@ -12,7 +12,9 @@
 //! not by name: its `latest_sha "…"` fields are not `@`-prefixed and its
 //! `latest_tag "…"` fields are not `version:` keys, so the gate reads them
 //! as data rather than as pins. Captured external evidence under
-//! `data/cache/` is not generated code and is not scanned.
+//! `data/cache/` and `data/source-cache/` (the git-ignored store fetched
+//! pages are written to at run time) is not generated code and is not
+//! scanned.
 //!
 //! This gate is red on a tree whose templates still carry the literals; the
 //! same change that rewrites them to `{placeholders}` (R6) turns it green.
@@ -43,7 +45,7 @@ fn main() {
                 repo = arguments
                     .next()
                     .unwrap_or_else(|| usage("--repo needs a path"))
-                    .into()
+                    .into();
             }
             other => usage(&format!("unknown flag {other}")),
         }
@@ -62,7 +64,7 @@ fn main() {
         );
     }
     println!(
-        "generated-version literals: {} finding(s) under data/ (data/cache excluded)",
+        "generated-version literals: {} finding(s) under data/ (data/cache, data/source-cache excluded)",
         findings.len()
     );
     if findings.is_empty() {
@@ -80,7 +82,8 @@ fn usage(message: &str) -> ! {
     std::process::exit(2);
 }
 
-/// Every memorized pin under `data/`, `data/cache/` excluded.
+/// Every memorized pin under `data/`, captured evidence (`data/cache/`,
+/// `data/source-cache/`) excluded.
 pub fn scan_data(data: &Path) -> Vec<Finding> {
     let mut findings = Vec::new();
     walk(data, data, &mut findings);
@@ -94,7 +97,10 @@ fn walk(root: &Path, dir: &Path, findings: &mut Vec<Finding>) {
     for entry in entries.flatten() {
         let path = entry.path();
         if path.is_dir() {
-            if path.file_name().is_some_and(|name| name == "cache") {
+            if path
+                .file_name()
+                .is_some_and(|name| name == "cache" || name == "source-cache")
+            {
                 continue;
             }
             walk(root, &path, findings);
@@ -191,7 +197,7 @@ mod tests {
             literal_action_sha(
                 "      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
             ),
-            Some(29)
+            Some(30)
         );
     }
 

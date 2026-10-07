@@ -433,30 +433,20 @@ fn percentile_joins_other_operations_and_languages() {
     let response =
         FormalAiEngine.answer("What are the mean and the 25th percentile of 4, 8, 15, 16, 23, 42?");
     assert_eq!(response.intent, "statistics");
-    assert!(
-        response.answer.contains("mean: 18 (108 / 6 = 18)")
-            && response.answer.contains(
-                "percentile: 9.75 (p = 25; rank = 1 + (6 - 1) × 25 / 100 = 2.25; 8 + 0.25 × (15 - 8) = 9.75)"
-            ),
-        "got: {}",
-        response.answer
+    assert_eq!(
+        response.answer.as_str(),
+        "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nmean: 18 (108 / 6 = 18)\npercentile: 9.75 (p = 25; rank = 1 + (6 - 1) × 25 / 100 = 2.25; 8 + 0.25 × (15 - 8) = 9.75)"
     );
 
     let russian = FormalAiEngine.answer("Каков 90-й перцентиль чисел 1, 2, 3, 4, 5?");
-    assert!(
-        russian
-            .answer
-            .contains("перцентиль: 4.6 (p = 90; ранг = 1 + (5 - 1) × 90 / 100 = 4.6;"),
-        "got: {}",
-        russian.answer
+    assert_eq!(
+        russian.answer.as_str(),
+        "Значения: 1, 2, 3, 4, 5 (n = 5).\nперцентиль: 4.6 (p = 90; ранг = 1 + (5 - 1) × 90 / 100 = 4.6; 4 + 0.6 × (5 - 4) = 4.6)"
     );
     let spanish = FormalAiEngine.answer("¿Cuál es el percentil 90 de 1, 2, 3, 4, 5?");
-    assert!(
-        spanish
-            .answer
-            .contains("percentil: 4.6 (p = 90; posición ="),
-        "got: {}",
-        spanish.answer
+    assert_eq!(
+        spanish.answer.as_str(),
+        "Los valores son 1, 2, 3, 4, 5 (n = 5).\npercentil: 4.6 (p = 90; posición = 1 + (5 - 1) × 90 / 100 = 4.6; 4 + 0.6 × (5 - 4) = 4.6)"
     );
 }
 

@@ -252,7 +252,10 @@ fn the_open_question_is_what_drives_the_next_research_turn() {
     // and knows precisely what to look for next, without a scripted turn count.
     assert_eq!(network.open_attributes(), vec!["connector"]);
     assert!(!network.is_closed());
-    assert!(network.ranked_plans().is_empty());
+    assert_eq!(
+        network.ranked_plans(),
+        [] as [formal_ai::option_network::Plan; 0]
+    );
 
     network.observe(
         Candidate::new("plug_adapter", Tier::GenericCompatible)
@@ -260,7 +263,10 @@ fn the_open_question_is_what_drives_the_next_research_turn() {
     );
     assert!(network.is_closed());
     assert!(network.unmet().is_empty());
-    assert!(!network.ranked_plans().is_empty());
+    assert_ne!(
+        network.ranked_plans(),
+        [] as [formal_ai::option_network::Plan; 0]
+    );
 }
 
 #[test]
@@ -321,7 +327,10 @@ fn the_target_and_current_contexts_are_ordinary_world_model_contexts() {
     let target = network.target_context();
     assert_eq!(target.links().len(), 3);
     // Nothing is established before research runs.
-    assert!(network.current_context().links().is_empty());
+    assert_eq!(
+        network.current_context().links(),
+        [] as [formal_ai::SubstitutionLink; 0]
+    );
 
     network.observe(
         Candidate::new("original_supply", Tier::Authentic)
@@ -348,7 +357,10 @@ fn plan_search_is_bounded_by_the_declared_item_limit() {
     // Closed, yet no plan: satisfying it would need more separate purchases than
     // the bound allows. Reporting nothing is correct — reporting a partial
     // bundle as if it were sufficient would not be.
-    assert!(network.ranked_plans().is_empty());
+    assert_eq!(
+        network.ranked_plans(),
+        [] as [formal_ai::option_network::Plan; 0]
+    );
 }
 
 /// The generality check. Nothing below is a charger, a laptop, or a marketplace

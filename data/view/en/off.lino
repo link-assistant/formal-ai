@@ -1,0 +1,41 @@
+view
+  id M-a9882f44ffce
+  lemma off
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not in operation or operational"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(of events) no longer planned or scheduled"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "from a particular thing or place or position (‘forth’ is obsolete)"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "at a distance in space or time"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "no longer on or in contact or attached"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "below a satisfactory level"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "in an unpalatable state"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not performing or scheduled for duties"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "kill intentionally and with premeditation"
+    provenance (wordnet)

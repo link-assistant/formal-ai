@@ -187,7 +187,7 @@ fn token_mode_respects_word_boundaries() {
 #[test]
 fn a_missing_set_never_matches() {
     assert!(!matches("no_such_cue_set", "anything at all"));
-    assert!(cues("no_such_cue_set").is_empty());
+    assert_eq!(cues("no_such_cue_set"), []);
 }
 
 /// The relevants list is what routing consumes; if a handler cue fires it appears

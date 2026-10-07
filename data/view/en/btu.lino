@@ -1,0 +1,9 @@
+view
+  id M-ade291f635dd
+  lemma btu
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of heat equal to the amount of heat required to raise one pound of water one degree Fahrenheit at one atmosphere pressure; equivalent to 251.997 calories"
+    provenance (wordnet)

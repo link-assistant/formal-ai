@@ -68,7 +68,7 @@ fn the_classifier_maps_every_failure_class_onto_the_right_target() {
     );
     for strategy in [&solver, &data, &test] {
         assert!(strategy.is_human_gated());
-        assert!(!strategy.trace_id.is_empty());
+        assert_ne!(strategy.trace_id, "");
     }
 }
 

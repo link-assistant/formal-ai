@@ -113,7 +113,7 @@ fn explain_reports_not_recorded_for_stages_a_route_did_not_populate() {
     let derivation = Derivation::record_for(&log, "answer_fedcba9876543210");
 
     assert!(derivation.fetches.is_empty(), "nothing is fabricated");
-    assert!(derivation.search_queries.is_empty());
+    assert_eq!(derivation.search_queries, [] as [std::string::String; 0]);
     let explanation = derivation.explain_text();
     for stage in [
         "stage search_queries",

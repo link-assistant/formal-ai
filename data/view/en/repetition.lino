@@ -1,0 +1,17 @@
+view
+  id M-ec4ceb511366
+  lemma repetition
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an event that repeats"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of doing or performing again"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the repeated use of the same word or word pattern as a rhetorical device"
+    provenance (wordnet)

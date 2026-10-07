@@ -169,7 +169,10 @@ fn conversational_program_without_a_named_callable_uses_the_main_entry_point() {
         .expect("program request without a signature");
     assert_eq!(spec.artifact_shape, ArtifactShape::Program);
     assert_eq!(spec.name, "main");
-    assert!(spec.parameters.is_empty());
+    assert_eq!(
+        spec.parameters,
+        [] as [formal_ai::coding_task_spec::Parameter; 0]
+    );
 }
 
 #[test]
@@ -179,7 +182,10 @@ fn conversational_program_uses_a_resolved_task_as_its_gap_identity() {
 
     assert_eq!(spec.artifact_shape, ArtifactShape::Program);
     assert_eq!(spec.name, "count_to_three");
-    assert!(spec.parameters.is_empty());
+    assert_eq!(
+        spec.parameters,
+        [] as [formal_ai::coding_task_spec::Parameter; 0]
+    );
 }
 
 #[test]

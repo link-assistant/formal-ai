@@ -1,0 +1,33 @@
+view
+  id M-daf7254396a6
+  lemma statement
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a message that is stated or declared; a communication (oral or written) setting forth particulars or facts etc"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a fact or assertion offered as evidence that something is true"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(music) the presentation of a musical theme"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a nonverbal message"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of affirming or asserting or stating something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a line of code written as part of a computer program"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a document showing credits and debits"
+    provenance (wordnet)

@@ -246,7 +246,10 @@ fn source_prelearning_is_consent_gated_and_uses_cache_provenance_and_ttl() {
         AnticipationConsent::Granted,
         &AnticipationConfig::default(),
     );
-    assert!(!granted.sources.is_empty());
+    assert_ne!(
+        granted.sources,
+        [] as [formal_ai::anticipation::PrelearnedSource; 0]
+    );
     assert!(requests.load(Ordering::SeqCst) > 0);
     for source in &granted.sources {
         assert_eq!(source.fetched_at, fixed_time().to_string());

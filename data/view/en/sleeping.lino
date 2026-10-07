@@ -1,0 +1,21 @@
+view
+  id M-f7c73ff11108
+  lemma sleeping
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the state of being asleep"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "quiet and inactive restfulness"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the suspension of consciousness and decrease in metabolic rate"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "lying with head on paws as if sleeping"
+    provenance (wordnet)

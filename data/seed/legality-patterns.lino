@@ -102,8 +102,10 @@ legality_patterns
     phrase "make a botnet"
     phrase "ddos tool for"
     phrase "hack into"
+    phrase "sql injection"
     phrase "написать вымогательское по"
     phrase "создать ботнет"
+    phrase "sql-инъекци"
   pattern warn_impersonation
     category impersonation
     disposition warn

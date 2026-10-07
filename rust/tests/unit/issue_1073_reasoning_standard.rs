@@ -413,7 +413,10 @@ fn instruction_completion_requires_every_attached_check() {
             "compiler_available".to_owned(),
         ],
     ] {
-        assert!(set.unmet_steps(&observed).is_empty());
+        assert_eq!(
+            set.unmet_steps(&observed),
+            [] as [&formal_ai::reasoning_standard::instructions::InstructionStep; 0]
+        );
     }
     let uncheckable = formalize(
         "unknown",
@@ -665,7 +668,10 @@ fn conclusions_need_varied_refutations_before_they_may_be_leaned_toward() {
 #[test]
 fn the_standard_is_a_formal_procedure_that_replays_without_a_model() {
     let standard = loaded();
-    assert!(!standard.gates.is_empty());
+    assert_ne!(
+        standard.gates,
+        [] as [formal_ai::reasoning_standard::Gate; 0]
+    );
     for gate in &standard.gates {
         assert!(!gate.requirement.trim().is_empty(), "{}", gate.slug);
         assert!(!gate.failure_slug.trim().is_empty(), "{}", gate.slug);

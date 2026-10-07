@@ -1,0 +1,37 @@
+view
+  id M-fb3498461453
+  lemma send
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to go somewhere"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to cause or order to be taken, directed, or transmitted to another place"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to be directed or transmitted to another place"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "transport commercially"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "assign to a station"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "transfer"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to be admitted; of persons to an institution"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "broadcast over the airwaves, as in radio or television"
+    provenance (wordnet)

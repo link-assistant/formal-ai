@@ -1,0 +1,9 @@
+view
+  id M-4d6ee18a72c7
+  lemma greatest
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "highest in quality"
+    provenance (wordnet)

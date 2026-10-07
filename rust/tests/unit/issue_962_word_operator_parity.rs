@@ -125,22 +125,12 @@ fn spanish_opening_question_mark_does_not_change_the_answer() {
 /// computes instead of echoing the expression back.
 #[test]
 fn glued_chinese_operator_words_are_split_before_evaluation() {
-    for (prompt, result) in [
-        ("12乘以7", "= 84"),
-        ("12乘以7等于多少?", "= 84"),
-        ("9减去4等于多少?", "= 5"),
-        ("8除以2等于多少?", "= 4"),
+    for (prompt, answer) in [
+        ("12乘以7", "12乘以7 = 84"),
+        ("12乘以7等于多少?", "12乘以7 = 84"),
+        ("9减去4等于多少?", "9减去4 = 5"),
+        ("8除以2等于多少?", "8除以2 = 4"),
     ] {
-        let response = FormalAiEngine.answer(prompt);
-        assert_eq!(
-            response.intent, "calculation",
-            "prompt {prompt:?}: intent={:?} answer={:?}",
-            response.intent, response.answer,
-        );
-        assert!(
-            response.answer.ends_with(result),
-            "prompt {prompt:?} should end with {result:?}, got {:?}",
-            response.answer,
-        );
+        assert_exact_calculation(prompt, answer);
     }
 }

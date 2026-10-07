@@ -257,7 +257,10 @@ fn a_missing_catalog_fragment_is_a_blocked_need_and_never_an_answer() {
     );
 
     assert!(outcome.selected.is_none());
-    assert!(outcome.unverified.is_empty());
+    assert_eq!(
+        outcome.unverified,
+        [] as [formal_ai::composition::UnverifiedDraft; 0]
+    );
     assert_eq!(outcome.blocked_needs.len(), 1);
     assert_eq!(outcome.blocked_needs[0].kind, NeedKind::Part);
     assert_eq!(outcome.blocked_needs[0].state, NeedState::Unsatisfiable);

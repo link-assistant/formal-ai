@@ -19,7 +19,7 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 #[test]
 fn knowledge_export_is_non_empty_links_notation() {
     let notation = knowledge_links_notation();
-    assert!(!notation.is_empty());
+    assert_ne!(notation, "");
     assert!(notation.contains("formal_ai_knowledge"));
 }
 
@@ -35,7 +35,7 @@ fn knowledge_records_parse_as_links_notation() {
 #[test]
 fn every_answer_includes_links_notation_trace() {
     let response = answer("Hi");
-    assert!(!response.links_notation.is_empty());
+    assert_ne!(response.links_notation, "");
     let (id, _root) =
         parse_indented(&response.links_notation).expect("trace should be valid Links Notation");
     assert!(id.starts_with("answer_"));

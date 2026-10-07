@@ -103,15 +103,15 @@ fn forty_conversions_through_si() {
     assert_converts(6, "foot", "meter", 6.0 * 0.3048);
     assert_converts(1, "inch", "millimeter", 25.4);
     assert_converts(1, "nautical_mile", "kilometer", 1.852);
-    assert_converts(1, "astronomical_unit", "kilometer", 149597870.700);
-    assert_converts(1, "light_year", "kilometer", 9460730472580.8);
+    assert_converts(1, "astronomical_unit", "kilometer", 149_597_870.700);
+    assert_converts(1, "light_year", "kilometer", 9_460_730_472_580.8);
     assert_converts(3, "yard", "meter", 3.0 * 0.9144);
     // Mass.
-    assert_converts(150, "pound", "kilogram", 150.0 * 0.45359237);
-    assert_converts(1, "ounce", "gram", 28.349523125);
-    assert_converts(1, "stone", "kilogram", 6.35029318);
-    assert_converts(1, "us_ton", "tonne", 0.90718474);
-    assert_converts(1, "long_ton", "tonne", 1.0160469088);
+    assert_converts(150, "pound", "kilogram", 150.0 * 0.453_592_37);
+    assert_converts(1, "ounce", "gram", 28.349_523_125);
+    assert_converts(1, "stone", "kilogram", 6.350_293_18);
+    assert_converts(1, "us_ton", "tonne", 0.907_184_74);
+    assert_converts(1, "long_ton", "tonne", 1.016_046_908_8);
     // Time.
     assert_converts(5, "hour", "minute", 300.0);
     assert_converts(1, "week", "day", 7.0);
@@ -127,33 +127,33 @@ fn forty_conversions_through_si() {
     );
     assert_converts(10, "knot", "kilometer_per_hour", 18.52);
     // Power.
-    assert_converts(3, "horsepower", "watt", 3.0 * 745.699872);
-    assert_converts(1, "horsepower", "kilowatt", 0.745699872);
+    assert_converts(3, "horsepower", "watt", 3.0 * 745.699_872);
+    assert_converts(1, "horsepower", "kilowatt", 0.745_699_872);
     assert_converts(1, "horsepower_metric", "watt", 735.49875);
     // Energy.
     assert_converts(2000, "calorie", "kilojoule", 8.368);
     assert_converts(1, "kilocalorie", "kilojoule", 4.184);
     assert_converts(1, "watt_hour", "joule", 3600.0);
     assert_converts(1, "kilowatt_hour", "kilojoule", 3600.0);
-    assert_converts(1, "btu", "joule", 1055.05585262);
+    assert_converts(1, "btu", "joule", 1_055.055_852_62);
     // Force.
     assert_converts(70, "kilogram_force", "newton", 70.0 * 9.80665);
     assert_converts(1000, "dyne", "newton", 0.01);
-    assert_converts(1, "pound_force", "newton", 4.4482216152605);
+    assert_converts(1, "pound_force", "newton", 4.448_221_615_260_5);
     // Pressure.
-    assert_converts(1, "atmosphere", "pascal", 101325.0);
+    assert_converts(1, "atmosphere", "pascal", 101_325.0);
     assert_converts(1, "atmosphere", "bar", 1.01325);
-    assert_converts(32, "psi", "kilopascal", 32.0 * 6894.757293168 / 1000.0);
-    assert_converts(1, "psi", "torr", 6894.757293168 / (101325.0 / 760.0));
+    assert_converts(32, "psi", "kilopascal", 32.0 * 6_894.757_293_168 / 1000.0);
+    assert_converts(1, "psi", "torr", 6_894.757_293_168 / (101_325.0 / 760.0));
     // Area.
-    assert_converts(1, "acre", "hectare", 0.40468564224);
-    assert_converts(1, "square_mile", "square_kilometer", 2.589988110336);
+    assert_converts(1, "acre", "hectare", 0.404_685_642_24);
+    assert_converts(1, "square_mile", "square_kilometer", 2.589_988_110_336);
     assert_converts(1, "hectare", "square_meter", 10000.0);
-    assert_converts(1, "square_foot", "square_meter", 0.09290304);
+    assert_converts(1, "square_foot", "square_meter", 0.092_903_04);
     // Volume.
-    assert_converts(2, "liter", "us_gallon", 2.0 / 3.785411784);
+    assert_converts(2, "liter", "us_gallon", 2.0 / 3.785_411_784);
     assert_converts(1, "imperial_gallon", "liter", 4.54609);
-    assert_converts(2, "us_cup", "milliliter", 2.0 * 236.5882365);
+    assert_converts(2, "us_cup", "milliliter", 2.0 * 236.588_236_5);
     // Data and angle (dimensionless families).
     assert_converts(1, "gibibyte", "mebibyte", 1024.0);
     assert_converts(1, "kibibyte", "byte", 1024.0);
@@ -168,7 +168,7 @@ fn exact_conversions_stay_rational() {
         outcome,
         SiConversion::Converted {
             // 2237.099616 reduced: 2237099616/1000000 → 69909363/31250.
-            value_num: 69909363,
+            value_num: 69_909_363,
             value_den: 31250
         }
     );
@@ -282,7 +282,7 @@ fn multilingual_prompts_resolve_and_convert() {
             3,
             "horsepower",
             "watts",
-            3.0 * 745.699872,
+            3.0 * 745.699_872,
         ),
         (
             "5 मील कितने किलोमीटर हैं?",
@@ -291,7 +291,7 @@ fn multilingual_prompts_resolve_and_convert() {
             "किलोमीटर",
             5.0 * 1609.344 / 1000.0,
         ),
-        ("3 马力是多少瓦?", 3, "马力", "瓦", 3.0 * 745.699872),
+        ("3 马力是多少瓦?", 3, "马力", "瓦", 3.0 * 745.699_872),
     ];
     for (prompt, value, from_surface, to_surface, expected) in cases {
         assert!(

@@ -33,7 +33,8 @@ pub fn report_text(intent: &str, values: &[(&str, &str)]) -> String {
 }
 
 /// Replace every `{name}` slot `values` names; any other brace is kept.
-fn fill_slots(template: &str, values: &[(&str, &str)]) -> String {
+#[must_use]
+pub fn fill_slots(template: &str, values: &[(&str, &str)]) -> String {
     let mut out = String::with_capacity(template.len());
     let mut rest = template;
     while let Some(open) = rest.find('{') {
@@ -54,19 +55,4 @@ fn fill_slots(template: &str, values: &[(&str, &str)]) -> String {
     }
     out.push_str(rest);
     out
-}
-
-#[cfg(test)]
-mod tests {
-    use super::fill_slots;
-
-    #[test]
-    fn slots_fill_in_one_pass_and_unknown_braces_survive() {
-        let template = concat!("{", "a}+{", "b}={", "c}");
-        let braced_b = concat!("{", "b}");
-        assert_eq!(
-            fill_slots(template, &[("a", braced_b), ("b", "2")]),
-            concat!("{", "b}+2={", "c}")
-        );
-    }
 }

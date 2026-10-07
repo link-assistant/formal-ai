@@ -155,7 +155,7 @@ fn generated_question_answer_stream_answers_with_existing_engine() {
         .expect("answer stream should yield at least one question-answer pair");
 
     assert_eq!(answered.question.text, "what is formal?");
-    assert!(!answered.answer.answer.trim().is_empty());
+    assert_ne!(answered.answer.answer.trim(), "");
     assert!(
         answered
             .answer

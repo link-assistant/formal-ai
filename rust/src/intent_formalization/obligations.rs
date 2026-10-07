@@ -89,7 +89,14 @@ const PRINT_VERB_FALLBACK: &[(&str, &[&str])] = &[
     ("en", &["print", "prints", "write", "writes", "output"]),
     (
         "ru",
-        &["выведи", "вывод", "напечатай", "напиши", "печатать"],
+        &[
+            "выведи",
+            "вывести",
+            "вывод",
+            "напечатай",
+            "напиши",
+            "печатать",
+        ],
     ),
     ("hi", &["छापो", "छाप", "प्रिंट", "आउटपुट", "लिखो"]),
     ("zh", &["打印", "输出", "打印出"]),
@@ -432,17 +439,24 @@ pub fn coreference_pass(graph: ObligationGraph) -> ObligationGraph {
 /// (program, CI, style, naming, badge) is a sentence about building
 /// something, not a command line. A bare `echo "Hello"` carries no authoring
 /// clause and stays a command.
+///
+/// One clause can carry both halves ("make a Kotlin app that prints
+/// `Hello`; add a GitHub Actions workflow" enumerates no cue to split on),
+/// and the graph keeps one kind per node, so the authoring half is read from
+/// every clause's own text rather than from the node classifications alone.
 #[must_use]
 pub fn request_carries_work_obligations(text: &str) -> bool {
     let graph = formalize_request(text);
-    let authoring = graph.has_obligation(ObligationKind::ProgramFile)
-        || graph.has_obligation(ObligationKind::CiWorkflow)
-        || graph.has_obligation(ObligationKind::CodeStyle)
-        || graph.has_obligation(ObligationKind::FileNaming)
-        || graph.has_obligation(ObligationKind::CiBadge);
-    (graph.has_obligation(ObligationKind::OutputLiteral) && authoring)
-        || graph.has_obligation(ObligationKind::FileNaming)
-        || graph.has_obligation(ObligationKind::CiBadge)
+    let authoring: Vec<ObligationKind> = graph
+        .nodes
+        .iter()
+        .filter_map(|node| authoring_kind(&node.clause))
+        .collect();
+    let names_or_badges =
+        |kind: ObligationKind| graph.has_obligation(kind) || authoring.contains(&kind);
+    (graph.has_obligation(ObligationKind::OutputLiteral) && !authoring.is_empty())
+        || names_or_badges(ObligationKind::FileNaming)
+        || names_or_badges(ObligationKind::CiBadge)
 }
 
 /// Classify one clause against the seed lexicon and the fallback tables.
@@ -475,29 +489,39 @@ fn classify_clause(clause: &str) -> Option<(ObligationKind, Option<String>)> {
             return Some((ObligationKind::OutputLiteral, Some(value)));
         }
     }
+    authoring_kind(clause).map(|kind| (kind, None))
+}
 
+/// The authoring obligation a clause demands — program, CI workflow, style,
+/// naming or badge — read from its text outside quoted segments.
+fn authoring_kind(clause: &str) -> Option<ObligationKind> {
+    let normalized = normalize_prompt(&crate::solver_handlers::text_outside_quoted_segments(
+        clause,
+    ));
+    let lower = normalized.to_lowercase();
+    let lexicon = seed::lexicon();
     if lexicon.mentions_role(seed::ROLE_CI_WORKFLOW_REQUEST, &normalized) {
-        return Some((ObligationKind::CiWorkflow, None));
+        return Some(ObligationKind::CiWorkflow);
     }
     if lexicon.mentions_role(seed::ROLE_PROGRAM_REQUEST, &normalized)
         || lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized)
     {
-        return Some((ObligationKind::ProgramFile, None));
+        return Some(ObligationKind::ProgramFile);
     }
     if CODE_STYLE_MARKERS
         .iter()
         .any(|marker| lower.contains(marker))
     {
-        return Some((ObligationKind::CodeStyle, None));
+        return Some(ObligationKind::CodeStyle);
     }
     if FILE_NAMING_MARKERS
         .iter()
         .any(|marker| lower.contains(marker))
     {
-        return Some((ObligationKind::FileNaming, None));
+        return Some(ObligationKind::FileNaming);
     }
     if CI_BADGE_MARKERS.iter().any(|marker| lower.contains(marker)) {
-        return Some((ObligationKind::CiBadge, None));
+        return Some(ObligationKind::CiBadge);
     }
     None
 }

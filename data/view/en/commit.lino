@@ -1,0 +1,37 @@
+view
+  id M-2e7db528993d
+  lemma commit
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "perform an act, usually with a negative connotation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a set of changes permanent"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give entirely to a specific person, activity, or cause"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to be admitted; of persons to an institution"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "confer a trust upon"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make an investment"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "engage in or perform"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "transfer to another place so something can be kept or preserved"
+    provenance (wordnet)

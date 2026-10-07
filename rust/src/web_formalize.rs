@@ -31,7 +31,7 @@ use std::collections::BTreeMap;
 use meta_language::{Link, LinkId, LinkNetwork};
 use serde_json::Value;
 
-use crate::seed::parser::parse_lino;
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::source_fetch::SourceCapture;
 
 /// The formalization rules seed, mirrored into the embedded bundle.
@@ -128,6 +128,16 @@ struct SniffRule {
     kind: String,
 }
 
+/// The records of a seed file: the children of its one top-level wrapper
+/// (`page_formalization_rules`, `source_trust_weights`), or the top level
+/// itself when a file carries no wrapper.
+fn seed_records(tree: &LinoNode) -> &[LinoNode] {
+    match tree.children.as_slice() {
+        [wrapper] if !wrapper.children.is_empty() => &wrapper.children,
+        records => records,
+    }
+}
+
 impl FormalizationRules {
     fn load() -> Self {
         let tree = parse_lino(RULES_TEXT);
@@ -141,7 +151,7 @@ impl FormalizationRules {
             extensions: Vec::new(),
             command_verbs: Vec::new(),
         };
-        for record in &tree.children {
+        for record in seed_records(&tree) {
             match record.name.as_str() {
                 "mime" => {
                     let hint = record.find_child_value("hint").to_owned();

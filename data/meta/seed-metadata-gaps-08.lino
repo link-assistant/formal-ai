@@ -19,6 +19,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calculator.lino"
     record "exchange_rate"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_41696dc87b715588
+    source "data/seed/meanings-calendar.lino"
+    record "february"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_1436d08299634eb8
     source "data/seed/meanings-coding-structure-2.lino"
     record "absolute_deviation"

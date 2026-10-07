@@ -46,8 +46,10 @@ total_closure_schema
   literal_operand_head command_verb
   literal_operand_head cst_node_kind
   literal_operand_head cue
+  literal_operand_head ending
   literal_operand_head entry_name
   literal_operand_head key
+  literal_operand_head members
   literal_operand_head output_call
   literal_operand_head prefix
   literal_operand_head severity

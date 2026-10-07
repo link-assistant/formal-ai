@@ -50,8 +50,8 @@ fn codex_read_pair() -> serde_json::Value {
     ])
 }
 
-/// The shared ChatMessage list a Responses request replays into.
-fn replayed_messages(input: serde_json::Value) -> Vec<formal_ai::ChatMessage> {
+/// The shared `ChatMessage` list a Responses request replays into.
+fn replayed_messages(input: &serde_json::Value) -> Vec<formal_ai::ChatMessage> {
     let request: ResponsesRequest = serde_json::from_value(json!({
         "model": "formal-ai",
         "input": input,
@@ -73,7 +73,7 @@ fn calls(plan: Option<AgenticPlan>) -> Vec<PlannedToolCall> {
 /// `gh issue view`.
 #[test]
 fn codex_cmd_read_drives_execution_instead_of_repeating() {
-    let messages = replayed_messages(codex_read_pair());
+    let messages = replayed_messages(&codex_read_pair());
     let planned = calls(plan_chat_step(&messages, &CODEX_TOOLS));
     assert!(
         !planned.is_empty(),
@@ -148,7 +148,7 @@ fn repeated_successful_read_is_reported_not_replanned() {
     let first_output = array[2].clone();
     array.push(first_call);
     array.push(first_output);
-    let messages = replayed_messages(items);
+    let messages = replayed_messages(&items);
     match plan_chat_step(&messages, &CODEX_TOOLS) {
         Some(AgenticPlan::ToolCalls(calls)) => {
             for call in &calls {

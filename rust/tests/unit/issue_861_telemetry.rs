@@ -18,7 +18,7 @@ impl TelemetryTransport for Capture {
         }
     }
 }
-fn diagnostic() -> AnonymousDiagnostic {
+const fn diagnostic() -> AnonymousDiagnostic {
     AnonymousDiagnostic {
         kind: DiagnosticKind::Solver,
         code: 42,
@@ -35,7 +35,7 @@ fn telemetry_default_never_sends() {
         Telemetry::default().report(diagnostic(), &target(), &mut capture),
         Err(TelemetryError::ConsentRequired)
     );
-    assert!(capture.sent.is_empty());
+    assert_eq!(capture.sent, [] as [std::string::String; 0]);
 }
 #[test]
 fn telemetry_once_consent_is_consumed_even_on_failure() {

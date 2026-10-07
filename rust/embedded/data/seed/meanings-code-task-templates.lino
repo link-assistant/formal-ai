@@ -463,3 +463,91 @@ meanings
     unit "not applicable"
     example "a handler body with a loop is not executed"
     grounding "data/seed/multilingual-responses.lino"
+  infinite_loop
+    defined-by method
+    role action
+    precondition "a shell-command rewrite request asks for the command to repeat"
+    effect "marks the request as wanting the command wrapped in an endless loop"
+    unit "not applicable"
+    example "run the cleanup forever in a loop"
+    grounding "data/seed/code-task-cues.lino"
+  screen_execution
+    defined-by method
+    role action
+    precondition "a shell-command rewrite request that names a screen session asks for the command to run inside it on one line"
+    effect "marks the request as wanting the loop started detached as screen -dmS with bash -c"
+    unit "not applicable"
+    example "execute it in a single line inside screen"
+    grounding "data/seed/code-task-cues.lino"
+  command_head
+    defined-by method
+    role action
+    precondition "a prompt opens or contains a known command-line program name"
+    effect "weighs the prompt as an existing shell command to transform rather than prose"
+    unit "not applicable"
+    example "rewrite the docker run command as a loop"
+    grounding "data/seed/code-task-cues.lino"
+  prose_lead
+    defined-by method
+    role action
+    precondition "a prompt opens with a conversational request lead"
+    effect "weighs the prompt as prose describing a command rather than a command itself"
+    unit "not applicable"
+    example "can we make a loop of this command"
+    grounding "data/seed/code-task-cues.lino"
+  size_qualifier
+    defined-by method
+    role action
+    precondition "a shell-compose request compares file sizes with a larger-than word"
+    effect "selects the find size test with a plus threshold"
+    unit "not applicable"
+    example "find files larger than 10 mb"
+    grounding "data/seed/code-task-cues.lino"
+  search_object
+    defined-by method
+    role action
+    precondition "a shell-compose request says search for an object"
+    effect "lets a search verb select the grep composition when paired with its object"
+    unit "not applicable"
+    example "search for TODO in the project"
+    grounding "data/seed/code-task-cues.lino"
+  pattern_lead
+    defined-by method
+    role action
+    precondition "a shell-compose request introduces the text pattern to search for"
+    effect "takes the word after the lead as the grep pattern with its case kept"
+    unit "not applicable"
+    example "files containing ERROR"
+    grounding "data/seed/code-task-cues.lino"
+  suffix_lead
+    defined-by method
+    role action
+    precondition "a shell-compose request introduces a file-name ending"
+    effect "takes the word after the lead as the find -name suffix pattern"
+    unit "not applicable"
+    example "files ending in .lino"
+    grounding "data/seed/code-task-cues.lino"
+  ignore_case
+    defined-by method
+    role action
+    precondition "a shell-compose search request asks to ignore letter case"
+    effect "adds the grep -i flag"
+    unit "not applicable"
+    example "search for todo ignoring case"
+    grounding "data/seed/code-task-cues.lino"
+  names_only
+    defined-by method
+    role action
+    precondition "a shell-compose search request asks which files match rather than the matching lines"
+    effect "adds the grep -l flag so only file names are listed"
+    unit "not applicable"
+    example "which files contain TODO"
+    grounding "data/seed/code-task-cues.lino"
+  files_noun
+    defined-by method
+    role action
+    precondition "a shell-compose request names files after a type word"
+    effect "reads the word before the files noun as a file-type extension"
+    unit "not applicable"
+    example "find all log files"
+    grounding "data/seed/code-task-cues.lino"

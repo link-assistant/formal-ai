@@ -107,6 +107,43 @@ const fn response_language_followup_noop(
     None
 }
 
+/// The issue #1177 handlers whose subject is a pasted code artifact. In such a
+/// request the code is what the instruction acts on (review, explain, refactor,
+/// debug), never a task to synthesize, and its paths and operators are code,
+/// never a workspace object.
+const CODE_ARTIFACT_HANDLERS: &[NativeHandler] = &[
+    handle_code_debugging,
+    handle_code_explanation,
+    handle_code_review,
+    handle_code_refactoring,
+];
+
+/// True when one of `handlers` claims `prompt`, probed on a scratch log so
+/// the caller's trace records only the handler that actually answers.
+fn any_handler_claims(handlers: &[NativeHandler], prompt: &str) -> bool {
+    let normalized = crate::engine::normalize_prompt(prompt);
+    handlers
+        .iter()
+        .any(|handler| handler(prompt, &normalized, &mut EventLog::new()).is_some())
+}
+
+/// True when a code-artifact handler (debugging, explanation, review,
+/// refactoring) claims the request. Route promotion asks it before reading a
+/// pasted `def` as a program-synthesis task (issue #1177).
+#[must_use]
+pub fn code_artifact_task_claims(prompt: &str) -> bool {
+    any_handler_claims(CODE_ARTIFACT_HANDLERS, prompt)
+}
+
+/// True when the shell-command composer claims the request. The capability
+/// table's honest gap declines these so the rank walk reaches the composer
+/// instead of reading the composed command's search root as a workspace read
+/// (issue #1177).
+#[must_use]
+pub fn shell_compose_claims(prompt: &str) -> bool {
+    any_handler_claims(&[handle_shell_command_compose], prompt)
+}
+
 #[derive(Clone, Copy)]
 pub struct ContextualRuntime {
     proof_render_config: ProofRenderConfig,

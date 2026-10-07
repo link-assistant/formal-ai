@@ -65,7 +65,7 @@ fn decompose_rust_hello_world_produces_entry_output_literal() {
         .find(|part| part.kind == CodePartKind::EntryPoint)
         .expect("entry part");
     assert_eq!(entry.source_text, "main");
-    assert!(!entry.cst_node_kind.is_empty());
+    assert_ne!(entry.cst_node_kind, "");
     let output = node
         .parts
         .iter()
@@ -341,7 +341,7 @@ fn recompose_with_formal_ai_literal_yields_go_source() {
 
 /// R1164-9 (static half): the seed already carries Pascal's program shape
 /// and output call, so the moment a grammar row is registered the held-out
-/// language recomposes; the answer today is the honest UnknownGrammar from
+/// language recomposes; the answer today is the honest `UnknownGrammar` from
 /// decompose, and this pins the shape that waits for it.
 #[test]
 fn pascal_shape_is_ready_for_its_grammar_row() {
@@ -404,7 +404,14 @@ fn recomposed_parts_carry_all_source_urls() {
 /// matching the schema seed.
 #[test]
 fn records_render_as_links_notation() {
-    let node = decompose_code_node(RUST_HELLO, "rust", &[]).expect("rust decomposes");
+    // The prose link is the part that carries a source URL, so the
+    // recomposition below has a `part_source_url` to render.
+    let prose = vec![ProseLink {
+        relation: "compile with".to_owned(),
+        text: "rustc main.rs".to_owned(),
+        source_url: "https://doc.rust-lang.org/book/ch01-02-hello-world.html".to_owned(),
+    }];
+    let node = decompose_code_node(RUST_HELLO, "rust", &prose).expect("rust decomposes");
     let notation = decomposed_links_notation(&node);
     assert!(notation.contains("decomposed_code_node"));
     assert!(notation.contains("language_slug rust"));
@@ -440,8 +447,8 @@ fn adoption_steps_leave_license_fields_to_the_gate() {
     let records = procedure.procedure_step_records();
     assert_eq!(records.len(), procedure.shared_structure.len());
     for record in &records {
-        assert!(record.license_name.is_empty());
-        assert!(record.license_url.is_empty());
+        assert_eq!(record.license_name, "");
+        assert_eq!(record.license_url, "");
         assert_eq!(record.source_id, procedure.id);
     }
 }

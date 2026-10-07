@@ -740,9 +740,11 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
 
     assert_eq!(
         pushing_jobs.len(),
-        4,
-        "expected the four jobs that write to the remote over git (the three \
-         release writers and the benchmark ledger writer), found \
+        6,
+        "expected the six jobs that write to the remote over git (the three \
+         release writers, the benchmark ledger writer, the daily dependency \
+         pull request of issue #1169 and the orphan-branch isolation run of \
+         issue #1187), found \
          {pushing_jobs:?}. A new one must keep its checkout credential; one \
          that stopped pushing should drop it"
     );

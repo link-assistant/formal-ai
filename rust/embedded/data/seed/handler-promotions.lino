@@ -72,6 +72,17 @@ handler_promotions
           substring divided of lowercase
           role arithmetic_operator_word of lowercase
     because "a digit and an arithmetic operator form an executable arithmetic expression"
+  promotion statistics
+    rank 65
+    when
+      all
+        role statistics_operation of cleaned
+        shape digit of trimmed
+        substring "," of lowercase
+        any
+          substring "?" of lowercase
+          substring "？" of lowercase
+    because "issue 1176: a question naming a statistic over a stated list of values is computed from that list before a search or a measurement lookup reads the statistic as a term to look up"
   promotion task_decomposition
     rank 70
     when

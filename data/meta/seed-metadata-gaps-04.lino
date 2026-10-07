@@ -27,6 +27,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_following"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_ffb20e9c2e71bce4
+    source "data/seed/meanings-calendar.lino"
+    record "january"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_353ff86fbd4e5304
     source "data/seed/meanings-calendar.lino"
     record "thursday"

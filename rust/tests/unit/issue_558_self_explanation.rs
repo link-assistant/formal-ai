@@ -103,12 +103,21 @@ fn the_explanation_covers_all_three_artifact_kinds() {
             "topic {} has no citation",
             section.topic
         );
-        assert!(!section.statement.trim().is_empty());
+        assert_ne!(section.statement.trim(), "");
     }
     // Source, data, and test are all represented — the issue asks for all three.
-    assert!(!explanation.citations_of(CitationKind::Source).is_empty());
-    assert!(!explanation.citations_of(CitationKind::Data).is_empty());
-    assert!(!explanation.citations_of(CitationKind::Test).is_empty());
+    assert_ne!(
+        explanation.citations_of(CitationKind::Source),
+        [] as [&formal_ai::Citation; 0]
+    );
+    assert_ne!(
+        explanation.citations_of(CitationKind::Data),
+        [] as [&formal_ai::Citation; 0]
+    );
+    assert_ne!(
+        explanation.citations_of(CitationKind::Test),
+        [] as [&formal_ai::Citation; 0]
+    );
     assert_eq!(
         explanation.citation_count(),
         explanation.citations().len(),

@@ -101,25 +101,3 @@ pub fn format_lino(root: &LinoNode) -> String {
     }
     out
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn indentation_and_quoted_values_survive() {
-        let doc = "# seed comment\nstrategy\n  value \"quoted value\"\n  step\n    name first\n";
-        let parsed = parse_lino(doc).unwrap();
-        assert_eq!(parsed.children[0].name, "strategy");
-        assert_eq!(parsed.children[0].find_child_value("value"), "quoted value");
-        assert_eq!(parsed.children[0].children[1].children[0].id, "first");
-        let reparsed = parse_lino(&format_lino(&parsed)).unwrap();
-        assert_eq!(
-            reparsed.children[0].find_child_value("value"),
-            "quoted value"
-        );
-    }
-    #[test]
-    fn malformed_document_is_rejected() {
-        assert!(parse_lino("value: (\n").is_err());
-    }
-}

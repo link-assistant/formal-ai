@@ -76,6 +76,7 @@ fn temp_cache(label: &str) -> std::path::PathBuf {
 
 fn fetch(url: &str, label: &str) -> SourceCapture {
     CachedSourceClient::new(temp_cache(label), FixtureTransport)
+        .with_online(true)
         .fetch(url)
         .expect("fixture fetch")
 }
@@ -224,7 +225,7 @@ fn store_keys_pages_by_url_and_hash() {
     assert_eq!(store.len(), 1);
     assert!(store.get(&key).is_some());
     assert!(store.contains_url(KOTLINLANG_URL));
-    let mut changed = first.clone();
+    let mut changed = first;
     changed.sha256 = format!("{}0", changed.sha256);
     let second_key = store.insert(changed);
     assert_eq!(store.len(), 2);

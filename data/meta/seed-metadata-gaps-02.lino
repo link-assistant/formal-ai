@@ -15,6 +15,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_today"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1bebb4b7b35e8872
+    source "data/seed/meanings-calendar.lino"
+    record "june"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_52d31e65cd8a2872
     source "data/seed/meanings-coding-structure-2.lino"
     record "explicit_value_mapping"

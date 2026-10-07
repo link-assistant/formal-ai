@@ -58,7 +58,7 @@ fn store_rejects_procedure_without_rediscovery_fields() {
         error.contains("rediscovery"),
         "the refusal names the missing policy fields: {error}"
     );
-    assert!(cache.recipes().is_empty());
+    assert_eq!(cache.recipes(), []);
 }
 
 /// The happy path: store, reload from disk, look up case-insensitively.
@@ -128,7 +128,7 @@ fn delete_all_empties_the_cache_file() {
     let mut cache = ProcedureCache::load_at(&path);
     cache.store(kotlin_hello_recipe()).expect("stores");
     cache.delete_all();
-    assert!(cache.recipes().is_empty());
+    assert_eq!(cache.recipes(), []);
     let reloaded = ProcedureCache::load_at(&path);
     assert!(
         reloaded.lookup("kotlin", "hello_world").is_none(),
@@ -154,7 +154,6 @@ fn miss_path_runs_research_and_stores_the_verified_procedure() {
     use std::sync::Arc;
     use std::sync::atomic::{AtomicUsize, Ordering};
 
-    let requests = Arc::new(AtomicUsize::new(0));
     struct ServingCount {
         requests: Arc<AtomicUsize>,
     }
@@ -176,6 +175,8 @@ fn miss_path_runs_research_and_stores_the_verified_procedure() {
             Err(FetchError::Transport(format!("fixture_missing:{url}")))
         }
     }
+
+    let requests = Arc::new(AtomicUsize::new(0));
 
     let path = isolated_cache("miss-path");
     let mut cache = ProcedureCache::load_at(&path);

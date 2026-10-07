@@ -121,7 +121,7 @@ fn the_learning_cycle_emits_promotion_proposals_in_the_issue_656_shape() {
                 .starts_with("learning_frontier:google-trends:")
         );
         assert_eq!(proposal.edit.seed_file, LEARNED_REQUEST_OPENERS_SEED_FILE);
-        assert!(!proposal.edit.lino.is_empty());
+        assert_ne!(proposal.edit.lino, "");
     }
 }
 

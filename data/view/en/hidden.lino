@@ -1,0 +1,33 @@
+view
+  id M-ee5e7695d34e
+  lemma hidden
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not accessible to view"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "designed to elude detection"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "difficult to find"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "prevent from being seen or discovered"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be or go into hiding; keep out of sight, as for protection and safety"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cover as if with a shroud"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make undecipherable or imperceptible by obscuring or concealing"
+    provenance (wordnet)

@@ -185,11 +185,14 @@ impl ResearchDocument {
                 .fold(String::new(), |mut html, (index, line)| {
                     use std::fmt::Write as _;
                     let tag = if index == 0 { "h1" } else { "p" };
+                    // The upstream HTML parser reads one block per line, so
+                    // each block owns a line and carries no line break inside.
                     let escaped = line
                         .replace('&', "&amp;")
                         .replace('<', "&lt;")
-                        .replace('>', "&gt;");
-                    let _ = write!(html, "<{tag}>{escaped}</{tag}>");
+                        .replace('>', "&gt;")
+                        .replace(['\n', '\r'], " ");
+                    let _ = writeln!(html, "<{tag}>{escaped}</{tag}>");
                     html
                 });
             let target = if format == ArtifactFormat::Pdf {

@@ -234,7 +234,10 @@ fn memory_answer(prompt: &str, prior_user: Option<&str>) -> String {
     });
     let completion = create_chat_completion_with_solver_and_memory(&request, &solver, &events);
     assert_eq!(completion.choices[0].finish_reason, "stop");
-    assert!(completion.choices[0].message.tool_calls.is_empty());
+    assert_eq!(
+        completion.choices[0].message.tool_calls,
+        [] as [formal_ai::ToolCall; 0]
+    );
     completion.choices[0].message.content.plain_text()
 }
 

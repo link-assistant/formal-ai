@@ -221,6 +221,13 @@ fn detect_terminal_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> O
     None
 }
 
+/// True when the prompt is a terminal-command request the suggestion answers,
+/// so a router that reads its arguments as workspace objects can decline it.
+#[must_use]
+pub fn names_terminal_command(prompt: &str) -> bool {
+    detect_terminal_command(prompt, &seed::terminal_command_vocabulary()).is_some()
+}
+
 /// Build the localized response body for a detected terminal command.
 ///
 /// The natural-language prose lives in `data/seed/multilingual-responses.lino`

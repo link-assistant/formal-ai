@@ -8,11 +8,14 @@
 //! instead of recognizing interface feedback.
 //!
 //! This test pins the dialog half the engine owns: the exact complaint
-//! string lands in the unknown-intent fallback and its opener comes from
-//! the seeded ru pool (`data/seed/unknown-openers.lino`), never from a Rust
-//! literal — the file's own invariant that the varied answer stays a strict
-//! superset of the seeded unknown response. The layout half (scrollable
-//! sidebar) is a CSS change in the web surface; its fix plan is recorded in
+//! string is a complaint about the assistant's own surface, which the
+//! issue-447 rows of `data/seed/capability-routing.lino` route to the
+//! structured report (`report_issue`) -- the same `ui_complaint` class
+//! `issue_1138_frontier_classes` pins in five languages. A chat surface that
+//! does not advertise the report tool answers with the seeded honest gap
+//! naming it, never with the generic unknown-intent pool that explained the
+//! complaint away. The layout half (scrollable sidebar) is a CSS change in
+//! the web surface; its fix plan is recorded in
 //! `docs/case-studies/issue-447/README.md` for the web lane.
 
 use formal_ai::seed::supported_languages;
@@ -28,12 +31,13 @@ fn solved(prompt: &str) -> String {
 }
 
 #[test]
-fn interface_complaint_gets_a_seeded_unknown_opener() {
+fn interface_complaint_routes_to_the_structured_report() {
     let answer = solved("интерфейс ужасен.");
-    // The pool lives in the seed; these literals pin the current seeded ru
-    // pool the way the repo's tests pin expected answer substrings, so a
-    // data edit that silently empties the pool fails here.
-    let seeded_openers = [
+    assert!(
+        answer.contains("`report_issue`"),
+        "the complaint must reach the report route, not the unknown-intent pool: {answer}"
+    );
+    let unknown_openers = [
         "Я пока не знаю, как ответить на это.",
         "Мне не удалось тебя понять.",
         "Я не уверен, как на это ответить.",
@@ -41,15 +45,15 @@ fn interface_complaint_gets_a_seeded_unknown_opener() {
         "Это для меня новое.",
     ];
     assert!(
-        seeded_openers.iter().any(|opener| answer.contains(opener)),
-        "the complaint must be answered by a seeded ru opener, not a Rust literal: {answer}"
+        !unknown_openers.iter().any(|opener| answer.contains(opener)),
+        "a complaint about the assistant's own surface is recorded, not explained away: {answer}"
     );
 }
 
 #[test]
 fn the_seeded_ru_pool_is_live_registry_data() {
-    // The registry must still declare ru among the agent's answer languages;
-    // the opener pool test above is meaningless without it.
+    // The registry must still declare ru among the agent's answer languages:
+    // the reported dialog was in Russian.
     assert!(
         supported_languages().iter().any(|lang| lang == "ru"),
         "ru must remain a supported answer language"

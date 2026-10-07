@@ -1,0 +1,33 @@
+view
+  id M-af597f1e9825
+  lemma repeat
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an event that repeats"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to say, state, or perform again"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make or do or perform again"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "happen or occur again"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to say again or imitate"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "do over"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "repeat an earlier theme of a composition"
+    provenance (wordnet)

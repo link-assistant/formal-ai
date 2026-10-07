@@ -10,6 +10,11 @@
 # languages covered needs no Rust change. Every record is defined by the
 # statement function-word genus — these surfaces carry grammatical structure,
 # not lexical content.
+#
+# The word-internal character table declares `lexeme en`, `lexeme ru` and
+# `lexeme es` with no surfaces on purpose — spaced scripts have no character
+# that cuts a token at any position. ASCII punctuation inside a token is part
+# of a name ("a Node.js service"), so listing it there would split names.
 
 meanings
   software_object_boundary_word
@@ -476,34 +481,9 @@ meanings
     lexeme hi
       surface
         text "।"
-    
     lexeme en
-      surface
-        text "."
-      surface
-        text "-"
-      surface
-        text "_"
-      surface
-        text "'"
     lexeme ru
-      surface
-        text "."
-      surface
-        text "-"
-      surface
-        text "_"
-      surface
-        text "'"
     lexeme es
-      surface
-        text "."
-      surface
-        text "-"
-      surface
-        text "_"
-      surface
-        text "'"
   software_sentence_end_character
     defined-by statement_function_word
     role software_sentence_end_character

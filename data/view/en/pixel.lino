@@ -1,0 +1,9 @@
+view
+  id M-61f0c5d946af
+  lemma pixel
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) the smallest discrete component of an image or picture on a CRT screen (usually a colored dot)"
+    provenance (wordnet)

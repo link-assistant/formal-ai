@@ -1,0 +1,13 @@
+view
+  id M-dc572b726aee
+  lemma missing
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not able to be found"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "nonexistent"
+    provenance (wordnet)

@@ -1,0 +1,29 @@
+view
+  id M-48157a54a005
+  lemma comment
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a statement that expresses a personal opinion or belief or adds information"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a written explanation or criticism or illustration that is added to a book or other textual material"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a report (often malicious) about the behavior of other people"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make or write a comment on"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "explain or interpret something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "provide interlinear explanations for words or phrases"
+    provenance (wordnet)

@@ -1,0 +1,9 @@
+view
+  id M-1fa5eff17dd8
+  lemma serialize
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange serially"
+    provenance (wordnet)

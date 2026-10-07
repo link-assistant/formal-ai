@@ -214,10 +214,9 @@ fn released_zero_byte_store_is_readable_and_upgradeable() {
     let receipt = formal_ai::migrate_memory(&memory_path, Some(&backup_path), None)
         .expect("upgrade released empty store");
     assert!(receipt.changed);
-    assert!(
-        std::fs::read(&backup_path)
-            .expect("read empty backup")
-            .is_empty()
+    assert_eq!(
+        std::fs::read(&backup_path).expect("read empty backup"),
+        [] as [u8; 0]
     );
     assert_eq!(
         std::fs::read_to_string(&memory_path).expect("read migrated empty store"),

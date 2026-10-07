@@ -9,21 +9,21 @@
 //! directory ships no lock) and compares it against the publisher's own
 //! registry, never a memorized list:
 //!
-//!   crates.io    /api/v1/crates/{name}            max_stable_version
+//!   crates.io    /api/v1/crates/{name}            `max_stable_version`
 //!   npm          registry.npmjs.org/{name}         dist-tags.latest
-//!   GitHub       /repos/{owner}/{repo}/releases/latest   tag_name
+//!   GitHub       /repos/{owner}/{repo}/releases/latest   `tag_name`
 //!   Docker Hub   /v2/repositories/{image}/tags     newest pushed tag
 //!   rustc        static.rust-lang.org channel-rust-stable.toml
 //!
 //! The one sanctioned escape hatch (issue #1169 R3) is a same-line blocked
 //! annotation naming the issue that tracks the hold-back. In Cargo.toml:
 //!
-//!   links-notation = "0.16.1" # blocked: https://github.com/link-foundation/lino-objects-codec/issues/60
+//!   links-notation = "0.16.1" # blocked: <https://github.com/link-foundation/lino-objects-codec/issues/60>
 //!
 //! In package.json a sibling key inside the same dependency object:
 //!
 //!   "electron": "^44.1.0",
-//!   "electron//": "blocked: https://github.com/link-assistant/formal-ai/issues/1234",
+//!   "electron//": "blocked: <https://github.com/link-assistant/formal-ai/issues/1234>",
 //!
 //! A blocked finding is reported but does not fail the gate; a drift without
 //! an annotation does. Live registry reads can also be skipped entirely:
@@ -37,7 +37,7 @@
 //!
 //! Exit codes: 0 clean, 1 findings, 2 usage, 3 a registry was unreachable
 //! (retry, or run --refresh-snapshot when the network is back).
-
+//!
 //! ```cargo
 //! [package]
 //! edition = "2024"
@@ -85,13 +85,13 @@ pub enum Ecosystem {
 }
 
 impl Ecosystem {
-    pub fn key(self) -> &'static str {
+    pub const fn key(self) -> &'static str {
         match self {
-            Ecosystem::CratesIo => "crates_io",
-            Ecosystem::Npm => "npm",
-            Ecosystem::GitHubAction => "github_action",
-            Ecosystem::DockerImage => "docker_image",
-            Ecosystem::RustToolchain => "rust_toolchain",
+            Self::CratesIo => "crates_io",
+            Self::Npm => "npm",
+            Self::GitHubAction => "github_action",
+            Self::DockerImage => "docker_image",
+            Self::RustToolchain => "rust_toolchain",
         }
     }
 }
@@ -224,7 +224,7 @@ fn main() {
 }
 
 #[cfg_attr(test, allow(dead_code))]
-fn status_note(dependency: &Dependency) -> &'static str {
+const fn status_note(dependency: &Dependency) -> &'static str {
     if dependency.blocked.is_some() {
         " (blocked)"
     } else {
@@ -476,12 +476,12 @@ pub fn apply_latest(findings: &[Finding]) {
             let ecosystem = dependency.ecosystem;
             let bare = without_v(&finding.latest);
             let updated = match ecosystem {
-                Ecosystem::CratesIo => rewrite_cargo_line(&rewritten, dependency, &bare),
-                Ecosystem::Npm => rewrite_npm_line(&rewritten, dependency, &bare),
+                Ecosystem::CratesIo => rewrite_cargo_line(&rewritten, dependency, bare),
+                Ecosystem::Npm => rewrite_npm_line(&rewritten, dependency, bare),
                 Ecosystem::GitHubAction => {
                     rewrite_uses_line(&rewritten, dependency, &finding.latest)
                 }
-                Ecosystem::DockerImage => rewrite_from_line(&rewritten, dependency, &bare),
+                Ecosystem::DockerImage => rewrite_from_line(&rewritten, dependency, bare),
                 Ecosystem::RustToolchain => {
                     rewrite_rust_version(&rewritten, dependency, &minor_of(&finding.latest))
                 }
@@ -496,9 +496,7 @@ pub fn apply_latest(findings: &[Finding]) {
 
 fn rewrite_cargo_line(text: &str, dependency: &Dependency, latest: &str) -> String {
     rewrite_line_at(text, dependency.line, |line| {
-        let Some(declared) = dependency.declared.as_deref() else {
-            return None;
-        };
+        let declared = dependency.declared.as_deref()?;
         let operator = if declared.starts_with('=') { "=" } else { "" };
         let updated = format!("{operator}{latest}");
         Some(line.replacen(&format!("\"{declared}\""), &format!("\"{updated}\""), 1))
@@ -507,13 +505,11 @@ fn rewrite_cargo_line(text: &str, dependency: &Dependency, latest: &str) -> Stri
 
 fn rewrite_npm_line(text: &str, dependency: &Dependency, latest: &str) -> String {
     rewrite_line_at(text, dependency.line, |line| {
-        let Some(declared) = dependency.declared.as_deref() else {
-            return None;
-        };
+        let declared = dependency.declared.as_deref()?;
         let prefix = ['^', '~', '>', '=']
             .iter()
             .find(|c| declared.starts_with(**c))
-            .map(|c| c.to_string())
+            .map(std::string::ToString::to_string)
             .unwrap_or_default();
         Some(line.replacen(
             &format!("\"{declared}\""),
@@ -565,7 +561,7 @@ fn rewrite_line_at(
     let Some(updated) = rewrite(lines[line_number - 1]) else {
         return text.to_string();
     };
-    let mut owned: Vec<String> = lines.iter().map(|line| line.to_string()).collect();
+    let mut owned: Vec<String> = lines.iter().map(std::string::ToString::to_string).collect();
     owned[line_number - 1] = updated;
     let mut out = owned.join("\n");
     if text.ends_with('\n') {
@@ -619,10 +615,10 @@ pub fn read_snapshot(path: &Path) -> Option<Snapshot> {
             current = ecosystem_of(&id).map(|ecosystem| (ecosystem, bare_id(&id, ecosystem)));
             continue;
         }
-        if let Some(rest) = trimmed.strip_prefix("latest ") {
-            if let (Some(key), Some(latest)) = (&current, quoted_value(rest)) {
-                entries.insert(key.clone(), (latest, String::new()));
-            }
+        if let Some(rest) = trimmed.strip_prefix("latest ")
+            && let (Some(key), Some(latest)) = (&current, quoted_value(rest))
+        {
+            entries.insert(key.clone(), (latest, String::new()));
         }
     }
     Some(Snapshot {

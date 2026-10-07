@@ -7,6 +7,9 @@ on:
     paths: ['js/app/**', 'scripts/check-web-ui-boundary.py', 'docs/case-studies/issue-951/**']
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   boundary:
     runs-on: ubuntu-latest

@@ -1,6 +1,6 @@
 //! R1012: the Rust port of the recursive meta reasoner
-//! (js/worker/formal_ai_worker_meta_reasoner.js,
-//! js/worker/formal_ai_worker_meta_synthesis.js). These mirror
+//! (`js/worker/formal_ai_worker_meta_reasoner.js`,
+//! `js/worker/formal_ai_worker_meta_synthesis.js`). These mirror
 //! rust/tests/web/meta-reasoner.test.mjs: every prompt is absent from the code
 //! and the seed; the answers are derived — grounded, enumerated, verified.
 //! Dictionary knowledge comes only from the committed captures under
@@ -295,7 +295,7 @@ fn a_derived_file_program_runs_and_agrees_with_a_direct_count() {
     std::fs::write(folder.join("short.txt"), "x\n").expect("short file");
     let result =
         reason("Write a Node.js script that prints every file in a folder with more than 3 lines");
-    let program = result.program.clone().expect("program");
+    let program = result.program.expect("program");
     let folder_text = folder.to_string_lossy().into_owned();
     let output = run_program(
         catalog(),
@@ -305,7 +305,9 @@ fn a_derived_file_program_runs_and_agrees_with_a_direct_count() {
         Runtime::Node,
     );
     let _ = std::fs::remove_dir_all(&folder);
-    let expected = Value::List(vec![Value::Path(format!("{folder_text}/long.txt"))]);
+    // The derived program ends in `print_lines` (the ladder rung's "prints"),
+    // which prints the kept paths one per line and returns that text.
+    let expected = Value::Text(format!("{folder_text}/long.txt"));
     assert_eq!(
         output.map(|value| value.to_json()),
         Some(expected.to_json())
@@ -337,7 +339,7 @@ fn learned_chunks_come_back_from_memory() {
     let statement = String::from(
         "meta_learned_chunk\n  word \"qzorpify\"\n  operation reverse_text\n  score 0.5\n  via \"memory\"",
     );
-    assert_eq!(import_learned(&[statement.clone()]), 1);
+    assert_eq!(import_learned(std::slice::from_ref(&statement)), 1);
     assert_eq!(import_learned(&[statement]), 0);
 }
 

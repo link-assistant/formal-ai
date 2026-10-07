@@ -1,0 +1,25 @@
+view
+  id M-7b28aa4f9ae9
+  lemma depth
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the extent downward or backward or inward"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "degree of psychological or intellectual profundity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(usually plural) a low moral state"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the intellectual ability to penetrate deeply into ideas"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the attribute or quality of being deep, strong, or intense"
+    provenance (wordnet)

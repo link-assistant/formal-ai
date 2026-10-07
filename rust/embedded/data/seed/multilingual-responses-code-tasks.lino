@@ -17,7 +17,7 @@ multilingual_responses
   response response_regex_synthesis_pattern_en
     intent regex_synthesis_pattern
     language en
-    text "Composed regular expression:\n\n    {pattern}\n\nHow the constraints composed:\n{mapping}{anchor_note}\nVerified structurally: groups are balanced, every repetition is well-formed, and every character class is closed.\nNot verified by execution: the regex engine in this repository is a dev-only dependency, so no match was run against any input. Test the pattern on real inputs (a regex tester or a unit test) before relying on it."
+    text "Composed regular expression:\n\n```regex\n{pattern}\n```\n\nHow the constraints composed:\n{mapping}{anchor_note}\nVerified structurally: groups are balanced, every repetition is well-formed, and every character class is closed.\nNot verified by execution: the regex engine in this repository is a dev-only dependency, so no match was run against any input. Test the pattern on real inputs (a regex tester or a unit test) before relying on it."
   response response_regex_synthesis_broken_en
     intent regex_synthesis_broken
     language en

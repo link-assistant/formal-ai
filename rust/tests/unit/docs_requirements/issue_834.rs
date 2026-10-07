@@ -375,9 +375,13 @@ fn issue_834_whole_task_has_traceable_research_and_an_operational_gate() {
             "third-party",
         ],
     );
-    assert_contains_all(
-        "REQUIREMENTS.md",
-        &["issue #834 legal & compliance self-audit", "r484", "r493"],
-    );
+    // REQUIREMENTS.md is an index; the register is the assembled parts.
+    let requirements = crate::assembled_docs::requirements().to_lowercase();
+    for needle in ["issue #834 legal & compliance self-audit", "r484", "r493"] {
+        assert!(
+            requirements.contains(needle),
+            "the assembled requirement register must document {needle:?}"
+        );
+    }
 }
 // Kept as a nested documentation-requirements suite by issue #1138 plan 11.

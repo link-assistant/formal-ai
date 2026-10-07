@@ -6,11 +6,15 @@ pub fn trust_score(features: &TrustFeatures) -> u8 {
     let mut weights: BTreeMap<String, f64> = BTreeMap::new();
     let mut grades: BTreeMap<String, f64> = BTreeMap::new();
     let mut agreement_scale = 1.0f64;
-    for record in &tree.children {
+    for record in seed_records(&tree) {
         if record.name != "feature" {
             continue;
         }
-        let name = record.find_child_value("name").to_owned();
+        let name = if record.id.is_empty() {
+            record.find_child_value("name").to_owned()
+        } else {
+            record.id.clone()
+        };
         if name.is_empty() {
             continue;
         }

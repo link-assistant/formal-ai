@@ -1,0 +1,21 @@
+view
+  id M-bbfc9f62bf43
+  lemma include
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have as a part, be made up out of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "consider as part of something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "add as part of something else; put in as part of a set, group, or category"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "allow participation in or the right to be part of; permit to exercise the rights, functions, and responsibilities of"
+    provenance (wordnet)

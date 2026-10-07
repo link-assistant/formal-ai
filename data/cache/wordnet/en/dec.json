@@ -1,0 +1,28 @@
+{
+  "lemma": "dec",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15238570-n",
+      "partOfSpeech": "n",
+      "definition": "the last (12th) month of the year",
+      "synonyms": [
+        "December"
+      ]
+    },
+    {
+      "id": "oewn-08650469-n",
+      "partOfSpeech": "n",
+      "definition": "(astronomy) the angular distance of a celestial body north or to the south of the celestial equator; expressed in degrees; used with right ascension to specify positions on the celestial sphere",
+      "synonyms": [
+        "declination",
+        "celestial latitude"
+      ]
+    }
+  ]
+}

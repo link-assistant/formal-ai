@@ -42,7 +42,7 @@ jobs:
           fi
           echo "current=$current" >> "$GITHUB_OUTPUT"
           if [ "$current" != "$previous" ]; then echo 'changed=true' >> "$GITHUB_OUTPUT"; else echo 'changed=false' >> "$GITHUB_OUTPUT"; fi
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: formal-ai-vscode
           path: vscode/*.vsix

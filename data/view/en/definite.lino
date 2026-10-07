@@ -1,0 +1,13 @@
+view
+  id M-d0bb7c86dca9
+  lemma definite
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "precise; explicit and clearly defined"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "known for certain"
+    provenance (wordnet)

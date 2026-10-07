@@ -50,13 +50,11 @@ routing_probes
     language ru
     intent algorithm_sort_python
     prompt "Напиши алгоритм сортировки на Python"
-    rust_misroute unverified
   probe p050
     lane code_debugging
     language en
     intent code_debugging
     prompt "Debug this code: for i in range(10) print(i)"
-    rust_misroute unverified
   probe p051
     lane code_debugging
     language en
@@ -73,12 +71,12 @@ routing_probes
     language en
     intent code_debugging
     prompt "What's wrong with `def mean(xs): return sum(xs) / len(xs) + 1`?"
+    rust_misroute calculation_error
   probe p054
     lane code_debugging
     language en
     intent code_debugging
     prompt "Why does this fail: def f(x): return x +"
-    rust_misroute unverified
   probe p055
     lane code_explanation
     language en
@@ -99,7 +97,6 @@ routing_probes
     language en
     intent code_explanation
     prompt "Explain this code: print(sum(range(10)))"
-    rust_misroute unverified
   probe p059
     lane code_explanation
     language en
@@ -111,7 +108,6 @@ routing_probes
     language en
     intent code_explanation
     prompt "What does this function do: `def square(n): return n * n`"
-    rust_misroute unverified
   probe p061
     lane code_refactoring
     language en
@@ -132,7 +128,6 @@ routing_probes
     language en
     intent code_refactoring
     prompt "Refactor: for i in range(len(xs)): print(xs[i])"
-    rust_misroute unverified
   probe p065
     lane code_review
     language en
@@ -143,6 +138,7 @@ routing_probes
     language en
     intent code_review
     prompt "Review this code:\n```python\ndef load(path):\n    try:\n        f = open(path)\n    except:\n        pass\n```"
+    rust_misroute write_program_skill_gap
   probe p067
     lane code_review
     language en
@@ -262,7 +258,6 @@ routing_probes
     intent format_conversion
     prompt "Convert this JSON to YAML: {""total_lines"": 12, ""word_count"": 40}"
     adversarial true
-    rust_misroute unverified
   probe p128
     lane format_conversion
     language en
@@ -295,7 +290,6 @@ routing_probes
     intent format_conversion
     prompt "Преобразуй JSON в YAML: {""name"": ""Анна""}"
     adversarial true
-    rust_misroute unverified
   probe p166
     lane installation_conversion
     language en
@@ -351,22 +345,24 @@ routing_probes
     intent javascript_execution
     prompt "Run this JavaScript: console.log(1 + 2)"
     rust_intent tool_call_refused
-    rust_misroute unverified
   probe p223
     lane program_synthesis
     language en
     intent write_program
     prompt "Write a Python function that returns the factorial of n"
+    rust_misroute write_program_skill_gap
   probe p224
     lane program_synthesis
     language hi
     intent write_program
     prompt "Python में एक फ़ंक्शन लिखो जो n का फ़ैक्टोरियल लौटाए"
+    rust_misroute write_program_skill_gap
   probe p225
     lane program_synthesis
     language ru
     intent write_program
     prompt "Напиши функцию на Python, которая возвращает факториал n"
+    rust_misroute write_program_skill_gap
   probe p231
     lane regex_synthesis
     language en
@@ -389,25 +385,27 @@ routing_probes
     language zh
     intent regex_synthesis
     prompt "写一个匹配五位数字的正则表达式"
-    rust_misroute unverified
   probe p245
     lane shell_command_compose
     language en
     intent shell_command_compose
     prompt "Count the lines in all .py files with a shell command"
     adversarial true
+    rust_misroute capability_gap
   probe p246
     lane shell_command_compose
     language en
     intent shell_command_compose
     prompt "Give me a bash command to count the lines in all .py files"
     adversarial true
+    rust_misroute capability_gap
   probe p247
     lane shell_command_compose
     language en
     intent shell_command_compose
     prompt "Give me a bash command to count the lines in all .rs files"
     adversarial true
+    rust_misroute capability_gap
   probe p248
     lane shell_command_compose
     language en
@@ -456,7 +454,6 @@ routing_probes
     intent software_project_plan
     prompt "Create a VS Code extension that counts lines in a file"
     adversarial true
-    rust_misroute unverified
   probe p257
     lane software_project
     language en
@@ -468,7 +465,6 @@ routing_probes
     intent software_project_plan
     prompt "Write a CLI tool in Rust that converts JSON to YAML"
     adversarial true
-    rust_misroute unverified
   probe p259
     lane software_project
     language hi
@@ -484,7 +480,6 @@ routing_probes
     language en
     intent software_project_plan
     prompt "Build a todo app in TypeScript"
-    rust_misroute unverified
   probe p268
     lane sql_synthesis
     language en
@@ -521,7 +516,6 @@ routing_probes
     intent text_manipulation
     prompt "Count the characters in 'banana'"
     adversarial true
-    rust_misroute unverified
   probe p284
     lane text_manipulation
     language en
@@ -570,35 +564,30 @@ routing_probes
     intent text_manipulation
     prompt "Count the words in 'the cat sat on the mat'"
     adversarial true
-    rust_misroute unverified
   probe p292
     lane text_manipulation
     language en
     intent text_manipulation
     prompt "Count the words in this sentence: 'grep finds lines that match'"
     adversarial true
-    rust_misroute unverified
   probe p293
     lane text_manipulation
     language en
     intent text_manipulation
     prompt "Count the words in this text: 'find the bug in my code'"
     adversarial true
-    rust_misroute unverified
   probe p294
     lane text_manipulation
     language en
     intent text_manipulation
     prompt "Count the words in this text: 'the quick brown fox'"
     adversarial true
-    rust_misroute unverified
   probe p295
     lane text_manipulation
     language en
     intent text_manipulation
     prompt "Count the words: 'ls -la /tmp'"
     adversarial true
-    rust_misroute unverified
   probe p296
     lane text_manipulation
     language en
@@ -610,14 +599,12 @@ routing_probes
     language en
     intent text_manipulation
     prompt "How many characters are in 'banana'?"
-    rust_misroute unverified
   probe p298
     lane text_manipulation
     language en
     intent text_manipulation
     prompt "How many words are in 'convert this json to yaml'?"
     adversarial true
-    rust_misroute unverified
   probe p299
     lane text_manipulation
     language en
@@ -665,25 +652,21 @@ routing_probes
     language hi
     intent text_manipulation
     prompt "इस पाठ में पंक्तियाँ गिनो: 'एक\nदो'"
-    rust_misroute unverified
   probe p307
     lane text_manipulation
     language hi
     intent text_manipulation
     prompt "शब्द उल्टे करो: 'हरा सीआई रिलीज़'"
-    rust_misroute unverified
   probe p308
     lane text_manipulation
     language zh
     intent text_manipulation
     prompt "数一数这段文字有几个词：'猫 坐 在 垫子 上'"
-    rust_misroute unverified
   probe p309
     lane text_manipulation
     language zh
     intent text_manipulation
     prompt "数一数这段文字有几行：'一\n二\n三'"
-    rust_misroute unverified
   probe p351
     lane write_program
     language en
@@ -718,7 +701,6 @@ routing_probes
     language zh
     intent write_program
     prompt "用Python写一个hello world程序"
-    rust_misroute unverified
   probe p357
     lane write_script
     language en
@@ -734,4 +716,4 @@ routing_probes
     language en
     intent write_program_language_unspecified
     prompt "Write a script that prints hello world"
-    js_misroute meta_reasoning_open
+    rust_misroute meta_reasoning_open

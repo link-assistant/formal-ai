@@ -25,10 +25,17 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    # Three CI-gate stages over a re-resolved tree plus two lockfile
+    # re-resolutions; the cap keeps a hung registry from inheriting the
+    # 360-minute default (issue #1017).
+    timeout-minutes: 60
     permissions:
       contents: write
       pull-requests: write
     steps:
+      # Issue #1079: this checkout keeps persist-credentials (the default)
+      # because peter-evans/create-pull-request below commits and pushes the
+      # `dependencies/latest` branch from this working tree.
       - uses: actions/checkout@v7.0.1
 
       - uses: ./.github/actions/automation-token

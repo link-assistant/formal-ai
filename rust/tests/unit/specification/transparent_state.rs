@@ -24,13 +24,13 @@ fn knowledge_export_is_inspectable_at_runtime() {
 #[test]
 fn evidence_links_are_exposed_through_the_public_struct() {
     let response = answer("Hi");
-    assert!(!response.evidence_links.is_empty());
+    assert_ne!(response.evidence_links, [] as [std::string::String; 0]);
 }
 
 #[test]
 fn links_notation_trace_is_always_present() {
     let response = answer("Hi");
-    assert!(!response.links_notation.is_empty());
+    assert_ne!(response.links_notation, "");
 }
 
 // ---------------------------------------------------------------------------

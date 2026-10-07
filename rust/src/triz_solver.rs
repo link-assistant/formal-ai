@@ -85,32 +85,6 @@ fn records_of_type(record_type: &str, name: &str) -> Vec<crate::seed::parser::Li
         .collect()
 }
 
-/// The seeded principle identifiers (forty inventive + four separation),
-/// for validating that benchmark tasks cite only real methods.
-#[cfg(test)]
-fn principle_ids() -> Vec<String> {
-    ["triz_inventive_principle", "triz_separation_principle"]
-        .iter()
-        .flat_map(|record_type| records_named_by_type(record_type))
-        .collect()
-}
-
-/// Top-level records whose `record_type` field matches (this seed types
-/// its records by field, and names the records `triz_inventive_01` …).
-#[cfg(test)]
-fn records_named_by_type(record_type: &str) -> Vec<String> {
-    let Some(text) = seed_text(SEED_PATH) else {
-        return Vec::new();
-    };
-    parse_lino(text)
-        .children
-        .into_iter()
-        .filter(|record| record.find_child_value("record_type") == record_type)
-        .map(|record| record.find_child_value("principle_id").to_string())
-        .filter(|id| !id.is_empty())
-        .collect()
-}
-
 /// The general resolution families, in seed order.
 #[must_use]
 pub fn triz_families() -> Vec<ResolutionFamily> {
@@ -160,7 +134,8 @@ pub fn triz_benchmark_tasks() -> Vec<BenchmarkTask> {
 
 /// The `triz_cues` phrases that mark a prompt as a contradiction
 /// question (stemmed fragments match by substring: противоречи-, triz).
-fn triz_cues() -> Vec<String> {
+#[must_use]
+pub fn triz_cues() -> Vec<String> {
     records_of_type("triz_intent_cues", "triz_cues")
         .iter()
         .flat_map(|record| {
@@ -179,7 +154,8 @@ fn triz_cues() -> Vec<String> {
 /// Every benchmark task whose statement or domain shares a word with the
 /// prompt, best match first (words of five or more characters, so
 /// stopwords do not carry the match). Empty when nothing overlaps.
-fn relevant_tasks<'a>(prompt: &str, tasks: &'a [BenchmarkTask]) -> Vec<&'a BenchmarkTask> {
+#[must_use]
+pub fn relevant_tasks<'a>(prompt: &str, tasks: &'a [BenchmarkTask]) -> Vec<&'a BenchmarkTask> {
     let words: Vec<&str> = prompt
         .split_whitespace()
         .map(|word| word.trim_matches(|c: char| !c.is_alphanumeric()))
@@ -275,74 +251,4 @@ pub fn handle_triz(prompt: &str, normalized: &str, log: &mut EventLog) -> Option
         &body,
         0.7,
     ))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn families_and_benchmark_load_from_the_seed() {
-        let families = triz_families();
-        assert!(
-            families.len() >= 12,
-            "twelve general families, got {}",
-            families.len()
-        );
-        assert!(
-            families
-                .iter()
-                .any(|family| family.method_id == "family_range_selection")
-        );
-        let tasks = triz_benchmark_tasks();
-        assert_eq!(tasks.len(), 20, "the top-20 corpus");
-        for task in &tasks {
-            assert!(
-                !task.methods.is_empty(),
-                "{} must name its methods",
-                task.task_id
-            );
-        }
-        // Every method a task names must exist as a family or a seeded
-        // principle identifier — the corpus cannot cite ghosts.
-        let known: Vec<String> = families
-            .iter()
-            .map(|family| family.method_id.clone())
-            .chain(principle_ids())
-            .collect();
-        for task in &tasks {
-            for method in &task.methods {
-                assert!(
-                    known.iter().any(|id| id == method),
-                    "{} cites unknown method {method}",
-                    task.task_id
-                );
-            }
-        }
-    }
-
-    // The prompt is the corpus row's own statement, read from the seed: a
-    // statement shares every one of its content words with itself, so no
-    // other row can outrank it. The prose-prompt version of this check is
-    // the handler test in rust/tests/unit/issue_901_triz_solver.rs.
-    #[test]
-    fn umbrella_prompt_finds_the_umbrella_precedent_first() {
-        let tasks = triz_benchmark_tasks();
-        let umbrella = tasks
-            .iter()
-            .find(|task| task.task_id == "umbrella_crowd")
-            .expect("the corpus carries the umbrella task");
-        let relevant = relevant_tasks(&umbrella.statement, &tasks);
-        assert_eq!(
-            relevant.first().map(|task| task.task_id.as_str()),
-            Some("umbrella_crowd")
-        );
-    }
-
-    #[test]
-    fn stems_match_russian_and_english_cues() {
-        let cues = triz_cues();
-        assert!(cues.iter().any(|cue| cue == "противоречи"));
-        assert!(cues.iter().any(|cue| cue == "contradiction"));
-    }
 }

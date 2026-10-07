@@ -1,0 +1,29 @@
+view
+  id M-0d32e24b2394
+  lemma blend
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an occurrence of thorough mixing"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a new word formed by joining two others and combining their meanings"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of blending components together thoroughly"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "combine into one"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "blend or harmonize"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "mix together different elements"
+    provenance (wordnet)

@@ -7,7 +7,6 @@ const CASE_STUDY: &str = "docs/case-studies/issue-864/README.md";
 const REQUIREMENTS: &str = "docs/case-studies/issue-864/requirements.md";
 const RUST_REGRESSIONS: &str = "rust/tests/unit/issue_864.rs";
 const BROWSER_REGRESSION: &str = "rust/tests/e2e/tests/issue-864.spec.js";
-const GLOBAL_REQUIREMENTS: &str = "REQUIREMENTS.md";
 
 fn root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -157,10 +156,14 @@ fn the_complete_issue_864_task_is_traceable() {
         REQUIREMENTS,
         &["R864-01", "R864-02", "R864-03", "R864-04", "R864-05"],
     );
-    assert_contains_all(
-        GLOBAL_REQUIREMENTS,
-        &["Issue #864", "R864-1", "Proactive", "Agent CLI"],
-    );
+    // REQUIREMENTS.md is an index; the register is the assembled parts.
+    let requirements = crate::assembled_docs::requirements();
+    for needle in ["Issue #864", "R864-1", "Proactive", "Agent CLI"] {
+        assert!(
+            requirements.contains(needle),
+            "the assembled requirement register must contain {needle:?}"
+        );
+    }
     assert_contains_all(
         CASE_STUDY,
         &[

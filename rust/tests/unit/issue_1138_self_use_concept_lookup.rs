@@ -205,7 +205,7 @@ fn response_parity_debt() -> ResponseParityDebt {
             assert_eq!(fields[0], "uncovered_behavior missing_languages ");
             assert_eq!(fields[2], " observed_on ");
             assert_eq!(fields[4], " response_intents ");
-            assert!(fields[6].is_empty());
+            assert_eq!(fields[6], "");
             assert_eq!(
                 fields[3], measured_on,
                 "every response parity row must carry the ledger measurement date"

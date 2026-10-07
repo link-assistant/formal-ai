@@ -1,7 +1,7 @@
 //! Issue #1179 (E144): fact checking over code, Git, GitHub, and the internet
 //! with relative meta logic.
 //!
-//! These tests pin the two halves the fact_check module owns:
+//! These tests pin the two halves the `fact_check` module owns:
 //! - claims, not keys: a structured line becomes an exclusive claim only when
 //!   it is a top-level fact field, so the 8,179 YAML step-key false
 //!   positives cannot recur (R1, R2);

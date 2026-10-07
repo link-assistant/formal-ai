@@ -136,9 +136,9 @@ fn manifest() -> Vec<ManifestRoute> {
             (4, field) => {
                 let route = routes.last_mut().expect("a field belongs to a route");
                 match field {
-                    "method" => route.method = value.to_owned(),
+                    "method" => value.clone_into(&mut route.method),
                     "path" => route.paths.push(unquote(value)),
-                    "auth" => route.auth = value.to_owned(),
+                    "auth" => value.clone_into(&mut route.auth),
                     "example" => route.example = Some(unquote(value)),
                     "param" => {
                         current_param = Some(value.to_owned());

@@ -31,6 +31,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_interrogative"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_0851c477bd0faf0c
+    source "data/seed/meanings-calendar.lino"
+    record "november"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_6f0b9c8d97302b1c
     source "data/seed/meanings-coding-structure.lino"
     record "geometric_measure"

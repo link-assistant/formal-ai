@@ -1,0 +1,33 @@
+view
+  id M-1f3eab48a0f3
+  lemma rendering
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a performance of a musical composition or a dramatic role etc."
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an explanation of something that is not immediately obvious"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of interpreting something as expressed in an artistic performance"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a written communication in a second language having the same meaning as the written communication in a first language"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a coat of stucco applied to a masonry wall"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "perspective drawing of an architect's design"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "giving in acknowledgment of obligation"
+    provenance (wordnet)

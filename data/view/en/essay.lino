@@ -1,0 +1,21 @@
+view
+  id M-66d63252e7c3
+  lemma essay
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an analytic or interpretive literary composition"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a tentative attempt"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make an effort or attempt"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put to the test, as for its quality, or give experimental use to"
+    provenance (wordnet)

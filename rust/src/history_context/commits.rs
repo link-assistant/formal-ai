@@ -97,7 +97,7 @@ fn import_commits_impl(
     let mut args: Vec<String> = vec![
         String::from("log"),
         String::from("--no-show-signature"),
-        String::from(LOG_FORMAT),
+        format!("--format={LOG_FORMAT}"),
         String::from("--name-only"),
     ];
     if path.is_some() {

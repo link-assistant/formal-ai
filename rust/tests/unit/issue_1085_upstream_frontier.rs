@@ -104,7 +104,7 @@ fn a_suite_with_fewer_than_three_runs_is_never_stagnant() {
         .filter(|result| result.suite == "swebench_lite")
         .count();
     if swebench_runs < 3 {
-        assert!(ratchet::stagnant(&ledger).is_empty());
+        assert_eq!(ratchet::stagnant(&ledger), [] as [std::string::String; 0]);
     }
 }
 

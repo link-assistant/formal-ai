@@ -29,6 +29,7 @@ pub use coding::discovered_procedures;
 pub use coding::fragment_catalog;
 pub use coding::function_catalog as coding_function_catalog;
 pub use coding::ir_lowering;
+pub use coding::program_contract;
 pub use coding::program_ir;
 pub use coding::python_render;
 pub use coding::python_signature;

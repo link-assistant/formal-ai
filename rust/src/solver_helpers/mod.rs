@@ -290,6 +290,12 @@ fn looks_like_independent_impulse(segment: &str) -> bool {
     if normalized.is_empty() {
         return false;
     }
+    // A bare number ("1776?" after "July 4,", or an item of "1, 2, 3") is an
+    // operand of the clause beside it, never a request of its own.
+    let bare = segment.trim_matches(|c: char| !c.is_alphanumeric());
+    if !bare.is_empty() && bare.chars().all(char::is_numeric) {
+        return false;
+    }
     let language = detect_language(segment);
     let formalization = formalize_intent(segment, language.slug(), None);
     formalization.route.is_some()

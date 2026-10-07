@@ -1,0 +1,73 @@
+view
+  id M-3c495d230a13
+  lemma home
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "used of your own ground"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relating to or being where one lives or where one's roots are"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "where you live at a particular time"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "housing that someone is living in"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the country or state or city where you live"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(baseball) base consisting of a rubber slab where the batter stands; it must be touched by a base runner in order to score"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the place where you are stationed and from which missions start and end"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "place where something began and flourished"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an environment offering affection and security"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a social unit living together"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an institution where people are cared for"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "at or to or in the direction of one's home or family"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "on or to the point aimed at"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "to the fullest extent; to the heart"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "inside the country"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "provide with, or send to, a home"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "return home accurately from a long distance"
+    provenance (wordnet)

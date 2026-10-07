@@ -91,6 +91,8 @@ fn full_result(text: &str) -> Result<Measurement, String> {
     })
 }
 
+const CORRECTION_MARKER: &str = "corrected overcount";
+
 #[cfg(not(test))]
 fn ratchet_value(text: &str, field: &str) -> Result<u64, String> {
     text.lines()
@@ -142,6 +144,23 @@ fn compare_with_ratchet(
         ));
     }
     Ok(())
+}
+
+/// A lower floor than the base is accepted only as an honest measurement
+/// correction: the ratchet's `coding_ladder_correction` note must say
+/// "corrected overcount" and name the previous floor, so a spurious pass
+/// that a later run exposed is removed in the open, never silently.
+fn floor_fall_is_corrected(ratchet_text: &str, previous_passed: u64) -> bool {
+    ratchet_text.lines().any(|line| {
+        line.trim()
+            .strip_prefix("coding_ladder_correction ")
+            .is_some_and(|note| {
+                note.contains(CORRECTION_MARKER)
+                    && note
+                        .split(|c: char| !c.is_ascii_digit())
+                        .any(|number| number == previous_passed.to_string())
+            })
+    })
 }
 
 #[cfg(not(test))]
@@ -200,7 +219,10 @@ fn check(root: &Path, result: &Path, base: Option<&str>) -> Result<(), String> {
                 "coding ladder task counts differ from {base}: {recorded:?} versus {previous:?}"
             ));
         }
-        if recorded.passed < previous.passed || recorded.l1_passed < previous.l1_passed {
+        if (recorded.passed < previous.passed
+            && !floor_fall_is_corrected(&ratchet_text, previous.passed))
+            || recorded.l1_passed < previous.l1_passed
+        {
             return Err(format!(
                 "coding ladder floor fell from {previous:?} at {base} to {recorded:?}"
             ));
@@ -299,5 +321,17 @@ mod tests {
             )
             .is_err()
         );
+    }
+
+    #[test]
+    fn a_floor_fall_needs_a_correction_naming_the_old_floor() {
+        let note = "coding_ladder_correction `corrected overcount. 24 counted a spurious pass.`";
+        assert!(floor_fall_is_corrected(note, 24));
+        assert!(!floor_fall_is_corrected(note, 25));
+        assert!(!floor_fall_is_corrected(
+            "coding_ladder_correction `24 fell.`",
+            24
+        ));
+        assert!(!floor_fall_is_corrected("coding_ladder_passing 23", 24));
     }
 }

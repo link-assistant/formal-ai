@@ -337,7 +337,12 @@ fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
             response_link: String::from("response:write_program"),
         });
     }
-    if crate::coding::task_spec::recognise(raw).is_some() {
+    // A pasted `def` under a review, explanation, refactoring or debugging
+    // instruction is the code that instruction acts on, not a task to
+    // synthesize (issue #1177), so it does not promote program synthesis.
+    if crate::coding::task_spec::recognise(raw).is_some()
+        && !crate::solver_dispatch::code_artifact_task_claims(raw)
+    {
         return Some(MatchedRoute {
             slug: String::from("program_synthesis"),
             response_link: String::from("response:write_program:synthesis"),

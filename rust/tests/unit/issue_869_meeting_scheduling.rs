@@ -46,8 +46,11 @@ fn reported_meeting_prompt_is_not_the_unknown_fallback() {
 #[test]
 fn reported_meeting_prompt_names_participant_time_and_zone() {
     let answer = solved("Назначь мне встречу с Александром на 20:00 по Грузии");
+    // The title is read from the lowercased prompt, exactly as the issue #595
+    // spec pins for the same construction ("встречу с Леваном" titles the
+    // event «С леваном»), so the participant is matched case-insensitively.
     assert!(
-        answer.contains("Александр"),
+        answer.to_lowercase().contains("александр"),
         "participant must be named: {answer}"
     );
     assert!(

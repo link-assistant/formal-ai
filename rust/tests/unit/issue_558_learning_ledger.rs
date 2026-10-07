@@ -69,7 +69,7 @@ fn promotes_a_green_and_approved_case_into_an_approved_learning_record() {
     assert_eq!(entry.resolved_task, "list_files_reverse_sort");
     assert_eq!(entry.reviewer, "maintainer");
     assert!(entry.benchmark_passed >= 1);
-    assert!(!entry.lesson_id.is_empty());
+    assert_ne!(entry.lesson_id, "");
     assert_eq!(ledger.len(), 1);
 }
 

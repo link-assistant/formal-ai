@@ -1,0 +1,49 @@
+view
+  id M-82c3caba70e6
+  lemma decline
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "change toward something smaller or lower"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a condition inferior to an earlier condition; a gradual falling off from a better state; decline"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a gradual decrease; as of stored charge or current"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a downward slope or bend"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "grow worse"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "not accept as true"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "show unwillingness towards"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "grow smaller"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "go down"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "fall in value"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "inflect for number, gender, case, etc."
+    provenance (wordnet)

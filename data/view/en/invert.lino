@@ -1,0 +1,17 @@
+view
+  id M-e9107ef5cd7b
+  lemma invert
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make an inversion (in a musical composition)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reverse the position, order, relation, or condition of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "turn inside out or upside down"
+    provenance (wordnet)

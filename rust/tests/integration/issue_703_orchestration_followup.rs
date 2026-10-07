@@ -450,8 +450,14 @@ fn council_results_are_formalized_summarized_and_cross_checked() {
             .iter()
             .any(|claim| claim.text.contains("Rust is memory safe") && claim.presented)
     );
-    assert!(!report.contradictions.is_empty());
-    assert!(!report.corrections.is_empty());
+    assert_ne!(
+        report.contradictions,
+        [] as [formal_ai::orchestration::AgentSynthesisContradiction; 0]
+    );
+    assert_ne!(
+        report.corrections,
+        [] as [formal_ai::orchestration::CorrectionRequest; 0]
+    );
     assert_eq!(report.fact_check_scope, "cross_agent_evidence_preflight");
     assert!(report.translation_required);
 
@@ -897,7 +903,10 @@ fn universal_decomposition_dispatches_independent_leaves_in_parallel() {
 
     assert!(report.tasks.len() >= 2, "{:?}", report.tasks);
     assert_eq!(report.tasks.len(), report.sessions.len());
-    assert!(!report.composed_changes.is_empty());
+    assert_ne!(
+        report.composed_changes,
+        [] as [formal_ai::orchestration::WorkspaceChange; 0]
+    );
 }
 
 #[test]

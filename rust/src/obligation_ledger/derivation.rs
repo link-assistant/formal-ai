@@ -56,11 +56,17 @@ pub fn clauses_with_spans(request: &str) -> Vec<(String, (usize, usize))> {
 }
 
 /// Whether the byte at `index` begins a clause: everything before it either ends
-/// a sentence or is nothing but whitespace.
+/// a sentence, ends a line, or is nothing but whitespace.
+///
+/// The line break is read before trimming: `trim_end` would strip it, and a cue
+/// opening a new line ("…\"Alpha\"\nThen, print …") would never cut (issue
+/// #1166).
 fn opens_a_clause(request: &str, index: usize) -> bool {
-    let before = request[..index].trim_end();
+    let line_end = request[..index].trim_end_matches([' ', '\t', '\r']);
+    let before = line_end.trim_end();
     before.is_empty()
-        || before.ends_with(['.', '!', '?', ';', ':', '\n', '。', '！', '？', '।', '॥'])
+        || line_end.ends_with('\n')
+        || before.ends_with(['.', '!', '?', ';', ':', '。', '！', '？', '।', '॥'])
 }
 
 /// Whether `rest` opens with `cue` as a whole word — or, for a script that does

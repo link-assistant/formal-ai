@@ -1,0 +1,9 @@
+view
+  id M-a7e6613eb4a6
+  lemma radian
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the unit of plane angle adopted under the Systeme International d'Unites; equal to the angle at the center of a circle subtended by an arc equal in length to the radius (approximately 57.295 degrees)"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-16e366f64550
+  lemma couplet
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "two items of the same kind"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a stanza consisting of two successive lines of verse; usually rhymed"
+    provenance (wordnet)

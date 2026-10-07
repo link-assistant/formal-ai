@@ -11,6 +11,10 @@ seed_metadata_gaps
     source "data/seed/learned-request-openers.lino"
     record "trends_context_request_opener"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_3a47b16eeaf15227
+    source "data/seed/meanings-calculator.lino"
+    record "math_function_argument"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_d9e7271afb0dcf17
     source "data/seed/meanings-calculator.lino"
     record "us_dollar"

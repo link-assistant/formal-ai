@@ -311,6 +311,13 @@ fn try_capability_route(
     if !crate::capability_routing::table_routing_enabled() {
         return None;
     }
+    // A request over pasted code is its code-task handler's: the `/` inside
+    // the code or the `fetch(url)` a refactoring rewrites is no object for a
+    // workspace or web tool, so the table declines and the rank walk reaches
+    // the handler (issue #1177).
+    if crate::solver_dispatch::code_artifact_task_claims(prompt) {
+        return None;
+    }
     let decision = crate::capability_routing::route_decision(prompt, SOLVER_CAPABILITIES);
     if !solver_route_is_authoritative(prompt, &decision) {
         return None;
@@ -403,6 +410,18 @@ fn try_capability_route(
             // (issue #870 parity).
             if crate::agentic_coding::semantic_shell_command_for_task(prompt).is_some()
                 && !commit_anchored_gap
+            {
+                return None;
+            }
+            // A prompt that is itself a command line (`touch newfile.txt`) is
+            // the terminal suggestion's: the table reads the file argument as
+            // a workspace read, but the request is to run the command (issue
+            // #1175). A request to compose a command is likewise the
+            // composer's: its search root (`under data/meta`) is the printed
+            // command's operand, not a read this surface owes (issue #1177).
+            if !commit_anchored_gap
+                && (crate::solver_terminal::names_terminal_command(prompt)
+                    || crate::solver_dispatch::shell_compose_claims(prompt))
             {
                 return None;
             }

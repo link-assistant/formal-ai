@@ -1,0 +1,17 @@
+view
+  id M-bcc1bbf9c4c2
+  lemma impersonation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a representation of a person that is exaggerated for comic effect"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "pretending to be another person"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "imitating the mannerisms of another person"
+    provenance (wordnet)

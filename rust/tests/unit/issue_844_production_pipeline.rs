@@ -99,7 +99,10 @@ fn recursive_gathering_uses_exact_captures_and_replays_its_learning_proposal() {
 
     assert!(first.report.is_closed());
     assert_eq!(first.sources.len(), 2);
-    assert!(first.failures.is_empty());
+    assert_eq!(
+        first.failures,
+        [] as [formal_ai::CapturedGatheringFailure; 0]
+    );
     assert_eq!(
         first.report.fetches[0].digest,
         sha256_hex(b"The parser is fast.\n"),
@@ -265,8 +268,11 @@ fn a_capture_failure_is_diagnostic_and_never_becomes_evidence() {
 
     let report = execute_captured_gathering(&plan, &client, merge_metadata);
 
-    assert!(report.sources.is_empty());
-    assert!(report.report.fetches.is_empty());
+    assert_eq!(
+        report.sources,
+        [] as [formal_ai::CapturedSourceObservation; 0]
+    );
+    assert_eq!(report.report.fetches, [] as [formal_ai::FetchRecord; 0]);
     assert!(report.report.observations.is_empty());
     assert_eq!(report.failures.len(), 1);
     assert!(report.learning_proposal().contains("source_failure"));

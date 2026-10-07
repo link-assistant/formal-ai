@@ -60,7 +60,7 @@ pub mod repair_strategy;
 mod report_issue;
 mod report_script;
 pub mod requirement_resolution;
-mod restart_feedback;
+pub mod restart_feedback;
 pub mod routing_learning;
 pub mod self_ast;
 pub mod self_heal;

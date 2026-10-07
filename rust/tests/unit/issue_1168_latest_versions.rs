@@ -227,7 +227,7 @@ impl SourceTransport for MockTransport {
     }
 }
 
-fn fixed_clock() -> u64 {
+const fn fixed_clock() -> u64 {
     1_800_000_000
 }
 
@@ -264,7 +264,7 @@ fn resolves_every_pin_from_live_fixtures() {
     assert_eq!(versions.java_lts.tag, "25");
     assert_eq!(versions.java_lts.sha, "");
     assert_eq!(versions.java_lts.origin, Origin::Live);
-    assert!(versions.provenance_note().is_empty());
+    assert_eq!(versions.provenance_note(), [] as [std::string::String; 0]);
 }
 
 #[test]
@@ -291,7 +291,7 @@ fn offline_replays_the_cached_capture_and_says_so() {
     let dir = temp_dir("cache");
     let online = MockTransport::online(dir.clone());
     let warmed = VersionSet::resolve(&online);
-    assert!(warmed.checkout.origin == Origin::Live);
+    assert_eq!(warmed.checkout.origin, Origin::Live);
     drop(online);
 
     let offline = CachedSourceClient::new(dir, MockTransport::default())

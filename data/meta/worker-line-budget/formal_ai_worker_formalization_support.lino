@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_formalization_support.js"
-  ceiling 184
-  rationale "Issue #1138 structural segmentation, procedure extraction, and graph identity helpers shared by deep formalization."
+  ceiling 310
+  rationale "Issue #1138 structural segmentation, procedure extraction, and graph identity helpers shared by deep formalization. Ceiling moved 184 to 310 by a move, not growth: the issue #999 warning band caps formal_ai_worker_20.js at 1400 lines, so the formalization fold-back, interpretation, deformalization and thinking-level helpers finalize() applies (123 lines) moved here unchanged, and formal_ai_worker_20.js fell by the same amount."

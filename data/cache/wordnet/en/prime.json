@@ -1,0 +1,129 @@
+{
+  "lemma": "prime",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03023717-a",
+      "partOfSpeech": "a",
+      "definition": "of or relating to or being an integer that cannot be factored into other integers",
+      "examples": [
+        "prime number"
+      ]
+    },
+    {
+      "id": "oewn-13615208-n",
+      "partOfSpeech": "n",
+      "definition": "a natural number that has exactly two distinct natural number divisors: 1 and itself",
+      "synonyms": [
+        "prime quantity"
+      ]
+    },
+    {
+      "id": "oewn-15320288-n",
+      "partOfSpeech": "n",
+      "definition": "the period of greatest prosperity or productivity",
+      "synonyms": [
+        "flower",
+        "peak",
+        "heyday",
+        "bloom",
+        "blossom",
+        "efflorescence",
+        "flush"
+      ]
+    },
+    {
+      "id": "oewn-15254580-n",
+      "partOfSpeech": "n",
+      "definition": "the second canonical hour; about 6 a.m."
+    },
+    {
+      "id": "oewn-15177369-n",
+      "partOfSpeech": "n",
+      "definition": "the time of maturity when power and vigor are greatest",
+      "synonyms": [
+        "prime of life"
+      ]
+    },
+    {
+      "id": "oewn-01016587-s",
+      "partOfSpeech": "s",
+      "definition": "first in rank or degree",
+      "examples": [
+        "an architect of premier rank",
+        "the prime minister"
+      ],
+      "synonyms": [
+        "premier"
+      ]
+    },
+    {
+      "id": "oewn-01016768-s",
+      "partOfSpeech": "s",
+      "definition": "used of the first or originating agent",
+      "examples": [
+        "prime mover"
+      ]
+    },
+    {
+      "id": "oewn-02351005-s",
+      "partOfSpeech": "s",
+      "definition": "of superior grade",
+      "examples": [
+        "choice wines",
+        "prime beef",
+        "prize carnations",
+        "quality paper",
+        "select peaches"
+      ],
+      "synonyms": [
+        "choice",
+        "prize",
+        "quality",
+        "select"
+      ]
+    },
+    {
+      "id": "oewn-01492920-s",
+      "partOfSpeech": "s",
+      "definition": "being at the best stage of development",
+      "examples": [
+        "our manhood's prime vigor"
+      ],
+      "synonyms": [
+        "meridian"
+      ]
+    },
+    {
+      "id": "oewn-00409549-v",
+      "partOfSpeech": "v",
+      "definition": "insert a primer into (a gun, mine, or charge) preparatory to detonation or firing",
+      "examples": [
+        "prime a cannon",
+        "prime a mine"
+      ]
+    },
+    {
+      "id": "oewn-01368058-v",
+      "partOfSpeech": "v",
+      "definition": "cover with a primer; apply a primer to",
+      "synonyms": [
+        "ground",
+        "undercoat"
+      ]
+    },
+    {
+      "id": "oewn-00454973-v",
+      "partOfSpeech": "v",
+      "definition": "fill with priming liquid",
+      "examples": [
+        "prime a car engine"
+      ]
+    }
+  ]
+}

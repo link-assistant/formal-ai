@@ -1,0 +1,53 @@
+view
+  id M-b5d5a7db774e
+  lemma prime
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to or being an integer that cannot be factored into other integers"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a natural number that has exactly two distinct natural number divisors: 1 and itself"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the period of greatest prosperity or productivity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the second canonical hour; about 6 a.m."
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the time of maturity when power and vigor are greatest"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "first in rank or degree"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "used of the first or originating agent"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of superior grade"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being at the best stage of development"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "insert a primer into (a gun, mine, or charge) preparatory to detonation or firing"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cover with a primer; apply a primer to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "fill with priming liquid"
+    provenance (wordnet)

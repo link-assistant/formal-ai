@@ -1,0 +1,29 @@
+view
+  id M-8f538fe80e18
+  lemma preferred
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "more desirable than another"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "preferred above all others and treated with partiality"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "like better; value more highly"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "select as an alternative over another"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "promote over another"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give preference to one creditor over another"
+    provenance (wordnet)

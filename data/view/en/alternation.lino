@@ -1,0 +1,9 @@
+view
+  id M-7621283696c0
+  lemma alternation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "successive change from one thing or state to another and back again"
+    provenance (wordnet)

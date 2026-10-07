@@ -1,0 +1,41 @@
+view
+  id M-92efc6c72e68
+  lemma search
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the activity of looking thoroughly in order to find something or someone"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an investigation seeking answers"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an operation that determines whether one or more of a set of items has a specified property"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the examination of alternative hypotheses"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "boarding and inspecting a ship on the high seas"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "try to locate or discover, or try to establish the existence of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "search or seek"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "inquire into"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "subject to a search"
+    provenance (wordnet)

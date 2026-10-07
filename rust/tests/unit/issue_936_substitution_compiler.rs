@@ -392,7 +392,7 @@ fn verified_program_plan_exports_are_seeded_in_all_supported_languages() {
         );
         assert_eq!(recipe.language, case.target);
         assert_eq!(recipe.path, case.primary_file);
-        assert!(!recipe.source.is_empty());
+        assert_ne!(recipe.source, "");
         assert!(
             recipe
                 .supporting_files
@@ -423,7 +423,7 @@ fn verified_program_plan_exports_are_seeded_in_all_supported_languages() {
                 case.language
             );
         }
-        assert!(!recipe.commands.is_empty());
+        assert_ne!(recipe.commands, [] as [std::string::String; 0]);
     }
 }
 

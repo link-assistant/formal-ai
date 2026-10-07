@@ -4,11 +4,11 @@ self_ast_census
   fidelity signature
   byte_len 19154
   line_count 489
-  content_id source_module_cda667b9771bba1b
+  content_id source_module_06c4d9d694fee06b
   symbol_count 27
   symbols
     const TOOLCHAINS 23 23
-    const CACHE_DIR_ENV 27 27
+    const CACHE_ENV_VAR 27 27
     enum Origin 31 38
     function label 41 47
     struct ResolvedVersion 52 66

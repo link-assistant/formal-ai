@@ -17,20 +17,23 @@ fn the_weekday_of_a_stated_date_is_computed() {
     for (prompt, expected) in [
         (
             "What day of the week was 2024-02-29?",
-            "2024-02-29 is a Thursday.",
+            "2024-02-29 is a Thursday. Counting from 1970-01-01, a Thursday, it is day 19782: 19782 = 7 × 2826 + 0, and Thursday + 0 days = Thursday.",
         ),
-        ("What weekday is 2025-12-25?", "2025-12-25 is a Thursday."),
+        (
+            "What weekday is 2025-12-25?",
+            "2025-12-25 is a Thursday. Counting from 1970-01-01, a Thursday, it is day 20447: 20447 = 7 × 2921 + 0, and Thursday + 0 days = Thursday.",
+        ),
         (
             "What day of the week was 1 January 2000?",
-            "2000-01-01 is a Saturday.",
+            "2000-01-01 is a Saturday. Counting from 1970-01-01, a Thursday, it is day 10957: 10957 = 7 × 1565 + 2, and Thursday + 2 days = Saturday.",
         ),
         (
             "Which day of the week is July 4, 1776?",
-            "1776-07-04 is a Thursday.",
+            "1776-07-04 is a Thursday. Counting from 1970-01-01, a Thursday, it is day -70672: -70672 = 7 × -10096 + 0, and Thursday + 0 days = Thursday.",
         ),
         (
             "What day of the week was 1969-12-31?",
-            "1969-12-31 is a Wednesday.",
+            "1969-12-31 is a Wednesday. Counting from 1970-01-01, a Thursday, it is day -1: -1 = 7 × -1 + 6, and Thursday + 6 days = Wednesday.",
         ),
     ] {
         let response = FormalAiEngine.answer(prompt);
@@ -39,11 +42,7 @@ fn the_weekday_of_a_stated_date_is_computed() {
             "{prompt}: {}",
             response.answer
         );
-        assert!(
-            response.answer.starts_with(expected),
-            "{prompt}: expected {expected}, got {}",
-            response.answer
-        );
+        assert_eq!(response.answer.as_str(), expected, "{prompt}");
     }
 }
 
@@ -136,7 +135,7 @@ fn a_spelled_function_application_is_computed() {
         ("What is the square root of 144?", "sqrt(144) = 12"),
         ("Calculate the square root of 81", "sqrt(81) = 9"),
         ("Сколько будет квадратный корень из 144?", "sqrt(144) = 12"),
-        ("What is the square root of 2?", "sqrt(2) = 1.41421356"),
+        ("What is the square root of 2?", "sqrt(2) = 1.414213562373095"),
     ] {
         let response = FormalAiEngine.answer(prompt);
         assert_eq!(
@@ -144,11 +143,7 @@ fn a_spelled_function_application_is_computed() {
             "{prompt}: {}",
             response.answer
         );
-        assert!(
-            response.answer.contains(expected),
-            "{prompt}: expected {expected}, got {}",
-            response.answer
-        );
+        assert_eq!(response.answer.as_str(), expected, "{prompt}");
     }
 }
 

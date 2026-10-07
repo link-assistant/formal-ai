@@ -6,7 +6,9 @@
 //! — on a fixture tree with its own baseline, never touching the real
 //! `data/meta/duplicate-functions-baseline.lino`.
 //!
-//! Run: `RUSTUP_TOOLCHAIN=1.98.1 cargo test --test unit issue_1182_`
+//! Run: `cargo test --test unit issue_1182_` (the gate inherits the
+//! toolchain cargo runs under; a pinned `RUSTUP_TOOLCHAIN` names one CI has
+//! not installed and fails before the gate starts).
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -26,21 +28,21 @@ fn scratch(name: &str) -> PathBuf {
     dir
 }
 
-const IDENTICAL_BODY: &str = r#"fn helper(value: u32) -> u32 {
+const IDENTICAL_BODY: &str = r"fn helper(value: u32) -> u32 {
     let doubled = value * 2;
     let shifted = doubled + 1;
     let folded = shifted ^ doubled;
     folded.wrapping_add(shifted)
 }
-"#;
+";
 
-const DIFFERENT_BODY: &str = r#"fn helper(value: u32) -> u32 {
+const DIFFERENT_BODY: &str = r"fn helper(value: u32) -> u32 {
     let doubled = value * 3;
     let shifted = doubled + 7;
     let folded = shifted ^ doubled;
     folded.wrapping_add(shifted)
 }
-"#;
+";
 
 fn write_source(dir: &Path, file: &str, body: &str) {
     fs::write(dir.join("src").join(file), body).expect("fixture source");
@@ -48,7 +50,6 @@ fn write_source(dir: &Path, file: &str, body: &str) {
 
 fn run_gate(dir: &Path, baseline: &Path) -> std::process::Output {
     Command::new("rust-script")
-        .env("RUSTUP_TOOLCHAIN", "1.98.1")
         .args([
             repo_root()
                 .join("scripts/check-duplicate-functions.rs")
@@ -91,7 +92,6 @@ fn the_write_baseline_mode_makes_the_same_tree_pass() {
     write_source(&dir, "b.rs", IDENTICAL_BODY);
     let baseline = dir.join("baseline.lino");
     let write = Command::new("rust-script")
-        .env("RUSTUP_TOOLCHAIN", "1.98.1")
         .args([
             repo_root()
                 .join("scripts/check-duplicate-functions.rs")

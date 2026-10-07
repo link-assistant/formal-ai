@@ -73,7 +73,7 @@ fn a_satisfied_need_becomes_a_proposed_candidate_skill() {
     assert_eq!(ledger.curriculum_count(), 0);
     let skill = &ledger.skills[0];
     assert_eq!(skill.status, SkillStatus::Proposed);
-    assert!(!skill.method.is_empty());
+    assert_ne!(skill.method, "");
     assert!(
         !skill.promotable(),
         "a once-demonstrated skill is not yet reusable"
@@ -92,7 +92,7 @@ fn selecting_a_method_does_not_demonstrate_a_skill() {
     );
     assert_eq!(ledger.curriculum_count(), evidence.trails.len());
     assert_eq!(ledger.curriculum[0].status.slug(), "planned");
-    assert!(!ledger.curriculum[0].reason.is_empty());
+    assert_ne!(ledger.curriculum[0].reason, "");
 }
 
 #[test]
@@ -104,7 +104,7 @@ fn a_blocked_need_becomes_a_curriculum_item_without_proposing_a_skill() {
         "an unresolved need must not be distilled into a skill"
     );
     assert_eq!(ledger.curriculum_count(), 1);
-    assert!(!ledger.curriculum[0].reason.is_empty());
+    assert_ne!(ledger.curriculum[0].reason, "");
 }
 
 #[test]

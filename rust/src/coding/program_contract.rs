@@ -10,6 +10,7 @@ use crate::seed::{self, parser::parse_lino};
 
 const CONTRACTS: &str = include_str!("../../embedded/data/meta/stdout-program-contracts.lino");
 
+#[must_use]
 pub fn runtime_steps(language: &str) -> Option<String> {
     let root = parse_lino(CONTRACTS);
     let contract = root
@@ -25,7 +26,8 @@ pub fn runtime_steps(language: &str) -> Option<String> {
 }
 
 /// Read an explicitly quoted output operand in its own clause.
-fn explicit_stdout(prompt: &str) -> Option<String> {
+#[must_use]
+pub fn explicit_stdout(prompt: &str) -> Option<String> {
     let mut previous_end = 0;
     let mut outputs = Vec::new();
     for literal in quoted_segment_spans(prompt) {
@@ -192,34 +194,4 @@ fn string_literal(value: &str, extra_escapes: &str, unicode_escape: &str) -> Str
     }
     out.push('"');
     out
-}
-
-#[cfg(test)]
-mod stdout_requirement_tests {
-    use super::explicit_stdout;
-    use crate::seed::parser::parse_lino;
-
-    /// The request/expectation pairs live beside the other test fixtures,
-    /// one `case` per behaviour: repeated mentions of one literal are one
-    /// output obligation, and distinct literals keep the request's order.
-    const CASES: &str = include_str!("../../tests/fixtures/program-contract/explicit-stdout.lino");
-
-    #[test]
-    fn explicit_stdout_reads_every_fixture_case() {
-        let root = parse_lino(CASES);
-        let cases = &root
-            .children
-            .first()
-            .expect("the fixture has a root")
-            .children;
-        assert_eq!(cases.len(), 2, "both fixture cases are read");
-        for case in cases {
-            assert_eq!(
-                explicit_stdout(case.find_child_value("prompt")),
-                Some(case.find_child_value("expected").to_owned()),
-                "fixture case {}",
-                case.id
-            );
-        }
-    }
 }

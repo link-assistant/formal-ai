@@ -390,14 +390,13 @@ fn handler_format_conversion_round_trips_json_and_yaml() {
 
 #[test]
 fn unrelated_prompts_are_not_claimed_by_any_code_task_handler() {
+    type Handler = fn(&str, &str, &mut EventLog) -> Option<formal_ai::engine::SymbolicAnswer>;
+
     let unrelated = [
         "Hello, how are you today?",
         "What is the capital of France?",
     ];
-    let handlers: [(
-        fn(&str, &str, &mut EventLog) -> Option<formal_ai::engine::SymbolicAnswer>,
-        &str,
-    ); 9] = [
+    let handlers: [(Handler, &str); 9] = [
         (formal_ai::handle_code_debugging, "debugging"),
         (formal_ai::handle_regex_synthesis, "regex"),
         (formal_ai::handle_sql_synthesis, "sql"),

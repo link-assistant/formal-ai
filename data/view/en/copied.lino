@@ -1,0 +1,21 @@
+view
+  id M-c78ef0f656fd
+  lemma copied
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "copy down as is"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reproduce someone's behavior or looks"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reproduce or make an exact copy of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a replica of"
+    provenance (wordnet)

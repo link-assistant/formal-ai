@@ -237,7 +237,7 @@ fn issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode() {
         assert_eq!(call.function.name, tool);
         let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
         assert_eq!(arguments["command"], "ls");
-        assert!(!choice.message.content.plain_text().is_empty());
+        assert_ne!(choice.message.content.plain_text(), "");
     }
 }
 
@@ -409,7 +409,7 @@ fn issue_607_server_summarizes_shell_tool_result_after_ls_runs() {
     let completion = create_chat_completion_with_solver(&request, &solver);
     let choice = &completion.choices[0];
     assert_eq!(choice.finish_reason, "stop");
-    assert!(choice.message.tool_calls.is_empty());
+    assert_eq!(choice.message.tool_calls, [] as [formal_ai::ToolCall; 0]);
     let body = choice.message.content.plain_text();
     assert!(body.contains("`ls`"));
     assert!(body.contains("Cargo.toml"));
@@ -612,7 +612,7 @@ fn server_emits_tool_calls_for_a_formalization_task_in_agent_mode() {
     assert_eq!(call.function.name, "web_search");
     assert!(call.function.arguments.contains(SEARCH_QUERY));
     // The assistant explains the action before the client starts the tool.
-    assert!(!choice.message.content.plain_text().is_empty());
+    assert_ne!(choice.message.content.plain_text(), "");
 }
 
 #[test]
@@ -646,7 +646,7 @@ fn server_returns_final_knowledge_base_once_the_recipe_is_exhausted() {
     let completion = create_chat_completion_with_solver(&request, &solver);
     let choice = &completion.choices[0];
     assert_eq!(choice.finish_reason, "stop");
-    assert!(choice.message.tool_calls.is_empty());
+    assert_eq!(choice.message.tool_calls, [] as [formal_ai::ToolCall; 0]);
     let body = choice.message.content.plain_text();
     assert!(body.contains("knowledge_base"));
     assert!(body.contains("9 of 9 protocol primitives"), "{body}");

@@ -27,6 +27,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_schedule_action"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_42c0ca84628fe69f
+    source "data/seed/meanings-calendar.lino"
+    record "may"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_738ef58b488c180f
     source "data/seed/meanings-coding-structure-2.lino"
     record "one_bit_difference"

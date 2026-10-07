@@ -1,0 +1,17 @@
+view
+  id M-aa013549c51f
+  lemma containment
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a policy of creating strategic alliances in order to check the expansion of a hostile power or ideology or to force it to negotiate peacefully"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(physics) a system designed to prevent the accidental release of radioactive material from a reactor"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of containing; keeping something from spreading"
+    provenance (wordnet)

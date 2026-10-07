@@ -1,0 +1,21 @@
+view
+  id M-80ad5e0e1140
+  lemma some
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(quantifier) used with either mass nouns or plural count nouns to indicate an unspecified number or quantity"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "(of quantities) imprecise but fairly close to correct"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relatively many but unspecified in number"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "remarkable"
+    provenance (wordnet)

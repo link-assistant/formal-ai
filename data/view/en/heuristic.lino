@@ -1,0 +1,13 @@
+view
+  id M-d831d50c50aa
+  lemma heuristic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to or using a general formulation that serves to guide investigation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a commonsense rule (or set of rules) intended to increase the probability of solving some problem"
+    provenance (wordnet)

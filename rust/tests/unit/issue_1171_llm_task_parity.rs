@@ -53,7 +53,7 @@ fn table_rows(document: &str) -> Vec<Vec<String>> {
             .collect();
         // A well-formed row ends with '|', so the split yields a trailing
         // empty piece; drop it.
-        if cells.last().is_none_or(|last| last.is_empty()) {
+        if cells.last().is_none_or(std::string::String::is_empty) {
             cells.pop();
         }
         rows.push(cells);
@@ -87,8 +87,7 @@ fn registry_classes() -> Vec<(String, Vec<String>)> {
             if let Some(name) = trimmed.strip_prefix("name \"") {
                 let name = name.strip_suffix('"').unwrap_or(name);
                 fields.push(format!("name {name}"));
-            } else if trimmed.starts_with("benchmark \"") {
-                let name = &trimmed["benchmark \"".len()..];
+            } else if let Some(name) = trimmed.strip_prefix("benchmark \"") {
                 let name = &name[..name.find('"').unwrap_or(name.len())];
                 fields.push(format!("benchmark {name}"));
             } else if let Some(number) = trimmed.strip_prefix("tracking_issue ") {

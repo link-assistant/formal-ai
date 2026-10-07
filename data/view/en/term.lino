@@ -1,0 +1,37 @@
+view
+  id M-13088dc50406
+  lemma term
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a word or expression used for some particular thing"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a limited period of time"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(usually plural) a statement of what is required as part of an agreement"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any distinct quantity contained in a polynomial"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one of the substantive phrases in a logical proposition"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the end of gestation or point at which birth is imminent"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(architecture) a statue or a human bust or an animal carved out of the top of a square pillar; originally used as a boundary marker in ancient Rome"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "name formally or designate with a term"
+    provenance (wordnet)

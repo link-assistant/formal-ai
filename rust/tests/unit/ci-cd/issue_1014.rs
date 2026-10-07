@@ -178,7 +178,7 @@ fn unix_agent_runner_uses_command_streams_exact_argv_api() {
     let cargo = repository_file("rust/Cargo.toml");
     let runner = repository_file("rust/src/orchestration/runner.rs");
 
-    assert!(cargo.contains("command-stream = \"=0.16.0\""));
+    assert!(cargo.contains("command-stream = \"1.1\""));
     assert!(runner.contains("command_stream::StreamingRunner::from_argv("));
     assert!(!runner.contains("command_stream::quote(&part)"));
 }

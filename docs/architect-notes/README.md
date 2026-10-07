@@ -40,3 +40,5 @@ Two rules for this folder:
 | 2026-09-14 | [Know how to get to know anything when it is needed](2026-09-14-know-how-to-get-to-know-anything.md) | Dynamic discovery, trusted sources, rediscoverable knowledge, and retained experience |
 | 2026-09-24 | [Three roots, full parity, via the meta language](2026-09-24-three-roots-full-parity-via-the-meta-language.md) | Full js/ts/rust parity for client and backend; translation in any direction (PR #1139) |
 | 2026-09-25 | [Deliver the requirements in code, not memories](2026-09-25-deliver-the-requirements-in-code.md) | Compile every directive into one file; deliver them as code (PR #1139) |
+| 2026-10-06 | [JavaScript first, full parity, then translate](2026-10-06-javascript-first-full-parity.md) | JavaScript gets every coding/QA requirement first, then translation to the other roots (PR #1188) |
+| 2026-10-06 | [A truly recursive meta algorithm, and Formal AI coding itself](2026-10-06-recursive-meta-algorithm.md) | Less hardcoded logic; discover meaning from data and the internet; self-coding (PR #1188) |

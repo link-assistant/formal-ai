@@ -1,0 +1,9 @@
+view
+  id M-85584edae9ca
+  lemma concise
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "expressing much in few words"
+    provenance (wordnet)

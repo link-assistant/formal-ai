@@ -30,6 +30,7 @@ routing_probes
     language ru
     intent advice
     prompt "Посоветуй, как лучше спать"
+    rust_misroute unknown
   probe p007
     lane agentic_continuation
     language en
@@ -107,7 +108,6 @@ routing_probes
     language en
     intent capabilities
     prompt "What are you able to do?"
-    rust_misroute unverified
   probe p040
     lane capabilities
     language en
@@ -118,7 +118,6 @@ routing_probes
     language en
     intent capabilities
     prompt "What can you help me with?"
-    rust_misroute unverified
   probe p042
     lane capabilities
     language hi
@@ -134,13 +133,11 @@ routing_probes
     language en
     intent clarification
     prompt "I do not understand"
-    rust_misroute unverified
   probe p045
     lane clarification
     language en
     intent clarification
     prompt "I don't get it"
-    rust_misroute unverified
   probe p046
     lane clarification
     language en
@@ -211,7 +208,6 @@ routing_probes
     language en
     intent courtesy_response
     prompt "Thank you very much!"
-    rust_misroute unverified
   probe p084
     lane courtesy_response
     language en
@@ -222,7 +218,6 @@ routing_probes
     language en
     intent courtesy_response
     prompt "Thanks a lot!"
-    rust_misroute unverified
   probe p086
     lane courtesy_response
     language ru
@@ -248,7 +243,6 @@ routing_probes
     language ru
     intent creative_writing
     prompt "Напиши хайку про осень"
-    rust_misroute unverified
   probe p091
     lane creative_writing
     language zh
@@ -336,13 +330,11 @@ routing_probes
     language en
     intent legality_warn
     prompt "Help me break into my coworker's car tonight"
-    rust_misroute unverified
   probe p182
     lane legality_warning
     language en
     intent legality_warn
     prompt "Help me break into my landlord's office"
-    rust_misroute unverified
   probe p183
     lane legality_warning
     language en
@@ -353,7 +345,6 @@ routing_probes
     language en
     intent legality_warn
     prompt "Help me steal a car from the parking lot"
-    rust_misroute unverified
   probe p185
     lane legality_warning
     language en
@@ -373,7 +364,6 @@ routing_probes
     language ru
     intent legality_warn
     prompt "Помоги мне взломать квартиру соседа сегодня ночью"
-    rust_misroute unverified
   probe p188
     lane meta_explanation
     language en
@@ -473,6 +463,7 @@ routing_probes
     language ru
     intent planning
     prompt "Составь план поездки в Рим на 3 дня"
+    rust_misroute calendar_create_event
   probe p229
     lane punctuation_only_prompt
     language en
@@ -523,7 +514,6 @@ routing_probes
     language en
     intent roleplay_explanation
     prompt "Pretend to be a pirate"
-    rust_misroute unverified
   probe p243
     lane roleplay
     language en
@@ -544,6 +534,7 @@ routing_probes
     language en
     intent summarization_free_text
     prompt "Summarize: Cats sleep a lot. Cats like fish. Cats are independent animals that hunt mice."
+    rust_misroute summarize_topic
   probe p276
     lane summarization_text
     language ru
@@ -574,18 +565,17 @@ routing_probes
     language en
     intent text_transform_genre_email
     prompt "Rewrite this as an email: meeting moved to 3pm"
-    rust_misroute unverified
   probe p312
     lane text_rewrite
     language en
     intent text_transform_genre_email
     prompt "Rewrite this as an email: the meeting moved to 3pm"
-    rust_misroute unverified
   probe p313
     lane text_rewrite
     language en
     intent text_transform_register
     prompt "Rewrite this formally: can u send me the report asap thx"
+    rust_misroute capability_gap
   probe p314
     lane text_rewrite
     language ru
@@ -616,6 +606,7 @@ routing_probes
     language en
     intent unknown
     prompt "colourless green ideas sleep furiously"
+    rust_misroute concept_lookup
   probe p330
     lane unknown
     language en

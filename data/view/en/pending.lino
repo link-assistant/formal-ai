@@ -1,0 +1,9 @@
+view
+  id M-eb0c76c1f57f
+  lemma pending
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "awaiting conclusion or confirmation"
+    provenance (wordnet)

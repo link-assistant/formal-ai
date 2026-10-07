@@ -11,6 +11,11 @@
 # (issues #1178, #1186, #836, #1185, #800, #901), plus the two routing intents
 # product_search and triz_resolution that product-search-cues.lino and
 # triz-principles.lino name, each pointing at the file that uses it.
+#
+# The R1017 records define the small-math intents (calendar_date_weekday,
+# the numeric_list_result and number_primality families) and the synthesis
+# response intents (meta_explanation_why, the how_it_works follow-ups,
+# network_snapshot, source_refresh) the bulk-fixes batch moved into seed data.
 
 meanings
   statistics
@@ -317,3 +322,107 @@ meanings
     unit "not applicable"
     example "how do I resolve the trade-off between strength and weight"
     grounding "data/seed/triz-principles.lino"
+  calendar_date_weekday
+    defined-by answer
+    role localized_response_template
+    precondition "a stated calendar date is asked for its day of the week"
+    effect "the weekday is stated with its day count from 1970-01-01 split into whole weeks and a remainder"
+    unit "not applicable"
+    example "2024-02-29 is a Thursday. Counting from 1970-01-01, a Thursday, it is day 19782."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  numeric_list_result_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a stated list of numbers is asked to be sorted without a request for code"
+    effect "the list is restated in ascending order"
+    unit "not applicable"
+    example "5, 2, 9, 1 sorted in ascending order: 1, 2, 5, 9."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  numeric_list_result_reverse_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a stated list of numbers is asked to be sorted from largest to smallest without a request for code"
+    effect "the list is restated in descending order"
+    unit "not applicable"
+    example "5, 2, 9, 1 sorted in descending order: 9, 5, 2, 1."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  numeric_list_result_reverse
+    defined-by answer
+    role localized_response_template
+    precondition "a stated list of numbers is asked to be reversed without a request for code"
+    effect "the list is restated in reverse order"
+    unit "not applicable"
+    example "5, 2, 9, 1 in reverse order: 1, 9, 2, 5."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_primality_prime
+    defined-by answer
+    role localized_response_template
+    precondition "a stated whole number above the trial-division threshold is asked whether it is prime and it is"
+    effect "the number is confirmed prime with the trial-division bound that no divisor reaches"
+    unit "not applicable"
+    example "Yes, 97 is a prime number: no integer from 2 to 9 divides it."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_primality_prime_small
+    defined-by answer
+    role localized_response_template
+    precondition "a stated small whole number is asked whether it is prime and it is"
+    effect "the number is confirmed prime by naming its only divisors"
+    unit "not applicable"
+    example "Yes, 7 is a prime number: its only divisors are 1 and 7."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_primality_composite
+    defined-by answer
+    role localized_response_template
+    precondition "a stated whole number is asked whether it is prime and it has a proper factor"
+    effect "the number is declared composite with its smallest factor and cofactor"
+    unit "not applicable"
+    example "No, 91 is not a prime number: 91 = 7 x 13, so 7 divides it."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_primality_below_two
+    defined-by answer
+    role localized_response_template
+    precondition "a stated whole number below two is asked whether it is prime"
+    effect "the number is declared not prime by restating that a prime is greater than 1"
+    unit "not applicable"
+    example "No, 1 is not a prime number: a prime is a whole number greater than 1."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  meta_explanation_why
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks why the previous answer was given"
+    effect "the answer names the deterministic Links Notation rule that matched and points at the appended evidence and trace"
+    unit "not applicable"
+    example "I answered that way because the prompt matched a deterministic Links Notation rule."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  how_it_works_prior_topic
+    defined-by answer
+    role localized_response_template
+    precondition "a how-does-it-work question names a term known only from the prior conversation"
+    effect "the answer admits no mechanism rule exists for the term yet and asks for a Links Notation fact describing it"
+    unit "not applicable"
+    example "To explain how the term works I need a Links Notation fact with the mechanism description."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  how_it_works_no_context
+    defined-by answer
+    role localized_response_template
+    precondition "a how-does-it-work follow-up names no topic and the conversation supplies none"
+    effect "the answer explains the matched rule and suggests asking about a concrete known concept"
+    unit "not applicable"
+    example "To ask about a specific topic, try how does X work where X is a concept I know."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  network_snapshot
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks to show or export the link network the runtime loaded"
+    effect "the seeded link network is returned as a Links Notation snapshot"
+    unit "not applicable"
+    example "Here is the link network this runtime has loaded from its seed data."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  source_refresh
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks to refresh a cached source page"
+    effect "the cached source is queued for refresh against its origin and the refresh is logged"
+    unit "not applicable"
+    example "Cached source wikipedia has been queued for refresh against its origin URL."
+    grounding "data/seed/multilingual-responses-synthesis.lino"

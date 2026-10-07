@@ -131,6 +131,14 @@ seed_metadata_gaps
     source "data/seed/meanings-software-project.lino"
     record "tabletop_game_tracker"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_b8e8107c50b6742a
+    source "data/seed/meanings-statistics.lino"
+    record "number_property_prime"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_a1c9c67afc0b47ea
+    source "data/seed/meanings-statistics.lino"
+    record "statistics_percentile"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_82f466a58412d01a
     source "data/seed/meanings-translation.lino"
     record "response_identity_es"

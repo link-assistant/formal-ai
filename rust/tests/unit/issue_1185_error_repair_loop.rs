@@ -264,7 +264,7 @@ fn repair_loop_records_the_fix_then_retries_the_failed_command() {
     // Rung phase 4: with the record written, the failed command retries.
     let arguments = calls[0].arguments.clone();
     let with_write = [
-        base.clone(),
+        base,
         vec![
             assistant_call("c3", "write_file", &arguments),
             tool_result("c3", "write_file", "recorded"),

@@ -887,9 +887,9 @@ The manual-confirmation column of
 whose automated test pins the machinery while nobody has yet watched it run
 by hand, and it carries no debt and gates nothing. Two rules follow:
 
-- **No new manual-confirmation ledger may be introduced until an existing
-  one is complete.** A second parallel column would dilute the one surface
-  that exists; finishing beats starting.
+- **No new manual-confirmation ledger may be introduced until an existing one is complete.**
+  A second parallel column would dilute the one surface that exists;
+  finishing beats starting.
 - The way the column fills is the finish branch of #1090: replayed session
   captures from the agentic-CLI matrix, cited per row. Until a capture
   exists for a row, the row stays `not yet confirmed` — that is the

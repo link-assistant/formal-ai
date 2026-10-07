@@ -11,6 +11,8 @@
 roles
   action
     kind meaning
+  advice_request
+    kind meaning
   agent_action_formalize_verb
     kind predicate
   agent_action_report_subject
@@ -41,6 +43,8 @@ roles
     kind predicate
   binary_relation_property
     kind predicate
+  brainstorming_request
+    kind meaning
   calculation_basis_reference
     kind predicate
   calculation_domain_term
@@ -263,6 +267,8 @@ roles
     kind predicate
   conversion_action_cue
     kind predicate
+  creative_writing_request
+    kind meaning
   currency_eur_reference
     kind predicate
   currency_rub_reference
@@ -535,6 +541,8 @@ roles
     kind predicate
   physical_dimension
     kind predicate
+  planning_request
+    kind meaning
   playwright_script_cue
     kind predicate
   playwright_tool_name
@@ -733,19 +741,7 @@ roles
     kind predicate
   software_language
     kind meaning
-  software_object_boundary_character
-    kind predicate
-  software_object_boundary_word
-    kind predicate
-  software_object_lead_bigram
-    kind predicate
-  software_object_lead_word
-    kind predicate
-  software_object_word_internal_character
-    kind predicate
   software_requirement_category
-    kind predicate
-  software_sentence_end_character
     kind predicate
   software_step_granularity
     kind meaning

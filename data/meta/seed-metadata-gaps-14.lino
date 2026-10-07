@@ -27,6 +27,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_day_after_tomorrow"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_357c48f0dbeb764e
+    source "data/seed/meanings-calendar.lino"
+    record "october"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_61853f384a2d790e
     source "data/seed/meanings-coding-structure-2.lino"
     record "conditional_expression"

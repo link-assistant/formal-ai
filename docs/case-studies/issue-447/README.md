@@ -24,8 +24,10 @@ a complaint about the very surface the user is typing into.
    CSS height) — scrolled with the wheel, trackpad, and keyboard.
 2. The panel never clips its controls at any width ≥ 320px (mobile column
    collapse included).
-3. The dialog half: interface complaints are answered by the seeded
-   unknown-opener pool (no Rust literal), which this change pins.
+3. The dialog half: an interface complaint is routed to the structured
+   report (`report_issue`, the issue-447 rows of
+   `data/seed/capability-routing.lino`), never explained away by the
+   generic unknown-opener pool; this change pins that route.
 
 ## Root cause
 
@@ -60,9 +62,9 @@ container with `min-height: 0` — the fix is the standard one, not novel.
 ## Solution (dialog half, this pull request)
 
 `rust/tests/unit/issue_447_dialog_politeness.rs` pins that the exact
-complaint string is answered from the seeded ru opener pool
-(`data/seed/unknown-openers.lino`) and that ru remains a declared answer
-language. The web draft now gives `.context-panel` its own vertical scroll container,
+complaint string reaches the `report_issue` route (a chat surface without the
+report tool answers with the seeded honest gap naming it, not the
+unknown-opener pool) and that ru remains a declared answer language. The web draft now gives `.context-panel` its own vertical scroll container,
 prevents direct section children from shrinking into clipped regions, and keeps
 focus targets inside a 12px scroll margin. It applies to the mobile drawer too.
 The existing fixed shell already follows the dynamic viewport height; imposing

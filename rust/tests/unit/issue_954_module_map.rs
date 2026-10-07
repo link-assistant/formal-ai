@@ -19,7 +19,7 @@ fn repo_root() -> PathBuf {
 
 fn read(path: &str) -> String {
     let full = repo_root().join(path);
-    fs::read_to_string(&full).unwrap_or_else(|error| panic!("{} should be readable: {error}", path))
+    fs::read_to_string(&full).unwrap_or_else(|error| panic!("{path} should be readable: {error}"))
 }
 
 /// The architecture topic file that owns §18 (ARCHITECTURE.md links to it).

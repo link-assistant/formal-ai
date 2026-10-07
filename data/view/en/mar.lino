@@ -1,0 +1,21 @@
+view
+  id M-ae85367296bb
+  lemma mar
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the month following February and preceding April"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a mark or flaw that spoils the appearance of something (especially on a person's body)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make imperfect"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "destroy or injure severely"
+    provenance (wordnet)

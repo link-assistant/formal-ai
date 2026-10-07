@@ -519,3 +519,35 @@ meanings
     unit "not applicable"
     example "summarize the current dialog while keeping source attribution"
     grounding "data/seed/environments.lino"
+  keep_greater
+    defined-by method
+    role action
+    precondition "a list request keeps the elements whose measure exceeds a threshold"
+    effect "filters the list by measure greater than the threshold inferred from the examples or read from the request"
+    unit "not applicable"
+    example "keep the words longer than 3 letters"
+    grounding "data/seed/meta-reasoning.lino"
+  keep_less
+    defined-by method
+    role action
+    precondition "a list request keeps the elements whose measure is below a threshold"
+    effect "filters the list by measure less than the threshold inferred from the examples or read from the request"
+    unit "not applicable"
+    example "keep the numbers smaller than 10"
+    grounding "data/seed/meta-reasoning.lino"
+  keep_containing
+    defined-by method
+    role action
+    precondition "a list request keeps the elements whose text contains a value"
+    effect "filters the list by substring containment of the requested value"
+    unit "not applicable"
+    example "keep the lines that contain TODO"
+    grounding "data/seed/meta-reasoning.lino"
+  maximum_by
+    defined-by method
+    role action
+    precondition "a request asks for the element with the greatest measure"
+    effect "selects the first element whose measure is the maximum"
+    unit "not applicable"
+    example "find the longest word in the list"
+    grounding "data/seed/meta-reasoning.lino"

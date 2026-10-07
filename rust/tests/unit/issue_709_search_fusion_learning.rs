@@ -204,7 +204,10 @@ fn approved_recipe_round_trips_and_executes_a_held_out_task() {
     let held_out =
         execute_search_fusion_with_recipe(&restored, &client, "tomato taxonomy", "en", 2, classify)
             .expect("approved recipe executes unseen equivalent task");
-    assert!(!held_out.answer.statements.is_empty());
+    assert_ne!(
+        held_out.answer.statements,
+        [] as [formal_ai::FusedSearchStatement; 0]
+    );
     assert!(held_out.trace().contains("search_fusion:rank"));
     assert!(
         fs::read_to_string(

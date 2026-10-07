@@ -1,0 +1,13 @@
+view
+  id M-8224cea82bfe
+  lemma limerick
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "port city in southwestern Ireland"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a humorous verse form of 5 anapestic lines with a rhyme scheme aabba"
+    provenance (wordnet)

@@ -61,6 +61,11 @@ jobs:
   build:
     name: build ${{ matrix.dockerfile }} (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
+    # The build step owns a 45-minute deadline of its own; the job cap leaves
+    # room for checkout, the binary download, verification and the artifact
+    # upload, so an overrun fails the step instead of cancelling the job
+    # (issues #1017, #1076).
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -88,9 +93,10 @@ jobs:
       slim-digest: ${{ steps.digests.outputs.slim }}
       full-digest: ${{ steps.digests.outputs.full }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref || github.ref }}
+          persist-credentials: false
       - name: Free runner disk
         run: bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
@@ -137,7 +143,7 @@ jobs:
         run: |
           tag="${{ matrix.arch }}-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}"
           docker save "formal-ai:$tag" -o "formal-ai-$tag.tar"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: image-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}-${{ matrix.arch }}
           path: formal-ai-${{ matrix.arch }}-${{ matrix.dockerfile == 'Dockerfile.slim' && 'slim' || 'full' }}.tar
@@ -147,15 +153,18 @@ jobs:
     name: merge multi-arch manifests
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       slim-size: ${{ steps.sizes.outputs.slim-size }}
       full-size: ${{ steps.sizes.outputs.full-size }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Set up Docker Buildx
         uses: ./.github/actions/setup-buildx-resilient
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
           pattern: image-*
           merge-multiple: false

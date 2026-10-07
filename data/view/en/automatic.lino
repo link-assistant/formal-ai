@@ -1,0 +1,25 @@
+view
+  id M-9c958a689fc3
+  lemma automatic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "operating with minimal human intervention; independent of external control"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "self-loading rifle capable of automatic fire"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a pistol that will keep firing until the ammunition is gone or the trigger is released"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "resembling the unthinking functioning of a machine"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "without volition or conscious control"
+    provenance (wordnet)

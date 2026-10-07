@@ -1,0 +1,9 @@
+view
+  id M-726f01db0128
+  lemma candela
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the basic unit of luminous intensity adopted under the Systeme International d'Unites; equal to 1/60 of the luminous intensity per square centimeter of a black body radiating at the temperature of 2,046 degrees Kelvin"
+    provenance (wordnet)

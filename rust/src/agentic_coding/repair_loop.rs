@@ -376,15 +376,16 @@ fn message_coverage(text: &str, diagnostic: &Diagnostic) -> f32 {
 
 /// Whether a fetched page addresses the diagnostic (R2's retention test,
 /// R6's unresolved-need test): the page names the exact error code when the
-/// language has one, or carries at least half the diagnostic's message
-/// tokens.
+/// language has one, or carries more than half the diagnostic's message
+/// tokens. Exactly half is not enough: a two-word message ("mismatched
+/// types") would otherwise be addressed by any page that says "types".
 fn page_addresses(text: &str, diagnostic: &Diagnostic) -> bool {
     if let Some(code) = &diagnostic.code
         && text.contains(code.as_str())
     {
         return true;
     }
-    message_coverage(text, diagnostic) >= 0.5
+    message_coverage(text, diagnostic) > 0.5
 }
 
 /// The candidate-fix fragment a matched page retains: the fenced code block
@@ -413,7 +414,7 @@ fn fix_fragment(page: &str, diagnostic: &Diagnostic) -> Option<String> {
         let window = &page[window_start..open_at];
         let code = diagnostic.code.as_deref().unwrap_or_default();
         let window_addresses = (!code.is_empty() && window.contains(code))
-            || message_coverage(window, diagnostic) >= 0.5;
+            || message_coverage(window, diagnostic) > 0.5;
         if window_addresses {
             let score = message_coverage(window, diagnostic);
             let candidate = page[body_start..close_at].trim().to_owned();

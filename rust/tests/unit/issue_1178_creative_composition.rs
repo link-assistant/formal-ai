@@ -413,15 +413,14 @@ fn handler_advice_unknown_topic_refuses_honestly() {
 
 #[test]
 fn unrelated_prompts_are_not_claimed_by_any_composition_handler() {
+    type Handler = fn(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>;
+
     let unrelated = [
         "Hello, how are you today?",
         "What is the capital of France?",
         "Convert this JSON to YAML:\n```json\n{\"a\": 1}\n```",
     ];
-    let handlers: [(
-        fn(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>,
-        &str,
-    ); 4] = [
+    let handlers: [(Handler, &str); 4] = [
         (formal_ai::handle_brainstorm_request, "brainstorming"),
         (
             formal_ai::handle_creative_writing_request,

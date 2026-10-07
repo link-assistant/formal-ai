@@ -171,7 +171,7 @@ function messageCoverage(text, diagnostic) {
 
 function pageAddresses(text, diagnostic) {
   if (diagnostic.code !== null && text.includes(diagnostic.code)) return true;
-  return messageCoverage(text, diagnostic) >= 0.5;
+  return messageCoverage(text, diagnostic) > 0.5;
 }
 
 function fixFragment(page, diagnostic) {
@@ -187,7 +187,7 @@ function fixFragment(page, diagnostic) {
     const before = Array.from(page.slice(0, open));
     const window = before.slice(Math.max(0, before.length - 400)).join('');
     const code = diagnostic.code ?? '';
-    const windowAddresses = (code !== '' && window.includes(code)) || messageCoverage(window, diagnostic) >= 0.5;
+    const windowAddresses = (code !== '' && window.includes(code)) || messageCoverage(window, diagnostic) > 0.5;
     if (windowAddresses) {
       const score = messageCoverage(window, diagnostic);
       const candidate = trim(page.slice(bodyStart, close));

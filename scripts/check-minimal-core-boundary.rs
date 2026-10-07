@@ -473,7 +473,10 @@ mod tests {
             ("rust/src/solver_handlers/domain.rs".to_owned(), 3),
             ("rust/src/solver_handlers/interpreter.rs".to_owned(), 2),
         ]);
-        assert!(audit(&sample_ledger(), &files).is_empty());
+        assert_eq!(
+            audit(&sample_ledger(), &files),
+            [] as [std::string::String; 0]
+        );
     }
 
     #[test]
@@ -545,7 +548,10 @@ mod tests {
             ("rust/src/solver_handlers/domain.rs".to_owned(), 3),
             ("rust/src/solver_handlers/interpreter.rs".to_owned(), 2),
         ]);
-        assert!(audit(&sample_ledger_with_component(), &files).is_empty());
+        assert_eq!(
+            audit(&sample_ledger_with_component(), &files),
+            [] as [std::string::String; 0]
+        );
     }
 
     #[test]

@@ -19,6 +19,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calculator.lino"
     record "cosine"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1d710660fe231d4b
+    source "data/seed/meanings-calendar.lino"
+    record "august"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_02befa1bbcab7f9b
     source "data/seed/meanings-coding-structure-2.lino"
     record "recurrence_add"

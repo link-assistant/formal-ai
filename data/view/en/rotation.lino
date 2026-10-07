@@ -1,0 +1,21 @@
+view
+  id M-4e20b0c6ebdd
+  lemma rotation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of rotating as if on an axis"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(mathematics) a transformation in which the coordinate axes are rotated by a fixed angle about the origin"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a single complete turn (axial or orbital)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a planned recurrent sequence (of crops or personnel etc.)"
+    provenance (wordnet)

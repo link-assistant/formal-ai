@@ -107,8 +107,8 @@ fn external_payloads_are_disposable_but_receipts_are_versioned() {
         .find(|source| source.id == first)
         .unwrap();
     assert!(receipt.cached_payload.is_none());
-    assert!(!receipt.locator.is_empty());
-    assert!(!receipt.content_id.is_empty());
+    assert_ne!(receipt.locator, "");
+    assert_ne!(receipt.content_id, "");
 
     assert!(!cycle.recollect_source(&first, "changed observation"));
     assert!(cycle.recollect_source(&first, "observation-v1"));

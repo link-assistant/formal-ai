@@ -139,7 +139,9 @@ fn the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin() {
 #[test]
 fn a_gh_read_does_not_count_as_literal_file_verification() {
     let mut messages = vec![ChatMessage::user(prompt())];
-    let objective = "Create a file note.txt containing exactly: hello";
+    // A `gh` read prints the title, a blank line, then the body; output
+    // without that shape is a failed read since issue #1155.
+    let objective = "Small task\n\nCreate a file note.txt containing exactly: hello";
     let (planned, answer) = drive(
         &["Bash", "Write"],
         &mut messages,

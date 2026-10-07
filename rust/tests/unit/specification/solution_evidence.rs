@@ -32,7 +32,7 @@ fn evidence_has_one_trail_per_need() {
         evidence.trails.len() >= 2,
         "a conjunction must produce a trail per detected need: {evidence:?}"
     );
-    assert!(!evidence.frame_id.is_empty());
+    assert_ne!(evidence.frame_id, "");
 }
 
 #[test]

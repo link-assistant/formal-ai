@@ -57,7 +57,6 @@ routing_probes
     language en
     intent calendar_create_event
     prompt "Create an event on Friday at 9:00 for the dentist"
-    rust_misroute unverified
   probe p033
     lane calendar_create_event
     language en
@@ -151,39 +150,44 @@ routing_probes
     language en
     intent document_originality_check
     prompt "Check this text for plagiarism: All happy families are alike."
+    rust_misroute compose_from_sources
   probe p103
     lane document_originality_check
     language en
     intent document_originality_check
     prompt "Check this text for plagiarism: The quick brown fox jumps over the lazy dog."
+    rust_misroute compose_from_sources
   probe p104
     lane document_originality_check
     language ru
     intent document_originality_check
     prompt "Проверь текст на плагиат: Быть или не быть, вот в чём вопрос."
+    rust_misroute compose_from_sources
   probe p109
     lane fact_lookup
     language en
     intent fact_query
     prompt "Make sense of this: what is the capital of France?"
     adversarial true
+    rust_misroute fact_lookup
   probe p110
     lane fact_lookup
     language en
     intent fact_query
     prompt "What is the capital of the USA?"
+    rust_misroute fact_lookup
   probe p111
     lane fact_lookup
     language ru
     intent fact_query
     prompt "столица россии"
+    rust_misroute fact_lookup
   probe p112
     lane fact_lookup
     language zh
     intent fact_lookup
     prompt "谁创建了 Rust?"
     js_misroute write_program_skill_gap
-    rust_misroute unverified
   probe p116
     lane formalization_request
     language en
@@ -204,6 +208,7 @@ routing_probes
     language en
     intent github_repository_traffic
     prompt "Can I see who visited my GitHub repository?"
+    rust_misroute capability_gap
   probe p134
     lane github_repository_traffic
     language en
@@ -485,6 +490,7 @@ routing_probes
     language zh
     intent statistics
     prompt "1、2、3、4、5的第90百分位数是多少？"
+    rust_misroute concept_measurement_lookup
   probe p318
     lane triz_resolution
     language en
@@ -528,18 +534,17 @@ routing_probes
     language ru
     intent unit_conversion
     prompt "Сколько километров в 10 милях?"
-    rust_misroute unverified
   probe p326
     lane unit_conversion
     language ru
     intent unit_conversion
     prompt "Сколько метров в 3 милях?"
-    rust_misroute unverified
   probe p327
     lane unit_conversion
     language zh
     intent unit_conversion
     prompt "10英里是多少公里？"
+    rust_misroute concept_measurement_lookup
   probe p331
     lane url_navigate
     language en

@@ -1,0 +1,9 @@
+view
+  id M-7a43ba5c31c5
+  lemma maintainer
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "someone who upholds or maintains"
+    provenance (wordnet)

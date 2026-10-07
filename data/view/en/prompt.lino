@@ -1,0 +1,37 @@
+view
+  id M-f5653ed4f600
+  lemma prompt
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a cue given to a performer (usually the beginning of the next line to be spoken)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a symbol that appears on the computer screen to indicate that the computer is ready to receive a command"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "according to schedule or without delay; on time"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "ready and willing or quick to act"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "performed with little or no delay"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give an incentive for action"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "serve as the inciting cause of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "assist (somebody acting or reciting) by suggesting the next words of something forgotten or imperfectly learned"
+    provenance (wordnet)

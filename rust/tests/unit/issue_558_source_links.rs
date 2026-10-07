@@ -79,7 +79,7 @@ fn owned_manifest_content_addresses_every_source_file() {
         );
         assert!(digest.path.starts_with("src/"), "{}", digest.path);
         assert_eq!(digest.byte_len, source.len());
-        assert!(!digest.content_id.is_empty());
+        assert_ne!(digest.content_id, "");
         // Deterministic, path-sorted, no duplicates.
         if let Some(prev) = previous {
             assert!(
@@ -95,7 +95,7 @@ fn owned_manifest_content_addresses_every_source_file() {
 
     // The whole tree collapses to one stable id, deterministic across calls.
     assert_eq!(owned_manifest_content_id(), owned_manifest_content_id());
-    assert!(!owned_manifest_content_id().is_empty());
+    assert_ne!(owned_manifest_content_id(), "");
 }
 
 #[test]

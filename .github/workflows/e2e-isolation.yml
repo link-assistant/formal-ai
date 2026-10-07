@@ -52,12 +52,17 @@ jobs:
   isolate:
     name: orphan-branch run (${{ inputs.purpose }})
     runs-on: ubuntu-latest
+    # The workload is a placeholder today; the cap keeps a hung `gh` call
+    # from inheriting the 360-minute default (issue #1017).
+    timeout-minutes: 20
     permissions:
       contents: write
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      # Issue #1079: this checkout keeps persist-credentials (the default)
+      # because the orphan-branch steps below push with it.
+      - uses: actions/checkout@v7
         with:
           # Full history is not needed to create an orphan; a shallow clone
           # of the dispatching ref is enough.
@@ -83,6 +88,10 @@ jobs:
           name="run"
           branch="e2e/${PURPOSE}/${run_id}/${name}"
 
+          # The push helper is copied out first: `git rm` below empties the
+          # tree it lives in (issue #1081, D13 -- every push goes through it).
+          cp scripts/push-to-shared-branch.sh "${RUNNER_TEMP}/push-to-shared-branch.sh"
+
           # The orphan branch: no parents, no shared tree with main.
           git checkout --orphan "$branch"
           git rm -rf --quiet .
@@ -92,7 +101,7 @@ jobs:
           git checkout "${GITHUB_SHA}" -- $FILES
           git -c user.name="formal-ai-e2e" -c user.email="noreply@users.noreply.github.com" \
             commit --no-verify -m "e2e: isolated tree for ${PURPOSE} (${run_id})"
-          git push origin "$branch"
+          bash "${RUNNER_TEMP}/push-to-shared-branch.sh" origin "$branch"
 
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
           echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
@@ -125,7 +134,7 @@ jobs:
           # nothing has changed yet, the tracking issue alone carries the
           # run and the PR step is skipped -- isolation without a PR is
           # still isolation.
-          git push origin "${BRANCH}:refs/heads/${BRANCH}-run" 2>/dev/null || true
+          bash "${RUNNER_TEMP}/push-to-shared-branch.sh" origin "${BRANCH}-run" >/dev/null 2>&1 || true
 
           echo "issue=${issue_number}" >> "$GITHUB_OUTPUT"
           echo "issue-url=${issue_url}" >> "$GITHUB_OUTPUT"
@@ -157,4 +166,8 @@ jobs:
           # at the end"). With layer `default` these calls still work --
           # github.token may close what it opened on its own repository.
           gh issue close "$ISSUE" --comment "isolated run finished; cleaning up" || true
-          git push origin --delete "${BRANCH}" "${BRANCH}-run" 2>/dev/null || true
+          # Branch deletion goes over the API, which reads GH_TOKEN, rather
+          # than a bare `git push --delete` (issue #1081).
+          for ref in "${BRANCH}" "${BRANCH}-run"; do
+            gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${ref}" >/dev/null 2>&1 || true
+          done
