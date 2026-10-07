@@ -20,7 +20,7 @@ coding_catalog
   language python
     name "Python"
     code_fence "python"
-    check_command "python3 -m py_compile main.py"
+    check_command "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py"
     run_command "python3 main.py"
     notes "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
     source "local Links Notation write-program seed"

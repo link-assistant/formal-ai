@@ -175,7 +175,7 @@ fn failure_report_names_the_exit_code_not_the_harness() {
         "the report must state the exit code: {text}"
     );
     assert!(
-        text.contains("python3 -m py_compile main.py"),
+        text.contains("python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py"),
         "the report must name the command that failed: {text}"
     );
     assert!(

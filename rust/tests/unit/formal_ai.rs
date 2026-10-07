@@ -14,7 +14,7 @@ print('Hello, world!')
 ```
 
 Execution status: not run; this program was rediscovered from https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples and its output contract was checked by decomposition, not by executing it.
-Check command: `python3 -m py_compile main.py`
+Check command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`
 Run command: `python3 main.py`
 Expected output after verification:
 ```text

@@ -711,7 +711,7 @@ const WRITE_PROGRAM_LANGUAGES = {
     fence: "python",
     saveAs: "main.py",
     setupHint: "Python 3 from https://www.python.org/downloads/",
-    checkCommand: "python3 -m py_compile main.py",
+    checkCommand: "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py",
     runCommand: "python3 main.py",
   },
   javascript: {

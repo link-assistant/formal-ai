@@ -70,7 +70,10 @@ fn documented_commands_of_every_captured_language() {
     assert_eq!(
         documented("python"),
         [
-            row("python3 -m py_compile main.py", None),
+            row(
+                "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py",
+                None
+            ),
             row("python3 main.py", None)
         ]
     );

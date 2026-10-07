@@ -46,7 +46,7 @@ possible tasks you encounter on the way must be fully supported by it".
 | T16 | `Show me git status.` | **Fail**: web search (the seeded cue is `show git status`). | **Pass**: runs `git status` (also `Show me the git log.`, `Покажи мне статус git`). |
 | T17 | `Change the value of "debug" to true in config.json.` | **Fail**: edit with `oldString: the value of "debug"`. | **Pass**: read → edit of the `"debug"` line → `sha256sum`; answer `Set \`debug\` to \`true\` in \`config.json\` and observed the result.` Also `Set the value of name to prod in config.json.` (keeps the quotes) and YAML `debug: …`. |
 | T18 | `Create hello.py that prints Hello, World! and run it.` | **Fail**: answered with a program in chat (named `main.py`, printing `Hello, world!`), wrote nothing, ran nothing. | Open (unquoted output, see below) |
-| T18q | `Create hello.py that prints "Hello, World!" and run it.` | **Fail**: same chat answer. | **Pass in-process**: writes `hello.py` + `tests/verify-output.sh`, runs `python3 -m py_compile hello.py` and the output check (`Hello, World!`), reports. Through the Agent CLI the files are written and the compile step runs, then **the CLI crashes** (see "Client defect"). |
+| T18q | `Create hello.py that prints "Hello, World!" and run it.` | **Fail**: same chat answer. | **Pass in-process**: writes `hello.py` + `tests/verify-output.sh`, runs `python3 -m py_compile hello.py` and the output check (`Hello, World!`), reports. Through the Agent CLI the files are written and the compile step runs, then **the CLI crashes** (see "Client defect"). **After the bytecode-free check: passes end-to-end through the CLI** (rc=0, no `__pycache__`). |
 | T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = a phrase of the request. | Open |
 | T20 | `Write a Python function add(a, b) that returns their sum.` (solver) | **Fail, wrong code**: `def add(a, b): return sum(a)`. | Open (next rung) |
 
@@ -358,3 +358,25 @@ T1 (author `multiply` in an existing ES module plus a `node:test` case),
 T18 with an unquoted output, and T6 (fix a typo whose correction the request
 does not state — needs a grounded word source; the local Wiktionary/WordNet
 caches hold only 254/713 lemmas and no `small`).
+
+### The Python check no longer writes bytecode into the workspace
+
+The catalog's Python check was `python3 -m py_compile main.py`, which writes
+`__pycache__/main.cpython-*.pyc` next to the source. A binary file in the
+workspace is what crashes the Agent CLI 0.26.0 (and drops the session summary
+in 0.26.11; upstream draft
+`docs/case-studies/pull-request-1188/upstream-issue-drafts/06-agent.md`).
+`PYTHONDONTWRITEBYTECODE` does not help (py_compile writes the cache file
+explicitly), and a `python3 -c "…compile(…)…"` check needs nested quotes the
+seed strings cannot carry cleanly. The check is now
+`python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`: the
+same full compile (a syntax error and `return` outside a function both still
+exit 1), no shell syntax, and the byte code lands under the prefix instead of
+the workspace. Changed in all three copies of the catalog
+(`rust/src/coding/catalog/languages.rs`, `data/meta/agentic-coding-catalog.lino`,
+`js/worker/formal_ai_worker_12.js`) and in every catalog-derived pin
+(`issue_716`, `issue_908`, `issue_1165_documentation_route`, `formal_ai.rs`,
+`specification/{prompt_variations,selection}.rs`, the catalog source test, the
+issue-1168 workflow fixture, the 1165 web test, the dogfood test). Transcripts
+that record what a client ran (issue #908/#916 envelopes) keep the historical
+command: the envelope's `Command:` field is never compared.

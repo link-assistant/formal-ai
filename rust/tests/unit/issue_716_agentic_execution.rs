@@ -86,7 +86,10 @@ fn every_catalog_language_projects_its_structured_execution_metadata() {
             "Python",
             "python",
             "main.py",
-            &["python3 -m py_compile main.py", "python3 main.py"][..],
+            &[
+                "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py",
+                "python3 main.py",
+            ][..],
         ),
         (
             "JavaScript",

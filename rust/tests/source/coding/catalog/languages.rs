@@ -30,7 +30,9 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             status: ExecutionStatus::Verified,
             environment: "issue-8 local verification harness (isolated sandbox)",
-            check_command: Some("python3 -m py_compile main.py"),
+            check_command: Some(
+                "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py",
+            ),
             run_command: "python3 main.py",
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },

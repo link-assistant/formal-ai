@@ -35,7 +35,9 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Python",
         code_fence: "python",
         execution: ProgramExecution {
-            check_command: Some(Cow::Borrowed("python3 -m py_compile main.py")),
+            check_command: Some(Cow::Borrowed(
+                "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py",
+            )),
             run_command: Cow::Borrowed("python3 main.py"),
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },

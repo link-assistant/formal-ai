@@ -250,7 +250,7 @@ describe('PR #1188 dogfood: a named source file says which language to write', (
     const args = JSON.parse(plan.calls[0].arguments);
     assert.equal(args.filePath, 'hello.py');
     assert.equal(args.content,
-      '# python3 -m py_compile hello.py\n# python3 hello.py\n# Emit the requested text followed by a newline.\nprint("Hello, World!")\n');
+      '# python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile hello.py\n# python3 hello.py\n# Emit the requested text followed by a newline.\nprint("Hello, World!")\n');
   });
 
   test('a file name no catalogued language saves as names no language', async () => {

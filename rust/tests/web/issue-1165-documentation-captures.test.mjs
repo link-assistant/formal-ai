@@ -76,7 +76,7 @@ test('R1165-6: the documented check and run commands of every captured language'
   assert.deepEqual(documented('typescript'), [['tsc hello.ts', 'tsc hello.ts'], ['node hello.js', null]]);
   assert.deepEqual(documented('go'), [['go run main.go', null]]);
   assert.deepEqual(documented('scala'), [['scalac Main.scala', null], ['scala Main', null]]);
-  assert.deepEqual(documented('python'), [['python3 -m py_compile main.py', null], ['python3 main.py', null]]);
+  assert.deepEqual(documented('python'), [['python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py', null], ['python3 main.py', null]]);
   assert.deepEqual(documented('javascript'), [['node --check main.js', null], ['node main.js', null]]);
   assert.deepEqual(documented('c'), [['gcc main.c -o main', null], ['./main', null]]);
   assert.deepEqual(documented('cpp'), [['g++ main.cpp -o main', null], ['./main', null]]);
