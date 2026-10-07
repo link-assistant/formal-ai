@@ -711,11 +711,19 @@ impl UniversalSolver {
                 if log.first_of("rule_synthesis_candidate").is_none() {
                     crate::coding::record_algorithm_construction(&mut log);
                 }
-                log.append(
-                    "execution_status",
-                    spec.language.execution_status().label().to_owned(),
+                // Issue #1165: a documentation-sourced program no recorded run
+                // verified is not run; its environment is the page it came from.
+                let (status, environment) = crate::engine::rediscovered_page(*spec).map_or_else(
+                    || {
+                        (
+                            spec.language.execution_status().label(),
+                            spec.language.environment(),
+                        )
+                    },
+                    |page| (crate::coding::ExecutionStatus::Unavailable.label(), page),
                 );
-                log.append("execution_environment", spec.language.environment());
+                log.append("execution_status", status.to_owned());
+                log.append("execution_environment", environment);
                 log.append("program_parameter:language", spec.language.slug.to_owned());
                 log.append("program_parameter:task", spec.task.slug.to_owned());
                 log.append("program_parameters", spec.parameter_summary());

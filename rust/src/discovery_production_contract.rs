@@ -281,12 +281,75 @@ pub fn documentation_deviation(language: &str, call: &str, program: &str) -> Opt
     (!breaks).then(|| String::from("trailing_newline=absent"))
 }
 
+/// How the program a documented pair answers with was verified.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ProgramVerification {
+    /// A recorded run compiled and executed this exact program.
+    Recorded {
+        /// Where the run happened.
+        environment: String,
+    },
+    /// Rediscovered from the page and checked by decomposition; nothing ran it.
+    Decomposition {
+        /// The page the program was rediscovered from.
+        page: String,
+    },
+}
+
+impl ProgramVerification {
+    /// The page a program checked only by decomposition was rediscovered from.
+    #[must_use]
+    pub fn rediscovered_page(&self) -> Option<&str> {
+        match self {
+            Self::Decomposition { page } => Some(page.as_str()),
+            Self::Recorded { .. } => None,
+        }
+    }
+}
+
+/// How a documented program was verified (issue #1165).
+///
+/// A run the policy seed's `recorded_verification` records for the
+/// program's language, task and `content_id` is cited; any other program is
+/// reported as rediscovered from its page and checked by decomposition. The
+/// JavaScript twin is `documentationVerification`.
+#[must_use]
+pub fn program_verification(program: &DocumentedProgram) -> ProgramVerification {
+    let policy = parse_lino(POLICY);
+    let content_id = format!("0x{:016x}", program.recipe.content_id);
+    policy
+        .children
+        .first()
+        .and_then(|root| {
+            root.children
+                .iter()
+                .find(|node| node.name == "recorded_verification")
+        })
+        .filter(|record| {
+            record.children.iter().any(|row| {
+                row.name == "program"
+                    && row.find_child_value("language") == program.recipe.language
+                    && row.find_child_value("task") == program.recipe.task
+                    && row.find_child_value("content_id") == content_id
+            })
+        })
+        .map_or_else(
+            || ProgramVerification::Decomposition {
+                page: program.recipe.rediscovery_source.clone(),
+            },
+            |record| ProgramVerification::Recorded {
+                environment: record.find_child_value("environment").to_owned(),
+            },
+        )
+}
+
 /// The derivation a documented pair adds after its `procedure_cache` event,
 /// as `(kind, payload)`.
 ///
 /// One `command_source` per command (where the command shown comes from, a
-/// page or the catalog) and the `documentation_deviation` the program
-/// carries. The JavaScript twin is `documentationEvents`.
+/// page or the catalog), the `program_verification` that names what verified
+/// the program, and the `documentation_deviation` the program carries. The
+/// JavaScript twin is `documentationEvents`.
 #[must_use]
 pub fn documentation_events(
     language: &str,
@@ -310,6 +373,21 @@ pub fn documentation_events(
             )
         })
         .collect();
+    let content_id = format!("0x{:016x}", program.recipe.content_id);
+    let (verification, source) = match program_verification(program) {
+        ProgramVerification::Recorded { environment } => ("recorded", environment),
+        ProgramVerification::Decomposition { page } => ("decomposition", page),
+    };
+    events.push((
+        "program_verification",
+        crate::event_log::render_fields(&[
+            ("language", language),
+            ("task", task),
+            ("content_id", content_id.as_str()),
+            ("verification", verification),
+            ("source", source.as_str()),
+        ]),
+    ));
     if let Some(deviation) = &program.deviation {
         let fields = crate::event_log::render_fields(&[("language", language), ("task", task)]);
         events.push((

@@ -676,6 +676,19 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
             )
         },
     );
+    // Issue #1165: a documentation-sourced program no recorded run verified
+    // names its page and its decomposition check, never the language's run.
+    if let Some(page) = crate::engine::rediscovered_page(program) {
+        let status_line = crate::seed::render_response(
+            "program_execution_rediscovered",
+            "en",
+            &[("page", page.as_str())],
+        )
+        .unwrap_or_default();
+        return format!(
+            "{status_line}\n{cmd}\nExpected output after verification:\n```text\n{expected_output}\n```"
+        );
+    }
     let status = program.language.execution_status();
     let output_label = if matches!(status, ExecutionStatus::Verified) {
         "Output"

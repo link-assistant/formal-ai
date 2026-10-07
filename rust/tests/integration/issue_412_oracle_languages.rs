@@ -24,14 +24,13 @@ fun main() {
 }
 ```
 
-Execution status: not compiled or run in Kotlin toolchain is not configured in this repository runtime.
+Execution status: not run; this program was rediscovered from https://kotlinlang.org/docs/command-line.html and its output contract was checked by decomposition, not by executing it.
 Check command: `kotlinc Main.kt -include-runtime -d Main.jar`
 Run command: `java -jar Main.jar`
 Expected output after verification:
 ```text
 Hello, world!
 ```
-The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.
 
 How it works:
 The program prints the text `Hello, world!` to standard output and then exits.
@@ -53,14 +52,13 @@ echo "Hello, world!";
 ?>
 ```
 
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Execution status: not run; this program was rediscovered from https://www.php.net/manual/en/tutorial.firstpage.php and its output contract was checked by decomposition, not by executing it.
 Check command: `php -l main.php`
 Run command: `php main.php`
-Output:
+Expected output after verification:
 ```text
 Hello, world!
 ```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
 
 How it works:
 The program prints the text `Hello, world!` to standard output and then exits.
@@ -197,11 +195,12 @@ fn php_graduated_from_the_oracle_to_the_catalog() {
         "answer must contain the catalogued PHP template, got: {}",
         response.answer
     );
-    // Unlike Kotlin, a real `php` toolchain verified this one, so the verified
-    // execution status is the honest claim to carry.
+    // A real `php` toolchain verified the catalog's earlier template, not
+    // php.net's page example the answer now carries (issue #1165), so the
+    // answer must not borrow that run.
     assert!(
-        response.answer.contains("compiled and ran"),
-        "the verified PHP toolchain must be reported as executed, got: {}",
+        !response.answer.contains("compiled and ran"),
+        "a rediscovered program must not be reported as executed, got: {}",
         response.answer
     );
     assert_eq!(response.answer, PHP_CATALOG_ANSWER);

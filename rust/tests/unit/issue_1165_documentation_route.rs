@@ -270,3 +270,41 @@ fn the_documentation_route_knows_the_languages_it_rediscovers() {
         ]
     );
 }
+
+/// The derivation names what verified a documented program: the recorded
+/// harness run only when the program is the one that run executed (the Rust
+/// Book's equals the template the issue-8 harness ran, by `content_id`),
+/// otherwise its page and the decomposition check, and the answer's
+/// execution status says the same.
+#[cfg(feature = "meta-language")]
+#[test]
+fn a_documented_program_cites_only_the_run_that_verified_it() {
+    let rust = formal_ai::UniversalSolver::default().solve("write me hello world program in Rust");
+    assert!(
+        rust.links_notation.contains(
+            "program_verification language=rust task=hello_world \
+             content_id=0x544f96663d886356 verification=recorded"
+        ),
+        "{}",
+        rust.links_notation
+    );
+    let page = "https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples";
+    let python =
+        formal_ai::UniversalSolver::default().solve("write me hello world program in Python");
+    assert!(
+        python.links_notation.contains(&format!(
+            "program_verification language=python task=hello_world \
+             content_id=0x{:016x} verification=decomposition source={page}",
+            formal_ai::discovery_production::fnv1a64(b"print('Hello, world!')")
+        )),
+        "{}",
+        python.links_notation
+    );
+    assert!(
+        python
+            .links_notation
+            .contains(&format!("execution_environment {page}")),
+        "{}",
+        python.links_notation
+    );
+}

@@ -804,6 +804,7 @@ fn write_program_answer(
             &spec.run_command_line(),
             &expected_output,
             language,
+            rediscovered_page(spec).as_deref(),
         ),
         program_explanation_section(spec, language),
         program_test_instructions(spec, language, prior_code_response),
@@ -823,13 +824,43 @@ fn write_program_intro(language_name: &str, task_label: &str, language: Language
     }
 }
 
+/// The page a documentation-sourced program was rediscovered from, when no
+/// recorded run verified that exact program (issue #1165).
+///
+/// Such a program is not the one the language's recorded harness run
+/// executed, so its execution status may not borrow that run.
+pub(crate) fn rediscovered_page(spec: ProgramSpec) -> Option<String> {
+    let pair = crate::coding::documented_pair(spec.task.slug, spec.language.slug)?;
+    crate::discovery_production::program_verification(&pair.program)
+        .rediscovered_page()
+        .map(str::to_owned)
+}
+
 fn execution_report(
     program_language: &ProgramLanguage,
     run_command: &str,
     output: &str,
     language: Language,
+    rediscovered_from: Option<&str>,
 ) -> String {
     let execution = &program_language.execution;
+    if let Some(page) = rediscovered_from {
+        // The status names the page and the check that actually ran; the
+        // language's notes describe the recorded run of another program, so
+        // they are not repeated here.
+        let status_line = crate::seed::render_response(
+            "program_execution_rediscovered",
+            language.slug(),
+            &[("page", page)],
+        )
+        .or_else(|| {
+            crate::seed::render_response("program_execution_rediscovered", "en", &[("page", page)])
+        })
+        .unwrap_or_default();
+        let command_lines = execution_command_lines(execution, run_command);
+        let output_label = execution_output_label(ExecutionStatus::Unavailable, language);
+        return format!("{status_line}\n{command_lines}\n{output_label}:\n```text\n{output}\n```");
+    }
     let status = program_language.execution_status();
     let environment = program_language.environment();
     let command_lines = execution_command_lines(execution, run_command);

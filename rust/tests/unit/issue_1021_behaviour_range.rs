@@ -602,8 +602,10 @@ fn the_languageless_coding_request_is_answered_in_its_own_language() {
 
 /// PHP graduating from the coding oracle to the catalog is what makes the #723
 /// answer a real one: the templates are `php -l`-checked and executed by the
-/// issue-8 harness, so the answer carries the verified execution status the
-/// other catalogued languages carry rather than a borrowed claim.
+/// issue-8 harness. The Hello World is now php.net's page example (issue
+/// #1165), which that run never executed, so the answer names the page and
+/// its decomposition check rather than borrowing the run; the FizzBuzz
+/// template below keeps the verified status.
 #[test]
 fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
     let response = UniversalSolver::default().solve("write a hello world program in php");
@@ -619,14 +621,13 @@ echo "Hello, world!";
 ?>
 ```
 
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Execution status: not run; this program was rediscovered from https://www.php.net/manual/en/tutorial.firstpage.php and its output contract was checked by decomposition, not by executing it.
 Check command: `php -l main.php`
 Run command: `php main.php`
-Output:
+Expected output after verification:
 ```text
 Hello, world!
 ```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
 
 How it works:
 The program prints the text `Hello, world!` to standard output and then exits.
@@ -641,8 +642,10 @@ How to test it yourself:
     assert_eq!(response.intent, "write_program", "{}", response.answer);
     assert!(response.answer.contains("```php"), "{}", response.answer);
     assert!(response.answer.contains("<?php"), "{}", response.answer);
+    // php.net's page example is not the template the harness ran (issue
+    // #1165), so the answer cites its page, not that run.
     assert!(
-        response.answer.contains("compiled and ran"),
+        !response.answer.contains("compiled and ran"),
         "{}",
         response.answer
     );
