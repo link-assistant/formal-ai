@@ -45,6 +45,7 @@ test('the captures seed is the formalized fixtures, byte for byte', async () => 
       ['swift', 'https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/GuidedTour/GuidedTour.md'],
       ['java', 'https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html'],
       ['php', 'https://www.php.net/manual/en/tutorial.firstpage.php'],
+      ['lua', 'https://www.lua.org/pil/1.html'],
     ],
   );
   assert.equal(renderSeed(context, headers), seed, 'regenerate with scripts/generate-coding-documentation-captures.mjs --write');
@@ -135,7 +136,7 @@ test('R1165-6: a documented command binds the documented file name consistently'
 // language whose captures rediscover a verified program is known.
 test('R1165-4: the documentation route knows every language its captures rediscover', async () => {
   await seeded;
-  const known = ['rust', 'python', 'javascript', 'typescript', 'go', 'c', 'cpp', 'csharp', 'ruby', 'kotlin', 'swift', 'scala', 'java', 'php', 'r', 'laravel']
+  const known = ['rust', 'python', 'javascript', 'typescript', 'go', 'c', 'cpp', 'csharp', 'ruby', 'kotlin', 'swift', 'scala', 'java', 'php', 'lua', 'r', 'laravel', 'bash', 'haskell']
     .filter((language) => evaluate(context, `documentationKnowsLanguage(${JSON.stringify(language)})`));
-  assert.deepEqual(known, ['rust', 'python', 'javascript', 'typescript', 'go', 'c', 'cpp', 'csharp', 'ruby', 'kotlin', 'swift', 'scala', 'java', 'php']);
+  assert.deepEqual(known, ['rust', 'python', 'javascript', 'typescript', 'go', 'c', 'cpp', 'csharp', 'ruby', 'kotlin', 'swift', 'scala', 'java', 'php', 'lua']);
 });

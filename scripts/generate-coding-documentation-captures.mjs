@@ -80,7 +80,9 @@ export function renderSeed(context, headers) {
     for (const field of HEADER_FIELDS) {
       const value = header[field];
       if (value === '' && OPTIONAL_FIELDS.includes(field)) continue;
-      lines.push(`    ${field} ${bare(value)}`);
+      // Only the task stays bare: every other header value is page or
+      // catalog data (a language slug included), quoted as data.
+      lines.push(`    ${field} ${field === 'task' ? bare(value) : quoteValue(value)}`);
     }
     for (const block of captureBlocks(context, header)) {
       // The page's own tag is literal page content, so it stays quoted.

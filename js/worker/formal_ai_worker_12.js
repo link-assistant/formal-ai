@@ -1147,38 +1147,11 @@ const KNOWLEDGE_SOURCES = {
 const CODING_ORACLE_SNAPSHOTS = [
   {
     taskSlug: "hello_world",
-    languageSlug: "kotlin",
-    languageLabel: "Kotlin",
-    source: "hello-world-collection",
-    sourceUrl: "http://helloworldcollection.de/#Kotlin",
-    code: 'fun main() {\n    println("Hello, World!")\n}',
-    expectedOutput: "Hello, World!",
-  },
-  {
-    taskSlug: "hello_world",
-    languageSlug: "php",
-    languageLabel: "PHP",
-    source: "hello-world-collection",
-    sourceUrl: "http://helloworldcollection.de/#PHP",
-    code: '<?php\necho "Hello, World!\\n";',
-    expectedOutput: "Hello, World!",
-  },
-  {
-    taskSlug: "hello_world",
     languageSlug: "bash",
     languageLabel: "Bash",
     source: "hello-world-collection",
     sourceUrl: "http://helloworldcollection.de/#Bash",
     code: 'echo "Hello, World!"',
-    expectedOutput: "Hello, World!",
-  },
-  {
-    taskSlug: "hello_world",
-    languageSlug: "lua",
-    languageLabel: "Lua",
-    source: "hello-world-collection",
-    sourceUrl: "http://helloworldcollection.de/#Lua",
-    code: 'print("Hello, World!")',
     expectedOutput: "Hello, World!",
   },
   {

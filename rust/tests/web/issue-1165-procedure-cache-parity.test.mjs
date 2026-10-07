@@ -13,7 +13,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
-import { readText } from '../../../js/agentic/host.mjs';
+import { readText, realm } from '../../../js/agentic/host.mjs';
 import { pushLinoNode } from '../../../js/agentic/crate/links_format.mjs';
 import { findChildValue, parseRoot } from '../../../js/agentic/crate/seed_parser.mjs';
 import {
@@ -218,7 +218,11 @@ test('knows_language requires a grammar and a procedure', () => {
 
 test('the bootstrap tier is governed by the policy seed', () => {
   assert.ok(bootstrapCacheActive(), 'the committed policy keeps the bootstrap active');
-  assert.ok(oracleKnowsLanguage('kotlin'), 'the snapshots answer while the bootstrap is active');
+  assert.ok(oracleKnowsLanguage('kotlin'), 'the oracle knows Kotlin while the bootstrap is active');
+  // Issue #1165: the Hello World snapshots the documentation route reproduces
+  // are retired; the Kotlin factorial still answers from Rosetta Code.
+  assert.ok(realm().codingOracleLookup('factorial', 'kotlin'));
+  assert.deepEqual(['kotlin', 'php', 'swift', 'lua'].filter((language) => realm().codingOracleLookup('hello_world', language)), []);
 });
 
 test('write_program_reuses_the_cached_procedure_only_for_an_unmodified_request', () => {

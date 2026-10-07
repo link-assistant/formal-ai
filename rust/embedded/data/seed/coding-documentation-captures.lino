@@ -14,7 +14,7 @@
 coding_documentation_captures
   version "1"
   capture
-    language rust
+    language "rust"
     task hello_world
     rediscovery_query "Rust hello world program"
     url "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
@@ -55,7 +55,7 @@ coding_documentation_captures
       language "console"
       text "$ ./main # or .\\main on Windows"
   capture
-    language go
+    language "go"
     task hello_world
     rediscovery_query "Go hello world program"
     url "https://go.dev/doc/tutorial/getting-started"
@@ -93,7 +93,7 @@ coding_documentation_captures
       language "unknown"
       text "$ go run .\nDon't communicate by sharing memory, share memory by communicating."
   capture
-    language kotlin
+    language "kotlin"
     task hello_world
     rediscovery_query "how to compile a Kotlin program from the command line"
     url "https://kotlinlang.org/docs/command-line.html"
@@ -137,7 +137,7 @@ coding_documentation_captures
       language "bash"
       text "kotlinc -script-templates org.example.CustomScriptDefinition -script custom.script1.kts"
   capture
-    language kotlin
+    language "kotlin"
     task hello_world
     rediscovery_query "Kotlin hello world program"
     url "https://kotlinlang.org/docs/kotlin-tour-hello-world.html"
@@ -160,7 +160,7 @@ coding_documentation_captures
       language "kotlin"
       text "fun main() {\n    val name = ""Mary""\n    val age = 20\n    println(""$name is $age years old"")\n}"
   capture
-    language scala
+    language "scala"
     task hello_world
     rediscovery_query "Scala hello world program"
     url "https://docs.scala-lang.org/scala3/book/taste-hello-world.html"
@@ -198,7 +198,7 @@ coding_documentation_captures
       language "scala"
       text "import scala.io.StdIn.readLine"
   capture
-    language python
+    language "python"
     task hello_world
     rediscovery_query "Python hello world program"
     url "https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples"
@@ -245,7 +245,7 @@ coding_documentation_captures
       language "python"
       text "squares = {x**2 for x in [0,2,4] if x < 4}\nprint(squares)\n# {0, 4}"
   capture
-    language javascript
+    language "javascript"
     task hello_world
     rediscovery_query "JavaScript console.log example"
     url "https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/console/index.md"
@@ -295,7 +295,7 @@ coding_documentation_captures
       language "js"
       text "function foo() {\n  function bar() {\n    console.trace();\n  }\n  bar();\n}\n\nfoo();"
   capture
-    language typescript
+    language "typescript"
     task hello_world
     rediscovery_query "TypeScript hello.ts example"
     url "https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md"
@@ -381,7 +381,7 @@ coding_documentation_captures
       language "js"
       text "function greet(person, date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\ngreet(""Maddison"", new Date());"
   capture
-    language c
+    language "c"
     task hello_world
     rediscovery_query "C puts example"
     url "https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/main/docs/c-runtime-library/reference/puts-putws.md"
@@ -398,7 +398,7 @@ coding_documentation_captures
       language "Output"
       text "Hello world from puts!"
   capture
-    language cpp
+    language "cpp"
     task hello_world
     rediscovery_query "C++ hello world console program"
     url "https://learn.microsoft.com/en-us/cpp/build/vscpp-step-1-create"
@@ -409,7 +409,7 @@ coding_documentation_captures
       language "unknown"
       text "#include <iostream>\n\nint main()\n{\n    std::cout << ""Hello, world!"" << std::endl;\n    return 0;\n}"
   capture
-    language csharp
+    language "csharp"
     task hello_world
     rediscovery_query "C# hello world program"
     url "https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/tutorials/hello-world"
@@ -456,7 +456,7 @@ coding_documentation_captures
       language "unknown"
       text "string songLyrics = ""You say goodbye, and I say hello"";\nConsole.WriteLine(songLyrics.StartsWith(""You""));\nConsole.WriteLine(songLyrics.StartsWith(""goodbye""));\n\nConsole.WriteLine(songLyrics.EndsWith(""hello""));\nConsole.WriteLine(songLyrics.EndsWith(""goodbye""));"
   capture
-    language ruby
+    language "ruby"
     task hello_world
     rediscovery_query "Ruby hello world program"
     url "https://www.ruby-lang.org/en/examples/hello_world/"
@@ -467,7 +467,7 @@ coding_documentation_captures
       language "ruby"
       text "# The famous Hello World\n# Program is trivial in\n# Ruby. Superfluous:\n#\n# * A ""main"" method\n# * Newline\n# * Semicolons\n#\n# Here is the Code:\n\nputs ""Hello World!"""
   capture
-    language swift
+    language "swift"
     language_name "Swift"
     task hello_world
     rediscovery_query "Swift hello world program"
@@ -833,7 +833,7 @@ coding_documentation_captures
       language "swifttest"
       text "  -> func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool\n         where T.Element: Equatable, T.Element == U.Element\n     {\n         for lhsItem in lhs {\n             for rhsItem in rhs {\n                 if lhsItem == rhsItem {\n                     return true\n                 }\n             }\n         }\n        return false\n     }\n  >> let hasAnyCommon =\n  -> anyCommonElements([1, 2, 3], [3])\n  >> print(hasAnyCommon)\n  << true"
   capture
-    language java
+    language "java"
     task hello_world
     rediscovery_query "Java hello world application"
     url "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html"
@@ -859,7 +859,7 @@ coding_documentation_captures
       language "unknown"
       text "java HelloWorldApp"
   capture
-    language php
+    language "php"
     task hello_world
     rediscovery_query "PHP first page tutorial"
     url "https://www.php.net/manual/en/tutorial.firstpage.php"
@@ -881,3 +881,21 @@ coding_documentation_captures
     block
       language "unknown"
       text "<?php\n\nphpinfo();\n\n?>"
+  capture
+    language "lua"
+    language_name "Lua"
+    task hello_world
+    rediscovery_query "Lua hello world program"
+    url "https://www.lua.org/pil/1.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/lua-pil-getting-started.html"
+    sha256 "b47452aa65d7fce28b156b447fccfe2a2af8fb54cc12cd9c8975d983aa2d0cce"
+    block
+      language "unknown"
+      text "print(""Hello World"")"
+    block
+      language "unknown"
+      text "prompt lua hello.lua"
+    block
+      language "unknown"
+      text "-- defines a factorial function\nfunction fact (n)\n  if n == 0 then\n    return 1\n  else\n    return n * fact(n-1)\n  end\nend\n\nprint(""enter a number:"")\na = io.read(""*number"")        -- read a number\nprint(fact(a))"

@@ -149,6 +149,11 @@ test('R1165-4: the oracle answers Swift from the captured Swift book', async () 
   assert.equal(swift.intent, 'write_program_oracle_hello_world_swift');
   assert.equal(swift.content, 'Here is a minimal Swift program (hello world):\n\n```swift\nprint("Hello, world!")\n// Prints "Hello, world!"\n```\n\nOutput:\n```text\nHello, world!\n```\nSource: Documentation capture (https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/GuidedTour/GuidedTour.md), cached locally as a popular example.');
   assert.equal(evaluate(context, 'CODING_ORACLE_SNAPSHOTS.some((snippet) => snippet.languageSlug === "swift")'), false);
+  // Lua's grammar row (meta-language ships tree-sitter-lua) lets lua.org's
+  // Programming in Lua answer it, and its snapshot is retired as well.
+  const lua = await host.solve('write me a hello world program in lua', []);
+  assert.equal(lua.intent, 'write_program_oracle_hello_world_lua');
+  assert.equal(lua.content, 'Here is a minimal Lua program (hello world):\n\n```lua\nprint("Hello, world!")\n```\n\nOutput:\n```text\nHello, world!\n```\nSource: Documentation capture (https://www.lua.org/pil/1.html), cached locally as a popular example.');
 });
 
 test('R1165-1: a customised request reuses the rediscovered procedure with its own literal', async () => {

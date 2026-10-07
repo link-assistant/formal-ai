@@ -77,6 +77,9 @@ code_example_parts
     entry_name none
     bare_output_call echo
     newline_token PHP_EOL
+  part_language "lua"
+    output_call print
+    entry_name none
   part_language r
     output_call print
     output_call cat
