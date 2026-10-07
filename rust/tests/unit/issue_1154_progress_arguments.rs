@@ -168,3 +168,82 @@ fn repeated_successful_read_is_reported_not_replanned() {
         None => panic!("the twice-read work item must still be planned"),
     }
 }
+
+/// A shell tool whose schema names its command property `shell_command`
+/// (requirement 1: the key comes from the client's declared schema).
+fn custom_shell_tool() -> serde_json::Value {
+    json!({
+        "type": "function",
+        "function": {
+            "name": "shell",
+            "description": "Run a shell command",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "shell_command": { "type": "string", "description": "The shell command to execute" },
+                    "workdir": { "type": "string", "description": "The working directory to run the command in" }
+                },
+                "required": ["shell_command"]
+            }
+        }
+    })
+}
+
+/// The transcript after one successful read under `arguments`.
+fn read_transcript(arguments: &serde_json::Value) -> Vec<formal_ai::ChatMessage> {
+    serde_json::from_value(json!([
+        { "role": "user", "content": solve_prompt() },
+        { "role": "assistant", "content": "", "tool_calls": [{
+            "id": "fc_1", "type": "function",
+            "function": { "name": "shell", "arguments": arguments.to_string() }
+        }] },
+        { "role": "tool", "tool_call_id": "fc_1", "name": "shell",
+          "content": "Implement Hello World in Rust\n\n## Task\nPlease implement a \"Hello World\" program in Rust.\n\n## Requirements\n1. Create a file with the appropriate extension for Rust\n2. The program should print exactly: `Hello, World!`\n" }
+    ]))
+    .expect("chat messages")
+}
+
+fn read_command() -> String {
+    format!(
+        "gh issue view '{ISSUE}' --json title --jq .title && echo && gh issue view '{ISSUE}' --json body --jq .body"
+    )
+}
+
+/// Requirement 1: the schema-declared key resolves, and the working-directory
+/// property (whose description also says "command") is never taken for it.
+#[test]
+fn the_command_key_is_read_from_the_tool_schema() {
+    use formal_ai::agentic_coding::tool_result::command_argument_key;
+    assert_eq!(
+        command_argument_key(&custom_shell_tool()).as_deref(),
+        Some("shell_command")
+    );
+    let codex = json!({ "type": "function", "name": "exec_command", "parameters": {
+        "properties": { "cmd": { "type": "string", "description": "The bash command to execute" } }
+    } });
+    assert_eq!(command_argument_key(&codex).as_deref(), Some("cmd"));
+}
+
+/// Requirement 1 on the server path: the projection the protocol layer applies
+/// before planning makes a schema-declared key read exactly as `command` is,
+/// without touching calls that are already readable.
+#[test]
+fn a_schema_declared_key_plans_exactly_as_the_command_key() {
+    use formal_ai::agentic_coding::tool_result::project_declared_command_keys;
+    let tools = [custom_shell_tool()];
+    let canonical = plan_chat_step(
+        &read_transcript(&json!({ "command": read_command() })),
+        &CODEX_TOOLS,
+    );
+    let declared = read_transcript(&json!({ "shell_command": read_command() }));
+    let unprojected = plan_chat_step(&declared, &CODEX_TOOLS);
+    assert_ne!(
+        unprojected, canonical,
+        "without the schema the read is invisible to the work-item path"
+    );
+    let projected = project_declared_command_keys(&declared, &tools);
+    assert_eq!(plan_chat_step(&projected, &CODEX_TOOLS), canonical);
+    let readable = read_transcript(&json!({ "cmd": read_command() }));
+    assert_eq!(project_declared_command_keys(&readable, &tools), readable);
+    assert_eq!(project_declared_command_keys(&declared, &[]), declared);
+}

@@ -587,7 +587,13 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         eprintln!("[trace] agentic_outcome: withheld ungroundable tools: {withheld:?}");
     }
     let tool_names: Vec<&str> = grounded.iter().map(String::as_str).collect();
-    let outcome = plan_chat_step(&request.messages, &tool_names)
+    // Issue #1154 R1: a shell tool whose schema names its command property
+    // something else than `command`/`cmd`/`script` is read through that key.
+    let messages = crate::agentic_coding::tool_result::project_declared_command_keys(
+        &request.messages,
+        &request.tools,
+    );
+    let outcome = plan_chat_step(&messages, &tool_names)
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
     if trace {
         match &outcome {

@@ -5,6 +5,7 @@ import { plainText, rustLines } from './content.mjs';
 import { agenticMessage } from './messages.mjs';
 import { classifyTool, isWorkspaceCreationTool } from './capability_router.mjs';
 import { Capability } from './capability.mjs';
+import { findToolDefinition } from './protocol_policy.mjs';
 import { requestFor as localSearchRequestFor } from './local_search.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { detect } from './crate/language.mjs';
@@ -518,6 +519,45 @@ export function commandArgumentKey(definition) {
     if (describesCommand && jsonGet(property, 'type') === 'string') return key;
   }
   return null;
+}
+
+/** The argument keys `commandArgument` reads on its own (`fn command_argument`). */
+const FALLBACK_COMMAND_KEYS = ['command', 'cmd', 'script'];
+
+/**
+ * Mirrors `fn project_declared_command_keys`: the transcript as the planner
+ * reads it, where every call to a tool whose own schema names its command
+ * property `K` (outside `command`/`cmd`/`script`) also carries that value
+ * under `command`. A pure projection of the request: nothing is stored
+ * between requests, and the client's own messages are not mutated.
+ * @param {Array<object>} messages
+ * @param {Array<object>} tools the request's tool definitions
+ * @returns {Array<object>}
+ */
+export function projectDeclaredCommandKeys(messages, tools) {
+  if (!Array.isArray(tools) || tools.length === 0) return messages;
+  const keyOf = new Map();
+  const declaredKey = (name) => {
+    if (!keyOf.has(name)) {
+      const definition = findToolDefinition(tools, name);
+      const key = definition ? commandArgumentKey(definition) : null;
+      keyOf.set(name, key !== null && !FALLBACK_COMMAND_KEYS.includes(key) ? key : null);
+    }
+    return keyOf.get(name);
+  };
+  return messages.map((message) => {
+    if (!Array.isArray(message.tool_calls) || message.tool_calls.length === 0) return message;
+    let changed = false;
+    const calls = message.tool_calls.map((call) => {
+      const key = call?.function ? declaredKey(call.function.name) : null;
+      if (key === null) return call;
+      const value = parseJson(call.function.arguments);
+      if (!isObject(value) || !has(value, key) || has(value, 'command')) return call;
+      changed = true;
+      return { ...call, function: { ...call.function, arguments: JSON.stringify({ command: value[key], ...value }) } };
+    });
+    return changed ? { ...message, tool_calls: calls } : message;
+  });
 }
 
 /** Mirrors `fn result_tool`. */

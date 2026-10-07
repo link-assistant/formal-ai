@@ -19,6 +19,7 @@ import { agenticMessage } from '../agentic/messages.mjs';
 import { planSymbolicCommandReroute } from '../agentic/command_reroute.mjs';
 import { suppliedFileAnswer } from '../agentic/file_read/supplied.mjs';
 import { planChatStep, toolCapability } from '../agentic/planner.mjs';
+import { projectDeclaredCommandKeys } from '../agentic/tool_result.mjs';
 import {
   agenticToolPermissionDenial,
   findToolDefinition,
@@ -95,7 +96,10 @@ export async function agenticOutcome(ctx, request, refusal) {
   const owned = requestedToolNames(request);
   const denial = agenticToolPermissionDenial(owned, toolCapability);
   if (denial) return { kind: 'refused', answer: toolPermissionRefusalAnswer(denial) };
-  const plan = await planChatStep(request.messages, groundableToolNames(request, owned));
+  // R1154-1: a shell tool whose schema names its command property something
+  // else than `command`/`cmd`/`script` is read through that declared key.
+  const messages = projectDeclaredCommandKeys(request.messages, request.tools);
+  const plan = await planChatStep(messages, groundableToolNames(request, owned));
   return plan === null ? { kind: 'fallthrough' } : { kind: 'planned', plan };
 }
 
