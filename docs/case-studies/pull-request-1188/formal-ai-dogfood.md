@@ -859,3 +859,62 @@ plainly deletes the file is still a deletion: `Delete the file t.md`,
 **Tests.** JS: "an edit-shaped request never becomes a file deletion". Rust:
 `rust/tests/unit/pull_request_1188_destructive_edit.rs` (uncompiled here).
 
+### Round 5 — one output binding, a seeded default language, named relations
+
+**Rung 5: both roots bind the same unquoted output.** Rust's coding task
+specification (`coding/task_spec.rs`, `extract_expected_stdout`) read a
+prefix slot form ("prints …") to the end of the request, so "write a Python
+program that prints Hello, World! and run it" expected the stdout
+`Hello, World! and run it`, and "prints the sum of a and b" expected the
+description itself. A prefix form now reads its span the way the obligation
+graph does (T18): a quoted payload right after the form, else the words up to
+the first seeded clause separator or sentence end, when they open with a
+capital and do not describe a value (no `statement_function_word`, no
+`coding_structure`, no `program_task_alias` other than a `social_greeting`).
+The rule lives once, in `intent_formalization::unquoted_utterance` and
+`describes_a_value`; `unquoted_output` and the task specification both call
+it. A circumfix form ("打印 … 的") keeps its own closing marker but no longer
+binds a described value. Pinned by
+`the_task_specification_binds_the_same_output` in
+`rust/tests/unit/pull_request_1188_unquoted_output.rs` with the same accepted
+and rejected probes as the JavaScript T18 test (uncompiled here: no cargo).
+
+**Rung 1: a program the request asks to run gets a seeded language.** "write
+a program that prints Hello, World! and run it" named no language, so the
+program contract declined and the planner fell through to a web search. The
+seed had no default program language (the `default_language` of
+agent-info.lino is the reply language). `data/meta/stdout-program-contracts.lino`
+now carries `unnamed_language python` with its stated reason: the run is the
+agent's own obligation, so the program must be written in something runnable,
+and python is the catalog's first row, covered by every stdout, function and
+test contract, and needs no build step. It applies only when the request also
+asks to run the program (the seeded `software_followup_execution` role:
+"run it", "запусти", "चलाओ", "运行"); a request that only asks for a program
+still asks which language (issue #906). Both roots: `unnamedProgramLanguage`
+/ `unnamed_program_language`. Probes (en, ru, zh) write `main.py` and check
+its output; pinned in the dogfood test and
+`rust/tests/unit/pull_request_1188_unnamed_language.rs`.
+
+**Rung 3: "returns their sum".** The T1 route computed the expected value
+only from operands after the return verb ("a times b"), so "returns their
+sum" gave no value and the request fell to the generated-source arm, which
+wrote `main.js`. The expected value now also comes from the arithmetic
+relation the specification names: the `coding_fragment` records of
+`data/seed/coding-composition-fragments.lino` whose idiom is
+`{left} <operator> {right}` and the reductions they `supports` (`integer_add`
+supports `reduce_sum`: sum, сумму, योग, 总和; `integer_multiply` supports
+`reduce_product`: product, произведение, गुणनफल, 乘积), so the calculator gets
+`2 + 3`. Running the same request in ru, hi and zh exposed three more gaps,
+all fixed. (1) A relative clause after a comma ("…, которая возвращает их
+сумму") and fullwidth or danda punctuation now bound the specification
+clause. (2) The module may precede the signature (SOV): the module is now
+the path the signature's own clause names. (3) The worker read a function
+name only after the English "function " marker; it now also reads a
+signature that a seeded `program_synthesis_subject` word names (функцию,
+फ़ंक्शन, 函数), as the native `inline_function_signature` already does. Hindi
+"लौटाता" joined the seeded `synthesis_action_return` surfaces. The module
+path is left out of the clause the solver synthesizes from, so a Hindi
+clause that opens with `math.mjs` is no longer read as a page to open.
+Pinned by the T1 test "a relation the request names …" (en sum/product, ru,
+hi, zh). "difference" is still open: the seed has no subtraction relation
+or fragment, and adding one would enter the composition search pool.

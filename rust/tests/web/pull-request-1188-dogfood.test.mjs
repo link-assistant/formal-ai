@@ -69,7 +69,7 @@ function execute(files, tool, args) {
     if (args.command.startsWith('git add -A && git commit')) return '5498cccac709f99fc533d81030c088d0b292e594\n';
     if (args.command === 'python3 greet.py') return 'Hello, World\n';
     if (/^node --check \S+$/u.test(args.command)) return '';
-    if (args.command === 'node --test') return '# pass 2\n# fail 0\n';
+    if (/^node --test( \S+)?$/u.test(args.command)) return '# pass 2\n# fail 0\n';
   }
   return `Error: ${tool} is not simulated`;
 }
@@ -545,6 +545,43 @@ describe('PR #1188 dogfood: an unquoted output is bound only when it reads as an
   });
 });
 
+describe('PR #1188 dogfood: a program the request asks to run is written in the seeded language when it names none', () => {
+  const MAIN = (text) => '# python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py\n# python3 main.py\n'
+    + `# Emit the requested text followed by a newline.\nprint("${text}")\n`;
+
+  test('the seed names the language and the reason, and the catalog runs it', async () => {
+    const { readText } = await import('../../../js/agentic/host.mjs');
+    const { findChildValue, parseLinoRoot } = await import('../../../js/agentic/write_lino.mjs');
+    const { programLanguageBySlug } = await import('../../../js/agentic/crate/coding_catalog.mjs');
+    const root = parseLinoRoot(readText('data/meta/stdout-program-contracts.lino')).children[0];
+    const language = findChildValue(root, 'unnamed_language');
+    assert.equal(language, 'python');
+    assert.match(findChildValue(root, 'unnamed_language_reason'), /issue #906/);
+    assert.equal(programLanguageBySlug(language).save_as, 'main.py');
+  });
+
+  for (const [prompt, text] of [
+    ['write a program that prints Hello, World! and run it', 'Hello, World!'],
+    ['Напиши программу, которая выводит Привет, мир! и запусти её', 'Привет, мир!'],
+    ['写一个打印 "Ni hao" 的程序并运行', 'Ni hao'],
+  ]) {
+    test(`\`${prompt}\` writes main.py and checks its output instead of searching the web`, async () => {
+      const plan = await planChatStep([{ role: 'user', content: prompt }], AGENT_CLI_TOOLS);
+      assert.equal(plan.kind, 'tool_calls');
+      assert.equal(plan.calls[0].tool, 'write');
+      const args = JSON.parse(plan.calls[0].arguments);
+      assert.equal(args.filePath, 'main.py');
+      assert.equal(args.content, MAIN(text));
+    });
+  }
+
+  test('a request that does not ask to run the program does not get a language chosen for it (issue #906)', async () => {
+    const { programContractAnswer } = await import('../../../js/agentic/crate/coding_program_contract.mjs');
+    assert.equal(programContractAnswer('Write a program that prints Hello, World!'), null);
+    assert.equal(programContractAnswer('Write a program that prints "Hi"'), null);
+  });
+});
+
 describe('PR #1188 dogfood: a request that names a line deletes whole lines', () => {
   const TABLE = '| id | value |\n| --- | --- |\n| R56kfQp | drop me |\n| R1 | keep |\n';
   const KEPT = '| id | value |\n| --- | --- |\n| R1 | keep |\n';
@@ -611,6 +648,24 @@ describe('PR #1188 dogfood: a function and its test are added to existing ES mod
     // A file no seeded extension names, or a test asked for without its file, is not this route's.
     assert.equal(moduleFunctionRequest('Add a function multiply(a, b) to math.txt that returns a times b.'), null);
     assert.equal(moduleFunctionRequest('Add a function multiply(a, b) to math.mjs that returns a times b, and add a test.'), null);
+  });
+
+  test('a relation the request names (`returns their sum`) is the expected value, in every seeded language', async () => {
+    const both = (operator) => `${MATH}\nexport function both(a, b) {\n  return a ${operator} b;\n}\n`;
+    const tested = (expected) => TEST.replace('{ add }', '{ add, both }')
+      + `\ntest('both', () => {\n  assert.equal(both(2, 3), ${expected});\n});\n`;
+    for (const [prompt, operator, expected] of [
+      ['Add a function both(a, b) to math.mjs that returns their sum, add a test for it to math.test.mjs, and run node --test.', '+', 5],
+      ['Add a function both(a, b) to math.mjs that returns their product, add a test for it to math.test.mjs, and run node --test.', '*', 6],
+      ['Добавь функцию both(a, b) в math.mjs, которая возвращает их сумму, добавь тест для неё в math.test.mjs и запусти node --test.', '+', 5],
+      ['math.mjs में एक फ़ंक्शन both(a, b) जोड़ो जो उनका योग लौटाता है, math.test.mjs में उसका टेस्ट जोड़ो और node --test चलाओ।', '+', 5],
+      ['在 math.mjs 中添加一个函数 both(a, b)，返回它们的乘积，在 math.test.mjs 中为它添加测试，然后运行 node --test。', '*', 6],
+    ]) {
+      const { calls, files } = await drive(prompt, { 'math.mjs': MATH, 'math.test.mjs': TEST }, 10);
+      assert.deepEqual(calls, ['read', 'read', 'write', 'write', 'bash', 'bash'], prompt);
+      assert.equal(files.get('math.mjs'), both(operator), prompt);
+      assert.equal(files.get('math.test.mjs'), tested(expected), prompt);
+    }
   });
 
   test('the browser composer lowers the same IR to JavaScript from the seeded realization', async () => {

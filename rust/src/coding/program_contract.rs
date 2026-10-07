@@ -53,6 +53,30 @@ fn program_language(prompt: &str) -> Option<String> {
             .flatten()
         })
         .or_else(|| named_source_language(prompt))
+        .or_else(|| unnamed_program_language(prompt))
+}
+
+/// The seed's `unnamed_language` when the request asks to write a program and
+/// to run it but names no language (PR #1188 dogfooding). The run is the
+/// agent's own obligation, so the program has to be written in something
+/// runnable; a request that only asks for a program still asks which
+/// language (issue #906).
+fn unnamed_program_language(prompt: &str) -> Option<String> {
+    let lexicon = seed::lexicon();
+    let outside = crate::solver_handlers::text_outside_quoted_segments(prompt);
+    let normalized = crate::engine::normalize_prompt(&outside);
+    let asks = lexicon
+        .meaning("coding_request_program")
+        .is_some_and(|meaning| meaning.evidenced_in(&normalized))
+        && (lexicon.mentions_role(seed::ROLE_PROGRAM_REQUEST, &normalized)
+            || lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized))
+        && lexicon.mentions_role(seed::ROLE_SOFTWARE_FOLLOWUP_EXECUTION, &normalized);
+    if !asks {
+        return None;
+    }
+    let root = parse_lino(CONTRACTS);
+    let language = root.children.first()?.find_child_value("unnamed_language");
+    (!language.is_empty()).then(|| language.to_owned())
 }
 
 /// A bare-word file path (`hello.py,` → `hello.py`), sentence marks peeled.

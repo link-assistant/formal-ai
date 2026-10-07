@@ -27,7 +27,7 @@ import { evidenceWindowStart } from './planner/continuation.mjs';
 import { normalizeCommandWord } from './shell_command_policy.mjs';
 import { failureMessage } from './tool_result.mjs';
 import { readArguments, resultForPath } from './workspace_change.mjs';
-import { mentionsRole, wordsForRole } from './write_lexicon.mjs';
+import { meaningEvidencedIn, mentionsRole, wordsForRole } from './write_lexicon.mjs';
 import { findChildValue, parseLinoRoot } from './write_lino.mjs';
 import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
 import { programLanguageBySlug } from './crate/coding_catalog.mjs';
@@ -66,7 +66,7 @@ function outsideQuotes(request) {
   return outside + request.slice(cursor);
 }
 
-/** The request's clauses: split at `,` `;` and sentence ends outside parentheses. */
+/** The request's clauses: split at `,` `;` and sentence ends (in any script) outside parentheses. */
 function clauses(request) {
   const out = [];
   let depth = 0;
@@ -75,7 +75,8 @@ function clauses(request) {
     const character = request[index];
     if (character === '(') depth += 1;
     else if (character === ')') depth = Math.max(0, depth - 1);
-    else if (depth === 0 && /[,;.!?]/u.test(character) && (index + 1 === request.length || /\s/u.test(request[index + 1]))) {
+    else if (depth === 0 && (/[\uff0c\uff1b\u3002\uff01\uff1f\u0964]/u.test(character)
+      || (/[,;.!?]/u.test(character) && (index + 1 === request.length || /\s/u.test(request[index + 1]))))) {
       out.push(request.slice(start, index));
       start = index + 1;
     }
@@ -130,19 +131,79 @@ export function moduleFunctionRequest(task) {
     || !(mentionsRole('coding_request_verb', normalized) || mentionsRole('coding_member_add_action', normalized))) return null;
   const stated = signature(outside);
   if (!stated) return null;
-  const paths = [...new Set(tokens(outside).filter((token) => token.start > stated.at)
-    .map((token) => cleanPathToken(token.text)).filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
+  const pathsIn = (text) => [...new Set(tokens(text).map((token) => cleanPathToken(token.text))
+    .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
+  const parts = clauses(outside);
+  const at = parts.findIndex((part) => signature(part)?.name === stated.name);
+  // The module is the path the signature's own clause names, before or after
+  // it ("math.mjs में एक फ़ंक्शन f(a, b) जोड़ो"); otherwise the first path
+  // after the signature.
+  const own = at < 0 ? [] : pathsIn(parts[at]);
+  const paths = own.length === 1
+    ? [own[0], ...pathsIn(outside).filter((path) => path !== own[0])]
+    : pathsIn(outside.slice(stated.at));
   const module = paths[0];
   const language = module === undefined ? null : extensionLanguage(module);
   if (language === null || contract(language) === null || !programLanguageBySlug(language)) return null;
   const others = paths.slice(1);
   const wantsTest = mentionsRole('coding_test_artifact_kind', normalized);
   if (others.length > 1 || (wantsTest && others.length !== 1) || (!wantsTest && others.length)) return null;
-  const clause = clauses(outside).find((part) => signature(part)?.name === stated.name) ?? outside;
+  // The specification is the signature's clause, joined by the relative
+  // clause right after it when the return is stated there ("…, которая
+  // возвращает их сумму").
+  const returnsIn = (part) => part.split(/\s+/u).some((word) => mentionsRole('coding_return_action', bare(word)));
+  const relative = at >= 0 && !returnsIn(parts[at]) && at + 1 < parts.length && returnsIn(parts[at + 1]);
+  const clause = at < 0 ? outside : relative ? `${parts[at]} ${parts[at + 1]}` : parts[at];
   return { ...stated, module, test: others[0] ?? null, language, clause, command: statedCommand(outside) };
 }
 
-/** The specification's value at `samples`, computed by the calculator, or null. */
+/**
+ * The binary operations the seed relates to a named arithmetic relation: each
+ * `coding_fragment` of data/seed/coding-composition-fragments.lino whose idiom
+ * is `{left} <operator> {right}`, with the reductions it `supports`
+ * (`integer_add` supports `reduce_sum`, `integer_multiply` `reduce_product`).
+ */
+function relationOperations() {
+  return cached('module_function:relations', () => {
+    const root = parseLinoRoot(readText('data/seed/coding-composition-fragments.lino') ?? '').children[0];
+    return (root?.children || []).map((node) => ({
+      idiom: findChildValue(node, 'idiom'),
+      supports: (node.children || []).filter((child) => child.name === 'supports').map((child) => String(child.id ?? child.value ?? '')),
+    })).filter(({ idiom }) => /^\{left\} \S+ \{right\}$/u.test(idiom));
+  });
+}
+
+/**
+ * `left <operator> right` for the one arithmetic relation `text` names in any
+ * seeded language ("their sum", "их сумму", "उनका योग", "它们的乘积"), or
+ * null when it names none or several.
+ */
+function relationExpression(text, samples) {
+  if (samples.length !== 2) return null;
+  const normalized = normalizePrompt(text).toLowerCase();
+  const named = relationOperations()
+    .filter(({ supports }) => supports.some((relation) => meaningEvidencedIn(relation, normalized)));
+  return named.length === 1 ? fill(named[0].idiom, [['left', samples[0]], ['right', samples[1]]]) : null;
+}
+
+/** The calculator's value of `expression`, or null. */
+function evaluated(expression) {
+  try {
+    const value = realm().evaluateArithmetic(expression);
+    return value === null || value === undefined ? null : String(value);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The specification's value at `samples`, computed by the calculator, or
+ * null: the clause after the seeded return action with the parameters bound
+ * to the samples ("a times b" -> "2 times 3"), or, when that names no
+ * operands, the arithmetic relation the clause names around its return
+ * action applied to the samples in parameter order ("returns their sum" ->
+ * "2 + 3"; the relation can precede the verb, as in "उनका योग लौटाता है").
+ */
 function specifiedValue(request, samples) {
   const words = request.clause.split(/\s+/u);
   const returns = words.findIndex((word) => mentionsRole('coding_return_action', bare(word)));
@@ -152,13 +213,10 @@ function specifiedValue(request, samples) {
     return index < 0 ? word : samples[index];
   }).join(' ');
   const extracted = realm().extractArithmeticExpression(bound);
-  if (!extracted || !extracted.expression) return null;
-  try {
-    const value = realm().evaluateArithmetic(extracted.expression);
-    return value === null || value === undefined ? null : String(value);
-  } catch {
-    return null;
-  }
+  if (extracted && extracted.expression) return evaluated(extracted.expression);
+  const afterSignature = request.clause.slice(request.clause.indexOf(')') + 1);
+  const relation = relationExpression(afterSignature, samples);
+  return relation === null ? null : evaluated(relation);
 }
 
 /** `source` with `name` imported from `specifier` through the contract's import line. */
@@ -194,7 +252,9 @@ const withFinalNewline = (text) => (text === '' || text.endsWith('\n') ? text : 
 async function moduleFunctionRecipe(request, moduleSource, testSource) {
   const terms = contract(request.language);
   const catalog = programLanguageBySlug(request.language);
-  const answer = await solve(`${request.clause} ${catalog.name}`, []);
+  // The module is where the function goes, not what it is: the clause is
+  // solved without it, so a path never reads as a page to open.
+  const answer = await solve(`${request.clause.split(request.module).join(' ')} ${catalog.name}`, []);
   const program = answer?.synthesized_program;
   if (!program || program.language !== request.language) return null;
   const definition = fill(findChildValue(terms, 'definition'), [['name', request.name]]);

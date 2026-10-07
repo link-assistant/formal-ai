@@ -63,7 +63,23 @@ function programLanguage(prompt) {
       if (language !== null && language !== undefined) return language;
     }
   }
-  return namedSourceLanguage(prompt);
+  return namedSourceLanguage(prompt) ?? unnamedProgramLanguage(prompt);
+}
+
+/**
+ * Mirrors `fn unnamed_program_language`: the seed's `unnamed_language` when
+ * the request asks to write a program and to run it but names no language
+ * (PR #1188 dogfooding). The run is the agent's own obligation, so the
+ * program has to be written in something runnable; a request that only asks
+ * for a program still asks which language (issue #906).
+ */
+function unnamedProgramLanguage(prompt) {
+  const normalized = normalizePrompt(textOutsideQuotedSegments(prompt));
+  const asks = meaningEvidencedIn('coding_request_program', normalized)
+    && (mentionsRole('program_request', normalized) || mentionsRole('coding_request_verb', normalized))
+    && mentionsRole('software_followup_execution', normalized);
+  const language = asks ? findChildValue(contracts(), 'unnamed_language') : '';
+  return language ? language : null;
 }
 
 /** Mirrors `fn source_path`: a bare-word file path, sentence marks peeled. */

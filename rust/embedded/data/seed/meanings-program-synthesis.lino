@@ -201,6 +201,8 @@ meanings
         text लौटाओ
       surface
         text लौटा
+      surface
+        text लौटाता
     lexeme zh
       surface
         text 返回

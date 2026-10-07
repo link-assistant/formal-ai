@@ -239,6 +239,7 @@ mod pull_request_1188_line_removal;
 mod pull_request_1188_module_function;
 mod pull_request_1188_subagent_gaps;
 mod pull_request_1188_typo_discovery;
+mod pull_request_1188_unnamed_language;
 mod pull_request_1188_unquoted_output;
 mod recipe_evidence;
 mod reference_closure;

@@ -438,7 +438,10 @@ function extractPythonFunctionName(prompt) {
   // Rust's parse_signature, a name after "function " needs its parameter list.
   const named = identifierAfterAsciiMarker(text, "function ");
   const signature = named && new RegExp(`\\bfunction\\s+${named}\\s*\\(`).test(text) ? named : "";
-  return identifierAfterAsciiMarker(text, "def ") || (assertion ? assertion[1] : "") || signature;
+  // In any language, a signature the word before names a function ("функцию both(a, b)", "函数 both(a, b)").
+  const inline = [...text.matchAll(/(\S+)\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^()]*)\)/g)].find((match) => match[3].split(",")
+    .every((part) => /^\s*[A-Za-z_][A-Za-z0-9_]*\s*$/.test(part)) && lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_SUBJECT, match[1].toLowerCase()));
+  return identifierAfterAsciiMarker(text, "def ") || (assertion ? assertion[1] : "") || signature || (inline ? inline[2] : "");
 }
 
 function discoveredCodingStructures(normalized) {

@@ -3,6 +3,8 @@ stdout_program_contracts
   instruction '{comment} {command}\n'
   documented_source '{instructions}{comment} Emit the requested text followed by a newline.\n{source}'
   response '```{language}\n{source}```\n\nSource: {source_url}\nExecution status: not run; the client must execute and verify the program.'
+  unnamed_language python
+  unnamed_language_reason "A request that asks to write a program and run it, naming no language, asks for a run the agent itself performs, so the program must be written in some language to be runnable at all. It is written in python: the first row of the program catalog, the one language every stdout, function and test contract here covers, and its check and run need only the python3 interpreter, with no build step. A request that only asks for a program, without running it, still asks which language instead (issue #906)."
   language rust
     source "https://doc.rust-lang.org/std/macro.println.html"
     entry 'fn main() {\n    {body}\n}\n'
