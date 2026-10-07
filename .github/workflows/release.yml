@@ -85,11 +85,9 @@ jobs:
       toml-changed: ${{ steps.changes.outputs.toml-changed }}
       docs-changed: ${{ steps.changes.outputs.docs-changed }}
       workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
-      # Only the files a pipeline job executes: its own definition, a composite
-      # action it calls, or a script those run. `workflow-changed` fires for any
-      # file under `.github/workflows/`, which made an edit to a scheduled
-      # benchmark pay for the macOS archive, the Docker check, six box images
-      # and a 25-minute agent E2E (issue #1107).
+      # Only the files a pipeline job executes (its definition, a composite action
+      # it calls, or a script those run): `workflow-changed` fires for any workflow
+      # file, which made a scheduled benchmark's edit pay for the whole pipeline (#1107).
       pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
       agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
@@ -107,6 +105,8 @@ jobs:
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          # A fragment waiting on main runs lint/test/build, so Auto Release runs (#1064).
+          RELEASE_PIPELINE: 'true'
         run: rust-script scripts/detect-code-changes.rs
   changelog:
     name: Changelog Fragment Check

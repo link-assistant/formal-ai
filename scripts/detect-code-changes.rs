@@ -29,13 +29,19 @@
 //! Environment variables (set by GitHub Actions):
 //!   - `GITHUB_EVENT_NAME`: `pull_request` or `push`
 //!   - `GITHUB_EVENT_BEFORE`: pre-push SHA from the event payload
+//!   - `GITHUB_REF`: the pushed ref
+//!   - `RELEASE_PIPELINE`: `true` in the release workflow, whose Auto Release
+//!     job needs lint, test and the binary build on a push that has a
+//!     changelog fragment waiting (see `release_pending`)
 //!
 //! Outputs (written to `GITHUB_OUTPUT`):
 //!   - rs-changed: 'true' if any .rs files changed
 //!   - toml-changed: 'true' if any .toml files changed
 //!   - docs-changed: 'true' if any .md files changed
 //!   - workflow-changed: 'true' if any .github/workflows/ files changed
-//!   - any-code-changed: 'true' if any non-ignored code files changed
+//!   - any-code-changed: 'true' if any non-ignored code files changed, or a
+//!     release is pending on a push to main in the release workflow
+//!   - release-pending: 'true' when that push has a changelog fragment waiting
 //!   - agentic-routing-changed: 'true' if agentic routing source changed
 //!   - js-changed: 'true' if the js tier's inputs changed (plan 16 L4)
 //!   - ts-changed: 'true' if the ts tier's inputs changed (plan 16 L4)
@@ -220,6 +226,33 @@ struct ChangeFlags {
     rust_changed: bool,
 }
 
+/// A release is pending when a push to `main` finds a changelog fragment in
+/// `changelog.d/`: the Auto Release job then has a version to cut, and it
+/// runs only after lint, test and the binary build pass. Those jobs are gated
+/// on `any-code-changed`, so a push that changed no code (the docs-and-workflow
+/// merge of #1150, carrying `20260926_215107_issue-1149-coverage-budget.md`)
+/// skipped them, skipped the release, and still reported a green pipeline --
+/// the silent deferral of issue #1064, which the no-deferral rule forbids.
+fn release_pending(event_name: &str, git_ref: &str, fragments: &[String]) -> bool {
+    event_name == "push"
+        && git_ref == "refs/heads/main"
+        && fragments
+            .iter()
+            .any(|name| name.ends_with(".md") && name != "README.md")
+}
+
+/// The file names in `changelog.d/` (empty when the folder is absent).
+fn changelog_fragments() -> Vec<String> {
+    fs::read_dir("changelog.d")
+        .map(|entries| {
+            entries
+                .filter_map(Result::ok)
+                .map(|entry| entry.file_name().to_string_lossy().into_owned())
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
 fn classify_changes(changed_files: &[String]) -> ChangeFlags {
     let relevant_files: Vec<&String> = changed_files
         .iter()
@@ -381,6 +414,18 @@ fn main() {
     }
     println!();
 
+    let pending = env::var("RELEASE_PIPELINE").is_ok_and(|value| value == "true")
+        && release_pending(
+            &env::var("GITHUB_EVENT_NAME").unwrap_or_default(),
+            &env::var("GITHUB_REF").unwrap_or_default(),
+            &changelog_fragments(),
+        );
+    if pending && !flags.any_code_changed {
+        println!(
+            "A changelog fragment is waiting on main: the release needs lint, test and the build."
+        );
+    }
+    set_output("release-pending", if pending { "true" } else { "false" });
     // Check if any code files changed (.rs, .toml, .mjs, .cjs, .js, .lino, .yml,
     // .yaml, or workflow files). .cjs covers the Electron desktop and VS Code
     // extension host sources (extension.*.cjs, lib/*.cjs) so changes there still
@@ -389,7 +434,7 @@ fn main() {
     // those files, so editing one must run lint/test that enforces the guard.
     set_output(
         "any-code-changed",
-        if flags.any_code_changed {
+        if flags.any_code_changed || pending {
             "true"
         } else {
             "false"
@@ -403,7 +448,31 @@ fn main() {
 mod tests {
     use super::{
         ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, classify_changes, comparison_for_event,
+        release_pending,
     };
+
+    #[test]
+    fn a_waiting_fragment_on_main_makes_the_release_pending() {
+        let fragments = |names: &[&str]| {
+            names
+                .iter()
+                .map(|name| (*name).to_string())
+                .collect::<Vec<_>>()
+        };
+        let waiting = fragments(&["README.md", "20260926_215107_issue-1149-coverage-budget.md"]);
+        assert!(release_pending("push", "refs/heads/main", &waiting));
+        assert!(!release_pending(
+            "push",
+            "refs/heads/main",
+            &fragments(&["README.md"])
+        ));
+        assert!(!release_pending(
+            "pull_request",
+            "refs/heads/main",
+            &waiting
+        ));
+        assert!(!release_pending("push", "refs/heads/feature", &waiting));
+    }
 
     #[test]
     fn pull_requests_compare_the_complete_base_to_head_range() {
