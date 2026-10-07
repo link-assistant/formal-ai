@@ -273,6 +273,32 @@ fn handler_sql_synthesis_filters_groups_with_having_after_the_grouping() {
 }
 
 #[test]
+fn handler_code_debugging_reports_an_assignment_inside_a_condition() {
+    let answer = answer_of!(
+        formal_ai::handle_code_debugging,
+        "Find the bug in this code:\n```js\nfunction check(x) {\n  if (x = 5) {\n    return true;\n  }\n  return false;\n}\n```"
+    );
+    let expected = "An assignment where a comparison was meant.\n\nDetected defect (code line 2): `if (x = 5) {`\nThe condition assigns with a single `=`, so it tests the assigned value instead of comparing: the branch runs whenever that value is truthy, and the variable is overwritten.\n\nFix \u{2014} compare instead of assigning (in JavaScript, `===` is the strict comparison):\n    if (x == 5) {\n\nMethod, stated honestly: a structural scan of each condition that opens with a head from the condition table (`assignment_in_condition` in data/seed/code-task-cues.lino) for a lone `=` at the top level of its parentheses, outside quoted text. No code was executed and no test was run.";
+    assert_eq!(answer, expected);
+    let nested = answer_of!(
+        formal_ai::handle_code_debugging,
+        "Debug this:\n```js\nfunction readAll(r) {\n  let line;\n  while ((line = r.read()) != null) { console.log(line); }\n}\n```"
+    );
+    assert!(
+        nested.starts_with("No recognized defect pattern."),
+        "a nested assignment is deliberate: {nested}"
+    );
+    let quoted = answer_of!(
+        formal_ai::handle_code_debugging,
+        "Find the bug in this code:\n```js\nfunction f(s) {\n  if (s == \"a=b\") { return 1; }\n  return 0;\n}\n```"
+    );
+    assert!(
+        quoted.starts_with("No recognized defect pattern."),
+        "an = inside quoted text is not code: {quoted}"
+    );
+}
+
+#[test]
 fn handler_code_debugging_reports_a_loop_bound_past_the_end() {
     let answer = answer_of!(
         formal_ai::handle_code_debugging,

@@ -74,6 +74,14 @@ test("a loop bound past the end of an indexed collection is the second defect cl
   assert.ok(unindexed.startsWith("No recognized defect pattern."), unindexed);
 });
 
+test("an assignment inside a parenthesized condition is the third defect class", () => {
+  assert.equal(handle("handleCodeDebugging", "Find the bug in this code:\n```js\nfunction check(x) {\n  if (x = 5) {\n    return true;\n  }\n  return false;\n}\n```"), "An assignment where a comparison was meant.\n\nDetected defect (code line 2): `if (x = 5) {`\nThe condition assigns with a single `=`, so it tests the assigned value instead of comparing: the branch runs whenever that value is truthy, and the variable is overwritten.\n\nFix \u2014 compare instead of assigning (in JavaScript, `===` is the strict comparison):\n    if (x == 5) {\n\nMethod, stated honestly: a structural scan of each condition that opens with a head from the condition table (`assignment_in_condition` in data/seed/code-task-cues.lino) for a lone `=` at the top level of its parentheses, outside quoted text. No code was executed and no test was run.");
+  const nested = handle("handleCodeDebugging", "Debug this:\n```js\nfunction readAll(r) {\n  let line;\n  while ((line = r.read()) != null) { console.log(line); }\n}\n```");
+  assert.ok(nested.startsWith("No recognized defect pattern."), "a nested assignment is deliberate: " + nested);
+  const quoted = handle("handleCodeDebugging", "Find the bug in this code:\n```js\nfunction f(s) {\n  if (s == \"a=b\") { return 1; }\n  return 0;\n}\n```");
+  assert.ok(quoted.startsWith("No recognized defect pattern."), "an = inside quoted text is not code: " + quoted);
+});
+
 test("engine and handler explain the function and its promise", async () => {
   const engine = await solve(EXPLAIN_PROMPT);
   assert.equal(engine.intent, "code_explanation");

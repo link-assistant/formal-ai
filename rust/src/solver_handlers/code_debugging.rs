@@ -28,6 +28,7 @@ const INTENT: &str = "code_debugging";
 /// The word map of loop bounds one past the end, and its collection slot.
 const INDEX_BOUND_MAP: &str = "index_bound_past_end";
 const COLLECTION_SLOT: &str = "{c}";
+const CONDITION_HEAD_MAP: &str = "assignment_in_condition";
 
 /// Look up embedded seed content by its registered path.
 fn seed_text(path: &str) -> Option<&'static str> {
@@ -355,6 +356,94 @@ fn scan_for_index_bound(code: &str) -> Option<IndexBound> {
     None
 }
 
+/// One lone assignment inside a parenthesized condition.
+struct ConditionAssignment {
+    line_number: usize,
+    line: String,
+    fixed: String,
+}
+
+/// The condition heads (`if (`, `while (` ...) of the seeded
+/// `assignment_in_condition` map.
+fn condition_heads() -> Vec<String> {
+    let Some(text) = seed_text(CUES_PATH) else {
+        return Vec::new();
+    };
+    parse_lino(text)
+        .children
+        .iter()
+        .filter(|record| record.name == "map")
+        .filter(|record| record.find_child_value("name") == CONDITION_HEAD_MAP)
+        .flat_map(|record| record.children.iter())
+        .flat_map(|child| child.children.iter())
+        .filter(|entry| entry.name == "entry")
+        .map(|entry| entry.find_child_value("word").to_owned())
+        .filter(|head| head.ends_with('('))
+        .collect()
+}
+
+/// The byte offset of a lone `=` at the top level of the parenthesized
+/// condition opening at `open`, outside quoted text: not part of `==`,
+/// `!=`, `<=`, `>=`, `=>`, a compound assignment or `:=`. A nested
+/// `(line = read()) != null` is deliberate and sits one level deeper.
+fn lone_assignment(line: &str, open: usize) -> Option<usize> {
+    let bytes = line.as_bytes();
+    let mut depth = 0usize;
+    let mut quote: Option<u8> = None;
+    for (offset, &byte) in bytes.iter().enumerate().skip(open) {
+        if let Some(open_quote) = quote {
+            if byte == open_quote {
+                quote = None;
+            }
+            continue;
+        }
+        match byte {
+            b'"' | b'\'' | b'`' => quote = Some(byte),
+            b'(' => depth += 1,
+            b')' => {
+                depth = depth.saturating_sub(1);
+                if depth == 0 {
+                    return None;
+                }
+            }
+            b'=' if depth == 1 => {
+                let before = bytes[offset - 1];
+                let after = bytes.get(offset + 1).copied().unwrap_or(b' ');
+                if !b"=!<>+-*/%&|^:".contains(&before) && after != b'=' && after != b'>' {
+                    return Some(offset);
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+/// Scan the code for a seeded condition head whose parenthesized condition
+/// assigns instead of comparing (`if (x = 5)`).
+fn scan_for_condition_assignment(code: &str) -> Option<ConditionAssignment> {
+    let heads = condition_heads();
+    for (index, line) in code.lines().enumerate() {
+        for head in &heads {
+            let Some(at) = line.find(head.as_str()) else {
+                continue;
+            };
+            let Some(assign) = lone_assignment(line, at + head.len() - 1) else {
+                continue;
+            };
+            return Some(ConditionAssignment {
+                line_number: index + 1,
+                line: line.trim().to_owned(),
+                fixed: [&line[..assign], "==", &line[assign + 1..]]
+                    .concat()
+                    .trim()
+                    .to_owned(),
+            });
+        }
+    }
+    None
+}
+
 /// The evidence entry naming where a defect sits and what it is.
 fn defect_event(line_number: usize, text: &str) -> String {
     format!("line {line_number}: `{text}`")
@@ -432,6 +521,22 @@ pub fn handle_code_debugging(
                     ("line", &bound.line),
                     ("bad", &bound.bad),
                     ("fixed", &bound.fixed),
+                ],
+            ),
+            0.8,
+        )
+    } else if let Some(assignment) = scan_for_condition_assignment(&code) {
+        log.append(
+            "code_debugging:defect",
+            defect_event(assignment.line_number, &assignment.line),
+        );
+        (
+            template(
+                "code_debugging_condition_assignment",
+                &[
+                    ("line_no", &assignment.line_number.to_string()),
+                    ("line", &assignment.line),
+                    ("fixed", &assignment.fixed),
                 ],
             ),
             0.8,

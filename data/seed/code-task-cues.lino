@@ -456,6 +456,16 @@ map
       word "<= {c}.len()"
       fix "< {c}.len()"
 map
+  name assignment_in_condition
+    entry
+      word "if ("
+    entry
+      word "if("
+    entry
+      word "while ("
+    entry
+      word "while("
+map
   name sql_grouping
     entry
       word per

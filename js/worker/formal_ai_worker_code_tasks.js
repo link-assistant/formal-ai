@@ -152,6 +152,59 @@ function codeDebuggingScanForIndexBound(code) {
 }
 
 /**
+ * The offset of a lone `=` at the top level of the parenthesized condition
+ * opening at `open`, outside quoted text (Rust `lone_assignment`).
+ * @param {string} line code line
+ * @param {number} open index of the condition's `(`
+ * @returns {number} offset, or -1
+ */
+function codeDebuggingLoneAssignment(line, open) {
+  let depth = 0;
+  let quote = null;
+  for (let offset = open; offset < line.length; offset += 1) {
+    const c = line[offset];
+    if (quote !== null) {
+      if (c === quote) quote = null;
+      continue;
+    }
+    if (c === "\"" || c === "'" || c === "`") quote = c;
+    else if (c === "(") depth += 1;
+    else if (c === ")") {
+      depth = Math.max(0, depth - 1);
+      if (depth === 0) return -1;
+    } else if (c === "=" && depth === 1) {
+      const after = offset + 1 < line.length ? line[offset + 1] : " ";
+      if (!"=!<>+-*/%&|^:".includes(line[offset - 1]) && after !== "=" && after !== ">") return offset;
+    }
+  }
+  return -1;
+}
+
+/**
+ * Scan for a seeded condition head whose condition assigns instead of
+ * comparing (Rust `scan_for_condition_assignment`).
+ * @param {string} code the code under discussion
+ * @returns {object|null} the defect, or null
+ */
+function codeDebuggingScanForConditionAssignment(code) {
+  const heads = codeTaskWordEntries("assignment_in_condition")
+    .map((entry) => codeTaskChildValue(entry, "word"))
+    .filter((head) => head.endsWith("("));
+  const lines = codeTaskLines(code);
+  for (let index = 0; index < lines.length; index += 1) {
+    for (const head of heads) {
+      const at = lines[index].indexOf(head);
+      if (at === -1) continue;
+      const assign = codeDebuggingLoneAssignment(lines[index], at + head.length - 1);
+      if (assign === -1) continue;
+      const line = lines[index];
+      return { lineNumber: index + 1, line: line.trim(), fixed: (line.slice(0, assign) + "==" + line.slice(assign + 1)).trim() };
+    }
+  }
+  return null;
+}
+
+/**
  * Recognize a debugging request and locate a shifted-quotient defect.
  * Mirrors `handle_code_debugging` in rust/src/solver_handlers/code_debugging.rs.
  * @param {string} prompt raw prompt
@@ -170,6 +223,7 @@ function handleCodeDebugging(prompt, normalized) {
   if (intent !== null) codeTaskLogAppend(log, "code_debugging:intent_property", intent.property);
   const defect = codeDebuggingScanForDefect(code);
   let bound = null;
+  let assignment = null;
   let body = "";
   let confidence = 0.5;
   if (intent !== null && defect !== null) {
@@ -194,6 +248,14 @@ function handleCodeDebugging(prompt, normalized) {
       ["line", bound.line],
       ["bad", bound.bad],
       ["fixed", bound.fixed],
+    ]);
+    confidence = 0.8;
+  } else if ((assignment = codeDebuggingScanForConditionAssignment(code)) !== null) {
+    codeTaskLogAppend(log, "code_debugging:defect", "line " + assignment.lineNumber + ": `" + assignment.line + "`");
+    body = codeTaskTemplate("code_debugging_condition_assignment", [
+      ["line_no", String(assignment.lineNumber)],
+      ["line", assignment.line],
+      ["fixed", assignment.fixed],
     ]);
     confidence = 0.8;
   } else {

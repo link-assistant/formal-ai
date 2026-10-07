@@ -23,6 +23,22 @@ meanings
     unit "not applicable"
     example "for i in range(len(xs) + 1) with xs[i] in the body is reported with the fix range(len(xs))"
     grounding "data/seed/multilingual-responses-code-tasks.lino"
+  code_debugging_condition_assignment
+    defined-by method
+    role action
+    precondition "a debugging request names code whose parenthesized if or while condition holds a lone assignment at its top level"
+    effect "answers with the offending line, why an assignment in a condition tests the assigned value, and the comparison that replaces it"
+    unit "not applicable"
+    example "if (x = 5) is reported with the fix if (x == 5)"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  assignment_in_condition
+    defined-by method
+    role action
+    precondition "a code line opens a parenthesized condition with a seeded head"
+    effect "names the condition heads the code debugger scans for a lone assignment"
+    unit "not applicable"
+    example "if ( and while ( open the conditions scanned"
+    grounding "data/seed/code-task-cues.lino"
   code_debugging_no_defect
     defined-by method
     role action

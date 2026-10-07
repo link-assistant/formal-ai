@@ -62,6 +62,7 @@ The full list is [`raw-data/commits.txt`](raw-data/commits.txt).
 | 2026-10-07 | `7d4f110d2`, `6872307e4`, `a0e1786ee`, `49447ab5c` | HTML walker, role registry, agentic call arguments, REST issue URLs, quoted-literal masking. |
 | 2026-10-07 | `2e1d6cb62` | Lean and Rocq keep the negation of a "No ..." statement. |
 | 2026-10-07 | requirement-drafting batch | Every planned open row drafted: #1163/#1164 JS twins and working memory, #1172 subject-verified facts, #1176 word relations and Wikidata-checked unit factors, #1177 GROUP BY, #1180 history store, #1184 rule stage and JS twin, #1185 honest repair stops, #1186 deformalization and probe set, #1187 optional credentials. |
+| 2026-10-07 | `a3340286e`, `065cb49af` and the next commit | #1177 breadth. The code debugger gets two more defect classes, a loop bound past the end of an indexed collection and an assignment inside an `if`/`while` condition (R1). The SQL composer reads a threshold after the grouping as HAVING and no longer emits a bogus `WHERE with > 5` (R3). The shell composer gets a literal `sed -i` substitution from seeded cues (R4). |
 
 ## CI history
 

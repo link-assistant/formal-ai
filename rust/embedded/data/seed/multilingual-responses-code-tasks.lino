@@ -14,10 +14,14 @@ multilingual_responses
     intent code_debugging_index_bound
     language en
     text "A loop bound past the end of `{collection}`.\n\nDetected defect (code line {line_no}): `{line}`\nThe bound `{bad}` lets the index reach the length of `{collection}`, one past its last valid position, so the final pass reads `{collection}[…]` out of range.\n\nFix — stop one position earlier:\n    {fixed}\n\nMethod, stated honestly: a structural scan against the index-bound table (`index_bound_past_end` in data/seed/code-task-cues.lino), confirmed by an index into `{collection}` in the same code. No code was executed and no test was run."
+  response response_code_debugging_condition_assignment_en
+    intent code_debugging_condition_assignment
+    language en
+    text "An assignment where a comparison was meant.\n\nDetected defect (code line {line_no}): `{line}`\nThe condition assigns with a single `=`, so it tests the assigned value instead of comparing: the branch runs whenever that value is truthy, and the variable is overwritten.\n\nFix — compare instead of assigning (in JavaScript, `===` is the strict comparison):\n    {fixed}\n\nMethod, stated honestly: a structural scan of each condition that opens with a head from the condition table (`assignment_in_condition` in data/seed/code-task-cues.lino) for a lone `=` at the top level of its parentheses, outside quoted text. No code was executed and no test was run."
   response response_code_debugging_no_defect_en
     intent code_debugging_no_defect
     language en
-    text "No recognized defect pattern.\n\nThis is a debugging request and the code was scanned, but no construct in the defect table matched: the table currently covers a binary `+`/`-` applied at top level after a division (a shifted quotient), cross-checked against the property the function name promises, and a loop bound that lets an index reach a collection's length.{intent_note}\n\nMethod, stated honestly: structural scan only — no code was executed, no test was run, and nothing outside the table was guessed. Next steps a human would take: run the failing input, read the traceback, and compare the output against the property the function name promises."
+    text "No recognized defect pattern.\n\nThis is a debugging request and the code was scanned, but no construct in the defect table matched: the table currently covers a binary `+`/`-` applied at top level after a division (a shifted quotient), cross-checked against the property the function name promises, a loop bound that lets an index reach a collection's length, and an assignment inside a parenthesized `if`/`while` condition.{intent_note}\n\nMethod, stated honestly: structural scan only — no code was executed, no test was run, and nothing outside the table was guessed. Next steps a human would take: run the failing input, read the traceback, and compare the output against the property the function name promises."
   response response_regex_synthesis_pattern_en
     intent regex_synthesis_pattern
     language en
@@ -101,7 +105,7 @@ multilingual_responses
   response response_code_debugging_no_intent_en
     intent code_debugging_no_intent
     language en
-    text "Note: the function name `{name}` is not in the intent table, so there was no promised property to check the code against."
+    text " Note: the function name `{name}` is not in the intent table, so there was no promised property to check the code against."
   response response_regex_mapping_line_en
     intent regex_mapping_line
     language en
