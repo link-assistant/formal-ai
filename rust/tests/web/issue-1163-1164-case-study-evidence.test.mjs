@@ -132,8 +132,9 @@ test("R1164-14: the decomposed example and generalized procedure reproduce from 
     nodes.push(node.node);
   }
   const generalized = await call(`generalizedCodeExampleNotation(generalizeCodeExamples(${literal(nodes)}))`);
-  const withoutBodies = (text) => text.trim().split("\n").filter((line) => !/^ {4}source "/.test(line)).join("\n");
+  // The program bodies are compared too: since the R1165-1 formalizer fix
+  // they keep their pages' indentation, so the run is reproduced whole.
   const recordedGeneralized = recorded.slice(generalizedAt + "\n# generalized\n".length);
-  assert.equal(withoutBodies(String(generalized)), withoutBodies(recordedGeneralized));
+  assert.equal(String(generalized).trim(), recordedGeneralized.trim());
   assert.match(recordedGeneralized, /^generalized_procedure$/m);
 });

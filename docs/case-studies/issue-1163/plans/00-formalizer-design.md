@@ -57,9 +57,11 @@ the same seed file and are pinned by the same captures.
 
 - go.dev declares no language on its blocks, so they stay `unknown`; the
   decomposer is told the language by the caller instead.
-- Indentation inside code blocks is not preserved by the HTML walker (the
+- Indentation inside code blocks was not preserved by the HTML walker (the
   decomposed programs in `docs/case-studies/issue-1164/decomposed-example/`
-  show it).
+  showed it). Fixed for issue #1165 R1165-1: `strip_tags_keep_lines` /
+  `pageStripTagsKeepLines` keep every line's indentation and drop only the
+  blank lines around a block and the indentation all its lines share.
 - The Agent CLI research path does not use the formalizer yet
   (`../agent-cli-evidence/kotlinlang-formalization/README.md`): it answers from
   `webfetch` plain text and drops the code block a how-to question needs.

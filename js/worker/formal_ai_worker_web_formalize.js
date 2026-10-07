@@ -512,11 +512,11 @@ function pageTagAttr(innerTag, name) {
 }
 
 /**
- * Strip every tag from an HTML fragment and collapse whitespace.
+ * The text of an HTML fragment with every tag removed, whitespace kept.
  * @param {string} fragment
  * @returns {string}
  */
-function pageStripTags(fragment) {
+function pageRemoveTags(fragment) {
   let out = "";
   let depth = 0;
   for (const character of fragment) {
@@ -524,16 +524,47 @@ function pageStripTags(fragment) {
     else if (character === ">") depth = Math.max(0, depth - 1);
     else if (depth === 0) out += character;
   }
-  return out.split(/\s+/).filter((word) => word.length > 0).join(" ");
+  return out;
 }
 
 /**
- * Strip tags line by line, for code blocks.
+ * Strip every tag from an HTML fragment and collapse whitespace.
+ * @param {string} fragment
+ * @returns {string}
+ */
+function pageStripTags(fragment) {
+  return pageRemoveTags(fragment).split(/\s+/).filter((word) => word.length > 0).join(" ");
+}
+
+/**
+ * Strip tags from a code block and keep it code (issue #1165 R1165-1): every
+ * line keeps its indentation and inner spacing, only trailing whitespace
+ * goes, and the blank lines around the block and the indentation every line
+ * shares (the page's markup, not the program) are removed. Mirrors
+ * `strip_tags_keep_lines` in rust/src/web_formalize.rs.
  * @param {string} fragment
  * @returns {string}
  */
 function pageStripTagsKeepLines(fragment) {
-  return pageLines(fragment).map(pageStripTags).join("\n");
+  const lines = pageLines(pageRemoveTags(fragment)).map((line) => line.trimEnd());
+  const first = lines.findIndex((line) => line !== "");
+  if (first === -1) return "";
+  let last = lines.length - 1;
+  while (lines[last] === "") last -= 1;
+  const body = lines.slice(first, last + 1);
+  let shared = null;
+  for (const line of body) {
+    if (line === "") continue;
+    const indent = line.slice(0, line.length - line.trimStart().length);
+    if (shared === null) shared = indent;
+    else {
+      let common = 0;
+      while (common < shared.length && common < indent.length && shared[common] === indent[common]) common += 1;
+      shared = shared.slice(0, common);
+    }
+  }
+  const prefix = shared || "";
+  return body.map((line) => (line.startsWith(prefix) ? line.slice(prefix.length) : line)).join("\n");
 }
 
 /**

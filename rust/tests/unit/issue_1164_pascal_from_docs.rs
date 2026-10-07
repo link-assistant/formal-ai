@@ -113,12 +113,12 @@ fn held_out_pascal_is_recomposed_from_the_free_pascal_documentation() {
     assert_eq!(
         code_blocks(PASCAL_PAGE.as_bytes()),
         [
-            "program Hello;\n\nbegin\nWriteLn('Hello, Free Pascal!');\nend.",
+            "program Hello;\n\nbegin\n  WriteLn('Hello, Free Pascal!');\nend.",
             "fpc hello.pas",
         ]
     );
     let bare = decompose_code_node(
-        "program Hello;\n\nbegin\nWriteLn('Hello, Free Pascal!');\nend.",
+        "program Hello;\n\nbegin\n  WriteLn('Hello, Free Pascal!');\nend.",
         "pascal",
         &[],
     )
@@ -154,7 +154,7 @@ fn held_out_pascal_is_recomposed_from_the_free_pascal_documentation() {
     let recomposition = recompose(node, "pascal");
     assert_eq!(
         recomposition.source,
-        "program Hello;\n\nbegin\nWriteLn('Hello, Formal AI!');\nend."
+        "program Hello;\n\nbegin\n  WriteLn('Hello, Formal AI!');\nend."
     );
     assert!(
         recomposition

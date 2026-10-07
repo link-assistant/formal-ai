@@ -3,7 +3,8 @@
 # decomposed the first block in the page's language (or untagged) that has an output
 # call (decomposeCodeExample), generalized the five nodes (generalizeCodeExamples) and
 # printed both with decomposedCodeExampleNotation / generalizedCodeExampleNotation.
-# Output below is verbatim; nothing was edited by hand.
+# Output below is verbatim; nothing was edited by hand. Re-run on 2026-10-07 after the
+# issue #1165 R1165-1 formalizer fix: the program bodies keep their pages' indentation.
 # issue-1164/kotlin-tour-hello-world.html sha256=916f03525029483ef10ca64b75b7c110c538aadce2c7021dbb6a56e8ef8bd92a
 decomposed_code_node
   language_slug kotlin
@@ -120,17 +121,16 @@ generalized_procedure
   source_url "https://github.com/swiftlang/swift-book/blob/main/TSPL.docc/GuidedTour/GuidedTour.md"
   program_body
     language go
-    source "\npackage main\n\nimport \"fmt\"\n\nfunc main() {\nfmt.Println(\"{literal}\")\n}"
+    source "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"{literal}\")\n}"
   program_body
     language kotlin
-    source "\nfun main() {\nprintln(\"{literal}\")\n// Hello, world!\n}"
+    source "fun main() {\n    println(\"{literal}\")\n    // Hello, world!\n}"
   program_body
     language rust
-    source "fn main() {\nprintln!(\"{literal}\");\n}"
+    source "fn main() {\n    println!(\"{literal}\");\n}"
   program_body
     language scala
-    source "object hello {\ndef main(args: Array[String]) = {\nprintln(\"{literal}\")\n}\n}\n"
+    source "object hello {\n  def main(args: Array[String]) = {\n    println(\"{literal}\")\n  }\n}"
   program_body
     language swift
     source "print(\"{literal}\")\n// Prints \"Hello, world!\""
-

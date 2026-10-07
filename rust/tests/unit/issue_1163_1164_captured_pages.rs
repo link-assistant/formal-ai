@@ -351,3 +351,41 @@ fn live_kotlinlang_compile_command_with_url_and_hash() {
     );
     assert_eq!(compile_commands(&capture), vec![KOTLINC_COMMAND.to_owned()]);
 }
+
+/// R1165-1: a code block keeps its indentation while prose still collapses.
+///
+/// The shared indentation and the blank lines around a block are the page's
+/// markup, a highlighter span around leading spaces is indentation, and the
+/// captured Hello World examples keep the indentation their pages show.
+#[test]
+fn a_code_block_keeps_its_indentation() {
+    let rust: Vec<String> = code_blocks(RUST_BOOK_PAGE, HTML)
+        .into_iter()
+        .map(|(_, text)| text)
+        .collect();
+    assert!(
+        rust.iter()
+            .any(|text| text == "fn main() {\n    println!(\"Hello, world!\");\n}"),
+        "{rust:?}"
+    );
+    let kotlin: Vec<String> = code_blocks(KOTLIN_COMMAND_LINE, HTML)
+        .into_iter()
+        .map(|(_, text)| text)
+        .collect();
+    assert!(
+        kotlin
+            .iter()
+            .any(|text| text == "fun main() {\n    println(\"Hello, World!\")\n}"),
+        "{kotlin:?}"
+    );
+    let page = "<p>Some   spaced\n   prose</p><pre><code>\n\n      if x {\n<span>      </span>    y()\n      }\n\n</code></pre>";
+    let texts: Vec<String> = formalize_page_with_context(page.as_bytes(), Some(HTML), None)
+        .1
+        .into_iter()
+        .filter_map(|(_, block)| match block {
+            PageBlock::Paragraph { text, .. } | PageBlock::CodeBlock { text, .. } => Some(text),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(texts, ["Some spaced prose", "if x {\n    y()\n}"]);
+}

@@ -799,8 +799,8 @@ fn tag_attr(inner_tag: &str, name: &str) -> Option<String> {
     }
 }
 
-/// Strip every tag from an HTML fragment.
-fn strip_tags(fragment: &str) -> String {
+/// The text of an HTML fragment with every tag removed, whitespace kept.
+fn remove_tags(fragment: &str) -> String {
     let mut out = String::new();
     let mut depth = 0usize;
     for character in fragment.chars() {
@@ -811,14 +811,53 @@ fn strip_tags(fragment: &str) -> String {
             _ => {}
         }
     }
-    out.split_whitespace().collect::<Vec<_>>().join(" ")
+    out
 }
 
-/// Strip tags while keeping line structure, for code blocks.
+/// Strip every tag from an HTML fragment and collapse its whitespace.
+fn strip_tags(fragment: &str) -> String {
+    remove_tags(fragment)
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// Strip tags from a code block and keep it code (issue #1165 R1165-1).
+///
+/// Unlike prose, a code block's whitespace is meaning: every line keeps its
+/// indentation and inner spacing (a highlighter's `<span>` around leading
+/// spaces included), and only trailing whitespace goes. The blank lines that
+/// open and close the block are the page's markup, not the program, and so
+/// is the indentation every line shares; both are removed.
 fn strip_tags_keep_lines(fragment: &str) -> String {
-    fragment
-        .lines()
-        .map(strip_tags)
+    let text = remove_tags(fragment);
+    let lines: Vec<&str> = text.lines().map(str::trim_end).collect();
+    let (Some(first), Some(last)) = (
+        lines.iter().position(|line| !line.is_empty()),
+        lines.iter().rposition(|line| !line.is_empty()),
+    ) else {
+        return String::new();
+    };
+    let body = &lines[first..=last];
+    let mut shared: Option<&str> = None;
+    for line in body.iter().copied().filter(|line| !line.is_empty()) {
+        let indent = &line[..line.len() - line.trim_start().len()];
+        shared = Some(match shared {
+            None => indent,
+            Some(previous) => {
+                let common = previous
+                    .char_indices()
+                    .zip(indent.chars())
+                    .find(|((_, left), right)| left != right)
+                    .map_or(previous.len().min(indent.len()), |((at, _), _)| at);
+                &previous[..common]
+            }
+        });
+    }
+    let shared = shared.unwrap_or_default();
+    body.iter()
+        .copied()
+        .map(|line| line.strip_prefix(shared).unwrap_or(line))
         .collect::<Vec<_>>()
         .join("\n")
 }

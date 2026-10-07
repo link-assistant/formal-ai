@@ -138,8 +138,8 @@ const PASCAL_PROSE = [
 
 test("R1164-9: held-out Pascal is recomposed from the Free Pascal documentation alone", async () => {
   const blocks = await call(`formalizePage(${literal(PASCAL_PAGE)}, "text/html", null).blocks.filter((block) => block.kind === "code_block").map((block) => block.text)`);
-  // The formalizer keeps the lines and drops their indentation; Pascal is free-form.
-  assert.deepEqual(blocks, ["program Hello;\n\nbegin\nWriteLn('Hello, Free Pascal!');\nend.", "fpc hello.pas"]);
+  // The formalizer keeps every line and its indentation (R1165-1).
+  assert.deepEqual(blocks, ["program Hello;\n\nbegin\n  WriteLn('Hello, Free Pascal!');\nend.", "fpc hello.pas"]);
   const example = decompose(blocks[0], "pascal", PASCAL_PROSE, FPC_QUICK_START);
   const node = (await call(example)).ok;
   assert.deepEqual(node.parts.map((part) => [part.kind, part.sourceText, part.sourceUrl]), [
@@ -154,7 +154,7 @@ test("R1164-9: held-out Pascal is recomposed from the Free Pascal documentation 
   assert.deepEqual(recomposed, {
     ok: {
       languageSlug: "pascal",
-      source: "program Hello;\n\nbegin\nWriteLn('Hello, Formal AI!');\nend.",
+      source: "program Hello;\n\nbegin\n  WriteLn('Hello, Formal AI!');\nend.",
       partSourceUrls: [FPC_WRITELN, FPC_QUICK_START],
     },
   });

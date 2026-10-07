@@ -93,3 +93,16 @@ test("R1164-12: every captured Hello World page decomposes", async () => {
     assert.deepEqual(found, parts, file);
   }
 });
+
+test("R1165-1: a code block keeps its indentation, prose still collapses", async () => {
+  const blocks = await codeBlocks("issue-1164/ch01-02-hello-world.html", "text/html");
+  assert.ok(blocks.some((block) => block.text === 'fn main() {\n    println!("Hello, world!");\n}'), JSON.stringify(blocks));
+  const kotlin = await codeBlocks("issue-1163/command-line.html", "text/html");
+  assert.ok(kotlin.some((block) => block.text === 'fun main() {\n    println("Hello, World!")\n}'), JSON.stringify(kotlin));
+  const page = plain(evaluate(worker, `formalizePage(${literal(
+    "<p>Some   spaced\n   prose</p><pre><code>\n\n      if x {\n<span>      </span>    y()\n      }\n\n</code></pre>",
+  )}, "text/html", null)`));
+  // The shared indentation and the blank lines around the block are markup;
+  // a highlighter span around leading spaces is indentation.
+  assert.deepEqual(page.blocks.map((block) => block.text), ["Some spaced prose", "if x {\n    y()\n}"]);
+});

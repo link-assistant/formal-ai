@@ -115,10 +115,11 @@ Status on this branch, from the shard:
   decomposed each page's Hello World block (`decomposeCodeExample`), generalized
   the five nodes (`generalizeCodeExamples`) and rendered both through
   `decomposedCodeExampleNotation` / `generalizedCodeExampleNotation`. The run
-  shows two limits: the HTML walker drops code indentation, and the Kotlin and
-  Swift program bodies keep a trailing comment that repeats the original
-  literal (`// Hello, world!`), so a recomposition with another literal would
-  carry a stale comment. Swift's guided-tour block has no entry point, so the
+  showed two limits: the HTML walker dropped code indentation (fixed for issue
+  #1165 R1165-1, and the run re-recorded with the indented bodies), and the
+  Kotlin and Swift program bodies keep a trailing comment that repeats the
+  original literal (`// Hello, world!`), so a recomposition with another
+  literal would carry a stale comment. Swift's guided-tour block has no entry point, so the
   shared structure is `output_operation` and `string_literal` only.
 - Byte-for-byte captures (`R1164-12`): the five Hello World pages (Kotlin tour,
   Rust Book, go.dev, Swift book source, Scala 3 book) are pinned by SHA-256,
