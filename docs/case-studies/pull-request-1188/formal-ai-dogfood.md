@@ -28,7 +28,7 @@ possible tasks you encounter on the way must be fully supported by it".
 
 | # | Task (prompt) | Before | After |
 | --- | --- | --- | --- |
-| T1 | `Add a function multiply(a, b) to math.mjs that returns a times b, add a test for it to math.test.mjs, and run node --test to confirm it passes.` | **Fail, destructive**: `math.mjs` was overwritten with the text `a function multiply(a, b)`; a plan file was written under `.formal-ai/`; the answer said the change was complete. | Open (see "Next") |
+| T1 | `Add a function multiply(a, b) to math.mjs that returns a times b, add a test for it to math.test.mjs, and run node --test to confirm it passes.` | **Fail, destructive**: `math.mjs` was overwritten with the text `a function multiply(a, b)`; a plan file was written under `.formal-ai/`; the answer said the change was complete. | **No longer destructive**: reads both files and reports them; the function and test are still not authored (open). |
 | T2 | `Create a file a.txt containing hello` | Pass: `a.txt` = `hello`. | — |
 | T3 | `Read the file math.mjs and tell me its first line.` | Pass: answered with the first line. | — |
 | T4 | `Append the line 'third line' to notes.txt.` | **Fail, destructive**: `notes.txt` was overwritten with `the line 'third line'`. | **Pass**: read → edit → `sha256sum` check; one line added; answer `Appended \`third line\` to the end of \`notes.txt\` and observed the result.` |
@@ -291,3 +291,24 @@ in a new sibling module, `rust/src/agentic_coding/workspace_computed_change.rs`
 rustfmt-clean and was not compiled locally (no cargo on this workstation);
 `changed_lines_edit` scans bytes only for `\n`, so it never slices inside a
 multi-byte character.
+
+### T1 — a description of code was written as the file's bytes
+
+**Root cause.** The general-change fallback (`composeGeneralChangePlan`)
+reads "verb + object + to FILE" as a literal write: `Add a function
+multiply(a, b) to math.mjs` gave the content `a function multiply(a, b)`,
+written over the whole file.
+
+**Fix (both roots).** `describesCodeToAuthor` / `describes_code_to_author`:
+when the request has no seeded content lead (`containing`, `with exactly this
+content:` …) and the content is not inside a quoted segment, content that
+names a code construct (seeded `coding_request_object`: function, method,
+program, example, …) is a description of code to author, and the literal
+plan declines. `Create a file a.txt containing hello` and `Write 'function
+f() {}' to f.js` still write.
+
+**Still open.** Authoring the function itself: composing `multiply` from
+"returns a times b", adding it to an existing ES module, adding a matching
+`node:test` case, and running `node --test`. That is the next rung.
+
+**Tests.** "a description of code is never written as a file's bytes".

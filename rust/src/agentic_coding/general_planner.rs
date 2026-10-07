@@ -22,6 +22,23 @@ use std::fmt::Write as _;
 pub const PLAN_PATH: &str = ".formal-ai/general-change-plan.lino";
 const TARGET_PLACEHOLDER: &str = "{target}";
 
+/// Unquoted content that names a code construct (`a function multiply(a, b)`,
+/// seeded `coding_request_object`) is a description of code to write, not the
+/// file's bytes: writing it as the whole file destroyed `math.mjs` (PR #1188
+/// dogfooding). Content a seeded content lead introduces (`containing`, `with
+/// exactly this content:`) is bytes whatever it mentions.
+fn describes_code_to_author(request: &str, content: &str) -> bool {
+    !content.is_empty()
+        && first_content_lead_end(&request.to_lowercase()).is_none()
+        && !crate::normal_markov::quoted_segments(request)
+            .iter()
+            .any(|segment| segment.contains(content))
+        && seed::lexicon().mentions_role(
+            "coding_request_object",
+            &crate::engine::normalize_prompt(content),
+        )
+}
+
 pub(crate) use super::write_request::typed_write_target;
 pub use super::write_request::compose_edit_request;
 /// What the bounded general planner can truthfully execute.
@@ -185,6 +202,9 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
         repaired
     });
     if !safe_relative_path(&target) {
+        return None;
+    }
+    if command_output.is_none() && describes_code_to_author(request, &content) {
         return None;
     }
     let response_language = language(request);

@@ -26,7 +26,9 @@ import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { resolveReference, workspace } from './crate/self_ast_census.mjs';
-import { roleWordForms } from './write_lexicon.mjs';
+import { mentionsRole, roleWordForms } from './write_lexicon.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { quotedSegments } from './crate/normal_markov.mjs';
 import {
   charIn, isAlphanumeric, isAscii, isAsciiAlphanumeric, isAsciiDigit, isWhitespace, lastChar,
   splitWhitespace, trim, trimEnd, trimEndMatches, trimMatches, trimStart,
@@ -56,6 +58,21 @@ const CAPABILITY_SLUGS = Object.freeze({
   grep: 'Grep', glob: 'Glob', list_dir: 'ListDir', todo: 'Todo', subagent: 'Subagent',
   read_many: 'ReadMany', multi_edit: 'MultiEdit', ask_user: 'AskUser',
 });
+
+/**
+ * Mirrors `fn describes_code_to_author`: unquoted content that names a code
+ * construct (`a function multiply(a, b)`, seeded `coding_request_object`) is
+ * a description of code to write, not the file's bytes — writing it as the
+ * whole file destroyed `math.mjs` (PR #1188 dogfooding). Content a seeded
+ * content lead introduces (`containing`, `with exactly this content:`) is
+ * bytes whatever it mentions.
+ */
+function describesCodeToAuthor(request, content) {
+  return content !== ''
+    && firstContentLeadEnd(request.toLowerCase()) === null
+    && !quotedSegments(request).some((segment) => segment.includes(content))
+    && mentionsRole('coding_request_object', normalizePrompt(content));
+}
 
 /** Mirrors `GeneralChangePlan::links_notation`. */
 export function planLinksNotation(plan) {
@@ -123,6 +140,7 @@ export function composeGeneralChangePlan(fullRequest) {
     content = repaired;
   }
   if (!safeRelativePath(target)) return null;
+  if (!commandOutput && describesCodeToAuthor(request, content)) return null;
   const responseLanguage = detect(request);
   const intent = formalizeIntent(request, responseLanguage);
   const verificationCommand = `cat ${target}`;

@@ -259,3 +259,21 @@ describe('PR #1188 dogfood: a named source file says which language to write', (
     assert.equal(programContractAnswer('Change greet.py so it prints "Hi".'), null);
   });
 });
+
+describe('PR #1188 dogfood: a description of code is never written as a file\'s bytes', () => {
+  test('`Add a function multiply(a, b) to math.mjs …` leaves math.mjs intact', async () => {
+    const before = 'export function add(a, b) {\n  return a + b;\n}\n';
+    const { files } = await drive(
+      'Add a function multiply(a, b) to math.mjs that returns a times b, add a test for it to math.test.mjs, and run node --test to confirm it passes.',
+      { 'math.mjs': before, 'math.test.mjs': "import { add } from './math.mjs';\n" },
+    );
+    assert.equal(files.get('math.mjs'), before);
+    assert.equal(files.has('.formal-ai/general-change-plan.lino'), false);
+  });
+
+  test('literal content still writes the file', async () => {
+    const { composeGeneralChangePlan } = await import('../../../js/agentic/general_planner.mjs');
+    assert.equal(composeGeneralChangePlan('Create a file a.txt containing hello').content, 'hello');
+    assert.equal(composeGeneralChangePlan("Write 'function f() {}' to f.js").content, 'function f() {}');
+  });
+});
