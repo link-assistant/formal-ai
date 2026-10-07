@@ -476,11 +476,25 @@ fn stop_note_reports_the_spent_ladder_and_is_silent_without_a_rung() {
 // R1/R7 — one shape table, all fourteen emitted languages
 // ---------------------------------------------------------------------------
 
+/// One emitted diagnostic: language, raw compiler output, file, line, code
+/// and message.
+type EmittedDiagnostic = (
+    &'static str,
+    &'static str,
+    &'static str,
+    u32,
+    Option<&'static str>,
+    &'static str,
+);
+
+/// A formalized diagnostic as read back: file, line, code and message.
+type ReadDiagnostic<'a> = (Option<&'a str>, Option<u32>, Option<&'a str>, &'a str);
+
 /// One captured diagnostic per emitted language, with the structure the
 /// generic matcher reads from it: (language, raw output, file, line, code,
 /// message). The JavaScript root replays the same table in
 /// `rust/tests/web/issue-1185-fourteen-languages.test.mjs`.
-const FOURTEEN_LANGUAGES: [(&str, &str, &str, u32, Option<&str>, &str); 14] = [
+const FOURTEEN_LANGUAGES: [EmittedDiagnostic; 14] = [
     (
         "rust",
         "error[E0308]: mismatched types\n --> src/main.rs:6:33",
@@ -599,7 +613,7 @@ const FOURTEEN_LANGUAGES: [(&str, &str, &str, u32, Option<&str>, &str); 14] = [
 fn every_emitted_language_formalizes_through_the_one_shape_table() {
     for (language, raw, file, line, code, message) in FOURTEEN_LANGUAGES {
         let diagnostics = repair_loop::formalize_diagnostic(language, raw);
-        let read: Vec<(Option<&str>, Option<u32>, Option<&str>, &str)> = diagnostics
+        let read: Vec<ReadDiagnostic<'_>> = diagnostics
             .iter()
             .map(|diagnostic| {
                 (

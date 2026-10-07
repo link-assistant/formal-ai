@@ -320,7 +320,7 @@ fn plain_and_pdf_text_formalize() {
     );
 }
 
-/// The DuckDuckGo instant-answer endpoint the research boundary queries.
+/// The `DuckDuckGo` instant-answer endpoint the research boundary queries.
 const DUCKDUCKGO_API: &str = "https://api.duckduckgo.com/";
 
 /// Answers a search with the kotlinlang page and serves the fixtures.
@@ -357,7 +357,7 @@ fn source_research_formalizes_pages_into_working_memory() {
 
     let proposal = research.learning_proposal();
     let statements = web_formalize::generic_page_statements(page.capture.bytes(), None);
-    assert!(!statements.is_empty());
+    assert_ne!(statements.len(), 0, "the captured page formalizes");
     assert_eq!(
         proposal.matches("formalized_page_statement").count(),
         statements.len(),

@@ -166,13 +166,24 @@ fn kotlinlang_steps_keep_the_compile_and_run_commands() {
     assert!(texts.iter().any(|text| text == "java -jar hello.jar"));
 }
 
+/// One captured page: bytes, mime, language, output call, printed literal,
+/// and whether the page tags its example block.
+type CapturedHelloWorld = (
+    &'static [u8],
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static str,
+    bool,
+);
+
 /// R1164-12: every captured Hello World page decomposes into its seed output
 /// call and printed literal. The page's example is its first block, tagged
 /// with the language or untagged (go.dev declares no tag), that decomposes
 /// into an output operation.
 #[test]
 fn every_captured_hello_world_page_decomposes() {
-    let cases: [(&[u8], &str, &str, &str, &str, bool); 6] = [
+    let cases: [CapturedHelloWorld; 6] = [
         (
             KOTLIN_COMMAND_LINE,
             HTML,

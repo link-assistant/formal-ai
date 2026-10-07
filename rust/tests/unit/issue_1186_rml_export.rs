@@ -85,7 +85,9 @@ fn the_rml_run_records_its_exit_status_and_paths() {
         source
     );
     assert!(
-        output_path.ends_with(".lean"),
+        std::path::Path::new(&output_path)
+            .extension()
+            .is_some_and(|extension| extension.eq_ignore_ascii_case("lean")),
         "the Lean output path is recorded: {output_path}"
     );
     let _ = std::fs::remove_dir_all(&directory);
@@ -100,9 +102,10 @@ fn the_rml_step_is_a_derivation_fragment() {
         offline: true,
         ..SolverConfig::default()
     });
-    let solved = solver.solve("Formalize in first-order logic: Every baker who sings smiles");
+    let formalized = solver.solve("Formalize in first-order logic: Every baker who sings smiles");
     let root = std::env::current_dir().expect("working directory");
-    let record = Derivation::load(&root, &solved.derivation_id()).expect("a persisted derivation");
+    let record =
+        Derivation::load(&root, &formalized.derivation_id()).expect("a persisted derivation");
     let fragments = record.formalized_fragments.join("\n");
     assert!(
         fragments.contains("stage=rml_export status=absent invoked=false")

@@ -283,7 +283,11 @@ case_relocated() {
   [ "${prompt_args[*]}" = "${args[*]}" ] || args+=("${prompt_args[@]}")
   # The client's own default model outranks the `model` its config names,
   # so the model is passed the way `formal-ai with` passes it.
-  local model_arg selector
+  local model_arg selector front=()
+  # A client that summarizes its session loads a second model for it, which
+  # the relocated config does not name either; `formal-ai with` turns the
+  # summary off with the seeded `no_summarize_args`, and so does this case.
+  mapfile -t front < <(matrix_client_values "$CLIENT" no_summarize_args)
   model_arg="$("$BIN" clients --format json | jq -r --arg id "$CLIENT" \
     '.[] | select(.id == $id) | .model_arg // ""')"
   if [ -n "$model_arg" ]; then
@@ -292,11 +296,14 @@ case_relocated() {
     selector="${selector:-{model\}}"
     selector="${selector//\{provider_id\}/$(matrix_client_field "$CLIENT" provider_id)}"
     selector="${selector//\{model\}/$MODEL}"
+    front=("$model_arg" "$selector" "${front[@]}")
+  fi
+  if [ "${#front[@]}" -gt 0 ]; then
     if [ "$("$BIN" clients --format json | jq -r --arg id "$CLIENT" \
       '.[] | select(.id == $id) | .model_arg_after_first_arg // false')" = true ]; then
-      args=("${args[0]}" "$model_arg" "$selector" "${args[@]:1}")
+      args=("${args[0]}" "${front[@]}" "${args[@]:1}")
     else
-      args=("$model_arg" "$selector" "${args[@]}")
+      args=("${front[@]}" "${args[@]}")
     fi
   fi
   local command key_env

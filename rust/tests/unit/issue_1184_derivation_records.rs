@@ -323,7 +323,9 @@ fn a_grammar_correction_answer_carries_its_rules_in_the_derivation() {
     let response = formal_ai::FormalAiEngine
         .answer("Correct the grammar: She don't like apples and he have two cat.");
     assert!(
-        response.links_notation.contains("kind \"grammar_correction\""),
+        response
+            .links_notation
+            .contains("kind \"grammar_correction\""),
         "the answer's derivation record names the grammar rules it applied: {}",
         response.links_notation
     );

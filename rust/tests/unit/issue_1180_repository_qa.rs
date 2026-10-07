@@ -21,12 +21,14 @@ fn repo_root() -> PathBuf {
 }
 
 fn shallow(root: &Path) -> bool {
-    std::process::Command::new("git")
+    let Ok(output) = std::process::Command::new("git")
         .args(["rev-parse", "--is-shallow-repository"])
         .current_dir(root)
         .output()
-        .map(|output| String::from_utf8_lossy(&output.stdout).trim() == "true")
-        .unwrap_or(true)
+    else {
+        return true;
+    };
+    String::from_utf8_lossy(&output.stdout).trim() == "true"
 }
 
 #[test]
@@ -74,8 +76,14 @@ fn a_cue_alone_never_names_a_subject() {
     );
     // A plain word is a census name too ("parse", "new"), so it is not read
     // as a symbol; nor is an identifier without a definition cue.
-    assert!(definition_subjects("What does parse do?", &rules).is_empty());
-    assert!(definition_subjects("Explain evaluate_calculation", &rules).is_empty());
+    assert_eq!(
+        definition_subjects("What does parse do?", &rules),
+        Vec::<String>::new()
+    );
+    assert_eq!(
+        definition_subjects("Explain evaluate_calculation", &rules),
+        Vec::<String>::new()
+    );
 }
 
 #[test]
