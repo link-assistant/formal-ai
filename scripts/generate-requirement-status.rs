@@ -170,10 +170,13 @@ fn verdict(line: &str, automated_test: &str) -> String {
         line.to_owned()
     };
     let lower = status.to_ascii_lowercase();
-    if lower.contains("withdrawn") {
+    // Words, not substrings: R1017-7 names its pinning test
+    // `superseded_read_only_work_releases_its_runners`, and a substring match
+    // filed a delivered row as superseded.
+    if contains_word(&lower, "withdrawn") {
         return "withdrawn".to_owned();
     }
-    if lower.contains("superseded") {
+    if contains_word(&lower, "superseded") {
         return "superseded".to_owned();
     }
     if ["not delivered", "not implemented", "pending", "planned"]

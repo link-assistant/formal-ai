@@ -5,6 +5,7 @@ use formal_ai::{environment_records, supported_languages};
 use walkdir::{DirEntry, WalkDir};
 
 mod count;
+mod doctrine_2026_10_07;
 mod issue_1138;
 mod issues;
 

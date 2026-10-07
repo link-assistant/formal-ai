@@ -357,3 +357,122 @@ fn formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves() {
         assert_eq!(arguments["content"], expected_leaf);
     }
 }
+
+/// The canonical archive of issue #1012 / pull request #1013.
+const ARCHIVE: &str = "dev/log/issues/1012/pulls/1013";
+
+fn archive_entries(directory: &str, prefix: &str, suffix: &str) -> usize {
+    let path = format!("{}/../{ARCHIVE}/{directory}", env!("CARGO_MANIFEST_DIR"));
+    fs::read_dir(&path)
+        .unwrap_or_else(|error| panic!("read {path}: {error}"))
+        .filter_map(Result::ok)
+        .filter(|entry| {
+            entry
+                .file_name()
+                .to_str()
+                .is_some_and(|name| name.starts_with(prefix) && name.ends_with(suffix))
+        })
+        .count()
+}
+
+/// R1012-1: all ten issue-listed runs are archived.
+///
+/// Each run keeps its metadata, its full log and its stderr, and the job and
+/// annotation listings sit beside them, so the audit re-derives without
+/// GitHub access.
+#[test]
+fn every_issue_listed_run_has_preserved_evidence() {
+    assert_eq!(archive_entries("raw-data", "main-run-", ".json"), 10);
+    assert_eq!(archive_entries("ci-logs", "main-run-", ".log"), 10);
+    assert_eq!(archive_entries("ci-logs", "main-run-", ".stderr"), 10);
+    assert!(archive_entries("raw-data/main-run-jobs", "", "") >= 10);
+    assert!(archive_entries("raw-data/check-annotations", "", ".json") > 0);
+    assert!(archive_entries("ci-logs/initial-pr", "", "") > 0);
+    assert!(archive_entries("ci-logs/final", "", "") > 0);
+}
+
+/// R1012-4: the comparison is against complete, pinned template trees.
+///
+/// The three pipeline templates and Hive Mind are archived at the commits the
+/// requirement row names, as file trees and as source snapshots.
+#[test]
+fn template_trees_are_archived_at_the_named_commits() {
+    for (repository, commit) in [
+        ("rust-ai-driven-development-pipeline-template", "56aa18a"),
+        ("js-ai-driven-development-pipeline-template", "77b8f1b"),
+        ("python-ai-driven-development-pipeline-template", "c3a2eb2"),
+        ("hive-mind", "44372fd"),
+    ] {
+        let head = repository_file(&format!("{ARCHIVE}/raw-data/{repository}-head.json"));
+        assert!(
+            head.contains(&format!("\"sha\":\"{commit}")),
+            "{repository} must be archived at {commit}"
+        );
+        assert!(
+            !repository_file(&format!("{ARCHIVE}/raw-data/{repository}-tree.json")).is_empty(),
+            "{repository} must keep its complete file tree"
+        );
+        if repository != "hive-mind" {
+            assert!(
+                archive_entries(&format!("references/templates/{repository}"), "", "") > 0,
+                "{repository} must keep its source snapshot"
+            );
+        }
+    }
+    assert!(!repository_file(&format!("{ARCHIVE}/raw-data/CI-CD-BEST-PRACTICES.md")).is_empty());
+}
+
+/// R1012-5 and R1012-7: the audit record names its reports and its analysis.
+///
+/// The README carries the timeline, the requirement inventory, the
+/// finding-by-finding root causes, the alternatives, the research and the two
+/// template reports with the canonical upstream issues they defer to.
+#[test]
+fn audit_record_carries_its_analysis_and_upstream_reports() {
+    let record = repository_file(&format!("{ARCHIVE}/README.md"));
+    for section in [
+        "## Timeline reconstructed from independent timestamps",
+        "## Requirements inventory",
+        "## Finding-by-finding root cause analysis",
+        "## Complete template comparison",
+        "## Online research and reusable components",
+        "## Alternatives and solution plans",
+        "## Upstream reports",
+        "## Tests and verification record",
+    ] {
+        assert!(record.contains(section), "missing {section:?}");
+    }
+    for report in [
+        "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/131",
+        "https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/133",
+        "https://github.com/actions/download-artifact/issues/484",
+        "https://github.com/microsoft/vscode/issues/319867",
+    ] {
+        assert!(record.contains(report), "missing upstream report {report}");
+    }
+}
+
+/// R1012-6 and R1012-9: tests came first, and one pull request delivered it.
+///
+/// The red log records the eight invariants failing before the fix and the
+/// focused green log the nine passing after it; the case studies name the
+/// issue and pull request #1013.
+#[test]
+fn tests_first_record_and_delivery_documents_are_retained() {
+    let red = repository_file(&format!("{ARCHIVE}/local-tests/regression-red.log"));
+    assert!(red.contains("test result: FAILED. 0 passed; 8 failed"));
+    let green = repository_file(&format!(
+        "{ARCHIVE}/local-tests/regression-focused-green.log"
+    ));
+    assert!(green.contains("test result: ok. 9 passed; 0 failed"));
+    for path in [
+        "dev/log/issues/1012/pulls/1013/README.md",
+        "docs/case-studies/issue-1012/README.md",
+        "docs/case-studies/pull-request-1013/README.md",
+    ] {
+        let document = repository_file(path);
+        for marker in ["#1012", "#1013"] {
+            assert!(document.contains(marker), "{path} is missing {marker}");
+        }
+    }
+}
