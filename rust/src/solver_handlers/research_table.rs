@@ -222,9 +222,9 @@ fn render_research_result_followup(
     status: &str,
     language: &str,
 ) -> Option<String> {
-    let preview = research_prompt_preview(prior_search);
+    let task = research_prompt_preview(prior_search);
     seed::localized_response(&format!("research_result_followup_{status}"), language)
-        .map(|template| template.replace("{preview}", &preview))
+        .map(|template| template.replace("{preview}", &task))
 }
 
 fn research_prompt_preview(value: &str) -> String {

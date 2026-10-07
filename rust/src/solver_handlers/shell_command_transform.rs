@@ -92,18 +92,18 @@ fn build_screen_command(
         return None;
     }
 
-    let session = extract_screen_session(prompt)?;
-    let loop_command = extract_loop_command(prompt)
+    let name = extract_screen_session(prompt)?;
+    let looped = extract_loop_command(prompt)
         .or_else(|| last_loop_command_from_history(history))
-        .or_else(|| extract_shell_command(prompt).map(|command| wrap_in_infinite_loop(&command)))?;
-    let command = template
-        .replace("{session}", &session)
-        .replace("{command}", &shell_single_quote(&loop_command));
+        .or_else(|| extract_shell_command(prompt).map(|line| wrap_in_infinite_loop(&line)))?;
+    let rewritten = template
+        .replace("{session}", &name)
+        .replace("{command}", &shell_single_quote(&looped));
     log.append("shell_transform", "screen_session".to_owned());
-    log.append("screen_session", session);
-    log.append("shell_command:input", loop_command);
-    log.append("shell_command:output", command.clone());
-    Some(command)
+    log.append("screen_session", name);
+    log.append("shell_command:input", looped);
+    log.append("shell_command:output", rewritten.clone());
+    Some(rewritten)
 }
 
 fn finalize_shell_transform(
@@ -231,11 +231,11 @@ fn looks_like_shell_command(candidate: &str) -> bool {
         .any(|head| head == first)
 }
 
-fn wrap_in_infinite_loop(command: &str) -> String {
-    if extract_loop_command(command).is_some() {
-        return command.trim().to_owned();
+fn wrap_in_infinite_loop(line: &str) -> String {
+    if extract_loop_command(line).is_some() {
+        return line.trim().to_owned();
     }
-    syntax_template("loop_template").replace("{command}", command.trim())
+    syntax_template("loop_template").replace("{command}", line.trim())
 }
 
 fn extract_screen_session(prompt: &str) -> Option<String> {

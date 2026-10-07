@@ -26,18 +26,18 @@ pub fn try_incompatible_units(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let (unit_a, dim_a, unit_b, dim_b) = detect_incompatible_unit_pair(normalized)?;
+    let pair = detect_incompatible_unit_pair(normalized)?;
     let body = localized_response(
         "unit_incompatibility",
         crate::language::detect(prompt).slug(),
     )?
-    .replace("{unit_a}", unit_a)
-    .replace("{dim_a}", dim_a)
-    .replace("{unit_b}", unit_b)
-    .replace("{dim_b}", dim_b);
+    .replace("{unit_a}", pair.0)
+    .replace("{dim_a}", pair.1)
+    .replace("{unit_b}", pair.2)
+    .replace("{dim_b}", pair.3);
     log.append(
         "unit_incompatibility",
-        format!("{unit_a}:{dim_a} vs {unit_b}:{dim_b}"),
+        format!("{}:{} vs {}:{}", pair.0, pair.1, pair.2, pair.3),
     );
     Some(finalize_simple(
         prompt,
