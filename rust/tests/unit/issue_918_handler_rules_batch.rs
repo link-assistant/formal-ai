@@ -419,3 +419,29 @@ fn a_roleplay_frame_renders_the_seeded_persona_and_topic() {
         assert_eq!(response.answer, expected, "{prompt}");
     }
 }
+
+const SPIDER_EN: &str = "Released title-role Spider-Man films in release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023); 11. Spider-Man: Brand New Day (2026). Announced but not yet released: Spider-Man: Beyond the Spider-Verse (2027-06-18). Source: Wikidata Query Service, snapshot taken 2026-08-04.";
+const SPIDER_RU: &str = "Вышедшие фильмы, где Человек-паук — главный герой в порядке выхода: 1. Человек-паук (2002); 2. Человек-паук 2 (2004); 3. Человек-паук 3: Враг в отражении (2007); 4. Новый Человек-паук (2012); 5. Новый Человек-паук. Высокое напряжение (2014); 6. Человек-паук: Возвращение домой (2017); 7. Человек-паук: Через вселенные (2018); 8. Человек-паук: Вдали от дома (2019); 9. Человек-паук: Нет пути домой (2021); 10. Человек-паук: Паутина вселенных (2023); 11. Человек-паук: Новый день (2026). Анонсированы, но ещё не вышли: Человек-паук: За пределами вселенных (2027-06-18). Источник: Wikidata Query Service, снимок данных от 2026-08-04.";
+
+/// A fact backed by a release timeline is the snapshot rendered against the
+/// day it is asked (`data/seed/release-timelines.lino`); the browser twin
+/// rendered nothing for it (an empty answer) until it got the same renderer.
+#[test]
+fn a_release_timeline_fact_renders_the_same_snapshot_answer() {
+    for (language, expected) in [("en", SPIDER_EN), ("ru", SPIDER_RU)] {
+        let rendered = formal_ai::release_timeline::render(
+            "spider_man_title_role_films",
+            language,
+            "2026-08-04",
+        )
+        .expect("the Spider-Man timeline renders");
+        assert_eq!(rendered.text, expected, "{language}");
+    }
+    let response = UniversalSolver::default().solve("List Spider-Man films in release order.");
+    let today = formal_ai::external_benchmarks::today_utc();
+    let expected = formal_ai::release_timeline::render("spider_man_title_role_films", "en", &today)
+        .expect("the Spider-Man timeline renders")
+        .text;
+    assert_eq!(response.intent, "fact_lookup");
+    assert_eq!(response.answer, expected);
+}

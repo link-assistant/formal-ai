@@ -255,3 +255,17 @@ test("a roleplay frame renders the seeded persona and topic", async () => {
     assert.equal(response.content, expected, prompt);
   }
 });
+
+const SPIDER_EN = "Released title-role Spider-Man films in release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023); 11. Spider-Man: Brand New Day (2026). Announced but not yet released: Spider-Man: Beyond the Spider-Verse (2027-06-18). Source: Wikidata Query Service, snapshot taken 2026-08-04.";
+const SPIDER_RU = "Вышедшие фильмы, где Человек-паук — главный герой в порядке выхода: 1. Человек-паук (2002); 2. Человек-паук 2 (2004); 3. Человек-паук 3: Враг в отражении (2007); 4. Новый Человек-паук (2012); 5. Новый Человек-паук. Высокое напряжение (2014); 6. Человек-паук: Возвращение домой (2017); 7. Человек-паук: Через вселенные (2018); 8. Человек-паук: Вдали от дома (2019); 9. Человек-паук: Нет пути домой (2021); 10. Человек-паук: Паутина вселенных (2023); 11. Человек-паук: Новый день (2026). Анонсированы, но ещё не вышли: Человек-паук: За пределами вселенных (2027-06-18). Источник: Wikidata Query Service, снимок данных от 2026-08-04.";
+
+test("a release-timeline fact renders the snapshot against the day it is asked", async () => {
+  await ready;
+  assert.equal(plain(evaluate(worker, 'renderReleaseTimeline("spider_man_title_role_films", "en", "2026-08-04")')).text, SPIDER_EN);
+  assert.equal(plain(evaluate(worker, 'renderReleaseTimeline("spider_man_title_role_films", "ru", "2026-08-04")')).text, SPIDER_RU);
+  const response = await solve("List Spider-Man films in release order.");
+  assert.equal(response.intent, "fact_lookup");
+  const today = new Date().toISOString().slice(0, 10);
+  assert.equal(response.content,
+    plain(evaluate(worker, `renderReleaseTimeline("spider_man_title_role_films", "en", "${today}")`)).text);
+});

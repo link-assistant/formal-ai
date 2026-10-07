@@ -138,7 +138,11 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/creative_composition.rs"
     justification "Issue 1178 orders seeded, cited advice by evidence grade and renders localized responses. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_creative.js answers the same seed records in the worker."
   handler fact_lookup
-    status pending
+    status migrated
+    data "data/seed/facts.lino|data/seed/release-timelines.lino|data/seed/meanings-facts.lino"
+    primitive "rust/src/solver_handlers/factual_qa.rs"
+    justification "issue #918 (R914-6): the row is a dispatcher over the promoted factual interpreters (prompt-text question, fact comparison, the subject-gated record of factual_qa.rs) and the generic release-timeline renderer; the records, their localized summaries and the timeline phrasing are seed data and the dispatcher names no word. The browser twin already read the same records but rendered a release-timeline record as an empty answer; it now has the renderer (renderReleaseTimeline in js/worker/formal_ai_worker_factual_qa.js) over the same seed, registered for the web. Pinned in both runtimes, and natively by rust/tests/unit/specification/issue_892.rs and the issue 1172 suites."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler coreference
     status pending
   handler roleplay

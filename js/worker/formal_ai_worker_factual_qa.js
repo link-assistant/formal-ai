@@ -772,3 +772,120 @@ async function tryExplanationResearch(prompt) {
     .concat(researched.senses.map((sense) => `source:${sense.sourceUrl}`));
   return { intent: "explanation_research", content, confidence: 0.8, evidence, trace: evidence.slice(), solverEvents };
 }
+
+// ---------------------------------------------------------------------------
+// Release timelines (issue #892; browser twin for issue #918). Mirrors
+// rust/src/release_timeline.rs over data/seed/release-timelines.lino: a
+// timeline answer is never a stored sentence but the snapshot rendered
+// against the day it is asked, every word from the seed's phrasing blocks.
+// ---------------------------------------------------------------------------
+
+let cachedReleaseTimelines = null;
+
+/**
+ * The phrasing blocks and timelines of data/seed/release-timelines.lino.
+ * Mirrors parse_release_timelines in rust/src/seed/release_timelines.rs.
+ * @returns {{phrasings: object[], timelines: object[]}}
+ */
+function releaseTimelineRegistry() {
+  if (cachedReleaseTimelines) return cachedReleaseTimelines;
+  const text = seedRawText(SEED_RAW, "release-timelines.lino");
+  const root = text ? parseLinoTree(text).children.find((node) => node.name === "release_timelines") : null;
+  const records = root ? root.children : [];
+  const localizedPairs = (node, field) => node.children
+    .filter((child) => child.name === "localized")
+    .map((child) => ({ language: child.value, text: childValue(child, field) }))
+    .filter((pair) => pair.language && pair.text);
+  const registry = {
+    phrasings: records.filter((node) => node.name === "phrasing").map((node) => ({
+      language: node.value,
+      releasedHeading: childValue(node, "released-heading"),
+      releasedItem: childValue(node, "released-item"),
+      announcedHeading: childValue(node, "announced-heading"),
+      announcedItem: childValue(node, "announced-item"),
+      undatedItem: childValue(node, "undated-item"),
+      itemSeparator: childValue(node, "item-separator"),
+      sectionEnd: childValue(node, "section-end"),
+      provenanceNote: childValue(node, "provenance-note"),
+      staleNote: childValue(node, "stale-note"),
+    })),
+    timelines: records.filter((node) => node.name === "timeline").map((node) => ({
+      slug: node.value,
+      sourceLabel: childValue(node, "source-label"),
+      retrievedAt: String(childValue(node, "retrieved-at") || ""),
+      freshForDays: Number.parseInt(String(childValue(node, "fresh-for-days") || "").trim(), 10) || 0,
+      subjects: localizedPairs(node, "subject"),
+      entries: node.children.filter((child) => child.name === "entry").map((entry) => ({
+        qid: entry.value,
+        releaseDate: String(childValue(entry, "release-date") || ""),
+        titles: localizedPairs(entry, "title"),
+      })),
+    })),
+  };
+  if (text) cachedReleaseTimelines = registry;
+  return registry;
+}
+
+/** The pair for `language`, else the English one (Rust `title_for` / `subject_for`). */
+function releaseTimelineLocalized(pairs, language, fallback) {
+  const hit = pairs.find((pair) => pair.language === language) || pairs.find((pair) => pair.language === "en");
+  return hit ? hit.text : fallback;
+}
+
+/** Days since the Unix epoch for an ISO day, or null (Rust `days_from_iso_date`). */
+function releaseTimelineDays(date) {
+  const parts = String(date || "").split("-").map((part) => Number.parseInt(part, 10));
+  if (parts.length < 3 || parts.some((part) => Number.isNaN(part))) return null;
+  const [year, month, day] = parts;
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const adjustedYear = year - (month <= 2 ? 1 : 0);
+  const era = Math.floor(adjustedYear / 400);
+  const yearOfEra = adjustedYear - era * 400;
+  const dayOfYear = Math.floor((153 * (month + (month > 2 ? -3 : 9)) + 2) / 5) + day - 1;
+  const dayOfEra = yearOfEra * 365 + Math.floor(yearOfEra / 4) - Math.floor(yearOfEra / 100) + dayOfYear;
+  return era * 146097 + dayOfEra - 719468;
+}
+
+/**
+ * Render the timeline `slug` in `language` as of `today` (an ISO day), or
+ * null for an unknown slug. Mirrors release_timeline::render_from.
+ * @param {string} slug
+ * @param {string} language
+ * @param {string} today
+ * @returns {{text: string, released: object[], announced: object[], stale: boolean}|null}
+ */
+function renderReleaseTimeline(slug, language, today) {
+  const registry = releaseTimelineRegistry();
+  const timeline = registry.timelines.find((candidate) => candidate.slug === slug);
+  const phrasing = registry.phrasings.find((candidate) => candidate.language === language) ||
+    registry.phrasings.find((candidate) => candidate.language === "en");
+  if (!timeline || !phrasing) return null;
+  const isReleased = (entry) => entry.releaseDate !== "" && entry.releaseDate <= today;
+  const released = timeline.entries.filter(isReleased).sort((left, right) =>
+    (left.releaseDate < right.releaseDate ? -1 : left.releaseDate > right.releaseDate ? 1
+      : left.qid < right.qid ? -1 : left.qid > right.qid ? 1 : 0));
+  const announced = timeline.entries.filter((entry) => !isReleased(entry));
+  const retrieved = releaseTimelineDays(timeline.retrievedAt);
+  const now = releaseTimelineDays(today);
+  const stale = retrieved === null || now === null || now - retrieved > timeline.freshForDays;
+  const subject = releaseTimelineLocalized(timeline.subjects, language, "");
+  const fill = (template, entry, position) => String(template)
+    .split("{position}").join(String(position))
+    .split("{title}").join(releaseTimelineLocalized(entry.titles, language, entry.qid))
+    .split("{year}").join(entry.releaseDate.split("-")[0] || "")
+    .split("{date}").join(entry.releaseDate);
+  const sections = [];
+  if (released.length > 0) {
+    const items = released.map((entry, index) => fill(phrasing.releasedItem, entry, index + 1));
+    sections.push(`${phrasing.releasedHeading.split("{subject}").join(subject)} ${items.join(phrasing.itemSeparator)}${phrasing.sectionEnd}`);
+  }
+  if (announced.length > 0) {
+    const items = announced.map((entry) =>
+      fill(entry.releaseDate === "" ? phrasing.undatedItem : phrasing.announcedItem, entry, 0));
+    sections.push(`${phrasing.announcedHeading.split("{subject}").join(subject)} ${items.join(phrasing.itemSeparator)}${phrasing.sectionEnd}`);
+  }
+  sections.push(String(stale ? phrasing.staleNote : phrasing.provenanceNote)
+    .split("{source}").join(timeline.sourceLabel)
+    .split("{retrieved}").join(timeline.retrievedAt));
+  return { text: sections.join(" "), released, announced, stale };
+}

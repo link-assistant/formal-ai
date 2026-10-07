@@ -663,6 +663,7 @@ seed_registry
     web true
   seed release-timelines
     bundle true
+    web true
   seed repository-command-allowlist
     bundle true
   seed research-table-procedure

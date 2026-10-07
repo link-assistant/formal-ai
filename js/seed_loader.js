@@ -491,6 +491,7 @@
         subjectAliases: splitList(findChildValue(item, "subject_aliases")).map(toLower),
         questionKeywords: splitList(findChildValue(item, "question_keywords")).map(toLower),
         summary: findChildValue(item, "summary"),
+        releaseTimeline: findChildValue(item, "release_timeline"),
         source: findChildValue(item, "source"),
         sourceKind: findChildValue(item, "source_kind"),
         localized: localized,
