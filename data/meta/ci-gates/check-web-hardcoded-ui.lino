@@ -7,3 +7,4 @@ ci_gate check_web_hardcoded_ui
   stage web
   description "The web app renders no hardcoded user-facing string."
   run "npm run --prefix rust/tests/e2e check:web-hardcoded-ui"
+  justification "Hardcoded user-facing strings in the web app produce English-only UI in non-English locales; the gate was introduced in #991 to enforce the seed-data pipeline for all UI text."

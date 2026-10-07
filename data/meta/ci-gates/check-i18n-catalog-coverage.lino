@@ -7,3 +7,4 @@ ci_gate check_i18n_catalog_coverage
   stage web
   description "Every user-facing string has a translation in every registered language."
   run "npm run --prefix rust/tests/e2e check:i18n"
+  justification "A user-facing string that has no translation in a registered language produces a blank or English fallback in production; the gate was introduced in #991 to catch missing catalog entries before merge."

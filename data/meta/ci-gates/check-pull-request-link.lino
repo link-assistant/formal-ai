@@ -7,3 +7,4 @@ ci_gate check_pull_request_link
   stage rust
   description "The pull request body links the issue it closes."
   run "rust-script --test scripts/check-pull-request-link.rs && rust-script scripts/check-pull-request-link.rs"
+  justification "A PR without an issue link cannot be traced back to a requirement and is invisible in the traceability report; the gate was introduced in #991 to enforce the link on every PR."

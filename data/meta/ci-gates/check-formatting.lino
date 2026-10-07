@@ -7,3 +7,4 @@ ci_gate check_formatting
   stage rust
   description "rustfmt owns the layout of every Rust file, so no review spends time on it."
   run "cargo fmt --manifest-path rust/Cargo.toml --all -- --check"
+  justification "Formatting drift makes diffs noisy and wastes review time on layout rather than logic; the gate has enforced rustfmt on every PR since the registry was introduced in #991."

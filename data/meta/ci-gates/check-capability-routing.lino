@@ -5,3 +5,4 @@ ci_gate check_capability_routing
   lane 4
   description "Capability-routing coverage is re-measured from the held-out corpus and the production router; every recorded value must equal the tree, upward measures may not fall, and routing debt may not rise."
   run "rust-script --test scripts/check-capability-routing.rs && rust-script scripts/check-capability-routing.rs --base origin/main"
+  justification "Routing coverage silently falls when a new capability is added without a corpus probe; the gate re-measures from the held-out corpus on every PR so no capability routes to silence, introduced in #1138 (commit 9c31b0530)."

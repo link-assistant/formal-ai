@@ -7,3 +7,4 @@ ci_gate check_ci_gate_registry
   stage rust
   description "No gate is run inline in the workflow, so the step list stops being an append point (issue #991)."
   run "rust-script --test scripts/run-ci-gates.rs && rust-script scripts/run-ci-gates.rs --check"
+  justification "Without this gate the lint job's step list grows back to the append-only state that caused 35 manual merge resolutions in release.yml (#991), defeating the entire registry mechanism."

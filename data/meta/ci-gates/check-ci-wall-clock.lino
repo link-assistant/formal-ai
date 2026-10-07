@@ -1,0 +1,10 @@
+# R1085-16 item 5: the pull-request pipeline's wall-clock ceiling is recorded
+# and enforced. The ceiling is the sum of timeout-minutes along the critical
+# path of PR-triggered jobs in release.yml. Adding a new step to the critical
+# path without updating data/meta/ci-wall-clock.lino fails this gate.
+# `rust-script scripts/run-ci-gates.rs --stage rust` runs it.
+ci_gate check_ci_wall_clock
+  stage rust
+  description "The PR pipeline's wall-clock ceiling is recorded in data/meta/ci-wall-clock.lino and the sum of the named critical-path job timeouts does not exceed it."
+  run "rust-script --test scripts/check-ci-wall-clock.rs && rust-script scripts/check-ci-wall-clock.rs"
+  justification "Without a recorded and enforced ceiling the PR pipeline can silently grow beyond acceptable wait times; this gate was introduced for R1085-16 in #1089 to prevent that regression."

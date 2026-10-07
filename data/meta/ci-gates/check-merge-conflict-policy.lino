@@ -7,3 +7,4 @@ ci_gate check_merge_conflict_policy
   stage rust
   description "Every measured conflict site is covered by a mechanism or deferred with a reason (issue #991)."
   run "rust-script --test scripts/check-merge-conflict-policy.rs && rust-script scripts/check-merge-conflict-policy.rs"
+  justification "Uncovered conflict sites regenerate the append-only problem that caused 35 manual resolutions in release.yml; the gate requires every measured conflict site to carry a mechanism or a tracked deferral, introduced in #991."

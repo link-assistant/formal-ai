@@ -7,3 +7,4 @@ ci_gate check_requirements_document
   stage rust
   description "REQUIREMENTS.md still matches the per-issue shards it is assembled from (issue #991)."
   run "rust-script --test scripts/assemble-requirements.rs && rust-script scripts/assemble-requirements.rs"
+  justification "REQUIREMENTS.md assembled from per-issue shards must stay byte-current so two branches can add requirements without ever touching the same file; the gate was introduced in #991 to prevent the assembled document from drifting."

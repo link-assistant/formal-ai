@@ -7,3 +7,4 @@ ci_gate check_desktop_packaging
   stage web
   description "Desktop packaging keeps its signing and resource-preparation regressions covered."
   run "node --test desktop/scripts/adhoc-sign-mac.test.cjs desktop/scripts/prepare-resources.test.mjs"
+  justification "Signing and resource-preparation regressions in the desktop packager are invisible to the Rust and JS test suites; the node tests for those scripts were introduced in #991 to catch them early."

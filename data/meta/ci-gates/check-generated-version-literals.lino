@@ -8,3 +8,4 @@ ci_gate check_generated_version_literals
   stage rust
   description "No third-party action SHA or bare toolchain version is memorized in data/, because workflow templates and ci_setup rows carry placeholders that version_resolution fills at generation time, issue #1168 R1168-6 and R1168-7."
   run "rust-script scripts/check-generated-version-literals.rs"
+  justification "Memorized action SHAs and toolchain versions in data/ cause silent divergence when the generated workflow is regenerated; the gate prevents this class of drift, introduced for R1168-6 and R1168-7 in commit 1935f8f0d (#1168)."

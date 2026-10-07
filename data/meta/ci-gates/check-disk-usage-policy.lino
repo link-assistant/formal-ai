@@ -7,3 +7,4 @@ ci_gate check_disk_usage_policy
   stage rust
   description "Development artifacts stay inside the disk policy a contributor's machine can hold."
   run "rust-script scripts/check-disk-usage-policy.rs"
+  justification "Development artifacts that exceed the disk policy make fresh contributor setups fail silently; the gate enforces the committed policy on every PR, introduced in #991."

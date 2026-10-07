@@ -7,3 +7,4 @@ ci_gate check_file_size
   stage rust
   description "No source file grows past the per-language ceiling that keeps merges and reviews small."
   run "rust-script scripts/check-file-size.rs"
+  justification "Source files that grow past per-language ceilings make diffs unreadable and merges expensive; the gate enforces the committed ceilings on every PR, introduced in #991."

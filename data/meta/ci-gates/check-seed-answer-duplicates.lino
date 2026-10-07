@@ -4,3 +4,4 @@ ci_gate check_seed_answer_duplicates
   stage rust
   description "No byte-identical answer value appears more than once in data/seed/**/*.lino: trigger rows point at the canonical reply through response_link, so a wording is fixed in one place and never drifts between copies."
   run "rust-script --test scripts/check-seed-answer-duplicates.rs && rust-script scripts/check-seed-answer-duplicates.rs"
+  justification "Byte-identical answer values in multiple seed records cause edits to one copy to silently diverge from the others; the gate was introduced in #1138 (commit bcf1e8edb) to enforce response_link indirection."

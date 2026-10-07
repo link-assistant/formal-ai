@@ -77,6 +77,48 @@ pub struct Gate {
     pub lane: u32,
     /// Shard the gate was read from, for error messages.
     pub source: String,
+    /// Why this gate exists: the concrete defect class or incident it prevents.
+    /// Must cite an issue or pull request (`#NNN`) or a commit hash (7-40 hex
+    /// characters). R1085-16 requires this on every gate.
+    pub justification: String,
+}
+
+/// Returns true when the justification cites an issue/PR number (`#NNN`) or a
+/// commit hash (7-40 lowercase hex characters).
+pub fn justification_has_citation(justification: &str) -> bool {
+    // Issue/PR citation: #NNN with at least one digit.
+    let has_issue = justification
+        .split_whitespace()
+        .chain(justification.split(|c: char| !c.is_ascii_alphanumeric() && c != '#'))
+        .any(|token| {
+            token.starts_with('#')
+                && token[1..].chars().all(|c| c.is_ascii_digit())
+                && token.len() >= 2
+        });
+    if has_issue {
+        return true;
+    }
+    // Commit hash: a run of 7-40 lowercase hex digits, standing alone (surrounded
+    // by non-hex or start/end of string) so a URL slug like "plan-09" is not caught.
+    let chars: Vec<char> = justification.chars().collect();
+    let mut i = 0;
+    while i < chars.len() {
+        if chars[i].is_ascii_hexdigit() {
+            let start = i;
+            while i < chars.len() && chars[i].is_ascii_hexdigit() {
+                i += 1;
+            }
+            let run = i - start;
+            let before_ok = start == 0 || !chars[start - 1].is_ascii_alphanumeric();
+            let after_ok = i >= chars.len() || !chars[i].is_ascii_alphanumeric();
+            if run >= 7 && run <= 40 && before_ok && after_ok {
+                return true;
+            }
+        } else {
+            i += 1;
+        }
+    }
+    false
 }
 
 fn unquote(value: &str) -> String {
@@ -114,6 +156,7 @@ fn parse_gate(source: &str, shard: &str) -> Result<Gate, String> {
             (2, "stage") => gate.stage = unquote(value),
             (2, "description") => gate.description = unquote(value),
             (2, "run") => gate.run = unquote(value),
+            (2, "justification") => gate.justification = unquote(value),
             (2, "lane") => {
                 gate.lane = unquote(value)
                     .parse::<u32>()
@@ -151,6 +194,21 @@ fn parse_gate(source: &str, shard: &str) -> Result<Gate, String> {
             gate.name,
             gate.stage,
             STAGES.join(", ")
+        ));
+    }
+    if gate.justification.is_empty() {
+        return Err(format!(
+            "{shard}: gate `{}` has no `justification`; every gate must name the \
+             defect class or incident it prevents, citing an issue/PR (#NNN) or a \
+             commit hash (R1085-16)",
+            gate.name
+        ));
+    }
+    if !justification_has_citation(&gate.justification) {
+        return Err(format!(
+            "{shard}: gate `{}`'s justification must cite an issue/PR (#NNN) or a \
+             commit hash; got: `{}`",
+            gate.name, gate.justification
         ));
     }
     Ok(gate)
@@ -504,7 +562,9 @@ mod tests {
 
     const SHARD: &str = "ci_gate check_formatting\n  stage rust\n  \
         description \"rustfmt owns the layout of every Rust file.\"\n  \
-        run \"cargo fmt --all -- --check\"\n";
+        run \"cargo fmt --all -- --check\"\n  \
+        justification \"Formatting drift makes diffs noisy and wastes review time; \
+        prevented since the registry was introduced in #991.\"\n";
 
     fn gate() -> Gate {
         parse_gate(SHARD, "data/meta/ci-gates/check-formatting.lino").unwrap()
@@ -540,6 +600,57 @@ mod tests {
         let source = "ci_gate check_formatting\n  stage rust\n  run \"cargo fmt\"\n";
         let error = parse_gate(source, "shard.lino").unwrap_err();
         assert!(error.contains("no description"), "{error}");
+    }
+
+    #[test]
+    fn a_gate_without_a_justification_is_rejected() {
+        // R1085-16: every gate must carry a justification.
+        let source = "ci_gate check_formatting\n  stage rust\n  \
+            description \"rustfmt owns the layout.\"\n  run \"cargo fmt\"\n";
+        let error = parse_gate(source, "shard.lino").unwrap_err();
+        assert!(error.contains("no `justification`"), "{error}");
+    }
+
+    #[test]
+    fn a_justification_without_a_citation_is_rejected() {
+        // The justification must name an issue/PR (#NNN) or a commit hash.
+        let source = "ci_gate check_formatting\n  stage rust\n  \
+            description \"rustfmt owns the layout.\"\n  \
+            run \"cargo fmt\"\n  \
+            justification \"prevents formatting drift\"\n";
+        let error = parse_gate(source, "shard.lino").unwrap_err();
+        assert!(error.contains("must cite an issue/PR"), "{error}");
+    }
+
+    #[test]
+    fn a_justification_with_an_issue_citation_is_accepted() {
+        let source = "ci_gate check_formatting\n  stage rust\n  \
+            description \"rustfmt owns the layout.\"\n  \
+            run \"cargo fmt\"\n  \
+            justification \"prevents formatting drift, introduced in #991\"\n";
+        assert!(parse_gate(source, "shard.lino").is_ok());
+    }
+
+    #[test]
+    fn a_justification_with_a_commit_hash_is_accepted() {
+        let source = "ci_gate check_formatting\n  stage rust\n  \
+            description \"rustfmt owns the layout.\"\n  \
+            run \"cargo fmt\"\n  \
+            justification \"prevents formatting drift, commit 2b656e5cc\"\n";
+        assert!(parse_gate(source, "shard.lino").is_ok());
+    }
+
+    #[test]
+    fn justification_citation_detection() {
+        assert!(justification_has_citation("introduced in #991"));
+        assert!(justification_has_citation("commit 2b656e5cc"));
+        assert!(justification_has_citation("fix for #1081 via commit abcdef1234567"));
+        // A URL slug with hex chars but fewer than 7 consecutive is not a commit.
+        assert!(!justification_has_citation("plan-09 leaf-6"));
+        // Plain prose without a citation is rejected.
+        assert!(!justification_has_citation("prevents formatting drift"));
+        // Exactly 7 hex chars is a valid short hash.
+        assert!(justification_has_citation("abc1234"));
     }
 
     #[test]

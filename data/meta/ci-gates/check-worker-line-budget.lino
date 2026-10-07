@@ -7,3 +7,4 @@ ci_gate check_worker_line_budget
   stage rust
   description "Each browser worker module stays under its own committed line ceiling."
   run "rust-script --test scripts/check-worker-line-budget.rs && rust-script scripts/check-worker-line-budget.rs"
+  justification "Browser worker modules that exceed their line ceilings become hard to review and merge; the gate was introduced in #991 to enforce committed per-module ceilings."

@@ -7,3 +7,4 @@ ci_gate check_vscode_extension
   stage web
   description "The VS Code extension's node tests pass."
   run "npm run vscode:test"
+  justification "VS Code extension regressions are invisible to the Rust and web test suites; the node test suite for the extension was introduced in #991 to catch them on every PR."

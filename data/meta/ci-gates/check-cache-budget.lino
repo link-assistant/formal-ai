@@ -7,3 +7,4 @@ ci_gate check_cache_budget
   stage rust
   description "The committed cache buckets stay inside the size budget the repository can carry."
   run "rust-script --test scripts/check-cache-budget.rs && rust-script scripts/check-cache-budget.rs"
+  justification "Cache buckets that silently exceed the repository size limit cause checkout failures on fresh runners; the gate has enforced the committed budget since the registry was introduced in #991."

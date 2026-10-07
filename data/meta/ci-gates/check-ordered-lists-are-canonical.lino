@@ -7,3 +7,4 @@ ci_gate check_ordered_lists_are_canonical
   stage rust
   description "Every union-merged list is back in its canonical order with no repeats (issue #991)."
   run "rust-script --test scripts/normalize-ordered-lists.rs && rust-script scripts/normalize-ordered-lists.rs"
+  justification "A union-merged list that is not re-sorted after a merge introduces non-determinism into the pipeline, making runs disagree; the normalization gate was introduced in #991 to prevent canonical-order violations from landing."

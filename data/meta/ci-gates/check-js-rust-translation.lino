@@ -7,3 +7,4 @@ ci_gate check_js_rust_translation
   stage web
   description "R1000: the committed js -> rust translation (rust/tests/fixtures/js-rust-translation/, data/meta/js-rust-translation.lino) is for the current bytes of every module in scope, its totals are the sums of its rows, and the layered-ci js-rust job checks meta-language out at the ledger's commit. Seconds, no upstream checkout; the js-rust job re-translates, compiles and runs the calls."
   run "node scripts/translate-js-rust.mjs --verify"
+  justification "A js->rust translation that drifts from its source module causes the Rust tier to run stale logic without a compile error; the gate was introduced in PR #1188 R1000 (commit 7a8d109fe) to keep the translation byte-current."

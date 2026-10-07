@@ -1160,6 +1160,16 @@ hardcoded prompt→answer tables.
     `scripts/tests-as-docs-allowlist.txt`, new ones fail the build, and a row
     that has been made explicit must be pruned (`--write` regenerates the list).
 
+17. **Pin invariants with containment, not byte-equality (R1085-16).** A test
+    that pins a structural invariant — "this generated document must satisfy
+    property X" — should assert containment or membership (`assert!(text.contains(…))`,
+    `assert!(VALID_VALUES.contains(&actual))`) rather than comparing the whole
+    generated document byte-for-byte. Byte-equality is right only when the bytes
+    themselves are the contract (a content-addressed artifact, a wire format, a
+    fixture the regeneration pipeline must reproduce exactly). For everything else,
+    pin the observable invariant and leave room for unrelated regeneration to change
+    the surrounding document without breaking the test.
+
 ## Merge conflicts are a layout bug (issue #991)
 
 `python3 scripts/analyze-merge-conflicts.py` replays every merge in this

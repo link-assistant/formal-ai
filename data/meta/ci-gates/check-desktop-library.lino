@@ -7,3 +7,4 @@ ci_gate check_desktop_library
   stage web
   description "The desktop library tests pass."
   run "bash scripts/run-desktop-lib-tests.sh"
+  justification "Desktop library regressions are not caught by the Rust unit suite because the library uses Node bindings; the gate runs the library test suite on every PR, introduced in #991."

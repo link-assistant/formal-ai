@@ -7,3 +7,4 @@ ci_gate check_javascript_dependencies
   stage web
   description "Every committed Bun and npm lockfile is checked for moderate-or-higher advisories."
   run "bash scripts/check-javascript-dependencies.sh"
+  justification "Committed lockfiles with moderate-or-higher advisories expose users to known vulnerabilities; the gate was introduced in commit 88d368a5b to audit every Bun and npm lockfile on each PR."

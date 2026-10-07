@@ -7,3 +7,4 @@ ci_gate run_clippy
   stage rust
   description "Clippy is clean across the library, binaries, tests and examples."
   run "cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings && cargo check --manifest-path rust/Cargo.toml --examples --all-features"
+  justification "Clippy warnings that accumulate unnoticed become harder to fix in bulk and sometimes hide real bugs; the gate was introduced in #991 to keep Clippy clean across the entire workspace."

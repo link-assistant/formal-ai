@@ -10,3 +10,4 @@ ci_gate check_semantic_grounding
   lane 2
   description "Every answer the solver produces is grounded in the seed lexicon rather than hardcoded."
   run "cargo test --manifest-path rust/Cargo.toml --test unit semantic_grounding -- --nocapture"
+  justification "Hardcoded answer values bypass the seed lexicon and become stale as the lexicon evolves; the gate was introduced in #991 to verify every answer is grounded in current seed data."

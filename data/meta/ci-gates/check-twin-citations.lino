@@ -7,3 +7,4 @@ ci_gate check_twin_citations
   stage web
   description "R1024: every JavaScript twin that says it mirrors a symbol in rust/src/<path>.rs names a Rust definition that still exists there, so a Rust rename, move or deletion cannot leave the JavaScript root citing a stale original."
   run "node scripts/check-twin-citations.mjs"
+  justification "A JavaScript twin that cites a renamed or deleted Rust symbol compiles and runs but implements the wrong logic; the gate was introduced in PR #1188 R1024 (commit fd9131dce) to verify every twin citation at build time."

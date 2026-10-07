@@ -17,3 +17,4 @@ ci_gate check_test_partition_balance
   stage rust
   description "Long tests start first so the planned test partitions stay balanced."
   run "rust-script scripts/plan-test-partition.rs --report --of 8"
+  justification "Splitting tests by index rather than cost left 282s of idle time on the critical path (run 32591020809); the LPT-first gate was introduced in commit 3c8912951 to prevent imbalanced partitions from slowing CI."

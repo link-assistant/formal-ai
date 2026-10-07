@@ -8,3 +8,4 @@ ci_gate check_rust_api_documentation
   description "rustdoc builds the public API without a single warning, including broken intra-doc links."
   run "cargo doc --manifest-path rust/Cargo.toml --no-deps --lib"
   env RUSTDOCFLAGS "-D warnings"
+  justification "Broken intra-doc links and undocumented public items accumulate silently without a per-PR check; the gate was introduced in #991 to keep the public API documentation clean."

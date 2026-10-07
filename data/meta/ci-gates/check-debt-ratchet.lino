@@ -2,3 +2,4 @@ ci_gate check_debt_ratchet
   stage rust
   description "Named debt only shrinks: every measured ceiling in data/meta/debt-ratchet.lino is compared strictly in both directions, so a value above its ceiling is new debt and a value below it is debt already removed whose ceiling was not lowered in the same commit. A ceiling may be lowered by a pull request and never raised. No release depends on any of them."
   run "rust-script --test scripts/check-debt-ratchet.rs && rust-script scripts/check-debt-ratchet.rs --base origin/main"
+  justification "Named debt ceilings that can only shrink prevent the release-blocker pattern where debt accumulates silently; the strict bidirectional comparison was introduced in commit 3e52a3c74 to catch both new debt and un-lowered ceilings."

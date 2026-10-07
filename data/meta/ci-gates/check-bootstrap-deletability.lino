@@ -10,3 +10,4 @@ ci_gate check_bootstrap_deletability
   lane 2
   description "The fragment bootstrap is deletable: an absent seed yields an empty, logged catalog and a forgotten fragment rediscovers to the same content id, all offline."
   run "cargo test --manifest-path rust/Cargo.toml --test unit coding_discovery::fragment_catalog -- --nocapture"
+  justification "Without this gate a stale seed lets the fragment bootstrap produce an empty catalog with no log line, hiding the regression until an end-to-end test fails; introduced in #1138 (commit bcf1e8edb)."

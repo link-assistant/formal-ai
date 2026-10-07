@@ -2,3 +2,4 @@ ci_gate check_formal_ai_contribution
   stage rust
   description "Each pull request carries Formal AI-authored work, and the requirement relaxes once the pull request has been open for more than a day. Nothing here gates a release."
   run "rust-script --test scripts/check-formal-ai-contribution.rs"
+  justification "Without a requirement for Formal AI-authored work on each PR the self-coding loop degrades silently; the gate was introduced in commit 3e52a3c74 to make the floor visible and enforced."

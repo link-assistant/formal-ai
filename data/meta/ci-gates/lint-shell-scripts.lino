@@ -7,3 +7,4 @@ ci_gate lint_shell_scripts
   stage rust
   description "Every committed shell script passes shellcheck."
   run "bash scripts/lint-shell-scripts.sh"
+  justification "Shell script bugs that shellcheck catches (unquoted variables, missing -e, portability issues) cause intermittent CI failures that are hard to reproduce locally; the gate was introduced in #991."

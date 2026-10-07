@@ -7,3 +7,4 @@ ci_gate check_reconstructed_changelog
   stage rust
   description "The changelog rebuilt from git history matches the committed one."
   run "node experiments/issue_711_rebuild_changelog.mjs --check"
+  justification "A changelog that diverges from git history means the published release notes do not match what actually shipped; the reconstruction gate was introduced in #991 to keep them in sync."

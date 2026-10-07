@@ -1046,7 +1046,7 @@ line number, which had gone stale for every row.
 | R895-5 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | rust/tests/unit/ci-cd/workflow_coverage.rs (CI runs the ratchet and its own scripts/check-coverage-ratchet-tests.rs suite) | not yet confirmed |
 | R901-1 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
 | R901-2 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | rust/tests/unit/specification/triz_contradictions.rs | not yet confirmed |
-| R901-3 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | none recorded | not yet confirmed |
+| R901-3 | docs/requirements/issue-0901-triz-contradictions.md | 2026-10-08 (PR #1188) | rust/tests/unit/specification/triz_contradictions.rs; rust/tests/web/issue-0901-triz-registry.test.mjs | not yet confirmed |
 | R901-4 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
 | R901-5 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | none recorded | not yet confirmed |
 | R917-1 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/issue_917.rs | not yet confirmed |
@@ -1213,7 +1213,7 @@ line number, which had gone stale for every row.
 | R1085-11 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1085_upstream_frontier.rs | not yet confirmed |
 | R1085-14 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1138_frontier_classes.rs, rust/tests/unit/issue_869_meeting_scheduling.rs | not yet confirmed |
 | R1085-15 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1088_evidence_index.rs | not yet confirmed |
-| R1085-16 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/docs_requirements/count.rs | not yet confirmed |
+| R1085-16 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/web/r1085-16-ci-gate-justifications.test.mjs | not yet confirmed |
 | R1085-17 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1090_manual_column_retired.rs | not yet confirmed |
 | R1138-B7-1 | docs/requirements/issue-1138-learning-effects.md | none recorded | rust/tests/unit/issue_1138_learned_items_change_answers.rs | not yet confirmed |
 | R1138-B7-2 | docs/requirements/issue-1138-learning-effects.md | none recorded | rust/tests/unit/issue_1138_learning_ratchet.rs | not yet confirmed |

@@ -7,3 +7,4 @@ ci_gate check_dependencies_latest
   stage rust
   description "Every manifest pin is at the latest release in the committed registry snapshot, or carries a blocked annotation naming its tracking issue or advisory (issue #1169); the daily dependencies-latest workflow refreshes the snapshot and moves the pins together."
   run "rust-script --test scripts/check-dependencies-latest.rs && rust-script scripts/check-dependencies-latest.rs --offline"
+  justification "Stale dependency pins cause silent security exposure and build divergence; the gate requires every pin to be at the latest release or carry a tracked annotation, introduced in PR #1169."

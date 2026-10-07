@@ -7,3 +7,4 @@ ci_gate check_web_tdz
   stage web
   description "The web app has no hook ordering bug that would throw a temporal-dead-zone error."
   run "npm run --prefix rust/tests/e2e check:web-tdz"
+  justification "A React hook ordering bug causes a temporal-dead-zone error at runtime, crashing the app silently in the browser console; the gate was introduced in #991 to catch TDZ errors in the web app on every PR."

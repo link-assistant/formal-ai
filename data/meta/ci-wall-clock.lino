@@ -1,0 +1,20 @@
+# Wall-clock ceiling for the pull-request pipeline. R1085-16 item 5 requires
+# this to be recorded and enforced. The ceiling is the sum of `timeout-minutes`
+# along the critical path of PR-triggered jobs in `.github/workflows/release.yml`.
+#
+# Critical path jobs (PR-triggered, 2026-10-08 measurement):
+#   detect-changes (5) -> build-artifacts (20) -> test (90)
+#     -> build (20) -> pipeline-status (5) = 140 min
+#
+# auto-release, manual-release, deploy-pages and test-e2e-pages do not trigger
+# on pull_request events and are excluded from the critical path.
+# `scripts/check-ci-wall-clock.rs` enforces this ceiling by summing the
+# timeout-minutes of the named critical_path_jobs against ceiling_minutes.
+ci_wall_clock pull_request_pipeline
+  measured_minutes 140
+  measured_date "2026-10-08"
+  ceiling_minutes 140
+  note "Critical path: detect-changes(5) -> build-artifacts(20) -> test(90) -> build(20) -> pipeline-status(5). All values are job-level timeout-minutes from release.yml. The test job is a matrix; parallel legs each have the 90-minute budget but run concurrently, so only one leg's budget is on the critical path. auto-release, manual-release, deploy-pages and test-e2e-pages are push-only and excluded."
+  source ".github/workflows/release.yml"
+  requirement "R1085-16"
+  critical_path_jobs "detect-changes build-artifacts test build pipeline-status"
