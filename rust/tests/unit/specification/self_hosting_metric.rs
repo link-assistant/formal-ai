@@ -317,6 +317,20 @@ fn release_target_ratchets_and_records_each_self_authored_pull_request() {
             )),
         "the ledger must record every contributing pull request"
     );
+    // Issue #924 R924-3: the release notes name the reviewed pull requests and
+    // the target the release was held to.
+    let note =
+        metric_script::release_note_for_tag(&ledger, "v1.1.0").expect("release note must render");
+    assert!(
+        note.contains(&format!(
+            "Formal AI-authored pull requests: {first_pull_request}."
+        )),
+        "the release notes must name every contributing pull request: {note}"
+    );
+    assert!(
+        note.contains("The release target in force was **0.00%**."),
+        "the release notes must name the target in force: {note}"
+    );
     git(&repo, &["tag", "v1.1.0"]);
 
     fs::write(repo.join("human-code.txt"), "human\n".repeat(100))
