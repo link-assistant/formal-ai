@@ -2,10 +2,10 @@ self_ast_census
   target src/web_formalize.rs
   language rust
   fidelity signature
-  byte_len 28151
-  line_count 764
-  content_id source_module_99b80fb09d4da4f1
-  symbol_count 34
+  byte_len 29346
+  line_count 791
+  content_id source_module_fa9359af4f0eb1d7
+  symbol_count 36
   symbols
     const RULES_TEXT 38 38
     const TRUST_TEXT 40 40
@@ -26,18 +26,20 @@ self_ast_census
     function formalize_page 279 281
     function formalize_page_with_context 287 308
     function blocks_to_network 313 354
-    function html_blocks 358 431
-    function markdown_blocks 435 515
-    function json_blocks 519 545
-    function plain_blocks 549 567
-    function paragraph_block 571 582
-    function flush_paragraph 585 590
-    function resolve_language 596 647
-    function shebang_language 650 657
-    function extension_language 660 666
-    function tag_attr 669 686
-    function strip_tags 689 701
-    function strip_tags_keep_lines 704 710
-    function cell_texts 713 737
-    function decode_entities 740 747
-    struct TrustFeatures 751 762
+    const OPAQUE_HTML_TAGS 358 358
+    function find_close_tag 362 374
+    function html_blocks 381 461
+    function markdown_blocks 465 545
+    function json_blocks 549 575
+    function plain_blocks 579 597
+    function paragraph_block 601 612
+    function flush_paragraph 615 620
+    function resolve_language 626 674
+    function shebang_language 677 684
+    function extension_language 687 693
+    function tag_attr 696 713
+    function strip_tags 716 728
+    function strip_tags_keep_lines 731 737
+    function cell_texts 740 764
+    function decode_entities 767 774
+    struct TrustFeatures 778 789

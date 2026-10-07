@@ -357,6 +357,10 @@ fn blocks_to_network(
 /// close tag instead of stepping into them.
 const OPAQUE_HTML_TAGS: [&str; 4] = ["script", "style", "template", "noscript"];
 
+/// HTML comment delimiters: a comment is markup, never page text.
+const HTML_COMMENT_OPEN: &str = "<!--";
+const HTML_COMMENT_CLOSE: &str = "-->";
+
 /// Offset of the close tag `</name` that really closes `name`: the next
 /// character must end the tag name, so `</p` never matches `</pre>`.
 fn find_close_tag(lower: &str, from: usize, name: &str) -> Option<usize> {
@@ -384,10 +388,11 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
     let mut cursor = 0usize;
     while let Some(rel) = lower[cursor..].find('<') {
         let open = cursor + rel;
-        if lower[open..].starts_with("<!--") {
-            cursor = lower[open + 4..]
-                .find("-->")
-                .map_or(lower.len(), |end| open + 4 + end + 3);
+        if lower[open..].starts_with(HTML_COMMENT_OPEN) {
+            let body = open + HTML_COMMENT_OPEN.len();
+            cursor = lower[body..]
+                .find(HTML_COMMENT_CLOSE)
+                .map_or(lower.len(), |end| body + end + HTML_COMMENT_CLOSE.len());
             continue;
         }
         let Some(tag_end_rel) = lower[open..].find('>') else {

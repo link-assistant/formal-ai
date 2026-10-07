@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 34881
-  line_count 811
-  content_id source_module_60ed5ee8867d42fc
+  byte_len 35106
+  line_count 814
+  content_id source_module_b53ce4a4d936864f
   symbol_count 49
   symbols
     struct ToolAttempt 15 22
@@ -52,17 +52,17 @@ self_ast_census
     function is_work_item_read_command 696 700
     function work_item_read_url 707 709
     function issue_view_command_url 712 723
-    function rest_read_url 726 748
-    function exit_sentinel 757 762
-    function without_exit_sentinel 766 771
-    function work_item_read_failure_reason 782 811
+    function rest_read_url 726 751
+    function exit_sentinel 760 765
+    function without_exit_sentinel 769 774
+    function work_item_read_failure_reason 785 814
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21635
-    named_node_count 4512
+    total_link_count 21662
+    named_node_count 4515
     distinct_node_kinds 77
     node_kinds
       arguments 378
@@ -104,7 +104,7 @@ self_ast_census
       let_chain 4
       let_condition 12
       let_declaration 55
-      line_comment 167
+      line_comment 170
       macro_invocation 11
       match_arm 8
       match_block 3
