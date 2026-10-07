@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/web_requests.rs
   language rust
   fidelity signature
-  byte_len 30164
-  line_count 743
-  content_id source_module_e4cd40be5e1d7ca1
-  symbol_count 38
+  byte_len 30590
+  line_count 752
+  content_id source_module_15ad29e39a685e49
+  symbol_count 39
   symbols
     module live_search 14 14
     module url_parse 15 15
@@ -14,34 +14,35 @@ self_ast_census
     function try_routed_http_fetch_with_offline 61 68
     function answer_http_fetch_url 70 114
     function url_navigation_claims 122 124
-    function try_url_navigate 131 155
-    const WEB_SEARCH_RRF_K 162 162
-    const WEB_SEARCH_PROVIDERS 168 168
-    function try_web_search 179 194
-    function detect_web_search_query 203 206
-    function answer_web_search_query 224 236
-    const PROMOTED_PROJECT_ORGS 238 238
-    enum RepositoryPlatform 241 245
-    function label 248 254
-    function host 256 262
-    struct RepositoryReference 266 271
-    function slug 274 276
-    function try_project_lookup 286 301
-    function try_explicit_repository_lookup 303 328
-    function try_project_lookup_with_response_language 330 346
-    function try_project_lookup_internal 348 405
-    function render_project_lookup 407 491
-    function render_generic_repository_lookup 493 597
-    function append_repository_evidence 599 606
-    function matched_project 610 624
-    function promoted_project_by_repo 626 633
-    function is_promoted_project 635 639
-    function repository_from_prompt 641 645
-    function repository_from_concept_term 647 654
-    function repository_from_slug 656 676
-    function repository_from_url 678 706
-    function clean_repository_segment 708 720
-    function is_text_url_extraction_prompt 722 726
-    function normalize_concept_term 728 734
-    function registry_static 739 743
-    static REGISTRY 741 741
+    function http_fetch_claims 131 133
+    function try_url_navigate 140 164
+    const WEB_SEARCH_RRF_K 171 171
+    const WEB_SEARCH_PROVIDERS 177 177
+    function try_web_search 188 203
+    function detect_web_search_query 212 215
+    function answer_web_search_query 233 245
+    const PROMOTED_PROJECT_ORGS 247 247
+    enum RepositoryPlatform 250 254
+    function label 257 263
+    function host 265 271
+    struct RepositoryReference 275 280
+    function slug 283 285
+    function try_project_lookup 295 310
+    function try_explicit_repository_lookup 312 337
+    function try_project_lookup_with_response_language 339 355
+    function try_project_lookup_internal 357 414
+    function render_project_lookup 416 500
+    function render_generic_repository_lookup 502 606
+    function append_repository_evidence 608 615
+    function matched_project 619 633
+    function promoted_project_by_repo 635 642
+    function is_promoted_project 644 648
+    function repository_from_prompt 650 654
+    function repository_from_concept_term 656 663
+    function repository_from_slug 665 685
+    function repository_from_url 687 715
+    function clean_repository_segment 717 729
+    function is_text_url_extraction_prompt 731 735
+    function normalize_concept_term 737 743
+    function registry_static 748 752
+    static REGISTRY 750 750

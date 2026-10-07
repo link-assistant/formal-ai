@@ -2,37 +2,43 @@ self_ast_census
   target src/intent_formalization/obligations.rs
   language rust
   fidelity signature
-  byte_len 21840
-  line_count 570
-  content_id source_module_76cda4527e35f7ac
-  symbol_count 29
+  byte_len 24557
+  line_count 596
+  content_id source_module_e1c9b2b765c25e86
+  symbol_count 35
   symbols
-    const GRAPH_RECORD 45 45
-    const SPLIT_DEPTH_BOUND 48 48
-    enum ObligationKind 55 68
-    function slug 73 82
-    const PRINT_VERB_FALLBACK 88 107
-    const CODE_STYLE_MARKERS 110 129
-    const FILE_NAMING_MARKERS 133 151
-    const CI_BADGE_MARKERS 154 162
-    struct ObligationGraph 170 175
-    function nodes 180 182
-    function language 186 188
-    function obligation_kinds 192 198
-    function has_obligation 202 206
-    function obligations_of_kind 210 219
-    function unique_output_literal 227 240
-    function literal_for 244 252
-    function underivable 257 262
-    function gap_report 267 287
-    function has_node_kind 289 293
-    function links_notation 298 324
-    function formalize_request 333 360
-    function coreference_pass 370 430
-    function request_carries_work_obligations 448 460
-    function request_demands 471 478
-    const OBLIGATION_GAP_KIND 481 481
-    function record_obligation_gaps 489 495
-    function classify_clause 502 528
-    function authoring_kind 532 562
-    function graph_id 568 570
+    const GRAPH_RECORD 46 46
+    const SPLIT_DEPTH_BOUND 49 49
+    enum ObligationKind 56 69
+    function slug 74 83
+    const ROLE_OUTPUT_OBLIGATION_VERB 90 90
+    const ROLE_CODE_STYLE_OBLIGATION 93 93
+    const ROLE_FILE_NAMING_OBLIGATION 97 97
+    const ROLE_CI_BADGE_OBLIGATION 100 100
+    const WHEN_UNBOUND_OUTPUT 105 105
+    const OUTPUT_INTRODUCTION_BREAKS 108 108
+    struct ObligationGraph 116 121
+    function nodes 126 128
+    function language 132 134
+    function obligation_kinds 138 144
+    function has_obligation 148 152
+    function obligations_of_kind 156 165
+    function unique_output_literal 173 186
+    function literal_for 190 198
+    function underivable 203 208
+    function gap_report 213 224
+    function unbound_output_report 236 253
+    function has_node_kind 255 259
+    function links_notation 264 290
+    function formalize_request 299 326
+    function coreference_pass 336 396
+    function request_carries_work_obligations 414 426
+    function request_demands 437 444
+    function gap_line 447 458
+    function bound_output_literals 473 502
+    const OBLIGATION_GAP_KIND 505 505
+    function obligation_gap_lines 514 519
+    function record_obligation_gaps 525 531
+    function classify_clause 538 562
+    function authoring_kind 566 588
+    function graph_id 594 596

@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/formalization_task.rs
   language rust
   fidelity signature
-  byte_len 20928
-  line_count 518
-  content_id source_module_36844113f8ff080b
-  symbol_count 23
+  byte_len 21404
+  line_count 531
+  content_id source_module_da76f0d184ed3866
+  symbol_count 24
   symbols
     const TARGETS 41 41
     const INTENT 42 42
@@ -22,11 +22,12 @@ self_ast_census
     function child_values 166 173
     function named_child 176 178
     function target_records 185 187
-    function grammar 190 251
-    static GRAMMAR 191 191
-    function response 256 260
-    function fill 263 269
-    function is_word_character 278 287
-    function tokenize 294 319
-    function quantifier_at 323 343
-    function parse_quantified_clause 347 514
+    function verb_final_language 196 201
+    function grammar 203 264
+    static GRAMMAR 204 204
+    function response 269 273
+    function fill 276 282
+    function is_word_character 291 300
+    function tokenize 307 332
+    function quantifier_at 336 356
+    function parse_quantified_clause 360 527
