@@ -237,6 +237,51 @@ function shellComposeComposed(command, manual, rows, explained) {
 }
 
 /**
+ * Escape the characters a basic regular expression (or, with `&`, a sed
+ * replacement) reads specially (Rust `sed_literal`).
+ * @param {string} word the literal word
+ * @param {Array<string>} special characters to escape
+ * @returns {string} escaped word
+ */
+function shellComposeSedLiteral(word, special) {
+  let out = "";
+  for (const c of word) out += (special.includes(c) ? "\\" : "") + c;
+  return out;
+}
+
+/**
+ * "replace foo with bar in config.txt" → `sed -i 's/foo/bar/g' config.txt`
+ * from the seeded `substitute` / `substitute_with` role words (Rust
+ * `sed_substitution`).
+ * @param {string} prompt raw prompt
+ * @returns {object|null} the composition
+ */
+function shellComposeSedSubstitution(prompt) {
+  const raw = prompt.split(/\s+/u).filter((word) => word !== "");
+  const bare = (word) => word.replace(/^['"`,?!]+|['"`,?!]+$/gu, "");
+  const lower = raw.map((word) => bare(word).toLowerCase());
+  const cueAt = shellComposeFind(lower, shellComposeRoleWords("substitute"));
+  if (cueAt === -1) return null;
+  const withWords = shellComposeRoleWords("substitute_with");
+  let withAt = -1;
+  for (let index = cueAt + 2; index < lower.length && withAt === -1; index += 1) {
+    if (withWords.includes(lower[index])) withAt = index;
+  }
+  if (withAt === -1 || withAt + 1 >= raw.length) return null;
+  const pattern = bare(raw[withAt - 1]);
+  const replacement = bare(raw[withAt + 1]);
+  const file = shellComposeFileArgument(raw.slice(withAt + 2).join(" "));
+  if (file === null || pattern === "" || replacement === "" || /[/']/u.test(pattern + replacement)) return null;
+  const manual = shellComposeManual("sed");
+  if (manual === null) return null;
+  const expression = "s/" + shellComposeSedLiteral(pattern, [".", "*", "[", "]", "^", "$", "\\"]) + "/" +
+    shellComposeSedLiteral(replacement, ["&", "\\"]) + "/g";
+  return shellComposeComposed("sed -i '" + expression + "' " + file, manual,
+    [[raw.slice(cueAt, withAt + 2).join(" "), expression], [file, file]],
+    shellComposeExplainedFlags(manual, ["-i", "s/regexp/replacement/g"]));
+}
+
+/**
  * A counting request ("count .lino files") pipes the composition into
  * `wc -l`, explained from wc's manual record (Rust `counted`).
  * @param {Array<string>} tokens request tokens
@@ -416,9 +461,12 @@ function shellComposeLsListing(tokens, prompt) {
 function handleShellCommandCompose(prompt, normalized) {
   const tokens = codeTaskTokens(normalized);
   const actions = codeTaskCuePhrases("shell_command_compose", "action");
-  if (isAgentTextRequest(prompt.toLowerCase()) || !tokens.some(function (token) { return actions.includes(token); })) return null; // an agent opt-in is the agent flow's
+  if (isAgentTextRequest(prompt.toLowerCase())) return null; // an agent opt-in is the agent flow's
+  // A complete substitution request is its own cue (Rust `sed_substitution`).
+  const substitution = shellComposeSedSubstitution(prompt);
+  if (substitution === null && !tokens.some(function (token) { return actions.includes(token); })) return null;
   const fileContext = codeTaskMapWords("file_context");
-  if (!tokens.some(function (token) { return fileContext.includes(token); })) return null;
+  if (substitution === null && !tokens.some(function (token) { return fileContext.includes(token); })) return null;
   // A requested function/program is program synthesis, not a shell command.
   if (shellComposeFind(tokens, shellComposeRoleWords("program_artifact")) !== -1) return null;
   for (const intent of shellComposeOtherIntents()) {
@@ -429,7 +477,7 @@ function handleShellCommandCompose(prompt, normalized) {
   if (parseTextManipulationRequest(normalized, normalized) !== null) return null;
   const log = codeTaskLog();
   codeTaskLogAppend(log, "shell_command_compose:request", "action + file context");
-  let composed = shellComposeLineSlice(tokens, prompt);
+  let composed = substitution === null ? shellComposeLineSlice(tokens, prompt) : substitution;
   if (composed === null) composed = shellComposeGrepSearch(tokens, prompt);
   if (composed === null) composed = shellComposeCounted(tokens, shellComposeFindFiles(tokens, prompt));
   if (composed === null) composed = shellComposeLsListing(tokens, prompt);

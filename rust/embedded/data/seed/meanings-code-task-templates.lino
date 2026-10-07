@@ -519,6 +519,22 @@ meanings
     unit "not applicable"
     example "search for TODO in the project"
     grounding "data/seed/code-task-cues.lino"
+  substitute_with
+    defined-by method
+    role property
+    precondition "a substitution request names the text to replace, then a connector word, then its replacement"
+    effect "marks the connector between the pattern and the replacement the sed composer reads"
+    unit "not applicable"
+    example "with in 'replace foo with bar in config.txt'; на in 'замени foo на bar'"
+    grounding "data/seed/code-task-cues.lino"
+  sed
+    defined-by method
+    role action
+    precondition "a substitution request names a pattern, a replacement and a file"
+    effect "composes a literal in-place sed substitution, cited from the GNU sed manual and not executed"
+    unit "not applicable"
+    example "replace 1.0 with 2.0 in version.txt composes sed -i 's/1\\.0/2.0/g' version.txt"
+    grounding "data/seed/manual-pages.lino"
   pattern_lead
     defined-by method
     role action

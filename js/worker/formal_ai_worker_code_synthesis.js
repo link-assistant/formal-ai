@@ -471,7 +471,7 @@ function sqlSynthesisTableName(tokens) {
 /**
  * Extract WHERE filters: seed comparatives, generic comparisons, equality.
  * @param {Array<string>} tokens request tokens
- * @returns {Array<object>} {clause, request} filters
+ * @returns {Array<object>} {clause, request, at} filters
  */
 function sqlSynthesisFilters(tokens) {
   const numbers = codeTaskWordEntries("number");
@@ -492,6 +492,7 @@ function sqlSynthesisFilters(tokens) {
         out.push({
           clause: codeTaskChildValue(comparative, "column") + " " + codeTaskChildValue(comparative, "operator") + " " + value,
           request: codeTaskEcho(tokens, index, index + 2),
+          at: index,
         });
       }
       continue;
@@ -520,12 +521,12 @@ function sqlSynthesisFilters(tokens) {
       if (column !== null) {
         const name = codeTaskIdentifier(column);
         if (name !== "") {
-          out.push({ clause: name + " " + operator + " " + value, request: codeTaskEcho(tokens, index - 1, index + 2) });
+          out.push({ clause: name + " " + operator + " " + value, request: codeTaskEcho(tokens, index - 1, index + 2), at: index });
         }
       }
     }
     if ((token === "named" || token === "имени") && index + 1 < tokens.length) {
-      out.push({ clause: "name = '" + tokens[index + 1] + "'", request: codeTaskEcho(tokens, index, index + 1) });
+      out.push({ clause: "name = '" + tokens[index + 1] + "'", request: codeTaskEcho(tokens, index, index + 1), at: index });
     }
   }
   return out;
@@ -599,7 +600,7 @@ function sqlSynthesisOrderClause(tokens) {
 /**
  * GROUP BY from the seed `sql_grouping` cues; mirrors `group_clause`.
  * @param {Array<string>} tokens request tokens
- * @returns {Array<string>|null} [column, request echo]
+ * @returns {Array|null} [column, request echo, index of the grouped column]
  */
 function sqlSynthesisGroupClause(tokens) {
   const cues = codeTaskWordEntries("sql_grouping");
@@ -608,7 +609,36 @@ function sqlSynthesisGroupClause(tokens) {
     if (entry === undefined) continue;
     const at = index + 1 + (Number.parseInt(codeTaskChildValue(entry, "skip"), 10) || 0);
     const column = at < tokens.length ? codeTaskIdentifier(tokens[at]) : "";
-    if (column !== "") return [column, codeTaskEcho(tokens, index, at)];
+    if (column !== "") return [column, codeTaskEcho(tokens, index, at), at];
+  }
+  return null;
+}
+
+/**
+ * HAVING from a seed `sql_having` cue after the grouping span, with the
+ * seed `sql_threshold` comparator; mirrors `having_clause`.
+ * @param {Array<string>} tokens request tokens
+ * @param {string} aggregate the aggregate expression
+ * @param {number} after index of the grouped column
+ * @returns {Array|null} [clause, request echo, start, end]
+ */
+function sqlSynthesisHavingClause(tokens, aggregate, after) {
+  const cues = codeTaskWordEntries("sql_having");
+  const thresholds = codeTaskWordEntries("sql_threshold");
+  const numbers = codeTaskWordEntries("number");
+  let start = -1;
+  for (let index = after + 1; index < tokens.length && start < 0; index += 1) {
+    if (codeTaskEntryFor(cues, tokens[index]) !== null) start = index;
+  }
+  if (start < 0) return null;
+  for (let index = start + 1; index < tokens.length; index += 1) {
+    const entry = codeTaskEntryFor(thresholds, tokens[index]);
+    if (entry === null) continue;
+    const at = index + (Number.parseInt(codeTaskChildValue(entry, "offset"), 10) || 1);
+    const value = at < tokens.length ? codeTaskNumberValue(tokens[at], numbers) : null;
+    if (value === null) return null;
+    const clause = " HAVING " + aggregate + " " + codeTaskChildValue(entry, "operator") + " " + value;
+    return [clause, codeTaskEcho(tokens, start, at), start, at];
   }
   return null;
 }
@@ -709,7 +739,10 @@ function handleSqlSynthesis(prompt, normalized) {
   const group = aggregate === null ? null : sqlSynthesisGroupClause(tokens);
   const columns = group === null ? selected[0] : group[0] + ", " + selected[0];
   const groupBy = group === null ? "" : " GROUP BY " + group[0];
-  const filters = sqlSynthesisFilters(tokens);
+  const having = group === null ? null : sqlSynthesisHavingClause(tokens, selected[0], group[2]);
+  const filters = sqlSynthesisFilters(tokens)
+    .filter((filter) => having === null || filter.at < having[2] || filter.at > having[3]);
+  const havingText = having === null ? "" : having[0];
   const clauses = [];
   for (const filter of filters) clauses.push(filter.clause);
   const whereClause = clauses.length === 0 ? "" : " WHERE " + clauses.join(" AND ");
@@ -717,11 +750,12 @@ function handleSqlSynthesis(prompt, normalized) {
   const limit = sqlSynthesisLimitClause(tokens, numbers);
   const orderText = order === null ? "" : order[0];
   const limitText = limit === null ? "" : limit[0];
-  const statement = "SELECT " + columns + " FROM " + table + whereClause + groupBy + orderText + limitText + ";";
+  const statement = "SELECT " + columns + " FROM " + table + whereClause + groupBy + havingText + orderText + limitText + ";";
   codeTaskLogAppend(log, "sql_synthesis:statement", statement);
   const rows = [[selected[1], "SELECT " + columns], [table, "FROM " + table]];
   for (const filter of filters) rows.push([filter.request, filter.clause]);
   if (group !== null) rows.push([group[1], groupBy.trim()]);
+  if (having !== null) rows.push([having[1], havingText.trim()]);
   if (orderText !== "") rows.push([order[1], orderText.trim()]);
   if (limitText !== "") rows.push([limit[1], limitText.trim()]);
   const body = codeTaskTemplate("sql_synthesis_statement", [

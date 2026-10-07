@@ -182,6 +182,7 @@ fn table_name(tokens: &[&str]) -> Option<String> {
 struct Filter {
     clause: String,
     request: String,
+    at: usize,
 }
 
 /// Extract filters: comparatives from the seed word map ("older than 30" →
@@ -210,6 +211,7 @@ fn filters(tokens: &[&str]) -> Vec<Filter> {
                 out.push(Filter {
                     clause: format!("{column} {operator} {value}"),
                     request: echo(tokens, index, index + 2),
+                    at: index,
                 });
             }
             continue;
@@ -238,6 +240,7 @@ fn filters(tokens: &[&str]) -> Vec<Filter> {
                     out.push(Filter {
                         clause: format!("{column} {operator} {value}"),
                         request: echo(tokens, index - 1, index + 2),
+                        at: index,
                     });
                 }
             }
@@ -248,6 +251,7 @@ fn filters(tokens: &[&str]) -> Vec<Filter> {
             out.push(Filter {
                 clause: format!("name = '{value}'"),
                 request: echo(tokens, index, index + 1),
+                at: index,
             });
         }
     }
@@ -286,7 +290,7 @@ fn aggregate(tokens: &[&str]) -> Option<(String, String)> {
 /// department", "grouped by city"): the column right after the cue, past the
 /// entry's `skip` connector words. Read only alongside an aggregate, so a
 /// grouped statement always selects what it groups.
-fn group_clause(tokens: &[&str]) -> Option<(String, String)> {
+fn group_clause(tokens: &[&str]) -> Option<(String, String, usize)> {
     let cues = word_entries("sql_grouping");
     for (index, token) in tokens.iter().enumerate() {
         let Some(entry) = cues
@@ -301,8 +305,59 @@ fn group_clause(tokens: &[&str]) -> Option<(String, String)> {
             .map(|word| identifier(word))
             .unwrap_or_default();
         if !column.is_empty() {
-            return Some((column, echo(tokens, index, at)));
+            return Some((column, echo(tokens, index, at), at));
         }
+    }
+    None
+}
+
+/// HAVING from a seed `sql_having` cue ("with more than 5 users", "having
+/// at least 3 orders") after a grouped aggregate: the seed `sql_threshold`
+/// comparator names the operator and how far past it the number sits, and
+/// the threshold applies to the aggregate. Returns the clause, the request
+/// echo and the token span, so the span is not read again as a WHERE filter.
+/// The cue must follow the grouping span (`after`), so a WHERE comparison
+/// stated before the grouping stays a WHERE filter.
+fn having_clause(
+    tokens: &[&str],
+    aggregate: &str,
+    after: usize,
+) -> Option<(String, String, (usize, usize))> {
+    let cues = word_entries("sql_having");
+    let thresholds = word_entries("sql_threshold");
+    let numbers = word_entries("number");
+    let start = after
+        + 1
+        + tokens.iter().skip(after + 1).position(|token| {
+            cues.iter()
+                .any(|entry| entry.find_child_value("word") == *token)
+        })?;
+    for (index, token) in tokens.iter().enumerate().skip(start + 1) {
+        let Some(entry) = thresholds
+            .iter()
+            .find(|entry| entry.find_child_value("word") == *token)
+        else {
+            continue;
+        };
+        let at = index
+            + entry
+                .find_child_value("offset")
+                .parse::<usize>()
+                .unwrap_or(1);
+        let value = tokens
+            .get(at)
+            .and_then(|word| number_value(word, &numbers))?;
+        let operator = entry.find_child_value("operator");
+        let clause = [
+            " HAVING ",
+            aggregate,
+            " ",
+            operator,
+            " ",
+            &value.to_string(),
+        ]
+        .concat();
+        return Some((clause, echo(tokens, start, at), (start, at)));
     }
     None
 }
@@ -444,6 +499,7 @@ pub fn handle_sql_synthesis(
         Some((expression, request)) => (expression, Some(request)),
         None => (String::new(), None),
     };
+    let aggregate_expression = aggregate.clone();
     let group = if aggregate.is_empty() {
         None
     } else {
@@ -455,14 +511,24 @@ pub fn handle_sql_synthesis(
         (aggregate, aggregate_request.unwrap_or_default())
     };
     let mut columns = columns;
-    if let Some((column, _)) = &group {
+    if let Some((column, _, _)) = &group {
         columns = format!("{column}, {columns}");
     }
     let group_by = group
         .as_ref()
-        .map(|(column, _)| [" GROUP BY ", column.as_str()].concat())
+        .map(|(column, _, _)| [" GROUP BY ", column.as_str()].concat())
         .unwrap_or_default();
-    let filter_list = filters(&tokens);
+    let having = group
+        .as_ref()
+        .and_then(|(_, _, after)| having_clause(&tokens, &aggregate_expression, *after));
+    let mut filter_list = filters(&tokens);
+    if let Some((_, _, (start, end))) = &having {
+        filter_list.retain(|filter| filter.at < *start || filter.at > *end);
+    }
+    let having_text = having
+        .as_ref()
+        .map(|(clause, _, _)| clause.clone())
+        .unwrap_or_default();
     let where_clause = if filter_list.is_empty() {
         String::new()
     } else {
@@ -485,6 +551,7 @@ pub fn handle_sql_synthesis(
         &table,
         &where_clause,
         &group_by,
+        &having_text,
         &order,
         &limit,
         ";",
@@ -497,8 +564,11 @@ pub fn handle_sql_synthesis(
     for filter in &filter_list {
         rows.push((filter.request.clone(), filter.clause.clone()));
     }
-    if let Some((_, request)) = &group {
+    if let Some((_, request, _)) = &group {
         rows.push((request.clone(), group_by.trim().to_owned()));
+    }
+    if let Some((clause, request, _)) = &having {
+        rows.push((request.clone(), clause.trim().to_owned()));
     }
     if !order.is_empty() {
         rows.push((order_request, order.trim().to_owned()));

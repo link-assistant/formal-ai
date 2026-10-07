@@ -49,7 +49,7 @@ multilingual_responses
   response response_shell_compose_refusal_en
     intent shell_compose_refusal
     language en
-    text "This request reads as a shell task, but no manual-page entry in data/seed/manual-pages.lino covers it (find, ls, head, tail, grep are covered), so I will not guess a command. Say which files, sizes, ages, paths, line counts, or patterns are involved and I will compose it."
+    text "This request reads as a shell task, but no manual-page entry in data/seed/manual-pages.lino covers it (find, ls, head, tail, grep, wc and sed are covered), so I will not guess a command. Say which files, sizes, ages, paths, line counts, or patterns are involved and I will compose it."
   response response_code_explanation_lines_en
     intent code_explanation_lines
     language en

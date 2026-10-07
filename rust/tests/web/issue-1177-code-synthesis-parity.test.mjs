@@ -117,3 +117,27 @@ test("unrelated prompts are not claimed by the composers", () => {
     }
   }
 });
+
+test("SQL composition reads HAVING after the grouping span", () => {
+  const counted = handle(
+    "handleSqlSynthesis",
+    "Write a SQL query to count orders per customer from the orders table having at least 3 orders",
+  );
+  assert.ok(counted.includes("SELECT customer, COUNT(*) FROM orders GROUP BY customer HAVING COUNT(*) >= 3;"), counted);
+  assert.ok(counted.includes("'having at least 3' -> HAVING COUNT(*) >= 3"), counted);
+  const withCue = handle(
+    "handleSqlSynthesis",
+    "Write a SQL query to count users per country from the users table with more than 5 users",
+  );
+  assert.ok(withCue.includes("SELECT country, COUNT(*) FROM users GROUP BY country HAVING COUNT(*) > 5;"), withCue);
+  const averaged = handle(
+    "handleSqlSynthesis",
+    "Write a SQL query for the average salary for each department from the employees table having average salary greater than 5000",
+  );
+  assert.ok(averaged.includes("GROUP BY department HAVING AVG(salary) > 5000;"), averaged);
+  const beforeGrouping = handle(
+    "handleSqlSynthesis",
+    "Write a SQL query to count users with age greater than 30 per country from the users table",
+  );
+  assert.ok(beforeGrouping.includes("SELECT country, COUNT(*) FROM users WHERE age > 30 GROUP BY country;"), beforeGrouping);
+});

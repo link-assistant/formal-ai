@@ -6,8 +6,9 @@
 //! composes a command from the manual-page flag table in
 //! `data/seed/manual-pages.lino` — so every emitted flag is explained and
 //! cites the upstream GNU manual. Covers `find` (-name/-size/-mtime/-type),
-//! `ls` (-l/-a/-R), `head`/`tail` (-n) and `grep` (-r/-i/-l); a counting
-//! request pipes a find into `wc -l`. Every request word the composer reads
+//! `ls` (-l/-a/-R), `head`/`tail` (-n), `grep` (-r/-i/-l) and a `sed`
+//! substitution ("replace foo with bar in config.txt"); a counting request
+//! pipes a find into `wc -l`. Every request word the composer reads
 //! (line-slice directions, containment, directory, count, "ending in" ...)
 //! comes from the `shell_cue` word map, keyed by role.
 //!
@@ -525,6 +526,76 @@ fn grep_search(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     })
 }
 
+/// Escape the characters a basic regular expression (or, with `&`, a sed
+/// replacement) reads specially, so the words are matched literally.
+fn sed_literal(word: &str, special: &[char]) -> String {
+    let mut out = String::new();
+    for c in word.chars() {
+        if special.contains(&c) {
+            out.push('\\');
+        }
+        out.push(c);
+    }
+    out
+}
+
+/// "replace foo with bar in config.txt" → `sed -i 's/foo/bar/g' config.txt`:
+/// a seeded `substitute` word, the word before the next `substitute_with`
+/// word is the pattern, the word after it the replacement, and the first
+/// dotted word after that the file. The words are escaped to match
+/// literally; a word holding the `/` delimiter or a single quote is not
+/// composed.
+fn sed_substitution(prompt: &str) -> Option<Composed> {
+    let raw: Vec<&str> = prompt.split_whitespace().collect();
+    let bare = |word: &str| {
+        word.trim_matches(|c: char| matches!(c, '\'' | '"' | '`' | ',' | '?' | '!'))
+            .to_owned()
+    };
+    let lower: Vec<String> = raw.iter().map(|word| bare(word).to_lowercase()).collect();
+    let substitute = role_words("substitute");
+    let with = role_words("substitute_with");
+    let cue_at = lower.iter().position(|word| substitute.contains(word))?;
+    let with_at = cue_at
+        + 2
+        + lower
+            .iter()
+            .skip(cue_at + 2)
+            .position(|word| with.contains(word))?;
+    let pattern = bare(raw[with_at - 1]);
+    let replacement = bare(raw.get(with_at + 1)?);
+    let file = file_argument(&raw.get(with_at + 2..)?.join(" "))?;
+    if pattern.is_empty()
+        || replacement.is_empty()
+        || (pattern.clone() + &replacement).contains(['/', '\''])
+    {
+        return None;
+    }
+    let manual = manual_pages()
+        .into_iter()
+        .find(|command| command.name == "sed")?;
+    let expression = [
+        "s/",
+        &sed_literal(&pattern, &['.', '*', '[', ']', '^', '$', '\\']),
+        "/",
+        &sed_literal(&replacement, &['&', '\\']),
+        "/g",
+    ]
+    .concat();
+    let used = ["-i".to_owned(), "s/regexp/replacement/g".to_owned()];
+    let explained = explained_flags(&manual, &used);
+    Some(Composed {
+        command: ["sed -i '", &expression, "' ", &file].concat(),
+        package: manual.package,
+        url: manual.url,
+        rows: vec![
+            (raw[cue_at..=with_at + 1].join(" "), expression),
+            (file.clone(), file),
+        ],
+        explained,
+        pipe: None,
+    })
+}
+
 /// The find composition: path + -name + -size + -mtime + -type.
 fn find_files(normalized_tokens: &[&str], prompt: &str) -> Option<Composed> {
     let pattern = name_pattern(prompt, normalized_tokens);
@@ -631,11 +702,14 @@ pub fn handle_shell_command_compose(
         return None;
     }
     let normalized_tokens = tokens(normalized);
+    // A complete substitution request is its own cue: it composes without
+    // the action and file-context words, and nothing else is read then.
+    let substitution = sed_substitution(prompt);
     let actions = cue_phrases(INTENT, "action");
     let has_action = normalized_tokens
         .iter()
         .any(|token| actions.iter().any(|action| action == token));
-    if !has_action {
+    if !has_action && substitution.is_none() {
         return None;
     }
     let file_context: Vec<String> = word_entries("file_context")
@@ -645,7 +719,7 @@ pub fn handle_shell_command_compose(
     let has_context = normalized_tokens
         .iter()
         .any(|token| file_context.iter().any(|word| word == token));
-    if !has_context {
+    if !has_context && substitution.is_none() {
         return None;
     }
     // A requested function/program is program synthesis, not a shell command.
@@ -670,7 +744,8 @@ pub fn handle_shell_command_compose(
         "action + file context".to_owned(),
     );
 
-    let composition = line_slice(&normalized_tokens, prompt)
+    let composition = substitution
+        .or_else(|| line_slice(&normalized_tokens, prompt))
         .or_else(|| grep_search(&normalized_tokens, prompt))
         .or_else(|| counted(&normalized_tokens, find_files(&normalized_tokens, prompt)))
         .or_else(|| ls_listing(&normalized_tokens, prompt));

@@ -473,6 +473,48 @@ map
       word каждой
       skip 0
 map
+  name sql_having
+    entry
+      word having
+    entry
+      word with
+    entry
+      word имеющих
+map
+  name sql_threshold
+    entry
+      word more
+      operator ">"
+      offset 2
+    entry
+      word greater
+      operator ">"
+      offset 2
+    entry
+      word больше
+      operator ">"
+      offset 2
+    entry
+      word fewer
+      operator "<"
+      offset 2
+    entry
+      word less
+      operator "<"
+      offset 2
+    entry
+      word меньше
+      operator "<"
+      offset 2
+    entry
+      word least
+      operator ">="
+      offset 1
+    entry
+      word most
+      operator "<="
+      offset 1
+map
   name extension
     entry
       word log
@@ -620,6 +662,24 @@ map
       word журнал
 map
   name shell_cue
+    entry
+      word replace
+      value substitute
+    entry
+      word substitute
+      value substitute
+    entry
+      word замени
+      value substitute
+    entry
+      word заменить
+      value substitute
+    entry
+      word with
+      value substitute_with
+    entry
+      word на
+      value substitute_with
     entry
       word larger
       value size_qualifier

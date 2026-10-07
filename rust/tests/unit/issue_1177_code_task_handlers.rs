@@ -245,6 +245,34 @@ fn handler_sql_synthesis_groups_an_aggregate_by_the_seeded_cue() {
 }
 
 #[test]
+fn handler_sql_synthesis_filters_groups_with_having_after_the_grouping() {
+    let answer = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query to count orders per customer from the orders table having at least 3 orders"
+    );
+    let expected = "Composed SQL:\n\n    SELECT customer, COUNT(*) FROM orders GROUP BY customer HAVING COUNT(*) >= 3;\n\nClause-by-clause mapping:\n  - 'count' -> SELECT customer, COUNT(*)\n  - 'orders' -> FROM orders\n  - 'per customer' -> GROUP BY customer\n  - 'having at least 3' -> HAVING COUNT(*) >= 3\nVerified by construction: each clause above maps to one constraint in the request, and the statement is a single SELECT in standard syntax.\nNot verified by execution: this project carries no SQL engine or parser dependency, so nothing was run \u{2014} check the column names against your actual schema before running it.";
+    assert_eq!(answer, expected);
+    let with_cue = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query to count users per country from the users table with more than 5 users"
+    );
+    assert!(
+        with_cue
+            .contains("SELECT country, COUNT(*) FROM users GROUP BY country HAVING COUNT(*) > 5;"),
+        "the threshold applies to the aggregate, not to a WHERE column: {with_cue}"
+    );
+    let before_grouping = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query to count users with age greater than 30 per country from the users table"
+    );
+    assert!(
+        before_grouping
+            .contains("SELECT country, COUNT(*) FROM users WHERE age > 30 GROUP BY country;"),
+        "a comparison stated before the grouping stays a WHERE filter: {before_grouping}"
+    );
+}
+
+#[test]
 fn handler_code_debugging_reports_a_loop_bound_past_the_end() {
     let answer = answer_of!(
         formal_ai::handle_code_debugging,
@@ -278,6 +306,31 @@ fn handler_shell_compose_slices_lines_and_searches_content() {
     assert!(
         searched.contains("    grep -r -i 'TODO' /src\n"),
         "{searched}"
+    );
+}
+
+#[test]
+fn handler_shell_compose_composes_a_literal_sed_substitution() {
+    let answer = answer_of!(
+        formal_ai::handle_shell_command_compose,
+        "Replace 1.0 with 2.0 in version.txt"
+    );
+    let expected = "Composed shell command:\n\n    sed -i 's/1\\.0/2.0/g' version.txt\n\nFlags, from the sed manual:\n  - `-i` \u{2014} edit the file in place (a GNU extension); without it sed prints the edited text and leaves the file unchanged\n  - `s/regexp/replacement/g` \u{2014} replace each match of the basic regular expression with the replacement; the trailing g replaces every match on a line, not only the first\nManual: https://www.gnu.org/software/sed/manual/sed.html\n\nDerivation:   - 'Replace 1.0 with 2.0' -> s/1\\.0/2.0/g\n  - 'version.txt' -> version.txt\n\nNot executed: this is a composed suggestion \u{2014} run it yourself and inspect the output.";
+    assert_eq!(answer, expected);
+    let russian = solved("Замени foo на bar в файле config.txt");
+    assert!(
+        russian.contains("    sed -i 's/foo/bar/g' config.txt\n"),
+        "{russian}"
+    );
+    let sentence = "Replace cat with dog in this sentence";
+    let claimed = formal_ai::handle_shell_command_compose(
+        sentence,
+        &normalize_prompt(sentence),
+        &mut EventLog::new(),
+    );
+    assert!(
+        claimed.is_none(),
+        "without a file argument the request is not a shell task"
     );
 }
 

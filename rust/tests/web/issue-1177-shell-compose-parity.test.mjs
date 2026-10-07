@@ -108,3 +108,15 @@ test("a prose lead before a colon is not part of the looped command", async () =
   assert.equal(engine.content, expected);
   assert.equal(worker.tryShellCommandTransform(prompt, []).content, expected);
 });
+
+test("a substitution request composes a literal sed expression", async () => {
+  const answer = handle("Replace 1.0 with 2.0 in version.txt");
+  assert.ok(answer.includes("    sed -i 's/1\\.0/2.0/g' version.txt\n"), answer);
+  assert.ok(answer.includes("https://www.gnu.org/software/sed/manual/sed.html"), answer);
+  assert.ok(answer.includes("'Replace 1.0 with 2.0' -> s/1\\.0/2.0/g"), answer);
+  const russian = await solve("Замени foo на bar в файле config.txt");
+  assert.equal(russian.intent, "shell_command_compose");
+  assert.ok(russian.content.includes("    sed -i 's/foo/bar/g' config.txt\n"), russian.content);
+  const sentence = "Replace cat with dog in this sentence";
+  assert.equal(worker.handleShellCommandCompose(sentence, worker.normalizePrompt(sentence)), null);
+});
