@@ -9,8 +9,8 @@
 //! `js/agentic/ci_workflow.mjs`.
 
 use formal_ai::agentic_coding::render_ci_workflow;
-use formal_ai::program_contract;
 use formal_ai::event_log::EventLog;
+use formal_ai::program_contract;
 use formal_ai::version_resolution::VersionSet;
 
 const FIXTURE: &str = include_str!("../fixtures/issue-1168/workflow-render-parity.json");
