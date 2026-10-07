@@ -186,8 +186,12 @@ fn handler_regex_synthesis_composes_anchored_pattern() {
         "the composed pattern must be anchored: {answer}"
     );
     assert!(answer.contains("Verified structurally"), "{answer}");
+    // R1177-2: the native twin matches the pattern against the examples the
+    // browser twin derives from the same constraints.
     assert!(
-        answer.contains("no match was run against any input"),
+        answer.ends_with(
+            "accepted all 2 positive examples (\"77777-7777\", \"77777\") and rejected all 5 negative examples (\"7777-7777\", \"a7777-7777\", \"77777-777\", \"77777-a777\", \"77777-77777\"). No input of yours was run; test the pattern on your real inputs before relying on it."
+        ),
         "{answer}"
     );
 }

@@ -18,7 +18,11 @@
 # both runtimes read the role words in seed order.
 #
 # `test_cases` records hold the sample inputs the test generator renders for
-# each recognized problem shape.
+# each recognized problem shape. `test_example_relation` holds the words that
+# join a stated example call to its expected value ("square(3) returns 9",
+# "square(3) == 9", "square(3) возвращает 9"); the generator turns each stated
+# example into its own case, so a function outside every shape is tested from
+# what the request itself says it must return.
 #
 # Read by the handlers in `rust/src/solver_handlers/` through
 # `crate::seed::seed_files()`.
@@ -1030,6 +1034,52 @@ map
     entry
       word "punctuation"
       value punctuation
+map
+  name test_example_relation
+    entry
+      word "should return"
+    entry
+      word "must return"
+    entry
+      word "should give"
+    entry
+      word "returns"
+    entry
+      word "return"
+    entry
+      word "gives"
+    entry
+      word "yields"
+    entry
+      word "is"
+    entry
+      word "=="
+    entry
+      word "->"
+    entry
+      word "=>"
+    entry
+      word "→"
+    entry
+      word "должна вернуть"
+    entry
+      word "должна возвращать"
+    entry
+      word "возвращает"
+    entry
+      word "возвращать"
+    entry
+      word "даёт"
+    entry
+      word "дает"
+    entry
+      word "равно"
+    entry
+      word "返回"
+    entry
+      word "लौटाता है"
+    entry
+      word "लौटाए"
 test_cases
   shape palindrome
     trigger palindrome

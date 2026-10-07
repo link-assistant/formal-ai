@@ -7,18 +7,22 @@
 //! all word maps in the same seed file), and composes an anchored pattern
 //! from them.
 //!
-//! The `regex` crate is a dev-only dependency of this project, so the
-//! composed pattern is verified **structurally** (balanced groups,
-//! well-formed repetitions and classes) and never executed — the answer (a
-//! template from `data/seed/multilingual-responses.lino`) states both facts.
+//! The composed pattern is verified **structurally** (balanced groups,
+//! well-formed repetitions and classes), then matched against positive and
+//! negative examples derived from the same constraints by the subset matcher
+//! in `regex_witness` (the `regex` crate is a dev-only dependency; the
+//! browser twin compiles the pattern with `RegExp`). No input of the user's
+//! is run, and the answer (a template from
+//! `data/seed/multilingual-responses.lino`) says which check was made.
 //! When the constraints do not compose, the handler refuses by name rather
 //! than guessing.
 
 use super::finalize_simple;
-use std::fmt::Write as _;
+use super::regex_witness::{self, WitnessPart};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
+use std::fmt::Write as _;
 
 const CUES_PATH: &str = "data/seed/code-task-cues.lino";
 const INTENT: &str = "regex_synthesis";
@@ -303,6 +307,68 @@ fn problem_text(code: &str) -> String {
     crate::seed::localized_response(&name, "en").unwrap_or_default()
 }
 
+/// Match the emitted pattern against positive and negative examples derived
+/// from the same constraints (`regex_witness`); the evidence sentence and the
+/// answer confidence. A pattern that disagrees with its examples is reported,
+/// not trusted.
+fn witness_check(
+    classes: &[ClassMention],
+    separators: &[SeparatorMention],
+    pattern: &str,
+    anchored: bool,
+    log: &mut EventLog,
+) -> (String, f32) {
+    let parts: Vec<WitnessPart> = classes
+        .iter()
+        .enumerate()
+        .map(|(index, mention)| WitnessPart {
+            class: mention.class.clone(),
+            count: mention.count,
+            at_least: mention.at_least,
+            optional: mention.optional,
+            separator: if index == 0 {
+                String::new()
+            } else {
+                let previous = classes
+                    .iter()
+                    .rfind(|other| other.position < mention.position)
+                    .map(|other| other.position);
+                separator_between(separators, previous, mention.position).unwrap_or_default()
+            },
+        })
+        .collect();
+    let Some((positives, negatives)) = regex_witness::examples(&parts, anchored) else {
+        return (template("regex_synthesis_not_executed", &[]), 0.7);
+    };
+    let Some(failures) = regex_witness::check(pattern, &positives, &negatives) else {
+        return (template("regex_synthesis_not_executed", &[]), 0.7);
+    };
+    if failures.is_empty() {
+        log.append("regex_synthesis:execution", "verified".to_owned());
+        (
+            template(
+                "regex_synthesis_witness_verified",
+                &[
+                    ("positive_count", &positives.len().to_string()),
+                    ("positives", &regex_witness::quote_list(&positives)),
+                    ("negative_count", &negatives.len().to_string()),
+                    ("negatives", &regex_witness::quote_list(&negatives)),
+                ],
+            ),
+            0.8,
+        )
+    } else {
+        log.append("regex_synthesis:execution", "failed".to_owned());
+        (
+            template(
+                "regex_synthesis_witness_failed",
+                &[("failures", &failures.join("; "))],
+            ),
+            0.4,
+        )
+    }
+}
+
 /// True when any cue phrase for the intent occurs in the normalized prompt
 /// or the raw prompt lowercased.
 fn triggered(prompt: &str, normalized: &str) -> bool {
@@ -372,6 +438,8 @@ pub fn handle_regex_synthesis(
             } else {
                 template("regex_anchor_note_unanchored", &[])
             };
+            let (execution, confidence) =
+                witness_check(&classes, &separators, &pattern, anchored, log);
             (
                 template(
                     "regex_synthesis_pattern",
@@ -379,9 +447,10 @@ pub fn handle_regex_synthesis(
                         ("pattern", &pattern),
                         ("mapping", &mapping),
                         ("anchor_note", &anchor_note),
+                        ("execution", &execution),
                     ],
                 ),
-                0.7,
+                confidence,
             )
         }
         Some(broken) => {

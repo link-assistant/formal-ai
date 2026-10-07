@@ -331,6 +331,7 @@ mod issue_1175_routing;
 mod issue_1175_routing_probes;
 mod issue_1176_quantities_dates;
 mod issue_1177_code_task_handlers;
+mod issue_1177_requirement_closure;
 mod issue_1178_creative_composition;
 mod issue_1179_fact_check_sources;
 mod issue_1180_history_context;

@@ -1,8 +1,8 @@
 core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
-  source_file_count_max 85
-  source_lines_max 35083
+  source_file_count_max 86
+  source_lines_max 35816
   outside_core_file_count_max 51
   outside_core_lines_max 20458
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
@@ -23,6 +23,7 @@ core_boundary_ledger
   note "Re-measured 2026-10-07 for the PR #1188 issue #1175 claim-row pass: web_requests.rs gained http_fetch_claims, the structural check the new http_fetch claim row in data/seed/capability-routing.lino consults before the handler runs (743 to 752 lines). source_lines_max records the measured 34739 and outside_core_lines_max the measured 20458."
   note "Re-measured 2026-10-07 for issue #1164 R1164-11: page_query_text.rs gained the supplied-page decomposition arm (69 to 142 lines), which runs the code-example decomposer over the code blocks of a page the prompt supplies when the query line evidences the seed meaning code_example_decomposition_request, the route the shared cross-runtime-synthesis case e1164_supplied_page_code_example_parts reaches in both runtimes. source_lines_max records the measured 34812; outside_core_lines_max is unchanged."
   note "Re-measured 2026-10-07 for the PR #1188 issue #1172 R7 language-parity fix: formalization_task.rs gained verb_final_language, which reads the verb_final flag of data/seed/formal-targets.lino (518 to 531 lines), and prompt_text_question.rs declines a sentence in a verb-final language through it (538 to 540 lines), because such a language marks time and place with postpositions the phrase reader does not read. source_lines_max records the measured 35083."
+  note "Re-measured 2026-10-07 for the issue #1177 requirement closure (R1177-2, R1177-5, R1177-7): regex_witness.rs joins the ledger as a promoted matcher (the native twin of the browser RegExp check over examples derived from the composed constraints); regex_synthesis.rs grew by its witness hand-off (419 to 488), code_explanation.rs by the generic head, only and infix readers of seed construct rows and the listing of unmatched lines (467 to 600), and test_generation.rs by the stated-example reader and the named refusal that replaces the smoke skeleton (441 to 608). source_file_count_max records 86 and source_lines_max adds 733 lines; outside_core_lines_max is unchanged."
   source rust/src/solver_handler_how.rs
     disposition migrate
     baseline_lines 930
@@ -95,7 +96,7 @@ core_boundary_ledger
     reason "Issue #1177: structural interpreter of the seed name-promise defect table. It composes a debugging diagnosis from seed cue vocabulary and never executes the pasted code; the defect classes and their guidance are data it reads, so the module is core machinery, not migration debt. Re-measured 2026-10-07 for PR #1188: code_block became the one shared extractor of the code-task family (explanation, review and refactoring dropped their identical copies) and reads code-shaped text after the request's colon (`Explain this code: print(sum(range(10)))`)."
   source rust/src/solver_handlers/code_explanation.rs
     disposition promote
-    baseline_lines 467
+    baseline_lines 600
     core_component code_explanation_interpreter
     reason "Issue #1177: generic interpreter that walks pasted code line by line against the seed construct table with grounding URLs; it stores no domain answers, only the walk. Re-measured 2026-10-07 for PR #1188: its private copy of code_block was removed in favour of the shared code_debugging::code_block."
   source rust/src/solver_handlers/code_refactoring.rs
@@ -315,9 +316,14 @@ core_boundary_ledger
     reason "Issues #800 and #872: parses marketplace and qualifier structure into a bounded search request; hosts, cues, and localized response text remain seed data."
   source rust/src/solver_handlers/regex_synthesis.rs
     disposition promote
-    baseline_lines 419
+    baseline_lines 488
     core_component regex_synthesis_interpreter
     reason "Issue #1177: composes regexes from seed cue vocabulary and verifies them structurally without ever running a match; the composer is the core interpreter of seed cues."
+  source rust/src/solver_handlers/regex_witness.rs
+    disposition promote
+    baseline_lines 364
+    core_component regex_witness_matcher
+    reason "Issue #1177 R1177-2: derives positive and negative examples from the composed regex constraints and matches the emitted pattern text against them with a backtracking matcher over the subset the composer emits (anchors, classes, groups, repetitions); it holds no vocabulary or answer, only the matcher, so it is core machinery, the native twin of the browser RegExp check."
   source rust/src/solver_handlers/research_table.rs
     disposition migrate
     baseline_lines 540
@@ -390,7 +396,7 @@ core_boundary_ledger
     reason "Decomposition heuristics and examples are problem-solving metadata."
   source rust/src/solver_handlers/test_generation.rs
     disposition promote
-    baseline_lines 441
+    baseline_lines 608
     core_component test_generation_interpreter
     reason "Issue #1177: fills the seed pytest templates for the three recognized problem shapes; shape recognition and the emitter are the core interpreter. Re-measured 2026-10-07 for PR #1188: an agent opt-in is left to the agent flow, which acts on the workspace (441 lines)."
   source rust/src/solver_handlers/text_edit_ops.rs

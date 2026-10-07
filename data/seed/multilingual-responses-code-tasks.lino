@@ -25,7 +25,19 @@ multilingual_responses
   response response_regex_synthesis_pattern_en
     intent regex_synthesis_pattern
     language en
-    text "Composed regular expression:\n\n```regex\n{pattern}\n```\n\nHow the constraints composed:\n{mapping}{anchor_note}\nVerified structurally: groups are balanced, every repetition is well-formed, and every character class is closed.\nNot verified by execution: the regex engine in this repository is a dev-only dependency, so no match was run against any input. Test the pattern on real inputs (a regex tester or a unit test) before relying on it."
+    text "Composed regular expression:\n\n```regex\n{pattern}\n```\n\nHow the constraints composed:\n{mapping}{anchor_note}\nVerified structurally: groups are balanced, every repetition is well-formed, and every character class is closed.\n{execution}"
+  response response_regex_synthesis_not_executed_en
+    intent regex_synthesis_not_executed
+    language en
+    text "Not verified by execution: no example could be derived from these constraints, so no match was run against any input. Test the pattern on real inputs (a regex tester or a unit test) before relying on it."
+  response response_regex_synthesis_witness_verified_en
+    intent regex_synthesis_witness_verified
+    language en
+    text "Verified against examples derived from the constraints: the pattern text was matched by the subset matcher in rust/src/solver_handlers/regex_witness.rs (anchors, classes, groups and repetitions read from the pattern itself) and accepted all {positive_count} positive examples ({positives}) and rejected all {negative_count} negative examples ({negatives}). No input of yours was run; test the pattern on your real inputs before relying on it."
+  response response_regex_synthesis_witness_failed_en
+    intent regex_synthesis_witness_failed
+    language en
+    text "The check against examples derived from the constraints failed (+ marks an example that should match, - one that should not): {failures}. Do not rely on this pattern; restate the counts and separators and I will compose it again."
   response response_regex_synthesis_broken_en
     intent regex_synthesis_broken
     language en
@@ -57,7 +69,7 @@ multilingual_responses
   response response_code_explanation_lines_en
     intent code_explanation_lines
     language en
-    text "A structural explanation, line by line. No code was executed.\n\n{lines}Overall: {overall}\n{cost}Method, stated honestly: each line was matched against the construct table in data/seed/meanings-code-structure-explanations.lino; nothing was run and nothing outside the table was guessed."
+    text "A structural explanation, line by line. No code was executed.\n\n{lines}Coverage: {matched} of {total} lines matched a construct; every line is listed above, each matched one with the reference that defines its construct.\nOverall: {overall}\n{cost}Method, stated honestly: each line was matched against the construct table in data/seed/meanings-code-structure-explanations.lino; nothing was run and nothing outside the table was guessed."
   response response_code_explanation_no_construct_en
     intent code_explanation_no_construct
     language en
@@ -157,7 +169,11 @@ multilingual_responses
   response response_code_explanation_line_en
     intent code_explanation_line
     language en
-    text "  - `{line}` — {meaning}\n"
+    text "  - `{line}` — {meaning} ({grounding})\n"
+  response response_code_explanation_unmatched_line_en
+    intent code_explanation_unmatched_line
+    language en
+    text "  - `{line}` — no construct in the table matches this line, so it is left unexplained rather than guessed\n"
   response response_code_explanation_overall_en
     intent code_explanation_overall
     language en
@@ -190,6 +206,10 @@ multilingual_responses
     intent format_conversion_reason_subset
     language en
     text "The text is outside the supported YAML subset (block mappings, block sequences, two-space indent, scalars), so I will not guess a conversion."
+  response response_test_generation_unknown_shape_en
+    intent test_generation_unknown_shape
+    language en
+    text "Recognized a request for tests of `{function}`, but its name matches no problem shape in the test-case table ({shapes}) and the request states no example with its expected value, so I will not guess what it must return. State examples as a call followed by its expected value, such as `{function}(<input>) returns <expected>` with a number, a quoted string, a list, True, False or None, and each one becomes a test case."
   response response_test_generation_refusal_en
     intent test_generation_refusal
     language en

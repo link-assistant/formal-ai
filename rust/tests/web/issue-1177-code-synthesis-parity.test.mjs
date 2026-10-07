@@ -34,7 +34,7 @@ test("engine and handler compose the anchored postal pattern", async () => {
   for (const answer of [engine.content, handle("handleRegexSynthesis", ZIP_PROMPT)]) {
     assert.ok(answer.includes("^\\d{5}(-\\d{4})?$"), answer);
     assert.ok(answer.includes("Verified structurally"), answer);
-    assert.ok(answer.includes("no match was run against any input"), "the Rust template is kept verbatim");
+    assert.ok(!answer.includes("no match was run against any input"), "examples were derived, so a match was run");
   }
 });
 

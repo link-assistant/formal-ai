@@ -290,18 +290,105 @@ function codeExplanationBuiltins() {
 }
 
 /**
- * The construct table: construct slug → explanation sentence.
- * @returns {Array<object>} {construct, meaning} records
+ * The construct table: construct slug → explanation sentence, grounding and
+ * the generic matching rows (`head`, `only`, `infix`) a construct may carry.
+ * @returns {Array<object>} {construct, meaning, grounding, heads, only, infixes} records
  */
 function codeExplanationStructures() {
   const out = [];
   for (const record of codeTaskSeedRecords("meanings-code-structure-explanations.lino")) {
     if (record.name !== "structure") continue;
     for (const body of codeTaskChildren(record, "construct")) {
-      out.push({ construct: String(body.id || ""), meaning: codeTaskChildValue(body, "explanation") });
+      const heads = [];
+      for (const head of codeTaskChildren(body, "head")) heads.push(String(head.id || ""));
+      const infixes = [];
+      for (const infix of codeTaskChildren(body, "infix")) infixes.push(String(infix.id || ""));
+      out.push({
+        construct: String(body.id || ""),
+        meaning: codeTaskChildValue(body, "explanation"),
+        grounding: codeTaskChildValue(body, "grounding"),
+        heads: heads,
+        only: codeTaskChildValue(body, "only"),
+        infixes: infixes,
+      });
     }
   }
   return out;
+}
+
+/**
+ * The remainder of a keyword-headed line: trailing `:` / `{` / `;` and one pair of
+ * wrapping parentheses removed (Rust `head_rest`).
+ * @param {string} rest text after the head
+ * @returns {string} the cleaned remainder
+ */
+function codeExplanationHeadRest(rest) {
+  let out = rest.trim();
+  while (out.endsWith(":") || out.endsWith("{") || out.endsWith(";")) out = out.slice(0, -1).trimEnd();
+  if (out.startsWith("(") && out.endsWith(")") && codeTaskInsideParens(out, 0).length === out.length - 2) {
+    out = out.slice(1, -1).trim();
+  }
+  return out;
+}
+
+/**
+ * Match a line against the seed rows that carry `head` or `only` (Rust
+ * `match_seed_head`). The longest head wins; a head ending in a word
+ * character must not run into another identifier character.
+ * @param {string} trimmed trimmed code line
+ * @param {Array<object>} table construct table
+ * @returns {object|null} the match, or null
+ */
+function codeExplanationSeedHead(trimmed, table) {
+  let best = null;
+  let bestLength = 0;
+  for (const structure of table) {
+    if (structure.only !== "" && Array.from(trimmed).every(function (ch) { return structure.only.includes(ch); })) {
+      return codeExplanationMatch(structure.construct, [], false);
+    }
+    for (const head of structure.heads) {
+      if (head === "" || !trimmed.startsWith(head) || head.length <= bestLength) continue;
+      const last = head[head.length - 1];
+      const next = trimmed.charAt(head.length);
+      if (codeTaskIsAlphanumeric(last) && next !== "" && (codeTaskIsAlphanumeric(next) || next === "_")) continue;
+      best = codeExplanationMatch(structure.construct, [["rest", codeExplanationHeadRest(trimmed.slice(head.length))]], false);
+      bestLength = head.length;
+    }
+  }
+  return best;
+}
+
+/**
+ * Match a line against the seed rows that carry `infix` (Rust
+ * `match_seed_infix`).
+ * @param {string} trimmed trimmed code line
+ * @param {Array<object>} table construct table
+ * @returns {object|null} the match, or null
+ */
+function codeExplanationSeedInfix(trimmed, table) {
+  for (const structure of table) {
+    for (const infix of structure.infixes) {
+      const at = infix === "" ? -1 : trimmed.indexOf(infix);
+      if (at === -1) continue;
+      return codeExplanationMatch(structure.construct, [
+        ["left", trimmed.slice(0, at).trim()],
+        ["op", infix.trim()],
+        ["right", codeTaskTrimEndChar(trimmed.slice(at + infix.length).trim(), ";")],
+      ], false);
+    }
+  }
+  return null;
+}
+
+/**
+ * A bare call `name(args)` at the start of a line (Rust `match_call`).
+ * @param {string} trimmed trimmed code line
+ * @returns {object|null} the match, or null
+ */
+function codeExplanationCall(trimmed) {
+  const name = codeTaskIdentifierAt(trimmed);
+  if (name === "" || trimmed.charAt(name.length) !== "(") return null;
+  return codeExplanationMatch("function_call", [["name", name], ["args", codeTaskInsideParens(trimmed, name.length)]], false);
 }
 
 /**
@@ -320,9 +407,11 @@ function codeExplanationMatch(construct, values, isLoop) {
  * @param {string} line code line
  * @returns {object|null} the match, or null
  */
-function codeExplanationExplainLine(line) {
+function codeExplanationExplainLine(line, table) {
   const trimmed = line.trim();
   if (trimmed === "") return null;
+  const headed = codeExplanationSeedHead(trimmed, table || []);
+  if (headed !== null) return headed;
   const thenAt = trimmed.indexOf(".then(");
   if (thenAt !== -1) {
     return codeExplanationMatch("promise_then", [
@@ -388,6 +477,8 @@ function codeExplanationExplainLine(line) {
   if (trimmed.startsWith("return ")) {
     return codeExplanationMatch("return_statement", [["value", trimmed.slice(7).trim()]], false);
   }
+  const infixed = codeExplanationSeedInfix(trimmed, table || []);
+  if (infixed !== null) return infixed;
   if (trimmed.indexOf(" == ") !== -1 || trimmed.indexOf(" != ") !== -1) {
     return codeExplanationMatch("comparison", [], false);
   }
@@ -423,7 +514,7 @@ function codeExplanationExplainLine(line) {
       }
     }
   }
-  return null;
+  return codeExplanationCall(trimmed);
 }
 
 /**
@@ -443,26 +534,38 @@ function handleCodeExplanation(prompt, normalized) {
   codeTaskLogAppend(log, "code_explanation:request", "line=" + lines.length);
   let linesBody = "";
   let matched = 0;
+  let total = 0;
   let loopSeen = false;
   for (const line of lines) {
-    const match = codeExplanationExplainLine(line);
-    if (match === null) continue;
+    if (line.trim() === "") continue;
+    total += 1;
+    const match = codeExplanationExplainLine(line, table);
+    let structure = null;
+    if (match !== null) {
+      for (const candidate of table) {
+        if (candidate.construct === match.construct) {
+          structure = candidate;
+          break;
+        }
+      }
+    }
+    if (structure === null) {
+      codeTaskLogAppend(log, "code_explanation:unmatched", line.trim());
+      linesBody += codeTaskTemplate("code_explanation_unmatched_line", [["line", line.trim()]]);
+      continue;
+    }
     matched += 1;
     loopSeen = loopSeen || match.isLoop;
     codeTaskLogAppend(log, "code_explanation:construct", match.construct);
-    let structure = null;
-    for (const candidate of table) {
-      if (candidate.construct === match.construct) {
-        structure = candidate;
-        break;
-      }
-    }
-    if (structure === null) continue;
     let meaning = structure.meaning;
     for (const pair of match.values) {
       meaning = meaning.split("{" + pair[0] + "}").join(pair[1]);
     }
-    linesBody += codeTaskTemplate("code_explanation_line", [["line", line.trim()], ["meaning", meaning]]);
+    linesBody += codeTaskTemplate("code_explanation_line", [
+      ["line", line.trim()],
+      ["meaning", meaning],
+      ["grounding", structure.grounding],
+    ]);
   }
   let body = "";
   let confidence = 0.4;
@@ -483,7 +586,13 @@ function handleCodeExplanation(prompt, normalized) {
     const cost = loopSeen
       ? codeTaskTemplate("code_explanation_cost_linear", [])
       : codeTaskTemplate("code_explanation_cost_constant", []);
-    body = codeTaskTemplate("code_explanation_lines", [["lines", linesBody], ["overall", overall], ["cost", cost]]);
+    body = codeTaskTemplate("code_explanation_lines", [
+      ["lines", linesBody],
+      ["matched", String(matched)],
+      ["total", String(total)],
+      ["overall", overall],
+      ["cost", cost],
+    ]);
     confidence = 0.7;
   }
   return codeTaskAnswer(log, "code_explanation", "response:code_explanation", body, confidence);
@@ -779,6 +888,98 @@ function testGenerationNormalizeHelper(properties) {
 }
 
 /**
+ * The literal that opens `text`: a bracketed list, a quoted string, or the
+ * number or `True`/`False`/`None` up to whitespace or `,;)` with a trailing
+ * `.` dropped; any other word is not a literal (Rust `literal_at`).
+ * @param {string} text text after a relation word
+ * @returns {string} the literal, or ""
+ */
+function testGenerationLiteralAt(text) {
+  const first = text.charAt(0);
+  if (first === "[") {
+    let depth = 0;
+    for (let index = 0; index < text.length; index += 1) {
+      if (text[index] === "[") depth += 1;
+      if (text[index] === "]") {
+        depth -= 1;
+        if (depth === 0) return text.slice(0, index + 1);
+      }
+    }
+    return "";
+  }
+  if (first === "\"" || first === "'") {
+    const close = text.indexOf(first, 1);
+    return close === -1 ? "" : text.slice(0, close + 1);
+  }
+  let end = 0;
+  while (end < text.length && !/\s/.test(text[end]) && ",;)`".indexOf(text[end]) === -1) end += 1;
+  const word = codeTaskTrimEndChar(text.slice(0, end), ".");
+  const lower = word.toLowerCase();
+  if (lower === "true" || lower === "false" || lower === "none") return word;
+  return /^-?[0-9]+(\.[0-9]+)?$/.test(word) ? word : "";
+}
+
+/**
+ * The examples the request states for the function under test: each call
+ * `fn(args)` followed by a seeded relation word and a literal (Rust
+ * `stated_examples`).
+ * @param {string} prompt raw prompt
+ * @param {string} fn function under test
+ * @returns {Array<object>} {args, expected, stated} records
+ */
+function testGenerationStatedExamples(prompt, fn) {
+  const relations = codeTaskMapWords("test_example_relation").slice().sort(function (a, b) {
+    return Array.from(b).length - Array.from(a).length;
+  });
+  const out = [];
+  const needle = fn + "(";
+  let from = 0;
+  while (true) {
+    const at = prompt.indexOf(needle, from);
+    if (at === -1) break;
+    const open = at + fn.length;
+    from = open + 1;
+    const before = at > 0 ? prompt[at - 1] : "";
+    if (before !== "" && (codeTaskIsAlphanumeric(before) || before === "_")) continue;
+    const span = codeTaskParenSpan(prompt, open);
+    if (span[1] === open) continue;
+    from = span[1];
+    const rest = prompt.slice(span[1]).trimStart();
+    let relation = null;
+    for (const word of relations) {
+      const head = Array.from(rest).slice(0, Array.from(word).length).join("");
+      if (head.toLowerCase() !== word) continue;
+      const next = Array.from(rest)[Array.from(word).length] || "";
+      const last = Array.from(word)[Array.from(word).length - 1];
+      if (codeTaskIsAlphanumeric(last) && next !== "" && codeTaskIsAlphanumeric(next)) continue;
+      relation = head;
+      break;
+    }
+    if (relation === null) continue;
+    const valueText = rest.slice(relation.length).trimStart();
+    const expected = testGenerationLiteralAt(valueText);
+    if (expected === "") continue;
+    out.push({ args: span[0], expected: expected, stated: fn + "(" + span[0] + ") " + relation + " " + expected });
+  }
+  return out;
+}
+
+/**
+ * The pytest assertion for one stated example.
+ * @param {string} fn function under test
+ * @param {object} example stated example
+ * @returns {string} the assertion line
+ */
+function testGenerationExampleAssertion(fn, example) {
+  const call = fn + "(" + example.args + ")";
+  const lower = example.expected.toLowerCase();
+  if (lower === "true" || lower === "false" || lower === "none") {
+    return "    assert " + call + " is " + lower.charAt(0).toUpperCase() + lower.slice(1);
+  }
+  return "    assert " + call + " == " + example.expected;
+}
+
+/**
  * Generate a pytest suite for the function under test.
  * Mirrors `handle_test_generation` in rust/src/solver_handlers/test_generation.rs.
  * @param {string} prompt raw prompt
@@ -841,11 +1042,25 @@ function handleTestGeneration(prompt, normalized) {
       lines.push(assertion);
       rows.push([sample.input, assertion]);
     }
-  } else {
-    codeTaskLogAppend(log, "test_generation:shape", "none");
-    lines = ["def test_smoke():", "    assert " + fn + " is not None"];
-    rows = [];
   }
+  const examples = testGenerationStatedExamples(prompt, fn);
+  if (shape === null) {
+    codeTaskLogAppend(log, "test_generation:shape", "none");
+    if (examples.length === 0) {
+      const names = [];
+      for (const candidate of testGenerationShapes()) names.push(candidate.name);
+      codeTaskLogAppend(log, "test_generation:refusal", "shape=none");
+      return codeTaskAnswer(log, "test_generation", "response:test_generation",
+        codeTaskTemplate("test_generation_unknown_shape", [["function", fn], ["shapes", names.join(", ")]]), 0.4);
+    }
+  }
+  for (let index = 0; index < examples.length; index += 1) {
+    const assertion = testGenerationExampleAssertion(fn, examples[index]);
+    lines.push("def test_" + fn + "_example_" + (index + 1) + "():");
+    lines.push(assertion);
+    rows.push([examples[index].stated, assertion]);
+  }
+  codeTaskLogAppend(log, "test_generation:examples", "stated=" + examples.length);
   if (normalizeApplied) {
     for (const word of propertyWords) rows.push([word, "normalize()"]);
   }

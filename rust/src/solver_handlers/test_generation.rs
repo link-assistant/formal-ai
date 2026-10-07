@@ -10,9 +10,12 @@
 //!
 //! The suite is NOT executed: executing generated tests is issue #1185's
 //! scope, and the answer (a template from
-//! `data/seed/multilingual-responses.lino`) says so. When the function
-//! matches no known shape, a smoke-test skeleton is emitted and the
-//! derivation says the shape was not recognized.
+//! `data/seed/multilingual-responses.lino`) says so. Every example the
+//! request states ("square(3) returns 9", joined by a seeded
+//! `test_example_relation` word) becomes its own case, so a function outside
+//! every shape is tested from what the request says it must return; with no
+//! shape and no stated example the request is refused by name rather than
+//! answered with a guessed skeleton.
 
 use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
@@ -203,6 +206,25 @@ fn inside_parens(text: &str, open_at: usize) -> &str {
     ""
 }
 
+/// The balanced-parenthesis span at `open_at` and the index of its `)`;
+/// `None` when the parentheses never close.
+fn paren_span(text: &str, open_at: usize) -> Option<(&str, usize)> {
+    let mut depth = 0usize;
+    for (offset, ch) in text[open_at..].char_indices() {
+        match ch {
+            '(' => depth += 1,
+            ')' => {
+                depth = depth.checked_sub(1)?;
+                if depth == 0 {
+                    return Some((&text[open_at + 1..open_at + offset], open_at + offset));
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
 /// The function under test: a backtick span like `is_palindrome(s)`, else
 /// the word after "for". Returns (name, parameter list).
 fn function_spec(prompt: &str) -> Option<(String, String)> {
@@ -212,9 +234,7 @@ fn function_spec(prompt: &str) -> Option<(String, String)> {
         let span = &prompt[start + 1..start + 1 + end];
         let name = identifier_at(span);
         if !name.is_empty() {
-            let args = span
-                .find('(')
-                .map_or("s", |open| inside_parens(span, open));
+            let args = span.find('(').map_or("s", |open| inside_parens(span, open));
             return Some((name.to_owned(), args.to_owned()));
         }
     }
@@ -330,6 +350,122 @@ fn normalize_helper(properties: &[String]) -> (Vec<String>, String) {
     }
 }
 
+/// The literal that opens `text`: a bracketed list, a quoted string, or a
+/// number or `True`/`False`/`None` up to whitespace or `,;)` with a trailing
+/// `.` dropped; any other word is not a literal.
+fn literal_at(text: &str) -> &str {
+    let Some(first) = text.chars().next() else {
+        return "";
+    };
+    if first == '[' {
+        let mut depth = 0usize;
+        for (index, ch) in text.char_indices() {
+            if ch == '[' {
+                depth += 1;
+            } else if ch == ']' {
+                depth = depth.saturating_sub(1);
+                if depth == 0 {
+                    return &text[..=index];
+                }
+            }
+        }
+        return "";
+    }
+    if first == '"' || first == '\'' {
+        return text[1..].find(first).map_or("", |close| &text[..close + 2]);
+    }
+    let end = text
+        .find(|ch: char| ch.is_whitespace() || ",;)`".contains(ch))
+        .unwrap_or(text.len());
+    let word = text[..end].trim_end_matches('.');
+    let lower = word.to_lowercase();
+    if ["true", "false", "none"].contains(&lower.as_str()) {
+        return word;
+    }
+    let digits = word.strip_prefix('-').unwrap_or(word);
+    let (whole, fraction) = digits.split_once('.').unwrap_or((digits, "0"));
+    let numeric = |part: &str| !part.is_empty() && part.chars().all(|ch| ch.is_ascii_digit());
+    if numeric(whole) && numeric(fraction) {
+        word
+    } else {
+        ""
+    }
+}
+
+/// One example the request states: the call's arguments, the expected
+/// literal, and the stated text it was read from.
+struct StatedExample {
+    args: String,
+    expected: String,
+    stated: String,
+}
+
+/// The examples the request states for the function under test: each call
+/// `function(args)` followed by a seeded `test_example_relation` word and a
+/// literal ("square(3) returns 9").
+fn stated_examples(prompt: &str, function: &str) -> Vec<StatedExample> {
+    let mut relations: Vec<String> = word_entries("test_example_relation")
+        .iter()
+        .map(|entry| entry.find_child_value("word").to_owned())
+        .filter(|word| !word.is_empty())
+        .collect();
+    relations.sort_by_key(|word| std::cmp::Reverse(word.chars().count()));
+    let needle = [function, "("].concat();
+    let mut out = Vec::new();
+    let mut from = 0usize;
+    while let Some(found) = prompt[from..].find(needle.as_str()) {
+        let at = from + found;
+        let open = at + function.len();
+        from = open + 1;
+        if prompt[..at]
+            .chars()
+            .next_back()
+            .is_some_and(|ch| ch.is_alphanumeric() || ch == '_')
+        {
+            continue;
+        }
+        let Some((args, close)) = paren_span(prompt, open) else {
+            continue;
+        };
+        from = close + 1;
+        let rest = prompt[close + 1..].trim_start();
+        let relation = relations.iter().find_map(|word| {
+            let length = word.chars().count();
+            let head: String = rest.chars().take(length).collect();
+            let next = rest.chars().nth(length);
+            let last = word.chars().next_back().unwrap_or(' ');
+            (head.to_lowercase() == *word
+                && !(last.is_alphanumeric() && next.is_some_and(char::is_alphanumeric)))
+            .then_some(head)
+        });
+        let Some(relation) = relation else {
+            continue;
+        };
+        let expected = literal_at(rest[relation.len()..].trim_start());
+        if expected.is_empty() {
+            continue;
+        }
+        out.push(StatedExample {
+            args: args.to_owned(),
+            expected: expected.to_owned(),
+            stated: [function, "(", args, ") ", &relation, " ", expected].concat(),
+        });
+    }
+    out
+}
+
+/// The pytest assertion for one stated example.
+fn example_assertion(function: &str, example: &StatedExample) -> String {
+    let call = [function, "(", &example.args, ")"].concat();
+    let lower = example.expected.to_lowercase();
+    match lower.as_str() {
+        "true" => ["    assert ", &call, " is ", "True"].concat(),
+        "false" => ["    assert ", &call, " is ", "False"].concat(),
+        "none" => ["    assert ", &call, " is ", "None"].concat(),
+        _ => ["    assert ", &call, " == ", &example.expected].concat(),
+    }
+}
+
 /// Try to recognize a test-writing request and generate a pytest suite for
 /// the function under test.
 ///
@@ -406,15 +542,46 @@ pub fn handle_test_generation(
         lines.extend(case_lines);
         (lines, case_rows)
     } else {
-        log.append("test_generation:shape", "none".to_owned());
-        (
-            vec![
-                ["def ", "test_smoke():"].concat(),
-                ["    assert ", &function, " is not None"].concat(),
-            ],
-            Vec::new(),
-        )
+        (Vec::new(), Vec::new())
     };
+    let examples = stated_examples(prompt, &function);
+    if shape.is_none() {
+        log.append("test_generation:shape", "none".to_owned());
+        if examples.is_empty() {
+            let names: Vec<String> = table.iter().map(|shape| shape.name.clone()).collect();
+            log.append("test_generation:refusal", "shape=none".to_owned());
+            return Some(finalize_simple(
+                prompt,
+                log,
+                INTENT,
+                "response:test_generation",
+                &template(
+                    "test_generation_unknown_shape",
+                    &[("function", &function), ("shapes", &names.join(", "))],
+                ),
+                0.4,
+            ));
+        }
+    }
+    for (index, example) in examples.iter().enumerate() {
+        let assertion = example_assertion(&function, example);
+        lines.push(
+            [
+                "def test_",
+                &function,
+                "_example_",
+                &(index + 1).to_string(),
+                "():",
+            ]
+            .concat(),
+        );
+        lines.push(assertion.clone());
+        rows.push((example.stated.clone(), assertion));
+    }
+    log.append(
+        "test_generation:examples",
+        ["stated=", &examples.len().to_string()].concat(),
+    );
     if normalize_applied {
         for word in &property_words {
             rows.push((word.clone(), "normalize()".to_owned()));

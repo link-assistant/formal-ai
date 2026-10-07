@@ -81,10 +81,24 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
     out
 }
 
-/// One `structure` record: a construct, its meaning sentence, its grounding.
+/// One `structure` record: a construct, its meaning sentence, its grounding,
+/// and the generic matching rows (`head`, `only`, `infix`) it may carry.
 struct Structure {
     construct: String,
     meaning: String,
+    grounding: String,
+    heads: Vec<String>,
+    only: String,
+    infixes: Vec<String>,
+}
+
+/// The ids of every `name` child of a construct body.
+fn child_ids(body: &crate::seed::parser::LinoNode, name: &str) -> Vec<String> {
+    body.children
+        .iter()
+        .filter(|child| child.name == name)
+        .map(|child| child.id.clone())
+        .collect()
 }
 
 fn structures() -> Vec<Structure> {
@@ -104,6 +118,10 @@ fn structures() -> Vec<Structure> {
         out.push(Structure {
             construct: body.id.clone(),
             meaning: body.find_child_value("explanation").to_string(),
+            grounding: body.find_child_value("grounding").to_string(),
+            heads: child_ids(body, "head"),
+            only: body.find_child_value("only").to_string(),
+            infixes: child_ids(body, "infix"),
         });
     }
     out
@@ -199,21 +217,112 @@ fn inside_parens(line: &str, open_at: usize) -> &str {
 
 /// One explained code line: the construct, the meaning's placeholder values,
 /// and whether the line is a loop.
-type LineExplanation = (&'static str, Vec<(&'static str, String)>, bool);
+type LineExplanation = (String, Vec<(&'static str, String)>, bool);
+
+/// The remainder of a keyword-headed line: trailing `:` / `{` / `;` and one pair of
+/// wrapping parentheses removed.
+fn head_rest(rest: &str) -> String {
+    let mut out = rest.trim();
+    while let Some(stripped) = out
+        .strip_suffix(':')
+        .or_else(|| out.strip_suffix('{'))
+        .or_else(|| out.strip_suffix(';'))
+    {
+        out = stripped.trim_end();
+    }
+    if out.starts_with('(') && out.ends_with(')') && inside_parens(out, 0).len() + 2 == out.len() {
+        out = out[1..out.len() - 1].trim();
+    }
+    out.to_owned()
+}
+
+/// Match a line against the seed rows that carry `head` or `only`. The
+/// longest head wins; a head ending in a word character must not run into
+/// another identifier character.
+fn match_seed_head(trimmed: &str, table: &[Structure]) -> Option<LineExplanation> {
+    let mut best: Option<LineExplanation> = None;
+    let mut best_length = 0usize;
+    for structure in table {
+        if !structure.only.is_empty() && trimmed.chars().all(|ch| structure.only.contains(ch)) {
+            return Some((structure.construct.clone(), Vec::new(), false));
+        }
+        for head in &structure.heads {
+            if head.is_empty() || !trimmed.starts_with(head.as_str()) || head.len() <= best_length {
+                continue;
+            }
+            let last = head.chars().next_back().unwrap_or(' ');
+            let next = trimmed[head.len()..].chars().next();
+            if last.is_alphanumeric() && next.is_some_and(|ch| ch.is_alphanumeric() || ch == '_') {
+                continue;
+            }
+            best = Some((
+                structure.construct.clone(),
+                vec![("rest", head_rest(&trimmed[head.len()..]))],
+                false,
+            ));
+            best_length = head.len();
+        }
+    }
+    best
+}
+
+/// Match a line against the seed rows that carry `infix`.
+fn match_seed_infix(trimmed: &str, table: &[Structure]) -> Option<LineExplanation> {
+    for structure in table {
+        for infix in &structure.infixes {
+            if infix.is_empty() {
+                continue;
+            }
+            let Some(at) = trimmed.find(infix.as_str()) else {
+                continue;
+            };
+            let right = trimmed[at + infix.len()..].trim();
+            return Some((
+                structure.construct.clone(),
+                vec![
+                    ("left", trimmed[..at].trim().to_owned()),
+                    ("op", infix.trim().to_owned()),
+                    ("right", right.trim_end_matches(';').to_owned()),
+                ],
+                false,
+            ));
+        }
+    }
+    None
+}
+
+/// A bare call `name(args)` at the start of a line.
+fn match_call(trimmed: &str) -> Option<LineExplanation> {
+    let name = identifier_at(trimmed);
+    if name.is_empty() || !trimmed[name.len()..].starts_with('(') {
+        return None;
+    }
+    Some((
+        "function_call".to_owned(),
+        vec![
+            ("name", name.to_owned()),
+            ("args", inside_parens(trimmed, name.len()).to_owned()),
+        ],
+        false,
+    ))
+}
 
 /// Match one code line against the construct table, filling the meaning's
 /// placeholders from the line. Returns (construct, meaning, `loop_seen`).
-fn explain_line(line: &str) -> Option<LineExplanation> {
+fn explain_line(line: &str, table: &[Structure]) -> Option<LineExplanation> {
     let trimmed = line.trim();
     if trimmed.is_empty() {
         return None;
+    }
+    if let Some(headed) = match_seed_head(trimmed, table) {
+        return Some(headed);
     }
     // JavaScript constructs first (their markers are the most specific).
     if let Some(at) = trimmed.find(".then(") {
         let value = trimmed[..at].trim();
         let handler = inside_parens(trimmed, at + 5);
         return Some((
-            "promise_then",
+            "promise_then".to_owned(),
             vec![("value", value.to_owned()), ("handler", handler.to_owned())],
             false,
         ));
@@ -222,7 +331,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
         let args = trimmed[..at].trim().trim_matches('(').trim_matches(')');
         let expr = trimmed[at + 2..].trim();
         return Some((
-            "arrow_function",
+            "arrow_function".to_owned(),
             vec![("args", args.to_owned()), ("expr", expr.to_owned())],
             false,
         ));
@@ -231,7 +340,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
         && let Some((name, value)) = rest.split_once(" = ")
     {
         return Some((
-            "const_declaration",
+            "const_declaration".to_owned(),
             vec![
                 ("name", name.trim().to_owned()),
                 ("value", value.trim().to_owned()),
@@ -250,7 +359,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
                 .map(|open| inside_parens(rest, open).to_owned())
                 .unwrap_or_default();
             return Some((
-                "function_definition",
+                "function_definition".to_owned(),
                 vec![("name", name.to_owned()), ("args", args)],
                 false,
             ));
@@ -265,7 +374,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
         let item = after_for[..in_at].trim();
         let items = after_for[in_at + 4..].trim().trim_end_matches(']');
         return Some((
-            "comprehension",
+            "comprehension".to_owned(),
             vec![
                 ("expr", expr.to_owned()),
                 ("item", item.to_owned()),
@@ -280,7 +389,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
         let item = rest[..in_at].trim();
         let items = rest[in_at + 4..].trim().trim_end_matches(':');
         return Some((
-            "for_loop",
+            "for_loop".to_owned(),
             vec![("item", item.to_owned()), ("items", items.to_owned())],
             true,
         ));
@@ -288,7 +397,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
     if let Some(rest) = trimmed.strip_prefix("if ") {
         let condition = rest.trim().trim_end_matches(':');
         return Some((
-            "if_statement",
+            "if_statement".to_owned(),
             vec![("condition", condition.to_owned())],
             false,
         ));
@@ -296,22 +405,29 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
     for (marker, construct) in BUILTINS {
         if let Some(open) = trimmed.find(marker) {
             let items = inside_parens(trimmed, open + marker.len() - 1);
-            return Some((construct, vec![("items", items.to_owned())], false));
+            return Some((
+                (*construct).to_owned(),
+                vec![("items", items.to_owned())],
+                false,
+            ));
         }
     }
     if let Some(rest) = trimmed.strip_prefix("return ") {
         return Some((
-            "return_statement",
+            "return_statement".to_owned(),
             vec![("value", rest.trim().to_owned())],
             false,
         ));
     }
+    if let Some(infixed) = match_seed_infix(trimmed, table) {
+        return Some(infixed);
+    }
     if trimmed.contains(" == ") || trimmed.contains(" != ") {
-        return Some(("comparison", Vec::new(), false));
+        return Some(("comparison".to_owned(), Vec::new(), false));
     }
     if let Some((name, value)) = trimmed.split_once(" = ") {
         return Some((
-            "assignment",
+            "assignment".to_owned(),
             vec![
                 ("name", name.trim().to_owned()),
                 ("value", value.trim().to_owned()),
@@ -320,7 +436,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
         ));
     }
     if trimmed.find('/').is_some() {
-        return Some(("division", Vec::new(), false));
+        return Some(("division".to_owned(), Vec::new(), false));
     }
     // indexing: `identifier[...]`
     if let Some(open) = trimmed.find('[') {
@@ -334,7 +450,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
             let items = before;
             let index = &trimmed[open + 1..open + close];
             return Some((
-                "indexing",
+                "indexing".to_owned(),
                 vec![("items", items.to_owned()), ("index", index.to_owned())],
                 false,
             ));
@@ -349,7 +465,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
         let args = inside_parens(trimmed, dot + open);
         if !method.is_empty() && !value.is_empty() {
             return Some((
-                "method_call",
+                "method_call".to_owned(),
                 vec![
                     ("value", value.to_owned()),
                     ("method", method.to_owned()),
@@ -359,7 +475,7 @@ fn explain_line(line: &str) -> Option<LineExplanation> {
             ));
         }
     }
-    None
+    match_call(trimmed)
 }
 
 /// True when any cue phrase for the intent occurs in the normalized prompt
@@ -391,24 +507,39 @@ pub fn handle_code_explanation(
 
     let mut lines_body = String::new();
     let mut matched = 0usize;
+    let mut total = 0usize;
     let mut loop_seen = false;
-    for line in code.lines() {
-        if let Some((construct, values, is_loop)) = explain_line(line) {
-            matched += 1;
-            loop_seen |= is_loop;
-            log.append("code_explanation:construct", construct.to_owned());
-            let Some(structure) = table.iter().find(|s| s.construct == construct) else {
-                continue;
-            };
-            let mut meaning = structure.meaning.clone();
-            for (key, value) in &values {
-                meaning = meaning.replace(&format!("{{{key}}}"), value);
-            }
+    for line in code.lines().filter(|line| !line.trim().is_empty()) {
+        total += 1;
+        let explained = explain_line(line, &table).and_then(|(construct, values, is_loop)| {
+            table
+                .iter()
+                .find(|s| s.construct == construct)
+                .map(|structure| (structure, values, is_loop))
+        });
+        let Some((structure, values, is_loop)) = explained else {
+            log.append("code_explanation:unmatched", line.trim().to_owned());
             lines_body.push_str(&template(
-                "code_explanation_line",
-                &[("line", line.trim()), ("meaning", &meaning)],
+                "code_explanation_unmatched_line",
+                &[("line", line.trim())],
             ));
+            continue;
+        };
+        matched += 1;
+        loop_seen |= is_loop;
+        log.append("code_explanation:construct", structure.construct.clone());
+        let mut meaning = structure.meaning.clone();
+        for (key, value) in &values {
+            meaning = meaning.replace(&format!("{{{key}}}"), value);
         }
+        lines_body.push_str(&template(
+            "code_explanation_line",
+            &[
+                ("line", line.trim()),
+                ("meaning", &meaning),
+                ("grounding", &structure.grounding),
+            ],
+        ));
     }
 
     let (body, confidence) = if matched == 0 {
@@ -448,6 +579,8 @@ pub fn handle_code_explanation(
                 "code_explanation_lines",
                 &[
                     ("lines", &lines_body),
+                    ("matched", &matched.to_string()),
+                    ("total", &total.to_string()),
                     ("overall", &overall),
                     ("cost", &cost),
                 ],

@@ -6,8 +6,9 @@
 //
 // Beyond Rust (issue #1177 R4): the browser has a regex engine, so the composed
 // pattern is also compiled with `RegExp` and run against positive and negative
-// example sets derived from the same constraints; the result is appended to the
-// Rust template as an evidence line.
+// example sets derived from the same constraints; the result fills the
+// template's execution line. The native twin derives the same examples and
+// matches them with its subset matcher (rust/src/solver_handlers/regex_witness.rs).
 
 // ---------------------------------------------------------------------------
 // regex_synthesis
@@ -376,18 +377,14 @@ function handleRegexSynthesis(prompt, normalized) {
   const anchorNote = anchored
     ? codeTaskTemplate("regex_anchor_note_anchored", [])
     : codeTaskTemplate("regex_anchor_note_unanchored", []);
-  let body = codeTaskTemplate("regex_synthesis_pattern", [
-    ["pattern", pattern],
-    ["mapping", mapping],
-    ["anchor_note", anchorNote],
-  ]);
+  let execution = codeTaskTemplate("regex_synthesis_not_executed", []);
   let confidence = 0.7;
   const examples = regexSynthesisExamples(classes, separators, anchored);
   if (examples !== null) {
     const run = regexSynthesisExecute(pattern, examples);
     codeTaskLogAppend(log, "regex_synthesis:execution", run.status);
     if (run.status === "verified") {
-      body += "\n" + codeTaskTemplate("regex_synthesis_execution_verified", [
+      execution = codeTaskTemplate("regex_synthesis_execution_verified", [
         ["positive_count", String(examples.positives.length)],
         ["positives", regexSynthesisQuoteList(examples.positives)],
         ["negative_count", String(examples.negatives.length)],
@@ -395,10 +392,16 @@ function handleRegexSynthesis(prompt, normalized) {
       ]);
       confidence = 0.8;
     } else {
-      body += "\n" + codeTaskTemplate("regex_synthesis_execution_failed", [["failures", run.failures.join("; ")]]);
+      execution = codeTaskTemplate("regex_synthesis_execution_failed", [["failures", run.failures.join("; ")]]);
       confidence = 0.4;
     }
   }
+  const body = codeTaskTemplate("regex_synthesis_pattern", [
+    ["pattern", pattern],
+    ["mapping", mapping],
+    ["anchor_note", anchorNote],
+    ["execution", execution],
+  ]);
   return codeTaskAnswer(log, "regex_synthesis", "response:regex_synthesis", body, confidence);
 }
 

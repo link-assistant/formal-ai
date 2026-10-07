@@ -43,6 +43,7 @@ mod program_blueprint;
 mod program_synthesis;
 mod prompt_text_question;
 mod regex_synthesis;
+mod regex_witness;
 mod research_table;
 mod response_language_followup;
 mod self_awareness;
