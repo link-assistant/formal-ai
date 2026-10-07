@@ -39,6 +39,7 @@ use super::tool_result;
 use crate::protocol::ChatMessage;
 use crate::seed::{self, ShellIntentVocabulary};
 
+const PATH_PLACEHOLDER: &str = concat!("{", "path", "}");
 const SOURCE_PLACEHOLDER: &str = concat!("{", "source", "}");
 const DESTINATION_PLACEHOLDER: &str = concat!("{", "destination", "}");
 const DESTINATION_PARENT_PLACEHOLDER: &str = concat!("{", "destination_parent", "}");
@@ -99,14 +100,24 @@ fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedA
             Some((&intent.effect, rest.split_whitespace().collect::<Vec<_>>()))
         })
         .max_by_key(|(_, operands)| operands.len())?;
-    let [source, destination] = operands.as_slice() else {
-        return None;
+    // One operand fills `{path}` (`mkdir src`); two fill the source, the
+    // destination and the destination's parent, the parent first so the
+    // longer placeholder is never read as the shorter one.
+    let substitutions: Vec<(&str, String)> = match operands.as_slice() {
+        [path] => vec![(PATH_PLACEHOLDER, (*path).to_owned())],
+        [source, destination] => vec![
+            (SOURCE_PLACEHOLDER, (*source).to_owned()),
+            (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),
+            (DESTINATION_PLACEHOLDER, (*destination).to_owned()),
+        ],
+        _ => return None,
     };
     let fill = |template: &String| {
-        template
-            .replace(SOURCE_PLACEHOLDER, source)
-            .replace(DESTINATION_PARENT_PLACEHOLDER, &parent_of(destination))
-            .replace(DESTINATION_PLACEHOLDER, destination)
+        substitutions
+            .iter()
+            .fold(template.clone(), |text, (placeholder, value)| {
+                text.replace(placeholder, value)
+            })
     };
     let mut steps: Vec<String> = effect.before.iter().map(&fill).collect();
     steps.extend(effect.prepare.iter().map(&fill));

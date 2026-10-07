@@ -393,6 +393,8 @@ roles
     kind predicate
   git_branch_cue
     kind meaning
+  git_commit_message_lead
+    kind predicate
   git_commit_request
     kind meaning
   github_repository_platform

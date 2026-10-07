@@ -126,11 +126,34 @@ fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Op
         .strip_prefix(':')
         .unwrap_or(remainder)
         .trim_start();
-    let remainder = strip_balanced_outer_quotes(remainder);
+    let remainder = trim_command_sentence_end(strip_balanced_outer_quotes(remainder));
     if let Some(named) = command_named_in_prose(remainder, vocab) {
         return Some(named);
     }
     (!remainder.is_empty() && !reads_as_prose(remainder, vocab)).then(|| remainder.to_owned())
+}
+
+/// The sentence's full stop and the quotes it wrapped around the command,
+/// peeled from the last token to a fixpoint.
+///
+/// `Run python3 greet.py.` ran `python3 greet.py.`, which names no file, and
+/// `` Run `ls -la`. `` ran the backticks too (PR #1188 dogfooding). The dot is
+/// peeled by [`trim_trailing_sentence_dot`], so `cd ..` and `ls .` keep the
+/// dots that are their whole argument.
+fn trim_command_sentence_end(remainder: &str) -> &str {
+    let mut current = remainder;
+    loop {
+        let unquoted = strip_balanced_outer_quotes(current.trim());
+        let split = unquoted
+            .char_indices()
+            .rfind(|(_, character)| character.is_whitespace())
+            .map_or(0, |(at, character)| at + character.len_utf8());
+        let next = &unquoted[..split + trim_trailing_sentence_dot(&unquoted[split..]).len()];
+        if next == current {
+            return current;
+        }
+        current = next;
+    }
 }
 
 /// Characters that turn the words around them into data rather than prose:

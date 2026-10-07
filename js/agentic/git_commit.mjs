@@ -13,7 +13,8 @@ import { render } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
 import { bareSurfaces, cleanCueToken, tokens } from './write_request.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
-import { mentionsRole } from './write_lexicon.mjs';
+import { mentionsRole, wordsForRole } from './write_lexicon.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { charIn, isAscii, isAsciiAlphanumeric, isWhitespace, trim, trimEnd, trimMatches, trimStart } from './write_str.mjs';
 
 /** Mirrors `CommitTarget::push_ref`. */
@@ -99,7 +100,22 @@ export function planCommitStep(task, messages, toolNames) {
   if (progress.run_outputs.length) {
     return finalAnswer(render('git commit', progress.run_outputs[progress.run_outputs.length - 1], task));
   }
-  return planOne(run, jsonText({ command: commitCommand(subjectForListing(task), null, 'HEAD') }));
+  return planOne(run, jsonText({ command: commitCommand(statedSubject(task) ?? subjectForListing(task), null, 'HEAD') }));
+}
+
+/**
+ * Mirrors `fn stated_subject`: the first quoted text after a seeded
+ * `git_commit_message_lead`, or null.
+ */
+function statedSubject(task) {
+  const lowered = task.toLowerCase();
+  const ends = wordsForRole('git_commit_message_lead').map((word) => word.toLowerCase())
+    .map((word) => { const at = lowered.indexOf(word); return at < 0 ? null : at + word.length; })
+    .filter((end) => end !== null);
+  if (!ends.length) return null;
+  const from = Math.min(...ends);
+  const segment = quotedSegmentSpans(task).find((candidate) => candidate.start >= from && trim(candidate.text) !== '');
+  return segment ? segment.text : null;
 }
 
 function subjectForListing(task) {

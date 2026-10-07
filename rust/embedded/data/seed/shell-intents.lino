@@ -684,6 +684,9 @@ shell_intents
     intent
       command mkdir
       argument "name_lead"
+      effect
+        before "test ! -e {path}"
+        after "test -d {path}"
       language en
         cue "create a directory"
         cue "create a new directory"

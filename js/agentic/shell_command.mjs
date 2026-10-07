@@ -76,10 +76,28 @@ function prefixedShellCommand(raw, vocab) {
   if (tail === null) return null;
   let remainder = trimStart(tail);
   remainder = trimStart(remainder.startsWith(':') ? remainder.slice(1) : remainder);
-  remainder = stripBalancedOuterQuotes(remainder);
+  remainder = trimCommandSentenceEnd(stripBalancedOuterQuotes(remainder));
   const named = commandNamedInProse(remainder, vocab);
   if (named !== null) return named;
   return remainder && !readsAsProse(remainder, vocab) ? remainder : null;
+}
+
+/**
+ * Mirrors `fn trim_command_sentence_end`: the sentence's full stop and the
+ * quotes it wrapped around the command, peeled from the last token to a
+ * fixpoint — `Run python3 greet.py.` runs `python3 greet.py`, and
+ * `` Run `ls -la`. `` runs `ls -la`, while `cd ..` and `ls .` keep their dots.
+ */
+function trimCommandSentenceEnd(remainder) {
+  let current = remainder;
+  for (;;) {
+    const unquoted = stripBalancedOuterQuotes(trim(current));
+    const lastSpace = /\s(?=\S*$)/u.exec(unquoted);
+    const split = lastSpace === null ? 0 : lastSpace.index + lastSpace[0].length;
+    const next = unquoted.slice(0, split) + trimTrailingSentenceDot(unquoted.slice(split));
+    if (next === current) return current;
+    current = next;
+  }
 }
 
 const SHELL_QUOTING_AND_METACHARACTERS = ['"', '\'', '`', '|', '&', ';', '<', '>', '$', '(', ')', '{', '}'];

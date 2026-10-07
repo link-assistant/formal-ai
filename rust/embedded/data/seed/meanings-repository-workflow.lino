@@ -31,6 +31,34 @@ meanings
     lexeme es
       surface
         text rama
+  message
+    defined-by concept
+    role git_commit_message_lead
+    precondition "a commit request quotes the message the commit should carry"
+    effect "the first quoted text after the lead becomes the commit subject"
+    unit "not applicable"
+    example "with the message"
+    lexeme en
+      surface
+        text message
+      surface
+        text "commit message"
+    lexeme ru
+      surface
+        text сообщением
+      surface
+        text сообщение
+    lexeme hi
+      surface
+        text संदेश
+    lexeme zh
+      surface
+        text 消息
+      surface
+        text 提交信息
+    lexeme es
+      surface
+        text mensaje
   git_commit_request
     defined-by action
     role git_commit_request
@@ -51,6 +79,12 @@ meanings
         text "commit and push"
       surface
         text "commit it"
+      surface
+        text "commit all"
+      surface
+        text "commit everything"
+      surface
+        text "commit my changes"
     lexeme ru
       surface
         text закоммить

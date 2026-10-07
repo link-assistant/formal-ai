@@ -40,6 +40,13 @@ possible tasks you encounter on the way must be fully supported by it".
 | T10 | `Run ls and summarize what is in this directory.` | Pass (lists the output; no prose summary). | — |
 | T11 | `How many lines are in notes.txt?` | Pass (`wc -l`). | — |
 | T12 | `Delete the file notes.txt.` / `Rename the file notes.txt to todo.txt.` | Pass (`rm`, `mv`). | — |
+| T13 | `Run python3 greet.py.` | **Fail**: ran `python3 greet.py.` ("can't open file 'greet.py.'"); `` Run `ls -la`. `` also kept the backticks. | **Pass**: runs `python3 greet.py`. |
+| T14 | `Create a directory named src.` | **Fail**: listed the directory instead. | **Pass**: `test ! -e src` → `mkdir src` → `test -d src`; answer `Completed the action \`mkdir src\` and verified it with \`test -d src\`.` |
+| T15 | `Commit all changes with the message 'initial notes'.` | **Fail**: web search for the sentence. (`Commit the changes.` committed as `chore: commit pending changes` and then failed on `git push` with no remote, reported as completed.) | **Pass**: one commit `initial notes`; push only when `git remote` names one. |
+| T16 | `Show me git status.` | **Fail**: web search (the seeded cue is `show git status`). | Open |
+| T17 | `Change the value of "debug" to true in config.json.` | **Fail**: edit with `oldString: the value of "debug"`. | Open |
+| T18 | `Create hello.py that prints Hello, World! and run it.` | **Fail**: answered with a program in chat (named `main.py`), wrote nothing, ran nothing. | Open |
+| T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = a phrase of the request. | Open |
 
 ## Root causes and fixes
 
@@ -147,3 +154,51 @@ removal, the file-deletion non-regression, and text found nowhere.
 945 pass, 0 fail after T7–T9.
 
 **Rust twin.** JS-only (`workspace_change.rs`), together with T4 and T7.
+
+### T13 — the sentence's full stop was part of the command
+
+**Root cause.** `prefixedShellCommand` (`js/agentic/shell_command.mjs`,
+`prefixed_shell_command` in Rust) took everything after the passthrough
+prefix (`run`, `execute`, …) verbatim, so the sentence's final `.` and any
+backticks around the command became shell text.
+
+**Fix (both roots).** `trimCommandSentenceEnd` peels the outer quotes and the
+last token's sentence dot to a fixpoint, reusing `trimTrailingSentenceDot` —
+the path-token rule that keeps `.` and `..` intact — so `cd ..` and `ls .`
+are unchanged.
+
+### T14 — "directory" routed to a listing
+
+**Root cause.** The named-capability router matched the word "directory" to
+`list_dir`. It already declined a read-many route for a request naming a
+*mutating* shell intent, but (a) the guard covered read-many only and (b) the
+`mkdir` intent declared no effect, so it did not count as mutating — effects
+could only be written for two-operand intents (`cp`, `mv`).
+
+**Fix.** The guard covers every observing capability (`read_many`,
+`list_dir`, `glob`, `grep`) in both roots. Effect expansion accepts one
+operand as `{path}` in both roots (`expand` / `expand_with`), and
+`data/seed/shell-intents.lino` declares the `mkdir` effect (`test ! -e
+{path}` before, `test -d {path}` after), so the request runs as a verified
+recipe. `rust/tests/unit/issue_680_intent_routing.rs` now expects the
+recipe's first step (`test ! -e build`) for "Create a directory called
+build".
+
+### T15 — commits: unrecognised phrasing, ignored message, unconditional push
+
+**Root cause.** The `git_commit_request` surfaces had no "commit all"; the
+commit subject was always generated; and the plain-commit templates
+(`data/meta/work-item-steps.lino`) pushed to `origin` unconditionally, so a
+local repository's commit was reported through a push failure.
+
+**Fix.** New surfaces ("commit all", "commit everything", "commit my
+changes"); a seeded concept `message` (role `git_commit_message_lead`, five
+languages) whose first following quoted segment becomes the subject
+(`statedSubject` / `stated_subject`, both roots); the two plain-commit
+templates push only `if test -n "$(git remote)"`. The work-item recipe commit
+is unchanged.
+
+**Tests.** "shell requests run what they name": T13's command and answer,
+T14's recipe and answer, T15's exact command.
+
+**Whole JS suite.** 1020 pass, 0 fail.

@@ -55,6 +55,19 @@ function execute(files, tool, args) {
     if (digest) return `${createHash('sha256').update(files.get(digest[1]) ?? '').digest('hex')}  ${digest[1]}\n`;
     const cat = /^cat (\S+)$/.exec(args.command);
     if (cat) return files.get(cat[1]) ?? `cat: ${cat[1]}: No such file or directory`;
+    const exists = (path) => files.has(path) || files.has(`${path}/`);
+    const test = /^test (!? ?)-([ed]) (\S+)$/.exec(args.command);
+    if (test) {
+      const holds = test[2] === 'd' ? files.has(`${test[3]}/`) : exists(test[3]);
+      return holds === (test[1] === '') ? '' : `Error: exit status 1`;
+    }
+    const mkdir = /^mkdir (\S+)$/.exec(args.command);
+    if (mkdir) {
+      files.set(`${mkdir[1]}/`, '');
+      return '';
+    }
+    if (args.command.startsWith('git add -A && git commit')) return '5498cccac709f99fc533d81030c088d0b292e594\n';
+    if (args.command === 'python3 greet.py') return 'Hello, World\n';
   }
   return `Error: ${tool} is not simulated`;
 }
@@ -164,5 +177,30 @@ describe('PR #1188 dogfood: a removal takes out what it quotes', () => {
     const { files, answer } = await drive("Delete the line 'absent' from notes.txt.", { 'notes.txt': 'first line\n' });
     assert.equal(files.get('notes.txt'), 'first line\n');
     assert.equal(answer, 'Verification failed for `notes.txt`: the observed bytes differ from the planned workspace effect.');
+  });
+});
+
+describe('PR #1188 dogfood: shell requests run what they name', () => {
+  test('`Run python3 greet.py.` runs the command without the sentence\'s full stop', async () => {
+    const { calls, answer } = await drive('Run python3 greet.py.', { 'greet.py': 'print("Hello, World")\n' });
+    assert.deepEqual(calls, ['bash']);
+    assert.equal(answer, 'The `python3 greet.py` command completed. Output:\n\n```text\nHello, World\n```');
+  });
+
+  test('`Create a directory named src.` makes the directory as a verified recipe, not a listing', async () => {
+    const { calls, files, answer } = await drive('Create a directory named src.', {});
+    assert.deepEqual(calls, ['bash', 'bash', 'bash']);
+    assert.equal(files.has('src/'), true);
+    assert.equal(answer, 'Completed the action `mkdir src` and verified it with `test -d src`.');
+  });
+
+  test('a commit carries the message the request quotes and pushes only where a remote exists', async () => {
+    const files = new Map();
+    const messages = [{ role: 'user', content: "Commit all changes with the message 'initial notes'." }];
+    const plan = await planChatStep(messages, AGENT_CLI_TOOLS);
+    assert.equal(plan.kind, 'tool_calls');
+    assert.equal(JSON.parse(plan.calls[0].arguments).command,
+      "git add -A && git commit -q -m 'initial notes' && if test -n \"$(git remote)\"; then git push -q origin HEAD; fi && git rev-parse HEAD");
+    assert.equal(files.size, 0);
   });
 });

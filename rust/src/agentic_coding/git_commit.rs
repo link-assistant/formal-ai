@@ -177,8 +177,29 @@ pub(super) fn plan_commit_step(
             task,
         )));
     }
-    let command = commit_command(&subject_for_listing(task), None, "HEAD");
+    let subject = stated_subject(task).unwrap_or_else(|| subject_for_listing(task));
+    let command = commit_command(&subject, None, "HEAD");
     Some(plan_one(run, json!({ "command": command }).to_string()))
+}
+
+/// The message the request quotes for the commit: the first quoted text after
+/// a seeded `git_commit_message_lead` ("with the message 'initial notes'"),
+/// so a stated message is never replaced by a generated one (PR #1188
+/// dogfooding).
+fn stated_subject(task: &str) -> Option<String> {
+    let lowered = task.to_lowercase();
+    let from = seed::lexicon()
+        .words_for_role("git_commit_message_lead")
+        .iter()
+        .filter_map(|word| {
+            let word = word.to_lowercase();
+            lowered.find(&word).map(|at| at + word.len())
+        })
+        .min()?;
+    crate::normal_markov::quoted_segment_spans(task)
+        .into_iter()
+        .find(|segment| segment.start >= from && !segment.text.trim().is_empty())
+        .map(|segment| segment.text)
 }
 
 /// A commit subject read from the `git status --porcelain` lines in `task`.

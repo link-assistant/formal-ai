@@ -190,6 +190,8 @@ export function planRoutedCapabilityStep(task, messages, toolNames, stage) {
   return planRoutedCapabilityStepIn(task, messages, toolNames, stage, []);
 }
 
+/** Mirrors `OBSERVING_SLUGS`: capabilities that only observe the workspace. */
+const OBSERVING_SLUGS = ['read_many', 'list_dir', 'glob', 'grep'];
 const NAMED_CAPABILITY_SLUGS = ['grep', 'glob', 'list_dir', 'read_many', 'multi_edit', 'todo', 'subagent'];
 
 /** Mirrors `fn plan_named_capability_step` in rust/src/agentic_coding/capability_router.rs. */
@@ -224,8 +226,7 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
   const capability = routedCapability(slug);
   if (capability === null) return null;
   if (namesAContainerWithoutAnAct(routedTask)) return null;
-  if ((capability === Capability.ReadMany || (capability === Capability.Run && loweredFrom === 'read_many'))
-    && namesMutatingShellIntent(routedTask)) {
+  if ((capability === Capability.ReadMany || OBSERVING_SLUGS.includes(decided)) && namesMutatingShellIntent(routedTask)) {
     return null;
   }
   if (hasLatestTurnResult(messages)) {

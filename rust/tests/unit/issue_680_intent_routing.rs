@@ -305,7 +305,10 @@ fn shell_intent_routes_to_run_tool_in_any_phrasing() {
             "Count the number of lines in Cargo.toml",
             "wc -l Cargo.toml",
         ),
-        ("English", "Create a directory called build", "mkdir build"),
+        // `mkdir` declares a verified effect in the seed (PR #1188 dogfooding),
+        // so its first planned step is the effect's precondition; `mkdir build`
+        // follows once the name is observed free.
+        ("English", "Create a directory called build", "test ! -e build"),
         ("English", "What is my username?", "whoami"),
         // Russian: "show what is in this folder" -> ls
         ("Russian", "покажи что в этой папке", "ls"),

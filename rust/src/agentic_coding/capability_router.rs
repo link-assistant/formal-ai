@@ -353,6 +353,10 @@ fn stage_of(task: &str) -> RoutingStage {
 /// Plan 10 leaf 11: the seven request-side cue families joined this table, so
 /// every capability the seed registry declares is decided by a
 /// `(object, act, locus)` row and none by a memorized phrase.
+/// Capabilities that only observe the workspace: a request naming a mutating
+/// shell intent is never answered by one of them.
+const OBSERVING_SLUGS: [&str; 4] = ["read_many", "list_dir", "glob", "grep"];
+
 const ROUTED_CAPABILITIES: [(&str, Capability); 12] = [
     ("web_fetch", Capability::Fetch),
     ("web_search", Capability::Search),
@@ -550,8 +554,10 @@ fn plan_routed_capability_step_in(
     // b.md") names no mutating cue and keeps its route (issue #1021:
     // "copy a.txt to b.txt" planned `cat`, and a traversal the safety rule
     // refused answered as a one-file cat of the operand that survived).
-    if (capability == Capability::ReadMany
-        || (capability == Capability::Run && lowered_from.as_deref() == Some("read_many")))
+    // Every observing capability defers the same way: "Create a directory
+    // named src." routed to `list_dir` on the word "directory" and answered
+    // with a listing instead of `mkdir src` (PR #1188 dogfooding).
+    if (capability == Capability::ReadMany || OBSERVING_SLUGS.contains(&decided))
         && super::shell_command::names_mutating_shell_intent(routed_task)
     {
         return None;

@@ -9,8 +9,8 @@ work_item_steps
   issue_rest_read_command "curl -fsSL -H 'Accept: application/vnd.github.raw+json' https://api.github.com/repos/{owner}/{repo}/{kind}/{number}; printf '\n__formal_ai_exit=%s\n' $?"
   issue_api_read_command "gh api repos/{owner}/{repo}/{kind}/{number} --jq .title && echo && gh api repos/{owner}/{repo}/{kind}/{number} --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
   read_failed_report "The work item at {target} could not be read, so nothing was planned for it and no plan record was written. Reads tried this session, each with its result:\n{attempts}"
-  commit_command "git add -A && git commit -q -m {subject} -m {body} && git push -q origin {branch} && git rev-parse HEAD"
-  commit_command_without_body "git add -A && git commit -q -m {subject} && git push -q origin {branch} && git rev-parse HEAD"
+  commit_command 'git add -A && git commit -q -m {subject} -m {body} && if test -n "$(git remote)"; then git push -q origin {branch}; fi && git rev-parse HEAD'
+  commit_command_without_body 'git add -A && git commit -q -m {subject} && if test -n "$(git remote)"; then git push -q origin {branch}; fi && git rev-parse HEAD'
   recipe_commit_command "git add -- {files} && (if git diff --cached --quiet -- {files}; then echo __formal_ai_commit_unchanged; else git commit --only -q -m {subject} -m {body} -- {files}; fi) && git push -q origin {branch} && git rev-parse HEAD"
   subject_added "feat: add {path}"
   subject_updated "fix: update {path}"

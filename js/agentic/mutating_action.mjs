@@ -14,6 +14,7 @@ import { localizedResponse } from './crate/seed.mjs';
 import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
 import { maxByKey, replaceAllLiteral, rsplitOnce, splitWhitespace } from './crate/rust_str.mjs';
 
+const PATH_PLACEHOLDER = '{path}';
 const SOURCE_PLACEHOLDER = '{source}';
 const DESTINATION_PLACEHOLDER = '{destination}';
 const DESTINATION_PARENT_PLACEHOLDER = '{destination_parent}';
@@ -44,13 +45,13 @@ function expandWith(command, vocab) {
   const best = maxByKey(candidates, ([, operands]) => operands.length);
   if (best === undefined) return null;
   const [effect, operands] = best;
-  if (operands.length !== 2) return null;
-  const [source, destination] = operands;
-  const fill = (template) => replaceAllLiteral(
-    replaceAllLiteral(replaceAllLiteral(template, SOURCE_PLACEHOLDER, source), DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)),
-    DESTINATION_PLACEHOLDER,
-    destination,
-  );
+  let substitutions;
+  if (operands.length === 1) substitutions = [[PATH_PLACEHOLDER, operands[0]]];
+  else if (operands.length === 2) {
+    const [source, destination] = operands;
+    substitutions = [[SOURCE_PLACEHOLDER, source], [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]];
+  } else return null;
+  const fill = (template) => substitutions.reduce((text, [placeholder, value]) => replaceAllLiteral(text, placeholder, value), template);
   const steps = [...effect.before.map(fill), ...effect.prepare.map(fill)];
   const action = steps.length;
   steps.push(command);
