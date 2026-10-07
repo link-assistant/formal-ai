@@ -25,6 +25,7 @@ mod issue_427_invert_sort;
 mod issue_457_self_source_metrics;
 mod issue_458_crypto_portfolio;
 mod issue_461_php_followup;
+mod issue_540_memory_dream_cli;
 mod issue_558_change_request;
 mod issue_558_learning_ledger;
 mod issue_558_rebuild_plan;
