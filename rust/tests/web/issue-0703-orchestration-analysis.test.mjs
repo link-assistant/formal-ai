@@ -10,10 +10,11 @@
 // repeated_orchestration_sessions_feed_human_gated_adapter_learning,
 // public_cli_synthesizes_translates_and_proposes_learned_adapter_updates (learn half).
 //
-// The ranking half of `synthesize_sessions` (formalize, deduplicate, rank,
-// recheck, `formalize_prompt`) needs the multi-source summarization pipeline and
-// the translation formalizer, which have no JavaScript module yet; its test runs
-// the moment `summarization.mjs` and `translation_formalization.mjs` export them.
+// The ranking half of `synthesize_sessions` runs the multi-source pipeline of
+// summarization*.mjs (formalize, deduplicate, rank, recheck) and
+// translation_formalization.mjs (`formalize_prompt`); its Rust twin
+// `council_results_are_formalized_summarized_and_cross_checked` is ported whole,
+// the translation half included.
 
 import assert from 'node:assert/strict';
 import path from 'node:path';
@@ -100,11 +101,7 @@ test('R703-8: synthesis refuses an empty council and an unsupported response lan
   await assert.rejects(synthesizeSessions([session], 'xx'), (error) => error.message === 'unsupported_response_language:xx');
 });
 
-const pipeline = await Promise.all([import('../../../js/agentic/crate/summarization.mjs'), import('../../../js/agentic/crate/translation_formalization.mjs').catch(() => ({}))])
-  .then(([summarization, translation]) => ({ ...summarization, ...translation }));
-const pipelineReady = ['deduplicate', 'rank', 'recheck', 'formalizePrompt'].every((name) => typeof pipeline[name] === 'function');
-
-test('R703-8, R703-9: council results are formalized, ranked, cross-checked and contradictions withheld', { skip: !pipelineReady && 'needs the multi-source summarization pipeline and formalize_prompt' }, async () => {
+test('R703-8, R703-9: council results are formalized, ranked, cross-checked and contradictions withheld', async () => {
   const first = await runAgent(fixtureConfig(fixture, 'codex', makeTemp('synthesis-first'), 'success', 'Rust is memory safe. The Moon is cheese.'));
   const second = await runAgent(fixtureConfig(fixture, 'claude', makeTemp('synthesis-second'), 'success', 'Rust is memory safe. The Moon is not cheese.'));
   const report = await synthesizeSessions([first, second], 'ru');
@@ -118,6 +115,22 @@ test('R703-8, R703-9: council results are formalized, ranked, cross-checked and 
   assert.notDeepEqual(report.contradictions, []);
   assert.notDeepEqual(report.corrections, []);
   assert.equal(report.translation_required, true);
+  assert.deepEqual(report.claims.map((claim) => [claim.text, claim.verdict, claim.presented, claim.sources, claim.denied_by]), [
+    ['Rust is memory safe.', 'confirmed', true, ['codex:0', 'claude:1'], []],
+    ['The Moon is cheese.', 'refuted', false, ['codex:0'], ['claude:1']],
+    ['The Moon is not cheese.', 'refuted', false, ['claude:1'], ['codex:0']],
+  ]);
+  assert.equal(report.summary, 'Rust is memory safe.');
+  assert.equal(report.final_language, 'en');
+
+  assert.throws(
+    () => applyVerifiedTranslation(report, 'Rust is memory safe.', 'translator-session-sha256'),
+    (error) => error instanceof AgentSynthesisError && error.message === 'translation_language_mismatch:ru:en',
+  );
+  applyVerifiedTranslation(report, 'Rust обеспечивает безопасность памяти.', 'translator-session-sha256');
+  assert.equal(report.final_language, 'ru');
+  assert.equal(report.translation_required, false);
+  assert.equal(report.translation.session_sha256, 'translator-session-sha256');
 });
 
 test('R703-11: repeated orchestration sessions feed human-gated adapter learning', async () => {

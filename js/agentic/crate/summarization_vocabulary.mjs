@@ -4,11 +4,10 @@
 // vocabulary; nothing is hardcoded here. The lists are cached per installed
 // host, like the Rust `OnceLock`s.
 //
-// Not ported: `rendered_response`, which only the unported merge layer
-// (context.rs, dedup.rs) calls.
 
 import { cached } from '../host.mjs';
 import { containsCjk, wordsForRole } from './seed_meanings.mjs';
+import { multilingualResponses } from './seed.mjs';
 
 /** Mirrors `ROLE_STATEMENT_FUNCTION_WORD` in rust/src/seed/roles/tooling.rs. */
 export const ROLE_STATEMENT_FUNCTION_WORD = 'statement_function_word';
@@ -136,4 +135,26 @@ export function mentionsWord(tokens, vocabulary) {
   const cjk = cjkWordsLongestFirst(vocabulary);
   return tokens.some((token) => vocabulary.some((word) => word === token)
     || (containsCjk(token) && cjk.some((word) => token.includes(word))));
+}
+
+/**
+ * Mirrors `fn response_template` in rust/src/summarization/vocabulary.rs: the
+ * seed response text for an intent and language slug.
+ */
+function responseTemplate(intent, language) {
+  const found = multilingualResponses().find((record) => record.intent === intent && record.language === language);
+  return found === undefined ? null : found.text;
+}
+
+/**
+ * Mirrors `fn rendered_response` in rust/src/summarization/vocabulary.rs: a
+ * seed response template for `language` (English when it has none, empty when
+ * neither exists) with every placeholder replaced.
+ * @param {string} intent
+ * @param {string} language a language slug
+ * @param {Array<[string, string]>} values `[placeholder, value]` pairs, applied in order
+ */
+export function renderedResponse(intent, language, values) {
+  const template = responseTemplate(intent, language) ?? responseTemplate(intent, 'en') ?? '';
+  return values.reduce((rendered, [placeholder, value]) => rendered.split(placeholder).join(value), template);
 }

@@ -474,3 +474,13 @@ agentic_messages
     text "{path} is a repository directory with {direct_files} {direct_files_noun} and {direct_directories} {direct_directories_noun} ({lines} {lines_noun} total across {files} {files_noun})."
   message summarization_omitted_entries
     text "{hidden} more {noun} omitted for brevity."
+  message statement_grounding_query
+    text '"{statement}" fact check source'
+  message recheck_reason_confirmed
+    text "supported by trusted sources, uncontradicted"
+  message recheck_reason_contested
+    text "sources disagree, still probable"
+  message recheck_reason_refuted
+    text "contradicting evidence outweighs support"
+  message recheck_reason_unsupported
+    text "no trusted source asserts it"

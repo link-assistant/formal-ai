@@ -4,18 +4,27 @@
 // project recorded sessions into the proposal-only client-contract learner.
 //
 // `extract_agent_result` and `apply_verified_translation` are self-contained.
-// `synthesize_sessions` drives the summarization pipeline (`deduplicate`,
-// `rank`, `recheck`, `summarize`, `deformalize`) and the translation
-// formalizer (`formalize_prompt`); those are supplied as a `pipeline` object
-// (or loaded from summarization.mjs / translation_formalization.mjs once those
-// modules export them), and the call fails with `synthesis_pipeline_unavailable`
-// naming whatever is missing rather than answering from a partial pipeline.
+// `synthesize_sessions` drives the summarization pipeline (summarization.mjs,
+// summarization_dedup.mjs, summarization_importance.mjs,
+// summarization_recheck.mjs) and the translation formalizer
+// (translation_formalization.mjs), the modules the Rust file imports from
+// `crate::summarization` and `crate::translation`.
 
 import { clientContractObservation } from './client_contract_learning.mjs';
 import { detect, languageFromSlug } from './language.mjs';
 import { isJsonObject, jsonValueStream, firstJsonValue } from './orchestration_json_stream.mjs';
 import { sessionSha256 } from './orchestration_runner.mjs';
 import { localizedResponse } from './seed.mjs';
+import { SourceTier } from './relative_meta_logic.mjs';
+import {
+  SummarizationMode, defaultConfig, deformalize, formalize, summarize, withLanguage, withMode,
+} from './summarization.mjs';
+import { deduplicate, mergedSources, sourcedStatement } from './summarization_dedup.mjs';
+import { rank } from './summarization_importance.mjs';
+import {
+  checkedText, recheck, survivors, verdictIsPresentable, verdictSlug,
+} from './summarization_recheck.mjs';
+import { candidateToLinksNotation, formalizePrompt } from './translation_formalization.mjs';
 
 const SOURCES_PLACEHOLDER = '{sources}';
 const PROBABILITY_PLACEHOLDER = '{probability}';
@@ -174,17 +183,6 @@ function correctionRequests(sessions, claims) {
   return requests;
 }
 
-/** Mirrors `the summarization and translation imports of fn synthesize_sessions` in rust/src/orchestration/analysis.rs. The summarization and translation pieces `synthesizeSessions` calls, or the names missing. */
-async function loadPipeline() {
-  const summarization = await import('./summarization.mjs').catch(() => ({}));
-  const translation = await import('./translation_formalization.mjs').catch(() => ({}));
-  const pipeline = { ...summarization, ...translation };
-  const missing = ['formalize', 'deduplicate', 'rank', 'recheck', 'summarize', 'deformalize', 'formalizePrompt']
-    .filter((name) => typeof pipeline[name] !== 'function');
-  if (missing.length > 0) throw new Error(`synthesis_pipeline_unavailable:${missing.join(',')}`);
-  return pipeline;
-}
-
 /**
  * Mirrors `fn synthesize_sessions` in rust/src/orchestration/analysis.rs: merge
  * agent output as sourced statements, rank it by evidence, and run the
@@ -192,13 +190,11 @@ async function loadPipeline() {
  * `cross_agent_evidence_preflight`: model agreement is not external proof.
  * @param {object[]} sessions the recorded `AgentSession`s
  * @param {string} targetLanguage a language slug
- * @param {object} [pipeline] the summarization / translation functions (default: loaded from the crate modules)
  * @returns {Promise<object>} the `AgentSynthesisReport`
  */
-export async function synthesizeSessions(sessions, targetLanguage, pipeline = null) {
+export async function synthesizeSessions(sessions, targetLanguage) {
   if (sessions.length === 0) throw new AgentSynthesisError('missing_sources');
   if (languageFromSlug(targetLanguage) === null) throw new AgentSynthesisError('unsupported_language', targetLanguage);
-  const api = pipeline ?? await loadPipeline();
   const sources = [];
   const observations = [];
   for (const [index, session] of sessions.entries()) {
@@ -209,25 +205,25 @@ export async function synthesizeSessions(sessions, targetLanguage, pipeline = nu
       cli: session.cli,
       session_sha256: sessionSha256(session),
       detected_language: detected,
-      meta_language: api.formalizePrompt(result, detected).toLinksNotation(),
+      meta_language: candidateToLinksNotation(formalizePrompt(result, detected)),
     });
-    for (const statement of api.formalize(result)) observations.push(api.sourcedStatement(statement, source, 'original_first_party'));
+    for (const statement of formalize(result)) observations.push(sourcedStatement(statement, source, SourceTier.OriginalFirstParty));
   }
-  const dedup = api.deduplicate(observations);
-  const ranked = api.rank(dedup);
-  const checked = api.recheck(ranked);
+  const dedup = deduplicate(observations);
+  const ranked = rank(dedup);
+  const checked = recheck(ranked);
   const claims = checked.checked.map((item) => ({
     id: item.ranked.statement.id,
-    text: api.itemText(item),
-    sources: api.statementSources(item.ranked.statement),
+    text: checkedText(item),
+    sources: mergedSources(item.ranked.statement),
     denied_by: item.ranked.denied_by,
     probability: item.ranked.probability,
     importance: item.ranked.score.weight,
-    verdict: item.verdict.slug,
-    presented: item.verdict.presentable,
+    verdict: verdictSlug(item.verdict),
+    presented: verdictIsPresentable(item.verdict),
   }));
-  const surviving = api.survivors(checked).map((item) => item.ranked.statement.representative);
-  const summary = api.deformalize(api.summarize(surviving, { mode: 'standard', language: targetLanguage }));
+  const surviving = survivors(checked).map((item) => item.ranked.statement.representative);
+  const summary = deformalize(summarize(surviving, withLanguage(withMode(defaultConfig(), SummarizationMode.Standard), targetLanguage)));
   const finalLanguage = detect(summary);
   return {
     schema: 'formal-ai-agent-synthesis-v1',

@@ -252,7 +252,7 @@ function periodBelongsToToken(buffer, next) {
  * Mirrors `fn weight_for_kind` in rust/src/summarization/mod.rs.
  * @param {string} kind
  */
-function weightForKind(kind) {
+export function weightForKind(kind) {
   switch (kind) {
     case StatementKind.Purpose: return 100;
     case StatementKind.Identity: return 90;

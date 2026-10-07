@@ -1,0 +1,241 @@
+// `crate::summarization::dedup` (rust/src/summarization/dedup.rs): statement
+// level deduplication over sourced observations - conservative (two statements
+// merge only on the same signature), explainable (every absorption leaves a
+// merge link) and reversible (`splitMerged`).
+//
+// Representation: a `Polarity` is 'asserted' | 'denied'; a
+// `StatementSignature` is `{polarity, terms}`; a `SourcedStatement` is
+// `{statement, source, tier, semantic_terms}`; a `MergedStatement` is `{id,
+// signature, representative, variants}` with variants `{text, source, tier}`;
+// a `DedupReport` is `{statements, links, contradictions, sources}`. Rust's
+// derived `Ord` on strings is byte order, which for valid text is code point
+// order (`compareStrings`), not JavaScript's UTF-16 code unit order.
+
+import { stableId } from './engine_stable_id.mjs';
+import { StatementKind, classifySentence, statement, weightForKind } from './summarization.mjs';
+import {
+  functionWords, mentionsWord, negationCues, stripWords, tokenize,
+} from './summarization_vocabulary.mjs';
+
+/** Mirrors `enum Polarity` in rust/src/summarization/dedup.rs. */
+export const Polarity = Object.freeze({ Asserted: 'asserted', Denied: 'denied' });
+
+/** Mirrors `Polarity::flipped` in rust/src/summarization/dedup.rs. */
+export function flippedPolarity(polarity) {
+  return polarity === Polarity.Asserted ? Polarity.Denied : Polarity.Asserted;
+}
+
+/**
+ * `String::cmp`: UTF-8 byte order, i.e. code point order.
+ * @param {string} left
+ * @param {string} right
+ */
+export function compareStrings(left, right) {
+  const a = Array.from(left);
+  const b = Array.from(right);
+  const shared = Math.min(a.length, b.length);
+  for (let index = 0; index < shared; index += 1) {
+    const difference = a[index].codePointAt(0) - b[index].codePointAt(0);
+    if (difference !== 0) return difference < 0 ? -1 : 1;
+  }
+  return Math.sign(a.length - b.length);
+}
+
+/** Sorted, de-duplicated copy of `terms` in byte order (`sort_unstable` + `dedup`). */
+function sortedUnique(terms) {
+  const sorted = [...terms].sort(compareStrings);
+  return sorted.filter((term, index) => index === 0 || term !== sorted[index - 1]);
+}
+
+/**
+ * Mirrors `StatementSignature::of`: tokenize, drop function words, fold the
+ * negation cues into the polarity, sort and de-duplicate the terms.
+ * @param {string} text
+ */
+export function signatureOf(text) {
+  const tokens = tokenize(text);
+  const content = stripWords(tokens, functionWords());
+  const polarity = mentionsWord(content, negationCues()) ? Polarity.Denied : Polarity.Asserted;
+  return { polarity, terms: sortedUnique(stripWords(content, negationCues())) };
+}
+
+/**
+ * Mirrors `StatementSignature::with_semantic_terms`.
+ * @param {string} text
+ * @param {Array<string>} semanticTerms
+ */
+export function signatureWithSemanticTerms(text, semanticTerms) {
+  if (semanticTerms.length === 0) return signatureOf(text);
+  return { polarity: signatureOf(text).polarity, terms: sortedUnique(semanticTerms) };
+}
+
+/** Mirrors `StatementSignature::negated`. */
+export function negatedSignature(signature) {
+  return { polarity: flippedPolarity(signature.polarity), terms: [...signature.terms] };
+}
+
+/** Mirrors `StatementSignature::key`: `"asserted:fast is parser"`. */
+export function signatureKey(signature) {
+  return `${signature.polarity}:${signature.terms.join(' ')}`;
+}
+
+/** Mirrors `StatementSignature::id`. */
+export function signatureId(signature) {
+  return stableId('statement', signatureKey(signature));
+}
+
+/** Mirrors `StatementSignature::is_empty`. */
+export function signatureIsEmpty(signature) {
+  return signature.terms.length === 0;
+}
+
+/** `StatementSignature == StatementSignature`. */
+export function sameSignature(left, right) {
+  return left.polarity === right.polarity && left.terms.length === right.terms.length
+    && left.terms.every((term, index) => term === right.terms[index]);
+}
+
+/**
+ * Mirrors `SourcedStatement::new` in rust/src/summarization/dedup.rs.
+ * @param {{text: string, kind: string, weight: number}} stmt
+ * @param {string} source
+ * @param {string} tier a `SourceTier`
+ */
+export function sourcedStatement(stmt, source, tier) {
+  return { statement: stmt, source, tier, semantic_terms: [] };
+}
+
+/** Mirrors `SourcedStatement::with_semantic_terms`. */
+export function withSemanticTerms(observation, terms) {
+  return { ...observation, semantic_terms: terms };
+}
+
+/**
+ * Mirrors `SourcedStatement::from_sentence`: a raw sentence classified and
+ * weighted the way the rest of the pipeline does.
+ * @param {string} text
+ * @param {string} source
+ * @param {string} tier
+ */
+export function sourcedStatementFromSentence(text, source, tier) {
+  const kind = classifySentence(text);
+  return sourcedStatement(
+    statement(text.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, ''), kind, weightForKind(kind)),
+    source,
+    tier,
+  );
+}
+
+/** Mirrors `MergedStatement::sources`: distinct sources in first-seen order. */
+export function mergedSources(node) {
+  const out = [];
+  for (const variant of node.variants) if (!out.includes(variant.source)) out.push(variant.source);
+  return out;
+}
+
+/** Mirrors `MergedStatement::evidence`: distinct `[source, tier]`, the first tier wins. */
+export function mergedEvidence(node) {
+  const out = [];
+  for (const variant of node.variants) {
+    if (!out.some(([source]) => source === variant.source)) out.push([variant.source, variant.tier]);
+  }
+  return out;
+}
+
+/** Mirrors `MergedStatement::source_count`. */
+export function sourceCount(node) {
+  return mergedSources(node).length;
+}
+
+/** Mirrors `MergedStatement::prior`. */
+export function mergedPrior(node) {
+  return node.representative.weight;
+}
+
+/** Mirrors `DedupReport::statement`. */
+export function reportStatement(report, id) {
+  return report.statements.find((node) => node.id === id) ?? null;
+}
+
+/** Mirrors `DedupReport::justification`: the merge links behind node `id`. */
+export function reportJustification(report, id) {
+  return report.links.filter((link) => link.representative === id);
+}
+
+/** Mirrors `DedupReport::is_contradicted`. */
+export function reportIsContradicted(report, id) {
+  return report.contradictions.some((pair) => pair.asserted === id || pair.denied === id);
+}
+
+/**
+ * Mirrors `DedupReport::split`: replace node `id` by one node per absorbed
+ * variant and drop its links and contradictions; `false` when nothing merged.
+ * @param {object} report a `DedupReport`, mutated
+ * @param {string} id
+ */
+export function splitMerged(report, id) {
+  const position = report.statements.findIndex((node) => node.id === id);
+  if (position < 0) return false;
+  if (report.statements[position].variants.length < 2) return false;
+  const node = report.statements[position];
+  const replacements = node.variants.map((variant, index) => ({
+    id: `${node.id}_${index}`,
+    signature: { polarity: node.signature.polarity, terms: [...node.signature.terms] },
+    representative: { ...node.representative, text: variant.text },
+    variants: [{ ...variant }],
+  }));
+  report.statements.splice(position, 1, ...replacements);
+  report.links = report.links.filter((link) => link.representative !== id);
+  report.contradictions = report.contradictions.filter((pair) => pair.asserted !== id && pair.denied !== id);
+  return true;
+}
+
+/** Mirrors `fn find_contradictions` in rust/src/summarization/dedup.rs. */
+function findContradictions(statements) {
+  const out = [];
+  for (const node of statements) {
+    if (node.signature.polarity !== Polarity.Asserted || signatureIsEmpty(node.signature)) continue;
+    const denial = negatedSignature(node.signature);
+    const twin = statements.find((other) => sameSignature(other.signature, denial));
+    if (twin !== undefined) out.push({ asserted: node.id, denied: twin.id, terms: [...node.signature.terms] });
+  }
+  return out;
+}
+
+/**
+ * Mirrors `fn deduplicate` in rust/src/summarization/dedup.rs: one node per
+ * distinct fact, a link per absorbed sentence, and the affirmed/denied twins.
+ * @param {Array<object>} observations `SourcedStatement` values
+ * @returns {{statements: Array<object>, links: Array<object>, contradictions: Array<object>, sources: Array<string>}}
+ */
+export function deduplicate(observations) {
+  const report = { statements: [], links: [], contradictions: [], sources: [] };
+  for (const observation of observations) {
+    const text = observation.statement.text.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '');
+    if (text === '') continue;
+    if (!report.sources.includes(observation.source)) report.sources.push(observation.source);
+    const signature = signatureWithSemanticTerms(text, observation.semantic_terms);
+    const id = signatureId(signature);
+    const existing = report.statements.find((node) => !signatureIsEmpty(node.signature) && sameSignature(node.signature, signature));
+    const variant = { text, source: observation.source, tier: observation.tier };
+    if (existing !== undefined) {
+      if (existing.variants.some((seen) => seen.text === variant.text && seen.source === variant.source)) continue;
+      existing.variants.push(variant);
+      report.links.push({
+        representative: existing.id,
+        absorbed: text,
+        source: observation.source,
+        justification: signatureKey(signature),
+      });
+    } else {
+      report.statements.push({
+        id: signatureIsEmpty(signature) ? stableId('statement', text) : id,
+        signature,
+        representative: { ...observation.statement, text },
+        variants: [variant],
+      });
+    }
+  }
+  report.contradictions = findContradictions(report.statements);
+  return report;
+}
