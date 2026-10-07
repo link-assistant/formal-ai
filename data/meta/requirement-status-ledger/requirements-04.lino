@@ -150,7 +150,7 @@ requirement_status_ledger_shard requirements_04
     verdict "partial"
     delivered "Partial (2026-10-07, this pull request): `plan_work_item_execution` takes its `execution_recipe` from the solver's answer, so it inherits the cache-backed recipe of R1165-1 and the named miss gap in the same derivation."
     issue "1165"
-    automated_test "rust/tests/unit/issue_1165_discovery_production.rs"
+    automated_test "rust/tests/unit/issue_716_agentic_execution.rs"
     manual "not yet confirmed"
   requirement
     id "R1165-3"

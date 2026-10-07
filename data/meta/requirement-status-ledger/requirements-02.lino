@@ -3,7 +3,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-3"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-19"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_behaviour_range.rs"
@@ -11,7 +11,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-30"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-19"
     issue "1021"
     automated_test "rust/tests/unit/ci-cd/issue_1021.rs"
@@ -19,7 +19,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-31"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-20"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_behaviour_range.rs"
@@ -27,7 +27,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-32"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-20"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_verified_move.rs"
@@ -35,7 +35,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-33"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-21"
     issue "1021"
     automated_test "rust/tests/unit/ci-cd/issue_1021.rs"
@@ -43,15 +43,15 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-34"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-21"
     issue "1021"
-    automated_test "rust/tests/unit/ci-cd/issue_1017.rs"
+    automated_test "rust/tests/web/issue-1021-link-checker.test.mjs"
     manual "falsified 2026-08-21 by running the four new tests against the previous parser: all four fail and the three pre-existing ones pass, which is what shows the gap was the report shape rather than the assertions. Reproduced from the real artefact with `node experiments/issue-1021-link-checker-false-positive/reproduce.mjs`, replaying the report captured verbatim from run 32454084765: 17 URLs reported broken and 16 of them links lychee had classified as healthy redirects before the fix, 1 and 0 after. Measured 2026-08-21: the two links CI timed out on both answer 200 from here in three consecutive requests each (0.67/0.62/0.51s for rowanzellers.com/hellaswag/, 4.34/0.76/0.82s for the Anthropic CLI-usage page), and run 32455788384 checked the same 1285 links with 0 timeouts and passed, so the verdict turned on the timeout and not on the links. Manual confirmation on a runner: not yet confirmed -- the failing shape needs a run in which some link happens to time out, which cannot be summoned on demand; what is confirmed is that the parser now returns the timeout alone from that exact report"
   requirement
     id "R1021-35"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-21"
     issue "1021"
     automated_test "rust/tests/integration/issue_1021_client_preflight.rs"
@@ -59,7 +59,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-36"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-21"
     issue "1021"
     automated_test "rust/tests/unit/ci-cd/issue_1021.rs"
@@ -67,7 +67,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-37"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-21"
     issue "1021"
     automated_test "rust/tests/unit/ci-cd/codeql_sink_heuristics.rs"
@@ -75,7 +75,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-4"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-19"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_behaviour_range.rs"
@@ -83,7 +83,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-5"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-19"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_behaviour_range.rs"
@@ -91,7 +91,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-6"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-20"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_behaviour_range.rs"
@@ -99,7 +99,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-7"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-20"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_behaviour_range.rs"
@@ -107,7 +107,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-8"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-20"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_behaviour_range.rs"
@@ -115,7 +115,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1021-9"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-19"
     issue "1021"
     automated_test "rust/tests/unit/issue_1021_behaviour_range.rs"

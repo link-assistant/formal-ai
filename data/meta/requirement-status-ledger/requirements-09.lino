@@ -403,10 +403,10 @@ requirement_status_ledger_shard requirements_09
   requirement
     id "R379-clean"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "none recorded"
     issue "1021"
-    automated_test ""
+    automated_test "rust/tests/unit/issue_1021_contribution_artifacts.rs"
     manual "not yet confirmed"
   requirement
     id "R38"
