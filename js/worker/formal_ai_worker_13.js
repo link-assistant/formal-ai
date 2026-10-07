@@ -1170,8 +1170,8 @@ function unescapeLinoValue(value) {
     }
     if (ch === "\\" && index + 1 < value.length) {
       const next = value[index + 1];
-      if (next === "n") {
-        out += "\n";
+      if (next === "n" || next === "t" || next === "r") {
+        out += { n: "\n", t: "\t", r: "\r" }[next];
         index += 1;
         continue;
       }
@@ -1259,8 +1259,8 @@ function stripLinoComment(line) {
 }
 
 function parseLinoValue(raw) {
-  const trimmed = raw.trim();
-  if (trimmed.length >= 2 && trimmed.startsWith('"') && trimmed.endsWith('"')) {
+  const trimmed = raw.trim(); // a backtick string unescapes as a double-quoted one (decode_quoted_reference)
+  if (trimmed.length >= 2 && ['"', "`"].some((quote) => trimmed.startsWith(quote) && trimmed.endsWith(quote))) {
     return unescapeLinoValue(trimmed.slice(1, -1));
   }
   if (trimmed.length >= 2 && trimmed.startsWith("'") && trimmed.endsWith("'")) {

@@ -7,10 +7,10 @@
 //
 // Three rules live here, each read from seed data rather than written as a
 // phrase list:
-//   - a program task the worker's own tables do not carry is learned, with its
-//     templates, its output and the input it was verified against, from
-//     data/seed/hello-world-programs.lino (R1021-6/R1021-7, `copy stdin to
-//     stdout` and the Rosetta Code URL naming it);
+//   - every catalog task is installed, with its label, its templates, its
+//     output and the input it was verified against, from
+//     data/seed/hello-world-programs.lino (R1021-6/R1021-7, and the full
+//     task x language set of the Rust catalog, R921-8);
 //   - a task that reads standard input pipes that input into the run command a
 //     reader is told to type (`ProgramTemplate::run_command_line`);
 //   - a request that names code as its artefact and nothing else is a
@@ -20,35 +20,40 @@
 const PROGRAM_SEED_FILE = "hello-world-programs.lino";
 
 /**
- * Learn every program task the seed declares and the worker's tables lack:
- * its label (the first surface of its `program_task_<slug>` meaning, the
- * wording the catalog prints), its expected output, its stdin fixture and the
- * template of each language the seed stores a program for. Tasks the tables
- * already carry are left alone, so this only ever widens the catalog to what
- * the Rust catalog (rust/src/coding/catalog/tasks.rs) holds. Idempotent.
+ * Install the catalog's tasks and programs from the seed: each task's label,
+ * expected output and stdin fixture, and the program of every pair the seed
+ * stores one for, in the seed's (the Rust table's) order. The seed bundle is
+ * the one the Rust catalog tests hold equal to the compiled tables
+ * (rust/tests/source/source_tests/coding/catalog/mod/lino_parity.rs), so the
+ * worker answers every task in every language the Rust catalog
+ * (rust/src/coding/catalog/{tasks,templates_*}.rs) does, and no table is
+ * written per language here. A row whose `program_source` is the
+ * documentation route stores no program; writeProgramTemplate rediscovers it.
+ * A label the seed row omits falls back to the first surface of its
+ * `program_task_<slug>` meaning. Idempotent.
  * @param {object} raw the seed bundle's raw files
- * @returns {Array<string>} the slugs learned by this call
+ * @returns {Array<string>} the task slugs installed
  */
 function installSeedProgramTasks(raw) {
   const text = seedRawText(raw, PROGRAM_SEED_FILE);
   if (!text || typeof WRITE_PROGRAM_TASKS !== "object") return [];
   const records = parseLinoTree(text).children;
-  const learned = [];
+  const installed = [];
   for (const record of records) {
     const slug = childValue(record, "task");
-    if (!record.name.startsWith("task_") || !slug || WRITE_PROGRAM_TASKS[slug]) continue;
-    const label = wordsForMeaning(`program_task_${slug}`)[0] || slug.split("_").join(" ");
+    if (!record.name.startsWith("task_") || !slug) continue;
+    const label = childValue(record, "label") || wordsForMeaning(`program_task_${slug}`)[0] || slug.split("_").join(" ");
     WRITE_PROGRAM_TASKS[slug] = { label: label, output: childValue(record, "output") || "", input: childValue(record, "input") || "" };
-    learned.push(slug);
+    installed.push(slug);
   }
   for (const record of records) {
     const slug = childValue(record, "task");
     const code = childValue(record, "code");
-    if (!record.name.startsWith("template_") || !learned.includes(slug) || !code) continue;
+    if (!record.name.startsWith("template_") || !installed.includes(slug) || !code) continue;
     WRITE_PROGRAM_TEMPLATES[slug] = WRITE_PROGRAM_TEMPLATES[slug] || {};
     WRITE_PROGRAM_TEMPLATES[slug][childValue(record, "language")] = code;
   }
-  return learned;
+  return installed;
 }
 
 /**

@@ -27,6 +27,25 @@ fn lino_seed_tasks_line_lists_every_catalog_task() {
     }
 }
 
+/// The browser worker installs its task table from the seed's `task_<slug>`
+/// rows (issue #921 R921-8), so each row must carry the catalog task's label,
+/// output and stdin fixture exactly; a row with no `input` has none.
+#[test]
+fn lino_seed_task_rows_mirror_every_catalog_task() {
+    let root = seed_tree();
+    for task in PROGRAM_TASKS {
+        let row = root
+            .children
+            .iter()
+            .find(|node| node.name == format!("task_{}", task.slug))
+            .unwrap_or_else(|| panic!("lino seed has no task_{} row", task.slug));
+        assert_eq!(child_value(row, "task"), Some(task.slug));
+        assert_eq!(child_value(row, "label"), Some(task.label), "{}", task.slug);
+        assert_eq!(child_value(row, "output"), Some(task.output), "{}", task.slug);
+        assert_eq!(child_value(row, "input").unwrap_or(""), task.input, "{}", task.slug);
+    }
+}
+
 /// A seed row whose `program_source` is the documentation route stores no
 /// program (issue #1165 R1165-4): the solver rediscovers it from
 /// `data/seed/coding-documentation-captures.lino`, and the unit test

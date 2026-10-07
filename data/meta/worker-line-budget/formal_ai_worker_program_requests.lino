@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_program_requests.js"
-  ceiling 125
-  rationale "Browser twins of the issue #1021 write_program generalizations: program tasks learned from data/seed/hello-world-programs.lino with their stdin fixtures (R1021-6/R1021-7), the run command that pipes a fixture in (run_command_line), and the subtraction rule that reads a bare request for code as a write_program request (R1021-31)."
+  ceiling 130
+  rationale "Browser twins of the issue #1021 write_program generalizations: program tasks learned from data/seed/hello-world-programs.lino with their stdin fixtures (R1021-6/R1021-7), the run command that pipes a fixture in (run_command_line), and the subtraction rule that reads a bare request for code as a write_program request (R1021-31). Ceiling raised 125 to 130 (2026-10-08, issue #921 R921-8, under R999): installSeedProgramTasks now installs every catalog task and program from the seed instead of only the ones the worker tables lacked, which deleted 288 lines of per-language tables from formal_ai_worker_12.js; the five lines are its doc comment naming the Rust lino_parity test that holds the seed equal to the compiled catalog."
