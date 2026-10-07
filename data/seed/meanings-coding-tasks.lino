@@ -227,6 +227,34 @@ meanings
     lexeme zh
       surface
         text 重命名
+  typo
+    defined-by concept
+    role typo_fix_lead
+    precondition "a request names a misspelled word in a file without stating its correction"
+    effect "the word is corrected to the unique most frequent known word one edit away"
+    unit "not applicable"
+    example "fix the typo"
+    lexeme en
+      surface
+        text typo
+    lexeme ru
+      surface
+        text опечатку
+      surface
+        text опечатка
+    lexeme hi
+      surface
+        text "वर्तनी की गलती"
+    lexeme zh
+      surface
+        text 错别字
+      surface
+        text 拼写错误
+    lexeme es
+      surface
+        text errata
+      surface
+        text "error ortográfico"
   coding_text_remove
     defined-by action
     role coding_text_remove_action

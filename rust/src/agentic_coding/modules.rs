@@ -68,6 +68,7 @@ pub mod self_heal;
 mod shell_command;
 mod shell_command_policy;
 mod shell_file_fallback;
+mod spelling;
 pub mod source_links;
 mod stated_request;
 pub mod statement_audit;

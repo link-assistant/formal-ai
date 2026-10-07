@@ -879,6 +879,8 @@ roles
     kind predicate
   translation_unquoted_frame
     kind meaning
+  typo_fix_lead
+    kind predicate
   unauthorized_mutation_correction
     kind meaning
   unit_conversion_question

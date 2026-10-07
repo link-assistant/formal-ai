@@ -379,3 +379,19 @@ describe('PR #1188 dogfood: a synthesized function is written to the named file 
     assert.deepEqual(statedCallArguments('Write f(x) with 2 parameters in f.py.'), []);
   });
 });
+
+describe('PR #1188 dogfood: a typo without its correction is corrected by discovery', () => {
+  test('`Fix the typo \'smal\' in README.md.` -> small, from the seed vocabulary', async () => {
+    const { calls, files, answer } = await drive("Fix the typo 'smal' in README.md.", { 'README.md': '# P\n\nA small tool.\nThis is a smal project.\n' });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('README.md'), '# P\n\nA small tool.\nThis is a small project.\n');
+    assert.equal(answer, 'Replaced `smal` with `small` in `README.md` and observed the result.');
+  });
+
+  test('the correction is the unique most frequent word one edit away, in the word\'s capitalisation', async () => {
+    const { correctedSpelling } = await import('../../../js/agentic/crate/spelling.mjs');
+    assert.equal(correctedSpelling('smal'), 'small');
+    assert.equal(correctedSpelling('Projet'), 'Project');
+    assert.equal(correctedSpelling('teh'), 'the');
+  });
+});

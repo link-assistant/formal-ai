@@ -33,7 +33,7 @@ possible tasks you encounter on the way must be fully supported by it".
 | T3 | `Read the file math.mjs and tell me its first line.` | Pass: answered with the first line. | — |
 | T4 | `Append the line 'third line' to notes.txt.` | **Fail, destructive**: `notes.txt` was overwritten with `the line 'third line'`. | **Pass**: read → edit → `sha256sum` check; one line added; answer `Appended \`third line\` to the end of \`notes.txt\` and observed the result.` |
 | T5 | `In greet.py rename the variable nmae to name.` | Pass: both occurrences renamed. | — |
-| T6 | `Fix the typo 'smal' in README.md.` | **Fail**: read the file, echoed it, changed nothing. | Open |
+| T6 | `Fix the typo 'smal' in README.md.` | **Fail**: read the file, echoed it, changed nothing. | **Pass** (in-process): read → edit of the one line → `sha256sum`; `small`, discovered; answer `Replaced \`smal\` with \`small\` in \`README.md\` and observed the result.` |
 | T7 | `Replace 'smal' with 'small' in README.md.` (README also says `A small tool.`) | **Fail**: edit `oldString: "smal"` — the Agent CLI refuses it ("Found multiple matches"); an edit tool that takes the first match turns `small` into `smalll`. Without the second line it passed, answering only "The command completed successfully without output." | **Pass**: read → edit of the one changed line → `sha256sum`; answer `Replaced \`smal\` with \`small\` in \`README.md\` and observed the result.` |
 | T8 | `Insert 'middle' after the line 'first line' in notes.txt.` | **Fail**: no plan at all (single quotes were not literals). With double quotes it worked but answered "The command completed successfully without output." | **Pass**: read → edit → `sha256sum`; answer `Inserted \`middle\` after \`first line\` in \`notes.txt\` and observed the result.` |
 | T9 | `Delete the line 'second line' from notes.txt.` | **Fail**: read the file, changed nothing. | **Pass**: read → edit (`second line\n` → empty) → `sha256sum`; answer `Removed \`second line\` from \`notes.txt\` and observed the result.` |
@@ -529,3 +529,24 @@ The coordinator handed real PR edits to the JavaScript Formal AI through `experi
 - Fixed: an append request could take the whole-file general change route; a blank line is now a seeded concept, and an appended payload unescapes newlines.
 - Fixed: a read whose text quotes error lines was treated as a missing file, so an append overwrote this very ledger with one newline. A file-block read is now always the file.
 - Open: an unquoted payload is declined rather than appended; role cues inside a quoted payload still steer routing; a replacement whose text contains code ends with a generic answer instead of the seeded one.
+
+### T6 — a typo whose correction the request does not state
+
+**Fix (both roots).** A seeded concept `typo` (role `typo_fix_lead`; en
+`typo`, ru `опечатку`, hi, zh `错别字`, es `errata`) and a fourth computed
+change, `groundedTypoFix` / `grounded_typo_fix`: one quoted word, one path,
+and the correction discovered by `correctedSpelling` /
+`corrected_spelling` (`js/agentic/crate/spelling.mjs`,
+`rust/src/agentic_coding/spelling.rs`): the unique most frequent word one
+Damerau edit away in a vocabulary counted once (cached) from the bundled seed
+files — the registry's `bundle true` set, which is what `seed::seed_files()`
+embeds — in the word's capitalisation. A tie or no candidate claims nothing.
+The change is the word-scoped replacement (so `small` elsewhere in the file is
+untouched) and the answer is the seeded `coding_text_replaced` sentence. No
+word list was authored; `misspelling` / `misspelled` were left out as surfaces
+because they are not grounded tokens yet.
+
+**Tests.** JS exact transcript and answer, plus `smal → small`,
+`Projet → Project`, `teh → the`; Rust
+`rust/tests/unit/pull_request_1188_typo_discovery.rs` (read, then the edit of
+the one line).
