@@ -486,12 +486,80 @@ fn completion_criterion_for(segment: &str) -> Option<String> {
 
 /// Split a task into raw segments: sentences when there is more than one,
 /// otherwise clauses.
+///
+/// A quoted literal is one operand, never a place to cut: the `!` and `,` of
+/// `prints "Hello, World!"` belong to the value, and splitting there left a
+/// segment with an unclosed quote whose literal no reader could anchor (issue
+/// #1166). Quoted spans are masked while splitting and restored afterwards.
 fn segment(task: &str) -> Vec<String> {
-    let sentences = split_sentences(task);
-    if sentences.len() > 1 {
-        return sentences;
+    let (masked, literals) = mask_quoted_literals(task);
+    let sentences = split_sentences(&masked);
+    let pieces = if sentences.len() > 1 {
+        sentences
+    } else {
+        split_clauses(&masked)
+    };
+    pieces
+        .iter()
+        .map(|piece| unmask_quoted_literals(piece, &literals))
+        .collect()
+}
+
+/// First code point of the Private Use Area that stands in for one quoted
+/// literal while a task is split, and the size of that area.
+const LITERAL_MASK_BASE: u32 = 0xE000;
+const LITERAL_MASK_SLOTS: u32 = 0x1900;
+
+fn literal_mask(index: usize) -> Option<char> {
+    u32::try_from(index)
+        .ok()
+        .filter(|index| *index < LITERAL_MASK_SLOTS)
+        .and_then(|index| char::from_u32(LITERAL_MASK_BASE + index))
+}
+
+fn literal_mask_index(character: char) -> Option<usize> {
+    u32::from(character)
+        .checked_sub(LITERAL_MASK_BASE)
+        .filter(|index| *index < LITERAL_MASK_SLOTS)
+        .and_then(|index| usize::try_from(index).ok())
+}
+
+/// Replace every quoted span (delimiters included) with one mask character.
+/// A task that already carries a mask character is left unmasked, so restoring
+/// can never invent text the task did not contain.
+fn mask_quoted_literals(task: &str) -> (String, Vec<String>) {
+    if task
+        .chars()
+        .any(|character| literal_mask_index(character).is_some())
+    {
+        return (task.to_owned(), Vec::new());
     }
-    split_clauses(task)
+    let mut masked = String::with_capacity(task.len());
+    let mut literals = Vec::new();
+    let mut cursor = 0_usize;
+    for span in crate::normal_markov::quoted_segment_spans(task) {
+        let Some(mask) = literal_mask(literals.len()) else {
+            break;
+        };
+        masked.push_str(&task[cursor..span.start]);
+        masked.push(mask);
+        literals.push(task[span.start..span.end].to_owned());
+        cursor = span.end;
+    }
+    masked.push_str(&task[cursor..]);
+    (masked, literals)
+}
+
+fn unmask_quoted_literals(piece: &str, literals: &[String]) -> String {
+    let mut out = String::with_capacity(piece.len());
+    for character in piece.chars() {
+        if let Some(literal) = literal_mask_index(character).and_then(|index| literals.get(index)) {
+            out.push_str(literal);
+            continue;
+        }
+        out.push(character);
+    }
+    out
 }
 
 /// Split on sentence terminators, keeping the terminator attached. A period

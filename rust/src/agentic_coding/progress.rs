@@ -743,7 +743,10 @@ fn rest_read_url(command: &str) -> Option<String> {
     if number.is_empty() {
         return None;
     }
-    let kind = if kind == "pulls" { "pull" } else { "issue" };
+    // GitHub prints an issue as `/issues/{n}` and a pull request as
+    // `/pull/{n}`; folding `issues` onto a singular `issue` named a page no
+    // plan targets, so the REST reads were never matched to their work item.
+    let kind = if kind == "pulls" { "pull" } else { "issues" };
     Some(format!("https://github.com/{owner}/{repo}/{kind}/{number}"))
 }
 

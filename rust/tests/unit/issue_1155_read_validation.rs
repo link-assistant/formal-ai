@@ -239,9 +239,11 @@ fn the_rest_routes_follow_the_fetch_fallback_in_order() {
         rest.contains("/issues/1;"),
         "the REST path names the same work item, got `{rest}`"
     );
+    // `gh api` reads in the view read's two-call shape (title, blank line,
+    // body), so the work-item path is followed by its `--jq` selector.
     let api = command_of(&planned[3]);
     assert!(
-        api.starts_with("gh api repos/") && api.contains("/issues/1;"),
+        api.starts_with("gh api repos/") && api.contains("/issues/1 --jq .title"),
         "the authenticated REST read follows, got `{api}`"
     );
 }

@@ -474,7 +474,7 @@ function restReadUrl(command) {
   if (numberSegment === undefined) return null;
   const number = /^[0-9]*/.exec(numberSegment)[0];
   if (!number) return null;
-  const kind = kindSegment === 'pulls' ? 'pull' : 'issue';
+  const kind = kindSegment === 'pulls' ? 'pull' : 'issues';
   return `https://github.com/${owner}/${repo}/${kind}/${number}`;
 }
 

@@ -62,12 +62,18 @@ const stringField = (item, ...names) => {
   return null;
 };
 
+/** `call_arguments_text`: a string as given, an object re-encoded (issue #1154). */
+const callArgumentsText = (value) => {
+  if (typeof value === 'string') return value;
+  return isObject(value) ? JSON.stringify(value) : '{}';
+};
+
 function appendItem(item, out, toolNamesById) {
   const itemType = typeof item?.type === 'string' ? item.type : 'message';
   if (itemType === 'function_call' || itemType === 'custom_tool_call') {
     const callId = stringField(item, 'call_id', 'id') ?? '';
     const name = typeof item.name === 'string' ? item.name : '';
-    const args = stringField(item, 'arguments', 'input') ?? '{}';
+    const args = callArgumentsText(item.arguments !== undefined ? item.arguments : item.input);
     if (name) toolNamesById.set(callId, name);
     out.push(chatMessage('assistant', '', {
       tool_calls: [{ id: callId, type: 'function', function: { name, arguments: args } }],

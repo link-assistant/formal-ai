@@ -13,6 +13,7 @@ import { mentionsRole, mentionsRoleRaw, wordsForRole } from '../write_lexicon.mj
 import { isAlphanumeric, isAsciiDigit, splitWhitespace, trim, trimEndMatches, trimMatches } from '../write_str.mjs';
 import { containsCjk } from './coding_catalog.mjs';
 import { normalizePrompt } from './engine.mjs';
+import { quotedSegmentSpans } from './normal_markov.mjs';
 import { stableId } from './engine_stable_id.mjs';
 import { detect } from './language.mjs';
 import { localizedResponse } from './seed.mjs';
@@ -144,9 +145,49 @@ function completionCriterionFor(text) {
   return `observable_result:${concreteTarget(text) ?? stableId('task_result', normalized)}`;
 }
 
+/**
+ * Mirrors `fn segment`: a quoted literal is one operand, never a place to cut
+ * (issue #1166), so quoted spans are masked while splitting and restored after.
+ */
 function segment(task) {
-  const sentences = splitSentences(task);
-  return sentences.length > 1 ? sentences : splitClauses(task);
+  const [masked, literals] = maskQuotedLiterals(task);
+  const sentences = splitSentences(masked);
+  const pieces = sentences.length > 1 ? sentences : splitClauses(masked);
+  return pieces.map((piece) => unmaskQuotedLiterals(piece, literals));
+}
+
+/** Mirrors `LITERAL_MASK_BASE` and `LITERAL_MASK_SLOTS`. */
+const LITERAL_MASK_BASE = 0xe000;
+const LITERAL_MASK_SLOTS = 0x1900;
+
+const literalMaskIndex = (character) => {
+  const index = character.codePointAt(0) - LITERAL_MASK_BASE;
+  return index >= 0 && index < LITERAL_MASK_SLOTS ? index : null;
+};
+
+/** Mirrors `fn mask_quoted_literals`. */
+function maskQuotedLiterals(task) {
+  if (Array.from(task).some((character) => literalMaskIndex(character) !== null)) return [task, []];
+  let masked = '';
+  const literals = [];
+  let cursor = 0;
+  for (const span of quotedSegmentSpans(task)) {
+    if (literals.length >= LITERAL_MASK_SLOTS) break;
+    masked += task.slice(cursor, span.start) + String.fromCodePoint(LITERAL_MASK_BASE + literals.length);
+    literals.push(task.slice(span.start, span.end));
+    cursor = span.end;
+  }
+  return [masked + task.slice(cursor), literals];
+}
+
+/** Mirrors `fn unmask_quoted_literals`. */
+function unmaskQuotedLiterals(piece, literals) {
+  let out = '';
+  for (const character of piece) {
+    const index = literalMaskIndex(character);
+    out += index !== null && index < literals.length ? literals[index] : character;
+  }
+  return out;
 }
 
 function splitSentences(text) {
