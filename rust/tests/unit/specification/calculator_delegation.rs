@@ -273,14 +273,25 @@ fn calculator_delegation_is_visible_in_evidence() {
 }
 
 #[test]
-fn local_arithmetic_fallback_keeps_word_operators() {
+fn calculator_handles_word_operators_after_upstream_fix() {
+    // The local fallback used to own word operators; the current
+    // link-calculator release evaluates them with standard precedence, so the
+    // request is delegated and its LINO keeps the grouping visible.
     let word_response = assert_calculation("What is 10 plus 20 times 3?", &["70"]);
     assert!(
         word_response
             .evidence_links
             .iter()
-            .any(|link| link == "calculation:engine:formal-ai-fallback"),
-        "word-operator fallback should be observable: {:?}",
+            .any(|link| link == "calculation:engine:link-calculator"),
+        "word operators should be delegated to link-calculator: {:?}",
+        word_response.evidence_links,
+    );
+    assert!(
+        word_response
+            .evidence_links
+            .iter()
+            .any(|link| link == "calculation:lino:(10 + (20 * 3))"),
+        "the delegated LINO should keep multiplication before addition: {:?}",
         word_response.evidence_links,
     );
 }
