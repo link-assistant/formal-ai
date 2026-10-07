@@ -59,6 +59,36 @@ The miss path answers from documentation instead of a stored program:
   no-memorization ratchet fell from 14 to 11, and the captures are counted on
   their own ratchet (7 page literals).
 
+## Every catalog language (2026-10-08, fifth pass)
+
+Official pages were fetched live for every remaining catalog language and
+each rediscovered program was saved under its run contract and run:
+
+| Language | Page | Result |
+| --- | --- | --- |
+| Python | wiki.python.org BeginnersGuide/Programmers/SimpleExamples | `print('Hello, world!')` |
+| JavaScript | MDN console (mdn/content markdown) | `console.log("Hello, world!");`, the template byte for byte |
+| TypeScript | TypeScript handbook Basics (markdown) | `hello.ts` with its comment line |
+| C | Microsoft C runtime `puts` reference (markdown) | `crt_puts.c` with `puts( ... )` |
+| C++ | learn.microsoft.com vscpp-step-1-create | `std::cout << ... << std::endl` |
+| C# | learn.microsoft.com tour-of-csharp hello-world | `Console.WriteLine(...)` top-level statement |
+| Ruby | ruby-lang.org examples/hello_world | comment header plus `puts` |
+| Swift | swift-book GuidedTour.md | `print(...)` plus its comment (oracle-answered, see R1165-4) |
+| Java | none | every official page names its class `HelloWorldApp`, `MyFirstClass` or `HelloWorld`; the run contract is `java Main` |
+| Scala | none usable | only a scala-cli page declares `Main`, with a `//> using dep` directive for an unused library |
+| PHP | none usable | php.net's first page ends in `?>` and prints no trailing newline |
+| R | none | no official page has a lone `print`/`cat` example |
+| Laravel | none | no grammar row; the Artisan docs show no Hello World command |
+
+The ten documented Hello World programs are no longer stored anywhere:
+`ProgramTemplate.code` became runtime data and the Rust catalog table appends
+the documentation route's program for every retired pair when it is first
+read. The no-memorization ceiling fell from 11 to 4. A captured block tagged
+`js`, `ts` or `c++` names its language through the `program_language`
+meaning surfaces. R1165-6 now derives each catalog command from the
+captures (a documented file name bound to the catalog's) and records which
+languages' pages state none.
+
 ## Wiring plan (the integration commit's part)
 
 1. `pub mod discovery_production;` in `rust/src/lib.rs`.
