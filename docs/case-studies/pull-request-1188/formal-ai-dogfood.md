@@ -86,10 +86,7 @@ keeps the file it appends to": the exact T4 prompt and tool sequence
 (`read`, `edit`, `bash`), the exact file content and answer, no plan file;
 plus prepend, no-final-newline, missing-file and Russian variants.
 
-**Rust twin.** `rust/src/agentic_coding/workspace_change.rs` still lacks the
-end insertion, so the native engine still overwrites on T4. The seed data is
-shared; the code is a port of `groundedEndInsertion`, `insertedAtEnd`,
-`compactEndEdit` and `planEndInsertionStep`.
+**Rust twin.** Ported (see "Rust twin of the workspace-change fixes").
 
 ### T7 — a replacement that contains its pattern was handed to a bare edit
 
@@ -126,9 +123,8 @@ and the answer comes from seeded responses keyed by the existing
 prompt, and a twice-occurring anchor that must not be edited. The test's edit
 tool refuses an ambiguous `oldString` exactly as the Agent CLI does.
 
-**Rust twin.** The quoting fix is in both roots. The word-scoped replacement,
-the line-scoped edit and the positional ownership (with its seeded answer)
-are JS-only so far: `rust/src/agentic_coding/workspace_change.rs`.
+**Rust twin.** The quoting fix is in both roots; the rest is ported (see
+"Rust twin of the workspace-change fixes").
 
 ### T9 — no arm removed quoted text from a file
 
@@ -154,7 +150,7 @@ removal, the file-deletion non-regression, and text found nowhere.
 **Whole JS suite.** `node --test --test-concurrency=1 rust/tests/web/`:
 945 pass, 0 fail after T7–T9.
 
-**Rust twin.** JS-only (`workspace_change.rs`), together with T4 and T7.
+**Rust twin.** Ported (see "Rust twin of the workspace-change fixes").
 
 ### T13 — the sentence's full stop was part of the command
 
@@ -241,7 +237,8 @@ agent's uncommitted edits in the same tree (`data/seed/handler-rules.lino`,
 `js/agentic/crate/summarization.mjs`), not from these changes. The agentic
 suites (`agentic-*`, the dogfood file) are green.
 
-**Rust twin.** T16 is in both roots; T17 is JS-only (`workspace_change.rs`).
+**Rust twin.** Both in both roots (T17 via "Rust twin of the workspace-change
+fixes").
 
 ### T18 — a named source file did not name its language
 
@@ -281,3 +278,16 @@ there.
 **Tests.** "a named source file says which language to write": the T18q
 plan's first call writes `hello.py` with the exact source; `notes.txt` and
 `Change greet.py so it prints "Hi".` claim nothing.
+
+### Rust twin of the workspace-change fixes (T4, T7, T8, T9, T17)
+
+`rust/src/agentic_coding/workspace_change.rs` now mirrors the JS arm:
+`GroundedRewrite` carries `renaming`, `unique` and an optional stated
+sentence; `rewritten_source`, `changed_lines_edit` and
+`grounded_positional_insert` match their JS twins. The computed changes live
+in a new sibling module, `rust/src/agentic_coding/workspace_computed_change.rs`
+(end insertion, removal, setting, and `plan_computed_change_step`), so
+`workspace_change.rs` stays well under the 1000-line limit. The code is
+rustfmt-clean and was not compiled locally (no cargo on this workstation);
+`changed_lines_edit` scans bytes only for `\n`, so it never slices inside a
+multi-byte character.

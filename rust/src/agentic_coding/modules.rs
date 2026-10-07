@@ -80,6 +80,7 @@ pub mod transcript_evidence;
 mod web_research;
 mod work_item_steps;
 mod workspace_change;
+mod workspace_computed_change;
 mod workspace_inspection;
 mod write_request;
 

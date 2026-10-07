@@ -32,25 +32,42 @@ struct GroundedRewrite {
     pattern: String,
     replacement: String,
     /// How the pattern is allowed to match. Renaming an identifier is a
-    /// word-scoped edit; replacing a quoted literal is a substring one.
+    /// word-scoped edit; replacing a quoted literal is a substring one -- or a
+    /// word-scoped one when the new word contains the old (`smal` → `small`).
     scope: RewriteScope,
+    /// Whether the request renamed a name (a word-scoped rename).
+    renaming: bool,
+    /// Whether the pattern must occur exactly once (a positional insertion's
+    /// anchor), replaced once rather than everywhere.
+    unique: bool,
+    /// The seed sentence that states the change, when it is not the
+    /// rename/replace one (a positional insertion's).
+    stated: Option<(&'static str, Vec<(&'static str, String)>)>,
 }
 
 impl GroundedRewrite {
     /// The intent whose seed sentence states this change rather than merely
-    /// reporting that the file was touched. The scope already carries the
-    /// distinction the sentence needs: a word-scoped edit renamed a name, a
-    /// substring one replaced a literal.
-    const fn stated_intent(&self) -> &'static str {
-        match self.scope {
-            RewriteScope::Word => "coding_identifier_renamed",
-            RewriteScope::Substring => "coding_text_replaced",
+    /// reporting that the file was touched.
+    fn stated_intent(&self) -> &'static str {
+        match &self.stated {
+            Some((intent, _)) => *intent,
+            None if self.renaming => "coding_identifier_renamed",
+            None => "coding_text_replaced",
         }
     }
 
-    /// The two operands the seed sentence names, as template slots.
-    fn stated_slots(&self) -> [(&str, &str); 2] {
-        [("{old}", &self.pattern), ("{new}", &self.replacement)]
+    /// The operands the seed sentence names, as template slots.
+    fn stated_slots(&self) -> Vec<(&str, &str)> {
+        match &self.stated {
+            Some((_, slots)) => slots
+                .iter()
+                .map(|(slot, value)| (*slot, value.as_str()))
+                .collect(),
+            None => vec![
+                ("{old}", self.pattern.as_str()),
+                ("{new}", self.replacement.as_str()),
+            ],
+        }
     }
 }
 
@@ -58,11 +75,11 @@ impl GroundedRewrite {
 ///
 /// `expected` is what the workspace should now hold; `intent` and `slots` are
 /// the seed sentence that states the change once it does.
-struct VerifiedChange<'a> {
-    target: &'a str,
-    expected: &'a str,
-    intent: &'a str,
-    slots: &'a [(&'a str, &'a str)],
+pub(super) struct VerifiedChange<'a> {
+    pub(super) target: &'a str,
+    pub(super) expected: &'a str,
+    pub(super) intent: &'a str,
+    pub(super) slots: &'a [(&'a str, &'a str)],
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -88,8 +105,16 @@ pub(super) fn plan_workspace_change_step(
     if let Some(change) = composite_module_change(task) {
         return plan_composite_step(task, current_turn, tool_names, &change);
     }
-    let rewrite = grounded_rewrite(task)?;
-    plan_rewrite_step(task, current_turn, tool_names, &rewrite)
+    if let Some(rewrite) = grounded_rewrite(task) {
+        return plan_rewrite_step(task, current_turn, tool_names, &rewrite);
+    }
+    let change = super::workspace_computed_change::grounded_computed_change(task)?;
+    super::workspace_computed_change::plan_computed_change_step(
+        task,
+        current_turn,
+        tool_names,
+        &change,
+    )
 }
 
 /// Whether `answer` is one of this module's seeded verification-failure
@@ -125,38 +150,32 @@ fn plan_rewrite_step(
         return Some(plan_one(tool, read_arguments(&rewrite.target)));
     };
     let source = source_from_read_result(&read);
-    let Ok(execution) = execute_scoped_workspace_rewrite(
-        &source,
-        &rewrite.pattern,
-        &rewrite.replacement,
-        rewrite.scope,
-    ) else {
+    let Some(updated) = rewritten_source(&source, rewrite) else {
         return Some(AgenticPlan::Final(render_seeded_outcome(
             "coding_workspace_verification_failed",
             task,
             &rewrite.target,
         )?));
     };
-    let updated = execution.output;
 
     let occurrences = match rewrite.scope {
         RewriteScope::Substring => source.match_indices(&rewrite.pattern).count(),
         RewriteScope::Word => word_scoped_matches(&source, &rewrite.pattern).len(),
     };
     if occurrences == 1 {
-        if let Some(tool) = tool_for(tool_names, Capability::Edit) {
-            if result_for_edit(
-                current_turn,
-                &rewrite.target,
-                &rewrite.pattern,
-                &rewrite.replacement,
-            )
-            .is_none()
-            {
-                return Some(plan_one(
-                    tool,
-                    edit_arguments(&rewrite.target, &rewrite.pattern, &rewrite.replacement),
-                ));
+        // The bare pattern when it is unique in the file; otherwise the
+        // smallest unique run of changed lines -- the edit tool refuses an
+        // `oldString` it finds twice, and `smal` also sits inside `small`.
+        let edit = if source.matches(rewrite.pattern.as_str()).count() == 1 {
+            Some((rewrite.pattern.clone(), rewrite.replacement.clone()))
+        } else {
+            changed_lines_edit(&source, &updated)
+        };
+        if let Some(tool) = tool_for(tool_names, Capability::Edit)
+            && let Some((old, new)) = edit
+        {
+            if result_for_edit(current_turn, &rewrite.target, &old, &new).is_none() {
+                return Some(plan_one(tool, edit_arguments(&rewrite.target, &old, &new)));
             }
             return plan_digest_verification(
                 task,
@@ -338,7 +357,91 @@ fn plan_composite_step(
     )?))
 }
 
+/// The file after `rewrite`, or `None` when it cannot apply. A positional
+/// insertion replaces its one anchor occurrence; an anchor found zero or
+/// several times does not say where the line goes.
+fn rewritten_source(source: &str, rewrite: &GroundedRewrite) -> Option<String> {
+    if rewrite.unique {
+        return (source.matches(rewrite.pattern.as_str()).count() == 1)
+            .then(|| source.replacen(rewrite.pattern.as_str(), &rewrite.replacement, 1));
+    }
+    execute_scoped_workspace_rewrite(
+        source,
+        &rewrite.pattern,
+        &rewrite.replacement,
+        rewrite.scope,
+    )
+    .ok()
+    .map(|execution| execution.output)
+}
+
+/// The smallest run of whole lines holding every change from `source` to
+/// `updated`, as an edit pair, when that run occurs once in `source`.
+pub(super) fn changed_lines_edit(source: &str, updated: &str) -> Option<(String, String)> {
+    const MAX_EDIT_BYTES: usize = 4096;
+    let prefix = source
+        .bytes()
+        .zip(updated.bytes())
+        .take_while(|(left, right)| left == right)
+        .count();
+    let limit = source.len().min(updated.len()) - prefix;
+    let suffix = source
+        .bytes()
+        .rev()
+        .zip(updated.bytes().rev())
+        .take(limit)
+        .take_while(|(left, right)| left == right)
+        .count();
+    // Byte positions only meet `\n`, so `start` and `end` fall on line -- and
+    // therefore character -- boundaries even when the first or last differing
+    // byte sits inside a multi-byte character.
+    let bytes = source.as_bytes();
+    let start = bytes[..prefix]
+        .iter()
+        .rposition(|byte| *byte == b'\n')
+        .map_or(0, |at| at + 1);
+    let end = bytes[source.len() - suffix..]
+        .iter()
+        .position(|byte| *byte == b'\n')
+        .map_or(source.len(), |at| source.len() - suffix + at);
+    let old = &source[start..end];
+    let new = &updated[start..updated.len() - (source.len() - end)];
+    (!old.is_empty() && old.len() <= MAX_EDIT_BYTES && source.matches(old).count() == 1)
+        .then(|| (old.to_owned(), new.to_owned()))
+}
+
+/// `Insert 'x' after the line 'y' in f`: the anchor line, replaced once by the
+/// anchor beside the new line, stated by the position meaning that placed it.
+fn grounded_positional_insert(task: &str) -> Option<GroundedRewrite> {
+    let (target, anchor, replacement) = super::positional_edit::compose_positional_insert(task)?;
+    let after_anchor = [anchor.as_str(), "\n"].concat();
+    let (intent, inserted) = if let Some(inserted) = replacement.strip_prefix(&after_anchor) {
+        ("file_edit_position_after", inserted.to_owned())
+    } else {
+        let before_anchor = ["\n", anchor.as_str()].concat();
+        (
+            "file_edit_position_before",
+            replacement.strip_suffix(&before_anchor)?.to_owned(),
+        )
+    };
+    Some(GroundedRewrite {
+        target,
+        stated: Some((
+            intent,
+            vec![("{new}", inserted), ("{anchor}", anchor.clone())],
+        )),
+        pattern: anchor,
+        replacement,
+        scope: RewriteScope::Substring,
+        renaming: false,
+        unique: true,
+    })
+}
+
 fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
+    if let Some(positional) = grounded_positional_insert(task) {
+        return Some(positional);
+    }
     let (target, old_clause, new_clause) = compose_edit_request(task)?;
     let renaming = seed::lexicon().mentions_role(
         seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
@@ -372,7 +475,11 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
     // there is -- giving a name a prefix or a suffix -- has to be refused, since
     // an unanchored substring rewrite that reintroduces its own pattern never
     // terminates.
-    let scope = if renaming && is_identifier_word(&old) && is_identifier_word(&new) {
+    //
+    // A word replaced by a longer word that contains it (`smal` → `small`, a
+    // typo fix) is only safe word by word for the same reason.
+    let words = is_identifier_word(&old) && is_identifier_word(&new);
+    let scope = if words && (renaming || new.contains(&old)) {
         RewriteScope::Word
     } else {
         RewriteScope::Substring
@@ -385,6 +492,9 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
         pattern: old,
         replacement: new,
         scope,
+        renaming: renaming && scope == RewriteScope::Word,
+        unique: false,
+        stated: None,
     })
 }
 
@@ -492,7 +602,7 @@ fn shell_safe_identifier(identifier: &str) -> bool {
             .all(|character| character.is_ascii_alphanumeric() || character == '_')
 }
 
-fn identifier_tokens(text: &str) -> impl DoubleEndedIterator<Item = &str> {
+pub(super) fn identifier_tokens(text: &str) -> impl DoubleEndedIterator<Item = &str> {
     text.split(|character: char| !character.is_ascii_alphanumeric() && character != '_')
         .filter(|token| valid_identifier(token))
 }
@@ -533,7 +643,7 @@ fn rust_paths(task: &str) -> Vec<String> {
     paths
 }
 
-fn result_for_path(
+pub(super) fn result_for_path(
     messages: &[ChatMessage],
     capability: Capability,
     path: &str,
@@ -559,7 +669,12 @@ fn result_for_path(
     })
 }
 
-fn result_for_edit(messages: &[ChatMessage], path: &str, old: &str, new: &str) -> Option<String> {
+pub(super) fn result_for_edit(
+    messages: &[ChatMessage],
+    path: &str,
+    old: &str,
+    new: &str,
+) -> Option<String> {
     matching_result(messages, |name, arguments| {
         if tool_capability(name) != Some(Capability::Edit) {
             return false;
@@ -603,7 +718,7 @@ fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String>
     })
 }
 
-fn plan_digest_verification(
+pub(super) fn plan_digest_verification(
     task: &str,
     current_turn: &[ChatMessage],
     tool_names: &[&str],
@@ -653,6 +768,6 @@ fn matching_result(
         })
 }
 
-fn read_arguments(path: &str) -> String {
+pub(super) fn read_arguments(path: &str) -> String {
     json!({"path": path, "filePath": path, "file_path": path}).to_string()
 }
