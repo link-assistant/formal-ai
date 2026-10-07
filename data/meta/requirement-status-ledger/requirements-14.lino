@@ -155,10 +155,10 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R710-D15"
     shard "docs/requirements/issue-0710-dynamic-coding-discovery.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "delivered 2026-09-15; PR #888 (issue #710)"
     issue "0710"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_benchmarks.rs"
     manual "not yet confirmed"
   requirement
     id "R710-D16"

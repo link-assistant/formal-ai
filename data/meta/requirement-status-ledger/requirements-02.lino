@@ -155,18 +155,18 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R103"
     shard "docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #17 (issue #16)"
     issue "0016"
-    automated_test ""
+    automated_test "rust/tests/source/source_tests/seed/tests.rs"
     manual "not yet confirmed"
   requirement
     id "R104"
     shard "docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #17 (issue #16)"
     issue "0016"
-    automated_test ""
+    automated_test "rust/tests/source/source_tests/seed/tests.rs"
     manual "not yet confirmed"
   requirement
     id "R105"

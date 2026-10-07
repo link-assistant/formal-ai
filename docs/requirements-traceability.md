@@ -151,8 +151,8 @@ line number, which had gone stale for every row.
 | R100 | docs/requirements/issue-0016-multilingual-wikipedia-and-append-only-memory-requirements.md | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): rust/tests/unit/specification/multilingual.rs | not yet confirmed |
 | R101 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | issue-level coverage (not row-pinned): rust/tests/unit/specification/multilingual.rs | not yet confirmed |
 | R102 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | issue-level coverage (not row-pinned): rust/tests/unit/specification/multilingual.rs | not yet confirmed |
-| R103 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | seed::tests | not yet confirmed |
-| R104 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | seed::tests::bundle_round_trips_through_parse_bundle; seed::tests::parse_bundle_recovers_intent_routing_via_inner_parser | not yet confirmed |
+| R103 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | rust/tests/source/source_tests/seed/tests.rs | not yet confirmed |
+| R104 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | rust/tests/source/source_tests/seed/tests.rs | not yet confirmed |
 | R105 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | rust/tests/e2e/playwright.local.config.js | not yet confirmed |
 | R106 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | issue-level coverage (not row-pinned): rust/tests/unit/specification/multilingual.rs | not yet confirmed |
 | R107 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | PR #17 (issue #16) | issue-level coverage (not row-pinned): rust/tests/unit/specification/multilingual.rs | not yet confirmed |
@@ -185,18 +185,18 @@ line number, which had gone stale for every row.
 | R134 | docs/requirements/issue-0103-test-matrix-and-architecture-requirements.md | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): rust/tests/unit/specification/prompt_variations.rs | not yet confirmed |
 | R135 | docs/requirements/issue-0103-test-matrix-and-architecture-requirements.md | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): rust/tests/unit/specification/prompt_variations.rs | not yet confirmed |
 | R136 | docs/requirements/issue-0103-test-matrix-and-architecture-requirements.md | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): rust/tests/unit/specification/prompt_variations.rs | not yet confirmed |
-| R137 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
-| R138 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
-| R139 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
-| R140 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/e2e/scripts/check-i18n-catalog.mjs; npm run --prefix rust/tests/e2e check:i18n | not yet confirmed |
+| R137 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/web/issue-0117-i18n-catalog.test.mjs | not yet confirmed |
+| R138 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/web/issue-0117-i18n-catalog.test.mjs | not yet confirmed |
+| R139 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/web/issue-0117-i18n-catalog.test.mjs | not yet confirmed |
+| R140 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/web/issue-0117-i18n-catalog.test.mjs; rust/tests/e2e/scripts/check-i18n-catalog.mjs | not yet confirmed |
 | R141 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
 | R142 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R143 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R144 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs | not yet confirmed |
-| R145 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
-| R146 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R145 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs | not yet confirmed |
+| R146 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs | not yet confirmed |
 | R147 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
-| R148 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R148 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs; rust/tests/unit/docs_requirements.rs | not yet confirmed |
 | R149 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs; rust/tests/integration/formal_ai_cli.rs | not yet confirmed |
 | R150 | docs/requirements/issue-0063-cross-language-definition-fusion-requirements.md | pre-2026-07 (undated); issue #63 | issue-level coverage (not row-pinned): rust/tests/unit/specification/definition_fusion.rs | not yet confirmed |
 | R151 | docs/requirements/issue-0063-cross-language-definition-fusion-requirements.md | pre-2026-07 (undated); issue #63 | issue-level coverage (not row-pinned): rust/tests/unit/specification/definition_fusion.rs | not yet confirmed |
@@ -310,10 +310,10 @@ line number, which had gone stale for every row.
 | R224 | docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md | pre-2026-07 (undated); issue #195 | rust/tests/unit/docs_requirements.rs | not yet confirmed |
 | R225 | docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): rust/tests/unit/specification/agent_isolation.rs | not yet confirmed |
 | R195-7 | docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md | PR for #1138 (issue #195 completion) | rust/tests/unit/issue_1138_execution_box.rs; rust/tests/unit/issue_1138_telegram_execution.rs | not yet confirmed |
-| R226 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
-| R227 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
-| R228 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
-| R229 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
+| R226 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | rust/tests/unit/memory_maintenance.rs; rust/tests/integration/formal_ai_cli.rs | not yet confirmed |
+| R227 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | rust/tests/unit/memory_maintenance.rs; rust/tests/integration/formal_ai_cli.rs; rust/tests/e2e/tests/multilingual-memory-settings.spec.js | not yet confirmed |
+| R228 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | rust/tests/e2e/tests/multilingual-memory-settings.spec.js | not yet confirmed |
+| R229 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | rust/tests/e2e/tests/multilingual-memory-settings.spec.js | not yet confirmed |
 | R230 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R231 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | rust/tests/source/source_tests/link_store/tests.rs; rust/tests/integration/issue_1069_link_cli_store.rs | not yet confirmed |
 | R232 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | rust/tests/source/source_tests/link_store/tests.rs | not yet confirmed |
@@ -740,7 +740,7 @@ line number, which had gone stale for every row.
 | R706-2 | docs/requirements/issue-0706-any-language-protocol.md | PR #880 (issue #706) | issue-level coverage (not row-pinned): rust/tests/unit/issue_706_any_language.rs | not yet confirmed |
 | R706-3 | docs/requirements/issue-0706-any-language-protocol.md | PR #880 (issue #706) | issue-level coverage (not row-pinned): rust/tests/unit/issue_706_any_language.rs | not yet confirmed |
 | R706-4 | docs/requirements/issue-0706-any-language-protocol.md | PR #880 (issue #706) | issue-level coverage (not row-pinned): rust/tests/unit/issue_706_any_language.rs | not yet confirmed |
-| R706-5 | docs/requirements/issue-0706-any-language-protocol.md | PR #880 (issue #706) | rust/tests/e2e/scripts/check-language-{test-coverage,change-parity}.mjs | not yet confirmed |
+| R706-5 | docs/requirements/issue-0706-any-language-protocol.md | PR #880 (issue #706) | rust/tests/unit/issue_706_any_language.rs | not yet confirmed |
 | R706-6 | docs/requirements/issue-0706-any-language-protocol.md | PR #880 (issue #706) | issue-level coverage (not row-pinned): rust/tests/unit/issue_706_any_language.rs | not yet confirmed |
 | R706-7 | docs/requirements/issue-0706-any-language-protocol.md | PR #880 (issue #706) | issue-level coverage (not row-pinned): rust/tests/unit/issue_706_any_language.rs | not yet confirmed |
 | R706-8 | docs/requirements/issue-0706-any-language-protocol.md | PR #880 (issue #706) | issue-level coverage (not row-pinned): rust/tests/unit/issue_706_any_language.rs | not yet confirmed |
@@ -760,11 +760,11 @@ line number, which had gone stale for every row.
 | R708-7 | docs/requirements/issue-0708-bounded-natural-language-memory-programs.md | PR #883 (issue #708) | issue-level coverage (not row-pinned): rust/tests/integration/memory_query.rs | not yet confirmed |
 | R708-8 | docs/requirements/issue-0708-bounded-natural-language-memory-programs.md | PR #883 (issue #708) | rust/tests/e2e/tests/issue-708.spec.js | not yet confirmed |
 | R708-9 | docs/requirements/issue-0708-bounded-natural-language-memory-programs.md | PR #883 (issue #708) | issue-level coverage (not row-pinned): rust/tests/integration/memory_query.rs | not yet confirmed |
-| R709-1 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
-| R709-2 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
-| R709-3 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
-| R709-4 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
-| R709-5 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
+| R709-1 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | rust/tests/unit/issue_709_search_fusion.rs | not yet confirmed |
+| R709-2 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | rust/tests/unit/issue_709_search_fusion.rs | not yet confirmed |
+| R709-3 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | rust/tests/unit/issue_709_search_fusion.rs | not yet confirmed |
+| R709-4 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | rust/tests/unit/issue_709_search_fusion.rs, rust/tests/e2e/tests/issue-709.spec.js | not yet confirmed |
+| R709-5 | docs/requirements/issue-0709-multi-source-search-fusion.md | pre-2026-07 (undated); issue #709 | rust/tests/unit/issue_709_search_fusion.rs | not yet confirmed |
 | R710-D1 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/coding_discovery/no_memorization.rs | not yet confirmed |
 | R710-D2 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710); full-suite measurement 2026-09-17 (PR #1139) | rust/tests/unit/specification/external_benchmarks.rs; first-20 upstream run recorded in docs/case-studies/issue-710/README.md; full-suite rows in data/benchmarks/external-results.lino | measured 2026-09-17 with `benchmark run --suite humaneval --slice 164`, cold-offline and with `--online`; rows recorded in data/benchmarks/external-results.lino |
 | R710-D3 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710); full-suite measurement 2026-09-18 (PR #1139) | rust/tests/unit/specification/external_benchmarks.rs; first-20 upstream run recorded in docs/case-studies/issue-710/README.md; full-suite rows in data/benchmarks/external-results.lino | measured 2026-09-18 with `benchmark run --suite mbpp --slice 500`, cold-offline and with `--online`; rows recorded in data/benchmarks/external-results.lino |
@@ -779,7 +779,7 @@ line number, which had gone stale for every row.
 | R710-D12 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/coding_discovery/multilingual.rs | not yet confirmed |
 | R710-D13 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/coding_discovery/rosetta.rs | not yet confirmed |
 | R710-D14 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/specification/external_benchmarks.rs | not yet confirmed |
-| R710-D15 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/docs_requirements/benchmarks.rs::latest_external_rows_are_published_from_the_ledger | not yet confirmed |
+| R710-D15 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/docs_benchmarks.rs | not yet confirmed |
 | R710-D16 | docs/requirements/issue-0710-dynamic-coding-discovery.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/specification/self_hosting_metric.rs | not yet confirmed |
 | R1137-1 | docs/requirements/issue-1137-pre-merge-four-client-routing-replay.md | delivered 2026-09-15; PR #888 (issue #1137) | rust/tests/unit/ci-cd/issue_1137_agentic_routing_replay.rs::agentic_routing_changes_enable_full_four_client_replay_on_pull_requests; scripts/detect-code-changes.rs::tests::agentic_source_changes_request_the_four_client_replay | not yet confirmed — CI on the final PR head is the unattended proof |
 | R1137-2 | docs/requirements/issue-1137-pre-merge-four-client-routing-replay.md | delivered 2026-09-15; PR #888 (issue #1137) | rust/tests/unit/ci-cd/issue_1137_agentic_routing_replay.rs::the_full_replay_still_exercises_each_supported_client; experiments/agent_cli_e2e/run_issue_781.sh | not yet confirmed — CI on the final PR head is the unattended proof |
@@ -955,13 +955,13 @@ line number, which had gone stale for every row.
 | R649-19 | docs/requirements/issue-0649-world-models-and-contexts.md | none recorded | none recorded | not yet confirmed |
 | R686-01 | docs/requirements/issue-0686-associative-knowledge-networks-learning.md | none recorded | none recorded | not yet confirmed |
 | R686-18 | docs/requirements/issue-0686-associative-knowledge-networks-learning.md | none recorded | none recorded | not yet confirmed |
-| R705-1 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | none recorded | not yet confirmed |
-| R705-2 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | none recorded | not yet confirmed |
-| R705-3 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | none recorded | not yet confirmed |
-| R705-4 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | none recorded | not yet confirmed |
-| R705-5 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | none recorded | not yet confirmed |
-| R705-6 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | none recorded | not yet confirmed |
-| R705-7 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | none recorded | not yet confirmed |
+| R705-1 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
+| R705-2 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
+| R705-3 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
+| R705-4 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
+| R705-5 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
+| R705-6 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
+| R705-7 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
 | R705-8 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
 | R710-01 | docs/requirements/issue-0710-dropped-requirements-re-verification.md | none recorded | none recorded | not yet confirmed |
 | R710-02 | docs/requirements/issue-0710-dropped-requirements-re-verification.md | none recorded | none recorded | not yet confirmed |
@@ -1066,15 +1066,15 @@ line number, which had gone stale for every row.
 | R901-3 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | none recorded | not yet confirmed |
 | R901-4 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
 | R901-5 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | none recorded | not yet confirmed |
-| R916-08a | docs/requirements/issue-0909-headless-ready-global-client-configuration.md | none recorded | none recorded | not yet confirmed |
-| R916-08b | docs/requirements/issue-0909-headless-ready-global-client-configuration.md | none recorded | none recorded | not yet confirmed |
-| R917-1 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | none recorded | not yet confirmed |
-| R917-2 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | none recorded | not yet confirmed |
-| R917-3 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | none recorded | not yet confirmed |
-| R917-4 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | none recorded | not yet confirmed |
-| R917-5 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | none recorded | not yet confirmed |
-| R917-6 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | none recorded | not yet confirmed |
-| R917-7 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | none recorded | not yet confirmed |
+| R916-08a | docs/requirements/issue-0909-headless-ready-global-client-configuration.md | none recorded | rust/tests/integration/with_formal_ai_headless_global.rs | not yet confirmed |
+| R916-08b | docs/requirements/issue-0909-headless-ready-global-client-configuration.md | none recorded | rust/tests/integration/with_formal_ai_headless_global.rs | not yet confirmed |
+| R917-1 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/issue_917.rs | not yet confirmed |
+| R917-2 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/issue_917.rs | not yet confirmed |
+| R917-3 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/specification/translation_round_trip.rs | not yet confirmed |
+| R917-4 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/issue_917.rs, rust/tests/e2e/tests/issue-917.spec.js | not yet confirmed |
+| R917-5 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/issue_917.rs | not yet confirmed |
+| R917-6 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/docs_requirements/issue_917.rs | not yet confirmed |
+| R917-7 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/docs_requirements/issue_917.rs | not yet confirmed |
 | R918-1 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
 | R918-2 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
 | R918-3 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
@@ -1159,13 +1159,13 @@ line number, which had gone stale for every row.
 | R933-12 | docs/requirements/issue-0933-conversational-variation-floor.md | none recorded | rust/tests/unit/issue_933_answer_parity.rs | not yet confirmed |
 | R933-13 | docs/requirements/issue-0933-conversational-variation-floor.md | none recorded | rust/tests/unit/issue_933_self_authoring.rs | not yet confirmed |
 | R933-14 | docs/requirements/issue-0933-conversational-variation-floor.md | none recorded | none recorded | not yet confirmed |
-| R936-1 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | none recorded | not yet confirmed |
-| R936-2 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | none recorded | not yet confirmed |
-| R936-3 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | none recorded | not yet confirmed |
-| R936-4 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | none recorded | not yet confirmed |
-| R936-5 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | none recorded | not yet confirmed |
-| R936-6 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | none recorded | not yet confirmed |
-| R936-7 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | none recorded | not yet confirmed |
+| R936-1 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
+| R936-2 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
+| R936-3 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
+| R936-4 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
+| R936-5 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
+| R936-6 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
+| R936-7 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
 | R222-1 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | none recorded | not yet confirmed |
 | R234-4 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | none recorded | not yet confirmed |
 | R960-1 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/data_files.rs | not yet confirmed |
