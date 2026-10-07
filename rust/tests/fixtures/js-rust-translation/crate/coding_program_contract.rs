@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0879615cbde639dd56a3392e47dfe301d22e1719984614646e8c09953715b80c bytes=11270
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0046ae9bcd06fe1ed106062971df1010930cb92c357e1c05638834e822f479bd bytes=12073
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:carried JavaScript import_statement (unsupported)
@@ -57,6 +57,12 @@
 
 // meta-language:carried JavaScript function_declaration (syntax)
 // formal-ai:refusal syntax: unterminated string literal
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .split()
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal new expression

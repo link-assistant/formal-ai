@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=44642994f31e08c6cae2c36e0beb59ddb9e19c14111bb774d0b6a344c299ed2a bytes=9072
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3c63c1ca1dd02b84cfc02381383597b680124ec1c4a1bf692d3de5539384991c bytes=10835
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -98,6 +98,18 @@ pub const WHEN_UNBOUND_OUTPUT: &str = "unbound_output_literal";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
+
+// meta-language:carried JavaScript lexical_declaration (unsupported)
+// formal-ai:refusal regular expression
+
+// meta-language:carried JavaScript lexical_declaration (unsupported)
+// formal-ai:refusal regular expression
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .replace()
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .split()
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)

@@ -15,7 +15,7 @@ js_rust_translation
   modules 127
   translated_items 238
   inferred_signatures 1
-  carried_items 2066
+  carried_items 2072
   translated_modules 77
   fully_translated_modules 1
   refused_modules 50
@@ -27,7 +27,7 @@ module js/agentic/crate/change_request.mjs translated 1 inferred 0 carried 16
 module js/agentic/crate/client_contract_learning.mjs translated 0 inferred 0 carried 14
 module js/agentic/crate/coding_catalog.mjs translated 4 inferred 0 carried 28
 module js/agentic/crate/coding_cjk.mjs translated 0 inferred 0 carried 1
-module js/agentic/crate/coding_program_contract.mjs translated 0 inferred 0 carried 27
+module js/agentic/crate/coding_program_contract.mjs translated 0 inferred 0 carried 29
 module js/agentic/crate/computer_use.mjs translated 2 inferred 0 carried 14
 module js/agentic/crate/computer_use_induction.mjs translated 4 inferred 0 carried 22
 module js/agentic/crate/computer_use_lexicon.mjs translated 5 inferred 0 carried 12
@@ -57,7 +57,7 @@ module js/agentic/crate/history_repository_qa.mjs translated 1 inferred 0 carrie
 module js/agentic/crate/history_store.mjs translated 3 inferred 0 carried 28
 module js/agentic/crate/implementation_language.mjs translated 0 inferred 0 carried 22
 module js/agentic/crate/intent_formalization.mjs translated 5 inferred 0 carried 23
-module js/agentic/crate/intent_formalization_obligations.mjs translated 2 inferred 0 carried 29
+module js/agentic/crate/intent_formalization_obligations.mjs translated 2 inferred 0 carried 33
 module js/agentic/crate/intent_formalization_requirements.mjs translated 0 inferred 0 carried 15
 module js/agentic/crate/issue_report.mjs translated 2 inferred 0 carried 0
 module js/agentic/crate/issue_report_title.mjs translated 2 inferred 0 carried 9
@@ -148,15 +148,15 @@ module js/worker/formal_ai_worker_meta_reasoner.js translated 1 inferred 0 carri
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 24
 refusal "import { … }" 393
 refusal "JSDoc type {…}" 191
-refusal "null" 159
+refusal "null" 160
 refusal "type: unknown name (a sibling item or an import)" 111
 refusal "arrow function" 95
 refusal "function value …" 93
 refusal "object without a $ tag" 77
 refusal "new expression" 73
 refusal "method call .find()" 57
-refusal "regular expression" 50
-refusal "method call .split()" 48
+refusal "regular expression" 52
+refusal "method call .split()" 50
 refusal "method call .map()" 44
 refusal "method call .filter()" 41
 refusal "method call .some()" 41
@@ -166,7 +166,7 @@ refusal "method call .push()" 34
 refusal "field access" 31
 refusal "method call .indexOf()" 26
 refusal "nullish coalescing" 25
-refusal "method call .replace()" 22
+refusal "method call .replace()" 23
 refusal "optional chaining" 19
 refusal "case test" 18
 refusal "syntax: malformed number" 18
