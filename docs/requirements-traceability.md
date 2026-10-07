@@ -173,7 +173,7 @@ line number, which had gone stale for every row.
 | R122 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
 | R123 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
 | R124 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
-| R125 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R125 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/web/issue-0096-calculator-arithmetic.test.mjs | not yet confirmed |
 | R126 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/e2e/tests/multilingual-memory-settings.spec.js | not yet confirmed |
 | R127 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
 | R128 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
@@ -195,7 +195,7 @@ line number, which had gone stale for every row.
 | R144 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs | not yet confirmed |
 | R145 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs | not yet confirmed |
 | R146 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs | not yet confirmed |
-| R147 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R147 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R148 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs; rust/tests/unit/docs_requirements.rs | not yet confirmed |
 | R149 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs; rust/tests/integration/formal_ai_cli.rs | not yet confirmed |
 | R150 | docs/requirements/issue-0063-cross-language-definition-fusion-requirements.md | pre-2026-07 (undated); issue #63 | issue-level coverage (not row-pinned): rust/tests/unit/specification/definition_fusion.rs | not yet confirmed |
@@ -222,7 +222,7 @@ line number, which had gone stale for every row.
 | R171 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/unit/ci-cd/workflow_release.rs | not yet confirmed |
 | R172 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R173 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/unit/specification/prompt_variations_facts.rs; rust/tests/web/issue-1172-live-fact-parity.test.mjs | not yet confirmed |
-| R174 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R174 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/web/issue-0127-fact-captures.test.mjs | not yet confirmed |
 | R175 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/web/issue-0127-fact-query-cache.test.mjs | not yet confirmed |
 | R176 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/web/issue-0127-fact-query-cache.test.mjs | not yet confirmed |
 | R177 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/web/issue-1172-live-fact-parity.test.mjs; rust/tests/web/issue-0127-fact-query-cache.test.mjs | not yet confirmed |
@@ -242,7 +242,7 @@ line number, which had gone stale for every row.
 | R191 | docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md | pre-2026-07 (undated); issue #133 | rust/tests/web/issue-0133-search-fusion.test.mjs | not yet confirmed |
 | R192 | docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md | pre-2026-07 (undated); issue #133 | rust/tests/web/issue-0133-search-fusion.test.mjs | not yet confirmed |
 | R193 | docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md | pre-2026-07 (undated); issue #133 | rust/tests/web/issue-0133-search-fusion.test.mjs | not yet confirmed |
-| R194 | docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): rust/tests/connectivity.js | not yet confirmed |
+| R194 | docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md | pre-2026-07 (undated); issue #133 | rust/tests/web/issue-0194-wasm-boundary.test.mjs | not yet confirmed |
 | R195 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | rust/tests/unit/specification/project_lookups.rs::russian_hive_mind_prompt_prefers_link_assistant_project | not yet confirmed |
 | R196 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | issue-level coverage (not row-pinned): rust/tests/unit/specification/project_lookups.rs:17 | not yet confirmed |
 | R197 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | rust/tests/unit/specification/summarization_pipeline.rs (mirrors rust/src/summarization/mod.rs::tests) | not yet confirmed |
@@ -334,22 +334,22 @@ line number, which had gone stale for every row.
 | R247 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | rust/tests/e2e/tests/issue-327.spec.js | not yet confirmed |
 | R248 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | issue-level coverage (not row-pinned): rust/tests/unit/specification/synthesis.rs:39 | not yet confirmed |
 | R249 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | rust/tests/web/issue-0327-wasm-synthesis-bridge.test.mjs | not yet confirmed |
-| R250 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
-| R251 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R250 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/issue-0244-vision-roadmap.test.mjs | not yet confirmed |
+| R251 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/issue-0244-vision-roadmap.test.mjs | not yet confirmed |
 | R252 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R253 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
-| R254 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
-| R255 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R254 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/issue-0244-vision-roadmap.test.mjs | not yet confirmed |
+| R255 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/issue-0244-vision-roadmap.test.mjs | not yet confirmed |
 | R256 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/integration/issue_349_reverse_sort.rs::issue_349_reverse_sort_follow_up_must_not_be_unknown | not yet confirmed |
 | R257 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/unit/specification/code_generation_coreference.rs | not yet confirmed |
-| R258 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | none recorded | not yet confirmed |
+| R258 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
 | R259 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/unit/specification/code_generation_program_modifiers.rs | not yet confirmed |
 | R260 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/integration/issue_349_reverse_sort.rs::issue_349_diagnostic_mode_emits_full_turn_5_reasoning_chain; rust/tests/e2e/tests/issue-360.spec.js | not yet confirmed |
-| R261 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | none recorded | not yet confirmed |
+| R261 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/web/issue-0361-cross-runtime-parity.test.mjs | not yet confirmed |
 | R262 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/unit/specification/coding_modification_benchmarks.rs::issue_362_multilingual_multi_turn_coding_modification_ratchet | not yet confirmed |
 | R263 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/e2e/tests/issue-363.spec.js | not yet confirmed |
 | R264 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/unit/specification/self_improvement.rs | not yet confirmed |
-| R265 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | none recorded | not yet confirmed |
+| R265 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/web/issue-0365-roadmap-closure.test.mjs | not yet confirmed |
 | R266 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
 | R267 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
 | R268 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
@@ -389,7 +389,7 @@ line number, which had gone stale for every row.
 | R302 | docs/requirements/issue-0451-symbolic-ai-reference-and-best-practices.md | PR #452 (issue #451) | rust/tests/unit/docs_requirements/issue_451.rs | not yet confirmed |
 | R303 | docs/requirements/issue-0451-symbolic-ai-reference-and-best-practices.md | PR #452 (issue #451) | rust/tests/unit/docs_requirements/issue_451.rs | not yet confirmed |
 | R304 | docs/requirements/issue-0451-symbolic-ai-reference-and-best-practices.md | PR #452 (issue #451) | rust/tests/unit/docs_requirements/issue_451.rs | not yet confirmed |
-| R305 | docs/requirements/issue-0451-symbolic-ai-reference-and-best-practices.md | PR #452 (issue #451) | rust/tests/source/source_tests/proof_engine/decision/{sat,boolean}/tests.rs | not yet confirmed |
+| R305 | docs/requirements/issue-0451-symbolic-ai-reference-and-best-practices.md | PR #452 (issue #451) | rust/tests/source/source_tests/proof_engine/decision/sat/tests.rs | not yet confirmed |
 | R306 | docs/requirements/issue-0468-agentic-coding-mode.md | PR #469 (issue #468) | issue-level coverage (not row-pinned): rust/tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
 | R307 | docs/requirements/issue-0468-agentic-coding-mode.md | PR #469 (issue #468) | rust/tests/unit/agentic_coding.rs | not yet confirmed |
 | R308 | docs/requirements/issue-0468-agentic-coding-mode.md | PR #469 (issue #468) | issue-level coverage (not row-pinned): rust/tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
@@ -495,7 +495,7 @@ line number, which had gone stale for every row.
 | R366 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/unit/docs_requirements/issue_492.rs | not yet confirmed |
 | R367 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R368 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/unit/ci-cd/release_publishing.rs; rust/tests/unit/docs_requirements/issue_492.rs | not yet confirmed |
-| R369 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R369 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/unit/docs_requirements/issue_492.rs | not yet confirmed |
 | R499-1 | docs/requirements/issue-0499-learn-from-this-data-source-requirements.md | PR #641 (issue #499) | issue-level coverage (not row-pinned): rust/tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
 | R499-2 | docs/requirements/issue-0499-learn-from-this-data-source-requirements.md | PR #641 (issue #499) | rust/tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
 | R499-3 | docs/requirements/issue-0499-learn-from-this-data-source-requirements.md | PR #641 (issue #499) | issue-level coverage (not row-pinned): rust/tests/unit/issue_499_learn_from_source.rs | not yet confirmed |

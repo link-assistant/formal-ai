@@ -13,7 +13,7 @@ import { REPO_ROOT } from './support/browser-runtime.mjs';
 const CASES = [
   { rows: ['R128'], issue: 96, files: [] },
   { rows: ['R142'], issue: 117, files: [] },
-  { rows: ['R143'], issue: 115, files: [] },
+  { rows: ['R143', 'R147'], issue: 115, files: ['raw-data/hive-mind/issues-recent.json', 'raw-data/hive-mind/manifest.json'] },
   { rows: ['R172'], issue: 129, files: [] },
   { rows: ['R230'], issue: 196, files: [] },
   { rows: ['R252', 'R253'], issue: 244, files: ['proposed-issues.md'] },
@@ -36,6 +36,7 @@ const CASES = [
     },
   },
   { rows: ['R873-9'], issue: 873, files: ['requirements.md', 'online-research.md', 'self-hosting-authorship'] },
+  { rows: ['R265'], issue: 365, files: [], noRawData: true },
   { rows: ['R922-6'], issue: 922, files: ['requirements.md', 'solution-plan.md', 'agent-cli-run'] },
 ];
 
@@ -45,12 +46,14 @@ const nonEmpty = (path) => {
 };
 
 describe('issue research is preserved under docs/case-studies', () => {
-  for (const { rows, issue, files, cites = [], contains = {} } of CASES) {
+  for (const { rows, issue, files, cites = [], contains = {}, noRawData = false } of CASES) {
     test(`${rows.join(', ')}: issue #${issue} keeps its README, raw data and named documents`, () => {
       const directory = join(REPO_ROOT, 'docs/case-studies', `issue-${issue}`);
       const readme = readFileSync(join(directory, 'README.md'), 'utf8');
       assert.ok(readme.trim().length > 0, `issue-${issue}/README.md is empty`);
-      assert.ok(nonEmpty(join(directory, 'raw-data')), `issue-${issue}/raw-data is empty`);
+      if (!noRawData) {
+        assert.ok(nonEmpty(join(directory, 'raw-data')), `issue-${issue}/raw-data is empty`);
+      }
       for (const file of files) {
         assert.ok(existsSync(join(directory, file)) && nonEmpty(join(directory, file)), `issue-${issue}/${file}`);
       }

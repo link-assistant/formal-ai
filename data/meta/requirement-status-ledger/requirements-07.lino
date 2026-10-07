@@ -483,18 +483,18 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R250"
     shard "docs/requirements/issue-0244-vision-implementation-planning.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #244"
     issue "0244"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0244-vision-roadmap.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R251"
     shard "docs/requirements/issue-0244-vision-implementation-planning.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #244"
     issue "0244"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0244-vision-roadmap.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R252"
@@ -515,18 +515,18 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R254"
     shard "docs/requirements/issue-0244-vision-implementation-planning.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #244"
     issue "0244"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0244-vision-roadmap.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R255"
     shard "docs/requirements/issue-0244-vision-implementation-planning.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #244"
     issue "0244"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0244-vision-roadmap.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R256"
@@ -547,10 +547,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R258"
     shard "docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #349"
     issue "0349"
-    automated_test ""
+    automated_test "rust/tests/unit/issue_936_substitution_compiler.rs"
     manual "not yet confirmed"
   requirement
     id "R259"
@@ -579,10 +579,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R261"
     shard "docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #349"
     issue "0349"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0361-cross-runtime-parity.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R262"
@@ -611,10 +611,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R265"
     shard "docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #349"
     issue "0349"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0365-roadmap-closure.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R266"

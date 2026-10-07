@@ -331,10 +331,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R305"
     shard "docs/requirements/issue-0451-symbolic-ai-reference-and-best-practices.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #452 (issue #451)"
     issue "0451"
-    automated_test ""
+    automated_test "rust/tests/source/source_tests/proof_engine/decision/sat/tests.rs"
     manual "not yet confirmed"
   requirement
     id "R306"
