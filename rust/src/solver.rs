@@ -565,7 +565,14 @@ impl UniversalSolver {
             // specialized handlers. Otherwise concept_lookup answers the language
             // name ("Rust") as an encyclopedia definition instead of returning the
             // requested program. Policy guards still run for these prompts below.
-            let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
+            //
+            // A page query over a page the prompt supplies (issues #1163 R10,
+            // #1164 R1164-11) is a question about that page: the page's own
+            // code example ("prints Hello, world! in Rust") names a task and a
+            // language, but it is the object of the query, not a request to
+            // write it, so the dispatch keeps it as the browser worker does.
+            let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_))
+                && !crate::solver_handlers::page_query_text::page_query_text_claims(prompt);
             if !is_concrete_write_program
                 && let Some(answer) = crate::meta_method_dispatch::try_dispatch(
                     self,

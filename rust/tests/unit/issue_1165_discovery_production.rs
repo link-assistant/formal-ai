@@ -334,3 +334,44 @@ fn miss_route_names_what_research_lacks_on_a_solve() {
         response.links_notation
     );
 }
+
+/// The catalog writer binds a one-line quoted literal, never a supplied code
+/// block: a Markdown fence reads as backtick quotes, and taking its body as
+/// the replacement nested the supplied program inside the generated output
+/// call (the e1164 parity failure). The unmodified request keeps its program
+/// and records its cache miss.
+#[test]
+fn a_supplied_code_fence_is_not_bound_as_the_hello_world_literal() {
+    let response = formal_ai::UniversalSolver::default()
+        .solve("write me hello world program in Rust, like this one:\n```rust\nfn main() {}\n```");
+    assert!(
+        response.answer.contains("println!(\"Hello, world!\")"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("println!(\"rust"),
+        "the fence body is not an output literal: {}",
+        response.answer
+    );
+}
+
+/// A page query over a supplied page whose example is a Hello World program is
+/// a question about the page, not a program request (issues #1163 R10, #1164
+/// R1164-11): the native solver answers with the example's parts, as the
+/// browser worker does.
+#[test]
+fn a_code_example_page_query_is_not_a_program_request() {
+    let response = formal_ai::UniversalSolver::default().solve(
+        "The parts of the code example:\nThe program below prints a greeting.\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nCompile it with this line.\n\nrustc hello.rs",
+    );
+    assert_eq!(
+        response.intent, "code_example_decomposition",
+        "{}",
+        response.answer
+    );
+    assert_eq!(
+        response.answer,
+        "entry_point main\noutput_operation println!\nstring_literal Hello, world!"
+    );
+}

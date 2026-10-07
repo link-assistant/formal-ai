@@ -35,7 +35,15 @@ fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
         return None;
     }
 
-    let quoted = quoted_segments(prompt);
+    // A replacement literal is one line of text the template's string
+    // literal can carry. A segment that spans a line break is a code block
+    // the prompt supplies (a Markdown fence reads as backtick quotes), and an
+    // empty one is a fence's delimiter pair: binding either would nest the
+    // supplied code inside the generated program's output call.
+    let quoted: Vec<String> = quoted_segments(prompt)
+        .into_iter()
+        .filter(|segment| !segment.is_empty() && !segment.contains('\n'))
+        .collect();
     match quoted.as_slice() {
         [] => None,
         [replacement] => Some(replacement.clone()),
