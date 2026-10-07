@@ -75,8 +75,27 @@ async function routeDictionaryFallback(page, entriesByTerm) {
       body: JSON.stringify({ search: [] }),
     });
   });
+  // Issue #1172 R5: the word-definition reader asks the registry's dictionary
+  // source first (Free Dictionary for en, each Wiktionary's extracts API for
+  // the others). These terms have no entry there, so the turn must still reach
+  // the opensearch fallback this spec pins.
+  await page.route('**://api.dictionaryapi.dev/**', async (route) => {
+    await route.fulfill({
+      status: 404,
+      contentType: 'application/json',
+      body: JSON.stringify({ title: 'No Definitions Found' }),
+    });
+  });
   await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
     const url = new URL(route.request().url());
+    if (url.searchParams.get('action') === 'query' && url.searchParams.has('titles')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ query: { pages: { '-1': { title: url.searchParams.get('titles'), missing: '' } } } }),
+      });
+      return;
+    }
     const term = url.searchParams.get('search') || '';
     const entry = entriesByTerm[term];
     expect(entry, `unexpected Wiktionary search term: ${term}`).toBeTruthy();
