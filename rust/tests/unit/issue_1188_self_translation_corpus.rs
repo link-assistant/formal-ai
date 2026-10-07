@@ -161,7 +161,6 @@ fn value(node: &Node) -> Value {
 /// Run one call on the Rust side; a row without a dispatch arm fails.
 fn call(case: &str, function: &str, arguments: &[Value]) -> Value {
     let number = |index: usize| arguments[index].number();
-    let text = |index: usize| arguments[index].text();
     match (case, function) {
         ("ratings-to-rust", "add") => Value::Number(ratings_to_rust::add(number(0), number(1))),
         ("ratings-to-rust", "average") => {
@@ -172,10 +171,10 @@ fn call(case: &str, function: &str, arguments: &[Value]) -> Value {
         }
         ("ratings-to-rust", "score_band") => Value::Text(ratings_to_rust::score_band(number(0))),
         ("ratings-to-rust", "is_rating_unit") => {
-            Value::Boolean(ratings_to_rust::is_rating_unit(text(0)))
+            Value::Boolean(ratings_to_rust::is_rating_unit(arguments[0].text()))
         }
         ("ratings-to-rust", "mentions_rating") => {
-            Value::Boolean(ratings_to_rust::mentions_rating(text(0)))
+            Value::Boolean(ratings_to_rust::mentions_rating(arguments[0].text()))
         }
         ("ratings-to-rust", "rating_label") => {
             Value::Text(ratings_to_rust::rating_label(number(0)))
@@ -196,7 +195,9 @@ fn call(case: &str, function: &str, arguments: &[Value]) -> Value {
         ("geometry-to-javascript", "quadrant") => {
             Value::Text(geometry::quadrant(number(0), number(1)))
         }
-        ("geometry-to-javascript", "is_unit") => Value::Boolean(geometry::is_unit(text(0))),
+        ("geometry-to-javascript", "is_unit") => {
+            Value::Boolean(geometry::is_unit(arguments[0].text()))
+        }
         (case, function) => panic!("no Rust dispatch for ({case}, {function})"),
     }
 }
