@@ -542,3 +542,41 @@ describe('PR #1188 dogfood: an unquoted output is bound only when it reads as an
     ]) assert.deepEqual(boundOutputLiterals(prompt), [], prompt);
   });
 });
+
+describe('PR #1188 dogfood: a request that names a line deletes whole lines', () => {
+  const TABLE = '| id | value |\n| --- | --- |\n| R56kfQp | drop me |\n| R1 | keep |\n';
+  const KEPT = '| id | value |\n| --- | --- |\n| R1 | keep |\n';
+
+  test('`Delete the line containing \'| R56kfQp |\' from t.md.` removes the row, not the quoted cells', async () => {
+    const { calls, files, answer } = await drive("Delete the line containing '| R56kfQp |' from t.md.", { 't.md': TABLE });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('t.md'), KEPT);
+    assert.equal(answer, 'Deleted 1 line(s) containing `| R56kfQp |` from `t.md` and observed the result.');
+  });
+
+  test('`Remove the line …` and `Delete lines containing …` read the same seeded line meaning', async () => {
+    const remove = await drive("Remove the line '| R56kfQp |' from t.md.", { 't.md': TABLE });
+    assert.equal(remove.files.get('t.md'), KEPT);
+    const plural = await drive("Delete lines containing 'R' from t.md.", { 't.md': TABLE });
+    assert.equal(plural.files.get('t.md'), '| id | value |\n| --- | --- |\n');
+    assert.equal(plural.answer, 'Deleted 2 line(s) containing `R` from `t.md` and observed the result.');
+  });
+
+  test('ru, hi and zh name the line in their own words; a sentence-final verb is still the verb', async () => {
+    for (const [prompt, expected] of [
+      ["Удали из t.md строку, содержащую '| R56kfQp |'.", 'Из `t.md` удалены строки, содержащие `| R56kfQp |` (1), результат проверен.'],
+      ["t.md से '| R56kfQp |' वाली पंक्ति हटाओ।", '`t.md` से `| R56kfQp |` वाली 1 पंक्ति(याँ) हटाईं और परिणाम सत्यापित किया।'],
+      ["删除 t.md 中包含 '| R56kfQp |' 的行。", '已从 `t.md` 中删除包含 `| R56kfQp |` 的 1 行并验证了结果。'],
+    ]) {
+      const { files, answer } = await drive(prompt, { 't.md': TABLE });
+      assert.equal(files.get('t.md'), KEPT, prompt);
+      assert.equal(answer, expected, prompt);
+    }
+  });
+
+  test('without a line named, quoted text is still removed from inside its line', async () => {
+    const { files, answer } = await drive("Remove 'drop me' from t.md.", { 't.md': TABLE });
+    assert.equal(files.get('t.md'), '| id | value |\n| --- | --- |\n| R56kfQp |  |\n| R1 | keep |\n');
+    assert.equal(answer, 'Removed `drop me` from `t.md` and observed the result.');
+  });
+});

@@ -732,3 +732,38 @@ are unchanged, and the parity suites (1164 code examples, 1184 derivation,
 1163, 1172, 1175, worker mirror) stay green. Pins: JS exact answers for
 `add3`/`mul3`; native `a_reduction_over_three_scalar_parameters_reads_all_three`
 (uncompiled here). Module budget 372 → 399 with the reason.
+
+### Line deletion — a request that names a line removed only the quoted text
+
+`Delete the line containing '| R56kfQp |' from t.md.` (coordinator, while
+using Formal AI as a sub-agent) answered ``Removed `| R56kfQp |` …`` and left the
+row's tail ` drop me |` behind.
+
+**Root cause.** The computed removal (`groundedRemoval` /
+`grounded_removal`) knew two readings: a line that *is* the payload goes,
+otherwise the payload's one occurrence inside a line does. A request that
+says *the line containing* the payload fell to the second.
+
+**Fix (both roots).** When the request names a line outside its quotes —
+the seeded `line` meaning, which now also carries `lines`, `строки`,
+`पंक्तियाँ`, `的行` and `líneas` — every line that contains the payload is
+removed whole (`removedLines` / `removed_lines`). Lines that were exactly the
+payload keep the old sentence (``Removed `second line` …``, T9 unchanged);
+lines that only contained it are stated by the new seeded `line` response
+with their count (``Deleted 1 line(s) containing `| R56kfQp |` from `t.md`
+and observed the result.``, also ru/hi/zh/es). Without a line named,
+`Remove 'drop me' from t.md.` still removes the text inside its line.
+
+**Second gap on the way (destructive).** `t.md से '| R56kfQp |' वाली पंक्ति
+हटाओ।` ran `rm t.md`: the Hindi verb closes the sentence, `हटाओ।` was no
+whole word, so the removal arm declined and the request reached a shell
+translation that deleted the file. The computed-change arms now read their
+seeded cues over `sentenceWords` / `sentence_words` (sentence and clause
+marks followed by a space set off as spaces; `t.md` keeps its dot). The
+shell translation that turned a quoted-payload removal into `rm` is still
+open.
+
+**Tests.** JS: "a request that names a line deletes whole lines" (en
+singular/plural, ru, hi with `।`, zh, and the in-line removal). Rust:
+`rust/tests/unit/pull_request_1188_line_removal.rs` (uncompiled here).
+

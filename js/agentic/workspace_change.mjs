@@ -19,7 +19,8 @@ import { correctedSpelling } from './crate/spelling.mjs';
 import {
   RewriteScope, executeScopedWorkspaceRewrite, isIdentifierWord, wordScopedMatches,
 } from './crate/workspace_change_learning.mjs';
-import { mentionsRole, wordsForRole } from './write_lexicon.mjs';
+import { meaningEvidencedIn, mentionsRole, wordsForRole } from './write_lexicon.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
 import { isAsciiAlphanumeric, lines, matchIndices, splitWhitespace, trim } from './write_str.mjs';
 
 const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
@@ -244,7 +245,7 @@ function quotedPayloadAndPath(task) {
  * would.
  */
 function groundedEndInsertion(task) {
-  const lowered = task.toLowerCase();
+  const lowered = sentenceWords(task);
   const atEnd = mentionsRole('file_edit_position_end', lowered);
   if (atEnd === mentionsRole('file_edit_position_start', lowered)) return null;
   const named = quotedPayloadAndPath(task) ?? blankLineAndPath(task) ?? linePayloadAndPath(task);
@@ -265,19 +266,68 @@ function groundedEndInsertion(task) {
  * line that is exactly the payload goes; otherwise its one occurrence inside
  * a line does. A missing file, or a payload found nowhere or more than once
  * inside lines, is not a removal anyone can verify.
+ *
+ * A request that names a line outside its quotes (the seeded `line` meaning:
+ * `the line containing '…'`, `lines`, `строку`, `पंक्ति`, `的行`) removes whole
+ * lines: every line that contains the payload goes, never only the payload
+ * inside it (PR #1188 dogfooding).
  */
 function groundedRemoval(task) {
-  const lowered = task.toLowerCase();
+  const lowered = sentenceWords(task);
   if (!mentionsRole('coding_text_remove_action', lowered) || mentionsRole('coding_member_add_action', lowered)) return null;
   const named = quotedPayloadAndPath(task);
   if (!named) return null;
+  const byLine = namesLine(task);
   return {
     target: named.target,
-    compute: (source, missing) => (missing ? null : removedLiteral(source, named.text)),
+    compute: (source, missing) => {
+      if (missing) return null;
+      return byLine ? removedLines(source, named.text) : removedLiteral(source, named.text);
+    },
     edit: changedLinesEdit,
     intent: 'coding_text_remove',
     slots: [['{old}', named.text]],
+    reported: byLine ? (source) => removedLinesReport(source, named.text) : null,
   };
+}
+
+/**
+ * Mirrors `fn sentence_words`: the lowered request with the marks that end a
+ * sentence or clause set off as spaces, so a verb that closes its sentence
+ * (`… पंक्ति हटाओ।`, `… удали.`) is still a whole word. A dot inside a token
+ * (`t.md`) is not followed by a space and stays.
+ */
+function sentenceWords(task) {
+  return task.toLowerCase().replace(/[.!?;:,\u0964\u0965\u3002\uff01\uff1f]+(?=\s|$)/gu, ' ');
+}
+
+/** Mirrors `fn names_line`: the seeded `line` meaning, outside the request's quotes. */
+function namesLine(task) {
+  let outside = '';
+  let cursor = 0;
+  for (const segment of quotedSegmentSpans(task)) {
+    if (segment.start < cursor) continue;
+    outside += `${task.slice(cursor, segment.start)} `;
+    cursor = segment.end;
+  }
+  return meaningEvidencedIn('line', normalizePrompt(outside + task.slice(cursor)).toLowerCase());
+}
+
+/** Mirrors `fn removed_lines`: `source` without every line containing `text`. */
+function removedLines(source, text) {
+  const kept = source.split(/(?<=\n)/u).filter((line) => !line.includes(text)).join('');
+  return kept === source ? null : kept;
+}
+
+/**
+ * Mirrors `fn removed_lines_report`: lines that were exactly the payload are
+ * reported as the payload's removal; lines that only contained it are
+ * reported as lines, with their count.
+ */
+function removedLinesReport(source, text) {
+  const removed = source.split(/(?<=\n)/u).map((line) => line.replace(/\r?\n$/u, '')).filter((line) => line.includes(text));
+  if (removed.every((line) => line === text)) return null;
+  return { intent: 'line', slots: [['{old}', text], ['{count}', String(removed.length)]] };
 }
 
 /**
@@ -289,7 +339,7 @@ function groundedRemoval(task) {
  * anyone can verify.
  */
 function groundedSetting(task) {
-  if (!mentionsRole('config_value_lead', task.toLowerCase())) return null;
+  if (!mentionsRole('config_value_lead', sentenceWords(task))) return null;
   const edit = composeEditRequest(task);
   if (!edit) return null;
   const [target, oldClause, value] = edit;
@@ -332,7 +382,7 @@ function assignedSetting(source, key, value, target) {
  * replacement a stated correction would have made.
  */
 function groundedTypoFix(task) {
-  if (!mentionsRole('typo_fix_lead', task.toLowerCase())) return null;
+  if (!mentionsRole('typo_fix_lead', sentenceWords(task))) return null;
   const named = quotedPayloadAndPath(task);
   if (!named || !isIdentifierWord(named.text)) return null;
   const correction = correctedSpelling(named.text);
@@ -390,7 +440,7 @@ function compactEndEdit(source, updated, atEnd) {
  * the change from the seeded response for its intent.
  */
 function planComputedChangeStep(task, currentTurn, toolNames, change) {
-  const { target, intent, slots } = change;
+  const { target } = change;
   const read = resultForPath(currentTurn, Capability.Read, target, null);
   if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(target));
   // A read that came back as the client's file block is the file, whatever
@@ -399,6 +449,7 @@ function planComputedChangeStep(task, currentTurn, toolNames, change) {
   const source = missing ? '' : sourceFromReadResult(read);
   const updated = change.compute(source, missing);
   if (updated === null || updated === source) return failed(task, target);
+  const { intent, slots } = change.reported?.(source) ?? change;
   const compact = change.edit(source, updated);
   const editTool = compact ? toolFor(toolNames, Capability.Edit) : null;
   if (compact && editTool) {

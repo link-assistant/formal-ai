@@ -259,6 +259,26 @@ multilingual_responses
     intent coding_text_remove
     language es
     text "Se eliminó `{old}` de `{path}` y se verificó el resultado."
+  response response_line_en
+    intent line
+    language en
+    text "Deleted {count} line(s) containing `{old}` from `{path}` and observed the result."
+  response response_line_ru
+    intent line
+    language ru
+    text "Из `{path}` удалены строки, содержащие `{old}` ({count}), результат проверен."
+  response response_line_hi
+    intent line
+    language hi
+    text "`{path}` से `{old}` वाली {count} पंक्ति(याँ) हटाईं और परिणाम सत्यापित किया।"
+  response response_line_zh
+    intent line
+    language zh
+    text "已从 `{path}` 中删除包含 `{old}` 的 {count} 行并验证了结果。"
+  response response_line_es
+    intent line
+    language es
+    text "Se eliminaron {count} línea(s) con `{old}` de `{path}` y se verificó el resultado."
   response response_setting_en
     intent setting
     language en

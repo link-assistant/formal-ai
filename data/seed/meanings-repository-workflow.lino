@@ -309,22 +309,32 @@ meanings
         text "a line"
       surface
         text line
+      surface
+        text lines
     lexeme ru
       surface
         text строку
       surface
         text строка
+      surface
+        text строки
     lexeme hi
       surface
         text पंक्ति
+      surface
+        text पंक्तियाँ
     lexeme zh
       surface
         text 一行
+      surface
+        text 的行
     lexeme es
       surface
         text "la línea"
       surface
         text línea
+      surface
+        text líneas
   file_edit_blank_line
     defined-by concept
     role file_edit_blank_line

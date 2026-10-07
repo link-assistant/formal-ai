@@ -37,6 +37,8 @@ pub(super) enum Computation {
     EndInsertion { text: String, at_end: bool },
     /// Every line that is exactly `text`, else its one in-line occurrence.
     Removal { text: String },
+    /// Every line that contains `text`, whole (the request names a line).
+    LineRemoval { text: String },
     /// The one line assigning `key` gets `value`, in the file's own quoting.
     Setting { key: String, value: String },
     /// Every whole-word `word` becomes its discovered `correction`.
@@ -83,7 +85,46 @@ fn grounded_typo_fix(task: &str) -> Option<ComputedChange> {
 }
 
 fn mentions(role: &str, task: &str) -> bool {
-    seed::lexicon().mentions_role(role, &task.to_lowercase())
+    seed::lexicon().mentions_role(role, &sentence_words(task))
+}
+
+/// The marks that end a sentence or a clause.
+const SENTENCE_MARKS: [char; 11] = [
+    '.', '!', '?', ';', ':', ',', '\u{0964}', '\u{0965}', '\u{3002}', '\u{ff01}', '\u{ff1f}',
+];
+
+/// The lowered request with the marks that end a sentence or clause set off
+/// as spaces, so a verb that closes its sentence (`… पंक्ति हटाओ।`, `…
+/// удали.`) is still a whole word. A dot inside a token (`t.md`) is not
+/// followed by a space and stays.
+fn sentence_words(task: &str) -> String {
+    let lowered = task.to_lowercase();
+    let characters: Vec<char> = lowered.chars().collect();
+    let mut out = String::with_capacity(lowered.len());
+    let mut index = 0;
+    while index < characters.len() {
+        let mut end = index;
+        while end < characters.len() && SENTENCE_MARKS.contains(&characters[end]) {
+            end += 1;
+        }
+        if end > index && characters.get(end).is_none_or(|next| next.is_whitespace()) {
+            out.push(' ');
+            index = end;
+        } else {
+            out.push(characters[index]);
+            index += 1;
+        }
+    }
+    out
+}
+
+/// Whether the request names a line outside its quotes: the seeded `line`
+/// meaning (`the line containing '…'`, `lines`, `строку`, `पंक्ति`, `的行`).
+fn names_line(task: &str) -> bool {
+    let outside = crate::solver_handlers::text_outside_quoted_segments(task);
+    seed::lexicon().meaning("line").is_some_and(|meaning| {
+        meaning.evidenced_in(&crate::engine::normalize_prompt(&outside).to_lowercase())
+    })
 }
 
 /// The one workspace path a request names and its one quoted segment that is
@@ -151,11 +192,18 @@ fn grounded_removal(task: &str) -> Option<ComputedChange> {
         return None;
     }
     let (target, text) = quoted_payload_and_path(task)?;
+    // A request that names a line removes whole lines: every line containing
+    // the payload goes, never only the payload inside it (PR #1188).
+    let computation = if names_line(task) {
+        Computation::LineRemoval { text: text.clone() }
+    } else {
+        Computation::Removal { text: text.clone() }
+    };
     Some(ComputedChange {
         target,
         intent: "coding_text_remove",
-        slots: vec![("{old}", text.clone())],
-        computation: Computation::Removal { text },
+        slots: vec![("{old}", text)],
+        computation,
     })
 }
 
@@ -194,6 +242,9 @@ impl ComputedChange {
             Computation::Removal { text } => {
                 (!missing).then(|| removed_literal(source, text)).flatten()
             }
+            Computation::LineRemoval { text } => {
+                (!missing).then(|| removed_lines(source, text)).flatten()
+            }
             Computation::Setting { key, value } => (!missing)
                 .then(|| assigned_setting(source, key, value, &self.target))
                 .flatten(),
@@ -213,6 +264,7 @@ impl ComputedChange {
             Computation::EndInsertion { .. } if source.is_empty() => None,
             Computation::EndInsertion { at_end, .. } => compact_end_edit(source, updated, *at_end),
             Computation::Removal { .. }
+            | Computation::LineRemoval { .. }
             | Computation::Setting { .. }
             | Computation::TypoFix { .. } => changed_lines_edit(source, updated),
         }
@@ -267,6 +319,46 @@ fn compact_end_edit(source: &str, updated: &str, at_end: bool) -> Option<(String
         return Some((anchor.to_owned(), replacement.to_owned()));
     }
     None
+}
+
+impl ComputedChange {
+    /// The seed sentence that states the change made to `source`: lines that
+    /// only contained the payload are reported as lines, with their count;
+    /// every other change keeps its own intent and slots.
+    fn reported(&self, source: &str) -> (&'static str, Vec<(&'static str, String)>) {
+        if let Computation::LineRemoval { text } = &self.computation {
+            let removed: Vec<&str> = source
+                .split_inclusive('\n')
+                .map(bare_line)
+                .filter(|line| line.contains(text.as_str()))
+                .collect();
+            if removed.iter().any(|line| line != text) {
+                return (
+                    "line",
+                    vec![
+                        ("{old}", text.clone()),
+                        ("{count}", removed.len().to_string()),
+                    ],
+                );
+            }
+        }
+        (self.intent, self.slots.clone())
+    }
+}
+
+/// A line without its `\n` or `\r\n` ending.
+fn bare_line(line: &str) -> &str {
+    line.strip_suffix('\n')
+        .map_or(line, |body| body.strip_suffix('\r').unwrap_or(body))
+}
+
+/// `source` without every line containing `text`; `None` when none does.
+fn removed_lines(source: &str, text: &str) -> Option<String> {
+    let kept: String = source
+        .split_inclusive('\n')
+        .filter(|line| !line.contains(text))
+        .collect();
+    (kept != source).then_some(kept)
 }
 
 fn removed_literal(source: &str, text: &str) -> Option<String> {
@@ -395,15 +487,15 @@ pub(super) fn plan_computed_change_step(
             target,
         )?));
     };
-    let slots: Vec<(&str, &str)> = change
-        .slots
+    let (intent, reported) = change.reported(&source);
+    let slots: Vec<(&str, &str)> = reported
         .iter()
         .map(|(slot, value)| (*slot, value.as_str()))
         .collect();
     let verified = VerifiedChange {
         target,
         expected: &updated,
-        intent: change.intent,
+        intent,
         slots: &slots,
     };
     if let Some((old, new)) = change.edit(&source, &updated)
