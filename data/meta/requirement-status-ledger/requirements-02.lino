@@ -139,10 +139,10 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1024"
     shard "docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "partial — relative-meta-logic named, no practice copied yet"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/web/self-translation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1025"

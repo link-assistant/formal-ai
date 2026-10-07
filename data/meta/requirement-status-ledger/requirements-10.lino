@@ -11,10 +11,10 @@ requirement_status_ledger_shard requirements_10
   requirement
     id "R406"
     shard "docs/requirements/issue-0531-pattern-inference-research.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "PR #642 (issue #531)"
     issue "0531"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R407"
