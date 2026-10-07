@@ -41,8 +41,18 @@ fn lino_seed_task_rows_mirror_every_catalog_task() {
             .unwrap_or_else(|| panic!("lino seed has no task_{} row", task.slug));
         assert_eq!(child_value(row, "task"), Some(task.slug));
         assert_eq!(child_value(row, "label"), Some(task.label), "{}", task.slug);
-        assert_eq!(child_value(row, "output"), Some(task.output), "{}", task.slug);
-        assert_eq!(child_value(row, "input").unwrap_or(""), task.input, "{}", task.slug);
+        assert_eq!(
+            child_value(row, "output"),
+            Some(task.output),
+            "{}",
+            task.slug
+        );
+        assert_eq!(
+            child_value(row, "input").unwrap_or(""),
+            task.input,
+            "{}",
+            task.slug
+        );
     }
 }
 
