@@ -16,6 +16,7 @@ use crate::protocol::ChatMessage;
 /// tool definitions resolve the key once and pass it in ahead of the fallback
 /// list, so a client that renames the property keeps working without a Rust
 /// change (requirement 1 of issue #1154).
+#[must_use]
 pub fn command_argument_key(definition: &Value) -> Option<String> {
     // A function tool nests its parameters under `function`; a custom tool
     // declares them at the top level.
@@ -45,8 +46,9 @@ pub fn command_argument_key(definition: &Value) -> Option<String> {
 /// The argument keys `command_argument` reads on its own.
 const FALLBACK_COMMAND_KEYS: [&str; 3] = ["command", "cmd", "script"];
 
-/// The transcript as the planner reads it (requirement 1 of issue #1154): every
-/// call to a tool whose own schema names its command property `K` — outside
+/// The transcript as the planner reads it (requirement 1 of issue #1154).
+///
+/// Every call to a tool whose own schema names its command property `K` — outside
 /// `command`/`cmd`/`script` — also carries that value under `command`, so the
 /// shared `command_argument` reads it. A pure projection of the request:
 /// nothing is stored between requests, and calls to tools without such a

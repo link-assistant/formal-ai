@@ -153,12 +153,11 @@ fn parse(pattern: &str) -> Option<Pattern> {
 /// Whether one character satisfies a single-character atom.
 fn accepts(atom: &Atom, ch: char) -> bool {
     match atom {
-        Atom::Literal(literal) => *literal == ch,
         Atom::Any => ch != '\n',
         Atom::Escape('d') => ch.is_ascii_digit(),
         Atom::Escape('w') => ch.is_ascii_alphanumeric() || ch == '_',
         Atom::Escape('s') => ch.is_whitespace(),
-        Atom::Escape(literal) => *literal == ch,
+        Atom::Literal(literal) | Atom::Escape(literal) => *literal == ch,
         Atom::Class(ranges, negated) => {
             ranges.iter().any(|(low, high)| *low <= ch && ch <= *high) != *negated
         }

@@ -369,8 +369,9 @@ impl SourceRoot {
     }
 }
 
-/// The subtrees of the ES roots whose ES-module sources gain a module twin:
-/// the agentic planner port, `js/agentic/**/*.mjs` ↔ `ts/agentic/**/*.mts`
+/// The subtrees of the ES roots whose ES-module sources gain a module twin.
+///
+/// The agentic planner port, `js/agentic/**/*.mjs` ↔ `ts/agentic/**/*.mts`
 /// (issue #1180 R11). The JavaScript translator names the same set
 /// `MODULE_ROOTS` in `scripts/translate-es.mjs`, so the native `--write`
 /// and the script render one file set.

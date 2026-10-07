@@ -88,13 +88,20 @@ fn contains_unit_word(normalized: &str, unit: &str) -> bool {
         return normalized.contains(unit);
     }
     let boundary_ok = |ch: Option<char>| ch.is_none_or(|c| !c.is_alphabetic());
+    // Issue #1176: unspaced Chinese glues the unit to the sentence on one side
+    // ("26.2英里是多少公里？"), so a CJK unit also counts when a digit precedes
+    // it or a non-letter follows it; "天气" and "弗拉克斯" still fail both.
+    let cjk = crate::coding::contains_cjk(unit);
     let mut search_from = 0;
     while let Some(offset) = normalized[search_from..].find(unit) {
         let start = search_from + offset;
         let end = start + unit.len();
         let before = normalized[..start].chars().next_back();
         let after = normalized[end..].chars().next();
-        if boundary_ok(before) && boundary_ok(after) {
+        let cjk_edge = cjk
+            && (before.is_some_and(|c| c.is_ascii_digit())
+                || after.is_some_and(|c| !c.is_alphabetic()));
+        if (boundary_ok(before) && boundary_ok(after)) || cjk_edge {
             return true;
         }
         // Advance past this occurrence. `end` is always a char boundary (the

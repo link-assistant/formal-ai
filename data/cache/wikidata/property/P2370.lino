@@ -1,0 +1,19 @@
+P2370
+  aliases
+    en ("conversion to SI base unit" "conversion to coherent SI unit" "SI unit equivalent")
+    es ("conversión a unidad básica del Sistema Internacional" "conversión a unidad básica del SI")
+    zh ("國際單位制單位轉換" "转换为国际单位制单位" "国际单位制单位转换")
+  datatype quantity
+  descriptions
+    en "conversion of the unit into a coherent SI unit"
+    es "conversión de la unidad en la unidad coherente del SI"
+    ru "величина в единицах СИ"
+    zh "将单位转换为国际单位制（SI）单位"
+  id P2370
+  labels
+    en "conversion to SI unit"
+    es "conversión a unidad del SI"
+    ru "преобразования к основной единице СИ"
+    zh "转换为国际单位制单位"
+  type property
+success 1

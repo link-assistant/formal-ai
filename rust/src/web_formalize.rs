@@ -842,17 +842,14 @@ fn strip_tags_keep_lines(fragment: &str) -> String {
     let mut shared: Option<&str> = None;
     for line in body.iter().copied().filter(|line| !line.is_empty()) {
         let indent = &line[..line.len() - line.trim_start().len()];
-        shared = Some(match shared {
-            None => indent,
-            Some(previous) => {
-                let common = previous
-                    .char_indices()
-                    .zip(indent.chars())
-                    .find(|((_, left), right)| left != right)
-                    .map_or(previous.len().min(indent.len()), |((at, _), _)| at);
-                &previous[..common]
-            }
-        });
+        shared = Some(shared.map_or(indent, |previous| {
+            let common = previous
+                .char_indices()
+                .zip(indent.chars())
+                .find(|((_, left), right)| left != right)
+                .map_or_else(|| previous.len().min(indent.len()), |((at, _), _)| at);
+            &previous[..common]
+        }));
     }
     let shared = shared.unwrap_or_default();
     body.iter()

@@ -2,7 +2,7 @@
 //!
 //! "What does X mean?" is answered from the registry's dictionary sources
 //! (Wiktionary through the Free Dictionary entry API for English and each
-//! edition's own MediaWiki extracts for the other languages), never from a
+//! edition's own `MediaWiki` extracts for the other languages), never from a
 //! canned paragraph. Everything this module reads is seed data — the
 //! `word_definition` rows of `data/seed/prompt-patterns.lino` hold the frames
 //! that read the word (`what does {term} mean`, `что означает {term}`,
@@ -41,6 +41,7 @@ fn patterns(kind: &str, language: Option<&str>) -> Vec<PromptPattern> {
 /// The word a definition request asks about and the frame's language, read
 /// from the longest seeded frame that encloses it.
 #[must_use]
+#[allow(clippy::literal_string_with_formatting_args)] // `{term}` is the seed frame's slot
 pub fn definition_term(prompt: &str) -> Option<(String, String)> {
     let lowered = prompt.to_lowercase();
     let lowered = lowered
@@ -109,7 +110,7 @@ fn respelling(gloss: &str, term: &str) -> bool {
     !gloss.is_empty() && gloss == letters(term)
 }
 
-/// Whether a trimmed extract line is a MediaWiki section heading.
+/// Whether a trimmed extract line is a `MediaWiki` section heading.
 fn is_heading(line: &str) -> bool {
     line.chars().count() > 1 && line.starts_with('=') && line.ends_with('=')
 }
@@ -120,7 +121,7 @@ fn title_of(line: &str) -> String {
 }
 
 /// The definitions one dictionary capture states, as `(part of speech,
-/// gloss)` pairs: the Free Dictionary entry array, or a MediaWiki extract read
+/// gloss)` pairs: the Free Dictionary entry array, or a `MediaWiki` extract read
 /// by its seeded definition sections (the first section when the edition
 /// declares none or the page carries none).
 fn read_senses(text: &str, term: &str, language: &str) -> Vec<(String, String)> {
@@ -242,7 +243,9 @@ fn render(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
 }
 
 /// Answer a definition request from the dictionary sources the registry
-/// declares, through `client` (the capture cache, then the network when the
+/// declares.
+///
+/// Sources are read through `client` (the capture cache, then the network when the
 /// client is online). `None` when the prompt is not a definition request or
 /// no dictionary source states a sense.
 pub fn try_word_definition_with_client<T: SourceTransport>(
@@ -301,7 +304,10 @@ pub fn try_word_definition_with_client<T: SourceTransport>(
                 ],
             ));
         }
-        let digest = capture.sha256().get(..16).unwrap_or(capture.sha256());
+        let digest = capture
+            .sha256()
+            .get(..16)
+            .unwrap_or_else(|| capture.sha256());
         let body = render(
             "word_definition_answer",
             &language,
@@ -314,7 +320,7 @@ pub fn try_word_definition_with_client<T: SourceTransport>(
                 ("license", &record.license_name),
             ],
         );
-        log.append("word_definition:source", record.id.clone());
+        log.append("word_definition:source", record.id);
         log.append("source", capture.source_url().to_owned());
         return Some(finalize_simple(
             prompt,

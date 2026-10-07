@@ -167,7 +167,8 @@ fn the_rust_tier_enforces_the_dogfood_regeneration_in_ci() {
     let workflow = layered_workflow();
     let rust = job_block(&workflow, "rust");
     for pin in [
-        "find ts -name '*.ts' -type f -delete",
+        // Issue #1180 R11: the native translator renders the `.mts` set too.
+        "find ts \\( -name '*.ts' -o -name '*.mts' \\) -type f -delete",
         "rust/target/release/formal-ai translate --from js --to ts --write",
         "git diff --exit-code -- ts/",
         "./.github/actions/formal-ai-binary",

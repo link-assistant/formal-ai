@@ -532,26 +532,27 @@ pub fn handle_test_generation(
     });
 
     let mut normalize_applied = false;
-    let (mut lines, mut rows): (Vec<String>, Vec<(String, String)>) = if let Some(shape) = shape {
-        log.append("test_generation:shape", shape.name.clone());
-        let (helper, mut call_prefix) = normalize_helper(&properties);
-        // When every sample input is a list, normalize() would never be
-        // called: drop it so the suite carries no dead helper.
-        if !shape.cases.iter().any(|case| !case.input.starts_with('[')) {
-            call_prefix.clear();
-        }
-        normalize_applied = !call_prefix.is_empty();
-        let mut lines = Vec::new();
-        if normalize_applied {
-            lines.extend(helper);
-            lines.push(String::new());
-        }
-        let (case_lines, case_rows) = case_lines(shape, &function, &call_prefix);
-        lines.extend(case_lines);
-        (lines, case_rows)
-    } else {
-        (Vec::new(), Vec::new())
-    };
+    let (mut lines, mut rows): (Vec<String>, Vec<(String, String)>) = shape.map_or_else(
+        || (Vec::new(), Vec::new()),
+        |shape| {
+            log.append("test_generation:shape", shape.name.clone());
+            let (helper, mut call_prefix) = normalize_helper(&properties);
+            // When every sample input is a list, normalize() would never be
+            // called: drop it so the suite carries no dead helper.
+            if !shape.cases.iter().any(|case| !case.input.starts_with('[')) {
+                call_prefix.clear();
+            }
+            normalize_applied = !call_prefix.is_empty();
+            let mut lines = Vec::new();
+            if normalize_applied {
+                lines.extend(helper);
+                lines.push(String::new());
+            }
+            let (case_lines, case_rows) = case_lines(shape, &function, &call_prefix);
+            lines.extend(case_lines);
+            (lines, case_rows)
+        },
+    );
     let examples = stated_examples(prompt, &function);
     if shape.is_none() {
         log.append("test_generation:shape", "none".to_owned());

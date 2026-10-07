@@ -224,9 +224,7 @@ pub fn rediscover_from_documentation(
         .map(|part| part.source_text.clone())
         .unwrap_or_default();
     let bindings = ParameterBindings(
-        [(String::from("output_literal"), expected_output.to_owned())]
-            .into_iter()
-            .collect(),
+        std::iter::once((String::from("output_literal"), expected_output.to_owned())).collect(),
     );
     let procedure = generalize_examples(std::slice::from_ref(&node));
     let recomposed = recompose_for_requirement(&procedure, &bindings, language)
