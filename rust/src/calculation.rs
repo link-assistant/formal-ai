@@ -451,7 +451,7 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
 /// normalizer would see the word. The surfaces are the
 /// `arithmetic_operator_word` meanings' spelled forms, longest first so `乘以`
 /// is rewritten before the `乘` it contains. Mirrors the CJK split in
-/// `normalizeArithmeticWords` (js/worker/formal_ai_worker_01.js).
+/// `normalizeArithmeticWords` (`js/worker/formal_ai_worker_01.js`).
 fn split_glued_operator_words(expression: &str) -> String {
     if !crate::coding::contains_cjk(expression) {
         return expression.to_owned();

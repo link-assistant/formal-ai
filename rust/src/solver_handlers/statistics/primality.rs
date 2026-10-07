@@ -131,5 +131,5 @@ fn single_stated_integer(lowered: &str) -> Option<(usize, usize)> {
 
 /// The smallest divisor of `number` in `2..=limit`, if any.
 fn smallest_factor(number: u64, limit: u64) -> Option<u64> {
-    (2..=limit).find(|divisor| number % divisor == 0)
+    (2..=limit).find(|divisor| number.is_multiple_of(*divisor))
 }

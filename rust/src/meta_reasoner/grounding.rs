@@ -400,9 +400,9 @@ fn ground_measure(
     deeper.push(stem.to_owned());
     for sense in senses.iter().take(BOUNDS.glosses_per_word) {
         let mut scores: Vec<(String, f64)> = Vec::new();
-        let mut seen: Vec<String> = Vec::new();
+        let mut visited_tokens: Vec<String> = Vec::new();
         for token in meta_words(&sense.gloss) {
-            if seed.is_grammatical(&token) || seen.contains(&token) {
+            if seed.is_grammatical(&token) || visited_tokens.contains(&token) {
                 continue;
             }
             for hypothesis in ground(&token, context, 1, &deeper).hypotheses {
@@ -420,7 +420,7 @@ fn ground_measure(
                     scores.push((hypothesis.operation, hypothesis.score));
                 }
             }
-            seen.push(token);
+            visited_tokens.push(token);
         }
         if scores.is_empty() {
             continue;

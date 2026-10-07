@@ -730,8 +730,7 @@ pub fn handle_statistics(
     // The percentile rank is a parameter, not a data point: it leaves the
     // list before any operation reads it, and an unstated or out-of-range
     // rank declines the question rather than guessing one.
-    let mut rank = None;
-    if ops.contains(&Op::Percentile) {
+    let rank = if ops.contains(&Op::Percentile) {
         let index = percentile_rank_index(&lowered)?;
         let stated = *values.get(index)?;
         values.remove(index);
@@ -742,8 +741,10 @@ pub fn handle_statistics(
         if stated.is_negative() || stated.compare(hundred) == Ordering::Greater {
             return None;
         }
-        rank = Some(stated);
-    }
+        Some(stated)
+    } else {
+        None
+    };
     if values.len() < 2 {
         return None;
     }

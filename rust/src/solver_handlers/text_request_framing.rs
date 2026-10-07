@@ -14,7 +14,7 @@ use crate::solver_handlers::text_manipulation::text_outside_quoted_segments;
 /// The request's own words, normalized: everything outside its quoted
 /// segments. Empty when the request quotes no payload, so neither a question
 /// about the world ("how many words does English have?") nor a signature
-/// colon ("count_vowels(text: str)") is read as a count over some text.
+/// colon (`count_vowels(text: str)`) is read as a count over some text.
 #[must_use]
 pub(super) fn request_framing(prompt: &str, spans: &[QuotedSegment]) -> String {
     if spans.is_empty() {
