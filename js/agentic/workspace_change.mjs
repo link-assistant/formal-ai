@@ -200,7 +200,11 @@ function groundedRewrite(task) {
   if (!edit) return null;
   const [target, oldClause, newClause] = edit;
   const renaming = mentionsRole('coding_identifier_rename_action', task.toLowerCase());
-  const quoted = quotedSegments(task);
+  // The edit request unescapes `\n` / `\t` in its literals, so the quoted
+  // segments are compared unescaped too: a multi-line replacement written with
+  // `\n` was otherwise not "quoted", and the general fallback wrote its new
+  // text over the whole file (PR #1188 sub-agent gap 3).
+  const quoted = quotedSegments(task).map(unescapeProseNewlines);
   let old;
   let next;
   if (quoted.includes(oldClause) && quoted.includes(newClause)) {
@@ -249,7 +253,8 @@ function groundedEndInsertion(task) {
     target: named.target,
     compute: (source) => insertedAtEnd(source, unescapeProseNewlines(named.text), atEnd),
     edit: (source, updated) => (source === '' ? null : compactEndEdit(source, updated, atEnd)),
-    intent: atEnd ? 'file_edit_position_end' : 'file_edit_position_start',
+    // An empty line has no text to quote back; it is stated in its own words.
+    intent: named.text === '' ? 'file_edit_blank_line' : atEnd ? 'file_edit_position_end' : 'file_edit_position_start',
     slots: [['{new}', named.text]],
   };
 }

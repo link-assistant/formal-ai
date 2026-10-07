@@ -53,3 +53,18 @@ fn an_unquoted_line_is_grounded_between_its_lead_and_the_destination_cue() {
         );
     }
 }
+
+/// Gap 3: a multi-line replacement written with `\n` escapes is a grounded
+/// rewrite of the function (the quoted literals are compared unescaped), never
+/// a whole-file write of the new text.
+#[test]
+fn a_multi_line_replacement_written_with_escapes_edits_the_function() {
+    let planned = read_then_change(
+        "In src/lib.rs replace \"fn old() -> u8 {\\n    1\\n}\" with \"fn old() -> u8 {\\n    2\\n}\".",
+        "fn old() -> u8 {\n    1\n}\nfn keep() {}\n",
+    );
+    assert_eq!(planned.len(), 2, "{planned:?}");
+    assert_eq!(planned[1].0, "edit", "{planned:?}");
+    assert_eq!(planned[1].1["oldString"], "fn old() -> u8 {\n    1\n}");
+    assert_eq!(planned[1].1["newString"], "fn old() -> u8 {\n    2\n}");
+}

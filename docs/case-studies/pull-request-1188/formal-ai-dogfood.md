@@ -565,3 +565,22 @@ declined; the coordinator's pin in
 `rust/tests/web/formal-ai-subagent-quoted-payloads.test.mjs` moved to that
 prompt, and its old prompt now pins the append. Tests: JS (three languages
 and the declined case) and Rust `rust/tests/unit/pull_request_1188_subagent_gaps.rs`.
+
+### Sub-agent gap 3 — code in a replacement; the empty line's wording
+
+Reproducing the reported generic answer exposed a worse case: a multi-line
+replacement written with `\n` escapes (`replace "fn old() -> u8 {\n    1\n}"
+with "…2…"`) **overwrote the whole file** with the quoted new text. The edit
+composer unescapes `\n` / `\t` in its literals, but `groundedRewrite` compared
+them against the raw quoted segments, decided the literals were not quoted,
+and the general-change fallback took the request as a literal write. Both
+roots now compare against the unescaped segments, so the request is a grounded
+rewrite: read → edit of the function → digest → the seeded
+`coding_text_replaced` sentence. (Single-line code literals such as
+`fn keep() {}` already answered with the seeded sentence.)
+
+An appended or prepended empty line is now stated as one, from new seeded
+responses keyed by the existing `file_edit_blank_line` meaning ("Added an empty
+line to `{path}` and observed the result.", five languages) instead of
+"Appended `` to …". Tests: JS (exact transcript, file and answer for both) and
+Rust `a_multi_line_replacement_written_with_escapes_edits_the_function`.

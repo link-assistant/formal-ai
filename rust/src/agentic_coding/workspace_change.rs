@@ -457,7 +457,15 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
     // \"conversation_history\"" quotes three things and states one replacement.
     // Asking whether each clause *is* quoted keeps the guarantee and drops the
     // arithmetic.
-    let quoted = quoted_segments(task);
+    // The edit request unescapes `\n` / `\t` in its literals, so the quoted
+    // segments are compared unescaped too: a multi-line replacement written
+    // with `\n` was otherwise not "quoted", and the general fallback wrote its
+    // new text over the whole file (PR #1188 sub-agent gap 3).
+    let quoted: Vec<String> = quoted_segments(task)
+        .iter()
+        .map(String::as_str)
+        .map(super::positional_edit::unescape_prose_newlines)
+        .collect();
     let is_quoted = |value: &String| quoted.contains(value);
     let operands = if is_quoted(&old_clause) && is_quoted(&new_clause) {
         Some((old_clause, new_clause))

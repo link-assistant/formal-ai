@@ -179,6 +179,26 @@ multilingual_responses
     intent file_edit_position_start
     language es
     text "Se añadió `{new}` al principio de `{path}` y se verificó el resultado."
+  response response_file_edit_blank_line_en
+    intent file_edit_blank_line
+    language en
+    text "Added an empty line to `{path}` and observed the result."
+  response response_file_edit_blank_line_ru
+    intent file_edit_blank_line
+    language ru
+    text "В `{path}` добавлена пустая строка, результат проверен."
+  response response_file_edit_blank_line_hi
+    intent file_edit_blank_line
+    language hi
+    text "`{path}` में एक खाली पंक्ति जोड़ी और परिणाम सत्यापित किया।"
+  response response_file_edit_blank_line_zh
+    intent file_edit_blank_line
+    language zh
+    text "已在 `{path}` 中添加一个空行并验证了结果。"
+  response response_file_edit_blank_line_es
+    intent file_edit_blank_line
+    language es
+    text "Se añadió una línea vacía a `{path}` y se verificó el resultado."
   response response_file_edit_position_after_en
     intent file_edit_position_after
     language en

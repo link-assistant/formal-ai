@@ -131,7 +131,10 @@ fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
     let text = super::positional_edit::unescape_prose_newlines(&text);
     Some(ComputedChange {
         target,
-        intent: if at_end {
+        // An empty line has no text to quote back; it is stated in its own words.
+        intent: if text.is_empty() {
+            "file_edit_blank_line"
+        } else if at_end {
             "file_edit_position_end"
         } else {
             "file_edit_position_start"

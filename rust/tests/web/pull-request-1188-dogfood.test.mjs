@@ -413,3 +413,20 @@ describe('PR #1188 dogfood: an unquoted line is grounded between its lead and th
     assert.equal(files.get('notes.txt'), 'first line\n');
   });
 });
+
+describe('PR #1188 dogfood: code and blank lines are stated in seeded words', () => {
+  const LIB = 'fn old() -> u8 {\n    1\n}\nfn keep() {}\n';
+
+  test('a multi-line replacement written with \\n edits the function, never the whole file', async () => {
+    const { calls, files, answer } = await drive('In src/lib.rs replace "fn old() -> u8 {\\n    1\\n}" with "fn old() -> u8 {\\n    2\\n}".', { 'src/lib.rs': LIB });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('src/lib.rs'), 'fn old() -> u8 {\n    2\n}\nfn keep() {}\n');
+    assert.equal(answer, 'Replaced `fn old() -> u8 {\n    1\n}` with `fn old() -> u8 {\n    2\n}` in `src/lib.rs` and observed the result.');
+  });
+
+  test('an appended empty line is stated as an empty line', async () => {
+    const { files, answer } = await drive('Append an empty line to src/lib.rs.', { 'src/lib.rs': LIB });
+    assert.equal(files.get('src/lib.rs'), `${LIB}\n`);
+    assert.equal(answer, 'Added an empty line to `src/lib.rs` and observed the result.');
+  });
+});
