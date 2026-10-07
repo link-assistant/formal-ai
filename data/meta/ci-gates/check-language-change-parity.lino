@@ -7,4 +7,4 @@ ci_gate check_language_change_parity
   stage web
   description "A change to one language's seed data is mirrored in every other language."
   run "npm run --prefix rust/tests/e2e check:language-parity"
-  justification "A seed-data change to one language that is not mirrored causes the assistant to behave differently across languages for the same intent; the gate was introduced in #991 to enforce mirror parity on every PR."
+  justification "When the source-root layout changed in #1138, the language parity check was added to ensure all natural-language definitions stay consistent across source roots; without it, adding a term in one root leaves gaps in others."

@@ -7,4 +7,4 @@ ci_gate check_hardcoded_language
   stage rust
   description "No natural-language string is hardcoded outside the seed data and its allowlist."
   run "rust-script scripts/check-hardcoded-language.rs"
-  justification "Natural-language strings hardcoded outside the seed data bypass the translation pipeline and produce English-only UI in non-English locales; the gate was introduced in #991 to prevent this class of i18n regression."
+  justification "Hardcoded prose strings in source code bypass the i18n catalog and leave users without translations; the burn-down gate was introduced in #659 (R379) to prevent new hardcoded strings from entering the codebase."

@@ -7,4 +7,4 @@ ci_gate check_multilingual_intent_coverage
   stage web
   description "Every routed intent is covered in every language the app advertises."
   run "npm run --prefix rust/tests/e2e check:intent-coverage"
-  justification "A routed intent that is not covered in every advertised language fails silently in non-English locales; the gate was introduced in #991 to require full intent coverage across all languages."
+  justification "An intent phrase not covered by multilingual test data caused incorrect responses in non-English sessions; the coverage check was introduced in #187 (R219) to ensure every intent has translations across all languages."

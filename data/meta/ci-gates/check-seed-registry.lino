@@ -7,4 +7,4 @@ ci_gate check_seed_registry
   stage rust
   description "The Rust and browser seed inventories still match data/meta/seed-registry.lino (issue #991)."
   run "rust-script --test scripts/generate-seed-registry.rs && rust-script scripts/generate-seed-registry.rs"
-  justification "A mismatch between the Rust and browser seed inventories causes one side to serve a different set of knowledge than the other; the gate was introduced in #991 to keep the registries in sync."
+  justification "generate-seed-registry.rs was introduced in #991 to derive the seed registry from per-entry source files; without it, the registry file can diverge from its sources and registrations are silently lost or duplicated."

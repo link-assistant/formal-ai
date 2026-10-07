@@ -7,4 +7,4 @@ ci_gate check_associative_terminology
   stage rust
   description "Associative-memory vocabulary stays consistent across code, data and docs."
   run "rust-script scripts/check-associative-terminology.rs"
-  justification "Inconsistent terminology (e.g. 'memory' vs 'store' vs 'cache') confused contributors and leaked into user-facing text; the gate was introduced in #991 to keep vocabulary stable across code, data and docs."
+  justification "A graph-named public API route or Rust module file would silently reintroduce the associative terminology the cleanup in #664 retired; this lint blocks new occurrences before they embed."

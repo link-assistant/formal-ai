@@ -7,4 +7,4 @@ ci_gate check_cargo_lock_is_synchronized
   stage rust
   description "Cargo.lock matches Cargo.toml, so a release build resolves the versions that were tested."
   run "cargo metadata --manifest-path rust/Cargo.toml --locked --format-version 1 > /dev/null"
-  justification "An out-of-sync Cargo.lock means the release build resolves different versions than the tested ones, causing reproducibility failures; enforced since the registry was introduced in #991."
+  justification "A committed Cargo.lock that diverges from Cargo.toml means reproducible builds fail silently; `cargo metadata --locked` has guarded lock-file consistency since the initial CI setup (commit 6f8d4a8a0), preventing build drift after dependency edits."

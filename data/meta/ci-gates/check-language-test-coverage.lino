@@ -7,4 +7,4 @@ ci_gate check_language_test_coverage
   stage web
   description "Every registered language is exercised by the end-to-end suite."
   run "npm run --prefix rust/tests/e2e check:language-test-coverage"
-  justification "An unexercised language passes the parity gate but may silently fall back to English in production; the gate was introduced in #991 to require at least one e2e test case for every registered language."
+  justification "A natural language could be added to the catalog without a corresponding test, leaving translation quality unverifiable; the coverage check was introduced in commit 54bf94f6a to ensure every supported language has test coverage."

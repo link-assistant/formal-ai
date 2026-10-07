@@ -7,4 +7,4 @@ ci_gate check_coverage_ratchet
   stage rust
   description "Test coverage does not fall below the committed ratchet."
   run "rust-script --test scripts/check-coverage-ratchet.rs"
-  justification "Coverage regression is silent without an enforced floor; the ratchet was introduced in #991 so that removing tests or untested code paths is caught immediately rather than at review."
+  justification "Coverage could fall to zero with the pipeline green because nothing read the LCOV numbers; the ratchet gate was added in #895 (epic #710) so every merged commit can only hold or improve measured coverage."

@@ -134,9 +134,10 @@ jobs:
     needs: [plan]
     if: ${{ needs.plan.outputs.already-green != 'true' }}
     runs-on: ubuntu-latest
-    # 45 minutes for a two-leaf leg, 180 for the one-leg modes (the scheduled
-    # `all` run walks every level of the tree in sequence).
-    timeout-minutes: ${{ matrix.leg.cap }}
+    # 45 minutes for a two-leaf leg; 180 is the ceiling for the one-leg modes
+    # (scheduled `all` run walks every level of the tree in sequence).
+    # Static value so the CI wall-clock gate can measure the worst-case ceiling.
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:

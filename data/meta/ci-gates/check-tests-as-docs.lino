@@ -7,4 +7,4 @@ ci_gate check_tests_as_docs
   stage rust
   description "Tests assert exact answers, so the suite doubles as the specification."
   run "rust-script --test scripts/check-tests-as-docs.rs && rust-script scripts/check-tests-as-docs.rs"
-  justification "Tests that check only that an answer is non-empty or has a certain shape do not catch regressions in the actual wording; the gate was introduced in #991 to require exact-answer assertions so the suite doubles as the specification."
+  justification "Behavioral tests that asserted substrings rather than exact answers failed to document the system's real behavior; the burn-down ratchet was introduced in #960 (R234-2) to migrate tests toward exact answers that serve as executable documentation."

@@ -308,9 +308,9 @@ requirement_status_ledger_shard requirements_02
     id "R1085-16"
     shard "docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md"
     verdict "implemented"
-    delivered "none recorded"
+    delivered "PR #1188, 2026-10-08"
     issue "1085"
-    automated_test "rust/tests/unit/docs_requirements/count.rs"
+    automated_test "rust/tests/web/r1085-16-ci-gate-justifications.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1085-17"

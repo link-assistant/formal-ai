@@ -7,4 +7,4 @@ ci_gate check_worker_terminal_vocabulary
   stage web
   description "The browser worker's terminal vocabulary stays in sync with the seed data."
   run "node experiments/issue-513-sync-worker-terminal.mjs --check"
-  justification "The browser worker's terminal vocabulary that drifts from the seed data causes the worker to respond with stale or missing terms; the sync gate was introduced in #991 to catch drift on every PR."
+  justification "Terminal-command trigger vocabulary hardcoded in the worker source diverged from the seed data it mirrored; the check was introduced in #513 to ensure the worker reads vocabulary only from the seed registry."

@@ -7,4 +7,4 @@ ci_gate check_wasm_worker_size
   stage wasm
   description "The compiled Rust-to-WASM worker stays inside its download size budget."
   run "rust-script scripts/check-wasm-worker-size.rs"
-  justification "A WASM worker that exceeds the download size budget degrades initial load time for users on slow connections; the size gate was introduced in #991 to enforce the committed budget."
+  justification "A WASM worker that grew beyond its size budget degraded load time without any CI signal; the size guard was introduced in #658 (E39/R380) to enforce the worker binary size ceiling that the Rust/WASM migration required."

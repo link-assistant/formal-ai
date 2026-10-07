@@ -7,4 +7,4 @@ ci_gate check_fragment_release_map
   stage rust
   description "The fragment release map regenerates to exactly what is committed."
   run "node --test experiments/issue_738_fragment_release_map.test.mjs"
-  justification "A stale fragment release map causes the wrong fragments to be included in a release archive; the gate regenerates and compares on every PR, introduced in #991."
+  justification "A fragment map regenerated non-atomically could produce partial or mismatched entries that misdirected release notes; the atomic regeneration test was introduced for issue #738 to prevent inconsistent fragment maps."

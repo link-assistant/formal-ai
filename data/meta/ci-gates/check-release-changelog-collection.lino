@@ -7,4 +7,4 @@ ci_gate check_release_changelog_collection
   stage rust
   description "The release script still collects the changelog entries it will publish."
   run "rust-script --test scripts/version-and-commit.rs"
-  justification "A release script that fails to collect changelog fragments silently ships a release with empty or partial release notes; the gate was introduced in #991 to test collection on every PR."
+  justification "A release committed without a matching changelog entry left the version history incomplete; scripts/version-and-commit.rs has enforced changelog collection since the initial CI commit (6f8d4a8a0) to ensure every release is recorded."
