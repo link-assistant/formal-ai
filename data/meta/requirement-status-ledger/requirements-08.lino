@@ -507,10 +507,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R320"
     shard "docs/requirements/issue-0438-prepared-telegram-docker-image.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #470 (issue #438)"
     issue "0438"
-    automated_test ""
+    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R321"

@@ -323,10 +323,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R230"
     shard "docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #196"
     issue "0196"
-    automated_test ""
+    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R231"
@@ -531,18 +531,18 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R252"
     shard "docs/requirements/issue-0244-vision-implementation-planning.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #244"
     issue "0244"
-    automated_test ""
+    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R253"
     shard "docs/requirements/issue-0244-vision-implementation-planning.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #244"
     issue "0244"
-    automated_test ""
+    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R254"

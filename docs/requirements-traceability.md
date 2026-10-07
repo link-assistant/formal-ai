@@ -176,7 +176,7 @@ line number, which had gone stale for every row.
 | R125 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
 | R126 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
 | R127 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
-| R128 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R128 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R129 | docs/requirements/issue-0103-test-matrix-and-architecture-requirements.md | pre-2026-07 (undated); issue #103 | rust/tests/unit/specification/prompt_variations.rs; rust/tests/unit/specification/chat_surface.rs | not yet confirmed |
 | R130 | docs/requirements/issue-0103-test-matrix-and-architecture-requirements.md | pre-2026-07 (undated); issue #103 | rust/tests/unit/specification/prompt_variations.rs; rust/tests/unit/specification/multilingual.rs | not yet confirmed |
 | R131 | docs/requirements/issue-0103-test-matrix-and-architecture-requirements.md | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): rust/tests/unit/specification/prompt_variations.rs | not yet confirmed |
@@ -190,9 +190,9 @@ line number, which had gone stale for every row.
 | R139 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
 | R140 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/e2e/scripts/check-i18n-catalog.mjs; npm run --prefix rust/tests/e2e check:i18n | not yet confirmed |
 | R141 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
-| R142 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
-| R143 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
-| R144 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R142 | docs/requirements/issue-0117-lino-i18n-catalog-requirements.md | pre-2026-07 (undated); issue #117 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
+| R143 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
+| R144 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | rust/tests/unit/github_logs.rs | not yet confirmed |
 | R145 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
 | R146 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
 | R147 | docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
@@ -220,7 +220,7 @@ line number, which had gone stale for every row.
 | R169 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): rust/tests/connectivity.js | not yet confirmed |
 | R170 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/e2e/tests/connectivity.spec.js | not yet confirmed |
 | R171 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/unit/ci-cd/workflow_release.rs | not yet confirmed |
-| R172 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): rust/tests/connectivity.js | not yet confirmed |
+| R172 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R173 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
 | R174 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
 | R175 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
@@ -314,7 +314,7 @@ line number, which had gone stale for every row.
 | R227 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
 | R228 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
 | R229 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
-| R230 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
+| R230 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R231 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
 | R232 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
 | R233 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
@@ -336,8 +336,8 @@ line number, which had gone stale for every row.
 | R249 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | issue-level coverage (not row-pinned): rust/tests/unit/specification/synthesis.rs:39 | not yet confirmed |
 | R250 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
 | R251 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
-| R252 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
-| R253 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R252 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
+| R253 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R254 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
 | R255 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
 | R256 | docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md | pre-2026-07 (undated); issue #349 | rust/tests/integration/issue_349_reverse_sort.rs::issue_349_reverse_sort_follow_up_must_not_be_unknown | not yet confirmed |
@@ -404,7 +404,7 @@ line number, which had gone stale for every row.
 | R317 | docs/requirements/issue-0468-agentic-coding-mode.md | PR #469 (issue #468) | issue-level coverage (not row-pinned): rust/tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
 | R318 | docs/requirements/issue-0468-agentic-coding-mode.md | PR #469 (issue #468) | issue-level coverage (not row-pinned): rust/tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
 | R319 | docs/requirements/issue-0468-agentic-coding-mode.md | PR #469 (issue #468) | rust/tests/unit/agentic_coding.rs; rust/tests/unit/agentic_surfaces.rs | not yet confirmed |
-| R320 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R320 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R321 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
 | R322 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
 | R323 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
@@ -490,10 +490,10 @@ line number, which had gone stale for every row.
 | R361 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
 | R362 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
 | R363 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
-| R364 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R364 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R365 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
 | R366 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
-| R367 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R367 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R368 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
 | R369 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
 | R499-1 | docs/requirements/issue-0499-learn-from-this-data-source-requirements.md | PR #641 (issue #499) | issue-level coverage (not row-pinned): rust/tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
@@ -521,7 +521,7 @@ line number, which had gone stale for every row.
 | R384 | docs/requirements/issue-0538-detailed-meanings-and-words.md | PR #601 (issue #538) | none recorded | not yet confirmed |
 | R385 | docs/requirements/issue-0538-detailed-meanings-and-words.md | PR #601 (issue #538) | rust/tests/unit/issue_538_agentic.rs | not yet confirmed |
 | R386 | docs/requirements/issue-0538-detailed-meanings-and-words.md | PR #601 (issue #538) | none recorded | not yet confirmed |
-| R387 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | none recorded | not yet confirmed |
+| R387 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R388 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | none recorded | not yet confirmed |
 | R389 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | none recorded | not yet confirmed |
 | R390 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | none recorded | not yet confirmed |
@@ -834,13 +834,13 @@ line number, which had gone stale for every row.
 | R536 | docs/requirements/doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.md | doctrine adopted 2026-08-04; boundary superseded 2026-09-24 by R992-R996 (ratchet remains in force per R995) | none yet — enforcement tracked in #934/#951/#952/#953 | n/a |
 | R992 | docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md | doctrine adopted 2026-09-24 (PR #1139, issue #1138) | plan 16 per-leaf progress: docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md | current state quoted honestly in the row; no parity claimed ahead of the migration |
 | R993 | docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md | delivered 2026-09-24 (PR #1139) | rust/tests/unit/issue_1138_translation_tool.rs | rust → meta live via the self-AST renderer; every pending leg names its plan-16 leaf |
-| R994 | docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md | direction documented 2026-09-24; loop closes with plan 16 L4/L5 | CONTRIBUTING.md Development Workflow (js-first cycle subsection) | path-filtered CI and CST-equal round trip pending |
+| R994 | docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md | direction documented 2026-09-24; js → rust step through meta-language self-translation 2026-10-08 (layered-ci js-rust job); loop closes with plan 16 L4/L5 | rust/tests/web/js-rust-translation.test.mjs | path-filtered CI and CST-equal round trip pending |
 | R995 | docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md | doctrine row; ratchet unchanged today | scripts/check-worker-line-budget.rs and data/meta/worker-line-budget/ remain required gates | 3,000-line end-state dissolves when the parity migration replaces the mirrored modules |
 | R996 | docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md | standing honesty rule | R992 status cell and docs/source-roots.md carry the numbers | no document may claim full three-root parity ahead of the measured migration |
 | R997 | docs/requirements/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.md | delivered 2026-10-07 on PR #1188 | rust/tests/web/pr-1188-doctrine-ratchets.test.mjs; rust/tests/web/issue-1177-code-tasks-parity.test.mjs | not yet confirmed |
 | R998 | docs/requirements/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.md | delivered 2026-10-06 | rust/tests/web/pr-1188-doctrine-ratchets.test.mjs; scripts/check-js-parity.mjs in layered-ci js tier | not yet confirmed |
 | R999 | docs/requirements/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.md | doctrine row 2026-10-06 (amends R995) | data/meta/worker-line-budget/ rationales name the ported keys | n/a |
-| R1000 | docs/requirements/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.md | js → ts twin delivered 2026-10-06; js → rust awaits meta-language#196 | rust/tests/web/translate-es.test.mjs; layered-ci ts and rust tiers | not yet confirmed |
+| R1000 | docs/requirements/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.md | js → ts twin delivered 2026-10-06; js → rust delivered 2026-10-08 through meta-language main 679a3b3c (214 items translated, ratcheted) | rust/tests/web/translate-es.test.mjs; rust/tests/web/js-rust-translation.test.mjs; layered-ci ts, js-rust and rust jobs | not yet confirmed |
 | R1001 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | metaReason opens every turn (JS) | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
 | R1002 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | grounding chain with recursive gloss subgoals | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
 | R1003 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | example-driven typed synthesis with counterexamples | rust/tests/web/meta-reasoner.test.mjs | not yet confirmed |
@@ -852,7 +852,7 @@ line number, which had gone stale for every row.
 | R1009 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | task ladder kept and walked (rungs awaiting a real dictionary capture are walked once it is committed) | rust/tests/fixtures/meta-reasoner/ladder.lino; rust/tests/web/meta-reasoner.test.mjs; rust/tests/unit/meta_reasoner.rs::every_rung_of_the_task_ladder_is_derived | not yet confirmed |
 | R1010 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | js/worker natural-language literal ratchet | rust/tests/web/pr-1188-doctrine-ratchets.test.mjs; scripts/check-js-literals.mjs | not yet confirmed |
 | R1011 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | file instruction set, prose-example guard, sub-goal decomposition, location operands, imperatives (never pre-empting a follow-up), gloss-quoted symbols as values, superlative degree as measure and selection, question words never defined terms | rust/tests/web/meta-reasoner.test.mjs; rust/tests/web/worker-mirror.test.mjs; rust/tests/unit/meta_reasoner.rs | not yet confirmed |
-| R1012 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | hand-ported Rust twin (rust/src/meta_reasoner) | rust/tests/unit/meta_reasoner.rs | not yet confirmed |
+| R1012 | docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md | hand-ported Rust twin (rust/src/meta_reasoner); translation measured 2026-10-08: 1 of 73 meta reasoner items translates | rust/tests/unit/meta_reasoner.rs; rust/tests/web/js-rust-translation.test.mjs | not yet confirmed |
 | R1013 | docs/requirements/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.md | JavaScript server (js/server) | rust/tests/web/server.test.mjs | not yet confirmed |
 | R1014 | docs/requirements/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.md | shared route manifest (data/meta/server-routes.lino) | rust/tests/unit/server_route_manifest.rs | not yet confirmed |
 | R1015 | docs/requirements/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.md | server parity corpus and ratchet | scripts/check-server-parity.mjs | not yet confirmed |
@@ -1047,14 +1047,14 @@ line number, which had gone stale for every row.
 | R802-4 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | none recorded | not yet confirmed |
 | R56kfQp | docs/requirements/issue-0848-executable-coding-tasks.md | none recorded | none recorded | not yet confirmed |
 | R873-1 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
-| R873-2 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
-| R873-3 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
-| R873-4 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
-| R873-5 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
-| R873-6 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
-| R873-7 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
-| R873-8 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
-| R873-9 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
+| R873-2 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
+| R873-3 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
+| R873-4 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
+| R873-5 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
+| R873-6 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
+| R873-7 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
+| R873-8 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
+| R873-9 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R873-10 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
 | R895-1 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | none recorded | not yet confirmed |
 | R895-2 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | none recorded | not yet confirmed |
@@ -1102,7 +1102,7 @@ line number, which had gone stale for every row.
 | R922-3 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
 | R922-4 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
 | R922-5 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
-| R922-6 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
+| R922-6 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R923-1 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | none recorded | not yet confirmed |
 | R923-2 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | none recorded | not yet confirmed |
 | R923-3 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | none recorded | not yet confirmed |

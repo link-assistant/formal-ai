@@ -35,10 +35,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R128"
     shard "docs/requirements/issue-0096-calculator-delegation-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #96"
     issue "0096"
-    automated_test ""
+    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R129"
@@ -163,26 +163,26 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R142"
     shard "docs/requirements/issue-0117-lino-i18n-catalog-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #117"
     issue "0117"
-    automated_test ""
+    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R143"
     shard "docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #115"
     issue "0115"
-    automated_test ""
+    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R144"
     shard "docs/requirements/issue-0115-github-evidence-collection-and-hive-mind-trace-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #115"
     issue "0115"
-    automated_test ""
+    automated_test "rust/tests/unit/github_logs.rs"
     manual "not yet confirmed"
   requirement
     id "R145"
@@ -427,10 +427,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R172"
     shard "docs/requirements/issue-0129-connectivity-diagnostics-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #129"
     issue "0129"
-    automated_test ""
+    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R173"
