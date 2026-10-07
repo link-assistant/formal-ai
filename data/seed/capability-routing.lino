@@ -474,17 +474,17 @@ capability_routing
     handler test_generation
     browser_handler tryTestGeneration
     admits_on function_under_test
-    refusal_event test_generation:refusal
+    refusal_event "test_generation:refusal"
     because "issue 1175 R3: a test request claims a suite only with the function under test it names; without one it is admitted to the refusal lane, where only its named refusal is kept"
   claim
     handler code_refactoring
     browser_handler tryCodeRefactoring
     admits_on code_artifact
-    refusal_event code_refactoring:refusal
+    refusal_event "code_refactoring:refusal"
     because "issue 1175 R3: a refactoring request claims a rewrite only with the code it rewrites; without code it is admitted to the refusal lane, where only its named refusal is kept"
   claim
     handler format_conversion
     browser_handler tryFormatConversion
     admits_on structured_document
-    refusal_event format_conversion:refusal
+    refusal_event "format_conversion:refusal"
     because "issue 1175 R3: a conversion request claims a converted document only with the document it converts; without one it is admitted to the refusal lane, where only its named refusal is kept"
