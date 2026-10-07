@@ -479,9 +479,12 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
     let clause_starts: Vec<usize> = clauses.iter().map(|(_, span)| span.0).collect();
     let lexicon = seed::lexicon();
     let print = lexicon.meaning("print_stdout");
+    let verb_final =
+        crate::solver_handlers::verb_final_language(crate::language::detect(text).slug());
+    let literals = quoted_segment_spans(text);
     let mut previous_end: usize = 0;
     let mut bound: Vec<(usize, String)> = Vec::new();
-    for literal in quoted_segment_spans(text) {
+    for (index, literal) in literals.iter().enumerate() {
         let clause_start = clause_starts
             .iter()
             .copied()
@@ -494,8 +497,13 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
             .rsplit(OUTPUT_INTRODUCTION_BREAKS)
             .next()
             .unwrap_or(window);
-        if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase())) {
-            bound.push((literal.start, literal.text));
+        let next = literals
+            .get(index + 1)
+            .map_or(text.len(), |next| next.start);
+        if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase()))
+            || (verb_final && followed_by_print(&text[literal.end..next]))
+        {
+            bound.push((literal.start, literal.text.clone()));
         }
     }
     for (clause, span) in &clauses {
@@ -513,6 +521,27 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         }
     }
     outputs
+}
+
+/// Whether the words right after a quoted literal -- up to the sentence break
+/// or the first seed clause separator -- evidence `print_stdout`, the way a
+/// verb-final language (the `verb_final` flag of data/seed/formal-targets.lino)
+/// states the output before its verb ("जो "Namaste" प्रिंट करे और उसे चलाओ").
+fn followed_by_print(window: &str) -> bool {
+    let lexicon = seed::lexicon();
+    let Some(print) = lexicon.meaning("print_stdout") else {
+        return false;
+    };
+    let separators = lexicon.words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
+    let sentence = window
+        .split(OUTPUT_INTRODUCTION_BREAKS)
+        .next()
+        .unwrap_or(window);
+    let words: Vec<&str> = sentence
+        .split_whitespace()
+        .take_while(|word| !separators.contains(&bare_word(word)))
+        .collect();
+    print.evidenced_in(&words.join(" ").to_lowercase())
 }
 
 /// The marks that end the words an unquoted output spans.

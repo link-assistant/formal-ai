@@ -7,10 +7,13 @@
 // is `ObligationKind::slug`. The graph's `language` and its Links Notation
 // rendering are not ported (no caller in this root reads them).
 
+import { cached, readText } from '../host.mjs';
 import { meaningEvidencedIn, mentionsRole, mentionsRoleRaw, wordsForRole } from '../write_lexicon.mjs';
+import { parseLinoRoot } from '../write_lino.mjs';
 import { utf8Len } from '../write_str.mjs';
 import { textOutsideQuotedSegments } from './coding_program_contract.mjs';
 import { normalizePrompt } from './engine.mjs';
+import { detect } from './language.mjs';
 import { quotedSegmentSpans } from './normal_markov.mjs';
 import { buildObligationTree, clausesWithSpans, expectationRules } from './obligation_ledger.mjs';
 import { DEFAULT_SPLIT_DEPTH_BOUND } from './task_decomposition.mjs';
@@ -190,15 +193,19 @@ function utf16Index(text, byteOffset) {
 export function boundOutputLiterals(text) {
   const clauses = clausesWithSpans(text);
   const clauseStarts = clauses.map(([, span]) => utf16Index(text, span[0]));
+  const verbFinal = verbFinalLanguage(detect(text));
+  const literals = quotedSegmentSpans(text);
   let previousEnd = 0;
   const bound = [];
-  for (const literal of quotedSegmentSpans(text)) {
+  literals.forEach((literal, index) => {
     const clauseStart = clauseStarts.filter((start) => start <= literal.start).reduce((max, start) => Math.max(max, start), 0);
     const window = text.slice(Math.max(previousEnd, clauseStart), literal.start);
     previousEnd = literal.end;
     const introduction = window.split(/[\n.;。]/u).pop();
-    if (meaningEvidencedIn('print_stdout', introduction.toLowerCase())) bound.push([literal.start, literal.text]);
-  }
+    const next = index + 1 < literals.length ? literals[index + 1].start : text.length;
+    if (meaningEvidencedIn('print_stdout', introduction.toLowerCase())
+      || (verbFinal && followedByPrint(text.slice(literal.end, next)))) bound.push([literal.start, literal.text]);
+  });
   clauses.forEach(([clause], index) => {
     if (quotedSegmentSpans(clause).length > 0) return;
     const output = unquotedOutput(clause);
@@ -208,6 +215,31 @@ export function boundOutputLiterals(text) {
   const outputs = [];
   for (const [, value] of bound) if (!outputs.includes(value)) outputs.push(value);
   return outputs;
+}
+
+/** Mirrors `fn verb_final_language` in rust/src/solver_handlers/formalization_task.rs. */
+function verbFinalLanguage(language) {
+  const root = cached('intent_formalization_obligations:formal-targets',
+    () => parseLinoRoot(readText('data/seed/formal-targets.lino') ?? '').children[0] ?? null);
+  return (root?.children || []).some((node) => node.name === 'natural_language' && node.id === language
+    && (node.children || []).some((child) => child.name === 'verb_final'));
+}
+
+/**
+ * Mirrors `fn followed_by_print`: whether the words right after a quoted
+ * literal — up to the sentence break or the first seeded clause separator —
+ * evidence `print_stdout`, the way a verb-final language states the output
+ * before its verb ("जो "Namaste" प्रिंट करे और उसे चलाओ").
+ */
+function followedByPrint(window) {
+  const separators = wordsForRole('skill_procedure_clause_separator');
+  const sentence = window.split(/[\n.;。]/u)[0];
+  const words = [];
+  for (const word of sentence.split(/\s+/u).filter(Boolean)) {
+    if (separators.includes(bareWord(word))) break;
+    words.push(word);
+  }
+  return meaningEvidencedIn('print_stdout', words.join(' ').toLowerCase());
 }
 
 /** Mirrors `UNQUOTED_OUTPUT_ENDS`. */

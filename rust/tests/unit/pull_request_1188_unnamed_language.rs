@@ -7,6 +7,7 @@
 //! JavaScript twin is pinned in rust/tests/web/pull-request-1188-dogfood.test.mjs.
 
 use formal_ai::event_log::EventLog;
+use formal_ai::intent_formalization::bound_output_literals;
 use formal_ai::program_contract;
 
 fn main_py(text: &str) -> String {
@@ -28,6 +29,10 @@ fn a_program_the_request_asks_to_run_is_written_in_the_seeded_language() {
             "Привет, мир!",
         ),
         ("写一个打印 \"Ni hao\" 的程序并运行", "Ni hao"),
+        (
+            "एक प्रोग्राम लिखो जो \"Namaste\" प्रिंट करे और उसे चलाओ",
+            "Namaste",
+        ),
     ] {
         let mut log = EventLog::new();
         let answer = program_contract::answer(prompt, &mut log)
@@ -53,4 +58,26 @@ fn a_request_that_does_not_ask_to_run_the_program_gets_no_language_chosen() {
             "{prompt}"
         );
     }
+}
+
+/// Round 6: a verb-final language (the seeded `verb_final` flag of
+/// data/seed/formal-targets.lino) states the output before its print verb.
+#[test]
+fn a_verb_final_language_binds_the_quoted_output_its_print_verb_follows() {
+    assert_eq!(
+        bound_output_literals("एक प्रोग्राम लिखो जो \"Namaste\" प्रिंट करे और उसे चलाओ"),
+        ["Namaste"]
+    );
+    assert_eq!(
+        bound_output_literals("Python में एक प्रोग्राम लिखें जो \"Alpha\" प्रिंट करता है"),
+        ["Alpha"]
+    );
+    assert_eq!(
+        bound_output_literals("\"notes.txt\" में \"x\" को \"y\" से बदलो"),
+        [] as [String; 0]
+    );
+    assert_eq!(
+        bound_output_literals("\"a.txt\" बनाओ और \"b\" प्रिंट करो"),
+        ["b"]
+    );
 }

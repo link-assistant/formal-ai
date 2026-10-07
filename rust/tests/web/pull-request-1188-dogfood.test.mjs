@@ -564,6 +564,7 @@ describe('PR #1188 dogfood: a program the request asks to run is written in the 
     ['write a program that prints Hello, World! and run it', 'Hello, World!'],
     ['Напиши программу, которая выводит Привет, мир! и запусти её', 'Привет, мир!'],
     ['写一个打印 "Ni hao" 的程序并运行', 'Ni hao'],
+    ['एक प्रोग्राम लिखो जो "Namaste" प्रिंट करे और उसे चलाओ', 'Namaste'],
   ]) {
     test(`\`${prompt}\` writes main.py and checks its output instead of searching the web`, async () => {
       const plan = await planChatStep([{ role: 'user', content: prompt }], AGENT_CLI_TOOLS);
@@ -574,6 +575,15 @@ describe('PR #1188 dogfood: a program the request asks to run is written in the 
       assert.equal(args.content, MAIN(text));
     });
   }
+
+  test('a verb-final language binds the quoted output its print verb follows (seeded `verb_final`)', async () => {
+    const { boundOutputLiterals } = await import('../../../js/agentic/crate/intent_formalization_obligations.mjs');
+    assert.deepEqual(boundOutputLiterals('एक प्रोग्राम लिखो जो "Namaste" प्रिंट करे और उसे चलाओ'), ['Namaste']);
+    assert.deepEqual(boundOutputLiterals('Python में एक प्रोग्राम लिखें जो "Alpha" प्रिंट करता है'), ['Alpha']);
+    // A quoted value no print verb follows, or one a clause separator parts from it, is not output.
+    assert.deepEqual(boundOutputLiterals('"notes.txt" में "x" को "y" से बदलो'), []);
+    assert.deepEqual(boundOutputLiterals('"a.txt" बनाओ और "b" प्रिंट करो'), ['b']);
+  });
 
   test('a request that does not ask to run the program does not get a language chosen for it (issue #906)', async () => {
     const { programContractAnswer } = await import('../../../js/agentic/crate/coding_program_contract.mjs');
@@ -650,7 +660,7 @@ describe('PR #1188 dogfood: a function and its test are added to existing ES mod
     assert.equal(moduleFunctionRequest('Add a function multiply(a, b) to math.mjs that returns a times b, and add a test.'), null);
   });
 
-  test('a relation the request names (`returns their sum`) is the expected value, in every seeded language', async () => {
+  test('a relation the request names (`returns their sum`, `their difference`) is the expected value, in every seeded language', async () => {
     const both = (operator) => `${MATH}\nexport function both(a, b) {\n  return a ${operator} b;\n}\n`;
     const tested = (expected) => TEST.replace('{ add }', '{ add, both }')
       + `\ntest('both', () => {\n  assert.equal(both(2, 3), ${expected});\n});\n`;
@@ -660,12 +670,25 @@ describe('PR #1188 dogfood: a function and its test are added to existing ES mod
       ['Добавь функцию both(a, b) в math.mjs, которая возвращает их сумму, добавь тест для неё в math.test.mjs и запусти node --test.', '+', 5],
       ['math.mjs में एक फ़ंक्शन both(a, b) जोड़ो जो उनका योग लौटाता है, math.test.mjs में उसका टेस्ट जोड़ो और node --test चलाओ।', '+', 5],
       ['在 math.mjs 中添加一个函数 both(a, b)，返回它们的乘积，在 math.test.mjs 中为它添加测试，然后运行 node --test。', '*', 6],
+      ['Add a function both(a, b) to math.mjs that returns their difference, add a test for it to math.test.mjs, and run node --test.', '-', -1],
+      ['Добавь функцию both(a, b) в math.mjs, которая возвращает их разность, добавь тест для неё в math.test.mjs и запусти node --test.', '-', -1],
+      ['math.mjs में एक फ़ंक्शन both(a, b) जोड़ो जो उनका अंतर लौटाता है, math.test.mjs में उसका टेस्ट जोड़ो और node --test चलाओ।', '-', -1],
+      ['在 math.mjs 中添加一个函数 both(a, b)，返回它们的差值，在 math.test.mjs 中为它添加测试，然后运行 node --test。', '-', -1],
     ]) {
       const { calls, files } = await drive(prompt, { 'math.mjs': MATH, 'math.test.mjs': TEST }, 10);
       assert.deepEqual(calls, ['read', 'read', 'write', 'write', 'bash', 'bash'], prompt);
       assert.equal(files.get('math.mjs'), both(operator), prompt);
       assert.equal(files.get('math.test.mjs'), tested(expected), prompt);
     }
+  });
+
+  test('the stated command is run in every language, after the run verb or before a final one', async () => {
+    const { moduleFunctionRequest } = await import('../../../js/agentic/module_function.mjs');
+    for (const prompt of [
+      'Добавь функцию both(a, b) в math.mjs, которая возвращает их сумму, добавь тест для неё в math.test.mjs и запусти node --test.',
+      'math.mjs में एक फ़ंक्शन both(a, b) जोड़ो जो उनका योग लौटाता है, math.test.mjs में उसका टेस्ट जोड़ो और node --test चलाओ।',
+      '在 math.mjs 中添加一个函数 both(a, b)，返回它们的乘积，在 math.test.mjs 中为它添加测试，然后运行 node --test。',
+    ]) assert.equal(moduleFunctionRequest(prompt).command, 'node --test', prompt);
   });
 
   test('the browser composer lowers the same IR to JavaScript from the seeded realization', async () => {

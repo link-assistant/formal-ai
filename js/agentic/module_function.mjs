@@ -13,9 +13,9 @@
 // evaluated by the calculator — never from the synthesized code. The edits
 // and the command run through the execution-recipe reroute, so the module
 // and the test are written whole after they were read, and the request's
-// own command is the verification. JavaScript first: the native twin of this
-// arm is not written yet; the lowering it relies on is
-// (rust/src/coding/ir_lowering/javascript.rs).
+// own command is the verification. Mirrors rust/src/agentic_coding/module_function.rs,
+// which synthesizes natively by searching the seeded binary operations
+// instead of calling the browser composer.
 
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
@@ -96,25 +96,44 @@ function signature(text) {
   return null;
 }
 
-/** The command after the request's last seeded run verb, headed by a seeded shell token. */
+/** The marks that end a command's last word: sentence and clause marks in any script. */
+const COMMAND_ENDS = /[,;.!?\uff0c\uff1b\u3002\uff01\uff1f\u0964]$/u;
+const COMMAND_PEEL = /[,;.!?\uff0c\uff1b\u3002\uff01\uff1f\u0964]+$/u;
+
+/**
+ * The command the request's last seeded run verb names, headed by a seeded
+ * shell token: the words after the verb ("run node --test", "запусти node
+ * --test", "运行 node --test"), or, in a verb-final clause, the words from the
+ * shell token up to the verb ("node --test चलाओ"). A run verb is a seeded
+ * `run_verbs` word in any script, or a word ending in a seeded
+ * `cjk_run_verbs` verb ("然后运行").
+ */
 function statedCommand(request) {
   const vocabulary = terminalCommandVocabulary();
   const heads = [...vocabulary.shell_tokens, ...vocabulary.bare_shell_tokens];
   const stops = [...wordsForRole('statement_function_word'), ...wordsForRole('skill_procedure_clause_separator')];
   const words = request.split(/\s+/u).filter(Boolean);
+  const runs = (word) => vocabulary.run_verbs.includes(normalizeCommandWord(word)) || vocabulary.run_verbs.includes(bare(word))
+    || vocabulary.cjk_run_verbs.some((verb) => bare(word).endsWith(verb));
   let verb = -1;
   words.forEach((word, index) => {
-    if (vocabulary.run_verbs.includes(normalizeCommandWord(word))) verb = index;
+    if (runs(word)) verb = index;
   });
   if (verb < 0) return null;
-  const command = [];
-  for (const word of words.slice(verb + 1)) {
-    if (stops.includes(bare(word))) break;
-    const ends = /[,;.!?]$/u.test(word);
-    command.push(word.replace(/[,;.!?]+$/u, ''));
-    if (ends) break;
-  }
-  return command.length && heads.includes(command[0]) ? command.join(' ') : null;
+  const commandFrom = (span) => {
+    const command = [];
+    for (const word of span) {
+      if (stops.includes(bare(word))) break;
+      const ends = COMMAND_ENDS.test(word);
+      command.push(word.replace(COMMAND_PEEL, ''));
+      if (ends) break;
+    }
+    return command.length && heads.includes(command[0]) ? command.join(' ') : null;
+  };
+  const after = commandFrom(words.slice(verb + 1));
+  if (after !== null) return after;
+  const head = words.slice(0, verb).findLastIndex((word) => heads.includes(word));
+  return head < 0 ? null : commandFrom(words.slice(head, verb));
 }
 
 /**
@@ -252,9 +271,13 @@ const withFinalNewline = (text) => (text === '' || text.endsWith('\n') ? text : 
 async function moduleFunctionRecipe(request, moduleSource, testSource) {
   const terms = contract(request.language);
   const catalog = programLanguageBySlug(request.language);
-  // The module is where the function goes, not what it is: the clause is
-  // solved without it, so a path never reads as a page to open.
-  const answer = await solve(`${request.clause.split(request.module).join(' ')} ${catalog.name}`, []);
+  // The module is where the function goes and the member-add verb how it
+  // gets there, not what it computes: the clause is solved without them, so a
+  // path never reads as a page to open and "जोड़ो" (add it) never as a sum.
+  const adds = wordsForRole('coding_member_add_action');
+  const specification = request.clause.split(request.module).join(' ').split(/\s+/u)
+    .filter((word) => word !== '' && !adds.includes(bare(word))).join(' ');
+  const answer = await solve(`${specification} ${catalog.name}`, []);
   const program = answer?.synthesized_program;
   if (!program || program.language !== request.language) return null;
   const definition = fill(findChildValue(terms, 'definition'), [['name', request.name]]);

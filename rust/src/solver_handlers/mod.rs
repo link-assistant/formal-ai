@@ -44,7 +44,7 @@ pub use formalization_task::{
     AppliedPredicate, ClauseExporter, ProverRecord, ProverRun, QuantifiedClause, RmlExport,
     formalization_statement, handle_formalization_request, prover_check_slots, prover_command_in,
     prover_file_stem, prover_records, prover_runs_with, prover_unit, rml_source, run_prover_with,
-    run_rml_export_with,
+    run_rml_export_with, verb_final_language,
 };
 pub use format_conversion::{carries_structured_document, handle_format_conversion};
 pub use installation_conversion::{carries_install_steps, try_installation_conversion};

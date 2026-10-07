@@ -15,7 +15,7 @@ js_rust_translation
   modules 128
   translated_items 243
   inferred_signatures 2
-  carried_items 2094
+  carried_items 2099
   translated_modules 78
   fully_translated_modules 1
   refused_modules 50
@@ -57,7 +57,7 @@ module js/agentic/crate/history_repository_qa.mjs translated 1 inferred 0 carrie
 module js/agentic/crate/history_store.mjs translated 3 inferred 0 carried 28
 module js/agentic/crate/implementation_language.mjs translated 0 inferred 0 carried 22
 module js/agentic/crate/intent_formalization.mjs translated 5 inferred 0 carried 23
-module js/agentic/crate/intent_formalization_obligations.mjs translated 2 inferred 0 carried 33
+module js/agentic/crate/intent_formalization_obligations.mjs translated 2 inferred 0 carried 38
 module js/agentic/crate/intent_formalization_requirements.mjs translated 0 inferred 0 carried 15
 module js/agentic/crate/issue_report.mjs translated 2 inferred 0 carried 0
 module js/agentic/crate/issue_report_title.mjs translated 2 inferred 0 carried 9
@@ -147,17 +147,17 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 inferred 0 ca
 module js/worker/formal_ai_worker_meta_composite.js translated 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 24
-refusal "import { … }" 400
+refusal "import { … }" 403
 refusal "JSDoc type {…}" 197
 refusal "null" 162
 refusal "type: unknown name (a sibling item or an import)" 111
-refusal "arrow function" 95
+refusal "arrow function" 96
 refusal "function value …" 93
 refusal "object without a $ tag" 77
 refusal "new expression" 74
 refusal "method call .find()" 58
 refusal "regular expression" 52
-refusal "method call .split()" 50
+refusal "method call .split()" 51
 refusal "method call .map()" 45
 refusal "method call .filter()" 43
 refusal "method call .some()" 41

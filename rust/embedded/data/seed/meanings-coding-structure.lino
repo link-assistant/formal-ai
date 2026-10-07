@@ -1020,6 +1020,39 @@ meanings
         text "leftover part"
     bootstrap true
     rediscovery_query "the part of the number after its decimal point"
+  arithmetic_difference
+    defined-by reduction
+    role coding_structure
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    precondition "a request names the difference of two values"
+    effect "the computation subtracts the second value from the first"
+    unit "the unit of the operands"
+    example "returns their difference"
+    lexeme en
+      surface
+        text "their difference"
+      surface
+        text "difference of"
+    lexeme ru
+      surface
+        text "разность"
+      surface
+        text "разницу"
+    lexeme hi
+      surface
+        text "उनका अंतर"
+      surface
+        text "का अंतर"
+    lexeme zh
+      surface
+        text "差值"
+      surface
+        text "之差"
+    lexeme es
+      surface
+        text "su diferencia"
+      surface
+        text "diferencia de"
   geometric_measure
     defined-by reduction
     role coding_structure

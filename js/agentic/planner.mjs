@@ -74,7 +74,7 @@ import * as workspaceInspection from './workspace_inspection.mjs';
 const { toolFor } = capabilityRouter;
 
 /**
- * Mirrors `PLANNER_ROUTE_ARMS` in rust/src/agentic_coding/planner.rs: the
+ * Mirrors `PLANNER_ROUTE_ARMS` in rust/src/agentic_coding/planner/precedence.rs: the
  * route arms of the cascade, named and in run order.
  */
 export const PLANNER_ROUTE_ARMS = [
@@ -83,7 +83,7 @@ export const PLANNER_ROUTE_ARMS = [
   ['plan_chat_step_routes', 'authoritative_literal_write'],
   ['plan_chat_step_routes', 'program_contract'],
   ['plan_chat_step_routes', 'evidence_record'],
-  ...['git_commit', 'workspace_change', 'generated_source', 'structured_edit', 'structured_document',
+  ...['git_commit', 'workspace_change', 'module_function', 'generated_source', 'structured_edit', 'structured_document',
     'statement_audit', 'task_obligations', 'literal_write', 'algorithm_learning', 'procedure',
     'learning_report', 'code_artifact', 'self_heal', 'dreaming_audit', 'self_ast', 'source_links',
     'learning_ledger', 'explain', 'change_request', 'repair_strategy', 'rebuild_plan',
@@ -98,7 +98,7 @@ export const PLANNER_ROUTE_ARMS = [
 ];
 
 /**
- * Mirrors `fn checked_route_precedence` in rust/src/agentic_coding/planner.rs:
+ * Mirrors `fn checked_route_precedence` in rust/src/agentic_coding/planner/precedence.rs:
  * throws unless planner-precedence.lino names exactly the coded arms in order.
  */
 export function checkedRoutePrecedence() {

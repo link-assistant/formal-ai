@@ -918,3 +918,72 @@ clause that opens with `math.mjs` is no longer read as a page to open.
 Pinned by the T1 test "a relation the request names …" (en sum/product, ru,
 hi, zh). "difference" is still open: the seed has no subtraction relation
 or fragment, and adding one would enter the composition search pool.
+
+### Round 6 — the native T1 arm, "difference", verb-final output, run verbs
+
+**Native twin of the T1 route.** `rust/src/agentic_coding/module_function.rs`
+mirrors `js/agentic/module_function.mjs` function by function, and each Rust
+doc comment names its JS original. The arm is named `module_function` in
+`data/seed/planner-precedence.lino`, in `PLANNER_ROUTE_ARMS` and in the JS
+list, after `workspace_change` in both cascades. To keep `planner.rs` under
+its 1000-line cap, the route-arm table and its seed join moved whole into
+`planner/precedence.rs` (re-exported, so `checked_route_precedence` keeps its
+path).
+
+One step cannot mirror the browser: the JS arm synthesizes through the
+worker's composer, which the native solver lacks. The native arm instead
+takes the one seeded binary `coding_fragment` whose idiom meets the
+specification at every sample pair of the contract (2 3, 4 5, 6 7). It
+lowers that fragment through the language's IR lowering. A specification
+that two operations meet, or none, declines.
+
+Pinned by three new tests in `rust/tests/unit/pull_request_1188_module_function.rs`:
+- the planner drive (read, read, write, write, bash, bash);
+- the request reading, which equals the JS one;
+- the relation probes in en, ru, hi and zh.
+
+None of the Rust here was compiled: cargo is not available in this
+environment, so CI is the first compile.
+
+**"difference".** The seed gained:
+- the `integer_subtract` fragment (`{left} - {right}`, JS realization, with
+  full metadata);
+- the `arithmetic_difference` coding structure (en "their difference",
+  "difference of"; ru разность, разницу; hi "उनका अंतर", "का अंतर"; zh 差值,
+  之差; es "su diferencia", "diferencia de").
+
+The surfaces avoid the bare word "difference". That word already belongs to
+`predicate_abs_diff_lt` ("difference is less than"), `absolute_deviation`
+and the research-table criterion, so using it bare would add a structure to
+those requests.
+
+The JS synthesis suites keep their programs: 0703, 0921, 1163, 1164, 1175,
+1177, 1184, 991, r1017 and worker-mirror all pass. The Rust composition
+suites could not be run here.
+
+The Hindi probe ("जोड़ो जो उनका अंतर लौटाता है") at first produced
+`a - a + b`. The member-add verb जोड़ो canonicalizes to the sum operation, so
+the composer saw `reduce_sum` as well as the difference. The fix is in the
+clause the arm hands to the solver: it now drops the seeded
+`coding_member_add_action` words. That verb says where the function goes,
+not what it computes. The fragment pool was left alone.
+
+**Verb-final output binding.** `'एक प्रोग्राम लिखो जो "Namaste" प्रिंट करे
+और उसे चलाओ'` bound no output, because the print verb follows the quoted
+value. The seed already records word order: `verb_final` of
+`data/seed/formal-targets.lino`, read natively by `verb_final_language`. A
+quoted literal in a verb-final request is now bound when the words after it,
+up to the sentence break or the first seeded clause separator, evidence
+`print_stdout`.
+- Both roots: `followedByPrint` / `followed_by_print` in `boundOutputLiterals`
+  / `bound_output_literals`.
+- A value that a separator parts from the verb is not bound
+  (`'"a.txt" बनाओ और "b" प्रिंट करो'` binds only `b`).
+- The Hindi program request now writes `main.py` with `print("Namaste")`.
+
+**Non-English run verbs.** запусти, चलाओ and 运行 were already seeded as
+`run_verbs` / `cjk_run_verbs`. The T1 reader matched words only through the
+ASCII-only `normalizeCommandWord`, so it never saw them. It now also matches
+the bare word in any script and a word ending in a CJK run verb (然后运行). A
+verb-final clause ("node --test चलाओ") takes the command from the shell token
+up to the verb. The request's own `node --test` now runs in ru, hi and zh.

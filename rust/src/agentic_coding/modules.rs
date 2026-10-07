@@ -45,6 +45,7 @@ pub(crate) mod lexicon;
 pub mod link_edit_rules;
 mod local_search;
 pub mod meaning_detail;
+pub mod module_function;
 pub mod mutating_action;
 pub(crate) mod narration;
 mod note_composition;
