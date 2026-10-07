@@ -1119,18 +1119,18 @@ line number, which had gone stale for every row.
 | R924-9 | docs/requirements/issue-0924-formal-ai-self-development-loop.md | none recorded | none recorded | not yet confirmed |
 | R924-10 | docs/requirements/issue-0924-formal-ai-self-development-loop.md | none recorded | none recorded | not yet confirmed |
 | R924-11 | docs/requirements/issue-0924-formal-ai-self-development-loop.md | none recorded | none recorded | not yet confirmed |
-| R931-1 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-2 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-3 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-4 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-5 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-6 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-7 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-8 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-9 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-10 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-11 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
-| R931-12 | docs/requirements/issue-0931-local-transports.md | none recorded | none recorded | not yet confirmed |
+| R931-1 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/integration/issue_931_local_transports.rs | not yet confirmed |
+| R931-2 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/integration/issue_931_local_transports.rs | not yet confirmed |
+| R931-3 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/integration/issue_931_local_transports.rs | not yet confirmed |
+| R931-4 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/integration/issue_931_local_transports.rs | not yet confirmed |
+| R931-5 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/integration/issue_931_local_transports.rs | not yet confirmed |
+| R931-6 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/integration/issue_931_local_transports.rs | not yet confirmed |
+| R931-7 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/unit/issue_931_local_transport_contract.rs | not yet confirmed |
+| R931-8 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/integration/issue_931_local_transports.rs | not yet confirmed |
+| R931-9 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/unit/issue_931_local_transport_contract.rs | not yet confirmed |
+| R931-10 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/integration/issue_931_local_transports.rs | not yet confirmed |
+| R931-11 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/unit/issue_931_local_transport_contract.rs | not yet confirmed |
+| R931-12 | docs/requirements/issue-0931-local-transports.md | none recorded | rust/tests/unit/issue_931_local_transport_contract.rs | not yet confirmed |
 | R932-1 | docs/requirements/issue-0932-box-language-projects.md | none recorded | none recorded | not yet confirmed |
 | R932-2 | docs/requirements/issue-0932-box-language-projects.md | none recorded | none recorded | not yet confirmed |
 | R932-3 | docs/requirements/issue-0932-box-language-projects.md | none recorded | none recorded | not yet confirmed |
