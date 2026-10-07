@@ -331,18 +331,18 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R231"
     shard "docs/requirements/issue-0278-native-doublets-store-default-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #278"
     issue "0278"
-    automated_test ""
+    automated_test "rust/tests/source/source_tests/link_store/tests.rs"
     manual "not yet confirmed"
   requirement
     id "R232"
     shard "docs/requirements/issue-0278-native-doublets-store-default-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #278"
     issue "0278"
-    automated_test ""
+    automated_test "rust/tests/source/source_tests/link_store/tests.rs"
     manual "not yet confirmed"
   requirement
     id "R233"
@@ -355,10 +355,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R234"
     shard "docs/requirements/issue-0278-native-doublets-store-default-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #278"
     issue "0278"
-    automated_test ""
+    automated_test "rust/tests/source/source_tests/link_store/tests.rs"
     manual "not yet confirmed"
   requirement
     id "R234-2"
@@ -379,18 +379,18 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R235"
     shard "docs/requirements/issue-0278-native-doublets-store-default-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #278"
     issue "0278"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements.rs"
     manual "not yet confirmed"
   requirement
     id "R236"
     shard "docs/requirements/issue-0278-native-doublets-store-default-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #278"
     issue "0278"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements.rs"
     manual "not yet confirmed"
   requirement
     id "R237"

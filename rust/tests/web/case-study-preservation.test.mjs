@@ -24,7 +24,17 @@ const CASES = [
     files: ['assets/issue-screenshot.png'],
     cites: ['rust-ai-driven-development-pipeline-template/issues/85'],
   },
-  { rows: ['R387'], issue: 558, files: ['requirements.md', 'solution-plan.md', 'pr-601-gap-analysis.md'] },
+  {
+    rows: ['R387', 'R388', 'R389', 'R390', 'R391'],
+    issue: 558,
+    files: ['requirements.md', 'solution-plan.md', 'pr-601-gap-analysis.md', 'raw-data/online-research.md'],
+    contains: {
+      'pr-601-gap-analysis.md': ['#601'],
+      'requirements.md': Array.from({ length: 12 }, (_, index) => `R558-${String(index + 1).padStart(2, '0')}`),
+      'raw-data/online-research.md': ['SWE-agent', 'OpenHands', 'Reflexion', 'DSPy'],
+      'solution-plan.md': ['Phase 0', 'Phase 1', 'Phase 2', 'Phase 3', 'Phase 4', 'Phase 5'],
+    },
+  },
   { rows: ['R873-9'], issue: 873, files: ['requirements.md', 'online-research.md', 'self-hosting-authorship'] },
   { rows: ['R922-6'], issue: 922, files: ['requirements.md', 'solution-plan.md', 'agent-cli-run'] },
 ];
@@ -35,7 +45,7 @@ const nonEmpty = (path) => {
 };
 
 describe('issue research is preserved under docs/case-studies', () => {
-  for (const { rows, issue, files, cites = [] } of CASES) {
+  for (const { rows, issue, files, cites = [], contains = {} } of CASES) {
     test(`${rows.join(', ')}: issue #${issue} keeps its README, raw data and named documents`, () => {
       const directory = join(REPO_ROOT, 'docs/case-studies', `issue-${issue}`);
       const readme = readFileSync(join(directory, 'README.md'), 'utf8');
@@ -45,6 +55,10 @@ describe('issue research is preserved under docs/case-studies', () => {
         assert.ok(existsSync(join(directory, file)) && nonEmpty(join(directory, file)), `issue-${issue}/${file}`);
       }
       for (const citation of cites) assert.ok(readme.includes(citation), `issue-${issue} README cites ${citation}`);
+      for (const [file, needles] of Object.entries(contains)) {
+        const text = readFileSync(join(directory, file), 'utf8');
+        for (const needle of needles) assert.ok(text.includes(needle), `issue-${issue}/${file} lacks ${needle}`);
+      }
     });
   }
 });

@@ -315,12 +315,12 @@ line number, which had gone stale for every row.
 | R228 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
 | R229 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
 | R230 | docs/requirements/issue-0196-permanent-memory-deletion-and-reset.md | pre-2026-07 (undated); issue #196 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
-| R231 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
-| R232 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
+| R231 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | rust/tests/source/source_tests/link_store/tests.rs; rust/tests/integration/issue_1069_link_cli_store.rs | not yet confirmed |
+| R232 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | rust/tests/source/source_tests/link_store/tests.rs | not yet confirmed |
 | R233 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
-| R234 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
-| R235 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
-| R236 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
+| R234 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | rust/tests/source/source_tests/link_store/tests.rs | not yet confirmed |
+| R235 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | rust/tests/unit/docs_requirements.rs | not yet confirmed |
+| R236 | docs/requirements/issue-0278-native-doublets-store-default-requirements.md | pre-2026-07 (undated); issue #278 | rust/tests/unit/docs_requirements.rs | not yet confirmed |
 | R237 | docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
 | R238 | docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
 | R239 | docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
@@ -522,10 +522,10 @@ line number, which had gone stale for every row.
 | R385 | docs/requirements/issue-0538-detailed-meanings-and-words.md | PR #601 (issue #538) | rust/tests/unit/issue_538_agentic.rs | not yet confirmed |
 | R386 | docs/requirements/issue-0538-detailed-meanings-and-words.md | PR #601 (issue #538) | none recorded | not yet confirmed |
 | R387 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
-| R388 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | none recorded | not yet confirmed |
-| R389 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | none recorded | not yet confirmed |
-| R390 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | none recorded | not yet confirmed |
-| R391 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | none recorded | not yet confirmed |
+| R388 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
+| R389 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
+| R390 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
+| R391 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R392 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/unit/docs_requirements/issue_558.rs; rust/tests/unit/mod.rs | not yet confirmed |
 | R393 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/unit/issue_558_self_healing.rs | not yet confirmed |
 | R394 | docs/requirements/issue-0558-auto-learning.md | PR #637 (issue #558) | rust/tests/unit/issue_558_self_healing.rs | not yet confirmed |
