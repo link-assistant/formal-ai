@@ -422,6 +422,36 @@ agentic_messages
     text "An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning."
   message self_explanation_agentic_interface
     text "Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests."
+  message orchestration_cli_value_required
+    text "a value is required for '{flag} <{value}>' but none was supplied"
+  message orchestration_cli_invalid_digit
+    text "invalid value '{value}' for '{flag} <{name}>': invalid digit found in string"
+  message orchestration_cli_required_missing
+    text "the following required arguments were not provided:\n  {argument}"
+  message orchestration_cli_conflict
+    text "the argument '{flag}' cannot be used with '{other}'"
+  message orchestration_cli_invalid_argv
+    text "invalid type: expected a sequence of strings"
+  message orchestration_cli_subcommand_required
+    text "a subcommand is required: run, dispatch, resume, synthesize, learn, replay"
+  message orchestration_io_not_found
+    text "No such file or directory"
+  message orchestration_io_permission_denied
+    text "Permission denied"
+  message orchestration_io_not_permitted
+    text "Operation not permitted"
+  message orchestration_io_already_exists
+    text "File exists"
+  message orchestration_io_not_a_directory
+    text "Not a directory"
+  message orchestration_io_is_a_directory
+    text "Is a directory"
+  message orchestration_io_directory_not_empty
+    text "Directory not empty"
+  message orchestration_binary_not_found
+    text "cannot find binary path"
+  message orchestration_attribution_commit_subject
+    text "formal-ai: apply verified agent effect"
   message summarization_compound_words_en
     text "in order to =>to |for the purpose of =>for |a number of =>several |user interface=>UI|command line interface=>CLI|artificial intelligence=>AI"
   message summarization_compound_words_ru

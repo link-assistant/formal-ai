@@ -137,7 +137,7 @@ export function isCheckable(text) {
   return completionCriterionFor(text) !== null;
 }
 
-function completionCriterionFor(text) {
+export function completionCriterionFor(text) {
   const normalized = normalizePrompt(text);
   const observable = mentionsRole('observable_task_action', normalized);
   const unobservable = mentionsRole('unobservable_task_action', normalized);
