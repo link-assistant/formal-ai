@@ -502,3 +502,43 @@ describe('PR #1188 dogfood: a reduction over three parameters reads all three', 
     });
   }
 });
+
+describe('PR #1188 dogfood: an unquoted output is bound only when it reads as an utterance', () => {
+  const HELLO = '# python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile hello.py\n# python3 hello.py\n'
+    + '# Emit the requested text followed by a newline.\nprint("Hello, World!")\n';
+
+  test('`Create hello.py that prints Hello, World! and run it.` writes hello.py and checks its output', async () => {
+    const plan = await planChatStep([{ role: 'user', content: 'Create hello.py that prints Hello, World! and run it.' }], AGENT_CLI_TOOLS);
+    assert.equal(plan.kind, 'tool_calls');
+    assert.equal(plan.calls[0].tool, 'write');
+    const args = JSON.parse(plan.calls[0].arguments);
+    assert.equal(args.filePath, 'hello.py');
+    assert.equal(args.content, HELLO);
+  });
+
+  test('`Write a Python program hello.py that prints …` names its file without a write cue', async () => {
+    const plan = await planChatStep([{ role: 'user', content: 'Write a Python program hello.py that prints Hello, World! and run it.' }], AGENT_CLI_TOOLS);
+    const args = JSON.parse(plan.calls[0].arguments);
+    assert.equal(args.filePath, 'hello.py');
+    assert.equal(args.content, HELLO);
+  });
+
+  test('the utterance ends at a seeded clause separator or the sentence that carries it', async () => {
+    const { boundOutputLiterals } = await import('../../../js/agentic/crate/intent_formalization_obligations.mjs');
+    assert.deepEqual(boundOutputLiterals('write a program that prints Hello, World! and run it'), ['Hello, World!']);
+    assert.deepEqual(boundOutputLiterals('Напиши программу на Python, которая выводит Привет, мир! и запусти её'), ['Привет, мир!']);
+    assert.deepEqual(boundOutputLiterals('Write hello.py that prints Hi. Then print "Bye".'), ['Hi', 'Bye']);
+  });
+
+  test('a description of a computation is never bound as text to print', async () => {
+    const { boundOutputLiterals } = await import('../../../js/agentic/crate/intent_formalization_obligations.mjs');
+    for (const prompt of [
+      'Write a Python program that prints the sum of a and b and run it',
+      'Write a program that prints Fibonacci numbers up to 100',
+      'Write a program that prints FizzBuzz',
+      'Write a program that prints FizzBuzz for 1 to 100',
+      'Write a program that prints prime numbers below 50',
+      'Print the greeting! Then "Hello"',
+    ]) assert.deepEqual(boundOutputLiterals(prompt), [], prompt);
+  });
+});

@@ -7,7 +7,7 @@
 // is `ObligationKind::slug`. The graph's `language` and its Links Notation
 // rendering are not ported (no caller in this root reads them).
 
-import { meaningEvidencedIn, mentionsRole, mentionsRoleRaw } from '../write_lexicon.mjs';
+import { meaningEvidencedIn, mentionsRole, mentionsRoleRaw, wordsForRole } from '../write_lexicon.mjs';
 import { utf8Len } from '../write_str.mjs';
 import { textOutsideQuotedSegments } from './coding_program_contract.mjs';
 import { normalizePrompt } from './engine.mjs';
@@ -188,19 +188,58 @@ function utf16Index(text, byteOffset) {
 
 /** Mirrors `fn bound_output_literals`. */
 export function boundOutputLiterals(text) {
-  const clauseStarts = clausesWithSpans(text).map(([, span]) => utf16Index(text, span[0]));
+  const clauses = clausesWithSpans(text);
+  const clauseStarts = clauses.map(([, span]) => utf16Index(text, span[0]));
   let previousEnd = 0;
-  const outputs = [];
+  const bound = [];
   for (const literal of quotedSegmentSpans(text)) {
     const clauseStart = clauseStarts.filter((start) => start <= literal.start).reduce((max, start) => Math.max(max, start), 0);
     const window = text.slice(Math.max(previousEnd, clauseStart), literal.start);
     previousEnd = literal.end;
     const introduction = window.split(/[\n.;。]/u).pop();
-    if (meaningEvidencedIn('print_stdout', introduction.toLowerCase()) && !outputs.includes(literal.text)) {
-      outputs.push(literal.text);
-    }
+    if (meaningEvidencedIn('print_stdout', introduction.toLowerCase())) bound.push([literal.start, literal.text]);
   }
+  clauses.forEach(([clause], index) => {
+    if (quotedSegmentSpans(clause).length > 0) return;
+    const output = unquotedOutput(clause);
+    if (output !== null) bound.push([clauseStarts[index], output]);
+  });
+  bound.sort((left, right) => left[0] - right[0]);
+  const outputs = [];
+  for (const [, value] of bound) if (!outputs.includes(value)) outputs.push(value);
   return outputs;
+}
+
+/** Mirrors `UNQUOTED_OUTPUT_ENDS`. */
+const UNQUOTED_OUTPUT_ENDS = /[.!?;:\u3002\uff01\uff1f\u0964]$/u;
+
+/** Mirrors `UNQUOTED_OUTPUT_PEEL`. */
+const UNQUOTED_OUTPUT_PEEL = /[.,;:\u3002\u0964]+$/u;
+
+/** Mirrors `fn bare_word`. */
+function bareWord(word) {
+  return word.replace(/^[^\p{Alphabetic}\p{N}]+|[^\p{Alphabetic}\p{N}]+$/gu, '').toLowerCase();
+}
+
+/** Mirrors `fn unquoted_output` (PR #1188 T18). */
+function unquotedOutput(clause) {
+  const words = clause.split(/\s+/u).filter(Boolean);
+  const printAt = words.findIndex((word) => meaningEvidencedIn('print_stdout', bareWord(word)));
+  if (printAt < 0) return null;
+  const separators = wordsForRole('skill_procedure_clause_separator');
+  const kept = [];
+  for (const word of words.slice(printAt + 1)) {
+    if (separators.includes(bareWord(word))) break;
+    kept.push(word);
+    if (UNQUOTED_OUTPUT_ENDS.test(word)) break;
+  }
+  const output = kept.join(' ').replace(UNQUOTED_OUTPUT_PEEL, '');
+  const lower = normalizePrompt(output.toLowerCase());
+  const functionWords = wordsForRole('statement_function_word');
+  const describes = output.split(/\s+/u).some((word) => functionWords.includes(bareWord(word)))
+    || mentionsRole('coding_structure', lower)
+    || (mentionsRole('program_task_alias', lower) && !mentionsRole('social_greeting', lower));
+  return /^\p{Uppercase}/u.test(output) && !describes ? output : null;
 }
 
 /** Mirrors `fn obligation_gap_lines`. */

@@ -55,11 +55,36 @@ fn program_language(prompt: &str) -> Option<String> {
         .or_else(|| named_source_language(prompt))
 }
 
+/// A bare-word file path (`hello.py,` → `hello.py`), sentence marks peeled.
+fn source_path(token: &str) -> &str {
+    token
+        .trim_start_matches(['`', '"', '\'', '('])
+        .trim_end_matches(['`', '"', '\'', ',', ';', ':', '.', '!', '?', ')'])
+}
+
+/// The one relative source file with `extension` the request names, cued or
+/// not: in "Write a Python program hello.py that prints …" the noun before
+/// the path is no write cue, yet the path names the program's file the way
+/// [`named_source_language`] reads its language from it (PR #1188 T18).
+/// Two distinct such files name none.
+fn named_source_file(prompt: &str, extension: &str) -> Option<String> {
+    let outside = crate::solver_handlers::text_outside_quoted_segments(prompt);
+    let mut paths: Vec<&str> = outside
+        .split_whitespace()
+        .filter(|token| source_extension(token) == Some(extension))
+        .map(source_path)
+        .filter(|path| !path.starts_with('/') && !path.split('/').any(|part| part == ".."))
+        .collect();
+    paths.dedup();
+    match paths.as_slice() {
+        [path] => Some((*path).to_owned()),
+        _ => None,
+    }
+}
+
 /// A bare-word file's extension (`hello.py` → `py`), sentence marks peeled.
 fn source_extension(token: &str) -> Option<&str> {
-    let path = token
-        .trim_start_matches(['`', '"', '\'', '('])
-        .trim_end_matches(['`', '"', '\'', ',', ';', ':', '.', '!', '?', ')']);
+    let path = source_path(token);
     let name = path.rsplit('/').next()?;
     let (stem, extension) = name.rsplit_once('.')?;
     (!stem.is_empty()
@@ -124,6 +149,7 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
         .extension()?
         .to_str()?;
     let path = crate::agentic_coding::general_planner::typed_write_target(prompt, extension)
+        .or_else(|| named_source_file(prompt, extension))
         .unwrap_or_else(|| catalog.save_as.to_string());
     let root = parse_lino(CONTRACTS);
     let contract = root

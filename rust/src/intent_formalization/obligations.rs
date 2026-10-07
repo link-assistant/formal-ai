@@ -469,16 +469,18 @@ fn gap_line(node: &ObligationNode, reason: &str) -> String {
 /// coreference). Literals the graph classifies more broadly but this reading
 /// does not anchor are reported by
 /// [`ObligationGraph::unbound_output_report`], never dropped.
+///
+/// A clause that quotes nothing can still name its output in the open
+/// ("… prints Hello, World! and run it"): [`unquoted_output`] binds that
+/// utterance, at the clause's position in request order (PR #1188 T18).
 #[must_use]
 pub fn bound_output_literals(text: &str) -> Vec<String> {
-    let clause_starts: Vec<usize> = crate::obligation_ledger::clauses_with_spans(text)
-        .into_iter()
-        .map(|(_, span)| span.0)
-        .collect();
+    let clauses = crate::obligation_ledger::clauses_with_spans(text);
+    let clause_starts: Vec<usize> = clauses.iter().map(|(_, span)| span.0).collect();
     let lexicon = seed::lexicon();
     let print = lexicon.meaning("print_stdout");
     let mut previous_end: usize = 0;
-    let mut outputs: Vec<String> = Vec::new();
+    let mut bound: Vec<(usize, String)> = Vec::new();
     for literal in quoted_segment_spans(text) {
         let clause_start = clause_starts
             .iter()
@@ -492,13 +494,92 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
             .rsplit(OUTPUT_INTRODUCTION_BREAKS)
             .next()
             .unwrap_or(window);
-        if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase()))
-            && !outputs.contains(&literal.text)
+        if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase())) {
+            bound.push((literal.start, literal.text));
+        }
+    }
+    for (clause, span) in &clauses {
+        if quoted_segment_spans(clause).is_empty()
+            && let Some(output) = unquoted_output(clause)
         {
-            outputs.push(literal.text);
+            bound.push((span.0, output));
+        }
+    }
+    bound.sort_by_key(|(start, _)| *start);
+    let mut outputs: Vec<String> = Vec::new();
+    for (_, value) in bound {
+        if !outputs.contains(&value) {
+            outputs.push(value);
         }
     }
     outputs
+}
+
+/// The marks that end the words an unquoted output spans.
+const UNQUOTED_OUTPUT_ENDS: [char; 9] = [
+    '.', '!', '?', ';', ':', '\u{3002}', '\u{ff01}', '\u{ff1f}', '\u{0964}',
+];
+
+/// The marks peeled off the end of an unquoted output: the sentence's own
+/// punctuation, not the utterance's. `!` and `?` stay, because an utterance
+/// ("Hello, World!") carries them and a sentence about it rarely does.
+const UNQUOTED_OUTPUT_PEEL: [char; 6] = ['.', ',', ';', ':', '\u{3002}', '\u{0964}'];
+
+/// A word with its edge punctuation removed, lowercased.
+fn bare_word(word: &str) -> String {
+    word.trim_matches(|character: char| !character.is_alphanumeric())
+        .to_lowercase()
+}
+
+/// The output a clause that quotes nothing names in the open, when it is an
+/// utterance rather than a description of one (PR #1188 T18).
+///
+/// The words after the clause's first `print_stdout` word, up to the first
+/// seed clause separator (`skill_procedure_clause_separator`: "and", "then",
+/// "и", "फिर", …) or through the first word that ends a sentence. They are an
+/// utterance only when they read as one:
+///
+/// * they open with a capital, the way a quoted utterance does mid-sentence
+///   ("prints Hello, World!"), where a description opens with an ordinary
+///   word ("prints prime numbers below 50");
+/// * no word is a seed function word (`statement_function_word`: "the", "of",
+///   "for", …), which is how a described value is built ("the sum of a and
+///   b", "a greeting", "`FizzBuzz` for 1 to 100");
+/// * they mention no coding structure (`coding_structure`: "the sum …",
+///   "Fibonacci numbers …") and no program task (`program_task_alias`:
+///   `FizzBuzz`), which name a computation the program must perform, not text
+///   it echoes. The one task that *is* its text is the greeting program: a
+///   task alias that is also a `social_greeting` ("Hello, World!") stays an
+///   utterance.
+fn unquoted_output(clause: &str) -> Option<String> {
+    let lexicon = seed::lexicon();
+    let print = lexicon.meaning("print_stdout")?;
+    let separators = lexicon.words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
+    let mut words = clause.split_whitespace();
+    words
+        .by_ref()
+        .find(|word| print.evidenced_in(&bare_word(word)))?;
+    let mut kept: Vec<&str> = Vec::new();
+    for word in words {
+        if separators.contains(&bare_word(word)) {
+            break;
+        }
+        kept.push(word);
+        if word.ends_with(UNQUOTED_OUTPUT_ENDS) {
+            break;
+        }
+    }
+    let joined = kept.join(" ");
+    let output = joined.trim_end_matches(UNQUOTED_OUTPUT_PEEL);
+    let lower = normalize_prompt(&output.to_lowercase());
+    let function_words = lexicon.words_for_role(seed::ROLE_STATEMENT_FUNCTION_WORD);
+    let describes = output
+        .split_whitespace()
+        .any(|word| function_words.contains(&bare_word(word)))
+        || lexicon.mentions_role(seed::ROLE_CODING_STRUCTURE, &lower)
+        || (lexicon.mentions_role(seed::ROLE_PROGRAM_TASK_ALIAS, &lower)
+            && !lexicon.mentions_role(seed::ROLE_SOCIAL_GREETING, &lower));
+    (output.chars().next().is_some_and(char::is_uppercase) && !describes).then(|| output.to_owned())
 }
 
 /// The event kind an executor records one undischargeable clause under.

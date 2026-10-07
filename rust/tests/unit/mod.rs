@@ -234,6 +234,7 @@ mod proxy;
 mod pull_request_1188_function_recipe;
 mod pull_request_1188_subagent_gaps;
 mod pull_request_1188_typo_discovery;
+mod pull_request_1188_unquoted_output;
 mod recipe_evidence;
 mod reference_closure;
 mod requirement_span_integrity;

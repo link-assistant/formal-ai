@@ -66,9 +66,28 @@ function programLanguage(prompt) {
   return namedSourceLanguage(prompt);
 }
 
+/** Mirrors `fn source_path`: a bare-word file path, sentence marks peeled. */
+function sourcePath(token) {
+  return token.replace(/^[`"'(]+|[`"',;:.!?)]+$/gu, '');
+}
+
+/**
+ * Mirrors `fn named_source_file`: the one relative source file with
+ * `extension` the request names, cued or not ("Write a Python program
+ * hello.py that prints …"), or null when it names none or two (PR #1188 T18).
+ */
+function namedSourceFile(prompt, extension) {
+  const paths = textOutsideQuotedSegments(prompt).split(/\s+/u)
+    .filter((token) => sourceExtension(token) === extension)
+    .map(sourcePath)
+    .filter((path) => !path.startsWith('/') && !path.split('/').includes('..'))
+    .filter((path, index, all) => index === 0 || all[index - 1] !== path);
+  return paths.length === 1 ? paths[0] : null;
+}
+
 /** Mirrors `fn source_extension`: a bare-word file's extension, or null. */
 function sourceExtension(token) {
-  const path = token.replace(/^[`"'(]+|[`"',;:.!?)]+$/gu, '');
+  const path = sourcePath(token);
   const extension = pathExtension(path);
   return extension !== null && /^[A-Za-z0-9]+$/u.test(extension) ? extension : null;
 }
@@ -119,7 +138,7 @@ export function programContractAnswer(prompt) {
   if (!catalog) return null;
   const extension = pathExtension(catalog.save_as);
   if (extension === null) return null;
-  const path = typedWriteTarget(prompt, extension) ?? catalog.save_as;
+  const path = typedWriteTarget(prompt, extension) ?? namedSourceFile(prompt, extension) ?? catalog.save_as;
   const root = contracts();
   const contract = contractFor(language);
   if (!root || !contract) return null;
