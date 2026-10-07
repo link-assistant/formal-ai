@@ -797,9 +797,8 @@ impl UniversalSolver {
                 }
                 _ => None,
             };
-            // Issue #1165 R1165-6: where each command the answer shows comes
-            // from (a documentation page or the catalog), and what the
-            // documented program departs from.
+            // Issue #1165 R1165-6: each shown command's source (page or catalog)
+            // and the documented program's departures.
             if let SelectedRule::WriteProgram(spec) = &rule
                 && let Some(pair) =
                     crate::coding::documented_pair(spec.task.slug, spec.language.slug)
