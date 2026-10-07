@@ -39,16 +39,74 @@ pub fn explicit_stdout(prompt: &str) -> Option<String> {
 /// A program authoring clause, excluding output literals and page navigation.
 fn program_language(prompt: &str) -> Option<String> {
     let lexicon = seed::lexicon();
+    prompt
+        .lines()
+        .find_map(|line| {
+            let outside = crate::solver_handlers::text_outside_quoted_segments(line);
+            let normalized = crate::engine::normalize_prompt(&outside);
+            (lexicon
+                .meaning("coding_request_program")
+                .is_some_and(|meaning| meaning.evidenced_in(&normalized))
+                && (lexicon.mentions_role(seed::ROLE_PROGRAM_REQUEST, &normalized)
+                    || lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized)))
+            .then(|| crate::implementation_language::requested(&normalized))
+            .flatten()
+        })
+        .or_else(|| named_source_language(prompt))
+}
+
+/// A bare-word file's extension (`hello.py` → `py`), sentence marks peeled.
+fn source_extension(token: &str) -> Option<&str> {
+    let path = token
+        .trim_start_matches(['`', '"', '\'', '('])
+        .trim_end_matches(['`', '"', '\'', ',', ';', ':', '.', '!', '?', ')']);
+    let name = path.rsplit('/').next()?;
+    let (stem, extension) = name.rsplit_once('.')?;
+    (!stem.is_empty()
+        && !extension.is_empty()
+        && extension
+            .chars()
+            .all(|character| character.is_ascii_alphanumeric()))
+    .then_some(extension)
+}
+
+/// A line that asks for printed output and names exactly one source file whose
+/// extension is the saved-file extension of exactly one catalogued language
+/// (`hello.py` → python) is a program request in that language, the way a
+/// programmer reads the file name (PR #1188 dogfooding). Only a line that asks
+/// to write or create one: `Change greet.py so it prints "Hi"` edits a file,
+/// it does not replace it.
+fn named_source_language(prompt: &str) -> Option<String> {
+    let lexicon = seed::lexicon();
     prompt.lines().find_map(|line| {
         let outside = crate::solver_handlers::text_outside_quoted_segments(line);
         let normalized = crate::engine::normalize_prompt(&outside);
-        (lexicon
-            .meaning("coding_request_program")
+        if !lexicon
+            .meaning("print_stdout")
             .is_some_and(|meaning| meaning.evidenced_in(&normalized))
-            && (lexicon.mentions_role(seed::ROLE_PROGRAM_REQUEST, &normalized)
-                || lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized)))
-        .then(|| crate::implementation_language::requested(&normalized))
-        .flatten()
+            || !lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized)
+        {
+            return None;
+        }
+        let mut slugs: Vec<&str> = outside
+            .split_whitespace()
+            .filter_map(source_extension)
+            .flat_map(|extension| {
+                crate::coding::catalog::PROGRAM_LANGUAGES
+                    .iter()
+                    .filter(move |language| {
+                        language.framework_of.is_none()
+                            && source_extension(&language.save_as) == Some(extension)
+                    })
+                    .map(|language| language.slug)
+            })
+            .collect();
+        slugs.sort_unstable();
+        slugs.dedup();
+        match slugs.as_slice() {
+            [slug] => Some((*slug).to_owned()),
+            _ => None,
+        }
     })
 }
 

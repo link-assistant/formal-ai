@@ -240,3 +240,22 @@ describe('PR #1188 dogfood: a setting changes on the line that assigns it', () =
     assert.equal(files.get('app.yml'), 'debug: true\nname: demo\n');
   });
 });
+
+describe('PR #1188 dogfood: a named source file says which language to write', () => {
+  test('`Create hello.py that prints "Hello, World!" and run it.` writes hello.py and checks its output', async () => {
+    const messages = [{ role: 'user', content: 'Create hello.py that prints "Hello, World!" and run it.' }];
+    const plan = await planChatStep(messages, AGENT_CLI_TOOLS);
+    assert.equal(plan.kind, 'tool_calls');
+    assert.equal(plan.calls[0].tool, 'write');
+    const args = JSON.parse(plan.calls[0].arguments);
+    assert.equal(args.filePath, 'hello.py');
+    assert.equal(args.content,
+      '# python3 -m py_compile hello.py\n# python3 hello.py\n# Emit the requested text followed by a newline.\nprint("Hello, World!")\n');
+  });
+
+  test('a file name no catalogued language saves as names no language', async () => {
+    const { programContractAnswer } = await import('../../../js/agentic/crate/coding_program_contract.mjs');
+    assert.equal(programContractAnswer('Create notes.txt that prints "Hello, World!".'), null);
+    assert.equal(programContractAnswer('Change greet.py so it prints "Hi".'), null);
+  });
+});

@@ -9,7 +9,7 @@ import { pathExtension, typedWriteTarget } from '../write_request.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
 import { meaningEvidencedIn, mentionsRole } from '../write_lexicon.mjs';
 import { lines } from '../write_str.mjs';
-import { programLanguageBySlug } from './coding_catalog.mjs';
+import { isFramework, programLanguageBySlug, programLanguages } from './coding_catalog.mjs';
 import { normalizePrompt } from './engine.mjs';
 import { requested } from './implementation_language.mjs';
 import { boundOutputLiterals, obligationGapLines } from './intent_formalization_obligations.mjs';
@@ -62,6 +62,39 @@ function programLanguage(prompt) {
       const language = requested(normalized);
       if (language !== null && language !== undefined) return language;
     }
+  }
+  return namedSourceLanguage(prompt);
+}
+
+/** Mirrors `fn source_extension`: a bare-word file's extension, or null. */
+function sourceExtension(token) {
+  const path = token.replace(/^[`"'(]+|[`"',;:.!?)]+$/gu, '');
+  const extension = pathExtension(path);
+  return extension !== null && /^[A-Za-z0-9]+$/u.test(extension) ? extension : null;
+}
+
+/**
+ * Mirrors `fn named_source_language`: a line that asks for printed output
+ * and names exactly one source file whose extension is the saved-file
+ * extension of exactly one catalogued language (`hello.py` -> python) is a
+ * program request in that language, the way a programmer reads the file
+ * name (PR #1188 dogfooding). Only a line that asks to write or create one:
+ * `Change greet.py so it prints "Hi"` edits a file, it does not replace it.
+ */
+function namedSourceLanguage(prompt) {
+  for (const line of lines(prompt)) {
+    const outside = textOutsideQuotedSegments(line);
+    const normalized = normalizePrompt(outside);
+    if (!meaningEvidencedIn('print_stdout', normalized) || !mentionsRole('coding_request_verb', normalized)) continue;
+    const slugs = new Set();
+    for (const token of outside.split(/\s+/u)) {
+      const extension = sourceExtension(token);
+      if (extension === null) continue;
+      for (const language of programLanguages()) {
+        if (!isFramework(language) && pathExtension(language.save_as) === extension) slugs.add(language.slug);
+      }
+    }
+    if (slugs.size === 1) return [...slugs][0];
   }
   return null;
 }

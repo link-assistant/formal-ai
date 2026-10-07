@@ -45,7 +45,8 @@ possible tasks you encounter on the way must be fully supported by it".
 | T15 | `Commit all changes with the message 'initial notes'.` | **Fail**: web search for the sentence. (`Commit the changes.` committed as `chore: commit pending changes` and then failed on `git push` with no remote, reported as completed.) | **Pass**: one commit `initial notes`; push only when `git remote` names one. |
 | T16 | `Show me git status.` | **Fail**: web search (the seeded cue is `show git status`). | **Pass**: runs `git status` (also `Show me the git log.`, `Покажи мне статус git`). |
 | T17 | `Change the value of "debug" to true in config.json.` | **Fail**: edit with `oldString: the value of "debug"`. | **Pass**: read → edit of the `"debug"` line → `sha256sum`; answer `Set \`debug\` to \`true\` in \`config.json\` and observed the result.` Also `Set the value of name to prod in config.json.` (keeps the quotes) and YAML `debug: …`. |
-| T18 | `Create hello.py that prints Hello, World! and run it.` | **Fail**: answered with a program in chat (named `main.py`), wrote nothing, ran nothing. | Open |
+| T18 | `Create hello.py that prints Hello, World! and run it.` | **Fail**: answered with a program in chat (named `main.py`, printing `Hello, world!`), wrote nothing, ran nothing. | Open (unquoted output, see below) |
+| T18q | `Create hello.py that prints "Hello, World!" and run it.` | **Fail**: same chat answer. | **Pass in-process**: writes `hello.py` + `tests/verify-output.sh`, runs `python3 -m py_compile hello.py` and the output check (`Hello, World!`), reports. Through the Agent CLI the files are written and the compile step runs, then **the CLI crashes** (see "Client defect"). |
 | T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = a phrase of the request. | Open |
 
 ## Root causes and fixes
@@ -241,3 +242,42 @@ agent's uncommitted edits in the same tree (`data/seed/handler-rules.lino`,
 suites (`agentic-*`, the dogfood file) are green.
 
 **Rust twin.** T16 is in both roots; T17 is JS-only (`workspace_change.rs`).
+
+### T18 — a named source file did not name its language
+
+**Root cause.** The program-contract route (`programContractAnswer`, which
+builds a write → compile → run → compare-output recipe) recognised the
+language only from words ("Python"), so `hello.py` named none; the request
+fell to the shared solver, which answered in chat with the rediscovered
+documentation example (`main.py`, `Hello, world!`) and no execution recipe.
+
+**Fix (both roots).** `namedSourceLanguage` / `named_source_language` in
+`js/agentic/crate/coding_program_contract.mjs` and
+`rust/src/coding/program_contract.rs`: a line that asks for printed output
+(`print_stdout`), carries a creation verb (`coding_request_verb`: write,
+create, implement, …) and names exactly one source file whose extension is
+the `save_as` extension of exactly one non-framework catalogued language
+takes that language. The catalog is the source, so every catalogued language
+(`.rs`, `.go`, `.kt`, `.R`, …) is covered. Without the creation verb
+(`Change greet.py so it prints "Hi"`) nothing is claimed — that is an edit.
+
+**Still open: the unquoted output.** `prints Hello, World! and run it`
+names its output without quotes, and the clause splitter keeps the whole
+sentence as one clause. Reading "the words after *prints* up to *and*" as a
+literal would also read `prints the sum of a and b` as the literal `the sum
+of a`, so the output boundary needs a grounded rule, not a guess.
+
+**Client defect found (link-assistant Agent CLI 0.26).** Any binary file
+appearing in the workspace during a session crashes the CLI with
+`UnhandledRejection` — its session-diff summary validates `additions: NaN`.
+Reproduced with `Run python3 -m py_compile greet.py` alone (rc=1), while
+`Run python3 greet.py` passes (rc=0). Formal AI's Python recipe triggers it
+because the catalog's check command `python3 -m py_compile` writes
+`__pycache__/*.pyc`; a check that leaves no byte code (for example under
+`PYTHONPYCACHEPREFIX`) would avoid it, but the check commands are the
+documentation-sourced catalog rows of the #1165 work, so the change belongs
+there.
+
+**Tests.** "a named source file says which language to write": the T18q
+plan's first call writes `hello.py` with the exact source; `notes.txt` and
+`Change greet.py so it prints "Hi".` claim nothing.
