@@ -44,6 +44,9 @@ function execute(files, tool, args) {
     const path = pathOf(args);
     const text = files.get(path) ?? '';
     if (!text.includes(args.oldString)) return 'Error: oldString not found in content';
+    if (text.indexOf(args.oldString) !== text.lastIndexOf(args.oldString)) {
+      return 'Error: Found multiple matches for oldString. Provide more surrounding lines in oldString to identify the correct match.';
+    }
     files.set(path, text.replace(args.oldString, () => args.newString));
     return '';
   }
@@ -108,5 +111,31 @@ describe('PR #1188 dogfood: an append keeps the file it appends to', () => {
     });
     assert.equal(files.get('notes.txt'), 'first line\nsecond line\nтретья строка\n');
     assert.equal(answer, 'В конец `notes.txt` добавлено `третья строка`, результат проверен.');
+  });
+});
+
+describe('PR #1188 dogfood: a replacement edits only what it names', () => {
+  const README = '# Project\n\nA small tool.\nThis is a smal project.\n';
+
+  test('`smal` -> `small` fixes the word, not the `smal` inside `small`', async () => {
+    const { calls, files, answer } = await drive("Replace 'smal' with 'small' in README.md.", { 'README.md': README });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('README.md'), '# Project\n\nA small tool.\nThis is a small project.\n');
+    assert.equal(answer, 'Replaced `smal` with `small` in `README.md` and observed the result.');
+  });
+
+  test('a single-quoted positional insert places the line after its anchor', async () => {
+    const { calls, files, answer } = await drive("Insert 'middle' after the line 'first line' in notes.txt.", {
+      'notes.txt': 'first line\nsecond line\n',
+    });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('notes.txt'), 'first line\nmiddle\nsecond line\n');
+    assert.equal(answer, 'Inserted `middle` after `first line` in `notes.txt` and observed the result.');
+  });
+
+  test('an anchor that occurs twice does not say where the line goes', async () => {
+    const { files, answer } = await drive("Insert 'x' before the line 'same' in t.txt.", { 't.txt': 'same\nsame\n' });
+    assert.equal(files.get('t.txt'), 'same\nsame\n');
+    assert.equal(answer, 'Verification failed for `t.txt`: the observed bytes differ from the planned workspace effect.');
   });
 });

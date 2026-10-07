@@ -10,6 +10,7 @@ import { composeEditRequest } from './general_planner.mjs';
 import { editArguments } from './intent_router.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
+import { composePositionalInsert } from './positional_edit.mjs';
 import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
 import { commandArgument, failureMessage } from './tool_result.mjs';
 import { quotedSegmentSpans, quotedSegments, unwrapTransportQuotes } from './crate/normal_markov.mjs';
@@ -23,8 +24,8 @@ import { isAsciiAlphanumeric, lines, matchIndices, splitWhitespace, trim } from 
 const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
 const finalOrNull = (text) => (text === null ? null : finalAnswer(text));
 
-const statedIntent = (rewrite) => (rewrite.scope === RewriteScope.Word ? 'coding_identifier_renamed' : 'coding_text_replaced');
-const statedSlots = (rewrite) => [['{old}', rewrite.pattern], ['{new}', rewrite.replacement]];
+const statedIntent = (rewrite) => rewrite.intent ?? (rewrite.renaming ? 'coding_identifier_renamed' : 'coding_text_replaced');
+const statedSlots = (rewrite) => rewrite.slots ?? [['{old}', rewrite.pattern], ['{new}', rewrite.replacement]];
 
 /**
  * Mirrors `fn plan_workspace_change_step`.
@@ -64,18 +65,20 @@ function planRewriteStep(task, currentTurn, toolNames, rewrite) {
   const read = resultForPath(currentTurn, Capability.Read, rewrite.target, null);
   if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(rewrite.target));
   const source = sourceFromReadResult(read);
-  const execution = executeScopedWorkspaceRewrite(source, rewrite.pattern, rewrite.replacement, rewrite.scope);
-  if (!execution.ok) return failed(task, rewrite.target);
-  const updated = execution.ok.output;
+  const updated = rewrittenSource(source, rewrite);
+  if (updated === null) return failed(task, rewrite.target);
   const occurrences = rewrite.scope === RewriteScope.Substring
     ? matchIndices(source, rewrite.pattern).length
     : wordScopedMatches(source, rewrite.pattern).length;
   const verified = { target: rewrite.target, expected: updated, intent: statedIntent(rewrite), slots: statedSlots(rewrite) };
   if (occurrences === 1) {
     const tool = toolFor(toolNames, Capability.Edit);
-    if (tool) {
-      if (resultForEdit(currentTurn, rewrite.target, rewrite.pattern, rewrite.replacement) === null) {
-        return planOne(tool, editArguments(rewrite.target, rewrite.pattern, rewrite.replacement));
+    const edit = matchIndices(source, rewrite.pattern).length === 1
+      ? [rewrite.pattern, rewrite.replacement]
+      : changedLinesEdit(source, updated);
+    if (tool && edit) {
+      if (resultForEdit(currentTurn, rewrite.target, edit[0], edit[1]) === null) {
+        return planOne(tool, editArguments(rewrite.target, edit[0], edit[1]));
       }
       return planDigestVerification(task, currentTurn, toolNames, verified);
     }
@@ -135,7 +138,63 @@ function planCompositeStep(task, currentTurn, toolNames, change) {
   return finalOrNull(renderSeededChange('coding_member_inserted', task, change.registration_path, members));
 }
 
+/**
+ * The file after `rewrite`, or null when it cannot apply. A positional
+ * insertion replaces its one anchor occurrence; an anchor found zero or
+ * several times does not say where the line goes.
+ */
+function rewrittenSource(source, rewrite) {
+  if (rewrite.unique) {
+    return matchIndices(source, rewrite.pattern).length === 1
+      ? source.replace(rewrite.pattern, () => rewrite.replacement)
+      : null;
+  }
+  const execution = executeScopedWorkspaceRewrite(source, rewrite.pattern, rewrite.replacement, rewrite.scope);
+  return execution.ok ? execution.ok.output : null;
+}
+
+/**
+ * The smallest run of whole lines holding every change from `source` to
+ * `updated`, as an edit pair, when that run occurs once in `source` — the
+ * edit tool refuses an `oldString` it finds twice, and a bare word can sit
+ * inside a longer one (`smal` in `small`).
+ */
+function changedLinesEdit(source, updated) {
+  const MAX_EDIT_BYTES = 4096;
+  let prefix = 0;
+  while (prefix < source.length && prefix < updated.length && source[prefix] === updated[prefix]) prefix += 1;
+  let suffix = 0;
+  while (suffix < source.length - prefix && suffix < updated.length - prefix
+    && source[source.length - 1 - suffix] === updated[updated.length - 1 - suffix]) suffix += 1;
+  const start = source.lastIndexOf('\n', prefix - 1) + 1;
+  const lineEnd = source.indexOf('\n', source.length - suffix);
+  const end = lineEnd < 0 ? source.length : lineEnd;
+  const old = source.slice(start, end);
+  const next = updated.slice(start, updated.length - (source.length - end));
+  if (old === '' || new TextEncoder().encode(old).length > MAX_EDIT_BYTES) return null;
+  return matchIndices(source, old).length === 1 ? [old, next] : null;
+}
+
+/**
+ * `Insert 'x' after the line 'y' in f`: the anchor line, replaced once by the
+ * anchor beside the new line, stated by the position meaning that placed it.
+ */
+function groundedPositionalInsert(task) {
+  const insert = composePositionalInsert(task);
+  if (!insert) return null;
+  const [target, anchor, replacement] = insert;
+  const after = replacement.startsWith(`${anchor}\n`);
+  const inserted = after ? replacement.slice(anchor.length + 1) : replacement.slice(0, -(anchor.length + 1));
+  return {
+    target, pattern: anchor, replacement, scope: RewriteScope.Substring, unique: true,
+    intent: after ? 'file_edit_position_after' : 'file_edit_position_before',
+    slots: [['{new}', inserted], ['{anchor}', anchor]],
+  };
+}
+
 function groundedRewrite(task) {
+  const positional = groundedPositionalInsert(task);
+  if (positional) return positional;
   const edit = composeEditRequest(task);
   if (!edit) return null;
   const [target, oldClause, newClause] = edit;
@@ -150,9 +209,12 @@ function groundedRewrite(task) {
     next = identifierTokens(newClause)[0];
     if (old === undefined || next === undefined) return null;
   } else return null;
-  const scope = renaming && isIdentifierWord(old) && isIdentifierWord(next) ? RewriteScope.Word : RewriteScope.Substring;
+  // A word replaced by a longer word that contains it (`smal` -> `small`) is
+  // only safe word by word: a substring rewrite would never terminate.
+  const words = isIdentifierWord(old) && isIdentifierWord(next);
+  const scope = words && (renaming || next.includes(old)) ? RewriteScope.Word : RewriteScope.Substring;
   if (old === '' || old === next || (scope === RewriteScope.Substring && next.includes(old))) return null;
-  return { target, pattern: old, replacement: next, scope };
+  return { target, pattern: old, replacement: next, scope, renaming: renaming && scope === RewriteScope.Word };
 }
 
 /**

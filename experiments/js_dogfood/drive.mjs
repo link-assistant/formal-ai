@@ -69,6 +69,10 @@ export function execute(dir, call) {
           return '';
         }
         if (!text.includes(oldString)) return 'Error: oldString not found in content';
+        // The Agent CLI refuses an ambiguous oldString rather than editing its first match.
+        if (!args.replaceAll && text.indexOf(oldString) !== text.lastIndexOf(oldString)) {
+          return 'Error: Found multiple matches for oldString. Provide more surrounding lines in oldString to identify the correct match.';
+        }
         const next = args.replaceAll ? text.split(oldString).join(newString) : text.replace(oldString, () => newString);
         writeFileSync(target, next);
         return '';

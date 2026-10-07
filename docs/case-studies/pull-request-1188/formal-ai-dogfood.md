@@ -34,6 +34,12 @@ possible tasks you encounter on the way must be fully supported by it".
 | T4 | `Append the line 'third line' to notes.txt.` | **Fail, destructive**: `notes.txt` was overwritten with `the line 'third line'`. | **Pass**: read → edit → `sha256sum` check; one line added; answer `Appended \`third line\` to the end of \`notes.txt\` and observed the result.` |
 | T5 | `In greet.py rename the variable nmae to name.` | Pass: both occurrences renamed. | — |
 | T6 | `Fix the typo 'smal' in README.md.` | **Fail**: read the file, echoed it, changed nothing. | Open |
+| T7 | `Replace 'smal' with 'small' in README.md.` (README also says `A small tool.`) | **Fail**: edit `oldString: "smal"` — the Agent CLI refuses it ("Found multiple matches"); an edit tool that takes the first match turns `small` into `smalll`. Without the second line it passed, answering only "The command completed successfully without output." | **Pass**: read → edit of the one changed line → `sha256sum`; answer `Replaced \`smal\` with \`small\` in \`README.md\` and observed the result.` |
+| T8 | `Insert 'middle' after the line 'first line' in notes.txt.` | **Fail**: no plan at all (single quotes were not literals). With double quotes it worked but answered "The command completed successfully without output." | **Pass**: read → edit → `sha256sum`; answer `Inserted \`middle\` after \`first line\` in \`notes.txt\` and observed the result.` |
+| T9 | `Delete the line 'second line' from notes.txt.` | **Fail**: read the file, changed nothing. | Open |
+| T10 | `Run ls and summarize what is in this directory.` | Pass (lists the output; no prose summary). | — |
+| T11 | `How many lines are in notes.txt?` | Pass (`wc -l`). | — |
+| T12 | `Delete the file notes.txt.` / `Rename the file notes.txt to todo.txt.` | Pass (`rm`, `mv`). | — |
 
 ## Root causes and fixes
 
@@ -76,3 +82,42 @@ plus prepend, no-final-newline, missing-file and Russian variants.
 end insertion, so the native engine still overwrites on T4. The seed data is
 shared; the code is a port of `groundedEndInsertion`, `insertedAtEnd`,
 `compactEndEdit` and `planEndInsertionStep`.
+
+### T7 — a replacement that contains its pattern was handed to a bare edit
+
+**Root cause.** `groundedRewrite` (`js/agentic/workspace_change.mjs`) refused
+any substring replacement whose new text contains the old one, because the
+substring Markov rewrite would not terminate on `smal` → `small`. The request
+then fell to the intent-router edit, which sends the bare word as `oldString`
+— ambiguous whenever the word also sits inside a longer one.
+
+**Fix.** A replacement of one word by another word containing it is
+word-scoped (the same scope a rename uses; the stated intent stays
+"replaced"). When the bare pattern is not unique in the file, the edit carries
+the smallest run of whole changed lines that is unique (`changedLinesEdit`);
+the result is checked by digest as before.
+
+### T8 — single-quoted literals were invisible to the positional insert
+
+**Root cause.** `quotedLiterals` in `js/agentic/positional_edit.mjs` (and
+`quoted_literals` in `rust/src/agentic_coding/positional_edit.rs`) had its own
+scanner for `"` and `` ` `` only, while every other literal reader uses
+`quotedSegmentSpans`, which also reads `'…'` (with an apostrophe guard), «»,
+“”, 「」. The insert also ended in the generic tool-result answer, because only
+the intent-router edit handled it.
+
+**Fix.** Both roots read literals through the shared `quoted_segment_spans`
+(Rust twin implemented). The JS workspace-change arm now owns positional
+inserts: the anchor must occur exactly once (otherwise the honest
+verification-failure answer, nothing written), the edit is checked by digest,
+and the answer comes from seeded responses keyed by the existing
+`file_edit_position_after` / `_before` meanings (five languages).
+
+**Tests.** "a replacement edits only what it names" in
+`rust/tests/web/pull-request-1188-dogfood.test.mjs`: the T7 file, the T8
+prompt, and a twice-occurring anchor that must not be edited. The test's edit
+tool refuses an ambiguous `oldString` exactly as the Agent CLI does.
+
+**Rust twin.** The quoting fix is in both roots. The word-scoped replacement,
+the line-scoped edit and the positional ownership (with its seeded answer)
+are JS-only so far: `rust/src/agentic_coding/workspace_change.rs`.

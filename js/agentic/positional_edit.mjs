@@ -6,6 +6,7 @@
 
 import { cleanContent, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { usesPostpositions } from './crate/language.mjs';
 import { meaningsWithRole, mentionsRole } from './crate/seed_meanings.mjs';
 import { replaceAllLiteral, trim, trimStartMatches, utf16ToByte, utf8Len } from './crate/rust_str.mjs';
@@ -47,26 +48,17 @@ export function composePositionalInsert(request) {
   return [target, anchor, replacement];
 }
 
-/** Mirrors `fn quoted_literals`: `{start, end, text}` with byte offsets. */
+/**
+ * Mirrors `fn quoted_literals`: `{start, end, text}` with byte offsets — every
+ * delimited literal slot `quotedSegmentSpans` reads (double, single, backtick,
+ * guillemet and CJK quotes), verbatim, so a quoted line keeps its indentation.
+ */
 function quotedLiterals(request) {
-  const literals = [];
-  let offset = 0;
-  for (;;) {
-    const match = /["`]/.exec(request.slice(offset));
-    if (match === null) break;
-    const open = offset + match.index;
-    const quote = request[open];
-    const length = request.slice(open + 1).indexOf(quote);
-    if (length < 0) break;
-    const close = open + 1 + length;
-    literals.push({
-      start: utf16ToByte(request, open),
-      end: utf16ToByte(request, close + 1),
-      text: request.slice(open + 1, close),
-    });
-    offset = close + 1;
-  }
-  return literals;
+  return quotedSegmentSpans(request).map((segment) => ({
+    start: utf16ToByte(request, segment.start),
+    end: utf16ToByte(request, segment.end),
+    text: segment.text,
+  }));
 }
 
 /** Mirrors `fn cue_governed_literal`: 0 or 1. */

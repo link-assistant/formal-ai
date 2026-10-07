@@ -179,6 +179,46 @@ multilingual_responses
     intent file_edit_position_start
     language es
     text "Se añadió `{new}` al principio de `{path}` y se verificó el resultado."
+  response response_file_edit_position_after_en
+    intent file_edit_position_after
+    language en
+    text "Inserted `{new}` after `{anchor}` in `{path}` and observed the result."
+  response response_file_edit_position_after_ru
+    intent file_edit_position_after
+    language ru
+    text "В `{path}` после `{anchor}` вставлено `{new}`, результат проверен."
+  response response_file_edit_position_after_hi
+    intent file_edit_position_after
+    language hi
+    text "`{path}` में `{anchor}` के बाद `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_file_edit_position_after_zh
+    intent file_edit_position_after
+    language zh
+    text "已在 `{path}` 中 `{anchor}` 之后插入 `{new}` 并验证了结果。"
+  response response_file_edit_position_after_es
+    intent file_edit_position_after
+    language es
+    text "Se insertó `{new}` después de `{anchor}` en `{path}` y se verificó el resultado."
+  response response_file_edit_position_before_en
+    intent file_edit_position_before
+    language en
+    text "Inserted `{new}` before `{anchor}` in `{path}` and observed the result."
+  response response_file_edit_position_before_ru
+    intent file_edit_position_before
+    language ru
+    text "В `{path}` перед `{anchor}` вставлено `{new}`, результат проверен."
+  response response_file_edit_position_before_hi
+    intent file_edit_position_before
+    language hi
+    text "`{path}` में `{anchor}` से पहले `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_file_edit_position_before_zh
+    intent file_edit_position_before
+    language zh
+    text "已在 `{path}` 中 `{anchor}` 之前插入 `{new}` 并验证了结果。"
+  response response_file_edit_position_before_es
+    intent file_edit_position_before
+    language es
+    text "Se insertó `{new}` antes de `{anchor}` en `{path}` y se verificó el resultado."
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en

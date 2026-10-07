@@ -12,6 +12,7 @@ use super::write_request::{
     clean_content, clean_path_token, looks_like_file_path, safe_relative_path,
     tokens,
 };
+use crate::normal_markov::quoted_segment_spans;
 use crate::seed;
 
 /// The bytes a quoted or clause-led span of edit prose stands for.
@@ -72,26 +73,19 @@ struct QuotedLiteral {
     text: String,
 }
 
-/// The double-quoted and backtick-quoted spans of `request`, verbatim: a
-/// quoted line keeps its indentation.
+/// The delimited literal slots of `request`, verbatim: a quoted line keeps its
+/// indentation. Every quote pair [`quoted_segment_spans`] reads counts —
+/// `'single'` quotes included — so `Insert 'x' after the line 'y'` places the
+/// line exactly as its double-quoted form does.
 fn quoted_literals(request: &str) -> Vec<QuotedLiteral> {
-    let mut literals = Vec::new();
-    let mut offset = 0;
-    while let Some(start) = request[offset..].find(['"', '`']) {
-        let open = offset + start;
-        let quote = &request[open..=open];
-        let Some(length) = request[open + 1..].find(quote) else {
-            break;
-        };
-        let close = open + 1 + length;
-        literals.push(QuotedLiteral {
-            start: open,
-            end: close + 1,
-            text: request[open + 1..close].to_owned(),
-        });
-        offset = close + 1;
-    }
-    literals
+    quoted_segment_spans(request)
+        .into_iter()
+        .map(|segment| QuotedLiteral {
+            start: segment.start,
+            end: segment.end,
+            text: segment.text,
+        })
+        .collect()
 }
 
 /// Which of two literals the position cue governs: `1` for the second, `0`
