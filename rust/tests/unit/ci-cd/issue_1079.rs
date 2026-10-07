@@ -636,9 +636,13 @@ fn every_checkout_drops_its_credential_unless_it_pushes() {
          stopped being read by this sweep is a checkout that stopped being \
          checked"
     );
+    // Five pushing jobs, plus the two the version-currency and E2E-isolation
+    // work added: `dependencies-latest` (create-pull-request pushes its
+    // branch) and `e2e-isolation` (its orphan branch is pushed through the
+    // retrying helper). Each carries its #1079 reason above the checkout.
     assert!(
-        exceptions.len() <= 5,
-        "only the five pushing jobs may keep their checkout credential, found \
+        exceptions.len() <= 7,
+        "only the seven pushing jobs may keep their checkout credential, found \
          {}: {exceptions:?}",
         exceptions.len()
     );

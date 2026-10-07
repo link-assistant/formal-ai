@@ -165,6 +165,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: ./.github/actions/setup-buildx-resilient
       - uses: actions/download-artifact@v8
+        env:
+          # download-artifact v8 triggers Node's DEP0005 Buffer() warning
+          # (issue #1012); suppress it on this step only.
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           pattern: image-*
           merge-multiple: false
