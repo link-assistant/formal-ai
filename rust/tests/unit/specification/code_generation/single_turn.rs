@@ -53,7 +53,7 @@ fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
             language: "Python",
             slug: "python",
             prompt: "Write hello world in Python, but print “Bye Python” instead",
-            code_fragment: "print(\"Bye Python\")",
+            code_fragment: "print('Bye Python')",
             output_fragment: "```text\nBye Python\n```",
         },
         Case {
