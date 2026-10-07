@@ -194,6 +194,14 @@ multilingual_responses
     intent code_review_finding
     language en
     text "  - [{severity}] {title} — line {line_no}: `{line}`\n    {advice}\n    {source}\n"
+  response response_format_conversion_csv_to_json_en
+    intent format_conversion_csv_to_json
+    language en
+    text "Converted CSV to JSON. Data rows: {rows}; header columns: {columns}. CSV carries no types, so every value stays a JSON string rather than a guessed number or boolean.\n\n```json\n{json}```\nRound-trip check: parsing the emitted JSON back gave every row the same value under every header column as the CSV it came from."
+  response response_format_conversion_reason_csv_en
+    intent format_conversion_reason_csv
+    language en
+    text "The text is outside the supported CSV subset (a header row of unique, non-empty names, then at least one row with the same number of comma-separated fields, double-quoted fields with doubled quotes inside), so I will not guess a conversion."
   response response_format_conversion_reason_bad_json_en
     intent format_conversion_reason_bad_json
     language en

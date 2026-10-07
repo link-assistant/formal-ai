@@ -871,6 +871,128 @@ function formatConversionYamlText(prompt) {
   return null;
 }
 
+/**
+ * The CSV table under discussion: a fenced block, else the text after the
+ * request's first colon when it spans at least two lines (Rust `csv_text`).
+ * @param {string} prompt raw prompt
+ * @returns {string|null} CSV text
+ */
+function formatConversionCsvText(prompt) {
+  let body = formatConversionFenced(prompt, "csv");
+  if (body === null) body = formatConversionFencedAny(prompt);
+  if (body !== null) return body;
+  const colon = prompt.search(/[:：]/u);
+  if (colon === -1) return null;
+  const rest = prompt.slice(colon + (prompt[colon] === ":" ? 1 : "：".length)).trim();
+  return rest.includes(",") && rest.includes("\n") ? rest : null;
+}
+
+/**
+ * Parse the CSV subset: comma-separated fields, double-quoted fields with
+ * doubled quotes inside, one record per line, a header of unique non-empty
+ * names and at least one row of the same width (Rust `parse_csv`).
+ * @param {string} text CSV text
+ * @returns {Array<Array<string>>|null} header then rows, or null outside the subset
+ */
+function formatConversionParseCsv(text) {
+  const records = [];
+  let record = [];
+  let field = "";
+  let quoted = false;
+  let closed = false;
+  const chars = Array.from(text.split("\r\n").join("\n"));
+  for (let index = 0; index < chars.length; index += 1) {
+    const ch = chars[index];
+    if (quoted) {
+      if (ch === "\"" && chars[index + 1] === "\"") {
+        field += "\"";
+        index += 1;
+      } else if (ch === "\"") {
+        quoted = false;
+        closed = true;
+      } else {
+        field += ch;
+      }
+    } else if (ch === ",") {
+      record.push(field);
+      field = "";
+      closed = false;
+    } else if (ch === "\n") {
+      record.push(field);
+      records.push(record);
+      record = [];
+      field = "";
+      closed = false;
+    } else if (closed) {
+      return null;
+    } else if (ch === "\"" && field === "") {
+      quoted = true;
+    } else {
+      field += ch;
+    }
+  }
+  if (quoted) return null;
+  record.push(field);
+  records.push(record);
+  const rows = records.filter((row) => !(row.length === 1 && row[0].trim() === ""));
+  if (rows.length < 2) return null;
+  const header = rows[0];
+  if (header.some((name) => name === "") || new Set(header).size !== header.length) return null;
+  if (rows.some((row) => row.length !== header.length)) return null;
+  return rows;
+}
+
+/**
+ * Render CSV rows as a JSON array of objects keyed by the header, two-space
+ * indented, every value a string (Rust `render_csv_json`).
+ * @param {Array<Array<string>>} rows header then rows
+ * @returns {string} JSON text with a trailing newline
+ */
+function formatConversionCsvJson(rows) {
+  const header = rows[0];
+  const objects = rows.slice(1).map((row) => "  {\n" + header
+    .map((name, column) => "    " + JSON.stringify(name) + ": " + JSON.stringify(row[column]))
+    .join(",\n") + "\n  }");
+  return "[\n" + objects.join(",\n") + "\n]\n";
+}
+
+/**
+ * Convert a CSV table to JSON and check the result parses back to the same
+ * cells (Rust `convert_csv`).
+ * @param {string} prompt raw prompt
+ * @param {Array<Array<string>>} log handler log
+ * @returns {Array} [body, confidence]
+ */
+function formatConversionCsvToJson(prompt, log) {
+  const text = formatConversionCsvText(prompt);
+  const rows = text === null ? null : formatConversionParseCsv(text);
+  if (rows === null) {
+    codeTaskLogAppend(log, "format_conversion:refusal", text === null ? "csv=none" : "csv=bad");
+    return [formatConversionRefusal("csv"), 0.4];
+  }
+  const json = formatConversionCsvJson(rows);
+  let reparsed = null;
+  try {
+    reparsed = JSON.parse(json);
+  } catch {
+    reparsed = null;
+  }
+  const header = rows[0];
+  const matches = Array.isArray(reparsed) && reparsed.length === rows.length - 1 && reparsed.every((object, index) =>
+    object !== null && typeof object === "object" && Object.keys(object).length === header.length
+      && header.every((name, column) => object[name] === rows[index + 1][column]));
+  if (!matches) {
+    codeTaskLogAppend(log, "format_conversion:refusal", "roundtrip=fail");
+    return [formatConversionRefusal("roundtrip"), 0.4];
+  }
+  codeTaskLogAppend(log, "format_conversion:converted", "roundtrip=ok");
+  return [codeTaskTemplate("format_conversion_csv_to_json", [
+    ["rows", String(rows.length - 1)],
+    ["columns", header.join(", ")],
+    ["json", json],
+  ]), 0.7];
+}
+
 // ---------------------------------------------------------------------------
 // Handler
 // ---------------------------------------------------------------------------
@@ -896,8 +1018,14 @@ function formatConversionRefusal(reason) {
 function handleFormatConversion(prompt, normalized) {
   const toYaml = codeTaskCued("format_conversion", "to_yaml", prompt, normalized);
   const toJson = codeTaskCued("format_conversion", "to_json", prompt, normalized);
-  if (!toYaml && !toJson) return null;
+  const fromCsv = !toYaml && !toJson && codeTaskCued("format_conversion", "csv_to_json", prompt, normalized);
+  if (!toYaml && !toJson && !fromCsv) return null;
   const log = codeTaskLog();
+  if (fromCsv) {
+    codeTaskLogAppend(log, "format_conversion:request", "dir=csv");
+    const converted = formatConversionCsvToJson(prompt, log);
+    return codeTaskAnswer(log, "format_conversion", "response:format_conversion", converted[0], converted[1]);
+  }
   codeTaskLogAppend(log, "format_conversion:request", "dir=" + (toYaml ? "yaml" : "json"));
   let body = "";
   let confidence = 0.4;

@@ -101,7 +101,8 @@ const CLAIM_EVIDENCE = Object.freeze({
   code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null, ...(typeof NUMERIC_CLAIM_EVIDENCE === "object" ? NUMERIC_CLAIM_EVIDENCE : {}),
   // Refusal group: the operand each handler's own reader extracts before it composes anything.
   function_under_test: (prompt) => testGenerationFunctionName(prompt) !== null,
-  structured_document: (prompt) => formatConversionJsonText(prompt) !== null || formatConversionYamlText(prompt) !== null,
+  structured_document: (prompt) => formatConversionJsonText(prompt) !== null || formatConversionYamlText(prompt) !== null
+    || formatConversionCsvText(prompt) !== null,
 });
 
 function claimRouteRows() {

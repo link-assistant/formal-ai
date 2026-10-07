@@ -191,6 +191,142 @@ fn yaml_text(prompt: &str) -> Option<String> {
     None
 }
 
+/// The CSV table under discussion: a fenced block, else the text after the
+/// request's first colon when it spans at least two lines.
+fn csv_text(prompt: &str) -> Option<String> {
+    if let Some(body) = fenced(prompt, "csv").or_else(|| fenced_any(prompt)) {
+        return Some(body);
+    }
+    let colon = prompt.find([':', '：'])?;
+    let width = prompt[colon..].chars().next().map_or(1, char::len_utf8);
+    let rest = prompt[colon + width..].trim();
+    (rest.contains(',') && rest.contains('\n')).then(|| rest.to_owned())
+}
+
+/// Parse the CSV subset: comma-separated fields, double-quoted fields with
+/// doubled quotes inside, one record per line, a header of unique non-empty
+/// names and at least one row of the same width. `None` outside the subset.
+fn parse_csv(text: &str) -> Option<Vec<Vec<String>>> {
+    let normalized = text.replace("\r\n", "\n");
+    let mut chars = normalized.chars().peekable();
+    let mut records: Vec<Vec<String>> = Vec::new();
+    let mut record: Vec<String> = Vec::new();
+    let mut field = String::new();
+    let mut quoted = false;
+    let mut closed = false;
+    while let Some(ch) = chars.next() {
+        if quoted {
+            if ch == '"' && chars.peek() == Some(&'"') {
+                field.push('"');
+                chars.next();
+            } else if ch == '"' {
+                quoted = false;
+                closed = true;
+            } else {
+                field.push(ch);
+            }
+        } else if ch == ',' {
+            record.push(std::mem::take(&mut field));
+            closed = false;
+        } else if ch == '\n' {
+            record.push(std::mem::take(&mut field));
+            records.push(std::mem::take(&mut record));
+            closed = false;
+        } else if closed {
+            return None;
+        } else if ch == '"' && field.is_empty() {
+            quoted = true;
+        } else {
+            field.push(ch);
+        }
+    }
+    if quoted {
+        return None;
+    }
+    record.push(field);
+    records.push(record);
+    let rows: Vec<Vec<String>> = records
+        .into_iter()
+        .filter(|row| !(row.len() == 1 && row[0].trim().is_empty()))
+        .collect();
+    let header = rows.first()?;
+    let unique: std::collections::BTreeSet<&String> = header.iter().collect();
+    if rows.len() < 2
+        || header.iter().any(String::is_empty)
+        || unique.len() != header.len()
+        || rows.iter().any(|row| row.len() != header.len())
+    {
+        return None;
+    }
+    Some(rows)
+}
+
+/// Render CSV rows as a JSON array of objects keyed by the header, two-space
+/// indented, every value a string, with a trailing newline.
+fn render_csv_json(rows: &[Vec<String>]) -> String {
+    let quote = |text: &str| serde_json::to_string(text).unwrap_or_default();
+    let header = &rows[0];
+    let objects: Vec<String> = rows[1..]
+        .iter()
+        .map(|row| {
+            let fields: Vec<String> = header
+                .iter()
+                .zip(row)
+                .map(|(name, cell)| ["    ", &quote(name), ": ", &quote(cell)].concat())
+                .collect();
+            ["  {\n", &fields.join(",\n"), "\n  }"].concat()
+        })
+        .collect();
+    ["[\n", &objects.join(",\n"), "\n]\n"].concat()
+}
+
+/// Convert a CSV table to JSON and check the result parses back to the same
+/// cells; the body and the answer confidence.
+fn convert_csv(prompt: &str, log: &mut EventLog) -> (String, f32) {
+    let text = csv_text(prompt);
+    let Some(rows) = text.as_deref().and_then(parse_csv) else {
+        let payload = if text.is_none() {
+            "csv=none"
+        } else {
+            "csv=bad"
+        };
+        log.append("format_conversion:refusal", payload.to_owned());
+        return (refusal("csv"), 0.4);
+    };
+    let json = render_csv_json(&rows);
+    let header = &rows[0];
+    let matches = serde_json::from_str::<Value>(&json)
+        .ok()
+        .and_then(|value| value.as_array().cloned())
+        .is_some_and(|objects| {
+            objects.len() == rows.len() - 1
+                && objects.iter().zip(&rows[1..]).all(|(object, row)| {
+                    object.as_object().is_some_and(|object| {
+                        object.len() == header.len()
+                            && header.iter().zip(row).all(|(name, cell)| {
+                                object.get(name).and_then(Value::as_str) == Some(cell.as_str())
+                            })
+                    })
+                })
+        });
+    if !matches {
+        log.append("format_conversion:refusal", "roundtrip=fail".to_owned());
+        return (refusal("roundtrip"), 0.4);
+    }
+    log.append("format_conversion:converted", "roundtrip=ok".to_owned());
+    (
+        template(
+            "format_conversion_csv_to_json",
+            &[
+                ("rows", &(rows.len() - 1).to_string()),
+                ("columns", &header.join(", ")),
+                ("json", &json),
+            ],
+        ),
+        0.7,
+    )
+}
+
 // ---------------------------------------------------------------------------
 // YAML subset rendering (Value -> YAML) and parsing (YAML -> Value)
 // ---------------------------------------------------------------------------
@@ -541,7 +677,7 @@ fn refusal(reason: &str) -> String {
 /// extractors the handler uses).
 #[must_use]
 pub fn carries_structured_document(prompt: &str) -> bool {
-    json_text(prompt).is_some() || yaml_text(prompt).is_some()
+    json_text(prompt).is_some() || yaml_text(prompt).is_some() || csv_text(prompt).is_some()
 }
 
 /// Try to recognize a JSON↔YAML conversion request and perform it within
@@ -554,8 +690,21 @@ pub fn handle_format_conversion(
 ) -> Option<SymbolicAnswer> {
     let to_yaml = role_cued(prompt, normalized, "to_yaml");
     let to_json = role_cued(prompt, normalized, "to_json");
-    if !to_yaml && !to_json {
+    let from_csv = !to_yaml && !to_json && role_cued(prompt, normalized, "csv_to_json");
+    if !to_yaml && !to_json && !from_csv {
         return None;
+    }
+    if from_csv {
+        log.append("format_conversion:request", "dir=csv".to_owned());
+        let (body, confidence) = convert_csv(prompt, log);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            INTENT,
+            "response:format_conversion",
+            &body,
+            confidence,
+        ));
     }
     let direction = if to_yaml { "yaml" } else { "json" };
     log.append("format_conversion:request", format!("dir={direction}"));

@@ -399,6 +399,22 @@ meanings
     unit "not applicable"
     example "a broken document is refused with its reason named"
     grounding "data/seed/multilingual-responses.lino"
+  format_conversion_csv_to_json
+    defined-by method
+    role action
+    precondition "a CSV table with a header row is asked for as JSON"
+    effect "renders the rows as JSON objects keyed by the header and states the round-trip check"
+    unit "not applicable"
+    example "name,age then Ann,30 becomes one object with two string values"
+    grounding "data/seed/multilingual-responses.lino"
+  format_conversion_reason_csv
+    defined-by method
+    role action
+    precondition "the CSV text breaks the header or field-count rules"
+    effect "names the CSV subset the conversion reads and refuses to guess"
+    unit "not applicable"
+    example "a row with a missing field is refused"
+    grounding "data/seed/multilingual-responses.lino"
   format_conversion_reason_bad_json
     defined-by method
     role action
@@ -463,6 +479,14 @@ meanings
     unit "not applicable"
     example "a string concatenation is checked inside the loop body"
     grounding "data/seed/code-review-rules.lino"
+  csv_to_json
+    defined-by method
+    role action
+    precondition "a conversion request names a csv table as the source and json as the target"
+    effect "routes the request to the csv-to-json conversion"
+    unit "not applicable"
+    example "a csv table with a header row is asked for as json"
+    grounding "data/seed/code-task-cues.lino"
   to_json
     defined-by method
     role action

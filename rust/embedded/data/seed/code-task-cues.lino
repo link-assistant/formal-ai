@@ -119,6 +119,14 @@ cues
     phrase "конвертируй yaml"
     phrase "переведи yaml в json"
 cues
+  intent format_conversion
+    role csv_to_json
+    phrase "csv to json"
+    phrase "из csv в json"
+    phrase "csv в json"
+    phrase "конвертируй csv"
+    phrase "переведи csv в json"
+cues
   intent code_explanation
     phrase "explain this code"
     phrase "explain the code"

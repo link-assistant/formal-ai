@@ -76,3 +76,8 @@ test("R1177-7: an unknown shape with no stated example is refused by name", () =
     "Recognized a request for tests of `is_even`, but its name matches no problem shape in the test-case table (palindrome, average, max) and the request states no example with its expected value, so I will not guess what it must return. State examples as a call followed by its expected value, such as `is_even(<input>) returns <expected>` with a number, a quoted string, a list, True, False or None, and each one becomes a test case.",
   );
 });
+
+test("R1177-9: a CSV table converts to JSON and is checked cell by cell", () => {
+  assert.equal(handle("handleFormatConversion", "Convert this CSV to JSON:\n```csv\nname,quote\nAnn,\"says \"\"hi\"\", twice\"\nBob,ok\n```"), "Converted CSV to JSON. Data rows: 2; header columns: name, quote. CSV carries no types, so every value stays a JSON string rather than a guessed number or boolean.\n\n```json\n[\n  {\n    \"name\": \"Ann\",\n    \"quote\": \"says \\\"hi\\\", twice\"\n  },\n  {\n    \"name\": \"Bob\",\n    \"quote\": \"ok\"\n  }\n]\n```\nRound-trip check: parsing the emitted JSON back gave every row the same value under every header column as the CSV it came from.");
+  assert.equal(handle("handleFormatConversion", "Convert this CSV to JSON: name,age\nAnn"), "I will not guess a conversion. The text is outside the supported CSV subset (a header row of unique, non-empty names, then at least one row with the same number of comma-separated fields, double-quoted fields with doubled quotes inside), so I will not guess a conversion.");
+});

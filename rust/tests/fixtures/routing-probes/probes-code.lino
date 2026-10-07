@@ -206,7 +206,6 @@ routing_probes
     intent format_conversion
     prompt "Convert this CSV to JSON: name,age\nAnn,30"
     adversarial true
-    js_misroute unknown
     rust_misroute unverified
   probe p120
     lane format_conversion

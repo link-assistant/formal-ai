@@ -2,7 +2,7 @@ core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 87
-  source_lines_max 36338
+  source_lines_max 36487
   outside_core_file_count_max 51
   outside_core_lines_max 20461
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
@@ -27,6 +27,7 @@ core_boundary_ledger
   note "Re-measured 2026-10-07 for issue #1176 R1176-1: unit_conversion.rs reads the captured Wikidata P2370 statements (data/seed/wikidata-conversion-to-si.lino) at answer time, resolves each unit of a linear conversion to its item, derives the factor from the two amounts and renders the localized grounding sentence (426 to 593 lines); source_lines_max adds 167 lines and outside_core_lines_max is unchanged."
   note "Re-measured 2026-10-07 for issue #1172 R1172-5: word_definition.rs joins the ledger as a promoted reader (definitions from the registry dictionary sources, every surface and template in seed data; 342 lines), and solver_handlers/mod.rs grew by its three re-export lines (793 to 796), so source_file_count_max records 87, source_lines_max adds 345 lines and outside_core_lines_max 3."
   note "Re-measured 2026-10-07 for issue #1175 R1175-3 (refusal group): test_generation.rs and format_conversion.rs expose the operand readers the claim router reads as function_under_test and structured_document evidence (608 to 616 and 648 to 650 lines; format_conversion.rs was also brought to rustfmt layout), so source_lines_max adds 10 lines; outside_core_lines_max is unchanged."
+  note "Re-measured 2026-10-07 for issue #1177 R1177-9 and #1173 R1173-3: format_conversion.rs reads a CSV table (the seeded csv_to_json cue, a header of unique names, quoted fields) into JSON with every value a string and checks the parse-back cell by cell (650 to 799 lines), so source_lines_max adds 149 lines; outside_core_lines_max is unchanged."
   source rust/src/solver_handler_how.rs
     disposition migrate
     baseline_lines 930
@@ -194,7 +195,7 @@ core_boundary_ledger
     reason "Issue #1186: renders the formalization result and evidence record from the generic target tree; all domain phrases come from seed vocabulary."
   source rust/src/solver_handlers/format_conversion.rs
     disposition promote
-    baseline_lines 650
+    baseline_lines 799
     core_component format_conversion_interpreter
     reason "Issue #1177: the JSON and YAML subset parsers with the round-trip value check are compiled interpretation of structure, not domain knowledge; the conversion vocabulary is seed data."
   source rust/src/solver_handlers/installation_conversion.rs
