@@ -486,15 +486,15 @@ line number, which had gone stale for every row.
 | R357 | docs/requirements/issue-0563-repository-resource-summarization.md | PR #564 (issue #563) | none recorded | not yet confirmed |
 | R358 | docs/requirements/issue-0563-repository-resource-summarization.md | PR #564 (issue #563) | none recorded | not yet confirmed |
 | R359 | docs/requirements/issue-0563-repository-resource-summarization.md | PR #564 (issue #563) | rust/tests/source/source_tests/summarization/mod/tests.rs::{summarize_repository_resource_topic_directory_is_identity_only,summarize_repository_resource_full_directory_recurses_into_nested_folder} | not yet confirmed |
-| R360 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R360 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/unit/ci-cd/release_publishing.rs | not yet confirmed |
 | R361 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
 | R362 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
-| R363 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R363 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/unit/ci-cd/release_publishing.rs | not yet confirmed |
 | R364 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R365 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
-| R366 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R366 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/unit/docs_requirements/issue_492.rs | not yet confirmed |
 | R367 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
-| R368 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R368 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | rust/tests/unit/ci-cd/release_publishing.rs; rust/tests/unit/docs_requirements/issue_492.rs | not yet confirmed |
 | R369 | docs/requirements/issue-0492-release-badge-stability.md | PR #583 (issue #492) | none recorded | not yet confirmed |
 | R499-1 | docs/requirements/issue-0499-learn-from-this-data-source-requirements.md | PR #641 (issue #499) | issue-level coverage (not row-pinned): rust/tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
 | R499-2 | docs/requirements/issue-0499-learn-from-this-data-source-requirements.md | PR #641 (issue #499) | rust/tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
@@ -655,14 +655,14 @@ line number, which had gone stale for every row.
 | R556 | docs/requirements/issue-0674-arbitrary-natural-language-programs.md | PR #815 (issue #674) | none recorded | not yet confirmed |
 | R557 | docs/requirements/issue-0674-arbitrary-natural-language-programs.md | PR #815 (issue #674) | none recorded | not yet confirmed |
 | R558 | docs/requirements/issue-0674-arbitrary-natural-language-programs.md | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R528 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | none recorded | not yet confirmed |
-| R529 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | none recorded | not yet confirmed |
-| R530 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | none recorded | not yet confirmed |
-| R531 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | none recorded | not yet confirmed |
-| R532 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | none recorded | not yet confirmed |
-| R533 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R528 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | rust/tests/unit/specification/external_benchmarks.rs | not yet confirmed |
+| R529 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | rust/tests/unit/specification/external_benchmarks.rs | not yet confirmed |
+| R530 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | rust/tests/unit/specification/external_benchmarks.rs | not yet confirmed |
+| R531 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | rust/tests/unit/specification/external_benchmarks.rs | not yet confirmed |
+| R532 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | rust/tests/unit/specification/external_benchmarks.rs | not yet confirmed |
+| R533 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | rust/tests/unit/specification/external_benchmarks.rs | not yet confirmed |
 | R534 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | none recorded | not yet confirmed |
-| R535 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R535 | docs/requirements/issue-0698-real-external-benchmark-harness.md | PR #816 (issue #698) | rust/tests/unit/issue_698_external_benchmark_learning.rs | not yet confirmed |
 | R702-1 | docs/requirements/issue-0702-dialogue-world-model.md | PR #675 (issue #702) | none recorded | not yet confirmed |
 | R702-2 | docs/requirements/issue-0702-dialogue-world-model.md | PR #675 (issue #702) | none recorded | not yet confirmed |
 | R702-3 | docs/requirements/issue-0702-dialogue-world-model.md | PR #675 (issue #702) | none recorded | not yet confirmed |
