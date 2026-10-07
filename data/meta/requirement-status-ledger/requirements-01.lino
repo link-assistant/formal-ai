@@ -67,10 +67,10 @@ requirement_status_ledger_shard requirements_01
   requirement
     id "R1005"
     shard "docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "reasoner vocabulary and trace wording are seed data"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/web/pr-1188-doctrine-ratchets.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1006"
@@ -115,10 +115,10 @@ requirement_status_ledger_shard requirements_01
   requirement
     id "R1010"
     shard "docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "js/worker natural-language literal ratchet"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/web/pr-1188-doctrine-ratchets.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1011"
@@ -315,10 +315,10 @@ requirement_status_ledger_shard requirements_01
   requirement
     id "R1016"
     shard "docs/requirements/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "1500-line ceiling on every maintained file"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/ci-cd/mod.rs"
     manual "not yet confirmed"
   requirement
     id "R1017"
