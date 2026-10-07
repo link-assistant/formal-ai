@@ -1328,16 +1328,21 @@ function parseCompoundPercentBeforeSymbol(prompt) {
 }
 
 function parseCompoundYears(normalized) {
-  // The duration unit is a meaning (year_unit_cue); locate the earliest of its
-  // surface forms (English "year", plus the other languages) and read the
-  // number to its left. Mirrors years_in_prompt.
+  // The duration unit is a meaning (year_unit_cue); read the number to the
+  // left of the earliest of its surface forms that has one, so the "year" in
+  // "compounded yearly" is skipped. Mirrors years_in_prompt.
   const text = String(normalized || "");
-  let earliest = -1;
+  const positions = [];
   for (const word of wordsForRole(ROLE_YEAR_UNIT_CUE)) {
-    const index = text.indexOf(word);
-    if (index >= 0 && (earliest < 0 || index < earliest)) earliest = index;
+    if (!word) continue;
+    for (let index = text.indexOf(word); index >= 0; index = text.indexOf(word, index + 1)) positions.push(index);
   }
-  return earliest >= 0 ? parseCompoundNumberLeft(text, earliest) : null;
+  positions.sort((left, right) => left - right);
+  for (const index of positions) {
+    const years = parseCompoundNumberLeft(text, index);
+    if (years !== null) return years;
+  }
+  return null;
 }
 
 function parseCompoundsPerYear(normalized) {

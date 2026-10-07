@@ -325,6 +325,7 @@ mod issue_1172_live_fact;
 mod issue_1172_live_fact_answer;
 mod issue_1172_word_definition;
 mod issue_1173_fallback_executes_search;
+mod issue_1173_local_requests_route;
 mod issue_1174_text_transform;
 mod issue_1175_claim_routing;
 mod issue_1175_phrase_vocabulary;

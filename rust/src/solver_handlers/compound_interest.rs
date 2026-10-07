@@ -324,15 +324,26 @@ fn parse_percent_before_symbol(prompt: &str) -> Option<f64> {
 }
 
 fn years_in_prompt(normalized: &str) -> Option<f64> {
-    // The duration unit is a meaning (year_unit_cue); we locate the earliest
-    // of its surface forms (English `year`, plus the other languages) and read
-    // the number to its left, reproducing the original `find("year")` scan.
-    let earliest = seed::lexicon()
+    // The duration unit is a meaning (year_unit_cue); we read the number to
+    // the left of the earliest of its surface forms (English `year`, plus the
+    // other languages) that has one. An occurrence with no number before it —
+    // the `year` inside "compounded yearly" — is a frequency word, not the
+    // term, so the scan moves on to the next occurrence.
+    let mut positions: Vec<usize> = seed::lexicon()
         .words_for_role(seed::ROLE_YEAR_UNIT_CUE)
         .into_iter()
-        .filter_map(|word| normalized.find(&word))
-        .min()?;
-    parse_number_left(normalized, earliest)
+        .flat_map(|word| {
+            normalized
+                .match_indices(word.as_str())
+                .map(|(at, _)| at)
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    positions.sort_unstable();
+    positions.dedup();
+    positions
+        .into_iter()
+        .find_map(|at| parse_number_left(normalized, at))
 }
 
 fn parse_compounds_per_year(normalized: &str) -> Option<u32> {

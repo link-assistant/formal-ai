@@ -97,7 +97,6 @@ routing_probes
     language en
     intent calculation
     prompt "invest $2500 at 6% annual interest compounded yearly for 10 years"
-    js_misroute unknown
     rust_misroute unverified
   probe p070
     lane compound_interest
