@@ -289,6 +289,11 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
             || file.starts_with("data/meta/server-")
             || file.starts_with("rust/tests/fixtures/server-parity/")
             || file == "scripts/check-server-parity.mjs"
+            // The js -> rust leg's translator driver, its pinned ledger and
+            // the committed translation (R1000): the js-rust job checks them.
+            || file == "scripts/translate-js-rust.mjs"
+            || file == "data/meta/js-rust-translation.lino"
+            || file.starts_with("rust/tests/fixtures/js-rust-translation/")
             || file == LAYERED_WORKFLOW
             || file == LAYER_CLASSIFIER
     };

@@ -18,7 +18,12 @@
 // is asynchronous; the census it returns is synchronous, which is the shape
 // `io.astCensus` of history_store.mjs takes.
 
-/** Byte order of two kind names, like the native `BTreeMap<String, _>`. */
+/**
+ * Byte order of two kind names, like the native `BTreeMap<String, _>`.
+ * @param {string} left
+ * @param {string} right
+ * @returns {number}
+ */
 function byteOrder(left, right) {
   return left < right ? -1 : left > right ? 1 : 0;
 }

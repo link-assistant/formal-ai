@@ -95,7 +95,12 @@ export function validateEffectAttribution(workspace, sessionFile, session) {
   evidencePath(workspace, sessionFile);
 }
 
-/** Mirrors `fn trailer` in rust/src/orchestration/attribution.rs. */
+/**
+ * Mirrors `fn trailer` in rust/src/orchestration/attribution.rs.
+ * @param {string} name
+ * @param {string} value
+ * @returns {string}
+ */
 const trailer = (name, value) => `${name}: ${value}`;
 
 /**

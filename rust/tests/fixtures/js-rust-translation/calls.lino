@@ -1,0 +1,22 @@
+# Calls of translated functions (R1000). Each row names a JavaScript module
+# in scope, one of its exported functions, the Rust function meta-language
+# translated it to, the arguments and the result. Both runtimes run every
+# row: rust/tests/web/js-rust-translation.test.mjs calls the JavaScript, and
+# the js-rust job of layered-ci.yml (`node scripts/translate-js-rust.mjs
+# --check --compile`) compiles the module's projection with a `main` that
+# asserts the same result from the translated Rust. Values are
+# percent-encoded; types are str, f64, bool and f64s (comma-separated).
+#
+# fenced_block over `x` followed by U+FEFF: JavaScript's trimEnd strips the
+# byte-order mark and so does the translated Rust, while the hand-written
+# rust/src/issue_report.rs uses str::trim_end, which does not (U+FEFF is not
+# Unicode White_Space). The translation is the faithful twin there.
+(call js/agentic/crate/issue_report.mjs fencedBlock fenced_block (arguments (str lino) (str %28a%20b%29)) (result (str %60%60%60lino%0A%28a%20b%29%0A%60%60%60)))
+(call js/agentic/crate/issue_report.mjs fencedBlock fenced_block (arguments (str text) (str x%0A%60%60%60%0Ay%20%20%0A)) (result (str %60%60%60%60text%0Ax%0A%60%60%60%0Ay%0A%60%60%60%60)))
+(call js/agentic/crate/issue_report.mjs fencedBlock fenced_block (arguments (str lino) (str x%EF%BB%BF)) (result (str %60%60%60lino%0Ax%0A%60%60%60)))
+(call js/agentic/crate/formalization_needs.mjs span span (arguments (str doc) (f64 3) (f64 9)) (result (str doc%403%3A9)))
+(call js/agentic/crate/computer_use.mjs permissionKey permission_key (arguments (str fs.write)) (result (str tool%3Acomputer%3Afs.write)))
+(call js/agentic/crate/summarization_recheck.mjs verdictSlug verdict_slug (arguments (str confirmed)) (result (str confirmed)))
+(call js/agentic/crate/rust_str.mjs compareTuples compare_tuples (arguments (f64s 1,2) (f64s 1,3)) (result (f64 -1)))
+(call js/agentic/crate/rust_str.mjs compareTuples compare_tuples (arguments (f64s 2) (f64s 1,9)) (result (f64 1)))
+(call js/agentic/crate/rust_str.mjs compareTuples compare_tuples (arguments (f64s 1,2) (f64s 1,2,0)) (result (f64 -1)))

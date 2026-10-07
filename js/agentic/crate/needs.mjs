@@ -36,6 +36,12 @@ export function raisedNeed(kind, subject, language, raisedBy) {
   };
 }
 
+/**
+ * One `field value` line of a need record.
+ * @param {string} field
+ * @param {string} value
+ * @returns {string}
+ */
 const bare = (field, value) => `  ${field} ${value}\n`;
 const escape = (value) => value.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
 const quoted = (field, value) => `  ${field} "${escape(value)}"\n`;

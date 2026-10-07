@@ -115,7 +115,12 @@ function toolDescription(definition) {
   return isObject(definition.function) ? definition.function.description : undefined;
 }
 
-/** `Path::join` for a relative `path` under `root`. */
+/**
+ * `Path::join` for a relative `path` under `root`.
+ * @param {string} root
+ * @param {string} path
+ * @returns {string}
+ */
 function joinPath(root, path) {
   return root.endsWith('/') ? `${root}${path}` : `${root}/${path}`;
 }

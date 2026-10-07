@@ -455,6 +455,12 @@ function looksLikeEnumerationResearchQuery(query) {
 
 const containsAnySearchMarker = (normalized, list) => list.some((marker) => containsSearchMarker(normalized, marker));
 
+/**
+ * Whether `normalized` holds `marker`; a marker padded with spaces matches whole words only.
+ * @param {string} normalized
+ * @param {string} marker
+ * @returns {boolean}
+ */
 function containsSearchMarker(normalized, marker) {
   if (marker.startsWith(' ') || marker.endsWith(' ')) return ` ${normalized} `.includes(marker);
   return normalized.includes(marker);

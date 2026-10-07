@@ -15,7 +15,12 @@ function skipWhitespace(text, position) {
   return index;
 }
 
-/** Mirrors `serde_json::Deserializer string scanning` in rust/src/orchestration/runner.rs. The end of the string literal starting at `start` (a `"`), or -1 when unterminated. */
+/**
+ * Mirrors `serde_json::Deserializer string scanning` in rust/src/orchestration/runner.rs. The end of the string literal starting at `start` (a `"`), or -1 when unterminated.
+ * @param {string} text
+ * @param {number} start
+ * @returns {number}
+ */
 function stringEnd(text, start) {
   for (let index = start + 1; index < text.length; index += 1) {
     if (text[index] === '\\') index += 1;

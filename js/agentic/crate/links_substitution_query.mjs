@@ -14,7 +14,11 @@ export function substitutionEffect(rule) {
   return 'update';
 }
 
-/** Mirrors `fn escape` in rust/src/links_substitution_query/mod.rs. */
+/**
+ * Mirrors `fn escape` in rust/src/links_substitution_query/mod.rs.
+ * @param {string} text
+ * @returns {string}
+ */
 function escape(text) {
   let out = '';
   for (const character of text) {

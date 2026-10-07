@@ -58,6 +58,11 @@ const FIELD_KEYS = [
 ];
 const FIELD_BY_KEY = new Map(FIELD_KEYS);
 
+/**
+ * The number of spaces that open `line`.
+ * @param {string} line
+ * @returns {number}
+ */
 const leadingSpaces = (line) => {
   let count = 0;
   while (count < line.length && line[count] === ' ') count += 1;

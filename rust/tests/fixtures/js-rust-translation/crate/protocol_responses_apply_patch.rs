@@ -1,0 +1,27 @@
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=7be553548fb06b376046ccd7aa533b1156315f2eca4a4cf3bb81df76e806caea bytes=1354
+// formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+
+// meta-language:prelude begin
+#![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
+// meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import { … }
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=563173ce78cfeea54c78b53e217ba3f7d05255a5ee4f643ac009353e81503b82
+// | const PATCH_BEGIN = '*** Begin Patch';
+pub const PATCH_BEGIN: &str = "*** Begin Patch";
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=dd882f4a3afb9a0871e2091a14c0b9515f71efa11c2567ba7c3e920020947940
+// | const PATCH_ADD_FILE = '*** Add File:';
+pub const PATCH_ADD_FILE: &str = "*** Add File:";
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=70d6227dd95f17fb7edc8316eec34d9e15bbe43422792df2ded07b0f0c70d1df
+// | const PATCH_END = '*** End Patch';
+pub const PATCH_END: &str = "*** End Patch";
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal try statement
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal JSDoc type {…}

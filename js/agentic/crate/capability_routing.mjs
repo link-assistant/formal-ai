@@ -43,7 +43,11 @@ export const Act = Object.freeze({
 const ACTS_IN_PRECEDENCE = ['schedule', 'demonstrate', 'compose', 'enumerate', 'transform', 'explain', 'record',
   'learn', 'retrieve'];
 
-/** Mirrors `Act::role`. */
+/**
+ * Mirrors `Act::role`.
+ * @param {string} act
+ * @returns {string}
+ */
 const actRole = (act) => (act === 'unresolved' ? '' : `capability_act_${act}`);
 
 export const Locus = Object.freeze({

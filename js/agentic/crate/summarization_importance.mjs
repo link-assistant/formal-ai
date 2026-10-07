@@ -38,7 +38,12 @@ export function blendImportance(prior, coverage, authority, agreement) {
   return { prior, coverage, authority, agreement, evidence, weight };
 }
 
-/** Mirrors `fn percentage`: `part x 100 / whole` clamped to 100, `0` for an empty whole. */
+/**
+ * Mirrors `fn percentage`: `part x 100 / whole` clamped to 100, `0` for an empty whole.
+ * @param {number} part
+ * @param {number} whole
+ * @returns {number}
+ */
 function percentage(part, whole) {
   if (whole === 0) return 0;
   return Math.min(Math.floor((part * 100) / whole), 100);

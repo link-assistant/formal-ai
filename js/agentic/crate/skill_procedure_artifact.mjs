@@ -92,6 +92,12 @@ function spanMatches(source, span, expected) {
   return start !== null && end !== null && source.slice(start, end) === expected;
 }
 
+/**
+ * Whether two `[start, end]` source spans are the same span.
+ * @param {number[]} left
+ * @param {number[]} right
+ * @returns {boolean}
+ */
 const sameSpan = (left, right) => left[0] === right[0] && left[1] === right[1];
 
 /** Mirrors `CompiledProcedure::validate_artifact`. */

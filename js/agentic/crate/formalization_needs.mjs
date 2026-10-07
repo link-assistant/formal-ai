@@ -41,7 +41,13 @@ export function emitNeeds(docId, segments, graph, depth) {
   return out;
 }
 
-/** Mirrors `fn span`: `"<doc_id>@<start>:<end>"`. */
+/**
+ * Mirrors `fn span`: `"<doc_id>@<start>:<end>"`.
+ * @param {string} docId
+ * @param {number} start
+ * @param {number} end
+ * @returns {string}
+ */
 export function span(docId, start, end) {
   return `${docId}@${start}:${end}`;
 }

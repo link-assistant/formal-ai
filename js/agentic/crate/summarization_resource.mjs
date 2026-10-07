@@ -67,7 +67,13 @@ export function resourceLinksNotation(resource) {
   return resource.kind === 'file' ? fileLinksNotation(resource.file) : directoryLinksNotation(resource.directory);
 }
 
-/** Mirrors `const fn pluralize` in rust/src/summarization/resource.rs. */
+/**
+ * Mirrors `const fn pluralize` in rust/src/summarization/resource.rs.
+ * @param {number} count
+ * @param {string} singular
+ * @param {string} plural
+ * @returns {string}
+ */
 function pluralize(count, singular, plural) {
   return count === 1 ? singular : plural;
 }

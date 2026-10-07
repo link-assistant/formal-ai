@@ -12,6 +12,10 @@
 #   ts   -- the js<->ts file-set parity: every .js has its .ts sibling and
 #           the ts tree holds no extras. The fast tier-2 rung; it fails in
 #           seconds before the rust tier spends minutes.
+#   js-rust -- beside the ts tier: the js -> rust leg through
+#           link-foundation/meta-language's self-translation at a pinned
+#           main commit (R1000). The committed translation must re-render
+#           byte for byte, compile with rustc, and agree on calls.lino.
 #   server-parity -- beside the rust tier, on the same cached binary: the
 #           JavaScript server (js/server/) and `formal-ai serve` answer the
 #           corpus in rust/tests/fixtures/server-parity/ alike (R1013).
@@ -259,6 +263,52 @@ jobs:
           scripts/run-with-budget-warning.sh
           "$TEST_BUDGET_SECONDS" "Compile the rendered Lean and Rocq units"
           node --test rust/tests/provers/issue-1186-real-provers.test.mjs
+
+  js-rust:
+    name: js -> rust leg (meta-language self-translation)
+    needs: [changes, js]
+    # R994/R1000/R1012: the js -> rust leg runs the upstream translator,
+    # link-foundation/meta-language's self-translation (PR #196, merged
+    # 2026-10-06, unreleased), at the commit data/meta/js-rust-translation.lino
+    # pins. It re-translates every module in scope, requires the committed
+    # projections (rust/tests/fixtures/js-rust-translation/) and the ledger
+    # byte for byte, refuses a module whose translated count fell, compiles
+    # every projection with rustc and runs the calls of calls.lino in the
+    # translated Rust. Same gate as the ts tier: js green or carried first.
+    if: needs.changes.outputs.js-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-js-rust
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # The pin is the ledger's `commit`; `--verify` (the check_js_rust_translation
+      # gate) fails when this ref and the ledger disagree.
+      - name: Check out meta-language at the pinned main commit (R1000)
+        uses: actions/checkout@v7
+        with:
+          repository: link-foundation/meta-language
+          ref: 679a3b3c3c56177b8df1ad82672690c6e9889aeb
+          path: .meta-language
+          persist-credentials: false
+      - name: Install meta-language's runtime dependencies
+        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Setup Rust (rustc compiles the translated Rust)
+        uses: dtolnay/rust-toolchain@stable
+      - name: The committed js -> rust translation is what meta-language renders, and it compiles
+        env:
+          TEST_BUDGET_SECONDS: 540
+          TEST_WARN_RATIO_PERCENT: 75
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "js -> rust translation" \
+            node scripts/translate-js-rust.mjs --check --compile --meta-language .meta-language
 
   ts:
     name: ts tier (js<->ts file-set parity)

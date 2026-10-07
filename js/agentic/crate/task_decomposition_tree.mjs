@@ -15,7 +15,12 @@ import {
   completionCriterionFor, plansFor, shippedLedger, splitOnceCheckable,
 } from './task_decomposition.mjs';
 
-/** Mirrors `fn child_path` in rust/src/task_decomposition.rs: `1`, `2`, ... under the root; `1.1`, ... under a sub-task. */
+/**
+ * Mirrors `fn child_path` in rust/src/task_decomposition.rs: `1`, `2`, ... under the root; `1.1`, ... under a sub-task.
+ * @param {string} parent
+ * @param {number} index
+ * @returns {string}
+ */
 function childPath(parent, index) {
   const number = index + 1;
   return parent === '' ? String(number) : `${parent}.${number}`;

@@ -233,7 +233,12 @@ export function minByKey(items, key, compare = (left, right) => left - right) {
   return best;
 }
 
-/** Lexicographic comparison of numeric tuples (Rust tuple `Ord`). */
+/**
+ * Lexicographic comparison of numeric tuples (Rust tuple `Ord`).
+ * @param {number[]} left
+ * @param {number[]} right
+ * @returns {number}
+ */
 export function compareTuples(left, right) {
   for (let index = 0; index < Math.min(left.length, right.length); index += 1) {
     if (left[index] !== right[index]) return left[index] < right[index] ? -1 : 1;

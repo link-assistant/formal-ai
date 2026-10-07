@@ -37,7 +37,12 @@ export const MAX_DISCOVERY_INPUT_STEPS = 4096;
 /** Mirrors `MAX_DISCOVERED_ALGORITHM_STEPS` in rust/src/algorithm_discovery.rs. */
 export const MAX_DISCOVERED_ALGORITHM_STEPS = 32;
 
-/** Rust `Ord::cmp` for integers. */
+/**
+ * Rust `Ord::cmp` for integers.
+ * @param {number} left
+ * @param {number} right
+ * @returns {number}
+ */
 const cmpNum = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
 
 
