@@ -177,3 +177,40 @@ test("the network query rules answer the snapshot, the introspection and the use
     "No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.");
   assert.ok(filter.evidence.includes("filter:user:self"));
 });
+
+// The shell-command rewrite reads its loop and session templates, joiners,
+// prompt markers, command heads and prose leads from data/seed/code-task-cues.lino
+// in both runtimes; the prompts and answers are the ones
+// rust/tests/unit/specification/shared_dialog_replay.rs pins natively.
+const SHELL_LOOP = "while true; do sleep 30m && hive-cleanup -f; done";
+const SHELL_SCREEN = "screen -dmS auto-cleanup bash -c 'while true; do sleep 30m && hive-cleanup -f; done'";
+
+test("the shell loop rewrite answers unchanged in english, russian, hindi and chinese", async () => {
+  for (const instruction of [
+    "make a loop of that (infinite), answer with only single line",
+    "сделай из этого бесконечный цикл, ответь одной строкой",
+    "इसे अनंत लूप बनाओ, केवल एक पंक्ति में उत्तर दो",
+    "把它做成无限循环, 只用一行回答",
+  ]) {
+    const prompt = `box@87ffc301f5eb:~$ sleep 30m && hive-cleanup -f\n\n${instruction}`;
+    const response = await solve(prompt);
+    assert.equal(response.intent, "shell_command_transform", instruction);
+    assert.equal(response.content, SHELL_LOOP, instruction);
+  }
+  const lead = await solve("Make this a single line loop: sleep 5m && cleanup -f");
+  assert.equal(lead.content, "while true; do sleep 5m && cleanup -f; done");
+});
+
+test("the screen session rewrite answers unchanged in english, russian, hindi and chinese", async () => {
+  await ready;
+  for (const followup of [
+    "Use `screen -R auto-cleanup` to execute that line inside, answer in one line.",
+    "Используй `screen -R auto-cleanup`, выполни эту строку внутри, ответь одной строкой.",
+    "`screen -R auto-cleanup` का उपयोग करके उस पंक्ति को अंदर चलाओ, एक पंक्ति में उत्तर दो।",
+    "使用 `screen -R auto-cleanup` 在里面执行那一行, 只用一行回答。",
+  ]) {
+    const response = evaluate(worker,
+      `tryShellCommandTransform(${JSON.stringify(followup)}, [{ role: "assistant", content: ${JSON.stringify(SHELL_LOOP)} }])`);
+    assert.equal(response.content, SHELL_SCREEN, followup);
+  }
+});

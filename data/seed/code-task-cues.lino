@@ -189,7 +189,8 @@ cues
 # The shell-command rewrite (issue #552) reads the same cue sets the native
 # handler reads from data/meta/cue-lexicon.lino (`shell_infinite_loop`,
 # `shell_screen_execution`), plus the command heads and prose leads its
-# command detector weighs, so the browser twin answers from seed data.
+# command detector weighs (both runtimes, issue #918), so the browser twin
+# answers from seed data.
 cues
   intent shell_command_transform
     role infinite_loop
@@ -252,6 +253,40 @@ cues
     role prose_lead
     phrase "make a "
     phrase "can we "
+# The shell syntax the rewrite reads and writes (issue #918): the loop and the
+# detached-session templates (the session program is the first token of the
+# screen template, and a command already in loop form is one the loop template
+# brackets), the joiners that make any line a command sequence, and the
+# interactive prompt markers a pasted command follows.
+map
+  name shell_syntax
+    entry
+      word loop_template
+      value "while true; do {command}; done"
+    entry
+      word screen_template
+      value "screen -dmS {session} bash -c {command}"
+    entry
+      word joiner
+      value " && "
+    entry
+      word joiner
+      value " || "
+    entry
+      word joiner
+      value " | "
+    entry
+      word joiner
+      value "; "
+    entry
+      word prompt_marker
+      value "$ "
+    entry
+      word prompt_marker
+      value "# "
+    entry
+      word prompt_marker
+      value "% "
 # The network snapshot (the network_query rules of handler-rules.lino) renders
 # the link network; the browser's rule records are the seeded intents
 # knowledge_links_notation (engine.rs) renders, in that order.

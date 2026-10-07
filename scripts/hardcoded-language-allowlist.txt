@@ -1047,8 +1047,6 @@ rust/src/solver_handlers/self_awareness.rs	Я могу использовать 
 rust/src/solver_handlers/self_awareness.rs	किसी खास fact के लिए सीधे पूछें; मैं local rules और memory पहले देखता हूँ, फिर environment अनुमति दे तो web search इस्तेमाल करता हूँ.
 rust/src/solver_handlers/self_awareness.rs	मैं current `{}` environment में इन fact sources का उपयोग कर सकता हूँ:
 rust/src/solver_handlers/self_awareness.rs	在当前 `{}` 环境中, 我可以使用这些事实来源:
-rust/src/solver_handlers/shell_command_transform.rs	screen -dmS {session} bash -c {}
-rust/src/solver_handlers/shell_command_transform.rs	while true; do {}; done
 rust/src/solver_handlers/software_project.rs	  command \"apply_damage\"\n
 rust/src/solver_handlers/software_project.rs	  command \"create_record\"\n
 rust/src/solver_handlers/software_project.rs	  command \"export_state\"\n

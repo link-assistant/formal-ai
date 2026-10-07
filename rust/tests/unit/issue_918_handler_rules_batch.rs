@@ -312,3 +312,32 @@ fn the_network_query_rules_answer_unchanged_through_the_engine() {
         "personal queries declare a user filter"
     );
 }
+
+/// The shell-command rewrite reads its loop and session templates, joiners,
+/// prompt markers, command heads and prose leads from
+/// `data/seed/code-task-cues.lino`; the four-language replay of
+/// `tests/unit/specification/shared_dialog_replay.rs` pins the same answers.
+#[test]
+fn the_shell_rewrites_answer_unchanged_from_the_seeded_syntax() {
+    let solver = UniversalSolver::default();
+    let looped = solver.solve(
+        "box@87ffc301f5eb:~$ sleep 30m && hive-cleanup -f\n\nmake a loop of that (infinite), answer with only single line",
+    );
+    assert_eq!(looped.intent, "shell_command_transform");
+    assert_eq!(
+        looped.answer,
+        "while true; do sleep 30m && hive-cleanup -f; done"
+    );
+
+    let screen = solver.solve_with_history(
+        "Use `screen -R auto-cleanup` to execute that line inside, answer in one line.",
+        &[ConversationTurn::assistant(
+            "while true; do sleep 30m && hive-cleanup -f; done",
+        )],
+    );
+    assert_eq!(screen.intent, "shell_command_transform");
+    assert_eq!(
+        screen.answer,
+        "screen -dmS auto-cleanup bash -c 'while true; do sleep 30m && hive-cleanup -f; done'"
+    );
+}

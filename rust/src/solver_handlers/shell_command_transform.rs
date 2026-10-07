@@ -1,10 +1,41 @@
 //! Shell command rewrites that produce command text without executing it.
+//!
+//! The shell syntax the rewrite reads and writes (the loop and detached-session
+//! templates, the command joiners, the prompt markers) is the `shell_syntax`
+//! map of `data/seed/code-task-cues.lino`, and the command heads and prose
+//! leads the detector weighs are that file's `shell_command_transform` cue
+//! records (issue #918), the same records the browser twin reads.
 
+use super::shell_command_compose::{cue_phrases, word_entries};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::extract_backticked;
+
+const CUE_INTENT: &str = "shell_command_transform";
+
+/// Every value of `word` in the `shell_syntax` map, in seed order.
+fn syntax(word: &str) -> Vec<String> {
+    word_entries("shell_syntax")
+        .iter()
+        .filter(|entry| entry.find_child_value("word") == word)
+        .map(|entry| entry.find_child_value("value").to_owned())
+        .collect()
+}
+
+/// The first value of `word` in the `shell_syntax` map, or empty.
+fn syntax_template(word: &str) -> String {
+    syntax(word).into_iter().next().unwrap_or_default()
+}
+
+/// Whether `line` opens with the session program: the first token of the
+/// seeded screen template.
+fn opens_session(line: &str) -> bool {
+    let template = syntax_template("screen_template");
+    let program = template.split_whitespace().next();
+    program.is_some() && line.split_whitespace().next() == program
+}
 
 pub fn try_shell_command_transform(
     prompt: &str,
@@ -52,7 +83,9 @@ fn build_screen_command(
     history: &[ConversationTurn],
     log: &mut EventLog,
 ) -> Option<String> {
-    if !normalized.contains("screen") {
+    let template = syntax_template("screen_template");
+    let program = template.split_whitespace().next()?;
+    if !normalized.contains(program) {
         return None;
     }
     if !wants_screen_execution(normalized) {
@@ -63,10 +96,9 @@ fn build_screen_command(
     let loop_command = extract_loop_command(prompt)
         .or_else(|| last_loop_command_from_history(history))
         .or_else(|| extract_shell_command(prompt).map(|command| wrap_in_infinite_loop(&command)))?;
-    let command = format!(
-        "screen -dmS {session} bash -c {}",
-        shell_single_quote(&loop_command)
-    );
+    let command = template
+        .replace("{session}", &session)
+        .replace("{command}", &shell_single_quote(&loop_command));
     log.append("shell_transform", "screen_session".to_owned());
     log.append("screen_session", session);
     log.append("shell_command:input", loop_command);
@@ -115,7 +147,7 @@ fn extract_shell_command(prompt: &str) -> Option<String> {
 
     if let Some(backticked) = extract_backticked(prompt) {
         let command = strip_code_fence(backticked.trim());
-        if looks_like_shell_command(command) && !command.starts_with("screen ") {
+        if looks_like_shell_command(command) && !opens_session(command) {
             return Some(command.to_owned());
         }
     }
@@ -125,7 +157,7 @@ fn extract_shell_command(prompt: &str) -> Option<String> {
         .map(str::trim)
         .map(strip_code_fence)
         .map(command_span)
-        .find(|line| looks_like_shell_command(line) && !line.starts_with("screen "))
+        .find(|line| looks_like_shell_command(line) && !opens_session(line))
         .map(str::to_owned)
 }
 
@@ -160,8 +192,8 @@ fn command_span(line: &str) -> &str {
 }
 
 fn command_after_shell_prompt(line: &str) -> Option<String> {
-    for marker in ["$ ", "# ", "% "] {
-        if let Some(index) = line.rfind(marker) {
+    for marker in syntax("prompt_marker") {
+        if let Some(index) = line.rfind(marker.as_str()) {
             let command = line[index + marker.len()..].trim();
             if looks_like_shell_command(command) {
                 return Some(command.to_owned());
@@ -180,60 +212,40 @@ fn looks_like_shell_command(candidate: &str) -> bool {
     if candidate.is_empty()
         || candidate.contains('\n')
         || candidate.ends_with('?')
-        || candidate.starts_with("make a ")
-        || candidate.starts_with("can we ")
+        || cue_phrases(CUE_INTENT, "prose_lead")
+            .iter()
+            .any(|lead| candidate.starts_with(lead.as_str()))
     {
         return false;
     }
-    if candidate.contains(" && ")
-        || candidate.contains(" || ")
-        || candidate.contains(" | ")
-        || candidate.contains("; ")
+    if syntax("joiner")
+        .iter()
+        .any(|joiner| candidate.contains(joiner.as_str()))
     {
         return true;
     }
 
     let first = candidate.split_whitespace().next().unwrap_or_default();
-    matches!(
-        first,
-        "awk"
-            | "bash"
-            | "cargo"
-            | "curl"
-            | "docker"
-            | "find"
-            | "git"
-            | "grep"
-            | "hive-cleanup"
-            | "jq"
-            | "make"
-            | "node"
-            | "npm"
-            | "python"
-            | "python3"
-            | "sed"
-            | "sh"
-            | "sleep"
-            | "tar"
-            | "while"
-    )
+    cue_phrases(CUE_INTENT, "command_head")
+        .iter()
+        .any(|head| head == first)
 }
 
 fn wrap_in_infinite_loop(command: &str) -> String {
     if extract_loop_command(command).is_some() {
         return command.trim().to_owned();
     }
-    format!("while true; do {}; done", command.trim())
+    syntax_template("loop_template").replace("{command}", command.trim())
 }
 
 fn extract_screen_session(prompt: &str) -> Option<String> {
     let command = extract_backticked(prompt)
-        .filter(|text| text.split_whitespace().next() == Some("screen"))
+        .filter(|text| opens_session(text))
         .or_else(|| {
             prompt
                 .lines()
                 .map(str::trim)
-                .find(|line| line.starts_with("screen "))
+                .find(|line| opens_session(line))
                 .map(str::to_owned)
         })?;
 
@@ -271,8 +283,14 @@ fn last_loop_command_from_history(history: &[ConversationTurn]) -> Option<String
         .find_map(|turn| extract_loop_command(&turn.content))
 }
 
+/// Whether `candidate` is already in the seeded loop form: the loop template
+/// brackets it.
 fn is_loop_command(candidate: &str) -> bool {
-    candidate.starts_with("while true; do ") && candidate.ends_with("; done")
+    syntax_template("loop_template")
+        .split_once("{command}")
+        .is_some_and(|(open, close)| {
+            !open.is_empty() && candidate.starts_with(open) && candidate.ends_with(close)
+        })
 }
 
 fn shell_single_quote(command: &str) -> String {

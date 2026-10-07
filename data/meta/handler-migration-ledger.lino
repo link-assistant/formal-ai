@@ -174,7 +174,11 @@ handler_migration_ledger
   handler numeric_list
     status pending
   handler shell_command_transform
-    status pending
+    status migrated
+    data "data/seed/code-task-cues.lino|data/meta/cue-lexicon.lino"
+    primitive "rust/src/solver_handlers/shell_command_transform.rs"
+    justification "issue #918 (R914-6): the loop and detached-session templates, the command joiners, the interactive prompt markers (the shell_syntax map), the command heads and the prose leads (cue records) are seed data in both runtimes, as are the loop and screen-execution cue sets; the session program is the first token of the seeded template and a command already in loop form is one the loop template brackets. The native part is the structural command extraction (prompt markers, backticks, prose-lead colons, prior assistant loops) and shell quoting. Browser twin: tryShellCommandTransform in js/worker/formal_ai_worker_native_lanes.js reads the same records; pinned in four languages natively (rust/tests/unit/specification/shared_dialog_replay.rs) and in the browser (rust/tests/web/issue-0918-handler-rules-batch.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler code_debugging
     status "justified-native"
     primitive "rust/src/solver_handlers/code_debugging.rs"

@@ -55,7 +55,7 @@ fn seed_text(path: &str) -> Option<&'static str> {
 
 /// Trigger phrases for one intent (optionally one named role) from
 /// `data/seed/code-task-cues.lino`.
-fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
+pub(super) fn cue_phrases(intent: &str, role: &str) -> Vec<String> {
     let Some(text) = seed_text(CUES_PATH) else {
         return Vec::new();
     };
@@ -114,7 +114,7 @@ pub(super) fn any_cue_matches(intent: &str, prompt: &str, normalized: &str) -> b
 }
 
 /// The `entry` records of one word map from `data/seed/code-task-cues.lino`.
-fn word_entries(map: &str) -> Vec<LinoNode> {
+pub(super) fn word_entries(map: &str) -> Vec<LinoNode> {
     let Some(text) = seed_text(CUES_PATH) else {
         return Vec::new();
     };

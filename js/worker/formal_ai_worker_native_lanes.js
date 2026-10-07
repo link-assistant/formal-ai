@@ -248,8 +248,25 @@ function trySourceRefresh(prompt) {
   return runHandlerRuleSet("source_refresh", prompt, nativeLaneLowercase(prompt), []);
 }
 
-/** Shell joiners that make any line a command sequence. */
-const SHELL_TRANSFORM_JOINERS = [" && ", " || ", " | ", "; "];
+/**
+ * Every value of `word` in the `shell_syntax` map of
+ * data/seed/code-task-cues.lino (loop and session templates, joiners, prompt
+ * markers), in seed order. Mirrors `syntax` in
+ * rust/src/solver_handlers/shell_command_transform.rs.
+ * @param {string} word
+ * @returns {string[]}
+ */
+function shellSyntax(word) {
+  return codeTaskWordEntries("shell_syntax")
+    .filter((entry) => codeTaskChildValue(entry, "word") === word)
+    .map((entry) => codeTaskChildValue(entry, "value"));
+}
+
+/** Whether `line` opens with the session program: the first token of the seeded screen template. */
+function shellTransformOpensSession(line) {
+  const program = (shellSyntax("screen_template")[0] || "").split(/\s+/u).filter(Boolean)[0];
+  return Boolean(program) && String(line).split(/\s+/u).filter(Boolean)[0] === program;
+}
 
 /**
  * Whether a candidate line reads as a shell command rather than prose.
@@ -262,7 +279,7 @@ function shellTransformLooksLikeCommand(candidate) {
   const text = String(candidate || "").trim();
   if (!text || text.includes("\n") || text.endsWith("?")) return false;
   if (codeTaskCuePhrases("shell_command_transform", "prose_lead").some((lead) => text.startsWith(lead))) return false;
-  if (SHELL_TRANSFORM_JOINERS.some((joiner) => text.includes(joiner))) return true;
+  if (shellSyntax("joiner").some((joiner) => text.includes(joiner))) return true;
   const first = text.split(/\s+/u)[0] || "";
   return codeTaskCuePhrases("shell_command_transform", "command_head").includes(first);
 }
@@ -279,7 +296,7 @@ function shellTransformBackticked(text) {
 }
 
 function shellTransformAfterPrompt(line) {
-  for (const marker of ["$ ", "# ", "% "]) {
+  for (const marker of shellSyntax("prompt_marker")) {
     const index = line.lastIndexOf(marker);
     if (index < 0) continue;
     const command = line.slice(index + marker.length).trim();
@@ -289,7 +306,8 @@ function shellTransformAfterPrompt(line) {
 }
 
 function shellTransformIsLoop(candidate) {
-  return candidate.startsWith("while true; do ") && candidate.endsWith("; done");
+  const [open, close] = String(shellSyntax("loop_template")[0] || "").split("{command}");
+  return Boolean(open) && close !== undefined && candidate.startsWith(open) && candidate.endsWith(close);
 }
 
 function shellTransformLoopCommand(text) {
@@ -306,10 +324,10 @@ function shellTransformCommand(prompt) {
   const backticked = shellTransformBackticked(prompt);
   if (backticked !== null) {
     const command = shellTransformStripFence(backticked.trim());
-    if (shellTransformLooksLikeCommand(command) && !command.startsWith("screen ")) return command;
+    if (shellTransformLooksLikeCommand(command) && !shellTransformOpensSession(command)) return command;
   }
   return prompt.split("\n").map((line) => shellTransformCommandSpan(shellTransformStripFence(line.trim())))
-    .find((line) => shellTransformLooksLikeCommand(line) && !line.startsWith("screen ")) || null;
+    .find((line) => shellTransformLooksLikeCommand(line) && !shellTransformOpensSession(line)) || null;
 }
 
 /**
@@ -333,14 +351,14 @@ function shellTransformCommandSpan(line) {
 
 function shellTransformWrapLoop(command) {
   if (shellTransformLoopCommand(command)) return command.trim();
-  return `while true; do ${command.trim()}; done`;
+  return String(shellSyntax("loop_template")[0] || "").split("{command}").join(command.trim());
 }
 
 function shellTransformScreenSession(prompt) {
   const backticked = shellTransformBackticked(prompt);
-  const command = backticked !== null && backticked.split(/\s+/u).filter(Boolean)[0] === "screen"
+  const command = backticked !== null && shellTransformOpensSession(backticked)
     ? backticked
-    : prompt.split("\n").map((line) => line.trim()).find((line) => line.startsWith("screen "));
+    : prompt.split("\n").map((line) => line.trim()).find(shellTransformOpensSession);
   if (!command) return null;
   let session = null;
   for (const token of command.split(/\s+/u).filter(Boolean).slice(1)) {
@@ -354,7 +372,9 @@ function shellTransformQuote(command) {
 }
 
 function shellTransformScreen(prompt, lower, history) {
-  if (!lower.includes("screen")) return null;
+  const template = String(shellSyntax("screen_template")[0] || "");
+  const program = template.split(/\s+/u).filter(Boolean)[0];
+  if (!program || !lower.includes(program)) return null;
   if (!codeTaskCued("shell_command_transform", "screen_execution", prompt, lower)) return null;
   const session = shellTransformScreenSession(prompt);
   if (!session) return null;
@@ -372,7 +392,8 @@ function shellTransformScreen(prompt, lower, history) {
     if (command) loop = shellTransformWrapLoop(command);
   }
   if (!loop) return null;
-  return { operation: "screen_session", input: loop, command: `screen -dmS ${session} bash -c ${shellTransformQuote(loop)}` };
+  const command = template.split("{session}").join(session).split("{command}").join(shellTransformQuote(loop));
+  return { operation: "screen_session", input: loop, command };
 }
 
 /**
