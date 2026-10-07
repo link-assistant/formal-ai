@@ -289,6 +289,69 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     in twenty-five graded windows, rose from 60 to 68 online (R1177-12 is
     implemented).
 
+## JavaScript parity gaps closed on 2026-10-08, and the ones left
+
+The JavaScript-first doctrine (R997) asks for full parity on client and
+server. Three known gaps were closed by porting the Rust code into the
+JavaScript root and pinning it with tests that run the Rust tests' own
+inputs and the committed fixtures.
+
+| Gap | JavaScript twin | Pinned by |
+| --- | --- | --- |
+| #703 external agent orchestration: only the replay verifier had a twin | `js/agentic/crate/orchestration_{permission,workspace,runner,json_stream,attribution,dispatch,dispatch_error,incremental,session_file,analysis}.mjs`, `recursive_execution.mjs`, `task_decomposition_tree.mjs`, `client_contract_learning.mjs`, `seed_client_integrations.mjs`, and the CLI twin `js/agentic/orchestration_cli.mjs` (`node js/agentic/orchestration_cli.mjs run\|dispatch\|resume\|synthesize\|learn\|replay`) (`44fb58bb2`); the synthesis pipeline it ranks with: `summarization_{dedup,importance,recheck}.mjs`, `relative_meta_logic.mjs`, `statement_verification.mjs`, `translation_formalization.mjs` (`72fc70adc`) | `rust/tests/web/issue-0703-orchestration-{run,dispatch,committed,analysis}.test.mjs` (`33575f0a2`) and `issue-0703-synthesis-pipeline.test.mjs`: the Rust integration tests of #703, #991 and #1069 over a node stand-in agent and real `git`, and the committed #703/#924/#933 sessions, ledgers and `learning.lino`/`proposals.lino` recomputed byte for byte |
+| #563 repository resource summarization: a 57-line sentence splitter | `js/agentic/crate/summarization{,_markdown,_dialog,_file,_resource,_identifier,_vocabulary,_meta_language}.mjs` (`24e0dcaec`, `83d303df1`, `b66454d31`) | `rust/tests/web/issue-0563-repository-summarization.test.mjs`: `summarization_pipeline.rs` and the source tests verbatim, the sampled repository files, and 14 conversation summaries captured from the prebuilt `formal-ai` 0.347.0 binary in en/ru/hi/zh |
+| Browser worker coding catalog: Scala and Kotlin answered Hello World and copy stdin only (18 pairs missing) | the worker's `WRITE_PROGRAM_TASKS`/`WRITE_PROGRAM_TEMPLATES` tables are gone; `installSeedProgramTasks` installs every task and program from `data/seed/hello-world-programs.lino` (now carrying each task's Rust label), and the worker's Links Notation reader gained backtick strings and the `\t`/`\r` escapes of `rust/src/seed/parser.rs` (`2f169e78b`); a concrete catalog request runs the write-program rows before any promoted handler, as `is_concrete_write_program` does in `rust/src/solver.rs` (`7dd65ee74`) | `rust/tests/web/issue-0921-worker-coding-catalog.test.mjs`: tasks, language rows and all 151 task x language pairs against `data/meta/agentic-coding-catalog.lino` (generated from the Rust tables), Scala/Kotlin answers in english, russian, hindi and chinese, and the three `task_catalog.rs` prompts a promotion used to claim; `lino_parity.rs::lino_seed_task_rows_mirror_every_catalog_task` |
+
+Gaps that remain, each with the reason it is open:
+
+- **#703 synthesis claims are not pinned against a native run.** The council
+  test's exact claims, verdicts and sources were derived from the algorithm:
+  no prebuilt binary carries the `synthesize` command. The world-model layer
+  the Rust merge tests need (`merge_into_context` in `context.rs`, `gather`
+  in `gathering.rs`) and the temperature-selection tests of
+  `specification/formalization.rs` are not ported; `formalizePrompt` reads
+  the concept query and the unquoted translation surface through the booted
+  worker realm, so it needs a host.
+- **`formal-ai with` legs of #703.** `agent run` with the default Formal AI
+  target and the six-CLI wrapper test go through `formal-ai with` and the
+  loopback health server, which have no JavaScript twin; the JavaScript runner
+  launches `$FORMAL_AI_CONTROLLER_PROGRAM` or `formal-ai` on `PATH` where Rust
+  uses `current_exe`, and its tests pin the argv it builds with a stand-in
+  controller instead.
+- **#703 details no committed test reaches.** `TaskExecutor::split`'s default
+  (`balanced_split`) is not ported (orchestration always overrides it);
+  `Decomposition::from_links_notation` and the learning gate are not ported;
+  serde's wording for malformed `--command`/`--verify` JSON is approximated;
+  the JavaScript runner is asynchronous and kills a timed-out process group
+  with POSIX signals only.
+- **Meta-language parse evidence in summaries.** The Rust build's default
+  `meta-language` feature parses 17 grammars (json/yaml/toml/ini/xml/html/css
+  before tree-sitter) and adds a "parsed it as X with N syntax links"
+  sentence to a code file's summary. The JavaScript root reproduces it for
+  Rust only, over the vendored tree-sitter-rust, its four numbers are pinned
+  by shape rather than by a native run, and no host installs that parser by
+  default, so JavaScript summaries of code files match the featureless Rust
+  build.
+- **Summarization layers outside #563.** `describe_project` (no twin of the
+  project registry), and the #844/#893 layers `context`, `pipeline`, `gathering` and
+  `validation` have no JavaScript twin (`dedup`, `importance` and `recheck`
+  were ported for the #703 synthesis).
+- **Swift and R catalog rows.** The Rust catalog has `swift` and `r` language
+  rows (issue #1167) with no template in either root; the worker has no such
+  rows and answers Swift Hello World through its coding oracle and R with a
+  skill gap. The native answer for those two languages could not be compared
+  without a current Rust build.
+- **Server parity, not re-measured.** `node scripts/check-server-parity.mjs
+  --list` needs a Rust server built from this branch; the only local binary
+  is the installed `formal-ai` 0.347.0 (the source is 0.352.1). Against it the
+  run reports 132 identical, 13 content and 7 protocol divergences, but the
+  protocol ones are fields newer than that binary (`derivation_id` on
+  `/v1/responses`, `tool_calls` on `agent_commit_and_push`) and most content
+  ones its older catalog and network, so they say nothing about this branch.
+  The ratchet (`data/meta/server-parity-ratchet.lino`, ceiling 5:
+  `responses_basic`, `responses_openai_path`, `responses_input_items`,
+  `responses_stream`, `telegram_message`) is left as CI last measured it.
+
 ## Constraints
 
 - **JavaScript first, full parity.** Every requirement lands in JavaScript
