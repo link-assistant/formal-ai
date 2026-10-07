@@ -30,8 +30,8 @@ use crate::solver_handlers::{
     handle_unit_conversion, handle_word_problem, try_algorithm, try_arithmetic,
     try_brainstorming_request, try_calendar_create_event, try_calendar_reasoning,
     try_compound_interest, try_concept_lookup, try_conversation_memory, try_coreference_request,
-    try_document_originality_check, try_document_request, try_execution_failure, try_fact_checking,
-    try_fact_lookup, try_fact_lookup_with_offline, try_http_fetch, try_http_fetch_with_offline,
+    try_document_originality_check, try_document_request, try_fact_checking, try_fact_lookup,
+    try_fact_lookup_with_offline, try_http_fetch, try_http_fetch_with_offline,
     try_installation_conversion, try_javascript_execution, try_learn_from_source,
     try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
     try_numeric_list_with_history, try_program_synthesis, try_program_synthesis_with_online,
@@ -471,7 +471,6 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     // explicit failure prompts (e.g. "calls undefined_function()") surface a
     // failure trace instead of being silently transformed into a passing
     // hello-world snippet.
-    ("execution_failure", try_execution_failure),
     // Issue #423: README install/deploy guide <-> shell/PowerShell conversion
     // is more specific than a generic "write script" request. It extracts an
     // ordered install-command IR, then renders the requested target surfaces.

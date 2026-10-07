@@ -252,8 +252,11 @@ handler_migration_ledger
   handler network_query
     status pending
   handler execution_failure
-    status pending
-    justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/rule_interpreter.rs"
+    justification "issue #918 (R914-6): the failing-call cue and the agent opt-in are rule conditions, the trace and action-log events are logged steps, and the English-only Rust trace is a seeded English response (every language renders it, as before). The trace is still a seeded description, not an execution. Browser twin: tryExecutionFailure in js/worker/formal_ai_worker_code_plans.js runs the same rules; pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler installation_conversion
     status pending
   handler write_script
@@ -327,7 +330,11 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/unit_conversion.rs"
     justification "Exact decimal conversion arithmetic is a compiled primitive; the unit factors, conversion formulas, and response templates are seed data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_units.js answers the same seed records in the worker."
   handler incompatible_units
-    status pending
+    status migrated
+    data "data/seed/meanings-units.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handler_units.rs"
+    justification "issue #918 (R914-6): the units, the dimensions they measure and their surfaces were already meaning-lexicon data; the last Rust and worker prose, the incompatibility sentence, is the seeded unit_incompatibility response with unit and dimension slots, English-only exactly as before. The native part is the language-neutral walk that finds two units the lexicon places in distinct dimensions. Browser twin: tryIncompatibleUnits in js/worker/formal_ai_worker_13.js renders the same response; pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler diagnostic
     status pending
     surface prelude

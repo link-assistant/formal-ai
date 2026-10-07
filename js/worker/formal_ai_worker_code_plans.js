@@ -5,10 +5,11 @@
 // `try*` bindings pass the lowercased prompt as `normalized`, exactly as the
 // native dispatcher does (rust/src/meta_method_dispatch.rs).
 //
-// Like their Rust counterparts, the first four keep their wording inline (the
-// Rust functions have not been moved to seed templates yet); `shell_refusal`
-// is a seed rule (data/seed/handler-rules.lino) run by the shared rule
-// interpreter, so its cues and response stay data.
+// Like their Rust counterparts, `algorithm` and `document_generation_plan`
+// keep their wording inline (the Rust functions have not been moved to seed
+// templates yet); `execution_failure`, `source_conflict` and `shell_refusal`
+// are seed rules (data/seed/handler-rules.lino) run by the shared rule
+// interpreter, so their cues and responses stay data.
 
 // ---------------------------------------------------------------------------
 // algorithm (rust/src/solver_handlers/mod.rs try_algorithm)
@@ -103,39 +104,19 @@ function tryAlgorithm(prompt) {
 }
 
 // ---------------------------------------------------------------------------
-// execution_failure (rust/src/solver_handlers/mod.rs try_execution_failure)
+// execution_failure (data/seed/handler-rules.lino, rules execution_failure*)
 // ---------------------------------------------------------------------------
 
 /**
- * Surface the failure trace of an explicit failing-call prompt.
- * Mirrors `try_execution_failure`.
- * @param {string} prompt raw prompt
- * @param {string} normalized normalized prompt
- * @returns {object|null} the worker answer, or null
- */
-function handleExecutionFailure(prompt, normalized) {
-  if (!normalized.includes("undefined_function")) return null;
-  const log = codeTaskLog();
-  codeTaskLogAppend(log, "trace:execution_failure", "undefined_function");
-  if (normalized.includes("[agent]")) {
-    codeTaskLogAppend(log, "agent_mode:opted_in", prompt);
-    codeTaskLogAppend(log, "action_log", prompt);
-  }
-  const body = "Execution status: failed in isolated sandbox.\n" +
-    "```python\nundefined_function()\n```\n" +
-    "Traceback (most recent call last):\n  File 'main.py', line 1, in <module>\n" +
-    "NameError: name 'undefined_function' is not defined.\n" +
-    "The failure trace is appended to the action log; see the trace link.";
-  return codeTaskAnswer(log, "execution_failure", "response:execution_failure", body, 0.4);
-}
-
-/**
- * Browser binding for the `execution_failure` precedence row.
+ * Browser binding for the `execution_failure` precedence row: an explicit
+ * failing-call prompt surfaces the seeded failure trace (an agent opt-in also
+ * records the action log). The seed rules run through the shared rule
+ * interpreter over the lowercased prompt, as the native dispatcher runs them.
  * @param {string} prompt raw prompt
  * @returns {object|null} the worker answer, or null
  */
 function tryExecutionFailure(prompt) {
-  return handleExecutionFailure(prompt, prompt.toLowerCase());
+  return runHandlerRuleSet("execution_failure", prompt, prompt.toLowerCase(), []);
 }
 
 // ---------------------------------------------------------------------------

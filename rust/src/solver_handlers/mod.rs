@@ -742,37 +742,6 @@ pub fn try_algorithm(prompt: &str, normalized: &str, log: &mut EventLog) -> Opti
     ))
 }
 
-pub fn try_execution_failure(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !normalized.contains("undefined_function") {
-        return None;
-    }
-    log.append("trace:execution_failure", "undefined_function".to_owned());
-    let body = String::from(
-        "Execution status: failed in isolated sandbox.\n\
-         ```python\nundefined_function()\n```\n\
-         Traceback (most recent call last):\n  File 'main.py', line 1, in <module>\n\
-         NameError: name 'undefined_function' is not defined.\n\
-         The failure trace is appended to the action log; see the trace link.",
-    );
-    let agent_request = normalized.contains("[agent]");
-    if agent_request {
-        log.append("agent_mode:opted_in", prompt.to_owned());
-        log.append("action_log", prompt.to_owned());
-    }
-    Some(finalize_simple(
-        prompt,
-        log,
-        "execution_failure",
-        "response:execution_failure",
-        &body,
-        0.4,
-    ))
-}
-
 pub fn finalize_simple(
     prompt: &str,
     log: &mut EventLog,

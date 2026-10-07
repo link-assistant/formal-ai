@@ -3,7 +3,9 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::seed::{Lexicon, Meaning, ROLE_MEASUREMENT_UNIT, ROLE_PHYSICAL_DIMENSION, lexicon};
+use crate::seed::{
+    Lexicon, Meaning, ROLE_MEASUREMENT_UNIT, ROLE_PHYSICAL_DIMENSION, lexicon, localized_response,
+};
 use crate::solver_handlers::finalize_simple;
 
 /// Detect queries that ask to convert between dimensionally incompatible units.
@@ -25,14 +27,17 @@ pub fn try_incompatible_units(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let (unit_a, dim_a, unit_b, dim_b) = detect_incompatible_unit_pair(normalized)?;
+    let body = localized_response(
+        "unit_incompatibility",
+        crate::language::detect(prompt).slug(),
+    )?
+    .replace("{unit_a}", unit_a)
+    .replace("{dim_a}", dim_a)
+    .replace("{unit_b}", unit_b)
+    .replace("{dim_b}", dim_b);
     log.append(
         "unit_incompatibility",
         format!("{unit_a}:{dim_a} vs {unit_b}:{dim_b}"),
-    );
-    let body = format!(
-        "{unit_a} measures {dim_a}; {unit_b} measures {dim_b}. \
-         These are different physical dimensions and cannot be converted into each other. \
-         The incompatibility is recorded as a `unit_incompatibility` link in the network."
     );
     Some(finalize_simple(
         prompt,

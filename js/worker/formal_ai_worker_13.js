@@ -844,10 +844,8 @@ function tryIncompatibleUnits(prompt, normalized) {
   const pair = detectIncompatibleUnitPair(normalized);
   if (!pair) return null;
   const [a, b] = pair;
-  const content =
-    `${a.unit} measures ${a.dimension}; ${b.unit} measures ${b.dimension}. ` +
-    "These are different physical dimensions and cannot be converted into each other. " +
-    "The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+  const content = nativeLaneRender(answerFor("unit_incompatibility", detectLanguage(prompt)),
+    { unit_a: a.unit, dim_a: a.dimension, unit_b: b.unit, dim_b: b.dimension });
   return {
     intent: "unit_incompatibility",
     content,

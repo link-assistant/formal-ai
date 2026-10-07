@@ -279,3 +279,22 @@ handler_rules
       respond source_conflict
       link "response:source_conflict"
       confidence 0.3
+  handler execution_failure
+    rule execution_failure_agent
+      when
+        substring undefined_function
+        substring "[agent]"
+      log "trace:execution_failure" "undefined_function"
+      log "agent_mode:opted_in" $prompt
+      log "action_log" $prompt
+      respond execution_failure
+      intent execution_failure
+      link "response:execution_failure"
+      confidence 0.4
+    rule execution_failure
+      when
+        substring undefined_function
+      log "trace:execution_failure" "undefined_function"
+      respond execution_failure
+      link "response:execution_failure"
+      confidence 0.4

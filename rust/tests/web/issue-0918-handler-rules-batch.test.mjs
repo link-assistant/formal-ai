@@ -33,6 +33,12 @@ const CONFLICT_EN = "Sources disagree on this question. The disagreement is reco
 const REFRESH_EN = "Cached source source_e2db54b48c90e140 has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.";
 const REFRESH_UNNAMED_EN = "Cached source source_2a324f9681a3e3bd has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.";
 
+const EXECUTION_FAILURE = "Execution status: failed in isolated sandbox.\n```python\nundefined_function()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name 'undefined_function' is not defined.\nThe failure trace is appended to the action log; see the trace link.";
+const UNITS_EN = "meters measures length; kilogram measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+const UNITS_RU = "метр measures length; килограмм measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+const KUPI_EN = "Buy an elephant is a well-known Russian children's word game. Whatever you reply, the answer comes back: everyone says that, but you buy an elephant! The traditional winning reply is: everyone has an elephant, but I do not.";
+const KUPI_RU = "«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет».";
+
 test("english and russian conversation topics answer unchanged", async () => {
   for (const [prompt, expected] of [
     ["Let's talk about existence", TOPIC_EN],
@@ -83,4 +89,37 @@ test("a source refresh answers unchanged and an unnamed one takes the refusal la
 
   const url = await rule("source_refresh", "Refresh the cached page https://example.com/docs");
   assert.ok(!url.evidence.some((link) => link.startsWith("source_refresh:refusal")));
+});
+
+test("an execution failure answers unchanged in chat and agent mode", async () => {
+  const chat = await solve("Write a Python script that calls undefined_function()");
+  assert.equal(chat.intent, "execution_failure");
+  assert.equal(chat.content, EXECUTION_FAILURE);
+  const agent = await solve("[agent] Run a Python script that calls undefined_function()");
+  assert.equal(agent.content, EXECUTION_FAILURE);
+  assert.ok(agent.evidence.some((link) => link.startsWith("agent_mode:opted_in:")));
+});
+
+test("an incompatible unit pair answers unchanged from the seeded wording", async () => {
+  for (const [prompt, expected] of [
+    ["How many meters are in a kilogram?", UNITS_EN],
+    ["Сколько метров в килограмме?", UNITS_RU],
+  ]) {
+    const response = await solve(prompt);
+    assert.equal(response.intent, "unit_incompatibility", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+});
+
+test("the buy-an-elephant idiom answers through its seed rule in the prompt language", async () => {
+  // The browser used to answer every language with the Russian text inline;
+  // the rule renders the seeded response the native interpreter renders.
+  for (const [prompt, expected] of [
+    ["Hey, buy an elephant!", KUPI_EN],
+    ["Ну купи слона, пожалуйста", KUPI_RU],
+  ]) {
+    const response = await solve(prompt);
+    assert.equal(response.intent, "kupi_slona", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
 });

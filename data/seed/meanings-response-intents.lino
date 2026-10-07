@@ -522,6 +522,14 @@ meanings
     unit "not applicable"
     example "Sources disagree on this question."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  unit_incompatibility
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion is asked between two units the lexicon places in different physical dimensions"
+    effect "the answer names both units and their dimensions and records the incompatibility instead of converting"
+    unit "not applicable"
+    example "meters measures length; kilogram measures mass."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
   fact_comparison
     defined-by answer
     role localized_response_template

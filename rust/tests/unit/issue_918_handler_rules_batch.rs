@@ -10,6 +10,12 @@
 //! value, and an `evidence` condition that asks the capability table's claim
 //! reader, so a rule's refusal lane and its admission read one predicate.
 //!
+//! The second batch moved `execution_failure` into the same rule document and
+//! the `incompatible_units` wording into the seeded `unit_incompatibility`
+//! response (its unit-dimension walk over the meaning lexicon stays the
+//! native primitive). Both had English-only wording, so their responses are
+//! seeded in English only and every language renders it exactly as before.
+//!
 //! The English and Russian answers below are byte-identical to the ones the
 //! deleted Rust produced (`tests/unit/specification/issue_146.rs` pins the
 //! same two conversation-topic answers). The browser twin is
@@ -27,9 +33,18 @@ const CONFLICT_EN: &str = "Sources disagree on this question. The disagreement i
 const REFRESH_EN: &str = "Cached source source_e2db54b48c90e140 has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.";
 const REFRESH_UNNAMED_EN: &str = "Cached source source_2a324f9681a3e3bd has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.";
 
+const EXECUTION_FAILURE: &str = "Execution status: failed in isolated sandbox.\n```python\nundefined_function()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name 'undefined_function' is not defined.\nThe failure trace is appended to the action log; see the trace link.";
+const UNITS_EN: &str = "meters measures length; kilogram measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+const UNITS_RU: &str = "метр measures length; килограмм measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+
 #[test]
-fn the_three_handlers_are_seed_rule_sets() {
-    for name in ["conversation_topic", "source_refresh", "source_conflict"] {
+fn the_migrated_handlers_are_seed_rule_sets() {
+    for name in [
+        "conversation_topic",
+        "source_refresh",
+        "source_conflict",
+        "execution_failure",
+    ] {
         assert!(
             rules().handler(name).is_some(),
             "{name} must be a rule set of data/seed/handler-rules.lino"
@@ -154,4 +169,46 @@ fn an_unnamed_source_refresh_takes_the_refusal_lane() {
             .any(|event| event.kind == "source_refresh:refusal"),
         "a URL is a named source"
     );
+}
+
+#[test]
+fn an_execution_failure_answers_unchanged_in_chat_and_agent_mode() {
+    let chat = FormalAiEngine.answer("Write a Python script that calls undefined_function()");
+    assert_eq!(chat.intent, "execution_failure");
+    assert_eq!(chat.answer, EXECUTION_FAILURE);
+    assert!(
+        chat.evidence_links
+            .iter()
+            .any(|link| link.starts_with("trace:execution_failure")),
+        "the failure exposes its trace link"
+    );
+
+    let mut log = EventLog::default();
+    let agent = run_handler(
+        "execution_failure",
+        "[agent] Run a Python script that calls undefined_function()",
+        "[agent] run a python script that calls undefined_function()",
+        &mut log,
+    )
+    .expect("the agent failure is answered");
+    assert_eq!(agent.intent, "execution_failure");
+    assert_eq!(agent.answer, EXECUTION_FAILURE);
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "agent_mode:opted_in"),
+        "the agent opt-in is recorded"
+    );
+}
+
+#[test]
+fn an_incompatible_unit_pair_answers_unchanged_from_the_seeded_wording() {
+    for (prompt, expected) in [
+        ("How many meters are in a kilogram?", UNITS_EN),
+        ("Сколько метров в килограмме?", UNITS_RU),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.intent, "unit_incompatibility", "{prompt}");
+        assert_eq!(response.answer, expected, "{prompt}");
+    }
 }

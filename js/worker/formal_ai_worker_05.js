@@ -639,20 +639,11 @@ function tryRoleplayRequest(prompt, normalized) {
 }
 
 function tryKupiSlona(prompt, normalized) {
-  // Recognition is data-driven: the idiom surfaces (the «купи слона» phrase and
-  // its buy-an-elephant calque in every supported language) live in
-  // data/seed/meanings-policy.lino under the circular_joke_phrase role, matched
-  // as raw substrings. The worker has no localized-response lookup, so the
-  // canonical Russian explanation stays inline (mirrors the Rust fallback).
-  if (!lexiconMentionsRoleSubstring(ROLE_CIRCULAR_JOKE_PHRASE, normalized))
-    return null;
-  return {
-    intent: "kupi_slona",
-    content:
-      "«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет».",
-    confidence: 1.0,
-    evidence: ["handler:kupi_slona", "language:ru"],
-  };
+  // The `kupi_slona` rule of data/seed/handler-rules.lino: the idiom surfaces
+  // are the circular_joke_phrase role, the explanation is the seeded response
+  // in the prompt's language with the Russian one as the fallback, exactly as
+  // the native rule interpreter answers it.
+  return runHandlerRuleSet("kupi_slona", prompt, normalized, []);
 }
 
 function extractName(text) {
