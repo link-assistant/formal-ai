@@ -31,11 +31,10 @@ pub fn render_clause(clause: &QuantifiedClause, slug: &str) -> Option<String> {
         .collect::<Vec<_>>()
         .join(&and);
     let consequent = render_atom(language, &clause.consequent, variable);
-    let conditional = clause.quantifier == "forall";
-    let template = if conditional {
-        &language.clause_conditional
-    } else {
-        &language.clause_conjunctive
+    let template = match clause.quantifier.as_str() {
+        "forall" => &language.clause_conditional,
+        "no" if !language.clause_negative.is_empty() => &language.clause_negative,
+        _ => &language.clause_conjunctive,
     };
     let quantifier_symbol = language
         .quantifiers

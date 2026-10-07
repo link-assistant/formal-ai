@@ -151,6 +151,35 @@ fn handler_formalizes_negative_quantifier() {
     );
 }
 
+/// Regression: the Lean and Rocq conjunctive templates used to hardcode the
+/// existential, so "No …" lost its negation in those two backends while
+/// FOL and Links Notation kept it.
+#[test]
+fn negative_quantifier_keeps_its_negation_in_lean_and_rocq() {
+    let answer = handler_answer("Formalize in FOL: No cat that sleeps hunts");
+    assert_eq!(
+        fenced(&answer, "lean"),
+        "theorem formalized : ¬∃ (x : U), Cat x ∧ Sleeps x ∧ Hunts x := by sorry",
+        "Lean keeps the negation: {answer}"
+    );
+    assert_eq!(
+        fenced(&answer, "rocq"),
+        "Theorem formalized : ~ (exists (x : U), Cat x /\\ Sleeps x /\\ Hunts x).\nProof.\nAdmitted.",
+        "Rocq keeps the negation, parenthesized past `~`'s precedence: {answer}"
+    );
+    let existential = handler_answer("Formalize in Lean: Some bird that sings flies");
+    assert_eq!(
+        fenced(&existential, "lean"),
+        "theorem formalized : ∃ (x : U), Bird x ∧ Sings x ∧ Flies x := by sorry",
+        "existential readings stay un-negated: {existential}"
+    );
+    assert_eq!(
+        fenced(&existential, "rocq"),
+        "Theorem formalized : exists (x : U), Bird x /\\ Sings x /\\ Flies x.\nProof.\nAdmitted.",
+        "existential readings stay un-negated in Rocq: {existential}"
+    );
+}
+
 #[test]
 fn handler_renders_every_target_with_the_named_one_first() {
     let answer = handler_answer("Formalize in Lean: Every student who studies passes");

@@ -9,7 +9,8 @@
 # The `formal_language` records hold each target's rendering grammar —
 # atom templates, join symbols, quantifier symbols, and the two clause
 # shapes (conditional for universal readings, conjunctive for existential
-# and negative readings). The `natural_language` records hold the surfaces
+# and negative readings; an optional `clause_negative` overrides the
+# conjunctive shape for `no` when the target's precedence needs it). The `natural_language` records hold the surfaces
 # the parser recognizes (quantifier words, join words, relative markers,
 # object-introducing articles, droppable words) and the deformalization
 # templates. Nothing here is keyed to a particular probe sentence — predicate
@@ -78,7 +79,7 @@ formal_targets
     alias "lean"
     alias "lean 4"
     clause_conditional "theorem formalized : ∀ ({variable} : U), {antecedent} → {consequent} := by sorry"
-    clause_conjunctive "theorem formalized : ∃ ({variable} : U), {joined} := by sorry"
+    clause_conjunctive "theorem formalized : {quantifier} ({variable} : U), {joined} := by sorry"
     atom "{predicate} {variable}"
     atom_with_object "{predicate} {variable} {object}"
     join and
@@ -97,7 +98,8 @@ formal_targets
     alias "coq"
     alias "rocq proof"
     clause_conditional "Theorem formalized : forall ({variable} : U), {antecedent} -> {consequent}.\nProof.\nAdmitted."
-    clause_conjunctive "Theorem formalized : exists ({variable} : U), {joined}.\nProof.\nAdmitted."
+    clause_conjunctive "Theorem formalized : {quantifier} ({variable} : U), {joined}.\nProof.\nAdmitted."
+    clause_negative "Theorem formalized : ~ (exists ({variable} : U), {joined}).\nProof.\nAdmitted."
     atom "{predicate} {variable}"
     atom_with_object "{predicate} {variable} {object}"
     join and

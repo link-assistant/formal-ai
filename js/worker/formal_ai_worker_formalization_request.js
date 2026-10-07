@@ -77,6 +77,7 @@ function formalGrammar() {
         quantifiers: quantifiers,
         clauseConditional: childValue(record, "clause_conditional"),
         clauseConjunctive: childValue(record, "clause_conjunctive"),
+        clauseNegative: childValue(record, "clause_negative"),
       });
     } else if (record.name === "natural_language") {
       natural.push({
@@ -352,7 +353,9 @@ function formalRenderClause(grammar, clause, slug) {
     .map((predicate) => formalRenderAtom(language, predicate, variable))
     .join(and);
   const consequent = formalRenderAtom(language, clause.consequent, variable);
-  const template = clause.quantifier === "forall" ? language.clauseConditional : language.clauseConjunctive;
+  const negative = clause.quantifier === "no" && language.clauseNegative.length > 0;
+  const shape = negative ? language.clauseNegative : language.clauseConjunctive;
+  const template = clause.quantifier === "forall" ? language.clauseConditional : shape;
   const symbol = formalLookup(language.quantifiers, clause.quantifier);
   const rendered = textTransformFill(template, [
     ["quantifier", symbol === null ? "" : symbol],

@@ -68,6 +68,13 @@ test("existential and negative readings are conjunctive", async () => {
   assert.equal(fenced(some, "fol"), "∃x (Bird(x) ∧ Sings(x) ∧ Flies(x))\n");
   const none = await handlerAnswer("Formalize in FOL: No cat that sleeps hunts");
   assert.equal(fenced(none, "fol"), "¬∃x (Cat(x) ∧ Sleeps(x) ∧ Hunts(x))\n");
+  // Regression: Lean and Rocq used to drop the negation of "No …".
+  assert.equal(fenced(none, "lean"), "theorem formalized : ¬∃ (x : U), Cat x ∧ Sleeps x ∧ Hunts x := by sorry\n");
+  assert.equal(
+    fenced(none, "rocq"),
+    "Theorem formalized : ~ (exists (x : U), Cat x /\\ Sleeps x /\\ Hunts x).\nProof.\nAdmitted.\n",
+  );
+  assert.equal(fenced(some, "lean"), "theorem formalized : ∃ (x : U), Bird x ∧ Sings x ∧ Flies x := by sorry\n");
 });
 
 test("the named target renders first", async () => {

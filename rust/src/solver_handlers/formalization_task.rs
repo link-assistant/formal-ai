@@ -53,6 +53,10 @@ struct FormalLanguage {
     quantifiers: BTreeMap<String, String>,
     clause_conditional: String,
     clause_conjunctive: String,
+    /// The negative (`no`) clause shape, when the target's precedence
+    /// needs one distinct from the conjunctive shape (Rocq's `~` binds
+    /// tighter than `exists`); empty means "use `clause_conjunctive`".
+    clause_negative: String,
 }
 
 /// One natural language's recognition surfaces and templates.
@@ -197,6 +201,7 @@ fn grammar() -> &'static Grammar {
                     .collect(),
                 clause_conditional: record.find_child_value("clause_conditional").to_owned(),
                 clause_conjunctive: record.find_child_value("clause_conjunctive").to_owned(),
+                clause_negative: record.find_child_value("clause_negative").to_owned(),
             });
         }
         for record in target_records(&tree).filter(|child| child.name == "natural_language") {

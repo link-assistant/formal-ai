@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_formalization_request.js"
-  ceiling 718
+  ceiling 721
   rationale "Issue #1186 user-facing formalization task, browser twin (issue #1188 JS parity). Mirrors rust/src/solver_handlers/formalization_task.rs and formalization_task_render.rs: cue phrases, the target grammars (FOL, Lean 4, Rocq, Links Notation) and the natural-language recognition tables all come from data/seed/formal-targets.lino; the prose comes from multilingual-responses-formalization.lino. JavaScript-first twin of native handler keys (formalization_request), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."
