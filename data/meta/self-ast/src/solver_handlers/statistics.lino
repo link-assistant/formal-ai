@@ -2,55 +2,56 @@ self_ast_census
   target src/solver_handlers/statistics.rs
   language rust
   fidelity signature
-  byte_len 34656
-  line_count 920
-  content_id source_module_52b7886032aa0e11
-  symbol_count 47
+  byte_len 34792
+  line_count 921
+  content_id source_module_b05f97395b7acaf0
+  symbol_count 48
   symbols
     module primality 30 30
-    const MARKER_UNIT_PRICE 33 33
-    const MARKER_PAYMENT 34 34
-    const MARKER_CHANGE 35 35
-    const MARKER_TOTAL 36 36
-    const MAX_MANTISSA 42 42
-    const MAX_SCALE 44 44
-    const MAX_VALUES 46 46
-    struct Decimal 55 58
-    function parse 64 99
-    function rescaled 104 113
-    function add 115 123
-    function sub 125 133
-    function mul 137 142
-    function div 147 155
-    function mul_div 160 175
-    function from_quotient 179 200
-    function compare 204 209
-    function is_negative 211 213
-    function negate 215 220
-    function ratio 223 225
-    function render 228 253
-    enum Op 258 266
-    const OP_ORDER 270 270
-    const MAX_RANK_SUFFIX_CHARS 282 282
-    const MAX_RANK_LEAD_CHARS 285 285
-    function meaning_slug 290 300
-    function evidence_kind 303 313
-    struct OpResult 318 321
-    function mentions_marker 326 332
-    function detect_ops 336 346
-    function stated_numbers 350 362
-    function nearest_before 366 373
-    function mean_of 377 398
-    function median_of 402 432
-    function mode_of 437 458
-    function variance_fraction 464 480
-    function variance_of 482 538
-    function std_dev_of 545 578
-    function range_of 581 596
-    function percentile_of 604 640
-    function surface_span 644 654
-    function percentile_rank_index 662 694
-    function render_approx 698 704
-    function handle_statistics 708 803
-    function marker_position 807 814
-    function handle_word_problem 820 920
+    module word_relations 31 31
+    const MARKER_UNIT_PRICE 34 34
+    const MARKER_PAYMENT 35 35
+    const MARKER_CHANGE 36 36
+    const MARKER_TOTAL 37 37
+    const MAX_MANTISSA 43 43
+    const MAX_SCALE 45 45
+    const MAX_VALUES 47 47
+    struct Decimal 56 59
+    function parse 65 100
+    function rescaled 105 114
+    function add 116 124
+    function sub 126 134
+    function mul 138 143
+    function div 148 156
+    function mul_div 161 176
+    function from_quotient 180 201
+    function compare 205 210
+    function is_negative 212 214
+    function negate 216 221
+    function ratio 224 226
+    function render 229 254
+    enum Op 259 267
+    const OP_ORDER 271 271
+    const MAX_RANK_SUFFIX_CHARS 283 283
+    const MAX_RANK_LEAD_CHARS 286 286
+    function meaning_slug 291 301
+    function evidence_kind 304 314
+    struct OpResult 319 322
+    function mentions_marker 327 333
+    function detect_ops 337 347
+    function stated_numbers 351 363
+    function nearest_before 367 374
+    function mean_of 378 399
+    function median_of 403 433
+    function mode_of 438 459
+    function variance_fraction 465 481
+    function variance_of 483 539
+    function std_dev_of 546 579
+    function range_of 582 597
+    function percentile_of 605 641
+    function surface_span 645 655
+    function percentile_rank_index 663 695
+    function render_approx 699 705
+    function handle_statistics 709 804
+    function marker_position 808 815
+    function handle_word_problem 821 921

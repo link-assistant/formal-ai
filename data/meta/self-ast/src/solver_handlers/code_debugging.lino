@@ -2,23 +2,35 @@ self_ast_census
   target src/solver_handlers/code_debugging.rs
   language rust
   fidelity signature
-  byte_len 12812
-  line_count 360
-  content_id source_module_7688deab9e3a9413
-  symbol_count 15
+  byte_len 20338
+  line_count 571
+  content_id source_module_15ce8486465f6489
+  symbol_count 27
   symbols
-    const CUES_PATH 22 22
-    const INTENTS_PATH 23 23
-    const INTENT 24 24
-    function seed_text 27 32
-    function cue_phrases 36 67
-    function template 70 76
-    struct FunctionIntent 79 84
-    function function_intents 87 120
-    function code_block 127 158
-    function function_name 162 178
-    function quotient_shift 188 228
-    struct Defect 232 238
-    function scan_for_defect 242 273
-    function triggered 277 282
-    function handle_code_debugging 286 360
+    const CUES_PATH 25 25
+    const INTENTS_PATH 26 26
+    const INTENT 27 27
+    const INDEX_BOUND_MAP 29 29
+    const COLLECTION_SLOT 30 30
+    const CONDITION_HEAD_MAP 31 31
+    function seed_text 34 39
+    function cue_phrases 43 74
+    function template 77 83
+    struct FunctionIntent 86 91
+    function function_intents 94 127
+    function code_block 134 165
+    function function_name 169 185
+    function quotient_shift 195 235
+    struct Defect 239 245
+    function scan_for_defect 249 280
+    struct IndexBound 283 289
+    function index_bound_pairs 293 313
+    function bound_in_line 316 332
+    function scan_for_index_bound 336 357
+    struct ConditionAssignment 360 364
+    function condition_heads 368 383
+    function lone_assignment 389 420
+    function scan_for_condition_assignment 424 445
+    function defect_event 448 450
+    function triggered 454 459
+    function handle_code_debugging 463 571

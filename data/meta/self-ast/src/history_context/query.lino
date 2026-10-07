@@ -1,0 +1,10 @@
+self_ast_census
+  target src/history_context/query.rs
+  language rust
+  fidelity signature
+  byte_len 1773
+  line_count 42
+  content_id source_module_45b67e7c125e87ac
+  symbol_count 1
+  symbols
+    function query_repository_history 20 42

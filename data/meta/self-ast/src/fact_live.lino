@@ -1,0 +1,21 @@
+self_ast_census
+  target src/fact_live.rs
+  language rust
+  fidelity signature
+  byte_len 7817
+  line_count 204
+  content_id source_module_e231c6a0eeb854c6
+  symbol_count 12
+  symbols
+    const REGISTRY_TEXT 25 25
+    const WIKIDATA_SOURCE 27 27
+    struct LiveFactStatement 31 48
+    function registry_field 51 59
+    function json 61 63
+    function first_search_hit 65 73
+    function entity 75 77
+    function label 79 87
+    function first_claim 89 91
+    function claim_value 94 103
+    function claim_reference 106 122
+    function resolve_fact_live 133 204

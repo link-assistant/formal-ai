@@ -1,0 +1,25 @@
+self_ast_census
+  target src/solver_handlers/formalization_task_targets.rs
+  language rust
+  fidelity signature
+  byte_len 14698
+  line_count 390
+  content_id source_module_14a6b585ca0103fa
+  symbol_count 16
+  symbols
+    enum TemplatePiece 18 21
+    function collapse_whitespace 25 27
+    function template_pieces 30 47
+    function match_template 55 95
+    function parse_target_atom 99 118
+    function parse_target_atoms 121 136
+    function clause_template_for 139 145
+    function parse_binder_clause 148 187
+    function line_key 192 204
+    function parse_line_clause 208 278
+    function parse_target_clause 283 296
+    function parse_any_formal_clause 300 304
+    function target_round_trip_holds 308 312
+    function record_clause_fragment 320 339
+    function record_render_fragment 343 369
+    function record_prover_fragment 373 390

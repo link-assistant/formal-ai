@@ -2,23 +2,24 @@ self_ast_census
   target src/history_context/commits.rs
   language rust
   fidelity signature
-  byte_len 10382
-  line_count 305
-  content_id source_module_6869d07dbdd42011
-  symbol_count 15
+  byte_len 12167
+  line_count 360
+  content_id source_module_7dc879356e24e7af
+  symbol_count 16
   symbols
-    function run_git 8 26
-    const LOG_FORMAT 30 30
-    function parse_log_output 35 59
-    function import_commits 67 73
-    function import_commits_for_path 81 88
-    function import_commits_impl 90 117
-    function formalize_raw_commit 121 128
-    function formalize_commit 136 188
-    function merge_subject_for 193 204
-    function blob_at 209 212
-    function diff_symbols 216 242
-    function diff_census 244 262
-    function census_kinds 267 273
-    function census_kinds 276 278
-    function diff_es 280 305
+    function run_git 9 27
+    const LOG_FORMAT 31 31
+    function parse_log_output 36 60
+    function import_commits 68 74
+    function import_commits_for_path 82 89
+    function import_commits_impl 91 118
+    function lineage_for_path 128 154
+    function formalize_raw_commit 158 165
+    function formalize_commit 173 233
+    function merge_subject_for 238 249
+    function blob_at 254 257
+    function diff_symbols 261 297
+    function diff_census 299 317
+    function census_kinds 322 328
+    function census_kinds 331 333
+    function diff_es 335 360

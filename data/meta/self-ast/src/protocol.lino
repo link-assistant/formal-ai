@@ -2,9 +2,9 @@ self_ast_census
   target src/protocol.rs
   language rust
   fidelity signature
-  byte_len 38018
-  line_count 997
-  content_id source_module_a2abdd8f1124f4a0
+  byte_len 38148
+  line_count 1000
+  content_id source_module_f6fe55d7e0eb3a8b
   symbol_count 51
   symbols
     module content 28 28
@@ -55,6 +55,6 @@ self_ast_census
     function create_response 751 755
     function create_response_with_solver 758 763
     function create_response_with_solver_and_memory 766 800
-    function response_from_plan 806 938
-    function response_from_symbolic 940 979
-    function response_reasoning_item 981 997
+    function response_from_plan 806 939
+    function response_from_symbolic 941 982
+    function response_reasoning_item 984 1000

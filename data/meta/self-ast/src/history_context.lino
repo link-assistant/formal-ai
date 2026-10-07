@@ -2,33 +2,41 @@ self_ast_census
   target src/history_context.rs
   language rust
   fidelity signature
-  byte_len 13859
-  line_count 393
-  content_id source_module_6429e053f9dd753b
-  symbol_count 25
+  byte_len 21032
+  line_count 559
+  content_id source_module_ecf3c894f44c8337
+  symbol_count 33
   symbols
     const SEED_PATH 33 33
     const CURSOR_ROOT 36 36
     const NUMBER_PLACEHOLDER 39 39
     struct RawCommit 43 50
-    struct SymbolChange 59 64
-    struct RepositoryHistoryImportError 69 72
-    function with_detail 75 80
-    function code 83 85
-    function fmt 89 94
-    struct RecordRule 102 108
-    struct PatternRule 112 116
-    struct HistoryRules 120 128
-    function record_rule 130 144
-    function pattern_rule 146 152
-    function defaults 158 201
-    function from_seed_text 206 287
-    function load 292 306
-    function record 309 311
-    function effective_record 317 329
-    function owned_or 331 337
-    function rule_event 341 361
-    function pattern_number 367 379
-    module commits 382 382
-    module cursor 383 383
-    module github 384 384
+    struct SymbolChange 60 65
+    struct RepositoryHistoryImportError 70 73
+    function with_detail 76 81
+    function code 84 86
+    function fmt 90 95
+    struct RecordRule 103 109
+    struct PatternRule 113 117
+    struct HistoryRules 121 148
+    struct StateTransitionRule 153 156
+    struct RequirementRule 161 165
+    function owned_list 168 170
+    function record_rule 172 186
+    function pattern_rule 188 194
+    function defaults 200 288
+    function from_seed_text 293 435
+    function load 440 454
+    function record 457 459
+    function effective_record 465 477
+    function child_ids 480 486
+    function owned_or 488 494
+    function rule_event 498 518
+    function pattern_number 524 536
+    module commits 539 539
+    module cursor 540 540
+    module github 541 541
+    module items 542 542
+    module lineage 543 543
+    module query 544 544
+    module statements 545 545

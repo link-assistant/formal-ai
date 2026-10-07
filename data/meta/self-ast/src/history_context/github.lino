@@ -2,9 +2,9 @@ self_ast_census
   target src/history_context/github.rs
   language rust
   fidelity signature
-  byte_len 15872
-  line_count 459
-  content_id source_module_3e5c80647538ffcb
+  byte_len 16133
+  line_count 463
+  content_id source_module_3b932da96f16133d
   symbol_count 22
   symbols
     enum LogFile 9 21
@@ -23,9 +23,9 @@ self_ast_census
     function review_items 235 240
     function imported_passes 242 248
     function sorted_entries 250 262
-    function formalize_issue_or_pull 264 308
-    function stamped 310 312
-    function formalize_review 314 354
-    function import_ci_runs 362 415
-    function keep_richer 419 427
-    function failing_step_lines 431 459
+    function formalize_issue_or_pull 264 312
+    function stamped 314 316
+    function formalize_review 318 358
+    function import_ci_runs 366 419
+    function keep_richer 423 431
+    function failing_step_lines 435 463

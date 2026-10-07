@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/benchmark_prompts.rs
   language rust
   fidelity signature
-  byte_len 22864
-  line_count 617
-  content_id source_module_61ebb7b8c3b5ef60
-  symbol_count 33
+  byte_len 23169
+  line_count 618
+  content_id source_module_0acf9318f6cca17b
+  symbol_count 31
   symbols
     function summary_topic_seed_data 19 22
     static CELL 20 20
@@ -21,22 +21,20 @@ self_ast_census
     function requested_brainstorm_count 227 233
     function cardinal_value 240 245
     function numbered 247 255
-    function fact_records 257 260
-    static CELL 258 258
-    function fact_store_resolves 274 279
-    function detect_relation 297 306
-    function detect_subject_alias 317 323
-    function try_fact_lookup 325 391
-    function render_release_timeline 395 415
-    function coreference_seed_data 417 420
-    static CELL 418 418
-    function try_coreference_request 422 456
-    function resolve_coreference_antecedent 465 510
-    const REFERENCE 469 469
-    function matching_coreference_pronoun 512 526
-    function rewrite_coreference_prompt 528 540
-    function replace_token 542 572
-    function token_boundary 574 576
-    function persona_seed_data 578 581
-    static CELL 579 579
-    function try_roleplay_request 583 617
+    function fact_store_resolves 270 273
+    function detect_relation 291 300
+    function detect_subject_alias 311 317
+    function try_fact_lookup 322 392
+    function render_release_timeline 396 416
+    function coreference_seed_data 418 421
+    static CELL 419 419
+    function try_coreference_request 423 457
+    function resolve_coreference_antecedent 466 511
+    const REFERENCE 470 470
+    function matching_coreference_pronoun 513 527
+    function rewrite_coreference_prompt 529 541
+    function replace_token 543 573
+    function token_boundary 575 577
+    function persona_seed_data 579 582
+    static CELL 580 580
+    function try_roleplay_request 584 618

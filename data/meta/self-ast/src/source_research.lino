@@ -2,21 +2,24 @@ self_ast_census
   target src/source_research.rs
   language rust
   fidelity signature
-  byte_len 10827
-  line_count 302
-  content_id source_module_fb0d37b1a63d50d0
-  symbol_count 13
+  byte_len 13724
+  line_count 361
+  content_id source_module_d189ed43d7ec954e
+  symbol_count 16
   symbols
     struct ResearchPage 27 30
     struct ResearchFailure 35 38
     struct SourceResearchExecution 42 47
     function record 51 87
     function learning_proposal 95 149
-    function execute_source_research 155 182
-    struct OptionResearchExecution 186 189
-    function learning_proposal 195 201
-    function execute_option_research 206 234
-    struct StatementResearchExecution 238 241
-    function execute_statement_research 245 286
-    function capture_learning_record 288 297
-    function source_label 299 302
+    function pages_by_trust 155 170
+    function execute_source_research 176 215
+    function need_routes_to_web_search 222 227
+    function research_unmatched_need 234 241
+    struct OptionResearchExecution 245 248
+    function learning_proposal 254 260
+    function execute_option_research 265 293
+    struct StatementResearchExecution 297 300
+    function execute_statement_research 304 345
+    function capture_learning_record 347 356
+    function source_label 358 361

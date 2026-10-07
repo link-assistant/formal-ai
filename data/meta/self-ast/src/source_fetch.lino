@@ -2,10 +2,10 @@ self_ast_census
   target src/source_fetch.rs
   language rust
   fidelity signature
-  byte_len 18965
-  line_count 550
-  content_id source_module_a04261700cd2d49f
-  symbol_count 43
+  byte_len 19314
+  line_count 561
+  content_id source_module_bb9d74f29e291a12
+  symbol_count 44
   symbols
     const CACHE_FORMAT_VERSION 21 21
     const LEGACY_CACHE_FORMAT_VERSION 22 22
@@ -28,25 +28,26 @@ self_ast_census
     function cached 197 199
     function bytes 202 204
     function trace_payload 207 218
-    function record 221 226
-    struct CachedSourceClient 231 237
-    function new 241 249
-    function with_online 252 255
-    function with_clock 258 261
-    function with_ttl_seconds 264 267
-    function fetch 269 298
-    function fetch_with_reconstruction 316 367
-    function paths 369 374
-    function validate_url 377 391
-    function read_capture 393 446
-    function field 448 461
-    function write_capture 463 488
-    function content_path 490 492
-    function is_sha256_hex 494 499
-    function unique_temp_path 501 508
-    function cache_error 510 512
-    function cache_diagnostic 514 516
-    function sha256_hex 519 521
-    function hex_lower 533 539
-    function unix_now 541 545
-    function format_timestamp 547 550
+    function replayed 224 229
+    function record 232 237
+    struct CachedSourceClient 242 248
+    function new 252 260
+    function with_online 263 266
+    function with_clock 269 272
+    function with_ttl_seconds 275 278
+    function fetch 280 309
+    function fetch_with_reconstruction 327 378
+    function paths 380 385
+    function validate_url 388 402
+    function read_capture 404 457
+    function field 459 472
+    function write_capture 474 499
+    function content_path 501 503
+    function is_sha256_hex 505 510
+    function unique_temp_path 512 519
+    function cache_error 521 523
+    function cache_diagnostic 525 527
+    function sha256_hex 530 532
+    function hex_lower 544 550
+    function unix_now 552 556
+    function format_timestamp 558 561

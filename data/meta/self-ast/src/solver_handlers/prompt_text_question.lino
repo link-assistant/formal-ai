@@ -1,0 +1,22 @@
+self_ast_census
+  target src/solver_handlers/prompt_text_question.rs
+  language rust
+  fidelity signature
+  byte_len 10315
+  line_count 282
+  content_id source_module_50770d2e109c7602
+  symbol_count 13
+  symbols
+    const ROLE_PROMPT_TEXT_QUESTION_CUE 29 29
+    const MIN_PASSAGE_WORDS 31 31
+    const MIN_STEM 33 33
+    const QUOTE_PAIRS 35 35
+    const QUESTION_LEAD 45 45
+    struct Passage 50 54
+    function closing_quote 58 73
+    function longest_passage 76 108
+    function sentences 112 131
+    function tokens_match 134 148
+    function content_units 152 180
+    function covered 183 196
+    function try_prompt_text_question 200 282

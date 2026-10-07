@@ -1,0 +1,37 @@
+self_ast_census
+  target src/solver_handlers/factual_qa.rs
+  language rust
+  fidelity signature
+  byte_len 18878
+  line_count 505
+  content_id source_module_edff37a1a516548d
+  symbol_count 28
+  symbols
+    const ROLE_FACT_COMPARISON_CUE 37 37
+    const ROLE_FACT_COMPARISON_JOINER 39 39
+    const WIKIDATA_ANCHOR_PREFIX 41 41
+    const CLAUSE_BOUNDARIES 43 43
+    struct ResolvedSubject 49 52
+    struct SubjectLabel 55 58
+    function fact_records 60 63
+    static CELL 61 61
+    function subject_label_index 66 97
+    static INDEX 67 67
+    function resolve_fact_subject 102 129
+    function question_relation 133 141
+    function relation_clause 145 157
+    struct SubjectGate 161 164
+    function fact_subject_gate 170 191
+    function gated_fact_record 200 224
+    function render_template 227 233
+    function role_surfaces 236 255
+    function locate 258 266
+    function comparison_sides 270 289
+    struct SubjectFacts 292 295
+    function of 298 323
+    function value 325 331
+    function or_missing 335 337
+    function relation_label 340 346
+    function try_fact_comparison 350 365
+    function compare_subjects 367 453
+    function comparison_gap 455 505

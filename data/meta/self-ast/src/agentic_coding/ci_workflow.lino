@@ -2,60 +2,60 @@ self_ast_census
   target src/agentic_coding/ci_workflow.rs
   language rust
   fidelity full_ast
-  byte_len 3492
-  line_count 89
-  content_id source_module_e849ad5fa43462b2
+  byte_len 3695
+  line_count 90
+  content_id source_module_bf39d2bd46902666
   symbol_count 4
   symbols
     function workflow_path 15 17
-    function requested_in 20 25
-    function attach 29 51
-    function render 60 89
+    function requested_in 24 26
+    function attach 30 52
+    function render 61 90
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2219
-    named_node_count 468
+    total_link_count 2220
+    named_node_count 470
     distinct_node_kinds 49
     node_kinds
-      arguments 34
+      arguments 32
       array_expression 4
       assignment_expression 1
       attribute 3
       attribute_item 3
       binary_expression 5
       block 11
-      call_expression 34
+      call_expression 32
       char_literal 6
       closure_expression 3
       closure_parameters 3
-      crate 7
-      doc_comment 17
+      crate 6
+      doc_comment 21
       else_clause 1
       expression_statement 16
-      field_expression 28
-      field_identifier 28
+      field_expression 27
+      field_identifier 27
       field_initializer_list 1
       for_expression 2
       function_item 4
-      identifier 99
+      identifier 98
       if_expression 3
       inner_doc_comment_marker 8
       let_condition 1
       let_declaration 5
-      line_comment 20
+      line_comment 24
       mutable_specifier 2
-      outer_doc_comment_marker 9
+      outer_doc_comment_marker 13
       parameter 3
       parameters 4
       primitive_type 2
-      reference_expression 18
+      reference_expression 17
       reference_type 3
       return_expression 1
-      scoped_identifier 28
-      scoped_use_list 1
+      scoped_identifier 25
+      scoped_use_list 2
       shorthand_field_initializer 2
       source_file 1
       string_content 9
@@ -67,5 +67,5 @@ self_ast_census
       tuple_struct_pattern 1
       type_identifier 6
       use_declaration 2
-      use_list 1
+      use_list 2
       visibility_modifier 4
