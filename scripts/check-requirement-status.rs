@@ -43,6 +43,27 @@ fn requirement_ids(text: &str) -> BTreeSet<String> {
     ids
 }
 
+/// The requirements the register defines: the id leading a table row
+/// (`| R12 |`), a heading (`### R12`) or a list item (`- R12`). Every other id
+/// is a reference — a range endpoint (`R97-R100`), a case-study
+/// sub-requirement (`R649-01 … R649-14`) or a cross-reference ("R379-clean").
+fn defined_requirement_ids(text: &str) -> BTreeSet<String> {
+    text.lines()
+        .map(str::trim_start)
+        .filter(|line| line.starts_with("| R") || line.starts_with("### R") || line.starts_with("- R"))
+        .filter_map(|line| {
+            let index = line.find('R')?;
+            let id: String = line[index..]
+                .chars()
+                .take_while(|character| {
+                    character.is_ascii_alphanumeric() || matches!(character, '-' | '_')
+                })
+                .collect();
+            requirement_ids(&id).contains(&id).then_some(id)
+        })
+        .collect()
+}
+
 fn unquote(value: &str) -> String {
     // The ledger escapes a quote by doubling it (the canonical Links Notation
     // form); the backslash dialect is still read so pre-conversion shards
@@ -159,7 +180,7 @@ fn read_register(root: &Path) -> Result<String, String> {
 fn main() {
     let root = std::env::current_dir().expect("current directory");
     let requirements = read_register(&root).unwrap_or_else(|error| panic!("{error}"));
-    let expected = requirement_ids(&requirements);
+    let expected = defined_requirement_ids(&requirements);
     let mut failures = Vec::new();
     let rows = ledger_rows(&root, &mut failures);
     let actual: BTreeSet<String> = rows.keys().cloned().collect();

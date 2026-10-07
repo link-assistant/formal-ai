@@ -68,6 +68,23 @@ fn requirement_ids(text: &str) -> Vec<String> {
     ids
 }
 
+/// A line defines the requirement it leads with: a table row (`| R12 |`), a
+/// heading (`### R12`) or a list item (`- R12`).
+fn is_definition_line(line: &str) -> bool {
+    let line = line.trim_start();
+    line.starts_with("| R") || line.starts_with("### R") || line.starts_with("- R")
+}
+
+/// The requirements the register defines. Every other id it names is a
+/// reference: a range endpoint (`R97-R100`, `R649-01 … R649-14`), a case-study
+/// sub-requirement, or a cross-reference such as "R379-clean".
+fn defined_requirement_ids(text: &str) -> BTreeSet<String> {
+    text.lines()
+        .filter(|line| is_definition_line(line))
+        .filter_map(|line| requirement_ids(line).into_iter().next())
+        .collect()
+}
+
 fn quoted(value: &str) -> String {
     // Canonical Links Notation reads a doubled delimiter as an escape and an
     // even run of quotes as a possible longer opener, so a value carrying a
@@ -228,7 +245,7 @@ fn read_register(root: &Path) -> Result<String, String> {
 
 fn requirement_rows(root: &Path) -> Result<Vec<Requirement>, String> {
     let assembled = read_register(root)?;
-    let expected: BTreeSet<String> = requirement_ids(&assembled).into_iter().collect();
+    let expected = defined_requirement_ids(&assembled);
     let trace = trace_rows(
         &fs::read_to_string(root.join(TRACEABILITY)).unwrap_or_default(),
         root,
@@ -256,10 +273,8 @@ fn requirement_rows(root: &Path) -> Result<Vec<Requirement>, String> {
             let defined = ids.first().cloned();
             for id in ids {
                 if expected.contains(&id) {
-                    let is_definition = (line.trim_start().starts_with("| R")
-                        || line.trim_start().starts_with("### R")
-                        || line.trim_start().starts_with("- R"))
-                        && defined.as_ref() == Some(&id);
+                    let is_definition =
+                        is_definition_line(line) && defined.as_ref() == Some(&id);
                     match ownership.get(&id) {
                         None => {
                             ownership.insert(id, (relative.clone(), line.to_owned()));
