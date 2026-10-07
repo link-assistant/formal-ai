@@ -231,6 +231,14 @@ meanings
     unit "not applicable"
     example "a definition line renders beside its meaning sentence"
     grounding "data/seed/multilingual-responses.lino"
+  code_explanation_unmatched_line
+    defined-by method
+    role action
+    precondition "one code line matches no construct in the table"
+    effect "lists the line as unexplained so no line of the code is silently skipped"
+    unit "not applicable"
+    example "an unknown statement is listed as left unexplained"
+    grounding "data/seed/multilingual-responses.lino"
   code_explanation_overall
     defined-by method
     role action
@@ -302,6 +310,46 @@ meanings
     effect "answers with the suite, its derivation rows and the not-executed note"
     unit "not applicable"
     example "a palindrome function yields a suite of named cases with a normalize helper"
+    grounding "data/seed/multilingual-responses.lino"
+  test_generation_unknown_shape
+    defined-by method
+    role action
+    precondition "the function under test matches no shape and the request states no example"
+    effect "refuses to guess expected values and asks for stated examples instead"
+    unit "not applicable"
+    example "tests for an unknown function with no examples are refused"
+    grounding "data/seed/multilingual-responses.lino"
+  test_example_relation
+    defined-by method
+    role relation
+    precondition "a test request states an example call followed by its expected value"
+    effect "joins the stated call to the value the generated assertion expects"
+    unit "not applicable"
+    example "square(3) returns 9 becomes assert square(3) == 9"
+    grounding "data/seed/code-task-cues.lino"
+  regex_synthesis_not_executed
+    defined-by method
+    role action
+    precondition "no example can be derived from the composed constraints"
+    effect "says that no match was run and asks for a test on real inputs"
+    unit "not applicable"
+    example "a pattern with no derivable probe is left unexecuted"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_synthesis_witness_verified
+    defined-by method
+    role action
+    precondition "the composed pattern accepts and rejects every derived example"
+    effect "reports the derived examples the pattern text was matched against"
+    unit "not applicable"
+    example "a postal pattern is matched against its derived examples"
+    grounding "data/seed/multilingual-responses.lino"
+  regex_synthesis_witness_failed
+    defined-by method
+    role action
+    precondition "the composed pattern disagrees with an example derived from its constraints"
+    effect "reports the disagreeing examples and withholds trust in the pattern"
+    unit "not applicable"
+    example "a pattern rejecting its own positive example is reported"
     grounding "data/seed/multilingual-responses.lino"
   test_generation_refusal
     defined-by method
