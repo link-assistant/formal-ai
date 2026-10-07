@@ -705,6 +705,9 @@ seed_registry
     web true
   seed unknown-openers
     web true
+  seed wikidata-conversion-to-si
+    bundle true
+    web true
   seed writing-genre-styleguides
     bundle true
     web true

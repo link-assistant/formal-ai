@@ -161,5 +161,6 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/tools.lino",
   "seed/triz-principles.lino",
   "seed/unknown-openers.lino",
+  "seed/wikidata-conversion-to-si.lino",
   "seed/writing-genre-styleguides.lino",
 ]);

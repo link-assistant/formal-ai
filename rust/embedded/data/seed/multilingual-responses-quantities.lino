@@ -47,6 +47,26 @@ multilingual_responses_quantities
     intent unit_conversion_divide
     language zh
     text "{value} {source_unit} 是 {result} {target_unit}。{derivation}，因为 1 {target_unit} = {factor} {source_unit}。"
+  response response_unit_conversion_wikidata_en
+    intent unit_conversion_wikidata
+    language en
+    text " Wikidata grounds the factor: {numerator_unit} is {numerator_item} and {denominator_unit} is {denominator_item}, whose conversion to SI unit (P2370, captured {fetched}) is {numerator_amount} and {denominator_amount} of {si_item}, so {ratio}."
+  response response_unit_conversion_wikidata_ru
+    intent unit_conversion_wikidata
+    language ru
+    text " Коэффициент из Викиданных: {numerator_unit} — это {numerator_item}, {denominator_unit} — это {denominator_item}; их перевод в единицу СИ (P2370, снимок от {fetched}) равен {numerator_amount} и {denominator_amount} от {si_item}, поэтому {ratio}."
+  response response_unit_conversion_wikidata_hi
+    intent unit_conversion_wikidata
+    language hi
+    text " गुणांक विकिडेटा से: {numerator_unit} {numerator_item} है और {denominator_unit} {denominator_item} है; SI इकाई में उनका रूपांतरण (P2370, {fetched} को लिया गया) {si_item} का {numerator_amount} और {denominator_amount} है, इसलिए {ratio}।"
+  response response_unit_conversion_wikidata_zh
+    intent unit_conversion_wikidata
+    language zh
+    text "系数来自维基数据：{numerator_unit} 是 {numerator_item}，{denominator_unit} 是 {denominator_item}；它们换算为国际单位（P2370，{fetched} 采集）分别是 {si_item} 的 {numerator_amount} 和 {denominator_amount}，所以 {ratio}。"
+  response response_unit_conversion_wikidata_es
+    intent unit_conversion_wikidata
+    language es
+    text " El factor viene de Wikidata: {numerator_unit} es {numerator_item} y {denominator_unit} es {denominator_item}; su conversión a unidad del SI (P2370, capturada el {fetched}) es {numerator_amount} y {denominator_amount} de {si_item}, así que {ratio}."
   response response_unit_conversion_formula_en
     intent unit_conversion_formula
     language en

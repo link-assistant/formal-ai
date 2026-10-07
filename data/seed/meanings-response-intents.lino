@@ -34,6 +34,14 @@ meanings
     unit "not applicable"
     example "3 km is 3000 m. 3 x 1000 = 3000, because 1 km = 1000 m."
     grounding "data/seed/multilingual-responses-quantities.lino"
+  unit_conversion_wikidata
+    defined-by answer
+    role localized_response_template
+    precondition "a linear unit conversion whose two units both resolve to a Wikidata item with a captured conversion to SI unit"
+    effect "the factor is cited as the quotient of the two items' P2370 amounts"
+    unit "not applicable"
+    example "1609.344 / 1000 = 1.609344 for the mile and the kilometre"
+    grounding "data/seed/multilingual-responses-quantities.lino"
   unit_conversion_divide
     defined-by answer
     role localized_response_template

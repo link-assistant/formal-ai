@@ -1,5 +1,11 @@
 //! Conversion between the measurement units the seed knows.
 //!
+//! Issue #1176 R1: a linear factor between two units the Wikidata capture
+//! covers (`data/seed/wikidata-conversion-to-si.lino`, P2370 conversion to SI
+//! unit) is derived at answer time from the two units' stated amounts — each
+//! unit resolved to its item — and the answer cites both items and the
+//! property; the seed factor is the fallback for uncaptured units.
+//!
 //! Issue #1176: "how many kilometers are 26.2 miles?" is arithmetic over a
 //! stated factor, not a lookup question — the answer shows the
 //! multiplication (26.2 × 1.609344 = 42.1648128, because 1 mile =
@@ -132,6 +138,106 @@ fn parse_formula_steps(tokens: &[&str]) -> Option<Vec<FormulaStep>> {
         .iter()
         .map(|pair| FormulaStep::parse(pair[0], pair[1]))
         .collect()
+}
+
+/// The captured Wikidata P2370 (conversion to SI unit) statements, read at
+/// answer time from `data/seed/wikidata-conversion-to-si.lino`.
+const WIKIDATA_CONVERSION_PATH: &str = "data/seed/wikidata-conversion-to-si.lino";
+
+/// One captured P2370 statement: the unit's item, the stated amount and the
+/// SI unit item it converts into, with that unit's seed slug.
+struct SiStatement {
+    unit: String,
+    item: String,
+    amount: Decimal,
+    target: String,
+    target_unit: String,
+}
+
+/// The capture date and every statement of the capture, parsed once.
+fn si_statements() -> &'static (String, Vec<SiStatement>) {
+    static TABLE: OnceLock<(String, Vec<SiStatement>)> = OnceLock::new();
+    TABLE.get_or_init(|| {
+        let text = crate::seed::seed_files()
+            .into_iter()
+            .find(|(path, _)| *path == WIKIDATA_CONVERSION_PATH)
+            .map_or("", |(_, text)| text);
+        let mut fetched = String::new();
+        let mut rows = Vec::new();
+        for root in &parser::parse_lino(text).children {
+            for child in &root.children {
+                if child.name == "fetched" {
+                    fetched.clone_from(&child.id);
+                }
+                if child.name != "conversion" {
+                    continue;
+                }
+                let Some(amount) = Decimal::parse(child.find_child_value("amount")) else {
+                    continue;
+                };
+                rows.push(SiStatement {
+                    unit: child.find_child_value("unit").to_owned(),
+                    item: child.find_child_value("item").to_owned(),
+                    amount,
+                    target: child.find_child_value("target").to_owned(),
+                    target_unit: child.find_child_value("target_unit").to_owned(),
+                });
+            }
+        }
+        (fetched, rows)
+    })
+}
+
+/// A unit resolved to its Wikidata item: the item, its amount of the SI
+/// unit, and the SI unit's item. The SI unit itself resolves to its own item
+/// with amount 1.
+fn resolve_item(slug: &str) -> Option<(String, Decimal, String)> {
+    let rows = &si_statements().1;
+    if let Some(row) = rows.iter().find(|row| row.unit == slug) {
+        return Some((row.item.clone(), row.amount, row.target.clone()));
+    }
+    let row = rows.iter().find(|row| row.target_unit == slug)?;
+    Some((row.target.clone(), Decimal::parse("1")?, row.target.clone()))
+}
+
+/// The factor `1 numerator = factor denominator`, derived from the two
+/// units' captured P2370 amounts when both convert into the same SI unit
+/// and the quotient terminates, with the grounding sentence's values.
+struct WikidataFactor {
+    factor: Decimal,
+    values: Vec<(&'static str, String)>,
+}
+
+fn wikidata_factor(numerator: &str, denominator: &str) -> Option<WikidataFactor> {
+    let (numerator_item, numerator_amount, numerator_si) = resolve_item(numerator)?;
+    let (denominator_item, denominator_amount, denominator_si) = resolve_item(denominator)?;
+    if numerator_si != denominator_si || numerator_item == denominator_item {
+        return None;
+    }
+    let (factor, exact) = numerator_amount.div(denominator_amount, 12)?;
+    if !exact {
+        return None;
+    }
+    let ratio = [
+        numerator_amount.render(),
+        " ÷ ".to_owned(),
+        denominator_amount.render(),
+        " = ".to_owned(),
+        factor.render(),
+    ]
+    .concat();
+    Some(WikidataFactor {
+        factor,
+        values: vec![
+            ("numerator_item", numerator_item),
+            ("numerator_amount", numerator_amount.render()),
+            ("denominator_item", denominator_item),
+            ("denominator_amount", denominator_amount.render()),
+            ("si_item", numerator_si),
+            ("fetched", si_statements().0.clone()),
+            ("ratio", ratio),
+        ],
+    })
 }
 
 /// A unit the prompt names: its meaning slug, the surface the prompt itself
@@ -347,6 +453,25 @@ pub fn handle_unit_conversion(
     log.append("unit_conversion:target_unit", target.slug.clone());
     log.append("unit_conversion:value", value.render());
 
+    // A linear factor is taken from the two units' captured Wikidata P2370
+    // statements when both resolve to an item; the seed factor is the
+    // fallback for units the capture does not cover.
+    let grounding = match &direction {
+        Direction::Forward(Conversion::Linear(_)) => wikidata_factor(&source.slug, &target.slug),
+        Direction::ReverseLinear(_) => wikidata_factor(&target.slug, &source.slug),
+        Direction::Forward(Conversion::Formula(_)) => None,
+    };
+    let direction = match (direction, &grounding) {
+        (Direction::Forward(Conversion::Linear(seed)), Some(wikidata)) => {
+            note_seed_factor(log, seed, wikidata.factor);
+            Direction::Forward(Conversion::Linear(wikidata.factor))
+        }
+        (Direction::ReverseLinear(seed), Some(wikidata)) => {
+            note_seed_factor(log, seed, wikidata.factor);
+            Direction::ReverseLinear(wikidata.factor)
+        }
+        (direction, _) => direction,
+    };
     let (result, exact, derivation, intent, factor_text) = match direction {
         Direction::Forward(Conversion::Linear(factor)) => {
             let result = value.mul(factor)?;
@@ -415,6 +540,36 @@ pub fn handle_unit_conversion(
                 .replace("{equals}", if exact { "=" } else { "≈" })
         })
         .unwrap_or(derivation);
+    let body = match &grounding {
+        Some(wikidata) => {
+            let (numerator, denominator) = if intent == "unit_conversion_divide" {
+                (&target.surface, &source.surface)
+            } else {
+                (&source.surface, &target.surface)
+            };
+            for (key, value) in &wikidata.values {
+                if key.ends_with("_item") {
+                    log.append("unit_conversion:wikidata_item", value.clone());
+                }
+            }
+            let sentence =
+                localized_response("unit_conversion_wikidata", language).map(|template| {
+                    wikidata
+                        .values
+                        .iter()
+                        .fold(template, |text, (key, value)| {
+                            text.replace(&["{", key, "}"].concat(), value)
+                        })
+                        .replace("{numerator_unit}", numerator)
+                        .replace("{denominator_unit}", denominator)
+                });
+            match sentence {
+                Some(sentence) => [body.as_str(), &sentence].concat(),
+                None => body,
+            }
+        }
+        None => body,
+    };
     Some(finalize_simple(
         prompt,
         log,
@@ -423,4 +578,16 @@ pub fn handle_unit_conversion(
         &body,
         1.0,
     ))
+}
+
+/// Record that the seed's stated factor was superseded by the captured
+/// Wikidata one, when the two disagree (they agree for every captured unit
+/// today; a capture refresh that moves a factor shows up here).
+fn note_seed_factor(log: &mut EventLog, seed: Decimal, wikidata: Decimal) {
+    if seed.render() != wikidata.render() {
+        log.append(
+            "unit_conversion:seed_factor_superseded",
+            [seed.render(), " -> ".to_owned(), wikidata.render()].concat(),
+        );
+    }
 }

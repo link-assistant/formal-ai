@@ -422,6 +422,76 @@ function unitApplyFormula(start, steps) {
 }
 
 /**
+ * The captured Wikidata P2370 (conversion to SI unit) statements of
+ * data/seed/wikidata-conversion-to-si.lino, read at answer time. Mirrors
+ * `si_statements()` in rust/src/solver_handlers/unit_conversion.rs.
+ * @returns {{fetched: string, rows: Array<{unit: string, item: string, amount: object, target: string, targetUnit: string}>}}
+ */
+function unitWikidataStatements() {
+  const out = { fetched: "", rows: [] };
+  const root = parseLinoTree(seedRawText(SEED_RAW, "wikidata-conversion-to-si.lino"));
+  for (const section of root.children) {
+    for (const child of section.children) {
+      if (child.name === "fetched") out.fetched = String(child.value || "");
+      if (child.name !== "conversion") continue;
+      const amount = exactDecimalParse(siChildValue(child, "amount"));
+      if (amount === null) continue;
+      out.rows.push({
+        unit: siChildValue(child, "unit"),
+        item: siChildValue(child, "item"),
+        amount: amount,
+        target: siChildValue(child, "target"),
+        targetUnit: siChildValue(child, "target_unit"),
+      });
+    }
+  }
+  return out;
+}
+
+/**
+ * A unit resolved to its Wikidata item (Rust `resolve_item`): the SI unit a
+ * statement converts into resolves to its own item with amount 1.
+ * @param {string} slug
+ * @returns {{item: string, amount: object, si: string}|null}
+ */
+function unitResolveItem(slug) {
+  const rows = unitWikidataStatements().rows;
+  const row = rows.find((candidate) => candidate.unit === slug);
+  if (row) return { item: row.item, amount: row.amount, si: row.target };
+  const target = rows.find((candidate) => candidate.targetUnit === slug);
+  if (!target) return null;
+  return { item: target.target, amount: exactDecimalParse("1"), si: target.target };
+}
+
+/**
+ * The factor `1 numerator = factor denominator` from the two units' captured
+ * P2370 amounts (Rust `wikidata_factor`), or null.
+ * @param {string} numerator
+ * @param {string} denominator
+ * @returns {{factor: object, values: Array<Array<string>>}|null}
+ */
+function unitWikidataFactor(numerator, denominator) {
+  const top = unitResolveItem(numerator);
+  const bottom = unitResolveItem(denominator);
+  if (top === null || bottom === null || top.si !== bottom.si || top.item === bottom.item) return null;
+  const quotient = exactDecimalDiv(top.amount, bottom.amount, 12);
+  if (quotient === null || !quotient.exact) return null;
+  const ratio = `${exactDecimalRender(top.amount)} ÷ ${exactDecimalRender(bottom.amount)} = ${exactDecimalRender(quotient.value)}`;
+  return {
+    factor: quotient.value,
+    values: [
+      ["numerator_item", top.item],
+      ["numerator_amount", exactDecimalRender(top.amount)],
+      ["denominator_item", bottom.item],
+      ["denominator_amount", exactDecimalRender(bottom.amount)],
+      ["si_item", top.si],
+      ["fetched", unitWikidataStatements().fetched],
+      ["ratio", ratio],
+    ],
+  };
+}
+
+/**
  * Unit-conversion entry point (issue #1176): "how many X are N Y",
  * "N Y in X", "convert N Y to X", exactly and with the arithmetic shown.
  * Mirrors `handle_unit_conversion`.
@@ -489,6 +559,17 @@ function tryUnitConversion(prompt, normalized, language) {
     `unit_conversion:target_unit:${target.slug}`,
     `unit_conversion:value:${exactDecimalRender(value)}`,
   ];
+  // A linear factor comes from the two units' captured Wikidata P2370
+  // statements when both resolve to an item; the seed factor is the fallback.
+  let grounding = null;
+  if (direction.kind === "linear") grounding = unitWikidataFactor(source.slug, target.slug);
+  if (direction.kind === "reverse_linear") grounding = unitWikidataFactor(target.slug, source.slug);
+  if (grounding !== null) {
+    if (exactDecimalRender(direction.factor) !== exactDecimalRender(grounding.factor)) {
+      log.push(`unit_conversion:seed_factor_superseded:${exactDecimalRender(direction.factor)} -> ${exactDecimalRender(grounding.factor)}`);
+    }
+    direction.factor = grounding.factor;
+  }
   let result;
   let exact;
   let derivation;
@@ -542,9 +623,23 @@ function tryUnitConversion(prompt, normalized, language) {
       ["derivation", derivation],
       ["equals", exact ? "=" : "≈"],
     ]);
+  let content = body;
+  if (grounding !== null) {
+    for (const pair of grounding.values) {
+      if (pair[0].endsWith("_item")) log.push(`unit_conversion:wikidata_item:${pair[1]}`);
+    }
+    const sentence = quantityLocalizedTemplate("unit_conversion_wikidata", language);
+    if (sentence !== null) {
+      const divide = intent === "unit_conversion_divide";
+      content = body + quantityFillTemplate(sentence, grounding.values.concat([
+        ["numerator_unit", divide ? target.surface : source.surface],
+        ["denominator_unit", divide ? source.surface : target.surface],
+      ]));
+    }
+  }
   return {
     intent: "unit_conversion",
-    content: body,
+    content: content,
     confidence: 1.0,
     evidence: ["handler:unit_conversion"].concat(log, ["response:unit_conversion", `language:${language}`]),
   };

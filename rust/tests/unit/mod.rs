@@ -330,6 +330,7 @@ mod issue_1175_phrase_vocabulary;
 mod issue_1175_routing;
 mod issue_1175_routing_probes;
 mod issue_1176_quantities_dates;
+mod issue_1176_wikidata_grounding;
 mod issue_1177_code_task_handlers;
 mod issue_1177_requirement_closure;
 mod issue_1178_creative_composition;

@@ -269,7 +269,7 @@ fn unit_conversion_multiplies_by_the_seed_factor() {
     );
     assert_eq!(
         response.answer,
-        "26.2 miles is 42.1648128 kilometers. 26.2 × 1.609344 = 42.1648128, because 1 miles = 1.609344 kilometers."
+        "26.2 miles is 42.1648128 kilometers. 26.2 × 1.609344 = 42.1648128, because 1 miles = 1.609344 kilometers. Wikidata grounds the factor: miles is Q253276 and kilometers is Q828224, whose conversion to SI unit (P2370, captured 2026-10-07) is 1609.344 and 1000 of Q11573, so 1609.344 ÷ 1000 = 1.609344."
     );
 }
 
@@ -287,7 +287,7 @@ fn unit_conversion_divides_when_the_factor_inverts() {
     );
     assert_eq!(
         response.answer,
-        "10 kilometers is ≈6.2137119 miles. 10 ÷ 1.609344 ≈ 6.2137119, because 1 miles = 1.609344 kilometers."
+        "10 kilometers is ≈6.2137119 miles. 10 ÷ 1.609344 ≈ 6.2137119, because 1 miles = 1.609344 kilometers. Wikidata grounds the factor: miles is Q253276 and kilometers is Q828224, whose conversion to SI unit (P2370, captured 2026-10-07) is 1609.344 and 1000 of Q11573, so 1609.344 ÷ 1000 = 1.609344."
     );
 }
 
@@ -651,7 +651,7 @@ fn si_factors_match_the_cached_wikidata_conversion_to_si() {
     };
     let si = unit_records(&read("data/seed/si-unit-dimensions.lino"));
     let cache = unit_records(&read(
-        "rust/tests/fixtures/unit-conversion/wikidata-P2370.lino",
+        "data/seed/wikidata-conversion-to-si.lino",
     ));
     let si_row = |slug: &str| {
         si.iter()

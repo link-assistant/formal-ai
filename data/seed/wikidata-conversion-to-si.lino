@@ -1,10 +1,18 @@
 # Wikidata P2370 (conversion to SI unit) for the units grounded in
-# data/seed/meanings-units.lino, fetched 2026-10-07 from the wbgetentities
-# API (issue #1176 R1). Each row keeps the item, the stated amount and the
-# unit item it converts to, with that unit's seed slug. Rows whose target
-# is not itself a grounded unit, and identity rows, are left out.
-# Read by rust/tests/unit/issue_1176_quantities_dates.rs, which checks the
-# si_factor column of data/seed/si-unit-dimensions.lino against it.
+# data/seed/meanings-units.lino, captured 2026-10-07 from the wbgetentities
+# API (issue #1176 R1). Each row keeps the unit's seed slug, its Wikidata
+# item, the stated amount and the unit item it converts to, with that unit's
+# seed slug. Rows whose target is not itself a grounded unit, and identity
+# rows, are left out.
+#
+# This is a source capture, not hand-typed data: both runtimes read it at
+# answer time (rust/src/solver_handlers/unit_conversion.rs and
+# js/worker/formal_ai_worker_units.js), resolve each unit of a linear
+# conversion to its item here, derive the factor from the two stated
+# amounts, and cite the items and the property in the answer.
+# rust/tests/unit/issue_1176_quantities_dates.rs also checks the si_factor
+# column of data/seed/si-unit-dimensions.lino against it. Refresh with
+# `node scripts/refresh-wikidata-conversion-to-si.mjs --write`.
 wikidata_conversion_to_si
   property P2370
   fetched 2026-10-07

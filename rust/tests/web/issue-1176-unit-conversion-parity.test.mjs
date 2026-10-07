@@ -42,7 +42,7 @@ test("unit conversion multiplies by the seed factor", async () => {
   assert.ok(answer.evidence.includes("response:unit_conversion"));
   assert.equal(
     answer.content,
-    "26.2 miles is 42.1648128 kilometers. 26.2 × 1.609344 = 42.1648128, because 1 miles = 1.609344 kilometers.",
+    "26.2 miles is 42.1648128 kilometers. 26.2 × 1.609344 = 42.1648128, because 1 miles = 1.609344 kilometers. Wikidata grounds the factor: miles is Q253276 and kilometers is Q828224, whose conversion to SI unit (P2370, captured 2026-10-07) is 1609.344 and 1000 of Q11573, so 1609.344 ÷ 1000 = 1.609344.",
   );
 });
 
@@ -57,7 +57,7 @@ test("the reverse direction divides by the same factor", async () => {
   );
   assert.equal(
     answer.content,
-    "10 kilometers is ≈6.2137119 miles. 10 ÷ 1.609344 ≈ 6.2137119, because 1 miles = 1.609344 kilometers.",
+    "10 kilometers is ≈6.2137119 miles. 10 ÷ 1.609344 ≈ 6.2137119, because 1 miles = 1.609344 kilometers. Wikidata grounds the factor: miles is Q253276 and kilometers is Q828224, whose conversion to SI unit (P2370, captured 2026-10-07) is 1609.344 and 1000 of Q11573, so 1609.344 ÷ 1000 = 1.609344.",
   );
 });
 
