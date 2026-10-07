@@ -6,8 +6,8 @@
 //! GitHub-token secret but the `AUTOMATION_*` names, every `pull_request`
 //! workflow dispatchable and blind to `e2e/**` bases, and release dispatch
 //! guarded by an explicit mode and the main ref. An edit still deferred
-//! (release.yml's R3 guard) must stay a `pending:` row in
-//! `docs/integration-manifest.md`, whose shape is pinned too.
+//! must stay a `pending:` row in `docs/integration-manifest.md`, whose shape
+//! is pinned too; release.yml's R3 guard is applied and asserted directly.
 //!
 //! Run: `RUSTUP_TOOLCHAIN=1.98.1 cargo test --test unit issue_1187_`
 
@@ -300,8 +300,6 @@ fn every_pull_request_workflow_declares_the_checks_mode_or_a_reason_not_to() {
         "desktop-release.yml",
         // A dispatch runs the credentialed full-slice benchmark jobs.
         "external-benchmarks.yml",
-        // Its dispatch modes are release modes; `checks` is its default.
-        "release.yml",
         // The workflow that opens the bot pull request and dispatches.
         "self-authored-pull-request.yml",
     ];
@@ -384,36 +382,130 @@ fn the_self_authored_workflow_resolves_its_token_and_dispatches_checks() {
     );
 }
 
+/// The jobs of a workflow as `(name, body)`: every two-space key under
+/// `jobs:` with the lines nested under it.
+fn workflow_jobs(body: &str) -> Vec<(String, String)> {
+    let mut jobs: Vec<(String, String)> = Vec::new();
+    let mut inside = false;
+    for line in body.lines() {
+        if !line.starts_with(' ') && !line.is_empty() && !line.starts_with('#') {
+            inside = line.trim_end() == "jobs:";
+            continue;
+        }
+        if !inside {
+            continue;
+        }
+        let is_header = line.starts_with("  ")
+            && !line.starts_with("   ")
+            && line.trim_end().ends_with(':')
+            && !line.trim_start().starts_with('#');
+        if is_header {
+            jobs.push((line.trim().trim_end_matches(':').to_owned(), String::new()));
+        } else if let Some((_, job)) = jobs.last_mut() {
+            job.push_str(line);
+            job.push('\n');
+        }
+    }
+    jobs
+}
+
+/// A job's own `if:` condition, single-line or block, joined onto one line;
+/// empty when the job has none.
+fn job_condition(job: &str) -> String {
+    let mut lines = job.lines().skip_while(|line| !line.starts_with("    if:"));
+    let Some(first) = lines.next() else {
+        return String::new();
+    };
+    let mut condition = first.trim_start_matches("    if:").trim().to_owned();
+    for line in lines.take_while(|line| line.is_empty() || line.starts_with("      ")) {
+        condition.push(' ');
+        condition.push_str(line.trim());
+    }
+    condition
+}
+
+/// Every `||` alternative of `text` that admits a dispatch names an explicit
+/// release mode and the main ref.
+fn dispatch_alternatives_are_guarded(text: &str) -> bool {
+    text.split("||")
+        .filter(|alternative| alternative.contains("workflow_dispatch"))
+        .all(|alternative| {
+            (alternative.contains("release_mode == 'instant'")
+                || alternative.contains("release_mode == 'changelog-pr'"))
+                && alternative.contains("github.ref == 'refs/heads/main'")
+        })
+}
+
 #[test]
-fn release_dispatch_needs_an_explicit_mode_and_main_or_a_pending_row() {
-    // R3 / R7: every release, publish or tag job reachable from
-    // `workflow_dispatch` requires an explicit release mode and the main ref.
-    // Until release.yml carries that guard, the edit must stay a pending
-    // #1187 R3 row in docs/integration-manifest.md, so the gap is never
-    // silent.
+fn release_dispatch_needs_an_explicit_mode_and_main() {
+    // R3 / R7: a dispatch of release.yml runs the checks unless a release mode
+    // is chosen, and every job that can write (a release, publish, tag or
+    // Pages job) runs on a dispatch only for an explicit release mode on main.
     let release = read(".github/workflows/release.yml");
-    let unguarded: Vec<&str> = release
-        .lines()
-        .filter(|line| line.starts_with("    if:") && line.contains("workflow_dispatch"))
-        .filter(|line| !line.contains("refs/heads/main"))
-        .collect();
-    let checks_default = trigger_block(&release)
-        .iter()
-        .any(|line| line.trim() == "default: checks");
-    if unguarded.is_empty() && checks_default {
-        return;
+    let triggers = trigger_block(&release).join("\n");
+    let release_mode = &triggers[triggers
+        .find("release_mode:")
+        .expect("release.yml declares a release_mode dispatch input")..];
+    let release_mode = &release_mode[..release_mode
+        .find("bump_type:")
+        .unwrap_or(release_mode.len())];
+    assert!(
+        release_mode.contains("default: checks") && release_mode.contains("- checks"),
+        "R3: release_mode defaults to checks"
+    );
+    assert!(
+        triggers.contains("options: [checks]"),
+        "R3: the checks-mode `mode` input the dispatcher passes"
+    );
+    let mut writers = Vec::new();
+    for (name, job) in workflow_jobs(&release) {
+        let writes = job.lines().any(|line| {
+            let line = line.trim();
+            line.ends_with(": write") && !line.starts_with('#')
+        });
+        if !writes {
+            continue;
+        }
+        writers.push(name.clone());
+        let condition = job_condition(&job);
+        if condition.is_empty() {
+            // No `if:`: the job runs on every event, so it must decide what a
+            // dispatch may do itself, and only through guarded alternatives.
+            assert!(
+                job.contains("workflow_dispatch") && dispatch_alternatives_are_guarded(&job),
+                "R3: `{name}` writes, has no `if:`, and does not guard what a dispatch does"
+            );
+        } else if condition.contains("workflow_dispatch") {
+            assert!(
+                dispatch_alternatives_are_guarded(&condition),
+                "R3: `{name}` runs on a dispatch without an explicit release mode and the main ref: {condition}"
+            );
+        } else {
+            assert!(
+                condition.contains("github.event_name == 'push'")
+                    || condition.contains("github.event_name == 'pull_request'"),
+                "R3: `{name}` writes and its `if:` does not exclude a dispatch: {condition}"
+            );
+        }
+    }
+    for expected in [
+        "auto-release",
+        "manual-release",
+        "changelog-pr",
+        "deploy-pages",
+    ] {
+        assert!(
+            writers.iter().any(|name| name == expected),
+            "the job parser found the release job `{expected}`: {writers:?}"
+        );
     }
     let manifest = read("docs/integration-manifest.md");
-    let pending = manifest.split("- `pending:`").skip(1).any(|row| {
-        row.trim_start()
-            .starts_with("`.github/workflows/release.yml`")
-            && row.contains("#1187 R3")
-    });
     assert!(
-        pending,
-        "release.yml dispatch jobs run without the main-ref guard ({} unguarded `if:` lines, \
-         checks default: {checks_default}) and no pending #1187 R3 row records it",
-        unguarded.len()
+        !manifest
+            .split("\n- ")
+            .filter(|row| row.starts_with("`pending:`"))
+            .any(|row| row.contains("`.github/workflows/release.yml` — #1187 R3")),
+        "the R3 guard is applied, so no pending #1187 R3 manifest row may remain"
     );
 }
 

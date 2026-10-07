@@ -13,10 +13,10 @@
 # contract: same inputs, same outputs, so switching to the shared action
 # changes no caller.
 #
-# The dispatch targets (layered-ci.yml, evidence-check.yml, workflows.yml)
-# declare `workflow_dispatch` with the `mode` and `pull-request` inputs this
-# action passes; release.yml's `mode` guard is still a pending row in
-# docs/integration-manifest.md.
+# The dispatch targets declare `workflow_dispatch` with the `mode` and
+# `pull-request` inputs this action passes. release.yml is one of them: its
+# dispatch defaults to `release_mode: checks`, and its writing jobs need an
+# explicit release mode on main (issue #1187 R3).
 name: dispatch-checks
 description: Dispatch every pull_request workflow on a bot pull request's head commit
 inputs:
