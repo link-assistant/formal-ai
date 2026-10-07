@@ -107,3 +107,19 @@ describe('R932-2/R932-13: an installation guide converts into a script that keep
     });
   }
 });
+
+describe('R932-6/R932-10/R932-11: the evidence is preserved with the case study', () => {
+  test('every matrix language has a committed container run that printed the expected output', () => {
+    for (const project of PROJECTS) {
+      const log = readFileSync(`${REPO_ROOT}/docs/case-studies/issue-932/raw-data/verify-${project.fields.language}.log`, 'utf8');
+      assert.ok(log.includes(`ok: ${project.fields.language} project built and printed ${CONTRACT.expected_output} inside ${project.fields.image}:${CONTRACT.image_tag}`),
+        `verify-${project.fields.language}.log records the run inside its own image`);
+    }
+  });
+
+  test('the case study names the delivering pull request and every requirement', () => {
+    const caseStudy = readFileSync(`${REPO_ROOT}/docs/case-studies/issue-932/README.md`, 'utf8');
+    assert.ok(caseStudy.includes('#1009'), 'the delivering pull request is named');
+    for (let index = 1; index <= 13; index += 1) assert.ok(caseStudy.includes(`R932-${index}`), `R932-${index}`);
+  });
+});
