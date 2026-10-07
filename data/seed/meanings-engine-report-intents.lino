@@ -152,22 +152,6 @@ meanings
     unit "not applicable"
     example "A contradiction is a link whose value (0-1) is chosen from the requirement's own clauses."
     grounding "data/seed/multilingual-responses-triz.lino"
-  formalization_prover_present
-    defined-by answer
-    role localized_response_template
-    precondition "the prover binary is found in PATH"
-    effect "the honesty block states that compilation is delegated to CI"
-    unit "not applicable"
-    example "lean is present in PATH; compilation was not run in this answer path and is delegated to CI."
-    grounding "data/seed/multilingual-responses-engine-reports.lino"
-  formalization_prover_absent
-    defined-by answer
-    role localized_response_template
-    precondition "the prover binary is not found in PATH"
-    effect "the honesty block states that the rendered text was not compiled"
-    unit "not applicable"
-    example "coqc was not found in PATH, so the coqc text was not compiled."
-    grounding "data/seed/multilingual-responses-engine-reports.lino"
   formalization_rml_absent
     defined-by answer
     role localized_response_template

@@ -17,6 +17,7 @@ import { createServer } from './http.mjs';
 import { createMemory, memoryPath } from './memory.mjs';
 import { serverMessage } from './messages.mjs';
 import { setLearnedImporter } from './meta-learned.mjs';
+import { createProverHost } from './prover-host.mjs';
 import { WorkerHost } from './worker-host.mjs';
 
 const TOKEN_ENV = ['FORMAL_AI_API_BEARER_TOKEN', 'FORMAL_AI_HTTP_BEARER_TOKEN', 'FORMAL_AI_API_TOKEN'];
@@ -61,7 +62,9 @@ export function parseArgs(argv, env = process.env) {
  */
 export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, env = process.env, worker } = {}) {
   const ctx = {
-    worker: worker || new WorkerHost(),
+    // The server can start processes, so the formalization task's prover
+    // seam runs `lean`/`coqc` when PATH has them (js/server/prover-host.mjs).
+    worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }) }),
     memory: createMemory(env),
     agentMode,
     bearerToken: bearerTokenFromEnv(env),

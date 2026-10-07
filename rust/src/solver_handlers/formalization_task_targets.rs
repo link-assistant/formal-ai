@@ -367,24 +367,3 @@ fn record_render_fragment(
         ],
     );
 }
-
-/// Append the prover step to the derivation record: which checker was found
-/// in PATH and that none was run (there is no `rml` step to report).
-fn record_prover_fragment(log: &mut EventLog) {
-    let presence = |binary: &str| {
-        if prover_present(binary) {
-            "present"
-        } else {
-            "absent"
-        }
-    };
-    log.append_fields(
-        crate::derivation::FORMALIZE_FRAGMENT_KIND,
-        &[
-            ("stage", "prover"),
-            ("lean", presence("lean")),
-            ("coqc", presence("coqc")),
-            ("invoked", "false"),
-        ],
-    );
-}

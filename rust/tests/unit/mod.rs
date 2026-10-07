@@ -347,6 +347,7 @@ mod issue_1185_error_repair_loop;
 mod issue_1185_repair_apply;
 mod issue_1186_formalization_probe_set;
 mod issue_1186_formalization_task;
+mod issue_1186_prover_step;
 mod issue_1186_rml_export;
 mod issue_1187_credentials;
 mod issue_447_dialog_politeness;

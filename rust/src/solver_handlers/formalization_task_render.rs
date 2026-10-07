@@ -258,24 +258,6 @@ fn carries_formal_surface(prompt: &str) -> bool {
         .any(|symbol| prompt.contains(symbol))
 }
 
-/// The `lean`/`coqc` presence sentence for the honesty block. The binary
-/// is looked up in PATH and never executed.
-fn prover_check(binary: &str, label: &str) -> String {
-    let intent = if prover_present(binary) {
-        "formalization_prover_present"
-    } else {
-        "formalization_prover_absent"
-    };
-    crate::seed::report_text(intent, &[("label", label)])
-}
-
-/// True when `binary` is a file in some PATH directory (never executed).
-fn prover_present(binary: &str) -> bool {
-    std::env::var_os("PATH").is_some_and(|paths| {
-        std::env::split_paths(&paths).any(|directory| directory.join(binary).is_file())
-    })
-}
-
 /// The language of a cue role suffix (`command_ru` → `ru`).
 fn role_language(role: &str) -> &str {
     role.rsplit('_').next().unwrap_or("en")
@@ -433,12 +415,12 @@ fn formalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String
         };
         let mut blocks = Vec::new();
         for slug in &slugs {
-            if let Some(rendered) = render_clause(&clause, slug) {
+            if let Some(rendered) = ClauseExporter::active().export(&clause, slug) {
                 record_render_fragment(log, &clause, slug, &rendered);
                 blocks.push(format!("```{slug}\n{rendered}\n```"));
             }
         }
-        record_prover_fragment(log);
+        let prover_slots = record_prover_fragment(log, &clause, language);
         let rml_check = record_rml_fragment(log, &clause);
         let statement_block = blocks.join("\n\n");
         let antecedents = clause
@@ -458,14 +440,7 @@ fn formalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String
                 ("templates", &slugs.join(", ")),
             ],
         );
-        let honesty = fill(
-            &response("formalization_honesty", language),
-            &[
-                ("lean_check", &prover_check("lean", "lean")),
-                ("rocq_check", &prover_check("coqc", "coqc")),
-                ("rml_check", &rml_check),
-            ],
-        );
+        let honesty = honesty_block(&prover_slots, &rml_check, language);
         (
             fill(
                 &response("formalization_result", language),
@@ -553,6 +528,7 @@ fn deformalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (Stri
         None => "re-parse failed (stated honestly)",
     };
     log.append("formalization:round_trip", round_trip.to_owned());
+    let prover_slots = record_prover_fragment(log, &clause, language);
     let rml_check = record_rml_fragment(log, &clause);
     log.append_fields(
         crate::derivation::FORMALIZE_FRAGMENT_KIND,
@@ -562,14 +538,7 @@ fn deformalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (Stri
             ("verdict", round_trip),
         ],
     );
-    let honesty = fill(
-        &response("formalization_honesty", language),
-        &[
-            ("lean_check", &prover_check("lean", "lean")),
-            ("rocq_check", &prover_check("coqc", "coqc")),
-            ("rml_check", &rml_check),
-        ],
-    );
+    let honesty = honesty_block(&prover_slots, &rml_check, language);
     (
         fill(
             &response("formalization_deformalized", language),

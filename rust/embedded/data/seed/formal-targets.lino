@@ -21,6 +21,13 @@
 # The `export_target` record is the typed fragment the relative-meta-logic
 # exporter reads (`rml export lean`), one template per declaration shape, so
 # a universal conditional clause is exported as data, not as Rust text.
+# The `prover` records make a rendered target a self-contained compile unit
+# for its theorem prover: the declarations of the domain, of every predicate
+# and of every object constant the clause names precede the rendered
+# theorem, and the unit is written with the prover's file extension and
+# checked by running `binary` on it when that binary is found in PATH. The
+# domain is the `export_target rml` record's `domain`, which the Lean and
+# Rocq clause templates bind their variable over.
 # Nothing here is keyed to a particular probe sentence — predicate symbols
 # derive from the sentence's own words at parse time.
 #
@@ -148,6 +155,24 @@ formal_targets
     atom_with_object "({name} {variable} {object})"
     hypothesis "(Pi ({atom} h{index}) {body})"
     clause "(formalized: (Pi ({domain} {variable}) {body}))"
+  prover lean
+    target "lean"
+    binary "lean"
+    label "lean"
+    extension "lean"
+    domain_declaration "axiom {domain} : Type"
+    predicate "axiom {name} : {domain} → Prop"
+    predicate_with_object "axiom {name} : {domain} → {domain} → Prop"
+    constant "axiom {constant} : {domain}"
+  prover rocq
+    target "rocq"
+    binary "coqc"
+    label "coqc"
+    extension "v"
+    domain_declaration "Parameter {domain} : Type."
+    predicate "Parameter {name} : {domain} -> Prop."
+    predicate_with_object "Parameter {name} : {domain} -> {domain} -> Prop."
+    constant "Parameter {constant} : {domain}."
   natural_language en
     quantifier forall
       text "every"

@@ -494,10 +494,13 @@ pub use solver_handlers::{
     handle_test_generation, handle_text_rewrite, handle_word_problem, try_translation,
     try_web_search_with_client,
 };
-// Issue #1186 R4/R6: the relative-meta-logic export step of the formalization
-// task, public so the unit suite pins the rendered source and the recorded run.
+// Issue #1186 R4/R6: the relative-meta-logic export step and the theorem-prover
+// step of the formalization task, public so the unit suite pins the rendered
+// sources, the PATH lookup and the recorded runs.
 pub use solver_handlers::{
-    AppliedPredicate, QuantifiedClause, RmlExport, rml_source, run_rml_export_with,
+    AppliedPredicate, ClauseExporter, ProverRecord, ProverRun, QuantifiedClause, RmlExport,
+    prover_check_slots, prover_command_in, prover_file_stem, prover_records, prover_runs_with,
+    prover_unit, rml_source, run_prover_with, run_rml_export_with,
 };
 // Issue #1172 R2/R6/R7: the subject-verified fact gate, seeded comparisons and
 // questions over prompt-supplied text, public so the unit suite pins them.

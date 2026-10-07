@@ -377,3 +377,87 @@ function formalRmlCheck(clause, trace) {
   trace.push("formalization:rml_export:absent");
   return formalResponse("formalization_rml_absent", "en");
 }
+
+// The theorem-prover step (issue #1186 R4), twin of
+// rust/src/solver_handlers/formalization_task_prover.rs. Each `prover` record
+// of data/seed/formal-targets.lino turns its target's rendering into a
+// self-contained compile unit (domain, predicate and object-constant
+// declarations, then the rendered theorem). Running the prover is the host's
+// job: a host that can start processes installs `formalAiProverHost`
+// (js/server/prover-host.mjs looks the binary up in PATH and runs it); the
+// browser installs none, so every prover is reported absent there.
+
+/**
+ * The `prover` records (`prover_records`), in seed order.
+ * @returns {Array<object>}
+ */
+function formalProverRecords() {
+  const names = ["target", "binary", "label", "extension", "domain_declaration", "predicate", "predicate_with_object", "constant"];
+  return formalTargetRecords()
+    .filter((record) => record.name === "prover")
+    .map((record) => Object.assign({ id: record.value }, Object.fromEntries(names.map((name) => [name, childValue(record, name)]))));
+}
+
+/**
+ * The compile unit a prover checks (`prover_unit`), or null when its target
+ * renders nothing for the clause.
+ * @param {object} grammar
+ * @param {object} clause
+ * @param {object} prover a formalProverRecords() entry
+ * @returns {string|null}
+ */
+function formalProverUnit(grammar, clause, prover) {
+  const rendered = formalRenderClause(grammar, clause, prover.target);
+  if (rendered === null) return null;
+  const templates = formalRmlTemplates();
+  const domain = templates === null ? "" : templates.domain;
+  const lines = [textTransformFill(prover.domain_declaration, [["domain", domain]])];
+  const declared = [];
+  const constants = [];
+  for (const predicate of clause.antecedent.concat([clause.consequent])) {
+    if (!declared.includes(predicate.name)) {
+      const template = predicate.object === null ? prover.predicate : prover.predicate_with_object;
+      lines.push(textTransformFill(template, [["name", predicate.name], ["domain", domain]]));
+      declared.push(predicate.name);
+    }
+    if (predicate.object !== null && !constants.includes(predicate.object)) constants.push(predicate.object);
+  }
+  for (const constant of constants) lines.push(textTransformFill(prover.constant, [["constant", constant], ["domain", domain]]));
+  return `${lines.join("\n")}\n\n${rendered}\n`;
+}
+
+/**
+ * Run every seeded prover through the host and render the honesty slots
+ * (`prover_checks`): `prover_summary` plus one `<target>_check` per prover.
+ * @param {object} grammar
+ * @param {object} clause
+ * @param {string} language
+ * @param {Array<string>} trace
+ * @returns {Array<Array<string>>} fill pairs
+ */
+function formalProverChecks(grammar, clause, language, trace) {
+  const host = typeof formalAiProverHost === "function" ? formalAiProverHost : null;
+  const ran = [];
+  const slots = [];
+  for (const prover of formalProverRecords()) {
+    const unit = formalProverUnit(grammar, clause, prover);
+    const outcome = unit === null || host === null ? null : host(prover.binary, prover.extension, unit);
+    if (outcome === null || outcome === undefined) {
+      trace.push(`formalization:prover:${prover.label}:absent`);
+      slots.push([`${prover.target}_check`, textTransformFill(formalResponse("formalization_prover_absent", language), [["label", prover.label]])]);
+    } else {
+      const exit = outcome.exit === null || outcome.exit === undefined ? "none" : String(outcome.exit);
+      trace.push(`formalization:prover:${prover.label}:ran:${exit}`);
+      ran.push(prover.label);
+      slots.push([`${prover.target}_check`, textTransformFill(formalResponse("formalization_prover_present", language), [
+        ["label", prover.label],
+        ["source", String(outcome.sourcePath)],
+        ["exit", exit],
+      ])]);
+    }
+  }
+  const summary = ran.length === 0
+    ? formalResponse("formalization_prover_none", language)
+    : textTransformFill(formalResponse("formalization_prover_invoked", language), [["provers", ran.join(", ")]]);
+  return [["prover_summary", summary]].concat(slots);
+}

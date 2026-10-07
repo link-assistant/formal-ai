@@ -262,9 +262,41 @@ meanings
     defined-by answer
     role localized_response_template
     precondition "a formalization or deformalization answer is rendered"
-    effect "the answer states that no theorem prover was invoked and what the Lean and Rocq texts are"
+    effect "the answer states which theorem provers ran or that none was invoked, and what the Lean and Rocq texts are"
     unit "not applicable"
     example "No theorem prover was invoked."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_prover_none
+    defined-by answer
+    role localized_response_template
+    precondition "no theorem prover binary named by a prover record is found in PATH"
+    effect "the honesty block opens by stating that no theorem prover was invoked"
+    unit "not applicable"
+    example "No theorem prover was invoked."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_prover_invoked
+    defined-by answer
+    role localized_response_template
+    precondition "at least one theorem prover binary was found in PATH and run on its compile unit"
+    effect "the honesty block opens by naming the theorem provers that were run"
+    unit "not applicable"
+    example "A theorem prover was invoked: lean."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_prover_present
+    defined-by answer
+    role localized_response_template
+    precondition "the prover binary is found in PATH and run on the rendered compile unit"
+    effect "the honesty block states the compile unit's path and the prover's exit status"
+    unit "not applicable"
+    example "lean was found in PATH and ran on /tmp/formal-ai-prover/clause_0123456789abcdef.lean; it exited with status 0."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_prover_absent
+    defined-by answer
+    role localized_response_template
+    precondition "the prover binary is not found in PATH"
+    effect "the honesty block states that the rendered text was not compiled"
+    unit "not applicable"
+    example "coqc was not found in PATH, so the coqc text was not compiled."
     grounding "data/seed/multilingual-responses-formalization.lino"
   legality_warn
     defined-by answer

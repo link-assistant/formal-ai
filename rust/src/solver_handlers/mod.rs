@@ -37,7 +37,9 @@ pub use factual_qa::{
 };
 pub use feature_capability::{CapabilityRuntime, try_feature_capability};
 pub use formalization_task::{
-    AppliedPredicate, QuantifiedClause, RmlExport, handle_formalization_request, rml_source,
+    AppliedPredicate, ClauseExporter, ProverRecord, ProverRun, QuantifiedClause, RmlExport,
+    handle_formalization_request, prover_check_slots, prover_command_in, prover_file_stem,
+    prover_records, prover_runs_with, prover_unit, rml_source, run_prover_with,
     run_rml_export_with,
 };
 pub use format_conversion::{carries_structured_document, handle_format_conversion};

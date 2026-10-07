@@ -10,6 +10,11 @@
 # The `repository_lineage` records render the lineage route's answer
 # (issue #1180 R10, repository history formalized into commits, issues and
 # pull requests); the commit list, path and numbers fill their slots.
+#
+# The `formalization_prover_*` records state, in each answer language, what
+# the theorem-prover step did: no prover invoked, which ones ran, and per
+# prover whether its binary was absent from PATH or ran with an exit status
+# on the compile unit the `prover` records of `formal-targets.lino` build.
 
 multilingual_responses
   response response_formalization_result_en
@@ -87,23 +92,103 @@ multilingual_responses
   response response_formalization_honesty_en
     intent formalization_honesty
     language en
-    text "No theorem prover was invoked. {lean_check} {rocq_check} {rml_check} The Lean and Rocq texts are seed-grammar renderings, and their in-process export through the relative-meta-logic crate is recorded as follow-up until it is published (link-foundation/relative-meta-logic#185)."
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} The Lean and Rocq texts come from the seed-grammar exporter; the relative-meta-logic crate takes its place in process once it is published (link-foundation/relative-meta-logic#185)."
   response response_formalization_honesty_ru
     intent formalization_honesty
     language ru
-    text "Теорем-прувер не вызывался. {lean_check} {rocq_check} {rml_check} Тексты Lean и Rocq — порождения сид-грамматики; их экспорт внутри процесса через relative-meta-logic записан как последующая работа до публикации crates.io (link-foundation/relative-meta-logic#185)."
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} Тексты Lean и Rocq порождены экспортёром сид-грамматики; после публикации relative-meta-logic (link-foundation/relative-meta-logic#185) его место внутри процесса займёт этот крейт."
   response response_formalization_honesty_hi
     intent formalization_honesty
     language hi
-    text "कोई थीरम प्रोवर नहीं चलाया गया। {lean_check} {rocq_check} {rml_check} Lean और Rocq पाठ सीड-व्याकरण से बने हैं; relative-meta-logic के crates.io प्रकाशन तक उनका इन-प्रोसेस निर्यात आगामी कार्य के रूप में दर्ज है (link-foundation/relative-meta-logic#185)।"
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} Lean और Rocq पाठ सीड-व्याकरण निर्यातक से बने हैं; relative-meta-logic के प्रकाशित होने पर (link-foundation/relative-meta-logic#185) वही क्रेट इन-प्रोसेस उसकी जगह लेगा।"
   response response_formalization_honesty_zh
     intent formalization_honesty
     language zh
-    text "未调用任何定理证明器。{lean_check} {rocq_check} {rml_check} Lean 与 Rocq 文本由种子文法生成；在 relative-meta-logic 发布到 crates.io 之前，其进程内导出被记录为后续工作（link-foundation/relative-meta-logic#185）。"
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} Lean 与 Rocq 文本由种子文法导出器生成；relative-meta-logic 发布后（link-foundation/relative-meta-logic#185），该 crate 将在进程内取而代之。"
   response response_formalization_honesty_es
     intent formalization_honesty
     language es
-    text "No se invocó ningún demostrador de teoremas. {lean_check} {rocq_check} {rml_check} Los textos Lean y Rocq son producciones de la gramática semilla; su exportación en proceso a través de relative-meta-logic queda registrada como trabajo posterior hasta su publicación en crates.io (link-foundation/relative-meta-logic#185)."
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} Los textos Lean y Rocq provienen del exportador de la gramática semilla; el crate relative-meta-logic ocupará su lugar en proceso cuando se publique (link-foundation/relative-meta-logic#185)."
+  response response_formalization_prover_none_en
+    intent formalization_prover_none
+    language en
+    text "No theorem prover was invoked."
+  response response_formalization_prover_invoked_en
+    intent formalization_prover_invoked
+    language en
+    text "A theorem prover was invoked: {provers}."
+  response response_formalization_prover_absent_en
+    intent formalization_prover_absent
+    language en
+    text "{label} was not found in PATH, so the {label} text was not compiled."
+  response response_formalization_prover_present_en
+    intent formalization_prover_present
+    language en
+    text "{label} was found in PATH and ran on {source}; it exited with status {exit}."
+  response response_formalization_prover_none_ru
+    intent formalization_prover_none
+    language ru
+    text "Теорем-прувер не вызывался."
+  response response_formalization_prover_invoked_ru
+    intent formalization_prover_invoked
+    language ru
+    text "Вызван теорем-прувер: {provers}."
+  response response_formalization_prover_absent_ru
+    intent formalization_prover_absent
+    language ru
+    text "{label} не найден в PATH, поэтому текст {label} не компилировался."
+  response response_formalization_prover_present_ru
+    intent formalization_prover_present
+    language ru
+    text "{label} найден в PATH и запущен на {source}; код завершения {exit}."
+  response response_formalization_prover_none_hi
+    intent formalization_prover_none
+    language hi
+    text "कोई थीरम प्रोवर नहीं चलाया गया।"
+  response response_formalization_prover_invoked_hi
+    intent formalization_prover_invoked
+    language hi
+    text "थीरम प्रोवर चलाया गया: {provers}।"
+  response response_formalization_prover_absent_hi
+    intent formalization_prover_absent
+    language hi
+    text "{label} PATH में नहीं मिला, इसलिए {label} पाठ संकलित नहीं हुआ।"
+  response response_formalization_prover_present_hi
+    intent formalization_prover_present
+    language hi
+    text "{label} PATH में मिला और {source} पर चलाया गया; उसकी निकास स्थिति {exit} रही।"
+  response response_formalization_prover_none_zh
+    intent formalization_prover_none
+    language zh
+    text "未调用任何定理证明器。"
+  response response_formalization_prover_invoked_zh
+    intent formalization_prover_invoked
+    language zh
+    text "已调用定理证明器：{provers}。"
+  response response_formalization_prover_absent_zh
+    intent formalization_prover_absent
+    language zh
+    text "在 PATH 中未找到 {label}，因此未编译 {label} 文本。"
+  response response_formalization_prover_present_zh
+    intent formalization_prover_present
+    language zh
+    text "在 PATH 中找到 {label} 并在 {source} 上运行；退出状态为 {exit}。"
+  response response_formalization_prover_none_es
+    intent formalization_prover_none
+    language es
+    text "No se invocó ningún demostrador de teoremas."
+  response response_formalization_prover_invoked_es
+    intent formalization_prover_invoked
+    language es
+    text "Se invocó un demostrador de teoremas: {provers}."
+  response response_formalization_prover_absent_es
+    intent formalization_prover_absent
+    language es
+    text "{label} no se encontró en PATH, así que el texto de {label} no se compiló."
+  response response_formalization_prover_present_es
+    intent formalization_prover_present
+    language es
+    text "{label} se encontró en PATH y se ejecutó sobre {source}; terminó con el estado {exit}."
   response response_repository_lineage_en
     intent repository_lineage
     language en

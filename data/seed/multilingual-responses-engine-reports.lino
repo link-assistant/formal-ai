@@ -6,14 +6,6 @@
 # as invented prose. They are English-only because the surfaces that print
 # them (error paths, evidence-log labels, generated-file notes) are.
 multilingual_responses
-  response response_formalization_prover_present_en
-    intent formalization_prover_present
-    language en
-    text "{label} is present in PATH; compilation was not run in this answer path and is delegated to CI."
-  response response_formalization_prover_absent_en
-    intent formalization_prover_absent
-    language en
-    text "{label} was not found in PATH, so the {label} text was not compiled."
   response response_formalization_derivation_en
     intent formalization_derivation
     language en

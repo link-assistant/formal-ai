@@ -17,18 +17,21 @@
 //! (`formalization_task_targets.rs`). Each step lands in the answer's
 //! derivation record as a `formalize:fragment` event, so
 //! `formal-ai explain <answer-id>` prints the parsed clause, every chosen
-//! template and rendering, and the prover step that did not run.
+//! template and rendering, and the prover step.
 //!
 //! The parse is structural, not memorized: quantifier words, join words,
 //! relative markers, articles, and copula drops all come from the seed,
 //! and predicate symbols derive from the sentence's own words. No
 //! sentence-keyed FOL string exists anywhere (issue requirement R9).
 //!
-//! Honesty: no theorem prover is invoked and no generated file is
-//! compiled in this answer path. `lean`/`coqc` presence is probed in
-//! PATH (never executed) and the answer states which check was not run.
-//! The in-process relative-meta-logic export is recorded as follow-up
-//! until the crate publishes (link-foundation/relative-meta-logic#185).
+//! Honesty: each `prover` record of the seed builds a self-contained
+//! compile unit from its target's rendering, and its binary (`lean`,
+//! `coqc`) runs on it when found in PATH (`formalization_task_prover.rs`);
+//! the answer states in its own language which prover ran with which exit
+//! status, or that none was invoked. The renderings come from the seed
+//! templates behind the `ClauseExporter` seam, where the in-process
+//! relative-meta-logic export takes over once the crate publishes
+//! (link-foundation/relative-meta-logic#185).
 
 use std::collections::BTreeMap;
 use std::sync::OnceLock;
@@ -529,3 +532,4 @@ fn parse_quantified_clause(text: &str, language: &NaturalLanguage) -> Option<Qua
 include!("formalization_task_render.rs");
 include!("formalization_task_targets.rs");
 include!("formalization_task_rml.rs");
+include!("formalization_task_prover.rs");
