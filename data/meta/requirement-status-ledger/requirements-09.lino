@@ -243,18 +243,18 @@ requirement_status_ledger_shard requirements_09
   requirement
     id "R361"
     shard "docs/requirements/issue-0492-release-badge-stability.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #583 (issue #492)"
     issue "0492"
-    automated_test ""
+    automated_test "rust/tests/unit/ci-cd/mod.rs"
     manual "not yet confirmed"
   requirement
     id "R362"
     shard "docs/requirements/issue-0492-release-badge-stability.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #583 (issue #492)"
     issue "0492"
-    automated_test ""
+    automated_test "rust/tests/unit/ci-cd/release_publishing.rs"
     manual "not yet confirmed"
   requirement
     id "R363"
@@ -275,10 +275,10 @@ requirement_status_ledger_shard requirements_09
   requirement
     id "R365"
     shard "docs/requirements/issue-0492-release-badge-stability.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #583 (issue #492)"
     issue "0492"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_492.rs"
     manual "not yet confirmed"
   requirement
     id "R366"

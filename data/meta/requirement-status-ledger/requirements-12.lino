@@ -235,18 +235,18 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R540"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_maintenance.rs"
     manual "not yet confirmed"
   requirement
     id "R541"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_maintenance.rs"
     manual "not yet confirmed"
   requirement
     id "R542"
@@ -267,10 +267,10 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R544"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_maintenance.rs"
     manual "not yet confirmed"
   requirement
     id "R545"

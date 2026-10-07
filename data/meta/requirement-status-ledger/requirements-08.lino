@@ -291,10 +291,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R297"
     shard "docs/requirements/issue-0408-text-and-code-editing-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #416 (issue #408)"
     issue "0408"
-    automated_test ""
+    automated_test "rust/tests/unit/specification/text_manipulation_benchmarks.rs"
     manual "not yet confirmed"
   requirement
     id "R298"
@@ -363,10 +363,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R304"
     shard "docs/requirements/issue-0451-symbolic-ai-reference-and-best-practices.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #452 (issue #451)"
     issue "0451"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_451.rs"
     manual "not yet confirmed"
   requirement
     id "R305"

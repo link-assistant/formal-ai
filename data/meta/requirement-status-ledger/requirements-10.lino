@@ -27,10 +27,10 @@ requirement_status_ledger_shard requirements_10
   requirement
     id "R408"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_maintenance.rs"
     manual "not yet confirmed"
   requirement
     id "R409"
@@ -51,18 +51,18 @@ requirement_status_ledger_shard requirements_10
   requirement
     id "R410"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_maintenance.rs"
     manual "not yet confirmed"
   requirement
     id "R411"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_maintenance.rs"
     manual "not yet confirmed"
   requirement
     id "R412"
@@ -75,10 +75,10 @@ requirement_status_ledger_shard requirements_10
   requirement
     id "R413"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_maintenance.rs"
     manual "not yet confirmed"
   requirement
     id "R414"
@@ -179,10 +179,10 @@ requirement_status_ledger_shard requirements_10
   requirement
     id "R425"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_learning.rs"
     manual "not yet confirmed"
   requirement
     id "R426"
@@ -459,10 +459,10 @@ requirement_status_ledger_shard requirements_10
   requirement
     id "R453-M4"
     shard "docs/requirements/issue-0453-moonshot-splitting.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "none recorded"
     issue "0453"
-    automated_test ""
+    automated_test "rust/tests/unit/issue_1138_selection_heuristics.rs"
     manual "not yet confirmed"
   requirement
     id "R454"
