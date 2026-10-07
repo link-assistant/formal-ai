@@ -367,7 +367,7 @@ function oblNamesDeferredWorkProduct(content) {
 
 const oblIsLiteralContent = (content) => Array.from(content).some(oblIsAlphanumeric);
 
-// Mirrors `fn parse_write_request_bound`: whether the binding yields content.
+// Mirrors `fn parse_write_request_bound`: the content the binding yields, or null.
 function oblWriteRequestBound(request, toks, binding) {
   const lowered = request.toLowerCase();
   const clauseStart = binding.cue_precedes ? binding.cue_start : toks[binding.index].start;
@@ -384,35 +384,44 @@ function oblWriteRequestBound(request, toks, binding) {
       const markerSpan = oblSlice(request, markerEnd, close === null ? statementEnd : Math.min(close, statementEnd));
       if (!markerLeads || oblFirstActionCue(toks, 0) !== null) {
         const content = markerSpan === null ? null : oblCleanContent(markerSpan);
-        if (content !== null && oblIsLiteralContent(content) && (!oblNamesDeferredWorkProduct(content) || authoritative)) return true;
+        if (content !== null && oblIsLiteralContent(content) && (!oblNamesDeferredWorkProduct(content) || authoritative)) return content;
       }
     }
   }
   let contentSpan;
   const actionEnd = oblFirstActionCue(toks, 0)?.[1] ?? null;
   if (binding.family === "destination" && binding.cue_precedes) {
-    if (actionEnd === null || !(actionEnd <= clauseStart && oblShareStatement(request, actionEnd, clauseStart))) return false;
+    if (actionEnd === null || !(actionEnd <= clauseStart && oblShareStatement(request, actionEnd, clauseStart))) return null;
     contentSpan = oblSlice(request, actionEnd, clauseStart);
   } else if (binding.family === "destination") {
     const actionStart = oblFirstActionCue(toks, binding.cue_end)?.[0] ?? null;
-    if (actionStart === null) return false;
-    if (!(binding.cue_end <= actionStart && oblShareStatement(request, binding.cue_end, actionStart))) return false;
+    if (actionStart === null) return null;
+    if (!(binding.cue_end <= actionStart && oblShareStatement(request, binding.cue_end, actionStart))) return null;
     contentSpan = oblSlice(request, binding.cue_end, actionStart);
   } else {
     const destinations = oblBareSurfaces("file_write_destination_cue");
     const valueLead = toks.slice(binding.index + 1).find((token) => destinations.includes(oblCleanCueToken(token.text)));
-    if (!valueLead || actionEnd === null) return false;
+    if (!valueLead || actionEnd === null) return null;
     if (!(actionEnd <= clauseStart
       && oblShareStatement(request, actionEnd, clauseStart)
-      && oblShareStatement(request, clauseStart, valueLead.start))) return false;
+      && oblShareStatement(request, clauseStart, valueLead.start))) return null;
     contentSpan = request.slice(valueLead.end);
   }
-  if (contentSpan === null) return false;
+  if (contentSpan === null) return null;
   const content = oblCleanContent(contentSpan);
-  if (content === null) return false;
+  if (content === null) return null;
   const nonReferential = roleWordForms("non_referential_subject")
     .some((form) => form.slot === "bare" && content.toLowerCase() === String(form.text));
-  return !nonReferential && !oblNamesDeferredWorkProduct(content) && oblIsLiteralContent(content);
+  return !nonReferential && !oblNamesDeferredWorkProduct(content) && oblIsLiteralContent(content) ? content : null;
+}
+
+// Mirrors `fn describes_code_to_author`: unquoted content without a content
+// lead that names a code construct is code to author, not the file's bytes.
+function oblDescribesCodeToAuthor(request, content) {
+  return content !== ""
+    && oblFirstPrefixLeadEnd(request.toLowerCase(), "file_write_content_lead") === null
+    && !quotedTextSegments(request).some((segment) => segment.includes(content))
+    && lexiconMentionsRole("coding_request_object", normalizePrompt(content));
 }
 
 // Mirrors `fn parse_command_output_request`: whether one is stated.
@@ -480,7 +489,10 @@ function obligationPlanMode(fullRequest) {
   const request = oblObjectiveText(fullRequest);
   if (oblCommandOutputRequest(request)) return "command_output";
   const toks = oblTokens(request);
-  if (oblRankedBindings(toks).some((binding) => oblWriteRequestBound(request, toks, binding))) return "literal_file";
+  for (const binding of oblRankedBindings(toks)) {
+    const content = oblWriteRequestBound(request, toks, binding);
+    if (content !== null) return oblDescribesCodeToAuthor(request, content) ? null : "literal_file";
+  }
   const target = oblRepositoryWorkReference(request);
   return target !== null && oblMentionsBareRole(request, "software_authoring_action") ? "repository_work_item" : null;
 }
