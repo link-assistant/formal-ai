@@ -10,7 +10,7 @@
 //   enforces;
 // - only the rust/ row calls its root complete, and no row claims full parity.
 // The register's own R992 row is held to the same facts: no ts/ stub once
-// ts/ is generated, and the js → rust counts of data/meta/js-rust-translation.lino.
+// ts/ is generated, and the js → rust leg cited from data/meta/js-rust-translation.lino.
 
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -75,12 +75,13 @@ test('R996: the R992 register row reports the measured state of each leg', () =>
   assert.ok(r992, 'the doctrine shard defines R992');
   const generated = typescriptFiles(`${REPO_ROOT}/ts`);
   if (generated > 0) assert.doesNotMatch(r992, /\bstub\b/, `ts/ holds ${generated} TypeScript files; R992 must not call it a stub`);
-  // The js → rust leg: the counts are the translation ledger's, and the row
-  // stays partial while any item is still carried by hand.
+  // The js → rust leg: the row cites the translation ledger rather than
+  // copying its counts (which grow with every translation run), states no
+  // count of its own, and stays partial while any item is carried by hand.
   const ledger = readFileSync(`${REPO_ROOT}/data/meta/js-rust-translation.lino`, 'utf8');
-  const field = (name) => Number(new RegExp(`^ {2}${name} (\\d+)$`, 'mu').exec(ledger)?.[1]);
-  const [translated, carried, modules] = [field('translated_items'), field('carried_items'), field('modules')];
-  const items = (translated + carried).toLocaleString('en-US');
-  assert.ok(r992.includes(`${translated} of ${items} top-level items across ${modules} modules translate`), r992);
+  const carried = Number(/^ {2}carried_items (\d+)$/mu.exec(ledger)?.[1]);
+  assert.ok(Number.isInteger(carried), 'the translation ledger records its carried items');
+  assert.match(r992, /`data\/meta\/js-rust-translation\.lino` records/u);
+  assert.doesNotMatch(r992, /\d[\d,]* of [\d,]+ (?:top-level )?items/u, 'R992 copies a count the ledger owns');
   if (carried > 0) assert.match(r992, /\| Partial, /u, 'R992 cannot be delivered while items are carried by hand');
 });
