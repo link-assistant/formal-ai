@@ -4,6 +4,7 @@
 import http from 'node:http';
 
 import { dispatch } from './dispatch.mjs';
+import { beginForegroundActivity } from './dreaming-runtime.mjs';
 import { serverMessage } from './messages.mjs';
 
 const STATUS_TEXT = new Map([
@@ -67,6 +68,9 @@ export function writeResponse(socketResponse, response) {
  */
 export function createServer(ctx) {
   return http.createServer(async (request, socketResponse) => {
+    // Every request holds the dreaming idle gate (rust/src/server.rs
+    // `ForegroundActivity::begin`), the Telegram webhook included.
+    const foreground = beginForegroundActivity();
     try {
       const headers = requestHeaders(request);
       const raw = await readBody(request);
@@ -78,6 +82,8 @@ export function createServer(ctx) {
     } catch (error) {
       process.stderr.write(`request failed: ${error?.stack || error}\n`);
       if (!socketResponse.headersSent) socketResponse.destroy();
+    } finally {
+      foreground.end();
     }
   });
 }

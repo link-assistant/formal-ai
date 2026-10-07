@@ -13,6 +13,7 @@
 import { pathToFileURL } from 'node:url';
 
 import { runExplain } from './derivation-store.mjs';
+import { startCoreDreaming } from './dreaming-runtime.mjs';
 import { createServer } from './http.mjs';
 import { createMemory, memoryPath } from './memory.mjs';
 import { serverMessage } from './messages.mjs';
@@ -95,6 +96,10 @@ async function main(argv) {
     return 2;
   }
   process.stderr.write(`${serverMessage('server_shared_memory', { path: memoryPath(process.env) })}\n`);
+  // `serve()` starts the default-on dreaming worker before accepting
+  // connections (rust/src/server/transport.rs); the embeddable `startServer`
+  // leaves it to the caller.
+  startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });
   const { url } = await startServer(options);
   process.stderr.write(`${serverMessage('server_listening', { url })}\n`);
   return null;

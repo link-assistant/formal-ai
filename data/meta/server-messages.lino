@@ -202,6 +202,8 @@ server_messages
     text "Recurring structure {structure} observed {occurrences} time(s)"
   message dreaming_replay_timeout
     text "dreaming replay did not answer within {seconds} seconds"
+  message dreaming_background_failed
+    text "[dreaming] background run failed: {error}"
   message program_execution_status_line_en
     text "Execution status: {status} in {environment}."
   message program_execution_status_line_ru
