@@ -2,17 +2,37 @@
 //!
 //! The generic calculator can evaluate symbolic expressions once extracted,
 //! but prompts such as "invest $1000 at 8% annual interest compounded monthly
-//! for 5 years" need domain-specific slot extraction before there is an
-//! arithmetic expression to delegate.
+//! for 10 years" need slot extraction before there is an arithmetic
+//! expression to evaluate.
+//!
+//! Issue #918: the handler holds no vocabulary, prose or rate. The cue words
+//! are the finance and currency meanings of the seed lexicon; the report and
+//! conversion wording are the seeded `compound_interest_*` responses; the
+//! periods per compounding meaning, the frequency labels, the default
+//! exchange rates and the final-amount marker are the `policy compound_interest`
+//! block of `data/seed/handler-rules.lino`. The browser twin
+//! (`tryCompoundInterest` in `js/worker/formal_ai_worker_05.js`) reads the same
+//! records, so both runtimes answer alike.
 
-use crate::calculation::{CalculationEvaluation, evaluate_calculation};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;
 
 use super::finalize_simple;
 
-const USD_EUR_FALLBACK_RATE: f64 = 0.92;
+const POLICY: &str = "compound_interest";
+
+/// The currency meanings a conversion names, in recognition priority, with
+/// the ISO code each resolves to. The codes are the recognizer's output, not
+/// vocabulary; the surfaces live in the seed lexicon.
+const CURRENCIES: [(&str, &str); 3] = [
+    (seed::ROLE_CURRENCY_EUR_REFERENCE, "EUR"),
+    (seed::ROLE_CURRENCY_USD_REFERENCE, "USD"),
+    (seed::ROLE_CURRENCY_RUB_REFERENCE, "RUB"),
+];
+
+/// The currency every principal is stated in.
+const PRINCIPAL_CURRENCY: &str = "USD";
 
 #[derive(Debug, Clone, Copy)]
 pub struct CompoundInterestRequest {
@@ -22,14 +42,6 @@ pub struct CompoundInterestRequest {
     years: f64,
     target_currency: Option<&'static str>,
     asks_for_web_rate: bool,
-}
-
-#[derive(Debug, Clone)]
-struct CurrencyRate {
-    rate: f64,
-    expression: String,
-    formatted: String,
-    source_detail: Option<String>,
 }
 
 pub fn try_compound_interest(
@@ -53,6 +65,14 @@ pub fn try_compound_interest(
         ));
     }
     None
+}
+
+fn policy(key: &str) -> String {
+    crate::rule_interpreter::handler_policy(POLICY, key).unwrap_or_default()
+}
+
+fn response(intent: &str, values: &[(&str, &str)]) -> String {
+    seed::render_response(intent, "en", values).unwrap_or_default()
 }
 
 fn answer_compound_interest(
@@ -79,56 +99,33 @@ fn answer_compound_interest(
     );
     log.append("calculation:formula", "A=P(1+r/n)^(n*t)");
 
-    let mut lines = vec![
-        String::from("Compound interest calculation"),
-        String::new(),
-        String::from("Formula: A = P(1 + r/n)^(n*t)"),
-        format!("P = {} USD", format_number(principal)),
-        format!(
-            "r = {} ({}% annual)",
-            format_rate(annual_rate),
-            format_number(request.annual_rate_percent),
-        ),
-        format!(
-            "n = {} ({})",
-            request.compounds_per_year,
-            compounding_label(request.compounds_per_year),
-        ),
-        format!("t = {} years", format_number(request.years)),
-        String::new(),
-        format!(
-            "Step 1: periodic rate = r/n = {}/{} = {}",
-            format_rate(annual_rate),
-            request.compounds_per_year,
-            format_rate(periodic_rate),
-        ),
-        format!(
-            "Step 2: number of periods = n*t = {}*{} = {}",
-            request.compounds_per_year,
-            format_number(request.years),
-            format_number(periods),
-        ),
-        format!(
-            "Step 3: A = {} * (1 + {})^{}",
-            format_number(principal),
-            format_rate(periodic_rate),
-            format_number(periods),
-        ),
-        format!("Final amount: {} USD", format_money(final_amount)),
-    ];
+    let periods_per_year = request.compounds_per_year.to_string();
+    let mut body = response(
+        "compound_interest_report",
+        &[
+            ("principal", &format_number(principal)),
+            ("rate", &format_rate(annual_rate)),
+            ("percent", &format_number(request.annual_rate_percent)),
+            ("periods_per_year", &periods_per_year),
+            ("frequency", &compounding_label(request.compounds_per_year)),
+            ("years", &format_number(request.years)),
+            ("periodic_rate", &format_rate(periodic_rate)),
+            ("periods", &format_number(periods)),
+            ("final_amount", &format_money(final_amount)),
+        ],
+    );
 
     if let Some(target_currency) = request.target_currency {
-        append_conversion_lines(
+        append_conversion(
             log,
-            &mut lines,
+            &mut body,
             final_amount,
-            "USD",
+            PRINCIPAL_CURRENCY,
             target_currency,
             request.asks_for_web_rate,
         );
     }
 
-    let body = lines.join("\n");
     log.append("calculation", body.clone());
     finalize_simple(
         prompt,
@@ -148,23 +145,21 @@ fn answer_final_amount_conversion(
     target_currency: &'static str,
     asks_for_web_rate: bool,
 ) -> SymbolicAnswer {
-    let mut lines = vec![
-        String::from("Final amount conversion"),
-        format!(
-            "Source amount: {} {}",
-            format_money(amount),
-            source_currency
-        ),
-    ];
-    append_conversion_lines(
+    let mut body = response(
+        "compound_interest_final_amount_conversion",
+        &[
+            ("amount", &format_money(amount)),
+            ("source", source_currency),
+        ],
+    );
+    append_conversion(
         log,
-        &mut lines,
+        &mut body,
         amount,
         source_currency,
         target_currency,
         asks_for_web_rate,
     );
-    let body = lines.join("\n");
     log.append("calculation", body.clone());
     finalize_simple(
         prompt,
@@ -176,58 +171,78 @@ fn answer_final_amount_conversion(
     )
 }
 
-fn append_conversion_lines(
+fn append_conversion(
     log: &mut EventLog,
-    lines: &mut Vec<String>,
+    body: &mut String,
     amount: f64,
-    source_currency: &'static str,
-    target_currency: &'static str,
+    source_currency: &str,
+    target_currency: &str,
     asks_for_web_rate: bool,
 ) {
-    if let Some(rate) = currency_rate(source_currency, target_currency, log) {
-        let displayed_amount = round_money(amount);
-        let converted = displayed_amount * rate.rate;
-        log.append(
-            "calculation:currency_conversion",
-            format!(
-                "{} {} to {} at {}",
-                format_money(displayed_amount),
-                source_currency,
-                target_currency,
-                format_rate(rate.rate),
-            ),
-        );
-        lines.push(String::new());
-        lines.push(format!(
-            "Conversion: {source_currency} -> {target_currency}"
-        ));
-        lines.push(format!("{} = {}", rate.expression, rate.formatted));
-        lines.push(format!(
-            "{} {} * {} = {} {}",
-            format_money(displayed_amount),
-            source_currency,
-            format_rate(rate.rate),
-            format_money(converted),
-            target_currency,
-        ));
-        if let Some(detail) = rate.source_detail {
-            lines.push(format!("Rate detail: {detail}"));
-        }
-        if asks_for_web_rate {
-            lines.push(String::from(
-                "Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.",
-            ));
-        }
-    } else {
+    let Some(rate) = default_rate(source_currency, target_currency) else {
         log.append(
             "calculation:currency_conversion:error",
             format!("{source_currency}->{target_currency}"),
         );
-        lines.push(String::new());
-        lines.push(format!(
-            "I calculated the USD amount, but no {source_currency}->{target_currency} exchange rate is available locally."
+        body.push_str("\n\n");
+        body.push_str(&response(
+            "compound_interest_rate_unavailable",
+            &[("source", source_currency), ("target", target_currency)],
         ));
+        return;
+    };
+    let displayed_amount = round_money(amount);
+    let converted = displayed_amount * rate;
+    log.append(
+        "calculation:currency_conversion",
+        format!(
+            "{} {source_currency} to {target_currency} at {}",
+            format_money(displayed_amount),
+            format_rate(rate),
+        ),
+    );
+    let expression = policy("rate_expression")
+        .replace("{source}", source_currency)
+        .replace("{target}", target_currency);
+    body.push_str("\n\n");
+    body.push_str(&response(
+        "compound_interest_conversion",
+        &[
+            ("source", source_currency),
+            ("target", target_currency),
+            ("expression", &expression),
+            ("rate", &format_rate(rate)),
+            ("amount", &format_money(displayed_amount)),
+            ("converted", &format_money(converted)),
+        ],
+    ));
+    body.push('\n');
+    body.push_str(&response(
+        "compound_interest_rate_detail",
+        &[
+            ("source", source_currency),
+            ("target", target_currency),
+            ("rate", &format_rate(rate)),
+        ],
+    ));
+    if asks_for_web_rate {
+        body.push('\n');
+        body.push_str(&response("compound_interest_live_rate_note", &[]));
     }
+}
+
+/// The seeded default rate from `source` to `target`: the direct pair, or
+/// the inverse of the reverse pair.
+fn default_rate(source: &str, target: &str) -> Option<f64> {
+    let direct = policy(&format!("rate_{source}_{target}"));
+    if let Ok(rate) = direct.parse::<f64>() {
+        return Some(rate);
+    }
+    policy(&format!("rate_{target}_{source}"))
+        .parse::<f64>()
+        .ok()
+        .filter(|rate| *rate != 0.0)
+        .map(|rate| 1.0 / rate)
 }
 
 pub fn parse_compound_interest_request(
@@ -235,10 +250,8 @@ pub fn parse_compound_interest_request(
     normalized: &str,
 ) -> Option<CompoundInterestRequest> {
     // The investment / interest / compounding cues are language-independent
-    // meanings carried by the finance lexicon; we test the raw substring of
-    // the already-normalized prompt against every surface form (English
-    // forms reproduce the original `invest`/`interest`/`compound` markers,
-    // while the additional languages broaden coverage for free).
+    // meanings carried by the finance lexicon, matched as raw substrings of the
+    // normalized prompt.
     let lexicon = seed::lexicon();
     if !lexicon.mentions_role_raw(seed::ROLE_INVESTMENT_CUE, normalized)
         || !lexicon.mentions_role_raw(seed::ROLE_INTEREST_CUE, normalized)
@@ -255,7 +268,7 @@ pub fn parse_compound_interest_request(
         annual_rate_percent,
         compounds_per_year,
         years,
-        target_currency: target_currency(normalized),
+        target_currency: target_currency(normalized, Some(PRINCIPAL_CURRENCY)),
         asks_for_web_rate: asks_for_web_rate(normalized),
     })
 }
@@ -272,8 +285,8 @@ fn parse_final_amount_conversion_request(
     {
         return None;
     }
-    let target = target_currency(normalized)?;
     let (amount, source) = prior_final_amount(log)?;
+    let target = target_currency(normalized, Some(source))?;
     Some((amount, source, target))
 }
 
@@ -285,14 +298,35 @@ fn prior_final_amount(log: &EventLog) -> Option<(f64, &'static str)> {
         .find_map(|event| parse_final_amount_from_text(&event.payload))
 }
 
+/// The amount and currency an earlier report states after the seeded
+/// final-amount marker.
 fn parse_final_amount_from_text(text: &str) -> Option<(f64, &'static str)> {
+    let marker = policy("final_amount_marker");
+    if marker.is_empty() {
+        return None;
+    }
     let lower = text.to_lowercase();
-    let marker = lower.find("final amount:")?;
-    let after_marker = marker + "final amount:".len();
-    let amount_text = &text[after_marker..];
-    let (amount, end) = parse_first_number(amount_text)?;
-    let currency = currency_after(&amount_text[end..])?;
-    Some((amount, currency))
+    let rest = &lower[lower.find(&marker)? + marker.len()..];
+    let start = rest.len() - rest.trim_start_matches(is_ascii_space).len();
+    let digits = rest[start..]
+        .find(|ch: char| !is_number_char(ch))
+        .map_or(rest.len(), |offset| start + offset);
+    let amount = parse_number_slice(&rest[start..digits])?;
+    let word: String = rest[digits..]
+        .trim_start_matches(is_ascii_space)
+        .chars()
+        .take_while(|ch| ch.is_alphabetic())
+        .collect();
+    let lexicon = seed::lexicon();
+    CURRENCIES
+        .iter()
+        .find(|(role, _)| {
+            lexicon
+                .words_for_role(role)
+                .iter()
+                .any(|form| *form == word)
+        })
+        .map(|(_, code)| (amount, *code))
 }
 
 fn parse_currency_amount(prompt: &str) -> Option<f64> {
@@ -300,9 +334,8 @@ fn parse_currency_amount(prompt: &str) -> Option<f64> {
         return parse_number_right(prompt, dollar + '$'.len_utf8());
     }
     // The `$` glyph is a typographic symbol that stays in code; the spelled-out
-    // US-dollar markers, however, are language data. We reconstruct each as a
-    // space-prefixed token from the currency_usd_reference English surface forms
-    // (usd, dollar, dollars) and scan for the amount immediately to their left.
+    // US-dollar markers are the English surfaces of currency_usd_reference,
+    // scanned as space-prefixed tokens with the amount to their left.
     let lower = prompt.to_lowercase();
     for word in
         seed::lexicon().words_for_role_in_languages(seed::ROLE_CURRENCY_USD_REFERENCE, &["en"])
@@ -325,10 +358,9 @@ fn parse_percent_before_symbol(prompt: &str) -> Option<f64> {
 
 fn years_in_prompt(normalized: &str) -> Option<f64> {
     // The duration unit is a meaning (year_unit_cue); we read the number to
-    // the left of the earliest of its surface forms (English `year`, plus the
-    // other languages) that has one. An occurrence with no number before it —
-    // the `year` inside "compounded yearly" — is a frequency word, not the
-    // term, so the scan moves on to the next occurrence.
+    // the left of the earliest of its surface forms that has one. An
+    // occurrence with no number before it — the `year` inside "compounded
+    // yearly" — is a frequency word, not the term, so the scan moves on.
     let mut positions: Vec<usize> = seed::lexicon()
         .words_for_role(seed::ROLE_YEAR_UNIT_CUE)
         .into_iter()
@@ -347,201 +379,88 @@ fn years_in_prompt(normalized: &str) -> Option<f64> {
 }
 
 fn parse_compounds_per_year(normalized: &str) -> Option<u32> {
-    // The compounding frequency is a cluster of meanings (monthly, quarterly,
-    // weekly, daily, annual), each carrying its surface forms and listed in
-    // priority order in the finance lexicon. We pick the first whose surface
-    // appears in the prompt and map its slug to the periods-per-year count.
+    // The compounding frequency is a cluster of meanings listed in priority
+    // order in the finance lexicon; the first whose surface appears in the
+    // prompt names its periods per year in the seeded policy.
     seed::lexicon()
         .meanings_with_role(seed::ROLE_COMPOUNDING_FREQUENCY_CUE)
         .find(|meaning| meaning.words().any(|word| normalized.contains(word)))
-        .and_then(|meaning| compounds_per_year_for_slug(&meaning.slug))
+        .and_then(|meaning| policy(&format!("periods_{}", meaning.slug)).parse().ok())
 }
 
-fn compounds_per_year_for_slug(slug: &str) -> Option<u32> {
-    match slug {
-        "compounding_monthly" => Some(12),
-        "compounding_quarterly" => Some(4),
-        "compounding_weekly" => Some(52),
-        "compounding_daily" => Some(365),
-        "compounding_annual" => Some(1),
-        _ => None,
-    }
-}
-
-pub fn target_currency(normalized: &str) -> Option<&'static str> {
-    // The euro target is a meaning (currency_eur_reference) matched as a
-    // token-bounded word, reproducing the original padded " eur "/" euro "/
-    // " euros " test; the `€` glyph is a typographic symbol that stays in code.
-    if seed::lexicon().mentions_role(seed::ROLE_CURRENCY_EUR_REFERENCE, normalized)
-        || normalized.contains('€')
-    {
-        Some("EUR")
-    } else {
-        None
-    }
+/// The currency a conversion request names, skipping `source`: the first
+/// currency meaning the prompt mentions as a whole token, in the priority of
+/// [`CURRENCIES`]. The `€` glyph is a typographic symbol for the euro.
+pub fn target_currency(normalized: &str, source: Option<&str>) -> Option<&'static str> {
+    let lexicon = seed::lexicon();
+    CURRENCIES
+        .iter()
+        .filter(|(_, code)| Some(*code) != source)
+        .find(|(role, code)| {
+            lexicon.mentions_role(role, normalized) || (*code == "EUR" && normalized.contains('€'))
+        })
+        .map(|(_, code)| *code)
 }
 
 fn asks_for_web_rate(normalized: &str) -> bool {
     // "fetch a live rate" is a meaning (live_rate_freshness_cue) whose surface
-    // forms (web, current exchange, current rate, exchange rate) are matched as
-    // raw substrings, exactly as the original recognizer did.
+    // forms are matched as raw substrings.
     seed::lexicon().mentions_role_raw(seed::ROLE_LIVE_RATE_FRESHNESS_CUE, normalized)
 }
 
-fn currency_rate(
-    source_currency: &'static str,
-    target_currency: &'static str,
-    log: &mut EventLog,
-) -> Option<CurrencyRate> {
-    if source_currency == target_currency {
-        return Some(CurrencyRate {
-            rate: 1.0,
-            expression: format!("1 {source_currency} in {target_currency}"),
-            formatted: format!("1 {target_currency}"),
-            source_detail: None,
-        });
-    }
-    let expression = format!("1 {source_currency} in {target_currency}");
-    log.append("calculation:request", expression.clone());
-    match evaluate_calculation(&expression) {
-        Ok(evaluation) => rate_from_evaluation(expression, evaluation, log),
-        Err(error) if source_currency == "USD" && target_currency == "EUR" => {
-            log.append("calculation:error", error.to_string());
-            Some(CurrencyRate {
-                rate: USD_EUR_FALLBACK_RATE,
-                expression,
-                formatted: format!("{} EUR", format_rate(USD_EUR_FALLBACK_RATE)),
-                source_detail: Some(String::from("fallback default rate")),
-            })
-        }
-        Err(error) => {
-            log.append("calculation:error", error.to_string());
-            None
-        }
-    }
+fn compounding_label(compounds_per_year: u32) -> String {
+    crate::rule_interpreter::handler_policy(POLICY, &format!("label_{compounds_per_year}"))
+        .unwrap_or_else(|| policy("label_other"))
 }
 
-fn rate_from_evaluation(
-    expression: String,
-    evaluation: CalculationEvaluation,
-    log: &mut EventLog,
-) -> Option<CurrencyRate> {
-    log.append("calculation:engine", evaluation.engine.slug());
-    if let Some(lino) = &evaluation.lino {
-        log.append("calculation:lino", lino.clone());
-    }
-    if !evaluation.steps.is_empty() {
-        log.append("calculation:steps", evaluation.steps.len().to_string());
-    }
-    let rate = leading_number(&evaluation.formatted)?;
-    let source_detail = rate_source_step(&evaluation).map(str::to_owned);
-    Some(CurrencyRate {
-        rate,
-        expression,
-        formatted: evaluation.formatted,
-        source_detail,
-    })
+const fn is_ascii_space(ch: char) -> bool {
+    ch.is_ascii_whitespace()
 }
 
-fn rate_source_step(evaluation: &CalculationEvaluation) -> Option<&str> {
-    evaluation
-        .steps
-        .iter()
-        .map(String::as_str)
-        .find(|step| step.contains("Exchange rate:") || step.contains("exchange rate:"))
+const fn is_number_char(ch: char) -> bool {
+    ch.is_ascii_digit() || matches!(ch, '.' | ',')
 }
 
 fn parse_number_left(text: &str, end: usize) -> Option<f64> {
-    let bytes = text.as_bytes();
-    let mut cursor = end.min(bytes.len());
-    while cursor > 0 && bytes[cursor - 1].is_ascii_whitespace() {
-        cursor -= 1;
-    }
-    let number_end = cursor;
-    while cursor > 0 && is_number_byte(bytes[cursor - 1]) {
-        cursor -= 1;
-    }
-    parse_number_slice(&text[cursor..number_end])
+    let before = text
+        .get(..end.min(text.len()))?
+        .trim_end_matches(is_ascii_space);
+    let start = before
+        .rfind(|ch: char| !is_number_char(ch))
+        .map_or(0, |at| {
+            at + before[at..].chars().next().map_or(1, char::len_utf8)
+        });
+    parse_number_slice(&before[start..])
 }
 
 fn parse_number_right(text: &str, start: usize) -> Option<f64> {
-    let bytes = text.as_bytes();
-    let mut cursor = start.min(bytes.len());
-    while cursor < bytes.len() && bytes[cursor].is_ascii_whitespace() {
-        cursor += 1;
-    }
-    let number_start = cursor;
-    while cursor < bytes.len() && is_number_byte(bytes[cursor]) {
-        cursor += 1;
-    }
-    parse_number_slice(&text[number_start..cursor])
+    let after = text
+        .get(start.min(text.len())..)?
+        .trim_start_matches(is_ascii_space);
+    let end = after
+        .find(|ch: char| !is_number_char(ch))
+        .unwrap_or(after.len());
+    parse_number_slice(&after[..end])
 }
 
-fn parse_first_number(text: &str) -> Option<(f64, usize)> {
-    let bytes = text.as_bytes();
-    let mut start = 0usize;
-    while start < bytes.len() && !bytes[start].is_ascii_digit() {
-        start += 1;
-    }
-    if start == bytes.len() {
+/// Read a run of digits, dots and commas. A lone comma followed by at most
+/// two digits is a decimal comma (`8,5`); any other comma groups thousands.
+fn parse_number_slice(value: &str) -> Option<f64> {
+    if !value.chars().any(|ch| ch.is_ascii_digit()) {
         return None;
     }
-    let mut end = start;
-    while end < bytes.len() && is_number_byte(bytes[end]) {
-        end += 1;
-    }
-    parse_number_slice(&text[start..end]).map(|value| (value, end))
-}
-
-fn leading_number(text: &str) -> Option<f64> {
-    parse_first_number(text).map(|(value, _)| value)
-}
-
-const fn is_number_byte(byte: u8) -> bool {
-    byte.is_ascii_digit() || matches!(byte, b'.' | b',')
-}
-
-fn parse_number_slice(value: &str) -> Option<f64> {
-    let cleaned = value.replace(',', "");
-    if cleaned.chars().any(|ch| ch.is_ascii_digit()) {
-        cleaned.parse::<f64>().ok()
-    } else {
-        None
-    }
-}
-
-fn currency_after(text: &str) -> Option<&'static str> {
-    // The currency word that follows a parsed amount is recognised from the
-    // currency_usd_reference / currency_eur_reference English surface forms
-    // (usd|dollar|dollars, eur|euro|euros); the returned ISO codes stay in code.
-    let lower = text.trim_start().to_lowercase();
-    let lexicon = seed::lexicon();
-    if lexicon
-        .words_for_role_in_languages(seed::ROLE_CURRENCY_USD_REFERENCE, &["en"])
-        .iter()
-        .any(|word| lower.starts_with(word.as_str()))
-    {
-        Some("USD")
-    } else if lexicon
-        .words_for_role_in_languages(seed::ROLE_CURRENCY_EUR_REFERENCE, &["en"])
-        .iter()
-        .any(|word| lower.starts_with(word.as_str()))
-    {
-        Some("EUR")
-    } else {
-        None
-    }
-}
-
-const fn compounding_label(compounds_per_year: u32) -> &'static str {
-    match compounds_per_year {
-        1 => "annually",
-        4 => "quarterly",
-        12 => "monthly",
-        52 => "weekly",
-        365 => "daily",
-        _ => "times per year",
-    }
+    let cleaned = match value.split_once(',') {
+        Some((whole, fraction))
+            if !value.contains('.') && !fraction.contains(',') && fraction.len() <= 2 =>
+        {
+            format!("{whole}.{fraction}")
+        }
+        _ => value.replace(',', ""),
+    };
+    cleaned
+        .parse::<f64>()
+        .ok()
+        .filter(|number| number.is_finite())
 }
 
 fn format_number(value: f64) -> String {

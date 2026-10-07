@@ -192,7 +192,11 @@ handler_migration_ledger
   handler calendar_create_event
     status pending
   handler compound_interest
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino|data/seed/meanings-finance.lino|data/seed/meanings-calculator.lino"
+    primitive "rust/src/solver_handlers/compound_interest.rs"
+    justification "issue #918 (R914-6): the twins diverged (the native row took its rate from the calculator and converted only to euros; the worker kept a rate table of its own, also converted to rubles, appended a USD-to-USD conversion for a principal spelled in dollars, and read a decimal comma differently). Both now read the finance and currency meanings for recognition, the policy compound_interest block of data/seed/handler-rules.lino for the periods per compounding meaning, the frequency labels, the default exchange rates and the final-amount marker, and the seeded compound_interest_* responses for every line of wording; the handler keeps only the formula and the number readers. Pinned byte-for-byte in both runtimes; the worker's answers are unchanged except for the dropped USD-to-USD lines."
+    held_out "rust/tests/unit/issue_918_browser_twins.rs"
   handler word_problem
     status "justified-native"
     primitive "rust/src/solver_handlers/statistics.rs"

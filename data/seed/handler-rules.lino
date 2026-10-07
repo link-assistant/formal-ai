@@ -331,3 +331,20 @@ handler_rules
       confidence 1.0
   policy response_language_followup
     terse_word_limit 4
+  policy compound_interest
+    periods_compounding_monthly "12"
+    periods_compounding_quarterly "4"
+    periods_compounding_weekly "52"
+    periods_compounding_daily "365"
+    periods_compounding_annual "1"
+    label_1 "annually"
+    label_4 "quarterly"
+    label_12 "monthly"
+    label_52 "weekly"
+    label_365 "daily"
+    label_other "times per year"
+    rate_USD_EUR "0.92"
+    rate_USD_RUB "89.5"
+    rate_EUR_USD "1.087"
+    rate_expression "1 {source} in {target}"
+    final_amount_marker "final amount:"

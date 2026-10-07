@@ -1,21 +1,4 @@
 // Worker module 7 of 21. Loaded by ../formal_ai_worker.js.
-function compoundLabel(compoundsPerYear) {
-  switch (compoundsPerYear) {
-    case 1:
-      return "annually";
-    case 4:
-      return "quarterly";
-    case 12:
-      return "monthly";
-    case 52:
-      return "weekly";
-    case 365:
-      return "daily";
-    default:
-      return "times per year";
-  }
-}
-
 function formatCompoundNumber(value) {
   if (Math.abs(value % 1) < 1e-10) return value.toFixed(0);
   return trimCompoundDecimal(value.toFixed(10));

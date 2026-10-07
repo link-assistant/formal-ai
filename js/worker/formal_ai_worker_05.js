@@ -1096,6 +1096,32 @@ function trySummarizeConversation(history) {
   };
 }
 
+// Issue #918: the compound-interest row holds no vocabulary, prose or rate.
+// The cue words are the finance and currency meanings of the seed lexicon; the
+// wording is the seeded compound_interest_* responses; the periods per
+// compounding meaning, the frequency labels, the default exchange rates and
+// the final-amount marker are the `policy compound_interest` block of
+// data/seed/handler-rules.lino. Mirrors src/solver_handlers/compound_interest.rs.
+// A function, not a const array, so the ROLE_* consts stay out of the TDZ.
+function compoundCurrencies() {
+  return [
+    [ROLE_CURRENCY_EUR_REFERENCE, "EUR"],
+    [ROLE_CURRENCY_USD_REFERENCE, "USD"],
+    [ROLE_CURRENCY_RUB_REFERENCE, "RUB"],
+  ];
+}
+const COMPOUND_PRINCIPAL_CURRENCY = "USD";
+
+function compoundPolicy(key) {
+  return handlerRulesPolicy("compound_interest", key) || "";
+}
+
+function compoundResponse(intent, values = {}) {
+  let text = answerFor(intent, "en");
+  for (const [name, value] of Object.entries(values)) text = text.split(`{${name}}`).join(String(value));
+  return text;
+}
+
 function tryCompoundInterest(prompt, normalized, history) {
   const request = parseCompoundInterestRequest(prompt, normalized);
   if (request) return answerCompoundInterest(request);
@@ -1118,27 +1144,23 @@ function answerCompoundInterest(request) {
     `calculation:compound_interest:P=${formatCompoundNumber(request.principal)};r=${formatCompoundRate(annualRate)};n=${periodsPerYear};t=${formatCompoundNumber(request.years)}`,
     "calculation:formula:A=P(1+r/n)^(n*t)",
   ];
-  const lines = [
-    "Compound interest calculation",
-    "",
-    "Formula: A = P(1 + r/n)^(n*t)",
-    `P = ${formatCompoundNumber(request.principal)} USD`,
-    `r = ${formatCompoundRate(annualRate)} (${formatCompoundNumber(request.annualRatePercent)}% annual)`,
-    `n = ${periodsPerYear} (${compoundLabel(periodsPerYear)})`,
-    `t = ${formatCompoundNumber(request.years)} years`,
-    "",
-    `Step 1: periodic rate = r/n = ${formatCompoundRate(annualRate)}/${periodsPerYear} = ${formatCompoundRate(periodicRate)}`,
-    `Step 2: number of periods = n*t = ${periodsPerYear}*${formatCompoundNumber(request.years)} = ${formatCompoundNumber(periods)}`,
-    `Step 3: A = ${formatCompoundNumber(request.principal)} * (1 + ${formatCompoundRate(periodicRate)})^${formatCompoundNumber(periods)}`,
-    `Final amount: ${formatCompoundMoney(finalAmount)} USD`,
-  ];
+  let content = compoundResponse("compound_interest_report", {
+    principal: formatCompoundNumber(request.principal),
+    rate: formatCompoundRate(annualRate),
+    percent: formatCompoundNumber(request.annualRatePercent),
+    periods_per_year: periodsPerYear,
+    frequency: compoundPolicy(`label_${periodsPerYear}`) || compoundPolicy("label_other"),
+    years: formatCompoundNumber(request.years),
+    periodic_rate: formatCompoundRate(periodicRate),
+    periods: formatCompoundNumber(periods),
+    final_amount: formatCompoundMoney(finalAmount),
+  });
 
   if (request.targetCurrency) {
-    appendCompoundConversionLines(
-      lines,
+    content += compoundConversion(
       evidence,
       finalAmount,
-      "USD",
+      COMPOUND_PRINCIPAL_CURRENCY,
       request.targetCurrency,
       request.asksForWebRate,
     );
@@ -1146,7 +1168,7 @@ function answerCompoundInterest(request) {
 
   return {
     intent: "calculation",
-    content: lines.join("\n"),
+    content,
     confidence: 1.0,
     evidence,
   };
@@ -1154,71 +1176,70 @@ function answerCompoundInterest(request) {
 
 function answerFinalAmountConversion(conversion) {
   const evidence = ["calculation:final_amount_conversion"];
-  const lines = [
-    "Final amount conversion",
-    `Source amount: ${formatCompoundMoney(conversion.amount)} ${conversion.sourceCurrency}`,
-  ];
-  appendCompoundConversionLines(
-    lines,
-    evidence,
-    conversion.amount,
-    conversion.sourceCurrency,
-    conversion.targetCurrency,
-    conversion.asksForWebRate,
-  );
+  const content =
+    compoundResponse("compound_interest_final_amount_conversion", {
+      amount: formatCompoundMoney(conversion.amount),
+      source: conversion.sourceCurrency,
+    }) +
+    compoundConversion(
+      evidence,
+      conversion.amount,
+      conversion.sourceCurrency,
+      conversion.targetCurrency,
+      conversion.asksForWebRate,
+    );
   return {
     intent: "calculation",
-    content: lines.join("\n"),
+    content,
     confidence: 1.0,
     evidence,
   };
 }
 
-function appendCompoundConversionLines(
-  lines,
-  evidence,
-  amount,
-  sourceCurrency,
-  targetCurrency,
-  asksForWebRate,
-) {
-  const rate = compoundCurrencyRate(sourceCurrency, targetCurrency);
-  if (!rate) {
-    evidence.push(`calculation:currency_conversion:error:${sourceCurrency}->${targetCurrency}`);
-    lines.push("");
-    lines.push(
-      `I calculated the USD amount, but no ${sourceCurrency}->${targetCurrency} exchange rate is available locally.`,
-    );
-    return;
+// The conversion paragraph appended to a report: the seeded default rate,
+// the converted amount, and the rate detail; or the honest no-rate sentence.
+function compoundConversion(evidence, amount, source, target, asksForWebRate) {
+  const rate = compoundDefaultRate(source, target);
+  if (rate === null) {
+    evidence.push(`calculation:currency_conversion:error:${source}->${target}`);
+    return `\n\n${compoundResponse("compound_interest_rate_unavailable", { source, target })}`;
   }
-
   const displayedAmount = roundCompoundMoney(amount);
-  const converted = displayedAmount * rate.rate;
+  const converted = displayedAmount * rate;
   evidence.push(
-    `calculation:currency_conversion:${formatCompoundMoney(displayedAmount)} ${sourceCurrency} to ${targetCurrency} at ${formatCompoundRate(rate.rate)}`,
+    `calculation:currency_conversion:${formatCompoundMoney(displayedAmount)} ${source} to ${target} at ${formatCompoundRate(rate)}`,
   );
-  lines.push("");
-  lines.push(`Conversion: ${sourceCurrency} -> ${targetCurrency}`);
-  lines.push(`${rate.expression} = ${rate.formatted}`);
-  lines.push(
-    `${formatCompoundMoney(displayedAmount)} ${sourceCurrency} * ${formatCompoundRate(rate.rate)} = ${formatCompoundMoney(converted)} ${targetCurrency}`,
-  );
-  if (rate.sourceDetail) {
-    lines.push(`Rate detail: ${rate.sourceDetail}`);
-  }
-  if (asksForWebRate) {
-    lines.push(
-      "Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.",
-    );
-  }
+  const expression = compoundPolicy("rate_expression").split("{source}").join(source).split("{target}").join(target);
+  let text = `\n\n${compoundResponse("compound_interest_conversion", {
+    source,
+    target,
+    expression,
+    rate: formatCompoundRate(rate),
+    amount: formatCompoundMoney(displayedAmount),
+    converted: formatCompoundMoney(converted),
+  })}`;
+  text += `\n${compoundResponse("compound_interest_rate_detail", { source, target, rate: formatCompoundRate(rate) })}`;
+  if (asksForWebRate) text += `\n${compoundResponse("compound_interest_live_rate_note")}`;
+  return text;
+}
+
+// The seeded default rate from `source` to `target`: the direct pair, or the
+// inverse of the reverse pair.
+function compoundDefaultRate(source, target) {
+  const direct = compoundRateNumber(compoundPolicy(`rate_${source}_${target}`));
+  if (direct !== null) return direct;
+  const reverse = compoundRateNumber(compoundPolicy(`rate_${target}_${source}`));
+  return reverse === null || reverse === 0 ? null : 1 / reverse;
+}
+
+function compoundRateNumber(text) {
+  return /^\d+(?:\.\d+)?$/.test(text) ? Number(text) : null;
 }
 
 function parseCompoundInterestRequest(prompt, normalized) {
   // The investment / interest / compounding cues are language-independent
-  // meanings carried by the finance lexicon; we test the raw substring of the
-  // already-normalized prompt against every surface form (the English forms
-  // reproduce the original invest/interest/compound markers, the other
-  // languages broaden coverage). Mirrors parse_compound_interest_request.
+  // meanings carried by the finance lexicon, matched as raw substrings of the
+  // normalized prompt. Mirrors parse_compound_interest_request.
   if (
     !lexiconMentionsRoleSubstring(ROLE_INVESTMENT_CUE, normalized) ||
     !lexiconMentionsRoleSubstring(ROLE_INTEREST_CUE, normalized) ||
@@ -1243,7 +1264,7 @@ function parseCompoundInterestRequest(prompt, normalized) {
     annualRatePercent,
     compoundsPerYear,
     years,
-    targetCurrency: targetCurrencyFromText(normalized),
+    targetCurrency: targetCurrencyFromText(normalized, COMPOUND_PRINCIPAL_CURRENCY),
     asksForWebRate: asksForWebRate(normalized),
   };
 }
@@ -1258,10 +1279,10 @@ function parseFinalAmountConversionRequest(normalized, history) {
   ) {
     return null;
   }
-  const targetCurrency = targetCurrencyFromText(normalized);
-  if (!targetCurrency) return null;
   const prior = priorFinalAmount(history);
   if (!prior) return null;
+  const targetCurrency = targetCurrencyFromText(normalized, prior.currency);
+  if (!targetCurrency) return null;
   return {
     amount: prior.amount,
     sourceCurrency: prior.currency,
@@ -1281,33 +1302,34 @@ function priorFinalAmount(history) {
   return null;
 }
 
+// The amount and currency an earlier report states after the seeded
+// final-amount marker. Mirrors parse_final_amount_from_text.
 function parseFinalAmountFromText(text) {
-  const match = /final amount:\s*([+-]?\d[\d,.]*)\s*([A-Za-z]{3}|dollars?|euros?|rubles?)/i.exec(
-    text,
-  );
-  if (!match) return null;
+  const marker = compoundPolicy("final_amount_marker");
+  const lower = String(text || "").toLowerCase();
+  const at = marker ? lower.indexOf(marker) : -1;
+  if (at < 0) return null;
+  const match = /^[ \t\n\f\r]*([\d.,]*)[ \t\n\f\r]*(\p{L}*)/u.exec(lower.slice(at + marker.length));
   const amount = parseCompoundNumberText(match[1]);
-  const currency = currencyCodeFromWord(match[2]);
-  if (amount === null || !currency) return null;
-  return { amount, currency };
+  const entry = compoundCurrencies().find(([role]) => wordsForRole(role).includes(match[2]));
+  return amount === null || !entry ? null : { amount, currency: entry[1] };
 }
 
 function parseCompoundCurrencyAmount(prompt) {
   const text = String(prompt || "");
   const dollarIndex = text.indexOf("$");
-  if (dollarIndex >= 0) {
-    return parseCompoundNumberRight(text, dollarIndex + 1);
+  if (dollarIndex >= 0) return parseCompoundNumberRight(text, dollarIndex + 1);
+  // The spelled-out US-dollar markers are the English surfaces of
+  // currency_usd_reference, scanned as space-prefixed tokens with the amount
+  // to their left. Mirrors parse_currency_amount.
+  const lower = text.toLowerCase();
+  for (const word of wordsForRoleInLanguages(ROLE_CURRENCY_USD_REFERENCE, ["en"])) {
+    const index = lower.indexOf(` ${word}`);
+    if (index < 0) continue;
+    const amount = parseCompoundNumberLeft(lower, index);
+    if (amount !== null) return amount;
   }
-  // The spelled-out US-dollar markers are language data: reconstruct the regex
-  // alternation from the currency_usd_reference English surface forms (usd,
-  // dollar, dollars) instead of hardcoding them. Mirrors parse_currency_amount,
-  // which scans the same forms; the `$` glyph stays in code as a symbol.
-  const usdWords = wordsForRoleInLanguages(ROLE_CURRENCY_USD_REFERENCE, ["en"]);
-  if (!usdWords.length) return null;
-  const alternation = usdWords.map((word) => escapeRegExp(word)).join("|");
-  const pattern = new RegExp(`([+-]?\\d[\\d,.]*)\\s*(?:${alternation})`, "i");
-  const match = pattern.exec(text);
-  return match ? parseCompoundNumberText(match[1]) : null;
+  return null;
 }
 
 function parseCompoundPercentBeforeSymbol(prompt) {
@@ -1335,114 +1357,47 @@ function parseCompoundYears(normalized) {
 }
 
 function parseCompoundsPerYear(normalized) {
-  // The compounding frequency is a cluster of meanings (monthly, quarterly,
-  // weekly, daily, annual), each carrying its surface forms and listed in
-  // priority order in the finance lexicon. Pick the first whose surface appears
-  // in the prompt and map its slug to the periods-per-year count. Mirrors
+  // The compounding frequency is a cluster of meanings listed in priority
+  // order in the finance lexicon; the first whose surface appears in the
+  // prompt names its periods per year in the seeded policy. Mirrors
   // parse_compounds_per_year.
   const meaning = meaningsWithRole(ROLE_COMPOUNDING_FREQUENCY_CUE).find((candidate) =>
     candidate.words.some((word) => normalized.includes(word)),
   );
-  return meaning ? compoundsPerYearForSlug(meaning.slug) : null;
+  const periods = meaning ? compoundPolicy(`periods_${meaning.slug}`) : "";
+  return /^\d+$/.test(periods) ? Number(periods) : null;
 }
 
-function compoundsPerYearForSlug(slug) {
-  switch (slug) {
-    case "compounding_monthly":
-      return 12;
-    case "compounding_quarterly":
-      return 4;
-    case "compounding_weekly":
-      return 52;
-    case "compounding_daily":
-      return 365;
-    case "compounding_annual":
-      return 1;
-    default:
-      return null;
-  }
-}
-
-function targetCurrencyFromText(normalized) {
-  // The target currency is whichever currency meaning the prompt names as a
-  // whole token. EUR wins over USD wins over RUB to preserve the original
-  // priority; the € glyph stays in code as a symbol alongside the EUR meaning.
-  // Token-bounded matching mirrors target_currency / mentions_role on the Rust
-  // side, so a code like "eur" never fires inside another word.
-  if (
-    lexiconMentionsRole(ROLE_CURRENCY_EUR_REFERENCE, normalized) ||
-    normalized.includes("€")
-  ) {
-    return "EUR";
-  }
-  if (lexiconMentionsRole(ROLE_CURRENCY_USD_REFERENCE, normalized)) {
-    return "USD";
-  }
-  if (lexiconMentionsRole(ROLE_CURRENCY_RUB_REFERENCE, normalized)) {
-    return "RUB";
-  }
-  return "";
+// The currency a conversion request names, skipping `source`: the first
+// currency meaning the prompt mentions as a whole token, in the priority of
+// compoundCurrencies(); the € glyph is a typographic symbol for the euro.
+// Mirrors target_currency.
+function targetCurrencyFromText(normalized, source) {
+  const entry = compoundCurrencies().find(([role, code]) => code !== source && (
+    lexiconMentionsRole(role, normalized) || (code === "EUR" && normalized.includes("€"))));
+  return entry ? entry[1] : "";
 }
 
 function asksForWebRate(normalized) {
   // "fetch the live/current rate from the web" is the live_rate_freshness_cue
-  // meaning; its surface forms (web, current exchange, current rate, exchange
-  // rate) live in the finance lexicon. Matched as raw substrings to mirror
-  // asks_for_web_rate / mentions_role_raw on the Rust side.
+  // meaning, matched as raw substrings. Mirrors asks_for_web_rate.
   return lexiconMentionsRoleSubstring(ROLE_LIVE_RATE_FRESHNESS_CUE, normalized);
 }
 
-function compoundCurrencyRate(sourceCurrency, targetCurrency) {
-  const expression = `1 ${sourceCurrency} in ${targetCurrency}`;
-  if (sourceCurrency === targetCurrency) {
-    return {
-      rate: 1,
-      expression,
-      formatted: `1 ${targetCurrency}`,
-      sourceDetail: "",
-    };
-  }
-
-  const wasmResult = wasmEvaluateArithmetic(expression);
-  if (wasmResult && wasmResult.ok) {
-    const rate = parseCompoundLeadingNumber(wasmResult.value);
-    if (rate !== null) {
-      return {
-        rate,
-        expression,
-        formatted: wasmResult.value,
-        sourceDetail: `Exchange rate: 1 ${sourceCurrency} = ${formatCompoundRate(rate)} ${targetCurrency} (source: calculator)`,
-      };
-    }
-  }
-
-  const rate = defaultCurrencyRate(sourceCurrency, targetCurrency);
-  if (!rate) return null;
-  return {
-    rate,
-    expression,
-    formatted: `${formatCompoundRate(rate)} ${targetCurrency}`,
-    sourceDetail: `Exchange rate: 1 ${sourceCurrency} = ${formatCompoundRate(rate)} ${targetCurrency} (source: default (hardcoded))`,
-  };
-}
-
+// Number readers mirroring parse_number_left / parse_number_right: skip ASCII
+// whitespace, then take the run of digits, dots and commas.
 function parseCompoundNumberLeft(text, end) {
-  const before = String(text || "").slice(0, end);
-  const match = /([+-]?\d[\d,.]*)\s*$/.exec(before);
-  return match ? parseCompoundNumberText(match[1]) : null;
+  const match = /([\d.,]*)[ \t\n\f\r]*$/.exec(String(text || "").slice(0, end));
+  return parseCompoundNumberText(match[1]);
 }
 
 function parseCompoundNumberRight(text, start) {
-  const after = String(text || "").slice(start);
-  const match = /^\s*([+-]?\d[\d,.]*)/.exec(after);
-  return match ? parseCompoundNumberText(match[1]) : null;
+  const match = /^[ \t\n\f\r]*([\d.,]*)/.exec(String(text || "").slice(start));
+  return parseCompoundNumberText(match[1]);
 }
 
-function parseCompoundLeadingNumber(text) {
-  const match = /([+-]?\d[\d,.]*)/.exec(String(text || ""));
-  return match ? parseCompoundNumberText(match[1]) : null;
-}
-
+// A lone comma followed by at most two digits is a decimal comma (8,5); any
+// other comma groups thousands. Mirrors parse_number_slice.
 function parseCompoundNumberText(value) {
   let cleaned = String(value || "").trim();
   if (!/\d/.test(cleaned)) return null;

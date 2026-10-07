@@ -243,7 +243,7 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
             .is_some()
         }
         "conversion_target_currency" => {
-            crate::solver_handlers::compound_interest::target_currency(normalized).is_some()
+            crate::solver_handlers::compound_interest::target_currency(normalized, None).is_some()
         }
         "interval_bounds" => crate::number_constraints::extract_interval_bounds(
             &crate::engine::normalize_prompt(normalized),

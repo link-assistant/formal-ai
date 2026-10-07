@@ -522,6 +522,54 @@ meanings
     unit "not applicable"
     example "Sources disagree on this question."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_report
+    defined-by answer
+    role localized_response_template
+    precondition "a request states a principal, an annual rate, a compounding frequency and a term"
+    effect "the answer shows the compound-interest formula, each substituted value, the three steps and the final amount"
+    unit "US dollars"
+    example "Final amount: 1489.85 USD"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_final_amount_conversion
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up asks to convert the final amount an earlier report stated"
+    effect "the answer restates the source amount before converting it"
+    unit "the source currency"
+    example "Source amount: 1489.85 USD"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_conversion
+    defined-by answer
+    role localized_response_template
+    precondition "a report converts an amount at a seeded default exchange rate"
+    effect "the answer names the currency pair, the rate and the converted amount"
+    unit "the target currency"
+    example "1489.85 USD * 0.92 = 1370.66 EUR"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_rate_detail
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion used a seeded default exchange rate"
+    effect "the answer states the rate and that it is a default, not a fetched rate"
+    unit "the target currency per source unit"
+    example "Exchange rate: 1 USD = 0.92 EUR"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_live_rate_note
+    defined-by answer
+    role localized_response_template
+    precondition "the request asked for a current or web exchange rate"
+    effect "the answer says the rate's live freshness is not verified"
+    unit "not applicable"
+    example "Live web freshness is not independently verified here."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_rate_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "no seeded default rate links the source and target currencies"
+    effect "the answer says the source amount was calculated but no rate is available to convert it"
+    unit "not applicable"
+    example "no USD->CHF exchange rate is available locally"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
   unit_incompatibility
     defined-by answer
     role localized_response_template

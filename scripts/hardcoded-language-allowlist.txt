@@ -849,13 +849,6 @@ rust/src/solver_handlers/calendar_create.rs	Create event «{title}» on {iso}. T
 rust/src/solver_handlers/calendar_create.rs	{iso} ({time}, समय क्षेत्र {tz}) पर «{title}» कार्यक्रम बनाएँ। अवधि {minutes} मिनट।\nइस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\nया Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{google_url}\nपुष्टि के लिए «हाँ» उत्तर दें।
 rust/src/solver_handlers/calendar_create.rs	Создать событие «{title}» на {day} число ({iso}). Время: {time}, часовой пояс: {tz}. Длительность {minutes} минут.\nИмпортируйте этот файл .ics в любой календарь:\n{ics}\nИли откройте в Google Календаре (вход не требуется):\n{google_url}\nОтветьте «да», чтобы подтвердить.
 rust/src/solver_handlers/calendar_create.rs	在 {iso}（{time}，时区 {tz}）创建事件「{title}」。时长 {minutes} 分钟。\n将此 .ics 文件导入任何日历：\n{ics}\n或在 Google 日历中打开（无需登录）：\n{google_url}\n回复「是」以确认。
-rust/src/solver_handlers/compound_interest.rs	Final amount: {} USD
-rust/src/solver_handlers/compound_interest.rs	I calculated the USD amount, but no {source_currency}->{target_currency} exchange rate is available locally.
-rust/src/solver_handlers/compound_interest.rs	Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.
-rust/src/solver_handlers/compound_interest.rs	Rate detail: {detail}
-rust/src/solver_handlers/compound_interest.rs	Source amount: {} {}
-rust/src/solver_handlers/compound_interest.rs	Step 1: periodic rate = r/n = {}/{} = {}
-rust/src/solver_handlers/compound_interest.rs	Step 2: number of periods = n*t = {}*{} = {}
 rust/src/solver_handlers/conversation_memory/conversation_summary.rs	Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n
 rust/src/solver_handlers/conversation_memory/conversation_summary.rs	Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n
 rust/src/solver_handlers/conversation_memory/conversation_summary.rs	对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n
