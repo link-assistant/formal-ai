@@ -558,7 +558,7 @@ pub fn handle_unit_conversion(
                         .values
                         .iter()
                         .fold(template, |text, (key, value)| {
-                            text.replace(&["{", key, "}"].concat(), value)
+                            text.replace(&["{", *key, "}"].concat(), value)
                         })
                         .replace("{numerator_unit}", numerator)
                         .replace("{denominator_unit}", denominator)

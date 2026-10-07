@@ -192,7 +192,7 @@ fn read_senses(text: &str, term: &str, language: &str) -> Vec<(String, String)> 
         let sectioned = !titles.is_empty()
             && lines
                 .iter()
-                .any(|line| is_heading(line) && opens_definitions(line));
+                .any(|&line| is_heading(line) && opens_definitions(line));
         let mut in_section = false;
         let mut headings = 0usize;
         for line in lines {
