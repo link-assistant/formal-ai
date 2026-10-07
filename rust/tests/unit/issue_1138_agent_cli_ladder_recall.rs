@@ -451,3 +451,48 @@ fn after_a_compaction_the_already_edited_list_is_not_rewritten() {
         "the compacted run re-reads the tracked file first: {steps:?}"
     );
 }
+
+/// PR #1188 dogfooding: a second compaction summarizes the first summary
+/// turn, so its envelope nests the first one and lists "What did we do so
+/// far?" as the first user turn. The task is recovered from the nested
+/// envelope -- the recall question and the continuation ping are the client's
+/// protocol, not the work.
+#[test]
+fn a_nested_compaction_envelope_still_yields_the_task() {
+    let envelope = format!(
+        "Conversation summary: What did we do so far? Continue if you have next steps. What did we do so far? Conversation summary: {ADD_TO_LIST_LEAF}\n\nTitle: Add wikiquote\n\nUser turns:\n  1. What did we do so far?\n  2. Continue if you have next steps"
+    );
+    let completion = agent_step(&[
+        ChatMessage::user("What did we do so far?"),
+        ChatMessage::assistant(envelope),
+        ChatMessage::user("Continue if you have next steps"),
+    ]);
+    let (name, arguments) = planned_call(&completion).expect("the leaf resumes with a tool call");
+    assert_eq!(name, "read", "{arguments}");
+    assert!(
+        arguments.contains("rust/src/web_search_core.rs"),
+        "{arguments}"
+    );
+}
+
+/// The envelope the Agent CLI really stored after its second compaction: the
+/// nested summary head carries the task followed by the client's own residue
+/// (`What did we do so far? Title: … User turns:.`). The head's sentences that
+/// state work are the task.
+#[test]
+fn a_re_summarized_head_keeps_the_task_sentences() {
+    let envelope = format!(
+        "Conversation summary: What did we do so far? Continue if you have next steps. What did we do so far? Conversation summary: {ADD_TO_LIST_LEAF} What did we do so far? Title: What did we do so. User turns:.\n\nTitle: What did we do so\n\nUser turns:\n  1. What did we do so far?\n  2. Continue if you have next steps\n  3. What did we do so far?"
+    );
+    let completion = agent_step(&[
+        ChatMessage::user("What did we do so far?"),
+        ChatMessage::assistant(envelope),
+        ChatMessage::user("Continue if you have next steps"),
+    ]);
+    let (name, arguments) = planned_call(&completion).expect("the leaf resumes with a tool call");
+    assert_eq!(name, "read", "{arguments}");
+    assert!(
+        arguments.contains("rust/src/web_search_core.rs"),
+        "{arguments}"
+    );
+}

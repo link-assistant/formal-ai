@@ -2,6 +2,9 @@
 // rust/src/agentic_coding/planner/continuation.rs.
 
 import { plainText } from '../content.mjs';
+import { normalizePrompt } from '../crate/engine.mjs';
+import { mentionsRole } from '../write_lexicon.mjs';
+import { proseSentences } from '../shell_command_policy.mjs';
 import { handlerMatches } from '../crate/rule_interpreter.mjs';
 import {
   isAlphanumeric, isWhitespace, rsplitOnce, splitOnce, stripPrefix, trim, trimEndMatches, trimMatches, trimStart,
@@ -45,23 +48,52 @@ export function continuedAgentTask(messages, latest) {
   return null;
 }
 
-/** Mirrors `fn compacted_agent_task`. */
+/**
+ * Mirrors `fn compacted_agent_task`. Agent may compact an already compacted
+ * conversation, and each compaction summarizes the previous summary turn, so
+ * envelopes nest; every `Conversation summary:` envelope is read, the latest
+ * first, until one names a standing task (PR #1188 dogfooding: the second
+ * compaction listed "What did we do so far?" first and the task was lost).
+ */
 export function compactedAgentTask(earlier) {
   for (let index = earlier.length - 1; index >= 0; index -= 1) {
     const message = earlier[index];
     if (!isRole(message, 'assistant')) continue;
-    const split = rsplitOnce(plainText(message.content), 'Conversation summary:');
-    if (!split) continue;
-    const summary = trimStart(split[1]);
-    let task = preservedFirstUserTurn(summary);
-    if (task === null) {
-      const titled = splitOnce(summary, '\n\nTitle:');
-      const head = titled ? trim(titled[0]) : '';
-      task = head || null;
+    const envelopes = plainText(message.content).split('Conversation summary:').slice(1).reverse();
+    for (const envelope of envelopes) {
+      const summary = trimStart(envelope);
+      let task = preservedFirstUserTurn(summary);
+      if (task === null) {
+        const titled = splitOnce(summary, '\n\nTitle:');
+        task = titled ? standingSentences(trim(titled[0])) : null;
+      }
+      if (task !== null) return repairCompactedDotPaths(task);
     }
-    if (task !== null) return repairCompactedDotPaths(task);
   }
   return null;
+}
+
+/**
+ * Mirrors `fn standing_sentences`: the summary head's sentences that state
+ * work, joined — a re-summarized head trails the client's own residue
+ * (`… What did we do so far? Title: … User turns:.`) after the task.
+ */
+function standingSentences(head) {
+  const kept = proseSentences(head)
+    .filter((sentence) => isStandingTask(sentence.text) && !sentence.text.includes('Title:') && !sentence.text.includes('User turns:'))
+    .map((sentence) => trim(head.slice(sentence.span.start, sentence.span.end)));
+  return kept.length ? kept.join(' ') : null;
+}
+
+/**
+ * Mirrors `fn is_standing_task`: a turn that states work, not the client's
+ * own protocol — a continuation cue, a seeded request to summarize the
+ * conversation, or a nested summary envelope.
+ */
+export function isStandingTask(text) {
+  return !isContinuationCue(text)
+    && !mentionsRole('conversation_summary_phrase', normalizePrompt(text))
+    && !text.includes('Conversation summary:');
 }
 
 /** Mirrors `fn safe_relative_path` in rust/src/agentic_coding/write_request.rs. */
@@ -115,11 +147,17 @@ export function repairCompactedDotPaths(original) {
 export function preservedFirstUserTurn(summary) {
   const split = splitOnce(summary, '\n\nUser turns:\n');
   if (!split) return null;
-  const first = stripPrefix(split[1], '  1. ');
-  if (first === null) return null;
-  const end = first.indexOf('\n  2.');
-  const task = trim(first.slice(0, end < 0 ? first.length : end));
-  return task || null;
+  let rest = split[1];
+  for (let number = 1; ; number += 1) {
+    const body = stripPrefix(rest, `  ${number}. `);
+    if (body === null) return null;
+    const next = body.indexOf(`\n  ${number + 1}.`);
+    const end = next < 0 ? body.length : next;
+    const task = trim(body.slice(0, end));
+    if (task && isStandingTask(task)) return task;
+    if (next < 0) return null;
+    rest = body.slice(end + 1);
+  }
 }
 
 /**

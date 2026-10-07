@@ -14,7 +14,7 @@ import { applyRetainedAmendments } from './standing-requirements.mjs';
 import { thinkingStep } from './thinking.mjs';
 import { clientWorkingDirectory } from '../agentic/content.mjs';
 import { toolActionNarration } from '../agentic/narration.mjs';
-import { installNodeHost } from '../agentic/node-host.mjs';
+import { ensureNodeHost } from './node-host-install.mjs';
 import { agenticMessage } from '../agentic/messages.mjs';
 import { planSymbolicCommandReroute } from '../agentic/command_reroute.mjs';
 import { suppliedFileAnswer } from '../agentic/file_read/supplied.mjs';
@@ -34,12 +34,9 @@ import {
 } from '../agentic/crate/protocol_responses.mjs';
 import { ungroundedIdentityArguments } from '../agentic/crate/tool_scope.mjs';
 
-const installed = new WeakMap();
-
-/** Install the planner host over `ctx.worker` once. */
+/** Install the planner host over `ctx.worker` once (shared with js/server/solve.mjs). */
 async function ensureHost(ctx) {
-  if (!installed.has(ctx.worker)) installed.set(ctx.worker, installNodeHost(ctx.worker));
-  await installed.get(ctx.worker);
+  await ensureNodeHost(ctx);
 }
 
 function memoryEvents(ctx) {

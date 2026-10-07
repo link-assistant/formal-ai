@@ -632,3 +632,49 @@ carried no model limits, so the Agent CLI fell back to its built-in 60,000-token
 Test: `rust/tests/integration/with_formal_ai_global.rs`
 `with_formal_ai_global_states_the_served_model_limits` — `with --global agent`
 writes `limit.output = 8192` and a context window above the 60,000 guess.
+
+### The JS server answers a compaction request like native; the task survives repeated compactions
+
+**Compaction summary.** The browser worker answers a summarize request with
+conversation statistics (`## Conversation summary`), which carry no task, so
+after an Agent CLI compaction the JS planner web-searched "What did we do so
+far?". The worker realm cannot load the ported summarizer
+(`js/agentic/crate/summarization*.mjs`), and the CLI-facing JS root is the
+server, so `solveSymbolic` (`js/server/solve.mjs`) now replaces the worker's
+statistics with the native envelope — `conversationSummaryEnvelope`
+(`js/agentic/crate/conversation_summary.mjs`, twin of the summary body of
+`try_summarize_conversation`): `Conversation summary: <summarize_dialog>`,
+`Title:`, and every user turn, with the en/ru/zh headers taken from
+`data/meta/agentic-messages.lino` (`conversation_summary_envelope_*`, the same
+strings as the Rust `format!`). The returning-user recap (plain format) is
+left as is. Replaying the run's compaction request against the JS server
+reproduces the native answer line for line except one: the native body
+stored by the CLI shows the second user turn ("What did we do so far?") as
+empty — unexplained (the history builders are twins), most likely the
+client's own post-processing of its stored summary. The planner host install
+is now shared (`js/server/node-host-install.mjs`).
+
+**Nested envelopes (both roots).** A second compaction summarizes the first
+summary turn: the envelope nests, its first listed user turn is "What did we
+do so far?", and its head trails residue (`… What did we do so far? Title: …
+User turns:.`). `compactedAgentTask` / `compacted_agent_task` now read every
+`Conversation summary:` envelope, latest first, and take the first listed user
+turn that is a standing task (not a continuation cue, not a seeded
+`conversation_summary_phrase`, not an envelope), else the head's standing
+sentences (`standingSentences` / `standing_sentences`).
+
+**Convergence (both roots).** A member list read that already lists every
+requested member is itself the observation: the run answers "already lists …"
+at once instead of planning a `cat` that, on a 25 KB file, re-crossed the
+CLI's threshold before the final answer. The idempotence pins in
+`agentic-write.test.mjs` and `issue_1069_structural_edit.rs` now expect that
+final answer.
+
+**Through the CLI (JS server, no limit configured so it compacts at 60,000):**
+L01 runs read → write → compaction → continue → read → "`rust/src/web_search_core.rs`
+already lists "wikiquote"; nothing needed to change." Before: three
+compactions, then a web search for "What did we do so far".
+
+Tests: JS envelope shape, nested envelope, residue head, compacted ladder
+convergence; Rust `a_nested_compaction_envelope_still_yields_the_task`,
+`a_re_summarized_head_keeps_the_task_sentences`.

@@ -171,11 +171,14 @@ fn issue_1069_insertion_is_idempotent() {
     record(&mut messages, &read, source);
     // A value that is already present needs no write at all (PR #1188
     // dogfooding: rewriting the unchanged file after a client compaction kept
-    // the issue #1028 ladder over the compaction threshold); the run observes
-    // the file instead.
-    let observe = next_call(&messages);
-    assert_eq!(observe.tool, "run_shell_command");
-    assert_eq!(argument(&observe, "command"), "cat names.rs");
+    // the issue #1028 ladder over the compaction threshold); the read that
+    // shows it is the observation.
+    assert_eq!(
+        plan_chat_step(&messages, &TOOLS),
+        Some(AgenticPlan::Final(
+            "`names.rs` already lists \"b\", \"a\"; nothing needed to change.".to_owned()
+        ))
+    );
 }
 
 /// The same request with the target path in prose markup. The probe sent this

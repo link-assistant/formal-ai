@@ -65,6 +65,17 @@ pub(super) fn plan_structured_edit_step(
         return Some(plan_one(read_tool, read_arguments(&edit.target)));
     };
     let (updated, inserted) = insert_members(&source, &edit)?;
+    // A read that already lists every member is itself the observation: a run
+    // resumed after a client compaction answers at once instead of spending
+    // another full-file observation that pushes it over the threshold again.
+    if inserted.is_empty() && latest_result(current_turn, Capability::Write).is_none() {
+        return Some(AgenticPlan::Final(render_seeded_change(
+            "coding_member_already_present",
+            task,
+            &edit.target,
+            &[("{members}", &quoted_list(&edit.values))],
+        )?));
+    }
 
     // Members the file already lists need no write: after a client compaction
     // the run re-reads the file it already changed, and rewriting it in full

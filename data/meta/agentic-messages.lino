@@ -92,6 +92,12 @@ agentic_messages
     text "line that starts exactly"
   message web_search_conversation_search_openers
     text "search conversations|search my conversations|search my chats"
+  message conversation_summary_envelope_en
+    text "Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"
+  message conversation_summary_envelope_ru
+    text "Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n"
+  message conversation_summary_envelope_zh
+    text "对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"
   message harness_envelope_summarize_lead
     text "The following is the text to summarize:"
   message restart_feedback_uncommitted_marker

@@ -5,6 +5,7 @@
 // rust/src/protocol_policy.rs.
 
 import { finalizeServerAnswer } from './derivation-store.mjs';
+import { ensureNodeHost } from './node-host-install.mjs';
 import { EventLog, buildEvidenceLinks } from './evidence-links.mjs';
 import { f32 } from './json.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
@@ -117,6 +118,17 @@ async function seedReportReader(ctx) {
  */
 export async function solveSymbolic(ctx, prompt, history) {
   const result = await ctx.worker.solve(prompt, history);
+  // The native solver answers a summarize request (not a returning-user recap)
+  // with the `Conversation summary: … User turns:` envelope; the browser
+  // worker's report is statistics only. A client that compacts its session
+  // keeps that answer as the summary, so the server answers like native
+  // (PR #1188 dogfooding: the Agent CLI lost the task after a compaction).
+  if (result?.intent === 'summarize_conversation' && !(result.evidence || []).includes('summarization:format:plain')) {
+    await ensureNodeHost(ctx);
+    const { conversationSummaryEnvelope } = await import('../agentic/crate/conversation_summary.mjs');
+    const envelope = conversationSummaryEnvelope(prompt, history);
+    if (envelope !== null) result.content = envelope;
+  }
   // Issue #1184 R1184-9: every native solve ends in `finalize_answer`, which
   // links, appends and persists the answer's derivation record.
   return finalizeServerAnswer(ctx, symbolicFromWorker(result, history, await seedReportReader(ctx)), result);

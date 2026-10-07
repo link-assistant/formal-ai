@@ -310,7 +310,7 @@ describe('PR #1188 dogfood: a compacted ladder leaf does not rewrite the list it
   const LEAF = 'Atomic task L01: Edit the tracked file `rust/src/web_search_core.rs`: add "wikiquote" to the WEB_SEARCH_PROVIDERS list. Change only that file and keep it valid Rust.';
   const UPDATED = 'pub const WEB_SEARCH_PROVIDERS: [&str; 4] = ["duckduckgo", "brave", "startpage", "wikiquote"];\n';
 
-  test('re-read after the summary envelope -> observe -> already present, never a second write', async () => {
+  test('re-read after the summary envelope -> already present at once, never a second write', async () => {
     const messages = [
       { role: 'user', content: 'What did we do so far?' },
       { role: 'assistant', content: `Conversation summary: Atomic task L01 adds wikiquote to the provider list.\n\nTitle: Add wikiquote\n\nUser turns:\n  1. ${LEAF}` },
@@ -333,7 +333,7 @@ describe('PR #1188 dogfood: a compacted ladder leaf does not rewrite the list it
       messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
       messages.push({ role: 'tool', tool_call_id: id, content: result });
     }
-    assert.deepEqual(calls, ['read', 'bash']);
+    assert.deepEqual(calls, ['read']);
     assert.equal(answer, '`rust/src/web_search_core.rs` already lists "wikiquote"; nothing needed to change.');
   });
 });
@@ -444,5 +444,47 @@ describe('PR #1188 dogfood: cues inside a quoted payload do not steer routing', 
     const { calls, files } = await drive('Append "Commit all changes" to notes.txt.', { 'notes.txt': 'first\n' });
     assert.deepEqual(calls, ['read', 'edit', 'bash']);
     assert.equal(files.get('notes.txt'), 'first\nCommit all changes\n');
+  });
+});
+
+describe('PR #1188 dogfood: the task survives repeated compactions', () => {
+  const LEAF = 'Atomic task L01: Edit the tracked file `rust/src/web_search_core.rs`: add "wikiquote" to the WEB_SEARCH_PROVIDERS list. Change only that file and keep it valid Rust.';
+
+  test('the server answers a compaction request with the native envelope', async () => {
+    const { conversationSummaryEnvelope } = await import('../../../js/agentic/crate/conversation_summary.mjs');
+    const envelope = conversationSummaryEnvelope('Provide a detailed but concise summary of our conversation above.', [
+      { role: 'user', content: LEAF },
+      { role: 'assistant', content: 'Let me open rust/src/web_search_core.rs and read what it says.' },
+      { role: 'user', content: 'What did we do so far?' },
+    ]);
+    assert.ok(envelope.startsWith('Conversation summary: '), envelope);
+    assert.ok(envelope.endsWith(`\n\nUser turns:\n  1. ${LEAF}\n  2. What did we do so far?`), envelope);
+  });
+
+  test('a nested envelope whose first user turn is the recall question still yields the task', async () => {
+    const messages = [
+      { role: 'user', content: 'What did we do so far?' },
+      { role: 'assistant', content: `Conversation summary: What did we do so far? Continue if you have next steps. What did we do so far? Conversation summary: ${LEAF}\n\nTitle: Add wikiquote\n\nUser turns:\n  1. What did we do so far?\n  2. Continue if you have next steps` },
+      { role: 'user', content: 'Continue if you have next steps' },
+    ];
+    const plan = await planChatStep(messages, AGENT_CLI_TOOLS);
+    assert.equal(plan.kind, 'tool_calls');
+    assert.equal(plan.calls[0].tool, 'read');
+    assert.equal(JSON.parse(plan.calls[0].arguments).filePath, 'rust/src/web_search_core.rs');
+  });
+});
+
+describe('PR #1188 dogfood: a re-summarized envelope head trails the client residue', () => {
+  test('the head sentences that state work are the task', async () => {
+    const LEAF = 'Atomic task L01: Edit the tracked file `rust/src/web_search_core.rs`: add "wikiquote" to the WEB_SEARCH_PROVIDERS list. Change only that file and keep it valid Rust.';
+    const messages = [
+      { role: 'user', content: 'What did we do so far?' },
+      { role: 'assistant', content: `Conversation summary: What did we do so far? Continue if you have next steps. What did we do so far? Conversation summary: ${LEAF} What did we do so far? Title: What did we do so. User turns:.\n\nTitle: What did we do so\n\nUser turns:\n  1. What did we do so far?\n  2. Continue if you have next steps\n  3. What did we do so far?` },
+      { role: 'user', content: 'Continue if you have next steps' },
+    ];
+    const plan = await planChatStep(messages, AGENT_CLI_TOOLS);
+    assert.equal(plan.kind, 'tool_calls');
+    assert.equal(plan.calls[0].tool, 'read');
+    assert.equal(JSON.parse(plan.calls[0].arguments).filePath, 'rust/src/web_search_core.rs');
   });
 });

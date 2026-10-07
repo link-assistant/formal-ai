@@ -48,6 +48,13 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
   const result = insertMembers(source, edit);
   if (!result) return null;
   const [updated, inserted] = result;
+  // A read that already lists every member is itself the observation: a run
+  // resumed after a client compaction answers at once instead of spending
+  // another full-file observation that pushes it over the threshold again.
+  if (!inserted.length && latestResult(currentTurn, Capability.Write) === null) {
+    const rendered = renderSeededChange('coding_member_already_present', task, edit.target, [['{members}', quotedList(edit.values)]]);
+    return rendered === null ? null : finalAnswer(rendered);
+  }
   // Members the file already lists need no write: after a client compaction
   // the run re-reads the file it already changed, and rewriting it in full
   // pushed the session straight back over the compaction threshold (the

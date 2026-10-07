@@ -157,15 +157,15 @@ describe('structured_edit (rust/tests/unit/issue_1069_structural_edit.rs)', () =
     assert.ok(pair.includes('("left", "right", "middle")'), pair);
   });
 
-  test('insertion is idempotent: an already-present value is observed, not rewritten (line 165)', () => {
+  test('insertion is idempotent: the read that shows the value is the observation (line 165)', () => {
     const prompt = 'Edit names.rs: add "b" to the NAMES array that already contains "a".';
     const messages = [{ role: 'user', content: prompt }];
     const read = planStructuredEditStep(prompt, messages, TOOLS);
     messages.push({ role: 'assistant', content: '', tool_calls: [{ id: 'call_1', type: 'function', function: { name: read.calls[0].tool, arguments: read.calls[0].arguments } }] });
     messages.push({ role: 'tool', tool_call_id: 'call_1', name: read.calls[0].tool, content: 'const NAMES: &[&str] = &["a", "b"];\n' });
-    const observe = planStructuredEditStep(prompt, messages, TOOLS);
-    assert.equal(observe.calls[0].tool, 'run_shell_command');
-    assert.equal(argument(observe, 'command'), 'cat names.rs');
+    const answer = planStructuredEditStep(prompt, messages, TOOLS);
+    assert.equal(answer.kind, 'final');
+    assert.equal(answer.answer, '`names.rs` already lists "b", "a"; nothing needed to change.');
   });
 });
 
