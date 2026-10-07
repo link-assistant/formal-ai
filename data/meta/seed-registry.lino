@@ -62,6 +62,8 @@ seed_registry
     web true
   seed coding-composition-fragments
     web true
+  seed coding-discovery-runtime
+    web true
   seed coding-documentation-captures
     web true
   seed coding-guidance
@@ -739,9 +741,6 @@ seed_registry
   seed writing-genre-styleguides
     bundle true
     web true
-  unregistered coding-discovery-runtime
-    owner "src/coding/python_render.rs"
-    reason "Coding discovery embeds these executable structural templates only in the Python renderer that interprets them."
   unregistered google-trends-*
     owner "src/google_trends_catalog.rs"
     reason "The Google Trends catalog embeds its own prompts and snapshot; the capability owns the data rather than the shared bundle."

@@ -543,7 +543,7 @@ function parseObject(text) {
 
 const stringField = (value, key) => (typeof value[key] === 'string' ? value[key] : null);
 
-function resultForPath(messages, capability, path, expectedContent) {
+export function resultForPath(messages, capability, path, expectedContent) {
   return matchingResult(messages, (name, args) => {
     if (classifyTool(name) !== capability) return false;
     const value = parseObject(args);
@@ -615,7 +615,7 @@ function matchingResult(messages, matches) {
   return null;
 }
 
-function readArguments(path) {
+export function readArguments(path) {
   return jsonText({ path, filePath: path, file_path: path });
 }
 

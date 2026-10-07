@@ -108,6 +108,8 @@ function browserFragmentsFrom(text, containerName, recordName, surfaceName) {
       result: browserType(browserNodeValue(node, "fragment_result")),
       arguments: browserPlaceholders(surface),
       supports: browserNodeValues(node, "supports"),
+      realizations: Object.fromEntries((node.children || []).filter((child) => child.name === "realization")
+        .flatMap((child) => (child.children || []).map((entry) => [entry.name, entry.value]))),
       grounding: browserNodeValue(node, "grounding"),
       license: browserNodeValue(node, "license"),
     }];
@@ -266,14 +268,36 @@ function browserBinderSlots(surface) {
   return slots;
 }
 
+// The seeded function a language lowers a composed body into
+// (`{language}_ir_function`, coding-discovery-runtime.lino, as native
+// ir_lowering reads it), or null for a language with no lowering.
+function browserFunctionTemplate(language) {
+  const template = parseLinoTree(seedRawText(SEED_RAW, "coding-discovery-runtime.lino")).children
+    .flatMap((node) => node.children || []).find((node) => node.name === "template" && node.value === `${language}_ir_function`);
+  return (template && browserNodeValue(template, "text")) || null;
+}
+
+// The language a function is synthesized in: the named one when the seed
+// lowers functions into it, else Python, the canonical fragment surface.
+function browserSynthesisLanguage(normalized) {
+  const named = programLanguageFromPrompt(normalized);
+  return named && browserFunctionTemplate(named) ? named : "python";
+}
+
 function browserComposeProgramIr(prompt, normalized, structures) {
   const language = programLanguageFromPrompt(normalized) || "python";
-  if (language !== "python") return null;
+  const functionTemplate = browserFunctionTemplate(language);
+  if (functionTemplate === null) return null;
   const name = extractPythonFunctionName(prompt);
   const parameters = browserFunctionParameters(prompt);
   const resultType = browserFunctionResultType(prompt);
   if (!name || parameters.length === 0 || structures.length === 0) return null;
-  const catalog = browserFragmentCatalog();
+  // A fragment composes in a language it is realized in: the Python idiom is
+  // the canonical surface, every other language its `realization` entry.
+  const catalog = browserFragmentCatalog().flatMap((fragment) => {
+    const surface = language === "python" ? fragment.surface : fragment.realizations[language];
+    return surface ? [{ ...fragment, surface, arguments: browserPlaceholders(surface) }] : [];
+  });
   const relevant = catalog.map((fragment) => ({
     fragment,
     score: (structures.includes(fragment.id) ? 100 : 0) +
@@ -391,7 +415,9 @@ function browserComposeProgramIr(prompt, normalized, structures) {
     ...chosen.fragments, chosen.source].join("\u001f");
   return {
     contentId: conceptStableId("program_ir", canonical),
-    source: `def ${name}(${parameters.map((parameter) => parameter.name).join(", ")}):\n    return ${chosen.source}\n`,
+    source: functionTemplate.replace("{name}", name)
+      .replace("{parameters}", parameters.map((parameter) => parameter.name).join(", "))
+      .replace("{expression}", chosen.source),
     fragments: chosen.fragments,
     sources: chosen.sources,
     licenses: chosen.licenses,

@@ -232,6 +232,8 @@ meanings
     defined-by reduction
     role coding_fragment
     idiom "{left} + {right}"
+    realization
+      javascript "{left} + {right}"
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
     license "PSF-2.0"
     bootstrap true
@@ -244,6 +246,8 @@ meanings
     defined-by reduction
     role coding_fragment
     idiom "{left} * {right}"
+    realization
+      javascript "{left} * {right}"
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
     license "PSF-2.0"
     bootstrap true

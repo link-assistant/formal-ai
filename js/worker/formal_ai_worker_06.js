@@ -404,7 +404,7 @@ function looksLikePythonFunctionSynthesis(prompt, normalized) {
   const hasDef = String(prompt || "").toLowerCase().includes("def ");
   return (
     (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) || hasDef) &&
-    lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized) &&
+    (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized) || browserFunctionTemplate(programLanguageFromPrompt(normalized)) !== null) &&
     (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_ACTION, normalized) || hasDef)
   );
 }

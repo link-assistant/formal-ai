@@ -68,6 +68,8 @@ function execute(files, tool, args) {
     }
     if (args.command.startsWith('git add -A && git commit')) return '5498cccac709f99fc533d81030c088d0b292e594\n';
     if (args.command === 'python3 greet.py') return 'Hello, World\n';
+    if (/^node --check \S+$/u.test(args.command)) return '';
+    if (args.command === 'node --test') return '# pass 2\n# fail 0\n';
   }
   return `Error: ${tool} is not simulated`;
 }
@@ -261,13 +263,13 @@ describe('PR #1188 dogfood: a named source file says which language to write', (
 });
 
 describe('PR #1188 dogfood: a description of code is never written as a file\'s bytes', () => {
-  test('`Add a function multiply(a, b) to math.mjs …` leaves math.mjs intact', async () => {
+  test('`Add a function multiply(a, b) to math.mjs …` keeps math.mjs and adds only the function', async () => {
     const before = 'export function add(a, b) {\n  return a + b;\n}\n';
     const { files } = await drive(
       'Add a function multiply(a, b) to math.mjs that returns a times b, add a test for it to math.test.mjs, and run node --test to confirm it passes.',
       { 'math.mjs': before, 'math.test.mjs': "import { add } from './math.mjs';\n" },
     );
-    assert.equal(files.get('math.mjs'), before);
+    assert.equal(files.get('math.mjs'), `${before}\nexport function multiply(a, b) {\n  return a * b;\n}\n`);
     assert.equal(files.has('.formal-ai/general-change-plan.lino'), false);
   });
 
@@ -578,5 +580,45 @@ describe('PR #1188 dogfood: a request that names a line deletes whole lines', ()
     const { files, answer } = await drive("Remove 'drop me' from t.md.", { 't.md': TABLE });
     assert.equal(files.get('t.md'), '| id | value |\n| --- | --- |\n| R56kfQp |  |\n| R1 | keep |\n');
     assert.equal(answer, 'Removed `drop me` from `t.md` and observed the result.');
+  });
+});
+
+describe('PR #1188 dogfood: a function and its test are added to existing ES modules (T1)', () => {
+  const MATH = 'export function add(a, b) {\n  return a + b;\n}\n';
+  const TEST = "import { test } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { add } from './math.mjs';\n\n"
+    + "test('add', () => {\n  assert.equal(add(2, 3), 5);\n});\n";
+  const PROMPT = 'Add a function multiply(a, b) to math.mjs that returns a times b, add a test for it to math.test.mjs, '
+    + 'and run node --test to confirm it passes.';
+
+  test('read both -> write the module and the test -> node --check -> node --test -> report', async () => {
+    const { calls, files, answer } = await drive(PROMPT, { 'math.mjs': MATH, 'math.test.mjs': TEST }, 10);
+    assert.deepEqual(calls, ['read', 'read', 'write', 'write', 'bash', 'bash']);
+    assert.equal(files.get('math.mjs'), `${MATH}\nexport function multiply(a, b) {\n  return a * b;\n}\n`);
+    assert.equal(files.get('math.test.mjs'), TEST.replace('{ add }', '{ add, multiply }')
+      + "\ntest('multiply', () => {\n  assert.equal(multiply(2, 3), 6);\n});\n");
+    assert.equal(answer, 'Created and verified `math.mjs` through the agentic CLI harness.\n\n'
+      + `\`\`\`javascript\n${files.get('math.mjs')}\n\`\`\`\n\nCommands executed by the harness:\n\n`
+      + `\`math.test.mjs\`\n\n\`\`\`text\n${files.get('math.test.mjs')}\n\`\`\`\n`
+      + '- `node --check math.mjs`\n- `node --test`\n\nActual tool output:\n\n```text\n# pass 2\n# fail 0\n```');
+  });
+
+  test('the expected value is the specification evaluated, not the synthesized code run', async () => {
+    const { moduleFunctionRequest } = await import('../../../js/agentic/module_function.mjs');
+    assert.deepEqual(moduleFunctionRequest(PROMPT), {
+      name: 'multiply', parameters: ['a', 'b'], at: 15, module: 'math.mjs', test: 'math.test.mjs', language: 'javascript',
+      clause: 'Add a function multiply(a, b) to math.mjs that returns a times b', command: 'node --test',
+    });
+    // A file no seeded extension names, or a test asked for without its file, is not this route's.
+    assert.equal(moduleFunctionRequest('Add a function multiply(a, b) to math.txt that returns a times b.'), null);
+    assert.equal(moduleFunctionRequest('Add a function multiply(a, b) to math.mjs that returns a times b, and add a test.'), null);
+  });
+
+  test('the browser composer lowers the same IR to JavaScript from the seeded realization', async () => {
+    const { solve } = await import('../../../js/agentic/host.mjs');
+    const result = await solve('Write a JavaScript function multiply(a, b) that returns a times b.', []);
+    assert.equal(result.answer,
+      'Coding task formalized for JavaScript function `multiply`.\nDiscovered structural parts: reduce_product.\n'
+      + '```javascript\nexport function multiply(a, b) {\n  return a * b;\n}\n```\n'
+      + 'Verification status: unverified in the browser boundary; run the Rust/native solver to execute the derived program and its tests.');
   });
 });

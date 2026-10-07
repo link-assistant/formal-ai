@@ -28,7 +28,7 @@ possible tasks you encounter on the way must be fully supported by it".
 
 | # | Task (prompt) | Before | After |
 | --- | --- | --- | --- |
-| T1 | `Add a function multiply(a, b) to math.mjs that returns a times b, add a test for it to math.test.mjs, and run node --test to confirm it passes.` | **Fail, destructive**: `math.mjs` was overwritten with the text `a function multiply(a, b)`; a plan file was written under `.formal-ai/`; the answer said the change was complete. | **No longer destructive**: reads both files and reports them; the function and test are still not authored (open). |
+| T1 | `Add a function multiply(a, b) to math.mjs that returns a times b, add a test for it to math.test.mjs, and run node --test to confirm it passes.` | **Fail, destructive**: `math.mjs` was overwritten with the text `a function multiply(a, b)`; a plan file was written under `.formal-ai/`; the answer said the change was complete. | **Pass end-to-end through the CLI** (round 4): read both → write `math.mjs` (keeps `add`, adds `export function multiply(a, b) { return a * b; }`) → write `math.test.mjs` (`{ add, multiply }`, `assert.equal(multiply(2, 3), 6)`) → `node --check math.mjs` → `node --test` (2 pass). |
 | T2 | `Create a file a.txt containing hello` | Pass: `a.txt` = `hello`. | — |
 | T3 | `Read the file math.mjs and tell me its first line.` | Pass: answered with the first line. | — |
 | T4 | `Append the line 'third line' to notes.txt.` | **Fail, destructive**: `notes.txt` was overwritten with `the line 'third line'`. | **Pass**: read → edit → `sha256sum` check; one line added; answer `Appended \`third line\` to the end of \`notes.txt\` and observed the result.` |
@@ -766,4 +766,65 @@ open.
 **Tests.** JS: "a request that names a line deletes whole lines" (en
 singular/plural, ru, hi with `।`, zh, and the in-line removal). Rust:
 `rust/tests/unit/pull_request_1188_line_removal.rs` (uncompiled here).
+
+### T1 — a function and its test added to existing ES modules
+
+`Add a function multiply(a, b) to math.mjs that returns a times b, add a test
+for it to math.test.mjs, and run node --test to confirm it passes.` was no
+longer destructive after round 1, but nothing authored the function: the
+browser composer lowered Python only, the fragments had no JavaScript
+surface, and no route added a function to an existing module.
+
+**Root causes and fixes.**
+
+1. *No JavaScript surface.* `integer_add` and `integer_multiply`
+   (`data/seed/coding-composition-fragments.lino`) now carry `realization` →
+   `javascript` blocks, the form native `fragment_catalog` already parsed but
+   no seed used.
+2. *Python-only lowering.* The browser composer
+   (`js/worker/formal_ai_worker_program_ir.js`) composes over the fragments
+   realized in the named language and lowers through the seeded
+   `{language}_ir_function` template of `coding-discovery-runtime.lino`
+   (`javascript_ir_function` is new; the Python `def` now comes from
+   `python_ir_function` too). That seed was never in the browser bundle — the
+   composer asked for it and got an empty text — so it is registered as a web
+   seed (`data/meta/seed-registry.lino`, `js/seed-files.js`), which also gives
+   the browser the runtime fragments native already had. A named language
+   with a lowering is a synthesis domain (`looksLikePythonFunctionSynthesis`),
+   and the answer names and fences the language it synthesized in. Native
+   twin: `rust/src/coding/ir_lowering/javascript.rs`, a registered backend that
+   renders only seeded `javascript` realizations and names every other node
+   as a gap (`javascript_ir_gap`).
+3. *No route added a function to a module.* `js/agentic/module_function.mjs`
+   (a settled route after the workspace change): a seeded code construct the
+   request asks to write or add, a signature, the module (the first path
+   after it whose extension the seeded extension table of
+   `page-formalization-rules.lino` maps to a language with a test contract),
+   and — when the request names a test (`coding_test_artifact_kind`) — the
+   test module. It reads both, synthesizes the function from the clause that
+   states it through the shared solver, and hands an execution recipe to the
+   reroute: the module with the function appended, the test module with the
+   name added to its import of the module and one case appended, the
+   catalog's check command and the request's own command (`node --test`,
+   bounded by the seeded run verbs, shell tokens, function words and clause
+   separators). The test's expected value is the **specification** evaluated:
+   the words after the seeded return action (`a times b`), parameters bound to
+   the contract's sample arguments (`2 times 3`), computed by the calculator
+   (`6`) — never the synthesized code run against itself. The import line,
+   test case, header and samples are `data/meta/function-test-contracts.lino`.
+   A specification the calculator cannot evaluate declines the route.
+
+**Tests.** JS: "a function and its test are added to existing ES modules (T1)"
+(the six-call transcript and exact files and answer; the parsed request and
+two declines; the browser composer's JavaScript answer); the round-1 guard now
+expects `math.mjs` to keep `add` and gain only `multiply`. Rust:
+`rust/tests/unit/pull_request_1188_module_function.rs` (the IR lowers to the
+ES module function; a Python-only fragment is a named gap; uncompiled here).
+Worker budgets: `program_ir` 399 → 425, `07` 1393 → 1394, with reasons.
+
+**Still open.** The agentic route has no native twin yet (JavaScript first).
+`their sum` is not evaluable by the calculator, so `add(a, b) that returns
+their sum` with a test declines. `write a program that prints Hello, World!
+and run it` (no language, no file) is still a web search: nothing chooses a
+language for a request that names none.
 

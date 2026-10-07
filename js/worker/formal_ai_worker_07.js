@@ -475,11 +475,12 @@ function tryProgramSynthesis(prompt, normalized) {
   if (!functionName) return null;
   const structures = discoveredCodingStructures(canonical);
   const composed = browserComposeProgramIr(prompt, canonical, structures);
+  const language = browserSynthesisLanguage(canonical);
   const discovered = structures.length > 0 ? structures.join(", ") : "none yet";
   const evidence = [
-    `response:write_program:formalized:python:${functionName}`,
+    `response:write_program:formalized:${language}:${functionName}`,
     ...metaAlgorithmConstructionEvidence("program_synthesis"),
-    `synthesis:spec:language=python function=${functionName}`,
+    `synthesis:spec:language=${language} function=${functionName}`,
     `synthesis:discovered_parts:${structures.join(",")}`,
     "synthesis:verification:unverified_browser_boundary",
   ];
@@ -493,9 +494,9 @@ function tryProgramSynthesis(prompt, normalized) {
     );
   }
   const body = [
-    `Coding task formalized for Python function \`${functionName}\`.`,
+    `Coding task formalized for ${WRITE_PROGRAM_LANGUAGES[language].name} function \`${functionName}\`.`,
     `Discovered structural parts: ${discovered}.`,
-    composed ? `\`\`\`python\n${composed.source.trimEnd()}\n\`\`\`` : "",
+    composed ? `\`\`\`${WRITE_PROGRAM_LANGUAGES[language].fence}\n${composed.source.trimEnd()}\n\`\`\`` : "",
     "Verification status: unverified in the browser boundary; run the Rust/native solver to execute the derived program and its tests.",
   ].filter(Boolean);
   return {
@@ -503,9 +504,9 @@ function tryProgramSynthesis(prompt, normalized) {
     content: body.join("\n"),
     confidence: 1.0,
     evidence,
-    ...(composed ? { synthesizedProgram: { language: "python", source: composed.source } } : {}),
+    ...(composed ? { synthesizedProgram: { language, source: composed.source } } : {}),
     trace: [
-      `synthesis:spec:language=python function=${functionName}`,
+      `synthesis:spec:language=${language} function=${functionName}`,
       `synthesis:discovered_parts:${structures.join(",")}`,
       ...(composed ? ["synthesis:ir:type_checked", `synthesis:ir:content_id=${composed.contentId}`] : []),
       "synthesis:verification:unverified_browser_boundary",

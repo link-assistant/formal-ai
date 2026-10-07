@@ -41,6 +41,7 @@ import * as learningReport from './learning_report.mjs';
 import * as ledger from './ledger.mjs';
 import * as localSearch from './local_search.mjs';
 import * as meaningDetail from './meaning_detail.mjs';
+import * as moduleFunction from './module_function.mjs';
 import * as mutatingAction from './mutating_action.mjs';
 import * as noteComposition from './note_composition.mjs';
 import { agenticMessage } from './messages.mjs';
@@ -202,7 +203,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
  */
 export async function planSettledRoutes(task, messages, toolNames) {
   for (const arm of [gitCommit.planCommitStep, workspaceChange.planWorkspaceChangeStep,
-    codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
+    moduleFunction.planModuleFunctionStep, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
     const plan = await arm(task, messages, toolNames);
     if (plan !== null) return plan;
   }
