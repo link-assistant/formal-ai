@@ -2,26 +2,26 @@ self_ast_census
   target src/meta_method_dispatch.rs
   language rust
   fidelity signature
-  byte_len 44849
-  line_count 972
-  content_id source_module_fabfcc64c14f29b2
+  byte_len 45816
+  line_count 988
+  content_id source_module_647bdfa01f6b7feb
   symbol_count 18
   symbols
-    function try_dispatch 38 232
-    const SOLVER_CAPABILITIES 240 251
-    function names_file_type_filter 254 260
-    function try_capability_route 268 680
-    function promoted_calendar_claims 686 691
-    function github_repository_traffic_claims 697 703
-    function capability_route_preempts 713 731
-    function solver_route_is_authoritative 741 757
-    function record_capability_route 759 775
-    function try_learned_method 786 830
-    struct MethodRuntime 833 837
-    function new 840 861
-    function try_attributed_runtime 864 890
-    function try_diagnostic 892 930
-    function record_method 932 934
-    function record_method_answer 936 944
-    function record_contextual_method_answer 946 954
-    function refresh_answer_projection 956 972
+    function try_dispatch 38 248
+    const SOLVER_CAPABILITIES 256 267
+    function names_file_type_filter 270 276
+    function try_capability_route 284 696
+    function promoted_calendar_claims 702 707
+    function github_repository_traffic_claims 713 719
+    function capability_route_preempts 729 747
+    function solver_route_is_authoritative 757 773
+    function record_capability_route 775 791
+    function try_learned_method 802 846
+    struct MethodRuntime 849 853
+    function new 856 877
+    function try_attributed_runtime 880 906
+    function try_diagnostic 908 946
+    function record_method 948 950
+    function record_method_answer 952 960
+    function record_contextual_method_answer 962 970
+    function refresh_answer_projection 972 988

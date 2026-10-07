@@ -2,26 +2,32 @@ self_ast_census
   target src/solver_handlers/test_generation.rs
   language rust
   fidelity signature
-  byte_len 14524
-  line_count 441
-  content_id source_module_7a1bc0cf9b0f7008
-  symbol_count 18
+  byte_len 20892
+  line_count 616
+  content_id source_module_a5175f61e00b458f
+  symbol_count 24
   symbols
-    const CUES_PATH 22 22
-    const INTENT 23 23
-    function seed_text 26 31
-    function cue_phrases 35 66
-    function word_entries 69 89
-    function template 92 98
-    function mapping_rows 102 111
-    struct TestCase 114 120
-    struct Shape 123 127
-    function shapes 129 178
-    function identifier_at 181 186
-    function inside_parens 189 204
-    function function_spec 208 233
-    function python_literal 237 243
-    function case_id 246 256
-    function case_lines 259 287
-    function normalize_helper 291 331
-    function handle_test_generation 338 441
+    const CUES_PATH 25 25
+    const INTENT 26 26
+    function seed_text 29 34
+    function cue_phrases 38 69
+    function word_entries 72 92
+    function template 95 101
+    function mapping_rows 105 114
+    struct TestCase 117 123
+    struct Shape 126 130
+    function shapes 132 181
+    function identifier_at 184 189
+    function inside_parens 192 207
+    function paren_span 211 226
+    function function_spec 230 253
+    function names_function_under_test 259 261
+    function python_literal 265 271
+    function case_id 274 284
+    function case_lines 287 315
+    function normalize_helper 319 359
+    function literal_at 364 401
+    struct StatedExample 405 409
+    function stated_examples 414 463
+    function example_assertion 466 475
+    function handle_test_generation 482 616

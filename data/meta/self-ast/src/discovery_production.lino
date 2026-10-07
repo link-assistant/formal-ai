@@ -2,9 +2,9 @@ self_ast_census
   target src/discovery_production.rs
   language rust
   fidelity signature
-  byte_len 22275
-  line_count 578
-  content_id source_module_db830d8a3ec8d8ca
+  byte_len 22327
+  line_count 580
+  content_id source_module_0e7268e1e2884351
   symbol_count 35
   symbols
     const POLICY 42 42

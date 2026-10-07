@@ -1,0 +1,12 @@
+self_ast_census
+  target src/protocol/tokens.rs
+  language rust
+  fidelity signature
+  byte_len 1109
+  line_count 28
+  content_id source_module_1af6f5f04f401466
+  symbol_count 3
+  symbols
+    function message_content_tokens 8 15
+    function message_input_tokens 20 24
+    function responses_input_tokens 26 28

@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/modules.rs
   language rust
   fidelity signature
-  byte_len 1923
-  line_count 73
-  content_id source_module_d562977c41957706
-  symbol_count 64
+  byte_len 1963
+  line_count 75
+  content_id source_module_ea66b22e4260811d
+  symbol_count 66
   symbols
     module agent_workspace 9 9
     module behavior_rule_followups 10 10
@@ -44,30 +44,32 @@ self_ast_census
     module program_synthesis 43 43
     module prompt_text_question 44 44
     module regex_synthesis 45 45
-    module research_table 46 46
-    module response_language_followup 47 47
-    module self_awareness 48 48
-    module shell_command_compose 49 49
-    module shell_command_transform 50 50
-    module software_project 51 51
-    module software_project_code 52 52
-    module software_project_followup 53 53
-    module software_project_phrases 54 54
-    module sql_synthesis 55 55
-    module statistics 56 56
-    module task_decomposition 57 57
-    module test_generation 58 58
-    module text_edit_ops 59 59
-    module text_manipulation 60 60
-    module text_request_framing 61 61
-    module unit_conversion 62 62
-    module numeric_list 64 64
-    module page_query_text 65 65
-    module policy_gates 66 66
-    module summarization_request 67 67
-    module text_rewrite 68 68
-    module user_intent 69 69
-    module verifiable_task 70 70
-    module web_requests 71 71
-    module web_search_intent 72 72
-    module world_state 73 73
+    module regex_witness 46 46
+    module research_table 47 47
+    module response_language_followup 48 48
+    module self_awareness 49 49
+    module shell_command_compose 50 50
+    module shell_command_transform 51 51
+    module software_project 52 52
+    module software_project_code 53 53
+    module software_project_followup 54 54
+    module software_project_phrases 55 55
+    module sql_synthesis 56 56
+    module statistics 57 57
+    module task_decomposition 58 58
+    module test_generation 59 59
+    module text_edit_ops 60 60
+    module text_manipulation 61 61
+    module text_request_framing 62 62
+    module unit_conversion 63 63
+    module numeric_list 65 65
+    module page_query_text 66 66
+    module policy_gates 67 67
+    module summarization_request 68 68
+    module text_rewrite 69 69
+    module user_intent 70 70
+    module verifiable_task 71 71
+    module web_requests 72 72
+    module web_search_intent 73 73
+    module word_definition 74 74
+    module world_state 75 75

@@ -2,89 +2,89 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 36614
-  line_count 969
-  content_id source_module_8c9e52c6e02fba13
+  byte_len 35107
+  line_count 939
+  content_id source_module_b35704df720bda1d
   symbol_count 49
   symbols
-    struct NormalizedResult 13 21
-    enum StepOutcome 31 38
-    function step_outcome 42 53
-    function failed_verification 62 71
-    function reported_exit_code 78 80
-    struct ShellStep 84 86
-    function harness_reported_failure 95 97
-    function shell_step 102 107
-    function normalized_payload 112 117
-    function observed_payload 123 126
-    function failure_message 131 148
-    const PROSE_FAILURE_PREFIX_CHARS 154 154
-    function looks_like_error 156 163
-    const CITED_LINES_THAT_MAKE_A_QUOTATION 170 170
-    function own_words 193 208
-    function citation_offset 218 228
-    function word_start 231 236
-    function render 238 274
-    function render_failure 279 283
-    function failure_report 289 312
-    function latest_turn_answer 314 333
-    function has_latest_turn_result 335 346
-    function is_write_run_recipe 348 358
-    function follow_up_answer 360 391
-    function requested_index 393 405
-    function normalize 407 501
-    struct ShellEnvelope 509 513
-    function into_result 516 542
-    function parse_shell_envelope 545 589
-    function is_field 591 597
-    function envelope_section 601 621
-    function from_payload 623 669
-    function mcp_text_content 671 702
-    function structured_content_text 707 730
-    function strip_transport_envelope 736 768
-    function nonzero_status 770 778
-    function failed_status 780 793
-    function expected_stop_status 795 809
-    function nonempty_text 811 821
-    function pretty_json 823 825
-    function command_argument 843 859
-    function command_argument_key 871 896
-    function result_tool 898 908
-    function result_label 910 925
-    function extract_urls 927 943
-    function is_listing 945 950
-    function is_search 952 957
-    function response_language 959 961
-    function fill 963 969
+    module command_keys 14 14
+    struct NormalizedResult 17 25
+    enum StepOutcome 35 42
+    function step_outcome 46 57
+    function failed_verification 66 75
+    function reported_exit_code 82 84
+    struct ShellStep 88 90
+    function harness_reported_failure 99 101
+    function shell_step 106 111
+    function normalized_payload 116 121
+    function observed_payload 127 130
+    function failure_message 135 152
+    const PROSE_FAILURE_PREFIX_CHARS 158 158
+    function looks_like_error 160 167
+    const CITED_LINES_THAT_MAKE_A_QUOTATION 174 174
+    function own_words 197 212
+    function citation_offset 222 232
+    function word_start 235 240
+    function render 242 278
+    function render_failure 283 287
+    function failure_report 293 316
+    function latest_turn_answer 318 337
+    function has_latest_turn_result 339 350
+    function is_write_run_recipe 352 362
+    function follow_up_answer 364 395
+    function requested_index 397 409
+    function normalize 411 505
+    struct ShellEnvelope 513 517
+    function into_result 520 546
+    function parse_shell_envelope 549 593
+    function is_field 595 601
+    function envelope_section 605 625
+    function from_payload 627 673
+    function mcp_text_content 675 706
+    function structured_content_text 711 735
+    function strip_transport_envelope 741 773
+    function nonzero_status 775 783
+    function failed_status 785 798
+    function expected_stop_status 800 814
+    function nonempty_text 816 826
+    function pretty_json 828 830
+    function command_argument 848 866
+    function result_tool 868 878
+    function result_label 880 895
+    function extract_urls 897 913
+    function is_listing 915 920
+    function is_search 922 927
+    function response_language 929 931
+    function fill 933 939
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 25904
-    named_node_count 5320
-    distinct_node_kinds 87
+    total_link_count 25001
+    named_node_count 5121
+    distinct_node_kinds 88
     node_kinds
-      arguments 471
-      array_expression 17
+      arguments 452
+      array_expression 16
       array_type 11
       assignment_expression 3
-      attribute 4
-      attribute_item 4
+      attribute 3
+      attribute_item 3
       base_field_initializer 5
-      binary_expression 64
-      block 118
+      binary_expression 61
+      block 115
       boolean_literal 3
       break_expression 2
-      call_expression 471
+      call_expression 452
       char_literal 9
-      closure_expression 87
-      closure_parameters 87
+      closure_expression 83
+      closure_parameters 83
       compound_assignment_expr 3
       const_item 2
       crate 11
       declaration_list 1
-      doc_comment 134
+      doc_comment 125
       else_clause 12
       enum_item 1
       enum_variant 3
@@ -93,62 +93,63 @@ self_ast_census
       expression_statement 75
       field_declaration 8
       field_declaration_list 3
-      field_expression 428
-      field_identifier 454
+      field_expression 410
+      field_identifier 436
       field_initializer 18
       field_initializer_list 11
       for_expression 3
-      function_item 43
+      function_item 42
       generic_function 11
-      generic_type 26
-      identifier 1068
+      generic_type 25
+      identifier 1037
       if_expression 37
       impl_item 1
       index_expression 15
       inner_doc_comment_marker 1
       integer_literal 31
       let_condition 11
-      let_declaration 103
+      let_declaration 99
       lifetime 2
-      line_comment 156
-      macro_invocation 9
+      line_comment 145
+      macro_invocation 8
       match_arm 28
       match_block 10
       match_expression 10
       match_pattern 28
+      mod_item 1
       mutable_specifier 9
       or_pattern 2
-      outer_doc_comment_marker 133
-      parameter 69
-      parameters 43
-      parenthesized_expression 10
+      outer_doc_comment_marker 124
+      parameter 68
+      parameters 42
+      parenthesized_expression 9
       primitive_type 78
       range_expression 12
       reference_expression 50
-      reference_type 69
+      reference_type 68
       return_expression 27
-      scoped_identifier 64
+      scoped_identifier 63
       scoped_type_identifier 1
-      scoped_use_list 1
+      scoped_use_list 2
       self 9
       self_parameter 1
       shorthand_field_initializer 7
       source_file 1
-      string_content 139
-      string_literal 144
+      string_content 128
+      string_literal 133
       struct_expression 11
       struct_item 3
-      super 21
-      token_tree 23
-      try_expression 19
+      super 20
+      token_tree 18
+      try_expression 15
       tuple_expression 10
-      tuple_pattern 21
+      tuple_pattern 19
       tuple_struct_pattern 34
       tuple_type 1
-      type_arguments 37
-      type_identifier 100
-      unary_expression 25
-      use_declaration 4
-      use_list 1
+      type_arguments 36
+      type_identifier 97
+      unary_expression 23
+      use_declaration 5
+      use_list 2
       visibility_modifier 20
       while_expression 2

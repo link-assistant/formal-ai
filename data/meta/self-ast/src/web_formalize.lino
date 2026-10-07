@@ -2,10 +2,10 @@ self_ast_census
   target src/web_formalize.rs
   language rust
   fidelity signature
-  byte_len 33521
-  line_count 879
-  content_id source_module_30073e37815d74f4
-  symbol_count 42
+  byte_len 35140
+  line_count 918
+  content_id source_module_f427cc675e70f0cf
+  symbol_count 43
   symbols
     const RULES_TEXT 38 38
     const TRUST_TEXT 40 40
@@ -44,8 +44,9 @@ self_ast_census
     function shebang_language 764 771
     function extension_language 774 780
     function tag_attr 783 800
-    function strip_tags 803 815
-    function strip_tags_keep_lines 818 824
-    function cell_texts 827 851
-    function decode_entities 854 861
-    struct TrustFeatures 865 876
+    function remove_tags 803 815
+    function strip_tags 818 823
+    function strip_tags_keep_lines 832 863
+    function cell_texts 866 890
+    function decode_entities 893 900
+    struct TrustFeatures 904 915

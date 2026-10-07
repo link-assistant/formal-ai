@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/format_conversion.rs
   language rust
   fidelity signature
-  byte_len 22801
-  line_count 648
-  content_id source_module_f2191e9c0d8cde58
-  symbol_count 24
+  byte_len 28340
+  line_count 799
+  content_id source_module_af89475b58acb4d5
+  symbol_count 29
   symbols
     const CUES_PATH 21 21
     const INTENT 22 22
@@ -18,16 +18,21 @@ self_ast_census
     function backtick_span 119 128
     function json_span 131 159
     function json_text 162 170
-    function yaml_text 174 194
-    function plain_safe 201 227
-    function scalar_yaml 230 265
-    function key_yaml 268 274
-    function render_yaml 277 340
-    function parse_scalar 343 372
-    function split_mapping_line 375 401
-    struct YamlLine 404 407
-    function parse_block 411 494
-    function strip_prefix 498 500
-    function parse_yaml 504 533
-    function refusal 540 543
-    function handle_format_conversion 548 648
+    function yaml_text 174 192
+    function csv_text 196 204
+    function parse_csv 209 262
+    function render_csv_json 266 281
+    function convert_csv 285 328
+    function plain_safe 335 361
+    function scalar_yaml 364 397
+    function key_yaml 400 406
+    function render_yaml 409 472
+    function parse_scalar 475 502
+    function split_mapping_line 505 531
+    struct YamlLine 534 537
+    function parse_block 541 624
+    function strip_prefix 628 630
+    function parse_yaml 634 663
+    function refusal 670 673
+    function carries_structured_document 679 681
+    function handle_format_conversion 686 799

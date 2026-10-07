@@ -2,59 +2,57 @@ self_ast_census
   target src/protocol.rs
   language rust
   fidelity signature
-  byte_len 38148
-  line_count 1000
-  content_id source_module_f6fe55d7e0eb3a8b
-  symbol_count 51
+  byte_len 37644
+  line_count 986
+  content_id source_module_f0bc1b80b193ebf6
+  symbol_count 49
   symbols
     module content 28 28
     module output 32 32
     module recording 33 33
     module responses_input 34 34
-    function resolved_request_model 43 45
-    function response_timestamp 47 51
-    struct ChatCompletionRequest 54 77
-    struct StreamOptions 81 84
-    function requests_tool_execution 88 112
-    function requested_tool_names 114 147
-    struct ChatMessage 151 182
-    function is_false 185 187
-    function new 192 198
-    function user 202 204
-    function assistant 208 210
-    function assistant_tool_calls 214 220
-    function assistant_tool_calls_with_content 228 238
-    function tool_result 243 255
-    function tool_result_error 262 271
-    enum MessageContent 276 279
-    function default 282 284
-    function message_content_tokens 287 294
-    function message_input_tokens 299 303
-    function deserialize_null_content 315 320
-    struct MessageContentPart 323 328
-    struct ToolCall 332 337
-    function tool_call_kind 339 341
-    function function 347 360
-    struct FunctionCall 365 368
-    struct ChatCompletion 371 380
-    struct ChatChoice 383 387
-    struct TokenUsage 390 394
-    struct ResponsesRequest 397 415
-    function to_chat_completion_request 427 445
-    function responses_input_tokens 448 450
-    function create_chat_completion 453 455
-    function create_chat_completion_with_solver 458 463
-    function create_chat_completion_with_solver_and_memory 466 498
-    function command_reroute_plan 500 511
-    enum AgenticOutcome 517 526
-    function agentic_outcome 532 602
-    function groundable_tool_names 610 625
-    function messages_text 629 635
-    function chat_completion_from_plan 641 712
-    function chat_completion_from_symbolic 714 748
-    function create_response 751 755
-    function create_response_with_solver 758 763
-    function create_response_with_solver_and_memory 766 800
-    function response_from_plan 806 939
-    function response_from_symbolic 941 982
-    function response_reasoning_item 984 1000
+    module tokens 35 35
+    function resolved_request_model 45 47
+    function response_timestamp 49 53
+    struct ChatCompletionRequest 56 79
+    struct StreamOptions 83 86
+    function requests_tool_execution 90 114
+    function requested_tool_names 116 149
+    struct ChatMessage 153 184
+    function is_false 187 189
+    function new 194 200
+    function user 204 206
+    function assistant 210 212
+    function assistant_tool_calls 216 222
+    function assistant_tool_calls_with_content 230 240
+    function tool_result 245 257
+    function tool_result_error 264 273
+    enum MessageContent 278 281
+    function default 284 286
+    function deserialize_null_content 299 304
+    struct MessageContentPart 307 312
+    struct ToolCall 316 321
+    function tool_call_kind 323 325
+    function function 331 344
+    struct FunctionCall 349 352
+    struct ChatCompletion 355 364
+    struct ChatChoice 367 371
+    struct TokenUsage 374 378
+    struct ResponsesRequest 381 399
+    function to_chat_completion_request 411 429
+    function create_chat_completion 433 435
+    function create_chat_completion_with_solver 438 443
+    function create_chat_completion_with_solver_and_memory 446 478
+    function command_reroute_plan 480 491
+    enum AgenticOutcome 497 506
+    function agentic_outcome 512 588
+    function groundable_tool_names 596 611
+    function messages_text 615 621
+    function chat_completion_from_plan 627 698
+    function chat_completion_from_symbolic 700 734
+    function create_response 737 741
+    function create_response_with_solver 744 749
+    function create_response_with_solver_and_memory 752 786
+    function response_from_plan 792 925
+    function response_from_symbolic 927 968
+    function response_reasoning_item 970 986

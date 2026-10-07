@@ -2,35 +2,36 @@ self_ast_census
   target src/version_resolution.rs
   language rust
   fidelity signature
-  byte_len 20698
-  line_count 516
-  content_id source_module_55f10ae0d8aa0f9e
-  symbol_count 27
+  byte_len 21162
+  line_count 523
+  content_id source_module_ad5da2820b65b5c1
+  symbol_count 28
   symbols
     const TOOLCHAINS 23 23
     const CACHE_ENV_VAR 27 27
-    enum Origin 31 38
-    function label 41 47
-    struct ResolvedVersion 52 66
-    function pinned_ref 72 78
-    function from_baseline 80 89
-    struct VersionSet 94 108
-    function resolve 114 163
-    function for_generation 168 172
-    function baseline 176 189
-    function resolve_github 191 225
-    function pins 228 228
-    function pin 243 248
-    function record 252 267
-    function provenance_note 272 302
-    function resolve_java_lts 307 332
-    const URL 311 311
-    function json_string 335 341
-    function baseline 344 352
-    function descend 354 359
-    function fill_workflow_versions 370 421
-    struct WorkflowAction 427 432
-    function workflow_actions 434 460
-    function workflow_step_marker 463 472
-    function replace_action_ref 476 501
-    function replace_quoted_value 504 516
+    const LIVE_FETCH_ENV_VAR 29 29
+    enum Origin 33 40
+    function label 43 49
+    struct ResolvedVersion 54 68
+    function pinned_ref 74 80
+    function from_baseline 82 91
+    struct VersionSet 96 110
+    function resolve 116 165
+    function for_generation 174 179
+    function baseline 183 196
+    function resolve_github 198 232
+    function pins 235 235
+    function pin 250 255
+    function record 259 274
+    function provenance_note 279 309
+    function resolve_java_lts 314 339
+    const URL 318 318
+    function json_string 342 348
+    function baseline 351 359
+    function descend 361 366
+    function fill_workflow_versions 377 428
+    struct WorkflowAction 434 439
+    function workflow_actions 441 467
+    function workflow_step_marker 470 479
+    function replace_action_ref 483 508
+    function replace_quoted_value 511 523
