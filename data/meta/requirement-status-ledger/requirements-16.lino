@@ -30,7 +30,7 @@ requirement_status_ledger_shard requirements_16
     verdict "partial"
     delivered "partial: E70 delivered general natural-formal translation for the seeded FOL statement slice (PR #984, issue #917); E75 delivered method learning (PR #1005, issue #922); broader coverage remains incremental seed growth"
     issue "0914"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_914.rs"
     manual "not yet confirmed"
   requirement
     id "R914-6"

@@ -99,18 +99,18 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R485"
     shard "docs/requirements/issue-0834-legal-compliance-self-audit.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #837 (issue #834)"
     issue "0834"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_834.rs"
     manual "not yet confirmed"
   requirement
     id "R486"
     shard "docs/requirements/issue-0834-legal-compliance-self-audit.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #837 (issue #834)"
     issue "0834"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_834.rs"
     manual "not yet confirmed"
   requirement
     id "R487"
@@ -131,10 +131,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R489"
     shard "docs/requirements/issue-0834-legal-compliance-self-audit.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #837 (issue #834)"
     issue "0834"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_834.rs"
     manual "not yet confirmed"
   requirement
     id "R49"
@@ -147,10 +147,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R490"
     shard "docs/requirements/issue-0834-legal-compliance-self-audit.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #837 (issue #834)"
     issue "0834"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_834.rs"
     manual "not yet confirmed"
   requirement
     id "R491"
@@ -203,10 +203,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R492"
     shard "docs/requirements/issue-0834-legal-compliance-self-audit.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #837 (issue #834)"
     issue "0834"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_834.rs"
     manual "not yet confirmed"
   requirement
     id "R493"
