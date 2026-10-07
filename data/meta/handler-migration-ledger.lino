@@ -112,7 +112,11 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/summarization_request.rs"
     justification "Free-text summarization composes the compressed summary in Rust under a length bound that can never echo the input; the topic tables, stop-word lists, and every response template are seed data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_text_transform.js answers the same seed records in the worker."
   handler summarization
-    status pending
+    status migrated
+    data "data/seed/summary-topics.lino|data/seed/concepts.lino|data/seed/projects.lino"
+    primitive "rust/src/solver_handlers/benchmark_prompts.rs"
+    justification "issue #918 (R914-6): the triggers, rejections, constraint markers, topics and their typed record references are data/seed/summary-topics.lino, and the answer is the referenced concept's localized summary or the project's heaviest statement, never a sentence of the handler's own; the fallback is the seeded unknown response. The native part matches the seed table and dereferences the record. The browser had no twin (the row answered with the unknown opener); trySummarizationTopic in js/worker/formal_ai_worker_factual_qa.js now reads the same records and runs inline after web search, where the native table places the row. Pinned in both runtimes, beside rust/tests/unit/specification/prompt_variations.rs."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler verifiable_task
     status pending
   handler text_manipulation

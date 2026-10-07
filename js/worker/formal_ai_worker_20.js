@@ -684,6 +684,9 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, webSearch, formalizationContext);
   }
+  // The `summarization` row runs after web search, as the native table runs it.
+  const topicSummary = claimRouteRun("trySummarizationTopic", prompt, normalized, history, () => trySummarizationTopic(prompt));
+  if (topicSummary) return finalizeInlineHandler(events, steps, toolCalls, topicSummary, "trySummarizationTopic", formalizationContext);
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
   const wiki = await tryWikipediaLookup(prompt, language, preferences);
   if (wiki) {
@@ -868,7 +871,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
 function workerHandlerRegistryDefinition() {
   const workerHandlerAliases = {
     conversation_memory: "tryMemoryWrite",
-    summarization: "trySummarizeConversation",
+    summarization: "trySummarizationTopic", // runs inline after web search, as the native row does
     brainstorming: "tryBrainstormingRequest",
     roleplay: "tryRoleplayRequest",
     coreference: "tryCoreferenceFactLookup",

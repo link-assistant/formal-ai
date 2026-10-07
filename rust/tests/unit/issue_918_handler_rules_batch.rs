@@ -459,3 +459,26 @@ fn a_meaning_question_resolves_through_the_seeded_query_vocabulary() {
     assert_eq!(response.intent, "concept_lookup");
     assert_eq!(response.answer, CONCEPT_WIKIDATA);
 }
+
+const SUMMARY_RUST: &str = "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector.";
+const SUMMARY_FORMAL_AI: &str =
+    "formal-ai is a deterministic symbolic AI that answers without any neural-network inference.";
+
+/// A topic summary is the seeded topic's canonical concept summary or its
+/// heaviest project statement (`data/seed/summary-topics.lino`); the browser
+/// answered these requests with the unknown opener until it got the same
+/// reader, run after web search as the native row is.
+#[test]
+fn a_topic_summary_is_the_seeded_record_in_both_runtimes() {
+    for (prompt, expected) in [
+        ("Can you summarize Rust?", SUMMARY_RUST),
+        (
+            "Please summarize formal-ai in one paragraph.",
+            SUMMARY_FORMAL_AI,
+        ),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.intent, "summarize_topic", "{prompt}");
+        assert_eq!(response.answer, expected, "{prompt}");
+    }
+}

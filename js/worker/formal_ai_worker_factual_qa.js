@@ -889,3 +889,118 @@ function renderReleaseTimeline(slug, language, today) {
     .split("{retrieved}").join(timeline.retrievedAt));
   return { text: sections.join(" "), released, announced, stale };
 }
+
+// ---------------------------------------------------------------------------
+// Topic summaries (the `summarization` precedence row; browser twin for issue
+// #918). Mirrors try_summarization_request in
+// rust/src/solver_handlers/benchmark_prompts.rs over
+// data/seed/summary-topics.lino: a triggered request names a seeded topic,
+// and the answer is that topic's canonical concept summary or heaviest project
+// statement, never a sentence of its own.
+// ---------------------------------------------------------------------------
+
+let cachedSummaryTopicSeeds = null;
+
+/** The items of a seed list value: every quoted item, else the bare value. */
+function summaryTopicList(value) {
+  const text = String(value || "").trim();
+  if (!text) return [];
+  const quoted = [...text.matchAll(/"([^"]*)"/gu)].map((match) => match[1]);
+  return (quoted.length > 0 ? quoted : [text]).map((item) => item.toLowerCase()).filter(Boolean);
+}
+
+/**
+ * The summary-topic seed (Rust `summary_topic_seeds`).
+ * @returns {object}
+ */
+function summaryTopicSeeds() {
+  if (cachedSummaryTopicSeeds) return cachedSummaryTopicSeeds;
+  const text = seedRawText(SEED_RAW, "summary-topics.lino");
+  const root = text ? parseLinoTree(text).children.find((node) => node.name === "summary_topics") : null;
+  const records = root ? root.children : [];
+  const values = (name) => records.filter((node) => node.name === name).flatMap((node) => summaryTopicList(node.value));
+  const seeds = {
+    triggers: summaryTopicList(childValue(root || { children: [] }, "trigger")),
+    rejectSubstrings: values("reject_substring"),
+    rejectExact: values("reject_exact"),
+    constraintMarkers: values("constraint_marker"),
+    constraintLabel: String(childValue(root || { children: [] }, "constraint_label") || ""),
+    fallbackResponse: String(childValue(root || { children: [] }, "fallback_response") || ""),
+    topics: records.filter((node) => node.name === "topic" && node.value).map((node) => ({
+      displayName: node.value,
+      detectionKeywords: summaryTopicList(childValue(node, "detection_keywords")),
+      sourceKind: String(childValue(node, "source_kind") || ""),
+      sourceId: String(childValue(node, "source_id") || ""),
+    })).filter((topic) => topic.sourceKind && topic.sourceId),
+  };
+  if (text) cachedSummaryTopicSeeds = seeds;
+  return seeds;
+}
+
+/** A localized block for `language`, else the English one (Rust `localized_for`). */
+function summaryTopicLocalized(record, language) {
+  const localized = Array.isArray(record.localized) ? record.localized : [];
+  return localized.find((entry) => entry && entry.language === language) ||
+    localized.find((entry) => entry && entry.language === "en") || null;
+}
+
+/**
+ * The topic's canonical statement and its source (Rust `derived_topic_summary`).
+ * @returns {{body: string, source: string}|null}
+ */
+function summaryTopicDerive(topic, language) {
+  if (topic.sourceKind === "concept") {
+    const record = (CONCEPTS || []).find((candidate) => candidate.slug === topic.sourceId);
+    if (!record) return null;
+    const localized = summaryTopicLocalized(record, language);
+    return {
+      body: (localized && localized.summary) || record.summary || "",
+      source: (localized && localized.source) || record.source || "",
+    };
+  }
+  if (topic.sourceKind === "project") {
+    const record = (PROJECTS || []).find((candidate) => candidate.slug === topic.sourceId);
+    if (!record) return null;
+    const localized = summaryTopicLocalized(record, language);
+    const statements = localized && Array.isArray(localized.statements) && localized.statements.length > 0
+      ? localized.statements : (record.statements || []);
+    let best = null;
+    for (const statement of statements) {
+      if (!best || statement.weight >= best.weight) best = statement; // the last of equal maxima, as Iterator::max_by_key
+    }
+    return best ? { body: best.text, source: record.url || "" } : null;
+  }
+  return null;
+}
+
+/**
+ * The `summarization` row: a summary request over a seeded topic.
+ * @param {string} prompt
+ * @returns {object|null}
+ */
+function trySummarizationTopic(prompt) {
+  const seeds = summaryTopicSeeds();
+  const lower = String(prompt || "").toLowerCase();
+  if (!seeds.triggers.some((trigger) => lower.includes(trigger))) return null;
+  if (seeds.rejectExact.some((exact) => lower === exact)) return null;
+  if (seeds.rejectSubstrings.some((substring) => lower.includes(substring))) return null;
+  const language = detectLanguage(prompt);
+  const topic = seeds.topics.find((candidate) =>
+    candidate.detectionKeywords.some((keyword) => lower.includes(keyword)));
+  const derived = topic ? summaryTopicDerive(topic, language) : null;
+  const evidence = [];
+  let label = topic ? topic.displayName : "";
+  let body = derived ? derived.body : "";
+  let source = derived ? derived.source : "";
+  if (!derived) {
+    evidence.push("summarization:refusal:no_seeded_topic");
+    label = String(prompt || "").replace(/^[\s!-/:-@[-`{-~]+|[\s!-/:-@[-`{-~]+$/gu, "");
+    body = answerFor(seeds.fallbackResponse || "unknown", language);
+    source = "none";
+  }
+  evidence.push(`summarization:topic:${label}`, `summarization:source:${source}`);
+  if (seeds.constraintMarkers.some((marker) => lower.includes(marker))) {
+    evidence.push(`summarization:constraint:${seeds.constraintLabel}`);
+  }
+  return { intent: "summarize_topic", content: body, confidence: 0.85, evidence };
+}
