@@ -13,7 +13,9 @@ import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_inte
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { asksAQuestion, callerContextVocabulary, copulaIn } from './crate/seed_caller_context.mjs';
 import { agenticToolCapabilities } from './crate/seed_agentic_tool_capabilities.mjs';
-import { mentionsRole, roleWordForms, wordsForRole } from './crate/seed_meanings.mjs';
+import { evidencedIn, meaning, mentionsRole, roleWordForms, wordsForRole } from './crate/seed_meanings.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { webSearchQueryFor } from './crate/solver_handlers_web_search.mjs';
 import {
   byteFind, charCount, compareTuples, eqIgnoreAsciiCase, isAlphanumeric, isWhitespace, maxByKey, minByKey,
@@ -359,6 +361,9 @@ function intentShellCommand(prompt, vocab) {
   const matched = matchedIntentCue(lower, vocab);
   if (matched === null) return null;
   const [intent, cue] = matched;
+  // A destructive intent (`destructive true` in the seed) never reads a
+  // request about text inside a file as a request to delete the file.
+  if (intent.destructive && editsInsideAFile(prompt)) return null;
   const withArgument = (argument) => (argument === null ? null : `${intent.command} ${argument}`);
   switch (intent.argument) {
     case 'none':
@@ -410,6 +415,50 @@ function matchedIntentCue(lower, vocab) {
     }
   }
   return maxByKey(pairs, ([, cue]) => charCount(cue)) ?? null;
+}
+
+/** The request without its quoted segments. */
+function outsideQuotedSegments(prompt) {
+  let outside = '';
+  let cursor = 0;
+  for (const segment of quotedSegmentSpans(prompt)) {
+    if (segment.start < cursor) continue;
+    outside += `${prompt.slice(cursor, segment.start)} `;
+    cursor = segment.end;
+  }
+  return outside + prompt.slice(cursor);
+}
+
+/**
+ * Mirrors `fn edits_inside_a_file`: the request is about text inside a file —
+ * it quotes a payload that is not a path, or names a line (the seeded `line`
+ * meaning) or another unit of text (`file_text_unit`: word, phrase,
+ * occurrence, text, in every registered language) outside its quotes
+ * (PR #1188: `t.md से drop शब्द हटाओ।` ran `rm t.md`).
+ */
+export function editsInsideAFile(prompt) {
+  const quoted = quotedSegmentSpans(prompt).map((segment) => trim(segment.text)).filter((text) => text !== '');
+  if (quoted.some((text) => !looksLikeAPath(text))) return true;
+  const outside = normalizePrompt(outsideQuotedSegments(prompt)).toLowerCase();
+  const line = meaning('line');
+  return (line !== null && line !== undefined && evidencedIn(line, outside)) || mentionsRole('file_text_unit', outside);
+}
+
+/**
+ * Mirrors `fn refused_destructive_edit`: when the request's seeded intent is
+ * destructive but the request edits inside a file, the path it names (or
+ * '') so the planner can decline honestly instead of composing the command;
+ * null otherwise.
+ */
+export function refusedDestructiveEdit(task) {
+  const prompt = stripBalancedOuterQuotes(trim(task));
+  const matched = matchedIntentCue(prompt.toLowerCase(), shellIntentVocabulary());
+  if (matched === null || !matched[0].destructive || !editsInsideAFile(prompt)) return null;
+  const written = splitWhitespace(outsideQuotedSegments(prompt))
+    .map((token) => trimMatches(token, (character) => '`"\'()[]{}<>,;:!?।。'.includes(character)))
+    .map((token) => trimTrailingSentenceDot(token))
+    .find((token) => looksLikeAPath(token));
+  return written ?? pathArguments(prompt, matched[1], shellIntentVocabulary(), 1) ?? '';
 }
 
 /** Mirrors `fn names_mutating_shell_intent`. */

@@ -300,6 +300,13 @@ async function planLaterRoutes(task, messages, toolNames) {
     const plan = await step();
     if (plan !== null) return plan;
   }
+  // A destructive shell intent read against a request about text inside a
+  // file is declined honestly, never composed (PR #1188).
+  const refused = shellCommand.refusedDestructiveEdit(task);
+  if (refused !== null) {
+    const decline = codeTask.renderSeededChange('file_text_unit', task, refused, []);
+    if (decline !== null) return finalAnswer(decline);
+  }
   const command = shellCommand.shellCommandForTask(task);
   if (command !== null) {
     const fallback = await shellFileFallback.planStep(task, messages, toolNames, command);

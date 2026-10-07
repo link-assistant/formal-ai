@@ -86,6 +86,9 @@ pub struct ShellIntent {
     /// The pre/post conditions this intent's command must satisfy, empty for the
     /// read-only intents that only report what they observe.
     pub effect: ShellIntentEffect,
+    /// `destructive true`: the command destroys its operand (`rm`, `rmdir`), so
+    /// it is never composed for a request about text inside a file.
+    pub destructive: bool,
 }
 
 /// Commands selected from a workspace's package-manager marker file.
@@ -326,6 +329,7 @@ fn parse_intent(node: &LinoNode) -> ShellIntent {
             .find(|child| child.name == "effect")
             .map(parse_intent_effect)
             .unwrap_or_default(),
+        destructive: node.find_child_value("destructive") == "true",
     }
 }
 

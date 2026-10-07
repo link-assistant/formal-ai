@@ -373,6 +373,8 @@ roles
     kind meaning
   file_read_action_cue
     kind predicate
+  file_text_unit
+    kind meaning
   file_write_action_cue
     kind predicate
   file_write_authoritative_content_lead

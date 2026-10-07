@@ -279,6 +279,26 @@ multilingual_responses
     intent line
     language es
     text "Se eliminaron {count} línea(s) con `{old}` de `{path}` y se verificó el resultado."
+  response response_file_text_unit_en
+    intent file_text_unit
+    language en
+    text "No edit I can verify reads this request against `{path}`, so nothing was changed. The request names text inside the file, not the file itself, so I did not delete it."
+  response response_file_text_unit_ru
+    intent file_text_unit
+    language ru
+    text "Ни одна проверяемая правка не прочитала этот запрос для `{path}`, поэтому ничего не изменено. Запрос говорит о тексте внутри файла, а не о самом файле, поэтому файл не удалён."
+  response response_file_text_unit_hi
+    intent file_text_unit
+    language hi
+    text "`{path}` के लिए इस अनुरोध को कोई सत्यापन-योग्य संपादन नहीं पढ़ सका, इसलिए कुछ नहीं बदला गया। अनुरोध फ़ाइल के भीतर के पाठ के बारे में है, फ़ाइल के बारे में नहीं, इसलिए फ़ाइल नहीं हटाई गई।"
+  response response_file_text_unit_zh
+    intent file_text_unit
+    language zh
+    text "没有可验证的编辑能针对 `{path}` 读懂这个请求，因此未做任何更改。请求说的是文件中的文本，而不是文件本身，所以没有删除该文件。"
+  response response_file_text_unit_es
+    intent file_text_unit
+    language es
+    text "Ninguna edición verificable interpreta esta solicitud sobre `{path}`, así que no se cambió nada. La solicitud nombra texto dentro del archivo, no el archivo, así que no lo eliminé."
   response response_setting_en
     intent setting
     language en

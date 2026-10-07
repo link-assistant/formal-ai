@@ -622,3 +622,38 @@ describe('PR #1188 dogfood: a function and its test are added to existing ES mod
       + 'Verification status: unverified in the browser boundary; run the Rust/native solver to execute the derived program and its tests.');
   });
 });
+
+describe('PR #1188 dogfood: an edit-shaped request never becomes a file deletion', () => {
+  const NOTES = 'keep one\ndrop me\nkeep two\n';
+
+  test('held-out en/ru/hi/zh probes are declined honestly and leave the file byte-identical', async () => {
+    for (const [prompt, expected] of [
+      ['Delete the file t.md word drop.',
+        'No edit I can verify reads this request against `t.md`, so nothing was changed. The request names text inside the file, not the file itself, so I did not delete it.'],
+      ['Удалить файл t.md слово drop',
+        'Ни одна проверяемая правка не прочитала этот запрос для `t.md`, поэтому ничего не изменено. Запрос говорит о тексте внутри файла, а не о самом файле, поэтому файл не удалён.'],
+      ['t.md से drop शब्द हटाओ।',
+        '`t.md` के लिए इस अनुरोध को कोई सत्यापन-योग्य संपादन नहीं पढ़ सका, इसलिए कुछ नहीं बदला गया। अनुरोध फ़ाइल के भीतर के पाठ के बारे में है, फ़ाइल के बारे में नहीं, इसलिए फ़ाइल नहीं हटाई गई।'],
+      ['删除文件 t.md 里的文字 drop',
+        '没有可验证的编辑能针对 `t.md` 读懂这个请求，因此未做任何更改。请求说的是文件中的文本，而不是文件本身，所以没有删除该文件。'],
+    ]) {
+      const { calls, files, answer } = await drive(prompt, { 't.md': NOTES });
+      assert.deepEqual(calls, [], prompt);
+      assert.equal(files.get('t.md'), NOTES, prompt);
+      assert.equal(answer, expected, prompt);
+    }
+  });
+
+  test('a request that plainly deletes the file is still a deletion, in every language', async () => {
+    for (const prompt of ['Delete the file t.md', 'Удали файл t.md', 't.md हटाओ', '删除文件 t.md']) {
+      const plan = await planChatStep([{ role: 'user', content: prompt }], AGENT_CLI_TOOLS);
+      assert.equal(plan.calls[0].tool, 'bash', prompt);
+      assert.equal(JSON.parse(plan.calls[0].arguments).command, 'rm t.md', prompt);
+    }
+  });
+
+  test('the destructive commands are the seed\'s `destructive true` intents, not a list in code', async () => {
+    const { shellIntentVocabulary } = await import('../../../js/agentic/crate/seed_shell_intents.mjs');
+    assert.deepEqual(shellIntentVocabulary().intents.filter((intent) => intent.destructive).map((intent) => intent.command), ['rmdir', 'rm']);
+  });
+});

@@ -335,6 +335,58 @@ meanings
         text línea
       surface
         text líneas
+  file_text_unit
+    defined-by concept
+    role file_text_unit
+    precondition "a request names a unit of text inside a file: a word, a phrase, an occurrence, the text"
+    effect "the request edits inside the file; a destructive file command never reads it as deleting the file"
+    unit "not applicable"
+    example "delete the word drop from notes.txt"
+    lexeme en
+      surface
+        text word
+      surface
+        text words
+      surface
+        text phrase
+      surface
+        text occurrence
+      surface
+        text text
+    lexeme ru
+      surface
+        text слово
+      surface
+        text слова
+      surface
+        text фразу
+      surface
+        text вхождение
+      surface
+        text текст
+    lexeme hi
+      surface
+        text शब्द
+      surface
+        text वाक्यांश
+      surface
+        text पाठ
+    lexeme zh
+      surface
+        text 一词
+      surface
+        text 词语
+      surface
+        text 文字
+      surface
+        text 文本
+    lexeme es
+      surface
+        text palabra
+      surface
+        text frase
+      surface
+        text texto
   file_edit_blank_line
     defined-by concept
     role file_edit_blank_line

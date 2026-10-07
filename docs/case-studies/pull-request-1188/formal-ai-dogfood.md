@@ -828,3 +828,34 @@ their sum` with a test declines. `write a program that prints Hello, World!
 and run it` (no language, no file) is still a web search: nothing chooses a
 language for a request that names none.
 
+### Safety — an edit-shaped request never becomes a file deletion (round 5)
+
+`t.md से drop शब्द हटाओ।` ("remove the word drop from t.md") ran `rm t.md` and
+deleted the file: no edit step grounds an unquoted word, and the seeded `rm`
+intent's Hindi cue is the bare verb `हटाओ`, so the shell translation composed
+the deletion.
+
+**Fix (both roots).** The `rm` and `rmdir` intents of
+`data/seed/shell-intents.lino` are marked `destructive true` (read into
+`ShellIntent::destructive` / `intent.destructive`; no command list in code).
+A destructive intent is never composed when the request edits inside a file
+(`editsInsideAFile` / `edits_inside_a_file`): it quotes a payload that is not
+a path, or names a line (the seeded `line` meaning) or another unit of text
+(the new seeded `file_text_unit` meaning: word, phrase, occurrence, text,
+слово, शब्द, 文字, palabra…) outside its quotes. The planner then declines
+honestly with the seeded `file_text_unit` sentence naming the file
+(`destructiveEditDecline` / `destructive_edit_decline`, ahead of the shell
+cascade), in five languages. Every other caller of the shell translation
+(the capability router's shell lowering, the semantic intent reader) goes
+through the same guarded intent reader; the shared solver and the shell
+composer answer these requests without a command.
+
+**Held-out probes** (in-process driver and real sandbox files; the file keeps
+its bytes): `Delete the file t.md word drop.`, `Удалить файл t.md слово drop`,
+`t.md से drop शब्द हटाओ।`, `删除文件 t.md 里的文字 drop`. A request that
+plainly deletes the file is still a deletion: `Delete the file t.md`,
+`Удали файл t.md`, `t.md हटाओ`, `删除文件 t.md` plan `rm t.md`.
+
+**Tests.** JS: "an edit-shaped request never becomes a file deletion". Rust:
+`rust/tests/unit/pull_request_1188_destructive_edit.rs` (uncompiled here).
+

@@ -118,6 +118,29 @@ fn sentence_words(task: &str) -> String {
     out
 }
 
+/// Whether the request is about text inside a file: it quotes a payload that
+/// is not a path, or names a line (the seeded `line` meaning) or another unit
+/// of text (`file_text_unit`: word, phrase, occurrence, text, in every
+/// registered language) outside its quotes. A destructive shell intent never
+/// reads such a request as deleting the file (PR #1188).
+pub(super) fn edits_inside_a_file(prompt: &str) -> bool {
+    if quoted_segment_spans(prompt)
+        .iter()
+        .map(|segment| segment.text.trim())
+        .any(|text| !text.is_empty() && !super::shell_command::looks_like_a_path(text))
+    {
+        return true;
+    }
+    let outside = crate::engine::normalize_prompt(
+        &crate::solver_handlers::text_outside_quoted_segments(prompt),
+    )
+    .to_lowercase();
+    seed::lexicon()
+        .meaning("line")
+        .is_some_and(|meaning| meaning.evidenced_in(&outside))
+        || seed::lexicon().mentions_role("file_text_unit", &outside)
+}
+
 /// Whether the request names a line outside its quotes: the seeded `line`
 /// meaning (`the line containing '…'`, `lines`, `строку`, `पंक्ति`, `的行`).
 fn names_line(task: &str) -> bool {

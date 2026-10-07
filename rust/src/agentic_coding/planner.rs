@@ -755,17 +755,18 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = comparison::plan_comparison_step(task, messages, tool_names) {
         return Some(plan);
     }
-    // Plan 10 leaf 11: the shared cue-phrase arm that stood here is retired,
-    // and its *position* is kept -- because position is what the seven named
-    // capabilities still need. The decision table decides them now by
-    // `(object, act, locus)` with no phrase scan, and it decides them here,
-    // ahead of the shell cascade, so a request whose row names an advertised
-    // `grep`, `glob`, `list_dir`, `read_many`, `multi_edit`, `todo` or
-    // `subagent` is not answered by the shell lowering that same row declares
-    // as its fallback. A row the table cannot decide here (no row, or a
-    // capability outside the seven) leaves the cascade exactly as it was.
+    // Plan 10 leaf 11: the shared cue-phrase arm that stood here is retired, and its *position*
+    // is kept -- because position is what the seven named capabilities still need. The decision
+    // table decides them now by `(object, act, locus)` with no phrase scan, and it decides them
+    // here, ahead of the shell cascade, so a request whose row names an advertised `grep`, `glob`,
+    // `list_dir`, `read_many`, `multi_edit`, `todo` or `subagent` is not answered by the shell
+    // lowering that same row declares as its fallback. A row the table cannot decide here (no
+    // row, or a capability outside the seven) leaves the cascade exactly as it was.
     if let Some(plan) = capability_router::plan_named_capability_step(task, messages, tool_names) {
         return Some(plan);
+    }
+    if let Some(decline) = shell_command::destructive_edit_decline(task) {
+        return Some(decline);
     }
     if let Some(command) = shell_command::shell_command_for_task(task) {
         if let Some(plan) = shell_file_fallback::plan_step(task, messages, tool_names, &command) {

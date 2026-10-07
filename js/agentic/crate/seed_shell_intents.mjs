@@ -25,6 +25,7 @@ function parseIntent(node) {
     argument: ARGUMENTS.includes(argument) ? argument : 'none',
     cues: lowerAll(collectLanguageValues(node, 'cue')),
     effect: { before: templates('before'), prepare: templates('prepare'), after: templates('after') },
+    destructive: findChildValue(node, 'destructive') === 'true',
   };
 }
 

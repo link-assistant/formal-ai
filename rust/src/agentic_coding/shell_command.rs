@@ -628,6 +628,11 @@ fn is_fact_statement(
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let lower = prompt.to_lowercase();
     let (intent, cue) = matched_intent_cue(&lower, vocab)?;
+    // A destructive intent (`destructive true` in the seed) never reads a
+    // request about text inside a file as a request to delete the file.
+    if intent.destructive && super::workspace_computed_change::edits_inside_a_file(prompt) {
+        return None;
+    }
     match intent.argument {
         ShellIntentArgument::None => resolve_shell_command(&intent.command, vocab),
         ShellIntentArgument::Path => {
@@ -724,6 +729,32 @@ pub fn names_mutating_shell_intent(prompt: &str) -> bool {
         .is_some_and(|(intent, _)| intent.effect.is_declared())
 }
 
+/// When the request's seeded intent is destructive but the request edits
+/// inside a file, the honest decline naming the file (the seeded
+/// `file_text_unit` response), never the command (PR #1188: `t.md से drop
+/// शब्द हटाओ।` ran `rm t.md`).
+pub(super) fn destructive_edit_decline(task: &str) -> Option<super::planner::AgenticPlan> {
+    let prompt = strip_balanced_outer_quotes(task.trim());
+    let vocab = seed::shell_intent_vocabulary();
+    let (intent, cue) = matched_intent_cue(&prompt.to_lowercase(), &vocab)?;
+    if !intent.destructive || !super::workspace_computed_change::edits_inside_a_file(prompt) {
+        return None;
+    }
+    let path = crate::solver_handlers::text_outside_quoted_segments(prompt)
+        .split_whitespace()
+        .map(|token| {
+            trim_trailing_sentence_dot(token.trim_matches(|character: char| {
+                "`\"'()[]{}<>,;:!?\u{0964}\u{3002}".contains(character)
+            }))
+            .to_owned()
+        })
+        .find(|token| looks_like_a_path(token))
+        .or_else(|| path_arguments(prompt, cue, &vocab, 1))
+        .unwrap_or_default();
+    super::code_task::render_seeded_change("file_text_unit", task, &path, &[])
+        .map(super::planner::AgenticPlan::Final)
+}
+
 fn path_arguments(
     prompt: &str,
     cue: &str,
@@ -762,7 +793,7 @@ fn names_a_path_object(cue: &str, vocab: &ShellIntentVocabulary) -> bool {
 /// Whether a token is written the way a path is written: rooted at the home
 /// directory, carrying a separator, or ending in an extension. A plain word
 /// (`stdin`, `Rust`) is not.
-fn looks_like_a_path(token: &str) -> bool {
+pub(super) fn looks_like_a_path(token: &str) -> bool {
     if is_dotted_number(token) {
         return false;
     }

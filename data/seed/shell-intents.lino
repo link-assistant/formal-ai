@@ -751,6 +751,7 @@ shell_intents
     intent
       command rmdir
       argument one_path
+      destructive true
       language en
         cue "remove the directory"
         cue "delete the directory"
@@ -768,6 +769,7 @@ shell_intents
     intent
       command rm
       argument one_path
+      destructive true
       language en
         cue "delete the file"
         cue "remove the file"
