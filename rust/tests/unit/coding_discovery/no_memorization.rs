@@ -764,40 +764,85 @@ fn formalization_grammar_and_runtime_memorize_no_probe_clause() {
 
 /// Verbatim Hello World program literals still stored under `data/` (issue
 /// #1165 R8). Each is the output literal of one per-language Hello World
-/// template in `data/meta/agentic-coding-catalog.lino`, generated from the
-/// Rust catalog tables. The ceiling only goes down: a verified procedure
-/// that reproduces a language's program replaces its stored template, and
-/// the ceiling drops with it until it reaches zero.
+/// template in `data/seed/hello-world-programs.lino`, the seed bundle the
+/// Rust catalog tests hold equal to the catalog tables. The JavaScript
+/// catalog (`data/meta/agentic-coding-catalog.lino`) used to carry a second
+/// copy of every program; it now names its templates and reads their text
+/// from that bundle, so each program is stored once. The ceiling only goes
+/// down: a verified procedure that reproduces a language's program replaces
+/// its stored template, and the ceiling drops with it until it reaches zero.
 const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 14;
 
-/// Hello World output literals written as a *code* string: inside a stored
-/// program the quotes are escaped (`\"Hello, world!\"`) or single, while a
-/// plain Links Notation value (`output "Hello, world!"`) is an expected
-/// output, not a program.
+/// The quote spellings a stored program may wrap its literal in: an escaped
+/// double quote, a single quote, the `\x27` escape of a single quote, and a
+/// plain double quote inside a larger value.
+const PROGRAM_QUOTES: [&str; 4] = ["\\\"", "'", "\\x27", "\""];
+
+/// Hello World output literals written as a *code* string, in any quote
+/// spelling a stored program uses. A plain Links Notation or JSON value that
+/// is the literal alone (`output "Hello, world!"`, `"expected": "Hello,
+/// world!"`) is an expected output, not a program.
 fn hello_world_program_literals(text: &str) -> usize {
-    const ESCAPED_QUOTE: &str = "\\\"";
-    const SINGLE_QUOTE: &str = "'";
     const LINE_FEED: &str = "\\\\n";
-    let lowered = text.to_lowercase();
     let mut count = 0;
-    for quote in [ESCAPED_QUOTE, SINGLE_QUOTE] {
-        for (start, _) in lowered.match_indices(quote) {
-            let rest = &lowered[start + quote.len()..];
-            let Some(rest) = rest.strip_prefix("hello") else {
-                continue;
-            };
-            let rest = rest.strip_prefix(',').unwrap_or(rest);
-            let Some(rest) = rest.strip_prefix(" world") else {
-                continue;
-            };
-            let rest = rest.strip_prefix('!').unwrap_or(rest);
-            let rest = rest.strip_prefix(LINE_FEED).unwrap_or(rest);
-            if rest.starts_with(quote) {
+    for line in text.to_lowercase().lines() {
+        for quote in PROGRAM_QUOTES {
+            for (start, _) in line.match_indices(quote) {
+                if quote == "\"" && line[..start].ends_with('\\') {
+                    continue;
+                }
+                let rest = &line[start + quote.len()..];
+                let Some(rest) = rest.strip_prefix("hello") else {
+                    continue;
+                };
+                let rest = rest.strip_prefix(',').unwrap_or(rest);
+                let Some(rest) = rest.strip_prefix(" world") else {
+                    continue;
+                };
+                let rest = rest.strip_prefix('!').unwrap_or(rest);
+                let rest = rest.strip_prefix(LINE_FEED).unwrap_or(rest);
+                if !rest.starts_with(quote) {
+                    continue;
+                }
+                if quote == "\"" && is_expectation_value(line[..start].trim()) {
+                    continue;
+                }
                 count += 1;
             }
         }
     }
     count
+}
+
+/// Whether the text before a double-quoted literal makes it a field's whole
+/// value: nothing, an opening bracket, a single field name, or a JSON key or
+/// list separator.
+fn is_expectation_value(before: &str) -> bool {
+    matches!(before, "" | "[" | "(")
+        || before.ends_with([':', ','])
+        || before
+            .chars()
+            .all(|character| character.is_alphanumeric() || matches!(character, '_' | '-'))
+}
+
+/// The counter sees a stored program in every quote spelling the data files
+/// use, and leaves an expected-output value alone.
+#[test]
+fn the_hello_world_counter_reads_every_program_quote_spelling() {
+    let programs = concat!(
+        "  code `fn main() {\\n    println!(\\\"Hello, world!\\\");\\n}`\n",
+        "  code 'print(\"Hello, world!\")'\n",
+        "  code 'puts \"Hello, world!\"'\n",
+        "  code \"$this->line(\\x27Hello, world!\\x27);\"\n",
+        "  code \"echo 'Hello, world!';\"\n",
+    );
+    assert_eq!(hello_world_program_literals(programs), 5);
+    let expectations = concat!(
+        "  output \"Hello, world!\"\n",
+        "  {\"expectedOutput\": \"Hello, world!\"}\n",
+        "  [\"Hello, world!\", \"Hello\"]\n",
+    );
+    assert_eq!(hello_world_program_literals(expectations), 0);
 }
 
 #[test]
