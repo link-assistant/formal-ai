@@ -714,6 +714,46 @@ fn repository_from_url(url: &str) -> Option<RepositoryReference> {
     })
 }
 
+/// Owner/name slugs a prompt names: a GitHub URL's owner and name, then each
+/// bare `owner/name` run of the characters a repository slug is spelled with.
+///
+/// Issue #1175 R3: the repository a traffic question names. Twin of
+/// `repositorySlugCandidates` in `js/worker/formal_ai_worker_claim_operands.js`.
+#[must_use]
+pub fn repository_slug_candidates(prompt: &str) -> Vec<String> {
+    let mut slugs = Vec::new();
+    if let Some(repo) = first_url_candidate(prompt).and_then(|(_, url)| repository_from_url(&url))
+        && repo.platform == RepositoryPlatform::GitHub
+    {
+        slugs.push(format!("{}/{}", repo.owner, repo.name));
+    }
+    let leads = |segment: &str| {
+        segment
+            .chars()
+            .next()
+            .is_some_and(|ch| ch.is_ascii_alphanumeric())
+    };
+    let digits = |segment: &str| segment.chars().all(|ch| ch.is_ascii_digit());
+    for run in prompt
+        .split(|ch: char| !(ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '/' | '-')))
+    {
+        let mut parts = run.trim_end_matches('.').split('/');
+        let (Some(owner), Some(name), None) = (parts.next(), parts.next(), parts.next()) else {
+            continue;
+        };
+        let (Some(owner), Some(name)) = (
+            clean_repository_segment(owner),
+            clean_repository_segment(name),
+        ) else {
+            continue;
+        };
+        if leads(&owner) && leads(&name) && !(digits(&owner) && digits(&name)) {
+            slugs.push(format!("{owner}/{name}"));
+        }
+    }
+    slugs
+}
+
 fn clean_repository_segment(segment: &str) -> Option<String> {
     let trimmed = segment.trim().trim_end_matches(".git");
     if trimmed.is_empty() {

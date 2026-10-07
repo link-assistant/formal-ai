@@ -183,6 +183,13 @@ enum ValueSource {
     Quoted,
     /// The runtime's own link network as a Links Notation snapshot.
     NetworkSnapshot,
+    /// The operand at `index` a claim-evidence reader extracts
+    /// (`crate::capability_routing::claim_operands`); the rule does not match
+    /// without it (issue #1175 R3).
+    Operand {
+        kind: String,
+        index: usize,
+    },
 }
 
 #[derive(Debug)]

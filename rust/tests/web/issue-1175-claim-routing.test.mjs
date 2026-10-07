@@ -107,6 +107,11 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "network_query", browserHandler: "tryNetworkSnapshot", admitsOn: ["assistant_subject"], refusalEvents: [] },
     { handler: "exact_memory_query", browserHandler: "tryExactMemoryQuery", admitsOn: ["memory_query_statement"], refusalEvents: [] },
     { handler: "fact_lookup", browserHandler: "", admitsOn: ["fact_subject"], refusalEvents: [] },
+    { handler: "docs_method_explanation", browserHandler: "tryDocsMethodExplanation", admitsOn: ["documented_method"], refusalEvents: [] },
+    { handler: "kupi_slona", browserHandler: "tryKupiSlona", admitsOn: ["idiom_utterance"], refusalEvents: [] },
+    { handler: "source_conflict", browserHandler: "trySourceConflict", admitsOn: ["attributed_alternatives"], refusalEvents: ["source_conflict:refusal"] },
+    { handler: "github_repository_traffic", browserHandler: "tryGithubRepositoryTraffic", admitsOn: ["named_repository"], refusalEvents: ["github_repository_traffic:refusal"] },
+    { handler: "formalization_request", browserHandler: "tryFormalizationRequest", admitsOn: ["formalization_statement"], refusalEvents: ["formalization_request:refusal"] },
   ]);
 });
 
@@ -200,6 +205,7 @@ test("a numeric handler answers only where its row admits", async () => {
 });
 
 test("a handler with no claim row is admitted as before", async () => {
+  assert.equal(await admits("tryAHandlerWithNoRow", "Купи слона"), true);
   assert.equal(await admits("tryKupiSlona", "Купи слона"), true);
 });
 
@@ -360,4 +366,106 @@ test("R1173-3: a comma after the advice verb still reaches the advice handler", 
   await seeded;
   const answer = plain(await evaluate(worker, 'solve("Посоветуй, как лучше спать", [], {}, {}, [], {})'));
   assert.equal(answer.intent, "advice");
+});
+
+// Issue #1175 R3, the last five rows: the handlers that read nothing but their
+// cue now read the operand their answer is about (formal_ai_worker_claim_operands.js),
+// so every precedence handler carries a row. Held-out probes in en, ru, hi and zh,
+// as rust/tests/unit/issue_1175_claim_routing_operands.rs pins natively.
+async function operands(kind, prompt) {
+  await seeded;
+  return plain(evaluate(worker, `CLAIM_OPERANDS[${JSON.stringify(kind)}](${JSON.stringify(prompt)})`));
+}
+
+async function admission(handler, prompt) {
+  await seeded;
+  return plain(evaluate(worker, `claimRouteAdmission(${JSON.stringify(handler)}, ${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`));
+}
+
+async function rule(handler, prompt) {
+  await seeded;
+  return plain(evaluate(worker, `runHandlerRuleSet(${JSON.stringify(handler)}, ${JSON.stringify(prompt)}, ${JSON.stringify(prompt.toLowerCase())}, [])`));
+}
+
+test("R1175-3 last five rows: every precedence handler carries a claim row", async () => {
+  await seeded;
+  const missing = plain(evaluate(worker, `(() => {
+    const rows = new Set(claimRouteRows().map((row) => row.handler));
+    return Object.keys(WORKER_HANDLER_REGISTRY.workerHandlers).filter((name) => !rows.has(name));
+  })()`));
+  assert.deepEqual(missing, []);
+});
+
+test("R1175-3 last five rows: the documented method is read from the prompt", async () => {
+  for (const prompt of ["how does pandas DataFrame.join work?", "как работает pandas DataFrame.join?",
+    "pandas DataFrame.join कैसे काम करता है?", "pandas DataFrame.join 如何工作？"]) {
+    assert.equal((await operands("documented_method", prompt))[0], "pandas.DataFrame.join", prompt);
+    assert.equal(await admission("tryDocsMethodExplanation", prompt), "full", prompt);
+  }
+  for (const prompt of ["Explain pandas DataFrame.merge", "объясни pandas DataFrame.merge",
+    "pandas DataFrame.merge कैसे काम करता है?", "pandas DataFrame.merge 如何工作？"]) {
+    assert.equal(await admission("tryDocsMethodExplanation", prompt), "denied", prompt);
+  }
+});
+
+test("R1175-3 last five rows: the idiom claims only as the whole utterance", async () => {
+  for (const [prompt, idiom] of [["Hey, buy an elephant!", "buy an elephant"], ["Ну купи слона, пожалуйста", "купи слона"],
+    ["चलो हाथी खरीदो ना", "हाथी खरीदो"], ["快买大象吧", "买大象"]]) {
+    assert.deepEqual(await operands("idiom_utterance", prompt), [idiom], prompt);
+    assert.equal((await rule("kupi_slona", prompt)).intent, "kupi_slona", prompt);
+  }
+  for (const prompt of ["Where can I buy an elephant figurine?", "Мама сказала: купи слона в магазине игрушек",
+    "दुकान से हाथी खरीदो और घर लाओ", "我想在动物园买大象玩具"]) {
+    assert.equal(await admission("tryKupiSlona", prompt), "denied", prompt);
+  }
+});
+
+test("R1175-3 last five rows: a source conflict names its attributed alternatives", async () => {
+  for (const [prompt, first, second] of [
+    ["The sources conflict: Wikipedia says Tesla was born in 1856, but an old almanac says 1857.", "Wikipedia says Tesla was born in 1856", "an old almanac says 1857"],
+    ["Источники противоречат друг другу: по данным Википедии он родился в 1880 году, а по данным Британники в 1881.", "по данным Википедии он родился в 1880 году", "по данным Британники в 1881"],
+    ["स्रोतों में विरोधाभास है: विकिपीडिया के अनुसार वह 1880 में पैदा हुआ, लेकिन ब्रिटानिका के अनुसार 1881 में।", "विकिपीडिया के अनुसार वह 1880 में पैदा हुआ", "ब्रिटानिका के अनुसार 1881 में"],
+    ["来源之间有矛盾：维基百科说他生于1880年，大英百科说他生于1881年。", "维基百科说他生于1880年", "大英百科说他生于1881年"],
+  ]) {
+    assert.equal(await admission("trySourceConflict", prompt), "full", prompt);
+    const answer = await rule("source_conflict", prompt);
+    assert.ok(answer.content.includes(first) && answer.content.includes(second), answer.content);
+  }
+  for (const prompt of ["The sources conflict on this question.", "Источники противоречат друг другу.", "स्रोतों में विरोधाभास है।", "来源之间有矛盾。"]) {
+    assert.equal(await admission("trySourceConflict", prompt), "refusal", prompt);
+    const answer = await rule("source_conflict", prompt);
+    assert.ok(answer.evidence.some((link) => link.startsWith("source_conflict:refusal")), prompt);
+  }
+});
+
+test("R1175-3 last five rows: a traffic answer names the repository the prompt names", async () => {
+  for (const [prompt, repository] of [
+    ["Can I see who visited my GitHub repository konard/formal-ai?", "konard/formal-ai"],
+    ["Можно ли узнать, кто заходил в репозиторий facebook/react на GitHub?", "facebook/react"],
+    ["क्या मैं जान सकता हूँ कि GitHub रेपो rust-lang/rust में कौन आया?", "rust-lang/rust"],
+    ["能知道谁访问过 GitHub 仓库 vercel/next.js 吗？", "vercel/next.js"],
+    ["можно ли узнать заходил ли кто либо в твое репо на github?", "link-assistant/formal-ai"],
+  ]) {
+    assert.deepEqual(await operands("named_repository", prompt), [repository], prompt);
+    assert.ok((await rule("github_repository_traffic", prompt)).content.includes(repository), prompt);
+  }
+  for (const prompt of ["Can I know who visited my GitHub repo?", "Можно ли узнать, кто заходил в мой репозиторий на GitHub?",
+    "क्या मैं जान सकता हूँ कि मेरे GitHub रेपो में कौन आया?", "能知道谁访问过我的 GitHub 仓库吗？"]) {
+    assert.equal(await admission("tryGithubRepositoryTraffic", prompt), "refusal", prompt);
+    const answer = await rule("github_repository_traffic", prompt);
+    assert.ok(!answer.content.includes("link-assistant/formal-ai"), answer.content);
+    assert.ok(answer.evidence.some((link) => link.startsWith("github_repository_traffic:refusal")), prompt);
+  }
+});
+
+test("R1175-3 last five rows: a formalization claims only with a statement", async () => {
+  for (const prompt of ["Formalize: all humans are mortal", "Формализуй: все люди смертны",
+    "औपचारिक बनाओ: हर छात्र जो पढ़ता है, परीक्षा पास करता है", "形式化：每个学习的学生都通过考试"]) {
+    assert.equal(await admission("tryFormalizationRequest", prompt), "full", prompt);
+  }
+  for (const prompt of ["Formalize this in Lean", "Формализуй это", "इसे औपचारिक बनाओ", "请形式化这个"]) {
+    assert.equal(await admission("tryFormalizationRequest", prompt), "refusal", prompt);
+    const answer = plain(evaluate(worker, `tryFormalizationRequest(${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`));
+    assert.ok(answer.evidence.some((link) => link.startsWith("formalization_request:refusal")), prompt);
+  }
 });

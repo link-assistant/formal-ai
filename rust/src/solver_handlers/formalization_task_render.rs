@@ -317,6 +317,37 @@ fn sentence_under_discussion(prompt: &str) -> String {
     prompt.trim().to_owned()
 }
 
+/// The statement a formalization request carries beyond its cue, or the
+/// formal clause it deformalizes (issue #1175 R3).
+///
+/// The statement is [`sentence_under_discussion`]; it is an operand when a
+/// formal quantifier symbol occurs, or when, with every cue phrase and target
+/// alias removed, a word outside the frame roles remains ("Formalize this in
+/// Lean" carries none). Twin of `claimOperandFormalizationStatement` in
+/// `js/worker/formal_ai_worker_claim_operands.js`.
+#[must_use]
+pub fn formalization_statement(prompt: &str) -> Option<String> {
+    let sentence = sentence_under_discussion(prompt);
+    if carries_formal_surface(prompt) {
+        return Some(sentence);
+    }
+    let tree = parse_lino(TARGETS);
+    let phrases: Vec<String> = target_records(&tree)
+        .filter(|record| record.name == "cues")
+        .filter_map(|record| named_child(record, "intent"))
+        .flat_map(|intent| intent.children.iter().filter(|child| child.name == "role"))
+        .flat_map(|role| child_values(role, "phrase"))
+        .chain(
+            grammar()
+                .formal
+                .iter()
+                .flat_map(|language| language.aliases.iter().cloned()),
+        )
+        .collect();
+    let rest = crate::capability_routing::without_surfaces(&sentence, &phrases);
+    (!crate::capability_routing::only_frame_words(&rest)).then_some(sentence)
+}
+
 /// Recognize and answer a formalization or deformalization request.
 ///
 /// Returns `None` when the prompt is neither, so the dispatch chain
@@ -356,6 +387,19 @@ pub fn handle_formalization_request(
         .to_owned(),
     );
     log.append("formalization:language", request_language.clone());
+    // Issue #1175 R3: a cue with no statement beyond it (and no formal
+    // clause) is refused by name, the answer its claim row's refusal lane keeps.
+    if formalization_statement(prompt).is_none() {
+        log.append("formalization_request:refusal", "no_statement".to_owned());
+        return Some(finalize_simple(
+            prompt,
+            log,
+            INTENT,
+            "response:formalization",
+            &response("formalization_no_statement", &request_language),
+            0.4,
+        ));
+    }
 
     let body = if formalize {
         formalize_answer(prompt, &request_language, log)

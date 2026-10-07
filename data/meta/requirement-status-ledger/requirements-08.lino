@@ -27,10 +27,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R271"
     shard "docs/requirements/issue-0398-recursive-semantic-meta-language.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #398"
     issue "0398"
-    automated_test "rust/tests/unit/reference_closure.rs"
+    automated_test "rust/tests/source/source_tests/seed/meanings/tests.rs"
     manual "not yet confirmed"
   requirement
     id "R272"
@@ -227,10 +227,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R294"
     shard "docs/requirements/issue-0408-text-and-code-editing-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #416 (issue #408)"
     issue "0408"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0408-text-edit-parity.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R295"

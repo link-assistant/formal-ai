@@ -726,6 +726,12 @@ function tryFormalizationRequest(prompt, normalized) {
     `formalization:direction:${formalize ? "formalize" : "deformalize"}`,
     `formalization:language:${language}`,
   ];
+  const evidence = ["handler:formalization_request", "response:formalization", `language:${language}`];
+  // #1175 R3: a cue with no statement beyond it is refused by name (Rust `handle_formalization_request`).
+  if (claimOperandFormalizationStatement(text).length === 0) {
+    return { intent: FORMALIZATION_INTENT, content: formalResponse("formalization_no_statement", language), confidence: 0.4,
+      evidence: evidence.concat("formalization_request:refusal:no_statement"), trace };
+  }
   const grammar = formalGrammar();
   const result = formalize
     ? formalFormalizeAnswer(grammar, text, language, trace)
@@ -734,7 +740,7 @@ function tryFormalizationRequest(prompt, normalized) {
     intent: FORMALIZATION_INTENT,
     content: result[0],
     confidence: result[1],
-    evidence: ["handler:formalization_request", "response:formalization", `language:${language}`],
+    evidence,
     trace: trace,
   };
 }

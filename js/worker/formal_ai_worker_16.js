@@ -1038,7 +1038,7 @@ const ROLE_ARCHITECTURE_CONCEPT = "architecture_concept";
 // live in data/seed/meanings-docs.lino (explanation leads, the method noun) and
 // data/seed/meanings-web-search.lino (the web_medium surfaces on
 // reference_internet). isExplanationRequest, isExplicitWebSearchPrompt and the
-// join+method branch of isPandasDataFrameJoinPrompt read them instead of naming
+// method-noun branch of claimOperandDocumentedMethod read them instead of naming
 // any interrogative, medium or per-language method word in code here.
 const ROLE_EXPLANATION_REQUEST_LEAD = "explanation_request_lead";
 const ROLE_WEB_MEDIUM = "web_medium";

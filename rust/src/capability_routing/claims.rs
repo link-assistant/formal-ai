@@ -18,7 +18,8 @@
 //!
 //! The dialogue kinds read the `prior_turn:*` events of the dialogue log
 //! ([`claim_admission_in_dialogue`]); the composer, lookup and dialogue kinds
-//! live in `claim_evidence.rs`.
+//! live in `claim_evidence.rs`, and the operand kinds of the last five rows in
+//! `claim_operands.rs`.
 //!
 //! Mirrored by `claimRouteAdmits` in `js/worker/formal_ai_worker_dispatch.js`.
 
@@ -124,6 +125,12 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "assistant_subject",
     "memory_query_statement",
     "fact_subject",
+    // The last five rows of issue #1175 R3: read by `claim_operands.rs`.
+    "documented_method",
+    "idiom_utterance",
+    "attributed_alternatives",
+    "named_repository",
+    "formalization_statement",
 ];
 
 /// Parse the `claim` rows of a capability-routing document.
@@ -186,6 +193,7 @@ pub fn claim_evidence_holds_in_dialogue(
     dialogue: &EventLog,
 ) -> Option<bool> {
     prompt_evidence_holds(kind, prompt, normalized)
+        .or_else(|| super::claim_operands(kind, prompt).map(|operands| !operands.is_empty()))
         .or_else(|| super::claim_evidence::class_evidence_holds(kind, prompt, normalized, dialogue))
 }
 

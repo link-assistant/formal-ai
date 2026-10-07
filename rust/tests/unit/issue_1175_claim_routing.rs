@@ -369,6 +369,27 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 vec!["memory_query_statement"]
             ),
             ("fact_lookup", "", vec!["fact_subject"]),
+            (
+                "docs_method_explanation",
+                "tryDocsMethodExplanation",
+                vec!["documented_method"]
+            ),
+            ("kupi_slona", "tryKupiSlona", vec!["idiom_utterance"]),
+            (
+                "source_conflict",
+                "trySourceConflict",
+                vec!["attributed_alternatives"]
+            ),
+            (
+                "github_repository_traffic",
+                "tryGithubRepositoryTraffic",
+                vec!["named_repository"]
+            ),
+            (
+                "formalization_request",
+                "tryFormalizationRequest",
+                vec!["formalization_statement"]
+            ),
         ]
     );
     let refusal_rows: Vec<(&str, Vec<&str>)> = claim_rows()
@@ -419,6 +440,15 @@ fn the_claim_rows_are_read_from_the_capability_table() {
             ("algorithm", vec!["algorithm:refusal"]),
             ("source_refresh", vec!["source_refresh:refusal"]),
             ("proof_request", vec!["proof_request:refusal"]),
+            ("source_conflict", vec!["source_conflict:refusal"]),
+            (
+                "github_repository_traffic",
+                vec!["github_repository_traffic:refusal"]
+            ),
+            (
+                "formalization_request",
+                vec!["formalization_request:refusal"]
+            ),
         ]
     );
 }
@@ -592,7 +622,11 @@ fn the_structural_evidence_admits() {
 
 #[test]
 fn a_handler_without_a_row_is_admitted_and_a_fixture_row_routes_without_code() {
-    assert!(claim_admitted("kupi_slona", "Купи слона", "купи слона"));
+    assert!(claim_admitted(
+        "a_handler_with_no_row",
+        "Купи слона",
+        "купи слона"
+    ));
     let fixture = "capability_routing\n  claim\n    handler concept_lookup\n    admits_on shell_command_shape\n    because \"fixture\"\n";
     assert_eq!(
         claim_rows_from(fixture),

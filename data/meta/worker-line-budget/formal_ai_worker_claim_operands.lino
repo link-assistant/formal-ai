@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_claim_operands.js"
+  ceiling 225
+  rationale "Issue #1175 R3, the last five claim rows (2026-10-08): the operand readers of docs_method_explanation (the seeded documentation page the prompt names), kupi_slona (the idiom as the whole utterance), source_conflict (the two alternatives attributed to sources), github_repository_traffic (the repository slug, or the assistant's own) and formalization_request (a statement beyond the cue). Twin of rust/src/capability_routing/claim_operands.rs (R999: a JavaScript-first twin); the row admits on these readers and the rule interpreter captures the same operands. It disappears with the JavaScript mirror when the Rust-to-WASM dispatcher replaces it."

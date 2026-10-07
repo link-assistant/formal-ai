@@ -1222,20 +1222,40 @@ multilingual_responses
   response response_source_conflict_en
     intent source_conflict
     language en
-    text "Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved."
+    text "The sources you cite disagree: {first}; {second}. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved."
   response response_source_conflict_ru
     intent source_conflict
     language ru
-    text "Источники расходятся в ответе на этот вопрос. Расхождение записано в сети как связь conflict:source_disagreement, а не разрешено молча."
+    text "Указанные вами источники расходятся: {first}; {second}. Расхождение записано в сети как связь conflict:source_disagreement, а не разрешено молча."
   response response_source_conflict_hi
     intent source_conflict
     language hi
-    text "इस प्रश्न पर स्रोत असहमत हैं। असहमति को चुपचाप सुलझाने के बजाय नेटवर्क में conflict:source_disagreement लिंक के रूप में दर्ज किया गया है।"
+    text "आपके बताए स्रोत असहमत हैं: {first}; {second}। असहमति को चुपचाप सुलझाने के बजाय नेटवर्क में conflict:source_disagreement लिंक के रूप में दर्ज किया गया है।"
   response response_source_conflict_zh
     intent source_conflict
     language zh
-    text "各来源对这个问题的回答不一致。这一分歧作为 conflict:source_disagreement 链接记录在网络中，而不是被悄悄消解。"
+    text "你引用的来源说法不一致：{first}；{second}。这一分歧作为 conflict:source_disagreement 链接记录在网络中，而不是被悄悄消解。"
   response response_source_conflict_es
     intent source_conflict
     language es
-    text "Las fuentes no coinciden en esta pregunta. El desacuerdo se registra en la red como un enlace conflict:source_disagreement en lugar de resolverse en silencio."
+    text "Las fuentes que citas no coinciden: {first}; {second}. El desacuerdo se registra en la red como un enlace conflict:source_disagreement en lugar de resolverse en silencio."
+  response response_source_conflict_unattributed_en
+    intent source_conflict_unattributed
+    language en
+    text "No source is named for either answer, so no disagreement between sources can be recorded. Name each source and what it states, for example: Wikipedia says 1880, but Britannica says 1881."
+  response response_source_conflict_unattributed_ru
+    intent source_conflict_unattributed
+    language ru
+    text "Ни для одного из ответов не назван источник, поэтому расхождение между источниками записать нельзя. Назовите каждый источник и то, что он утверждает, например: по данным Википедии 1880, а по данным Британники 1881."
+  response response_source_conflict_unattributed_hi
+    intent source_conflict_unattributed
+    language hi
+    text "किसी भी उत्तर के लिए स्रोत नहीं बताया गया, इसलिए स्रोतों के बीच असहमति दर्ज नहीं की जा सकती। हर स्रोत और उसका कथन बताइए, जैसे: विकिपीडिया के अनुसार 1880, लेकिन ब्रिटानिका के अनुसार 1881।"
+  response response_source_conflict_unattributed_zh
+    intent source_conflict_unattributed
+    language zh
+    text "两个答案都没有注明来源，因此无法记录来源之间的分歧。请写明每个来源及其说法，例如：维基百科说1880年，但大英百科说1881年。"
+  response response_source_conflict_unattributed_es
+    intent source_conflict_unattributed
+    language es
+    text "Ninguna respuesta nombra su fuente, así que no se puede registrar un desacuerdo entre fuentes. Nombra cada fuente y lo que afirma, por ejemplo: según Wikipedia 1880, pero según Britannica 1881."

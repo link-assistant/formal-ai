@@ -149,6 +149,8 @@ roles
     kind predicate
   clause_continuation_marker
     kind meaning
+  clause_joiner
+    kind meaning
   code_example_decomposition_answer
     kind predicate
   code_example_decomposition_cue
@@ -391,6 +393,8 @@ roles
     kind predicate
   followup_instruction_verb
     kind meaning
+  frame_filler_word
+    kind meaning
   game_tracker_domain
     kind meaning
   game_tracker_mechanic
@@ -421,6 +425,8 @@ roles
     kind meaning
   incompatibility_relation
     kind predicate
+  information_source_noun
+    kind meaning
   interest_cue
     kind predicate
   interrogative_opener
@@ -697,6 +703,8 @@ roles
     kind predicate
   script_or_code_artifact
     kind predicate
+  second_person_possessive
+    kind meaning
   selection_criterion_brevity_cue
     kind predicate
   selection_criterion_completeness_cue
@@ -788,6 +796,10 @@ roles
   software_sentence_end_character
     kind meaning
   software_step_granularity
+    kind meaning
+  source_attribution_marker
+    kind meaning
+  source_conflict_cue
     kind meaning
   statement_clock_suffix
     kind meaning

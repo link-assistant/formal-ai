@@ -1415,3 +1415,59 @@ meanings
     unit "not applicable"
     example "what is the capital of france"
     grounding "data/seed/handler-precedence.lino"
+  documented_method
+    defined-by concept
+    role action
+    precondition "the request names the project and the method of a seeded documentation page"
+    effect "admits the claim of the documentation explanation handler and names the page it answers from"
+    unit "boolean"
+    example "how does pandas DataFrame.join work"
+    grounding "data/seed/capability-routing.lino"
+  idiom_utterance
+    defined-by concept
+    role action
+    precondition "the circular idiom is the whole utterance, framed at most by particles and function words"
+    effect "admits the claim of the circular idiom handler"
+    unit "boolean"
+    example "buy an elephant"
+    grounding "data/seed/capability-routing.lino"
+  attributed_alternatives
+    defined-by concept
+    role action
+    precondition "the request names two alternatives each attributed to a source"
+    effect "admits the claim of the source conflict handler and names both alternatives"
+    unit "boolean"
+    example "Wikipedia says 1880, but Britannica says 1881"
+    grounding "data/seed/capability-routing.lino"
+  named_repository
+    defined-by concept
+    role action
+    precondition "the request names a repository as an owner/name slug or url, or as the assistant's own"
+    effect "admits the claim of the repository traffic handler and names that repository"
+    unit "boolean"
+    example "who visited konard/formal-ai on GitHub"
+    grounding "data/seed/capability-routing.lino"
+  formalization_statement
+    defined-by concept
+    role action
+    precondition "the request carries a statement beyond its formalization cue, or a formal clause"
+    effect "admits the claim of the formalization handler"
+    unit "boolean"
+    example "formalize: every human is mortal"
+    grounding "data/seed/capability-routing.lino"
+  formalization_request
+    defined-by concept
+    role action
+    precondition "a request asks to formalize a statement or deformalize a formal clause"
+    effect "the formalization handler renders the statement in the formal targets or reads the clause back"
+    unit "boolean"
+    example "formalize: every human is mortal"
+    grounding "data/seed/capability-routing.lino"
+  operand
+    defined-by concept
+    role action
+    precondition "a rule captures the operand a claim-evidence reader extracts from the request"
+    effect "the rule answers about the same operand its claim row admits on"
+    unit "boolean"
+    example "value repository operand named_repository"
+    grounding "data/seed/capability-routing.lino"

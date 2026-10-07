@@ -250,6 +250,14 @@ meanings
     unit "not applicable"
     example "no quantified clause could be parsed from it: no quantifier word found."
     grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_no_statement
+    defined-by answer
+    role localized_response_template
+    precondition "a formalization request names no statement beyond its cue"
+    effect "the request is refused by name and the statement is asked for"
+    unit "not applicable"
+    example "it names no statement to formalize"
+    grounding "data/seed/multilingual-responses-formalization.lino"
   formalization_deformalized
     defined-by answer
     role localized_response_template
@@ -517,11 +525,27 @@ meanings
   source_conflict
     defined-by answer
     role localized_response_template
-    precondition "a question admits answers that sources disagree on"
-    effect "the disagreement is recorded as a conflict link instead of being resolved silently"
+    precondition "a request names two alternatives each attributed to a source and says the sources disagree"
+    effect "the two attributed alternatives are named and the disagreement is recorded as a conflict link instead of being resolved silently"
     unit "not applicable"
-    example "Sources disagree on this question."
+    example "The sources you cite disagree."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  source_conflict_unattributed
+    defined-by answer
+    role localized_response_template
+    precondition "a source conflict is cued but no alternative is attributed to a source"
+    effect "the request is refused by name and each source and its statement are asked for"
+    unit "not applicable"
+    example "No source is named for either answer."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  github_repository_traffic_unnamed
+    defined-by answer
+    role localized_response_template
+    precondition "a repository traffic question names no repository"
+    effect "the platform's aggregate traffic policy is stated for any repository without naming one"
+    unit "not applicable"
+    example "You did not name a repository."
+    grounding "data/seed/multilingual-responses-policy.lino"
   compound_interest_report
     defined-by answer
     role localized_response_template

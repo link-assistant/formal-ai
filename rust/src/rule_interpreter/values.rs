@@ -33,6 +33,11 @@ impl Rule {
                     crate::solver_helpers::extract_quoted_phrase(context.prompt)?
                 }
                 ValueSource::NetworkSnapshot => crate::engine::knowledge_links_notation(),
+                ValueSource::Operand { kind, index } => {
+                    crate::capability_routing::claim_operands(kind, context.prompt)?
+                        .into_iter()
+                        .nth(*index)?
+                }
             };
             resolved.push((name.clone(), value));
         }

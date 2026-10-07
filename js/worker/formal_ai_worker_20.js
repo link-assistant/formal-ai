@@ -270,7 +270,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       formalizationContext,
     );
   }
-  const githubRepositoryTraffic = tryGithubRepositoryTraffic(normalized, language);
+  const githubRepositoryTraffic = claimRouteRun("tryGithubRepositoryTraffic", prompt, normalized, history, () => tryGithubRepositoryTraffic(prompt));
   if (githubRepositoryTraffic) {
     events.push(`handler:${githubRepositoryTraffic.intent}`);
     steps.push({
@@ -582,13 +582,13 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, navigated, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "docs_method_explanation" });
-  const docsMethod = tryDocsMethodExplanation(prompt, language);
+  const docsMethod = claimRouteRun("tryDocsMethodExplanation", prompt, normalized, history, () => tryDocsMethodExplanation(prompt));
   if (docsMethod) {
     events.push(`handler:${docsMethod.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryDocsMethodExplanation" });
     toolCalls.push({
       tool: "docs_method_explanation",
-      inputs: { prompt, language, project: "pandas", method: "DataFrame.join" },
+      inputs: { prompt, language, method: docsMethod.formalizedObject },
       outputs: {
         intent: docsMethod.intent,
         confidence: docsMethod.confidence,

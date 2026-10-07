@@ -323,10 +323,10 @@ requirement_status_ledger_shard requirements_13
   requirement
     id "R71"
     shard "docs/requirements/issue-0012-holistic-vision-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #12"
     issue "0012"
-    automated_test ""
+    automated_test "rust/tests/web/issue-0012-specification-pins.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R710-01"

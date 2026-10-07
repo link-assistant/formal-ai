@@ -612,72 +612,13 @@ const GITHUB_README_KNOWN_TOOLS = [
 ];
 
 // Issue #497: GitHub repository traffic visibility is a platform-policy answer,
-// not a live repository-info fetch. These role names mirror the Rust constants
-// in src/seed/roles/tooling.rs; all natural-language surfaces live in
-// data/seed/meanings-web-search.lino and are loaded through MEANINGS_LINO.
-const ROLE_GITHUB_REPOSITORY_PLATFORM = "github_repository_platform";
-const ROLE_REPOSITORY_REFERENCE = "repository_reference";
-const ROLE_GITHUB_REPOSITORY_TRAFFIC_SIGNAL = "github_repository_traffic_signal";
-const ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION =
-  "github_repository_traffic_question";
-const GITHUB_TRAFFIC_UI_DOC =
-  "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository";
-const GITHUB_TRAFFIC_API_DOC = "https://docs.github.com/en/rest/metrics/traffic";
-const DEFAULT_GITHUB_REPOSITORY = "link-assistant/formal-ai";
-
-function githubRepositoryTrafficRepository() {
-  const repository = String((AGENT_INFO && AGENT_INFO.repository) || "").trim();
-  return repository || DEFAULT_GITHUB_REPOSITORY;
-}
-
-function githubRepositoryTrafficBody(language, repository) {
-  return answerFor("github_repository_traffic", language)
-    .replace("{repository}", repository)
-    .replace("{traffic_ui_docs}", GITHUB_TRAFFIC_UI_DOC)
-    .replace("{traffic_api_docs}", GITHUB_TRAFFIC_API_DOC);
-}
-
-function isGithubRepositoryTrafficQuestion(normalized, language) {
-  const languages = language === "en" ? ["en"] : [language, "en"];
-  return (
-    mentionsRoleInLanguagesRaw(
-      ROLE_GITHUB_REPOSITORY_PLATFORM,
-      normalized,
-      languages,
-    ) &&
-    mentionsRoleInLanguagesRaw(ROLE_REPOSITORY_REFERENCE, normalized, languages) &&
-    mentionsRoleInLanguagesRaw(
-      ROLE_GITHUB_REPOSITORY_TRAFFIC_SIGNAL,
-      normalized,
-      languages,
-    ) &&
-    mentionsRoleInLanguagesRaw(
-      ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION,
-      normalized,
-      languages,
-    )
-  );
-}
-
-function tryGithubRepositoryTraffic(normalized, language) {
-  if (!isGithubRepositoryTrafficQuestion(normalized, language)) return null;
-  const repository = githubRepositoryTrafficRepository();
-  return {
-    intent: "github_repository_traffic",
-    content: githubRepositoryTrafficBody(language, repository),
-    confidence: 0.92,
-    evidence: [
-      "github_repository_traffic:platform:github",
-      `github_repository_traffic:repository:${repository}`,
-      "github_repository_traffic:access:push_or_write_access_required",
-      "github_repository_traffic:window:last_14_days",
-      "github_repository_traffic:aggregate:views_uniques_clones_referrers_paths",
-      "github_repository_traffic:privacy:no_individual_identity",
-      `source:${GITHUB_TRAFFIC_UI_DOC}`,
-      `source:${GITHUB_TRAFFIC_API_DOC}`,
-      `language:${language}`,
-    ],
-  };
+// not a live repository-info fetch: the github_repository_traffic rules of
+// data/seed/handler-rules.lino, run as the native interpreter runs them. Since
+// #1175 R3 the answer names the repository the prompt names (an owner/name
+// slug, or the assistant's own for "your repository"), and a question about an
+// unnamed repository answers for any repository through the refusal lane.
+function tryGithubRepositoryTraffic(prompt) {
+  return runHandlerRuleSet("github_repository_traffic", prompt, String(prompt || "").toLowerCase(), []);
 }
 
 function githubRepositoryInfoRequest(prompt, normalized) {

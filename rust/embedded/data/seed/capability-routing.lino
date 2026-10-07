@@ -836,3 +836,32 @@ capability_routing
     handler fact_lookup
     admits_on fact_subject
     because "issue 1175 R3: a fact question claims only with the subject one of its arms resolves: a question over supplied text, a comparison of seeded subjects, the gated record, a live relation and subject, or the concept an explanation researches"
+  claim_note "Issue 1175 R3 last five rows: each handler that read nothing but its cue now reads the operand its answer is about, through a reader the rule interpreter also captures the operand with (value <name> operand <kind>), so the row and the answer read the same thing."
+  claim
+    handler docs_method_explanation
+    browser_handler tryDocsMethodExplanation
+    admits_on documented_method
+    because "issue 1175 R3: a documentation explanation claims only when the prompt names the project and the method of a seeded documentation page, never on an explanation lead alone"
+  claim
+    handler kupi_slona
+    browser_handler tryKupiSlona
+    admits_on idiom_utterance
+    because "issue 1175 R3: the circular idiom claims only when it is the whole utterance, framed at most by particles and function words, never when the phrase merely occurs inside another request"
+  claim
+    handler source_conflict
+    browser_handler trySourceConflict
+    admits_on attributed_alternatives
+    refusal_event "source_conflict:refusal"
+    because "issue 1175 R3: a source conflict claims an answer only with the two alternatives it attributes to sources, and names them; a cued conflict without them is admitted to the refusal lane"
+  claim
+    handler github_repository_traffic
+    browser_handler tryGithubRepositoryTraffic
+    admits_on named_repository
+    refusal_event "github_repository_traffic:refusal"
+    because "issue 1175 R3: a traffic answer names a repository only when the prompt names it, as an owner/name slug or URL or as the assistant's own; a question about an unnamed repository is admitted to the refusal lane, which states the policy for any repository"
+  claim
+    handler formalization_request
+    browser_handler tryFormalizationRequest
+    admits_on formalization_statement
+    refusal_event "formalization_request:refusal"
+    because "issue 1175 R3: a formalization claims only with a statement beyond its cue, or the formal clause a deformalization reads; a cue without one is admitted to the refusal lane"

@@ -96,6 +96,7 @@ const CLAIM_EVIDENCE = Object.freeze({
   calendar_date_signal: (prompt, normalized) => mentionsCalendarCreateRequest(normalized),
   code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null, ...(typeof NUMERIC_CLAIM_EVIDENCE === "object" ? NUMERIC_CLAIM_EVIDENCE : {}),
   ...(typeof CLASS_CLAIM_EVIDENCE === "object" ? CLASS_CLAIM_EVIDENCE : {}), // classes (b), (c), (e): formal_ai_worker_claim_evidence.js
+  ...(typeof OPERAND_CLAIM_EVIDENCE === "object" ? OPERAND_CLAIM_EVIDENCE : {}), // the last five rows: formal_ai_worker_claim_operands.js
   // Refusal group: the operand each handler's own reader extracts before it composes anything.
   function_under_test: (prompt) => testGenerationFunctionName(prompt) !== null,
   structured_document: (prompt) => formatConversionJsonText(prompt) !== null || formatConversionYamlText(prompt) !== null

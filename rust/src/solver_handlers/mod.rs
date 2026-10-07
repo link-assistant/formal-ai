@@ -42,8 +42,8 @@ pub use factual_qa::{
 pub use feature_capability::{CapabilityRuntime, try_feature_capability};
 pub use formalization_task::{
     AppliedPredicate, ClauseExporter, ProverRecord, ProverRun, QuantifiedClause, RmlExport,
-    handle_formalization_request, prover_check_slots, prover_command_in, prover_file_stem,
-    prover_records, prover_runs_with, prover_unit, rml_source, run_prover_with,
+    formalization_statement, handle_formalization_request, prover_check_slots, prover_command_in,
+    prover_file_stem, prover_records, prover_runs_with, prover_unit, rml_source, run_prover_with,
     run_rml_export_with,
 };
 pub use format_conversion::{carries_structured_document, handle_format_conversion};
@@ -89,8 +89,9 @@ pub use user_intent::{names_stated_claim, try_proof_request, try_proof_request_w
 pub use verifiable_task::try_verifiable_task;
 pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
 pub use web_requests::{
-    detect_web_search_query, http_fetch_claims, try_explicit_repository_lookup, try_http_fetch,
-    try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,
+    detect_web_search_query, http_fetch_claims, repository_slug_candidates,
+    try_explicit_repository_lookup, try_http_fetch, try_http_fetch_with_offline,
+    try_project_lookup, try_project_lookup_with_response_language,
     try_routed_http_fetch_with_offline, try_url_navigate, try_web_search,
     try_web_search_with_client, try_web_search_with_offline, url_navigation_claims,
 };

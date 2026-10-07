@@ -29,7 +29,8 @@ const TOPIC_EN = "We can talk about existence. I can start with a short definiti
 const TOPIC_RU = "Можем. Тема: бытие. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник.";
 const TOPIC_HI = "हम बात कर सकते हैं. विषय: गणित. मैं छोटी परिभाषा, संदर्भ, या किसी ठोस प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो तो public facts बाहरी स्रोत से जाँचे जा सकते हैं.";
 const TOPIC_ZH = "可以聊。主题: 音乐。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。";
-const CONFLICT_EN = "Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.";
+const CONFLICT_EN = "The sources you cite disagree: Wikipedia says X was born in 1880; Britannica says 1881. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.";
+const CONFLICT_UNATTRIBUTED_EN = "No source is named for either answer, so no disagreement between sources can be recorded. Name each source and what it states, for example: Wikipedia says 1880, but Britannica says 1881.";
 const REFRESH_EN = "Cached source source_e2db54b48c90e140 has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.";
 const REFRESH_UNNAMED_EN = "Cached source source_2a324f9681a3e3bd has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.";
 
@@ -70,11 +71,18 @@ test("the topic claim is the rule and an empty slot is no topic", async () => {
   assert.equal(claims("What is the capital of France?"), false);
 });
 
-test("a source conflict answers unchanged", async () => {
-  const response = await solve("Was X born in 1880 or 1881?");
+// Issue #1175 R3: the conflict names the two alternatives it attributes to
+// sources; a disjunction that attributes neither is refused by name.
+test("a source conflict names its attributed alternatives and refuses without them", async () => {
+  const response = await solve("The sources conflict: Wikipedia says X was born in 1880, but Britannica says 1881.");
   assert.equal(response.intent, "source_conflict");
   assert.equal(response.content, CONFLICT_EN);
   assert.ok(response.evidence.some((link) => link.startsWith("conflict:source_disagreement")));
+  const unattributed = await solve("Was X born in 1880 or 1881?");
+  assert.equal(unattributed.intent, "source_conflict");
+  assert.equal(unattributed.content, CONFLICT_UNATTRIBUTED_EN);
+  assert.ok(unattributed.evidence.includes("source_conflict:refusal:no attributed alternatives"));
+  assert.ok(!unattributed.evidence.some((link) => link.startsWith("conflict:source_disagreement")));
 });
 
 test("a source refresh answers unchanged and an unnamed one takes the refusal lane", async () => {

@@ -122,3 +122,365 @@ meanings
         text 操你妈
       surface
         text 傻逼
+  frame_filler_word
+    defined-by concept
+    role frame_filler_word
+    precondition "a request frames its operand with a word that names no operand of its own"
+    effect "the word is set aside when the router asks whether an operand remains"
+    unit "not applicable"
+    example "hey"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en
+      surface
+        text "hey"
+      surface
+        text "come on"
+      surface
+        text "ok"
+      surface
+        text "okay"
+      surface
+        text "oh"
+      surface
+        text "well"
+      surface
+        text "everyone says"
+      surface
+        text "everybody says"
+      surface
+        text "statement"
+      surface
+        text "sentence"
+      surface
+        text "following"
+    lexeme ru
+      surface
+        text "ну"
+      surface
+        text "давай"
+      surface
+        text "ладно"
+      surface
+        text "все говорят"
+      surface
+        text "все так говорят"
+      surface
+        text "а ты"
+      surface
+        text "утверждение"
+      surface
+        text "предложение"
+      surface
+        text "следующее"
+    lexeme hi
+      surface
+        text "चलो"
+      surface
+        text "ना"
+      surface
+        text "अरे"
+      surface
+        text "सब कहते हैं"
+      surface
+        text "इसे"
+      surface
+        text "कथन"
+      surface
+        text "वाक्य"
+      surface
+        text "निम्नलिखित"
+    lexeme zh
+      surface
+        text "快"
+      surface
+        text "吧"
+      surface
+        text "啊"
+      surface
+        text "呀"
+      surface
+        text "嘛"
+      surface
+        text "请"
+      surface
+        text "这个"
+      surface
+        text "这句话"
+      surface
+        text "句子"
+      surface
+        text "命题"
+      surface
+        text "一下"
+      surface
+        text "大家都说"
+    lexeme es
+      surface
+        text "oye"
+      surface
+        text "vamos"
+      surface
+        text "por favor"
+      surface
+        text "todos dicen"
+      surface
+        text "esto"
+      surface
+        text "enunciado"
+      surface
+        text "frase"
+  source_conflict_cue
+    defined-by concept
+    role source_conflict_cue
+    precondition "a request says that sources disagree"
+    effect "the source-conflict handler is cued"
+    unit "not applicable"
+    example "the sources conflict"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en
+      surface
+        text "conflict"
+      surface
+        text "disagree"
+      surface
+        text "contradict"
+    lexeme ru
+      surface
+        text "противореч"
+      surface
+        text "расходятся"
+      surface
+        text "не сходятся"
+      surface
+        text "конфликт"
+    lexeme hi
+      surface
+        text "विरोधाभास"
+      surface
+        text "असहमत"
+      surface
+        text "मेल नहीं खाते"
+    lexeme zh
+      surface
+        text "矛盾"
+      surface
+        text "冲突"
+      surface
+        text "不一致"
+      surface
+        text "说法不一"
+    lexeme es
+      surface
+        text "contradic"
+      surface
+        text "no coinciden"
+      surface
+        text "conflicto"
+  information_source_noun
+    defined-by concept
+    role information_source_noun
+    precondition "a request names sources of information as a class"
+    effect "a conflict cue is read as a disagreement between sources"
+    unit "not applicable"
+    example "sources"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en
+      surface
+        text "source"
+    lexeme ru
+      surface
+        text "источник"
+    lexeme hi
+      surface
+        text "स्रोत"
+    lexeme zh
+      surface
+        text "来源"
+      surface
+        text "资料"
+    lexeme es
+      surface
+        text "fuente"
+  source_attribution_marker
+    defined-by concept
+    role source_attribution_marker
+    precondition "a clause attributes what it states to a named source"
+    effect "the clause is read as one attributed alternative of a source conflict"
+    unit "not applicable"
+    example "according to"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en
+      surface
+        text "says"
+      surface
+        text "say"
+      surface
+        text "said"
+      surface
+        text "according to"
+      surface
+        text "states"
+      surface
+        text "claims"
+      surface
+        text "reports"
+      surface
+        text "lists"
+      surface
+        text "gives"
+    lexeme ru
+      surface
+        text "пишет"
+      surface
+        text "говорит"
+      surface
+        text "утверждает"
+      surface
+        text "по данным"
+      surface
+        text "согласно"
+      surface
+        text "указывает"
+      surface
+        text "сообщает"
+    lexeme hi
+      surface
+        text "के अनुसार"
+      surface
+        text "कहता है"
+      surface
+        text "कहती है"
+      surface
+        text "लिखता है"
+      surface
+        text "बताता है"
+    lexeme zh
+      surface
+        text "说"
+      surface
+        text "称"
+      surface
+        text "据"
+      surface
+        text "根据"
+      surface
+        text "写道"
+      surface
+        text "记载"
+    lexeme es
+      surface
+        text "dice"
+      surface
+        text "según"
+      surface
+        text "afirma"
+      surface
+        text "indica"
+  clause_joiner
+    defined-by concept
+    role clause_joiner
+    precondition "two clauses are joined by a contrastive conjunction"
+    effect "the request is split into its clauses at the conjunction"
+    unit "not applicable"
+    example "but"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en
+      surface
+        text "but"
+      surface
+        text "while"
+      surface
+        text "whereas"
+    lexeme ru
+      surface
+        text "а"
+      surface
+        text "но"
+      surface
+        text "тогда как"
+      surface
+        text "однако"
+    lexeme hi
+      surface
+        text "लेकिन"
+      surface
+        text "जबकि"
+      surface
+        text "पर"
+      surface
+        text "मगर"
+    lexeme zh
+      surface
+        text "但是"
+      surface
+        text "但"
+      surface
+        text "而"
+      surface
+        text "可是"
+    lexeme es
+      surface
+        text "pero"
+      surface
+        text "mientras que"
+  second_person_possessive
+    defined-by concept
+    role second_person_possessive
+    precondition "a request names something as belonging to the addressee"
+    effect "the object is read as the assistant's own"
+    unit "not applicable"
+    example "your"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en
+      surface
+        text "your"
+      surface
+        text "yours"
+    lexeme ru
+      surface
+        text "твое"
+      surface
+        text "твоё"
+      surface
+        text "твой"
+      surface
+        text "твоя"
+      surface
+        text "твоего"
+      surface
+        text "твоем"
+      surface
+        text "твоём"
+      surface
+        text "ваш"
+      surface
+        text "ваше"
+      surface
+        text "ваша"
+      surface
+        text "вашего"
+      surface
+        text "вашем"
+    lexeme hi
+      surface
+        text "तुम्हारा"
+      surface
+        text "तुम्हारे"
+      surface
+        text "तुम्हारी"
+      surface
+        text "आपका"
+      surface
+        text "आपके"
+      surface
+        text "आपकी"
+    lexeme zh
+      surface
+        text "你的"
+      surface
+        text "您的"
+    lexeme es
+      surface
+        text "tu"
+      surface
+        text "tus"

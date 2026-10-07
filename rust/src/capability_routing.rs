@@ -40,9 +40,11 @@ use crate::seed::{
 use crate::web_engine_core::normalize_prompt;
 
 mod claim_evidence;
+mod claim_operands;
 mod claims;
 mod evidence;
 pub use claim_evidence::{content_beyond_roles, without_answer_shape_directive};
+pub use claim_operands::{claim_operands, only_frame_words, without_surfaces};
 pub use claims::{
     CLAIM_EVIDENCE_KINDS, ClaimAdmission, ClaimRow, claim_admission, claim_admission_in_dialogue,
     claim_admitted, claim_evidence_holds, claim_evidence_holds_in_dialogue, claim_rows,

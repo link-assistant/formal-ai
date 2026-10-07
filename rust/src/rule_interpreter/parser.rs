@@ -291,6 +291,19 @@ fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
                 .cloned()
                 .ok_or_else(|| node.error("role_slot_without_role"))?,
         ),
+        "operand" => ValueSource::Operand {
+            kind: node
+                .args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("operand_without_kind"))?,
+            index: match node.args.get(3) {
+                Some(index) => index
+                    .parse()
+                    .map_err(|_| node.error("operand_index_not_a_number"))?,
+                None => 0,
+            },
+        },
         "agent_info" => {
             let key = node
                 .args

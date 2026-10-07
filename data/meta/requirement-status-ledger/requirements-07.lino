@@ -3,10 +3,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R197"
     shard "docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #159"
     issue "0159"
-    automated_test ""
+    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
     manual "not yet confirmed"
   requirement
     id "R198"
@@ -411,10 +411,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R242"
     shard "docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #279"
     issue "0279"
-    automated_test ""
+    automated_test "rust/tests/unit/specification/probabilistic_reasoning/evidence_core.rs"
     manual "not yet confirmed"
   requirement
     id "R243"
@@ -467,10 +467,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R249"
     shard "docs/requirements/issue-0327-cross-runtime-synthesis-parity.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #327"
     issue "0327"
-    automated_test "rust/tests/unit/specification/synthesis.rs"
+    automated_test "rust/tests/web/issue-0327-wasm-synthesis-bridge.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R25"

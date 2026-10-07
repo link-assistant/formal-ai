@@ -700,126 +700,16 @@ function appendUniqueEvidence(target, source) {
   }
 }
 
-const PANDAS_DATAFRAME_JOIN_DOCS_URL =
-  "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html";
-
-function hasNormalizedWord(normalized, word) {
-  return String(normalized || "")
-    .split(/\s+/)
-    .some((token) => token === word);
-}
-
-// True when the prompt opens with an imperative to search the web, so it should
-// be answered by the web-search handler rather than the narrow docs handler.
-// Mirrors is_explicit_web_search in src/solver_handler_docs.rs by meaning. The
-// search imperative is read from the web_search_imperative_lead role — only its
-// prefix forms are clause-initial leads, so the literal before each ellipsis
-// ("search ", "look up ", "найди ", "搜索", …) is matched against the start of
-// the prompt. The medium is read from the web_medium role; its surfaces are
-// space-wrapped, so containsSearchMarker matches them with the whole-token
-// padding convention (which also catches a medium word at the very end).
-function isExplicitWebSearchPrompt(normalized) {
-  const text = String(normalized || "");
-  const requestsSearch = roleWordForms(ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
-    .filter((form) => form.slot === "prefix")
-    .some((form) => text.startsWith(form.before));
-  if (!requestsSearch) return false;
-  return roleWordForms(ROLE_WEB_MEDIUM).some((form) =>
-    containsSearchMarker(text, form.text),
-  );
-}
-
-// True when the prompt is phrased as a request to have something explained.
-// Mirrors is_explanation_request in src/solver_handler_docs.rs: every
-// interrogative and imperative lead-in lives in the explanation_request_lead
-// role, so no question word is hardcoded here. Each surface is matched by its
-// slot — a prefix form ("how …", "explain …", "как …", "解释…") by the literal
-// before the ellipsis against the start of the prompt, a bare form (" how ",
-// "कैसे काम", "如何工作", …) as a raw substring anywhere (the space-wrapped bare
-// forms thus match only on whole-word boundaries).
-function isExplanationRequest(normalized) {
-  const text = String(normalized || "");
-  return roleWordForms(ROLE_EXPLANATION_REQUEST_LEAD).some((form) =>
-    form.slot === "prefix"
-      ? text.startsWith(form.before)
-      : text.includes(form.text),
-  );
-}
-
-// True when the prompt asks how the pandas DataFrame.join method works. Mirrors
-// is_pandas_dataframe_join_prompt in src/solver_handler_docs.rs. The prompt must
-// address pandas, read as an explanation request, and not be an explicit web
-// search. The join is then recognised through two kinds of evidence: code-
-// resident API identifiers (DataFrame.join, df.join, the join+dataframe pairing)
-// — written the same in every language, so they legitimately live here as the
-// bridge from a multilingual question to one documented API — and the
-// translatable noun "method", matched through the code_method_noun role rather
-// than the four per-language words it used to hardcode, paired with the join
-// identifier.
-function isPandasDataFrameJoinPrompt(prompt, normalized) {
-  const lower = String(prompt || "").toLowerCase();
-  const text = String(normalized || "").trim();
-  if (isExplicitWebSearchPrompt(text)) return false;
-  if (!hasNormalizedWord(text, "pandas")) return false;
-  if (!isExplanationRequest(text)) return false;
-  return (
-    lower.includes("dataframe.join") ||
-    lower.includes("df.join") ||
-    (hasNormalizedWord(text, "join") && hasNormalizedWord(text, "dataframe")) ||
-    (hasNormalizedWord(text, "join") &&
-      lexiconMentionsRole(ROLE_CODE_METHOD_NOUN, text))
-  );
-}
-
-function docsMethodContent(language) {
-  if (language === "ru") {
-    return [
-      "pandas `DataFrame.join` добавляет столбцы из `other` DataFrame или именованной Series к вызывающему DataFrame и возвращает новый DataFrame.",
-      "В рамках этого метода: по умолчанию это left join по индексу вызывающего DataFrame. Если задан `on`, pandas сопоставляет этот столбец или уровень индекса с индексом объекта `other`. Параметр `how` управляет объединением ключей (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` или `right_anti`). `lsuffix` и `rsuffix` нужны при совпадающих именах столбцов, `sort` сортирует ключи join, а `validate` проверяет связи one-to-one, one-to-many, many-to-one или many-to-many. Для join столбец-к-столбцу документация pandas указывает на `DataFrame.merge`.",
-      `Источник: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (официальная документация pandas).`,
-    ].join("\n\n");
-  }
-
-  if (language === "hi") {
-    return [
-      "pandas `DataFrame.join` कॉल करने वाले DataFrame में `other` DataFrame या named Series के columns जोड़ता है और नया DataFrame लौटाता है.",
-      "इस method के दायरे में: default रूप से यह caller के index पर left join करता है. `on` देने पर pandas caller के उस column या index level को `other` object के index से मिलाता है. `how` parameter keys को मिलाने का तरीका चुनता है (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, या `right_anti`). Column नाम टकराने पर `lsuffix` और `rsuffix`, join keys को sort करने के लिए `sort`, और one-to-one, one-to-many, many-to-one, या many-to-many संबंध जांचने के लिए `validate` इस्तेमाल करें. Column-on-column joins के लिए pandas docs `DataFrame.merge` की ओर भेजते हैं.",
-      `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
-    ].join("\n\n");
-  }
-
-  if (language === "zh") {
-    return [
-      "pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。",
-      "只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。",
-      `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
-    ].join("\n\n");
-  }
-
-  return [
-    "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.",
-    "Scoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.",
-    `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
-  ].join("\n\n");
-}
-
-function tryDocsMethodExplanation(prompt, language) {
-  const normalized = normalizePrompt(prompt);
-  if (!isPandasDataFrameJoinPrompt(prompt, normalized)) return null;
-
-  return {
-    intent: "docs_method_explanation",
-    content: docsMethodContent(language),
-    confidence: 0.92,
-    evidence: [
-      "docs_method:project:pandas",
-      "docs_method:method:pandas.DataFrame.join",
-      "docs_method:source_kind:official-docs",
-      `source:${PANDAS_DATAFRAME_JOIN_DOCS_URL}`,
-      `language:${language}`,
-    ],
-    formalizedObject: "pandas.DataFrame.join",
-  };
+// The docs_method_explanation rule of data/seed/handler-rules.lino: its claim
+// row admits only when the prompt names the project and the method of the
+// seeded documentation page (claimOperandDocumentedMethod), and the answer is
+// the seeded response for that page in the prompt's language, exactly as the
+// native rule interpreter answers it (#1175 R3).
+function tryDocsMethodExplanation(prompt) {
+  const hit = runHandlerRuleSet("docs_method_explanation", prompt, String(prompt || "").toLowerCase(), []);
+  if (!hit) return null;
+  const method = claimOperandDocumentedMethod(prompt)[0] || "";
+  return { ...hit, formalizedObject: method };
 }
 
 // Issue #444: external *trusted* services are opt-out. A preference value of

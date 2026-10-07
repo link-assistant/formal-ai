@@ -57,6 +57,26 @@ multilingual_responses
     intent formalization_unparsed
     language es
     text "La frase se reconoció como una solicitud de formalización, pero no se pudo extraer de ella una cláusula cuantificada: {reason}. Una formalización necesita una palabra cuantificadora (todo, algún, ningún) o un símbolo cuantificador formal y al menos un predicado."
+  response response_formalization_no_statement_en
+    intent formalization_no_statement
+    language en
+    text "This was recognized as a formalization request, but it names no statement to formalize. Give the statement after a colon, for example: Formalize: every human is mortal."
+  response response_formalization_no_statement_ru
+    intent formalization_no_statement
+    language ru
+    text "Это распознано как запрос на формализацию, но в нём нет утверждения для формализации. Укажите утверждение после двоеточия, например: Формализуй: каждый человек смертен."
+  response response_formalization_no_statement_hi
+    intent formalization_no_statement
+    language hi
+    text "इसे औपचारिकीकरण अनुरोध माना गया, पर इसमें औपचारिक बनाने के लिए कोई कथन नहीं है। कथन को कोलन के बाद दें, उदाहरण: औपचारिक बनाओ: हर मनुष्य नश्वर है।"
+  response response_formalization_no_statement_zh
+    intent formalization_no_statement
+    language zh
+    text "这被识别为形式化请求，但其中没有需要形式化的命题。请在冒号后给出命题，例如：形式化：每个人都会死。"
+  response response_formalization_no_statement_es
+    intent formalization_no_statement
+    language es
+    text "Se reconoció una solicitud de formalización, pero no nombra ningún enunciado que formalizar. Escribe el enunciado después de dos puntos, por ejemplo: Formaliza esto: todo humano es mortal."
   response response_formalization_deformalized_en
     intent formalization_deformalized
     language en

@@ -627,8 +627,8 @@ requirement_status_ledger_shard requirements_04
   requirement
     id "R1175-3"
     shard "docs/requirements/issue-1175-routing-by-formalization.md"
-    verdict "partial"
-    delivered "Partial: this change delivers the targeted guards at the two reported detection sites and pins them with held-out probes; the wholesale capability-table refactor of every handler's claims was left open by that first pass."
+    verdict "implemented"
+    delivered "2026-10-08 (this pull request): every handler of the precedence table carries a claim row; the last five read their operand through claim_operands"
     issue "1175"
     automated_test "rust/tests/unit/issue_1175_claim_routing.rs"
     manual "not yet confirmed"

@@ -79,7 +79,7 @@ test("a software artifact defers the document plan to the project handler", () =
 });
 
 test("conflicting sources are surfaced instead of silently resolved", async () => {
-  const answer = await solve("Was X born in 1880 or 1881?");
+  const answer = await solve("The sources conflict: Wikipedia says X was born in 1880, but Britannica says 1881.");
   assert.equal(answer.intent, "source_conflict");
   assert.ok(answer.evidence.some((link) => link.startsWith("conflict:source_disagreement")));
 });
