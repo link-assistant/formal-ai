@@ -88,7 +88,8 @@ merge_conflict_policy
       inert "formalization_task_render"
       inert "formalization_task_targets"
       inert "formalization_task_rml"
-      note "The four inert files are parts of creative_writing.rs and formalization_task.rs pulled in with `include!`, not modules of their own."
+      inert "formalization_task_prover"
+      note "The five inert files are parts of creative_writing.rs and formalization_task.rs pulled in with `include!`, not modules of their own."
     file
       path "rust/src/agentic_coding/modules.rs"
       extracted_from "src/agentic_coding/modules.rs"
