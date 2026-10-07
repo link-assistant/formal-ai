@@ -334,7 +334,10 @@ pub(super) fn plan_computed_change_step(
         let tool = tool_for(tool_names, Capability::Read)?;
         return Some(plan_one(tool, read_arguments(target)));
     };
-    let missing = super::tool_result::failure_message(&read, false, true).is_some();
+    // A read that came back as the client's file block is the file, whatever
+    // its text says: a ledger that quotes error lines is not a missing file.
+    let missing = super::code_artifact::source_from_agent_read_result(&read).is_none()
+        && super::tool_result::failure_message(&read, false, true).is_some();
     let source = if missing {
         String::new()
     } else {

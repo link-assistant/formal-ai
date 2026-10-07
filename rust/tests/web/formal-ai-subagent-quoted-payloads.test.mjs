@@ -103,3 +103,23 @@ describe('an inserted line may itself name a path', () => {
     );
   });
 });
+
+describe('an append keeps the file it appends to', () => {
+  const LEDGER = '# Ledger\n\nError: oldString not found in content\n- the run failed, then passed\n';
+
+  test('a file whose text quotes error lines is read as the file, not as a missing one', async () => {
+    const { files, answer } = await drive("Append the line '- one more entry' to ledger.md.", { 'ledger.md': LEDGER });
+    assert.equal(files.get('ledger.md'), `${LEDGER}- one more entry\n`);
+    assert.equal(answer, 'Appended `- one more entry` to the end of `ledger.md` and observed the result.');
+  });
+
+  test('"append an empty line" adds one empty line and nothing else', async () => {
+    const { files } = await drive('Append an empty line to ledger.md.', { 'ledger.md': LEDGER });
+    assert.equal(files.get('ledger.md'), `${LEDGER}\n`);
+  });
+
+  test('an append the arm cannot ground is declined, never a whole-file rewrite', async () => {
+    const { files } = await drive('Append the line third to notes.txt.', { 'notes.txt': 'first\nsecond\n' });
+    assert.equal(files.get('notes.txt'), 'first\nsecond\n');
+  });
+});

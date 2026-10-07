@@ -314,7 +314,7 @@ pub(super) fn source_from_read_result(result: &str) -> String {
     decoded
 }
 
-fn source_from_agent_read_result(result: &str) -> Option<String> {
+pub(super) fn source_from_agent_read_result(result: &str) -> Option<String> {
     let after_open = result.strip_prefix("<file>\n")?;
     let (numbered, footer) = after_open.rsplit_once("\n\n(End of file - total ")?;
     if !footer.ends_with("</file>") {

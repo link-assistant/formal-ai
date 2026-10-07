@@ -3,7 +3,7 @@
 
 import { Capability } from './capability.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
-import { sourceFromReadResult } from './code_artifact.mjs';
+import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
 import { renderRustTemplate, renderSeededChange, renderSeededOutcome, rustSourceForTask } from './code_task.mjs';
 import { plainText } from './content.mjs';
 import { composeEditRequest } from './general_planner.mjs';
@@ -15,6 +15,7 @@ import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './w
 import { commandArgument, failureMessage } from './tool_result.mjs';
 import { quotedSegmentSpans, quotedSegments, unwrapTransportQuotes } from './crate/normal_markov.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
+import { correctedSpelling } from './crate/spelling.mjs';
 import {
   RewriteScope, executeScopedWorkspaceRewrite, isIdentifierWord, wordScopedMatches,
 } from './crate/workspace_change_learning.mjs';
@@ -40,7 +41,7 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   if (change) return planCompositeStep(task, currentTurn, toolNames, change);
   const rewrite = groundedRewrite(task);
   if (rewrite) return planRewriteStep(task, currentTurn, toolNames, rewrite);
-  const computed = groundedEndInsertion(task) ?? groundedRemoval(task) ?? groundedSetting(task);
+  const computed = groundedEndInsertion(task) ?? groundedRemoval(task) ?? groundedSetting(task) ?? groundedTypoFix(task);
   return computed ? planComputedChangeStep(task, currentTurn, toolNames, computed) : null;
 }
 
@@ -319,6 +320,31 @@ function assignedSetting(source, key, value, target) {
   return lines.join('\n');
 }
 
+/**
+ * `Fix the typo 'smal' in README.md`: the seeded `typo_fix_lead` with one
+ * quoted word and one path, and no stated correction. The correction is
+ * discovered (`correctedSpelling`), and the change is the word-scoped
+ * replacement a stated correction would have made.
+ */
+function groundedTypoFix(task) {
+  if (!mentionsRole('typo_fix_lead', task.toLowerCase())) return null;
+  const named = quotedPayloadAndPath(task);
+  if (!named || !isIdentifierWord(named.text)) return null;
+  const correction = correctedSpelling(named.text);
+  if (correction === null) return null;
+  return {
+    target: named.target,
+    compute: (source, missing) => {
+      if (missing) return null;
+      const execution = executeScopedWorkspaceRewrite(source, named.text, correction, RewriteScope.Word);
+      return execution.ok ? execution.ok.output : null;
+    },
+    edit: changedLinesEdit,
+    intent: 'coding_text_replaced',
+    slots: [['{old}', named.text], ['{new}', correction]],
+  };
+}
+
 function removedLiteral(source, text) {
   const kept = source.split(/(?<=\n)/u).filter((line) => line.replace(/\r?\n$/u, '') !== text);
   const withoutLines = kept.join('');
@@ -362,7 +388,9 @@ function planComputedChangeStep(task, currentTurn, toolNames, change) {
   const { target, intent, slots } = change;
   const read = resultForPath(currentTurn, Capability.Read, target, null);
   if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(target));
-  const missing = failureMessage(read, false, true) !== null;
+  // A read that came back as the client's file block is the file, whatever
+  // its text says: a ledger that quotes "Error:" lines is not a missing file.
+  const missing = sourceFromAgentReadResult(read) === null && failureMessage(read, false, true) !== null;
   const source = missing ? '' : sourceFromReadResult(read);
   const updated = change.compute(source, missing);
   if (updated === null || updated === source) return failed(task, target);

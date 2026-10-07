@@ -223,7 +223,7 @@ export function sourceFromReadResult(result) {
   return decoded;
 }
 
-function sourceFromAgentReadResult(result) {
+export function sourceFromAgentReadResult(result) {
   if (!result.startsWith('<file>\n')) return null;
   const afterOpen = result.slice('<file>\n'.length);
   const marker = '\n\n(End of file - total ';
