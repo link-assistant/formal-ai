@@ -203,18 +203,18 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R538"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "desktop/scripts/dreaming.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R539"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/integration/issue_540_memory_dream_cli.rs"
     manual "not yet confirmed"
   requirement
     id "R54"
@@ -243,18 +243,18 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R542"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_learning.rs"
     manual "not yet confirmed"
   requirement
     id "R543"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/memory_maintenance.rs"
     manual "not yet confirmed"
   requirement
     id "R544"
@@ -267,10 +267,10 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R545"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/integration/issue_540_memory_dream_cli.rs"
     manual "not yet confirmed"
   requirement
     id "R546"
@@ -283,10 +283,10 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R547"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
-    automated_test ""
+    automated_test "rust/tests/unit/docs_requirements/issue_540.rs"
     manual "not yet confirmed"
   requirement
     id "R548"
