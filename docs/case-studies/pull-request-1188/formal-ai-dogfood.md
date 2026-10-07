@@ -519,3 +519,13 @@ symbolic command reroute). Tests: JS exact transcript and answer, the
 argument reader; Rust `rust/tests/unit/pull_request_1188_function_recipe.rs`
 (write `add.py`, check, call, final; without arguments only the write and
 check). Worker budgets 07 → 1393 and 20 → 1346 with the reason.
+
+## Coordinator using Formal AI as a sub-agent (2026-10-08)
+
+The coordinator handed real PR edits to the JavaScript Formal AI through `experiments/js_dogfood/drive.mjs`, one small step per prompt, reviewed each sandbox result and copied it into the repository.
+
+- Landed through Formal AI: the case-study ladder note, 41 requirement rows pinned to their test files, the `file_edit_blank_line` seed block, the Rust twins of the three fixes below, and this section (one insert, replace or append per prompt).
+- Fixed: a replacement whose new text carried a backticked path edited that path; a cue word and a full stop inside the quoted text split the literals (`unquotedPathTokens`).
+- Fixed: an append request could take the whole-file general change route; a blank line is now a seeded concept, and an appended payload unescapes newlines.
+- Fixed: a read whose text quotes error lines was treated as a missing file, so an append overwrote this very ledger with one newline. A file-block read is now always the file.
+- Open: an unquoted payload is declined rather than appended; role cues inside a quoted payload still steer routing; a replacement whose text contains code ends with a generic answer instead of the seeded one.
