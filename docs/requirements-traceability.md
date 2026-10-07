@@ -119,7 +119,7 @@ line number, which had gone stale for every row.
 | R68 | docs/requirements/issue-0012-holistic-vision-requirements.md | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements.rs | not yet confirmed |
 | R69 | docs/requirements/issue-0012-holistic-vision-requirements.md | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements.rs | not yet confirmed |
 | R70 | docs/requirements/issue-0012-holistic-vision-requirements.md | pre-2026-07 (undated); issue #12 | rust/tests/unit/docs_requirements.rs | not yet confirmed |
-| R71 | docs/requirements/issue-0012-holistic-vision-requirements.md | pre-2026-07 (undated); issue #12 | rust/tests/unit/specification/ | not yet confirmed |
+| R71 | docs/requirements/issue-0012-holistic-vision-requirements.md | pre-2026-07 (undated); issue #12 | rust/tests/web/issue-0012-specification-pins.test.mjs | not yet confirmed |
 | R72 | docs/requirements/issue-0012-holistic-vision-requirements.md | pre-2026-07 (undated); issue #12 | rust/tests/unit/specification/reasoning_loop.rs | not yet confirmed |
 | R73 | docs/requirements/issue-0012-holistic-vision-requirements.md | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements.rs | not yet confirmed |
 | R74 | docs/requirements/issue-0012-holistic-vision-requirements.md | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements.rs | not yet confirmed |
@@ -245,7 +245,7 @@ line number, which had gone stale for every row.
 | R194 | docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): rust/tests/connectivity.js | not yet confirmed |
 | R195 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | rust/tests/unit/specification/project_lookups.rs::russian_hive_mind_prompt_prefers_link_assistant_project | not yet confirmed |
 | R196 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | issue-level coverage (not row-pinned): rust/tests/unit/specification/project_lookups.rs:17 | not yet confirmed |
-| R197 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | rust/src/summarization/mod.rs::tests | not yet confirmed |
+| R197 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | rust/tests/unit/specification/summarization_pipeline.rs (mirrors rust/src/summarization/mod.rs::tests) | not yet confirmed |
 | R198 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | issue-level coverage (not row-pinned): rust/tests/unit/specification/project_lookups.rs:17 | not yet confirmed |
 | R199 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | issue-level coverage (not row-pinned): rust/tests/unit/specification/project_lookups.rs:17 | not yet confirmed |
 | R200 | docs/requirements/issue-0159-hive-mind-lookup-and-curated-project-summarization.md | pre-2026-07 (undated); issue #159 | rust/tests/unit/specification/project_lookups.rs::curated_project_concept_prompt_routes_to_project_lookup | not yet confirmed |
@@ -326,14 +326,14 @@ line number, which had gone stale for every row.
 | R239 | docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
 | R240 | docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
 | R241 | docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
-| R242 | docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
+| R242 | docs/requirements/issue-0279-symbolic-probabilistic-reasoning.md | pre-2026-07 (undated); issue #279 | rust/tests/unit/specification/probabilistic_reasoning/evidence_core.rs | not yet confirmed |
 | R243 | docs/requirements/issue-0283-generalized-natural-language-skill-compiler.md | pre-2026-07 (undated); issue #283 | issue-level coverage (not row-pinned): rust/tests/unit/specification/arbitrary_skill_compilation.rs | not yet confirmed |
 | R244 | docs/requirements/issue-0283-generalized-natural-language-skill-compiler.md | pre-2026-07 (undated); issue #283 | issue-level coverage (not row-pinned): rust/tests/unit/specification/arbitrary_skill_compilation.rs | not yet confirmed |
 | R245 | docs/requirements/issue-0283-generalized-natural-language-skill-compiler.md | pre-2026-07 (undated); issue #283 | issue-level coverage (not row-pinned): rust/tests/unit/specification/arbitrary_skill_compilation.rs | not yet confirmed |
 | R246 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | issue-level coverage (not row-pinned): rust/tests/unit/specification/synthesis.rs:39 | not yet confirmed |
 | R247 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | rust/tests/e2e/tests/issue-327.spec.js | not yet confirmed |
 | R248 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | issue-level coverage (not row-pinned): rust/tests/unit/specification/synthesis.rs:39 | not yet confirmed |
-| R249 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | issue-level coverage (not row-pinned): rust/tests/unit/specification/synthesis.rs:39 | not yet confirmed |
+| R249 | docs/requirements/issue-0327-cross-runtime-synthesis-parity.md | pre-2026-07 (undated); issue #327 | rust/tests/web/issue-0327-wasm-synthesis-bridge.test.mjs | not yet confirmed |
 | R250 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
 | R251 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
 | R252 | docs/requirements/issue-0244-vision-implementation-planning.md | pre-2026-07 (undated); issue #244 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
@@ -355,7 +355,7 @@ line number, which had gone stale for every row.
 | R268 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
 | R269 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
 | R270 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
-| R271 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
+| R271 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | rust/tests/source/source_tests/seed/meanings/tests.rs | not yet confirmed |
 | R272 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
 | R273 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
 | R274 | docs/requirements/issue-0398-recursive-semantic-meta-language.md | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): rust/tests/unit/reference_closure.rs | not yet confirmed |
@@ -378,7 +378,7 @@ line number, which had gone stale for every row.
 | R291 | docs/requirements/issue-0412-pr-review-standards-comment-4674-knowledge-source-breadth.md | pre-2026-07 (undated); issue #412 | issue-level coverage (not row-pinned): rust/tests/integration/issue_412_oracle_languages.rs | not yet confirmed |
 | R292 | docs/requirements/issue-0412-pr-review-standards-comment-4674-knowledge-source-breadth.md | pre-2026-07 (undated); issue #412 | issue-level coverage (not row-pinned): rust/tests/integration/issue_412_oracle_languages.rs | not yet confirmed |
 | R293 | docs/requirements/issue-0408-text-and-code-editing-requirements.md | PR #416 (issue #408) | rust/tests/unit/specification/text_manipulation.rs | not yet confirmed |
-| R294 | docs/requirements/issue-0408-text-and-code-editing-requirements.md | PR #416 (issue #408) | none recorded | not yet confirmed |
+| R294 | docs/requirements/issue-0408-text-and-code-editing-requirements.md | PR #416 (issue #408) | rust/tests/web/issue-0408-text-edit-parity.test.mjs; rust/tests/unit/specification/text_manipulation_benchmarks.rs | not yet confirmed |
 | R295 | docs/requirements/issue-0408-text-and-code-editing-requirements.md | PR #416 (issue #408) | rust/tests/unit/specification/text_manipulation_benchmarks.rs::issue_408_text_code_edit_profile_passes_local_ratchet | not yet confirmed |
 | R296 | docs/requirements/issue-0408-text-and-code-editing-requirements.md | PR #416 (issue #408) | rust/tests/unit/docs_requirements.rs::issue_408_text_edit_benchmark_scope_documents_are_traceable | not yet confirmed |
 | R297 | docs/requirements/issue-0408-text-and-code-editing-requirements.md | PR #416 (issue #408) | none recorded | not yet confirmed |
