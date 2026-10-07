@@ -851,6 +851,226 @@ multilingual_responses
     intent playwright_starter_typescript
     language en
     text "import { test, expect } from '@playwright/test';\n\ntest('opens the Playwright docs', async ({ page }) => {\n  await page.goto('https://playwright.dev/');\n  await expect(page).toHaveTitle(/Playwright/);\n\n  await page.getByRole('link', { name: 'Docs' }).click();\n  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();\n});"
+  response response_web_open_in_new_tab_en
+    intent web_open_in_new_tab
+    language en
+    text "I suggest opening this in a new tab: [{url}]({url})."
+  response response_web_url_navigate_native_note_en
+    intent web_url_navigate_native_note
+    language en
+    text "In the browser web app, this URL is checked with browser-readable frame-policy metadata before any embedded preview is attempted. If X-Frame-Options or CSP frame-ancestors blocks embedding, the web app keeps the direct external link instead."
+  response response_web_frame_policy_blocked_en
+    intent web_frame_policy_blocked
+    language en
+    text "I checked the page's frame policy, and it does not allow embedding here because {reason}."
+  response response_web_frame_policy_unknown_en
+    intent web_frame_policy_unknown
+    language en
+    text "I could not verify that this page allows embedding here because {reason}."
+  response response_web_frame_policy_unverified_en
+    intent web_frame_policy_unverified
+    language en
+    text "I could not verify that this page allows embedding here."
+  response response_web_frame_policy_cors_note_en
+    intent web_frame_policy_cors_note
+    language en
+    text "Browser JavaScript also cannot read the page content directly unless the site allows CORS, so the direct external link is the reliable option."
+  response response_web_frame_policy_allowed_en
+    intent web_frame_policy_allowed
+    language en
+    text "I checked the page's frame policy and can show it here.\n\nDirect link: [{url}]({url})."
+  response response_web_http_fetch_unavailable_en
+    intent web_http_fetch_unavailable
+    language en
+    text "HTTP fetch is not available in this environment.\n\nURL: [{url}]({url})"
+  response response_web_http_fetch_truncated_en
+    intent web_http_fetch_truncated
+    language en
+    text "{body}\n\n*(truncated — {bytes} bytes total)*"
+  response response_web_http_fetch_body_en
+    intent web_http_fetch_body
+    language en
+    text "Fetched `{url}` — status **{status}**.\n\nResponse body:\n```\n{body}\n```"
+  response response_web_http_fetch_binary_en
+    intent web_http_fetch_binary
+    language en
+    text "Fetched `{url}` — status **{status}**.\n\nContent-Type: `{content_type}` — binary or empty body, not shown.\n\nYou can view this URL directly: [{url}]({url})"
+  response response_web_http_fetch_failed_cors_en
+    intent web_http_fetch_failed_cors
+    language en
+    text "Could not fetch `{url}` directly (CORS restriction)."
+  response response_web_http_fetch_failed_network_en
+    intent web_http_fetch_failed_network
+    language en
+    text "Could not fetch `{url}` directly (network error)."
+  response response_web_http_fetch_iframe_en
+    intent web_http_fetch_iframe
+    language en
+    text "I checked the page's frame policy and can show it in the embedded frame below."
+  response response_web_frame_policy_reason_target_url_unparsed_en
+    intent web_frame_policy_reason_target_url_unparsed
+    language en
+    text "the target URL could not be parsed"
+  response response_web_frame_policy_reason_xfo_deny_and_csp_none_en
+    intent web_frame_policy_reason_xfo_deny_and_csp_none
+    language en
+    text "the page sends X-Frame-Options: DENY and CSP frame-ancestors 'none'"
+  response response_web_frame_policy_reason_xfo_deny_en
+    intent web_frame_policy_reason_xfo_deny
+    language en
+    text "the page sends X-Frame-Options: DENY"
+  response response_web_frame_policy_reason_xfo_sameorigin_en
+    intent web_frame_policy_reason_xfo_sameorigin
+    language en
+    text "the page sends X-Frame-Options: SAMEORIGIN"
+  response response_web_frame_policy_reason_embedder_unavailable_en
+    intent web_frame_policy_reason_embedder_unavailable
+    language en
+    text "the current web app origin is unavailable"
+  response response_web_frame_policy_reason_csp_none_en
+    intent web_frame_policy_reason_csp_none
+    language en
+    text "the page sends CSP frame-ancestors 'none'"
+  response response_web_frame_policy_reason_csp_excludes_embedder_en
+    intent web_frame_policy_reason_csp_excludes_embedder
+    language en
+    text "the page's CSP frame-ancestors directive does not include this web app"
+  response response_web_frame_policy_reason_no_blocking_policy_en
+    intent web_frame_policy_reason_no_blocking_policy
+    language en
+    text "no blocking X-Frame-Options or CSP frame-ancestors policy was detected"
+  response response_web_frame_policy_reason_fetch_unavailable_en
+    intent web_frame_policy_reason_fetch_unavailable
+    language en
+    text "browser fetch is not available"
+  response response_web_frame_policy_reason_non_public_url_en
+    intent web_frame_policy_reason_non_public_url
+    language en
+    text "only public HTTP(S) URLs are checked by the frame-policy service"
+  response response_web_frame_policy_reason_service_http_status_en
+    intent web_frame_policy_reason_service_http_status
+    language en
+    text "the frame-policy service returned HTTP {status}"
+  response response_web_frame_policy_reason_service_no_headers_en
+    intent web_frame_policy_reason_service_no_headers
+    language en
+    text "the frame-policy service did not return response headers"
+  response response_web_frame_policy_reason_service_unreachable_en
+    intent web_frame_policy_reason_service_unreachable
+    language en
+    text "the frame-policy service could not be reached from this browser"
+  response response_web_search_results_header_en
+    intent web_search_results_header
+    language en
+    text "Search results for `{query}` — top {top} after reciprocal rank fusion (k = {k})."
+  response response_web_search_results_header_ru
+    intent web_search_results_header
+    language ru
+    text "Результаты поиска для `{query}` — топ {top} после реципрокного объединения рангов (k = {k})."
+  response response_web_search_results_header_zh
+    intent web_search_results_header
+    language zh
+    text "搜索 `{query}` 的结果 — 经互惠等级融合后的前 {top} 项（k = {k}）。"
+  response response_web_search_results_header_hi
+    intent web_search_results_header
+    language hi
+    text "`{query}` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष {top} (k = {k})।"
+  response response_web_search_other_sources_en
+    intent web_search_other_sources
+    language en
+    text "Other sources"
+  response response_web_search_other_sources_ru
+    intent web_search_other_sources
+    language ru
+    text "Другие источники"
+  response response_web_search_other_sources_zh
+    intent web_search_other_sources
+    language zh
+    text "其他来源"
+  response response_web_search_other_sources_hi
+    intent web_search_other_sources
+    language hi
+    text "अन्य स्रोत"
+  response response_web_search_via_en
+    intent web_search_via
+    language en
+    text "via"
+  response response_web_search_via_ru
+    intent web_search_via
+    language ru
+    text "через"
+  response response_web_search_via_zh
+    intent web_search_via
+    language zh
+    text "来自"
+  response response_web_search_via_hi
+    intent web_search_via
+    language hi
+    text "के माध्यम से"
+  response response_web_search_read_more_en
+    intent web_search_read_more
+    language en
+    text "Read more"
+  response response_web_search_read_more_ru
+    intent web_search_read_more
+    language ru
+    text "Подробнее"
+  response response_web_search_read_more_zh
+    intent web_search_read_more
+    language zh
+    text "阅读更多"
+  response response_web_search_read_more_hi
+    intent web_search_read_more
+    language hi
+    text "और पढ़ें"
+  response response_web_search_no_results_en
+    intent web_search_no_results
+    language en
+    text "No CORS-enabled web search results were returned for `{query}`.\n\nProviders tried: {providers}."
+  response response_web_search_no_results_ru
+    intent web_search_no_results
+    language ru
+    text "Не получены результаты веб-поиска с поддержкой CORS для `{query}`.\n\nПопробованы провайдеры: {providers}."
+  response response_web_search_no_results_zh
+    intent web_search_no_results
+    language zh
+    text "未获取到 `{query}` 的可用 CORS 搜索结果。\n\n已尝试的提供方：{providers}。"
+  response response_web_search_no_results_hi
+    intent web_search_no_results
+    language hi
+    text "`{query}` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: {providers}."
+  response response_web_search_all_disabled_en
+    intent web_search_all_disabled
+    language en
+    text "All CORS-readable search providers are disabled for this session. Tried: {providers}."
+  response response_web_search_all_disabled_ru
+    intent web_search_all_disabled
+    language ru
+    text "Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: {providers}."
+  response response_web_search_all_disabled_zh
+    intent web_search_all_disabled
+    language zh
+    text "本会话中所有支持 CORS 的搜索提供方都已禁用。已尝试：{providers}。"
+  response response_web_search_all_disabled_hi
+    intent web_search_all_disabled
+    language hi
+    text "इस सत्र के लिए सभी CORS-समर्थित खोज प्रदाता अक्षम हैं। प्रयास किया: {providers}."
+  response response_web_search_wikinews_article_en
+    intent web_search_wikinews_article
+    language en
+    text "Wikinews has a news article titled \"{title}\"."
+  response response_web_search_wikinews_article_ru
+    intent web_search_wikinews_article
+    language ru
+    text "В Wikinews есть новостная статья «{title}»."
+  response response_web_search_wikinews_article_zh
+    intent web_search_wikinews_article
+    language zh
+    text "Wikinews 有“{title}”这篇新闻。"
+  response response_web_search_wikinews_article_hi
+    intent web_search_wikinews_article
+    language hi
+    text "Wikinews में \"{title}\" के लिए समाचार लेख है।"
   response response_research_result_followup_no_results_en
     intent research_result_followup_no_results
     language en

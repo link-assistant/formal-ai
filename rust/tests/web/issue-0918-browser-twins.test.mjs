@@ -148,3 +148,91 @@ test("a low guess probability asks for the script's scope", async () => {
   assert.equal(response.intent, "playwright_script_clarification");
   assert.equal(response.content, "Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.");
 });
+
+// Issue #918 (R914-6): the fetch, navigation and frame-policy wording of the
+// http_fetch and url_navigate rows is the seeded web_* responses, which the
+// native url_navigate row renders too (its exact answer is pinned in
+// rust/tests/unit/formal_ai/seed_and_memory.rs). The browser answers depend
+// on what the page and the frame-policy service return, so each outcome is
+// pinned against a stubbed fetch; every answer is unchanged.
+const WEB_CORS_NOTE = "Browser JavaScript also cannot read the page content directly unless the site allows CORS, so the direct external link is the reliable option.";
+const webHeaders = (values) => ({ get: (name) => values[name.toLowerCase()] || null });
+
+async function withFetch(fetchImpl, code) {
+  await ready;
+  worker.fetch = fetchImpl;
+  return plain(await evaluate(worker, code));
+}
+
+test("a navigation the frame policy blocks keeps the external link", async () => {
+  const response = await withFetch(
+    async () => ({ ok: true, status: 200, json: async () => ({ headers: { "x-frame-options": "DENY", "content-security-policy": "frame-ancestors 'none'" } }), headers: webHeaders({}) }),
+    'tryUrlNavigate("Navigate to github.com")',
+  );
+  assert.equal(response.intent, "url_navigate");
+  assert.equal(response.content, `I suggest opening this in a new tab: [https://github.com](https://github.com).\n\nI checked the page's frame policy, and it does not allow embedding here because the page sends X-Frame-Options: DENY and CSP frame-ancestors 'none'.\n${WEB_CORS_NOTE}`);
+});
+
+test("a navigation the frame policy allows shows the page", async () => {
+  const response = await withFetch(
+    async () => ({ ok: true, status: 200, json: async () => ({ headers: {} }), headers: webHeaders({}) }),
+    'tryUrlNavigate("Navigate to example.com")',
+  );
+  assert.equal(response.content, "I checked the page's frame policy and can show it here.\n\nDirect link: [https://example.com](https://example.com).");
+  assert.equal(response.iframeUrl, "https://example.com");
+});
+
+test("an unreachable frame-policy service names its reason", async () => {
+  const response = await withFetch(async () => ({ ok: false, status: 503, headers: webHeaders({}) }), 'tryUrlNavigate("Go to example.org")');
+  assert.equal(response.content, `I suggest opening this in a new tab: [https://example.org](https://example.org).\n\nI could not verify that this page allows embedding here because the frame-policy service returned HTTP 503.\n${WEB_CORS_NOTE}`);
+});
+
+test("a fetched text body is shown and a binary body is not", async () => {
+  const text = await withFetch(
+    async () => ({ ok: true, status: 200, headers: webHeaders({ "content-type": "text/plain" }), text: async () => "hello {url} world", json: async () => ({ headers: {} }) }),
+    'tryFetch("fetch example.com")',
+  );
+  assert.equal(text.intent, "http_fetch");
+  assert.equal(text.content, "Fetched `https://example.com` — status **200**.\n\nResponse body:\n```\nhello {url} world\n```");
+  const binary = await withFetch(
+    async () => ({ ok: true, status: 204, headers: webHeaders({ "content-type": "image/png" }), text: async () => "", json: async () => ({ headers: {} }) }),
+    'tryFetch("fetch example.com")',
+  );
+  assert.equal(binary.content, "Fetched `https://example.com` — status **204**.\n\nContent-Type: `image/png` — binary or empty body, not shown.\n\nYou can view this URL directly: [https://example.com](https://example.com)");
+});
+
+test("a failed fetch falls back to the frame policy", async () => {
+  const response = await withFetch(
+    async (url) => {
+      if (!String(url).includes("api") && String(url).includes("example.com")) throw new Error("boom");
+      return { ok: true, status: 200, json: async () => ({ headers: {} }), headers: webHeaders({}) };
+    },
+    'tryFetch("fetch example.com")',
+  );
+  assert.equal(response.content, "Could not fetch `https://example.com` directly (network error).\n\nI checked the page's frame policy and can show it in the embedded frame below.");
+});
+
+// Issue #918 (R914-6): the browser web search renders its result header,
+// source labels, no-result and all-disabled sentences and the Wikinews
+// fallback description from seeded web_search_* responses instead of
+// per-language tables in js/worker/formal_ai_worker_19.js and
+// js/worker/formal_ai_worker_18.js; every text is unchanged.
+test("web search texts come from the seed in every language", async () => {
+  await ready;
+  const texts = plain(evaluate(worker, `["en", "ru", "es"].map((language) => { const t = webSearchTexts(language); return [t.header("rust", 10, 60), t.otherSources, t.via, t.readMore, t.noResults("rust", "duckduckgo, wikipedia"), t.allDisabled("duckduckgo")]; })`));
+  assert.deepEqual(texts[0], [
+    "Search results for `rust` — top 10 after reciprocal rank fusion (k = 60).",
+    "Other sources", "via", "Read more",
+    "No CORS-enabled web search results were returned for `rust`.\n\nProviders tried: duckduckgo, wikipedia.",
+    "All CORS-readable search providers are disabled for this session. Tried: duckduckgo.",
+  ]);
+  assert.deepEqual(texts[1], [
+    "Результаты поиска для `rust` — топ 10 после реципрокного объединения рангов (k = 60).",
+    "Другие источники", "через", "Подробнее",
+    "Не получены результаты веб-поиска с поддержкой CORS для `rust`.\n\nПопробованы провайдеры: duckduckgo, wikipedia.",
+    "Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: duckduckgo.",
+  ]);
+  assert.deepEqual(texts[2], texts[0]);
+  assert.equal(plain(evaluate(worker, 'wikinewsFallbackDescription("Mars rover lands", "ru")')), "В Wikinews есть новостная статья «Mars rover lands».");
+  assert.equal(plain(evaluate(worker, 'wikinewsFallbackDescription("Mars rover lands", "en")')), 'Wikinews has a news article titled "Mars rover lands".');
+});

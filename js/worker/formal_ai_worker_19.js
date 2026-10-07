@@ -136,33 +136,24 @@ function providerPriorityScore(providers) {
   return Math.min(...providers.map((p) => WEB_SEARCH_PROVIDER_PRIORITY[p && p.id] || 999));
 }
 
-// Localized search templates mirror i18n-catalog.lino; English is the fallback.
-const WEB_SEARCH_TEXTS = {
-  en: {
-    header: (query, top, k) => `Search results for \`${query}\` — top ${top} after reciprocal rank fusion (k = ${k}).`,
-    otherSources: "Other sources", via: "via", readMore: "Read more",
-    noResults: (query, providers) => `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${providers}.`,
-    allDisabled: (providers) => `All CORS-readable search providers are disabled for this session. Tried: ${providers}.` },
-  ru: {
-    header: (query, top, k) => `Результаты поиска для \`${query}\` — топ ${top} после реципрокного объединения рангов (k = ${k}).`,
-    otherSources: "Другие источники", via: "через", readMore: "Подробнее",
-    noResults: (query, providers) => `Не получены результаты веб-поиска с поддержкой CORS для \`${query}\`.\n\nПопробованы провайдеры: ${providers}.`,
-    allDisabled: (providers) => `Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: ${providers}.` },
-  zh: {
-    header: (query, top, k) => `搜索 \`${query}\` 的结果 — 经互惠等级融合后的前 ${top} 项（k = ${k}）。`,
-    otherSources: "其他来源", via: "来自", readMore: "阅读更多",
-    noResults: (query, providers) => `未获取到 \`${query}\` 的可用 CORS 搜索结果。\n\n已尝试的提供方：${providers}。`,
-    allDisabled: (providers) => `本会话中所有支持 CORS 的搜索提供方都已禁用。已尝试：${providers}。` },
-  hi: {
-    header: (query, top, k) => `\`${query}\` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष ${top} (k = ${k})।`,
-    otherSources: "अन्य स्रोत", via: "के माध्यम से", readMore: "और पढ़ें",
-    noResults: (query, providers) => `\`${query}\` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: ${providers}.`,
-    allDisabled: (providers) => `इस सत्र के लिए सभी CORS-समर्थित खोज प्रदाता अक्षम हैं। प्रयास किया: ${providers}.` },
-};
-
+// Localized search templates are the seeded web_search_* responses
+// (data/seed/multilingual-responses-synthesis.lino); English is the fallback
+// (issue #918).
 function webSearchTexts(language) {
   const code = String(language || "").toLowerCase().slice(0, 2);
-  return WEB_SEARCH_TEXTS[code] || WEB_SEARCH_TEXTS.en;
+  const text = (intent, values = {}) => {
+    let out = answerFor(intent, code);
+    for (const [name, value] of Object.entries(values)) out = out.split(`{${name}}`).join(String(value));
+    return out;
+  };
+  return {
+    header: (query, top, k) => text("web_search_results_header", { top, k, query }),
+    otherSources: text("web_search_other_sources"),
+    via: text("web_search_via"),
+    readMore: text("web_search_read_more"),
+    noResults: (query, providers) => text("web_search_no_results", { providers, query }),
+    allDisabled: (providers) => text("web_search_all_disabled", { providers }),
+  };
 }
 
 function normalizeBareTermResultLabel(value) {

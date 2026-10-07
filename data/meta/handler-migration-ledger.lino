@@ -60,9 +60,17 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/page_query_text.rs"
     justification "Issue #1163 R10: the page queries are the seed's page_query templates (data/seed/page-formalization-rules.lino) run over a page the prompt supplies, formalized by the generic page formalizer; the answer is the page's own block text. Browser twin (PR #1188, JavaScript-first parity): tryPageQueryText in js/worker/formal_ai_worker_web_formalize.js answers the same templates in the worker."
   handler http_fetch
-    status pending
+    status migrated
+    data "data/seed/meanings-web-navigation.lino|data/seed/multilingual-responses-synthesis.lino|data/seed/multilingual-responses.lino"
+    primitive "rust/src/solver_handlers/web_requests.rs"
+    justification "issue #918 (R914-6): recognition is the seeded web-navigation roles in both runtimes; the native row answers through seeded responses (the offline cache-miss and fetch-failure records) and the browser row now renders its fetched-body, binary-body, truncation, CORS and network failure, iframe and frame-policy wording from the seeded web_* responses instead of literals. The two runtimes answer from different environments (the browser fetches live and checks frame policy; the native row reads the replayable source cache), so their answers are pinned per outcome rather than byte-for-byte against each other; every browser answer is unchanged against stubbed fetches."
+    held_out "rust/tests/unit/web_requests.rs"
   handler url_navigate
-    status pending
+    status migrated
+    data "data/seed/meanings-web-navigation.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handlers/web_requests.rs"
+    justification "issue #918 (R914-6): both runtimes open with the same seeded web_open_in_new_tab sentence; the native row adds the seeded web_url_navigate_native_note paragraph (its exact answer is pinned in rust/tests/unit/formal_ai/seed_and_memory.rs) and the browser row the seeded frame-policy verdict and reason for what the frame-policy service returned. Recognition is the seeded web-navigation roles in both."
+    held_out "rust/tests/unit/formal_ai/seed_and_memory.rs"
   handler github_repository_traffic
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-web-search.lino|data/seed/multilingual-responses.lino"
@@ -84,7 +92,11 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/product_search.rs"
     justification "Issues 800 and 872 compose marketplace searches from seeded hosts, qualifiers, and localized responses. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_product_search.js answers the same seed records in the worker."
   handler web_search
-    status pending
+    status migrated
+    data "data/seed/meanings-web-search.lino|data/seed/multilingual-responses-agentic.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handlers/web_requests/live_search.rs"
+    justification "issue #918 (R914-6): recognition is the seeded web-search roles in both runtimes; the native row executes the search through the replayable source cache and answers through the seeded web_search_live_results, web_search_unavailable and search_fusion_* responses, and the browser row now renders its result header, source labels, no-result and all-disabled sentences and the Wikinews fallback from seeded web_search_* responses instead of a four-language table and inline sentences. The browser searches CORS providers live while the native row reads captured sources, so the two answers differ by environment, not by vocabulary; the browser texts are pinned unchanged in every language."
+    held_out "rust/tests/web/issue-0918-browser-twins.test.mjs"
   handler learn_from_source
     status pending
   handler research_comparison_table

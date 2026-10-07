@@ -1,4 +1,17 @@
 // Worker module 19 of 21. Loaded by ../formal_ai_worker.js.
+// Issue #918: the fetch, navigation and frame-policy wording is seeded
+// web_* responses (data/seed/multilingual-responses-synthesis.lino); the
+// native url_navigate row renders the same records.
+function webResponse(intent, values = {}) {
+  let text = answerFor(intent, "en");
+  for (const [name, value] of Object.entries(values)) text = text.split(`{${name}}`).join(String(value));
+  return text;
+}
+
+function framePolicyReason(key, values) {
+  return webResponse(`web_frame_policy_reason_${key}`, values);
+}
+
 function evaluateFramePolicy(headers, targetUrl, embedderOrigin) {
   const frameHeaders = normalizeFramePolicyHeaders(headers);
   const xFrameOptions = frameHeaders["x-frame-options"] || "";
@@ -7,7 +20,7 @@ function evaluateFramePolicy(headers, targetUrl, embedderOrigin) {
   try {
     target = new URL(targetUrl);
   } catch (_error) {
-    return { status: "unknown", reason: "the target URL could not be parsed" };
+    return { status: "unknown", reason: framePolicyReason("target_url_unparsed") };
   }
 
   const xFrameDirectives = xFrameOptions
@@ -21,9 +34,7 @@ function evaluateFramePolicy(headers, targetUrl, embedderOrigin) {
   if (xFrameDirectives.includes("deny")) {
     return {
       status: "blocked",
-      reason: cspHasFrameAncestorsNone
-        ? "the page sends X-Frame-Options: DENY and CSP frame-ancestors 'none'"
-        : "the page sends X-Frame-Options: DENY",
+      reason: framePolicyReason(cspHasFrameAncestorsNone ? "xfo_deny_and_csp_none" : "xfo_deny"),
     };
   }
   if (xFrameDirectives.includes("sameorigin")) {
@@ -36,7 +47,7 @@ function evaluateFramePolicy(headers, targetUrl, embedderOrigin) {
     if (!embedder || embedder.origin !== target.origin) {
       return {
         status: "blocked",
-        reason: "the page sends X-Frame-Options: SAMEORIGIN",
+        reason: framePolicyReason("xfo_sameorigin"),
       };
     }
   }
@@ -51,14 +62,14 @@ function evaluateFramePolicy(headers, targetUrl, embedderOrigin) {
     if (!embedder) {
       return {
         status: "unknown",
-        reason: "the current web app origin is unavailable",
+        reason: framePolicyReason("embedder_unavailable"),
       };
     }
     for (const sources of sourceSets) {
       if (sources.includes("'none'")) {
         return {
           status: "blocked",
-          reason: "the page sends CSP frame-ancestors 'none'",
+          reason: framePolicyReason("csp_none"),
         };
       }
       if (
@@ -67,8 +78,7 @@ function evaluateFramePolicy(headers, targetUrl, embedderOrigin) {
       ) {
         return {
           status: "blocked",
-          reason:
-            "the page's CSP frame-ancestors directive does not include this web app",
+          reason: framePolicyReason("csp_excludes_embedder"),
         };
       }
     }
@@ -76,7 +86,7 @@ function evaluateFramePolicy(headers, targetUrl, embedderOrigin) {
 
   return {
     status: "allowed",
-    reason: "no blocking X-Frame-Options or CSP frame-ancestors policy was detected",
+    reason: framePolicyReason("no_blocking_policy"),
   };
 }
 
@@ -85,14 +95,14 @@ async function detectFramePolicy(url) {
   if (typeof fetch !== "function") {
     return {
       status: "unknown",
-      reason: "browser fetch is not available",
+      reason: framePolicyReason("fetch_unavailable"),
       evidence: evidence.concat("url_preview:frame_policy:unknown"),
     };
   }
   if (!isPublicHttpUrl(url)) {
     return {
       status: "unknown",
-      reason: "only public HTTP(S) URLs are checked by the frame-policy service",
+      reason: framePolicyReason("non_public_url"),
       evidence: evidence.concat("url_preview:frame_policy:unknown"),
     };
   }
@@ -107,7 +117,7 @@ async function detectFramePolicy(url) {
     if (!response.ok) {
       return {
         status: "unknown",
-        reason: `the frame-policy service returned HTTP ${response.status}`,
+        reason: framePolicyReason("service_http_status", { status: response.status }),
         evidence: evidence.concat("url_preview:frame_policy:unknown"),
       };
     }
@@ -116,7 +126,7 @@ async function detectFramePolicy(url) {
     if (!headers || typeof headers !== "object") {
       return {
         status: "unknown",
-        reason: "the frame-policy service did not return response headers",
+        reason: framePolicyReason("service_no_headers"),
         evidence: evidence.concat("url_preview:frame_policy:unknown"),
       };
     }
@@ -128,28 +138,22 @@ async function detectFramePolicy(url) {
   } catch (_error) {
     return {
       status: "unknown",
-      reason: "the frame-policy service could not be reached from this browser",
+      reason: framePolicyReason("service_unreachable"),
       evidence: evidence.concat("url_preview:frame_policy:unknown"),
     };
   }
 }
 
 function directExternalLinkAnswer(url, framePolicy, leadingLine) {
-  const lines = [leadingLine || `I suggest opening this in a new tab: [${url}](${url}).`, ""];
+  const lines = [leadingLine || webResponse("web_open_in_new_tab", { url }), ""];
   if (framePolicy && framePolicy.status === "blocked") {
-    lines.push(
-      `I checked the page's frame policy, and it does not allow embedding here because ${framePolicy.reason}.`,
-    );
+    lines.push(webResponse("web_frame_policy_blocked", { reason: framePolicy.reason }));
   } else if (framePolicy && framePolicy.status === "unknown") {
-    lines.push(
-      `I could not verify that this page allows embedding here because ${framePolicy.reason}.`,
-    );
+    lines.push(webResponse("web_frame_policy_unknown", { reason: framePolicy.reason }));
   } else {
-    lines.push("I could not verify that this page allows embedding here.");
+    lines.push(webResponse("web_frame_policy_unverified"));
   }
-  lines.push(
-    "Browser JavaScript also cannot read the page content directly unless the site allows CORS, so the direct external link is the reliable option.",
-  );
+  lines.push(webResponse("web_frame_policy_cors_note"));
   return lines.join("\n");
 }
 
@@ -163,7 +167,7 @@ async function tryFetch(prompt) {
   if (typeof fetch !== "function") {
     return {
       intent: "http_fetch",
-      content: `HTTP fetch is not available in this environment.\n\nURL: [${url}](${url})`,
+      content: webResponse("web_http_fetch_unavailable", { url }),
       confidence: 0.5,
       evidence,
       iframeUrl: url,
@@ -177,26 +181,15 @@ async function tryFetch(prompt) {
     let body = "";
     if (contentType.includes("text/") || contentType.includes("application/json")) {
       const text = await response.text();
-      body = text.length > 2000 ? `${text.slice(0, 2000)}\n\n*(truncated — ${text.length} bytes total)*` : text;
+      body = text.length > 2000 ? webResponse("web_http_fetch_truncated", { bytes: text.length, body: text.slice(0, 2000) }) : text;
     }
     evidence.push(`http_fetch:status:${status}`);
-    const lines = [
-      `Fetched \`${url}\` — status **${status}**.`,
-      "",
-    ];
-    if (body) {
-      lines.push("Response body:");
-      lines.push("```");
-      lines.push(body);
-      lines.push("```");
-    } else {
-      lines.push(`Content-Type: \`${contentType || "unknown"}\` — binary or empty body, not shown.`);
-      lines.push("");
-      lines.push(`You can view this URL directly: [${url}](${url})`);
-    }
+    const content = body
+      ? webResponse("web_http_fetch_body", { url, status, body })
+      : webResponse("web_http_fetch_binary", { url, status, content_type: contentType || "unknown" });
     return {
       intent: "http_fetch",
-      content: lines.join("\n"),
+      content,
       confidence: 0.95,
       evidence,
       iframeUrl: null,
@@ -212,7 +205,7 @@ async function tryFetch(prompt) {
     evidence.push(`http_fetch:error:${isCors ? "cors" : "network"}`);
     const framePolicy = await detectFramePolicy(url);
     evidence.push(...framePolicy.evidence);
-    const fetchFailureLine = `Could not fetch \`${url}\` directly${isCors ? " (CORS restriction)" : " (network error)"}.`;
+    const fetchFailureLine = webResponse(isCors ? "web_http_fetch_failed_cors" : "web_http_fetch_failed_network", { url });
     if (framePolicy.status !== "allowed") {
       evidence.push(`url_preview:external_link:${url}`);
       return {
@@ -220,7 +213,7 @@ async function tryFetch(prompt) {
         content: directExternalLinkAnswer(
           url,
           framePolicy,
-          `${fetchFailureLine}\n\nI suggest opening this in a new tab: [${url}](${url}).`,
+          `${fetchFailureLine}\n\n${webResponse("web_open_in_new_tab", { url })}`,
         ),
         confidence: 0.75,
         evidence,
@@ -228,14 +221,9 @@ async function tryFetch(prompt) {
       };
     }
     evidence.push(`url_preview:iframe:${url}`);
-    const lines = [
-      fetchFailureLine,
-      "",
-      "I checked the page's frame policy and can show it in the embedded frame below.",
-    ];
     return {
       intent: "http_fetch",
-      content: lines.join("\n"),
+      content: `${fetchFailureLine}\n\n${webResponse("web_http_fetch_iframe")}`,
       confidence: 0.8,
       evidence,
       iframeUrl: url,
@@ -263,15 +251,9 @@ async function tryUrlNavigate(prompt) {
   }
 
   evidence.push(`url_preview:iframe:${url}`);
-  const lines = [
-    "I checked the page's frame policy and can show it here.",
-    "",
-    `Direct link: [${url}](${url}).`,
-  ];
-
   return {
     intent: "url_navigate",
-    content: lines.join("\n"),
+    content: webResponse("web_frame_policy_allowed", { url }),
     confidence: 0.95,
     evidence,
     iframeUrl: url,
@@ -940,16 +922,7 @@ async function searchWiktionary(query, language, limit) {
 }
 
 function wikinewsFallbackDescription(title, language) {
-  if (language === "ru") {
-    return `В Wikinews есть новостная статья «${title}».`;
-  }
-  if (language === "zh") {
-    return `Wikinews 有“${title}”这篇新闻。`;
-  }
-  if (language === "hi") {
-    return `Wikinews में "${title}" के लिए समाचार लेख है।`;
-  }
-  return `Wikinews has a news article titled "${title}".`;
+  return answerFor("web_search_wikinews_article", String(language || "")).split("{title}").join(title);
 }
 
 // Issue #400: Wikinews exposes the same CORS-readable MediaWiki opensearch

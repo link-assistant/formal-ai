@@ -610,6 +610,278 @@ meanings
     unit "not applicable"
     example "await page.goto('https://playwright.dev/');"
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_target_url_unparsed
+    defined-by answer
+    role localized_response_template
+    precondition "the requested URL cannot be parsed"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the target URL could not be parsed"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_xfo_deny_and_csp_none
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends both X-Frame-Options DENY and CSP frame-ancestors none"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the page sends X-Frame-Options: DENY and CSP frame-ancestors none"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_xfo_deny
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends X-Frame-Options DENY"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the page sends X-Frame-Options: DENY"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_xfo_sameorigin
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends X-Frame-Options SAMEORIGIN for another origin"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the page sends X-Frame-Options: SAMEORIGIN"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_embedder_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the web app cannot read its own origin"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the current web app origin is unavailable"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_csp_none
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends CSP frame-ancestors none"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the page sends CSP frame-ancestors none"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_csp_excludes_embedder
+    defined-by answer
+    role localized_response_template
+    precondition "the page's CSP frame-ancestors list omits the web app origin"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the pages CSP frame-ancestors directive does not include this web app"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_no_blocking_policy
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends no blocking frame policy"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "no blocking X-Frame-Options or CSP frame-ancestors policy was detected"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_fetch_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the browser offers no fetch function"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "browser fetch is not available"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_non_public_url
+    defined-by answer
+    role localized_response_template
+    precondition "the URL is not a public HTTP or HTTPS address"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "only public HTTP(S) URLs are checked by the frame-policy service"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_service_http_status
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy service answers with an error status"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the frame-policy service returned HTTP 503"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_service_no_headers
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy service answers without response headers"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the frame-policy service did not return response headers"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_service_unreachable
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy service cannot be reached"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the frame-policy service could not be reached from this browser"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_open_in_new_tab
+    defined-by answer
+    role localized_response_template
+    precondition "a navigation or a failed fetch cannot be shown embedded"
+    effect "the answer suggests opening the URL in a new tab with a direct link"
+    unit "not applicable"
+    example "I suggest opening this in a new tab."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_url_navigate_native_note
+    defined-by answer
+    role localized_response_template
+    precondition "the native runtime answers a navigation request without a browser"
+    effect "the answer explains that the web app checks frame policy before any embedded preview"
+    unit "not applicable"
+    example "the web app keeps the direct external link instead."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_blocked
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy check reports a blocking policy"
+    effect "the answer says embedding is not allowed and names the reason"
+    unit "not applicable"
+    example "it does not allow embedding here"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_unknown
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy check cannot reach a verdict"
+    effect "the answer says embedding could not be verified and names the reason"
+    unit "not applicable"
+    example "I could not verify that this page allows embedding here."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_unverified
+    defined-by answer
+    role localized_response_template
+    precondition "no frame-policy verdict is available"
+    effect "the answer says embedding could not be verified"
+    unit "not applicable"
+    example "I could not verify that this page allows embedding here."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_cors_note
+    defined-by answer
+    role localized_response_template
+    precondition "a page is offered only as an external link"
+    effect "the answer explains that browser JavaScript cannot read the page without CORS"
+    unit "not applicable"
+    example "the direct external link is the reliable option."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_allowed
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy check allows embedding"
+    effect "the answer shows the page embedded and gives the direct link"
+    unit "not applicable"
+    example "I checked the page's frame policy and can show it here."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_http_fetch_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the environment has no fetch function"
+    effect "the answer says the fetch cannot run and links the URL"
+    unit "not applicable"
+    example "HTTP fetch is not available in this environment."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_http_fetch_truncated
+    defined-by answer
+    role localized_response_template
+    precondition "a fetched text body is longer than the display limit"
+    effect "the answer shows the first part of the body and the total byte count"
+    unit "bytes"
+    example "truncated, 2100 bytes total"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_http_fetch_body
+    defined-by answer
+    role localized_response_template
+    precondition "a fetch returns a text or JSON body"
+    effect "the answer gives the status and shows the body in a code block"
+    unit "not applicable"
+    example "Fetched example.com, status 200."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_http_fetch_binary
+    defined-by answer
+    role localized_response_template
+    precondition "a fetch returns a binary or empty body"
+    effect "the answer gives the status and content type and links the URL instead of the body"
+    unit "not applicable"
+    example "binary or empty body, not shown."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_http_fetch_failed_cors
+    defined-by answer
+    role localized_response_template
+    precondition "a fetch is blocked by the CORS policy"
+    effect "the answer says the URL could not be fetched because of CORS"
+    unit "not applicable"
+    example "Could not fetch example.com directly."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_http_fetch_failed_network
+    defined-by answer
+    role localized_response_template
+    precondition "a fetch fails with a network error"
+    effect "the answer says the URL could not be fetched because of a network error"
+    unit "not applicable"
+    example "Could not fetch example.com directly."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_http_fetch_iframe
+    defined-by answer
+    role localized_response_template
+    precondition "a failed fetch can still be shown under the frame policy"
+    effect "the answer says the page is shown in the embedded frame"
+    unit "not applicable"
+    example "I can show it in the embedded frame below."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_search_results_header
+    defined-by answer
+    role localized_response_template
+    precondition "a browser web search returns fused results"
+    effect "the answer heads the results with the query, the result count and the fusion constant"
+    unit "not applicable"
+    example "Search results for rust, top 10 after reciprocal rank fusion."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_search_other_sources
+    defined-by answer
+    role localized_response_template
+    precondition "a fused result has further sources"
+    effect "the answer labels the further sources"
+    unit "not applicable"
+    example "Other sources"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_search_via
+    defined-by answer
+    role localized_response_template
+    precondition "a result names the provider it came through"
+    effect "the answer joins the result to its provider"
+    unit "not applicable"
+    example "via"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_search_read_more
+    defined-by answer
+    role localized_response_template
+    precondition "a result links to its full page"
+    effect "the answer labels the link to the full page"
+    unit "not applicable"
+    example "Read more"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_search_no_results
+    defined-by answer
+    role localized_response_template
+    precondition "no CORS-readable provider returns a result"
+    effect "the answer names the query and the providers tried"
+    unit "not applicable"
+    example "No CORS-enabled web search results were returned."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_search_all_disabled
+    defined-by answer
+    role localized_response_template
+    precondition "every CORS-readable provider is disabled in the session"
+    effect "the answer says the providers are disabled and names them"
+    unit "not applicable"
+    example "All CORS-readable search providers are disabled for this session."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_search_wikinews_article
+    defined-by answer
+    role localized_response_template
+    precondition "a Wikinews result has no description"
+    effect "the answer describes the result as a Wikinews article with its title"
+    unit "not applicable"
+    example "Wikinews has a news article titled Mars rover lands."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
   unit_incompatibility
     defined-by answer
     role localized_response_template

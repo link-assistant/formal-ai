@@ -146,12 +146,12 @@ pub fn try_url_navigate(
     log.append("url_navigate:request", url.clone());
     log.append("url_preview:frame_policy_check", url.clone());
     log.append("url_preview:external_link", url.clone());
+    // Issue #918: the wording is the seeded web_* responses the browser twin
+    // (`tryUrlNavigate`, js/worker/formal_ai_worker_18.js) also renders.
     let body = format!(
-        "I suggest opening this in a new tab: [{url}]({url}).\n\n\
-         In the browser web app, this URL is checked with browser-readable \
-         frame-policy metadata before any embedded preview is attempted. If \
-         X-Frame-Options or CSP frame-ancestors blocks embedding, the web app \
-         keeps the direct external link instead."
+        "{}\n\n{}",
+        seed::render_response("web_open_in_new_tab", "en", &[("url", &url)]).unwrap_or_default(),
+        seed::render_response("web_url_navigate_native_note", "en", &[]).unwrap_or_default(),
     );
     Some(finalize_simple(
         prompt,
