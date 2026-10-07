@@ -611,18 +611,18 @@ requirement_status_ledger_shard requirements_05
   requirement
     id "R120"
     shard "docs/requirements/issue-0096-calculator-delegation-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #96"
     issue "0096"
-    automated_test ""
+    automated_test "rust/tests/unit/specification/calculator_delegation.rs"
     manual "manually confirmed 2026-08-04 (audit): README arithmetic examples run in en (`8% of $50`) and ru (currency conversion)"
   requirement
     id "R121"
     shard "docs/requirements/issue-0096-calculator-delegation-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #96"
     issue "0096"
-    automated_test ""
+    automated_test "rust/tests/unit/specification/calculator_delegation.rs"
     manual "not yet confirmed"
   requirement
     id "R122"
@@ -635,8 +635,8 @@ requirement_status_ledger_shard requirements_05
   requirement
     id "R123"
     shard "docs/requirements/issue-0096-calculator-delegation-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #96"
     issue "0096"
-    automated_test ""
+    automated_test "rust/tests/unit/specification/calculator_delegation.rs"
     manual "not yet confirmed"

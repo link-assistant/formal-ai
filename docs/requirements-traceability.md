@@ -168,14 +168,14 @@ line number, which had gone stale for every row.
 | R117 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | none recorded | not yet confirmed |
 | R118 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | none recorded | not yet confirmed |
 | R119 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | rust/tests/e2e/tests/multilingual-chat.spec.js; rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
-| R120 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | manually confirmed 2026-08-04 (audit): README arithmetic examples run in en (`8% of $50`) and ru (currency conversion) |
-| R121 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R120 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | manually confirmed 2026-08-04 (audit): README arithmetic examples run in en (`8% of $50`) and ru (currency conversion) |
+| R121 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
 | R122 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
-| R123 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R123 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
 | R124 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
 | R125 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
-| R126 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
-| R127 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R126 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/e2e/tests/multilingual-memory-settings.spec.js | not yet confirmed |
+| R127 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
 | R128 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R129 | docs/requirements/issue-0103-test-matrix-and-architecture-requirements.md | pre-2026-07 (undated); issue #103 | rust/tests/unit/specification/prompt_variations.rs; rust/tests/unit/specification/chat_surface.rs | not yet confirmed |
 | R130 | docs/requirements/issue-0103-test-matrix-and-architecture-requirements.md | pre-2026-07 (undated); issue #103 | rust/tests/unit/specification/prompt_variations.rs; rust/tests/unit/specification/multilingual.rs | not yet confirmed |
@@ -221,13 +221,13 @@ line number, which had gone stale for every row.
 | R170 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/e2e/tests/connectivity.spec.js | not yet confirmed |
 | R171 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/unit/ci-cd/workflow_release.rs | not yet confirmed |
 | R172 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
-| R173 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R173 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/unit/specification/prompt_variations_facts.rs; rust/tests/web/issue-1172-live-fact-parity.test.mjs | not yet confirmed |
 | R174 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
-| R175 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
-| R176 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
-| R177 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
-| R178 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
-| R179 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R175 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/web/issue-0127-fact-query-cache.test.mjs | not yet confirmed |
+| R176 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/web/issue-0127-fact-query-cache.test.mjs | not yet confirmed |
+| R177 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/web/issue-1172-live-fact-parity.test.mjs; rust/tests/web/issue-0127-fact-query-cache.test.mjs | not yet confirmed |
+| R178 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/web/issue-0127-fact-query-cache.test.mjs | not yet confirmed |
+| R179 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/unit/specification/prompt_variations_facts.rs | not yet confirmed |
 | R180 | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md | pre-2026-07 (undated); issue #127 | rust/tests/unit/specification/prompt_variations.rs; rust/tests/e2e/tests/multilingual-issue-27.spec.js | not yet confirmed |
 | R181 | docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md | pre-2026-07 (undated); issue #133 | rust/tests/web/issue-0133-search-fusion.test.mjs | not yet confirmed |
 | R182 | docs/requirements/issue-0133-duckduckgo-default-combined-ranking-and-expanded-provider-diagnostics.md | pre-2026-07 (undated); issue #133 | rust/tests/web/issue-0133-search-fusion.test.mjs | not yet confirmed |
