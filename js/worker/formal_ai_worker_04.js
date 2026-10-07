@@ -585,17 +585,13 @@ function architectureLanguage(prompt, normalized) {
 }
 
 function architectureExplanationContent(language) {
+  // Issue #918: the seeded meta_explanation_architecture record, filled with
+  // this surface's notes in one pass as architecture_explanation_body fills
+  // the native ones.
   const surface = BROWSER_SURFACE;
-  if (language === "ru") {
-    return `Я не LLM-рантайм и не выполняю нейросетевой инференс. Текущая среда: ${surface.label} (\`${surface.slug}\`). Рантайм: ${surface.runtime}. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память (${surface.memory}); затем веб-поиск используется только с учетом среды: ${surface.webSearch}. Весь интернет не загружен в локальные правила целиком.`;
-  }
-  if (language === "hi") {
-    return `मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: ${surface.label} (\`${surface.slug}\`). Runtime: ${surface.runtime}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और memory (${surface.memory}) देखता है; फिर web search केवल environment अनुमति दे तो उपयोग करता है: ${surface.webSearch}. पूरा internet local rules में preload नहीं है.`;
-  }
-  if (language === "zh") {
-    return `我不是 LLM runtime, 也不执行神经网络推理。当前环境: ${surface.label} (\`${surface.slug}\`)。Runtime: ${surface.runtime}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 (${surface.memory}); 然后只在当前环境允许时使用 web search: ${surface.webSearch}。整个互联网不会预加载到本地规则中。`;
-  }
-  return `I am not an LLM runtime and I do not perform neural inference. Current environment: ${surface.label} (\`${surface.slug}\`). Runtime: ${surface.runtime}. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory (${surface.memory}) first; web search is used only when this environment allows it: ${surface.webSearch}. The whole internet is not preloaded into local rules.`;
+  const values = { surface_label: surface.label, surface: surface.slug, runtime: surface.runtime, memory: surface.memory, web_search: surface.webSearch };
+  return answerFor("meta_explanation_architecture", language).replace(/\{([^{}]*)\}/gu, (whole, name) =>
+    Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : whole);
 }
 
 function tryArchitectureExplanation(prompt, normalized) {

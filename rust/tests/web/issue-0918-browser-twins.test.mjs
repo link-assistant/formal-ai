@@ -313,3 +313,23 @@ test("numeric-list answers render their seeded intro and result label", async ()
     assert.equal(response.content, expected, prompt);
   }
 });
+
+// Issue #918 (R914-6): meta_explanation renders the seeded why, how-I-work
+// and meta_explanation_architecture records in both runtimes (the native pins
+// are rust/tests/unit/specification/issue_146.rs), and both read which
+// languages take the fronted and the compositional why-question readings
+// from the `policy meta_explanation` block. Every answer is unchanged.
+test("meta explanations render the seeded records", async () => {
+  for (const [prompt, expected] of [
+    ["Why did you answer that way?", "I answered that way because the prompt matched a deterministic Links Notation rule. The evidence links and trace events are appended to the log; see the trace link for the full chain."],
+    ["Почему ты так ответил?", "Я ответил так, потому что запрос совпал с детерминированным правилом Links Notation. Evidence-ссылки и trace-события добавлены в журнал; по trace-ссылке можно проверить всю цепочку."],
+    ["你为什么这样回答？", "我这样回答是因为该提示匹配了确定性的 Links Notation 规则。evidence links 和 trace events 已追加到日志中; 可通过 trace link 检查完整链路。"],
+    ["How do you work?", "I work by matching your prompt against deterministic Links Notation rules stored in memory. Each rule maps a recognized pattern to a fixed response. When no rule matches, I report intent: unknown. There is no neural inference — every answer is fully traceable to a symbolic rule."],
+    ["Are you an LLM?", "I am not an LLM runtime and I do not perform neural inference. Current environment: browser demo with JavaScript and WebAssembly worker (`browser`). Runtime: JavaScript UI plus a WebAssembly worker mirror of the solver. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory (browser IndexedDB/local storage plus worker state and imported memory) first; web search is used only when this environment allows it: available through browser CORS-readable providers when online and not blocked. The whole internet is not preloaded into local rules."],
+    ["Ты нейросеть?", "Я не LLM-рантайм и не выполняю нейросетевой инференс. Текущая среда: browser demo with JavaScript and WebAssembly worker (`browser`). Рантайм: JavaScript UI plus a WebAssembly worker mirror of the solver. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память (browser IndexedDB/local storage plus worker state and imported memory); затем веб-поиск используется только с учетом среды: available through browser CORS-readable providers when online and not blocked. Весь интернет не загружен в локальные правила целиком."],
+  ]) {
+    const response = await solveWith(prompt, []);
+    assert.equal(response.intent, "meta_explanation", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+});

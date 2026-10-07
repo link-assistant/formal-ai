@@ -356,3 +356,7 @@ handler_rules
   policy how_it_works
     concept_query "what is {term}"
     mechanism_query "how {subject} works"
+  policy meta_explanation
+    rationale_lead_languages "en ru"
+    compositional_why_languages "hi zh"
+    operating_principle_languages "ru"

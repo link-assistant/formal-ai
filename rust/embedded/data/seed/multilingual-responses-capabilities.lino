@@ -7,7 +7,9 @@
 # speaks of the browser session, the native one of the configuration.
 # Placeholders in braces are filled by
 # rust/src/solver_handlers/feature_capability.rs and the browser twin in
-# js/worker/formal_ai_worker_04.js.
+# js/worker/formal_ai_worker_04.js. The meta_explanation_architecture records
+# answer how the assistant itself is built, with the current surface's label,
+# slug, runtime, memory and web-search notes filled in by each runtime.
 multilingual_responses
   response response_feature_capability_available_en
     intent feature_capability_available
@@ -137,3 +139,19 @@ multilingual_responses
     intent feature_capability_web_search_unavailable_browser
     language zh
     text "不可以。当前浏览器会话中 web search 不可用：浏览器 offline，或所有 CORS-readable 搜索 provider 都因错误被禁用。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。"
+  response response_meta_explanation_architecture_en
+    intent meta_explanation_architecture
+    language en
+    text "I am not an LLM runtime and I do not perform neural inference. Current environment: {surface_label} (`{surface}`). Runtime: {runtime}. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory ({memory}) first; web search is used only when this environment allows it: {web_search}. The whole internet is not preloaded into local rules."
+  response response_meta_explanation_architecture_ru
+    intent meta_explanation_architecture
+    language ru
+    text "Я не LLM-рантайм и не выполняю нейросетевой инференс. Текущая среда: {surface_label} (`{surface}`). Рантайм: {runtime}. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память ({memory}); затем веб-поиск используется только с учетом среды: {web_search}. Весь интернет не загружен в локальные правила целиком."
+  response response_meta_explanation_architecture_hi
+    intent meta_explanation_architecture
+    language hi
+    text "मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: {surface_label} (`{surface}`). Runtime: {runtime}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और memory ({memory}) देखता है; फिर web search केवल environment अनुमति दे तो उपयोग करता है: {web_search}. पूरा internet local rules में preload नहीं है."
+  response response_meta_explanation_architecture_zh
+    intent meta_explanation_architecture
+    language zh
+    text "我不是 LLM runtime, 也不执行神经网络推理。当前环境: {surface_label} (`{surface}`)。Runtime: {runtime}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 ({memory}); 然后只在当前环境允许时使用 web search: {web_search}。整个互联网不会预加载到本地规则中。"

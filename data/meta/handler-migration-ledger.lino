@@ -322,7 +322,11 @@ handler_migration_ledger
     justification "issue #918 (R914-6): recognition is the mechanism_inquiry, mechanism_predicate, detail_modifier and non_referential_subject roles in both runtimes; the native row now renders the seeded how_it_works, how_it_works_prior_topic and how_it_works_no_context responses the browser already rendered, and both read the concept-query frame from the policy how_it_works block. Deliberate parity fix: the English how_it_works record lacked the closing clause the native answer has, so the browser now ends 'instead of inventing details.' as the native pin in rust/tests/unit/specification/reasoning_paths.rs does."
     held_out "rust/tests/unit/specification/reasoning_paths.rs"
   handler meta_explanation
-    status pending
+    status migrated
+    data "data/seed/meanings-meta.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses.lino|data/seed/multilingual-responses-synthesis.lino|data/seed/multilingual-responses-capabilities.lino"
+    primitive "rust/src/solver_handlers/meta_explanation.rs"
+    justification "issue #918 (R914-6): recognition is the answer_rationale_lead, causal_interrogative, prior_answer_reference, assistant_mechanism_inquiry, operating_principle, assistant_self_reference and architecture_concept roles, and which languages take the fronted or the compositional why-question reading is now the policy meta_explanation block instead of language literals; the why, how-I-work and architecture answers are the seeded meta_explanation_why, meta_explanation and meta_explanation_architecture records filled with each surface's own notes. The browser already rendered the why and how-I-work records; both runtimes now read every record, and every answer is unchanged."
+    held_out "rust/tests/unit/specification/issue_146.rs"
   handler network_query
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses-synthesis.lino"

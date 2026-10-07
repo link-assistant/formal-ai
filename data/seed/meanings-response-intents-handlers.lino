@@ -85,3 +85,11 @@ meanings
     unit "not applicable"
     example "numbers"
     grounding "data/seed/multilingual-responses-numeric-list.lino"
+  meta_explanation_architecture
+    defined-by answer
+    role localized_response_template
+    precondition "a prompt asks how the assistant itself is built, addressing it and naming an architecture concept"
+    effect "the answer says it is not an LLM runtime and names the current surface, its runtime, memory and web-search notes"
+    unit "not applicable"
+    example "I am not an LLM runtime and I do not perform neural inference."
+    grounding "data/seed/multilingual-responses-capabilities.lino"

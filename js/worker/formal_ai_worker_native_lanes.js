@@ -70,10 +70,15 @@ function tryAgenticContinuation(prompt, normalized, history = []) {
  * @param {string} lower
  * @returns {boolean}
  */
+function metaExplanationLanguages(key) {
+  return String(handlerRulesPolicy("meta_explanation", key) || "").split(/\s+/u).filter(Boolean);
+}
+
 function isWhyQuestion(lower) {
+  const leadLanguages = metaExplanationLanguages("rationale_lead_languages");
   for (const meaning of meaningsWithRole(ROLE_ANSWER_RATIONALE_LEAD)) {
     for (const lexeme of meaning.lexemes) {
-      if (lexeme.language !== "en" && lexeme.language !== "ru") continue;
+      if (!leadLanguages.includes(lexeme.language)) continue;
       for (const text of lexeme.words) {
         const form = makeWordForm(text, "", "");
         const matched = form.slot === "prefix"
@@ -83,7 +88,7 @@ function isWhyQuestion(lower) {
       }
     }
   }
-  return ["hi", "zh"].some((language) => {
+  return metaExplanationLanguages("compositional_why_languages").some((language) => {
     const namesCause = wordsForRoleInLanguages(ROLE_CAUSAL_INTERROGATIVE, [language]).some((word) => lower.includes(word));
     const namesPrior = wordsForRoleInLanguages(ROLE_PRIOR_ANSWER_REFERENCE, [language]).some((word) => lower.includes(word));
     return namesCause && namesPrior;
@@ -112,8 +117,9 @@ function whyQuestionAddressesAssistant(rest) {
  */
 function isHowYouWork(lower) {
   if (lexiconMentionsRoleSubstring(ROLE_ASSISTANT_MECHANISM_INQUIRY, lower)) return true;
-  const namesPrinciple = wordsForRoleInLanguages(ROLE_OPERATING_PRINCIPLE, ["ru"]).some((word) => lower.includes(word));
-  const addressesAssistant = wordsForRoleInLanguages(ROLE_ASSISTANT_SELF_REFERENCE, ["ru"]).some((word) => lower.includes(word));
+  const languages = metaExplanationLanguages("operating_principle_languages");
+  const namesPrinciple = wordsForRoleInLanguages(ROLE_OPERATING_PRINCIPLE, languages).some((word) => lower.includes(word));
+  const addressesAssistant = wordsForRoleInLanguages(ROLE_ASSISTANT_SELF_REFERENCE, languages).some((word) => lower.includes(word));
   return namesPrinciple && addressesAssistant;
 }
 
