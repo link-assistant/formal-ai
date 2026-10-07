@@ -231,6 +231,9 @@ jobs:
   # is recorded in the ledger by a reviewed commit, never by one shard.
   shard-plan:
     name: Plan upstream shards
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-plan
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     if: github.event_name == 'workflow_dispatch' && inputs.shard_size
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -269,6 +272,9 @@ jobs:
 
   upstream-shard:
     name: Upstream shard ${{ matrix.window.offset }}
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-${{ matrix.window.offset }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: shard-plan
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -319,6 +325,9 @@ jobs:
 
   shard-total:
     name: Total of upstream shards
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-total
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [shard-plan, upstream-shard]
     if: ${{ !cancelled() && needs.shard-plan.result == 'success' }}
     runs-on: ubuntu-latest

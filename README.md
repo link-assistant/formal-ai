@@ -1024,7 +1024,7 @@ assert_eq!(
 
 ## Measured Today
 
-Curated industry-suite slice: **13/13**, gated by a rising `minimum_pass_count` ratchet; the upstream suites the same solver runs score HumanEval 14/164 on the full slice (`--online`) and MBPP 49/500 cold-offline, with the 2026-09-15 first-20 rows (HumanEval 20/20, MBPP 20/20) kept as regression controls. Every number below is the latest committed row of [`data/benchmarks/external-results.lino`](data/benchmarks/external-results.lino) (latest run of 2026-09-18, solver `0.350.0`), rendered per suite in [docs/status.md](docs/status.md) and explained per slice in [docs/benchmarks.md](docs/benchmarks.md).
+Curated industry-suite slice: **13/13**, gated by a rising `minimum_pass_count` ratchet; the upstream suites the same solver runs score HumanEval 21/164 and MBPP 68/500 on the full slices (`--online`, sharded, 2026-10-07; were 14/164 and 49/500 cold-offline), with the 2026-09-15 first-20 rows (HumanEval 20/20, MBPP 20/20) kept as regression controls. Every number below is the latest committed row of [`data/benchmarks/external-results.lino`](data/benchmarks/external-results.lino) (latest run of 2026-10-07, solver `0.352.1`), rendered per suite in [docs/status.md](docs/status.md) and explained per slice in [docs/benchmarks.md](docs/benchmarks.md).
 
 | Suite | Slice | Passed / total |
 | --- | ---: | ---: |

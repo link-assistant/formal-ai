@@ -31,7 +31,8 @@ generalized over arbitrary input, and the imported benchmark suite grew to a
 10-case slice that passed **10/10** with a `minimum_pass_count` ratchet (13 cases / 13-floor today — see `data/benchmarks/industry-suite.lino`)
 (`rust/tests/unit/specification/benchmarks.rs`). The upstream rows of the same
 suites are HumanEval 14/164 on the full slice (`--online`, 2026-09-17) and
-MBPP 49/500 cold-offline (2026-09-18), with the 2026-09-15 first-20 rows
+MBPP 49/500 cold-offline (2026-09-18), since raised to HumanEval 21/164 and
+MBPP 68/500 (`--online`, sharded, 2026-10-07), with the 2026-09-15 first-20 rows
 (HumanEval 20/20, MBPP 20/20) kept as regression controls; `docs/status.md`
 renders every upstream suite row from the external-results ledger, and
 `docs/benchmarks.md` publishes the honest current numbers per slice.

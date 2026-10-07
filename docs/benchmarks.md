@@ -361,21 +361,22 @@ HumanEval and MBPP rows, and
 `docs_benchmarks::curated_pass_ratios_publish_an_upstream_comparison_beside_them`
 refuses a curated ratio published without an upstream one beside it.
 
-The latest committed rows are dated `2026-09-18`: HumanEval's coding row is the
-`2026-09-17` full-slice run and MBPP's is the `2026-09-18` full-slice run
-(HumanEval 164 with `--online`; MBPP 500 cold-offline, recorded with its
-`mode offline` field so the runner command in the ledger reproduces it exactly),
-all on solver version `0.350.0` with the deterministic solver at
-`temperature = 0.0`. The same-day MBPP `--online` full-slice run scored 60/500
-and the 164-case cross-check scored 25/164 in both modes; the headline stays
-the reproducible cold-offline run. The `2026-09-15` first-20 rows remain as
-regression controls. Other suite rows remain at their latest `2026-09-07`
-measurements:
+The latest committed rows are dated `2026-10-07`: both coding rows are full-slice
+`--online` runs on solver version `0.352.1`, sharded into concurrently graded
+windows (HumanEval in fourteen 12-case windows, run 37613780755; MBPP in
+twenty-five 20-case windows, run 37622330993) whose total job fails unless every
+case was graded. HumanEval rose from 14/164 (`2026-09-17`) to 21/164 and MBPP
+from 60/500 `--online` (49/500 cold-offline, `2026-09-18`) to 68/500. The earlier
+rows stay below as history, the 164-case MBPP cross-check scored 25/164, and the
+`2026-09-15` first-20 rows remain as regression controls. Other suite rows remain
+at their latest `2026-09-07` measurements:
 
 | Suite | License | Slice | Grading | Passed | Total |
 | --- | --- | ---: | --- | ---: | ---: |
+| HumanEval | MIT | 164 | upstream unit test executed (`--online`, sharded) | 21 | 164 |
 | HumanEval | MIT | 164 | upstream unit test executed | 14 | 164 |
 | HumanEval | MIT | 20 | upstream unit test executed | 20 | 20 |
+| MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery (`--online`, sharded) | 68 | 500 |
 | MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery | 49 | 500 |
 | MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery (`--online`) | 60 | 500 |
 | MBPP | Apache-2.0 | 164 | upstream `test_list` asserts executed with live source discovery | 25 | 164 |
