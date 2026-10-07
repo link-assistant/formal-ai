@@ -91,8 +91,7 @@ fn identifier(value: &str) -> String {
 
 /// The gap for `node`, its detail the seeded `javascript_ir_gap` sentence
 /// about `subject` (the node kind, or the fragment with no realization).
-fn gap(node: &str, subject: impl AsRef<str>) -> LoweringGap {
-    let subject = subject.as_ref();
+fn gap(node: &str, subject: &str) -> LoweringGap {
     LoweringGap {
         language: "javascript".to_owned(),
         node: node.to_owned(),
