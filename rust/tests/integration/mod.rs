@@ -43,6 +43,7 @@ mod issue_680_intent_routing;
 mod issue_703_orchestration;
 mod issue_703_orchestration_followup;
 mod issue_703_orchestration_languages;
+mod issue_703_replay_tamper;
 mod issue_712_intent_routing;
 mod issue_714_agentic_mode;
 mod issue_716_agentic_execution;
