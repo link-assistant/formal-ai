@@ -79,6 +79,9 @@ pub use unit_conversion::handle_unit_conversion;
 pub use user_intent::{try_proof_request, try_proof_request_with_config};
 pub use verifiable_task::try_verifiable_task;
 pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
+pub use word_definition::{
+    definition_term, try_word_definition_with_client, try_word_definition_with_offline,
+};
 pub use web_requests::{
     detect_web_search_query, http_fetch_claims, try_explicit_repository_lookup, try_http_fetch,
     try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,

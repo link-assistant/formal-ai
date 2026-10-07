@@ -71,4 +71,5 @@ mod user_intent;
 mod verifiable_task;
 mod web_requests;
 pub mod web_search_intent;
+mod word_definition;
 mod world_state;

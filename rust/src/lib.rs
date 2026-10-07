@@ -514,6 +514,11 @@ pub use solver_handlers::{
     LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
     try_fact_lookup_with_client, try_fact_lookup_with_offline,
 };
+// Issue #1172 R1172-5: the concept_lookup row's dictionary step, public so the
+// unit suite drives it over committed captures.
+pub use solver_handlers::{
+    definition_term, try_word_definition_with_client, try_word_definition_with_offline,
+};
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{
     CachedSourceClient, CurlSourceTransport, FetchError, SourceCapture, SourceTransport, sha256_hex,

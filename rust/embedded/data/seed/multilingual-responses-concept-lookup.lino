@@ -119,3 +119,43 @@ multilingual_responses
     intent concept_lookup_disabled
     language es
     text "No se consultó la fuente {source} porque la opción {settings_key} está desactivada."
+  response response_word_definition_answer_en
+    intent word_definition_answer
+    language en
+    text "{term}, as {source} defines it:\n{senses}Source: {url} (sha256 {sha256}; {license})"
+  response response_word_definition_answer_ru
+    intent word_definition_answer
+    language ru
+    text "{term} — значения по словарю {source}:\n{senses}Источник: {url} (sha256 {sha256}; {license})"
+  response response_word_definition_answer_hi
+    intent word_definition_answer
+    language hi
+    text "{term} — {source} के अनुसार अर्थ:\n{senses}स्रोत: {url} (sha256 {sha256}; {license})"
+  response response_word_definition_answer_zh
+    intent word_definition_answer
+    language zh
+    text "{term}——{source}的释义：\n{senses}来源：{url}（sha256 {sha256}；{license}）"
+  response response_word_definition_answer_es
+    intent word_definition_answer
+    language es
+    text "{term}, según {source}:\n{senses}Fuente: {url} (sha256 {sha256}; {license})"
+  response response_word_definition_sense_en
+    intent word_definition_sense
+    language en
+    text "  {n}. {pos}{gloss}\n"
+  response response_word_definition_sense_ru
+    intent word_definition_sense
+    language ru
+    text "  {n}. {pos}{gloss}\n"
+  response response_word_definition_sense_hi
+    intent word_definition_sense
+    language hi
+    text "  {n}. {pos}{gloss}\n"
+  response response_word_definition_sense_zh
+    intent word_definition_sense
+    language zh
+    text "  {n}. {pos}{gloss}\n"
+  response response_word_definition_sense_es
+    intent word_definition_sense
+    language es
+    text "  {n}. {pos}{gloss}\n"

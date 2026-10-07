@@ -231,6 +231,10 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, projectLookup, formalizationContext);
   }
+  // Issue #1172 R1172-5: a definition request is answered from a dictionary
+  // source before any encyclopedia or search lane (Rust: the concept_lookup row).
+  const definition = await tryWordDefinition(prompt, preferences);
+  if (definition) return finalizeInlineHandler(events, steps, toolCalls, definition, "tryWordDefinition", formalizationContext);
   steps.push({ step: "invoke_tool", detail: "wikipedia_article_question" });
   const earlyWikiArticleQuestion = await tryWikipediaArticleQuestion(
     prompt,

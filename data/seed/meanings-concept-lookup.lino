@@ -317,3 +317,75 @@ meanings
     unit "count"
     example "No se consultó la fuente."
     grounding "src/source_walk.rs::skipped_sources"
+  word_definition
+    defined-by method
+    role action
+    precondition "A prompt asks what a single word means."
+    effect "Read the word from a seeded frame and answer with the definitions a dictionary source states for it."
+    unit "not applicable"
+    example "What does ephemeral mean? is answered from Wiktionary."
+    grounding "data/seed/prompt-patterns.lino"
+  frame
+    defined-by method
+    role action
+    precondition "A prompt pattern holds the slot {term} between its fixed words."
+    effect "Match a prompt that opens with the words before the slot and closes with the words after it, and read the slot."
+    unit "not applicable"
+    example "what does {term} mean reads ephemeral from What does ephemeral mean?"
+    grounding "data/seed/prompt-patterns.lino"
+  source_kind
+    defined-by method
+    role action
+    precondition "A definition is looked up in the source registry."
+    effect "Name the registry kind whose sources answer a definition request."
+    unit "not applicable"
+    example "the dictionary kind selects Wiktionary."
+    grounding "data/seed/sources-registry.lino"
+  definition_section
+    defined-by method
+    role action
+    precondition "A dictionary page is read as section-headed text."
+    effect "Name a section heading under which a dictionary edition states its definitions."
+    unit "not applicable"
+    example "the Russian Wiktionary states senses under the heading Значение."
+    grounding "data/seed/prompt-patterns.lino"
+  example_marker
+    defined-by method
+    role action
+    precondition "A definition line carries a usage example after a marker."
+    effect "Cut the definition at the marker so the example is not read as the definition."
+    unit "not applicable"
+    example "text after the diamond marker is a quoted usage example."
+    grounding "data/seed/prompt-patterns.lino"
+  annotation_prefix
+    defined-by method
+    role action
+    precondition "A dictionary line opens with an annotation label instead of a definition."
+    effect "Skip the labelled line so usage notes, synonyms and examples are not read as definitions."
+    unit "not applicable"
+    example "a line opening with Ejemplo: is an example, not a sense."
+    grounding "data/seed/prompt-patterns.lino"
+  inflection_marker
+    defined-by method
+    role action
+    precondition "A dictionary line lists the inflected forms of the headword."
+    effect "Skip the line carrying the marker so the inflection table is not read as a definition."
+    unit "not applicable"
+    example "the plural and feminine forms line is skipped."
+    grounding "data/seed/prompt-patterns.lino"
+  word_definition_answer
+    defined-by answer
+    role localized_response_template
+    precondition "A dictionary source stated at least one definition of the word."
+    effect "State the word, the numbered definitions and the source with its digest and license."
+    unit "not applicable"
+    example "ephemeral: lasting for a short period of time, from Wiktionary."
+    grounding "data/seed/multilingual-responses-concept-lookup.lino"
+  word_definition_sense
+    defined-by answer
+    role localized_response_template
+    precondition "One definition of the word is rendered."
+    effect "Render one numbered definition with its part of speech when the source states one."
+    unit "not applicable"
+    example "1. (adjective) Lasting for a short period of time."
+    grounding "data/seed/multilingual-responses-concept-lookup.lino"

@@ -301,6 +301,25 @@ pub fn try_contextual_override(
             log,
             runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
         ),
+        // Issue #1172 R1172-5: a definition request the seeded concepts do
+        // not cover is answered from the registry's dictionary sources. A
+        // seeded concept, or no dictionary sense, leaves the row to the plain
+        // concept lookup (and its #556 response-language variant).
+        "concept_lookup" => {
+            let seeded = crate::concepts::extract_concept_query(prompt)
+                .is_some_and(|query| crate::concepts::lookup_concept_query(&query).is_some());
+            if seeded {
+                return ContextualOutcome::NotHandled;
+            }
+            let offline = runtime.solver_config.offline
+                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH");
+            let Some(answer) =
+                crate::solver_handlers::try_word_definition_with_offline(prompt, log, offline)
+            else {
+                return ContextualOutcome::NotHandled;
+            };
+            Some(answer)
+        }
         "fact_lookup" => try_fact_lookup_with_offline(
             prompt,
             normalized,
