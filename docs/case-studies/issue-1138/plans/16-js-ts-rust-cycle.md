@@ -243,6 +243,15 @@ implemented, box ticked in the landing commit.
   Test: extends `tests/unit/issue_1138_rust_projection.rs` — each ruled
   construct renders, each unruled construct refuses by name, and the four
   legs flip live in the registry only as their rules land.
+  Progress 2026-10-08 (js → rust, not via rules): meta-language's own
+  self-translation (PR #196, merged and unreleased, pinned at main
+  `679a3b3c`) now carries this leg item by item. It translates 214 items of
+  the 123 agentic crate and meta reasoner modules and carries 1,926 with
+  their refused construct named. The layered-ci `js-rust` job re-renders the
+  committed projections and compiles them (`scripts/translate-js-rust.mjs`,
+  `docs/case-studies/pull-request-1188/js-rust-translation.md`). The leaf
+  stays open: the legs are not live in the `formal-ai translate` registry,
+  and the translated Rust replaces no hand-written module yet.
 
 ### Survey note 2026-09-25 — L8: the engine is measured (facts for the leaf's own survey)
 
