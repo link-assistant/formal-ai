@@ -114,6 +114,9 @@ seed_registry
   seed facts
     bundle true
     web true
+  seed feature-capabilities
+    bundle true
+    web true
   seed formal-language-projections
     bundle true
     web true
@@ -499,6 +502,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-agentic-tools
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-capabilities
     bundle true
     lexicon response
     web true

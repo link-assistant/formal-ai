@@ -357,214 +357,29 @@ const ROLE_FEATURE_CAPABILITY_QUESTION = "feature_capability_question";
 const ROLE_FEATURE_ACTION_ARITHMETIC = "feature_action_arithmetic";
 const ROLE_FEATURE_ACTION_PLANNING = "feature_action_planning";
 
-const FEATURE_CAPABILITIES = [
-  {
-    slug: "web_search",
-    state: "web_search",
-    labels: { en: "web search", ru: "веб-поиск", hi: "web search", zh: "web search" },
-    examples: {
-      en: "Search the web for Nikola Tesla",
-      ru: "Найди в интернете Никола Тесла",
-      hi: "Search the web for Nikola Tesla",
-      zh: "Search the web for Nikola Tesla",
-    },
-  },
-  {
-    slug: "diagnostics",
-    state: "diagnostics",
-    labels: { en: "diagnostics", ru: "диагностика", hi: "diagnostics", zh: "诊断" },
-    examples: {
-      en: "Turn on diagnostics",
-      ru: "Включи диагностику",
-      hi: "Turn on diagnostics",
-      zh: "开启诊断",
-    },
-  },
-  {
-    slug: "agent_mode",
-    state: "agent_mode",
-    labels: { en: "agent mode", ru: "agent mode", hi: "agent mode", zh: "agent mode" },
-    examples: {
-      en: "Turn on agent mode",
-      ru: "Включи agent mode",
-      hi: "Turn on agent mode",
-      zh: "开启 agent mode",
-    },
-  },
-  {
-    slug: "definition_fusion",
-    state: "definition_fusion",
-    labels: {
-      en: "automatic definition fusion",
-      ru: "автоматическое слияние определений",
-      hi: "automatic definition fusion",
-      zh: "自动 definition fusion",
-    },
-    examples: {
-      en: "Turn on definition fusion",
-      ru: "Включи слияние определений",
-      hi: "Turn on definition fusion",
-      zh: "开启 definition fusion",
-    },
-  },
-  {
-    slug: "configuration",
-    state: "always",
-    labels: {
-      en: "message-driven configuration",
-      ru: "настройка через сообщения",
-      hi: "message-driven configuration",
-      zh: "消息驱动设置",
-    },
-    examples: {
-      en: "Switch to dark theme",
-      ru: "Переключи тему на темную",
-      hi: "Switch to dark theme",
-      zh: "切换到深色主题",
-    },
-  },
-  {
-    slug: "memory_actions",
-    state: "always",
-    labels: {
-      en: "memory import/export",
-      ru: "импорт и экспорт памяти",
-      hi: "memory import/export",
-      zh: "记忆导入/导出",
-    },
-    examples: {
-      en: "Export memory",
-      ru: "Экспортируй память",
-      hi: "Export memory",
-      zh: "导出记忆",
-    },
-  },
-  {
-    slug: "greeting",
-    state: "always",
-    labels: { en: "greetings", ru: "приветствия", hi: "अभिवादन", zh: "问候" },
-    examples: { en: "Hello", ru: "Привет", hi: "नमस्ते", zh: "你好" },
-  },
-  {
-    slug: "write_program",
-    state: "always",
-    labels: {
-      en: "program template generation",
-      ru: "генерация программ",
-      hi: "program template generation",
-      zh: "程序生成",
-    },
-    examples: {
-      en: "Write a Python program that counts to three",
-      ru: "Напиши hello world на Rust",
-      hi: "Write a Python program that counts to three",
-      zh: "Write a Python program that counts to three",
-    },
-  },
-  {
-    slug: "concept_lookup",
-    state: "always",
-    labels: { en: "concept lookup", ru: "поиск понятий", hi: "concept lookup", zh: "概念查找" },
-    examples: {
-      en: "What is Wikipedia?",
-      ru: "Что такое Википедия?",
-      hi: "विकिपीडिया क्या है?",
-      zh: "什么是维基百科？",
-    },
-  },
-  {
-    slug: "arithmetic",
-    state: "always",
-    labels: { en: "arithmetic", ru: "арифметика", hi: "अंकगणित", zh: "算术" },
-    examples: {
-      en: "What is 2 + 2?",
-      ru: "Сколько будет 2 + 2?",
-      hi: "2 + 2 क्या है?",
-      zh: "2 + 2 等于多少？",
-    },
-  },
-  {
-    slug: "translation",
-    state: "always",
-    labels: { en: "translation", ru: "перевод", hi: "अनुवाद", zh: "翻译" },
-    examples: {
-      en: 'Translate "hello" to Russian',
-      ru: 'Переведи "hello" на русский',
-      hi: 'Translate "hello" to Hindi',
-      zh: 'Translate "hello" to Chinese',
-    },
-  },
-  {
-    slug: "memory",
-    state: "always",
-    labels: {
-      en: "conversation memory",
-      ru: "память разговора",
-      hi: "conversation memory",
-      zh: "会话记忆",
-    },
-    examples: {
-      en: "My name is Ada. What is my name?",
-      ru: "Меня зовут Ада. Как меня зовут?",
-      hi: "My name is Ada. What is my name?",
-      zh: "My name is Ada. What is my name?",
-    },
-  },
-  {
-    slug: "demo_mode",
-    state: "always",
-    labels: { en: "demo mode", ru: "демо-режим", hi: "demo mode", zh: "演示模式" },
-    examples: { en: "Turn off demo mode", ru: "Выключи демо", hi: "Turn off demo mode", zh: "关闭演示" },
-  },
-  {
-    slug: "http_url",
-    state: "always",
-    labels: {
-      en: "URL fetch/navigation",
-      ru: "HTTP-запросы и переходы по URL",
-      hi: "URL fetch/navigation",
-      zh: "URL fetch/navigation",
-    },
-    examples: {
-      en: "Navigate to example.com",
-      ru: "Перейди на example.com",
-      hi: "Navigate to example.com",
-      zh: "Navigate to example.com",
-    },
-  },
-  {
-    slug: "javascript_execution",
-    state: "always",
-    labels: {
-      en: "JavaScript execution",
-      ru: "выполнение JavaScript",
-      hi: "JavaScript execution",
-      zh: "JavaScript execution",
-    },
-    examples: {
-      en: "Run JavaScript: 1 + 1",
-      ru: "Выполни JavaScript: 1 + 1",
-      hi: "Run JavaScript: 1 + 1",
-      zh: "Run JavaScript: 1 + 1",
-    },
-  },
-  {
-    slug: "planning",
-    state: "always",
-    labels: {
-      en: "summaries, brainstorming, roleplay, and project planning",
-      ru: "резюме, брейншторминг, роли и планирование проектов",
-      hi: "summaries, brainstorming, roleplay, and project planning",
-      zh: "总结、头脑风暴、角色扮演和项目计划",
-    },
-    examples: {
-      en: "Brainstorm 5 project ideas",
-      ru: "Предложи 5 идей проекта",
-      hi: "Brainstorm 5 project ideas",
-      zh: "Brainstorm 5 project ideas",
-    },
-  },
-];
+// Issue #918: the features, their runtime switches and their localized labels
+// and examples are data/seed/feature-capabilities.lino, read here as the
+// native handler reads it; a language without an entry falls back to English.
+function featureCapabilities() {
+  const out = [];
+  for (const root of codeTaskSeedRecords("feature-capabilities.lino")) {
+    for (const node of codeTaskChildren(root, "feature")) {
+      const localized = (kind) => {
+        const group = codeTaskChildren(node, kind)[0];
+        const table = {};
+        for (const entry of (group && group.children) || []) table[entry.name] = String(entry.id || "");
+        return table;
+      };
+      out.push({
+        slug: String(node.id || "").replace(/^feature_capability_/u, ""),
+        state: codeTaskChildValue(node, "state"),
+        labels: localized("label"),
+        examples: localized("example"),
+      });
+    }
+  }
+  return out;
+}
 
 function localizedValue(record, language) {
   if (!record || typeof record !== "object") return "";
@@ -589,7 +404,7 @@ function detectFeatureCapability(normalized, language) {
   const prefix = "feature_capability_";
   if (!meaning.slug.startsWith(prefix)) return null;
   const slug = meaning.slug.slice(prefix.length);
-  return FEATURE_CAPABILITIES.find((feature) => feature.slug === slug) || null;
+  return featureCapabilities().find((feature) => feature.slug === slug) || null;
 }
 
 // A prompt is a capability question when one of the `feature_capability_question`
@@ -639,27 +454,16 @@ function isFeatureActionRequest(normalized, feature) {
   return false;
 }
 
+function capabilityResponse(intent, language, values = {}) {
+  let text = answerFor(intent, language);
+  for (const [name, value] of Object.entries(values)) text = text.split(`{${name}}`).join(String(value));
+  return text;
+}
+
 function webSearchStatusContent(language, available, providers) {
-  const providerList = providers || "none";
-  const rrfK = webSearchRrfK();
-  if (language === "ru") {
-    return available
-      ? `Да. В этой конфигурации веб-поиск включен: я могу использовать DuckDuckGo Instant Answer по умолчанию и доступные CORS-провайдеры (\`${providerList}\`) для явных запросов вроде \`Найди в интернете Никола Тесла\`. Результаты из top-10 по каждому провайдеру объединяются через reciprocal rank fusion (k = ${rrfK}). Если провайдеры отключены или заблокированы в браузерной сессии, я сообщу об этом вместо ответа "да".`
-      : "Нет. В этой браузерной сессии веб-поиск сейчас недоступен: браузер offline или все CORS-readable поисковые провайдеры отключены после ошибок. Я могу отвечать по локальным правилам и кэшу, но не буду обращаться к поисковым системам.";
-  }
-  if (language === "zh") {
-    return available
-      ? `可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（\`${providerList}\`）处理明确的搜索请求，例如 \`Search the web for Nikola Tesla\`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = ${rrfK}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。`
-      : "不可以。当前浏览器会话中 web search 不可用：浏览器 offline，或所有 CORS-readable 搜索 provider 都因错误被禁用。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。";
-  }
-  if (language === "hi") {
-    return available
-      ? `हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (\`${providerList}\`) का उपयोग explicit prompts जैसे \`Search the web for Nikola Tesla\` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = ${rrfK}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं "हाँ" कहने के बजाय स्थिति बताऊँगा।`
-      : "नहीं। इस browser session में web search अभी available नहीं है: browser offline है या सभी CORS-readable search providers errors के बाद disabled हैं। मैं local rules और cache से जवाब दे सकता हूँ, लेकिन search engines को call नहीं करूँगा।";
-  }
   return available
-    ? `Yes. Web search is enabled in this configuration: I can use DuckDuckGo Instant Answer by default plus the configured CORS-readable providers (\`${providerList}\`) for explicit prompts such as \`Search the web for Nikola Tesla\`. The top-10 results from each provider are merged with reciprocal rank fusion (k = ${rrfK}). If the browser session disables or blocks every provider, I will say that instead of claiming search is available.`
-    : "No. Web search is unavailable in this browser session: the browser is offline or every CORS-readable search provider has been disabled after errors. I can still answer from local rules and cache, but I will not call search engines.";
+    ? capabilityResponse("feature_capability_web_search_available", language, { k: webSearchRrfK(), providers: providers || "none" })
+    : capabilityResponse("feature_capability_web_search_unavailable_browser", language);
 }
 
 function featureAvailability(feature, preferences) {
@@ -673,49 +477,13 @@ function featureAvailability(feature, preferences) {
       providers,
     };
   }
-  if (feature.state === "diagnostics") {
-    const available = Boolean(preferences && preferences.diagnosticsMode);
-    return { available, reason: available ? "none" : "diagnostics_off" };
-  }
-  if (feature.state === "agent_mode") {
-    const available = Boolean(preferences && preferences.agentMode);
-    return { available, reason: available ? "none" : "agent_mode_off" };
-  }
-  if (feature.state === "definition_fusion") {
-    const available = definitionFusionByDefault(preferences || {});
-    return { available, reason: available ? "none" : "definition_fusion_explicit" };
-  }
-  return { available: true, reason: "none" };
-}
-
-function unavailableReasonText(reason, language) {
-  const reasons = {
-    offline_or_no_providers: {
-      en: "the browser is offline or no search providers are available",
-      ru: "браузер offline или нет доступных поисковых провайдеров",
-      hi: "browser offline है या कोई search provider available नहीं है",
-      zh: "浏览器 offline，或没有可用搜索 provider",
-    },
-    diagnostics_off: {
-      en: "diagnostics are off; enable them to show traces",
-      ru: "диагностика выключена; включите ее, чтобы видеть трассировку",
-      hi: "diagnostics off है; trace दिखाने के लिए इसे enable करें",
-      zh: "诊断已关闭；开启后才会显示 trace",
-    },
-    agent_mode_off: {
-      en: "agent mode is off; multi-step actions require explicit opt-in",
-      ru: "agent mode выключен; для многошаговых действий нужен явный opt-in",
-      hi: "agent mode off है; multi-step actions के लिए explicit opt-in चाहिए",
-      zh: "agent mode 已关闭；多步骤操作需要显式启用",
-    },
-    definition_fusion_explicit: {
-      en: "automatic definition fusion is set to explicit-only",
-      ru: "автоматическое слияние определений работает только после включения режима auto",
-      hi: "automatic definition fusion के लिए auto mode enable करना होगा",
-      zh: "自动 definition fusion 需要切换到 auto 模式",
-    },
+  const switches = {
+    diagnostic_mode: [Boolean(preferences && preferences.diagnosticsMode), "diagnostic_mode_off"],
+    agent_mode: [Boolean(preferences && preferences.agentMode), "agent_mode_off"],
+    definition_fusion: [definitionFusionByDefault(preferences || {}), "definition_fusion_explicit"],
   };
-  return localizedValue(reasons[reason] || { en: "not available" }, language);
+  const [available, reason] = switches[feature.state] || [true, "none"];
+  return { available, reason: available ? "none" : reason };
 }
 
 function featureCapabilityContent(feature, language, availability) {
@@ -730,28 +498,10 @@ function featureCapabilityContent(feature, language, availability) {
   const label = localizedValue(feature.labels, language);
   const example = localizedValue(feature.examples, language);
   if (availability.available) {
-    if (language === "ru") {
-      return `Да. Возможность «${label}» доступна в этой конфигурации. Пример сообщения: \`${example}\`.`;
-    }
-    if (language === "zh") {
-      return `可以。当前配置中「${label}」可用。示例消息：\`${example}\`。`;
-    }
-    if (language === "hi") {
-      return `हाँ। इस configuration में \`${label}\` available है। Example message: \`${example}\`.`;
-    }
-    return `Yes. ${label} is available in this configuration. Example message: \`${example}\`.`;
+    return capabilityResponse("feature_capability_available", language, { label, example });
   }
-  const reason = unavailableReasonText(availability.reason, language);
-  if (language === "ru") {
-    return `Нет. Возможность «${label}» сейчас недоступна в этой конфигурации: ${reason}. Пример сообщения после включения: \`${example}\`.`;
-  }
-  if (language === "zh") {
-    return `不可以。当前配置中「${label}」不可用：${reason}。启用后的示例消息：\`${example}\`。`;
-  }
-  if (language === "hi") {
-    return `नहीं। इस configuration में \`${label}\` अभी available नहीं है: ${reason}. Enable करने के बाद example message: \`${example}\`.`;
-  }
-  return `No. ${label} is not available in this configuration: ${reason}. Example message after enabling it: \`${example}\`.`;
+  const reason = answerFor(`feature_capability_reason_${availability.reason}`, language);
+  return capabilityResponse("feature_capability_unavailable", language, { reason, label, example });
 }
 
 function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {

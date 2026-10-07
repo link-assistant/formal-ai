@@ -169,3 +169,29 @@ fn a_follow_up_converts_the_earlier_final_amount() {
         format!("Final amount conversion\nSource amount: 1489.85 USD{COMPOUND_RUB}")
     );
 }
+
+/// Feature-capability questions answer from
+/// `data/seed/feature-capabilities.lino` and the seeded
+/// `feature_capability_*` responses, the records the browser twin reads.
+#[test]
+fn feature_capability_questions_answer_from_the_seeded_table() {
+    let solver = UniversalSolver::new(SolverConfig::default());
+    for (prompt, expected) in [
+        (
+            "Can you merge definitions automatically?",
+            "No. automatic definition fusion is not available in this configuration: automatic definition fusion is set to explicit-only. Example message after enabling it: `Turn on definition fusion`.",
+        ),
+        (
+            "Ты умеешь переводить?",
+            "Да. Возможность «перевод» доступна в этой конфигурации. Пример сообщения: `Переведи hello на русский`.",
+        ),
+        (
+            "Can you remember conversation context?",
+            "Yes. conversation memory is available in this configuration. Example message: `Remember my name is Ada`.",
+        ),
+    ] {
+        let answer = solver.solve(prompt);
+        assert_eq!(answer.intent, "capabilities", "{prompt}");
+        assert_eq!(answer.answer, expected, "{prompt}");
+    }
+}

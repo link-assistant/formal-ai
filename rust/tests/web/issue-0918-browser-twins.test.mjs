@@ -270,3 +270,27 @@ test("the mechanism discovery plan answers as the native row does", async () => 
   // answer pinned in rust/tests/unit/specification/reasoning_paths.rs does.
   assert.equal(response.content, "Mechanism discovery plan for `AUR`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `AUR` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. If no source explains the mechanism, it should ask for a source or a narrower term instead of inventing details.");
 });
+
+// Issue #918 (R914-6): feature-capability questions answer from
+// data/seed/feature-capabilities.lino and the seeded feature_capability_*
+// responses in both runtimes. The two hand-kept tables had drifted (the
+// browser said "diagnostics" where the native row said "diagnostic trace",
+// and a dozen labels and examples differed); the seed holds the native
+// table, so these answers are the ones the native pins in
+// rust/tests/unit/specification/capabilities.rs and
+// rust/tests/unit/issue_918_browser_twins.rs assert.
+test("feature capability questions answer from the seeded table", async () => {
+  for (const [prompt, preferences, expected] of [
+    ["Can you show diagnostics?", {}, "No. diagnostic trace is not available in this configuration: diagnostics are off; enable them to show traces. Example message after enabling it: `Turn on diagnostics`."],
+    ["Can you show diagnostics?", { diagnosticsMode: true }, "Yes. diagnostic trace is available in this configuration. Example message: `Turn on diagnostics`."],
+    ["Can you use agent mode?", { agentMode: true }, "Yes. agent mode is available in this configuration. Example message: `Turn on agent mode`."],
+    ["Can you merge definitions automatically?", {}, "No. automatic definition fusion is not available in this configuration: automatic definition fusion is set to explicit-only. Example message after enabling it: `Turn on definition fusion`."],
+    ["Ты умеешь переводить?", {}, "Да. Возможность «перевод» доступна в этой конфигурации. Пример сообщения: `Переведи hello на русский`."],
+    ["Can you remember conversation context?", {}, "Yes. conversation memory is available in this configuration. Example message: `Remember my name is Ada`."],
+  ]) {
+    await ready;
+    const response = await worker.solve(prompt, [], preferences, {}, [], {});
+    assert.equal(response.intent, "capabilities", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+});

@@ -64,6 +64,8 @@ pub const FACT_CHECK_SOURCES_LINO: &str =
 pub const FACT_REALIZATION_LINO: &str =
     include_str!("../../embedded/data/seed/fact-realization.lino");
 pub const FACTS_LINO: &str = include_str!("../../embedded/data/seed/facts.lino");
+pub const FEATURE_CAPABILITIES_LINO: &str =
+    include_str!("../../embedded/data/seed/feature-capabilities.lino");
 pub const FORMAL_LANGUAGE_PROJECTIONS_LINO: &str =
     include_str!("../../embedded/data/seed/formal-language-projections.lino");
 pub const FORMAL_TARGETS_LINO: &str = include_str!("../../embedded/data/seed/formal-targets.lino");
@@ -267,6 +269,8 @@ pub const MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-agentic-continuation.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-agentic-tools.lino");
+pub const MULTILINGUAL_RESPONSES_CAPABILITIES_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-client-config.lino");
 pub const MULTILINGUAL_RESPONSES_CODE_TASKS_LINO: &str =
@@ -435,6 +439,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/fact-check-sources.lino", FACT_CHECK_SOURCES_LINO),
         ("data/seed/fact-realization.lino", FACT_REALIZATION_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
+        ("data/seed/feature-capabilities.lino", FEATURE_CAPABILITIES_LINO),
         ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),
         ("data/seed/formal-targets.lino", FORMAL_TARGETS_LINO),
         ("data/seed/formalization-relations.lino", FORMALIZATION_RELATIONS_LINO),
@@ -552,6 +557,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-agentic-tools.lino",
             MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-capabilities.lino",
+            MULTILINGUAL_RESPONSES_CAPABILITIES_LINO,
         ),
         (
             "data/seed/multilingual-responses-client-config.lino",
@@ -689,6 +698,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO,
+    MULTILINGUAL_RESPONSES_CAPABILITIES_LINO,
     MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
     MULTILINGUAL_RESPONSES_CODE_TASKS_LINO,
     MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,

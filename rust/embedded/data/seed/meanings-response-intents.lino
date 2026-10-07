@@ -1002,6 +1002,70 @@ meanings
     unit "not applicable"
     example "Fallback web search should use reciprocal rank fusion."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  feature_capability_available
+    defined-by answer
+    role localized_response_template
+    precondition "a capability question names a seeded feature whose runtime switch is on"
+    effect "the answer says yes and gives the feature's localized label and example message"
+    unit "not applicable"
+    example "Yes. agent mode is available in this configuration."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "a capability question names a seeded feature whose runtime switch is off"
+    effect "the answer says no, names the reason, and gives the example message for after enabling it"
+    unit "not applicable"
+    example "No. diagnostic trace is not available in this configuration."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_reason_agent_mode_off
+    defined-by answer
+    role localized_response_template
+    precondition "agent mode is off"
+    effect "the answer says multi-step actions need an explicit opt-in"
+    unit "not applicable"
+    example "agent mode is off; multi-step actions require explicit opt-in"
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_reason_diagnostic_mode_off
+    defined-by answer
+    role localized_response_template
+    precondition "diagnostics are off"
+    effect "the answer says diagnostics must be enabled to show traces"
+    unit "not applicable"
+    example "diagnostics are off; enable them to show traces"
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_reason_definition_fusion_explicit
+    defined-by answer
+    role localized_response_template
+    precondition "definition fusion runs only on explicit request"
+    effect "the answer says automatic definition fusion is explicit-only"
+    unit "not applicable"
+    example "automatic definition fusion is set to explicit-only"
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_web_search_available
+    defined-by answer
+    role localized_response_template
+    precondition "a capability question asks about web search and providers are available"
+    effect "the answer says web search is enabled and names the providers and the fusion constant"
+    unit "not applicable"
+    example "Yes. Web search is enabled in this configuration."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_web_search_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the native runtime is offline or has no search providers"
+    effect "the answer says web search is disabled by the configuration and local rules still answer"
+    unit "not applicable"
+    example "No. Web search is disabled by this configuration's offline mode."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_web_search_unavailable_browser
+    defined-by answer
+    role localized_response_template
+    precondition "the browser is offline or every provider is disabled"
+    effect "the answer says web search is unavailable in this browser session"
+    unit "not applicable"
+    example "No. Web search is unavailable in this browser session."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
   unit_incompatibility
     defined-by answer
     role localized_response_template

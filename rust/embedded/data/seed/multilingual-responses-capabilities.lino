@@ -1,0 +1,139 @@
+# Response templates for feature-capability questions (issue #918).
+#
+# A capability question about a feature of data/seed/feature-capabilities.lino
+# answers yes or no with the feature's localized label and example; an
+# unavailable feature names the seeded reason its runtime switch gives. Web
+# search has its own status sentences: the browser's unavailable sentence
+# speaks of the browser session, the native one of the configuration.
+# Placeholders in braces are filled by
+# rust/src/solver_handlers/feature_capability.rs and the browser twin in
+# js/worker/formal_ai_worker_04.js.
+multilingual_responses
+  response response_feature_capability_available_en
+    intent feature_capability_available
+    language en
+    text "Yes. {label} is available in this configuration. Example message: `{example}`."
+  response response_feature_capability_available_ru
+    intent feature_capability_available
+    language ru
+    text "Да. Возможность «{label}» доступна в этой конфигурации. Пример сообщения: `{example}`."
+  response response_feature_capability_available_hi
+    intent feature_capability_available
+    language hi
+    text "हाँ। इस configuration में `{label}` available है। Example message: `{example}`."
+  response response_feature_capability_available_zh
+    intent feature_capability_available
+    language zh
+    text "可以。当前配置中「{label}」可用。示例消息：`{example}`。"
+  response response_feature_capability_unavailable_en
+    intent feature_capability_unavailable
+    language en
+    text "No. {label} is not available in this configuration: {reason}. Example message after enabling it: `{example}`."
+  response response_feature_capability_unavailable_ru
+    intent feature_capability_unavailable
+    language ru
+    text "Нет. Возможность «{label}» сейчас недоступна в этой конфигурации: {reason}. Пример сообщения после включения: `{example}`."
+  response response_feature_capability_unavailable_hi
+    intent feature_capability_unavailable
+    language hi
+    text "नहीं। इस configuration में `{label}` अभी available नहीं है: {reason}. Enable करने के बाद example message: `{example}`."
+  response response_feature_capability_unavailable_zh
+    intent feature_capability_unavailable
+    language zh
+    text "不可以。当前配置中「{label}」不可用：{reason}。启用后的示例消息：`{example}`。"
+  response response_feature_capability_reason_agent_mode_off_en
+    intent feature_capability_reason_agent_mode_off
+    language en
+    text "agent mode is off; multi-step actions require explicit opt-in"
+  response response_feature_capability_reason_agent_mode_off_ru
+    intent feature_capability_reason_agent_mode_off
+    language ru
+    text "agent mode выключен; для многошаговых действий нужен явный opt-in"
+  response response_feature_capability_reason_agent_mode_off_hi
+    intent feature_capability_reason_agent_mode_off
+    language hi
+    text "agent mode off है; multi-step actions के लिए explicit opt-in चाहिए"
+  response response_feature_capability_reason_agent_mode_off_zh
+    intent feature_capability_reason_agent_mode_off
+    language zh
+    text "agent mode 已关闭；多步骤操作需要显式启用"
+  response response_feature_capability_reason_diagnostic_mode_off_en
+    intent feature_capability_reason_diagnostic_mode_off
+    language en
+    text "diagnostics are off; enable them to show traces"
+  response response_feature_capability_reason_diagnostic_mode_off_ru
+    intent feature_capability_reason_diagnostic_mode_off
+    language ru
+    text "диагностика выключена; включите ее, чтобы видеть трассировку"
+  response response_feature_capability_reason_diagnostic_mode_off_hi
+    intent feature_capability_reason_diagnostic_mode_off
+    language hi
+    text "diagnostics off है; trace दिखाने के लिए इसे enable करें"
+  response response_feature_capability_reason_diagnostic_mode_off_zh
+    intent feature_capability_reason_diagnostic_mode_off
+    language zh
+    text "诊断已关闭；开启后才会显示 trace"
+  response response_feature_capability_reason_definition_fusion_explicit_en
+    intent feature_capability_reason_definition_fusion_explicit
+    language en
+    text "automatic definition fusion is set to explicit-only"
+  response response_feature_capability_reason_definition_fusion_explicit_ru
+    intent feature_capability_reason_definition_fusion_explicit
+    language ru
+    text "автоматическое слияние определений работает только после включения режима auto"
+  response response_feature_capability_reason_definition_fusion_explicit_hi
+    intent feature_capability_reason_definition_fusion_explicit
+    language hi
+    text "automatic definition fusion के लिए auto mode enable करना होगा"
+  response response_feature_capability_reason_definition_fusion_explicit_zh
+    intent feature_capability_reason_definition_fusion_explicit
+    language zh
+    text "自动 definition fusion 需要切换到 auto 模式"
+  response response_feature_capability_web_search_available_en
+    intent feature_capability_web_search_available
+    language en
+    text "Yes. Web search is enabled in this configuration: I can use DuckDuckGo Instant Answer by default plus the configured CORS-readable providers (`{providers}`) for explicit prompts such as `Search the web for Nikola Tesla`. The top-10 results from each provider are merged with reciprocal rank fusion (k = {k}). If the browser session disables or blocks every provider, I will say that instead of claiming search is available."
+  response response_feature_capability_web_search_unavailable_en
+    intent feature_capability_web_search_unavailable
+    language en
+    text "No. Web search is disabled by this configuration's offline mode or there are no configured search providers. I can still answer from local rules and cache, but I will not call search engines."
+  response response_feature_capability_web_search_unavailable_browser_en
+    intent feature_capability_web_search_unavailable_browser
+    language en
+    text "No. Web search is unavailable in this browser session: the browser is offline or every CORS-readable search provider has been disabled after errors. I can still answer from local rules and cache, but I will not call search engines."
+  response response_feature_capability_web_search_available_ru
+    intent feature_capability_web_search_available
+    language ru
+    text "Да. В этой конфигурации веб-поиск включен: я могу использовать DuckDuckGo Instant Answer по умолчанию и доступные CORS-провайдеры (`{providers}`) для явных запросов вроде `Найди в интернете Никола Тесла`. Результаты из top-10 по каждому провайдеру объединяются через reciprocal rank fusion (k = {k}). Если провайдеры отключены или заблокированы в браузерной сессии, я сообщу об этом вместо ответа \"да\"."
+  response response_feature_capability_web_search_unavailable_ru
+    intent feature_capability_web_search_unavailable
+    language ru
+    text "Нет. В этой конфигурации веб-поиск отключен offline-режимом или нет доступных поисковых провайдеров. Я могу отвечать по локальным правилам и кэшу, но не буду обращаться к поисковым системам."
+  response response_feature_capability_web_search_unavailable_browser_ru
+    intent feature_capability_web_search_unavailable_browser
+    language ru
+    text "Нет. В этой браузерной сессии веб-поиск сейчас недоступен: браузер offline или все CORS-readable поисковые провайдеры отключены после ошибок. Я могу отвечать по локальным правилам и кэшу, но не буду обращаться к поисковым системам."
+  response response_feature_capability_web_search_available_hi
+    intent feature_capability_web_search_available
+    language hi
+    text "हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (`{providers}`) का उपयोग explicit prompts जैसे `Search the web for Nikola Tesla` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = {k}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं \"हाँ\" कहने के बजाय स्थिति बताऊँगा।"
+  response response_feature_capability_web_search_unavailable_hi
+    intent feature_capability_web_search_unavailable
+    language hi
+    text "नहीं। इस configuration में offline mode या missing providers के कारण web search disabled है। मैं local rules और cache से जवाब दे सकता हूँ, लेकिन search engines को call नहीं करूँगा।"
+  response response_feature_capability_web_search_unavailable_browser_hi
+    intent feature_capability_web_search_unavailable_browser
+    language hi
+    text "नहीं। इस browser session में web search अभी available नहीं है: browser offline है या सभी CORS-readable search providers errors के बाद disabled हैं। मैं local rules और cache से जवाब दे सकता हूँ, लेकिन search engines को call नहीं करूँगा।"
+  response response_feature_capability_web_search_available_zh
+    intent feature_capability_web_search_available
+    language zh
+    text "可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（`{providers}`）处理明确的搜索请求，例如 `Search the web for Nikola Tesla`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = {k}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。"
+  response response_feature_capability_web_search_unavailable_zh
+    intent feature_capability_web_search_unavailable
+    language zh
+    text "不可以。当前配置的 offline 模式禁用了 web search，或者没有可用的搜索 provider。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。"
+  response response_feature_capability_web_search_unavailable_browser_zh
+    intent feature_capability_web_search_unavailable_browser
+    language zh
+    text "不可以。当前浏览器会话中 web search 不可用：浏览器 offline，或所有 CORS-readable 搜索 provider 都因错误被禁用。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。"
