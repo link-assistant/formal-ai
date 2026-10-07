@@ -6,7 +6,9 @@
 //! timeout-minutes, handles reusable workflows (uses: ./.github/workflows/X)
 //! by recursing, excludes jobs whose if: restricts them to push /
 //! workflow_dispatch / release / schedule only (with no output-based escape),
-//! and fails if any reachable job has no timeout-minutes (unbounded).
+//! and fails if any reachable job has no timeout-minutes (unbounded), if a
+//! workflow does not parse, or if a local reusable workflow cannot be found:
+//! each of those would otherwise drop a leg out of the measurement.
 //!
 //! The ceiling is read from data/meta/ci-wall-clock.lino. The measured maximum
 //! must equal measured_minutes and must not exceed ceiling_minutes.
@@ -19,18 +21,37 @@
 //! [package]
 //! edition = "2024"
 //! [dependencies]
-//! serde_yaml = "0.9"
+//! yaml-rust2 = "0.13"
 //! ```
 
-use serde_yaml::Value;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 #[cfg(not(test))]
 use std::process::Command;
+use yaml_rust2::{Yaml as Value, YamlLoader};
 
 const WALL_CLOCK_FILE: &str = "data/meta/ci-wall-clock.lino";
 const GITHUB_DEFAULT_TIMEOUT: u32 = 360;
+
+/// The single document of a workflow file.
+pub fn parse_document(text: &str) -> Result<Value, String> {
+    let mut documents = YamlLoader::load_from_str(text).map_err(|error| error.to_string())?;
+    if documents.is_empty() {
+        return Err("empty document".to_owned());
+    }
+    Ok(documents.swap_remove(0))
+}
+
+/// A mapping's value under a string key.
+fn get<'a>(value: &'a Value, key: &str) -> Option<&'a Value> {
+    value.as_hash()?.get(&Value::String(key.to_owned()))
+}
+
+/// A non-negative integer scalar.
+fn as_minutes(value: &Value) -> Option<u32> {
+    value.as_i64().and_then(|number| u32::try_from(number).ok())
+}
 
 // ─── .lino parser ───────────────────────────────────────────────────────────
 
@@ -71,18 +92,9 @@ pub fn parse_wall_clock(content: &str) -> Result<WallClockRecord, String> {
 /// Return the value of the `on:` key (which YAML 1.1 parsers may read as
 /// boolean `true`, while YAML 1.2 reads it as the string `"on"`).
 fn get_on(wf: &Value) -> Option<&Value> {
-    if let Some(v) = wf.get("on") {
-        return Some(v);
-    }
-    // Some parsers represent the `on:` YAML key as a bool true.
-    if let Value::Mapping(m) = wf {
-        for (k, v) in m {
-            if k == &Value::Bool(true) {
-                return Some(v);
-            }
-        }
-    }
-    None
+    // YAML 1.2 (yaml-rust2) reads the key as the string `on`; a YAML 1.1
+    // reader would read it as boolean true.
+    get(wf, "on").or_else(|| wf.as_hash()?.get(&Value::Boolean(true)))
 }
 
 /// Returns true if the workflow has a `pull_request` trigger.
@@ -93,10 +105,8 @@ pub fn workflow_has_pr_trigger(wf: &Value) -> bool {
     };
     match on {
         Value::String(s) => s == "pull_request",
-        Value::Sequence(seq) => seq.iter().any(|v| v.as_str() == Some("pull_request")),
-        Value::Mapping(m) => m
-            .keys()
-            .any(|k| k.as_str() == Some("pull_request")),
+        Value::Array(seq) => seq.iter().any(|v| v.as_str() == Some("pull_request")),
+        Value::Hash(m) => m.keys().any(|k| k.as_str() == Some("pull_request")),
         _ => false,
     }
 }
@@ -152,18 +162,13 @@ pub fn resolve_matrix_timeout(t_expr: &str, job: &Value) -> Option<u32> {
     if key.contains('.') {
         return None;
     }
-    let include = job
-        .get("strategy")
-        .and_then(|s| s.get("matrix"))
-        .and_then(|m| m.get("include"))?;
+    let include = get(job, "strategy")
+        .and_then(|s| get(s, "matrix"))
+        .and_then(|m| get(m, "include"))?;
     let vals: Vec<u32> = include
-        .as_sequence()?
+        .as_vec()?
         .iter()
-        .filter_map(|row| {
-            row.get(key)
-                .and_then(|v| v.as_u64())
-                .map(|n| n as u32)
-        })
+        .filter_map(|row| get(row, key).and_then(as_minutes))
         .collect();
     vals.into_iter().max()
 }
@@ -181,7 +186,7 @@ pub fn job_weight(
     depth: u32,
 ) -> (u32, String) {
     // Reusable workflow: recurse into it (or contribute 0 if not found).
-    if let Some(uses_val) = job.get("uses") {
+    if let Some(uses_val) = get(job, "uses") {
         let uses = uses_val.as_str().unwrap_or("");
         let rw_path = resolve_reusable_path(uses, workflows_dir);
         let (cp, label) = match rw_path {
@@ -190,19 +195,23 @@ pub fn job_weight(
                 let name = p.file_name().and_then(|n| n.to_str()).unwrap_or("?");
                 (c, format!("{job_name}(->reusable:{name}:{c}m)"))
             }
-            None => (0, format!("{job_name}(->unresolved:{uses}:0m)")),
+            // Reported by `find_unbounded_jobs`; weighed as the runner default.
+            None => (
+                GITHUB_DEFAULT_TIMEOUT,
+                format!("{job_name}(->unresolved:{uses}->{GITHUB_DEFAULT_TIMEOUT}m)"),
+            ),
         };
         return (cp, label);
     }
     // Static or matrix-expression timeout.
-    match job.get("timeout-minutes") {
+    match get(job, "timeout-minutes") {
         None => (
             GITHUB_DEFAULT_TIMEOUT,
             format!("{job_name}(UNBOUNDED->{GITHUB_DEFAULT_TIMEOUT}m)"),
         ),
         Some(t_val) => {
-            if let Some(n) = t_val.as_u64() {
-                (n as u32, format!("{job_name}({}m)", n))
+            if let Some(n) = as_minutes(t_val) {
+                (n, format!("{job_name}({n}m)"))
             } else if let Some(expr) = t_val.as_str() {
                 if let Some(resolved) = resolve_matrix_timeout(expr, job) {
                     (resolved, format!("{job_name}(matrix-max:{resolved}m)"))
@@ -253,14 +262,11 @@ fn reusable_critical_path(
     }
     let result = fs::read_to_string(wf_path)
         .ok()
-        .and_then(|content| serde_yaml::from_str::<Value>(&content).ok())
+        .and_then(|content| parse_document(&content).ok())
         .map(|wf| {
-            let jobs = wf.get("jobs").cloned().unwrap_or(Value::Null);
+            let jobs = get(&wf, "jobs").cloned().unwrap_or(Value::Null);
             let (cp, chain) = critical_path_of_jobs(&jobs, workflows_dir, cache, depth + 1);
-            let name = wf_path
-                .file_name()
-                .and_then(|n| n.to_str())
-                .unwrap_or("?");
+            let name = wf_path.file_name().and_then(|n| n.to_str()).unwrap_or("?");
             let prefixed: Vec<String> = chain.iter().map(|c| format!("{name}::{c}")).collect();
             (cp, prefixed)
         })
@@ -277,7 +283,7 @@ pub fn critical_path_of_jobs(
     cache: &mut ReusableCache,
     depth: u32,
 ) -> (u32, Vec<String>) {
-    let mapping = match jobs.as_mapping() {
+    let mapping = match jobs.as_hash() {
         Some(m) => m,
         None => return (0, vec![]),
     };
@@ -296,15 +302,12 @@ pub fn critical_path_of_jobs(
     // DP over topological order.
     let mut dist: HashMap<String, (u32, Vec<String>)> = HashMap::new();
     for jname in &topo {
-        let jbody = match mapping.get(jname.as_str()) {
+        let jbody = match mapping.get(&Value::String(jname.clone())) {
             Some(v) => v,
             None => continue,
         };
         // Exclude push-only jobs.
-        let if_cond = jbody
-            .get("if")
-            .and_then(|v| v.as_str())
-            .unwrap_or("");
+        let if_cond = get(jbody, "if").and_then(Value::as_str).unwrap_or("");
         if is_job_excluded_on_pr(if_cond) {
             dist.insert(jname.clone(), (0, vec![]));
             continue;
@@ -330,9 +333,9 @@ pub fn critical_path_of_jobs(
 
 /// Parse the `needs:` field from a job value into a Vec of job names.
 fn parse_needs(job: &Value) -> Vec<String> {
-    match job.get("needs") {
+    match get(job, "needs") {
         Some(Value::String(s)) => vec![s.clone()],
-        Some(Value::Sequence(seq)) => seq
+        Some(Value::Array(seq)) => seq
             .iter()
             .filter_map(|v| v.as_str().map(|s| s.to_string()))
             .collect(),
@@ -342,17 +345,6 @@ fn parse_needs(job: &Value) -> Vec<String> {
 
 /// Kahn's algorithm for topological sort.
 fn topological_sort(needs_map: &HashMap<String, Vec<String>>) -> Vec<String> {
-    let mut in_degree: HashMap<&str, usize> = HashMap::new();
-    for (n, deps) in needs_map {
-        in_degree.entry(n).or_insert(0);
-        for d in deps {
-            if needs_map.contains_key(d.as_str()) {
-                *in_degree.entry(n).or_insert(0) += 0; // ensure entry
-                *in_degree.entry(n.as_str()).or_insert(0) += 0; // noop
-            }
-        }
-    }
-    // Rebuild properly.
     let mut in_deg: HashMap<String, usize> = needs_map.keys().map(|k| (k.clone(), 0)).collect();
     for (n, deps) in needs_map {
         for d in deps {
@@ -400,10 +392,13 @@ fn topological_sort(needs_map: &HashMap<String, Vec<String>>) -> Vec<String> {
 
 // ─── Unbounded-job detection ─────────────────────────────────────────────────
 
-/// Find PR-reachable jobs with no timeout-minutes in a workflow.
+/// Find PR-reachable jobs with no timeout-minutes in a workflow, descending
+/// into the local reusable workflows its jobs call: their jobs run on the
+/// caller's event, so an unbounded job there is unbounded here. A local
+/// reusable workflow that cannot be found or parsed is reported too.
 /// Returns job names (for diagnostic output).
-pub fn find_unbounded_jobs(jobs: &Value) -> Vec<String> {
-    let mapping = match jobs.as_mapping() {
+pub fn find_unbounded_jobs(jobs: &Value, workflows_dir: &Path, depth: u32) -> Vec<String> {
+    let mapping = match jobs.as_hash() {
         Some(m) => m,
         None => return vec![],
     };
@@ -413,15 +408,32 @@ pub fn find_unbounded_jobs(jobs: &Value) -> Vec<String> {
             Some(s) => s,
             None => continue,
         };
-        let if_cond = v.get("if").and_then(|c| c.as_str()).unwrap_or("");
+        let if_cond = get(v, "if").and_then(Value::as_str).unwrap_or("");
         if is_job_excluded_on_pr(if_cond) {
             continue;
         }
-        // Reusable workflows delegate timeout to their own jobs.
-        if v.get("uses").is_some() {
+        if let Some(uses) = get(v, "uses").and_then(Value::as_str) {
+            if !uses.starts_with("./") {
+                continue;
+            }
+            let called = resolve_reusable_path(uses, workflows_dir)
+                .and_then(|path| fs::read_to_string(path).ok())
+                .and_then(|text| parse_document(&text).ok());
+            match called {
+                Some(workflow) if depth < 5 => {
+                    let inner = get(&workflow, "jobs").cloned().unwrap_or(Value::Null);
+                    unbounded.extend(
+                        find_unbounded_jobs(&inner, workflows_dir, depth + 1)
+                            .into_iter()
+                            .map(|job| format!("{jname}>{job}")),
+                    );
+                }
+                Some(_) => {}
+                None => unbounded.push(format!("{jname}(UNRESOLVED:{uses})")),
+            }
             continue;
         }
-        match v.get("timeout-minutes") {
+        match get(v, "timeout-minutes") {
             None => unbounded.push(jname.to_string()),
             Some(t) => {
                 // Check for truly dynamic expression (not resolvable from static include).
@@ -484,15 +496,20 @@ fn main() {
             Ok(c) => c,
             Err(_) => continue,
         };
-        let wf: Value = match serde_yaml::from_str(&content) {
+        // A workflow that does not parse would drop out of the measurement
+        // silently; it fails the gate instead.
+        let wf: Value = match parse_document(&content) {
             Ok(v) => v,
-            Err(_) => continue,
+            Err(error) => {
+                println!("::error::{}: {error}", wf_file.display());
+                std::process::exit(1);
+            }
         };
         if !workflow_has_pr_trigger(&wf) {
             continue;
         }
-        let jobs = wf.get("jobs").cloned().unwrap_or(Value::Null);
-        let ub = find_unbounded_jobs(&jobs);
+        let jobs = get(&wf, "jobs").cloned().unwrap_or(Value::Null);
+        let ub = find_unbounded_jobs(&jobs, &workflows_dir, 0);
         if !ub.is_empty() {
             let wf_name = wf_file
                 .file_name()
@@ -637,7 +654,7 @@ jobs:
 "#;
 
     fn parse_yaml(s: &str) -> Value {
-        serde_yaml::from_str(s).expect("fixture YAML parse")
+        parse_document(s).expect("fixture YAML parse")
     }
 
     #[test]
@@ -696,9 +713,8 @@ strategy:
       - {os: windows, capmin: 50}
 "#;
         let job = parse_yaml(job_yaml);
-        let t = job
-            .get("timeout-minutes")
-            .and_then(|v| v.as_str())
+        let t = get(&job, "timeout-minutes")
+            .and_then(Value::as_str)
             .unwrap();
         assert_eq!(resolve_matrix_timeout(t, &job), Some(50));
     }
@@ -707,9 +723,8 @@ strategy:
     fn resolve_matrix_timeout_returns_none_for_nested_key() {
         // ${{ matrix.leg.cap }} — nested key, can't resolve statically.
         let job = parse_yaml("timeout-minutes: \"${{ matrix.leg.cap }}\"\n");
-        let t = job
-            .get("timeout-minutes")
-            .and_then(|v| v.as_str())
+        let t = get(&job, "timeout-minutes")
+            .and_then(Value::as_str)
             .unwrap();
         assert_eq!(resolve_matrix_timeout(t, &job), None);
     }
@@ -717,10 +732,13 @@ strategy:
     #[test]
     fn find_unbounded_jobs_detects_missing_timeout() {
         let wf = parse_yaml(FIXTURE_UNBOUNDED);
-        let jobs = wf.get("jobs").unwrap();
-        let ub = find_unbounded_jobs(jobs);
+        let jobs = get(&wf, "jobs").unwrap();
+        let ub = find_unbounded_jobs(jobs, &PathBuf::from(".github/workflows"), 0);
         assert!(ub.contains(&"no-timeout-job".to_string()), "got: {ub:?}");
-        assert!(!ub.contains(&"check".to_string()), "check should be bounded");
+        assert!(
+            !ub.contains(&"check".to_string()),
+            "check should be bounded"
+        );
     }
 
     #[test]
@@ -733,23 +751,45 @@ jobs:
     steps: []
 "#;
         let wf = parse_yaml(yaml);
-        let jobs = wf.get("jobs").unwrap();
-        assert!(find_unbounded_jobs(jobs).is_empty());
+        let jobs = get(&wf, "jobs").unwrap();
+        assert!(find_unbounded_jobs(jobs, &PathBuf::from(".github/workflows"), 0).is_empty());
     }
 
     #[test]
-    fn critical_path_follows_needs_dag() {
+    fn an_unresolved_reusable_workflow_weighs_the_runner_default() {
         let wf = parse_yaml(FIXTURE_MAIN);
-        let jobs = wf.get("jobs").unwrap();
-        let workflows_dir = PathBuf::from(".github/workflows");
+        let jobs = get(&wf, "jobs").unwrap();
+        let workflows_dir = PathBuf::from("/nonexistent/.github/workflows");
         let mut cache = ReusableCache::new();
         let (cp, chain) = critical_path_of_jobs(jobs, &workflows_dir, &mut cache, 0);
-        // Expected chain (ignoring reuse-job path which calls a reusable workflow
-        // from a non-existent file in tests → 0m):
-        // setup(5) -> build(20) -> test(45) -> finish(5) = 75m
-        // deploy is excluded (push-only).
-        // reuse-job → fixture-reusable.yml doesn't exist → 0m.
-        assert_eq!(cp, 75, "chain: {chain:?}");
+        // fixture-reusable.yml is absent, so reuse-job weighs the 360-minute
+        // runner default rather than vanishing from the measurement:
+        // setup(5) -> reuse-job(360) -> finish(5). deploy is push-only.
+        assert_eq!(cp, 370, "chain: {chain:?}");
+        let unbounded = find_unbounded_jobs(jobs, &workflows_dir, 0);
+        assert!(
+            unbounded
+                .iter()
+                .any(|job| job.starts_with("reuse-job(UNRESOLVED:")),
+            "got: {unbounded:?}"
+        );
+    }
+
+    #[test]
+    fn an_unbounded_job_inside_a_called_workflow_is_reported() {
+        let dir =
+            std::env::temp_dir().join(format!("check-ci-wall-clock-inner-{}", std::process::id()));
+        let wf_dir = dir.join(".github").join("workflows");
+        std::fs::create_dir_all(&wf_dir).unwrap();
+        std::fs::write(
+            wf_dir.join("fixture-reusable.yml"),
+            "on:\n  workflow_call:\njobs:\n  inner:\n    runs-on: ubuntu-latest\n",
+        )
+        .unwrap();
+        let wf = parse_yaml(FIXTURE_MAIN);
+        let unbounded = find_unbounded_jobs(get(&wf, "jobs").unwrap(), &wf_dir, 0);
+        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(unbounded, vec!["reuse-job>inner".to_string()]);
     }
 
     #[test]
@@ -762,7 +802,7 @@ jobs:
         fs::create_dir_all(&wf_dir).unwrap();
         fs::write(wf_dir.join("fixture-reusable.yml"), FIXTURE_REUSABLE).unwrap();
         let wf = parse_yaml(FIXTURE_MAIN);
-        let jobs = wf.get("jobs").unwrap();
+        let jobs = get(&wf, "jobs").unwrap();
         let mut cache = ReusableCache::new();
         let (cp, chain) = critical_path_of_jobs(jobs, &wf_dir, &mut cache, 0);
         let _ = fs::remove_dir_all(&dir);
@@ -773,8 +813,7 @@ jobs:
 
     #[test]
     fn parse_wall_clock_reads_measured_and_ceiling() {
-        let content =
-            "ci_wall_clock pr\n  measured_minutes 225\n  ceiling_minutes 225\n  workflow \".github/workflows/issue-1028-agent-ladder.yml\"\n";
+        let content = "ci_wall_clock pr\n  measured_minutes 225\n  ceiling_minutes 225\n  workflow \".github/workflows/issue-1028-agent-ladder.yml\"\n";
         let r = parse_wall_clock(content).unwrap();
         assert_eq!(r.measured_minutes, 225);
         assert_eq!(r.ceiling_minutes, 225);
