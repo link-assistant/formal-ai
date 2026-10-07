@@ -292,7 +292,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   lines.push("");
   lines.push(programExplanationSection(task, responseLanguage));
   lines.push("");
-  lines.push(programTestInstructions(languageInfo, responseLanguage, priorCode));
+  lines.push(programTestInstructions(languageInfo, responseLanguage, priorCode, task));
   const content = applyInlineHelloWorldOutputReplacement(prompt, task, lines.join("\n"));
   return {
     intent: "write_program",
@@ -300,7 +300,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     // R1013: the sandbox block and the facts a native host reports instead (js/server/program-report.mjs).
     programExecution: { language, task, responseLanguage, checkCommand: languageInfo.checkCommand || null,
       rediscoveredFrom: documentationRediscoveredPage(task, language), // #1165: what verified this program
-      runCommand: languageInfo.runCommand, output: applyInlineHelloWorldOutputReplacement(prompt, task, expectedOutput),
+      runCommand: programRunCommandLine(task, languageInfo.runCommand), output: applyInlineHelloWorldOutputReplacement(prompt, task, expectedOutput),
       block: applyInlineHelloWorldOutputReplacement(prompt, task, executionLines.join("\n")) },
     confidence: 0.9,
     evidence: [

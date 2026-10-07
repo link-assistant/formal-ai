@@ -223,7 +223,10 @@ function writeProgramParameters(prompt) {
     Boolean(language) &&
     mentionsProgramRequest &&
     (Boolean(WRITE_PROGRAM_LANGUAGES[language]) || codingOracleKnowsLanguage(language));
-  if (!task && !asksForProgram && !asksForKnownLanguageProgram) return null;
+  // Issue #1021 (R1021-31): "мне нужен код" names code and nothing else, so it is a
+  // request with no parameters whatever the asking verb (namesCodeAndNothingElse).
+  const asksForBareCode = !task && !language && namesCodeAndNothingElse(normalized);
+  if (!task && !asksForProgram && !asksForKnownLanguageProgram && !asksForBareCode) return null;
   // Issue #358: modification phrases in the same turn lower the base task
   // through the data-backed substitution pipeline.
   if (task) {
@@ -748,9 +751,9 @@ function historyHasPriorCode(history) {
 // walked the user through running code, the verbose setup is replaced by a
 // short "test it the same way" note. Mirrors
 // `coding::guidance::program_test_instructions`.
-function programTestInstructions(languageInfo, language, priorCodeResponse) {
+function programTestInstructions(languageInfo, language, priorCodeResponse, task) {
   const saveAs = languageInfo.saveAs;
-  const runCommand = languageInfo.runCommand;
+  const runCommand = programRunCommandLine(task, languageInfo.runCommand); // stdin fixture piped in
   const checkCommand = languageInfo.checkCommand;
 
   if (priorCodeResponse) {

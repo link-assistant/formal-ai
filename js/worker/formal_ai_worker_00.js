@@ -249,6 +249,7 @@ function hydrateLinoSeedText(raw) {
   cachedProgramPlanRules = null;
   cachedMeaningLexicon = null;
   cachedMarketPriceReferences = null;
+  if (typeof installSeedProgramTasks === "function") installSeedProgramTasks(raw); // R1021-6, formal_ai_worker_program_requests.js
 }
 // Intent routing rules loaded from `seed/intent-routing.lino` at init time.
 // `intents` mirror `seed::IntentRoute` from the Rust crate, so the browser

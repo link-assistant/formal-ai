@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_14.js"
-  ceiling 1263
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker."
+  ceiling 1266
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1263 to 1266 for issue #1021 R1021-31: writeProgramParameters reads a request that names code and nothing else as a write_program request with no parameters (namesCodeAndNothingElse, mirroring names_code_and_nothing_else), so every asking verb reaches the honest dead end instead of a web search."

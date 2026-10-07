@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_program_requests.js"
+  ceiling 125
+  rationale "Browser twins of the issue #1021 write_program generalizations: program tasks learned from data/seed/hello-world-programs.lino with their stdin fixtures (R1021-6/R1021-7), the run command that pipes a fixture in (run_command_line), and the subtraction rule that reads a bare request for code as a write_program request (R1021-31)."
