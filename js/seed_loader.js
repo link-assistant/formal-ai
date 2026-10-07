@@ -560,11 +560,13 @@
   }
 
   function extractBrainstormSeeds(root) {
-    var seeds = { triggers: [], categories: [] };
+    var seeds = { triggers: [], categories: [], defaultCount: 0, countCardinal: "" };
     if (!root || !Array.isArray(root.children)) return seeds;
     var section = root.name === "brainstorm_seeds" ? root : findChildren(root, "brainstorm_seeds")[0];
     if (!section) return seeds;
     seeds.triggers = splitList(findChildValue(section, "trigger")).map(toLower);
+    seeds.defaultCount = Number(findChildValue(section, "default_count")) || 0;
+    seeds.countCardinal = findChildValue(section, "count_cardinal") || "";
     var categories = findChildren(section, "category");
     for (var i = 0; i < categories.length; i += 1) {
       var category = categories[i];

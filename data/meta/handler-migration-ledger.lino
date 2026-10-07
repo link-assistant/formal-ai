@@ -122,7 +122,11 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/creative_composition.rs"
     justification "Issue 1178 composes and ranks topic-bound names from seeded morphology and constraint rules. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_creative.js answers the same seed records in the worker."
   handler brainstorming
-    status pending
+    status migrated
+    data "data/seed/brainstorm-seeds.lino|data/seed/meanings.lino"
+    primitive "rust/src/solver_handlers/benchmark_prompts.rs"
+    justification "issue #918 (R914-6): the triggers, categories, detection keywords and items were already data/seed/brainstorm-seeds.lino; the last policy in code, how many items a reply lists by default and which cardinal a prompt names to ask for more (a literal 5 and the slug ten in both runtimes), is now the seed default_count and count_cardinal, and the worker no longer carries a bootstrap copy of the seed. The native part reads the seed table and numbers the items. The items are seeded example data, not a composition: topic-bearing requests are composed by brainstorm_composition before this row (issue 1178), so this row is the canned fallback list. Pinned in both runtimes, and natively by rust/tests/unit/specification/prompt_variations.rs."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler conversation_topic
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses-policy.lino"
@@ -138,7 +142,11 @@ handler_migration_ledger
   handler coreference
     status pending
   handler roleplay
-    status pending
+    status migrated
+    data "data/seed/personas.lino"
+    primitive "rust/src/solver_handlers/benchmark_prompts.rs"
+    justification "issue #918 (R914-6): the triggers, personas, topics, frame template and fallback body are data/seed/personas.lino in both runtimes; the worker dropped its bootstrap copy of the seed and its inline fallback persona, body and template. The native part matches the seed tables and fills the frame. The topic bodies are seeded example explanations, not compositions. Pinned in both runtimes, and natively by rust/tests/unit/specification/prompt_variations_facts.rs."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler creative_writing
     status "justified-native"
     primitive "rust/src/solver_handlers/creative_writing.rs"

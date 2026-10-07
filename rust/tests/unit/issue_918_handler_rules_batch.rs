@@ -372,3 +372,50 @@ fn a_terse_language_switch_replays_the_prior_answer_under_the_seeded_limit() {
         response.evidence_links
     );
 }
+
+const BRAINSTORM_FIVE: &str = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.";
+const BRAINSTORM_TEN: &str = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.\n6. A changelog-fragment consistency checker.\n7. A prompt-matrix generator for four-language smoke tests.\n8. A Wikidata anchor verifier for local seed records.\n9. A trace viewer that groups events by solver phase.\n10. A small offline issue-to-test planning tool.";
+
+/// The seeded brainstorm list: how many items a reply lists by default and
+/// which cardinal a prompt names to ask for more are the seed's
+/// `default_count` and `count_cardinal`, not constants in either runtime.
+/// The list itself is seeded example data; topic-bearing requests are
+/// composed by `brainstorm_composition` before this row is reached.
+#[test]
+fn the_seeded_brainstorm_list_reads_its_count_policy_from_the_seed() {
+    for (prompt, expected) in [
+        (
+            "Give me five ideas for an open-source side project.",
+            BRAINSTORM_FIVE,
+        ),
+        (
+            "Suggest ten open-source utilities for developers.",
+            BRAINSTORM_TEN,
+        ),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.intent, "brainstorm_project_ideas", "{prompt}");
+        assert_eq!(response.answer, expected, "{prompt}");
+    }
+}
+
+/// The roleplay frame, personas, topics and fallback body are
+/// `data/seed/personas.lino`; the browser twin no longer carries a bootstrap
+/// copy of them.
+#[test]
+fn a_roleplay_frame_renders_the_seeded_persona_and_topic() {
+    for (prompt, expected) in [
+        (
+            "Explain like you are Ada Lovelace teaching algorithms.",
+            "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
+        ),
+        (
+            "Roleplay as a teacher explaining relativity.",
+            "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+        ),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.intent, "roleplay_explanation", "{prompt}");
+        assert_eq!(response.answer, expected, "{prompt}");
+    }
+}

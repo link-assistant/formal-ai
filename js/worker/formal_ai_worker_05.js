@@ -423,9 +423,6 @@ async function tryTranslation(prompt, normalized) {
   };
 }
 
-// The number of brainstorm items returned when the prompt names no count.
-const DEFAULT_BRAINSTORM_COUNT = 5;
-
 // Read the integer value of a cardinal-number meaning from its own data. Each
 // cardinal carries a numeral word form (e.g. "10") — the script-independent
 // surface that spells the value — so the count is derived from the seed rather
@@ -439,20 +436,18 @@ function cardinalValue(meaning) {
   return Number.isNaN(value) ? null : value;
 }
 
-// Parse the number of items the user asked for, defaulting to
-// DEFAULT_BRAINSTORM_COUNT when no explicit count is present. The only
-// non-default count the brainstorm prompts exercise is ten, so the recogniser
-// asks the seed whether the `ten` cardinal is evidenced in the prompt (in any
-// supported language) and reads the value from that cardinal's own numeral
-// surface. Mirrors requested_brainstorm_count in
-// src/solver_handlers/benchmark_prompts.rs (issue #386).
-function requestedBrainstormCount(normalized) {
-  const ten = findMeaning("ten");
-  if (ten && meaningEvidencedIn(ten, normalized)) {
-    const value = cardinalValue(ten);
+// The number of items the user asked for: the value of the seed's
+// count_cardinal meaning when the prompt evidences it (in any supported
+// language), else the seed's default_count — both data/seed/brainstorm-seeds.lino
+// (issue #918). Mirrors requested_brainstorm_count in
+// src/solver_handlers/benchmark_prompts.rs.
+function requestedBrainstormCount(seeds, normalized) {
+  const cardinal = findMeaning(seeds.countCardinal || "");
+  if (cardinal && meaningEvidencedIn(cardinal, normalized)) {
+    const value = cardinalValue(cardinal);
     if (value !== null) return value;
   }
-  return DEFAULT_BRAINSTORM_COUNT;
+  return Number(seeds.defaultCount) || 0;
 }
 
 function numbered(items, count) {
@@ -472,7 +467,7 @@ function tryBrainstormingRequest(prompt, normalized) {
   if (!category || !Array.isArray(category.items) || category.items.length === 0) {
     return null;
   }
-  const count = requestedBrainstormCount(normalized);
+  const count = requestedBrainstormCount(seeds, normalized);
   return {
     intent: category.intent || "brainstorm_project_ideas",
     content: numbered(category.items, count),
@@ -607,9 +602,7 @@ function tryCoreferenceFactLookup(prompt, normalized, history) {
 }
 
 function renderRoleplayBody(persona, body) {
-  const template =
-    (PERSONA_SEEDS && PERSONA_SEEDS.bodyTemplate) ||
-    "Roleplay frame recorded for <persona>. I will keep the persona explicit and factual: <body>";
+  const template = String((PERSONA_SEEDS && PERSONA_SEEDS.bodyTemplate) || "");
   return template.replace(/<persona>/g, persona).replace(/<body>/g, body);
 }
 
@@ -620,12 +613,8 @@ function tryRoleplayRequest(prompt, normalized) {
   const persona = personas.find((entry) => containsAny(normalized, entry.aliases));
   const topics = Array.isArray(seeds.topics) ? seeds.topics : [];
   const topic = topics.find((entry) => containsAny(normalized, entry.detectionKeywords));
-  const displayName =
-    (persona && persona.displayName) || seeds.defaultPersona || "requested persona";
-  const body =
-    (topic && topic.body) ||
-    seeds.fallbackBody ||
-    "relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.";
+  const displayName = (persona && persona.displayName) || seeds.defaultPersona || "";
+  const body = (topic && topic.body) || seeds.fallbackBody || "";
   const evidence = [`roleplay:persona:${displayName}`];
   if (persona && persona.wikidata) evidence.push(`wikidata:${persona.wikidata}`);
   if (topic && topic.slug) evidence.push(`roleplay:topic:${topic.slug}`);

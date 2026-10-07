@@ -227,3 +227,31 @@ test("a terse language switch replays the prior answer under the seeded limit", 
     "我是 formal-ai —— 一个确定性的符号化 AI 系统,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。");
   assert.ok(response.evidence.includes("response_language_followup:target:zh"));
 });
+
+const BRAINSTORM_FIVE = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.";
+const BRAINSTORM_TEN = `${BRAINSTORM_FIVE}\n6. A changelog-fragment consistency checker.\n7. A prompt-matrix generator for four-language smoke tests.\n8. A Wikidata anchor verifier for local seed records.\n9. A trace viewer that groups events by solver phase.\n10. A small offline issue-to-test planning tool.`;
+
+test("the seeded brainstorm list reads its count policy from the seed", async () => {
+  for (const [prompt, expected] of [
+    ["Give me five ideas for an open-source side project.", BRAINSTORM_FIVE],
+    ["Suggest ten open-source utilities for developers.", BRAINSTORM_TEN],
+  ]) {
+    const response = await solve(prompt);
+    assert.equal(response.intent, "brainstorm_project_ideas", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+});
+
+test("a roleplay frame renders the seeded persona and topic", async () => {
+  // The prompts and answers rust/tests/unit/specification/prompt_variations_facts.rs pins natively.
+  for (const [prompt, expected] of [
+    ["Pretend you are Albert Einstein and explain relativity to a teenager.", "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."],
+    ["Roleplay as a teacher explaining relativity.", "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."],
+    ["Explain like you are Ada Lovelace teaching algorithms.", "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result."],
+    ["Pretend you are a patient teacher and explain time dilation.", "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields."],
+  ]) {
+    const response = await solve(prompt);
+    assert.equal(response.intent, "roleplay_explanation", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+});

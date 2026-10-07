@@ -116,64 +116,17 @@ let CONCEPTS = [];
 let CONCEPT_CONTEXTS = [];
 let FACTS = [];
 let PROJECTS = [];
-let BRAINSTORM_SEEDS = {
-  triggers: [
-    "brainstorm",
-    "give me five ideas",
-    "give me 5 ideas",
-    "give me ten ideas",
-    "give me 10 ideas",
-    "suggest five",
-    "suggest 5",
-    "suggest ten",
-    "suggest 10",
-  ],
-  categories: [
-    {
-      slug: "project_ideas",
-      intent: "brainstorm_project_ideas",
-      detectionKeywords: [],
-      items: [
-        "A local Links Notation notebook with searchable traces.",
-        "A deterministic code-review checklist generator.",
-        "A multilingual prompt-variation test corpus.",
-        "A CLI that converts issue requirements into traceable tests.",
-        "A source-cache inspector for reproducible agent runs.",
-        "A changelog-fragment consistency checker.",
-        "A prompt-matrix generator for four-language smoke tests.",
-        "A Wikidata anchor verifier for local seed records.",
-        "A trace viewer that groups events by solver phase.",
-        "A small offline issue-to-test planning tool.",
-      ],
-    },
-  ],
-};
+// Filled from data/seed/brainstorm-seeds.lino and data/seed/personas.lino when
+// the seed loads (issue #918: the bootstrap copies of their lists, items and
+// templates are gone, so the seed is the only place those words live).
+let BRAINSTORM_SEEDS = { triggers: [], categories: [], defaultCount: 0, countCardinal: "" };
 let PERSONA_SEEDS = {
-  triggers: ["pretend you are", "act as", "roleplay", "explain like you are"],
-  defaultPersona: "requested persona",
-  bodyTemplate:
-    "Roleplay frame recorded for <persona>. I will keep the persona explicit and factual: <body>",
-  fallbackBody:
-    "relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
-  personas: [
-    { displayName: "Albert Einstein", aliases: ["einstein"], wikidata: "Q937" },
-    { displayName: "Ada Lovelace", aliases: ["ada lovelace"], wikidata: "Q7259" },
-    { displayName: "teacher", aliases: ["teacher"], wikidata: "" },
-  ],
-  topics: [
-    {
-      slug: "algorithm",
-      detectionKeywords: ["algorithm", "algorithms"],
-      body:
-        "an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
-    },
-    {
-      slug: "time_dilation",
-      detectionKeywords: ["time dilation"],
-      body:
-        "time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields.",
-    },
-  ],
+  triggers: [],
+  defaultPersona: "",
+  bodyTemplate: "",
+  fallbackBody: "",
+  personas: [],
+  topics: [],
 };
 let COREFERENCE_SEEDS = { pronouns: [], antecedents: [] };
 let TOOLS = [];

@@ -122,7 +122,7 @@ pub fn try_brainstorming_request(
     if category.detection_keywords.is_empty() {
         log.append("brainstorming:refusal", "no category keyword".to_owned());
     }
-    let requested_count = requested_brainstorm_count(normalized);
+    let requested_count = requested_brainstorm_count(seeds, normalized);
     let body = numbered(&category.items, requested_count);
     log.append("brainstorm:category", category.slug.clone());
     Some(finalize_simple(
@@ -135,23 +135,20 @@ pub fn try_brainstorming_request(
     ))
 }
 
-/// The number of brainstorm items returned when the prompt names no count.
-const DEFAULT_BRAINSTORM_COUNT: usize = 5;
-
-/// Parse the number of items the user asked for, defaulting to
-/// [`DEFAULT_BRAINSTORM_COUNT`] when no explicit count is present.
+/// The number of items the user asked for: the value of the seed's
+/// `count_cardinal` meaning when the prompt evidences it (in any supported
+/// language), else the seed's `default_count`.
 ///
-/// The only non-default count the brainstorm prompts exercise is ten, so the
-/// recogniser asks the seed whether the `ten` cardinal is evidenced in the
-/// prompt — in any supported language — and reads the integer value from that
-/// cardinal's own numeral surface rather than a hardcoded literal. Recognising
-/// the concept this way keeps the count language-independent and self-describing.
-fn requested_brainstorm_count(normalized: &str) -> usize {
+/// The cardinal's integer value is read from its own numeral surface rather
+/// than a literal, so the count stays language-independent and the policy
+/// (which cardinal, which default) is the seed's, not this module's (issue
+/// #918).
+fn requested_brainstorm_count(seeds: &BrainstormSeeds, normalized: &str) -> usize {
     seed::lexicon()
-        .meaning("ten")
-        .filter(|ten| ten.evidenced_in(normalized))
+        .meaning(&seeds.count_cardinal)
+        .filter(|cardinal| cardinal.evidenced_in(normalized))
         .and_then(cardinal_value)
-        .unwrap_or(DEFAULT_BRAINSTORM_COUNT)
+        .unwrap_or(seeds.default_count)
 }
 
 /// Read the integer value of a cardinal-number meaning from its own data.
