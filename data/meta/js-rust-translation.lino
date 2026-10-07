@@ -12,11 +12,11 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit 679a3b3c3c56177b8df1ad82672690c6e9889aeb
-  modules 127
-  translated_items 238
-  inferred_signatures 1
-  carried_items 2072
-  translated_modules 77
+  modules 128
+  translated_items 243
+  inferred_signatures 2
+  carried_items 2093
+  translated_modules 78
   fully_translated_modules 1
   refused_modules 50
 module js/agentic/crate/algorithm_discovery.mjs translated 6 inferred 0 carried 40
@@ -107,6 +107,7 @@ module js/agentic/crate/seed_parser.mjs translated 0 inferred 0 carried 3
 module js/agentic/crate/seed_reports.mjs translated 0 inferred 0 carried 5
 module js/agentic/crate/seed_shell_intents.mjs translated 1 inferred 0 carried 8
 module js/agentic/crate/seed_terminal_commands.mjs translated 0 inferred 0 carried 5
+module js/agentic/crate/selection_heuristics_triz.mjs translated 5 inferred 1 carried 21
 module js/agentic/crate/self_ast_census.mjs translated 2 inferred 0 carried 13
 module js/agentic/crate/self_explanation.mjs translated 0 inferred 0 carried 8
 module js/agentic/crate/self_source_links.mjs translated 3 inferred 0 carried 17
@@ -146,24 +147,24 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 inferred 0 ca
 module js/worker/formal_ai_worker_meta_composite.js translated 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 24
-refusal "import { … }" 393
-refusal "JSDoc type {…}" 191
-refusal "null" 160
+refusal "import { … }" 400
+refusal "JSDoc type {…}" 197
+refusal "null" 161
 refusal "type: unknown name (a sibling item or an import)" 111
 refusal "arrow function" 95
 refusal "function value …" 93
 refusal "object without a $ tag" 77
-refusal "new expression" 73
-refusal "method call .find()" 57
+refusal "new expression" 74
+refusal "method call .find()" 58
 refusal "regular expression" 52
 refusal "method call .split()" 50
-refusal "method call .map()" 44
-refusal "method call .filter()" 41
+refusal "method call .map()" 45
+refusal "method call .filter()" 43
 refusal "method call .some()" 41
 refusal "Array.from" 40
 refusal "method call .slice()" 40
 refusal "method call .push()" 34
-refusal "field access" 31
+refusal "field access" 32
 refusal "method call .indexOf()" 26
 refusal "nullish coalescing" 25
 refusal "method call .replace()" 23
@@ -172,7 +173,7 @@ refusal "case test" 18
 refusal "syntax: malformed number" 18
 refusal "export …" 17
 refusal "try statement" 17
-refusal "method call .codePointAt()" 14
+refusal "method call .codePointAt()" 15
 refusal "typeof operator" 13
 refusal "import from '…'" 12
 refusal "method call .every()" 12

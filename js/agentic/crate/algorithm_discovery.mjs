@@ -7,7 +7,7 @@
 // rust/src/algorithm_discovery/adapters.rs (`traces_from_memory_events`,
 // `parse_arguments`) and rust/src/algorithm_discovery/ranking.rs
 // (`rank_survivors`, via rust/src/selection_heuristics.rs `LeastActionRanker`
-// over data/meta/selection-heuristics.lino) that
+// and `TrizRanker` over data/meta/selection-heuristics.lino; R901-3) that
 // `agentic_coding::algorithm_learning` reaches.
 //
 // Shapes: a trace is `{id, steps: [{operation, arguments: [[name, value]...]}]}`
@@ -28,6 +28,7 @@ import { stableId } from './engine_stable_id.mjs';
 import { byteOrder as cmpStr, trim, utf8Len as stringBytes } from './rust_str.mjs';
 import { parseRoot, findChildValue } from './seed_parser.mjs';
 import { NULL_LINK, SequenceStore, SymbolTable, balancedConvert, compress } from './sequences.mjs';
+import { rankWithHeuristic, situationFor } from './selection_heuristics_triz.mjs';
 
 const DEFAULT_MIN_STEPS = 2;
 const DEFAULT_SUPPORT_OCCURRENCES = 2;
@@ -430,66 +431,33 @@ function subsumes(longer, shorter) {
   return false;
 }
 
-/** Mirrors rust/src/algorithm_discovery/ranking.rs `rank_survivors`. */
+/**
+ * Mirrors rust/src/algorithm_discovery/ranking.rs `rank_survivors` (R901-3):
+ * resolves the ranker through `heuristics_for(HeuristicRole::Rank, situation)`
+ * so `TrizRanker` is selected when a contradiction is detected.
+ */
 function rankSurvivors(candidates) {
-  const order = rankingKeyOrder();
-  const dimension = (candidate, name, index) => {
-    if (name === 'steps') return candidate.steps.length;
-    if (name === 'code_size') return candidate.steps.reduce((sum, step) => sum + stringBytes(step.operation), 0);
-    if (name === 'resource_units') return 0;
-    if (name === 'leaf_count') return 1;
-    return index;
-  };
-  const ranked = candidates.map((candidate, index) => index).filter((index) => candidateValidated(candidates[index]));
-  if (order.length > 0) {
-    ranked.sort((left, right) => {
-      for (const name of order) {
-        const compared = cmpNum(dimension(candidates[left], name, left), dimension(candidates[right], name, right));
-        if (compared) return compared;
-      }
-      return 0;
-    });
-  }
+  const scores = candidates.map((candidate, index) => ({
+    candidate_id: candidate.id,
+    checks: [
+      candidate.held_out.filter((t) => t.passed).length,
+      candidate.held_out.length,
+    ],
+    cost: {
+      steps: candidate.steps.length,
+      code_size: candidate.steps.reduce((sum, step) => sum + stringBytes(step.operation), 0),
+      resource_units: 0,
+      leaf_count: 1,
+    },
+  }));
+  const situation = situationFor(scores);
+  const ranked = rankWithHeuristic(scores, situation);
   const taken = new Set(ranked);
   const remaining = candidates.filter((candidate, index) => !taken.has(index))
     .sort((left, right) => cmpStr(left.id, right.id));
   return [...ranked.map((index) => candidates[index]), ...remaining];
 }
 
-
-/**
- * The `key_order` of the first `rank` heuristic that applies with no
- * situation (rust/src/selection_heuristics.rs `shipped_catalog`,
- * `catalog_from`, `key_order`; rust/src/method_registry.rs `heuristics_for`).
- */
-function rankingKeyOrder() {
-  return cached('algorithm-discovery-rank-key-order', () => {
-    const catalog = [];
-    let valid = true;
-    for (const record of parseRoot(readText('data/meta/selection-heuristics.lino')).children || []) {
-      if (findChildValue(record, 'record_type') !== 'selection_heuristic') continue;
-      const role = findChildValue(record, 'role');
-      const order = findChildValue(record, 'order');
-      if (!['rank', 'experiment', 'split'].includes(role) || !/^\+?[0-9]+$/.test(order)) {
-        valid = false;
-        break;
-      }
-      const fields = record.children || [];
-      catalog.push({
-        role,
-        order: Number(order.replace(/^\+/, '')),
-        appliesWhen: fields.filter((field) => field.name === 'applies_when'),
-        parameters: fields.filter((field) => !['record_type', 'role', 'order', 'applies_when'].includes(field.name)),
-      });
-    }
-    const chosen = valid
-      ? catalog.filter((heuristic) => heuristic.role === 'rank' && heuristic.appliesWhen.length === 0)
-        .sort((left, right) => left.order - right.order)[0]
-      : undefined;
-    const parameter = chosen?.parameters.find((field) => field.name === 'key_order');
-    return parameter ? parameter.value.split(',').map((part) => trim(part)) : [];
-  });
-}
 
 
 /**

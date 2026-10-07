@@ -19,6 +19,14 @@ heuristic_resource_least_action
   applies_when "execution_measured"
   key_order "resource_units,steps,code_size,candidate_index"
   rationale "When an execution record supplied measured resource units (plan 05), rank by work actually done before ranking by artifact size."
+heuristic_triz
+  record_type "selection_heuristic"
+  role "rank"
+  order "3"
+  slug "triz"
+  issue "901"
+  applies_when "contradiction_detected"
+  rationale "When two satisfying candidates each win on a different cost dimension, that is a technical contradiction; resolve it by the selection value derived from the requirement's own clauses rather than by the arbitrary index tie-break."
 heuristic_balanced_split
   record_type "selection_heuristic"
   role "split"

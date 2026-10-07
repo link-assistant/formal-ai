@@ -1,9 +1,12 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bf988cf9e8b91ed55589d292b9942d4d20c01a8a083e0b81338f4553c18e2c41 bytes=33095
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5f62186197be7e9515f7ee3ac5c4cb8248ef8065559d2fef49b4dd9ddac6c8d1 bytes=31578
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import { … }
@@ -123,10 +126,7 @@ pub fn cmp_num(left: f64, right: f64) -> f64 {
 // formal-ai:refusal arrow function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal arrow function
-
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal arrow function
+// formal-ai:refusal method call .map()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}

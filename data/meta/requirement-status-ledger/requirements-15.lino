@@ -339,10 +339,10 @@ requirement_status_ledger_shard requirements_15
   requirement
     id "R901-3"
     shard "docs/requirements/issue-0901-triz-contradictions.md"
-    verdict "partial"
-    delivered "none recorded"
+    verdict "implemented"
+    delivered "2026-10-08 (PR #1188)"
     issue "0901"
-    automated_test "rust/tests/unit/specification/selection_heuristics.rs"
+    automated_test "rust/tests/unit/specification/triz_contradictions.rs"
     manual "not yet confirmed"
   requirement
     id "R901-4"
