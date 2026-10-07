@@ -22,7 +22,7 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
             "| R918-6 ",
             "docs/design/minimal-core-boundary.md",
             "data/meta/seed-metadata-schema.lino",
-            "all 46 files as migration candidates",
+            "covers all 88 recursively counted handler sources",
         ],
     );
     assert_contains_all(
