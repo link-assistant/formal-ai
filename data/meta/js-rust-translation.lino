@@ -12,13 +12,13 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit 679a3b3c3c56177b8df1ad82672690c6e9889aeb
-  modules 123
-  translated_items 214
+  modules 127
+  translated_items 238
   inferred_signatures 1
-  carried_items 1926
-  translated_modules 72
+  carried_items 2066
+  translated_modules 77
   fully_translated_modules 1
-  refused_modules 51
+  refused_modules 50
 module js/agentic/crate/algorithm_discovery.mjs translated 6 inferred 0 carried 40
 module js/agentic/crate/associative_persistence.mjs translated 1 inferred 0 carried 7
 module js/agentic/crate/calculation.mjs translated 0 inferred 0 carried 2
@@ -56,7 +56,7 @@ module js/agentic/crate/history_lineage.mjs translated 3 inferred 0 carried 8
 module js/agentic/crate/history_repository_qa.mjs translated 1 inferred 0 carried 16
 module js/agentic/crate/history_store.mjs translated 3 inferred 0 carried 28
 module js/agentic/crate/implementation_language.mjs translated 0 inferred 0 carried 22
-module js/agentic/crate/intent_formalization.mjs translated 0 inferred 0 carried 4
+module js/agentic/crate/intent_formalization.mjs translated 5 inferred 0 carried 23
 module js/agentic/crate/intent_formalization_obligations.mjs translated 2 inferred 0 carried 29
 module js/agentic/crate/intent_formalization_requirements.mjs translated 0 inferred 0 carried 15
 module js/agentic/crate/issue_report.mjs translated 2 inferred 0 carried 0
@@ -65,7 +65,10 @@ module js/agentic/crate/language.mjs translated 2 inferred 0 carried 29
 module js/agentic/crate/links_format.mjs translated 0 inferred 0 carried 10
 module js/agentic/crate/links_substitution_query.mjs translated 0 inferred 0 carried 10
 module js/agentic/crate/memory.mjs translated 5 inferred 0 carried 18
+module js/agentic/crate/meta_core.mjs translated 1 inferred 0 carried 32
+module js/agentic/crate/meta_frame.mjs translated 5 inferred 0 carried 47
 module js/agentic/crate/meta_translate.mjs translated 0 inferred 0 carried 6
+module js/agentic/crate/method_registry.mjs translated 9 inferred 0 carried 21
 module js/agentic/crate/needs.mjs translated 1 inferred 0 carried 8
 module js/agentic/crate/normal_markov.mjs translated 1 inferred 0 carried 11
 module js/agentic/crate/obligation_ledger.mjs translated 0 inferred 0 carried 36
@@ -111,6 +114,7 @@ module js/agentic/crate/sequences.mjs translated 1 inferred 0 carried 8
 module js/agentic/crate/skill_compiler.mjs translated 0 inferred 0 carried 4
 module js/agentic/crate/skill_procedure.mjs translated 10 inferred 0 carried 35
 module js/agentic/crate/skill_procedure_artifact.mjs translated 1 inferred 0 carried 18
+module js/agentic/crate/solver_formalization.mjs translated 4 inferred 0 carried 21
 module js/agentic/crate/solver_handlers_benchmark_prompts.mjs translated 0 inferred 0 carried 11
 module js/agentic/crate/solver_handlers_task_decomposition.mjs translated 6 inferred 0 carried 4
 module js/agentic/crate/solver_handlers_web_search.mjs translated 1 inferred 0 carried 74
@@ -142,53 +146,53 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 inferred 0 ca
 module js/worker/formal_ai_worker_meta_composite.js translated 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 24
-refusal "import { … }" 366
-refusal "JSDoc type {…}" 189
-refusal "null" 143
-refusal "type: unknown name (a sibling item or an import)" 105
-refusal "arrow function" 85
-refusal "function value …" 80
-refusal "object without a $ tag" 76
-refusal "new expression" 64
-refusal "method call .find()" 55
-refusal "regular expression" 49
-refusal "method call .split()" 46
+refusal "import { … }" 393
+refusal "JSDoc type {…}" 191
+refusal "null" 159
+refusal "type: unknown name (a sibling item or an import)" 111
+refusal "arrow function" 95
+refusal "function value …" 93
+refusal "object without a $ tag" 77
+refusal "new expression" 73
+refusal "method call .find()" 57
+refusal "regular expression" 50
+refusal "method call .split()" 48
+refusal "method call .map()" 44
+refusal "method call .filter()" 41
 refusal "method call .some()" 41
-refusal "method call .filter()" 39
-refusal "Array.from" 38
-refusal "method call .slice()" 38
-refusal "method call .map()" 37
+refusal "Array.from" 40
+refusal "method call .slice()" 40
+refusal "method call .push()" 34
 refusal "field access" 31
-refusal "method call .indexOf()" 25
-refusal "nullish coalescing" 23
+refusal "method call .indexOf()" 26
+refusal "nullish coalescing" 25
 refusal "method call .replace()" 22
-refusal "method call .push()" 21
 refusal "optional chaining" 19
+refusal "case test" 18
 refusal "syntax: malformed number" 18
 refusal "export …" 17
 refusal "try statement" 17
-refusal "case test" 16
 refusal "method call .codePointAt()" 14
+refusal "typeof operator" 13
 refusal "import from '…'" 12
-refusal "typeof operator" 12
+refusal "method call .every()" 12
+refusal "undefined" 12
+refusal "for with const" 11
 refusal "method call .join()" 11
-refusal "undefined" 11
-refusal "for with const" 10
-refusal "method call .every()" 10
-refusal "namespace property …" 10
-refusal "syntax: @param needs a type and a name" 10
+refusal "namespace property …" 11
+refusal "syntax: @param needs a type and a name" 11
+refusal "method call .reduce()" 10
 refusal "assignment" 9
+refusal "method call .flatMap()" 9
 refusal "method call .replaceAll()" 9
 refusal "object spread" 9
-refusal "method call .flatMap()" 8
-refusal "method call .reduce()" 8
 refusal "Array.isArray" 7
 refusal "method call .lastIndexOf()" 7
+refusal "destructured parameter" 6
+refusal "array destructuring" 5
 refusal "method call .sort()" 5
 refusal "throw new …" 5
 refusal "Object.keys" 4
-refusal "array destructuring" 4
-refusal "destructured parameter" 4
 refusal "syntax: unsupported template escape" 4
 refusal "top-level class statement" 4
 refusal "type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc" 4
@@ -198,6 +202,7 @@ refusal "Object.prototype.hasOwnProperty.call" 3
 refusal "let …" 3
 refusal "method call .has()" 3
 refusal "method call .repeat()" 3
+refusal "method call .toFixed()" 3
 refusal "syntax: unterminated string literal" 3
 refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 3
 refusal "bitwise &" 2
@@ -205,13 +210,16 @@ refusal "call of a computed function" 2
 refusal "instanceof operator" 2
 refusal "method call .createDirAll()" 2
 refusal "method call .entries()" 2
+refusal "method call .forEach()" 2
 refusal "method call .get()" 2
 refusal "method call .match()" 2
 refusal "method call .subarray()" 2
-refusal "method call .toFixed()" 2
 refusal "rest parameter" 2
+refusal "shift <<" 2
 refusal "throw of a non-error value" 2
 refusal "BigInt" 1
+refusal "Math.fround" 1
+refusal "Math.log2" 1
 refusal "Object.is" 1
 refusal "^= assignment" 1
 refusal "exponentiation" 1
@@ -230,7 +238,7 @@ refusal "method call .values()" 1
 refusal "method in an object value" 1
 refusal "namespace member …" 1
 refusal "rest property" 1
-refusal "shift <<" 1
+refusal "shift >>" 1
 refusal "shift >>>" 1
 refusal "syntax: unsupported string escape \]" 1
 refusal "syntax: unsupported string escape \b" 1

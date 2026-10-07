@@ -172,8 +172,8 @@ function solverHandlerPromotions() {
   return rows;
 }
 
-// `promoted_relevants`: the handlers a prompt hoists, in rank order.
-function solverPromotedHandlers(prompt) {
+// `promoted_relevants`: the handlers a prompt hoists, in rank order; `cue_set` rows hold only with `cueSets`.
+function solverPromotedHandlers(prompt, cueSets = null) {
   const source = String(prompt || "");
   const normalized = canonicalizedPrompt(normalizePrompt(source));
   const language = detectLanguage(source);
@@ -182,6 +182,7 @@ function solverPromotedHandlers(prompt) {
     language,
     languages: language === "en" ? ["en"] : [language, "en"],
     history: [],
+    cueSets,
     subjects: {
       normalized,
       cleaned: normalizePrompt(normalized),
@@ -220,17 +221,20 @@ function solverRouteMatches(normalized, route) {
     || (route.combos || []).some((combo) => Array.isArray(combo) && combo.length > 0 && combo.every(hasToken));
 }
 
+// `route_for_prompt`: the matched `{slug, responseLink}` (write_program, a declared role surface, the table), or null.
+function solverRouteForPrompt(prompt) {
+  const normalized = normalizePrompt(prompt);
+  if (typeof writeProgramParameters === "function" && writeProgramParameters(prompt)) return { slug: "write_program", responseLink: "response:write_program" };
+  const intents = INTENT_ROUTING && Array.isArray(INTENT_ROUTING.intents) ? INTENT_ROUTING.intents : [];
+  const route = intents.find((row) => Array.isArray(row.roleSurfaces) && row.roleSurfaces.some((role) => wordsForRole(role).includes(normalized)))
+    || intents.find((row) => solverRouteMatches(normalized, row));
+  return route ? { slug: route.slug, responseLink: route.responseLink } : null;
+}
+
 // `route_for_prompt`, then `route_from_relevants` over the promoted handlers.
 function solverIntentRoute(prompt) {
-  const normalized = normalizePrompt(prompt);
-  if (typeof writeProgramParameters === "function" && writeProgramParameters(prompt)) return "write_program";
-  const intents = INTENT_ROUTING && Array.isArray(INTENT_ROUTING.intents) ? INTENT_ROUTING.intents : [];
-  const declared = intents.find((route) =>
-    Array.isArray(route.roleSurfaces) && route.roleSurfaces.some((role) => wordsForRole(role).includes(normalized)));
-  if (declared) return declared.slug;
-  const tabled = intents.find((route) => solverRouteMatches(normalized, route));
-  if (tabled) return tabled.slug;
-  return solverPromotedHandlers(prompt)[0] || null;
+  const matched = solverRouteForPrompt(prompt);
+  return matched ? matched.slug : solverPromotedHandlers(prompt)[0] || null;
 }
 
 // ---------------------------------------------------------------- the log

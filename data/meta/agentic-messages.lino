@@ -490,3 +490,37 @@ agentic_messages
     text "contradicting evidence outweighs support"
   message recheck_reason_unsupported
     text "no trusted source asserts it"
+  message meta_route_recognized
+    text "the route `{route}` was recognized"
+  message meta_route_none
+    text "no route was recognized"
+  message meta_observe
+    text "At depth {depth}, observed a span of {characters} characters; {route}."
+  message meta_downward_not_atomic
+    text "The span carries more than one need, so it is not solvable by a single method: decompose it into {count} sub-units and reason about each recursively."
+  message meta_downward_direct_method
+    text "The span is directly solvable: its route resolves to the registered method `{method}`. Invoke that method; no further decomposition is needed."
+  message meta_downward_direct_unresolved
+    text "The span is directly solvable by a recognized route, but no registered method resolves it yet — record the route so the gap is visible rather than decomposing further."
+  message meta_downward_single_need
+    text "The span cannot be split further and matches no known route, so it is an irreducible single need. Record it for an honest blocked status instead of forcing an answer."
+  message meta_downward_depth_bound
+    text "The recursion depth bound was reached, so stop decomposing to guarantee termination and treat this unit as a leaf."
+  message meta_upward_direct
+    text "Return the method's result directly; there are no children to compose."
+  message meta_upward_blocked
+    text "Return a blocked marker upward: this leaf has no resolving method, so there is nothing to compose."
+  message meta_upward_compose
+    text "Once all {count} children are solved, compose their results in source order into this unit's answer; the answer is complete iff every child's is."
+  message meta_construction_leaf_method
+    text "Base case: construct this leaf's answer directly from the result of method `{method}`."
+  message meta_construction_leaf_blocked
+    text "Base case: no method resolves this leaf, so its answer is a blocked marker — nothing is constructed."
+  message meta_construction_compose
+    text "Recursive case: compose the {count} already-constructed children in source order into this unit's answer."
+  message skill_curriculum_no_method
+    text "No catalogued method resolves this need; recorded as a gap to close."
+  message skill_curriculum_disconnected
+    text "A method exists but the need's chain did not connect end to end; recorded as a gap to close."
+  message skill_curriculum_unsatisfied
+    text "The need resolved to a method but was not satisfied; recorded as a gap to close."

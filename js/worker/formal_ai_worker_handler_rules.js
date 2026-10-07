@@ -516,10 +516,15 @@ function handlerRulesHolds(condition, context) {
       return typeof reader === "function"
         && Boolean(reader(context.prompt, context.subjects.normalized, context.history));
     }
-    case "cue_set":
+    case "cue_set": {
+      // `cue_lexicon::matches`, read only when the caller carries the cue sets (the server's intent record,
+      // data/meta/cue-lexicon.lino); the rule sets this browser module runs keep their dedicated handlers.
+      const set = context.cueSets ? context.cueSets[condition.value] : null;
+      const token = (cue) => (/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/u.test(cue) ? text.includes(cue) : text.split(/\s+/).includes(cue));
+      return Boolean(set) && set.cues.some((cue) => (set.match === "prefix" ? text.startsWith(cue) : set.match === "substring" ? text.includes(cue) : token(cue)));
+    }
     case "route_exact":
-      // Neither backend is read by the rule sets this browser module runs;
-      // their rows (capabilities, …) keep their dedicated worker handlers.
+      // The exact-route backend is not read by the rule sets this browser module runs.
       return false;
     default:
       return false;

@@ -13,6 +13,7 @@ import { serverMessage } from './messages.mjs';
 import { noteLearned } from './meta-learned.mjs';
 import { nativeProgramAnswer } from './program-report.mjs';
 import { answerFromMemoryIfRequested } from './memory-answer.mjs';
+import { nativeSolverLog } from './solver-log.mjs';
 import { thinkingStepsFromEvents } from './solver-trace.mjs';
 import { applyRetainedAmendments, solveWithStandingRequirements } from './standing-requirements.mjs';
 import { thinkingStep, thinkingStepsFromWorker } from './thinking.mjs';
@@ -118,6 +119,12 @@ async function seedReportReader(ctx) {
  */
 export async function solveSymbolic(ctx, prompt, history) {
   const result = await ctx.worker.solve(prompt, history);
+  // R1013: the formalization, intent-formalization and meta-core records the
+  // native solver logs between the worker's prelude and its handler events.
+  if (Array.isArray(result?.solverEvents)) {
+    await ensureNodeHost(ctx);
+    result.solverEvents = nativeSolverLog(result);
+  }
   // The native solver answers a summarize request (not a returning-user recap)
   // with the `Conversation summary: … User turns:` envelope; the browser
   // worker's report is statistics only. A client that compacts its session
