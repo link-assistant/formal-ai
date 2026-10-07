@@ -402,7 +402,10 @@ fn a_code_example_page_query_is_not_a_program_request() {
 
 /// The run contract of a catalog row: the file it is saved as and the
 /// commands that check and run it.
-fn contract(save_as: &'static str, commands: &'static [&'static str]) -> RunContract<'static> {
+const fn contract(
+    save_as: &'static str,
+    commands: &'static [&'static str],
+) -> RunContract<'static> {
     RunContract { save_as, commands }
 }
 

@@ -459,11 +459,11 @@ fn release_dispatch_needs_an_explicit_mode_and_main() {
     );
     let mut writers = Vec::new();
     for (name, job) in workflow_jobs(&release) {
-        let writes = job.lines().any(|line| {
+        let grants_write = job.lines().any(|line| {
             let line = line.trim();
             line.ends_with(": write") && !line.starts_with('#')
         });
-        if !writes {
+        if !grants_write {
             continue;
         }
         writers.push(name.clone());

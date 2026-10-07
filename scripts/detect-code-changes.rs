@@ -236,9 +236,12 @@ struct ChangeFlags {
 fn release_pending(event_name: &str, git_ref: &str, fragments: &[String]) -> bool {
     event_name == "push"
         && git_ref == "refs/heads/main"
-        && fragments
-            .iter()
-            .any(|name| name.ends_with(".md") && name != "README.md")
+        && fragments.iter().any(|name| {
+            Path::new(name)
+                .extension()
+                .is_some_and(|extension| extension.eq_ignore_ascii_case("md"))
+                && name != "README.md"
+        })
 }
 
 /// The file names in `changelog.d/` (empty when the folder is absent).
