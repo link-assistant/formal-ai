@@ -19,19 +19,22 @@
 // for both servers. The consent-gated auto-free-space pass on import is
 // js/server/storage-policy.mjs.
 
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { predictionHitEvent } from './anticipation.mjs';
 import { stableId } from './ids.mjs';
 import { serverMessage } from './messages.mjs';
-import { predictionHitEvent } from './anticipation.mjs';
 import { LEARNED_CHUNK_KIND, importLearned, takeLearned } from './meta-learned.mjs';
+import { packageVersion } from './seed.mjs';
 import { applyAutoFreeSpaceForWrite } from './storage-policy.mjs';
 
 export const ROOT_HEADER = 'demo_memory';
 export const MINIMUM_READABLE_SCHEMA = 1;
 export const MAXIMUM_READABLE_SCHEMA = 2;
 export const TARGET_SCHEMA = 2;
+export const V1_TO_V2_MIGRATION_ID = 'demo_memory_v1_to_v2';
 const MEMORY_DIRECTORY_NAME = '.formal-ai';
 const MEMORY_FILE_NAME = 'memory.lino';
 const DEFAULT_AVG_UTF8_BYTES_PER_CHAR = 2;
@@ -240,8 +243,9 @@ function parsePersistedQuoted(value) {
   return null;
 }
 
-/** `validate_persisted_memory_text`: true when the released writer's shape holds. */
-function validPersistedMemory(text) {
+/** `validate_persisted_memory_text`: `{count}` events, or the `line=N:reason` error. */
+function validatePersistedMemoryText(text) {
+  let count = 0;
   let insideEvent = false;
   let lineNumber = 0;
   for (const raw of rustLines(text)) {
@@ -251,34 +255,65 @@ function validPersistedMemory(text) {
     const indent = leadingSpaces(line);
     const content = line.slice(indent);
     if (indent === 0 && lineNumber === 1 && content === ROOT_HEADER) continue;
-    if (indent !== 2 && !(indent === 4 && insideEvent)) return false;
+    const scope = indent === 2 ? 'root' : 'event';
+    if (indent !== 2 && !(indent === 4 && insideEvent)) return { error: `line=${lineNumber}:indent_or_parent_invalid` };
     if (indent === 2) insideEvent = false;
     const space = content.indexOf(' ');
-    if (space <= 0 || parsePersistedQuoted(content.slice(space + 1)) === null) return false;
-    if (indent === 2 && content.slice(0, space) === 'event') insideEvent = true;
+    if (space < 0) return { error: `line=${lineNumber}:${scope}_value_missing` };
+    if (space === 0 || parsePersistedQuoted(content.slice(space + 1)) === null) return { error: `line=${lineNumber}:${scope}_value_invalid` };
+    if (indent === 2 && content.slice(0, space) === 'event') {
+      count += 1;
+      insideEvent = true;
+    }
   }
-  return true;
+  return { count };
 }
 
-function baseStatus(pathExists) {
+/** `MemoryUpgradeStatus::base`: the full operator-contract status, in its JSON field order. */
+function baseUpgradeStatus(pathExists) {
   return {
+    binary_version: packageVersion(),
+    path_exists: pathExists,
     detected_schema_version: null,
+    minimum_readable_schema_version: MINIMUM_READABLE_SCHEMA,
+    maximum_readable_schema_version: MAXIMUM_READABLE_SCHEMA,
+    target_schema_version: TARGET_SCHEMA,
     compatible: true,
     migration_required: false,
+    migration_id: null,
+    rollback_supported: true,
     migration_state: pathExists ? 'ready' : 'missing',
+    event_count: 0,
+    source_sha256: null,
   };
 }
 
-function incompatibleStatus(pathExists, detected) {
-  return { ...baseStatus(pathExists), detected_schema_version: detected, compatible: false, migration_state: 'incompatible' };
+/** `MemoryUpgradeStatus::incompatible` (with the source digest when bytes were read). */
+export function incompatibleUpgradeStatus(pathExists, detected, code, reason, bytes = null) {
+  return {
+    ...baseUpgradeStatus(pathExists),
+    detected_schema_version: detected,
+    compatible: false,
+    rollback_supported: false,
+    migration_state: 'incompatible',
+    event_count: null,
+    source_sha256: bytes === null ? null : sha256Hex(bytes),
+    refusal_code: code,
+    refusal_reason: reason,
+  };
 }
 
-/** `inspect_memory_bytes`: the schema facts `/health` and `SyncStore::open_at` read. */
-export function inspectMemoryBytes(bytes, pathExists) {
-  const status = baseStatus(pathExists);
+const sha256Hex = (bytes) => createHash('sha256').update(bytes).digest('hex');
+
+/** `inspect_memory_bytes` in rust/src/memory/upgrade.rs: the full, side-effect-free status. */
+export function inspectMemoryUpgrade(bytes, pathExists) {
+  const status = { ...baseUpgradeStatus(pathExists), source_sha256: sha256Hex(bytes) };
+  const refuse = (detected, code, reason) => incompatibleUpgradeStatus(pathExists, detected, code, reason, bytes);
   if (bytes.length === 0) {
+    // Released binaries create the shared file before the first event: a valid empty schema-1 store.
     status.detected_schema_version = MINIMUM_READABLE_SCHEMA;
     status.migration_required = TARGET_SCHEMA > 1;
+    status.migration_id = status.migration_required ? V1_TO_V2_MIGRATION_ID : null;
     status.migration_state = status.migration_required ? 'upgrade_required' : 'ready';
     return status;
   }
@@ -286,10 +321,11 @@ export function inspectMemoryBytes(bytes, pathExists) {
   try {
     text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
   } catch {
-    return incompatibleStatus(pathExists, null);
+    return refuse(null, 'memory_not_utf8', serverMessage('memory_upgrade_not_utf8'));
   }
   const lines = rustLines(text);
-  if (lines.length === 0 || lines[0] !== ROOT_HEADER) return incompatibleStatus(pathExists, null);
+  if (lines.length === 0) return refuse(null, 'memory_empty', serverMessage('memory_upgrade_empty'));
+  if (lines[0] !== ROOT_HEADER) return refuse(null, 'memory_header_unknown', `memory_header_unknown:expected=${ROOT_HEADER}`);
   let detected = null;
   for (const line of lines) {
     const indent = leadingSpaces(line);
@@ -298,33 +334,59 @@ export function inspectMemoryBytes(bytes, pathExists) {
     if (!content.startsWith('schema_version ')) continue;
     const value = parsePersistedQuoted(content.slice('schema_version '.length));
     const version = value === null ? null : parseCount(value);
-    if (version === null || version > 0xffffffff) return incompatibleStatus(pathExists, null);
-    if (detected !== null) return incompatibleStatus(pathExists, version);
+    if (version === null || version > 0xffffffff) {
+      return refuse(null, 'schema_version_invalid', serverMessage('memory_upgrade_schema_version_invalid'));
+    }
+    if (detected !== null) return refuse(version, 'schema_version_duplicate', serverMessage('memory_upgrade_schema_version_duplicate'));
     detected = version;
   }
   detected = detected ?? MINIMUM_READABLE_SCHEMA;
   status.detected_schema_version = detected;
-  if (detected < MINIMUM_READABLE_SCHEMA || detected > MAXIMUM_READABLE_SCHEMA) {
-    return incompatibleStatus(pathExists, detected);
+  if (detected < MINIMUM_READABLE_SCHEMA) {
+    return refuse(detected, 'schema_too_old', `schema_too_old:detected=${detected}:minimum=${MINIMUM_READABLE_SCHEMA}`);
   }
-  if (!validPersistedMemory(text)) return incompatibleStatus(pathExists, detected);
+  if (detected > MAXIMUM_READABLE_SCHEMA) {
+    return refuse(detected, 'schema_too_new', `schema_too_new:detected=${detected}:maximum=${MAXIMUM_READABLE_SCHEMA}`);
+  }
+  const validated = validatePersistedMemoryText(text);
+  if (validated.error !== undefined) return refuse(detected, 'memory_malformed', `memory_malformed:error=${validated.error}`);
+  status.event_count = validated.count;
   if (detected < TARGET_SCHEMA) {
     status.migration_required = true;
+    status.migration_id = V1_TO_V2_MIGRATION_ID;
     status.migration_state = 'upgrade_required';
   }
   return status;
 }
 
-/** `preflight_memory_upgrade`: inspect without creating anything. */
-export function preflightMemory(file) {
+/** `preflight_memory_upgrade` in rust/src/memory/upgrade.rs: the full status, creating nothing. */
+export function preflightMemoryUpgrade(file) {
   let bytes;
   try {
     bytes = fs.readFileSync(file);
   } catch (error) {
-    if (error.code === 'ENOENT') return baseStatus(false);
-    return incompatibleStatus(true, null);
+    if (error.code === 'ENOENT') return baseUpgradeStatus(false);
+    return incompatibleUpgradeStatus(true, null, 'memory_unreadable', `memory_unreadable:path=${file}:error=${error.message}`);
   }
-  return inspectMemoryBytes(bytes, true);
+  return inspectMemoryUpgrade(bytes, true);
+}
+
+/** The schema facts `/health` and `SyncStore::open_at` read, from the full status. */
+const schemaFacts = (status) => ({
+  detected_schema_version: status.detected_schema_version,
+  compatible: status.compatible,
+  migration_required: status.migration_required,
+  migration_state: status.migration_state,
+});
+
+/** `inspect_memory_bytes`, as the schema facts. */
+export function inspectMemoryBytes(bytes, pathExists) {
+  return schemaFacts(inspectMemoryUpgrade(bytes, pathExists));
+}
+
+/** `preflight_memory_upgrade`, as the schema facts. */
+export function preflightMemory(file) {
+  return schemaFacts(preflightMemoryUpgrade(file));
 }
 
 /** `events_since`. */

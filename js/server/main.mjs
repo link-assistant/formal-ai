@@ -9,6 +9,9 @@
 // transports are native-only and refused. `explain <answer-id>
 // [--format text|links]` is the `formal-ai explain` request: it prints the
 // derivation record a served answer persisted (js/server/derivation-store.mjs).
+// `memory upgrade-status [--path P] [--format json]` and `memory migrate
+// [--path P] [--backup B] [--receipt R] [--format json]` are the explicit
+// persisted-memory upgrade (js/server/memory-upgrade.mjs).
 
 import { pathToFileURL } from 'node:url';
 
@@ -16,6 +19,7 @@ import { runExplain } from './derivation-store.mjs';
 import { startCoreDreaming } from './dreaming-runtime.mjs';
 import { createServer } from './http.mjs';
 import { createMemory, memoryPath } from './memory.mjs';
+import { runMemoryCli } from './memory-upgrade.mjs';
 import { serverMessage } from './messages.mjs';
 import { setLearnedImporter } from './meta-learned.mjs';
 import { createProverHost } from './prover-host.mjs';
@@ -86,6 +90,13 @@ async function main(argv) {
   // `formal-ai explain <answer-id> [--format text|links]` (rust/src/cli_explain.rs).
   if (argv[0] === 'explain') {
     const { code, stdout, stderr } = runExplain(argv.slice(1));
+    process.stdout.write(stdout);
+    process.stderr.write(stderr);
+    return code;
+  }
+  // `formal-ai memory upgrade-status|migrate` (rust/src/cli_memory.rs).
+  if (argv[0] === 'memory') {
+    const { code, stdout, stderr } = await runMemoryCli(argv.slice(1));
     process.stdout.write(stdout);
     process.stderr.write(stderr);
     return code;

@@ -100,6 +100,36 @@ server_messages
     text "unknown field `{field}`"
   message memory_schema_write_refused
     text "refusing to write an incompatible persisted-memory schema"
+  message memory_upgrade_not_utf8
+    text "persisted memory is not valid UTF-8"
+  message memory_upgrade_empty
+    text "persisted memory is empty"
+  message memory_upgrade_schema_version_invalid
+    text "schema_version must be a quoted positive integer"
+  message memory_upgrade_schema_version_duplicate
+    text "persisted memory contains more than one schema_version marker"
+  message memory_upgrade_incompatible
+    text "memory schema is incompatible"
+  message memory_upgrade_path_invalid
+    text "persisted-memory migration requires a filesystem path"
+  message memory_upgrade_unavailable
+    text "no migration implementation matches the detected schema"
+  message memory_upgrade_path_collision
+    text "memory, lock, backup, and receipt paths must be distinct"
+  message memory_upgrade_validation_failed
+    text "staged memory did not pass target-schema and event-count validation"
+  message memory_upgrade_migrated_not_utf8
+    text "memory is not UTF-8"
+  message memory_upgrade_header_unrecognized
+    text "memory root header is not recognized"
+  message memory_upgrade_header_own_line
+    text "memory root header must occupy its own line"
+  message memory_upgrade_preflight_refused
+    text "persisted-memory preflight refused an incompatible file"
+  message memory_upgrade_migration_refused
+    text "persisted-memory migration refused to modify the file"
+  message memory_cli_unsupported
+    text "unsupported argument: {argument}"
   message memory_record_failed
     text "[memory] failed to record live chat exchange: {error}"
   message memory_debug_init_failed
