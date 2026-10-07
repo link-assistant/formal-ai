@@ -18,3 +18,4 @@ done
 | 03 | link-foundation/lino-objects-codec | JS reproduction re-run 2026-10-07 against lino-objects-codec 0.4.0 |
 | 04 | link-foundation/lino-objects-codec | JS `formatIndented` output re-checked 2026-10-07 |
 | 05 | link-foundation/meta-language | crates.io 0.58.2 dependency list checked 2026-10-08 |
+| 06 | link-assistant/agent | Reproduced 2026-10-08 on @link-assistant/agent 0.26.0 (exit 1) and 0.26.11 (summary dropped); `gh search issues --repo link-assistant/agent` found only the related #304 (unhandled summary rejection, fixed) |
