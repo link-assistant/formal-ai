@@ -21,6 +21,9 @@ use super::write_request::{clean_path_token, looks_like_file_path, safe_relative
 use crate::normal_markov::{quoted_segment_spans, quoted_segments};
 use crate::protocol::ChatMessage;
 use crate::seed;
+use crate::workspace_change_learning::{
+    RewriteScope, execute_scoped_workspace_rewrite, is_identifier_word,
+};
 
 const MAX_ANCHOR_BYTES: usize = 4096;
 
@@ -33,6 +36,8 @@ pub(super) enum Computation {
     Removal { text: String },
     /// The one line assigning `key` gets `value`, in the file's own quoting.
     Setting { key: String, value: String },
+    /// Every whole-word `word` becomes its discovered `correction`.
+    TypoFix { word: String, correction: String },
 }
 
 /// A computed change: the file, how its bytes are computed, and the seed
@@ -50,6 +55,28 @@ pub(super) fn grounded_computed_change(task: &str) -> Option<ComputedChange> {
     grounded_end_insertion(task)
         .or_else(|| grounded_removal(task))
         .or_else(|| grounded_setting(task))
+        .or_else(|| grounded_typo_fix(task))
+}
+
+/// `Fix the typo 'smal' in README.md`: the seeded `typo_fix_lead` with one
+/// quoted word and one path, and no stated correction. The correction is
+/// discovered ([`super::spelling::corrected_spelling`]), and the change is the
+/// word-scoped replacement a stated correction would have made.
+fn grounded_typo_fix(task: &str) -> Option<ComputedChange> {
+    if !mentions("typo_fix_lead", task) {
+        return None;
+    }
+    let (target, word) = quoted_payload_and_path(task)?;
+    if !is_identifier_word(&word) {
+        return None;
+    }
+    let correction = super::spelling::corrected_spelling(&word)?;
+    Some(ComputedChange {
+        target,
+        intent: "coding_text_replaced",
+        slots: vec![("{old}", word.clone()), ("{new}", correction.clone())],
+        computation: Computation::TypoFix { word, correction },
+    })
 }
 
 fn mentions(role: &str, task: &str) -> bool {
@@ -162,6 +189,13 @@ impl ComputedChange {
             Computation::Setting { key, value } => (!missing)
                 .then(|| assigned_setting(source, key, value, &self.target))
                 .flatten(),
+            Computation::TypoFix { word, correction } => (!missing)
+                .then(|| {
+                    execute_scoped_workspace_rewrite(source, word, correction, RewriteScope::Word)
+                        .ok()
+                        .map(|execution| execution.output)
+                })
+                .flatten(),
         }
     }
 
@@ -170,9 +204,9 @@ impl ComputedChange {
         match &self.computation {
             Computation::EndInsertion { .. } if source.is_empty() => None,
             Computation::EndInsertion { at_end, .. } => compact_end_edit(source, updated, *at_end),
-            Computation::Removal { .. } | Computation::Setting { .. } => {
-                changed_lines_edit(source, updated)
-            }
+            Computation::Removal { .. }
+            | Computation::Setting { .. }
+            | Computation::TypoFix { .. } => changed_lines_edit(source, updated),
         }
     }
 }
