@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/shell_command_compose.rs
   language rust
   fidelity signature
-  byte_len 25654
-  line_count 719
-  content_id source_module_cdbe91f307831012
+  byte_len 26010
+  line_count 727
+  content_id source_module_ec0ee9a6a183fa16
   symbol_count 35
   symbols
     const CUES_PATH 28 28
@@ -41,4 +41,4 @@ self_ast_census
     function grep_search 485 526
     function find_files 529 579
     function ls_listing 582 618
-    function handle_shell_command_compose 623 719
+    function handle_shell_command_compose 623 727

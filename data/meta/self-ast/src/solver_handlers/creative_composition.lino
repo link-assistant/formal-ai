@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/creative_composition.rs
   language rust
   fidelity signature
-  byte_len 27948
-  line_count 792
-  content_id source_module_92df27e93a40cec1
+  byte_len 28186
+  line_count 797
+  content_id source_module_1f22a8427a3c34e7
   symbol_count 42
   symbols
     const RULES_PATH 38 38
@@ -42,10 +42,10 @@ self_ast_census
     function compose_candidates 407 460
     function content_words 463 470
     function select_candidates 474 521
-    function handle_brainstorm_request 529 637
-    struct EvidenceGrade 641 645
-    function evidence_grades 647 656
-    struct Recommendation 659 664
-    function recommendations 666 677
-    function advice_topics 680 696
-    function handle_advice_request 704 792
+    function handle_brainstorm_request 529 642
+    struct EvidenceGrade 646 650
+    function evidence_grades 652 661
+    struct Recommendation 664 669
+    function recommendations 671 682
+    function advice_topics 685 701
+    function handle_advice_request 709 797

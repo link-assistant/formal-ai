@@ -1,0 +1,14 @@
+self_ast_census
+  target src/solver_handlers/statistics/primality.rs
+  language rust
+  fidelity signature
+  byte_len 5163
+  line_count 135
+  content_id source_module_b53430efaf83ee72
+  symbol_count 5
+  symbols
+    const PRIME_SLUG 26 26
+    const MAX_TESTED 29 29
+    function handle_primality 32 98
+    function single_stated_integer 103 130
+    function smallest_factor 133 135

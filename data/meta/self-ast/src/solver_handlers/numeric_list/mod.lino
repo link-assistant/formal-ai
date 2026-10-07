@@ -2,47 +2,48 @@ self_ast_census
   target src/solver_handlers/numeric_list/mod.rs
   language rust
   fidelity signature
-  byte_len 34890
-  line_count 855
-  content_id source_module_8f3eca95bfe0a4b9
-  symbol_count 39
+  byte_len 35378
+  line_count 866
+  content_id source_module_c3cb64e94c36b55c
+  symbol_count 40
   symbols
     module codegen 35 35
-    struct InheritedCoding 60 70
-    enum Transform 75 82
-    enum Reduce 86 91
-    enum Operation 96 99
-    function canonical 106 116
-    enum ListValue 121 124
-    struct ParsedListItem 129 132
-    function numeric_value 135 140
-    function is_text 142 144
-    struct NumericListSolution 150 170
-    function try_numeric_list 178 184
-    function try_numeric_list_with_history 190 257
-    function solve_numeric_list 267 269
-    function solve_numeric_list_with_context 276 353
-    function numeric_list_history_context 361 396
-    function detect_operation 402 428
-    function compute 433 466
-    function compare_items 468 473
-    function value_type_label 475 483
-    function format_scalar 487 499
-    function family 504 506
-    function formalization 508 517
-    function render 522 540
-    struct Localization 548 551
-    function for_language 554 565
-    function intro 567 574
-    function intro_en 576 605
-    function intro_ru 607 631
-    function intro_hi 633 657
-    function intro_zh 659 683
-    function ontology 687 689
-    function result_kind_for 693 706
-    function family_for 709 722
-    function direction_for 726 736
-    function parse_list_items 738 744
-    function parse_quoted_strings 749 787
-    function parse_numbers 794 845
-    function preceded_by_digit_or_word 850 855
+    module stated_result 36 36
+    struct InheritedCoding 61 71
+    enum Transform 76 83
+    enum Reduce 87 92
+    enum Operation 97 100
+    function canonical 107 117
+    enum ListValue 122 125
+    struct ParsedListItem 130 133
+    function numeric_value 136 141
+    function is_text 143 145
+    struct NumericListSolution 151 171
+    function try_numeric_list 179 185
+    function try_numeric_list_with_history 191 263
+    function solve_numeric_list 273 275
+    function solve_numeric_list_with_context 282 364
+    function numeric_list_history_context 372 407
+    function detect_operation 413 439
+    function compute 444 477
+    function compare_items 479 484
+    function value_type_label 486 494
+    function format_scalar 498 510
+    function family 515 517
+    function formalization 519 528
+    function render 533 551
+    struct Localization 559 562
+    function for_language 565 576
+    function intro 578 585
+    function intro_en 587 616
+    function intro_ru 618 642
+    function intro_hi 644 668
+    function intro_zh 670 694
+    function ontology 698 700
+    function result_kind_for 704 717
+    function family_for 720 733
+    function direction_for 737 747
+    function parse_list_items 749 755
+    function parse_quoted_strings 760 798
+    function parse_numbers 805 856
+    function preceded_by_digit_or_word 861 866

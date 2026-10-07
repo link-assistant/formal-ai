@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/code_review.rs
   language rust
   fidelity signature
-  byte_len 10744
-  line_count 315
-  content_id source_module_3af4a8c3b6e58954
-  symbol_count 19
+  byte_len 9645
+  line_count 285
+  content_id source_module_bf7da999d1f3967a
+  symbol_count 18
   symbols
     const CUES_PATH 20 20
     const RULES_PATH 21 21
@@ -17,12 +17,11 @@ self_ast_census
     function template 72 78
     struct Rule 81 91
     function rules 93 126
-    function code_block 131 156
-    function indent_of 159 161
-    function is_loop_header 164 167
-    function is_def_line 170 175
-    function loop_body_lines 179 201
-    struct Finding 204 208
-    function review 212 250
-    function triggered 254 259
-    function handle_code_review 264 315
+    function indent_of 129 131
+    function is_loop_header 134 137
+    function is_def_line 140 145
+    function loop_body_lines 149 171
+    struct Finding 174 178
+    function review 182 220
+    function triggered 224 229
+    function handle_code_review 234 285

@@ -2,14 +2,15 @@ self_ast_census
   target src/meta_reasoner/request.rs
   language rust
   fidelity signature
-  byte_len 5942
-  line_count 165
-  content_id source_module_10dca73ff55c5ac0
-  symbol_count 6
+  byte_len 6377
+  line_count 178
+  content_id source_module_6798f863b672dfa3
+  symbol_count 7
   symbols
-    struct Operand 15 24
-    function names_operation 32 47
-    function location_operands 56 97
-    function bare_name 104 122
+    struct Operand 16 25
+    function names_operation 33 48
+    function location_operands 58 99
+    function bare_name 106 122
     function is_file_noun 129 142
-    function word_position 150 165
+    function names_file_noun 151 155
+    function word_position 163 178

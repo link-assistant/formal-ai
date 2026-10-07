@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/test_generation.rs
   language rust
   fidelity signature
-  byte_len 14309
-  line_count 436
-  content_id source_module_7ae2776b9018958a
+  byte_len 14524
+  line_count 441
+  content_id source_module_7a1bc0cf9b0f7008
   symbol_count 18
   symbols
     const CUES_PATH 22 22
@@ -24,4 +24,4 @@ self_ast_census
     function case_id 246 256
     function case_lines 259 287
     function normalize_helper 291 331
-    function handle_test_generation 338 436
+    function handle_test_generation 338 441

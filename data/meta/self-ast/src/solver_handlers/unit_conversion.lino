@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/unit_conversion.rs
   language rust
   fidelity signature
-  byte_len 15876
-  line_count 419
-  content_id source_module_d514298356cbca06
+  byte_len 16235
+  line_count 426
+  content_id source_module_88f789b4c47e607f
   symbol_count 14
   symbols
     const ROLE_UNIT_CONVERSION_QUESTION 32 32
@@ -20,4 +20,4 @@ self_ast_census
     enum Direction 191 197
     function find_conversion 202 218
     function apply_formula 223 257
-    function handle_unit_conversion 261 419
+    function handle_unit_conversion 261 426

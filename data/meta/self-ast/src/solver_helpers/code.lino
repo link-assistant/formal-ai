@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_helpers/code.rs
   language rust
   fidelity signature
-  byte_len 14314
-  line_count 348
-  content_id source_module_cf10b496e31a246d
+  byte_len 14586
+  line_count 354
+  content_id source_module_be26d8ee59ffafdb
   symbol_count 19
   symbols
     function detect_program_languages 14 37
@@ -25,4 +25,4 @@ self_ast_census
     function extract_concept_from_query 264 271
     function detect_algorithm_language 273 292
     function build_sorting_algorithm_answer 294 322
-    function extract_javascript_program 328 348
+    function extract_javascript_program 328 354

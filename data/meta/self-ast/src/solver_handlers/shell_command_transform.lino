@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/shell_command_transform.rs
   language rust
   fidelity signature
-  byte_len 7291
-  line_count 249
-  content_id source_module_193a90386dfe9083
-  symbol_count 16
+  byte_len 8219
+  line_count 272
+  content_id source_module_94673b5f43c82793
+  symbol_count 17
   symbols
     function try_shell_command_transform 9 15
     function try_shell_command_transform_with_history 17 47
@@ -13,13 +13,14 @@ self_ast_census
     function finalize_shell_transform 77 92
     function wants_infinite_loop 97 99
     function wants_screen_execution 104 106
-    function extract_shell_command 108 129
-    function command_after_shell_prompt 131 141
-    function strip_code_fence 143 145
-    function looks_like_shell_command 147 189
-    function wrap_in_infinite_loop 191 196
-    function extract_screen_session 198 221
-    function extract_loop_command 223 233
-    function last_loop_command_from_history 235 241
-    function is_loop_command 243 245
-    function shell_single_quote 247 249
+    function extract_shell_command 108 130
+    function command_span 138 152
+    function command_after_shell_prompt 154 164
+    function strip_code_fence 166 168
+    function looks_like_shell_command 170 212
+    function wrap_in_infinite_loop 214 219
+    function extract_screen_session 221 244
+    function extract_loop_command 246 256
+    function last_loop_command_from_history 258 264
+    function is_loop_command 266 268
+    function shell_single_quote 270 272
