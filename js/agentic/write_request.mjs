@@ -7,9 +7,10 @@
 
 import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
 import { proseSentences, sentences } from './shell_command_policy.mjs';
-import { composePositionalInsert, literalText } from './positional_edit.mjs';
+import { composePositionalInsert, literalText, unquotedPathTokens } from './positional_edit.mjs';
 import { resolveCensusTarget } from './general_planner.mjs';
 import { containsCjk } from './crate/coding_catalog.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { roleWordForms } from './write_lexicon.mjs';
 import {
   charIn, isAlphanumeric, isAscii, isAsciiPunctuation, isWhitespace, minByKey, trim, trimEnd,
@@ -399,7 +400,9 @@ export function composeEditRequest(request) {
   const isActionCue = (index) => actionCues.includes(cleanCueToken(toks[index].text));
   let fileIndex = -1;
   let target = null;
+  const unquoted = new Set(unquotedPathTokens(request).map((token) => token.start));
   for (let index = 0; index < toks.length; index += 1) {
+    if (!unquoted.has(toks[index].start)) continue;
     const cleaned = cleanPathToken(toks[index].text);
     const resolved = resolveCensusTarget(cleaned);
     if (resolved === null && (!looksLikeFilePath(cleaned) || !safeRelativePath(cleaned))) continue;
@@ -415,11 +418,13 @@ export function composeEditRequest(request) {
   let clauseStartIndex = fileIndex;
   while (clauseStartIndex > 0 && isTargetCue(clauseStartIndex - 1)) clauseStartIndex -= 1;
   const fileClauseStart = toks[clauseStartIndex].start;
-  const actionTokens = toks.filter((token) => actionCues.includes(cleanCueToken(token.text)));
+  // Cue words inside a quoted literal are payload (`replace 'covered by x'`).
+  const actionTokens = toks.filter((token) => unquoted.has(token.start) && actionCues.includes(cleanCueToken(token.text)));
   const action = actionTokens.find((token) => token.start > toks[fileIndex].end) ?? actionTokens[0];
   if (!action) return null;
   const actionEnd = action.end;
-  const newLead = toks.find((token) => token.start >= actionEnd && newLeads.includes(cleanCueToken(token.text)));
+  const newLead = toks.find((token) => token.start >= actionEnd && unquoted.has(token.start)
+    && newLeads.includes(cleanCueToken(token.text)));
   if (!newLead) return null;
   if (fileClauseStart >= actionEnd && fileClauseStart < newLead.start) return null;
   const oldSpan = request.slice(actionEnd, newLead.start);
@@ -430,6 +435,11 @@ export function composeEditRequest(request) {
     const raw = request.slice(span.start, span.end);
     sentenceEnd = span.start + (raw.length - trimStart(raw).length) + containing.text.length;
   }
+  // A sentence boundary inside a quoted literal (`'… mod.rs`.'`) is payload:
+  // the new text runs to the end of the literal it falls in.
+  const literalAround = quotedSegmentSpans(request)
+    .find((segment) => segment.start < sentenceEnd && sentenceEnd < segment.end);
+  if (literalAround) sentenceEnd = literalAround.end;
   const newEnd = fileClauseStart > newLead.end ? Math.min(fileClauseStart, sentenceEnd) : sentenceEnd;
   if (newEnd < newLead.end) return null;
   const newSpan = request.slice(newLead.end, newEnd);

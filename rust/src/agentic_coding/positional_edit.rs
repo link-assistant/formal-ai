@@ -9,8 +9,7 @@
 //! cue's language (`languages.lino`, `adposition`), not of the sentence.
 
 use super::write_request::{
-    clean_content, clean_path_token, looks_like_file_path, safe_relative_path,
-    tokens,
+    clean_content, clean_path_token, looks_like_file_path, safe_relative_path, tokens,
 };
 use crate::normal_markov::quoted_segment_spans;
 use crate::seed;
@@ -38,7 +37,7 @@ pub(super) fn compose_positional_insert(request: &str) -> Option<(String, String
     let [first, second] = literals.as_slice() else {
         return None;
     };
-    let target = tokens(request)
+    let target = unquoted_path_tokens(request)
         .iter()
         .map(|token| clean_path_token(token.text))
         .find(|candidate| looks_like_file_path(candidate) && safe_relative_path(candidate))?
@@ -144,19 +143,38 @@ fn cue_governed_literal(
     }
 }
 
-
 /// A span that is one quoted literal, kept byte for byte: the author who
 /// quoted `"  schedule:"` quoted its indentation on purpose (issue #1116).
 fn quoted_verbatim(span: &str) -> Option<String> {
-    let trimmed = span
-        .trim()
-        .trim_start_matches([':', '-', '—', '–'])
-        .trim();
+    let trimmed = span.trim().trim_start_matches([':', '-', '—', '–']).trim();
+    // One quoted literal of any delimiter (single quotes included) is verbatim.
+    if let [segment] = quoted_segment_spans(trimmed).as_slice()
+        && segment.start == 0
+        && segment.end == trimmed.len()
+    {
+        return Some(segment.text.clone());
+    }
     let mut chars = trimmed.chars();
     let (first, last) = (chars.next()?, chars.next_back()?);
     (first == last && matches!(first, '"' | '`') && trimmed.len() >= 2)
         .then(|| trimmed[1..trimmed.len() - 1].to_owned())
         .filter(|inner| !inner.contains(first))
+}
+
+/// The request's tokens outside every quoted literal; a literal that is
+/// exactly one path still names the file (mirrors `unquotedPathTokens`).
+pub(super) fn unquoted_path_tokens(request: &str) -> Vec<super::write_request::Token<'_>> {
+    let segments = quoted_segment_spans(request);
+    tokens(request)
+        .into_iter()
+        .filter(|token| {
+            !segments.iter().any(|segment| {
+                token.start >= segment.start
+                    && token.end <= segment.end
+                    && clean_path_token(token.text) != segment.text
+            })
+        })
+        .collect()
 }
 
 /// Whether `task` is an instruction to change a named local file: an edit or

@@ -377,3 +377,4 @@ Gaps that remain, each with the reason it is open:
   by CI, not asserted.
 - `CI/CD Pipeline` is green on the final head SHA before the draft is marked
   ready.
+- The Issue 1028 ladder's sixteen missing_proof leaves are a Rust parity gap: after a correct member-list write the native planner plans no observation and restarts on the client's continuation cue, while the JavaScript planner observes and answers.

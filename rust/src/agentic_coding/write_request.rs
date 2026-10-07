@@ -750,8 +750,15 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let target_cues = bare_surfaces(seed::ROLE_FILE_EDIT_TARGET_CUE);
     let is_target_cue = |index: usize| target_cues.contains(&clean_cue_token(toks[index].text));
     let is_action_cue = |index: usize| action_cues.contains(&clean_cue_token(toks[index].text));
+    let unquoted: Vec<usize> = super::positional_edit::unquoted_path_tokens(request)
+        .iter()
+        .map(|token| token.start)
+        .collect();
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
+        if !unquoted.contains(&token.start) {
+            return None;
+        }
         let resolved = super::general_planner::resolve_census_target(cleaned);
         if resolved.is_none() && (!looks_like_file_path(cleaned) || !safe_relative_path(cleaned)) {
             return None;
@@ -771,15 +778,21 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let file_clause_start = toks[clause_start_index].start;
     let action = toks
         .iter()
-        .filter(|token| action_cues.contains(&clean_cue_token(token.text)))
+        .filter(|token| {
+            unquoted.contains(&token.start) && action_cues.contains(&clean_cue_token(token.text))
+        })
         .find(|token| token.start > toks[file_index].end)
         .or_else(|| {
-            toks.iter()
-                .find(|token| action_cues.contains(&clean_cue_token(token.text)))
+            toks.iter().find(|token| {
+                unquoted.contains(&token.start)
+                    && action_cues.contains(&clean_cue_token(token.text))
+            })
         })?;
     let action_end = action.end;
     let new_lead = toks.iter().find(|token| {
-        token.start >= action_end && new_leads.contains(&clean_cue_token(token.text))
+        token.start >= action_end
+            && unquoted.contains(&token.start)
+            && new_leads.contains(&clean_cue_token(token.text))
     })?;
     if file_clause_start >= action_end && file_clause_start < new_lead.start {
         return None;
@@ -795,6 +808,11 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
                 sentence.span.start + (raw.len() - raw.trim_start().len()) + sentence.text.len()
             },
         );
+    // A sentence boundary inside a quoted literal is payload: extend to its end.
+    let sentence_end = crate::normal_markov::quoted_segment_spans(request)
+        .into_iter()
+        .find(|segment| segment.start < sentence_end && sentence_end < segment.end)
+        .map_or(sentence_end, |segment| segment.end);
     let new_end = if file_clause_start > new_lead.end {
         file_clause_start.min(sentence_end)
     } else {

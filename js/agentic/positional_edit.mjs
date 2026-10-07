@@ -34,7 +34,7 @@ export function composePositionalInsert(request) {
   const literals = quotedLiterals(request);
   if (literals.length !== 2) return null;
   const [first, second] = literals;
-  const target = tokens(request)
+  const target = unquotedPathTokens(request)
     .map((token) => cleanPathToken(token.text))
     .find((candidate) => looksLikeFilePath(candidate) && safeRelativePath(candidate));
   if (target === undefined) return null;
@@ -46,6 +46,19 @@ export function composePositionalInsert(request) {
   const anchor = unescapeProseNewlines(anchorLiteral.text);
   const replacement = after ? `${anchor}\n${inserted}` : `${inserted}\n${anchor}`;
   return [target, anchor, replacement];
+}
+
+/**
+ * Mirrors `fn unquoted_path_tokens`: the request's tokens that are not part of
+ * a quoted literal. A path inside the text being inserted or replaced
+ * (`'import x from './a.mjs';'`) is payload, not the file the request edits; a
+ * literal that is exactly one path (`'notes.txt'`) still names the file.
+ * @param {string} request
+ */
+export function unquotedPathTokens(request) {
+  const segments = quotedSegmentSpans(request);
+  return tokens(request).filter((token) => !segments.some((segment) => token.start >= segment.start
+    && token.end <= segment.end && cleanPathToken(token.text) !== segment.text));
 }
 
 /**
@@ -101,6 +114,12 @@ const LEADING_MARKS = new Set([':', '-', '—', '–']);
 
 function quotedVerbatim(span) {
   const trimmed = trim(trimStartMatches(trim(span), (character) => LEADING_MARKS.has(character)));
+  // A span that is exactly one quoted literal of any delimiter the shared
+  // reader knows (single quotes included, apostrophes told apart) is verbatim.
+  const segments = quotedSegmentSpans(trimmed);
+  if (segments.length === 1 && segments[0].start === 0 && segments[0].end === trimmed.length) {
+    return segments[0].text;
+  }
   const characters = Array.from(trimmed);
   if (characters.length < 2) return null;
   const first = characters[0];
