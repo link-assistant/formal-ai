@@ -4,8 +4,8 @@
 //! task-kind gating.
 
 use formal_ai::{
-    ChatCompletionRequest, ChatMessage, DreamingActionKind, DreamingConfig, MemoryEvent,
-    MemoryStore, RetainedAmendment, SyncStore, UniversalSolver, apply_dreaming_plan,
+    ChatCompletionRequest, ChatMessage, DreamingActionKind, DreamingConfig, DreamingDurability,
+    MemoryEvent, MemoryStore, RetainedAmendment, SyncStore, UniversalSolver, apply_dreaming_plan,
     create_chat_completion_with_solver_and_memory, plan_memory_dreaming,
     replay_answer_with_amendments,
 };
@@ -429,6 +429,94 @@ fn hindi_task_kinds_are_replayed_as_candidates() {
         .find(|candidate| candidate.source_event_id == "run-hi")
         .expect("Hindi-kind run must be replayed as a candidate");
     assert!(candidate.passed, "{}", candidate.simulated_output);
+}
+
+#[test]
+fn deleted_threads_public_caches_and_replay_proved_intermediates_are_the_reclaimable_tiers() {
+    // Issue #540 §4 (R542): what free-space maintenance may forget. A derived
+    // record is a recomputable intermediate only once replay re-derives it;
+    // an intermediate without that proof is retained like raw experience.
+    let statement = "Always include a LaTeX verification step in proof solutions.";
+    let events = vec![
+        MemoryEvent {
+            id: String::from("raw"),
+            kind: Some(String::from("message")),
+            role: Some(String::from("user")),
+            content: Some("irreplaceable user experience ".repeat(20)),
+            ..MemoryEvent::default()
+        },
+        MemoryEvent {
+            id: String::from("gone"),
+            kind: Some(String::from("message")),
+            role: Some(String::from("user")),
+            content: Some(String::from("forget me")),
+            conversation_id: Some(String::from("conv-gone")),
+            ..MemoryEvent::default()
+        },
+        MemoryEvent {
+            id: String::from("gone-marker"),
+            kind: Some(String::from("conversation_deleted")),
+            role: Some(String::from("system")),
+            conversation_id: Some(String::from("conv-gone")),
+            ..MemoryEvent::default()
+        },
+        MemoryEvent {
+            id: String::from("unproved"),
+            kind: Some(String::from("intermediate_conclusion")),
+            content: Some("an intermediate conclusion ".repeat(20)),
+            ..MemoryEvent::default()
+        },
+        requirement_event("req-1", "latex", statement),
+        verified_task_run_event(
+            "run-1",
+            "latex",
+            "Explain a latex proof by induction",
+            statement,
+        ),
+        recomputable_event("external-cache", &"cached public source ".repeat(20)),
+    ];
+    let plan = plan_memory_dreaming(
+        &events,
+        &DreamingConfig {
+            storage_capacity_bytes: Some(1_000_000),
+            free_bytes: Some(0),
+            ..DreamingConfig::default()
+        },
+    );
+
+    let durability = |id: &str| {
+        plan.observations
+            .iter()
+            .find(|observation| observation.event_id == id)
+            .unwrap_or_else(|| panic!("{id} must be observed"))
+            .durability
+    };
+    assert_eq!(durability("gone"), DreamingDurability::DeletedConversation);
+    assert_eq!(
+        durability("external-cache"),
+        DreamingDurability::RecomputableCache
+    );
+    assert_eq!(
+        durability("run-1"),
+        DreamingDurability::RecomputableIntermediate
+    );
+    assert_eq!(durability("unproved"), DreamingDurability::IrreplaceableRaw);
+    assert_eq!(durability("raw"), DreamingDurability::IrreplaceableRaw);
+    assert_eq!(
+        plan.actions
+            .iter()
+            .map(|action| (action.kind, action.event_id.as_str()))
+            .collect::<Vec<_>>(),
+        [
+            (DreamingActionKind::PurgeDeletedConversation, "gone"),
+            (DreamingActionKind::PurgeDeletedConversation, "gone-marker"),
+            (DreamingActionKind::ForgetCoveredSpecific, "run-1"),
+            (
+                DreamingActionKind::EvictLowUseRecomputable,
+                "external-cache"
+            ),
+        ]
+    );
 }
 
 fn requirement_event(id: &str, topic: &str, statement: &str) -> MemoryEvent {
