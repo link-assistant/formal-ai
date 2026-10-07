@@ -18,6 +18,9 @@
 // that has a parser installs it with `installMetaLanguageParser` (a function
 // `(label, source) => MetaLanguageFormalization`); the same
 // `MAX_META_LANGUAGE_PARSE_BYTES` bound then applies as in Rust.
+// summarization_meta_language.mjs builds such a parser over web-tree-sitter for
+// the grammars a host loads (the vendored tree-sitter-rust), and states
+// exactly which of meta-language's numbers it reproduces.
 
 import { flattenLinoValue } from './links_format.mjs';
 import {

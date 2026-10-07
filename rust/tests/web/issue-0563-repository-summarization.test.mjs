@@ -26,13 +26,19 @@
 // from the 0.352.1 source; their agreement on all rows confirms both.
 //
 // Meta-language evidence: the JavaScript root mirrors the featureless Rust
-// build (no parser installed) unless a host calls `installMetaLanguageParser`;
-// the plumbing is tested with a stub parser and is NOT a claim about tree-sitter
-// link counts. See js/agentic/crate/summarization_file.mjs.
+// build (no parser installed) unless a host calls `installMetaLanguageParser`.
+// The plumbing is tested with a stub parser, and the Rust assertions of
+// `formalize_repository_file_rust_records_meta_language_and_symbols` run over
+// the vendored tree-sitter-rust (summarization_meta_language.mjs). The exact
+// link counts are derived from the meta-language 0.58.2 source, not compared
+// with a native run, so they are asserted by shape (`\d+`), never by value.
+// Assertions tagged `(source-derived)` were derived by hand from the Rust
+// source rather than from a Rust run.
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { after, before, describe, it } from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 import { installHost } from '../../../js/agentic/host.mjs';
 import { parseLino, readRepoFile } from '../../../js/server/lino.mjs';
@@ -49,6 +55,8 @@ import {
 import {
   assistantTurn, formalizeDialog, generateChatTitle, summarizeDialog, summarizeDialogPlain, userTurn,
 } from '../../../js/agentic/crate/summarization_dialog.mjs';
+import * as webTreeSitter from '../../../js/vendor/tree-sitter/web-tree-sitter.mjs';
+import { loadMetaLanguageParser } from '../../../js/agentic/crate/summarization_meta_language.mjs';
 import {
   fileLinksNotation, formalizeRepositoryFile, installMetaLanguageParser, summarizeRepositoryFile,
 } from '../../../js/agentic/crate/summarization_file.mjs';
@@ -927,5 +935,63 @@ describe('the identifier rung (identifier.rs, vocabulary.rs; issue_844)', () => 
     assert.equal(isValidIdentifier(subject, NamingConvention.CommitSubject), true, subject);
     assert.ok(Array.from(subject).length <= 50, subject);
     assert.ok(/^\p{Uppercase}/u.test(subject), subject);
+  });
+});
+
+describe('R347: tree-sitter backed meta-language evidence (summarization_meta_language.mjs)', () => {
+  let parser;
+
+  before(async () => {
+    parser = await loadMetaLanguageParser(webTreeSitter, {
+      rust: fileURLToPath(new URL('js/vendor/tree-sitter/tree-sitter-rust.wasm', root)),
+    });
+    installMetaLanguageParser(parser);
+  });
+
+  after(() => installMetaLanguageParser(null));
+
+  it('formalize_repository_file_rust_records_meta_language_and_symbols', () => {
+    const source = 'pub struct FileSummary;\n\npub fn summarize_file() -> &\'static str {\n"ok"\n}\n';
+    const formalized = formalizeRepositoryFile('src/file_summary.rs', source);
+    assert.equal(formalized.format, 'rust');
+    assert.ok(formalized.statements.some((candidate) => candidate.text.includes('rust struct FileSummary')));
+    assert.ok(formalized.statements.some((candidate) => candidate.text.includes('rust function summarize_file')));
+    const meta = formalized.meta_language;
+    assert.notEqual(meta, null, 'Rust files should be parsed through the meta-language parser');
+    assert.equal(meta.label, 'rust');
+    assert.ok(meta.syntax_link_count > 0);
+    assert.ok(meta.text_preserved);
+    assert.equal(meta.has_error, false);
+  });
+
+  it('a_parsed_rust_file_reports_the_evidence_sentence_and_block (R347, R350)', () => {
+    const source = 'pub fn x() {}\n';
+    const summary = summarizeRepositoryFile('src/lib.rs', source, config(SummarizationMode.Full));
+    assert.match(summary, /^src\/lib\.rs is a Rust file with 1 lines and 14 bytes\. meta-language parsed it as rust with \d+ syntax links\. Key content: /u);
+    const lino = fileLinksNotation(formalizeRepositoryFile('src/lib.rs', source));
+    assert.match(lino, /\n {2}meta_language\n {4}label rust\n {4}syntax_link_count \d+\n {4}total_link_count \d+\n {4}has_error false\n {4}text_preserved true\n/u);
+  });
+
+  it('markdown_embedded_rust_blocks_carry_their_own_evidence (R348)', () => {
+    const formalized = formalizeRepositoryFile('docs/loader.md', '# L\n\n```rust\nfn load() {}\n```\n\n```go\nfunc main() {}\n```\n');
+    const [rust, go] = formalized.embedded_grammars;
+    assert.equal(rust.meta_language.label, 'rust');
+    assert.ok(rust.meta_language.syntax_link_count > 0);
+    // Only the loaded grammar produces evidence; see the module header for the gap.
+    assert.equal(go.meta_language, null);
+  });
+
+  it('a_broken_rust_parse_is_not_reported_as_valid_evidence (source-derived)', () => {
+    const meta = parser('rust', 'fn (');
+    assert.equal(meta.has_error, true);
+    const summary = summarizeRepositoryFile('broken.rs', 'fn (', config(SummarizationMode.Full));
+    assert.ok(!summary.includes('meta-language parsed'), summary);
+  });
+
+  it('leading_blank_lines_are_not_covered_by_any_token (source-derived replay of reconstruct_text)', () => {
+    // meta-language starts the root's gap tokens at the root's own start, so
+    // text before the first node is lost from the reconstruction.
+    assert.equal(parser('rust', 'fn x() {}').text_preserved, true);
+    assert.equal(parser('rust', '\n\nfn x() {}\n').text_preserved, false);
   });
 });
