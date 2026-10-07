@@ -11,6 +11,17 @@ name: Benchmark Corpus Gate
 # coding ladder and task ladder measurements already use. The gate is
 # written failing-first (plan 14 wave T): red here is the expected state
 # until the leaf that places every prompt lands.
+#
+# PR #1188 split the one 26-34 minute job (runs 37652296319, 37663996903:
+# 5.6-6.6 min building, 25.7-34.2 min answering) into a build, parallel
+# shards and a verdict, so no job runs longer than the owner's 15-minute
+# target and the run finishes in a fraction of the time:
+#   corpus-build  compiles the integration test executable once;
+#   corpus-shard  N legs each answer every N-th prompt of the sorted corpus
+#                 (FORMAL_AI_CORPUS_SHARD=<index>/<N>, N = the matrix size);
+#   corpus-gate   the check this workflow always reported, green only when
+#                 every shard was (scripts/check-shard-results.sh) -- a
+#                 failed, timed-out or skipped shard is a missing measurement.
 on:
   push:
     branches:
@@ -24,6 +35,7 @@ on:
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
       - '.github/workflows/benchmark-corpus-gate.yml'
+      - 'scripts/check-shard-results.sh'
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
@@ -38,6 +50,7 @@ on:
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
       - '.github/workflows/benchmark-corpus-gate.yml'
+      - 'scripts/check-shard-results.sh'
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
@@ -62,14 +75,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  corpus-gate:
-    name: no benchmark prompt reaches the unknown opener
+  corpus-build:
+    name: Build the corpus gate binary
     runs-on: ubuntu-latest
-    # 5700s of budgets (1500 build + 4200 gate) under a 140-minute cap sits
-    # at 68%, inside the 70% share issue #1081 caps a job's spendable group
-    # at. The cap is a backstop: a typical run is build ~700s plus the gate
-    # itself, and the budget comments below carry the measurements.
-    timeout-minutes: 140
+    # 1500s of budget under a 40-minute cap is 62.5%, inside the 70% share
+    # issue #1081 allows. A warm sccache build measured 2.0-6.6 minutes.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
         with:
@@ -95,21 +106,103 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Corpus gate binary build" \
-            cargo test --manifest-path rust/Cargo.toml --test integration --no-run
+            cargo test --manifest-path rust/Cargo.toml --test integration --no-run \
+              --message-format=json-render-diagnostics > corpus-build.json
 
-      - name: Run the benchmark corpus gate
+      # The executable bakes this checkout's absolute paths in at compile time
+      # (`CARGO_MANIFEST_DIR` locates data/benchmarks/), and every shard checks
+      # out to the same runner path, so it runs there unchanged.
+      - name: Collect the integration test executable
+        run: |
+          set -euo pipefail
+          executable=$(jq -r 'select(.reason == "compiler-artifact" and .target.name == "integration" and .profile.test == true) | .executable // empty' corpus-build.json | tail -1)
+          if [ -z "$executable" ] || [ ! -x "$executable" ]; then
+            echo "::error title=No corpus gate executable::cargo test --no-run reported no integration test executable" >&2
+            exit 1
+          fi
+          mkdir -p corpus-gate
+          cp "$executable" corpus-gate/integration
+
+      - name: Upload the corpus gate executable
+        uses: actions/upload-artifact@v7
+        with:
+          name: corpus-gate-executable
+          path: corpus-gate/integration
+          if-no-files-found: error
+          retention-days: 1
+
+  corpus-shard:
+    name: Corpus shard ${{ matrix.shard }}
+    needs: [corpus-build]
+    runs-on: ubuntu-latest
+    # 900s of budget under a 25-minute cap is 60%. The whole sweep measured
+    # 25.7-34.2 minutes in one job; a sixth of it is ~6 minutes, and the
+    # budget leaves room for the shard that draws the slowest prompts.
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        # Six legs; the shard count is the matrix size (strategy.job-total),
+        # so adding or removing a leg can never leave prompts unchecked.
+        shard: [1, 2, 3, 4, 5, 6]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Download the corpus gate executable
+        uses: actions/download-artifact@v8
+        env:
+          # v8's bundled unzip dependency still calls Buffer(); suppress only
+          # that reviewed upstream diagnostic, never all Node warnings:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: corpus-gate-executable
+          path: corpus-gate
+
+      - name: Run the benchmark corpus gate shard
         env:
           # The gate answers every committed benchmark prompt through the
-          # full engine: 842s and 873s measured locally on 2026-09-23/24.
-          # CI pace is spawn-bound (one python3 per verified draft) and run
-          # 35893508679 proves it is at least 1.3x local -- 1154s of
-          # execution did not finish the scan. The specification lane
-          # measured CI at up to 4.4x its local pace (341s -> 1492s), so
-          # 4200s holds even that worst observed ratio (~3815s) with room,
-          # and the first green run's own measurement tunes this number.
-          TEST_BUDGET_SECONDS: 4200
+          # full engine: 842s and 873s measured locally on 2026-09-23/24,
+          # 25.7-34.2 minutes on CI. Round-robin over the sorted corpus
+          # spreads the slow coding corpora evenly across the shards.
+          TEST_BUDGET_SECONDS: 900
           TEST_WARN_RATIO_PERCENT: 70
+          SHARD_INDEX: ${{ strategy.job-index }}
+          SHARD_TOTAL: ${{ strategy.job-total }}
         run: |
-          scripts/run-with-budget-warning.sh \
-            "$TEST_BUDGET_SECONDS" "Benchmark corpus gate" \
-            cargo test --manifest-path rust/Cargo.toml --test integration issue_1138_no_silent_unknown -- --nocapture
+          set -euo pipefail
+          chmod +x corpus-gate/integration
+          export FORMAL_AI_CORPUS_SHARD="$((SHARD_INDEX + 1))/${SHARD_TOTAL}"
+          # cargo runs an integration test from the package root; so does this.
+          cd rust
+          ../scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Benchmark corpus gate shard" \
+            ../corpus-gate/integration issue_1138_no_silent_unknown --nocapture \
+            | tee ../corpus-shard.log
+          # A filter that matches nothing reports `ok` with zero tests; that
+          # is a shard that checked nothing, not a pass.
+          grep -E '^test result: ok\. 1 passed' ../corpus-shard.log >/dev/null || {
+            echo "::error title=Corpus shard ran no gate::the shard's filter matched no test, so no prompt was checked" >&2
+            exit 1
+          }
+
+  corpus-gate:
+    name: no benchmark prompt reaches the unknown opener
+    needs: [corpus-build, corpus-shard]
+    # Not `always()`: a run superseded by a newer push is the one
+    # cancellation that is not a defect, and it skips the verdict.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Every corpus shard answered its prompts
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          JOBS: corpus-build corpus-shard
+          CHECK: Benchmark corpus gate
+        run: bash scripts/check-shard-results.sh

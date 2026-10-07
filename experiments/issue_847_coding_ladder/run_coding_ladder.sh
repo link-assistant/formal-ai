@@ -17,7 +17,16 @@
 #   OUT       Results JSON (default: <scriptdir>/results.json for a full run;
 #             filtered runs use results-partial-<filter>.json)
 #   ONLY      Substring filter on task id (e.g. ONLY=L4, ONLY=L1.solve)
+#   SHARD     `<index>/<total>`: measure only every total-th task starting at
+#             index (1-based), in dataset order. CI runs the ladder as
+#             parallel shards and merge_results.py joins them back into the
+#             one canonical 130-task result (PR #1188); a shard alone is a
+#             partial measurement and never replaces the canonical score.
 #   TIMEOUT   Per-task seconds (default: 300)
+#   MERGE_FROM  Directory holding the shard results of one run (any depth).
+#             Measures nothing: validates that the shards cover every task of
+#             the dataset exactly once, then writes them to OUT in dataset
+#             order, in exactly the format a single full run writes.
 #
 # Each solve runs in an isolated exact-commit clone. The harness checks and
 # explicitly applies the stdout diff to the ambient benchmark tree so the
@@ -41,6 +50,8 @@ ROOT="$(cd "$HERE/../.." && pwd)"
 BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PROMPTS="${PROMPTS:-$HERE/prompts.json}"
 ONLY="${ONLY:-}"
+SHARD="${SHARD:-}"
+MERGE_FROM="${MERGE_FROM:-}"
 TIMEOUT="${TIMEOUT:-300}"
 
 if [ -n "${OUT:-}" ]; then
@@ -52,7 +63,7 @@ else
   OUT="$HERE/results.json"
 fi
 
-if [ ! -x "$BIN" ]; then
+if [ -z "$MERGE_FROM" ] && [ ! -x "$BIN" ]; then
   echo "formal-ai binary not found at $BIN (build with: cargo build --release)" >&2
   exit 0
 fi
@@ -61,18 +72,29 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 0
 fi
 
-echo "binary:  $($BIN --version 2>/dev/null)"
+if [ -z "$MERGE_FROM" ]; then
+  echo "binary:  $($BIN --version 2>/dev/null)"
+fi
 echo "repo:    $ROOT"
 echo
 
-python3 - "$PROMPTS" "$OUT" "$ONLY" "$TIMEOUT" "$BIN" "$ROOT" <<'PY'
+python3 - "$PROMPTS" "$OUT" "$ONLY" "$TIMEOUT" "$BIN" "$ROOT" "$SHARD" "$MERGE_FROM" <<'PY'
 import glob, json, os, re, shutil, subprocess, sys, tempfile
 
-prompts_path, out_path, only, timeout_s, binary, root = sys.argv[1:7]
+prompts_path, out_path, only, timeout_s, binary, root, shard, merge_from = sys.argv[1:9]
 timeout_s = int(timeout_s)
 data = json.load(open(prompts_path))
 all_tasks = data["tasks"]
 tasks = [t for t in all_tasks if not only or only in t["id"]]
+if shard:
+    # A malformed shard must stop the run: measuring nothing and reporting it
+    # as a shard would let the merged score silently lose tasks.
+    match = re.fullmatch(r"(\d+)/(\d+)", shard)
+    if not match or not 1 <= int(match.group(1)) <= int(match.group(2)):
+        raise SystemExit(f"SHARD must be <index>/<total> with 1 <= index <= total, got {shard!r}")
+    shard_index, shard_total = int(match.group(1)), int(match.group(2))
+    tasks = [t for position, t in enumerate(tasks)
+             if position % shard_total == shard_index - 1]
 
 def reset_repo():
     """Every task starts from a clean tree so results are independent.
@@ -150,7 +172,7 @@ def resolve_expected_answer(task):
     except (KeyError, IndexError, OSError, re.error) as error:
         return None, f"could not resolve file-derived expectation: {error}"
 
-if not repo_is_clean():
+if not merge_from and not repo_is_clean():
     print("refusing to run: working tree is dirty; commit or stash first", file=sys.stderr)
     raise SystemExit(0)
 
@@ -175,8 +197,9 @@ def write_results():
         "measurement": {
             "dataset_total": len(all_tasks),
             "measured_total": len(tasks),
-            "complete": not only and len(tasks) == len(all_tasks),
+            "complete": not only and not shard and len(tasks) == len(all_tasks),
             "filter": only or None,
+            "shard": shard or None,
         },
         "summary": summarize(),
     }
@@ -184,6 +207,62 @@ def write_results():
     rows = ",\n".join("    " + json.dumps(r, ensure_ascii=False) for r in results)
     with open(out_path, "w") as handle:
         handle.write(body + ',\n  "results": [\n' + rows + "\n  ]\n}\n")
+
+def merge_shards(directory):
+    """Join SHARD=<i>/<n> results into one result, or refuse loudly.
+
+    A merged score is only the canonical score when every shard of one plan
+    is present, each finished every task it was given, and together they
+    cover the dataset exactly once. Anything less is refused with a non-zero
+    exit, because a merge that quietly dropped a shard would publish a
+    smaller ladder as the whole one.
+    """
+    paths = sorted(glob.glob(os.path.join(directory, "**", "*.json"), recursive=True))
+    if not paths:
+        raise SystemExit(f"MERGE_FROM={directory!r} holds no shard results")
+    by_id, plan = {}, set()
+    for path in paths:
+        with open(path) as handle:
+            document = json.load(handle)
+        measurement = document.get("measurement", {})
+        found = re.fullmatch(r"(\d+)/(\d+)", measurement.get("shard") or "")
+        if not found:
+            raise SystemExit(f"{path}: not a shard result (no measurement.shard)")
+        if measurement.get("filter"):
+            raise SystemExit(f"{path}: a filtered shard is not a ladder measurement")
+        if measurement.get("dataset_total") != len(all_tasks):
+            raise SystemExit(f"{path}: measured a {measurement.get('dataset_total')}-task "
+                             f"dataset, this one has {len(all_tasks)}")
+        rows = document.get("results", [])
+        if len(rows) != measurement.get("measured_total"):
+            raise SystemExit(f"{path}: {len(rows)} of {measurement.get('measured_total')} "
+                             "tasks recorded; the shard did not finish")
+        plan.add((int(found.group(1)), int(found.group(2))))
+        for row in rows:
+            if row["id"] in by_id:
+                raise SystemExit(f"{path}: task {row['id']} was measured twice")
+            by_id[row["id"]] = row
+    total = max(count for _, count in plan)
+    if plan != {(index, total) for index in range(1, total + 1)}:
+        raise SystemExit(f"shards {sorted(plan)} are not one complete {total}-shard plan")
+    missing = [task["id"] for task in all_tasks if task["id"] not in by_id]
+    unknown = sorted(set(by_id) - {task["id"] for task in all_tasks})
+    if missing or unknown:
+        raise SystemExit(f"shards miss {missing} and add unknown {unknown}")
+    results.extend(by_id[task["id"]] for task in all_tasks)
+
+if merge_from:
+    tasks, only, shard = all_tasks, "", ""
+    merge_shards(merge_from)
+    write_results()
+    passed = sum(1 for r in results if r["pass"])
+    print(f"MERGED {passed}/{len(results)} passed from {merge_from}")
+    for level in sorted(summarize()["by_level"]):
+        slot = summarize()["by_level"][level]
+        print(f"  {level}: {slot['passed']}/{slot['total']}")
+    print(f"\nwrote {out_path}")
+    raise SystemExit(0)
+
 for task in tasks:
     structural = ""
     reset_repo()
@@ -368,8 +447,9 @@ for level in sorted(summarize()["by_level"]):
 if unmeasured:
     print(f"\nWARNING: {unmeasured} task(s) were NOT MEASURED -- the temporary "
           "server never started. Treat this run as incomplete.")
-if only:
+if only or shard:
     print(f"\nPARTIAL: measured {len(tasks)}/{len(all_tasks)} tasks with "
-          f"filter {only!r}; the canonical 130-task score was not replaced.")
+          f"filter {only!r} shard {shard!r}; the canonical 130-task score was "
+          "not replaced.")
 print(f"\nwrote {out_path}")
 PY
