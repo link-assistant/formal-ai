@@ -605,3 +605,30 @@ rendering over it**, and `Append "Commit all changes" to notes.txt.` ran
 
 Both roots. Tests: JS (the doc-comment append, the quoted commit) and Rust
 `cues_inside_a_quoted_payload_do_not_steer_routing`.
+
+### Client configs state the served model limits (`formal-ai with`)
+
+The ladder harness fix (above) only covered the harness: every config
+`formal-ai with` writes for an opencode-shaped client (`opencode`,
+`opencode-vscode`, `opencode-desktop`, `agent` — ephemeral and `--global`)
+carried no model limits, so the Agent CLI fell back to its built-in 60,000-token
+`formal-ai` entry and compacted long sessions.
+
+- `rust/src/client_integrations/server.rs` `served_model_limits` reads
+  `context_window_tokens` and `max_output_tokens` from the target server's
+  `/v1/models` (the same raw HTTP the wrapper already uses for `/health`).
+- `render_context` fills two new placeholders, `{context_window_tokens}` and
+  `{max_output_tokens}`, from it — or, when nothing listens yet, from this
+  host's `ContextCapacity` and `ADVERTISED_MAX_OUTPUT_TOKENS`, which is
+  exactly what a wrapper-started server here serves.
+- `data/seed/client-integrations.lino` sets
+  `provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}`
+  and `limit.output=json:{max_output_tokens}` for those four clients, in both
+  the ephemeral and the global blocks. Codex already wrote the window through
+  its model catalog. The other clients' config formats state no model window.
+- JS has no config renderer (`formal-ai with` is native-only), so there is no
+  JS twin.
+
+Test: `rust/tests/integration/with_formal_ai_global.rs`
+`with_formal_ai_global_states_the_served_model_limits` — `with --global agent`
+writes `limit.output = 8192` and a context window above the 60,000 guess.

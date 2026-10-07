@@ -164,6 +164,10 @@ struct RenderContext {
     google_auth_type: String,
     model_catalog_path: String,
     working_directory: String,
+    /// The context window and output cap the server serves on `/v1/models`,
+    /// for clients whose config states a model's limits.
+    context_window_tokens: String,
+    max_output_tokens: String,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -353,7 +357,19 @@ fn render_context(
         google_auth_type,
         model_catalog_path: String::new(),
         working_directory: std::env::current_dir()?.to_string_lossy().into_owned(),
+        context_window_tokens: String::new(),
+        max_output_tokens: String::new(),
     };
+    // A running server states its own limits; otherwise this host's capacity
+    // is exactly what a wrapper-started server here would serve.
+    let (window, output) = server::served_model_limits(&context.base_url).unwrap_or_else(|| {
+        (
+            ContextCapacity::current().map_or(0, |capacity| capacity.context_window_tokens),
+            crate::server::ADVERTISED_MAX_OUTPUT_TOKENS.unsigned_abs(),
+        )
+    });
+    context.context_window_tokens = window.to_string();
+    context.max_output_tokens = output.to_string();
     // An already-qualified selector (`provider/model`) is passed through: the
     // seed template only supplies the provider a bare alias is missing.
     context.model_selector = if integration.model_selector.is_empty() || context.model.contains('/')
@@ -699,6 +715,8 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{google_auth_type}", &context.google_auth_type)
         .replace("{model_catalog_path}", &context.model_catalog_path)
         .replace("{working_directory}", &context.working_directory)
+        .replace("{context_window_tokens}", &context.context_window_tokens)
+        .replace("{max_output_tokens}", &context.max_output_tokens)
 }
 
 fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
