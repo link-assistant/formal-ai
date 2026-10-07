@@ -114,6 +114,11 @@ function browserVerifiableProgram(task) {
 }
 
 function tryVerifiableTask(prompt) {
+  // Pattern inference keeps its own result and intent; as in the native
+  // `try_verifiable_task_with_online`, this generic route is its entrance
+  // (js/worker/formal_ai_worker_pattern_inference.js, issue #531).
+  const pattern = tryPatternInference(prompt);
+  if (pattern) return pattern;
   const task = recogniseBrowserVerifiableTask(prompt);
   if (!task) return null;
   const program = browserVerifiableProgram(task);

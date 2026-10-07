@@ -62,6 +62,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_number_constraints.js",
   "worker/formal_ai_worker_obligation_plans.js",
   "worker/formal_ai_worker_obligations.js",
+  "worker/formal_ai_worker_pattern_inference.js",
   "worker/formal_ai_worker_product_search.js",
   "worker/formal_ai_worker_program_ir.js",
   "worker/formal_ai_worker_program_requests.js",
