@@ -18,6 +18,8 @@
 
 const CODE_EXAMPLE_PARTS_FILE = "code-example-parts.lino";
 const CODE_EXAMPLE_GRAMMARS_FILE = "program-cst-grammars.lino";
+const CODE_EXAMPLE_CAPTURES_FILE = "coding-documentation-captures.lino";
+const CODE_EXAMPLE_POLICY_FILE = "program-cache-policy.lino";
 const CODE_EXAMPLE_LITERAL_SLOT = "{" + "literal}";
 const CODE_EXAMPLE_QUOTES = ["\"", "'"];
 const CODE_EXAMPLE_NO_ENTRY = "none";
@@ -271,6 +273,149 @@ function recomposeCodeExample(procedure, bindings, targetLanguage) {
       partSourceUrls: procedure.sourceUrls.slice(),
     },
   };
+}
+
+/** The policy seed's `documentation_route`, when the seed keeps it active. */
+function documentationRouteActive() {
+  const root = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_POLICY_FILE)).children[0];
+  const route = (root ? root.children : []).find((node) => node.name === "documentation_route");
+  return Boolean(route) && childValue(route, "active") === "true";
+}
+
+/**
+ * The documentation captures for one language and task, in seed order, each
+ * with its URL, rediscovery query and the code blocks its page holds.
+ * @param {string} language
+ * @param {string} task
+ * @returns {Array<{url: string, query: string, blocks: Array<{language: string, text: string}>}>}
+ */
+function documentationCaptures(language, task) {
+  const root = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_CAPTURES_FILE)).children
+    .find((node) => node.name === "coding_documentation_captures");
+  return (root ? root.children : [])
+    .filter((node) => node.name === "capture" && childValue(node, "language") === language && childValue(node, "task") === task)
+    .map((node) => ({
+      url: childValue(node, "url"),
+      query: childValue(node, "rediscovery_query"),
+      blocks: node.children.filter((child) => child.name === "block")
+        .map((block) => ({ language: childValue(block, "language"), text: childValue(block, "text") })),
+    }));
+}
+
+/** FNV-1a (64-bit) of the UTF-8 bytes as `0x` and 16 hex digits (`fnv1a64`). */
+function codeExampleContentId(text) {
+  let hash = 0xcbf29ce484222325n;
+  for (const byte of new TextEncoder().encode(text)) {
+    hash ^= BigInt(byte);
+    hash = (hash * 0x100000001b3n) & 0xffffffffffffffffn;
+  }
+  return "0x" + hash.toString(16).padStart(16, "0");
+}
+
+/**
+ * The names a language's run contract invokes that a program must declare:
+ * the stem of the file it is saved as, when a run or check command names it
+ * bare (`scala Main` runs the object `Main`; `rustc main.rs -o main` only
+ * names the binary its `fn main` builds).
+ * @param {object|null} languageInfo a WRITE_PROGRAM_LANGUAGES row
+ * @returns {Array<string>}
+ */
+function runContractNames(languageInfo) {
+  if (!languageInfo) return [];
+  const file = String(languageInfo.saveAs || "").split("/").pop();
+  const stem = file.includes(".") ? file.slice(0, file.lastIndexOf(".")) : file;
+  const words = [languageInfo.runCommand, languageInfo.checkCommand].filter(Boolean).join(" ").split(/\s+/);
+  return stem && words.includes(stem) ? [stem] : [];
+}
+
+/**
+ * Rediscover a write_program procedure from the documentation captures
+ * (issue #1165 R1165-1, the documentation_route of the policy seed). Mirrors
+ * `rediscover_from_documentation` in rust/src/discovery_production.rs.
+ * Each page's first block in the language (or untagged) that decomposes into
+ * an output call printing a literal is recomposed with the task's expected
+ * output bound into that literal; the shortest program is kept and verified
+ * by decomposing it again and against the run contract. `rejected` names why
+ * captured pages yielded no program; `captured` says whether any existed.
+ * @param {string} task
+ * @param {string} language
+ * @returns {{recipe: object|null, rejected: string|null, captured: boolean}}
+ */
+function rediscoverDocumentedProgram(task, language) {
+  const captures = documentationRouteActive() ? documentationCaptures(language, task) : [];
+  if (captures.length === 0) return { recipe: null, rejected: null, captured: false };
+  const reject = (reason) => ({ recipe: null, rejected: reason, captured: true });
+  const taskInfo = typeof WRITE_PROGRAM_TASKS === "object" ? WRITE_PROGRAM_TASKS[task] : null;
+  const expected = taskInfo ? String(taskInfo.output) : "";
+  if (expected === "" || expected.includes("\n")) return reject("no_single_line_output");
+  let best = null;
+  for (const capture of captures) {
+    for (const block of capture.blocks) {
+      if (block.language !== language && block.language !== "unknown") continue;
+      const node = decomposeCodeExample(block.text, language, [], capture.url).ok;
+      if (!node || !node.programBody || !node.parts.some((part) => part.kind === "output_operation")) continue;
+      if (!best || [...node.programBody].length < [...best.node.programBody].length) best = { capture, node };
+      break;
+    }
+  }
+  if (!best) return reject("no_output_example");
+  const recomposed = recomposeCodeExample(generalizeCodeExamples([best.node]), { output_literal: expected }, language).ok;
+  if (!recomposed) return reject("no_program_body");
+  const call = best.node.parts.find((part) => part.kind === "output_operation").sourceText;
+  const check = decomposeCodeExample(recomposed.source, language, [], best.capture.url).ok;
+  const verified = Boolean(check) && check.parts.some((part) => part.kind === "output_operation" && part.sourceText === call)
+    && check.parts.some((part) => part.kind === "string_literal" && part.sourceText === expected);
+  if (!verified) return reject("verification");
+  const tokens = recomposed.source.split(/[^A-Za-z0-9_]+/);
+  const languageInfo = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
+  const undeclared = runContractNames(languageInfo).filter((name) => !tokens.includes(name));
+  if (undeclared.length > 0) return reject("run_contract:" + undeclared.join(","));
+  return {
+    recipe: {
+      language: language,
+      task: task,
+      rediscovery_query: best.capture.query,
+      rediscovery_source: best.capture.url,
+      entry: recomposed.source,
+      verified_output: expected,
+      content_id: codeExampleContentId(recomposed.source),
+    },
+    rejected: null,
+    captured: true,
+  };
+}
+
+/** Rediscovery is deterministic over the seed, so a worker computes it once per pair. */
+const CODE_EXAMPLE_DOCUMENTED = new Map();
+
+/**
+ * The memoized rediscovery for a pair (never memoized before the captures
+ * seed is loaded).
+ * @param {string} task
+ * @param {string} language
+ */
+function documentedProgram(task, language) {
+  const key = task + ":" + language;
+  if (CODE_EXAMPLE_DOCUMENTED.has(key)) return CODE_EXAMPLE_DOCUMENTED.get(key);
+  const result = rediscoverDocumentedProgram(task, language);
+  if (seedRawText(SEED_RAW, CODE_EXAMPLE_CAPTURES_FILE) !== "") CODE_EXAMPLE_DOCUMENTED.set(key, result);
+  return result;
+}
+
+/**
+ * The program a write_program answer starts from: the one rediscovered from
+ * documentation when the captures yield a verified one, else the stored
+ * catalog template, else null.
+ * @param {string} task
+ * @param {string} language
+ * @returns {string|null}
+ */
+function writeProgramTemplate(task, language) {
+  if (!task || !language) return null;
+  const documented = documentedProgram(task, language);
+  if (documented.recipe) return documented.recipe.entry;
+  const stored = typeof WRITE_PROGRAM_TEMPLATES === "object" ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
+  return typeof stored === "string" ? stored : null;
 }
 
 /**

@@ -58,7 +58,7 @@ template_hello_world_rust
   language rust
   task hello_world
   code_fence rust
-  code 'fn main() {\n    println!("Hello, world!");\n}'
+  program_source "documentation_route"
 template_hello_world_python
   intent write_program
   language python
@@ -82,7 +82,7 @@ template_hello_world_go
   language go
   task hello_world
   code_fence go
-  code 'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, world!")\n}'
+  program_source "documentation_route"
 template_hello_world_c
   intent write_program
   language c
@@ -124,7 +124,7 @@ template_hello_world_kotlin
   language kotlin
   task hello_world
   code_fence kotlin
-  code 'fun main() {\n    println("Hello, world!")\n}'
+  program_source "documentation_route"
 template_hello_world_php
   intent write_program
   language php

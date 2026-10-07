@@ -5,11 +5,14 @@
 // row answers an unmodified catalog request with the cached entry and logs
 // `procedure_cache outcome=hit ... content_id=0x...`; the committed, row-less
 // cache keeps the miss; a customised request is never answered from the cache.
+// A program the worker rediscovered from the documentation captures (R1165-1)
+// is recorded in an explicitly configured runtime cache and reused as a hit;
+// the committed cache file is never written by a solve.
 // Cache files live under the OS temp directory, so the committed cache is never
 // touched.
 
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { after, before, test } from 'node:test';
@@ -114,4 +117,30 @@ test('a customised request is never answered from the cache', async () => {
   assert.equal(result.intent, 'write_program');
   assert.deepEqual(cacheEvents(result), []);
   assert.ok(!result.content.includes(ENTRY));
+});
+
+test('R1165-1: a rediscovered row is recorded in the runtime cache and reused as a hit', async () => {
+  const file = path.join(directory, 'runtime.lino');
+  process.env[ENV] = file;
+  const program = 'fn main() {\n    println!("Hello, world!");\n}';
+  const contentId = `0x${contentAddress(program).toString(16).padStart(16, '0')}`;
+  const first = await host.solve('Write a hello world program in Rust', []);
+  assert.equal(cacheEvents(first)[0]?.payload.split(' ')[0], 'outcome=discovered');
+  const row = loadProcedureCache().recipes.find((recipe) => recipe.language === 'rust');
+  assert.ok(row, 'the rediscovered row is stored');
+  assert.equal(row.entry, program);
+  assert.equal(row.rediscovery_source, 'https://doc.rust-lang.org/book/ch01-02-hello-world.html');
+  assert.equal(row.verified_output, 'Hello, world!');
+  const second = await host.solve('Write a hello world program in Rust', []);
+  assert.deepEqual(cacheEvents(second), [
+    { kind: 'procedure_cache', payload: `outcome=hit language=rust task=hello_world content_id=${contentId}` },
+  ]);
+  assert.ok(second.content.includes(program));
+});
+
+test('the committed cache is never written by a solve', async () => {
+  delete process.env[ENV];
+  const committed = readFileSync(procedureCachePath(), 'utf8');
+  await host.solve('Write a hello world program in Go', []);
+  assert.equal(readFileSync(procedureCachePath(), 'utf8'), committed);
 });

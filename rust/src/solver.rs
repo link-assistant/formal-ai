@@ -765,24 +765,28 @@ impl UniversalSolver {
                             );
                             Some(recipe.entry.clone())
                         }
-                        // An unmodified request the cache has no row for is
-                        // a miss: research cannot run on it without the
-                        // inputs the policy seed's `miss_route` names, so the
-                        // gap is recorded instead of hidden behind the
-                        // template (R1165-1).
+                        // An unmodified request the cache has no row for
+                        // rediscovers its program from the documentation
+                        // captures; with none that verify, the research miss
+                        // names the inputs the policy seed's `miss_route`
+                        // lacks instead of hiding behind the template.
                         None if rendered == spec.template.code => {
-                            let missing =
-                                crate::discovery_production::miss_research_missing().join(",");
-                            log.append_fields(
-                                "procedure_cache",
-                                &[
-                                    ("outcome", "miss"),
-                                    ("language", spec.language.slug),
-                                    ("task", spec.task.slug),
-                                    ("research_missing", &missing),
-                                ],
-                            );
-                            None
+                            let execution = &spec.language.execution;
+                            let commands: Vec<&str> = execution
+                                .check_command
+                                .into_iter()
+                                .chain(std::iter::once(execution.run_command))
+                                .collect();
+                            crate::discovery_production::answer_cache_miss(
+                                &mut log,
+                                spec.language.slug,
+                                spec.task.slug,
+                                &spec.task.output_for_language(spec.language),
+                                crate::discovery_production::RunContract {
+                                    save_as: spec.language.save_as,
+                                    commands: &commands,
+                                },
+                            )
                         }
                         None => None,
                     }

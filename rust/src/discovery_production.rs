@@ -576,3 +576,5 @@ fn quote(value: &str) -> String {
             .replace('\n', "\\n")
     )
 }
+
+include!("discovery_production_documentation.rs");

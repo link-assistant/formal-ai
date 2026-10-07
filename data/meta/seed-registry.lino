@@ -60,6 +60,8 @@ seed_registry
   seed code-task-cues
     bundle true
     web true
+  seed coding-documentation-captures
+    web true
   seed coding-guidance
     bundle true
   seed coding-idioms

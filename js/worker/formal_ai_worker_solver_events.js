@@ -257,13 +257,19 @@ function solverWriteProgramEvents(answer, prompt) {
 }
 
 // The `procedure_cache` event of the native `WriteProgram` branch (R1165-10).
-// The worker ships no cache rows (data/cache/coding-procedure-cache.lino is
-// committed empty), so an unmodified catalog request is the miss Rust logs,
-// naming the policy seed's `miss_route` inputs a solve does not carry.
+// The worker reads no cache file, so an unmodified catalog request either
+// rediscovers its program from the documentation captures (R1165-1,
+// `outcome=discovered`) or is the miss Rust logs, naming the `miss_route`
+// inputs a solve does not carry and why captured pages yielded nothing.
 function solverProcedureCacheEvents(prompt, language, task) {
-  const template = typeof WRITE_PROGRAM_TEMPLATES === "object" ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
+  const template = writeProgramTemplate(task, language);
   if (!template || applyInlineHelloWorldOutputReplacement(prompt, task, template) !== template) return [];
-  const missing = solverMissResearchMissing().join(",");
+  const { recipe, rejected } = documentedProgram(task, language);
+  if (recipe) {
+    const fields = `rediscovery_source=${recipe.rediscovery_source} content_id=${recipe.content_id}`;
+    return [solverEvent("procedure_cache", `outcome=discovered language=${language} task=${task} ${fields}`)];
+  }
+  const missing = solverMissResearchMissing().join(",") + (rejected ? ` documentation_rejected=${rejected}` : "");
   return [solverEvent("procedure_cache", `outcome=miss language=${language} task=${task} research_missing=${missing}`)];
 }
 

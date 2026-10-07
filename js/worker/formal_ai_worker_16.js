@@ -213,7 +213,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   );
   // Issue #324: answer in the language of the request (falls back to en).
   const i18n = writeProgramStrings(responseLanguage);
-  const template = language && task ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
+  const template = writeProgramTemplate(task, language); // #1165: documentation first, else stored
   const diagnostics = writeProgramDiagnosticBundle({
     prompt,
     initiallyDetected,

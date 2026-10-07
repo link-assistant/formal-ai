@@ -24,6 +24,41 @@ conversion of the compiled-in snapshot store:
   `bootstrap_cache_active()`: retiring the bootstrap tier is a seed edit that
   stops every snapshot answer with no Rust change.
 
+## Rediscovery from documentation (2026-10-08)
+
+The miss path answers from documentation instead of a stored program:
+
+- `data/seed/coding-documentation-captures.lino` is pre-cached source data.
+  Each capture names a documentation page (URL, rediscovery query, mime), the
+  byte-for-byte fixture it was captured into and that fixture's SHA-256, and
+  holds the code blocks the page formalizer reads from those bytes. The
+  blocks are written by `scripts/generate-coding-documentation-captures.mjs`
+  and re-derived from the fixtures by a pin test in each root, so no program
+  in the seed was authored.
+- The formalizer keeps code indentation (`strip_tags_keep_lines`,
+  `pageStripTagsKeepLines`); before the fix every recomposed program came back
+  unindented, which is why the #1164 recomposition could not answer.
+- On an unmodified `write_program` miss, `answer_cache_miss`
+  (`rust/src/discovery_production_documentation.rs`, JS twin
+  `rediscoverDocumentedProgram`) decomposes each captured page's example,
+  binds the task's expected output into its literal, keeps the shortest
+  program, and verifies it twice: decomposing it again must find the same
+  output call printing the expected output, and it must declare the names the
+  catalog run contract invokes. The derivation logs `procedure_cache
+  outcome=discovered` with the page and content id; a runtime cache
+  (`FORMAL_AI_PROCEDURE_CACHE`) stores the row and the next request hits it.
+  The committed cache file is never written by a solve.
+- Result on the committed captures: Rust (Rust Book), Go (go.dev) and Kotlin
+  (kotlinlang command-line page, shorter than the tour's example with its
+  comment line) are rediscovered byte for byte equal to the retired
+  templates; Scala is refused, because the Scala book's `object hello` cannot
+  run as the catalog's `scala Main`.
+- The Rust, Go and Kotlin Hello World programs left
+  `data/seed/hello-world-programs.lino` (their rows now carry
+  `program_source "documentation_route"`) and the worker's template table; the
+  no-memorization ratchet fell from 14 to 11, and the captures are counted on
+  their own ratchet (7 page literals).
+
 ## Wiring plan (the integration commit's part)
 
 1. `pub mod discovery_production;` in `rust/src/lib.rs`.

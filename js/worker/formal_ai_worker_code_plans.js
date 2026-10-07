@@ -156,7 +156,7 @@ function writeScriptLanguage(prompt, normalized) {
   if (metaNamesFileNoun(prompt, detectLanguage(prompt))) return null; // a script over files is derived, not templated
   const program = normalizeProgramPrompt(prompt);
   const language = programLanguageFromPrompt(program);
-  if (!language || !WRITE_PROGRAM_TEMPLATES.hello_world?.[language]) return null;
+  if (!language || !writeProgramTemplate("hello_world", language)) return null;
   const task = programTaskFromPrompt(program);
   if (task && task !== "hello_world") return null;
   return tryNumericList(prompt, []) ? null : language;
@@ -172,7 +172,7 @@ function writeScriptLanguage(prompt, normalized) {
 function tryWriteScript(prompt, responseLanguage) {
   const language = writeScriptLanguage(prompt, normalizePrompt(prompt));
   if (!language) return null;
-  const template = WRITE_PROGRAM_TEMPLATES.hello_world[language];
+  const template = writeProgramTemplate("hello_world", language);
   const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
   const taskInfo = WRITE_PROGRAM_TASKS.hello_world;
   const i18n = writeProgramStrings(responseLanguage);

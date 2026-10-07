@@ -27,3 +27,9 @@ program_cache_policy
     research_requires "expected_output"
     research_requires "reviewer_approval"
     solve_carries "expected_output"
+  documentation_route
+    active "true"
+    captures "data/seed/coding-documentation-captures.lino"
+    purpose "A write_program cache miss whose language and task have documentation captures rediscovers its program from them at answer time. In each captured page the first block, in the requested language or untagged, that decomposes into an output call printing a literal is recomposed with the task's expected output bound into that literal, and the shortest such program is kept. It is answered only when decomposing it again finds the same output call printing the expected output, and when it declares every name the language's run contract invokes (the save_as stem a run or check command names bare). The row it yields cites the page as its rediscovery_source and its rediscovery_query, and is stored when the solve has a writable runtime cache (FORMAL_AI_PROCEDURE_CACHE), so the next request reuses it as a hit. The committed cache file is never written by a solve."
+    verification "decomposition"
+    verification "run_contract"

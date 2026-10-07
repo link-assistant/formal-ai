@@ -320,17 +320,19 @@ export class WorkerHost {
   }
 
   /**
-   * The worker's catalog template for a `(task, language)` pair and what
-   * `prompt` rendered it to (the inline replacement a customised request
-   * makes), for the procedure-cache read.
+   * The worker's catalog template for a `(task, language)` pair (rediscovered
+   * from documentation first, issue #1165 R1165-1), what `prompt` rendered it
+   * to (the inline replacement a customised request makes), and the
+   * rediscovered row when there is one, for the procedure-cache read.
    */
   async catalogTemplate() {
     const context = await this.boot();
     if (!this.templateFor) {
       this.templateFor = evaluate(context, `((prompt, task, language) => {
-        const template = typeof WRITE_PROGRAM_TEMPLATES === "object" ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
-        if (typeof template !== "string") return { template: null, rendered: null };
-        return { template, rendered: applyInlineHelloWorldOutputReplacement(prompt, task, template) };
+        const template = writeProgramTemplate(task, language);
+        if (typeof template !== "string") return { template: null, rendered: null, documented: null };
+        const documented = documentedProgram(task, language).recipe;
+        return { template, rendered: applyInlineHelloWorldOutputReplacement(prompt, task, template), documented };
       })`);
     }
     return this.templateFor;

@@ -888,12 +888,12 @@ const WRITE_PROGRAM_TASKS = {
 };
 
 const WRITE_PROGRAM_TEMPLATES = {
+  // Issue #1165 R1165-4: rust, go and kotlin hello_world are rediscovered from
+  // data/seed/coding-documentation-captures.lino (writeProgramTemplate).
   hello_world: {
-    rust: 'fn main() {\n    println!("Hello, world!");\n}',
     python: 'print("Hello, world!")',
     javascript: 'console.log("Hello, world!");',
     typescript: 'console.log("Hello, world!");',
-    go: 'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, world!")\n}',
     c: '#include <stdio.h>\n\nint main(void) {\n    puts("Hello, world!");\n    return 0;\n}',
     cpp: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, world!" << std::endl;\n    return 0;\n}',
     java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, world!");\n    }\n}',
@@ -902,7 +902,6 @@ const WRITE_PROGRAM_TEMPLATES = {
     ruby: 'puts "Hello, world!"',
     scala:
       'object Main {\n  def main(args: Array[String]): Unit = {\n    println("Hello, world!")\n  }\n}',
-    kotlin: 'fun main() {\n    println("Hello, world!")\n}',
     php: '<?php\n\necho "Hello, world!", PHP_EOL;',
     laravel:
       "<?php\n\nnamespace App\\Console\\Commands;\n\nuse Illuminate\\Console\\Command;\n\nclass HelloWorld extends Command\n{\n    protected $signature = 'hello:world';\n\n    protected $description = 'Print a greeting';\n\n    public function handle(): int\n    {\n        $this->line('Hello, world!');\n\n        return self::SUCCESS;\n    }\n}",

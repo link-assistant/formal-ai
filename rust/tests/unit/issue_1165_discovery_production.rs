@@ -17,9 +17,15 @@ use formal_ai::coding_research_learning::{
     CodingResearchApproval, CodingResearchGap, ResearchedCodingProcedureLedger,
 };
 use formal_ai::discovery_production::{
-    CachedOrDiscovered, ProcedureCache, RediscoverableRecipe, bootstrap_cache_active,
-    cached_write_program, fnv1a64, grammar_exists, knows_language, miss_research_missing,
+    CachedOrDiscovered, NO_DOCUMENTATION_CAPTURE, ProcedureCache, RediscoverableRecipe,
+    RunContract, all_documentation_captures, bootstrap_cache_active, cached_write_program,
+    documentation_captures, documentation_route_active, documented_catalog_programs, fnv1a64,
+    grammar_exists, knows_language, miss_research_missing, rediscover_from_documentation,
 };
+use formal_ai::web_formalize::{PageBlock, formalize_page_with_context};
+
+/// The Rust Book page the Rust Hello World is rediscovered from.
+const RUST_BOOK: &str = "https://doc.rust-lang.org/book/ch01-02-hello-world.html";
 
 /// An isolated cache file per test, so a failing test never destroys the
 /// committed cache and tests never see each other's rows.
@@ -320,14 +326,16 @@ fn write_program_reuses_the_cached_procedure_only_for_an_unmodified_request() {
 /// a reviewer's approval while a solve carries only the expected output, so
 /// the solver's `WriteProgram` branch records the miss with the approval it
 /// lacks instead of answering as if research had run.
+///
+/// Python has no documentation capture, so its miss is the research miss.
 #[test]
 fn miss_route_names_what_research_lacks_on_a_solve() {
     assert_eq!(miss_research_missing(), ["reviewer_approval"]);
     let response =
-        formal_ai::UniversalSolver::default().solve("write me hello world program in Rust");
+        formal_ai::UniversalSolver::default().solve("write me hello world program in Python");
     assert!(
         response.links_notation.contains(
-            "procedure_cache outcome=miss language=rust task=hello_world \
+            "procedure_cache outcome=miss language=python task=hello_world \
              research_missing=reviewer_approval"
         ),
         "{}",
@@ -374,4 +382,242 @@ fn a_code_example_page_query_is_not_a_program_request() {
         response.answer,
         "entry_point main\noutput_operation println!\nstring_literal Hello, world!"
     );
+}
+
+/// The run contract of a catalog row: the file it is saved as and the
+/// commands that check and run it.
+fn contract(save_as: &'static str, commands: &'static [&'static str]) -> RunContract<'static> {
+    RunContract { save_as, commands }
+}
+
+/// R1165-1: rediscovery from the documentation captures.
+///
+/// Each captured page's example is decomposed, the task's expected output is
+/// bound into its literal, and the program is verified before it is
+/// returned: the Rust Book, go.dev and kotlinlang pages yield their programs
+/// (kotlinlang's command-line page beats the tour, whose example carries a
+/// comment line), the Scala book's `object hello` is refused because the
+/// catalog runs `scala Main`, and a language with no capture is the research
+/// miss.
+#[cfg(feature = "meta-language")]
+#[test]
+fn documentation_rediscovery_recomposes_the_captured_example_and_checks_the_run_contract() {
+    assert!(documentation_route_active());
+    let rust = rediscover_from_documentation(
+        "rust",
+        "hello_world",
+        "Hello, world!",
+        contract("main.rs", &["rustc main.rs -o main", "./main"]),
+    )
+    .expect("the Rust Book page yields a program");
+    assert_eq!(
+        rust.entry,
+        "fn main() {\n    println!(\"Hello, world!\");\n}"
+    );
+    assert_eq!(rust.rediscovery_source, RUST_BOOK);
+    assert_eq!(rust.rediscovery_query, "Rust hello world program");
+    assert_eq!(rust.verified_output, "Hello, world!");
+    assert_eq!(rust.content_id, fnv1a64(rust.entry.as_bytes()));
+    let go = rediscover_from_documentation(
+        "go",
+        "hello_world",
+        "Hello, world!",
+        contract("main.go", &["go run main.go"]),
+    )
+    .expect("go.dev yields a program");
+    assert_eq!(
+        go.entry,
+        "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}"
+    );
+    assert_eq!(
+        go.rediscovery_source,
+        "https://go.dev/doc/tutorial/getting-started"
+    );
+    let kotlin_contract = contract(
+        "Main.kt",
+        &[
+            "kotlinc Main.kt -include-runtime -d Main.jar",
+            "java -jar Main.jar",
+        ],
+    );
+    assert_eq!(documentation_captures("kotlin", "hello_world").len(), 2);
+    let kotlin =
+        rediscover_from_documentation("kotlin", "hello_world", "Hello, world!", kotlin_contract)
+            .expect("kotlinlang yields a program");
+    assert_eq!(
+        kotlin.entry,
+        "fun main() {\n    println(\"Hello, world!\")\n}"
+    );
+    assert_eq!(
+        kotlin.rediscovery_source,
+        "https://kotlinlang.org/docs/command-line.html"
+    );
+    let greeting =
+        rediscover_from_documentation("kotlin", "hello_world", "Hi there", kotlin_contract)
+            .expect("the bound literal is the requirement's");
+    assert_eq!(greeting.entry, "fun main() {\n    println(\"Hi there\")\n}");
+    assert_eq!(
+        rediscover_from_documentation(
+            "scala",
+            "hello_world",
+            "Hello, world!",
+            contract("Main.scala", &["scalac Main.scala", "scala Main"]),
+        ),
+        Err(String::from("run_contract:Main"))
+    );
+    assert_eq!(
+        rediscover_from_documentation(
+            "python",
+            "hello_world",
+            "Hello, world!",
+            contract("main.py", &["python3 main.py"]),
+        ),
+        Err(NO_DOCUMENTATION_CAPTURE.to_owned())
+    );
+    assert_eq!(
+        rediscover_from_documentation(
+            "rust",
+            "hello_world",
+            "1\n2\n3",
+            contract("main.rs", &["./main"]),
+        ),
+        Err(String::from("no_single_line_output")),
+        "a multi-line output is not a printed literal"
+    );
+}
+
+/// R1165-1/R1165-2: the solver's `WriteProgram` miss answers from the
+/// rediscovered program.
+///
+/// The derivation records `outcome=discovered` with the page and the
+/// program's content address, and the execution recipe the work-item
+/// executor runs carries the same program.
+#[cfg(feature = "meta-language")]
+#[test]
+fn write_program_miss_answers_from_the_documentation() {
+    let program = "fn main() {\n    println!(\"Hello, world!\");\n}";
+    let response =
+        formal_ai::UniversalSolver::default().solve("write me hello world program in Rust");
+    let event = format!(
+        "procedure_cache outcome=discovered language=rust task=hello_world \
+         rediscovery_source={RUST_BOOK} content_id=0x{:016x}",
+        fnv1a64(program.as_bytes())
+    );
+    assert!(
+        response.links_notation.contains(&event),
+        "{}",
+        response.links_notation
+    );
+    assert!(response.answer.contains(program), "{}", response.answer);
+    let recipe = response
+        .execution_recipe
+        .expect("a program answer carries its execution recipe");
+    assert_eq!(recipe.source, program);
+}
+
+/// A captured page whose example breaks the run contract is not answered:
+/// the Scala miss names the rejection beside the research gap.
+#[cfg(feature = "meta-language")]
+#[test]
+fn a_rejected_documented_example_is_named_on_the_miss() {
+    let response =
+        formal_ai::UniversalSolver::default().solve("write me hello world program in Scala");
+    assert!(
+        response.links_notation.contains(
+            "procedure_cache outcome=miss language=scala task=hello_world \
+             research_missing=reviewer_approval documentation_rejected=run_contract:Main"
+        ),
+        "{}",
+        response.links_notation
+    );
+}
+
+/// A rediscovered row stored in a runtime cache is reused as a hit: the
+/// cache answers the next unmodified request with the same program.
+#[cfg(feature = "meta-language")]
+#[test]
+fn a_rediscovered_row_is_stored_and_reused() {
+    let row = rediscover_from_documentation(
+        "go",
+        "hello_world",
+        "Hello, world!",
+        contract("main.go", &["go run main.go"]),
+    )
+    .expect("go.dev yields a program");
+    let path = isolated_cache("rediscovered").join("cache.lino");
+    let mut cache = ProcedureCache::load_at(&path);
+    cache
+        .store(row.clone())
+        .expect("a rediscovered row is policy-complete");
+    let reloaded = ProcedureCache::load_at(&path);
+    assert_eq!(
+        cached_write_program(&reloaded, "go", "hello_world", &row.entry, &row.entry),
+        Some(&row)
+    );
+}
+
+/// R1165-1: the documentation captures are pre-cached source data.
+///
+/// Each capture names a byte-for-byte fixture and its SHA-256, and its block
+/// rows are exactly the code blocks the page formalizer reads from those
+/// bytes, so no program in the seed was written by hand. The browser twin is
+/// `rust/tests/web/issue-1165-documentation-captures.test.mjs`.
+#[test]
+fn documentation_captures_are_the_formalized_fixtures() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate");
+    let captures = all_documentation_captures();
+    assert_eq!(captures.len(), 5);
+    for capture in captures {
+        let bytes = std::fs::read(root.join(&capture.fixture))
+            .unwrap_or_else(|error| panic!("{}: {error}", capture.fixture));
+        assert_eq!(
+            formal_ai::sha256_hex(&bytes),
+            capture.sha256,
+            "{}",
+            capture.fixture
+        );
+        let blocks: Vec<(String, String)> =
+            formalize_page_with_context(&bytes, Some(&capture.mime), Some(&capture.url))
+                .1
+                .into_iter()
+                .filter_map(|(_, block)| match block {
+                    PageBlock::CodeBlock { language, text } => Some((language, text)),
+                    _ => None,
+                })
+                .collect();
+        assert_eq!(blocks, capture.blocks, "{}", capture.url);
+    }
+}
+
+/// R1165-4: the seed programs retired to the documentation route are
+/// reproduced by it.
+///
+/// `data/seed/hello-world-programs.lino` stores no program for the Rust, Go
+/// and Kotlin Hello World rows any more (their `program_source` is the
+/// documentation route); the program the documentation captures yield for
+/// each is exactly the template the Rust catalog still compiles as the
+/// fallback of a retired route, so both runtimes answer the same program.
+#[cfg(feature = "meta-language")]
+#[test]
+fn retired_seed_programs_are_reproduced_by_the_documentation() {
+    let retired = documented_catalog_programs();
+    assert_eq!(
+        retired
+            .iter()
+            .map(|program| (program.language.as_str(), program.task.as_str()))
+            .collect::<Vec<_>>(),
+        [
+            ("rust", "hello_world"),
+            ("go", "hello_world"),
+            ("kotlin", "hello_world"),
+        ]
+    );
+    for program in retired {
+        let recipe = program
+            .rediscovered
+            .unwrap_or_else(|reason| panic!("{}: {reason}", program.language));
+        assert_eq!(recipe.entry, program.compiled, "{}", program.language);
+    }
 }

@@ -1,0 +1,199 @@
+# Documentation captures for coding discovery (issue #1165, R1165-1).
+#
+# Pre-cached source data, not solutions. Each capture is one documentation
+# page fetched byte for byte into the named fixture; its SHA-256 pins those
+# bytes, and its block rows are the code blocks the page formalizer reads
+# from them, in page order, with the language each block declares. The
+# header fields are authored; the blocks are written by
+# scripts/generate-coding-documentation-captures.mjs and pinned against the
+# fixture in both roots. A write_program cache miss rediscovers its program
+# from these blocks at answer time: the page's example is decomposed, the
+# task's expected output is bound into its literal slot, and the result is
+# verified before it is answered or cached (see documentation_route in
+# data/seed/program-cache-policy.lino).
+coding_documentation_captures
+  version "1"
+  capture
+    language rust
+    task hello_world
+    rediscovery_query "Rust hello world program"
+    url "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1164/ch01-02-hello-world.html"
+    sha256 "98d3e31d5c41a6572a3536ee16c51a1058b3974e6f22e15ba5fb2a5e964ceb4e"
+    block
+      language "console"
+      text "$ mkdir ~/projects\n$ cd ~/projects\n$ mkdir hello_world\n$ cd hello_world"
+    block
+      language "cmd"
+      text "> mkdir ""%USERPROFILE%\\projects""\n> cd /d ""%USERPROFILE%\\projects""\n> mkdir hello_world\n> cd hello_world"
+    block
+      language "rust"
+      text "fn main() {\n    println!(""Hello, world!"");\n}"
+    block
+      language "console"
+      text "$ rustc main.rs\n$ ./main\nHello, world!"
+    block
+      language "powershell"
+      text "> rustc main.rs\n> .\\main\nHello, world!"
+    block
+      language "rust"
+      text "fn main() {\n\n}"
+    block
+      language "rust"
+      text "#![allow(unused)]\nfn main() {\nprintln!(""Hello, world!"");\n}"
+    block
+      language "console"
+      text "$ rustc main.rs"
+    block
+      language "console"
+      text "$ ls\nmain  main.rs"
+    block
+      language "cmd"
+      text "> dir /B %= the /B option says to only show the file names =%\nmain.exe\nmain.pdb\nmain.rs"
+    block
+      language "console"
+      text "$ ./main # or .\\main on Windows"
+  capture
+    language go
+    task hello_world
+    rediscovery_query "Go hello world program"
+    url "https://go.dev/doc/tutorial/getting-started"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1164/getting-started.html"
+    sha256 "a7048d2cce6a94ae835c9503d6af5e96f88954a459d831fe03f9a7d82b60ef2c"
+    block
+      language "unknown"
+      text "cd"
+    block
+      language "unknown"
+      text "cd %HOMEPATH%"
+    block
+      language "unknown"
+      text "mkdir hello\ncd hello"
+    block
+      language "unknown"
+      text "$ go mod init example/hello\ngo: creating new go.mod: module example/hello"
+    block
+      language "unknown"
+      text "package main\n\nimport ""fmt""\n\nfunc main() {\n    fmt.Println(""Hello, World!"")\n}"
+    block
+      language "unknown"
+      text "$ go run .\nHello, World!"
+    block
+      language "unknown"
+      text "$ go help"
+    block
+      language "unknown"
+      text "package main\n\nimport ""fmt""\n\nimport ""rsc.io/quote""\n\nfunc main() {\n    fmt.Println(quote.Go())\n}"
+    block
+      language "unknown"
+      text "$ go mod tidy\ngo: finding module for package rsc.io/quote\ngo: found rsc.io/quote in rsc.io/quote v1.5.2"
+    block
+      language "unknown"
+      text "$ go run .\nDon't communicate by sharing memory, share memory by communicating."
+  capture
+    language kotlin
+    task hello_world
+    rediscovery_query "how to compile a Kotlin program from the command line"
+    url "https://kotlinlang.org/docs/command-line.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1163/command-line.html"
+    sha256 "0847a47edc7136be89ddb103aed1178c4eb95a0ba03bdfe396f1b207ab806e8e"
+    block
+      language "bash"
+      text "sdk install kotlin"
+    block
+      language "bash"
+      text "brew update\nbrew install kotlin"
+    block
+      language "bash"
+      text "sudo snap install --classic kotlin"
+    block
+      language "kotlin"
+      text "fun main() {\n    println(""Hello, World!"")\n}"
+    block
+      language "bash"
+      text "kotlinc hello.kt -include-runtime -d hello.jar"
+    block
+      language "bash"
+      text "kotlinc -help"
+    block
+      language "bash"
+      text "java -jar hello.jar"
+    block
+      language "bash"
+      text "kotlinc hello.kt -d hello.jar"
+    block
+      language "bash"
+      text "kotlinr -classpath hello.jar HelloKt"
+    block
+      language "kotlin"
+      text "import java.io.File\n\n// Get the passed in path, i.e. ""-d some/path"" or use the current path.\nval path = if (args.contains(""-d"")) args[1 + args.indexOf(""-d"")]\n           else "".""\n\nval folders = File(path).listFiles { file -> file.isDirectory() }\nfolders?.forEach { folder -> println(folder) }"
+    block
+      language "bash"
+      text "kotlinc -script list_folders.kts -- -d <path_to_folder_to_inspect>"
+    block
+      language "bash"
+      text "kotlinc -script-templates org.example.CustomScriptDefinition -script custom.script1.kts"
+  capture
+    language kotlin
+    task hello_world
+    rediscovery_query "Kotlin hello world program"
+    url "https://kotlinlang.org/docs/kotlin-tour-hello-world.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1164/kotlin-tour-hello-world.html"
+    sha256 "916f03525029483ef10ca64b75b7c110c538aadce2c7021dbb6a56e8ef8bd92a"
+    block
+      language "kotlin"
+      text "fun main() {\n    println(""Hello, world!"")\n    // Hello, world!\n}"
+    block
+      language "kotlin"
+      text "fun main() {\n//sampleStart\n    val popcorn = 5    // There are 5 boxes of popcorn\n    val hotdog = 7     // There are 7 hotdogs\n    var customers = 10 // There are 10 customers in the queue\n\n    // Some customers leave the queue\n    customers = 8\n    println(customers)\n    // 8\n//sampleEnd\n}"
+    block
+      language "kotlin"
+      text "fun main() {\n//sampleStart\n    val customers = 10\n    println(""There are $customers customers"")\n    // There are 10 customers\n\n    println(""There are ${customers + 1} customers"")\n    // There are 11 customers\n//sampleEnd\n}"
+    block
+      language "kotlin"
+      text "fun main() {\n    val name = ""Mary""\n    val age = 20\n    // Write your code here\n}"
+    block
+      language "kotlin"
+      text "fun main() {\n    val name = ""Mary""\n    val age = 20\n    println(""$name is $age years old"")\n}"
+  capture
+    language scala
+    task hello_world
+    rediscovery_query "Scala hello world program"
+    url "https://docs.scala-lang.org/scala3/book/taste-hello-world.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1163/taste-hello-world.html"
+    sha256 "913485460cbb046dab070e46eca56fc97cc3f1bc43fb57ae931a2f711145ef2b"
+    block
+      language "scala"
+      text "object hello {\n  def main(args: Array[String]) = {\n    println(""Hello, World!"")\n  }\n}"
+    block
+      language "scala"
+      text "@main def hello() = println(""Hello, World!"")"
+    block
+      language "bash"
+      text "$ scala run hello.scala"
+    block
+      language "plaintext"
+      text "Compiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nHello, World!"
+    block
+      language "scala"
+      text "import scala.io.StdIn.readLine"
+    block
+      language "scala"
+      text "import scala.io.StdIn.readLine\n\nobject helloInteractive {\n\n  def main(args: Array[String]) = {\n    println(""Please enter your name:"")\n    val name = readLine()\n\n    println(""Hello, "" + name + ""!"")\n  }\n\n}"
+    block
+      language "scala"
+      text "import scala.io.StdIn.readLine\n\n@main def helloInteractive() =\n  println(""Please enter your name:"")\n  val name = readLine()\n\n  println(""Hello, "" + name + ""!"")"
+    block
+      language "bash"
+      text "$ scala run helloInteractive.scala\nCompiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nPlease enter your name:\n▌"
+    block
+      language "bash"
+      text "$ scala run helloInteractive.scala\nCompiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nPlease enter your name:\nAlvin Alexander\nHello, Alvin Alexander!"
+    block
+      language "scala"
+      text "import scala.io.StdIn.readLine"
