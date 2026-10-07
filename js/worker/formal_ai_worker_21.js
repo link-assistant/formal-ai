@@ -789,6 +789,7 @@ function tryDocumentOriginalityCheck(prompt, language) {
     evidence.push(`read_local_file:request:${attachment}`);
   }
   if (samplePresent) evidence.push("document_originality_check:text_sample:present");
+  if (!claimEvidenceDocumentOperand(prompt)) evidence.push("document_originality_check:refusal:no document supplied"); // #1175 R3
   evidence.push(`web_search:request:${query}`);
   if (language) evidence.push(`web_search:language:${language}`);
   for (const provider of WEB_SEARCH_PROVIDERS) {
@@ -825,5 +826,7 @@ function tryCurrentDialogueFactChecking(_prompt, normalized, language, history) 
     .filter((turn) => turn && String(turn.role || "").toLowerCase() === "user")
     .map((turn) => String(turn.content || "").trim()).filter((text) =>
       text && !isRequest(normalizePrompt(text)));
-  return wasmFactCheckDialogue([...templates, ...turns].map(encodeURIComponent).join("\n"));
+  const checked = wasmFactCheckDialogue([...templates, ...turns].map(encodeURIComponent).join("\n"));
+  if (checked && turns.length === 0) checked.evidence = (checked.evidence || []).concat("current_dialogue_fact_checking:refusal:no statements"); // #1175 R3
+  return checked;
 }

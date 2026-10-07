@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_04.js"
-  ceiling 1222
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker."
+  ceiling 1223
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved to 1223 for issue #1175 R3 (follow-up round, 2026-10-08): the action-correction arm of the conversation-control twin records conversation_control:refusal when there is no earlier action to correct."

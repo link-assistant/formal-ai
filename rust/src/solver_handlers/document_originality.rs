@@ -41,6 +41,12 @@ pub fn try_document_originality_check(
 
     let language = detect_language(prompt).slug();
     let sample_present = has_text_sample(prompt);
+    if !names_document_operand(prompt) {
+        log.append(
+            "document_originality_check:refusal",
+            "no document supplied".to_owned(),
+        );
+    }
     let query = document_originality_query(prompt, &attachments);
 
     log.append("language", language.to_owned());
@@ -80,6 +86,19 @@ pub fn try_document_originality_check(
         &body,
         0.84,
     ))
+}
+
+/// Whether the request supplies the document it asks about.
+///
+/// An attachment, a text sample or the text after a colon; the
+/// `document_operand` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_document_operand(prompt: &str) -> bool {
+    !extract_attached_file_names(prompt).is_empty()
+        || has_text_sample(prompt)
+        || prompt
+            .split_once(':')
+            .is_some_and(|(_, rest)| !rest.trim().is_empty())
 }
 
 fn extract_attached_file_names(prompt: &str) -> Vec<String> {

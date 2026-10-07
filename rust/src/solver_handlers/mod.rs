@@ -19,7 +19,7 @@ pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
     MemoryQueryExecution, answer_memory_recall, conversation_summary_answer, execute_memory_query,
-    execute_memory_query_with_options, try_conversation_memory,
+    execute_memory_query_with_options, names_recall_query, try_conversation_memory,
 };
 pub use creative_composition::{
     handle_advice_request, handle_brainstorm_request, names_advice_topic, topic_words,
@@ -27,7 +27,7 @@ pub use creative_composition::{
 pub use creative_writing::{
     handle_creative_writing_request, handle_planning_request, names_cached_destination,
 };
-pub use document_originality::try_document_originality_check;
+pub use document_originality::{names_document_operand, try_document_originality_check};
 pub use document_request::{names_document_format, try_document_request};
 pub use fact_checking::try_fact_checking;
 #[cfg(feature = "meta-language")]
@@ -86,7 +86,7 @@ pub use text_manipulation::{
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use text_rewrite::handle_text_rewrite;
 pub use unit_conversion::handle_unit_conversion;
-pub use user_intent::{try_proof_request, try_proof_request_with_config};
+pub use user_intent::{names_stated_claim, try_proof_request, try_proof_request_with_config};
 pub use verifiable_task::try_verifiable_task;
 pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
 pub use web_requests::{
@@ -514,6 +514,9 @@ pub fn try_translation(
 
     log.append("language_from", source_slug.to_owned());
     log.append("language_to", target_slug.to_owned());
+    if surface.is_empty() && no_backticked_text {
+        log.append("translation:refusal", "no source phrase".to_owned());
+    }
 
     // Run the real Wiktionary + Wikidata translation pipeline. The pipeline
     // returns a `MeaningId` that we publish into the trace verbatim, so two
@@ -714,6 +717,11 @@ pub fn try_algorithm(prompt: &str, normalized: &str, log: &mut EventLog) -> Opti
             .matches("sort", &crate::engine::normalize_prompt(normalized))
     {
         return None;
+    }
+    if !crate::seed::operation_vocabulary()
+        .matches("sort", &crate::engine::normalize_prompt(normalized))
+    {
+        log.append("algorithm:refusal", "no operation named".to_owned());
     }
     let with_tests = normalized.contains("test");
     let lang_slug = detect_algorithm_language(normalized);

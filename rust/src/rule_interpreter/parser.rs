@@ -200,6 +200,7 @@ fn parse_condition(node: &Node) -> Result<Condition, String> {
         "unbalanced_parentheses" => Condition::UnbalancedParentheses,
         "route_exact" => Condition::RouteExact(node.first_arg()?),
         "history_role" => Condition::HistoryRole(node.first_arg()?),
+        "prior_turn" => Condition::PriorTurn(node.first_arg()?),
         "shape" => Condition::Shape(parse_shape(node, &node.first_arg()?)?, subject),
         _ => return Err(node.error("unknown_condition")),
     })

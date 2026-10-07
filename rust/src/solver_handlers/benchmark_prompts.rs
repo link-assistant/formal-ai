@@ -32,25 +32,26 @@ pub fn try_summarization_request(
     }
 
     let language = detect_language(prompt).slug();
-    let (topic, body, source) = seeds
-        .pick_topic(normalized)
-        .and_then(|topic| {
-            derived_topic_summary(topic, language)
-                .map(|(body, source)| (topic.display_name.clone(), body, source))
-        })
-        .unwrap_or_else(|| {
-            let label = prompt
-                .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
-                .to_owned();
-            let fallback = if seeds.fallback_response.is_empty() {
-                "unknown"
-            } else {
-                seeds.fallback_response.as_str()
-            };
-            let body = seed::localized_response(fallback, language)
-                .unwrap_or_else(|| crate::engine::unknown_answer().to_owned());
-            (label, body, String::from("none"))
-        });
+    let derived = seeds.pick_topic(normalized).and_then(|topic| {
+        derived_topic_summary(topic, language)
+            .map(|(body, source)| (topic.display_name.clone(), body, source))
+    });
+    if derived.is_none() {
+        log.append("summarization:refusal", "no seeded topic".to_owned());
+    }
+    let (topic, body, source) = derived.unwrap_or_else(|| {
+        let label = prompt
+            .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
+            .to_owned();
+        let fallback = if seeds.fallback_response.is_empty() {
+            "unknown"
+        } else {
+            seeds.fallback_response.as_str()
+        };
+        let body = seed::localized_response(fallback, language)
+            .unwrap_or_else(|| crate::engine::unknown_answer().to_owned());
+        (label, body, String::from("none"))
+    });
 
     log.append("summarization:topic", topic);
     log.append("summarization:source", source);
@@ -118,6 +119,9 @@ pub fn try_brainstorming_request(
         return None;
     }
     let category = seeds.pick_category(normalized)?;
+    if category.detection_keywords.is_empty() {
+        log.append("brainstorming:refusal", "no category keyword".to_owned());
+    }
     let requested_count = requested_brainstorm_count(normalized);
     let body = numbered(&category.items, requested_count);
     log.append("brainstorm:category", category.slug.clone());
@@ -621,6 +625,9 @@ pub fn try_roleplay_request(
     let topic_body = seeds
         .pick_topic(normalized)
         .map_or(seeds.fallback_body.as_str(), |topic| topic.body.as_str());
+    if seeds.pick_persona(normalized).is_none() && seeds.pick_topic(normalized).is_none() {
+        log.append("roleplay:refusal", "no persona or topic".to_owned());
+    }
     let body = seeds.render_body(persona_display, topic_body);
 
     Some(finalize_simple(

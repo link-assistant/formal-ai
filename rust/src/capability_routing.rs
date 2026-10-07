@@ -42,7 +42,7 @@ use crate::web_engine_core::normalize_prompt;
 mod claim_evidence;
 mod claims;
 mod evidence;
-pub use claim_evidence::without_answer_shape_directive;
+pub use claim_evidence::{content_beyond_roles, without_answer_shape_directive};
 pub use claims::{
     CLAIM_EVIDENCE_KINDS, ClaimAdmission, ClaimRow, claim_admission, claim_admission_in_dialogue,
     claim_admitted, claim_evidence_holds, claim_evidence_holds_in_dialogue, claim_rows,

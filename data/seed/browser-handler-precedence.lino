@@ -9,6 +9,7 @@ browser_handler_precedence
   handler tryAgenticContinuation
     argument_prompt
     argument_normalized
+    argument_history
   handler tryExactMemoryQuery
     argument_prompt
     argument_memoryEvents
@@ -206,6 +207,7 @@ browser_handler_precedence
   handler tryClarification
     argument_prompt
     argument_normalized
+    argument_history
   handler tryIllFormed
     argument_prompt
     argument_normalized

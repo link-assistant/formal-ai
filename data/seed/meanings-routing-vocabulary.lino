@@ -1191,3 +1191,227 @@ meanings
     unit "not applicable"
     example "now make it read a file"
     grounding "data/seed/handler-precedence.lino"
+  backticked_term
+    defined-by concept
+    role action
+    precondition "the request carries a term in backticks"
+    effect "admits the claim of the conversation control handler"
+    unit "boolean"
+    example "avoid the term `synergy`"
+    grounding "data/seed/capability-routing.lino"
+  name_assignment
+    defined-by concept
+    role action
+    precondition "the request assigns a name to the assistant or introduces the user's own"
+    effect "admits the claim of the conversation recall handlers"
+    unit "boolean"
+    example "now your name is ada"
+    grounding "data/seed/capability-routing.lino"
+  recall_query_term
+    defined-by concept
+    role action
+    precondition "the request names a term to recall from the conversation"
+    effect "admits the claim of the conversation memory handler"
+    unit "boolean"
+    example "what did we say about rust"
+    grounding "data/seed/capability-routing.lino"
+  supplied_payload
+    defined-by concept
+    role action
+    precondition "the request carries text after a colon"
+    effect "admits the claim of the conversation memory handler"
+    unit "boolean"
+    example "summarize: we met and agreed"
+    grounding "data/seed/capability-routing.lino"
+  summary_topic
+    defined-by concept
+    role action
+    precondition "the request names a seeded summary topic"
+    effect "admits the claim of the topic summary handler"
+    unit "boolean"
+    example "summarize rust"
+    grounding "data/seed/capability-routing.lino"
+  brainstorm_category
+    defined-by concept
+    role action
+    precondition "the request names a brainstorm category by its keywords"
+    effect "admits the claim of the brainstorm list handler"
+    unit "boolean"
+    example "brainstorm project ideas"
+    grounding "data/seed/capability-routing.lino"
+  persona_or_topic
+    defined-by concept
+    role action
+    precondition "the request names a seeded persona or roleplay topic"
+    effect "admits the claim of the roleplay handler"
+    unit "boolean"
+    example "explain relativity as einstein"
+    grounding "data/seed/capability-routing.lino"
+  document_operand
+    defined-by concept
+    role action
+    precondition "the request supplies the document it asks about"
+    effect "admits the claim of the originality check handler"
+    unit "boolean"
+    example "check this text for plagiarism: a quote"
+    grounding "data/seed/capability-routing.lino"
+  translation_text
+    defined-by concept
+    role action
+    precondition "the request carries the text it asks to translate"
+    effect "admits the claim of the translation handler"
+    unit "boolean"
+    example "translate apple to russian"
+    grounding "data/seed/capability-routing.lino"
+  triz_precedent
+    defined-by concept
+    role action
+    precondition "the contradiction question shares words with a seeded precedent"
+    effect "admits the claim of the triz handler"
+    unit "boolean"
+    example "make the wing stronger without weight"
+    grounding "data/seed/capability-routing.lino"
+  algorithm_operation
+    defined-by concept
+    role action
+    precondition "the algorithm request names the operation it implements"
+    effect "admits the claim of the algorithm handler"
+    unit "boolean"
+    example "write a sorting algorithm"
+    grounding "data/seed/capability-routing.lino"
+  source_reference
+    defined-by concept
+    role action
+    precondition "the request names the source it acts on by url or path"
+    effect "admits the claim of the source refresh handler"
+    unit "boolean"
+    example "refresh the page https://example.com"
+    grounding "data/seed/capability-routing.lino"
+  stated_claim
+    defined-by concept
+    role action
+    precondition "the proof request states a claim beyond its directive"
+    effect "admits the claim of the proof handler"
+    unit "boolean"
+    example "prove that 2 + 2 = 4"
+    grounding "data/seed/capability-routing.lino"
+  assistant_subject
+    defined-by concept
+    role action
+    precondition "the question addresses the assistant or names no other subject"
+    effect "admits the claim of the capability, meta and network handlers"
+    unit "boolean"
+    example "what can you do"
+    grounding "data/seed/capability-routing.lino"
+  memory_query_statement
+    defined-by concept
+    role action
+    precondition "the request is a statement in a memory query dialect"
+    effect "admits the claim of the exact memory query handler"
+    unit "boolean"
+    example "select content from memory"
+    grounding "data/seed/capability-routing.lino"
+  brainstorming
+    defined-by method
+    role action
+    precondition "a brainstorm request names a seeded category"
+    effect "lists the category's seeded ideas"
+    unit "not applicable"
+    example "brainstorm project ideas"
+    grounding "data/seed/handler-precedence.lino"
+  conversation_control
+    defined-by method
+    role action
+    precondition "a request sets a conversation preference or corrects an earlier action"
+    effect "records the preference or acknowledges the correction"
+    unit "not applicable"
+    example "do not use the word `synergy`"
+    grounding "data/seed/handler-precedence.lino"
+  conversation_memory
+    defined-by method
+    role action
+    precondition "a request recalls or summarizes the running conversation"
+    effect "answers from the recorded turns"
+    unit "not applicable"
+    example "what did i ask before"
+    grounding "data/seed/handler-precedence.lino"
+  current_dialogue_fact_checking
+    defined-by method
+    role action
+    precondition "a request checks the statements of the running dialogue"
+    effect "checks each earlier statement"
+    unit "not applicable"
+    example "check what i said so far"
+    grounding "data/seed/handler-precedence.lino"
+  document_originality_check
+    defined-by method
+    role action
+    precondition "a request asks whether a document is original"
+    effect "plans the originality search over the supplied document"
+    unit "not applicable"
+    example "check this text for plagiarism"
+    grounding "data/seed/handler-precedence.lino"
+  exact_memory_query
+    defined-by method
+    role action
+    precondition "a request is a memory query statement"
+    effect "runs the query over the memory store"
+    unit "not applicable"
+    example "select content from memory"
+    grounding "data/seed/handler-precedence.lino"
+  historical
+    defined-by method
+    role action
+    precondition "a request recaps or recalls the running conversation"
+    effect "answers from the earlier turns"
+    unit "not applicable"
+    example "what was the previous message"
+    grounding "data/seed/handler-precedence.lino"
+  network_query
+    defined-by method
+    role action
+    precondition "a request asks about the assistant's own link network"
+    effect "renders the network or the concept it records"
+    unit "not applicable"
+    example "show me the network"
+    grounding "data/seed/handler-precedence.lino"
+  proof_request
+    defined-by method
+    role action
+    precondition "a request asks for a proof of a stated claim"
+    effect "runs the proof engine on the claim"
+    unit "not applicable"
+    example "prove that 2 + 2 = 4"
+    grounding "data/seed/handler-precedence.lino"
+  dialogue_turn
+    defined-by concept
+    role action
+    precondition "the dialogue holds an earlier turn"
+    effect "admits the claim of the conversation recall handlers"
+    unit "boolean"
+    example "what was the previous message"
+    grounding "data/seed/capability-routing.lino"
+  continuation_cue
+    defined-by concept
+    role action
+    precondition "the whole request is a continuation cue"
+    effect "names the answer of the agentic continuation handler"
+    unit "not applicable"
+    example "continue"
+    grounding "data/seed/handler-rules.lino"
+  fact_subject
+    defined-by concept
+    role action
+    precondition "the fact question names the subject one of its arms resolves"
+    effect "admits the claim of the fact lookup handler"
+    unit "boolean"
+    example "what is the capital of france"
+    grounding "data/seed/capability-routing.lino"
+  fact_lookup
+    defined-by method
+    role action
+    precondition "a question asks for a fact about a named subject"
+    effect "answers from the gated record, a live statement or a researched explanation"
+    unit "not applicable"
+    example "what is the capital of france"
+    grounding "data/seed/handler-precedence.lino"

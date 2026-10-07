@@ -14,8 +14,18 @@ handler_rules
     rule action_correction
       when
         role unauthorized_mutation_correction forms of cleaned
+        prior_turn assistant
       log "action_correction:unauthorized_mutation" $prompt
       respond action_correction
+      link "response:action_correction"
+      confidence 1.0
+    rule action_correction_without_action
+      when
+        role unauthorized_mutation_correction forms of cleaned
+      log "action_correction:unauthorized_mutation" $prompt
+      log "conversation_control:refusal" "no earlier action"
+      respond action_correction
+      intent action_correction
       link "response:action_correction"
       confidence 1.0
   handler github_repository_traffic
@@ -100,12 +110,24 @@ handler_rules
     rule clarification
       when
         role clarification_request of cleaned
+        prior_turn assistant
       respond clarification
       link "response:clarification"
       confidence 0.9
     rule clarification_inflected_stem
       when
         role clarification_request raw
+        prior_turn assistant
+      respond clarification
+      intent clarification
+      link "response:clarification"
+      confidence 0.9
+    rule clarification_without_reply
+      when
+        any
+          role clarification_request of cleaned
+          role clarification_request raw
+      log "clarification:refusal" "no earlier reply"
       respond clarification
       intent clarification
       link "response:clarification"
@@ -197,7 +219,17 @@ handler_rules
     rule continuation_cue
       when
         role agentic_continuation_cue whole of cleaned
+        prior_turn assistant
       log "agentic_continuation:cue" $prompt
       respond agentic_continuation
+      link "response:agentic_continuation"
+      confidence 1.0
+    rule continuation_cue_without_task
+      when
+        role agentic_continuation_cue whole of cleaned
+      log "agentic_continuation:cue" $prompt
+      log "agentic_continuation:refusal" "nothing to resume"
+      respond agentic_continuation
+      intent continuation_cue
       link "response:agentic_continuation"
       confidence 1.0

@@ -90,6 +90,11 @@ pub fn try_source_refresh(
     }
     let target = stable_id("source", prompt);
     log.append("source_refresh", target.clone());
+    if crate::capability_routing::first_url(prompt).is_none()
+        && crate::capability_routing::first_path(prompt).is_none()
+    {
+        log.append("source_refresh:refusal", "no source named".to_owned());
+    }
     let body = format!(
         "Cached source {target} has been queued for refresh against its origin URL. The \
          refresh event is appended to the audit log and a fresh fetched_at timestamp will be \

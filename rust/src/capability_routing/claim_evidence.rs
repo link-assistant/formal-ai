@@ -78,6 +78,53 @@ pub fn class_evidence_holds(
         "assistant_addressee" => addresses_assistant(normalized),
         "punctuation_only" => carries_no_word(prompt),
         "unbalanced_brackets" => unbalanced_brackets(prompt),
+        // Follow-up round: the no-input arms record a refusal event, these
+        // kinds read the input.
+        "backticked_term" => prompt
+            .split('`')
+            .nth(1)
+            .is_some_and(|term| !term.trim().is_empty()),
+        "name_assignment" => {
+            crate::solver_helpers::extract_assistant_name(prompt).is_some()
+                || crate::solver_helpers::extract_introduced_name(prompt).is_some()
+        }
+        "recall_query_term" => handlers::names_recall_query(normalized),
+        "supplied_payload" => prompt
+            .split_once(':')
+            .is_some_and(|(_, rest)| !rest.trim().is_empty()),
+        "summary_topic" => crate::seed::summary_topic_seeds()
+            .pick_topic(normalized)
+            .is_some(),
+        "brainstorm_category" => {
+            crate::seed::brainstorm_seeds()
+                .categories
+                .iter()
+                .any(|category| {
+                    category
+                        .detection_keywords
+                        .iter()
+                        .any(|keyword| !keyword.is_empty() && normalized.contains(keyword.as_str()))
+                })
+        }
+        "persona_or_topic" => {
+            let seeds = crate::seed::persona_seeds();
+            seeds.pick_persona(normalized).is_some() || seeds.pick_topic(normalized).is_some()
+        }
+        "document_operand" => handlers::names_document_operand(prompt),
+        "translation_text" => names_translation_text(prompt),
+        "triz_precedent" => {
+            !crate::triz_solver::relevant_tasks(prompt, &crate::triz_solver::triz_benchmark_tasks())
+                .is_empty()
+        }
+        "algorithm_operation" => crate::seed::operation_vocabulary()
+            .matches("sort", &crate::engine::normalize_prompt(normalized)),
+        "source_reference" => {
+            super::first_url(prompt).is_some() || super::first_path(prompt).is_some()
+        }
+        "stated_claim" => handlers::names_stated_claim(normalized),
+        "assistant_subject" => addresses_assistant(normalized) || !names_other_subject(prompt),
+        "memory_query_statement" => handlers::is_exact_memory_query(prompt),
+        "fact_subject" => names_fact_subject(prompt, normalized),
         // The program-writing and memory-program rows are browser-only: the
         // native solver never offers those handlers a prompt.
         "prior_program" | "program_task" | "memory_program_reading" => false,
@@ -108,6 +155,73 @@ fn continues_procedure(dialogue: &EventLog) -> bool {
             ))
             .is_some()
         })
+}
+
+/// Whether a fact question names the subject one of its arms resolves.
+///
+/// A question over supplied text, a comparison of seeded subjects, the
+/// subject the gate admits, the relation and subject of a live question, or
+/// the concept an explanation researches.
+fn names_fact_subject(prompt: &str, normalized: &str) -> bool {
+    handlers::gated_fact_record(prompt, normalized).is_some()
+        || handlers::live_fact_question(prompt).is_some()
+        || handlers::explanation_concept(prompt).is_some()
+        || handlers::try_prompt_text_question(prompt, &mut EventLog::new()).is_some()
+        || handlers::try_fact_comparison(prompt, &mut EventLog::new()).is_some()
+}
+
+/// Whether the request carries text to translate.
+///
+/// A quoted phrase, an unquoted surface, a backticked span, free text after
+/// the command head, or a source-tree file.
+fn names_translation_text(prompt: &str) -> bool {
+    crate::solver_helpers::extract_quoted_phrase(prompt).is_some()
+        || crate::translation::prompt::extract_unquoted_translation_surface(prompt).is_some()
+        || crate::solver_helpers::extract_backticked(prompt).is_some()
+        || handlers::text_rewrite::free_text_payload(prompt).is_some()
+        || crate::meta_translate::source_tree_request(prompt).is_some()
+}
+
+/// Whether `text` holds a word outside the surfaces of `roles` and the seeded function words.
+///
+/// The words a request frame contributes (its directive, scaffold or cue)
+/// and the closed-class words are covered; any other word is content.
+#[must_use]
+pub fn content_beyond_roles(text: &str, roles: &[&str]) -> bool {
+    let lexicon = crate::seed::lexicon();
+    let covered: Vec<String> = roles
+        .iter()
+        .copied()
+        .chain([
+            crate::seed::ROLE_REQUEST_FUNCTION_WORD,
+            crate::seed::ROLE_STATEMENT_FUNCTION_WORD,
+        ])
+        .flat_map(|role| lexicon.words_for_role(role))
+        .flat_map(|surface| {
+            words(&surface.to_lowercase())
+                .into_iter()
+                .map(str::to_owned)
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    let lowered = text.to_lowercase();
+    words(&lowered)
+        .iter()
+        .any(|word| !covered.iter().any(|surface| surface == word))
+}
+
+/// Whether the prompt names a subject other than the assistant.
+///
+/// The concept, dictionary or mechanism reader extracts a term holding a word
+/// beyond the seeded function words.
+fn names_other_subject(prompt: &str) -> bool {
+    let concept = crate::concepts::extract_concept_query(prompt).map(|query| query.term);
+    let definition = handlers::definition_term(prompt).map(|(term, _)| term);
+    let mechanism = crate::solver_handler_how::mechanism_subject_term(prompt);
+    [concept, definition, mechanism]
+        .into_iter()
+        .flatten()
+        .any(|subject| content_beyond_roles(&subject, &[]))
 }
 
 /// Whether the prompt carries a call expression: an identifier followed by `(`.

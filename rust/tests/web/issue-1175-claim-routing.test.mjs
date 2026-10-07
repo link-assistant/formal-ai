@@ -87,6 +87,26 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "software_project_request", browserHandler: "trySoftwareProjectRequest", admitsOn: ["object_phrase_artifact","approval_of_a_proposal"], refusalEvents: [] },
     { handler: "memory_program", browserHandler: "tryMemoryProgram", admitsOn: ["memory_program_reading"], refusalEvents: [] },
     { handler: "memory_program_gap", browserHandler: "tryMemoryProgramGap", admitsOn: ["memory_program_reading"], refusalEvents: [] },
+    { handler: "conversation_control", browserHandler: "", admitsOn: ["backticked_term","prior_reply"], refusalEvents: ["conversation_control:refusal"] },
+    { handler: "agentic_continuation", browserHandler: "tryAgenticContinuation", admitsOn: ["prior_reply"], refusalEvents: ["agentic_continuation:refusal"] },
+    { handler: "clarification", browserHandler: "tryClarification", admitsOn: ["prior_reply"], refusalEvents: ["clarification:refusal"] },
+    { handler: "current_dialogue_fact_checking", browserHandler: "tryCurrentDialogueFactChecking", admitsOn: ["prior_user_request"], refusalEvents: ["current_dialogue_fact_checking:refusal"] },
+    { handler: "historical", browserHandler: "tryHistorical", admitsOn: ["dialogue_turn","name_assignment"], refusalEvents: ["conversation_recall:refusal"] },
+    { handler: "conversation_memory", browserHandler: "", admitsOn: ["dialogue_turn","name_assignment","recall_query_term","supplied_payload"], refusalEvents: ["conversation_recall:refusal"] },
+    { handler: "summarization", browserHandler: "", admitsOn: ["summary_topic"], refusalEvents: ["summarization:refusal"] },
+    { handler: "brainstorming", browserHandler: "tryBrainstormingRequest", admitsOn: ["brainstorm_category"], refusalEvents: ["brainstorming:refusal"] },
+    { handler: "roleplay", browserHandler: "tryRoleplayRequest", admitsOn: ["persona_or_topic"], refusalEvents: ["roleplay:refusal"] },
+    { handler: "document_originality_check", browserHandler: "tryDocumentOriginalityCheck", admitsOn: ["document_operand"], refusalEvents: ["document_originality_check:refusal"] },
+    { handler: "translation", browserHandler: "tryTranslation", admitsOn: ["translation_text"], refusalEvents: ["translation:refusal"] },
+    { handler: "triz_resolution", browserHandler: "tryTrizResolution", admitsOn: ["triz_precedent"], refusalEvents: ["triz_resolution:refusal"] },
+    { handler: "algorithm", browserHandler: "tryAlgorithm", admitsOn: ["algorithm_operation"], refusalEvents: ["algorithm:refusal"] },
+    { handler: "source_refresh", browserHandler: "trySourceRefresh", admitsOn: ["source_reference"], refusalEvents: ["source_refresh:refusal"] },
+    { handler: "proof_request", browserHandler: "tryProofRequest", admitsOn: ["stated_claim"], refusalEvents: ["proof_request:refusal"] },
+    { handler: "capabilities", browserHandler: "tryCapabilities", admitsOn: ["assistant_subject"], refusalEvents: [] },
+    { handler: "meta_explanation", browserHandler: "tryMetaExplanation", admitsOn: ["assistant_subject"], refusalEvents: [] },
+    { handler: "network_query", browserHandler: "tryNetworkSnapshot", admitsOn: ["assistant_subject"], refusalEvents: [] },
+    { handler: "exact_memory_query", browserHandler: "tryExactMemoryQuery", admitsOn: ["memory_query_statement"], refusalEvents: [] },
+    { handler: "fact_lookup", browserHandler: "", admitsOn: ["fact_subject"], refusalEvents: [] },
   ]);
 });
 
@@ -180,7 +200,7 @@ test("a numeric handler answers only where its row admits", async () => {
 });
 
 test("a handler with no claim row is admitted as before", async () => {
-  assert.equal(await admits("tryRoleplayRequest", "Pretend you are a pirate"), true);
+  assert.equal(await admits("tryKupiSlona", "Купи слона"), true);
 });
 
 test("R1175-3 refusal lane: a cued request without its operand keeps only its named refusal", async () => {
@@ -301,4 +321,43 @@ test("R1175-3: a class handler answers only where its row admits", async () => {
   })`));
   assert.deepEqual(kept, kept.map(([raw]) => [raw, raw]));
   assert.ok(kept.every(([raw]) => raw), JSON.stringify(kept));
+});
+
+// Issue #1175 R3, follow-up round: a handler that answered without its input
+// records a named refusal event there and keeps that answer through the
+// refusal lane; the assistant is the subject of a question that addresses it
+// or names no other subject (rust/tests/unit/issue_1175_claim_routing.rs).
+test("R1175-3 follow-up round: a handler without its input is admitted to its refusal lane only", async () => {
+  await seeded;
+  const admission = (handler, prompt, history = []) => plain(evaluate(worker,
+    `claimRouteAdmission(${JSON.stringify(handler)}, ${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}), ${JSON.stringify(history)})`));
+  for (const [handler, bare, full] of [
+    ["tryAlgorithm", "Write an algorithm", "Write a sorting algorithm in Python"],
+    ["tryProofRequest", "Prove it", "Prove that 2 + 2 = 4"],
+    ["tryTranslation", "Translate to Russian", "Translate \"apple\" to Russian"],
+    ["trySourceRefresh", "Refresh the cache", "Refresh the cached page https://example.com/docs"],
+  ]) {
+    assert.equal(await admission(handler, bare), "refusal", bare);
+    assert.equal(await admission(handler, full), "full", full);
+  }
+  const reply = [{ role: "user", content: "Delete the logs" }, { role: "assistant", content: "Deleted." }];
+  assert.equal(await admission("tryClarification", "I don't understand", reply), "full");
+  assert.equal(await admission("tryClarification", "I don't understand"), "refusal");
+  // The no-input answer records its refusal event, so it still stands.
+  const answer = plain(await evaluate(worker, 'solve("Continue", [], {}, {}, [], {})'));
+  assert.equal(answer.intent, "continuation_cue");
+});
+
+test("R1175-3 follow-up round: the assistant is the subject unless another is named", async () => {
+  assert.equal(await evidence("assistant_subject", "What can you do?"), true);
+  assert.equal(await evidence("assistant_subject", "show me the network"), true);
+  assert.equal(await evidence("assistant_subject", "What is a monad?"), false);
+  assert.equal(await evidence("memory_query_statement", "select content from memory"), true);
+  assert.equal(await evidence("memory_query_statement", "remember that I like tea"), false);
+});
+
+test("R1173-3: a comma after the advice verb still reaches the advice handler", async () => {
+  await seeded;
+  const answer = plain(await evaluate(worker, 'solve("Посоветуй, как лучше спать", [], {}, {}, [], {})'));
+  assert.equal(answer.intent, "advice");
 });

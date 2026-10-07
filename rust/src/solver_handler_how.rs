@@ -310,7 +310,13 @@ fn extract_how_it_works_query(prompt: &str, _normalized: &str) -> Option<HowItWo
 /// The `mechanism_subject` claim evidence of issue #1175 R3.
 #[must_use]
 pub fn names_mechanism_subject(prompt: &str) -> bool {
-    extract_how_it_works_query(prompt, "").is_some_and(|query| query.subject.is_some())
+    mechanism_subject_term(prompt).is_some()
+}
+
+/// The subject a mechanism question names, if any.
+#[must_use]
+pub fn mechanism_subject_term(prompt: &str) -> Option<String> {
+    extract_how_it_works_query(prompt, "").and_then(|query| query.subject)
 }
 
 /// Is `lower` a bare "how it works" form — a fixed phrase carrying no subject?

@@ -85,6 +85,7 @@ function handleAlgorithm(prompt, normalized) {
   const log = codeTaskLog();
   codeTaskLogAppend(log, "execution_status", "unavailable");
   codeTaskLogAppend(log, "execution_environment", "no compile/run sandbox configured for this generated snippet");
+  if (!operationMatchesSlug("sort", normalizePrompt(normalized))) codeTaskLogAppend(log, "algorithm:refusal", "no operation named"); // #1175 R3
   return codeTaskAnswer(log, "algorithm_sort_" + language, "response:algorithm",
     algorithmSortingAnswer(language, normalized.includes("test")), 1.0);
 }

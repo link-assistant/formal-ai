@@ -123,6 +123,10 @@ pub(super) fn try_summarize_conversation(
     // decision table answered the bare phrase with a literal web search and a
     // hallucinated fetch loop (agentic CLI matrix, summarize leg).
     if turns.is_empty() && !prompt.trim().is_empty() {
+        log.append(
+            "conversation_recall:refusal",
+            "conversation not started".to_owned(),
+        );
         turns.push(DialogTurn::user(prompt.trim().to_owned()));
     }
     let user_turn_count = turns.iter().filter(|turn| turn.role == "user").count();

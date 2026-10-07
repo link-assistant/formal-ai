@@ -224,7 +224,7 @@ function tryProofRequest(prompt, normalized, language) {
       "pipeline:planned:relative-meta-logic",
       "proof_outcome:partial_plan",
       `language:${language}`,
-    ],
+    ].concat(claimEvidenceStatedClaim(claim) ? [] : ["proof_request:refusal:no stated claim"]), // #1175 R3
   };
 }
 

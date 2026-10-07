@@ -169,7 +169,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryPunctuationOnlyPrompt" });
     return finalize(events, steps, toolCalls, punctuationOnly, formalizationContext);
   }
-  const translation = await tryTranslation(prompt, normalized);
+  const translation = await claimRouteRun("tryTranslation", prompt, normalized, history, () => tryTranslation(prompt, normalized));
   if (translation) {
     events.push(`handler:${translation.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTranslation" });
@@ -310,7 +310,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   }
 
   const capabilities = !isAssistantFreeTimePrompt(normalized, prompt)
-    && tryCapabilities(prompt, normalized, preferences, history);
+    && claimRouteRun("tryCapabilities", prompt, normalized, history, () => tryCapabilities(prompt, normalized, preferences, history));
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
@@ -639,7 +639,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, procedureFollowup, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "document_originality_check" });
-  const originality = tryDocumentOriginalityCheck(prompt, language);
+  const originality = claimRouteRun("tryDocumentOriginalityCheck", prompt, normalized, history, () => tryDocumentOriginalityCheck(prompt, language));
   if (originality) {
     events.push(`handler:${originality.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryDocumentOriginalityCheck" });

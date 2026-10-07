@@ -31,7 +31,6 @@ routing_probes
     language ru
     intent advice
     prompt "Посоветуй, как лучше спать"
-    rust_misroute unknown
   probe p007
     lane agentic_continuation
     language en

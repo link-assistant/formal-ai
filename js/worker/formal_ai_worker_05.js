@@ -414,6 +414,7 @@ async function tryTranslation(prompt, normalized) {
     `meaning:${meaningId}`,
   ];
   if (translation.gap && surface) evidence.push(`translation_gap:${surface}`);
+  if (!surface) evidence.push("translation:refusal:no source phrase"); // #1175 R3 refusal lane
   return {
     intent: `translate_${source}_to_${target}`,
     content,
@@ -465,8 +466,8 @@ function tryBrainstormingRequest(prompt, normalized) {
   const seeds = BRAINSTORM_SEEDS || {};
   if (!containsAny(normalized, seeds.triggers)) return null;
   const categories = Array.isArray(seeds.categories) ? seeds.categories : [];
-  const category =
-    categories.find((entry) => containsAny(normalized, entry.detectionKeywords)) ||
+  const keyworded = categories.find((entry) => containsAny(normalized, entry.detectionKeywords));
+  const category = keyworded ||
     categories.find((entry) => !entry.detectionKeywords || entry.detectionKeywords.length === 0);
   if (!category || !Array.isArray(category.items) || category.items.length === 0) {
     return null;
@@ -476,7 +477,8 @@ function tryBrainstormingRequest(prompt, normalized) {
     intent: category.intent || "brainstorm_project_ideas",
     content: numbered(category.items, count),
     confidence: 0.8,
-    evidence: [`brainstorm:category:${category.slug || "project_ideas"}`],
+    evidence: [`brainstorm:category:${category.slug || "project_ideas"}`]
+      .concat(keyworded ? [] : ["brainstorming:refusal:no category keyword"]), // #1175 R3 refusal lane
   };
 }
 
@@ -627,6 +629,7 @@ function tryRoleplayRequest(prompt, normalized) {
   const evidence = [`roleplay:persona:${displayName}`];
   if (persona && persona.wikidata) evidence.push(`wikidata:${persona.wikidata}`);
   if (topic && topic.slug) evidence.push(`roleplay:topic:${topic.slug}`);
+  if (!persona && !topic) evidence.push("roleplay:refusal:no persona or topic"); // #1175 R3 refusal lane
   return {
     intent: "roleplay_explanation",
     content: renderRoleplayBody(displayName, body),
@@ -836,7 +839,7 @@ function tryRecallPreviousMessage(prompt, history) {
     evidence: [
       "recall_previous_message",
       previous ? `prior_turn:${previous.role}` : "prior_turn:none",
-    ],
+    ].concat(previous ? [] : ["conversation_recall:refusal:no previous message"]),
   };
 }
 

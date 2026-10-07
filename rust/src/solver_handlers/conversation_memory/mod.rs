@@ -324,6 +324,10 @@ fn try_recall_previous_message(
         render_previous_message(role, &content, language)
     } else {
         log.append("filter:user", "previous_message:none".to_owned());
+        log.append(
+            "conversation_recall:refusal",
+            "no previous message".to_owned(),
+        );
         render_no_previous_message(language)
     };
     Some(finalize_simple(
@@ -440,6 +444,14 @@ fn try_memory_recall(
         &body,
         0.9,
     ))
+}
+
+/// Whether the request names a term to recall from the conversation.
+///
+/// The `recall_query_term` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_recall_query(normalized: &str) -> bool {
+    recognize_recall_query(normalized).is_some()
 }
 
 fn recognize_recall_query(normalized: &str) -> Option<RecallQuery> {

@@ -75,6 +75,70 @@ function claimEvidenceInstallSteps(prompt, normalized) {
     && extractInstallationSteps(prompt, format).length > 0;
 }
 
+/** The text after the first colon, trimmed (a supplied payload; Rust `supplied_payload`). */
+function claimEvidencePayload(prompt) {
+  const text = String(prompt || "");
+  const colon = text.indexOf(":");
+  return colon === -1 ? "" : text.slice(colon + 1).trim();
+}
+
+/** The term a conversation-recall query names (Rust `recognize_recall_query`). */
+function claimEvidenceRecallQueryTerm(normalized) {
+  const text = String(normalized || "");
+  return [ROLE_CONVERSATION_RECALL_QUERY, ROLE_CONVERSATION_RECALL_OTHER_QUERY].some((role) => roleWordForms(role).some((form) => {
+    let raw = null;
+    if (form.slot === "prefix" && text.startsWith(form.before)) raw = text.slice(form.before.length);
+    else if (form.slot === "suffix" && text.endsWith(form.after)) raw = text.slice(0, text.length - form.after.length);
+    else if (form.slot === "circumfix" && text.startsWith(form.before) && text.endsWith(form.after)
+      && text.length > form.before.length + form.after.length) raw = text.slice(form.before.length, text.length - form.after.length);
+    return raw !== null && raw.replace(/[\s`"':\-_.,?!()]+/gu, "") !== "";
+  }));
+}
+
+/** Whether a seeded summary topic's detection keyword occurs (Rust `SummaryTopicSeeds::pick_topic`). */
+function claimEvidenceSummaryTopic(normalized) {
+  const text = seedRawText(SEED_RAW, "summary-topics.lino") || "";
+  return text.split("\n").filter((line) => /^\s+detection_keywords /u.test(line))
+    .some((line) => [...line.matchAll(/"([^"]+)"/gu)].some((match) => String(normalized || "").includes(match[1])));
+}
+
+/** A document the originality check reads: an attachment, a text sample or a supplied payload (Rust `names_document_operand`). */
+function claimEvidenceDocumentOperand(prompt) {
+  return extractDocumentOriginalityAttachmentNames(prompt).length > 0 || hasDocumentOriginalityTextSample(prompt)
+    || claimEvidencePayload(prompt) !== "";
+}
+
+/** The words of `text` outside the surfaces of `roles` and the seeded function words (Rust `content_beyond_roles`). */
+function claimEvidenceContentBeyond(text, roles) {
+  const covered = new Set([...roles, "request_function_word", "statement_function_word"]
+    .flatMap((role) => wordsForRole(role)).flatMap((surface) => claimEvidenceWords(String(surface).toLowerCase())));
+  return claimEvidenceWords(String(text || "").toLowerCase()).some((word) => !covered.has(word));
+}
+
+/** Whether the proof request states a claim beyond its directive (Rust `names_stated_claim`). */
+function claimEvidenceStatedClaim(claim) {
+  return claimEvidenceContentBeyond(claim, ["proof_directive", "proof_request_lead", "proof_claim_scaffold", "proof_marker"]);
+}
+
+/**
+ * Whether the prompt names a subject other than the assistant: the concept,
+ * dictionary or mechanism reader extracts a term with a word beyond the
+ * seeded function words (Rust `names_other_subject`).
+ */
+function claimEvidenceNamesOtherSubject(prompt) {
+  const query = extractConceptQuery(prompt);
+  const definition = wordDefinitionTerm(prompt);
+  const subjects = [query && query.term, definition && (definition.term || definition[0]), extractHowItWorksSubject(prompt, nativeLaneLowercase(prompt))];
+  return subjects.some((subject) => typeof subject === "string" && claimEvidenceContentBeyond(subject, []));
+}
+
+/** A memory query statement in a dialect the WebAssembly engine reads (Rust `memory_query_worker::detect_dialect`). */
+function claimEvidenceMemoryQueryStatement(prompt) {
+  const text = String(prompt || "").trim().toLowerCase();
+  return ["select ", "insert into ", "update ", "delete from "].some((lead) => text.startsWith(lead))
+    || (text.includes("{") && ["query", "mutation", "{"].some((lead) => text.startsWith(lead)) && text.includes("memory"));
+}
+
 const CLASS_CLAIM_EVIDENCE = Object.freeze({
   // (b) The earlier turn the follow-up continues.
   dialogue_turn: (prompt, normalized, history) => claimEvidenceTurns(history).length > 0,
@@ -137,6 +201,27 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   punctuation_only: (prompt) => String(prompt || "").trim() !== "" && !/[\p{L}\p{N}]/u.test(String(prompt || "")),
   unbalanced_brackets: (prompt) => claimEvidenceUnbalancedBrackets(prompt),
   memory_program_reading: (prompt) => compileMemoryProgramOnce(prompt).status !== "not_memory_program",
+  // Follow-up round of #1175 R3: the no-input arms record a refusal event, these read the input.
+  backticked_term: (prompt) => /`[^`]*\S[^`]*`/u.test(String(prompt || "")),
+  name_assignment: (prompt) => Boolean(extractAssistantName(prompt) || extractName(String(prompt || ""))),
+  recall_query_term: (prompt, normalized) => claimEvidenceRecallQueryTerm(normalized),
+  supplied_payload: (prompt) => claimEvidencePayload(prompt) !== "",
+  summary_topic: (prompt, normalized) => claimEvidenceSummaryTopic(normalized),
+  brainstorm_category: (prompt, normalized) => ((BRAINSTORM_SEEDS || {}).categories || [])
+    .some((category) => containsAny(normalized, category.detectionKeywords)),
+  persona_or_topic: (prompt, normalized) => ((PERSONA_SEEDS || {}).personas || []).some((persona) => containsAny(normalized, persona.aliases))
+    || ((PERSONA_SEEDS || {}).topics || []).some((topic) => containsAny(normalized, topic.detectionKeywords)),
+  document_operand: (prompt) => claimEvidenceDocumentOperand(prompt),
+  translation_text: (prompt) => Boolean(extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt)
+    || /`[^`]+`/u.test(String(prompt || "")) || textTransformFreeTextPayload(prompt)),
+  triz_precedent: (prompt) => trizRelevantTasks(prompt, trizBenchmarkTasks()).length > 0,
+  algorithm_operation: (prompt) => operationMatchesSlug("sort", normalizePrompt(String(prompt || "").toLowerCase())),
+  source_reference: (prompt) => firstUrlCandidate(prompt) !== null || /(^|\s)[\w.-]*\/[\w.\/-]+/u.test(String(prompt || "")),
+  stated_claim: (prompt) => claimEvidenceStatedClaim(extractProofClaim(normalizePrompt(prompt))),
+  assistant_subject: (prompt, normalized) => claimEvidenceAddressesAssistant(normalized) || !claimEvidenceNamesOtherSubject(prompt),
+  memory_query_statement: (prompt) => claimEvidenceMemoryQueryStatement(prompt),
+  fact_subject: (prompt, normalized) => Boolean(gatedFactRecord(normalized, prompt) || explanationConcept(prompt)
+    || tryPromptTextQuestion(prompt, normalized) || tryFactComparison(prompt, normalized)),
   // Native-only readers with no worker twin (the browser has no handler to admit).
   learnable_source: () => false,
 });

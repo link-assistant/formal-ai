@@ -244,7 +244,8 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
       intent: "action_correction",
       content: answerFor("action_correction", language),
       confidence: 1.0,
-      evidence: ["action_correction:unauthorized_mutation"],
+      evidence: ["action_correction:unauthorized_mutation"] // #1175 R3: no earlier action is the refusal lane
+        .concat(lastHistoryTurn(history, "assistant") ? [] : ["conversation_control:refusal:no earlier action"]),
     };
   }
   const updateRule = runtimeRuleFromText(prompt);

@@ -721,6 +721,14 @@ pub fn handle_advice_request(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // The canonical reading folds punctuation, as the browser twin does, so a
+    // comma after the advice verb ("Посоветуй, как …") does not hide it.
+    let canonical = crate::engine::normalize_prompt(prompt);
+    let normalized = if canonical.is_empty() {
+        normalized
+    } else {
+        canonical.as_str()
+    };
     if !crate::seed::lexicon().mentions_role(ROLE_ADVICE, normalized) {
         return None;
     }

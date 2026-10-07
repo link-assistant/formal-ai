@@ -57,8 +57,8 @@ function nativeLaneRender(template, values) {
  * @param {string} normalized
  * @returns {object|null}
  */
-function tryAgenticContinuation(prompt, normalized) {
-  return runHandlerRuleSet("agentic_continuation", prompt, normalized, []);
+function tryAgenticContinuation(prompt, normalized, history = []) {
+  return runHandlerRuleSet("agentic_continuation", prompt, normalized, history);
 }
 
 /**
@@ -261,7 +261,8 @@ function trySourceRefresh(prompt) {
     intent: "source_refresh",
     content: nativeLaneRender(answerFor("source_refresh", "en"), { target }),
     confidence: 1.0,
-    evidence: [`source_refresh:${target}`, "response:source_refresh"],
+    evidence: [`source_refresh:${target}`, "response:source_refresh"] // #1175 R3: no named source is the refusal lane
+      .concat(CLASS_CLAIM_EVIDENCE.source_reference(prompt) ? [] : ["source_refresh:refusal:no source named"]),
   };
 }
 

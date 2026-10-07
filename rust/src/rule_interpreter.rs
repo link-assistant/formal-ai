@@ -124,6 +124,8 @@ enum Condition {
     UnbalancedParentheses,
     RouteExact(String),
     HistoryRole(String),
+    /// An earlier turn of this role (`user`, `assistant`, or `any`) exists.
+    PriorTurn(String),
     Shape(Shape, Subject),
 }
 
@@ -798,6 +800,11 @@ impl Condition {
                         })
                     })
             }
+            Self::PriorTurn(role) => log.events().iter().any(|event| match event.kind {
+                "prior_turn:user" => role == "user" || role == "any",
+                "prior_turn:assistant" => role == "assistant" || role == "any",
+                _ => false,
+            }),
             Self::Shape(shape, subject) => shape.holds(context.text(*subject)),
         }
     }

@@ -120,6 +120,7 @@ function handlerRulesParseCondition(node) {
     case "only_characters":
     case "route_exact":
     case "history_role":
+    case "prior_turn":
       return { kind: node.name, value: handlerRulesFirstArg(node), subject };
     case "unbalanced_parentheses":
       return { kind: node.name, subject };
@@ -476,6 +477,8 @@ function handlerRulesHolds(condition, context) {
         return surfaces.some((surface) => surface.text !== "" && payload.includes(surface.text));
       });
     }
+    case "prior_turn": // #1175 R3: an earlier turn of this role (`any` for either) exists (Rust Condition::PriorTurn)
+      return context.history.some((turn) => turn && (turn.content || turn.text) && (condition.value === "any" || turn.role === condition.value));
     case "shape":
       return handlerRulesShapeHolds(condition.value, text);
     case "cue_set":
@@ -646,8 +649,8 @@ function runHandlerRuleSet(name, prompt, normalized, history) {
  * @param {string} normalized
  * @returns {object|null}
  */
-function tryClarification(prompt, normalized) {
-  return runHandlerRuleSet("clarification", prompt, normalized, []);
+function tryClarification(prompt, normalized, history = []) {
+  return runHandlerRuleSet("clarification", prompt, normalized, history);
 }
 
 /**

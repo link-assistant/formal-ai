@@ -123,6 +123,9 @@ pub fn try_proof_request_with_config(
     }
     log.append("pipeline:planned", "relative-meta-logic".to_owned());
     let claim = extract_claim_from_prompt(normalized);
+    if !crate::capability_routing::content_beyond_roles(&claim, PROOF_SCAFFOLD_ROLES) {
+        log.append("proof_request:refusal", "no stated claim".to_owned());
+    }
     let outcome = attempt_proof_with_config(
         prompt,
         &claim,
@@ -158,6 +161,25 @@ pub fn try_proof_request_with_config(
         &body,
         confidence,
     ))
+}
+
+/// The seed roles whose surfaces frame a proof request rather than state its claim.
+const PROOF_SCAFFOLD_ROLES: &[&str] = &[
+    seed::ROLE_PROOF_DIRECTIVE,
+    seed::ROLE_PROOF_REQUEST_LEAD,
+    seed::ROLE_PROOF_CLAIM_SCAFFOLD,
+    seed::ROLE_PROOF_MARKER,
+];
+
+/// Whether the proof request states a claim beyond its directive and scaffold.
+///
+/// The `stated_claim` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_stated_claim(normalized: &str) -> bool {
+    crate::capability_routing::content_beyond_roles(
+        &extract_claim_from_prompt(normalized),
+        PROOF_SCAFFOLD_ROLES,
+    )
 }
 
 fn is_known_unsolved_bounded_proof_request(normalized: &str) -> bool {

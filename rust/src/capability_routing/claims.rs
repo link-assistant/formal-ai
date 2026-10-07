@@ -107,6 +107,23 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "unbalanced_brackets",
     "memory_program_reading",
     "learnable_source",
+    // Follow-up round of issue #1175 R3.
+    "backticked_term",
+    "name_assignment",
+    "recall_query_term",
+    "supplied_payload",
+    "summary_topic",
+    "brainstorm_category",
+    "persona_or_topic",
+    "document_operand",
+    "translation_text",
+    "triz_precedent",
+    "algorithm_operation",
+    "source_reference",
+    "stated_claim",
+    "assistant_subject",
+    "memory_query_statement",
+    "fact_subject",
 ];
 
 /// Parse the `claim` rows of a capability-routing document.

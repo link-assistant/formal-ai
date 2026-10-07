@@ -224,6 +224,12 @@ pub fn handle_triz(prompt: &str, normalized: &str, log: &mut EventLog) -> Option
     for task in &relevant {
         log.append("triz_solver:precedent", task.task_id.clone());
     }
+    if relevant.is_empty() {
+        log.append(
+            "triz_resolution:refusal",
+            "no overlapping precedent".to_owned(),
+        );
+    }
     // With no overlapping task, cite the first three corpus entries as
     // canonical shape examples rather than nothing.
     let cited: Vec<&BenchmarkTask> = if relevant.is_empty() {

@@ -134,6 +134,7 @@ function tryTrizResolution(prompt, normalized) {
   const relevant = trizRelevantTasks(prompt, tasks);
   const evidence = ["handler:triz_resolution", "triz_solver:cued:contradiction question"];
   for (const task of relevant) evidence.push(`triz_solver:precedent:${task.taskId}`);
+  if (relevant.length === 0) evidence.push("triz_resolution:refusal:no overlapping precedent"); // #1175 R3
   const cited = (relevant.length === 0 ? tasks : relevant).slice(0, 3);
   const familiesText = families
     .map((family) => `- ${family.name}: ${family.mechanism}`)

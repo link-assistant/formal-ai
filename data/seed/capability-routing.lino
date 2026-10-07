@@ -719,3 +719,120 @@ capability_routing
     browser_handler tryMemoryProgramGap
     admits_on memory_program_reading
     because "issue 1175 R3: a memory program gap claims only when the request reads as a seeded program family"
+  claim_note "Issue 1175 R3 follow-up round: a handler that used to answer without its input now records a named refusal event in that branch, so its row admits on the input and keeps the no-input answer through the refusal lane; the assistant itself is the subject of a question that addresses it or names no other subject."
+  claim
+    handler conversation_control
+    admits_on backticked_term
+    admits_on prior_reply
+    refusal_event "conversation_control:refusal"
+    because "issue 1175 R3: a preference claims with the backticked term it avoids and a correction with the earlier action it corrects; a correction with no earlier turn is admitted to the refusal lane"
+  claim
+    handler agentic_continuation
+    browser_handler tryAgenticContinuation
+    admits_on prior_reply
+    refusal_event "agentic_continuation:refusal"
+    because "issue 1175 R3: a continuation claims with the earlier task it resumes; with nothing to resume it is admitted to the refusal lane"
+  claim
+    handler clarification
+    browser_handler tryClarification
+    admits_on prior_reply
+    refusal_event "clarification:refusal"
+    because "issue 1175 R3: a clarification request claims with the earlier reply it asks about; with none it is admitted to the refusal lane"
+  claim
+    handler current_dialogue_fact_checking
+    browser_handler tryCurrentDialogueFactChecking
+    admits_on prior_user_request
+    refusal_event "current_dialogue_fact_checking:refusal"
+    because "issue 1175 R3: a dialogue fact check claims with the earlier statements it checks; with none it is admitted to the refusal lane"
+  claim
+    handler historical
+    browser_handler tryHistorical
+    admits_on dialogue_turn
+    admits_on name_assignment
+    refusal_event "conversation_recall:refusal"
+    because "issue 1175 R3: a recap or recall claims with the earlier turns it reads, a naming with the name it assigns; a recall with no earlier message is admitted to the refusal lane"
+  claim
+    handler conversation_memory
+    admits_on dialogue_turn
+    admits_on name_assignment
+    admits_on recall_query_term
+    admits_on supplied_payload
+    refusal_event "conversation_recall:refusal"
+    because "issue 1175 R3: a conversation recall claims with the earlier turns, the name it assigns, the term it recalls or the text it summarizes; a request with none of them is admitted to the refusal lane"
+  claim
+    handler summarization
+    admits_on summary_topic
+    refusal_event "summarization:refusal"
+    because "issue 1175 R3: a topic summary claims with the seeded topic it summarizes; any other topic is admitted to the refusal lane"
+  claim
+    handler brainstorming
+    browser_handler tryBrainstormingRequest
+    admits_on brainstorm_category
+    refusal_event "brainstorming:refusal"
+    because "issue 1175 R3: a brainstorm list claims with the category its keywords name; the default category is admitted to the refusal lane"
+  claim
+    handler roleplay
+    browser_handler tryRoleplayRequest
+    admits_on persona_or_topic
+    refusal_event "roleplay:refusal"
+    because "issue 1175 R3: a roleplay claims with the persona or topic it names; the default persona on the fallback topic is admitted to the refusal lane"
+  claim
+    handler document_originality_check
+    browser_handler tryDocumentOriginalityCheck
+    admits_on document_operand
+    refusal_event "document_originality_check:refusal"
+    because "issue 1175 R3: an originality check claims with the document it checks, an attachment, a text sample or a supplied text; a named but unsupplied document is admitted to the refusal lane"
+  claim
+    handler translation
+    browser_handler tryTranslation
+    admits_on translation_text
+    refusal_event "translation:refusal"
+    because "issue 1175 R3: a translation claims with the text it translates; a request with no source phrase is admitted to the refusal lane"
+  claim
+    handler triz_resolution
+    browser_handler tryTrizResolution
+    admits_on triz_precedent
+    refusal_event "triz_resolution:refusal"
+    because "issue 1175 R3: a contradiction question claims with the precedent its words overlap; with none it is admitted to the refusal lane"
+  claim
+    handler algorithm
+    browser_handler tryAlgorithm
+    admits_on algorithm_operation
+    refusal_event "algorithm:refusal"
+    because "issue 1175 R3: an algorithm request claims with the operation it names; with none it is admitted to the refusal lane"
+  claim
+    handler source_refresh
+    browser_handler trySourceRefresh
+    admits_on source_reference
+    refusal_event "source_refresh:refusal"
+    because "issue 1175 R3: a refresh claims with the source it names, a URL or a path; with none it is admitted to the refusal lane"
+  claim
+    handler proof_request
+    browser_handler tryProofRequest
+    admits_on stated_claim
+    refusal_event "proof_request:refusal"
+    because "issue 1175 R3: a proof request claims with the claim it states beyond its directive; with none it is admitted to the refusal lane"
+  claim
+    handler capabilities
+    browser_handler tryCapabilities
+    admits_on assistant_subject
+    because "issue 1175 R3: a capability question claims only when its subject is the assistant, addressed or left unnamed, never when it names another subject"
+  claim
+    handler meta_explanation
+    browser_handler tryMetaExplanation
+    admits_on assistant_subject
+    because "issue 1175 R3: a question about how or why the assistant answers claims only when its subject is the assistant, addressed or left unnamed"
+  claim
+    handler network_query
+    browser_handler tryNetworkSnapshot
+    admits_on assistant_subject
+    because "issue 1175 R3: a network question claims only when its subject is the assistant's own network, addressed or left unnamed"
+  claim
+    handler exact_memory_query
+    browser_handler tryExactMemoryQuery
+    admits_on memory_query_statement
+    because "issue 1175 R3: an exact memory query claims only with a statement in a memory query dialect"
+  claim
+    handler fact_lookup
+    admits_on fact_subject
+    because "issue 1175 R3: a fact question claims only with the subject one of its arms resolves: a question over supplied text, a comparison of seeded subjects, the gated record, a live relation and subject, or the concept an explanation researches"

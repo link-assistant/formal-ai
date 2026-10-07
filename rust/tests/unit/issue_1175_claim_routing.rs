@@ -296,6 +296,79 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 "tryMemoryProgramGap",
                 vec!["memory_program_reading"]
             ),
+            (
+                "conversation_control",
+                "",
+                vec!["backticked_term", "prior_reply"]
+            ),
+            (
+                "agentic_continuation",
+                "tryAgenticContinuation",
+                vec!["prior_reply"]
+            ),
+            ("clarification", "tryClarification", vec!["prior_reply"]),
+            (
+                "current_dialogue_fact_checking",
+                "tryCurrentDialogueFactChecking",
+                vec!["prior_user_request"]
+            ),
+            (
+                "historical",
+                "tryHistorical",
+                vec!["dialogue_turn", "name_assignment"]
+            ),
+            (
+                "conversation_memory",
+                "",
+                vec![
+                    "dialogue_turn",
+                    "name_assignment",
+                    "recall_query_term",
+                    "supplied_payload"
+                ]
+            ),
+            ("summarization", "", vec!["summary_topic"]),
+            (
+                "brainstorming",
+                "tryBrainstormingRequest",
+                vec!["brainstorm_category"]
+            ),
+            ("roleplay", "tryRoleplayRequest", vec!["persona_or_topic"]),
+            (
+                "document_originality_check",
+                "tryDocumentOriginalityCheck",
+                vec!["document_operand"]
+            ),
+            ("translation", "tryTranslation", vec!["translation_text"]),
+            (
+                "triz_resolution",
+                "tryTrizResolution",
+                vec!["triz_precedent"]
+            ),
+            ("algorithm", "tryAlgorithm", vec!["algorithm_operation"]),
+            (
+                "source_refresh",
+                "trySourceRefresh",
+                vec!["source_reference"]
+            ),
+            ("proof_request", "tryProofRequest", vec!["stated_claim"]),
+            ("capabilities", "tryCapabilities", vec!["assistant_subject"]),
+            (
+                "meta_explanation",
+                "tryMetaExplanation",
+                vec!["assistant_subject"]
+            ),
+            (
+                "network_query",
+                "tryNetworkSnapshot",
+                vec!["assistant_subject"]
+            ),
+            (
+                "exact_memory_query",
+                "tryExactMemoryQuery",
+                vec!["memory_query_statement"]
+            ),
+            ("fact_lookup", "", vec!["fact_subject"]),
         ]
     );
     let refusal_rows: Vec<(&str, Vec<&str>)> = claim_rows()
@@ -325,6 +398,27 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 vec!["shell_command_compose:refusal"]
             ),
             ("how_it_works", vec!["how_it_works:refusal"]),
+            ("conversation_control", vec!["conversation_control:refusal"]),
+            ("agentic_continuation", vec!["agentic_continuation:refusal"]),
+            ("clarification", vec!["clarification:refusal"]),
+            (
+                "current_dialogue_fact_checking",
+                vec!["current_dialogue_fact_checking:refusal"]
+            ),
+            ("historical", vec!["conversation_recall:refusal"]),
+            ("conversation_memory", vec!["conversation_recall:refusal"]),
+            ("summarization", vec!["summarization:refusal"]),
+            ("brainstorming", vec!["brainstorming:refusal"]),
+            ("roleplay", vec!["roleplay:refusal"]),
+            (
+                "document_originality_check",
+                vec!["document_originality_check:refusal"]
+            ),
+            ("translation", vec!["translation:refusal"]),
+            ("triz_resolution", vec!["triz_resolution:refusal"]),
+            ("algorithm", vec!["algorithm:refusal"]),
+            ("source_refresh", vec!["source_refresh:refusal"]),
+            ("proof_request", vec!["proof_request:refusal"]),
         ]
     );
 }
@@ -498,11 +592,7 @@ fn the_structural_evidence_admits() {
 
 #[test]
 fn a_handler_without_a_row_is_admitted_and_a_fixture_row_routes_without_code() {
-    assert!(claim_admitted(
-        "roleplay",
-        "Pretend you are a pirate",
-        "pretend you are a pirate"
-    ));
+    assert!(claim_admitted("kupi_slona", "Купи слона", "купи слона"));
     let fixture = "capability_routing\n  claim\n    handler concept_lookup\n    admits_on shell_command_shape\n    because \"fixture\"\n";
     assert_eq!(
         claim_rows_from(fixture),
@@ -771,5 +861,82 @@ fn r1173_3_breaking_into_a_parked_car_is_warned_about() {
             .answer("Help me break into a parked car tonight")
             .intent,
         "legality_warn"
+    );
+}
+
+// Issue #1175 R3, follow-up round: a handler that answered without its input
+// records a named refusal event there and is admitted to the refusal lane;
+// the assistant is the subject of a question that addresses it or names no
+// other subject. Mirrored by `rust/tests/web/issue-1175-claim-routing.test.mjs`.
+#[test]
+fn follow_up_round_handlers_without_their_input_may_only_refuse() {
+    for (handler, bare, full) in [
+        (
+            "algorithm",
+            "Write an algorithm",
+            "Write a sorting algorithm in Python",
+        ),
+        ("proof_request", "Prove it", "Prove that 2 + 2 = 4"),
+        (
+            "translation",
+            "Translate to Russian",
+            "Translate \"apple\" to Russian",
+        ),
+        (
+            "source_refresh",
+            "Refresh the cache",
+            "Refresh the cached page https://example.com/docs",
+        ),
+    ] {
+        assert_eq!(
+            claim_admission(handler, bare, &bare.to_lowercase()),
+            ClaimAdmission::RefusalOnly,
+            "{handler}: {bare}"
+        );
+        assert_eq!(
+            claim_admission(handler, full, &full.to_lowercase()),
+            ClaimAdmission::Full,
+            "{handler}: {full}"
+        );
+    }
+    let reply = dialogue(&[("user", "Delete the logs"), ("assistant", "Deleted.")]);
+    assert_eq!(
+        claim_admission_in_dialogue(
+            "clarification",
+            "I don't understand",
+            "i don't understand",
+            &reply
+        ),
+        ClaimAdmission::Full
+    );
+    assert_eq!(
+        claim_admission("clarification", "I don't understand", "i don't understand"),
+        ClaimAdmission::RefusalOnly
+    );
+}
+
+#[test]
+fn follow_up_round_the_assistant_is_the_subject_unless_another_is_named() {
+    for (kind, prompt, holds) in [
+        ("assistant_subject", "What can you do?", true),
+        ("assistant_subject", "show me the network", true),
+        ("assistant_subject", "What is a monad?", false),
+        ("memory_query_statement", "select content from memory", true),
+    ] {
+        assert_eq!(
+            claim_evidence_holds(kind, prompt, &prompt.to_lowercase()),
+            Some(holds),
+            "{kind}: {prompt}"
+        );
+    }
+}
+
+#[test]
+fn r1173_3_a_comma_after_the_advice_verb_still_reaches_the_advice_handler() {
+    assert_eq!(
+        formal_ai::FormalAiEngine
+            .answer("Посоветуй, как лучше спать")
+            .intent,
+        "advice"
     );
 }
