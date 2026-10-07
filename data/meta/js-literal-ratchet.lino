@@ -13,7 +13,7 @@
 # wording is data/meta/agentic-messages.lino and the seed responses (R1015).
 # Every number only falls.
 js_literal_ratchet
-  worker_ceiling 1105
+  worker_ceiling 1103
   meta_ceiling 0
   server_ceiling 0
   agentic_ceiling 0
