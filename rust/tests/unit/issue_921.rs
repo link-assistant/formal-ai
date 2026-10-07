@@ -262,6 +262,12 @@ fn issue_921_formal_ai_direction_has_a_canonical_hash_chained_replay() {
             "Install @link-assistant/hive-mind CLI",
             "Hive Mind full-circle integration gate (issue #921)",
             "experiments/issue_921_hive_mind_full_circle/run.sh",
+            // R921-5: the harness writes its raw traces where the failure
+            // steps read them, so a red run prints and uploads its evidence.
+            "OUT=/tmp/formal-ai-issue-921-evidence",
+            "Show the Agent CLI evidence on failure",
+            "Upload E2E logs on failure",
+            "/tmp/formal-ai-issue-*-evidence",
         ],
     );
 }
