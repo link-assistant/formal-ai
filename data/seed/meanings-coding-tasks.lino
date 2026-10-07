@@ -279,6 +279,32 @@ meanings
         text borrar
       surface
         text quita
+  setting
+    defined-by concept
+    role config_value_lead
+    precondition "a request names the setting of a configuration file it wants changed"
+    effect "the line assigning that key gets the new value, in the file's own quoting"
+    unit "not applicable"
+    example "the value of"
+    lexeme en
+      surface
+        text "value of"
+      surface
+        text setting
+    lexeme ru
+      surface
+        text значение
+      surface
+        text настройку
+    lexeme hi
+      surface
+        text मान
+    lexeme zh
+      surface
+        text 值
+    lexeme es
+      surface
+        text "valor de"
   coding_artifact_name
     defined-by relation
     role coding_name_slot

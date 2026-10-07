@@ -239,6 +239,26 @@ multilingual_responses
     intent coding_text_remove
     language es
     text "Se eliminó `{old}` de `{path}` y se verificó el resultado."
+  response response_setting_en
+    intent setting
+    language en
+    text "Set `{old}` to `{new}` in `{path}` and observed the result."
+  response response_setting_ru
+    intent setting
+    language ru
+    text "В `{path}` для `{old}` установлено `{new}`, результат проверен."
+  response response_setting_hi
+    intent setting
+    language hi
+    text "`{path}` में `{old}` को `{new}` पर सेट किया और परिणाम सत्यापित किया।"
+  response response_setting_zh
+    intent setting
+    language zh
+    text "已在 `{path}` 中将 `{old}` 设为 `{new}` 并验证了结果。"
+  response response_setting_es
+    intent setting
+    language es
+    text "Se estableció `{old}` en `{new}` en `{path}` y se verificó el resultado."
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en

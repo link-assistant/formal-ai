@@ -681,7 +681,7 @@ fn matched_intent_cue<'a>(
         .filter(|(intent, cue)| {
             requesting
                 .iter()
-                .any(|sentence| sentence.contains(cue.as_str()))
+                .any(|sentence| sentence_carries_cue(sentence, cue, &vocab.cue_fillers))
                 && (intent.argument != ShellIntentArgument::SearchQuery
                     || vocab
                         .local_search_scopes
@@ -689,6 +689,23 @@ fn matched_intent_cue<'a>(
                         .any(|scope| lower.contains(scope)))
         })
         .max_by_key(|(_, cue)| cue.chars().count())
+}
+
+/// Whether `sentence` carries `cue` as written, or once both drop the seeded
+/// filler words a speaker inserts inside a cue phrase: *"show me git status"*
+/// carries the cue `show git status` (PR #1188 dogfooding).
+fn sentence_carries_cue(sentence: &str, cue: &str, fillers: &[String]) -> bool {
+    if sentence.contains(cue) {
+        return true;
+    }
+    let without_fillers = |text: &str| {
+        text.split_whitespace()
+            .filter(|word| !fillers.iter().any(|filler| filler.as_str() == *word))
+            .collect::<Vec<_>>()
+            .join(" ")
+    };
+    let bare = without_fillers(cue);
+    !bare.is_empty() && without_fillers(sentence).contains(&bare)
 }
 
 /// Whether a requesting sentence names the cue of an intent that declares an

@@ -245,6 +245,8 @@ roles
     kind predicate
   computer_use_resource_cue
     kind predicate
+  config_value_lead
+    kind predicate
   containment_relation
     kind predicate
   conversation_preference_avoid

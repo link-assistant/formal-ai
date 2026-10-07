@@ -37,7 +37,7 @@ export function effectIsDeclared(effect) {
 export function shellIntentVocabulary() {
   return cached('shell-intent-vocabulary', () => {
     const vocab = {
-      name_leads: [], argument_noise: [], local_search_scopes: [], local_path_search_command_template: '',
+      name_leads: [], argument_noise: [], cue_fillers: [], local_search_scopes: [], local_path_search_command_template: '',
       local_path_search_actions: [], local_path_search_scopes: [], local_path_search_kinds: [],
       workspace_commands: [], path_objects: [],
       directory_listing: { verbs: [], questions: [], objects: [], scopes: [] },
@@ -53,6 +53,9 @@ export function shellIntentVocabulary() {
           break;
         case 'argument_noise':
           vocab.argument_noise = collectLanguageValues(group, 'word');
+          break;
+        case 'cue_fillers':
+          vocab.cue_fillers = lowerAll(collectLanguageValues(group, 'word'));
           break;
         case 'local_search_scopes':
           vocab.local_search_scopes = collectLanguageValues(group, 'scope');

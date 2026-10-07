@@ -150,6 +150,9 @@ pub struct ShellIntentVocabulary {
     pub name_leads: Vec<String>,
     /// Natural-language glue ignored while recovering path and search operands.
     pub argument_noise: Vec<String>,
+    /// Words a speaker inserts inside a cue phrase without changing it
+    /// (*"show **me** git status"*), lowercased, pooled across languages.
+    pub cue_fillers: Vec<String>,
     /// Phrases that distinguish repository/file search from internet search.
     pub local_search_scopes: Vec<String>,
     /// Seed-defined portable command with root, predicate, and pattern slots.
@@ -188,6 +191,12 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
             "name_leads" => vocab.name_leads = collect_language_values(group, "lead"),
             "argument_noise" => {
                 vocab.argument_noise = collect_language_values(group, "word");
+            }
+            "cue_fillers" => {
+                vocab.cue_fillers = collect_language_values(group, "word")
+                    .into_iter()
+                    .map(|word| word.to_lowercase())
+                    .collect();
             }
             "local_search_scopes" => {
                 vocab.local_search_scopes = collect_language_values(group, "scope");

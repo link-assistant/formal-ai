@@ -40,7 +40,7 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   if (change) return planCompositeStep(task, currentTurn, toolNames, change);
   const rewrite = groundedRewrite(task);
   if (rewrite) return planRewriteStep(task, currentTurn, toolNames, rewrite);
-  const computed = groundedEndInsertion(task) ?? groundedRemoval(task);
+  const computed = groundedEndInsertion(task) ?? groundedRemoval(task) ?? groundedSetting(task);
   return computed ? planComputedChangeStep(task, currentTurn, toolNames, computed) : null;
 }
 
@@ -272,6 +272,51 @@ function groundedRemoval(task) {
     intent: 'coding_text_remove',
     slots: [['{old}', named.text]],
   };
+}
+
+/**
+ * `Change the value of "debug" to true in config.json`: the seeded
+ * `config_value_lead` names a setting, the edit request's old clause names
+ * its key (quoted, or its last identifier) and the new clause its value. The
+ * one line assigning that key (`"debug": …`, `debug: …`, `debug = …`) gets
+ * the new value; a key assigned nowhere or more than once is not a change
+ * anyone can verify.
+ */
+function groundedSetting(task) {
+  if (!mentionsRole('config_value_lead', task.toLowerCase())) return null;
+  const edit = composeEditRequest(task);
+  if (!edit) return null;
+  const [target, oldClause, value] = edit;
+  const quoted = quotedSegments(oldClause);
+  const key = quoted.length === 1 ? quoted[0] : identifierTokens(oldClause).pop();
+  if (key === undefined || trim(value) === '') return null;
+  return {
+    target,
+    compute: (source, missing) => (missing ? null : assignedSetting(source, key, trim(value), target)),
+    edit: changedLinesEdit,
+    intent: 'setting',
+    slots: [['{old}', key], ['{new}', trim(value)]],
+  };
+}
+
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** A value every config format writes bare: a boolean, null or a number. */
+const isBareLiteral = (value) => /^(true|false|null|-?\d+(\.\d+)?)$/u.test(value);
+
+function assignedSetting(source, key, value, target) {
+  const pattern = new RegExp(`^(\\s*(["']?)${escapeRegExp(key)}\\2\\s*[:=]\\s*)(.*?)(\\s*,?\\s*)$`, 'u');
+  const lines = source.split('\n');
+  const matches = lines.map((line, index) => [index, pattern.exec(line)]).filter(([, match]) => match !== null);
+  if (matches.length !== 1) return null;
+  const [index, match] = matches[0];
+  const [, head, , old, tail] = match;
+  let written = value;
+  const quote = /^["']/u.exec(old)?.[0];
+  if (quote && !isBareLiteral(value)) written = `${quote}${value}${quote}`;
+  else if (!quote && target.endsWith('.json') && !isBareLiteral(value) && !/^["'[{]/u.test(value)) written = JSON.stringify(value);
+  if (written === old) return null;
+  lines[index] = `${head}${written}${tail}`;
+  return lines.join('\n');
 }
 
 function removedLiteral(source, text) {

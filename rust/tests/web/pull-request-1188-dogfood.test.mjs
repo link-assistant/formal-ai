@@ -204,3 +204,39 @@ describe('PR #1188 dogfood: shell requests run what they name', () => {
     assert.equal(files.size, 0);
   });
 });
+
+describe('PR #1188 dogfood: a filler word inside a cue phrase keeps the cue', () => {
+  for (const [prompt, command] of [
+    ['Show me git status.', 'git status'],
+    ['Show me the git log.', 'git log'],
+    ['Покажи мне статус git', 'git status'],
+  ]) {
+    test(`${prompt} runs ${command}`, async () => {
+      const plan = await planChatStep([{ role: 'user', content: prompt }], AGENT_CLI_TOOLS);
+      assert.equal(plan.kind, 'tool_calls');
+      assert.equal(plan.calls[0].tool, 'bash');
+      assert.equal(JSON.parse(plan.calls[0].arguments).command, command);
+    });
+  }
+});
+
+describe('PR #1188 dogfood: a setting changes on the line that assigns it', () => {
+  const CONFIG = '{\n  "debug": false,\n  "name": "demo"\n}\n';
+
+  test('`Change the value of "debug" to true in config.json.` writes a bare boolean', async () => {
+    const { calls, files, answer } = await drive('Change the value of "debug" to true in config.json.', { 'config.json': CONFIG });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('config.json'), '{\n  "debug": true,\n  "name": "demo"\n}\n');
+    assert.equal(answer, 'Set `debug` to `true` in `config.json` and observed the result.');
+  });
+
+  test('a string value keeps the file\'s quoting', async () => {
+    const { files } = await drive('Set the value of name to prod in config.json.', { 'config.json': CONFIG });
+    assert.equal(files.get('config.json'), '{\n  "debug": false,\n  "name": "prod"\n}\n');
+  });
+
+  test('a YAML key is found by its own separator', async () => {
+    const { files } = await drive('Change the setting debug to true in app.yml.', { 'app.yml': 'debug: false\nname: demo\n' });
+    assert.equal(files.get('app.yml'), 'debug: true\nname: demo\n');
+  });
+});

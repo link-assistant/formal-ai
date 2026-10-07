@@ -27,6 +27,8 @@ meanings
         text "refactor"
       surface
         text "rename"
+      surface
+        text "set"
     lexeme ru
       surface
         text замени
@@ -42,6 +44,8 @@ meanings
         text исправь
       surface
         text переименуй
+      surface
+        text установи
     lexeme hi
       surface
         text बदलो

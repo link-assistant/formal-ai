@@ -43,8 +43,8 @@ possible tasks you encounter on the way must be fully supported by it".
 | T13 | `Run python3 greet.py.` | **Fail**: ran `python3 greet.py.` ("can't open file 'greet.py.'"); `` Run `ls -la`. `` also kept the backticks. | **Pass**: runs `python3 greet.py`. |
 | T14 | `Create a directory named src.` | **Fail**: listed the directory instead. | **Pass**: `test ! -e src` → `mkdir src` → `test -d src`; answer `Completed the action \`mkdir src\` and verified it with \`test -d src\`.` |
 | T15 | `Commit all changes with the message 'initial notes'.` | **Fail**: web search for the sentence. (`Commit the changes.` committed as `chore: commit pending changes` and then failed on `git push` with no remote, reported as completed.) | **Pass**: one commit `initial notes`; push only when `git remote` names one. |
-| T16 | `Show me git status.` | **Fail**: web search (the seeded cue is `show git status`). | Open |
-| T17 | `Change the value of "debug" to true in config.json.` | **Fail**: edit with `oldString: the value of "debug"`. | Open |
+| T16 | `Show me git status.` | **Fail**: web search (the seeded cue is `show git status`). | **Pass**: runs `git status` (also `Show me the git log.`, `Покажи мне статус git`). |
+| T17 | `Change the value of "debug" to true in config.json.` | **Fail**: edit with `oldString: the value of "debug"`. | **Pass**: read → edit of the `"debug"` line → `sha256sum`; answer `Set \`debug\` to \`true\` in \`config.json\` and observed the result.` Also `Set the value of name to prod in config.json.` (keeps the quotes) and YAML `debug: …`. |
 | T18 | `Create hello.py that prints Hello, World! and run it.` | **Fail**: answered with a program in chat (named `main.py`), wrote nothing, ran nothing. | Open |
 | T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = a phrase of the request. | Open |
 
@@ -202,3 +202,42 @@ is unchanged.
 T14's recipe and answer, T15's exact command.
 
 **Whole JS suite.** 1020 pass, 0 fail.
+
+### T16 — a filler word inside a cue phrase broke the cue
+
+**Root cause.** Shell-intent cues match as literal substrings of a requesting
+sentence, so `show me git status` never contained the seeded cue `show git
+status`, and the request fell to web search.
+
+**Fix (both roots).** A seeded `cue_fillers` list in
+`data/seed/shell-intents.lino` (en/ru/hi/zh/es: `me`, `the`, `please`, `мне`,
+`मुझे`, …) and `sentenceCarriesCue` / `sentence_carries_cue`: a cue matches
+the sentence as written or once both drop the fillers. The literal match is
+tried first, so every existing match is unchanged.
+
+### T17 — "the value of KEY" was read as literal text
+
+**Root cause.** The edit composer split the request into old `the value of
+"debug"` and new `true`; nothing knew that "the value of K" names the
+assignment of K in a configuration file.
+
+**Fix.** A seeded concept `setting` (role `config_value_lead`: "value of",
+"setting", "значение", "मान", "值", "valor de") and a third computed change
+in the workspace-change arm (`groundedSetting`): the key is the old clause's
+quoted segment (or its last identifier), the value the new clause; the one
+line assigning the key (`"k": v`, `k: v`, `k = v`) gets the value, in the
+file's own quoting (bare for booleans, null and numbers; JSON strings
+quoted). "set" / "установи" join the seeded edit action cues. Answers come
+from seeded responses keyed by `setting`.
+
+**Tests.** "a filler word inside a cue phrase keeps the cue" and "a setting
+changes on the line that assigns it".
+
+**Suite note.** A full `rust/tests/web/` run at this point showed 60
+failures, all `handler_rules:unknown_condition`, plus a missing
+`js/agentic/crate/summarization_identifier.mjs` import: both from another
+agent's uncommitted edits in the same tree (`data/seed/handler-rules.lino`,
+`js/agentic/crate/summarization.mjs`), not from these changes. The agentic
+suites (`agentic-*`, the dogfood file) are green.
+
+**Rust twin.** T16 is in both roots; T17 is JS-only (`workspace_change.rs`).

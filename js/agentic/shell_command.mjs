@@ -382,6 +382,18 @@ function intentShellCommand(prompt, vocab) {
   }
 }
 
+/**
+ * Mirrors `fn sentence_carries_cue`: the cue is in the sentence as written,
+ * or once both drop the seeded filler words a speaker inserts inside a cue
+ * phrase (`show me git status` carries `show git status`).
+ */
+function sentenceCarriesCue(sentence, cue, fillers) {
+  if (sentence.includes(cue)) return true;
+  const withoutFillers = (text) => splitWhitespace(text).filter((word) => !fillers.includes(word)).join(' ');
+  const bare = withoutFillers(cue);
+  return bare !== '' && withoutFillers(sentence).includes(bare);
+}
+
 /** Mirrors `fn matched_intent_cue`: `[intent, cue]` or null. */
 function matchedIntentCue(lower, vocab) {
   const moods = sentencesWithMood(lower);
@@ -392,7 +404,7 @@ function matchedIntentCue(lower, vocab) {
   for (const intent of vocab.intents) {
     if (intent.command === REPORT_ISSUE_ACTION) continue;
     for (const cue of intent.cues) {
-      if (!requesting.some((sentence) => sentence.includes(cue))) continue;
+      if (!requesting.some((sentence) => sentenceCarriesCue(sentence, cue, vocab.cue_fillers))) continue;
       if (intent.argument === 'search_query' && !vocab.local_search_scopes.some((scope) => lower.includes(scope))) continue;
       pairs.push([intent, cue]);
     }

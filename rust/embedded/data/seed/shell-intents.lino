@@ -59,6 +59,30 @@ shell_intents
       word 代码
       word 中
       word 搜索
+  cue_fillers
+    language en
+      word me
+      word us
+      word please
+      word the
+      word my
+      word our
+    language ru
+      word мне
+      word нам
+      word пожалуйста
+    language hi
+      word मुझे
+      word हमें
+      word कृपया
+    language zh
+      word 请
+      word 我
+    language es
+      word me
+      word mi
+      word el
+      word la
   local_search_scopes
     language en
       scope "the code"
