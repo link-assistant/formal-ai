@@ -15,6 +15,7 @@ mod issue_1138_formalization_agent;
 mod issue_1138_no_silent_unknown;
 mod issue_1138_recovery_live;
 mod issue_1138_swebench_case;
+mod issue_1161_clients_surface;
 mod issue_349_reverse_sort;
 mod issue_386_cancel_sort;
 mod issue_395_sort_numbers;
