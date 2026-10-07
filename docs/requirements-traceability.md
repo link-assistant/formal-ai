@@ -804,7 +804,7 @@ line number, which had gone stale for every row.
 | R914-4 | docs/requirements/issue-0914-vision-implementation-planning-coding-first.md | pre-2026-07 (undated); issue #914 | rust/tests/unit/docs_requirements/issue_914.rs | not yet confirmed |
 | R914-5 | docs/requirements/issue-0914-vision-implementation-planning-coding-first.md | partial: E70 delivered general natural-formal translation for the seeded FOL statement slice (PR #984, issue #917); E75 delivered method learning (PR #1005, issue #922); broader coverage remains incremental seed growth | rust/tests/unit/docs_requirements/issue_914.rs | not yet confirmed |
 | R914-6 | docs/requirements/issue-0914-vision-implementation-planning-coding-first.md | partial: enforced by the #918 minimal-core boundary (PR #986) and the open handler-migration continuation #959 | rust/tests/unit/docs_requirements/issue_914.rs | not yet confirmed |
-| R914-7 | docs/requirements/issue-0914-vision-implementation-planning-coding-first.md | pre-2026-07 (undated); issue #914 | rust/tests/unit/docs_requirements/issue_914.rs | not yet confirmed |
+| R914-7 | docs/requirements/issue-0914-vision-implementation-planning-coding-first.md | pre-2026-07 (undated); issue #914 | rust/tests/web/issue-0914-vision-plan.test.mjs, rust/tests/unit/issue_923.rs | not yet confirmed |
 | R914-8 | docs/requirements/issue-0914-vision-implementation-planning-coding-first.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/coding_discovery/composition.rs | not yet confirmed |
 | R914-9 | docs/requirements/issue-0914-vision-implementation-planning-coding-first.md | delivered 2026-09-15; PR #888 (issue #710) | rust/tests/unit/issue_1138_learned_items_change_answers.rs | not yet confirmed |
 | R914-10 | docs/requirements/issue-0914-vision-implementation-planning-coding-first.md | delivered 2026-08-14; PR #1003 (issue #920) | rust/tests/unit/issue_920_question_necessity.rs | not yet confirmed |
@@ -931,30 +931,14 @@ line number, which had gone stale for every row.
 | R1085-10 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | delivered 2026-09-18: every curated 13/13 citation carries the upstream rows beside it (VISION, ROADMAP pillars 25/26 and the #922 section, README Measured Today, ARCHITECTURE D5.4 paragraph) | rust/tests/unit/docs_benchmarks.rs::latest_external_rows_are_published_from_the_ledger; ::curated_pass_ratios_publish_an_upstream_comparison_beside_them | not yet confirmed |
 | R1085-12 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | issue-1085 branch, 2026-09-08 | rust/tests/unit/ci-cd/issue_1081/release_preflight.rs::the_crates_io_token_is_never_judged_by_the_cookie_only_me_endpoint | manual: crates.io /api/v1/me answered 403 to a bogus token and to no token alike on 2026-09-08; source `AuthCheck::only_cookie()` |
 | R1085-13 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | issue-1085 branch, 2026-09-08 | rust/tests/unit/ci-cd/issue_1012.rs; rust/tests/unit/ci-cd/issue_1081.rs (budget share) | not yet confirmed |
-| R97-R100 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | none recorded | none recorded | not yet confirmed |
-| R278-R281 | docs/requirements/issue-0398-pr-review-standards-comment-4663407299.md | none recorded | none recorded | not yet confirmed |
 | R453-M1 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
 | R453-M2 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
 | R453-M3 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
 | R453-M4 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | none recorded | not yet confirmed |
-| R491-1 | docs/requirements/issue-0491-least-action-continuation.md | none recorded | none recorded | not yet confirmed |
 | R491-C1 | docs/requirements/issue-0491-least-action-continuation.md | none recorded | none recorded | not yet confirmed |
 | R491-C2 | docs/requirements/issue-0491-least-action-continuation.md | none recorded | none recorded | not yet confirmed |
 | R491-C3 | docs/requirements/issue-0491-least-action-continuation.md | none recorded | none recorded | not yet confirmed |
 | R491-C4 | docs/requirements/issue-0491-least-action-continuation.md | none recorded | none recorded | not yet confirmed |
-| R531-01 | docs/requirements/issue-0531-pattern-inference-research.md | none recorded | none recorded | not yet confirmed |
-| R480-R483 | docs/requirements/issue-0538-detailed-meanings-and-words.md | none recorded | none recorded | not yet confirmed |
-| R558-01 | docs/requirements/issue-0558-auto-learning.md | none recorded | rust/tests/unit/issue_558_self_healing.rs | not yet confirmed |
-| R558-05 | docs/requirements/issue-0558-auto-learning.md | none recorded | rust/tests/unit/issue_558_self_healing.rs | not yet confirmed |
-| R558-12 | docs/requirements/issue-0558-auto-learning.md | none recorded | none recorded | not yet confirmed |
-| R345-R354 | docs/requirements/issue-0563-repository-resource-summarization.md | none recorded | none recorded | not yet confirmed |
-| R355-R359 | docs/requirements/issue-0563-repository-resource-summarization.md | none recorded | none recorded | not yet confirmed |
-| R649-01 | docs/requirements/issue-0649-world-models-and-contexts.md | none recorded | none recorded | not yet confirmed |
-| R649-14 | docs/requirements/issue-0649-world-models-and-contexts.md | none recorded | none recorded | not yet confirmed |
-| R649-15 | docs/requirements/issue-0649-world-models-and-contexts.md | none recorded | none recorded | not yet confirmed |
-| R649-19 | docs/requirements/issue-0649-world-models-and-contexts.md | none recorded | none recorded | not yet confirmed |
-| R686-01 | docs/requirements/issue-0686-associative-knowledge-networks-learning.md | none recorded | none recorded | not yet confirmed |
-| R686-18 | docs/requirements/issue-0686-associative-knowledge-networks-learning.md | none recorded | none recorded | not yet confirmed |
 | R705-1 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
 | R705-2 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
 | R705-3 | docs/requirements/issue-0705-anticipatory-dreaming.md | none recorded | rust/tests/unit/issue_705_anticipation.rs | not yet confirmed |
@@ -1041,11 +1025,10 @@ line number, which had gone stale for every row.
 | R710-R5 | docs/requirements/issue-0710-repository-and-retention-continuation.md | implemented — PR #888 continuation (issue #710) | rust/tests/unit/issue_1133_hive_mind_three_runs.rs | not yet confirmed |
 | R710-R6 | docs/requirements/issue-0710-repository-and-retention-continuation.md | implemented — PR #888 continuation (issue #710) | rust/tests/unit/memory_retention_origin.rs; rust/tests/unit/memory_learning.rs | not yet confirmed |
 | R710-R9 | docs/requirements/issue-0710-repository-and-retention-continuation.md | implemented — PR #888 continuation (issue #710) | rust/tests/unit/requirement_span_integrity.rs; rust/tests/unit/issue_956.rs; rust/tests/unit/specification/obligation_ledger.rs | not yet confirmed |
-| R802-1 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | none recorded | not yet confirmed |
-| R802-2 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | none recorded | not yet confirmed |
-| R802-3 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | none recorded | not yet confirmed |
-| R802-4 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | none recorded | not yet confirmed |
-| R56kfQp | docs/requirements/issue-0848-executable-coding-tasks.md | none recorded | none recorded | not yet confirmed |
+| R802-1 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | rust/tests/unit/specification/refutation_search.rs | not yet confirmed |
+| R802-2 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | rust/tests/unit/specification/refutation_search.rs | not yet confirmed |
+| R802-3 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | rust/tests/unit/budget_search.rs | not yet confirmed |
+| R802-4 | docs/requirements/issue-0802-hypothesis-search.md | none recorded | rust/tests/unit/issue_1073_reasoning_standard.rs | not yet confirmed |
 | R873-1 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
 | R873-2 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
 | R873-3 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
@@ -1056,18 +1039,16 @@ line number, which had gone stale for every row.
 | R873-8 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/unit/issue_873.rs | not yet confirmed |
 | R873-9 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
 | R873-10 | docs/requirements/issue-0873-research-driven-unknown-recovery.md | none recorded | none recorded | not yet confirmed |
-| R895-1 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | none recorded | not yet confirmed |
-| R895-2 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | none recorded | not yet confirmed |
-| R895-3 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | none recorded | not yet confirmed |
-| R895-4 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | none recorded | not yet confirmed |
-| R895-5 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | none recorded | not yet confirmed |
+| R895-1 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | rust/tests/unit/ci-cd/workflow_coverage.rs (CI runs the ratchet and its own scripts/check-coverage-ratchet-tests.rs suite) | not yet confirmed |
+| R895-2 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | rust/tests/unit/ci-cd/workflow_coverage.rs (CI runs the ratchet and its own scripts/check-coverage-ratchet-tests.rs suite) | not yet confirmed |
+| R895-3 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | rust/tests/unit/ci-cd/workflow_coverage.rs (CI runs the ratchet and its own scripts/check-coverage-ratchet-tests.rs suite) | not yet confirmed |
+| R895-4 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | rust/tests/unit/ci-cd/workflow_coverage.rs (CI runs the ratchet and its own scripts/check-coverage-ratchet-tests.rs suite) | not yet confirmed |
+| R895-5 | docs/requirements/issue-0895-coverage-publication-and-ratchet.md | none recorded | rust/tests/unit/ci-cd/workflow_coverage.rs (CI runs the ratchet and its own scripts/check-coverage-ratchet-tests.rs suite) | not yet confirmed |
 | R901-1 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
-| R901-2 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | none recorded | not yet confirmed |
+| R901-2 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | rust/tests/unit/specification/triz_contradictions.rs | not yet confirmed |
 | R901-3 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | none recorded | not yet confirmed |
 | R901-4 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
 | R901-5 | docs/requirements/issue-0901-triz-contradictions.md | none recorded | none recorded | not yet confirmed |
-| R916-08a | docs/requirements/issue-0909-headless-ready-global-client-configuration.md | none recorded | rust/tests/integration/with_formal_ai_headless_global.rs | not yet confirmed |
-| R916-08b | docs/requirements/issue-0909-headless-ready-global-client-configuration.md | none recorded | rust/tests/integration/with_formal_ai_headless_global.rs | not yet confirmed |
 | R917-1 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/issue_917.rs | not yet confirmed |
 | R917-2 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/issue_917.rs | not yet confirmed |
 | R917-3 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/specification/translation_round_trip.rs | not yet confirmed |
@@ -1075,20 +1056,18 @@ line number, which had gone stale for every row.
 | R917-5 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/issue_917.rs | not yet confirmed |
 | R917-6 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/docs_requirements/issue_917.rs | not yet confirmed |
 | R917-7 | docs/requirements/issue-0917-general-natural-formal-translation.md | none recorded | rust/tests/unit/docs_requirements/issue_917.rs | not yet confirmed |
-| R918-1 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
+| R918-1 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | rust/tests/unit/issue_918.rs | not yet confirmed |
 | R918-2 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
-| R918-3 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
-| R918-4 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
-| R918-5 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
-| R918-6 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | none recorded | not yet confirmed |
+| R918-3 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | rust/tests/unit/issue_918.rs | not yet confirmed |
+| R918-4 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | rust/tests/unit/issue_918.rs | not yet confirmed |
+| R918-5 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | rust/tests/unit/issue_918.rs | not yet confirmed |
+| R918-6 | docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md | none recorded | rust/tests/unit/docs_requirements/issue_918.rs, rust/tests/unit/issue_918.rs | not yet confirmed |
 | R919-1 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | rust/tests/unit/issue_919.rs | not yet confirmed |
-| R919-2 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | none recorded | not yet confirmed |
-| R919-3 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | none recorded | not yet confirmed |
-| R919-4 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | none recorded | not yet confirmed |
-| R919-5 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | none recorded | not yet confirmed |
-| R919-6 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | none recorded | not yet confirmed |
-| R916-09 | docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md | none recorded | rust/tests/unit/issue_907.rs | not yet confirmed |
-| R916-10 | docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md | none recorded | rust/tests/unit/issue_907.rs | not yet confirmed |
+| R919-2 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | rust/tests/unit/issue_919.rs | not yet confirmed |
+| R919-3 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | rust/tests/unit/issue_919.rs | not yet confirmed |
+| R919-4 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | rust/tests/unit/issue_919.rs | not yet confirmed |
+| R919-5 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | rust/tests/unit/issue_919.rs | not yet confirmed |
+| R919-6 | docs/requirements/issue-0919-research-driven-coding-procedures.md | none recorded | rust/tests/unit/issue_919.rs | not yet confirmed |
 | R921-1 | docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md | none recorded | none recorded | not yet confirmed |
 | R921-2 | docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md | none recorded | none recorded | not yet confirmed |
 | R921-3 | docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md | none recorded | none recorded | not yet confirmed |
@@ -1097,17 +1076,17 @@ line number, which had gone stale for every row.
 | R921-6 | docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md | none recorded | rust/tests/unit/issue_907.rs | not yet confirmed |
 | R921-7 | docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md | none recorded | rust/tests/unit/issue_904.rs | not yet confirmed |
 | R921-8 | docs/requirements/issue-0921-hive-mind-full-circle-integration-gate.md | none recorded | none recorded | not yet confirmed |
-| R922-1 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
-| R922-2 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
-| R922-3 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
-| R922-4 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
-| R922-5 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | none recorded | not yet confirmed |
+| R922-1 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | rust/tests/unit/issue_922_method_learning.rs | not yet confirmed |
+| R922-2 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | rust/tests/unit/issue_922_method_learning.rs | not yet confirmed |
+| R922-3 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | rust/tests/unit/issue_922_method_learning.rs, rust/tests/unit/docs_requirements/issue_922.rs | not yet confirmed |
+| R922-4 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | rust/tests/unit/issue_922_method_learning.rs | not yet confirmed |
+| R922-5 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | rust/tests/unit/issue_922_method_learning.rs | not yet confirmed |
 | R922-6 | docs/requirements/issue-0922-method-learning-from-experience.md | none recorded | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
-| R923-1 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | none recorded | not yet confirmed |
-| R923-2 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | none recorded | not yet confirmed |
-| R923-3 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | none recorded | not yet confirmed |
-| R923-4 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | none recorded | not yet confirmed |
-| R923-5 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | none recorded | not yet confirmed |
+| R923-1 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | rust/tests/unit/issue_923.rs | not yet confirmed |
+| R923-2 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | rust/tests/unit/issue_923.rs | not yet confirmed |
+| R923-3 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | rust/tests/unit/issue_923.rs | not yet confirmed |
+| R923-4 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | rust/tests/unit/issue_923.rs | not yet confirmed |
+| R923-5 | docs/requirements/issue-0923-formal-reasoning-coverage-growth.md | none recorded | rust/tests/unit/docs_requirements/issue_923.rs | not yet confirmed |
 | R924-1 | docs/requirements/issue-0924-formal-ai-self-development-loop.md | none recorded | none recorded | not yet confirmed |
 | R924-2 | docs/requirements/issue-0924-formal-ai-self-development-loop.md | none recorded | none recorded | not yet confirmed |
 | R924-3 | docs/requirements/issue-0924-formal-ai-self-development-loop.md | none recorded | none recorded | not yet confirmed |
@@ -1144,7 +1123,6 @@ line number, which had gone stale for every row.
 | R932-11 | docs/requirements/issue-0932-box-language-projects.md | none recorded | none recorded | not yet confirmed |
 | R932-12 | docs/requirements/issue-0932-box-language-projects.md | none recorded | rust/tests/unit/issue_932_self_authoring.rs | not yet confirmed |
 | R932-13 | docs/requirements/issue-0932-box-language-projects.md | none recorded | rust/tests/unit/installation_conversion.rs | not yet confirmed |
-| R234-2 | docs/requirements/issue-0933-conversational-variation-floor.md | none recorded | rust/tests/unit/conversational_variations.rs | not yet confirmed |
 | R933-1 | docs/requirements/issue-0933-conversational-variation-floor.md | none recorded | none recorded | not yet confirmed |
 | R933-2 | docs/requirements/issue-0933-conversational-variation-floor.md | none recorded | none recorded | not yet confirmed |
 | R933-3 | docs/requirements/issue-0933-conversational-variation-floor.md | none recorded | none recorded | not yet confirmed |
@@ -1166,19 +1144,19 @@ line number, which had gone stale for every row.
 | R936-5 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
 | R936-6 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
 | R936-7 | docs/requirements/issue-0936-substitution-rule-compilation.md | none recorded | rust/tests/unit/issue_936_substitution_compiler.rs | not yet confirmed |
-| R222-1 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | none recorded | not yet confirmed |
-| R234-4 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | none recorded | not yet confirmed |
+| R222-1 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/docs_requirements/issue_960.rs | not yet confirmed |
+| R234-4 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/docs_requirements/issue_960.rs | not yet confirmed |
 | R960-1 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/data_files.rs | not yet confirmed |
-| R960-2 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | none recorded | not yet confirmed |
+| R960-2 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/docs_requirements/issue_960.rs | not yet confirmed |
 | R960-3 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/total_closure.rs | not yet confirmed |
 | R960-4 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/assistant_name.rs | not yet confirmed |
-| R960-5 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | none recorded | not yet confirmed |
-| R960-6 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | none recorded | not yet confirmed |
-| R961-1 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | none recorded | not yet confirmed |
-| R961-2 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | none recorded | not yet confirmed |
-| R961-3 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | rust/tests/integration/pty.rs | not yet confirmed |
-| R961-4 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | none recorded | not yet confirmed |
-| R961-5 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | none recorded | not yet confirmed |
+| R960-5 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/docs_requirements/issue_960.rs | not yet confirmed |
+| R960-6 | docs/requirements/issue-0960-enforcing-recorded-but-unenforced-conventions.md | none recorded | rust/tests/unit/docs_requirements/issue_960.rs | not yet confirmed |
+| R961-1 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | rust/tests/issue_961_macos_portability.rs | not yet confirmed |
+| R961-2 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | rust/tests/issue_961_macos_portability.rs, rust/tests/issue_757_session_files.rs | not yet confirmed |
+| R961-3 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | rust/tests/integration/pty.rs, rust/tests/issue_961_macos_portability.rs | not yet confirmed |
+| R961-4 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | rust/tests/issue_961_macos_portability.rs | not yet confirmed |
+| R961-5 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | rust/tests/issue_961_macos_portability.rs | not yet confirmed |
 | R961-6 | docs/requirements/issue-0961-macos-ci-parity.md | none recorded | rust/tests/issue_961_macos_portability.rs | not yet confirmed |
 | R982-1 | docs/requirements/issue-0982-persisted-memory-compatibility-contract.md | none recorded | none recorded | not yet confirmed |
 | R982-2 | docs/requirements/issue-0982-persisted-memory-compatibility-contract.md | none recorded | none recorded | not yet confirmed |
@@ -1193,12 +1171,12 @@ line number, which had gone stale for every row.
 | R982-11 | docs/requirements/issue-0982-persisted-memory-compatibility-contract.md | none recorded | none recorded | not yet confirmed |
 | R991-1 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | rust/tests/unit/issue_991_how_to_synthesis.rs | not yet confirmed |
 | R991-2 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | rust/tests/integration/issue_991_how_to_http.rs | not yet confirmed |
-| R991-3 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | none recorded | not yet confirmed |
+| R991-3 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | rust/tests/unit/issue_991_how_to_synthesis.rs | not yet confirmed |
 | R991-4 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | none recorded | not yet confirmed |
-| R991-5 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | none recorded | not yet confirmed |
-| R991-6 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | none recorded | not yet confirmed |
+| R991-5 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | rust/tests/unit/issue_991_how_to_synthesis.rs, rust/tests/web/issue-991-how-to-synthesis.test.mjs | not yet confirmed |
+| R991-6 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | rust/tests/unit/issue_991_how_to_synthesis.rs | not yet confirmed |
 | R991-7 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | rust/tests/unit/issue_991_how_to_synthesis.rs | not yet confirmed |
-| R991-8 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | none recorded | not yet confirmed |
+| R991-8 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | rust/tests/unit/issue_991_merge_conflict_policy.rs | not yet confirmed |
 | R991-9 | docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md | none recorded | rust/tests/unit/issue_991_incremental_decomposition.rs | not yet confirmed |
 | R1012-1 | docs/requirements/issue-1012-complete-ci-cd-diagnostic-audit.md | none recorded | none recorded | not yet confirmed |
 | R1012-2 | docs/requirements/issue-1012-complete-ci-cd-diagnostic-audit.md | none recorded | rust/tests/unit/ci-cd/issue_1012.rs | not yet confirmed |
@@ -1230,7 +1208,6 @@ line number, which had gone stale for every row.
 | R1017-10 | docs/requirements/issue-1017-ci-cd-false-results-sweep.md | none recorded | none recorded | not yet confirmed |
 | R1017-11 | docs/requirements/issue-1017-ci-cd-false-results-sweep.md | none recorded | rust/tests/source/agent.rs | not yet confirmed |
 | R1017-12 | docs/requirements/issue-1017-ci-cd-false-results-sweep.md | none recorded | none recorded | not yet confirmed |
-| R379-clean | docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md | none recorded | none recorded | not yet confirmed |
 | R1085-2 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1085_seed_links.rs | not yet confirmed |
 | R1085-3 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1085_requirement_resolution.rs | not yet confirmed |
 | R1085-11 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1085_upstream_frontier.rs | not yet confirmed |

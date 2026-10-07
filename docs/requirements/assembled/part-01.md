@@ -466,9 +466,9 @@ Russian.
 | ID | Requirement | Status |
 | --- | --- | --- |
 | R216 | Current-day and current-date prompts must route to a typed calendar intent instead of `unknown`. | Implemented by the `calendar_current_day` branch in `try_calendar_reasoning` and mirrored by `tryCalendarReasoning` in `js/worker/formal_ai_worker.js`. |
-| R217 | Current-day answers must be derived from the runtime clock and must expose date, weekday, and time-zone evidence. | Rust resolves the current UTC date and records `calendar:today`, `calendar:weekday`, and `calendar:time_zone:UTC`; the browser worker resolves the current browser date in the user-context time zone and records the same evidence shape. |
+| R217 | Current-day answers must be derived from the runtime clock and must expose date, weekday, and time-zone evidence. | Delivered: Rust resolves the current UTC date and records `calendar:today`, `calendar:weekday`, and `calendar:time_zone:UTC`; the browser worker resolves the current browser date in the user-context time zone and records the same evidence shape. |
 | R218 | Current-day prompts must be supported for every language declared by `agent_info.supported_languages`. | Covered by the English, Russian, Hindi, and Chinese current-day matrix in `rust/tests/unit/specification/reasoning_paths.rs` and the browser e2e matrix in `rust/tests/e2e/tests/multilingual-*.spec.js` family. |
-| R219 | CI must fail when a multilingual feature matrix omits one of the supported languages. | Enforced by `rust/tests/e2e/scripts/check-multilingual-intent-coverage.mjs`, which parses `data/seed/agent-info.lino` and validates feature matrices against the supported-language list. |
+| R219 | CI must fail when a multilingual feature matrix omits one of the supported languages. | Delivered: Enforced by `rust/tests/e2e/scripts/check-multilingual-intent-coverage.mjs`, which parses `data/seed/agent-info.lino` and validates feature matrices against the supported-language list. |
 
 ## Issue #195 Docker-in-Docker Telegram Runtime
 
@@ -1285,9 +1285,9 @@ PR [#690](https://github.com/link-assistant/formal-ai/pull/690) adds the
 | R467 | Enforce every canonical gate policy, including the coding suite's 10,000-basis-point pass-rate requirement, rather than checking only pass-count floors. | `PromotionRatchet::clears` checks command success, floor, and manifest pass rate; covered by `gate_replay_uses_all_canonical_commands_once_and_enforces_pass_rate`. |
 | R468 | Execute the learned seed change through Formal AI's Agent task path and verify the authored path and bytes before applying it. | `apply_promotions` calls `run_agentic_task`, extracts its `write_file` arguments, compares them byte-for-byte, and records a content-addressed Agent session id. Exact quote preservation is covered by `general_task_preserves_exact_multiline_lino_payload`. |
 | R469 | Promotion must fail closed for unsafe seed paths, dirty/non-Git workspaces, command failures, and malformed benchmark output. | Implemented by `rust/src/promotion/gates.rs` and `rust/src/promotion/materialize.rs`; covered by the failure, malformed-evidence, and non-seed-target tests. |
-| R470 | `formal-ai improve --promote` must operate on actual open proposals and must not silently apply a synthetic demonstration proposal. | The CLI requires a non-empty `--proposals` document; demonstration constructors remain test/example fixtures only. |
+| R470 | `formal-ai improve --promote` must operate on actual open proposals and must not silently apply a synthetic demonstration proposal. | Delivered: The CLI requires a non-empty `--proposals` document; demonstration constructors remain test/example fixtures only. |
 | R471 | Preserve reproducible real-world evidence, issue/PR feedback, online research, and a requirement-by-requirement solution map. | Implemented by `docs/case-studies/issue-656/`, including external Agent CLI and canonical gate artifacts. |
-| R472 | Keep GitHub required checks and human review as the final authority; local replay cannot predict CI on the future branch SHA. | The protocol never pushes or merges. Its branch plan opens a draft PR only after an explicit external push, where required GitHub checks evaluate the actual head SHA. |
+| R472 | Keep GitHub required checks and human review as the final authority; local replay cannot predict CI on the future branch SHA. | Delivered: The protocol never pushes or merges. Its branch plan opens a draft PR only after an explicit external push, where required GitHub checks evaluate the actual head SHA. |
 
 ## Issue #657 Release Self-Hosting Metric
 

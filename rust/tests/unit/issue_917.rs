@@ -91,3 +91,54 @@ fn formal_projection_rejects_ids_in_the_wrong_semantic_roles() {
     assert!(translate_statement("Q89(P31, Q3314483)", "fol", "en").is_err());
     assert!(translate_statement("P31(Q3314483, P31)", "fol", "en").is_err());
 }
+
+/// R917-2 and R917-5: the formal targets and the natural word orders are one
+/// seed catalog, and the interpreter that reads it names no projection of its
+/// own. Every slug the seed declares is the whole list the engine exposes,
+/// every natural projection the seed declares renders the formal statement,
+/// and no slug appears as a literal in the interpreter, so adding another
+/// target or natural projection is a change to the seed file alone.
+#[test]
+fn projection_catalog_is_seed_data_and_the_interpreter_names_no_projection() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits above the crate");
+    let catalog = std::fs::read_to_string(root.join("data/seed/formal-language-projections.lino"))
+        .expect("the projection catalog is seed data");
+    let declared = |kind: &str| -> Vec<String> {
+        catalog
+            .lines()
+            .filter_map(|line| line.trim().strip_prefix(kind))
+            .map(|rest| rest.trim().trim_matches('"').to_owned())
+            .collect()
+    };
+    let formal = declared("formal_language ");
+    let natural = declared("natural_language ");
+    assert_eq!(formal_language_targets(), formal);
+    assert_eq!(
+        natural.iter().cloned().collect::<BTreeSet<_>>(),
+        NATURAL_STATEMENTS
+            .iter()
+            .map(|(language, _)| (*language).to_owned())
+            .collect::<BTreeSet<_>>()
+    );
+    for target in &formal {
+        for language in &natural {
+            let rendered = translate_statement(FORMAL_STATEMENT, target, language)
+                .expect("every seeded natural projection renders the statement");
+            let back = translate_statement(&rendered.surface, language, target)
+                .expect("every seeded natural projection parses back");
+            assert_eq!(back.meaning, rendered.meaning);
+        }
+    }
+
+    let interpreter =
+        std::fs::read_to_string(root.join("rust/src/translation/formal_statement.rs"))
+            .expect("the projection interpreter is readable");
+    for slug in formal.iter().chain(&natural) {
+        assert!(
+            !interpreter.contains(&format!("\"{slug}\"")),
+            "formal_statement.rs names the projection `{slug}`; it must come from the seed catalog"
+        );
+    }
+}

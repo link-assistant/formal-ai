@@ -215,6 +215,7 @@ mod issue_988_stock_rust_install;
 mod issue_989;
 mod issue_991_how_to_synthesis;
 mod issue_991_incremental_decomposition;
+mod issue_991_merge_conflict_policy;
 mod issue_996_markdown;
 mod language_parity_lib_suite;
 mod lino_location;
