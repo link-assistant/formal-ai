@@ -191,3 +191,25 @@ test('R921-8: russian, hindi and chinese requests answer catalog tasks in Scala 
     assert.ok(result.content.includes(workerTemplate(task, language)), result.content);
   }
 });
+
+// A concrete catalog request is the catalog program even when a handler
+// promotion would hoist another row (rust/src/solver.rs skips the promoted
+// method dispatch for `SelectedRule::WriteProgram`): "C++" carries an
+// operator the arithmetic promotion reads, and a recursive Fibonacci request
+// is promoted to program synthesis. The prompts are task_catalog.rs's.
+const PROMOTED = [
+  ['Write me a C++ program for the factorial of 5', 'cpp', 'factorial', 'Here is a minimal C++ factorial of 5 program:'],
+  ['Write me a C++ program for the sum from 1 to 10', 'cpp', 'sum_to_ten', 'Here is a minimal C++ sum from 1 to 10 program:'],
+  ['Write a Python function that calculates the Fibonacci sequence recursively.', 'python', 'fibonacci',
+    'Here is a minimal Python recursive Fibonacci program:'],
+];
+
+test('R921-8: a concrete catalog request is not claimed by a promoted handler', async () => {
+  for (const [prompt, language, task, heading] of PROMOTED) {
+    const result = await host.solve(prompt, []);
+    assert.equal(result.intent, 'write_program', prompt);
+    assert.equal(parameters(result), `write_program(language=${language}, task=${task})`, prompt);
+    assert.equal(result.content.split('\n')[0], heading, prompt);
+    assert.ok(result.content.includes(workerTemplate(task, language)), result.content);
+  }
+});

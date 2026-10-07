@@ -197,8 +197,13 @@ function solverPromotedHandlers(prompt) {
 }
 
 // `ordered_method_names_for_relevants`: the rows a prompt promotes run first, in promotion rank order.
-// A hoisted row claims only what it can answer; its impasse waits for the row's own rank.
+// A hoisted row claims only what it can answer; its impasse waits for the row's own rank. A concrete catalog
+// request runs the write-program rows first: solver.rs skips meta dispatch for `is_concrete_write_program`.
 function promotedHandlerOrder(registry, prompt) {
+  const requested = typeof writeProgramParameters === "function" ? writeProgramParameters(prompt) : null;
+  const concrete = (record) => record.contextBinding === "writeProgram" && record.resultIntent === "write_program";
+  if (requested && requested.task && requested.language && writeProgramTemplate(requested.task, requested.language) !== null
+    && tryPageQueryText(prompt) === null) return [...registry.filter(concrete), ...registry.filter((record) => !concrete(record))];
   const bindings = typeof WORKER_HANDLER_REGISTRY === "object" ? WORKER_HANDLER_REGISTRY.workerHandlers : {};
   const names = [...new Set(solverPromotedHandlers(prompt).map((slug) => bindings[slug]).filter(Boolean))];
   const hoisted = names.flatMap((name) => registry.filter((record) => record.name === name)).map((record) => ({ ...record, hoisted: true }));

@@ -146,9 +146,14 @@ test("every coding handler executes the shared meta-algorithm", async () => {
 
 test("source-derived recurrences render and evaluate without a task template", async () => {
   await worker.init();
-  const fibonacci = await solve(
-    "Write a Python function that calculates the Fibonacci sequence recursively.",
-  );
+  // A recursive Fibonacci request names the catalog's fibonacci task, so the
+  // solver answers it from the catalog, as rust/src/solver.rs does for a
+  // concrete write_program rule (task_catalog.rs pins the native answer); the
+  // recurrence route itself is exercised directly.
+  const prompt = "Write a Python function that calculates the Fibonacci sequence recursively.";
+  const catalog = await solve(prompt);
+  assert.equal(catalog.content.split("\n")[0], "Here is a minimal Python recursive Fibonacci program:");
+  const fibonacci = await worker.trySourceRecurrenceSynthesis(prompt);
   assert.equal(fibonacci.intent, "write_program");
   assert.match(fibonacci.content, /def fibonacci\(n\)/);
   assert.match(fibonacci.content, /fibonacci\(n - 1\)/);
