@@ -46,7 +46,7 @@ requirement_status_ledger_shard requirements_16
     verdict "not-delivered"
     delivered "partial: enforced by the #918 minimal-core boundary (PR #986) and the open handler-migration continuation #959"
     issue "0914"
-    automated_test ""
+    automated_test "rust/tests/unit/issue_918_handler_rules_batch.rs"
     manual "not yet confirmed"
   requirement
     id "R914-7"
