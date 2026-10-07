@@ -217,6 +217,90 @@ meanings
         text "justo antes de"
       surface
         text "antes de"
+  file_edit_position_end
+    defined-by concept
+    role file_edit_position_end
+    precondition "an additive edit places quoted text at the end of a named file"
+    effect "the file keeps its content and gains the quoted text as its last line"
+    unit "not applicable"
+    example "append the line to the file"
+    lexeme en
+      surface
+        text append
+      surface
+        text "to the end of"
+      surface
+        text "at the end of"
+      surface
+        text "to the bottom of"
+      surface
+        text "at the bottom of"
+    lexeme ru
+      surface
+        text "в конец"
+      surface
+        text "в конце"
+      surface
+        text допиши
+      surface
+        text дописать
+    lexeme hi
+      surface
+        text "के अंत में"
+      surface
+        text "अंत में"
+    lexeme zh
+      surface
+        text 追加
+      surface
+        text 末尾
+      surface
+        text 结尾
+    lexeme es
+      surface
+        text "al final de"
+      surface
+        text "añade al final"
+  file_edit_position_start
+    defined-by concept
+    role file_edit_position_start
+    precondition "an additive edit places quoted text at the start of a named file"
+    effect "the file keeps its content and gains the quoted text as its first line"
+    unit "not applicable"
+    example "prepend the line to the file"
+    lexeme en
+      surface
+        text prepend
+      surface
+        text "to the beginning of"
+      surface
+        text "at the beginning of"
+      surface
+        text "to the top of"
+      surface
+        text "at the top of"
+      surface
+        text "at the start of"
+    lexeme ru
+      surface
+        text "в начало"
+      surface
+        text "в начале"
+    lexeme hi
+      surface
+        text "की शुरुआत में"
+      surface
+        text "शुरुआत में"
+    lexeme zh
+      surface
+        text 开头
+      surface
+        text 最前面
+    lexeme es
+      surface
+        text "al principio de"
+      surface
+        text "al inicio de"
   output_obligation_verb
     defined-by concept
     role output_obligation_verb

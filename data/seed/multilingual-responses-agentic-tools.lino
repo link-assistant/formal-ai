@@ -139,6 +139,46 @@ multilingual_responses
     intent coding_identifier_renamed
     language es
     text "Se renombró `{old}` a `{new}` en `{path}` y se verificó el resultado."
+  response response_file_edit_position_end_en
+    intent file_edit_position_end
+    language en
+    text "Appended `{new}` to the end of `{path}` and observed the result."
+  response response_file_edit_position_end_ru
+    intent file_edit_position_end
+    language ru
+    text "В конец `{path}` добавлено `{new}`, результат проверен."
+  response response_file_edit_position_end_hi
+    intent file_edit_position_end
+    language hi
+    text "`{path}` के अंत में `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_file_edit_position_end_zh
+    intent file_edit_position_end
+    language zh
+    text "已在 `{path}` 末尾追加 `{new}` 并验证了结果。"
+  response response_file_edit_position_end_es
+    intent file_edit_position_end
+    language es
+    text "Se añadió `{new}` al final de `{path}` y se verificó el resultado."
+  response response_file_edit_position_start_en
+    intent file_edit_position_start
+    language en
+    text "Added `{new}` to the start of `{path}` and observed the result."
+  response response_file_edit_position_start_ru
+    intent file_edit_position_start
+    language ru
+    text "В начало `{path}` добавлено `{new}`, результат проверен."
+  response response_file_edit_position_start_hi
+    intent file_edit_position_start
+    language hi
+    text "`{path}` की शुरुआत में `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_file_edit_position_start_zh
+    intent file_edit_position_start
+    language zh
+    text "已在 `{path}` 开头添加 `{new}` 并验证了结果。"
+  response response_file_edit_position_start_es
+    intent file_edit_position_start
+    language es
+    text "Se añadió `{new}` al principio de `{path}` y se verificó el resultado."
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en

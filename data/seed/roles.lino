@@ -351,6 +351,10 @@ roles
     kind meaning
   file_edit_position_before
     kind meaning
+  file_edit_position_end
+    kind meaning
+  file_edit_position_start
+    kind meaning
   file_edit_target_cue
     kind predicate
   file_leading_line_constraint_lead

@@ -10,8 +10,9 @@ import { composeEditRequest } from './general_planner.mjs';
 import { editArguments } from './intent_router.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
-import { commandArgument } from './tool_result.mjs';
-import { quotedSegments, unwrapTransportQuotes } from './crate/normal_markov.mjs';
+import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
+import { commandArgument, failureMessage } from './tool_result.mjs';
+import { quotedSegmentSpans, quotedSegments, unwrapTransportQuotes } from './crate/normal_markov.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import {
   RewriteScope, executeScopedWorkspaceRewrite, isIdentifierWord, wordScopedMatches,
@@ -37,7 +38,9 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   const change = compositeModuleChange(task);
   if (change) return planCompositeStep(task, currentTurn, toolNames, change);
   const rewrite = groundedRewrite(task);
-  return rewrite ? planRewriteStep(task, currentTurn, toolNames, rewrite) : null;
+  if (rewrite) return planRewriteStep(task, currentTurn, toolNames, rewrite);
+  const insertion = groundedEndInsertion(task);
+  return insertion ? planEndInsertionStep(task, currentTurn, toolNames, insertion) : null;
 }
 
 /** Mirrors `fn is_verification_failure_answer`. */
@@ -150,6 +153,77 @@ function groundedRewrite(task) {
   const scope = renaming && isIdentifierWord(old) && isIdentifierWord(next) ? RewriteScope.Word : RewriteScope.Substring;
   if (old === '' || old === next || (scope === RewriteScope.Substring && next.includes(old))) return null;
   return { target, pattern: old, replacement: next, scope };
+}
+
+/**
+ * An additive edit at one end of a named file (`append 'x' to notes.txt`,
+ * `prepend "x" to a.md`): `{target, text, atEnd}` or null. The position comes
+ * from the seeded `file_edit_position_end` / `file_edit_position_start`
+ * meanings, the payload is the request's one quoted segment that is not the
+ * path, and the target is the one workspace path the request names.
+ */
+function groundedEndInsertion(task) {
+  const lowered = task.toLowerCase();
+  const atEnd = mentionsRole('file_edit_position_end', lowered);
+  if (atEnd === mentionsRole('file_edit_position_start', lowered)) return null;
+  const segments = quotedSegmentSpans(task);
+  const inside = (token) => segments.some((segment) => token.start >= segment.start && token.end <= segment.end
+    && cleanPathToken(token.text) !== segment.text);
+  const paths = [...new Set(tokens(task).filter((token) => !inside(token)).map((token) => cleanPathToken(token.text))
+    .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
+  if (paths.length !== 1) return null;
+  const payloads = segments.filter((segment) => segment.text !== paths[0] && trim(segment.text) !== '');
+  if (payloads.length !== 1) return null;
+  return { target: paths[0], text: payloads[0].text, atEnd };
+}
+
+/** The file after the insertion; a file without a final newline keeps none. */
+function insertedAtEnd(source, text, atEnd) {
+  if (source === '') return `${text}\n`;
+  if (!atEnd) return `${text}\n${source}`;
+  return source.endsWith('\n') ? `${source}${text}\n` : `${source}\n${text}`;
+}
+
+/**
+ * The smallest unique run of whole lines at the insertion end, and what it
+ * becomes, so the edit tool carries the change rather than the whole file.
+ */
+function compactEndEdit(source, updated, atEnd) {
+  const MAX_ANCHOR_BYTES = 4096;
+  const breaks = matchIndices(source, '\n');
+  const cuts = atEnd
+    ? [0, ...breaks.map((index) => index + 1).filter((start) => start < source.length)].reverse()
+    : [...breaks.map((index) => index + 1), source.length];
+  for (const cut of cuts) {
+    const anchor = atEnd ? source.slice(cut) : source.slice(0, cut);
+    if (trim(anchor) === '') continue;
+    if (new TextEncoder().encode(anchor).length > MAX_ANCHOR_BYTES) break;
+    if (matchIndices(source, anchor).length !== 1) continue;
+    return [anchor, atEnd ? updated.slice(cut) : updated.slice(0, updated.length - (source.length - cut))];
+  }
+  return null;
+}
+
+function planEndInsertionStep(task, currentTurn, toolNames, insertion) {
+  const { target, text, atEnd } = insertion;
+  const read = resultForPath(currentTurn, Capability.Read, target, null);
+  if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(target));
+  const missing = failureMessage(read, false, true) !== null;
+  const source = missing ? '' : sourceFromReadResult(read);
+  const updated = insertedAtEnd(source, text, atEnd);
+  const intent = atEnd ? 'file_edit_position_end' : 'file_edit_position_start';
+  const slots = [['{new}', text]];
+  const compact = source === '' ? null : compactEndEdit(source, updated, atEnd);
+  const editTool = compact ? toolFor(toolNames, Capability.Edit) : null;
+  if (compact && editTool) {
+    const [old, next] = compact;
+    if (resultForEdit(currentTurn, target, old, next) === null) return planOne(editTool, editArguments(target, old, next));
+    return planDigestVerification(task, currentTurn, toolNames, { target, expected: updated, intent, slots });
+  }
+  if (resultForPath(currentTurn, Capability.Write, target, updated) === null) {
+    return planWithTool(toolNames, Capability.Write, writeArguments(target, updated));
+  }
+  return planDigestVerification(task, currentTurn, toolNames, { target, expected: updated, intent, slots });
 }
 
 function compositeModuleChange(task) {
