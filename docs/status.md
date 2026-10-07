@@ -32,7 +32,7 @@ This document is a deterministic projection of committed ledgers.
 | `coedit` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `egg_math` | 2026-09-07 | 20 | 20 | 20 | 0.347.0 |
 | `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
-| `humaneval` | 2026-09-17 | 164 | 14 | 164 | 0.350.0 |
+| `humaneval` | 2026-10-07 | 164 | 21 | 164 | 0.352.1 |
 | `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `mbpp` | 2026-09-18 | 500 | 49 | 500 | 0.350.0 |
 | `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
@@ -49,10 +49,10 @@ This document is a deterministic projection of committed ledgers.
 
 | Input | Lines |
 | --- | ---: |
-| `data/benchmarks/external-results.lino` | 946 |
+| `data/benchmarks/external-results.lino` | 957 |
 | `data/meta/self-hosting-ledger.lino` | 1283 |
 | `data/meta/debt-ratchet.lino` | 64 |
-| `data/meta/core-boundary-ledger.lino` | 449 |
+| `data/meta/core-boundary-ledger.lino` | 450 |
 | `data/meta/handler-migration-ledger.lino` | 339 |
 | `data/meta/ladder-ratchet.lino` | 21 |
 | `data/meta/requirement-status-ledger.lino` | 25 |

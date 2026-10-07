@@ -92,7 +92,7 @@ requirement_status_ledger_shard requirements_05
     id "R1177-12"
     shard "docs/requirements/issue-1177-code-tasks-formal-answers.md"
     verdict "partial"
-    delivered "open — no hang: run 37594798452 solved 89/164 HumanEval cases in 81 min (55 s mean) before the job cap cut grading; `--offset` shards (`shard_size`) added, sharded HumanEval and MBPP dispatch pending"
+    delivered "partial — HumanEval full slice 21/164 recorded (sharded run 37613780755; was 14/164); MBPP 500-case sharded run pending"
     issue "1177"
     automated_test ""
     manual "`rust/tests/unit/specification/external_benchmarks.rs`"

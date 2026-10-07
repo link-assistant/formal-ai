@@ -465,6 +465,19 @@ creative_composition_rules
     word दिन
   topic_stop_word
     language zh
+    word 直到
+    word 自从
+    word 期间
+    word 之前
+    word 之后
+    word 附近
+    word 后面
+    word 下面
+    word 里面
+    word 上面
+    word 上午
+    word 下午
+    word 点钟
     word 的
     word 给
     word 我

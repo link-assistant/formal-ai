@@ -111,7 +111,7 @@ function claimRouteRows() {
   return rows;
 }
 
-function claimRouteAdmits(browserHandler, prompt, normalized = normalizePrompt(prompt)) {
+function claimRouteAdmits(browserHandler, prompt, normalized) {
   const row = claimRouteRows().find((candidate) => candidate.browserHandler === browserHandler);
-  return !row || row.admitsOn.some((kind) => Boolean(CLAIM_EVIDENCE[kind] && CLAIM_EVIDENCE[kind](prompt, normalized)));
+  return !row || row.admitsOn.some((kind) => Boolean(CLAIM_EVIDENCE[kind] && CLAIM_EVIDENCE[kind](prompt, normalized ?? normalizePrompt(prompt))));
 }
