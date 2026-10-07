@@ -152,6 +152,14 @@ describe('R184-R187: the diagnostics page probes the extra provider families', (
   }
 });
 
+describe('the evidence names the web-search release the bundle is built from', () => {
+  test('the component entry (bundled at build time) labels the version package.json pins', () => {
+    const pinned = JSON.parse(readFileSync(join(REPO_ROOT, 'package.json'), 'utf8')).dependencies['@link-assistant/web-search'];
+    const entry = readFileSync(join(REPO_ROOT, 'js/web-search-component-entry.js'), 'utf8');
+    assert.equal(/const VERSION = "([^"]+)";/.exec(entry)?.[1], pinned);
+  });
+});
+
 describe('R193: the change was released as a minor version with its changelog entry', () => {
   test('the 0.71.0 section records the issue #133 addition', () => {
     const archive = readFileSync(join(REPO_ROOT, 'docs/changelog/archive-01.md'), 'utf8');
