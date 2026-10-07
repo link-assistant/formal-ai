@@ -163,10 +163,10 @@ line number, which had gone stale for every row.
 | R112 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #18 | issue-level coverage (not row-pinned): rust/tests/e2e/tests/issue-672-migration-replay.spec.js | not yet confirmed |
 | R113 | docs/requirements/issue-0018-full-memory-export-import-requirements.md | pre-2026-07 (undated); issue #18 | issue-level coverage (not row-pinned): rust/tests/e2e/tests/issue-672-migration-replay.spec.js | not yet confirmed |
 | R114 | docs/requirements/issue-0018-full-memory-export-import-requirements.md | pre-2026-07 (undated); issue #18 | rust/tests/e2e/tests/multilingual-memory-settings.spec.js; memory::tests::full_memory_round_trip_* | not yet confirmed |
-| R115 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | none recorded | not yet confirmed |
+| R115 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | rust/tests/web/issue-0078-issue-reporting.test.mjs | not yet confirmed |
 | R116 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
-| R117 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | none recorded | not yet confirmed |
-| R118 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | none recorded | not yet confirmed |
+| R117 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | rust/tests/web/issue-0078-issue-reporting.test.mjs | not yet confirmed |
+| R118 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | rust/tests/web/issue-0078-issue-reporting.test.mjs | not yet confirmed |
 | R119 | docs/requirements/issue-0078-shorter-issue-reporting-requirements.md | pre-2026-07 (undated); issue #78 | rust/tests/e2e/tests/multilingual-chat.spec.js; rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
 | R120 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | manually confirmed 2026-08-04 (audit): README arithmetic examples run in en (`8% of $50`) and ru (currency conversion) |
 | R121 | docs/requirements/issue-0096-calculator-delegation-requirements.md | pre-2026-07 (undated); issue #96 | rust/tests/unit/specification/calculator_delegation.rs | not yet confirmed |
@@ -299,10 +299,10 @@ line number, which had gone stale for every row.
 | R527-10 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527_question_catalog.rs | not yet confirmed |
 | R527-11 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527_question_catalog.rs | not yet confirmed |
 | R527-12 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527_question_catalog.rs | not yet confirmed |
-| R216 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | none recorded | not yet confirmed |
-| R217 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | none recorded | not yet confirmed |
+| R216 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | rust/tests/unit/specification/reasoning_paths.rs | not yet confirmed |
+| R217 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | rust/tests/unit/specification/reasoning_paths.rs | not yet confirmed |
 | R218 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | rust/tests/unit/specification/reasoning_paths.rs; rust/tests/e2e/tests/multilingual-chat.spec.js | not yet confirmed |
-| R219 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | rust/tests/e2e/scripts/check-multilingual-intent-coverage.mjs | not yet confirmed |
+| R219 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | rust/tests/web/issue-0078-issue-reporting.test.mjs; rust/tests/e2e/scripts/check-multilingual-intent-coverage.mjs | not yet confirmed |
 | R220 | docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md | pre-2026-07 (undated); issue #195 | rust/tests/unit/docker_runtime.rs | not yet confirmed |
 | R221 | docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): rust/tests/unit/specification/agent_isolation.rs | not yet confirmed |
 | R222 | docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): rust/tests/unit/specification/agent_isolation.rs | not yet confirmed |
@@ -625,9 +625,9 @@ line number, which had gone stale for every row.
 | R467 | docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md | PR #690 (issue #656) | issue-level coverage (not row-pinned): rust/tests/integration/issue_656_improve.rs | not yet confirmed |
 | R468 | docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md | PR #690 (issue #656) | issue-level coverage (not row-pinned): rust/tests/integration/issue_656_improve.rs | not yet confirmed |
 | R469 | docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md | PR #690 (issue #656) | issue-level coverage (not row-pinned): rust/tests/integration/issue_656_improve.rs | not yet confirmed |
-| R470 | docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md | PR #690 (issue #656) | issue-level coverage (not row-pinned): rust/tests/integration/issue_656_improve.rs | not yet confirmed |
+| R470 | docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md | PR #690 (issue #656) | rust/tests/integration/issue_656_improve.rs | not yet confirmed |
 | R471 | docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md | PR #690 (issue #656) | issue-level coverage (not row-pinned): rust/tests/integration/issue_656_improve.rs | not yet confirmed |
-| R472 | docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md | PR #690 (issue #656) | issue-level coverage (not row-pinned): rust/tests/integration/issue_656_improve.rs | not yet confirmed |
+| R472 | docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md | PR #690 (issue #656) | rust/tests/integration/issue_656_improve.rs | not yet confirmed |
 | R473 | docs/requirements/issue-0657-release-self-hosting-metric.md | PR #735 (issue #657) | issue-level coverage (not row-pinned): rust/tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
 | R474 | docs/requirements/issue-0657-release-self-hosting-metric.md | PR #735 (issue #657) | issue-level coverage (not row-pinned): rust/tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
 | R475 | docs/requirements/issue-0657-release-self-hosting-metric.md | PR #735 (issue #657) | issue-level coverage (not row-pinned): rust/tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
@@ -934,8 +934,8 @@ line number, which had gone stale for every row.
 | R97-R100 | docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md | none recorded | none recorded | not yet confirmed |
 | R278-R281 | docs/requirements/issue-0398-pr-review-standards-comment-4663407299.md | none recorded | none recorded | not yet confirmed |
 | R453-M1 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
-| R453-M2 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | none recorded | not yet confirmed |
-| R453-M3 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | none recorded | not yet confirmed |
+| R453-M2 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
+| R453-M3 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | rust/tests/unit/issue_1138_selection_heuristics.rs | not yet confirmed |
 | R453-M4 | docs/requirements/issue-0453-moonshot-splitting.md | none recorded | none recorded | not yet confirmed |
 | R491-1 | docs/requirements/issue-0491-least-action-continuation.md | none recorded | none recorded | not yet confirmed |
 | R491-C1 | docs/requirements/issue-0491-least-action-continuation.md | none recorded | none recorded | not yet confirmed |
