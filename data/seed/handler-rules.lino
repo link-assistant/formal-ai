@@ -1,6 +1,6 @@
 handler_rules
   issue 1085
-  purpose "Specialized handlers expressed as links: conditions over seed roles and prompt shape, logged steps, and a seeded multilingual response. src/rule_interpreter.rs walks each rule; specialized_handlers() resolves a precedence name to a handler block here when no native function claims it."
+  purpose "Specialized handlers expressed as links: conditions over seed roles and prompt shape, logged steps, and a seeded multilingual response. src/rule_interpreter.rs walks each rule; specialized_handlers() resolves a precedence name to a handler block here when no native function claims it. A policy block holds a value a native handler reads instead of a constant of its own (issue #918)."
   handler conversation_control
     rule conversation_preference
       when
@@ -329,3 +329,5 @@ handler_rules
       respond filter_user
       link "response:filter_user"
       confidence 1.0
+  policy response_language_followup
+    terse_word_limit 4

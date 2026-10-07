@@ -150,7 +150,11 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/text_rewrite.rs"
     justification "Register substitution tables, agreement rules, and genre style guides are seed data; the in-place rewrite engine that applies them is a compiled primitive. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_text_transform.js answers the same seed records in the worker."
   handler response_language_followup
-    status pending
+    status migrated
+    data "data/seed/meanings-translation.lino|data/seed/handler-rules.lino"
+    primitive "rust/src/solver_handlers/response_language_followup.rs"
+    justification "issue #918 (R914-6): the response-language marker and the comprehension-failure marker are seed roles, and how short a bare language switch may be is the terse_word_limit policy of data/seed/handler-rules.lino (it was a literal 4 in both runtimes). The native part is the generic meta step itself: replay the previous user request through the whole solver with the requested language forced, and decline an inconclusive replay. Browser twin: tryResponseLanguageFollowup in js/worker/formal_ai_worker_19.js reads the same policy and now declines the same inconclusive intents (concept_lookup_unresolved was missing); pinned in both runtimes, and natively in four languages by rust/tests/unit/specification/response_language_followup.rs."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler capabilities
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"

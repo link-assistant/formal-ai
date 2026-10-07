@@ -35,7 +35,7 @@
 //! `rust/tests/web/issue-0918-handler-rules-batch.test.mjs`.
 
 use formal_ai::event_log::EventLog;
-use formal_ai::rule_interpreter::{handler_claims, rules, run_handler};
+use formal_ai::rule_interpreter::{handler_claims, handler_policy, rules, run_handler};
 use formal_ai::{ConversationTurn, FormalAiEngine, UniversalSolver};
 
 const TOPIC_EN: &str = "We can talk about existence. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.";
@@ -339,5 +339,36 @@ fn the_shell_rewrites_answer_unchanged_from_the_seeded_syntax() {
     assert_eq!(
         screen.answer,
         "screen -dmS auto-cleanup bash -c 'while true; do sleep 30m && hive-cleanup -f; done'"
+    );
+}
+
+const RETARGET_ZH: &str = "我是 formal-ai —— 一个确定性的符号化 AI 系统,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。";
+
+/// The response-language follow-up replays the prior request through the whole
+/// solver with the requested language forced; how short a bare language switch
+/// may be is the `terse_word_limit` policy of the rule document, not a constant
+/// in either runtime.
+#[test]
+fn a_terse_language_switch_replays_the_prior_answer_under_the_seeded_limit() {
+    assert_eq!(
+        handler_policy("response_language_followup", "terse_word_limit").as_deref(),
+        Some("4")
+    );
+    let solver = UniversalSolver::default();
+    let history = [
+        ConversationTurn::user("что ты такое"),
+        ConversationTurn::assistant(
+            "Я formal-ai — детерминированный символьный ИИ, отвечающий по локальным правилам Links Notation.",
+        ),
+    ];
+    let response = solver.solve_with_history("用中文", &history);
+    assert_eq!(response.intent, "identity");
+    assert_eq!(response.answer, RETARGET_ZH);
+    assert!(
+        response
+            .evidence_links
+            .contains(&"response_language_followup:target:zh".to_owned()),
+        "{:?}",
+        response.evidence_links
     );
 }

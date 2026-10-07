@@ -87,6 +87,24 @@ fn tokenize(line: &str) -> Vec<String> {
     tokens
 }
 
+/// The value a `policy <handler>` block of a rule document declares for `key`.
+pub(super) fn policy_value(text: &str, handler: &str, key: &str) -> Option<String> {
+    parse_tree(text)
+        .iter()
+        .find(|node| node.name == "handler_rules")?
+        .children
+        .iter()
+        .find(|node| {
+            node.name == "policy" && node.args.first().is_some_and(|name| name == handler)
+        })?
+        .children
+        .iter()
+        .find(|node| node.name == key)?
+        .args
+        .first()
+        .cloned()
+}
+
 pub(super) fn parse_rule(node: &Node) -> Result<Rule, String> {
     let name = node.first_arg()?;
     let mut when = None;

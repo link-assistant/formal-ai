@@ -214,3 +214,16 @@ test("the screen session rewrite answers unchanged in english, russian, hindi an
     assert.equal(response.content, SHELL_SCREEN, followup);
   }
 });
+
+test("a terse language switch replays the prior answer under the seeded limit", async () => {
+  await ready;
+  assert.equal(evaluate(worker, 'handlerRulesPolicy("response_language_followup", "terse_word_limit")'), "4");
+  const response = await worker.solve("用中文", [
+    { role: "user", content: "что ты такое" },
+    { role: "assistant", content: "Я formal-ai — детерминированный символьный ИИ, отвечающий по локальным правилам Links Notation." },
+  ], {}, {}, [], {});
+  assert.equal(response.intent, "identity");
+  assert.equal(response.content,
+    "我是 formal-ai —— 一个确定性的符号化 AI 系统,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。");
+  assert.ok(response.evidence.includes("response_language_followup:target:zh"));
+});

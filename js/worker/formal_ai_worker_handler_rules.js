@@ -269,6 +269,21 @@ function handlerRulesDocument() {
 }
 
 /**
+ * The value a `policy <handler>` block of the rule document declares for
+ * `key` (Rust `rule_interpreter::handler_policy`), or null.
+ * @param {string} handler
+ * @param {string} key
+ * @returns {string|null}
+ */
+function handlerRulesPolicy(handler, key) {
+  const text = seedRawText(SEED_RAW, "handler-rules.lino");
+  const root = handlerRulesParseTree(text).find((node) => node.name === "handler_rules");
+  const policy = root && root.children.find((node) => node.name === "policy" && node.args[0] === handler);
+  const entry = policy && policy.children.find((node) => node.name === key);
+  return entry && entry.args.length > 0 ? entry.args[0] : null;
+}
+
+/**
  * The surfaces of every meaning carrying `role`, with language and slot
  * (Rust `LinkStoreSource::role_surfaces`).
  * @param {string} role

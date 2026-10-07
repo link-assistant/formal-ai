@@ -23,7 +23,7 @@ use crate::solver_handlers::finalize_simple;
 mod parser;
 mod values;
 
-use parser::{parse_rule, parse_tree};
+use parser::{parse_rule, parse_tree, policy_value};
 
 /// Every handler rule set declared in `data/seed/handler-rules.lino`.
 #[derive(Debug)]
@@ -441,6 +441,13 @@ pub fn handler_claims(name: &str, prompt: &str, normalized: &str) -> bool {
     rules()
         .handler(name)
         .is_some_and(|set| set.matches_with_source(LinkStoreSource::shared(), prompt, normalized))
+}
+
+/// A policy value the rule document declares for a handler (`policy <handler>`
+/// then `<key> <value>`), such as a limit a native handler reads from data.
+#[must_use]
+pub fn handler_policy(handler: &str, key: &str) -> Option<String> {
+    policy_value(HANDLER_RULES_LINO, handler, key)
 }
 
 /// One rule-condition result, before value capture or response rendering.
