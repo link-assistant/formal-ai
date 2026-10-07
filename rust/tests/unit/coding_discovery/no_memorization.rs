@@ -778,8 +778,10 @@ fn formalization_grammar_and_runtime_memorize_no_probe_clause() {
 /// followed them, and from 4 to 1 when Java and Scala bound their documented
 /// class and object names into the run contract and PHP's page example was
 /// answered with its missing trailing newline recorded as a deviation. The
-/// one left is Laravel: the Laravel docs show no Hello World command and the
-/// catalog carries no Laravel grammar.
+/// one left is Laravel: the Laravel docs show no Hello World command (their
+/// routing page returns `Hello World` as an HTTP response body, not the
+/// standard output the catalog's `php artisan hello:world` contract checks)
+/// and the catalog carries no Laravel grammar.
 const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
 
 /// The documentation captures seed (R1165-1): source data, not programs.
@@ -797,10 +799,11 @@ const DOCUMENTATION_CAPTURES_SEED: &str = "data/seed/coding-documentation-captur
 ///
 /// It rose from 7 to 19 with the eight captures of 2026-10-08 (Python wiki,
 /// MDN, the TypeScript handbook, Microsoft's C, C++ and C# pages, ruby-lang.org
-/// and the Swift book), and to 22 with Oracle's Java tutorial and php.net's
-/// first page, each pinned by SHA-256 and re-derived from its fixture; it is
-/// the visible size of the source data, not of stored answers.
-const DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX: usize = 22;
+/// and the Swift book), to 22 with Oracle's Java tutorial and php.net's
+/// first page, and to 23 with lua.org's Programming in Lua, each pinned by
+/// SHA-256 and re-derived from its fixture; it is the visible size of the
+/// source data, not of stored answers.
+const DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX: usize = 23;
 
 /// The quote spellings a stored program may wrap its literal in: an escaped
 /// double quote, a single quote, the `\x27` escape of a single quote, and a

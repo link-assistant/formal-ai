@@ -293,14 +293,24 @@ fn knows_language_requires_grammar_and_procedure() {
 /// The bootstrap tier obeys the policy seed: while `bootstrap` carries
 /// `active "true"` the embedded snapshots are the record of past discovery.
 /// Flipping the seed is the deletion path the issue's wiring completes.
+///
+/// The Hello World snapshots the documentation route reproduces are retired
+/// (Kotlin, PHP, Swift, Lua); the Kotlin factorial still answers from its
+/// Rosetta Code snapshot, and Kotlin stays known through its captures.
 #[test]
 fn bootstrap_tier_is_governed_by_the_policy_seed() {
+    use formal_ai::knowledge::CodingOracle;
     assert!(
         bootstrap_cache_active(),
         "the committed policy keeps the bootstrap active until the wiring retires it"
     );
-    assert!(formal_ai::knowledge::CodingOracle::knows_language("kotlin"));
-    assert!(formal_ai::knowledge::CodingOracle::lookup("hello_world", "kotlin").is_some());
+    assert!(CodingOracle::knows_language("kotlin"));
+    assert!(CodingOracle::lookup("factorial", "kotlin").is_some());
+    let retired = ["kotlin", "php", "swift", "lua"]
+        .into_iter()
+        .filter(|language| CodingOracle::lookup("hello_world", language).is_some())
+        .collect::<Vec<_>>();
+    assert_eq!(retired, Vec::<&str>::new(), "retired Hello World snapshots");
 }
 
 /// R1165-1/R1165-2: the solver's `WriteProgram` branch reuses a verified
@@ -628,7 +638,7 @@ fn documentation_captures_are_the_formalized_fixtures() {
         .parent()
         .expect("the repository root sits one level above the crate");
     let captures = all_documentation_captures();
-    assert_eq!(captures.len(), 15);
+    assert_eq!(captures.len(), 16);
     for capture in captures {
         let bytes = std::fs::read(root.join(&capture.fixture))
             .unwrap_or_else(|error| panic!("{}: {error}", capture.fixture));

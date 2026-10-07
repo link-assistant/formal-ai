@@ -206,31 +206,14 @@ pub struct OracleSnippet {
 
 /// The committed popular-case cache for the coding oracle.
 ///
-/// These are the "Hello, World!" programs for languages the built-in
-/// [`crate::coding::catalog`] did not template (Kotlin, PHP, Bash, Lua,
-/// Haskell), plus a Rosetta-Code factorial in Kotlin to exercise a non-trivial
-/// task. Swift's left with issue #1165: the oracle answers it from the
-/// captured Swift book through the documentation route. The set is intentionally tiny — well under [`cache_capacity`] for every
+/// These are the "Hello, World!" programs for languages no grammar row lets
+/// the documentation route rediscover (Bash, Haskell), plus a Rosetta-Code
+/// factorial in Kotlin to exercise a non-trivial task. Issue #1165 retired
+/// the Swift, Lua, Kotlin and PHP Hello World snapshots: the oracle answers
+/// Swift and Lua from their captured documentation (the Swift book, lua.org),
+/// and Kotlin and PHP are answered by the catalog from theirs. The set is intentionally tiny — well under [`cache_capacity`] for every
 /// source — and is the offline accelerator a live refresh would repopulate.
 const ORACLE_SNAPSHOTS: &[OracleSnippet] = &[
-    OracleSnippet {
-        task_slug: "hello_world",
-        language_slug: "kotlin",
-        language_label: "Kotlin",
-        source: KnowledgeSource::HelloWorldCollection,
-        source_url: "http://helloworldcollection.de/#Kotlin",
-        code: "fun main() {\n    println(\"Hello, World!\")\n}",
-        expected_output: "Hello, World!",
-    },
-    OracleSnippet {
-        task_slug: "hello_world",
-        language_slug: "php",
-        language_label: "PHP",
-        source: KnowledgeSource::HelloWorldCollection,
-        source_url: "http://helloworldcollection.de/#PHP",
-        code: "<?php\necho \"Hello, World!\\n\";",
-        expected_output: "Hello, World!",
-    },
     OracleSnippet {
         task_slug: "hello_world",
         language_slug: "bash",
@@ -238,15 +221,6 @@ const ORACLE_SNAPSHOTS: &[OracleSnippet] = &[
         source: KnowledgeSource::HelloWorldCollection,
         source_url: "http://helloworldcollection.de/#Bash",
         code: "echo \"Hello, World!\"",
-        expected_output: "Hello, World!",
-    },
-    OracleSnippet {
-        task_slug: "hello_world",
-        language_slug: "lua",
-        language_label: "Lua",
-        source: KnowledgeSource::HelloWorldCollection,
-        source_url: "http://helloworldcollection.de/#Lua",
-        code: "print(\"Hello, World!\")",
         expected_output: "Hello, World!",
     },
     OracleSnippet {

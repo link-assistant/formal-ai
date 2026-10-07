@@ -169,6 +169,31 @@ fn swift_hello_world_resolves_from_the_oracle() {
     );
 }
 
+/// Lua has no catalog row either; its grammar row (meta-language ships
+/// tree-sitter-lua) lets the oracle answer it from lua.org's Programming in
+/// Lua through the documentation route, so its snapshot is retired too
+/// (issue #1165).
+#[test]
+fn lua_hello_world_resolves_from_the_documentation() {
+    let lua = UniversalSolver::default().solve("write me a hello world program in lua");
+    assert_eq!(lua.intent, "write_program_oracle_hello_world_lua");
+    assert_eq!(
+        lua.answer,
+        "Here is a minimal Lua program (hello world):\n\
+         \n\
+         ```lua\n\
+         print(\"Hello, world!\")\n\
+         ```\n\
+         \n\
+         Output:\n\
+         ```text\n\
+         Hello, world!\n\
+         ```\n\
+         Source: Documentation capture (https://www.lua.org/pil/1.html), \
+         cached locally as a popular example."
+    );
+}
+
 /// PHP shared this file's fallback example with Swift until issue #1021, which
 /// asked for a PHP request (issue #723) to be answered by generalization rather
 /// than by a per-prompt fix. Cataloguing PHP is that generalization: the eleven

@@ -29,6 +29,8 @@ const SHIPPED_TRACKED_GRAMMAR_SLUGS: &[&str] = &[
     "java",
     "javascript",
     "kotlin",
+    // tree-sitter-lua; registered for the documentation route of issue #1165.
+    "lua",
     // tree-sitter-pascal; registered for the held-out Free Pascal path of
     // issue #1164 (R1164-9).
     "pascal",

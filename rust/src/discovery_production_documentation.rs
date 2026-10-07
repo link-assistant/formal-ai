@@ -487,19 +487,25 @@ pub fn documented_run_commands(language: &str, task: &str) -> Vec<DocumentedComm
 }
 
 /// Whether the documentation route knows `language` (R1165-4): some task its
-/// captures cover rediscovers a verified program for the catalog row. The
-/// JavaScript twin is `documentationKnowsLanguage`.
+/// captures cover rediscovers a verified program.
+///
+/// A catalog row's program is bound to its run contract; a language the
+/// catalog has no row for (Lua) is rediscovered as the coding oracle answers
+/// it. The JavaScript twin is `documentationKnowsLanguage`.
 #[must_use]
 pub fn language_has_documented_procedure(language: &str) -> bool {
     let needle = language.trim().to_ascii_lowercase();
-    let Some(row) = crate::coding::program_language_by_slug(&needle) else {
-        return false;
-    };
+    let row = crate::coding::program_language_by_slug(&needle);
     documented_pairs()
         .iter()
         .filter(|(_, documented)| *documented == needle)
         .filter_map(|(task, _)| crate::coding::program_task_by_slug(task))
-        .any(|task| rediscover_catalog_program(row, task).is_ok())
+        .any(|task| {
+            row.map_or_else(
+                || documented_oracle_program(task.slug, &needle).is_some(),
+                |row| rediscover_catalog_program(row, task).is_ok(),
+            )
+        })
 }
 
 /// The `program_source` of a seed template row whose program is retired to

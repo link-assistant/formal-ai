@@ -224,7 +224,8 @@ fn a_documented_command_binds_the_file_name_consistently() {
 }
 
 /// R1165-4: the documentation route knows exactly the languages its captures
-/// rediscover a verified program for (R and Laravel have no capture).
+/// rediscover a verified program for (R and Laravel have no capture; Bash
+/// and Haskell have no grammar row, since meta-language ships none).
 #[cfg(feature = "meta-language")]
 #[test]
 fn the_documentation_route_knows_the_languages_it_rediscovers() {
@@ -243,8 +244,11 @@ fn the_documentation_route_knows_the_languages_it_rediscovers() {
         "scala",
         "java",
         "php",
+        "lua",
         "r",
         "laravel",
+        "bash",
+        "haskell",
     ];
     let known: Vec<&str> = languages
         .into_iter()
@@ -266,7 +270,8 @@ fn the_documentation_route_knows_the_languages_it_rediscovers() {
             "swift",
             "scala",
             "java",
-            "php"
+            "php",
+            "lua"
         ]
     );
 }
