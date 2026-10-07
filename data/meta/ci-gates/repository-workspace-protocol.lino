@@ -1,4 +1,9 @@
+# PR #1188: lane 3 of the parallel `lint` matrix. The six filters run in one
+# `cargo test` instead of six chained ones: libtest ORs its filters, so the
+# same tests run, and main run 36292106539 showed every one of the six
+# invocations recompiling formal-ai (~90s each, ~9 of the gate's 604s).
 ci_gate repository_workspace_protocol
   stage rust
+  lane 3
   description "The repository workspace stays one exact-commit, default-deny protocol: clone/diff isolation, multilingual target location, named-test evidence, data/source grounding and solve attribution are exercised together so a caller cannot bypass a protocol step unnoticed."
-  run "cargo test --manifest-path rust/Cargo.toml --locked --test unit issue_1138_repository_workspace && cargo test --manifest-path rust/Cargo.toml --locked --test unit issue_1138_locate_targets && cargo test --manifest-path rust/Cargo.toml --locked --test unit issue_1138_named_tests && cargo test --manifest-path rust/Cargo.toml --locked --test unit repository_workspace_protocol && cargo test --manifest-path rust/Cargo.toml --locked --test unit issue_1138_solve_cli && cargo test --manifest-path rust/Cargo.toml --locked --test unit solve_commit_payload_is_accepted_by_the_canonical_attribution_parser"
+  run "cargo test --manifest-path rust/Cargo.toml --locked --test unit -- issue_1138_repository_workspace issue_1138_locate_targets issue_1138_named_tests repository_workspace_protocol issue_1138_solve_cli solve_commit_payload_is_accepted_by_the_canonical_attribution_parser"

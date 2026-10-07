@@ -117,7 +117,7 @@ jobs:
           set -euo pipefail
           executable=$(jq -r 'select(.reason == "compiler-artifact" and .target.name == "integration" and .profile.test == true) | .executable // empty' corpus-build.json | tail -1)
           if [ -z "$executable" ] || [ ! -x "$executable" ]; then
-            echo "::error title=No corpus gate executable::cargo test --no-run reported no integration test executable" >&2
+            echo "::error title=No corpus gate executable::the --no-run build reported no integration test executable" >&2
             exit 1
           fi
           mkdir -p corpus-gate

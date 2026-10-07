@@ -178,7 +178,7 @@ jobs:
         run: experiments/issue_1028_agent_cli_ladder/run.sh
 
       - name: Show the Agent CLI evidence on failure
-        if: ${{ failure() }}
+        if: failure()
         run: scripts/dump-agent-cli-evidence.sh "$OUT"
 
       - name: Upload tree evidence
@@ -300,7 +300,7 @@ jobs:
           fi
 
       - name: Show the Agent CLI evidence on failure
-        if: ${{ failure() }}
+        if: failure()
         run: scripts/dump-agent-cli-evidence.sh docs/case-studies/issue-1028/agent-tree-run
       - name: Upload tree evidence
         if: ${{ always() }}

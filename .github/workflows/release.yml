@@ -296,17 +296,20 @@ jobs:
     permissions:
       contents: read
   lint:
-    name: Lint and Format Check
+    name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-latest
-    # Issue #1076 (D5): 12.7 min worst case was 84.4% of the old 15m cap -- a
-    # deadline, not a backstop. 25 put that at 50.7%, but the gate set has
-    # grown since: run 35806556194 (a0745518a) consumed the whole 25 minutes
-    # and the cap killed it mid-gate in repository_workspace_protocol, which
-    # GitHub reports as cancelled. 45 keeps a measured demand of at least
-    # 25.2 minutes under 56% of the cap (check-job-headroom.rs warns at 70%).
-    timeout-minutes: 45
+    # Issue #1076 (D5) raised the one serial job's cap 15 -> 25 -> 45 minutes
+    # (run 35806556194 was killed mid-gate at 25). PR #1188 runs the gates as
+    # parallel lanes instead (`lane` in data/meta/ci-gates/, CI_GATE_LANE
+    # below; run-ci-gates.rs --check fails a gate no lane runs); lane 1 also
+    # runs the wasm and web stages. 30 holds the slowest lane (~15 min).
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [1, 2, 3, 4]
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-lint
+      group: ${{ github.workflow }}-${{ github.ref }}-lint-${{ matrix.lane }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, base]
     if: |
@@ -350,58 +353,57 @@ jobs:
           FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
           PR_BODY: ${{ github.event.pull_request.body }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
+          CI_GATE_LANE: ${{ matrix.lane }}
         run: rust-script scripts/run-ci-gates.rs --stage rust
       - name: Build Rust→WASM worker
+        if: matrix.lane == 1
         run: sh js/wasm-worker/build.sh
       # The rebuilt worker is published so a stale checked-in binary can be
       # replaced with CI's exact bytes (the toolchain is CI's stable, which a
       # contributor's machine may not match); check_wasm_worker_current below
       # still fails until it is committed.
       - name: Upload rebuilt WASM worker
+        if: matrix.lane == 1
         uses: actions/upload-artifact@v7
         with:
           name: formal-ai-worker-wasm
           path: js/formal_ai_worker.wasm
           retention-days: 3
       - name: Run registered gates (stage wasm)
+        if: matrix.lane == 1
         run: rust-script scripts/run-ci-gates.rs --stage wasm
       - name: Install web bundle dependencies
+        if: matrix.lane == 1
         run: bun install --frozen-lockfile
       - name: Build web vendor bundle
+        if: matrix.lane == 1
         run: bun run build:web
       - name: Check web bundles are current
+        if: matrix.lane == 1
         run: git diff --exit-code -- js/vendor.bundle.js js/web-search-component.bundle.js js/ocr.bundle.js js/app.js
       - name: Setup Node
+        if: matrix.lane == 1
         uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: rust/tests/e2e/package-lock.json
       - name: Install web test dependencies
+        if: matrix.lane == 1
         run: npm ci --prefix rust/tests/e2e --no-audit --no-fund
       - name: Run registered gates (stage web)
+        if: matrix.lane == 1
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/run-ci-gates.rs --stage web
   test:
-    name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/4', matrix.shard) || '' }}
+    name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards || 4) || '' }}
     runs-on: ${{ matrix.os }}
-    # Issue #1017: run 31937348472 used 1415s of a 1500s cap with 455s outside
-    # the budgeted step, so the 1200s budget could never expire first. The cap
-    # is the backstop; the budget is the deadline.
-    #
-    # Issue #1081 finished the thought. Every step here that compiles or runs
-    # tests now owns a budget, so nothing on the job clock can grow unwatched,
-    # and the cap is sized to hold the *sum* of one leg's budgets at or under
-    # the 70% share `tests/unit/ci-cd/issue_1081.rs` enforces -- the invariant
-    # the js pipeline template already carries and this repository only had
-    # half of. The specification lane owns a worst budgeted group of 3600s
-    # (two 1800s steps behind one condition), which the old 65-minute cap
-    # held at a 92% share -- the budget, not the cap, was the real deadline.
-    # At 90 minutes the worst groups -- the specification lane, and the full
-    # lane once issue #1138 raised `Run tests` to 2400s -- sit at 66% of the
-    # cap and the pre-raise full lane's 2640s at 49%, so the cap is the
-    # backstop again.
+    # Issue #1017: the cap is the backstop, the step budget the deadline (run
+    # 31937348472 used 1415s of a 1500s cap). Issue #1081 sized the cap so one
+    # leg's worst budgeted group -- 3600s: the specification lane's two 1800s
+    # steps, or the full lane's 2400s tests plus its gates -- stays at 66.7% of
+    # 90 minutes, inside the 70% share `tests/unit/ci-cd/issue_1081.rs` holds.
     timeout-minutes: 90
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}
@@ -424,12 +426,13 @@ jobs:
           - { os: ubuntu-latest, test-suite: full, shard: 2 }
           - { os: ubuntu-latest, test-suite: full, shard: 3 }
           - { os: ubuntu-latest, test-suite: full, shard: 4 }
-          # The specification suite ran only on macOS while the rest of the
-          # matrix ran on ubuntu, so a linux-only failure in it could not turn
-          # any required check red. A third leg closes that blind spot; the
-          # green ledger keys per os and suite, so it starts with no stale
-          # green to honor (issue #1107).
-          - { os: ubuntu-latest, test-suite: specification }
+          # The specification suite ran only on macOS, so a linux-only failure
+          # in it could not turn any required check red; these legs close that
+          # blind spot (issue #1107). PR #1188 runs it as three shards (17-19
+          # min in one job); pr_1188_sharding.rs pins that `shards` legs exist.
+          - { os: ubuntu-latest, test-suite: specification, shard: 1, shards: 3 }
+          - { os: ubuntu-latest, test-suite: specification, shard: 2, shards: 3 }
+          - { os: ubuntu-latest, test-suite: specification, shard: 3, shards: 3 }
           - { os: macos-15-intel, test-suite: specification }
     steps:
       - uses: actions/checkout@v7
@@ -519,22 +522,11 @@ jobs:
       - name: Run tests
         if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
-          # Issue #1081: 961s worst measured over 38 runs was 80.1% of the old
-          # 1200s budget -- inside the band the step audit now warns on, and
-          # invisible until it was measured.
-          # Issue #1138: raised from 1440. The L1-era suite outgrew it: the
-          # unit phase measures 1251-1315s and the integration phase ~200s
-          # (389 of its 397 tests inside the 164s window run 35877276920
-          # reached before its kill), so the step demands ~1520s and every
-          # post-L1 attempt that got past the unit phase died at exit 124 --
-          # 253687e0f only looked complete because its three real failures
-          # ended the step at 1344s first. 2400 holds the measured worst at
-          # 63%, and the full lane's sum reaches 3600s, 66.7% of the cap --
-          # still inside the 70% share, now tied with the specification lane.
-          # The 397th integration test -- the benchmark corpus gate -- moved
-          # to its own workflow (benchmark-corpus-gate.yml): run 35893508679
-          # showed it needs more than the 1154s this step had left after the
-          # unit phase, alone; it is skipped via run-prebuilt-tests.sh.
+          # Issue #1081 measured 961s worst against the old 1200s budget;
+          # issue #1138 raised it from 1440 when the unsharded unit phase grew
+          # to 1251-1315s plus ~200s of integration (run 35877276920). 2400
+          # holds that at 63%. The benchmark corpus gate runs in its own
+          # workflow (benchmark-corpus-gate.yml), skipped by run-prebuilt-tests.sh.
           TEST_BUDGET_SECONDS: 2400
           SHARD_INDEX: ${{ matrix.shard || 1 }}
           SHARD_TOTAL: 4
@@ -544,18 +536,10 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Test suite" \
             bash scripts/run-prebuilt-tests.sh
-      # Issue #1081. The specification budget used to guard a compile *and* the
-      # tests it produced, and on macOS this is the job's first compiling step:
-      # on run 34095902681 rustc took 1201s of the 1400s budget, `running 1053
-      # tests` appeared 20 minutes in, and the wrapper killed the step 199s
-      # later at 100.1% of its budget. Run 32688997247 died the same way on
-      # 2026-08-24. The ubuntu leg never hit it because issue #1055 gives it
-      # prebuilt executables to download, so the two legs measured different
-      # things through the same number.
-      #
-      # Splitting the build out gives each phase a deadline over the work it
-      # actually bounds -- the shape `macos-core-tests.yml` already uses, where
-      # the archive build and the run own separate budgets.
+      # Issue #1081 split the specification compile from its run: on run
+      # 34095902681 rustc alone took 1201s of the old combined 1400s budget and
+      # the step died at 100.1% of it. Each phase now owns a deadline over the
+      # work it bounds, the shape `macos-core-tests.yml` already uses.
       - name: Build the specification test binary
         if: ${{ (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
@@ -567,29 +551,28 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test build" \
             cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose --no-run
-      # Renamed with the split, and deliberately. `scripts/check-step-budget-
-      # headroom.rs` joins measurements to budgets on the step name, so a name
-      # kept across a change of what the step *does* would have the audit
-      # compare this 660s execution budget against runs of the old step that
-      # compiled as well -- 1401s of them -- and report 212% for weeks. A step
-      # name is the identity of the work it names.
+      # Named apart from the old combined step on purpose: the step audit
+      # (`scripts/check-step-budget-headroom.rs`) joins measurements by name.
       - name: Run specification tests from the prebuilt binary
         if: ${{ (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
-          # The binary is built above, so this budget bounds execution only.
-          # The old 660s came from "the fastest observed combined step was 424s
-          # *including* its compile" -- but the suite has since grown to 1145
-          # tests, and every tip since at least 2026-09-21 23:14 was killed at
-          # exit 124 mid-stream (run 35703111768: 508 tests all ok in 662s).
-          # Measured 2026-09-22: the whole suite passes in 341s on a dev
-          # notebook; the CI host's observed pace (508 tests / 662s) puts the
-          # full run at ~1492s. 1800s holds that with ~20% headroom.
+          # Execution only. The whole suite (1145 tests) measured 341s on a
+          # dev notebook and ~1492s at the CI host's pace (run 35703111768: 508
+          # tests in 662s); 1800s holds an unsharded leg (macOS) as well.
           TEST_BUDGET_SECONDS: 1800
           TEST_WARN_RATIO_PERCENT: 70
+          SHARD_INDEX: ${{ matrix.shard || 1 }}
+          SHARD_TOTAL: ${{ matrix.shards || 1 }}
+        # Every SHARD_TOTAL-th test of the listed suite; `--exact` makes the
+        # `specification::` filter match nothing, so only this shard's names run.
         run: |
+          set -euo pipefail
+          mapfile -t names < <(cargo test --manifest-path rust/Cargo.toml --test unit --all-features specification:: -- --list --format terse \
+            | sed -n 's/: test$//p' | awk -v i="$SHARD_INDEX" -v n="$SHARD_TOTAL" '(NR - 1) % n == i - 1')
+          [ "${#names[@]}" -gt 0 ] || { echo "::error::specification shard $SHARD_INDEX/$SHARD_TOTAL selected no test" >&2; exit 1; }
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
-            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification::
+            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification:: -- --exact "${names[@]}"
       - name: Run doc tests
         if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && matrix.shard == 2 }}
         env:

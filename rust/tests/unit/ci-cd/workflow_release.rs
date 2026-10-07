@@ -796,7 +796,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // hidden behind a cancelled job, every gate that did run passing. The
         // measured demand of at least 25.2 min sits under 56% of 45, back
         // below the 70% warn line of check-job-headroom.rs.
-        ("lint", 45),
+        // PR #1188: instead of a fourth raise, the gates run as four parallel
+        // lanes (`lane` in data/meta/ci-gates/); 30 holds the slowest (~15).
+        ("lint", 30),
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
