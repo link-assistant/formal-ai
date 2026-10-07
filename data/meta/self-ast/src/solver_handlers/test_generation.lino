@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/test_generation.rs
   language rust
   fidelity signature
-  byte_len 20892
-  line_count 616
-  content_id source_module_a5175f61e00b458f
+  byte_len 20966
+  line_count 617
+  content_id source_module_d3f879541ad0d92d
   symbol_count 24
   symbols
     const CUES_PATH 25 25
@@ -30,4 +30,4 @@ self_ast_census
     struct StatedExample 405 409
     function stated_examples 414 463
     function example_assertion 466 475
-    function handle_test_generation 482 616
+    function handle_test_generation 482 617

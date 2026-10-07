@@ -2,20 +2,20 @@ self_ast_census
   target src/solver_handlers/word_definition.rs
   language rust
   fidelity signature
-  byte_len 12713
-  line_count 342
-  content_id source_module_396ba286b7e0b350
+  byte_len 12874
+  line_count 348
+  content_id source_module_e48e8b7102f23271
   symbol_count 12
   symbols
     const INTENT 24 24
     const MAX_SENSES 25 25
     function patterns 29 39
-    function definition_term 44 91
-    function compact 94 96
-    function respelling 100 110
-    function is_heading 113 115
-    function title_of 118 120
-    function read_senses 126 233
-    function render 236 242
-    function try_word_definition_with_client 248 329
-    function try_word_definition_with_offline 333 342
+    function definition_term 45 92
+    function compact 95 97
+    function respelling 101 111
+    function is_heading 114 116
+    function title_of 119 121
+    function read_senses 127 234
+    function render 237 243
+    function try_word_definition_with_client 251 335
+    function try_word_definition_with_offline 339 348

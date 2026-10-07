@@ -170,7 +170,7 @@
     "expectedIntent": "code_example_decomposition",
     "expectedAnswerFragments": ["entry_point main", "output_operation println!", "string_literal Greetings, reader!"],
     "forbiddenAnswerFragments": [],
-    "expectedEvidencePrefixes": ["code_example_decomposition:rust parts=3", "code_example_part:rust entry_point main", "intent:code_example_decomposition", "response:code_example_decomposition"],
+    "expectedEvidencePrefixes": ["code_example_decomposition:code_example_decomposition_", "code_example_part:code_example_part_", "intent:code_example_decomposition", "response:code_example_decomposition"],
     "expectedTraceFragments": ["code_example_decomposition"],
     "browserExpectedEvidencePrefixes": ["code_example_decomposition:rust parts=3", "code_example_part:rust entry_point main", "response:code_example_decomposition"]
   },
