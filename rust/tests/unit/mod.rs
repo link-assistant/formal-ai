@@ -193,6 +193,7 @@ mod issue_908;
 mod issue_916;
 mod issue_917;
 mod issue_918;
+mod issue_918_browser_twins;
 mod issue_918_handler_rules_batch;
 mod issue_919;
 mod issue_920_question_necessity;

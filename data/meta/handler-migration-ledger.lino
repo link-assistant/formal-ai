@@ -19,11 +19,17 @@ handler_migration_ledger
     status pending
     justification "plan 09 leaf 13: the census now names the browser-only rows of the precedence seed; the memory store lives in the worker, so this handler has no native implementation yet."
   handler memory_program
-    status pending
-    justification "plan 09 leaf 13: browser-only memory-program interpreter, recorded by the same census correction."
+    status migrated
+    data "data/seed/memory-programs.lino|data/seed/multilingual-responses-memory-program.lino"
+    primitive "rust/src/memory_program.rs"
+    justification "issue #918 (R914-6): the row compiles a request against the reviewed templates and ordered steps of data/seed/memory-programs.lino and renders the outcome through the seeded memory_program_* responses; the interpreter names no word and no prose. The worker holds the memory store its solve table reads, so the precedence row stays browser_only; the native twin is the same interpreter on the native memory surface (execute_memory_query_with_options, behind the CLI memory query and the protocol's memory events), and js/worker/formal_ai_worker_22.js mirrors it step for step. Pinned byte-for-byte in both runtimes over the same store, with the browser recomputing the native stable id of the canonical program."
+    held_out "rust/tests/unit/issue_918_browser_twins.rs"
   handler memory_program_gap
-    status pending
-    justification "plan 09 leaf 13: browser-only gap surfacing over stored memory programs, recorded by the same census correction."
+    status migrated
+    data "data/seed/memory-programs.lino|data/seed/multilingual-responses-memory-program.lino"
+    primitive "rust/src/memory_program.rs"
+    justification "issue #918 (R914-6): a request that names a seeded memory cue and set scope but matches no complete seeded family is an honest program_gap rendered through the seeded memory_program_compilation_gap response; the cues, scopes and families are data/seed/memory-programs.lino. The native twin is the gap arm of execute_memory_query_with_options on the native memory surface; the browser row stays browser_only because the worker owns the store. Pinned byte-for-byte in both runtimes."
+    held_out "rust/tests/unit/issue_918_browser_twins.rs"
   handler current_dialogue_fact_checking
     status pending
     justification "plan 09 leaf 13: browser-only dialogue fact checking against the worker's memory, recorded by the same census correction."
