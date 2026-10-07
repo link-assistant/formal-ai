@@ -139,7 +139,10 @@ jobs:
           retention-days: 3
 
   coding-ladder:
-    name: 130-task coding ladder
+    name: 130-task coding ladder (all shards)
+    # A new display name on purpose: scripts/check-job-headroom.rs matches
+    # measured jobs to caps by name, and the one-job history under the old
+    # name would be judged against this short verdict job's cap.
     needs: [ladder-binary, ladder-shard]
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.

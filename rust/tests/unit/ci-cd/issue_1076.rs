@@ -50,8 +50,14 @@ fn repository_file(path: &str) -> String {
 ///
 /// Each entry is `(marker, human name)`, where `marker` is text that appears in
 /// the step that runs it.
+///
+/// PR #1188 split the instrumented coverage run into shards; the marker is the
+/// shard runner each leg executes the suite through.
 const UNBOUNDED_LONG_STEPS: &[(&str, &str)] = &[
-    ("cargo llvm-cov --all-features", "instrumented coverage run"),
+    (
+        "scripts/run-coverage-shard.sh",
+        "instrumented coverage shard",
+    ),
     ("docker/build-push-action", "container build and push"),
 ];
 
@@ -112,19 +118,24 @@ fn every_long_running_step_under_a_job_cap_owns_a_deadline() {
 /// Issue #1017 pinned "declared budget <= 70% of cap" for the budgets that
 /// existed. The coverage step had none, so it was invisible to that gate; this
 /// re-asserts the share for the budget added here, and additionally requires
-/// the budget to leave room for the *measured* worst case. The last twenty-one
-/// `Coverage` runs took 14.4 to 33.8 minutes when they succeeded
-/// (`analysis/coverage-job-durations.tsv`), so a budget below that worst case
-/// would turn a merely slow runner into a red build -- the false *positive*
-/// half of what issue #1076 asks for.
+/// the budget to leave room for the *measured* worst case, so a merely slow
+/// runner never turns into a red build -- the false *positive* half of what
+/// issue #1076 asks for.
+///
+/// PR #1188 split the instrumented run across parallel shards, so the budget
+/// that bounds the tests is now each shard's: the shards together must hold
+/// the whole suite's measured test time with room for a shard that draws up
+/// to twice its even share (the slowest single tests run for minutes).
 #[test]
 fn the_coverage_budget_covers_the_measured_worst_case_and_fits_its_cap() {
-    /// Worst case across the twenty-one measured `Coverage` runs that
-    /// succeeded, in seconds: 33.8 minutes on 2026-08-23.
-    const MEASURED_WORST_CASE_SECONDS: u64 = 33 * 60 + 48;
+    /// The whole instrumented suite's test time on run 37652295937 (tip
+    /// 1cd24513): 4310s in the `unit` target plus ~250s across the others.
+    const MEASURED_SUITE_SECONDS: u64 = 4560;
+    /// The share of the suite one shard may draw, against an even split.
+    const SHARD_IMBALANCE: u64 = 2;
 
     let body = repository_file(".github/workflows/coverage.yml");
-    let job = job_block(&body, "coverage");
+    let job = job_block(&body, "coverage-shard");
 
     let budget_seconds: u64 = job
         .lines()
@@ -134,34 +145,40 @@ fn the_coverage_budget_covers_the_measured_worst_case_and_fits_its_cap() {
                 .and_then(|value| value.trim().parse::<u64>().ok())
         })
         .expect(
-            "coverage.yml: the `coverage` job must declare TEST_BUDGET_SECONDS \
+            "coverage.yml: the `coverage-shard` job must declare TEST_BUDGET_SECONDS \
              for the instrumented run; without it `timeout-minutes` is the \
              deadline and an overrun reports `cancelled` (issue #977)",
         );
+    let shards = job
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("shard: ["))
+        .map(|list| list.trim_end_matches(']').split(',').count())
+        .expect("coverage.yml: the `coverage-shard` matrix must list its shards");
+    let shards = u64::try_from(shards).expect("a shard count fits in u64");
 
     let cap_minutes: u64 = job_timeout(job)
-        .expect("coverage.yml: the `coverage` job must declare a cap")
+        .expect("coverage.yml: the `coverage-shard` job must declare a cap")
         .parse()
-        .expect("coverage.yml: write the `coverage` cap as a plain number");
+        .expect("coverage.yml: write the `coverage-shard` cap as a plain number");
     let cap_seconds = cap_minutes * 60;
 
     let share = budget_seconds * 100 / cap_seconds;
     assert!(
         share <= MAX_BUDGET_SHARE_PERCENT,
         "coverage.yml: a {budget_seconds}s budget under a {cap_minutes}m cap is \
-         {share}% of it; checkout, the toolchain, cargo-llvm-cov's install, the \
-         ratchet and four artifact uploads have to fit in the remainder, or the \
-         job clock expires first and the overrun is a `cancelled` again. Keep \
-         the budget at or below {MAX_BUDGET_SHARE_PERCENT}%."
+         {share}% of it; checkout, the toolchain, the executable download, the \
+         profile merge and its upload have to fit in the remainder, or the job \
+         clock expires first and the overrun is a `cancelled` again. Keep the \
+         budget at or below {MAX_BUDGET_SHARE_PERCENT}%."
     );
 
     assert!(
-        budget_seconds > MEASURED_WORST_CASE_SECONDS,
-        "coverage.yml: a {budget_seconds}s budget is at or below the \
-         {MEASURED_WORST_CASE_SECONDS}s worst case measured across the last \
-         twenty-one green `Coverage` runs, so an ordinarily slow runner would \
-         fail the build for a reason that has nothing to do with the code under \
-         test -- the false positive issue #1076 also asks to remove."
+        budget_seconds * shards >= MEASURED_SUITE_SECONDS * SHARD_IMBALANCE,
+        "coverage.yml: {shards} shards of {budget_seconds}s cannot hold the \
+         {MEASURED_SUITE_SECONDS}s the instrumented suite measured with room for a \
+         shard drawing {SHARD_IMBALANCE}x its share, so an ordinarily slow runner \
+         would fail the build for a reason that has nothing to do with the code \
+         under test -- the false positive issue #1076 also asks to remove."
     );
 }
 
@@ -193,12 +210,14 @@ fn runner_telemetry_exists_and_defaults_to_off() {
         );
     }
 
+    // PR #1188: the instrumented tests now run in the `coverage-shard` legs,
+    // so that is where the telemetry samples the host.
     let body = repository_file(".github/workflows/coverage.yml");
-    let job = job_block(&body, "coverage");
+    let job = job_block(&body, "coverage-shard");
     assert!(
         job.contains("report-runner-capacity.sh"),
-        "coverage.yml: the `coverage` job is the one that failed for a reason \
-         no log can explain; it must sample runner capacity"
+        "coverage.yml: the instrumented run is the one that failed for a reason \
+         no log can explain; its `coverage-shard` job must sample runner capacity"
     );
     assert!(
         job.contains("FORMAL_AI_CI_VERBOSE"),

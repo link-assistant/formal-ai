@@ -189,7 +189,10 @@ jobs:
           }
 
   corpus-gate:
-    name: no benchmark prompt reaches the unknown opener
+    name: no benchmark prompt reaches the unknown opener (all shards)
+    # A new display name on purpose: scripts/check-job-headroom.rs matches
+    # measured jobs to caps by name, and the one-job history under the old
+    # name would be judged against this short verdict job's cap.
     needs: [corpus-build, corpus-shard]
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.
