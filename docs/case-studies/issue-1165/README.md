@@ -73,12 +73,18 @@ each rediscovered program was saved under its run contract and run:
 | C++ | learn.microsoft.com vscpp-step-1-create | `std::cout << ... << std::endl` |
 | C# | learn.microsoft.com tour-of-csharp hello-world | `Console.WriteLine(...)` top-level statement |
 | Ruby | ruby-lang.org examples/hello_world | comment header plus `puts` |
-| Swift | swift-book GuidedTour.md | `print(...)` plus its comment (oracle-answered, see R1165-4) |
-| Java | none | every official page names its class `HelloWorldApp`, `MyFirstClass` or `HelloWorld`; the run contract is `java Main` |
-| Scala | none usable | only a scala-cli page declares `Main`, with a `//> using dep` directive for an unused library |
-| PHP | none usable | php.net's first page ends in `?>` and prints no trailing newline |
+| Swift | swift-book GuidedTour.md | `print(...)` plus its comment, answered by the coding oracle (the Swift snapshot is retired) |
+| Java | docs.oracle.com Java tutorial (Unix) | `class HelloWorldApp`; the name binds `HelloWorldApp.java` and the page states `javac HelloWorldApp.java` and `java HelloWorldApp` |
+| Scala | Scala 3 book taste-hello-world | `object hello`; the `entry_container` row binds `hello.scala`, `scalac hello.scala`, `scala hello` |
+| PHP | php.net tutorial first page | `echo "...";` then `?>`; answered with `documentation_deviation trailing_newline=absent` recorded |
 | R | none | no official page has a lone `print`/`cat` example |
 | Laravel | none | no grammar row; the Artisan docs show no Hello World command |
+
+Later the same day the run contract learned to bind a documented program's
+own name (a captured command line, else an `entry_container` keyword), every
+command became runtime data with its source recorded in the derivation, and
+the coding oracle began reading the documentation route, which brought Java,
+Scala, PHP and Swift in: only Laravel's Hello World is still stored.
 
 The ten documented Hello World programs are no longer stored anywhere:
 `ProgramTemplate.code` became runtime data and the Rust catalog table appends
