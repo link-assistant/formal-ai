@@ -22,11 +22,13 @@
 // (es_tokenizer.mjs, byte-for-byte with rust/src/es_tokenizer.rs) and then its
 // named items; a Rust path gets the `ast_census` node-kind histogram delta and
 // then its named items. The histogram itself is a tree-sitter parse
-// (`self_ast::ast_census` over the meta-language links network), which no
-// JavaScript root carries, so it comes through the optional `io.astCensus`;
-// without it the histogram is empty, exactly as the native importer built
-// without the `meta-language` feature records it, and nodeHistoryIo offers
-// none.
+// (`self_ast::ast_census` over the meta-language links network); its
+// JavaScript twin is rust_ast_census.mjs over the vendored tree-sitter-rust
+// grammar, whose loader is asynchronous, so it comes through the optional
+// `io.astCensus` (`nodeHistoryIo({..., astCensus:
+// historyAstCensus(await rustAstCensus())})`, node-host.mjs). Without it the
+// histogram is empty, exactly as the native importer built without the
+// `meta-language` feature records it.
 
 import { countTokens, tokenize } from './es_tokenizer.mjs';
 import { diffNamedItems, formalizeCommit, parseLogOutput } from './history_context.mjs';
@@ -42,11 +44,13 @@ export const LOG_FORMAT = '\u001e%H\u001f%an\u001f%cI\u001f%s\u001f%b\u001f';
 export const LOCAL_REPOSITORY = 'local-repository';
 
 /**
- * An `io` over node's own modules.
- * @param {{fs: object, path: object, childProcess: object}} modules
+ * An `io` over node's own modules, plus the optional Rust census
+ * (`historyAstCensus` of rust_ast_census.mjs).
+ * @param {{fs: object, path: object, childProcess: object, astCensus?: Function}} modules
  */
-export function nodeHistoryIo({ fs, path, childProcess }) {
+export function nodeHistoryIo({ fs, path, childProcess, astCensus }) {
   return {
+    ...(typeof astCensus === 'function' ? { astCensus } : {}),
     runGit(repoRoot, args) {
       return childProcess.execFileSync('git', args, {
         cwd: repoRoot,

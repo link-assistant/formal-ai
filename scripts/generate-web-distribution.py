@@ -15,7 +15,9 @@ assets = {}
 for path in sorted(WEB.rglob('*')):
     if path.is_file() and path.suffix in {'.js', '.css', '.html', '.wasm', '.lino', '.png', '.svg', '.webmanifest'}:
         name = path.relative_to(WEB).as_posix()
-        if path.name not in EXCLUDED and not name.startswith(('app/', 'distribution/', 'seed/')):
+        # vendor/ holds the Node-side tree-sitter runtime and grammar (issue
+        # #1180 R11); no page loads them, so they are not precached.
+        if path.name not in EXCLUDED and not name.startswith(('app/', 'distribution/', 'seed/', 'vendor/')):
             assets[name] = path
 assets['app/index.html'] = WEB / 'app/index.html'
 for path in sorted(SEED.rglob('*.lino')):

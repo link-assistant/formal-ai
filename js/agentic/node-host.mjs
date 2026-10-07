@@ -9,6 +9,8 @@ import path from 'node:path';
 
 import { REPO_ROOT, parseLino, readRepoFile } from '../server/lino.mjs';
 import { symbolicFromWorker } from '../server/solve.mjs';
+import * as webTreeSitter from '../vendor/tree-sitter/web-tree-sitter.mjs';
+import { loadRustAstCensus } from './crate/rust_ast_census.mjs';
 import { cachedSourceFetch } from './crate/source_cache.mjs';
 import { installHost } from './host.mjs';
 
@@ -98,4 +100,17 @@ export async function installNodeHost(worker) {
     sourceFetch: nodeSourceFetch,
   });
   return context;
+}
+
+let rustCensus = null;
+
+/**
+ * The Rust node-kind census over the vendored web-tree-sitter runtime and
+ * tree-sitter-rust grammar (js/vendor/tree-sitter/), loaded once.
+ */
+export function rustAstCensus() {
+  if (rustCensus === null) {
+    rustCensus = loadRustAstCensus(webTreeSitter, path.join(REPO_ROOT, 'js/vendor/tree-sitter/tree-sitter-rust.wasm'));
+  }
+  return rustCensus;
 }

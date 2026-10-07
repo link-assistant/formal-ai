@@ -77,6 +77,9 @@ const MAINTAINED_EXTENSIONS: &[&str] = &[
 const UNMAINTAINED_FILE_NAMES: &[&str] = &["package-lock.json", "bun.lock", "yarn.lock"];
 const UNMAINTAINED_PATH_FRAGMENTS: &[&str] = &[
     "docs/case-studies/",
+    // Verbatim upstream web-tree-sitter build and grammar (issue #1180 R11),
+    // sha256-pinned by js/vendor/tree-sitter/provenance.lino.
+    "js/vendor/tree-sitter/",
     "rust/tests/fixtures/coding-discovery/python-docs/",
     "rust/tests/fixtures/coding-discovery/captured/",
     "rust/tests/fixtures/meta-reasoner/captures/",
