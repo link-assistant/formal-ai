@@ -858,6 +858,14 @@ line number, which had gone stale for every row.
 | R1015 | docs/requirements/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.md | server parity corpus and ratchet | scripts/check-server-parity.mjs | not yet confirmed |
 | R1016 | docs/requirements/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.md | 1500-line ceiling on every maintained file | scripts/check-file-size.rs | not yet confirmed |
 | R1017 | docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md | development tasks put to Formal AI, kept as ladder rungs | rust/tests/web/r1017-counting-tasks.test.mjs; rust/tests/web/r1017-delegated-tasks.test.mjs; rust/tests/web/r1017-line-tasks.test.mjs | not yet confirmed |
+| R1018 | docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md | 2026-10-07 (this pull request; package.json test:web, CONTRIBUTING) | none recorded | not yet confirmed |
+| R1019 | docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md | 2026-10-07 (this pull request; CONTRIBUTING) | none recorded | not yet confirmed |
+| R1020 | docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md | 2026-10-07 (this pull request; release workflow WASM artifact, CONTRIBUTING) | none recorded | not yet confirmed |
+| R1021 | docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md | 2026-10-07 (this pull request) | scripts/check-requirement-status.rs | not yet confirmed |
+| R1022 | docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md | 2026-10-07 (this pull request; CONTRIBUTING) | none recorded | not yet confirmed |
+| R1023 | docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md | 2026-10-07 (this pull request; CONTRIBUTING) | none recorded | not yet confirmed |
+| R1024 | docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md | partial — relative-meta-logic named, no practice copied yet | none recorded | not yet confirmed |
+| R1025 | docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md | 2026-10-07 (this pull request; architect note comparison) | none recorded | not yet confirmed |
 | R894-1 | docs/requirements/issue-0894-ci-template-upstream-filings.md | PR #971 (issue #894) | rust/tests/unit/docs_requirements_issue_894.rs | revalidated 2026-08-05 against the four template default branches; commands and verbatim output kept in docs/case-studies/issue-894/raw-data/revalidation-greps.txt and revalidation-greps-2.txt |
 | R894-2 | docs/requirements/issue-0894-ci-template-upstream-filings.md | PR #971 (issue #894) | rust/tests/unit/docs_requirements_issue_894.rs | eight issues filed upstream 2026-08-05; bodies and API snapshot kept in docs/case-studies/issue-894/raw-data/ |
 | R894-3 | docs/requirements/issue-0894-ci-template-upstream-filings.md | PR #971 (issue #894) | rust/tests/unit/docs_requirements_issue_894.rs | ledger rendered and links opened 2026-08-05 in docs/case-studies/issue-479/template-comparison/REPORT.md |
@@ -1221,12 +1229,87 @@ line number, which had gone stale for every row.
 | R1138-B8-7 | docs/requirements/issue-1138-verifiable-task-routing.md | none recorded | rust/tests/unit/verifiable_task/recognition.rs | not yet confirmed |
 | R1138-B8-8 | docs/requirements/issue-1138-verifiable-task-routing.md | none recorded | rust/tests/unit/verifiable_task/ratchets.rs | not yet confirmed |
 | R1138-B8-9 | docs/requirements/issue-1138-verifiable-task-routing.md | none recorded | rust/tests/unit/verifiable_task/rendering.rs | not yet confirmed |
+| R1154-1 | docs/requirements/issue-1154-codex-command-argument.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1154-2 | docs/requirements/issue-1154-codex-command-argument.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1154-3 | docs/requirements/issue-1154-codex-command-argument.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1154-4 | docs/requirements/issue-1154-codex-command-argument.md | this pull request — see the shard | rust/tests/unit/issue_1154_progress_arguments.rs | not yet confirmed |
+| R1155-1 | docs/requirements/issue-1155-work-item-read-validation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1155-2 | docs/requirements/issue-1155-work-item-read-validation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1155-3 | docs/requirements/issue-1155-work-item-read-validation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1155-4 | docs/requirements/issue-1155-work-item-read-validation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1155-5 | docs/requirements/issue-1155-work-item-read-validation.md | this pull request — see the shard | rust/tests/unit/issue_1155_read_validation.rs | not yet confirmed |
 | R1161-1 | docs/requirements/issue-1161-agent-config-env.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1161_client_registry_env.rs | not yet confirmed |
 | R1161-2 | docs/requirements/issue-1161-agent-config-env.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1161_client_registry_env.rs | not yet confirmed |
 | R1161-3 | docs/requirements/issue-1161-agent-config-env.md | 2026-09-30 (this pull request) | reviewed: `src/cli_clients.rs` is a bin module outside the lib test target | not yet confirmed |
 | R1161-4 | docs/requirements/issue-1161-agent-config-env.md | 2026-09-30 (this pull request) | docs assertions read `docs/configuration/agentic-clis.md` by hand (no docs pin test in this shard) | not yet confirmed |
 | R1161-5 | docs/requirements/issue-1161-agent-config-env.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1161_client_registry_env.rs | not yet confirmed |
 | R1161-6 | docs/requirements/issue-1161-agent-config-env.md | cross-repo (link-assistant/hive-mind#2314) | n/a from this repository | not yet confirmed |
+| R1161-7 | docs/requirements/issue-1161-agent-config-env.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1163-1 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | 2026-09-30 (this pull request; HTML walker and seed-wrapper fixes 2026-10-07) | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-2 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | 2026-09-30 (this pull request; seed-wrapper fix 2026-10-07) | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-3 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | partial, 2026-09-30 (this pull request): one of six extractors checked | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-4 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | open follow-up (no routing of an unmatched need to web search) | — | — |
+| R1163-5 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | partial, 2026-09-30 (this pull request): source_research emits formalized_page_statement records, no test asserts them | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-6 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | partial, 2026-09-30 (this pull request): store exists, not in the solver's working memory | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-7 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | partial, 2026-09-30 (this pull request): seed-weighted score, features supplied by the caller | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-8 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | partial, 2026-09-30 (this pull request): store queries return links, not in the memory query language | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-9 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-10 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | open follow-up (JS/TS translation and parity cases) | — | — |
+| R1163-11 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | open follow-up (gated live kotlinlang.org test) | — | — |
+| R1163-12 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | open follow-up (web_page registry row and generic_page_v1 dispatcher branch) | — | — |
+| R1163-13 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | open follow-up (document_formats.rs conversion source) | — | — |
+| R1163-14 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | partial, 2026-09-30 (this pull request): trimmed fixtures, not byte-for-byte captures | rust/tests/unit/issue_1163_web_formalize.rs | not yet confirmed |
+| R1163-15 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | partial, 2026-10-07 (this pull request): case study README and raw data only | none recorded | not yet confirmed |
+| R1163-16 | docs/requirements/issue-1163-internet-as-formal-knowledge.md | open follow-up (changelog fragment) | — | — |
+| R1164-1 | docs/requirements/issue-1164-code-node-decomposition.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-2 | docs/requirements/issue-1164-code-node-decomposition.md | partial, 2026-09-30 (this pull request): six of fifteen registered languages checked | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-3 | docs/requirements/issue-1164-code-node-decomposition.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-4 | docs/requirements/issue-1164-code-node-decomposition.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-5 | docs/requirements/issue-1164-code-node-decomposition.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-6 | docs/requirements/issue-1164-code-node-decomposition.md | partial, 2026-09-30 (this pull request): CST parts carry no URL; program text from the seed template | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-7 | docs/requirements/issue-1164-code-node-decomposition.md | partial, 2026-09-30 (this pull request): step records only, adopt_decomposed_procedure absent | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-8 | docs/requirements/issue-1164-code-node-decomposition.md | partial, 2026-09-30 (this pull request): structural check, no compile or run | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-9 | docs/requirements/issue-1164-code-node-decomposition.md | partial, 2026-09-30 (this pull request): UnknownGrammar for zig and pascal; seeded Pascal template conflicts with the held-out rule | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-10 | docs/requirements/issue-1164-code-node-decomposition.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-11 | docs/requirements/issue-1164-code-node-decomposition.md | open follow-up (JS/TS translation and parity cases) | — | — |
+| R1164-12 | docs/requirements/issue-1164-code-node-decomposition.md | partial, 2026-09-30 (this pull request): trimmed fixtures, not byte-for-byte captures | rust/tests/unit/issue_1164_code_example_knowledge.rs | not yet confirmed |
+| R1164-13 | docs/requirements/issue-1164-code-node-decomposition.md | open follow-up (gated Pascal online test; needs the Pascal grammar row) | — | — |
+| R1164-14 | docs/requirements/issue-1164-code-node-decomposition.md | partial, 2026-10-07 (this pull request): case study README, raw data and the schema seed's worked example | none recorded | not yet confirmed |
+| R1164-15 | docs/requirements/issue-1164-code-node-decomposition.md | open follow-up (changelog fragment) | — | — |
+| R1165-1 | docs/requirements/issue-1165-discovery-production-path.md | open follow-up — see the shard | rust/tests/unit/issue_1165_discovery_production.rs | not yet confirmed |
+| R1165-2 | docs/requirements/issue-1165-discovery-production-path.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1165-3 | docs/requirements/issue-1165-discovery-production-path.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1165-4 | docs/requirements/issue-1165-discovery-production-path.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1165-5 | docs/requirements/issue-1165-discovery-production-path.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1165-6 | docs/requirements/issue-1165-discovery-production-path.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1165-7 | docs/requirements/issue-1165-discovery-production-path.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1165-8 | docs/requirements/issue-1165-discovery-production-path.md | open follow-up — see the shard | rust/tests/unit/coding_discovery/no_memorization.rs | not yet confirmed |
+| R1165-9 | docs/requirements/issue-1165-discovery-production-path.md | this pull request — see the shard | rust/tests/unit/issue_1166_obligation_routing.rs | not yet confirmed |
+| R1165-10 | docs/requirements/issue-1165-discovery-production-path.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1166-1 | docs/requirements/issue-1166-request-formalization.md | this pull request — see the shard | rust/tests/unit/issue_1166_obligation_routing.rs | not yet confirmed |
+| R1166-2 | docs/requirements/issue-1166-request-formalization.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1166-3 | docs/requirements/issue-1166-request-formalization.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1166-4 | docs/requirements/issue-1166-request-formalization.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1166-5 | docs/requirements/issue-1166-request-formalization.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1166-6 | docs/requirements/issue-1166-request-formalization.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1166-7 | docs/requirements/issue-1166-request-formalization.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1166-8 | docs/requirements/issue-1166-request-formalization.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1168-1 | docs/requirements/issue-1168-generated-versions.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1168-2 | docs/requirements/issue-1168-generated-versions.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1168-3 | docs/requirements/issue-1168-generated-versions.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1168-4 | docs/requirements/issue-1168-generated-versions.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1168-5 | docs/requirements/issue-1168-generated-versions.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1168-6 | docs/requirements/issue-1168-generated-versions.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1168-7 | docs/requirements/issue-1168-generated-versions.md | this pull request — see the shard | rust/tests/unit/issue_1168_latest_versions.rs | not yet confirmed |
+| R1168-8 | docs/requirements/issue-1168-generated-versions.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1169-1 | docs/requirements/issue-1169-dependency-currency.md | this pull request — see the shard | rust/tests/unit/issue_1169_dependency_currency.rs | not yet confirmed |
+| R1169-2 | docs/requirements/issue-1169-dependency-currency.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1169-3 | docs/requirements/issue-1169-dependency-currency.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1169-4 | docs/requirements/issue-1169-dependency-currency.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1169-5 | docs/requirements/issue-1169-dependency-currency.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1169-6 | docs/requirements/issue-1169-dependency-currency.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1169-7 | docs/requirements/issue-1169-dependency-currency.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1169-8 | docs/requirements/issue-1169-dependency-currency.md | this pull request — see the shard | rust/tests/unit/issue_1169_dependency_currency.rs | not yet confirmed |
 | R1172-1 | docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1172_factual_qa_subject_match.rs | not yet confirmed |
 | R1172-2 | docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md | open follow-up (needs the formalizer's subject-Q-id anchors as the gate) | — | — |
 | R1172-3 | docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md | open follow-up (Rust live path; depends on #1163/E128) | — | — |
@@ -1238,6 +1321,7 @@ line number, which had gone stale for every row.
 | R1172-9 | docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md | open follow-up (blocked on R1172-2/R1172-3) | — | — |
 | R1172-10 | docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md | 2026-10-07 (this pull request; Rust, JS and the regenerated TS twin) | rust/tests/web/issue-1172-1173-worker-parity.test.mjs | not yet confirmed |
 | R1172-11 | docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md | 2026-09-30 (this pull request) | docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md rows R173/R174/R177 | not yet confirmed |
+| R1172-12 | docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md | open follow-up — see the shard | rust/tests/web/issue-1172-1173-worker-parity.test.mjs | not yet confirmed |
 | R1173-1 | docs/requirements/issue-1173-no-canned-search-answer.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1173_fallback_executes_search.rs | not yet confirmed |
 | R1173-2 | docs/requirements/issue-1173-no-canned-search-answer.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1173_fallback_executes_search.rs | not yet confirmed |
 | R1173-3 | docs/requirements/issue-1173-no-canned-search-answer.md | owned by the #1175 routing shard of this pull request | see the #1175 shard | not yet confirmed |
@@ -1251,6 +1335,7 @@ line number, which had gone stale for every row.
 | R1174-6 | docs/requirements/issue-1174-text-transform-formal-versions.md | 2026-09-30 (this pull request) — free-sentence translation word by word with seeded lemmas, dropped function words logged, unknown words named, honest gap when nothing resolves | rust/tests/unit/issue_1174_text_transform.rs | not yet confirmed |
 | R1174-7 | docs/requirements/issue-1174-text-transform-formal-versions.md | 2026-09-30 (this pull request) — all vocabulary and response prose in seed data with five-language parity; net-zero unresolved closure tokens; literal-predicate count stays at 536 | rust/tests/unit/issue_1174_text_transform.rs | not yet confirmed |
 | R1174-8 | docs/requirements/issue-1174-text-transform-formal-versions.md | 2026-09-30 (this pull request) — handler-level tests pinning every probe and honest boundary; dispatch wiring and test registration owned by the #1175 routing work in the same pull request | rust/tests/unit/issue_1174_text_transform.rs | not yet confirmed |
+| R1174-9 | docs/requirements/issue-1174-text-transform-formal-versions.md | open follow-up — see the shard | none recorded | not yet confirmed |
 | R1175-1 | docs/requirements/issue-1175-routing-by-formalization.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1175_routing.rs | not yet confirmed |
 | R1175-2 | docs/requirements/issue-1175-routing-by-formalization.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1175_routing.rs | not yet confirmed |
 | R1175-3 | docs/requirements/issue-1175-routing-by-formalization.md | partial — targeted guards at the two reported sites; the full capability-table refactor remains open | rust/tests/unit/issue_1175_routing.rs | not yet confirmed |
@@ -1272,6 +1357,19 @@ line number, which had gone stale for every row.
 | R1177-8 | docs/requirements/issue-1177-code-tasks-formal-answers.md | 2026-09-30 (this pull request) — promise-chain → async/await with bodies verbatim; other refactoring targets refused by name | rust/tests/unit/issue_1177_code_task_handlers.rs | not yet confirmed |
 | R1177-9 | docs/requirements/issue-1177-code-tasks-formal-answers.md | 2026-09-30 (this pull request) — JSON↔YAML over a subset parser with a round-trip value check; subset exits named on refusal | rust/tests/unit/issue_1177_code_task_handlers.rs | not yet confirmed |
 | R1177-10 | docs/requirements/issue-1177-code-tasks-formal-answers.md | 2026-10-07 (this pull request; all three roots, dispatch wired) | rust/tests/web/issue-1177-code-tasks-parity.test.mjs | not yet confirmed |
+| R1177-11 | docs/requirements/issue-1177-code-tasks-formal-answers.md | 2026-10-07 (this pull request) — the no-memorization gate scans the nine handlers' output surfaces and their sources | rust/tests/unit/coding_discovery/no_memorization.rs | not yet confirmed |
+| R1177-12 | docs/requirements/issue-1177-code-tasks-formal-answers.md | open follow-up — full-slice HumanEval/MBPP re-measurement not yet recorded | — | — |
+| R1180-1 | docs/requirements/issue-1180-repository-history-formalization.md | partial — PR #1188 (d81d549e0, 2026-09-30; `--format=` fix 46d45c9e1, 2026-10-07); `Co-Authored-By:` not formalized as evidence | rust/tests/unit/issue_1180_history_context.rs (`commit_formalization_extracts_trailers_and_changed_symbols`) | not yet confirmed |
+| R1180-2 | docs/requirements/issue-1180-repository-history-formalization.md | partial — PR #1188 (d81d549e0, 2026-09-30); node-kind / token-count deltas, not changed item names | rust/tests/unit/issue_1180_history_context.rs (`commit_formalization_extracts_trailers_and_changed_symbols`) | not yet confirmed |
+| R1180-3 | docs/requirements/issue-1180-repository-history-formalization.md | partial — PR #1188 (d81d549e0, 2026-09-30); bodies not formalized into requirements, no state-transition history | rust/tests/unit/issue_1180_history_context.rs (`issue_and_pr_import_links_commit_to_source_issue`) | not yet confirmed |
+| R1180-4 | docs/requirements/issue-1180-repository-history-formalization.md | PR #1188 (d81d549e0), 2026-09-30 | rust/tests/unit/issue_1180_history_context.rs (`issue_and_pr_import_links_commit_to_source_issue`) | not yet confirmed |
+| R1180-5 | docs/requirements/issue-1180-repository-history-formalization.md | PR #1188 (d81d549e0), 2026-09-30 | rust/tests/unit/issue_1180_history_context.rs (`ci_run_import_carries_failing_steps`) | not yet confirmed |
+| R1180-6 | docs/requirements/issue-1180-repository-history-formalization.md | PR #1188 (d81d549e0, split c80c498a8), 2026-09-30 | rust/tests/unit/issue_1180_history_context.rs (`incremental_import_is_idempotent`, `incremental_import_only_advances_past_the_watermark`) | not yet confirmed |
+| R1180-7 | docs/requirements/issue-1180-repository-history-formalization.md | PR #1188 (d81d549e0), 2026-09-30 | rust/tests/unit/issue_1180_history_context.rs (`issue_and_pr_import_links_commit_to_source_issue` runs the memory-query-language lineage query) | not yet confirmed |
+| R1180-8 | docs/requirements/issue-1180-repository-history-formalization.md | PR #1188 (d81d549e0, 2026-09-30; real `git log` works since 46d45c9e1, 2026-10-07) | rust/tests/unit/issue_1180_history_context.rs (`on_this_repo_check_self_development_release_lineage`; skips on a shallow clone; only the introducing commit's issue/PR asserted) | not yet confirmed |
+| R1180-9 | docs/requirements/issue-1180-repository-history-formalization.md | not delivered; owned by #1180 | none recorded | not yet confirmed |
+| R1180-10 | docs/requirements/issue-1180-repository-history-formalization.md | not delivered; owned by #1180 (and the `repository_qa` class of #1171) | none recorded | not yet confirmed |
+| R1180-11 | docs/requirements/issue-1180-repository-history-formalization.md | not delivered; owned by #1180 | none recorded | not yet confirmed |
 | R1181-1 | docs/requirements/issue-1181-cli-binaries-and-env-switches.md | 2026-09-30 (this pull request); observable on the next tagged release | workflow: the `cli` job's smoke test runs `formal-ai --version` from each leg's own archive; no automated assertion exists until a release carries the assets | not yet confirmed |
 | R1181-2 | docs/requirements/issue-1181-cli-binaries-and-env-switches.md | 2026-09-30 (this pull request); observable on the next tagged release | workflow: "Package the CLI archive" + "Smoke test CLI archive" steps (exact `--locked` build command, contents asserted on the runner) | not yet confirmed |
 | R1181-3 | docs/requirements/issue-1181-cli-binaries-and-env-switches.md | 2026-09-30 (this pull request); observable on the next tagged release | workflow: `finalize` fragment merge + `builder_of`/label-loop coverage with the existing INCOMPLETE reporting | not yet confirmed |
@@ -1279,3 +1377,38 @@ line number, which had gone stale for every row.
 | R1181-5 | docs/requirements/issue-1181-cli-binaries-and-env-switches.md | 2026-09-30 (this pull request) | reviewed: `install_cli_prebuilt`/`Install-CliPrebuilt` reuse the existing checksum-verified download helpers; install.ps1 not machine-parsed (no PowerShell on the implementing workstation) | not yet confirmed |
 | R1181-6 | docs/requirements/issue-1181-cli-binaries-and-env-switches.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1181_boolean_env_parser.rs | not yet confirmed |
 | R1181-7 | docs/requirements/issue-1181-cli-binaries-and-env-switches.md | 2026-09-30 (this pull request) | rust/tests/unit/issue_1181_boolean_env_parser.rs (`silent_switch_now_accepts_one_as_the_issue_reported`, `bool_env_value_parser_maps_spellings_to_clap_results`) | not yet confirmed |
+| R1184-1 | docs/requirements/issue-1184-white-box-derivation.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1184-2 | docs/requirements/issue-1184-white-box-derivation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1184-3 | docs/requirements/issue-1184-white-box-derivation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1184-4 | docs/requirements/issue-1184-white-box-derivation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1184-5 | docs/requirements/issue-1184-white-box-derivation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1184-6 | docs/requirements/issue-1184-white-box-derivation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1184-7 | docs/requirements/issue-1184-white-box-derivation.md | this pull request — see the shard | none recorded | not yet confirmed |
+| R1184-8 | docs/requirements/issue-1184-white-box-derivation.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1184-9 | docs/requirements/issue-1184-white-box-derivation.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1185-1 | docs/requirements/issue-1185-error-driven-repair-loop.md | partial — see the shard | none recorded | not yet confirmed |
+| R1185-2 | docs/requirements/issue-1185-error-driven-repair-loop.md | partial — see the shard | none recorded | not yet confirmed |
+| R1185-3 | docs/requirements/issue-1185-error-driven-repair-loop.md | partial — see the shard | none recorded | not yet confirmed |
+| R1185-4 | docs/requirements/issue-1185-error-driven-repair-loop.md | partial — see the shard | none recorded | not yet confirmed |
+| R1185-5 | docs/requirements/issue-1185-error-driven-repair-loop.md | partial — see the shard | none recorded | not yet confirmed |
+| R1185-6 | docs/requirements/issue-1185-error-driven-repair-loop.md | partial — see the shard | none recorded | not yet confirmed |
+| R1185-7 | docs/requirements/issue-1185-error-driven-repair-loop.md | partial — see the shard | none recorded | not yet confirmed |
+| R1185-8 | docs/requirements/issue-1185-error-driven-repair-loop.md | open follow-up — see the shard | none recorded | not yet confirmed |
+| R1186-1 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | PR #1188 (dc3671dc7 handler, fca05d36d dispatch wiring), 2026-09-30 | rust/tests/unit/issue_1186_formalization_task.rs (`engine_answers_formalization_request`); rust/tests/web/issue-1186-formalization-parity.test.mjs | not yet confirmed |
+| R1186-2 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | PR #1188 (dc3671dc7, 2026-09-30; seed-root read fix 4566820cb, 2026-10-06) | rust/tests/unit/issue_1186_formalization_task.rs (`handler_formalizes_the_issue_probe_sentence`, `handler_formalizes_russian_conditional_in_russian`) | not yet confirmed |
+| R1186-3 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | PR #1188 (dc3671dc7), 2026-09-30 | rust/tests/unit/issue_1186_formalization_task.rs (`handler_formalizes_objectless_conditional_exactly`, `handler_formalizes_negative_quantifier`) | not yet confirmed |
+| R1186-4 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | partial — PR #1188 (dc3671dc7, 2026-09-30; negation fix 2e1d6cb62, 2026-10-07); seeded templates, not relative-meta-logic (link-foundation/relative-meta-logic#185); provers detected in PATH, never run | rust/tests/unit/issue_1186_formalization_task.rs (`negative_quantifier_keeps_its_negation_in_lean_and_rocq`); rust/tests/web/issue-1186-formalization-parity.test.mjs | not yet confirmed |
+| R1186-5 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | partial — PR #1188 (dc3671dc7), 2026-09-30; FOL input only, no Lean/Rocq reverse parse | rust/tests/unit/issue_1186_formalization_task.rs (`deformalization_round_trip_preserves_structure`) | not yet confirmed |
+| R1186-6 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | partial — PR #1188 (dc3671dc7), 2026-09-30; inline `Derivation:` block only, no record for `formal-ai explain` | rust/tests/unit/issue_1186_formalization_task.rs (`handler_formalizes_the_issue_probe_sentence`) | not yet confirmed |
+| R1186-7 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | partial — PR #1188 (151cb0ed2 JS/TS twins), 2026-10-06; no `cross-runtime-synthesis.json` cases | rust/tests/web/issue-1186-formalization-parity.test.mjs | not yet confirmed |
+| R1186-8 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | not delivered; owned by #1186 with the #1171 generator | none recorded | not yet confirmed |
+| R1186-9 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | not delivered; owned by #1186 | none recorded | not yet confirmed |
+| R1186-10 | docs/requirements/issue-1186-formalization-as-a-user-facing-task.md | not delivered; owned by #1186 | none recorded | not yet confirmed |
+| R1187-1 | docs/requirements/issue-1187-optional-github-credentials.md | partial — PR #1188 (2f86f34b4), 2026-09-30; `self-authored-pull-request.yml` migration deferred in docs/integration-manifest.md | rust/tests/unit/issue_1187_credentials.rs (`the_resolver_action_implements_the_three_layers`, `no_workflow_reads_a_foreign_token_secret`) | not yet confirmed |
+| R1187-2 | docs/requirements/issue-1187-optional-github-credentials.md | partial — PR #1188 (2f86f34b4), 2026-09-30; dispatcher not yet called, three workflows lack `workflow_dispatch` | rust/tests/unit/issue_1187_credentials.rs (`the_dispatcher_dispatches_pull_request_workflows`) | not yet confirmed |
+| R1187-3 | docs/requirements/issue-1187-optional-github-credentials.md | not delivered; exact edit recorded in docs/integration-manifest.md (#1187) | none recorded | not yet confirmed |
+| R1187-4 | docs/requirements/issue-1187-optional-github-credentials.md | partial — PR #1188 (2f86f34b4), 2026-09-30; `branches-ignore: e2e/**` deferred | rust/tests/unit/issue_1187_credentials.rs (`orphan_branch_isolation_needs_no_credential`) | not yet confirmed |
+| R1187-5 | docs/requirements/issue-1187-optional-github-credentials.md | partial — PR #1188 (`cross-org-duplication.yml` degrade step), 2026-09-30; no tracking issue | none recorded | not yet confirmed |
+| R1187-6 | docs/requirements/issue-1187-optional-github-credentials.md | PR #1188 (2f86f34b4), 2026-09-30 | rust/tests/unit/issue_1187_credentials.rs (`contributing_states_the_credential_rules`) | not yet confirmed |
+| R1187-7 | docs/requirements/issue-1187-optional-github-credentials.md | partial — PR #1188 (2f86f34b4), 2026-09-30; token-name rule only (`FORMAL_AI_BOT_TOKEN`), dispatch and release-guard rules unasserted | rust/tests/unit/issue_1187_credentials.rs | not yet confirmed |
+| R1187-8 | docs/requirements/issue-1187-optional-github-credentials.md | not delivered; manual run needs R1187-1/-2 applied first | none recorded | not yet confirmed |

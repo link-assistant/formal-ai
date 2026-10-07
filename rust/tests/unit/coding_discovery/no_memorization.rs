@@ -508,21 +508,45 @@ fn the_relation_seed_declares_how_a_gloss_is_read_and_never_what_a_word_means() 
     }
 }
 
-#[test]
-fn no_seed_template_is_a_whole_algorithm() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("the repository root sits one level above the crate");
-    let seed = fs::read_to_string(root.join(RUNTIME_TEMPLATE_SEED))
-        .unwrap_or_else(|error| panic!("{RUNTIME_TEMPLATE_SEED}: {error}"));
+/// The seed surfaces the nine code-task handlers of issue #1177 render their
+/// answers from: response templates, explanation meanings, review rules,
+/// manual pages and recognition cues.
+const CODE_TASK_OUTPUT_SURFACES: [&str; 5] = [
+    "data/seed/multilingual-responses-code-tasks.lino",
+    "data/seed/meanings-code-structure-explanations.lino",
+    "data/seed/code-review-rules.lino",
+    "data/seed/manual-pages.lino",
+    "data/seed/code-task-cues.lino",
+];
 
+/// The nine code-task handlers of issue #1177.
+const CODE_TASK_HANDLERS: [&str; 9] = [
+    "src/solver_handlers/code_debugging.rs",
+    "src/solver_handlers/regex_synthesis.rs",
+    "src/solver_handlers/sql_synthesis.rs",
+    "src/solver_handlers/shell_command_compose.rs",
+    "src/solver_handlers/code_explanation.rs",
+    "src/solver_handlers/code_review.rs",
+    "src/solver_handlers/test_generation.rs",
+    "src/solver_handlers/code_refactoring.rs",
+    "src/solver_handlers/format_conversion.rs",
+];
+
+/// Every quoted value of `seed` (`key "value"` lines) that is a whole
+/// algorithm: more than one statement, at least one loop and a return.
+fn whole_algorithm_values(seed: &str) -> Vec<String> {
     let mut offenders = Vec::new();
     for line in seed.lines() {
-        let trimmed = line.trim();
-        let Some(body) = trimmed.strip_prefix("text ") else {
+        let Some((_, rest)) = line.trim().split_once(' ') else {
             continue;
         };
-        let body = body.trim().trim_matches('"');
+        let rest = rest.trim();
+        let Some(body) = rest
+            .strip_prefix('"')
+            .and_then(|value| value.strip_suffix('"'))
+        else {
+            continue;
+        };
         let statements = body
             .split("\\n")
             .map(str::trim)
@@ -540,11 +564,72 @@ fn no_seed_template_is_a_whole_algorithm() {
             offenders.push(body.to_owned());
         }
     }
+    offenders
+}
 
+fn repository_root() -> &'static Path {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate")
+}
+
+#[test]
+fn no_seed_template_is_a_whole_algorithm() {
+    let root = repository_root();
+    let seed = fs::read_to_string(root.join(RUNTIME_TEMPLATE_SEED))
+        .unwrap_or_else(|error| panic!("{RUNTIME_TEMPLATE_SEED}: {error}"));
+    let offenders = whole_algorithm_values(&seed);
     assert!(
         offenders.is_empty(),
         "a seed template is a bootstrap fragment, never a whole algorithm; \
          these carry a loop and a return:\n{}",
+        offenders.join("\n")
+    );
+}
+
+/// Issue #1177 R11: the code-task handlers' output surfaces are held to the
+/// same rule as the runtime template seed, so no explanation, review, fix or
+/// generated test can be a memorized whole program.
+#[test]
+fn code_task_output_surfaces_carry_no_whole_algorithm() {
+    let root = repository_root();
+    let mut offenders = Vec::new();
+    for surface in CODE_TASK_OUTPUT_SURFACES {
+        let seed = fs::read_to_string(root.join(surface))
+            .unwrap_or_else(|error| panic!("{surface}: {error}"));
+        offenders.extend(
+            whole_algorithm_values(&seed)
+                .into_iter()
+                .map(|body| format!("{surface}: {body}")),
+        );
+    }
+    assert!(
+        offenders.is_empty(),
+        "a code-task answer surface is composed per request, never a stored \
+         whole program; these carry a loop and a return:\n{}",
+        offenders.join("\n")
+    );
+}
+
+/// Issue #1177 R11: the verbatim Rosetta Code rendering belongs to the
+/// "example" intent alone; none of the nine code-task handlers reaches it.
+#[test]
+fn code_task_handlers_never_recite_rosetta_examples() {
+    let crate_root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let mut offenders = Vec::new();
+    for handler in CODE_TASK_HANDLERS {
+        let source = fs::read_to_string(crate_root.join(handler))
+            .unwrap_or_else(|error| panic!("{handler}: {error}"));
+        for needle in ["rosetta_request", "render_example"] {
+            if source.contains(needle) {
+                offenders.push(format!("{handler} reaches {needle}"));
+            }
+        }
+    }
+    assert!(
+        offenders.is_empty(),
+        "the code-task handlers compose from seed meanings and must not recite \
+         a fetched example:\n{}",
         offenders.join("\n")
     );
 }

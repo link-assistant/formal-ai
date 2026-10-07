@@ -60,6 +60,26 @@ Before this change, in both engines the 11-step universal algorithm
 | W3C PROV-style trace | numbered events; derivation in links notation on every answer |
 | Record/replay sources | real captures with sha256 under `rust/tests/fixtures/meta-reasoner` |
 
+## Comparison with published approaches (R1025)
+
+The practices above are adopted; this table states, per family of published
+work, what the recursive meta algorithm does differently, where that is an
+advantage, and where it is still weaker. It is re-checked whenever the loop
+changes.
+
+| Approach | What it does | Where Formal AI does better | Where Formal AI is weaker today |
+| --- | --- | --- | --- |
+| DreamCoder (Ellis et al., 2021): wake-sleep library learning | Grows a DSL of reusable abstractions by compressing solved programs; a neural recognizer guides search | Every learned chunk carries its grounding (dictionary capture, sha256, derivation in links notation), so a learned operation can be audited and retracted; no opaque recognizer | No compression pass over solved programs yet — chunks are learned per word, not refactored into shared abstractions |
+| FlashFill / PROSE (Gulwani, 2011; Polozov and Gulwani, 2015): programming by example over a DSL | Version-space algebra over a fixed DSL, ranked by hand-tuned scores | The instruction set is grounded from documentation rather than fixed, so a request outside the starting DSL can still be read; examples verify instead of being the only specification | Version-space search is far faster and more complete within its DSL; the loop enumerates shortest-first without a shared version space |
+| SyGuS / CEGIS (Alur et al., 2013; Solar-Lezama, 2008) | Syntax-guided synthesis against a logical specification, refined by counterexamples | Specifications are formalized from natural language in four languages, and every rejected candidate is recorded in the trace | No SMT solver checks a candidate against a full logical specification; verification is by examples and seeded probes |
+| Large-language-model code generation (Codex, AlphaCode and successors) | Samples programs from a model trained on code, filtered by tests | Answers are derived, never recited (the no-memorization gate pins it), deterministic, offline-reproducible and explained step by step; an unsolved goal says what is unknown instead of guessing | Coverage of everyday programming tasks is much narrower; the ladder measures how far it reaches (`data/meta/ladder-ratchet.lino`) |
+| Cyc and other hand-built knowledge bases | Encode common sense as hand-written axioms | Meanings are discovered from cached public sources with provenance rather than authored axiom by axiom; the closure audit keeps the seed honest | The discovered network is shallow next to decades of curated axioms; many words still close only through a gloss |
+| Soar / ACT-R cognitive architectures | Impasse-driven subgoaling and chunking over production rules | The same impasse→subgoal→chunk cycle is applied to language grounding and program derivation together, with a human-readable derivation | No learned utility or decay; chunks are never forgotten or re-weighted |
+
+The comparison keeps two obligations open: a compression pass that refactors
+learned chunks into shared abstractions (DreamCoder's sleep phase), and a
+solver-backed verifier for formalized specifications beyond examples.
+
 ## The ladder
 
 Real requests put to Formal AI's own JavaScript engine

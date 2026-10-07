@@ -145,6 +145,8 @@ order: together they are the whole register.
    - Issue #1159: Workspace prerequisite recovery
    - Issue #1160: Hive Mind prepared work continuation
    - Issue #1161 Client Registry Names the Agent Config Env
+   - Issue #1163 Internet as Formal Knowledge
+   - Issue #1164 Code Node Decomposition
    - Issue #1165 Discovery on the Production Path
    - Issue #1166 The Request Formalized into Obligations
    - Issue #1168 Generated Code Uses Versions Resolved at Generation Time
@@ -155,13 +157,17 @@ order: together they are the whole register.
    - Issue #1175 Routing by Formalization, Not by a Surface Word
    - Issue #1176 Quantities, Dates and Statistics Computed Exactly
    - Issue #1177 Code Tasks Answered Formally
+   - Issue #1180 Repository History as Formal Context
    - Issue #1181 Standalone CLI Binaries and Consistent Boolean Env Switches
    - Issue #1182 Duplication gates and maintained-parser adoption
    - Issue #1184 White-Box Derivation for Every Answer
    - Issue #1185 Error-Driven Repair Loop
+   - Issue #1186 Formalization as a User-Facing Task
+   - Issue #1187 Optional GitHub Credentials in Every Workflow
    - Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
    - Standing Doctrine: JavaScript First, Full Parity, Then Translate (2026-10-06)
    - Standing Doctrine: The JavaScript Server Has Full Parity With the Rust Server (2026-10-07)
    - Standing Doctrine: The Recursive Meta Algorithm Is the Main Path (2026-10-06)
    - Standing Doctrine: Three Roots, Full Parity, Through The Meta Language (2026-09-24)
    - Standing Doctrine: Work Is Delegated to Formal AI Itself (2026-10-07)
+   - Standing Doctrine: Workstation Resources and Continuous Delivery (2026-10-07)

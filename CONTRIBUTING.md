@@ -524,6 +524,25 @@ Removal from a public thread is not approval to retain another copy.
    - On long batches, commit at least once every four hours, and push
      only after re-reading the issue, the pull request, and the diff
      one more time.
+   - One test at a time on the workstation (R1018): run a single test
+     file (`node --test --test-concurrency=1 <file>`, after any running
+     `node --test` finishes). When test processes overload the machine,
+     never kill the owner's processes; fix the cause (unbounded
+     concurrency, a runaway runner) instead.
+   - Rust is verified by pushing (R1020): no local `cargo` build, test or
+     clippy. Artifacts that need a Rust build come from CI — the WASM
+     worker from the release workflow's `formal-ai-worker-wasm` artifact,
+     `ts/` from `scripts/translate-es.mjs`.
+   - Keep requirement status current (R1021): a batch that changes what is
+     delivered updates its requirement rows and regenerates the assembled
+     register and the status ledger in the same push.
+   - Never idle-wait on CI (R1022): while a run is in flight, keep drafting
+     the open requirement rows and re-verifying the planned ones. A pull
+     request is finished only when every planned requirement is drafted,
+     CI/CD is green and the release is deliverable.
+   - Decide, don't ask (R1023): open technical choices are settled from the
+     best available practices (researched online when needed), not put to
+     the owner as questions.
 
    **The three-root cycle is js-first.** Rust, JavaScript and TypeScript
    are all full implementation roots — client and backend — kept
@@ -532,7 +551,9 @@ Removal from a public thread is not approval to retain another copy.
    the 2026-08-04 interfacing-only-JavaScript boundary). Because
    JavaScript executes faster than Rust compiles, author and test a
    change in `js/` first when the change touches shared logic, then
-   translate outward rather than hand-porting:
+   translate outward rather than hand-porting. The conversion follows
+   the practices of `link-foundation/meta-language` (PR #196) and
+   `link-foundation/relative-meta-logic` (R1024):
 
    ```bash
    formal-ai translate --list                  # every direction and its status
@@ -552,7 +573,10 @@ Removal from a public thread is not approval to retain another copy.
    the Opus model; the Fable model must never be used as a sub-agent
    (project owner directive, 2026-09-15). Keep the agent count low —
    the workstation is a notebook, and a fleet of agents competes with
-   the build for the same memory.
+   the build for the same memory: at most two or three sub-agents at
+   once (R1019), each told the same disk, RAM and CPU limits. Sub-agents
+   only make code changes; they run the JavaScript Formal AI only when
+   absolutely necessary and never run builds or full suites.
 
    **Classify CI failures before touching them.** A branch with
    tracked, owner-assigned reds (an allowlisted failing test, an
