@@ -356,6 +356,40 @@ impl SourceRoot {
             Self::Rust | Self::Meta => None,
         }
     }
+
+    /// The extension this root's ES-module sources carry inside a
+    /// [`MODULE_SUBTREES`] subtree (`.mjs` ↔ `.mts`).
+    #[must_use]
+    pub const fn module_extension(self) -> Option<&'static str> {
+        match self {
+            Self::JavaScript => Some("mjs"),
+            Self::TypeScript => Some("mts"),
+            Self::Rust | Self::Meta => None,
+        }
+    }
+}
+
+/// The subtrees of the ES roots whose ES-module sources gain a module twin:
+/// the agentic planner port, `js/agentic/**/*.mjs` ↔ `ts/agentic/**/*.mts`
+/// (issue #1180 R11). The JavaScript translator names the same set
+/// `MODULE_ROOTS` in `scripts/translate-es.mjs`, so the native `--write`
+/// and the script render one file set.
+pub const MODULE_SUBTREES: &[&str] = &["agentic"];
+
+/// The `(stem, extension)` a path under an ES root maps by: an owned file
+/// anywhere under the root, or an ES module inside a [`MODULE_SUBTREES`]
+/// subtree. `None` for anything else.
+fn es_source_stem(root: SourceRoot, sub: &str) -> Option<(&str, bool)> {
+    let owned = format!(".{}", root.owned_extension()?);
+    if let Some(stem) = sub.strip_suffix(&owned) {
+        return Some((stem, false));
+    }
+    let module = format!(".{}", root.module_extension()?);
+    let stem = sub.strip_suffix(&module)?;
+    MODULE_SUBTREES
+        .iter()
+        .any(|subtree| sub.starts_with(&format!("{subtree}/")))
+        .then_some((stem, true))
 }
 
 /// Map one repo-relative source path to its write target under the sibling
@@ -378,20 +412,22 @@ pub fn write_target(
         return Err(WriteTargetError::UnsupportedLeg { from, to });
     }
     let directory = from.directory();
-    let extension = from
-        .owned_extension()
-        .expect("the ES roots declare their owned extension");
-    let mapped = repo_relative
+    let (mapped, module) = repo_relative
         .strip_prefix(&format!("{directory}/"))
-        .and_then(|sub| sub.strip_suffix(&format!(".{extension}")))
+        .and_then(|sub| es_source_stem(from, sub))
         .filter(|_| !escapes_root(repo_relative))
         .ok_or_else(|| WriteTargetError::WrongRoot {
             path: repo_relative.to_owned(),
         })?;
+    let extension = if module {
+        to.module_extension()
+    } else {
+        to.owned_extension()
+    };
     Ok(format!(
         "{}/{mapped}.{}",
         to.directory(),
-        to.owned_extension().expect("the ES roots declare one")
+        extension.expect("the ES roots declare both extensions")
     ))
 }
 

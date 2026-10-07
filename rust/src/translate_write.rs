@@ -164,6 +164,15 @@ pub fn write_tree(from: SourceRoot, to: SourceRoot, root: &Path) -> WriteReport 
     let source_root = root.join(from.directory());
     let mut sources = Vec::new();
     collect_owned_files(&source_root, extension, &mut sources);
+    // The ES-module subtrees render their `.mjs`/`.mts` set too (issue #1180
+    // R11), so the native write and scripts/translate-es.mjs agree file for
+    // file.
+    if let Some(module_extension) = from.module_extension() {
+        for subtree in meta_translate::MODULE_SUBTREES {
+            collect_owned_files(&source_root.join(subtree), module_extension, &mut sources);
+        }
+        sources.sort();
+    }
     if sources.is_empty() {
         return WriteReport::Empty { root: from };
     }

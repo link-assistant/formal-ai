@@ -9,17 +9,26 @@
 //   { runGit(repoRoot, args) -> string   (throws when git fails),
 //     readText(path) -> string|null      (null when the file is missing),
 //     writeText(path, text), createDirAll(path),
-//     listFiles(dir) -> [{name, text}]   (regular files, any order) }
+//     listFiles(dir) -> [{name, text}]   (regular files, any order),
+//     astCensus?(source) -> [{kind, count}]  (optional: the named-node
+//                                             histogram of a Rust source) }
 //
 // `nodeHistoryIo` builds that object from the `node:fs`, `node:path` and
 // `node:child_process` modules a node caller passes in. The browser worker has
 // no repository to run git in and passes none.
 //
-// One residual difference from the native importer: the per-path symbol diff
-// carries the named top-level items (`diffNamedItems`, both censuses) but not
-// the tree-sitter node-kind histogram nor the ES token count, which need the
-// meta-language parse the JavaScript roots do not have.
+// The per-path symbol diff mirrors `diff_symbols` in full: an ES path gets the
+// `es_meta_extract token_count` delta from the shared tokenizer twin
+// (es_tokenizer.mjs, byte-for-byte with rust/src/es_tokenizer.rs) and then its
+// named items; a Rust path gets the `ast_census` node-kind histogram delta and
+// then its named items. The histogram itself is a tree-sitter parse
+// (`self_ast::ast_census` over the meta-language links network), which no
+// JavaScript root carries, so it comes through the optional `io.astCensus`;
+// without it the histogram is empty, exactly as the native importer built
+// without the `meta-language` feature records it, and nodeHistoryIo offers
+// none.
 
+import { countTokens, tokenize } from './es_tokenizer.mjs';
 import { diffNamedItems, formalizeCommit, parseLogOutput } from './history_context.mjs';
 import { importCiRuns, importIssuesAndPullsWithWatermark } from './history_github.mjs';
 import { MemoryStore, escapeValue, memoryEvent } from './memory.mjs';
@@ -94,7 +103,7 @@ function blobAt(io, repoRoot, rev, file) {
   return gitOrNull(io, repoRoot, ['show', `${rev}:${file}`]);
 }
 
-/** Mirrors `diff_symbols` over the named-item half (see the header). */
+/** Mirrors `diff_symbols` (see the header for the census source). */
 export function diffSymbols(io, repoRoot, sha, file, rules) {
   const name = file.toLowerCase();
   const census = rules.censusSuffixes.some((suffix) => name.endsWith(suffix))
@@ -105,7 +114,40 @@ export function diffSymbols(io, repoRoot, sha, file, rules) {
   if (census === null) return [];
   const before = blobAt(io, repoRoot, `${sha}^`, file) ?? '';
   const after = blobAt(io, repoRoot, sha, file) ?? '';
-  return diffNamedItems(file, census, before, after, rules);
+  const counted = census === 'ast_census' ? diffCensus(io, file, before, after) : diffEs(file, before, after);
+  return [...counted, ...diffNamedItems(file, census, before, after, rules)];
+}
+
+/** Mirrors `census_kinds`: empty when the host offers no census. */
+function censusKinds(io, source) {
+  return typeof io.astCensus === 'function' ? io.astCensus(source) : [];
+}
+
+/** Mirrors `diff_census`: per-kind deltas, kinds in byte order, zeros dropped. */
+export function diffCensus(io, file, before, after) {
+  const histogram = new Map();
+  for (const { kind, count } of censusKinds(io, before)) histogram.set(kind, -count);
+  for (const { kind, count } of censusKinds(io, after)) histogram.set(kind, (histogram.get(kind) ?? 0) + count);
+  return [...histogram.keys()]
+    .sort((left, right) => (left < right ? -1 : left > right ? 1 : 0))
+    .filter((kind) => histogram.get(kind) !== 0)
+    .map((kind) => ({ path: file, source: 'ast_census', item: kind, delta: histogram.get(kind) }));
+}
+
+/** `es_meta::extract(..).token_count`, read as 0 when the source does not tokenize. */
+function esTokenCount(source) {
+  try {
+    return countTokens(tokenize(source));
+  } catch {
+    return 0;
+  }
+}
+
+/** Mirrors `diff_es`: one `token_count` change when the count moved. */
+export function diffEs(file, before, after) {
+  const [beforeTokens, afterTokens] = [esTokenCount(before), esTokenCount(after)];
+  if (beforeTokens === afterTokens) return [];
+  return [{ path: file, source: 'es_meta_extract', item: 'token_count', delta: afterTokens - beforeTokens }];
 }
 
 /** Mirrors `import_commits_impl`. */

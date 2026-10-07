@@ -243,7 +243,9 @@ jobs:
           # diffing over the stale committed tree would report green. With
           # the tree deleted, a refusal leaves the deletions in place and
           # the diff below is the full red.
-          find ts -name '*.ts' -type f -delete
+          # The agentic .mts twins are part of the native write set too
+          # (issue #1180 R11), so they are deleted and regenerated with it.
+          find ts \( -name '*.ts' -o -name '*.mts' \) -type f -delete
           rust/target/release/formal-ai translate --from js --to ts --write
           git diff --exit-code -- ts/
           echo "the committed ts tree regenerates byte-for-byte from js"
