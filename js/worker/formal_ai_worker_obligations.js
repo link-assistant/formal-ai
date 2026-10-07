@@ -459,14 +459,15 @@ function obligationGapLines(text, graph = obligationFormalizeRequest(text)) {
   return gaps;
 }
 
-// Mirrors the gate of the native `WriteProgram` branch:
-// `request_carries_work_obligations(prompt) || request_demands(prompt, CiWorkflow)`.
-function obligationCatalogGateOpen(graph) {
+// Mirrors `fn request_carries_work_obligations` (`ci_workflow` true adds
+// `request_demands(prompt, CiWorkflow)`, the native `WriteProgram` gate).
+function obligationCarriesWork(graph, ciWorkflow = false) {
   const authoring = graph.map(({ node }) => obligationAuthoringKind(node.clause)).filter(Boolean);
   const has = (kind) => graph.some((entry) => entry.kind === kind) || authoring.includes(kind);
   return (graph.some((entry) => entry.kind === "output_literal") && authoring.length > 0)
-    || has("file_naming") || has("ci_badge") || has("ci_workflow");
+    || has("file_naming") || has("ci_badge") || (ciWorkflow && has("ci_workflow"));
 }
+const obligationCatalogGateOpen = (graph) => obligationCarriesWork(graph, true);
 
 // The `obligation_gap` events `record_obligation_gaps` appends for a catalog
 // `write_program` request, in report order; none when the gate is closed.

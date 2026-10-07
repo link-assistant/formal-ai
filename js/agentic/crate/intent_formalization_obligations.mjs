@@ -104,6 +104,54 @@ export function obligationsOfKind(graph, kind) {
   return graph.nodes.filter((node) => hasNodeKind(graph, node.node_id, kind));
 }
 
+/** `ObligationKind` declaration order (the `Ord` `obligation_kinds` sorts by). */
+const KIND_ORDER = Object.values(ObligationKind);
+
+/** Mirrors `ObligationGraph::obligation_kinds`: distinct kinds, in declaration order. */
+export function obligationKinds(graph) {
+  return KIND_ORDER.filter((kind) => graph.classifications.some(([, present]) => present === kind));
+}
+
+/** Mirrors `ObligationGraph::has_obligation`. */
+export function hasObligation(graph, kind) {
+  return graph.classifications.some(([, present]) => present === kind);
+}
+
+/** Mirrors `ObligationGraph::literal_for`: the literal of an output-literal node, or null. */
+export function literalFor(graph, node) {
+  if (!hasNodeKind(graph, node.node_id, ObligationKind.OutputLiteral)) return null;
+  return graph.literals.find(([id]) => id === node.node_id)?.[1] ?? null;
+}
+
+/** Mirrors `ObligationGraph::unique_output_literal`: the one demanded value, or null. */
+export function uniqueOutputLiteral(graph) {
+  const values = obligationsOfKind(graph, ObligationKind.OutputLiteral)
+    .map((node) => literalFor(graph, node))
+    .filter((value) => value !== null);
+  return values.length === 1 ? values[0] : null;
+}
+
+/** Mirrors `ObligationGraph::underivable`: the clauses no rule could read, kept. */
+export function underivable(graph) {
+  return graph.nodes.filter((node) => node.expectation.kind === 'underivable');
+}
+
+/** Mirrors `fn request_carries_work_obligations` (the terminal-router guard, R1166-8). */
+export function requestCarriesWorkObligations(text) {
+  const graph = formalizeRequest(text);
+  const authoring = graph.nodes.map((node) => authoringKind(node.clause)).filter((kind) => kind !== null);
+  const namesOrBadges = (kind) => hasObligation(graph, kind) || authoring.includes(kind);
+  return (hasObligation(graph, ObligationKind.OutputLiteral) && authoring.length > 0)
+    || namesOrBadges(ObligationKind.FileNaming)
+    || namesOrBadges(ObligationKind.CiBadge);
+}
+
+/** Mirrors `fn request_demands` (R1166-3). */
+export function requestDemands(text, kind) {
+  const graph = formalizeRequest(text);
+  return hasObligation(graph, kind) || graph.nodes.some((node) => authoringKind(node.clause) === kind);
+}
+
 /** Mirrors `fn gap_line`. */
 function gapLine(node, reason) {
   return `obligation ${node.node_id} span ${node.span[0]}:${node.span[1]} underivable ${reason}`;
@@ -111,9 +159,7 @@ function gapLine(node, reason) {
 
 /** Mirrors `ObligationGraph::gap_report`. */
 export function gapReport(graph) {
-  return graph.nodes
-    .filter((node) => node.expectation.kind === 'underivable')
-    .map((node) => gapLine(node, node.expectation.reason));
+  return underivable(graph).map((node) => gapLine(node, node.expectation.reason));
 }
 
 /** Mirrors `ObligationGraph::unbound_output_report`. */

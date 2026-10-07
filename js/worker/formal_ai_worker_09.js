@@ -550,7 +550,9 @@ function leadingShellCommand(prompt) {
   // A seed token as the first word is necessary but not sufficient: many
   // shell tokens double as ordinary English words, so the rest of the prompt
   // must parse as command arguments (issue #1175).
-  return parsesAsCommandArguments(trimmed.slice(first.length)) ? trimmed : null;
+  if (!parsesAsCommandArguments(trimmed.slice(first.length))) return null;
+  // A sentence about building something is not a command line (issue #1166 R8).
+  return obligationCarriesWork(obligationFormalizeRequest(trimmed)) ? null : trimmed;
 }
 
 function detectTerminalCommand(prompt) {
