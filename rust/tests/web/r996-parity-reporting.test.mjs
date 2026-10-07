@@ -63,3 +63,22 @@ test('R996: only the rust/ root is called complete, and no row claims full parit
   }
   assert.doesNotMatch(ROOTS, /full three-root parity (is|has been) (reached|achieved|delivered)/i);
 });
+
+test('R996: the R992 register row reports the measured state of each leg', () => {
+  const doctrine = readFileSync(
+    `${REPO_ROOT}/docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md`,
+    'utf8',
+  );
+  const r992 = doctrine.split('\n').find((line) => line.startsWith('| R992 |'));
+  assert.ok(r992, 'the doctrine shard defines R992');
+  const generated = typescriptFiles(`${REPO_ROOT}/ts`);
+  if (generated > 0) assert.doesNotMatch(r992, /\bstub\b/, `ts/ holds ${generated} TypeScript files; R992 must not call it a stub`);
+  // The js → rust leg: the counts are the translation ledger's, and the row
+  // stays partial while any item is still carried by hand.
+  const ledger = readFileSync(`${REPO_ROOT}/data/meta/js-rust-translation.lino`, 'utf8');
+  const field = (name) => Number(new RegExp(`^ {2}${name} (\\d+)$`, 'mu').exec(ledger)?.[1]);
+  const [translated, carried, modules] = [field('translated_items'), field('carried_items'), field('modules')];
+  const items = (translated + carried).toLocaleString('en-US');
+  assert.ok(r992.includes(`${translated} of ${items} top-level items across ${modules} modules translate`), r992);
+  if (carried > 0) assert.match(r992, /\| Partial, /u, 'R992 cannot be delivered while items are carried by hand');
+});

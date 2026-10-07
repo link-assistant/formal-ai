@@ -403,7 +403,7 @@ requirement_status_ledger_shard requirements_17
   requirement
     id "R992"
     shard "docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered "doctrine adopted 2026-09-24 (PR #1139, issue #1138)"
     issue ""
     automated_test ""
@@ -435,7 +435,7 @@ requirement_status_ledger_shard requirements_17
   requirement
     id "R996"
     shard "docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "standing honesty rule"
     issue ""
     automated_test "rust/tests/web/r996-parity-reporting.test.mjs"
