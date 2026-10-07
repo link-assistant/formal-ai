@@ -163,7 +163,7 @@ fn render_unresolved(
 /// The month number (1–12) a prompt names. Every `calendar_month_name`
 /// surface is tried and the longest match wins, so "十一月" reads as November
 /// rather than as the "一月" inside it; ties keep the earlier month.
-pub(super) fn detect_month(normalized: &str) -> Option<i64> {
+pub fn detect_month(normalized: &str) -> Option<i64> {
     let mut best: Option<(usize, i64)> = None;
     for meaning in lexicon().meanings_with_role(ROLE_CALENDAR_MONTH_NAME) {
         let Some(position) = MONTH_SLUGS.iter().position(|slug| *slug == meaning.slug) else {

@@ -141,7 +141,7 @@ fn digit_runs(text: &str) -> Vec<DigitRun> {
 
 /// The date the prompt states as `(year, month, day)`, validated against the
 /// proleptic Gregorian calendar.
-fn stated_date(prompt: &str, normalized: &str) -> Option<(i64, i64, i64)> {
+pub fn stated_date(prompt: &str, normalized: &str) -> Option<(i64, i64, i64)> {
     let runs = digit_runs(prompt);
     let (year, month, day) = if let [first, second, third] = runs.as_slice() {
         iso_date(prompt, *first, *second, *third)?

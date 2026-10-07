@@ -88,6 +88,7 @@ seed_registry
     web true
   seed derivation-schema
     bundle true
+    web true
   seed diagnostic-code-shapes
     bundle true
   seed draft-strategies
@@ -513,6 +514,7 @@ seed_registry
   seed multilingual-responses-engine-reports
     bundle true
     lexicon response
+    web true
   seed multilingual-responses-entities
     bundle true
     lexicon response

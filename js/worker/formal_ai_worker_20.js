@@ -1318,10 +1318,9 @@ self.onmessage = async (event) => {
     });
     return;
   }
-  const executionAnswer = await executeBrowserCodeRequest(prompt);
-  const answer = executionAnswer || attachUserContext(
-    await solve(prompt, history, prefs, userContext, memory, { memoryEvents }), userContext,
-  );
+  const answer = explainWorkerDerivation(prompt, memoryEvents) || finalizeWorkerDerivation( // #1184 R1184-9
+    await executeBrowserCodeRequest(prompt) || attachUserContext(
+      await solve(prompt, history, prefs, userContext, memory, { memoryEvents }), userContext));
   postMessage({
     kind: "message",
     requestId: data.requestId,
@@ -1334,6 +1333,7 @@ self.onmessage = async (event) => {
     iframeUrl: answer.iframeUrl || null,
     diagnostics: answer.diagnostics || null,
     memoryOperation: answer.memoryOperation || null,
+    derivationRecord: answer.derivationRecord || null,
     runtimeOffer: answer.runtimeOffer || null,
     engine,
   });

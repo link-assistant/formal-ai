@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_derivation.js"
+  ceiling 329
+  rationale "Issue #1184 R1184-9 three-roots parity, browser leg (2026-10-07). Classic-script twin of rust/src/derivation.rs and js/agentic/crate/derivation.mjs, which the classic worker cannot import: record projection over the answer's solverEvents plus the render:emit event, to_lino/from_lino, explain_text, store_path, persist/load over an injected store (the app's memory event log in the browser) and the seed miss text, so every web UI answer carries its derivation and `explain <answer id>` reads it back as the server's explain request does. Growth is the ported record, not silent regrowth."

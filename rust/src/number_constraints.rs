@@ -34,7 +34,7 @@ impl Bound {
 }
 
 #[derive(Clone, Copy, Debug)]
-struct IntervalBounds {
+pub struct IntervalBounds {
     lower: Bound,
     upper: Bound,
 }
@@ -117,7 +117,7 @@ fn contains_any(text: &str, needles: &[&str]) -> bool {
     needles.iter().any(|needle| text.contains(needle))
 }
 
-fn extract_interval_bounds(word_text: &str, symbol_text: &str) -> Option<IntervalBounds> {
+pub fn extract_interval_bounds(word_text: &str, symbol_text: &str) -> Option<IntervalBounds> {
     let lower = find_role_bound(
         word_text,
         seed::ROLE_NUMBER_CONSTRAINT_LOWER_INCLUSIVE,

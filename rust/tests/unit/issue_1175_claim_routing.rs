@@ -51,6 +51,46 @@ fn the_claim_rows_are_read_from_the_capability_table() {
             ("http_fetch", "", vec!["fetch_url"]),
             ("url_navigate", "", vec!["navigation_url"]),
             ("calendar_create_event", "", vec!["calendar_date_signal"]),
+            ("code_debugging", "tryCodeDebugging", vec!["code_artifact"]),
+            (
+                "code_explanation",
+                "tryCodeExplanation",
+                vec!["code_artifact"]
+            ),
+            ("code_review", "tryCodeReview", vec!["code_artifact"]),
+            (
+                "summarization_text",
+                "trySummarizationText",
+                vec!["supplied_text"],
+            ),
+            ("text_rewrite", "tryTextRewrite", vec!["supplied_text"]),
+            ("statistics", "tryStatistics", vec!["stated_number"]),
+            ("word_problem", "tryWordProblem", vec!["stated_number"]),
+            (
+                "arithmetic",
+                "tryArithmetic",
+                vec!["calculation_expression", "currency_rate_basis"],
+            ),
+            (
+                "compound_interest",
+                "tryCompoundInterest",
+                vec!["investment_terms", "conversion_target_currency"],
+            ),
+            (
+                "number_constraint_reasoning",
+                "tryNumberConstraintReasoning",
+                vec!["interval_bounds"],
+            ),
+            (
+                "unit_conversion",
+                "tryUnitConversion",
+                vec!["measured_quantity"]
+            ),
+            (
+                "calendar_reasoning",
+                "tryCalendarReasoning",
+                vec!["calendar_date_signal", "calendar_anchor"],
+            ),
         ]
     );
 }
@@ -107,6 +147,25 @@ fn a_surface_word_alone_is_not_admitted() {
         ("http_fetch", "Fetch me a summary of the news"),
         ("url_navigate", "Navigate the menu to the settings screen"),
         ("calendar_create_event", "Explain how a calendar works."),
+        ("code_debugging", "Find the bug in my plan for the trip"),
+        ("code_explanation", "Explain how a compiler works"),
+        ("code_review", "Review my essay about the ocean"),
+        ("summarization_text", "Summarize the rust language"),
+        ("text_rewrite", "Make this more formal"),
+        ("statistics", "What is the mean of my test scores?"),
+        ("statistics", "Is this number prime?"),
+        ("word_problem", "How many apples are left if I eat some?"),
+        ("arithmetic", "Explain how long division works"),
+        (
+            "compound_interest",
+            "How does compound interest work when you invest?",
+        ),
+        (
+            "number_constraint_reasoning",
+            "Guess the hidden number I am thinking of",
+        ),
+        ("unit_conversion", "Convert this recipe to metric units"),
+        ("calendar_reasoning", "Explain how a calendar works."),
     ] {
         assert!(
             !claim_admitted(handler, prompt, &prompt.to_lowercase()),
@@ -143,6 +202,57 @@ fn the_structural_evidence_admits() {
         (
             "calendar_create_event",
             "Schedule a meeting with Anna tomorrow at 3pm",
+        ),
+        (
+            "code_debugging",
+            "Find the bug: def average(xs): return sum(xs) / len(xs)",
+        ),
+        (
+            "code_explanation",
+            "Explain this code: print(sum(range(10)))",
+        ),
+        (
+            "code_review",
+            "Review this code: `const total = items.map((item) => item.price)`",
+        ),
+        (
+            "summarization_text",
+            "Summarize: The parser reads the file. It builds a tree. The tree is checked.",
+        ),
+        (
+            "text_rewrite",
+            "Make this formal: hey can you send me the file",
+        ),
+        ("statistics", "What is the mean of 3, 5 and 7?"),
+        ("statistics", "Is 97 a prime number?"),
+        (
+            "word_problem",
+            "Tom has 5 apples and gets 3 more. How many apples does he have?",
+        ),
+        ("arithmetic", "What is 2 + 2?"),
+        (
+            "arithmetic",
+            "what dollar exchange rate do you use for calculations?",
+        ),
+        (
+            "compound_interest",
+            "If I invest $1000 at 8% annual interest compounded monthly for 5 years, how much will I have?",
+        ),
+        (
+            "compound_interest",
+            "convert the final amount to EUR using current exchange rates from the web.",
+        ),
+        (
+            "number_constraint_reasoning",
+            "Я загадал число больше 1 но меньше 3. что это за число?",
+        ),
+        ("unit_conversion", "How many meters are in 3 km?"),
+        ("calendar_reasoning", "What day comes after Monday?"),
+        ("calendar_reasoning", "What day is today?"),
+        ("calendar_reasoning", "What day of the week was 2024-02-29?"),
+        (
+            "calendar_reasoning",
+            "What month is 2 months after January?",
         ),
     ] {
         assert!(

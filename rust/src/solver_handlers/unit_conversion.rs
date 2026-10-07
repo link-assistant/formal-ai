@@ -136,7 +136,7 @@ fn parse_formula_steps(tokens: &[&str]) -> Option<Vec<FormulaStep>> {
 
 /// A unit the prompt names: its meaning slug, the surface the prompt itself
 /// used (echoed back in the answer), and where it appeared.
-struct UnitMention {
+pub struct UnitMention {
     slug: String,
     surface: String,
     position: usize,
@@ -145,7 +145,7 @@ struct UnitMention {
 /// Every measurement unit the lowercased prompt names, at its earliest
 /// surface occurrence. Surfaces come from the seed lexicon, so unit names in
 /// a new language are a data edit.
-fn unit_mentions(lowered: &str) -> Vec<UnitMention> {
+pub fn unit_mentions(lowered: &str) -> Vec<UnitMention> {
     let mut mentions: Vec<UnitMention> = Vec::new();
     for meaning in lexicon().meanings_with_role(ROLE_MEASUREMENT_UNIT) {
         let Some((surface, position)) = meaning

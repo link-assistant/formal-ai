@@ -116,7 +116,7 @@ fn rate_source_step(evaluation: &CalculationEvaluation) -> Option<&str> {
 /// [`Lexicon::mentions_role_raw`](seed::Lexicon::mentions_role_raw), byte-for-byte
 /// reproducing the original three `contains` disjunctions while keeping every
 /// surface word in the seed rather than in code.
-fn asks_for_usd_rate_basis(normalized: &str) -> bool {
+pub fn asks_for_usd_rate_basis(normalized: &str) -> bool {
     let lexicon = seed::lexicon();
     lexicon.mentions_role_raw(seed::ROLE_EXCHANGE_RATE_REFERENCE, normalized)
         && lexicon.mentions_role_raw(seed::ROLE_CURRENCY_USD_REFERENCE, normalized)

@@ -80,10 +80,9 @@ function synchronousHandlerCandidates(context, registry = promotedHandlerOrder(b
   }));
 }
 
-// Claim routing (issue #1175 R3), twin of rust/src/capability_routing/claims.rs:
-// the `claim` rows of data/seed/capability-routing.lino name a handler's
-// browser function and the evidence kinds any one of which admits it; a
-// handler whose row admits on none is never offered the prompt.
+// Claim routing (issue #1175 R3), twin of rust/src/capability_routing/claims.rs: the `claim` rows of
+// data/seed/capability-routing.lino name a handler's browser function and the evidence kinds any one of
+// which admits it; a handler whose row admits on none is never offered the prompt.
 let CLAIM_ROUTE_ROWS = null;
 const CLAIM_EVIDENCE = Object.freeze({
   object_phrase_artifact: (prompt) => detectSoftwareObjectPhrase(normalizePrompt(prompt)) !== null,
@@ -97,6 +96,7 @@ const CLAIM_EVIDENCE = Object.freeze({
   fetch_url: (prompt, normalized) => extractHttpFetchUrl(prompt, normalized) !== null,
   navigation_url: (prompt, normalized) => extractUrlNavigateUrl(prompt, normalized) !== null,
   calendar_date_signal: (prompt, normalized) => mentionsCalendarCreateRequest(normalized),
+  code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null, ...NUMERIC_CLAIM_EVIDENCE,
 });
 
 function claimRouteRows() {

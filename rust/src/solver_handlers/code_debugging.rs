@@ -131,7 +131,7 @@ fn function_intents() -> Vec<FunctionIntent> {
 /// The first fenced block, else a backtick span that looks like code, else the
 /// whole prompt when it carries code markers, else the code-shaped text after
 /// the request's colon.
-pub(super) fn code_block(prompt: &str) -> Option<String> {
+pub fn code_block(prompt: &str) -> Option<String> {
     if let Some(start) = prompt.find("```") {
         let rest = &prompt[start + 3..];
         let after_open = rest.find('\n').map_or(rest, |nl| &rest[nl + 1..]);

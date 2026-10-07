@@ -15,11 +15,11 @@ use super::calendar_create::try_calendar_create_event;
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-mod date_weekday;
-mod month;
+pub mod date_weekday;
+pub mod month;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Weekday {
+pub enum Weekday {
     Monday,
     Tuesday,
     Wednesday,
@@ -338,7 +338,7 @@ fn try_current_day_reasoning(prompt: &str, log: &mut EventLog) -> Option<Symboli
     ))
 }
 
-fn mentions_current_day_question(normalized: &str) -> bool {
+pub fn mentions_current_day_question(normalized: &str) -> bool {
     let lex = lexicon();
     // A today marker must be present as a standalone word (CJK substring).
     let mentions_today = lex
@@ -391,7 +391,7 @@ fn detect_operation(normalized: &str) -> Option<WeekdayOperation> {
     }
 }
 
-fn detect_weekday(normalized: &str) -> Option<Weekday> {
+pub fn detect_weekday(normalized: &str) -> Option<Weekday> {
     // Walk the `calendar_weekday` meanings in cycle order (Monday … Sunday) and
     // return the first whose surface words appear as a standalone term, mapping
     // its slug back to a position. The words live in the lexicon, per language.

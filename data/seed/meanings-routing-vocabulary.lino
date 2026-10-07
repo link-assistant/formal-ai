@@ -407,6 +407,174 @@ meanings
     unit "boolean"
     example "schedule a meeting with anna tomorrow at 3pm"
     grounding "data/seed/capability-routing.lino"
+  code_debugging
+    defined-by method
+    role action
+    precondition "a request asks to find the defect in code it carries"
+    effect "names the handler whose claim row admits it only on a code artifact"
+    unit "not applicable"
+    example "find the bug in def average(xs): return sum(xs) / len(xs)"
+    grounding "data/seed/capability-routing.lino"
+  code_explanation
+    defined-by method
+    role action
+    precondition "a request asks to explain code it carries"
+    effect "names the handler whose claim row admits it only on a code artifact"
+    unit "not applicable"
+    example "explain this code: print(sum(range(10)))"
+    grounding "data/seed/capability-routing.lino"
+  code_review
+    defined-by method
+    role action
+    precondition "a request asks to review code it carries"
+    effect "names the handler whose claim row admits it only on a code artifact"
+    unit "not applicable"
+    example "review this code with a fenced block"
+    grounding "data/seed/capability-routing.lino"
+  summarization_text
+    defined-by method
+    role action
+    precondition "a request asks to summarize text it carries"
+    effect "names the handler whose claim row admits it only on supplied text"
+    unit "not applicable"
+    example "summarize: the text on the following lines"
+    grounding "data/seed/capability-routing.lino"
+  text_rewrite
+    defined-by method
+    role action
+    precondition "a request asks to rewrite, correct or recast text it carries"
+    effect "names the handler whose claim row admits it only on supplied text"
+    unit "not applicable"
+    example "make this formal: hey can you send me the file"
+    grounding "data/seed/capability-routing.lino"
+  code_artifact
+    defined-by concept
+    role action
+    precondition "the request carries code: a fenced block, a code-shaped backtick span, a definition keyword or a call after a command colon"
+    effect "admits the code debugging, explanation and review handler claims"
+    unit "boolean"
+    example "explain this code: print(sum(range(10)))"
+    grounding "data/seed/capability-routing.lino"
+  supplied_text
+    defined-by concept
+    role action
+    precondition "the request carries at least three words of text after a command colon, a line break or inside quotes"
+    effect "admits the free-text summary and rewrite handler claims"
+    unit "boolean"
+    example "summarize: the text that follows"
+    grounding "data/seed/capability-routing.lino"
+  word_problem
+    defined-by method
+    role action
+    precondition "a request asks a quantity question in prose over numbers it states"
+    effect "names the handler whose claim row admits it only on a stated number"
+    unit "not applicable"
+    example "five boxes cost 3 each, what is the total for 5 boxes"
+    grounding "data/seed/capability-routing.lino"
+  arithmetic
+    defined-by method
+    role action
+    precondition "a request asks to evaluate an expression it carries"
+    effect "names the handler whose claim row admits it only on a calculation expression or a rate-basis currency pair"
+    unit "not applicable"
+    example "what is 2 + 2"
+    grounding "data/seed/capability-routing.lino"
+  compound_interest
+    defined-by method
+    role action
+    precondition "a request asks for the final amount of an investment, or converts that amount"
+    effect "names the handler whose claim row admits it only on investment terms or a conversion target currency"
+    unit "not applicable"
+    example "invest 1000 dollars at 8% compounded monthly for 5 years"
+    grounding "data/seed/capability-routing.lino"
+  number_constraint_reasoning
+    defined-by method
+    role action
+    precondition "a request asks which numbers satisfy the bounds it states"
+    effect "names the handler whose claim row admits it only on stated interval bounds"
+    unit "not applicable"
+    example "a number is greater than 3 and less than 7, which is it"
+    grounding "data/seed/capability-routing.lino"
+  unit_conversion
+    defined-by method
+    role action
+    precondition "a request asks to convert a stated quantity between two units"
+    effect "names the handler whose claim row admits it only on a measured quantity"
+    unit "not applicable"
+    example "3 km in m"
+    grounding "data/seed/capability-routing.lino"
+  calendar_reasoning
+    defined-by method
+    role action
+    precondition "a request asks for a day or month reached from a calendar anchor"
+    effect "names the handler whose claim row admits it only on a calendar anchor or an event date signal"
+    unit "not applicable"
+    example "what day comes after monday"
+    grounding "data/seed/capability-routing.lino"
+  stated_number
+    defined-by concept
+    role action
+    precondition "the request states at least one number the shared numeric reader parses"
+    effect "admits the statistics and word problem handler claims"
+    unit "boolean"
+    example "the mean of 3, 5 and 7"
+    grounding "data/seed/capability-routing.lino"
+  calculation_expression
+    defined-by concept
+    role action
+    precondition "the calculator reader extracts an expression from the request"
+    effect "admits the arithmetic handler claim"
+    unit "boolean"
+    example "what is 2 + 2"
+    grounding "data/seed/capability-routing.lino"
+  currency_rate_basis
+    defined-by concept
+    role action
+    precondition "the request names the US dollar exchange rate whose calculation basis it asks"
+    effect "admits the arithmetic handler claim for its rate-basis arm"
+    unit "boolean"
+    example "which usd rate do you use for calculations"
+    grounding "data/seed/capability-routing.lino"
+  investment_terms
+    defined-by concept
+    role action
+    precondition "the request states a principal, an annual rate, a compounding frequency and a term"
+    effect "admits the compound interest handler claim"
+    unit "boolean"
+    example "1000 dollars at 8% compounded monthly for 5 years"
+    grounding "data/seed/capability-routing.lino"
+  conversion_target_currency
+    defined-by concept
+    role action
+    precondition "the request names the currency an earlier final amount converts to"
+    effect "admits the compound interest follow-up claim"
+    unit "boolean"
+    example "convert the final amount to eur"
+    grounding "data/seed/capability-routing.lino"
+  interval_bounds
+    defined-by concept
+    role action
+    precondition "the request states a lower and an upper bound on a hidden number"
+    effect "admits the number constraint handler claim"
+    unit "boolean"
+    example "greater than 3 and less than 7"
+    grounding "data/seed/capability-routing.lino"
+  measured_quantity
+    defined-by concept
+    role action
+    precondition "the request states a number and names exactly two measurement units"
+    effect "admits the unit conversion handler claim"
+    unit "boolean"
+    example "3 km in m"
+    grounding "data/seed/capability-routing.lino"
+  calendar_anchor
+    defined-by concept
+    role action
+    precondition "the request names the day it starts from: a weekday, a month, a stated date or today"
+    effect "admits the calendar reasoning handler claim"
+    unit "boolean"
+    example "what day comes after monday"
+    grounding "data/seed/capability-routing.lino"
   rml
     defined-by concept
     role action

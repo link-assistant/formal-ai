@@ -42,6 +42,16 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "fetch_url",
     "navigation_url",
     "calendar_date_signal",
+    "code_artifact",
+    "supplied_text",
+    "stated_number",
+    "calculation_expression",
+    "currency_rate_basis",
+    "investment_terms",
+    "conversion_target_currency",
+    "interval_bounds",
+    "measured_quantity",
+    "calendar_anchor",
 ];
 
 /// Parse the `claim` rows of a capability-routing document.
@@ -86,6 +96,7 @@ pub fn claim_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Optio
     } else {
         canonical.as_str()
     };
+    let lowered = prompt.to_lowercase();
     let holds = match kind {
         "object_phrase_artifact" => crate::solver_handlers::software_project_claims(canonical),
         "approval_of_a_proposal" => {
@@ -109,6 +120,49 @@ pub fn claim_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Optio
         "fetch_url" => crate::solver_handlers::http_fetch_claims(prompt, normalized),
         "navigation_url" => crate::solver_handlers::url_navigation_claims(prompt, normalized),
         "calendar_date_signal" => crate::solver_handlers::calendar_claims(normalized),
+        "code_artifact" => crate::solver_handlers::code_debugging::code_block(prompt).is_some(),
+        "supplied_text" => {
+            crate::solver_handlers::text_rewrite::free_text_payload(prompt).is_some()
+        }
+        // Issue #1175 R3, numeric group: each kind is the operand the handler's
+        // own reader parses before it answers, read by that same reader.
+        "stated_number" => {
+            !crate::solver_handlers::numeric_list::parse_numbers(&lowered).is_empty()
+        }
+        "calculation_expression" => {
+            !crate::calculation::calculation_expression_candidates(prompt).is_empty()
+        }
+        "currency_rate_basis" => {
+            crate::solver_handlers::calculator_rate::asks_for_usd_rate_basis(canonical)
+        }
+        "investment_terms" => {
+            crate::solver_handlers::compound_interest::parse_compound_interest_request(
+                prompt, normalized,
+            )
+            .is_some()
+        }
+        "conversion_target_currency" => {
+            crate::solver_handlers::compound_interest::target_currency(normalized).is_some()
+        }
+        "interval_bounds" => crate::number_constraints::extract_interval_bounds(
+            &crate::engine::normalize_prompt(normalized),
+            &prompt
+                .chars()
+                .flat_map(char::to_lowercase)
+                .collect::<String>(),
+        )
+        .is_some(),
+        "measured_quantity" => {
+            !crate::solver_handlers::numeric_list::parse_numbers(&lowered).is_empty()
+                && crate::solver_handlers::unit_conversion::unit_mentions(&lowered).len() == 2
+        }
+        "calendar_anchor" => {
+            use crate::solver_handlers::calendar;
+            calendar::detect_weekday(normalized).is_some()
+                || calendar::month::detect_month(normalized).is_some()
+                || calendar::date_weekday::stated_date(prompt, normalized).is_some()
+                || calendar::mentions_current_day_question(normalized)
+        }
         _ => return None,
     };
     Some(holds)

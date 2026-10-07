@@ -886,6 +886,11 @@ export function App() {
     if (answer.memoryOperation) {
       await handleMemoryOperation(answer.memoryOperation);
     }
+    // Issue #1184 R1184-9: file the answer's derivation record in the memory
+    // log, where `explain <answer id>` reads it back.
+    if (answer.derivationRecord) {
+      await handleMemoryOperation(answer.derivationRecord);
+    }
     setPending(false);
   }
 

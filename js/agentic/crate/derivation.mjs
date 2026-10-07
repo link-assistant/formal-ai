@@ -20,9 +20,10 @@
 // createDirAll?(path) }` — because the agentic host offers `readText` for
 // repository files only and no write (the same convention as the procedure
 // cache in discovery_production.mjs). A node caller passes `node:fs`
-// wrappers; the browser worker has no `data/cache/` and passes none, so it
-// neither persists nor loads. `storePath` and `missMessage` keep the path and
-// the miss wording one spelling across roots.
+// wrappers; the browser worker (js/worker/formal_ai_worker_derivation.js, a
+// classic-script twin of this module) injects a store over the app's memory
+// event log. `storePath` and `missMessage` keep the path and the miss wording
+// one spelling across roots.
 
 import { cached, readText } from '../host.mjs';
 import { trim } from '../write_str.mjs';

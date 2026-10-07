@@ -15,7 +15,7 @@ use super::finalize_simple;
 const USD_EUR_FALLBACK_RATE: f64 = 0.92;
 
 #[derive(Debug, Clone, Copy)]
-struct CompoundInterestRequest {
+pub struct CompoundInterestRequest {
     principal: f64,
     annual_rate_percent: f64,
     compounds_per_year: u32,
@@ -230,7 +230,7 @@ fn append_conversion_lines(
     }
 }
 
-fn parse_compound_interest_request(
+pub fn parse_compound_interest_request(
     prompt: &str,
     normalized: &str,
 ) -> Option<CompoundInterestRequest> {
@@ -357,7 +357,7 @@ fn compounds_per_year_for_slug(slug: &str) -> Option<u32> {
     }
 }
 
-fn target_currency(normalized: &str) -> Option<&'static str> {
+pub fn target_currency(normalized: &str) -> Option<&'static str> {
     // The euro target is a meaning (currency_eur_reference) matched as a
     // token-bounded word, reproducing the original padded " eur "/" euro "/
     // " euros " test; the `€` glyph is a typographic symbol that stays in code.

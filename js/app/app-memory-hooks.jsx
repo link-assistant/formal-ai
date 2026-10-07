@@ -314,6 +314,24 @@ export function useMemoryOperation({ refreshConversations, ensureConversation })
       refreshConversations();
       return;
     }
+    // Issue #1184 R1184-9: the worker's derivation store writes through the
+    // memory log; the record's path is the event's `inputs`, its Links
+    // Notation the `content` (formal_ai_worker_derivation.js reads it back).
+    if (operation.action === "derivation" && operation.path && operation.text) {
+      await recordMemoryEvent({
+        kind: "derivation",
+        role: "system",
+        intent: "derivation",
+        inputs: operation.path,
+        content: operation.text,
+        evidence: [operation.path],
+        sentAt,
+        conversationId,
+        conversationTitle,
+        isDemo: demoFlag,
+      });
+      return;
+    }
     if (operation.action === "program") {
       try {
         await window.FormalAiMemory.applyProgramOperation(operation);

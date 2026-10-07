@@ -405,4 +405,67 @@ capability_routing
     handler calendar_create_event
     admits_on calendar_date_signal
     because "issue 1175 R3: an event claims only with a date signal backed by an entity such as a clock hour, a timezone or a participant, or an explicit scheduling act"
+  claim
+    handler code_debugging
+    browser_handler tryCodeDebugging
+    admits_on code_artifact
+    because "issue 1175 R3: a debugging request claims only with the code it debugs, a fenced block, a code-shaped backtick span, a definition or the payload after a command colon"
+  claim
+    handler code_explanation
+    browser_handler tryCodeExplanation
+    admits_on code_artifact
+    because "issue 1175 R3: an explanation of code claims only with the code it explains, never on an explain word alone"
+  claim
+    handler code_review
+    browser_handler tryCodeReview
+    admits_on code_artifact
+    because "issue 1175 R3: a review claims only with the code it reviews, never on a review word alone"
+  claim
+    handler summarization_text
+    browser_handler trySummarizationText
+    admits_on supplied_text
+    because "issue 1175 R3: a free-text summary claims only with the text the request carries after a command colon, a line break or quotes"
+  claim
+    handler text_rewrite
+    browser_handler tryTextRewrite
+    admits_on supplied_text
+    because "issue 1175 R3: a rewrite, a correction or a genre rendering claims only with the text the request carries, never on a rewrite word alone"
+  claim
+    handler statistics
+    browser_handler tryStatistics
+    admits_on stated_number
+    because "issue 1175 R3: a statistics or one-number primality question claims only with the numbers it states, never on a measure or property word alone"
+  claim
+    handler word_problem
+    browser_handler tryWordProblem
+    admits_on stated_number
+    because "issue 1175 R3: a word problem claims only with the quantities it states, never on a price, gain or share word alone"
+  claim
+    handler arithmetic
+    browser_handler tryArithmetic
+    admits_on calculation_expression
+    admits_on currency_rate_basis
+    because "issue 1175 R3: a calculation claims only with the expression the calculator reader extracts, or the named currency pair whose rate basis it asks"
+  claim
+    handler compound_interest
+    browser_handler tryCompoundInterest
+    admits_on investment_terms
+    admits_on conversion_target_currency
+    because "issue 1175 R3: an interest problem claims only with its principal, rate, compounding and term, and its follow-up only with the currency the earlier final amount converts to"
+  claim
+    handler number_constraint_reasoning
+    browser_handler tryNumberConstraintReasoning
+    admits_on interval_bounds
+    because "issue 1175 R3: a hidden-number riddle claims only with the lower and upper bound it states"
+  claim
+    handler unit_conversion
+    browser_handler tryUnitConversion
+    admits_on measured_quantity
+    because "issue 1175 R3: a conversion claims only with a stated number and exactly two named units, never on a convert word alone"
+  claim
+    handler calendar_reasoning
+    browser_handler tryCalendarReasoning
+    admits_on calendar_date_signal
+    admits_on calendar_anchor
+    because "issue 1175 R3: calendar arithmetic claims only with the day it starts from, a weekday, a month, a stated date or today, or with an event's date signal"
   default ask
