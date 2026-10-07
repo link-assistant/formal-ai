@@ -248,3 +248,24 @@ fn a_reduction_over_one_sequence_parameter_stays_a_reduction() {
     let first = programs.first().expect("the reduction composes");
     assert_eq!(first.fragments, ["reduce_sum"]);
 }
+
+/// PR #1188 dogfooding: a reduction over three scalar parameters reads all
+/// three (`a + b + c`), not the first two.
+#[test]
+fn a_reduction_over_three_scalar_parameters_reads_all_three() {
+    let catalog = FragmentCatalog::bootstrap();
+    let spec = recognise("Write a Python function add3(a, b, c) that returns their sum.")
+        .expect("the request is a coding task");
+    let programs = search_with_structures(
+        &spec,
+        &catalog,
+        SearchBounds::default(),
+        &["reduce_sum".to_owned()],
+    );
+    let first = programs.first().expect("the reduction composes");
+    let lowered = lowering_for("python")
+        .expect("Python lowering exists")
+        .lower(first, &catalog)
+        .expect("the reduction lowers");
+    assert!(lowered.contains("return a + b + c\n"), "{lowered}");
+}

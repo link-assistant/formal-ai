@@ -488,3 +488,17 @@ describe('PR #1188 dogfood: a re-summarized envelope head trails the client resi
     assert.equal(JSON.parse(plan.calls[0].arguments).filePath, 'rust/src/web_search_core.rs');
   });
 });
+
+describe('PR #1188 dogfood: a reduction over three parameters reads all three', () => {
+  for (const [name, operation, symbol] of [['add3', 'reduce_sum', '+'], ['mul3', 'reduce_product', '*']]) {
+    test(`${name}(a, b, c) is a ${symbol} b ${symbol} c`, async () => {
+      const { solve } = await import('../../../js/agentic/host.mjs');
+      const word = operation === 'reduce_sum' ? 'sum' : 'product';
+      const result = await solve(`Write a Python function ${name}(a, b, c) that returns their ${word}.`, []);
+      assert.equal(result.answer,
+        `Coding task formalized for Python function \`${name}\`.\nDiscovered structural parts: ${operation}.\n` +
+        `\`\`\`python\ndef ${name}(a, b, c):\n    return a ${symbol} b ${symbol} c\n\`\`\`\n` +
+        'Verification status: unverified in the browser boundary; run the Rust/native solver to execute the derived program and its tests.');
+    });
+  }
+});

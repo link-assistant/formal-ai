@@ -678,3 +678,24 @@ compactions, then a web search for "What did we do so far".
 Tests: JS envelope shape, nested envelope, residue head, compacted ladder
 convergence; Rust `a_nested_compaction_envelope_still_yields_the_task`,
 `a_re_summarized_head_keeps_the_task_sentences`.
+
+### `add3(a, b, c)` — the browser pool was crowded by slot-name chains
+
+`Write a Python function add3(a, b, c) that returns their sum.` gave
+`return a + b`. Three browser-composer causes (`js/worker/formal_ai_worker_program_ir.js`):
+
+1. Every fragment's first slot name was treated as a binder, so `{left} + {right}`
+   preferred operands mentioning `left`; the slots filled with
+   `left + right + left …` chains that never close. The binder preference now
+   applies only to slots the idiom binds (`browserBinderSlots`: names between
+   `for` and `in`, `lambda` parameters — native `fragment_binder_slots`).
+2. Parameter reads now rank ahead of slot-name coherence, both when the pool is
+   bounded and when a slot's eight choices are picked.
+3. A slot's choices always include every unifying parameter, so covered sums
+   (`a + b`, `a + c`, …) cannot crowd out `c`.
+
+Now `a + b + c` / `a * b * c`; `add(a, b)`, `total(items)` and `count_vowels`
+are unchanged, and the parity suites (1164 code examples, 1184 derivation,
+1163, 1172, 1175, worker mirror) stay green. Pins: JS exact answers for
+`add3`/`mul3`; native `a_reduction_over_three_scalar_parameters_reads_all_three`
+(uncompiled here). Module budget 372 → 399 with the reason.

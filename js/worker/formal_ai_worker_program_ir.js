@@ -175,10 +175,15 @@ function browserExpressionKey(expression) {
   return expression.source;
 }
 
-function browserNormalizeExpressions(expressions) {
+function browserNormalizeExpressions(expressions, parameterNames = []) {
+  // Expressions that read more of the function's parameters stay in the
+  // bounded pool ahead of slot-name chains (`left + right + left …`), which can
+  // never close; native ranks by parameters referenced the same way.
+  const reads = (expression) => parameterNames.filter((name) => browserIdentifierCount(expression.source, name) > 0).length;
   expressions.sort((left, right) =>
     right.coverage.length - left.coverage.length ||
     right.fragments.length - left.fragments.length ||
+    reads(right) - reads(left) ||
     right.coherence - left.coherence ||
     left.depth - right.depth ||
     browserExpressionKey(left).localeCompare(browserExpressionKey(right)),
@@ -248,6 +253,19 @@ function browserUnboundPlaceholderCount(expression, fragments, parameters) {
   ).length;
 }
 
+// The placeholders an idiom binds: names between `for` and `in`, and `lambda`
+// parameters (native fragment_binder_slots). `{left} + {right}` binds nothing,
+// so its slot names earn no binder preference and cannot crowd out `a + b + c`.
+function browserBinderSlots(surface) {
+  const slots = new Set();
+  const collect = (span) => {
+    for (const match of span.matchAll(/\{([A-Za-z_]\w*)\}/g)) slots.add(match[1]);
+  };
+  for (const match of String(surface || "").matchAll(/\bfor\b([\s\S]*?)\bin\b/g)) collect(match[1]);
+  for (const match of String(surface || "").matchAll(/\blambda\b([^:]*):/g)) collect(match[1]);
+  return slots;
+}
+
 function browserComposeProgramIr(prompt, normalized, structures) {
   const language = programLanguageFromPrompt(normalized) || "python";
   if (language !== "python") return null;
@@ -291,7 +309,10 @@ function browserComposeProgramIr(prompt, normalized, structures) {
       });
     }
   }
-  pool = browserNormalizeExpressions(pool);
+  const parameterNames = parameters.map((parameter) => parameter.name);
+  const parameterReads = (expression) =>
+    parameterNames.filter((name) => browserIdentifierCount(expression.source, name) > 0).length;
+  pool = browserNormalizeExpressions(pool, parameterNames);
   for (let depth = 2; depth <= BROWSER_IR_BOUNDS.depth; depth += 1) {
     const snapshot = pool.slice();
     const layer = [];
@@ -300,7 +321,7 @@ function browserComposeProgramIr(prompt, normalized, structures) {
       // A comprehension's predicate naturally references the binder the same
       // application introduces, so candidates mentioning it are tried before
       // computed junk (mirrors the native binder-slot grounding).
-      const binder = fragment.arguments[0];
+      const binder = browserBinderSlots(fragment.surface).has(fragment.arguments[0]) ? fragment.arguments[0] : null;
       const mentionsBinder = (expression) =>
         (binder && browserIdentifierCount(expression.source, binder) > 0 ? 0 : 1);
       const choices = fragment.signature.map((type, index) => snapshot
@@ -310,9 +331,15 @@ function browserComposeProgramIr(prompt, normalized, structures) {
           const rightName = right.source === fragment.arguments[index] ? 0 : 1;
           return leftName - rightName || mentionsBinder(left) - mentionsBinder(right) ||
             right.coverage.length - left.coverage.length ||
+            parameterReads(right) - parameterReads(left) ||
             right.coherence - left.coherence || left.depth - right.depth ||
             left.source.localeCompare(right.source);
-        }).slice(0, 8));
+        }).slice(0, 8)
+        // A parameter is always an operand: the top eight can fill with
+        // covered compositions (`a + b`, `a + c`, …) and crowd out `c`.
+        .concat(snapshot.filter((expression) => parameterNames.includes(expression.source) &&
+          browserTypesUnify(type, expression.type)))
+        .filter((expression, position, all) => all.indexOf(expression) === position));
       if (choices.some((options) => options.length === 0)) continue;
       for (const arguments_ of browserArgumentProducts(choices, 96)) {
         const childDepth = Math.max(...arguments_.map((argument) => argument.depth));
@@ -335,7 +362,7 @@ function browserComposeProgramIr(prompt, normalized, structures) {
         });
       }
     }
-    pool = browserNormalizeExpressions(pool.concat(layer));
+    pool = browserNormalizeExpressions(pool.concat(layer), parameterNames);
   }
   const complete = pool.filter((expression) => expression.fragments.length > 0 &&
     (!resultType || browserTypesUnify(resultType, expression.type)) &&
