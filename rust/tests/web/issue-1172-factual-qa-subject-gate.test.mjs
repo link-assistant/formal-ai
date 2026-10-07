@@ -157,6 +157,69 @@ test("#1172 R7: nothing in the text covers the question, so the text does not sa
   assert.deepEqual(external, []);
 });
 
+const MEETING = "The meeting moved from Tuesday to Thursday at 3 pm in room 204.";
+const MEETING_STATEMENT = "As a statement: subject «The meeting»; predicate «moved»; "
+  + "time «from Tuesday to Thursday at 3 pm»; place «in room 204»";
+
+test("#1172 R7: the covering sentence is projected into subject/predicate/object/time/place", async () => {
+  const both = await solve(`Read this and answer: "${MEETING}" When and where is the meeting?`);
+  assert.equal(both.content, [
+    "From the text — time «from Tuesday to Thursday at 3 pm»; place «in room 204».",
+    `The text answers this: «${MEETING}»`,
+    MEETING_STATEMENT,
+  ].join("\n"));
+  assert.ok(both.evidence.includes("prompt_text:statement:subject=The meeting;predicate=moved;time=from Tuesday to Thursday at 3 pm;place=in room 204"), JSON.stringify(both.evidence));
+  assert.ok(both.evidence.includes("prompt_text:asked:time,place"));
+
+  const when = await solve(`Given the text: '${MEETING}' When is the meeting?`);
+  assert.equal(when.content, [
+    "From the text — time «from Tuesday to Thursday at 3 pm».",
+    `The text answers this: «${MEETING}»`,
+    MEETING_STATEMENT,
+  ].join("\n"));
+
+  const close = await solve(
+    "Given the text: \"The library opens at 9 am. The cafe closes at 6 pm. Parking is free on Sundays.\" When does the cafe close?",
+  );
+  assert.equal(close.content, [
+    "From the text — time «at 6 pm».",
+    "The text answers this: «The cafe closes at 6 pm.»",
+    "As a statement: subject «The cafe»; predicate «closes»; time «at 6 pm»",
+  ].join("\n"));
+
+  const russian = await solve("Given the text: \"Мы встретимся в четверг в комнате 204.\" Где встреча?");
+  assert.equal(russian.content, [
+    "По тексту — место «в комнате 204».",
+    "Ответ есть в тексте: «Мы встретимся в четверг в комнате 204.»",
+    "Как утверждение: субъект «Мы»; предикат «встретимся»; время «в четверг»; место «в комнате 204»",
+  ].join("\n"));
+
+  const cafe = await solve(
+    "Given the text: \"The library opens at 9 am. The cafe closes at 6 pm. Parking is free on Sundays.\" When is parking free?",
+  );
+  assert.equal(cafe.content, [
+    "From the text — time «on Sundays».",
+    "The text answers this: «Parking is free on Sundays.»",
+    "As a statement: subject «Parking»; predicate «is free»; time «on Sundays»",
+  ].join("\n"), "an inflected weekday is a time; the copula joins the predicate");
+});
+
+test("#1172 R7: an asked slot the question already says is not claimed; CJK keeps the quote", async () => {
+  const who = await solve(`Given the text: '${MEETING}' Who moved the meeting?`);
+  assert.equal(who.intent, "prompt_text_answer");
+  assert.equal(who.content.split("\n")[0], `The text answers this: «${MEETING}»`, "subject «The meeting» answers who? only as the statement");
+  assert.ok(!who.evidence.some((entry) => entry.startsWith("prompt_text:asked:")), JSON.stringify(who.evidence));
+
+  const chinese = await solve("根据文本：「会议改到星期四下午三点，在204房间。」会议在哪里？");
+  assert.equal(chinese.content, "文本中的答案：「会议改到星期四下午三点，在204房间。」");
+
+  const comma = await call(`promptTextStatement("On Monday, Alice sent the report to Bob.")`);
+  assert.deepEqual(comma, [["Alice"], ["sent"], ["the", "report", "to", "Bob"], ["On", "Monday"], []]);
+  assert.equal(await call(`promptTextStatement("Alice chairs it.")`), null, "no seeded adjunct, no projection");
+  const alice = await solve("Given the text: 'The meeting moved to Thursday. Alice chairs it.' Who chairs it?");
+  assert.equal(alice.content, "The text answers this: «Alice chairs it.»");
+});
+
 test("#1172 R7: a quoted phrase inside an instruction is not a text to read", async () => {
   assert.equal(await call(`tryPromptTextQuestion("Translate 'I would like to order a coffee please' into French", "")`), null);
   assert.equal(await call(`tryPromptTextQuestion("Proofread 'the quick brown fox jumps over the lazy dog'", "")`), null);

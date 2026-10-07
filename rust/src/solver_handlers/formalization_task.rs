@@ -187,6 +187,19 @@ fn target_records(tree: &LinoNode) -> impl Iterator<Item = &LinoNode> {
 }
 
 /// Parse the whole targets seed into the grammar tables.
+/// Whether `language` puts the object before its verb.
+///
+/// That is the `verb_final` flag of its `natural_language` record in
+/// `data/seed/formal-targets.lino`; such a language marks time and place with
+/// postpositions, which the prompt-text statement projection does not read.
+#[must_use]
+pub fn verb_final_language(language: &str) -> bool {
+    grammar()
+        .natural
+        .iter()
+        .any(|natural| natural.language == language && natural.verb_final)
+}
+
 fn grammar() -> &'static Grammar {
     static GRAMMAR: OnceLock<Grammar> = OnceLock::new();
     GRAMMAR.get_or_init(|| {

@@ -237,6 +237,35 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     gap. Pinning `electron-builder` 26.5.0 as `npm audit` suggested was
     tried and rejected: it reintroduced a critical `tar` advisory.
 
+25. **Partial rows drafted to their real limit.** A seventh pass closed what
+    this repository can close:
+    - R1166-4 in all three roots, the browser worker included;
+    - R1168-8 with an injected version set;
+    - R1164-11 with a solver route to the decomposer;
+    - R1184-9 with a JS server route;
+    - R1172-7 with statement slots;
+    - R1172-8 and R1165-10 with browser and server twins;
+    - R1180-11 with the git and store twin.
+
+    The rows left partial are partial for reasons the code cannot remove
+    from here:
+    - R1165-1/2/4-8 need verified cache rows, and each row needs a human
+      reviewer's approval by design.
+    - R1172-9 needs relation claims and Russian case forms that the
+      Wikidata captures do not carry. A test now names each gap and fails
+      once a capture closes it.
+    - R1187-8 needs the merged workflow, because an `issues: labeled`
+      event runs the default branch's file.
+
+26. **A new meaning must speak every language.** The statement-projection
+    meanings first carried en/ru/es only, and the language-parity ratchet
+    (910) refused them. The hi/zh surfaces are now seeded. Both runtimes
+    decline a sentence in a `verb_final` language, a flag read from
+    `formal-targets.lino`, because such a language marks time and place
+    with postpositions and the phrase reader expects prepositions. Chinese
+    keeps only multi-character surfaces: a single character such as 在
+    would have become a topic word in every Chinese composition prompt.
+
 ## Constraints
 
 - **JavaScript first, full parity.** Every requirement lands in JavaScript

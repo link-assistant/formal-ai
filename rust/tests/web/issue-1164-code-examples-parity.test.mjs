@@ -159,3 +159,24 @@ test("R1164-9: held-out Pascal is recomposed from the Free Pascal documentation 
     },
   });
 });
+
+test("R1164-11: the supplied-page route reaches the decomposer for the shared parity case", async () => {
+  const registry = await call("WORKER_HANDLER_REGISTRY.workerHandlers");
+  assert.equal(registry.page_query_text, "tryPageQueryText");
+  const cases = JSON.parse(readFileSync(path.join(REPO_ROOT, "data", "parity", "cross-runtime-synthesis.json"), "utf8"));
+  const parity = cases.find((entry) => entry.id === "e1164_supplied_page_code_example_parts");
+  assert.ok(parity, "the parity corpus carries the #1164 case");
+  await seeded;
+  const answer = plain(await worker.solve(parity.prompt, [], {}, {}, [], {}));
+  assert.equal(answer.intent, parity.expectedIntent, JSON.stringify(answer));
+  // The complete answer rust/tests/unit/specification/synthesis.rs documents.
+  assert.equal(answer.content, "entry_point main\noutput_operation println!\nstring_literal Hello, world!");
+  for (const fragment of parity.forbiddenAnswerFragments) assert.ok(!answer.content.includes(fragment), fragment);
+  for (const prefix of parity.browserExpectedEvidencePrefixes) {
+    assert.ok(answer.evidence.some((link) => link.startsWith(prefix)), `${prefix}: ${JSON.stringify(answer.evidence)}`);
+  }
+  // A query line that asks something else, or a page with no decomposable block, is declined.
+  const page = parity.prompt.slice(parity.prompt.indexOf("\n") + 1);
+  assert.equal(await call(`tryCodeExamplePageQuery(${literal({ query: "the summary of the page", page })})`), null);
+  assert.equal(await call(`tryCodeExamplePageQuery(${literal({ query: "the parts of the code example", page: "No code here." })})`), null);
+});

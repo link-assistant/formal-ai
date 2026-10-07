@@ -165,6 +165,16 @@
     "browserExpectedEvidencePrefixes": ["page_query:", "page_query_page:", "page_query_answer:", "response:page_query"]
   },
   {
+    "id": "e1164_supplied_page_code_example_parts",
+    "prompt": "The parts of the code example:\nThe program below prints a greeting.\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nCompile it with this line.\n\nrustc hello.rs",
+    "expectedIntent": "code_example_decomposition",
+    "expectedAnswerFragments": ["entry_point main", "output_operation println!", "string_literal Hello, world!"],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": ["code_example_decomposition:rust parts=3", "code_example_part:rust entry_point main", "intent:code_example_decomposition", "response:code_example_decomposition"],
+    "expectedTraceFragments": ["code_example_decomposition"],
+    "browserExpectedEvidencePrefixes": ["code_example_decomposition:rust parts=3", "code_example_part:rust entry_point main", "response:code_example_decomposition"]
+  },
+  {
     "id": "e1184_derivation_answer_id",
     "prompt": "Uppercase and reverse words: 'every answer derivation'",
     "expectedIntent": "text_manipulation",

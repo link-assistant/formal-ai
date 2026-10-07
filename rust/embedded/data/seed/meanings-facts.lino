@@ -430,3 +430,280 @@ meanings
         text "según el texto"
       surface
         text "en el texto"
+  statement_time_preposition
+    defined-by time
+    defined-by concept
+    role statement_time_preposition
+    precondition "a sentence of a prompt-supplied text carries a phrase this word opens"
+    effect "the phrase is a candidate time slot of the sentence's statement"
+    unit "a phrase whose words name a weekday, month, hour or clock suffix is a time"
+    example "from Tuesday"
+    lexeme en
+      surface
+        text "from"
+      surface
+        text "to"
+      surface
+        text "until"
+      surface
+        text "till"
+      surface
+        text "since"
+      surface
+        text "during"
+      surface
+        text "before"
+      surface
+        text "after"
+    lexeme ru
+      surface
+        text "с"
+      surface
+        text "со"
+      surface
+        text "до"
+      surface
+        text "после"
+      surface
+        text "к"
+      surface
+        text "ко"
+    lexeme es
+      surface
+        text "desde"
+      surface
+        text "hasta"
+      surface
+        text "durante"
+      surface
+        text "tras"
+    lexeme hi
+      surface
+        text "से"
+      surface
+        text "तक"
+      surface
+        text "दौरान"
+      surface
+        text "पहले"
+      surface
+        text "बाद"
+    lexeme zh
+      surface
+        text "直到"
+      surface
+        text "自从"
+      surface
+        text "期间"
+      surface
+        text "之前"
+      surface
+        text "之后"
+  statement_place_preposition
+    defined-by concept
+    role statement_place_preposition
+    precondition "a sentence of a prompt-supplied text carries a phrase this word opens"
+    effect "the phrase is the place slot of the statement unless its words name a time"
+    unit "not applicable"
+    example "in room 204"
+    lexeme en
+      surface
+        text "in"
+      surface
+        text "at"
+      surface
+        text "on"
+      surface
+        text "near"
+      surface
+        text "inside"
+      surface
+        text "outside"
+      surface
+        text "behind"
+      surface
+        text "under"
+      surface
+        text "above"
+      surface
+        text "beside"
+    lexeme ru
+      surface
+        text "в"
+      surface
+        text "во"
+      surface
+        text "на"
+      surface
+        text "у"
+      surface
+        text "около"
+      surface
+        text "возле"
+      surface
+        text "под"
+      surface
+        text "над"
+      surface
+        text "за"
+    lexeme es
+      surface
+        text "en"
+      surface
+        text "junto"
+      surface
+        text "cerca"
+      surface
+        text "sobre"
+      surface
+        text "bajo"
+      surface
+        text "detrás"
+    lexeme hi
+      surface
+        text "में"
+      surface
+        text "पर"
+      surface
+        text "पास"
+      surface
+        text "अंदर"
+      surface
+        text "बाहर"
+      surface
+        text "पीछे"
+      surface
+        text "नीचे"
+      surface
+        text "ऊपर"
+    lexeme zh
+      surface
+        text "附近"
+      surface
+        text "后面"
+      surface
+        text "下面"
+      surface
+        text "里面"
+      surface
+        text "上面"
+  statement_clock_suffix
+    defined-by time
+    defined-by calendar_day
+    role statement_clock_suffix
+    precondition "a phrase of a sentence carries a clock reading"
+    effect "the phrase is read as a time slot"
+    unit "hour of the day"
+    example "at 3 pm"
+    lexeme en
+      surface
+        text "am"
+      surface
+        text "pm"
+      surface
+        text "o'clock"
+    lexeme ru
+      surface
+        text "утра"
+      surface
+        text "дня"
+      surface
+        text "вечера"
+      surface
+        text "ночи"
+    lexeme hi
+      surface
+        text "बजे"
+    lexeme es
+      surface
+        text "am"
+      surface
+        text "pm"
+    lexeme zh
+      surface
+        text "上午"
+      surface
+        text "下午"
+      surface
+        text "点钟"
+  statement_time_question
+    defined-by time
+    defined-by inquiry
+    role statement_time_question
+    precondition "a question over a prompt-supplied text asks when"
+    effect "the statement's time slot is stated first"
+    unit "not applicable"
+    example "When is the meeting?"
+    lexeme en
+      surface
+        text "when"
+    lexeme ru
+      surface
+        text "когда"
+    lexeme hi
+      surface
+        text "कब"
+    lexeme zh
+      surface
+        text "什么时候"
+      surface
+        text "何时"
+    lexeme es
+      surface
+        text "cuándo"
+      surface
+        text "cuando"
+  statement_place_question
+    defined-by inquiry
+    role statement_place_question
+    precondition "a question over a prompt-supplied text asks where"
+    effect "the statement's place slot is stated first"
+    unit "not applicable"
+    example "Where is the meeting?"
+    lexeme en
+      surface
+        text "where"
+    lexeme ru
+      surface
+        text "где"
+      surface
+        text "куда"
+    lexeme hi
+      surface
+        text "कहाँ"
+      surface
+        text "कहां"
+    lexeme zh
+      surface
+        text "哪里"
+      surface
+        text "在哪"
+    lexeme es
+      surface
+        text "dónde"
+      surface
+        text "donde"
+  statement_subject_question
+    defined-by inquiry
+    role statement_subject_question
+    precondition "a question over a prompt-supplied text asks who"
+    effect "the statement's subject slot is stated first when the question does not already name it"
+    unit "not applicable"
+    example "Who chairs the meeting?"
+    lexeme en
+      surface
+        text "who"
+    lexeme ru
+      surface
+        text "кто"
+    lexeme hi
+      surface
+        text "कौन"
+    lexeme zh
+      surface
+        text "谁"
+    lexeme es
+      surface
+        text "quién"
+      surface
+        text "quien"

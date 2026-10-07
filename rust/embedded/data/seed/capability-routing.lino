@@ -378,4 +378,31 @@ capability_routing
     handler repository_lineage
     admits_on repository_subject
     because "issue 1180 R10: a history cue claims only with an existing path, a status phrase or a census symbol to answer about"
+  claim
+    handler page_query_text
+    browser_handler tryPageQueryText
+    admits_on supplied_page
+    because "issue 1175 R3: a page query claims only a prompt whose first line is the query and whose remaining lines are the page it supplies; a question that merely mentions a page is not one"
+  claim
+    handler javascript_execution
+    browser_handler tryJavaScriptExecution
+    admits_on javascript_program
+    because "issue 1175 R3: running a program claims only when a program can be extracted from the prompt, never on a run word alone"
+  claim
+    handler incompatible_units
+    browser_handler tryIncompatibleUnits
+    admits_on incompatible_unit_pair
+    because "issue 1175 R3: an incompatibility claims only when two measurement units of different physical dimensions are both named"
+  claim
+    handler http_fetch
+    admits_on fetch_url
+    because "issue 1175 R3: a fetch claims only with a URL operand the request asks to retrieve, never on a fetch word alone"
+  claim
+    handler url_navigate
+    admits_on navigation_url
+    because "issue 1175 R3: a navigation claims only with a URL operand the request asks to open"
+  claim
+    handler calendar_create_event
+    admits_on calendar_date_signal
+    because "issue 1175 R3: an event claims only with a date signal backed by an entity such as a clock hour, a timezone or a participant, or an explicit scheduling act"
   default ask

@@ -16,6 +16,7 @@ import path from "node:path";
 import vm from "node:vm";
 
 import { serverMessage } from "./messages.mjs";
+import { applyProcedureCache } from "./procedure-cache.mjs";
 
 export const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
 const WORKER_DIR = path.join(REPO_ROOT, "js/worker");
@@ -250,6 +251,7 @@ export class WorkerHost {
     this.ready = null;
     this.queue = Promise.resolve();
     this.readers = null;
+    this.templateFor = null;
   }
 
   /** Boot the worker and load the seed once. */
@@ -307,11 +309,30 @@ export class WorkerHost {
    * greets with the canonical wording, so the worker's per-reply greeting
    * variation (a browser preference) is off here.
    */
-  solve(prompt, history = [], options = {}) {
-    return this.run("solve(__serverPrompt, __serverHistory, { greetingVariations: false }, {}, [], __serverOptions)", {
+  async solve(prompt, history = [], options = {}) {
+    const result = await this.run("solve(__serverPrompt, __serverHistory, { greetingVariations: false }, {}, [], __serverOptions)", {
       __serverPrompt: prompt,
       __serverHistory: history,
       __serverOptions: options,
     });
+    // Issue #1165 R1165-10: the native `WriteProgram` branch reads the procedure cache file.
+    return applyProcedureCache(result, prompt, this, await this.catalogTemplate());
+  }
+
+  /**
+   * The worker's catalog template for a `(task, language)` pair and what
+   * `prompt` rendered it to (the inline replacement a customised request
+   * makes), for the procedure-cache read.
+   */
+  async catalogTemplate() {
+    const context = await this.boot();
+    if (!this.templateFor) {
+      this.templateFor = evaluate(context, `((prompt, task, language) => {
+        const template = typeof WRITE_PROGRAM_TEMPLATES === "object" ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
+        if (typeof template !== "string") return { template: null, rendered: null };
+        return { template, rendered: applyInlineHelloWorldOutputReplacement(prompt, task, template) };
+      })`);
+    }
+    return this.templateFor;
   }
 }

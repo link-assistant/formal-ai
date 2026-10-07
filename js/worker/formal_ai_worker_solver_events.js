@@ -232,7 +232,9 @@ function solverIntentRoute(prompt) {
 
 // The `SelectedRule::WriteProgram` tail `solve` logs after `intent`
 // (`program_parameter:*`, `program_parameters`, `legacy_intent`), read back
-// from the parameters the program answer already carries as evidence.
+// from the parameters the program answer already carries as evidence, with
+// the `obligation_gap` report of a request carrying work obligations (R1166-4,
+// formal_ai_worker_obligations.js).
 function solverWriteProgramEvents(answer, prompt) {
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const parameter = (name) => {
@@ -249,6 +251,7 @@ function solverWriteProgramEvents(answer, prompt) {
     solverEvent("program_parameter:task", task),
     solverEvent("program_parameters", `write_program(language=${language}, task=${task})`),
     solverEvent("legacy_intent", legacy),
+    ...solverObligationGapEvents(prompt),
     ...solverProcedureCacheEvents(prompt, language, task),
   ];
 }

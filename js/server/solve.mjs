@@ -4,6 +4,7 @@
 // `estimate_tokens`) and the tool-policy refusals of
 // rust/src/protocol_policy.rs.
 
+import { finalizeServerAnswer } from './derivation-store.mjs';
 import { EventLog, buildEvidenceLinks } from './evidence-links.mjs';
 import { f32 } from './json.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
@@ -113,7 +114,9 @@ async function seedReportReader(ctx) {
  */
 export async function solveSymbolic(ctx, prompt, history) {
   const result = await ctx.worker.solve(prompt, history);
-  return symbolicFromWorker(result, history, await seedReportReader(ctx));
+  // Issue #1184 R1184-9: every native solve ends in `finalize_answer`, which
+  // links, appends and persists the answer's derivation record.
+  return finalizeServerAnswer(ctx, symbolicFromWorker(result, history, await seedReportReader(ctx)), result);
 }
 
 /** The store's `MemoryEvent`s the protocol surfaces answer with (`store.events()`). */

@@ -36,6 +36,12 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "shell_command_shape",
     "semantic_shell_task",
     "repository_subject",
+    "supplied_page",
+    "javascript_program",
+    "incompatible_unit_pair",
+    "fetch_url",
+    "navigation_url",
+    "calendar_date_signal",
 ];
 
 /// Parse the `claim` rows of a capability-routing document.
@@ -95,6 +101,14 @@ pub fn claim_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Optio
                 || crate::history_context::status_subject(prompt, &rules).is_some()
                 || !crate::history_context::definition_subjects(prompt, &rules).is_empty()
         }
+        "supplied_page" => crate::web_formalize::split_supplied_page(prompt).is_some(),
+        "javascript_program" => crate::solver_helpers::extract_javascript_program(prompt).is_some(),
+        "incompatible_unit_pair" => {
+            crate::solver_handler_units::names_incompatible_unit_pair(normalized)
+        }
+        "fetch_url" => crate::solver_handlers::http_fetch_claims(prompt, normalized),
+        "navigation_url" => crate::solver_handlers::url_navigation_claims(prompt, normalized),
+        "calendar_date_signal" => crate::solver_handlers::calendar_claims(normalized),
         _ => return None,
     };
     Some(holds)

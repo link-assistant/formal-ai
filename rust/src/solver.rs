@@ -713,6 +713,19 @@ impl UniversalSolver {
                 log.append("program_parameter:task", spec.task.slug.to_owned());
                 log.append("program_parameters", spec.parameter_summary());
                 log.append("legacy_intent", spec.legacy_intent());
+                // R1166-4: a program request that formalizes into work
+                // obligations (output, naming or badge clauses, or the CI
+                // workflow the work-item executor attaches) reports every one
+                // this executor cannot discharge, as the program-contract
+                // executor does.
+                if crate::intent_formalization::request_carries_work_obligations(prompt)
+                    || crate::intent_formalization::request_demands(
+                        prompt,
+                        crate::intent_formalization::ObligationKind::CiWorkflow,
+                    )
+                {
+                    crate::intent_formalization::record_obligation_gaps(prompt, &mut log);
+                }
             }
             // Issue #1165 R1165-1/R1165-2: a verified cache row for this
             // (language, task) pair replaces the catalog template in the

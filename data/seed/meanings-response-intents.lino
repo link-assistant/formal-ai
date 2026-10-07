@@ -554,6 +554,62 @@ meanings
     unit "not applicable"
     example "The given text does not say: none of its sentences mentions ceo."
     grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_answer
+    defined-by answer
+    role localized_response_template
+    precondition "the question asks a slot (time, place or subject) the covering sentence's statement fills"
+    effect "the asked slots of the projected statement are stated first"
+    unit "not applicable"
+    example "From the text — time «from Tuesday to Thursday at 3 pm»; place «in room 204»."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_statement
+    defined-by answer
+    role localized_response_template
+    precondition "the covering sentence of a prompt-supplied text projects into a statement"
+    effect "the statement's filled slots are listed after the quoted sentence"
+    unit "not applicable"
+    example "As a statement: subject «The meeting»; predicate «moved»; time «from Tuesday to Thursday at 3 pm»; place «in room 204»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_subject
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has a subject"
+    effect "the subject slot is named with its words"
+    unit "not applicable"
+    example "subject «The meeting»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_predicate
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has a predicate"
+    effect "the predicate slot is named with its words"
+    unit "not applicable"
+    example "predicate «moved»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_object
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has an object"
+    effect "the object slot is named with its words"
+    unit "not applicable"
+    example "object «the report»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_time
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has a time phrase"
+    effect "the time slot is named with its phrases"
+    unit "not applicable"
+    example "time «from Tuesday to Thursday at 3 pm»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_place
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has a place phrase"
+    effect "the place slot is named with its phrases"
+    unit "not applicable"
+    example "place «in room 204»"
+    grounding "data/seed/multilingual-responses-entities.lino"
   fact_live_answer
     defined-by answer
     role localized_response_template

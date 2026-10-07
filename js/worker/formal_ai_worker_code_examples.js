@@ -337,3 +337,39 @@ function generalizedCodeExampleNotation(procedure) {
   }
   return lines.join("\n") + "\n";
 }
+
+/**
+ * The code examples of a page the prompt supplies, decomposed (R1164-11):
+ * when the query line evidences the seed meaning
+ * `code_example_decomposition_request`, every code block in a registered
+ * grammar is decomposed and the answer lists each part as `kind text`.
+ * Mirrors `code_example_page_answer` in
+ * rust/src/solver_handlers/page_query_text.rs. Null when the query asks
+ * something else or no block decomposes.
+ * @param {{query: string, page: string}} split
+ * @returns {object|null}
+ */
+function tryCodeExamplePageQuery(split) {
+  const meaning = findMeaning("code_example_decomposition_request");
+  if (meaning === null || !meaningEvidencedIn(meaning, normalizePrompt(split.query))) return null;
+  const lines = [];
+  const trace = [];
+  for (const block of formalizePage(split.page, null, null).blocks) {
+    if (block.kind !== "code_block") continue;
+    const node = decomposeCodeExample(block.text, block.language || "", [], "").ok;
+    if (!node) continue;
+    trace.push(`code_example_decomposition:${node.languageSlug} parts=${node.parts.length}`);
+    for (const part of node.parts) {
+      lines.push(`${part.kind} ${part.sourceText}`);
+      trace.push(`code_example_part:${node.languageSlug} ${part.kind} ${part.sourceText}`);
+    }
+  }
+  if (lines.length === 0) return null;
+  return {
+    intent: "code_example_decomposition",
+    content: lines.join("\n"),
+    confidence: 0.85,
+    evidence: ["handler:page_query_text", ...trace, "response:code_example_decomposition"],
+    trace: trace,
+  };
+}

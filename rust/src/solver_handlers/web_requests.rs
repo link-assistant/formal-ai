@@ -123,6 +123,15 @@ pub fn url_navigation_claims(prompt: &str, normalized: &str) -> bool {
     extract_url_navigate_url(prompt, normalized).is_some()
 }
 
+/// Whether the seed's fetch recognizer claims this prompt for the
+/// `http_fetch` row: a URL operand the request asks to retrieve. The claim
+/// row of the capability table consults it before the handler runs (issue
+/// #1175 R3), so a fetch word with no URL operand never reaches it.
+#[must_use]
+pub fn http_fetch_claims(prompt: &str, normalized: &str) -> bool {
+    extract_http_fetch_url(prompt, normalized).is_some()
+}
+
 /// Match prompts that ask the assistant to navigate to or display a URL
 /// without performing an HTTP request (e.g. `Navigate to github.com`,
 /// `Go to github.com`, `Перейди на github.com`). The browser web app renders

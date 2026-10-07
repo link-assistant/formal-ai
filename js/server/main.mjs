@@ -6,10 +6,13 @@
 // (127.0.0.1), `--port` / FORMAL_AI_PORT (8080), `--agent-mode` (or
 // FORMAL_AI_AGENT_MODE), and the bearer token from FORMAL_AI_API_BEARER_TOKEN,
 // FORMAL_AI_HTTP_BEARER_TOKEN or FORMAL_AI_API_TOKEN. The `--ws` / `--webrtc`
-// transports are native-only and refused.
+// transports are native-only and refused. `explain <answer-id>
+// [--format text|links]` is the `formal-ai explain` request: it prints the
+// derivation record a served answer persisted (js/server/derivation-store.mjs).
 
 import { pathToFileURL } from 'node:url';
 
+import { runExplain } from './derivation-store.mjs';
 import { createServer } from './http.mjs';
 import { createMemory, memoryPath } from './memory.mjs';
 import { serverMessage } from './messages.mjs';
@@ -76,6 +79,13 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
 }
 
 async function main(argv) {
+  // `formal-ai explain <answer-id> [--format text|links]` (rust/src/cli_explain.rs).
+  if (argv[0] === 'explain') {
+    const { code, stdout, stderr } = runExplain(argv.slice(1));
+    process.stdout.write(stdout);
+    process.stderr.write(stderr);
+    return code;
+  }
   const options = parseArgs(argv);
   if (options.unsupported) {
     process.stderr.write(`unsupported argument: ${options.unsupported}\n`);

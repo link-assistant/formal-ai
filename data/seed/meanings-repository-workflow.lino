@@ -217,3 +217,183 @@ meanings
         text "justo antes de"
       surface
         text "antes de"
+  output_obligation_verb
+    defined-by concept
+    role output_obligation_verb
+    precondition "a request clause quotes a value the program must emit"
+    effect "the clause formalizes into an output-literal obligation (issue #1166)"
+    unit "not applicable"
+    example "print exactly"
+    lexeme en
+      surface
+        text "print"
+      surface
+        text "prints"
+      surface
+        text "write"
+      surface
+        text "writes"
+      surface
+        text "output"
+    lexeme ru
+      surface
+        text "выведи"
+      surface
+        text "вывести"
+      surface
+        text "вывод"
+      surface
+        text "напечатай"
+      surface
+        text "напиши"
+      surface
+        text "печатать"
+    lexeme hi
+      surface
+        text "छापो"
+      surface
+        text "छाप"
+      surface
+        text "प्रिंट"
+      surface
+        text "आउटपुट"
+      surface
+        text "लिखो"
+    lexeme zh
+      surface
+        text "打印"
+      surface
+        text "输出"
+      surface
+        text "打印出"
+    lexeme es
+      surface
+        text "imprime"
+      surface
+        text "imprimir"
+      surface
+        text "escribe"
+      surface
+        text "escribir"
+      surface
+        text "salida"
+  code_style_obligation
+    defined-by concept
+    role code_style_obligation
+    precondition "a request clause asks for a quality of the written code"
+    effect "the clause formalizes into a code-style obligation (issue #1166)"
+    unit "not applicable"
+    example "add clear comments"
+    lexeme en
+      surface
+        text "comment"
+      surface
+        text "comments"
+      surface
+        text "best practice"
+      surface
+        text "best practices"
+      surface
+        text "clean code"
+      surface
+        text "readable"
+    lexeme ru
+      surface
+        text "комментар"
+      surface
+        text "лучшие практики"
+      surface
+        text "понятн"
+    lexeme hi
+      surface
+        text "टिप्पणी"
+      surface
+        text "सर्वोत्तम अभ्यास"
+    lexeme zh
+      surface
+        text "注释"
+      surface
+        text "最佳实践"
+      surface
+        text "可读"
+    lexeme es
+      surface
+        text "comentario"
+      surface
+        text "comentarios"
+      surface
+        text "buenas prácticas"
+      surface
+        text "prácticas recomendadas"
+  file_naming_obligation
+    defined-by concept
+    role file_naming_obligation
+    precondition "a request clause asks for the name of the file it produces"
+    effect "the clause formalizes into a file-naming obligation (issue #1166); a bare filename token is not one"
+    unit "not applicable"
+    example "a meaningful name like"
+    lexeme en
+      surface
+        text "name like"
+      surface
+        text "named"
+      surface
+        text "meaningful name"
+    lexeme ru
+      surface
+        text "назови"
+      surface
+        text "название файла"
+      surface
+        text "имя файла"
+      surface
+        text "осмысленное имя"
+    lexeme hi
+      surface
+        text "नाम रखो"
+      surface
+        text "सार्थक नाम"
+    lexeme zh
+      surface
+        text "命名"
+      surface
+        text "名为"
+      surface
+        text "文件名"
+      surface
+        text "有意义的名字"
+    lexeme es
+      surface
+        text "llama al archivo"
+      surface
+        text "llámalo"
+      surface
+        text "nombre del archivo"
+      surface
+        text "nombre significativo"
+  ci_badge_obligation
+    defined-by concept
+    role ci_badge_obligation
+    precondition "a request clause asks for a continuous-integration status badge"
+    effect "the clause formalizes into a CI-badge obligation (issue #1166)"
+    unit "not applicable"
+    example "a CI badge"
+    lexeme en
+      surface
+        text "badge"
+    lexeme ru
+      surface
+        text "значок"
+      surface
+        text "бейдж"
+    lexeme hi
+      surface
+        text "प्रतीक"
+    lexeme zh
+      surface
+        text "徽章"
+    lexeme es
+      surface
+        text "escudo"
+      surface
+        text "insignia"

@@ -1,0 +1,98 @@
+{
+  "description": "Issue #1166 R1166-3/R1166-4 cross-runtime cases: the output literals the program executor binds from the obligation graph (rust/src/intent_formalization/obligations.rs bound_output_literals, js/agentic/crate/intent_formalization_obligations.mjs boundOutputLiterals) and the obligation_gap lines every graph-reading executor records (obligation_gap_lines / obligationGapLines). Read by rust/tests/unit/issue_1166_executor_gaps.rs and rust/tests/web/issue-1166-executor-gaps.test.mjs. catalogCases are catalog write_program requests: the obligation_gap events the native WriteProgram branch of rust/src/solver.rs and the browser worker (js/worker/formal_ai_worker_obligations.js) record, empty when the request carries no work or CI obligation; read by rust/tests/web/issue-1166-worker-obligation-gaps.test.mjs too.",
+  "bindingCases": [
+    {
+      "id": "repeated_mentions_bind_one_literal",
+      "prompt": "Print `Hello, World!`. The program must print `Hello, World!`.",
+      "expected": [
+        "Hello, World!"
+      ]
+    },
+    {
+      "id": "each_clause_binds_its_own_literal",
+      "prompt": "Print `first`. Then print `second`.",
+      "expected": [
+        "first",
+        "second"
+      ]
+    },
+    {
+      "id": "a_print_verb_does_not_bind_a_literal_in_the_next_clause",
+      "prompt": "Print the greeting! Then \"Hello\"",
+      "expected": []
+    },
+    {
+      "id": "a_clause_without_print_evidence_binds_nothing",
+      "prompt": "Write a Python program that prints \"A\"\nThen write \"B\"",
+      "expected": [
+        "A"
+      ]
+    }
+  ],
+  "gapCases": [
+    {
+      "id": "unreadable_clause_is_reported",
+      "prompt": "First, print exactly: \"Hi\"\nThen, harmonize the quantum flux\n",
+      "expected": [
+        "obligation obligation_84b90c0043e2163f span 0:26 underivable no_artifact_in_clause",
+        "obligation obligation_656fe8280da8a332 span 27:59 underivable no_artifact_in_clause"
+      ]
+    },
+    {
+      "id": "unbound_output_literal_is_reported",
+      "prompt": "Write a Python program that prints \"A\"\nThen write \"B\"",
+      "expected": [
+        "obligation obligation_ab6347c5ea4e2372 span 0:38 underivable no_artifact_in_clause",
+        "obligation obligation_cc5bc3ad38a61818 span 39:53 underivable no_artifact_in_clause",
+        "obligation obligation_cc5bc3ad38a61818 span 39:53 underivable output_literal_not_bound_by_executor"
+      ]
+    }
+  ],
+  "catalogCases": [
+    {
+      "id": "ci_workflow_clause_opens_the_gate",
+      "prompt": "Write a hello world program in Python and add a GitHub Actions workflow",
+      "expected": [
+        "obligation obligation_0567e197171e33f2 span 0:37 underivable no_artifact_in_clause"
+      ]
+    },
+    {
+      "id": "ci_badge_clause_opens_the_gate",
+      "prompt": "Write a hello world program in Python. Also, add a CI badge",
+      "expected": [
+        "obligation obligation_f1a132b1d007ccbb span 0:38 underivable no_artifact_in_clause"
+      ]
+    },
+    {
+      "id": "output_literal_with_a_naming_clause",
+      "prompt": "Write a hello world program in Python that prints \"Hi\"\nAlso, use a meaningful name for the file",
+      "expected": [
+        "obligation obligation_01b79d0379ee16de span 0:54 underivable no_artifact_in_clause",
+        "obligation obligation_369e061ae8f7ba39 span 55:95 underivable no_artifact_in_clause"
+      ]
+    },
+    {
+      "id": "unbound_output_literal_in_a_catalog_request",
+      "prompt": "Write a hello world program in Python that prints \"Hi\"\nThen write \"B\"\nAlso, add a CI badge",
+      "expected": [
+        "obligation obligation_f964137c18fbe676 span 0:54 underivable no_artifact_in_clause",
+        "obligation obligation_9070583226937df1 span 55:69 underivable no_artifact_in_clause",
+        "obligation obligation_9070583226937df1 span 55:69 underivable output_literal_not_bound_by_executor"
+      ]
+    },
+    {
+      "id": "enumerated_program_request",
+      "prompt": "Create a small Kotlin program. First, the program must print exactly: \"Hello, World!\"\nAlso, add a GitHub Actions workflow\nAlso, use a meaningful name for the workflow file, like test-hello-world.yml\nFinally, a CI badge (optional)",
+      "expected": [
+        "obligation obligation_82b3ae3a89a1e640 span 0:30 underivable no_artifact_in_clause",
+        "obligation obligation_b83d3d025c32f17d span 31:85 underivable no_artifact_in_clause",
+        "obligation obligation_362def3325615951 span 199:229 underivable no_artifact_in_clause"
+      ]
+    },
+    {
+      "id": "plain_catalog_request_reports_nothing",
+      "prompt": "Write a hello world program in Python",
+      "expected": []
+    }
+  ]
+}

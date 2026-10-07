@@ -335,6 +335,78 @@ meanings
     unit "boolean"
     example "what does evaluate_calculation do"
     grounding "data/seed/capability-routing.lino"
+  page_query_text
+    defined-by method
+    role action
+    precondition "a request asks a question over a page it supplies"
+    effect "names the handler whose claim row admits it only on a supplied page"
+    unit "not applicable"
+    example "what command builds the jar, then the page text on the following lines"
+    grounding "data/seed/capability-routing.lino"
+  javascript_execution
+    defined-by method
+    role action
+    precondition "a request asks for a supplied program to be run"
+    effect "names the handler whose claim row admits it only on an extracted program"
+    unit "not applicable"
+    example "run this javascript with console.log(1 + 2)"
+    grounding "data/seed/capability-routing.lino"
+  incompatible_units
+    defined-by method
+    role action
+    precondition "a request asks to convert between units of different physical dimensions"
+    effect "names the handler whose claim row admits it only on an incompatible unit pair"
+    unit "not applicable"
+    example "how many meters are in a kilobyte"
+    grounding "data/seed/capability-routing.lino"
+  supplied_page
+    defined-by concept
+    role action
+    precondition "the first line is a query and the remaining lines are the page it reads"
+    effect "admits the page query handler claim"
+    unit "boolean"
+    example "what command builds the jar, then the page text"
+    grounding "data/seed/capability-routing.lino"
+  javascript_program
+    defined-by concept
+    role action
+    precondition "a program can be extracted from the request to run it"
+    effect "admits the program execution handler claim"
+    unit "boolean"
+    example "run this javascript with console.log(1 + 2)"
+    grounding "data/seed/capability-routing.lino"
+  incompatible_unit_pair
+    defined-by concept
+    role action
+    precondition "two named measurement units belong to different physical dimensions"
+    effect "admits the unit incompatibility handler claim"
+    unit "boolean"
+    example "meters and kilobytes"
+    grounding "data/seed/capability-routing.lino"
+  fetch_url
+    defined-by concept
+    role action
+    precondition "the request carries a URL operand it asks to retrieve"
+    effect "admits the fetch handler claim"
+    unit "boolean"
+    example "fetch https://example.com"
+    grounding "data/seed/capability-routing.lino"
+  navigation_url
+    defined-by concept
+    role action
+    precondition "the request carries a URL operand it asks to open"
+    effect "admits the navigation handler claim"
+    unit "boolean"
+    example "navigate to github.com"
+    grounding "data/seed/capability-routing.lino"
+  calendar_date_signal
+    defined-by concept
+    role action
+    precondition "a date signal is backed by a clock hour, a timezone, a participant or an explicit scheduling act"
+    effect "admits the calendar event handler claim"
+    unit "boolean"
+    example "schedule a meeting with anna tomorrow at 3pm"
+    grounding "data/seed/capability-routing.lino"
   rml
     defined-by concept
     role action

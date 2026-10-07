@@ -225,3 +225,39 @@ fn live_reproducible_seeded_records_are_the_documented_ten() {
         ]
     );
 }
+
+/// R1172-9: the ten stay seeded because no committed subject capture states
+/// the relation's claim (the entity captures are trimmed to labels, aliases
+/// and, for grounded entities, P17/P297), so the triple cannot be read from
+/// the cache yet. The full gap audit (summaries, aliases, sitelinks) is
+/// `rust/tests/web/issue-1172-seeded-fact-retirement.test.mjs`.
+#[test]
+fn no_committed_subject_capture_states_a_seeded_relation_claim() {
+    let lexicon = formal_ai::seed::lexicon();
+    let cache =
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../data/cache/wikidata/entity");
+    let with_claim: Vec<String> = formal_ai::seed::facts()
+        .into_iter()
+        .filter_map(|record| {
+            let property = lexicon.meaning(&record.relation)?.wikidata.clone();
+            if record.subject_qid.is_empty() || !property.starts_with('P') {
+                return None;
+            }
+            let path = cache.join(format!("{}.json", record.subject_qid));
+            let text = std::fs::read_to_string(&path)
+                .unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+            let document: serde_json::Value =
+                serde_json::from_str(&text).expect("committed capture is JSON");
+            let claims =
+                &document["entities"][record.subject_qid.as_str()]["claims"][property.as_str()];
+            let states = claims.as_array().is_some_and(|entries| {
+                entries.iter().any(|entry| {
+                    entry["mainsnak"]["datavalue"]["value"]["id"].as_str()
+                        == Some(record.value_qid.as_str())
+                })
+            });
+            states.then_some(record.slug)
+        })
+        .collect();
+    assert!(with_claim.is_empty(), "retirable now: {with_claim:?}");
+}

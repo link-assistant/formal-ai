@@ -5,7 +5,6 @@
 
 use crate::engine::{ExecutionRecipe, ExecutionRecipeFile, SymbolicAnswer};
 use crate::event_log::EventLog;
-use crate::normal_markov::quoted_segment_spans;
 use crate::seed::{self, parser::parse_lino};
 
 const CONTRACTS: &str = include_str!("../../embedded/data/meta/stdout-program-contracts.lino");
@@ -25,26 +24,15 @@ pub fn runtime_steps(language: &str) -> Option<String> {
     ))
 }
 
-/// Read an explicitly quoted output operand in its own clause.
+/// Read the request's explicitly quoted output operands.
+///
+/// The operands come from the obligation graph's clauses
+/// ([`crate::intent_formalization::bound_output_literals`]): a quoted value
+/// introduced by a print clause of its own obligation clause, each value
+/// once, in request order (R1166-3).
 #[must_use]
 pub fn explicit_stdout(prompt: &str) -> Option<String> {
-    let mut previous_end = 0;
-    let mut outputs = Vec::new();
-    for literal in quoted_segment_spans(prompt) {
-        let prefix = &prompt[previous_end..literal.start];
-        previous_end = literal.end;
-        let clause = prefix
-            .rsplit(['\n', '.', ';', '。'])
-            .next()
-            .unwrap_or(prefix);
-        if seed::lexicon()
-            .meaning("print_stdout")
-            .is_some_and(|meaning| meaning.evidenced_in(&clause.to_lowercase()))
-            && !outputs.contains(&literal.text)
-        {
-            outputs.push(literal.text);
-        }
-    }
+    let outputs = crate::intent_formalization::bound_output_literals(prompt);
     (!outputs.is_empty()).then(|| outputs.join("\n"))
 }
 
@@ -125,8 +113,9 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     log.append("program_parameter:language", language.clone());
     log.append("program_parameter:expected_stdout", output.clone());
     log.append("knowledge_source_url", source_url.to_owned());
-    // R1166-3: clauses the obligation graph cannot read are reported in the
-    // run's derivation, never dropped.
+    // R1166-3/R1166-4: clauses the obligation graph cannot read, and output
+    // literals it demands but the binding above does not carry, are reported
+    // in the run's derivation, never dropped.
     crate::intent_formalization::record_obligation_gaps(prompt, log);
     let mut answer = crate::solver_handlers::finalize_simple(
         prompt,

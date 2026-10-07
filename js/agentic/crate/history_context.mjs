@@ -5,10 +5,10 @@
 // (data/seed/history-formalization.lino) read into the same tables, the
 // `git log` record splitter, the trailer, co-author and merge scans, the
 // named top-level item diff, and the commit-to-memory-event mapping. The
-// subprocess half (running git and the store and cursor files) stays with the
-// native importer; a JavaScript caller hands the `git log` text and the blobs
-// in. The github-logs importers are js/agentic/crate/history_github.mjs and the
-// lineage route's claim and answer are js/agentic/crate/history_lineage.mjs.
+// subprocess half (running git and the store and cursor files) is
+// js/agentic/crate/history_store.mjs over an injected io. The github-logs
+// importers are js/agentic/crate/history_github.mjs and the lineage route's
+// claim and answer are js/agentic/crate/history_lineage.mjs.
 
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';

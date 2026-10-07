@@ -71,7 +71,7 @@ function synchronousHandlerCandidates(context, registry = promotedHandlerOrder(b
   return registry.map((record) => ({
     name: record.name,
     run: () => {
-      if (!claimRouteAdmits(record.name, context.prompt)) return null;
+      if (!claimRouteAdmits(record.name, context.prompt, context.normalized)) return null;
       const implementation = handlerImplementation(record, context);
       const args = (record.arguments || []).map((path) => handlerContextValue(context, path));
       const hit = implementation(...args);
@@ -91,6 +91,12 @@ const CLAIM_EVIDENCE = Object.freeze({
   shell_command_shape: (prompt) => detectTerminalCommand(prompt) !== null,
   semantic_shell_task: (prompt) => detectSemanticShellCommand(prompt) !== null,
   repository_subject: () => false,
+  supplied_page: (prompt) => pageSplitSuppliedPage(prompt) !== null,
+  javascript_program: (prompt) => extractJavaScriptProgram(prompt) !== null,
+  incompatible_unit_pair: (prompt, normalized) => detectIncompatibleUnitPair(normalized) !== null,
+  fetch_url: (prompt, normalized) => extractHttpFetchUrl(prompt, normalized) !== null,
+  navigation_url: (prompt, normalized) => extractUrlNavigateUrl(prompt, normalized) !== null,
+  calendar_date_signal: (prompt, normalized) => mentionsCalendarCreateRequest(normalized),
 });
 
 function claimRouteRows() {
@@ -105,7 +111,7 @@ function claimRouteRows() {
   return rows;
 }
 
-function claimRouteAdmits(browserHandler, prompt) {
+function claimRouteAdmits(browserHandler, prompt, normalized = normalizePrompt(prompt)) {
   const row = claimRouteRows().find((candidate) => candidate.browserHandler === browserHandler);
-  return !row || row.admitsOn.some((kind) => Boolean(CLAIM_EVIDENCE[kind] && CLAIM_EVIDENCE[kind](prompt)));
+  return !row || row.admitsOn.some((kind) => Boolean(CLAIM_EVIDENCE[kind] && CLAIM_EVIDENCE[kind](prompt, normalized)));
 }

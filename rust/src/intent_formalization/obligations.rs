@@ -18,20 +18,21 @@
 //! fix #1156 calls for: `unique_output_literal` returns the value once no
 //! matter which clauses carry it.
 //!
-//! Classification reads the seed lexicon wherever a meaning or role exists
-//! (`print_stdout`, `ci_workflow_request`, the program-request roles), so the
-//! languages the seeds cover classify in any surface language; the smaller
-//! style, naming, and badge vocabularies fall back to the multilingual token
-//! tables below until a seed meaning owns them. A clause nothing classifies
-//! keeps its ledger node and its `Underivable` expectation — nothing is ever
-//! discarded (R710-R9).
+//! Classification reads the seed lexicon only (`print_stdout`,
+//! `ci_workflow_request`, the program-request roles, and the
+//! `output_obligation_verb`, `code_style_obligation`,
+//! `file_naming_obligation` and `ci_badge_obligation` roles of
+//! `data/seed/meanings-repository-workflow.lino`), so a new surface language
+//! is a seed edit. A clause nothing classifies keeps its ledger node and its
+//! `Underivable` expectation — nothing is ever discarded (R710-R9).
 //!
 //! Callers replace phrase-match decision points with [`formalize_request`]:
 //! `crate::agentic_coding::ci_workflow::requested_in` delegates to
-//! [`request_demands`] (`crate::coding::program_contract::explicit_stdout`
-//! is the open half of that wiring), and `crate::solver_terminal` consults
+//! [`request_demands`], `crate::coding::program_contract::explicit_stdout`
+//! reads [`bound_output_literals`], and `crate::solver_terminal` consults
 //! [`request_carries_work_obligations`] before classifying a leading shell
-//! token as a command line.
+//! token as a command line. Every executor that reads the graph records
+//! [`obligation_gap_lines`] through [`record_obligation_gaps`] (R1166-4).
 
 use crate::engine::{normalize_prompt, stable_id};
 use crate::implementation_language;
@@ -82,84 +83,29 @@ impl ObligationKind {
     }
 }
 
-/// Print-verb fallback vocabulary for languages whose `print_stdout` lexemes
-/// the seed does not yet carry. A literal only counts as an output obligation
-/// when it is *quoted*, so no command line can pick these up by accident.
-const PRINT_VERB_FALLBACK: &[(&str, &[&str])] = &[
-    ("en", &["print", "prints", "write", "writes", "output"]),
-    (
-        "ru",
-        &[
-            "выведи",
-            "вывести",
-            "вывод",
-            "напечатай",
-            "напиши",
-            "печатать",
-        ],
-    ),
-    ("hi", &["छापो", "छाप", "प्रिंट", "आउटपुट", "लिखो"]),
-    ("zh", &["打印", "输出", "打印出"]),
-    (
-        "es",
-        &["imprime", "imprimir", "escribe", "escribir", "salida"],
-    ),
-];
+/// Seed role whose surfaces mark an output-literal clause beside the
+/// `print_stdout` meaning (`data/seed/meanings-repository-workflow.lino`).
+/// A literal only counts as an output obligation when it is *quoted*, so no
+/// command line can pick these surfaces up by accident.
+const ROLE_OUTPUT_OBLIGATION_VERB: &str = "output_obligation_verb";
 
-/// Code-style clause vocabulary, pending a seed meaning for style demands.
-const CODE_STYLE_MARKERS: &[&str] = &[
-    "comment",
-    "comments",
-    "best practice",
-    "best practices",
-    "clean code",
-    "readable",
-    "комментар",
-    "лучшие практики",
-    "понятн",
-    "टिप्पणी",
-    "सर्वोत्तम अभ्यास",
-    "注释",
-    "最佳实践",
-    "可读",
-    "comentario",
-    "comentarios",
-    "buenas prácticas",
-    "prácticas recomendadas",
-];
+/// Seed role whose surfaces mark a code-style clause.
+const ROLE_CODE_STYLE_OBLIGATION: &str = "code_style_obligation";
 
-/// File-naming clause phrases. A bare filename token is deliberately not a
-/// naming obligation — `make test-hello-world.yml` stays a command line.
-const FILE_NAMING_MARKERS: &[&str] = &[
-    "name like",
-    "named",
-    "meaningful name",
-    "назови",
-    "название файла",
-    "имя файла",
-    "осмысленное имя",
-    "नाम रखो",
-    "सार्थक नाम",
-    "命名",
-    "名为",
-    "文件名",
-    "有意义的名字",
-    "llama al archivo",
-    "llámalo",
-    "nombre del archivo",
-    "nombre significativo",
-];
+/// Seed role whose surfaces mark a file-naming clause. A bare filename token
+/// is deliberately not one: `make test-hello-world.yml` stays a command line.
+const ROLE_FILE_NAMING_OBLIGATION: &str = "file_naming_obligation";
 
-/// CI-badge clause phrases.
-const CI_BADGE_MARKERS: &[&str] = &[
-    "badge",
-    "значок",
-    "бейдж",
-    "escudo",
-    "insignia",
-    "प्रतीक",
-    "徽章",
-];
+/// Seed role whose surfaces mark a CI-badge clause.
+const ROLE_CI_BADGE_OBLIGATION: &str = "ci_badge_obligation";
+
+/// The `when` key of the contract rule that names the reason an output
+/// literal no executor binding carries is reported under
+/// (`data/meta/obligation-evidence-contract.lino`).
+const WHEN_UNBOUND_OUTPUT: &str = "unbound_output_literal";
+
+/// The breaks that end the text introducing a quoted output operand.
+const OUTPUT_INTRODUCTION_BREAKS: [char; 4] = ['\n', '.', ';', '\u{3002}'];
 
 /// The formalized request: ledger nodes plus their classifications.
 ///
@@ -269,20 +215,40 @@ impl ObligationGraph {
             .into_iter()
             .map(|node| {
                 let reason = match &node.expectation {
-                    ObligationExpectation::Underivable { reason } => reason.clone(),
-                    _ => String::new(),
+                    ObligationExpectation::Underivable { reason } => reason.as_str(),
+                    _ => "",
                 };
-                let span = format!("{}:{}", node.span.0, node.span.1);
-                [
-                    ("obligation", node.node_id.as_str()),
-                    ("span", span.as_str()),
-                    ("underivable", reason.as_str()),
-                ]
-                .iter()
-                .map(|(name, value)| [*name, *value].join(" "))
-                .collect::<Vec<_>>()
-                .join(" ")
+                gap_line(node, reason)
             })
+            .collect()
+    }
+
+    /// Gap lines for the output-literal nodes whose value `bound` lacks.
+    ///
+    /// The graph reads an output clause broadly (the `print_stdout` meaning
+    /// and the `output_obligation_verb` surfaces anywhere in the clause, the
+    /// clause's last quoted segment); an executor binds only the literals
+    /// [`bound_output_literals`] anchors. A literal the graph demands but no
+    /// binding carries would otherwise vanish from the program silently, so
+    /// it is reported under the contract's `unbound_output_literal` reason
+    /// (R1166-4).
+    #[must_use]
+    pub fn unbound_output_report(&self, bound: &[String]) -> Vec<String> {
+        let reason = crate::obligation_ledger::ExpectationRules::shipped()
+            .rules
+            .into_iter()
+            .find(|rule| rule.when == WHEN_UNBOUND_OUTPUT)
+            .map_or_else(|| WHEN_UNBOUND_OUTPUT.to_owned(), |rule| rule.reason);
+        self.nodes
+            .iter()
+            .filter(|node| self.has_node_kind(&node.node_id, ObligationKind::OutputLiteral))
+            .filter(|node| {
+                self.literal_by_node
+                    .iter()
+                    .find(|(node_id, _)| *node_id == node.node_id)
+                    .is_some_and(|(_, value)| !bound.contains(value))
+            })
+            .map(|node| gap_line(node, &reason))
             .collect()
     }
 
@@ -477,24 +443,94 @@ pub fn request_demands(text: &str, kind: ObligationKind) -> bool {
             .any(|node| authoring_kind(&node.clause) == Some(kind))
 }
 
+/// One gap line: the node id, its byte span, and the underivable reason.
+fn gap_line(node: &ObligationNode, reason: &str) -> String {
+    let span = format!("{}:{}", node.span.0, node.span.1);
+    [
+        ("obligation", node.node_id.as_str()),
+        ("span", span.as_str()),
+        ("underivable", reason),
+    ]
+    .iter()
+    .map(|(name, value)| [*name, *value].join(" "))
+    .collect::<Vec<_>>()
+    .join(" ")
+}
+
+/// The output literals an executor binds from `text`, each once, in order.
+///
+/// This is the program executor's reading of the graph's output clauses
+/// (R1166-3): every quoted segment is assigned to the enumerated obligation
+/// clause that contains it, and it is an output operand when the text
+/// introducing it — from the clause start or the previous quoted segment,
+/// after the last sentence break — evidences the seed `print_stdout` meaning.
+/// A print verb in an earlier clause never binds a literal in a later one,
+/// and a value quoted in several clauses is bound once (the #1156
+/// coreference). Literals the graph classifies more broadly but this reading
+/// does not anchor are reported by
+/// [`ObligationGraph::unbound_output_report`], never dropped.
+#[must_use]
+pub fn bound_output_literals(text: &str) -> Vec<String> {
+    let clause_starts: Vec<usize> = crate::obligation_ledger::clauses_with_spans(text)
+        .into_iter()
+        .map(|(_, span)| span.0)
+        .collect();
+    let lexicon = seed::lexicon();
+    let print = lexicon.meaning("print_stdout");
+    let mut previous_end: usize = 0;
+    let mut outputs: Vec<String> = Vec::new();
+    for literal in quoted_segment_spans(text) {
+        let clause_start = clause_starts
+            .iter()
+            .copied()
+            .filter(|start| *start <= literal.start)
+            .max()
+            .unwrap_or(0);
+        let window = &text[previous_end.max(clause_start)..literal.start];
+        previous_end = literal.end;
+        let introduction = window
+            .rsplit(OUTPUT_INTRODUCTION_BREAKS)
+            .next()
+            .unwrap_or(window);
+        if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase()))
+            && !outputs.contains(&literal.text)
+        {
+            outputs.push(literal.text);
+        }
+    }
+    outputs
+}
+
 /// The event kind an executor records one undischargeable clause under.
 pub const OBLIGATION_GAP_KIND: &str = "obligation_gap";
 
-/// Record every undischargeable clause of `text` in the executor's log.
+/// Every gap line an executor reports for `text` (R1166-3, R1166-4).
 ///
-/// One `obligation_gap` event per [`ObligationGraph::gap_report`] line (node
-/// id, byte span, reason), so a completed run names each clause it could not
-/// read instead of omitting it (R1166-3, R1166-4). Returns the lines it
-/// recorded.
+/// The [`ObligationGraph::gap_report`] lines (clauses no rule can read)
+/// followed by the [`ObligationGraph::unbound_output_report`] lines (output
+/// literals no binding carries), so a completed run names each obligation it
+/// could not discharge instead of omitting it.
+#[must_use]
+pub fn obligation_gap_lines(text: &str) -> Vec<String> {
+    let graph = formalize_request(text);
+    let mut lines = graph.gap_report();
+    lines.extend(graph.unbound_output_report(&bound_output_literals(text)));
+    lines
+}
+
+/// Record every undischargeable obligation of `text` in the executor's log.
+///
+/// One `obligation_gap` event per [`obligation_gap_lines`] line (node id,
+/// byte span, reason). Returns the lines it recorded.
 pub fn record_obligation_gaps(text: &str, log: &mut crate::event_log::EventLog) -> Vec<String> {
-    let gaps = formalize_request(text).gap_report();
+    let gaps = obligation_gap_lines(text);
     for gap in &gaps {
         log.append(OBLIGATION_GAP_KIND, gap.clone());
     }
     gaps
 }
 
-/// Classify one clause against the seed lexicon and the fallback tables.
+/// Classify one clause against the seed lexicon.
 ///
 /// Returns the kind plus, for `OutputLiteral`, the anchored quoted value.
 /// `None` leaves the node unclassified — its ledger expectation (often
@@ -509,9 +545,7 @@ fn classify_clause(clause: &str) -> Option<(ObligationKind, Option<String>)> {
     let print_evidence = lexicon
         .meaning("print_stdout")
         .is_some_and(|meaning| meaning.evidenced_in(&lower))
-        || PRINT_VERB_FALLBACK
-            .iter()
-            .any(|(_, verbs)| verbs.iter().any(|verb| lower.contains(verb)));
+        || lexicon.mentions_role_raw(ROLE_OUTPUT_OBLIGATION_VERB, &lower);
     let quoted = quoted_segment_spans(clause);
     if print_evidence && !quoted.is_empty() {
         // The anchored literal is the last quoted segment of the clause: the
@@ -543,22 +577,14 @@ fn authoring_kind(clause: &str) -> Option<ObligationKind> {
     {
         return Some(ObligationKind::ProgramFile);
     }
-    if CODE_STYLE_MARKERS
-        .iter()
-        .any(|marker| lower.contains(marker))
-    {
-        return Some(ObligationKind::CodeStyle);
-    }
-    if FILE_NAMING_MARKERS
-        .iter()
-        .any(|marker| lower.contains(marker))
-    {
-        return Some(ObligationKind::FileNaming);
-    }
-    if CI_BADGE_MARKERS.iter().any(|marker| lower.contains(marker)) {
-        return Some(ObligationKind::CiBadge);
-    }
-    None
+    [
+        (ROLE_CODE_STYLE_OBLIGATION, ObligationKind::CodeStyle),
+        (ROLE_FILE_NAMING_OBLIGATION, ObligationKind::FileNaming),
+        (ROLE_CI_BADGE_OBLIGATION, ObligationKind::CiBadge),
+    ]
+    .into_iter()
+    .find(|(role, _)| lexicon.mentions_role_raw(role, &lower))
+    .map(|(_, kind)| kind)
 }
 
 /// Stable graph id for a request: the same meaning yields the same id, so

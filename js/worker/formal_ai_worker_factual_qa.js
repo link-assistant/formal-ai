@@ -27,6 +27,16 @@ const FACTUAL_QA_ROLE_COMPARISON_JOINER = "fact_comparison_joiner";
 const FACTUAL_QA_ROLE_TEXT_CUE = "prompt_text_question_cue";
 const FACTUAL_QA_ROLE_FUNCTION_WORD = "statement_function_word";
 const FACTUAL_QA_ROLE_INTERROGATIVE = "interrogative_opener";
+/** Prepositions opening a time / place phrase of the statement projection. */
+const FACTUAL_QA_ROLE_TIME_PREPOSITION = "statement_time_preposition";
+const FACTUAL_QA_ROLE_PLACE_PREPOSITION = "statement_place_preposition";
+/** Roles whose surfaces make a phrase a time. */
+const FACTUAL_QA_TEMPORAL_ROLES = ["calendar_weekday", "calendar_month_name", "calendar_hour_reference", "statement_clock_suffix"];
+/** The statement slots in rendering order, with the role of the question words asking each. */
+const FACTUAL_QA_SLOTS = [
+  ["subject", "statement_subject_question"], ["predicate", null], ["object", null],
+  ["time", "statement_time_question"], ["place", "statement_place_question"],
+];
 /** Fewest words an uncued quoted passage needs to count as a text to read. */
 const FACTUAL_QA_MIN_PASSAGE_WORDS = 6;
 /** Shortest shared stem two inflected tokens need to count as one word. */
@@ -462,16 +472,109 @@ function tryPromptTextQuestion(prompt, normalized) {
       evidence: evidence.concat("prompt_text:gap", "response:prompt_text_gap"),
     };
   }
+  const quote = factualQaRender("prompt_text_answer", language, { sentence: best.sentence });
+  const projected = promptTextStatementAnswer(promptTextStatement(best.sentence), quote, [normalizePrompt(question), units], language);
   return {
     intent: "prompt_text_answer",
-    content: factualQaRender("prompt_text_answer", language, { sentence: best.sentence }),
+    content: projected.content,
     confidence: 0.85,
     evidence: evidence.concat(
       `prompt_text:selected:${best.index + 1}`,
       `prompt_text:covered:${best.covered.join(",")}`,
+      projected.evidence,
       "response:prompt_text_answer",
     ),
   };
+}
+
+/**
+ * Project one sentence into a statement (twin of `project_statement`): a
+ * seeded time or place preposition opens an adjunct phrase (a comma closes
+ * it); a phrase naming a weekday, month, hour or clock suffix (by stem), or
+ * a clock shape, is a time, another place phrase a place, the rest object.
+ * The clause before the adjuncts splits into subject and predicate.
+ * @param {string} sentence
+ * @returns {Array<Array<string>>|null} the words of each slot, or null without an adjunct
+ */
+function promptTextStatement(sentence) {
+  if (containsCjk(sentence) || formalGrammar().natural.some((natural) => natural.language === detectLanguage(sentence) && natural.verbFinal)) return null;
+  const timePrepositions = factualQaSurfaces(FACTUAL_QA_ROLE_TIME_PREPOSITION);
+  const placePrepositions = factualQaSurfaces(FACTUAL_QA_ROLE_PLACE_PREPOSITION);
+  const temporal = FACTUAL_QA_TEMPORAL_ROLES.flatMap((role) => factualQaSurfaces(role));
+  const words = [];
+  for (const raw of sentence.split(/\s+/u)) {
+    const text = raw.replace(/^[^\p{L}\p{N}\p{M}]+|[^\p{L}\p{N}\p{M}]+$/gu, "");
+    const trailing = raw.slice(raw.replace(/[^\p{L}\p{N}\p{M}]+$/u, "").length);
+    if (text) words.push({ text, key: normalizePrompt(text), closes: /[,;，；]/u.test(trailing) });
+  }
+  const core = [];
+  const phrases = [];
+  let open = null;
+  for (const word of words) {
+    const place = placePrepositions.includes(word.key);
+    if (place || timePrepositions.includes(word.key)) {
+      if (open) phrases.push(open);
+      open = { place, words: [word] };
+    } else if (open) open.words.push(word);
+    else core.push(word);
+    if (word.closes && open) {
+      phrases.push(open);
+      open = null;
+    }
+  }
+  if (open) phrases.push(open);
+  if (phrases.length === 0) return null;
+  const functionWords = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD);
+  const contentAfter = (from) => {
+    for (let at = from; at < core.length; at += 1) if (!functionWords.includes(core[at].key)) return at + 1;
+    return core.length;
+  };
+  const subjectEnd = core.length === 2 ? 1 : contentAfter(0);
+  const predicateEnd = contentAfter(subjectEnd);
+  const text = (list) => list.map((word) => word.text);
+  const slots = [text(core.slice(0, subjectEnd)), text(core.slice(subjectEnd, predicateEnd)), text(core.slice(predicateEnd)), [], []];
+  for (const phrase of phrases) {
+    const body = phrase.words.slice(1);
+    const timed = body.some((word) => /^\d+:\d+$/u.test(word.text)
+      || temporal.some((surface) => promptTextTokensMatch(word.key, surface)));
+    const slot = body.length === 0 ? 2 : timed ? 3 : phrase.place ? 4 : 2;
+    slots[slot].push(...text(phrase.words));
+  }
+  return slots;
+}
+
+/**
+ * The answer over a projected statement (twin of `statement_answer`): the
+ * asked slots first when each tells a content word the question does not
+ * already say, the quote, then the statement.
+ * @param {Array<Array<string>>|null} slots
+ * @param {string} quote
+ * @param {[string, Array<string>]} question the normalized question and its content units
+ * @param {string} language
+ * @returns {{content: string, evidence: Array<string>}}
+ */
+function promptTextStatementAnswer(slots, quote, [question, units], language) {
+  if (!slots) return { content: quote, evidence: [] };
+  const functionWords = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD);
+  const tells = (index) => slots[index].some((word) => {
+    const key = normalizePrompt(word);
+    return !functionWords.includes(key) && !units.some((unit) => promptTextTokensMatch(key, unit));
+  });
+  const render = (indices) => indices.filter((index) => slots[index].length > 0)
+    .map((index) => factualQaRender(`prompt_text_slot_${FACTUAL_QA_SLOTS[index][0]}`, language, { value: slots[index].join(" ") }))
+    .join("; ");
+  const asked = FACTUAL_QA_SLOTS.map(([, role], index) => (role && factualQaSurfaces(role)
+    .some((surface) => factualQaLocate(question, surface) >= 0) ? index : -1)).filter((index) => index >= 0);
+  const fields = FACTUAL_QA_SLOTS.map(([name], index) => (slots[index].length > 0 ? `${name}=${slots[index].join(" ")}` : ""))
+    .filter(Boolean).join(";");
+  const evidence = [`prompt_text:statement:${fields}`];
+  const lines = [];
+  if (asked.length > 0 && asked.every(tells)) {
+    evidence.push(`prompt_text:asked:${asked.map((index) => FACTUAL_QA_SLOTS[index][0]).join(",")}`);
+    lines.push(factualQaRender("prompt_text_slot_answer", language, { slots: render(asked) }));
+  }
+  lines.push(quote, factualQaRender("prompt_text_statement", language, { statement: render([0, 1, 2, 3, 4]) }));
+  return { content: lines.join("\n"), evidence };
 }
 
 // Issue #1172 R3: the live answer, twin of
@@ -573,4 +676,99 @@ function factLiveSummary(query, subjectQid, subjectLabel, claim, valueLabel) {
   const relation = factRelationLabel(query.relation, query.language), own = `fact_live_answer_${query.relation}`;
   const summary = factualQaRender(MULTILINGUAL_ANSWERS[own] ? own : "fact_live_answer", query.language, { relation, subject: subjectLabel, value: valueLabel, reference: source });
   return { summary, source };
+}
+
+// Issue #1172 R8, browser twin of `explanation_concept` and
+// `try_explanation_research` (rust/src/solver_handlers/fact_live_answer.rs)
+// over `research_page_senses` (rust/src/concept_lookup.rs, the issue #1163 R4
+// retrieve-and-formalize path). The concept is what follows a
+// `capability_act_explain` surface opening the prompt. Web search is the
+// DuckDuckGo Instant Answer boundary (`searchDuckDuckGo`, Rust's CORS-readable
+// fallback); each result page is captured with its SHA-256, remembered with
+// its trust score and read most-trusted first by the registry row whose
+// extractor is the generic page formalizer: every paragraph or list item that
+// mentions the concept is a statement, quoted with its URL and digest through
+// the `explanation_research_answer` / `explanation_research_row` templates.
+const EXPLANATION_ROLE_CUE = "capability_act_explain";
+const EXPLANATION_PAGE_EXTRACTOR = "generic_page_v1";
+const EXPLANATION_SEARCH_PROVIDER = "duckduckgo";
+const EXPLANATION_STATEMENT_KINDS = ["paragraph", "list_item"];
+let EXPLANATION_PAGE_MEMORY = null;
+
+/**
+ * The concept an explanation request asks about, or null.
+ * @param {string} prompt
+ * @returns {string|null}
+ */
+function explanationConcept(prompt) {
+  const normalized = normalizePrompt(prompt);
+  if (!normalized || containsCjk(normalized)) return null;
+  const cue = factualQaSurfaces(EXPLANATION_ROLE_CUE).find((surface) => factualQaLocate(normalized, surface) === 0);
+  return cue ? factLiveContentWords(normalized.slice(cue.length), []) : null;
+}
+
+/**
+ * Retrieve and formalize pages about `subject`: `{sourceId, senses}`, or null
+ * when no registry row uses the generic page formalizer or the search could
+ * not be read.
+ * @param {string} subject
+ * @param {{maxPagesPerService: number, maxItems: number}} bounds
+ * @returns {Promise<{sourceId: string, senses: Array<object>}|null>}
+ */
+async function researchPageSenses(subject, bounds) {
+  const record = sourceWalkRegistry().find((row) => row.extractor === EXPLANATION_PAGE_EXTRACTOR);
+  if (!record || webSearchIsDisabled(EXPLANATION_SEARCH_PROVIDER)) return null;
+  const limit = webSearchProviderLimit();
+  const search = await searchDuckDuckGo(subject, "", limit);
+  if (!search || !search.ok) return null;
+  if (!EXPLANATION_PAGE_MEMORY) EXPLANATION_PAGE_MEMORY = createFormalizedPageStore();
+  const store = EXPLANATION_PAGE_MEMORY;
+  const pages = [];
+  for (const result of search.results.slice(0, Math.min(bounds.maxPagesPerService, limit))) {
+    // eslint-disable-next-line no-await-in-loop -- capture order is the fused order.
+    const capture = await sourceWalkFetchCapture(result.url);
+    if (!capture.ok) continue;
+    const key = pageKey(capture.url, capture.sha256);
+    if (!store.pages.has(key)) {
+      const trust = pageTrustScore(pageTrustFeatures(capture.url, capture.text, store, []));
+      formalizedPageStoreInsert(store, formalizedPageFromCapture(capture, subject, pages.length + 1, trust, null));
+    }
+    pages.push({ capture, trust: store.pages.get(key).trust });
+  }
+  pages.sort((left, right) => right.trust - left.trust);
+  const needle = subject.trim().toLowerCase();
+  const senses = [];
+  for (const { capture } of pages) {
+    const room = bounds.maxItems - senses.length;
+    if (!needle || room <= 0) continue;
+    const statements = formalizePage(capture.text, null, null).blocks
+      .filter((block) => EXPLANATION_STATEMENT_KINDS.includes(block.kind) && block.text.toLowerCase().includes(needle))
+      .slice(0, room);
+    for (const block of statements) senses.push({ gloss: block.text, sourceUrl: capture.url, sha256: capture.sha256 });
+  }
+  return { sourceId: record.id, senses };
+}
+
+/**
+ * Answer an explanation request from retrieved pages (intent
+ * `explanation_research`), or null so the dispatch keeps looking.
+ * @param {string} prompt
+ * @returns {Promise<object|null>}
+ */
+async function tryExplanationResearch(prompt) {
+  const concept = explanationConcept(prompt);
+  if (!concept) return null;
+  const language = detectLanguage(prompt);
+  const researched = await researchPageSenses(concept, CONCEPT_LOOKUP_BOUNDS);
+  if (!researched || researched.senses.length === 0) return null;
+  const solverEvents = [solverEvent("explanation_research:concept", concept), solverEvent("explanation_research:source", researched.sourceId)];
+  const rows = researched.senses.map((sense) => {
+    solverEvents.push(solverEvent("source", sense.sourceUrl));
+    return factualQaRender("explanation_research_row", language, { statement: sense.gloss, url: sense.sourceUrl, sha256: sense.sha256 });
+  });
+  const content = factualQaRender("explanation_research_answer", language, { concept, rows: rows.join("\n") });
+  if (!content) return null;
+  const evidence = [`explanation_research:concept:${concept}`, `explanation_research:source:${researched.sourceId}`]
+    .concat(researched.senses.map((sense) => `source:${sense.sourceUrl}`));
+  return { intent: "explanation_research", content, confidence: 0.8, evidence, trace: evidence.slice(), solverEvents };
 }

@@ -28,14 +28,15 @@
 // The JavaScript root has no twin of `research_coding_skill_gap`
 // (rust/src/coding_research_learning.rs), so `cachedOrResearch` takes the
 // research round as an injected function. Rust's solver reads the cache
-// through `cached_write_program` in its `WriteProgram` branch; its twin
-// `cachedWriteProgram` is here, but no JavaScript root carries that catalog
-// `write_program` recipe arm yet (js/agentic/general_execution.mjs ports only
-// the program-contract arm, and the browser worker has no cache file), so no
-// JavaScript solver path calls either function yet. The browser worker's
-// catalog arm does log the native miss: js/worker/formal_ai_worker_solver_events.js
-// appends `procedure_cache outcome=miss ... research_missing=...` for an
-// unmodified request, reading the same `miss_route` rows as `missResearchMissing`.
+// through `cached_write_program` in its `WriteProgram` branch; on the
+// JavaScript server js/server/procedure-cache.mjs reads the same cache file
+// (the `FORMAL_AI_PROCEDURE_CACHE` override, else `DEFAULT_CACHE_FILE`) after
+// every worker solve and calls `cachedWriteProgram`, so a verified row answers
+// there as it does natively. The browser worker reads no file: its catalog arm
+// logs the native miss (js/worker/formal_ai_worker_solver_events.js appends
+// `procedure_cache outcome=miss ... research_missing=...` for an unmodified
+// request, reading the same `miss_route` rows as `missResearchMissing`), which
+// is what the committed, row-less cache produces.
 
 import { cached, readText as hostReadText, realm } from '../host.mjs';
 import { pushLinoField } from './links_format.mjs';

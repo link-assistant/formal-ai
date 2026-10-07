@@ -51,9 +51,17 @@ export function attach(recipe) {
   recipe.supporting_files.push({ path, source: render(recipe) });
 }
 
-/** Mirrors `fn render`: checkout, then the recipe's commands in order. */
+/** Mirrors `fn render`: the workflow over the generation-time version set. */
 export function render(recipe) {
-  const versions = forGeneration();
+  return renderWith(recipe, forGeneration());
+}
+
+/**
+ * Mirrors `fn render_with`: checkout, then the recipe's commands in order,
+ * every pin filled from the injected `versions` (R1168-8), so a parity lane
+ * renders the same workflow in both runtimes from one offline version set.
+ */
+export function renderWith(recipe, versions) {
   let out = '';
   for (const note of provenanceNote(versions)) out += `# ${note}\n`;
   out += fill('workflow_template', [['{path}', recipe.path]]);

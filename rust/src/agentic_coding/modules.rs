@@ -87,6 +87,7 @@ pub use associative_learning::{
     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
 };
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
+pub use ci_workflow::render_with as render_ci_workflow;
 pub use code_rewrite_learning::{
     is_code_rewrite_learning_task, CODE_REWRITE_LEARNING_PATH, CODE_REWRITE_LEARNING_TASK,
 };

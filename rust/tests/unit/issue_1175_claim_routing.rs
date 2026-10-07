@@ -37,6 +37,20 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 vec!["shell_command_shape", "semantic_shell_task"],
             ),
             ("repository_lineage", "", vec!["repository_subject"]),
+            ("page_query_text", "tryPageQueryText", vec!["supplied_page"]),
+            (
+                "javascript_execution",
+                "tryJavaScriptExecution",
+                vec!["javascript_program"],
+            ),
+            (
+                "incompatible_units",
+                "tryIncompatibleUnits",
+                vec!["incompatible_unit_pair"],
+            ),
+            ("http_fetch", "", vec!["fetch_url"]),
+            ("url_navigate", "", vec!["navigation_url"]),
+            ("calendar_create_event", "", vec!["calendar_date_signal"]),
         ]
     );
 }
@@ -84,6 +98,15 @@ fn a_surface_word_alone_is_not_admitted() {
             "Write a regex for a US ZIP code with an optional 4-digit extension",
         ),
         ("repository_lineage", "Which issue introduced this feature?"),
+        (
+            "page_query_text",
+            "What command builds the jar on this page?",
+        ),
+        ("javascript_execution", "Run this JavaScript"),
+        ("incompatible_units", "What does a unit test check?"),
+        ("http_fetch", "Fetch me a summary of the news"),
+        ("url_navigate", "Navigate the menu to the settings screen"),
+        ("calendar_create_event", "Explain how a calendar works."),
     ] {
         assert!(
             !claim_admitted(handler, prompt, &prompt.to_lowercase()),
@@ -106,6 +129,21 @@ fn the_structural_evidence_admits() {
             "Why does the self-development status fail?",
         ),
         ("repository_lineage", "What does `evaluate_calculation` do?"),
+        (
+            "page_query_text",
+            "What command builds the jar?\nRun kotlinc hello.kt -include-runtime -d hello.jar.",
+        ),
+        (
+            "javascript_execution",
+            "Run this JavaScript: console.log(1 + 2)",
+        ),
+        ("incompatible_units", "How many meters are in a kilobyte?"),
+        ("http_fetch", "Fetch https://example.com"),
+        ("url_navigate", "Navigate to github.com"),
+        (
+            "calendar_create_event",
+            "Schedule a meeting with Anna tomorrow at 3pm",
+        ),
     ] {
         assert!(
             claim_admitted(handler, prompt, &prompt.to_lowercase()),

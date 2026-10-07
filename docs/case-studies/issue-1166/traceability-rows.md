@@ -9,8 +9,8 @@ this slice does not run).
 | --- | --- | --- |
 | R1166-1 | request parses into an obligation graph | confirmed by `canonical_yields_unique_output_literal` and kin in `rust/tests/unit/issue_1166_obligation_routing.rs` |
 | R1166-2 | same quoted literal → one node | confirmed by `two_identical_output_clauses_produce_one_node` |
-| R1166-3 | executor plans from obligation nodes | not yet confirmed — module exposes `obligations_of_kind`/`gap_report`; the `ci_workflow.rs` and `program_contract.rs` call-site rewrites land with the wiring commit |
-| R1166-4 | undischargeable nodes reported | confirmed at module level (`gap_report`); executor emission pending the same wiring |
+| R1166-3 | executor plans from obligation nodes | wired 2026-10-07 — `ci_workflow::requested_in` reads `request_demands`, `program_contract::explicit_stdout` reads `bound_output_literals`, in both roots (JS verified locally, Rust awaiting CI) |
+| R1166-4 | undischargeable nodes reported | wired 2026-10-07 — `obligation_gap_lines` (gap report plus unbound output literals) emitted as `obligation_gap` events by the program-contract and catalog `write_program` executors; JS carries them as `obligation_gaps`; the browser worker's catalog arm records the same events through its port (JS and worker verified locally, Rust awaiting CI) |
 | R1166-5 | underivable clauses never discarded | confirmed by `unknown_requirement_clause_yields_underivable_node_not_panic` |
 | R1166-6 | translated bodies yield the same graph | confirmed for the fixture family (`kotlin_issue_ru_yields_same_obligation_count_as_en`, `kotlin_issue_hi_zh_es_yield_same_graph_modulo_language_tag`) |
 | R1166-7 | paraphrase yields an equivalent graph | confirmed by `paraphrase_en_yields_same_obligation_count_as_canonical_en` |

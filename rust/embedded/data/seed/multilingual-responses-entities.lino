@@ -263,6 +263,146 @@ multilingual_responses
     intent prompt_text_gap
     language es
     text "El texto dado no lo dice: ninguna de sus frases menciona {focus}."
+  response response_prompt_text_slot_answer_en
+    intent prompt_text_slot_answer
+    language en
+    text "From the text — {slots}."
+  response response_prompt_text_slot_answer_ru
+    intent prompt_text_slot_answer
+    language ru
+    text "По тексту — {slots}."
+  response response_prompt_text_slot_answer_hi
+    intent prompt_text_slot_answer
+    language hi
+    text "पाठ के अनुसार — {slots}।"
+  response response_prompt_text_slot_answer_zh
+    intent prompt_text_slot_answer
+    language zh
+    text "根据文本——{slots}。"
+  response response_prompt_text_slot_answer_es
+    intent prompt_text_slot_answer
+    language es
+    text "Según el texto — {slots}."
+  response response_prompt_text_statement_en
+    intent prompt_text_statement
+    language en
+    text "As a statement: {statement}"
+  response response_prompt_text_statement_ru
+    intent prompt_text_statement
+    language ru
+    text "Как утверждение: {statement}"
+  response response_prompt_text_statement_hi
+    intent prompt_text_statement
+    language hi
+    text "कथन के रूप में: {statement}"
+  response response_prompt_text_statement_zh
+    intent prompt_text_statement
+    language zh
+    text "作为陈述：{statement}"
+  response response_prompt_text_statement_es
+    intent prompt_text_statement
+    language es
+    text "Como enunciado: {statement}"
+  response response_prompt_text_slot_subject_en
+    intent prompt_text_slot_subject
+    language en
+    text "subject «{value}»"
+  response response_prompt_text_slot_subject_ru
+    intent prompt_text_slot_subject
+    language ru
+    text "субъект «{value}»"
+  response response_prompt_text_slot_subject_hi
+    intent prompt_text_slot_subject
+    language hi
+    text "कर्ता «{value}»"
+  response response_prompt_text_slot_subject_zh
+    intent prompt_text_slot_subject
+    language zh
+    text "主语「{value}」"
+  response response_prompt_text_slot_subject_es
+    intent prompt_text_slot_subject
+    language es
+    text "sujeto «{value}»"
+  response response_prompt_text_slot_predicate_en
+    intent prompt_text_slot_predicate
+    language en
+    text "predicate «{value}»"
+  response response_prompt_text_slot_predicate_ru
+    intent prompt_text_slot_predicate
+    language ru
+    text "предикат «{value}»"
+  response response_prompt_text_slot_predicate_hi
+    intent prompt_text_slot_predicate
+    language hi
+    text "विधेय «{value}»"
+  response response_prompt_text_slot_predicate_zh
+    intent prompt_text_slot_predicate
+    language zh
+    text "谓语「{value}」"
+  response response_prompt_text_slot_predicate_es
+    intent prompt_text_slot_predicate
+    language es
+    text "predicado «{value}»"
+  response response_prompt_text_slot_object_en
+    intent prompt_text_slot_object
+    language en
+    text "object «{value}»"
+  response response_prompt_text_slot_object_ru
+    intent prompt_text_slot_object
+    language ru
+    text "объект «{value}»"
+  response response_prompt_text_slot_object_hi
+    intent prompt_text_slot_object
+    language hi
+    text "कर्म «{value}»"
+  response response_prompt_text_slot_object_zh
+    intent prompt_text_slot_object
+    language zh
+    text "宾语「{value}」"
+  response response_prompt_text_slot_object_es
+    intent prompt_text_slot_object
+    language es
+    text "objeto «{value}»"
+  response response_prompt_text_slot_time_en
+    intent prompt_text_slot_time
+    language en
+    text "time «{value}»"
+  response response_prompt_text_slot_time_ru
+    intent prompt_text_slot_time
+    language ru
+    text "время «{value}»"
+  response response_prompt_text_slot_time_hi
+    intent prompt_text_slot_time
+    language hi
+    text "समय «{value}»"
+  response response_prompt_text_slot_time_zh
+    intent prompt_text_slot_time
+    language zh
+    text "时间「{value}」"
+  response response_prompt_text_slot_time_es
+    intent prompt_text_slot_time
+    language es
+    text "tiempo «{value}»"
+  response response_prompt_text_slot_place_en
+    intent prompt_text_slot_place
+    language en
+    text "place «{value}»"
+  response response_prompt_text_slot_place_ru
+    intent prompt_text_slot_place
+    language ru
+    text "место «{value}»"
+  response response_prompt_text_slot_place_hi
+    intent prompt_text_slot_place
+    language hi
+    text "स्थान «{value}»"
+  response response_prompt_text_slot_place_zh
+    intent prompt_text_slot_place
+    language zh
+    text "地点「{value}」"
+  response response_prompt_text_slot_place_es
+    intent prompt_text_slot_place
+    language es
+    text "lugar «{value}»"
   response response_fact_live_answer_en
     intent fact_live_answer
     language en

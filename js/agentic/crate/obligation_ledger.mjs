@@ -17,7 +17,7 @@ import { cached, readText } from '../host.mjs';
 import { composeGeneralChangePlan } from '../general_planner.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
 import { wordsForRole } from '../write_lexicon.mjs';
-import { isAlphanumeric, isWhitespace, lines, trim, trimEnd, utf8Len } from '../write_str.mjs';
+import { isAlphanumeric, isWhitespace, lines, trim, trimEnd, trimEndMatches, utf8Len } from '../write_str.mjs';
 import { debugOption, stableId } from './engine_stable_id.mjs';
 import { evidenceNames, reportsSuccess } from './execution_evidence.mjs';
 import { detect } from './language.mjs';
@@ -54,9 +54,15 @@ export function clausesWithSpans(request) {
   return out;
 }
 
+/**
+ * Mirrors `fn opens_a_clause`: the line break is read before trimming, so a
+ * cue opening a new line cuts even when the previous line ends without a
+ * sentence mark (issue #1166).
+ */
 function opensAClause(request, index) {
-  const before = trimEnd(request.slice(0, index));
-  return before === '' || ['.', '!', '?', ';', ':', '\n', '。', '！', '？', '।', '॥'].some((mark) => before.endsWith(mark));
+  const lineEnd = trimEndMatches(request.slice(0, index), (character) => [' ', '\t', '\r'].includes(character));
+  const before = trimEnd(lineEnd);
+  return before === '' || lineEnd.endsWith('\n') || ['.', '!', '?', ';', ':', '。', '！', '？', '।', '॥'].some((mark) => before.endsWith(mark));
 }
 
 function isUnspacedScript(character) {

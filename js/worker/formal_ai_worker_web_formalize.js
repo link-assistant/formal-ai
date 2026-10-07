@@ -965,6 +965,8 @@ function pageSplitSuppliedPage(prompt) {
 function tryPageQueryText(prompt) {
   const split = pageSplitSuppliedPage(prompt);
   if (split === null) return null;
+  const decomposed = tryCodeExamplePageQuery(split); // #1164 R1164-11
+  if (decomposed !== null) return decomposed;
   const network = formalizePage(split.page, null, null);
   // The worker has no synchronous SHA-256, so a supplied page is keyed by the
   // worker's stable content id, as formalization_support keys a document.

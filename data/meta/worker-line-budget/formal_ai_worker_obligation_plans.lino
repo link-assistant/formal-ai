@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_obligation_plans.js"
+  ceiling 486
+  rationale "Issue #1166 R1166-4: the plan reader derive_expectation consults, the browser twin of the parts of rust/src/agentic_coding/general_planner.rs, write_request.rs, note_composition.rs and file_path_shape.rs that decide whether a clause composes a GeneralChangePlan and in which mode (literal file, command output, repository work item). Only the mode is computed, never the plan, because the obligation expectation depends on nothing else; every cue is a seed role. Held to the agentic root (composeGeneralChangePlan) by rust/tests/web/issue-1166-worker-obligation-gaps.test.mjs."

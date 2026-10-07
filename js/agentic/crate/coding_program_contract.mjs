@@ -12,6 +12,7 @@ import { lines } from '../write_str.mjs';
 import { programLanguageBySlug } from './coding_catalog.mjs';
 import { normalizePrompt } from './engine.mjs';
 import { requested } from './implementation_language.mjs';
+import { boundOutputLiterals, obligationGapLines } from './intent_formalization_obligations.mjs';
 import { quotedSegmentSpans } from './normal_markov.mjs';
 import { fillWorkflowVersions, forGeneration } from './version_resolution.mjs';
 
@@ -43,18 +44,12 @@ export function textOutsideQuotedSegments(prompt) {
   return outside + prompt.slice(cursor);
 }
 
-/** Mirrors `fn explicit_stdout`. */
+/**
+ * Mirrors `fn explicit_stdout`: the output operands the obligation graph's
+ * clauses bind (`boundOutputLiterals`), each once, in request order.
+ */
 export function explicitStdout(prompt) {
-  let previousEnd = 0;
-  const outputs = [];
-  for (const literal of quotedSegmentSpans(prompt)) {
-    const prefix = prompt.slice(previousEnd, literal.start);
-    previousEnd = literal.end;
-    const clause = prefix.split(/[\n.;。]/u).pop();
-    if (meaningEvidencedIn('print_stdout', clause.toLowerCase()) && !outputs.includes(literal.text)) {
-      outputs.push(literal.text);
-    }
-  }
+  const outputs = boundOutputLiterals(prompt);
   return outputs.length ? outputs.join('\n') : null;
 }
 
@@ -77,6 +72,9 @@ function programLanguage(prompt) {
  * links, thinking steps and Links Notation trace are not rebuilt (native-only:
  * rust/src/solver_handlers/mod.rs finalize_simple; the JS host has no
  * EventLog), only `intent`, `answer`, `confidence` and `execution_recipe`.
+ * The `obligation_gap` events the native run records
+ * (`intent_formalization::record_obligation_gaps`, R1166-4) are carried as
+ * `obligation_gaps`, one `obligation_gap_lines` line each, in order.
  * @param {string} prompt
  */
 export function programContractAnswer(prompt) {
@@ -117,6 +115,7 @@ export function programContractAnswer(prompt) {
     thinking_steps: [],
     links_notation: '',
     execution_recipe: { language, source, path, supporting_files: [verifier], commands },
+    obligation_gaps: obligationGapLines(prompt),
   };
 }
 

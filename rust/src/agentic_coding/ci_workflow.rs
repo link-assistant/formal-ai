@@ -51,15 +51,30 @@ pub(super) fn attach(recipe: &mut ExecutionRecipe) {
         .push(ExecutionRecipeFile { path, source });
 }
 
-/// The workflow text: checkout, then the recipe's commands in order.
+/// The workflow text over the generation-time version set.
 ///
 /// Every third-party pin the workflow carries -- the `uses:` refs and the
 /// toolchain versions -- is resolved at generation time rather than shipped
 /// from the template, and wherever a pin came from something other than a
 /// live lookup, the workflow says so in a comment (issue #1168).
-#[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn render(recipe: &ExecutionRecipe) -> String {
-    let versions = crate::version_resolution::VersionSet::for_generation();
+    render_with(
+        recipe,
+        &crate::version_resolution::VersionSet::for_generation(),
+    )
+}
+
+/// The workflow text: checkout, then the recipe's commands in order.
+///
+/// Every pin is filled from the injected `versions`, so a parity lane renders
+/// the same workflow in both runtimes from one offline version set (issue
+/// #1168 R1168-8); `render` injects the generation-time set.
+#[must_use]
+#[allow(clippy::literal_string_with_formatting_args)]
+pub fn render_with(
+    recipe: &ExecutionRecipe,
+    versions: &crate::version_resolution::VersionSet,
+) -> String {
     let mut out = String::new();
     for note in versions.provenance_note() {
         out.push_str("# ");
@@ -72,11 +87,11 @@ pub(super) fn render(recipe: &ExecutionRecipe) -> String {
     ));
     // Filling versions trims the fragment's final newline; each fragment is a
     // whole line block, so it is restored before the next one is appended.
-    out = crate::version_resolution::fill_workflow_versions(&out, &versions);
+    out = crate::version_resolution::fill_workflow_versions(&out, versions);
     out.push('\n');
     if let Some(setup) = crate::coding::program_contract::runtime_steps(&recipe.language) {
         out.push_str(&crate::version_resolution::fill_workflow_versions(
-            &setup, &versions,
+            &setup, versions,
         ));
         out.push('\n');
     }

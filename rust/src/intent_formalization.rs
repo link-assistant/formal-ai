@@ -28,8 +28,9 @@ mod prompt_relevants;
 mod requirements;
 mod write_program_request;
 pub use obligations::{
-    OBLIGATION_GAP_KIND, ObligationGraph, ObligationKind, coreference_pass, formalize_request,
-    record_obligation_gaps, request_carries_work_obligations, request_demands,
+    OBLIGATION_GAP_KIND, ObligationGraph, ObligationKind, bound_output_literals, coreference_pass,
+    formalize_request, obligation_gap_lines, record_obligation_gaps,
+    request_carries_work_obligations, request_demands,
 };
 use prompt_relevants::append_prompt_relevants;
 pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};

@@ -137,6 +137,8 @@ roles
     kind predicate
   causal_interrogative
     kind meaning
+  ci_badge_obligation
+    kind meaning
   ci_workflow_request
     kind meaning
   circular_joke_phrase
@@ -149,6 +151,8 @@ roles
     kind meaning
   code_method_noun
     kind predicate
+  code_style_obligation
+    kind meaning
   coding_artifact_kind
     kind predicate
   coding_bound_cue
@@ -347,6 +351,8 @@ roles
     kind predicate
   file_leading_line_constraint_lead
     kind predicate
+  file_naming_obligation
+    kind meaning
   file_read_action_cue
     kind predicate
   file_write_action_cue
@@ -536,6 +542,8 @@ roles
   ordering_relation
     kind predicate
   output_display_request
+    kind meaning
+  output_obligation_verb
     kind meaning
   part_whole_relation
     kind predicate
@@ -763,9 +771,21 @@ roles
     kind meaning
   software_step_granularity
     kind meaning
+  statement_clock_suffix
+    kind meaning
   statement_function_word
     kind meaning
   statement_negation_cue
+    kind meaning
+  statement_place_preposition
+    kind meaning
+  statement_place_question
+    kind meaning
+  statement_subject_question
+    kind meaning
+  statement_time_preposition
+    kind meaning
+  statement_time_question
     kind meaning
   statistics_operation
     kind meaning

@@ -175,8 +175,24 @@ const contentLength = (event) => (event.content ?? '').length;
  * @param {object} rules
  */
 export function importIssuesAndPulls(files, since, rules) {
+  return importIssuesAndPullsWithWatermark(files, since, rules).events;
+}
+
+/**
+ * Mirrors `import_issues_and_pulls_inner`: the events plus the newest
+ * `updatedAt` that passed the filter (the incremental watermark).
+ * @param {Array<{name: string, text: string}>} files
+ * @param {string|null} since
+ * @param {object} rules
+ * @returns {{events: Array<object>, watermark: string|null}}
+ */
+export function importIssuesAndPullsWithWatermark(files, since, rules) {
   const byId = new Map();
+  let watermark = null;
   const record = (imported) => {
+    if (imported.updatedAt && (watermark === null || imported.updatedAt > watermark)) {
+      watermark = imported.updatedAt;
+    }
     const existing = byId.get(imported.event.id);
     if (!existing || contentLength(imported.event) > contentLength(existing)) {
       byId.set(imported.event.id, imported.event);
@@ -210,7 +226,7 @@ export function importIssuesAndPulls(files, since, rules) {
     const items = Array.isArray(root) ? root : [];
     items.forEach((item, index) => record(formalizeReview(item, classified.number, batch[0], batch[1], index, rules)));
   }
-  return [...byId.keys()].sort().map((id) => byId.get(id));
+  return { events: [...byId.keys()].sort().map((id) => byId.get(id)), watermark };
 }
 
 /** Mirrors `failing_step_lines`. */
