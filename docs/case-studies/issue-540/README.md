@@ -166,3 +166,38 @@ Automated tests cover the policy directly:
   remain traceable.
 - `tests/unit/issue_540_agent_cli.rs` drives the Formal AI Agent CLI recipe to a
   real write/read/final loop and pins its session and gap analysis byte-for-byte.
+
+### The JavaScript server twin
+
+The JavaScript server (`js/server/`) dreams the same way, and
+`rust/tests/web/` pins it case for case against the Rust suites:
+
+- `server-dreaming-learning.test.mjs` pins the learning loop: multilingual
+  requirement cues, replay-verified coverage, candidate pass/fail, pattern
+  mining, coverage revocation, trial synthesis, and the reclaimable tiers.
+- `server-dreaming-runtime.test.mjs` pins the default-on runtime: request
+  guard, idle gate, mid-run cancellation, worker thread, recipe sidecar,
+  learning-cycle record.
+- `server-anticipation.test.mjs` pins idle anticipation: Markov predictions,
+  expansion, probes, the adoption frontier, consent-gated prelearning,
+  prediction hits, and the ledger.
+- `server-learning-cycle.test.mjs` pins the proposal-only learning cycle. A
+  fixture frontier renders to `rust/tests/fixtures/learning-cycle/record.lino`,
+  which the Rust suite pins too.
+
+What the JavaScript twin still lacks, and why:
+
+- Consented source prelearning is not ported. The Rust half searches the web
+  through the `web-capture` and `web-search` crates. With
+  `FORMAL_AI_LIVE_API` enabled, the JavaScript run records each attempt as
+  `fetch_failed: source_research_unavailable` and fetches nothing. The
+  consent gate and everything downstream of a fetched source are ported and
+  tested with a fixture research function.
+- Its offline probes solve with the browser worker, which has no compute
+  budget. A text-transformation probe takes about 30 seconds and can classify
+  differently from the native offline solver. The anticipation suite
+  therefore classifies the scripted history with a fixture classifier, and
+  runs the real solver end to end only on arithmetic probes.
+- The Electron and CLI consent prompts belong to the native surfaces. The
+  JavaScript server reads and honours the persisted
+  `.auto-free-space` choice.
