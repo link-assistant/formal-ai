@@ -394,3 +394,11 @@ fn prior_software_project_dialogue(log: &EventLog) -> Option<(SoftwareProjectMea
     let meaning = SoftwareProjectMeaning::from_prompt(prior_prompt, &normalized)?;
     Some((meaning, approved))
 }
+
+/// Whether the earlier reply formalized a software project request.
+///
+/// The `prior_software_project` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn continues_software_project(log: &EventLog) -> bool {
+    prior_software_project_dialogue(log).is_some()
+}

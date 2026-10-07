@@ -210,7 +210,7 @@ function howItWorksFromHistory(history) {
     intent: "meta_explanation",
     content: answerFor("how_it_works_no_context", "en"),
     confidence: 0.5,
-    evidence: ["response:meta_explanation"],
+    evidence: ["how_it_works:refusal:no subject and no prior reply", "response:meta_explanation"],
   };
 }
 

@@ -149,7 +149,7 @@ pub struct ConceptQuery {
 /// Patterns come from `data/seed/prompt-patterns.lino` (English, Russian,
 /// Hindi, Chinese prefixes, suffixes, and context delimiters).
 pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
-    let trimmed = prompt.trim();
+    let trimmed = crate::capability_routing::without_answer_shape_directive(prompt);
     let trimmed = trimmed
         .trim_end_matches(['?', '。', '.', '!', '!', ',', ',', ';', ':'])
         .trim();

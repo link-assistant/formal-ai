@@ -406,6 +406,15 @@ fn numeric_list_history_context(history: &[ConversationTurn]) -> InheritedCoding
     inherited
 }
 
+/// Whether an earlier turn established the list, language or code request.
+///
+/// The `prior_numeric_list` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn continues_numeric_list(history: &[ConversationTurn]) -> bool {
+    let inherited = numeric_list_history_context(history);
+    inherited.language.is_some() || inherited.code_requested || !inherited.items.is_empty()
+}
+
 /// Recognize which numeric-list operation the prompt asks for, in priority
 /// order. Sort phrasings are checked first because "sort in reverse order"
 /// legitimately contains the bare `reverse` verb; the descending variant wins
@@ -795,6 +804,14 @@ fn parse_quoted_strings(prompt: &str) -> Vec<ParsedListItem> {
         }
     }
     items
+}
+
+/// Whether the request lists numbers, or at least two quoted values.
+///
+/// The `list_items` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_list_items(prompt: &str) -> bool {
+    !parse_numbers(prompt).is_empty() || parse_quoted_strings(prompt).len() >= 2
 }
 
 /// Extract every number token from the raw prompt, in order of appearance.

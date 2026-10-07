@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_claim_evidence.js"
+  ceiling 142
+  rationale "Issue #1175 R3 classes b, c and e (2026-10-08): the claim evidence the browser router reads for the dialogue follow-ups, the composers and the lookups, each kind bound to the reader the handler itself runs, plus the #1173 R3 answer-shape reading the concept reader uses. Twin of rust/src/capability_routing/claim_evidence.rs; it disappears with the JavaScript mirror when the Rust-to-WASM dispatcher replaces it."

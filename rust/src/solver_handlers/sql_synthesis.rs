@@ -178,6 +178,20 @@ fn table_name(tokens: &[&str]) -> Option<String> {
     None
 }
 
+/// Whether the request names the table a query is composed over.
+///
+/// The `table_reference` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_query_table(prompt: &str) -> bool {
+    let lowered = prompt.to_lowercase();
+    let tokens: Vec<&str> = lowered
+        .split_whitespace()
+        .map(|token| token.trim_matches(|c: char| !c.is_alphanumeric() && c != '_'))
+        .filter(|token| !token.is_empty())
+        .collect();
+    table_name(&tokens).is_some()
+}
+
 /// One WHERE filter composed from the request.
 struct Filter {
     clause: String,

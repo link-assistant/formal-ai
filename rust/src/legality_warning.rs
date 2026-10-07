@@ -62,6 +62,28 @@ pub struct LegalityPattern {
     /// The jurisdiction-variance note interpolated into the warning.
     pub jurisdiction_note: String,
     phrases: Vec<String>,
+    frames: Vec<LegalityFrame>,
+}
+
+/// One act-object `frame` of a pattern: an act surface whose object phrase
+/// names one of the frame's object nouns.
+#[derive(Debug, Clone)]
+struct LegalityFrame {
+    acts: Vec<String>,
+    objects: Vec<String>,
+}
+
+/// How many words after an act its object phrase may span.
+const FRAME_OBJECT_WINDOW: usize = 4;
+
+/// The values of every child of `record` named `name`.
+fn child_values(record: &crate::seed::parser::LinoNode, name: &str) -> Vec<String> {
+    record
+        .children
+        .iter()
+        .filter(|child| child.name == name && !child.id.is_empty())
+        .map(|child| child.id.clone())
+        .collect()
 }
 
 /// The framing an `exemption` record names (e.g. `security_research`).
@@ -112,12 +134,22 @@ pub fn legality_patterns() -> Vec<LegalityPattern> {
                 (!phrase.is_empty()).then_some(phrase)
             })
             .collect();
+        let frames = record
+            .children
+            .iter()
+            .filter(|child| child.name == "frame")
+            .map(|frame| LegalityFrame {
+                acts: child_values(frame, "act"),
+                objects: child_values(frame, "object"),
+            })
+            .collect();
         out.push(LegalityPattern {
             category,
             disposition,
             reason: record.find_child_value("reason").to_string(),
             jurisdiction_note: record.find_child_value("jurisdiction_note").to_string(),
             phrases,
+            frames,
         });
     }
     out
@@ -163,8 +195,43 @@ fn category_readable(category: &str) -> String {
     category.replace('_', " ")
 }
 
-/// The first pattern whose phrase occurs in the normalized or lowered
-/// prompt. File order is the precedence.
+/// Whether an act-object frame holds in `text`.
+///
+/// An act surface starts a word and one of the frame's object nouns (or its
+/// plural) is among the next [`FRAME_OBJECT_WINDOW`] words of the same clause.
+fn frame_matches(frame: &LegalityFrame, text: &str) -> bool {
+    frame.acts.iter().any(|act| {
+        text.match_indices(act.as_str()).any(|(start, _)| {
+            let starts_word = text[..start]
+                .chars()
+                .next_back()
+                .is_none_or(|before| !before.is_alphanumeric());
+            if !starts_word {
+                return false;
+            }
+            let rest = &text[start + act.len()..];
+            let clause = rest
+                .split(['.', ',', ';', ':', '!', '?', '\n'])
+                .next()
+                .unwrap_or_default();
+            clause
+                .split(|ch: char| !(ch.is_alphanumeric() || ch == '\''))
+                .filter(|word| !word.is_empty())
+                .take(FRAME_OBJECT_WINDOW)
+                .any(|word| {
+                    frame.objects.iter().any(|object| {
+                        word == object
+                            || word
+                                .strip_prefix(object.as_str())
+                                .is_some_and(|plural| plural == "s" || plural == "es")
+                    })
+                })
+        })
+    })
+}
+
+/// The first pattern whose phrase occurs, or whose act-object frame holds,
+/// in the normalized or lowered prompt. File order is the precedence.
 fn matched_pattern<'a>(
     prompt: &str,
     normalized: &str,
@@ -176,6 +243,10 @@ fn matched_pattern<'a>(
             .phrases
             .iter()
             .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()))
+            || pattern
+                .frames
+                .iter()
+                .any(|frame| frame_matches(frame, &lower) || frame_matches(frame, normalized))
     })
 }
 

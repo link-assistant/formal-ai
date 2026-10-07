@@ -62,6 +62,10 @@ function legalityCatalogue() {
           reason: guardChildValue(record, "reason"),
           jurisdictionNote: guardChildValue(record, "jurisdiction_note"),
           phrases: guardPhrases(record),
+          frames: (record.children || []).filter((child) => child.name === "frame").map((frame) => ({
+            acts: (frame.children || []).filter((child) => child.name === "act" && child.value).map((child) => String(child.value)),
+            objects: (frame.children || []).filter((child) => child.name === "object" && child.value).map((child) => String(child.value)),
+          })),
         });
       }
     } else if (root.name === "legality_exemptions") {
@@ -88,6 +92,33 @@ function guardPhraseMatches(phrases, normalized, lower) {
   return phrases.some((phrase) => normalized.includes(phrase) || lower.includes(phrase));
 }
 
+/** How many words after an act its object phrase may span (Rust `FRAME_OBJECT_WINDOW`). */
+const LEGALITY_FRAME_OBJECT_WINDOW = 4;
+
+/**
+ * Does an act-object frame hold: an act surface starting a word, then one of
+ * the frame's object nouns (or its plural) among the next few words of the
+ * same clause (Rust `frame_matches`).
+ * @param {{acts: string[], objects: string[]}} frame
+ * @param {string} text
+ * @returns {boolean}
+ */
+function legalityFrameMatches(frame, text) {
+  for (const act of frame.acts) {
+    let from = text.indexOf(act);
+    while (from !== -1) {
+      const before = from === 0 ? "" : text[from - 1];
+      if (from === 0 || !/[\p{L}\p{N}]/u.test(before)) {
+        const clause = text.slice(from + act.length).split(/[.,;:!?\n]/u)[0];
+        const words = clause.split(/[^\p{L}\p{N}']+/u).filter(Boolean).slice(0, LEGALITY_FRAME_OBJECT_WINDOW);
+        if (words.some((word) => frame.objects.some((object) => word === object || word === `${object}s` || word === `${object}es`))) return true;
+      }
+      from = text.indexOf(act, from + 1);
+    }
+  }
+  return false;
+}
+
 /**
  * Assess a request against the catalogue (Rust `legality_warning::assess`).
  * @param {string} prompt
@@ -99,7 +130,8 @@ function assessLegality(prompt, normalized) {
   const lower = String(prompt || "").toLowerCase();
   const text = String(normalized || "");
   const pattern = catalogue.patterns.find((candidate) =>
-    guardPhraseMatches(candidate.phrases, text, lower));
+    guardPhraseMatches(candidate.phrases, text, lower)
+    || (candidate.frames || []).some((frame) => legalityFrameMatches(frame, lower) || legalityFrameMatches(frame, text)));
   if (!pattern) return null;
   const exemption = catalogue.exemptions.find((candidate) =>
     guardPhraseMatches(candidate.phrases, text, lower));

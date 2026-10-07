@@ -129,6 +129,14 @@ fn extract_shell_command(prompt: &str) -> Option<String> {
         .map(str::to_owned)
 }
 
+/// Whether the request carries the command or loop it rewrites.
+///
+/// The `shell_command_operand` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_shell_command(prompt: &str) -> bool {
+    extract_shell_command(prompt).is_some() || extract_loop_command(prompt).is_some()
+}
+
 /// The command span of a line. A line such as *"Make this a single line loop:
 /// sleep 5m && cleanup -f"* carries a prose lead that ends at a colon; the
 /// lead is the request, not part of the command, so the command is the span

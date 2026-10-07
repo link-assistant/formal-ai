@@ -543,6 +543,15 @@ fn detect_document_format(lowercased: &str) -> Option<DocFormat> {
     None
 }
 
+/// Whether the request names a document format the plan renders.
+///
+/// The `document_format` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_document_format(normalized: &str) -> bool {
+    let lowercased = normalized.to_lowercase();
+    detect_document_format(&lowercased).is_some() || !format_mentions(&lowercased).is_empty()
+}
+
 /// Render the localized document-generation plan. The plan is translated for
 /// every supported language (Russian, Hindi, Chinese); any other detected
 /// language falls back to English, matching the localization scope of the

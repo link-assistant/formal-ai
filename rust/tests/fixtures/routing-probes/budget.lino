@@ -11,12 +11,15 @@
 #
 # The two ceilings are ratchets — they equal the number of probes carrying a
 # `js_misroute` / `rust_misroute` line, may only fall, and must be lowered in
-# the same change that fixes a misroute.
+# the same change that fixes a misroute. Each line names the measured intent
+# its runtime answers instead (rust/tests/web/r1175-routing-probes.test.mjs
+# for the browser, rust/tests/unit/issue_1175_routing_probes.rs for the native
+# solver), so neither runtime has an unmeasured probe.
 routing_probe_budget
   minimum_probes 200
   minimum_probes_per_lane 2
-  js_misroute_ceiling 19
-  rust_misroute_ceiling 51
+  js_misroute_ceiling 17
+  rust_misroute_ceiling 39
   extra_lane agent_suggestion
     reason "the terminal-command detector answers before the handler table; it is not a precedence row"
   exempt_lane repository_lineage

@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_reasoning_guards.js"
-  ceiling 191
-  rationale "Reasoning guards shared with the native surface. JavaScript-first twin of native handler keys (legality_warning and the #1173 R5 fallback guard), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."
+  ceiling 223
+  rationale "Reasoning guards shared with the native surface. JavaScript-first twin of native handler keys (legality_warning and the #1173 R5 fallback guard), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling moved 191 to 223 for issue #1173 R1173-3 (2026-10-08): the legality catalogue gained act-object frames, so legalityFrameMatches (twin of Rust frame_matches) recognises a request to break into any seeded object class by structure instead of one phrase per determiner and owner."

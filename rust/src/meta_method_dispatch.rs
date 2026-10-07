@@ -153,18 +153,33 @@ pub fn try_dispatch(
         {
             return Some(answer);
         }
-        match try_contextual_override(
-            &name,
-            prompt,
-            &normalized,
-            history,
-            ContextualRuntime::new(
-                runtime.proof_render_config,
-                runtime.self_awareness_runtime,
-                solver.config,
-            ),
-            log,
-        ) {
+        // Issue #1175 R3: the claim-routing rows of the capability table are
+        // consulted before the handler runs, contextual or plain, so a handler
+        // whose row admits on none of its evidence kinds (read from the prompt
+        // and the dialogue before it) is never offered the prompt. A row
+        // naming a refusal event admits its handler without the evidence to
+        // the refusal lane only: the answer stands when the handler recorded
+        // that event, and is dropped (with its events) otherwise.
+        let admission =
+            crate::capability_routing::claim_admission_in_dialogue(&name, prompt, &normalized, log);
+        let refusal_only = admission == crate::capability_routing::ClaimAdmission::RefusalOnly;
+        let contextual = if admission == crate::capability_routing::ClaimAdmission::Full {
+            try_contextual_override(
+                &name,
+                prompt,
+                &normalized,
+                history,
+                ContextualRuntime::new(
+                    runtime.proof_render_config,
+                    runtime.self_awareness_runtime,
+                    solver.config,
+                ),
+                log,
+            )
+        } else {
+            ContextualOutcome::NotHandled
+        };
+        match contextual {
             ContextualOutcome::Answer(answer) => {
                 return Some(record_contextual_method_answer(prompt, log, answer, &name));
             }
@@ -195,15 +210,6 @@ pub fn try_dispatch(
         {
             return Some(answer);
         }
-        // Issue #1175 R3: the claim-routing rows of the capability table are
-        // consulted before the handler runs, so a handler whose row admits on
-        // none of its evidence kinds is never offered the prompt.
-        // A row naming a refusal event admits its handler without the
-        // evidence to the refusal lane only: the answer stands when the
-        // handler recorded that event, and is dropped (with its events)
-        // otherwise, so no answer is claimed on the cue alone.
-        let admission = crate::capability_routing::claim_admission(&name, prompt, &normalized);
-        let refusal_only = admission == crate::capability_routing::ClaimAdmission::RefusalOnly;
         if admission != crate::capability_routing::ClaimAdmission::Denied
             && let Some(handler) = handler_for_method(&name)
         {

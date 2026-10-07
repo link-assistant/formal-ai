@@ -700,6 +700,16 @@ fn advice_topics() -> Vec<(String, Vec<String>)> {
         .collect()
 }
 
+/// Whether the advice table covers a topic the request names.
+///
+/// The `advice_topic` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_advice_topic(normalized: &str) -> bool {
+    advice_topics()
+        .iter()
+        .any(|(_, surfaces)| surfaces.iter().any(|surface| normalized.contains(surface)))
+}
+
 /// Recognize an advice request and render its evidence-graded
 /// recommendations, each with citation and strength.
 ///

@@ -307,6 +307,21 @@ fn tokens(normalized: &str) -> Vec<&str> {
     normalized.split(' ').filter(|t| !t.is_empty()).collect()
 }
 
+/// Whether the request acts on files or directories, or is a whole substitution.
+///
+/// The `filesystem_object` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_filesystem_object(prompt: &str, normalized: &str) -> bool {
+    let file_context: Vec<String> = word_entries("file_context")
+        .iter()
+        .map(|entry| entry.find_child_value("word").to_owned())
+        .collect();
+    sed_substitution(prompt).is_some()
+        || tokens(normalized)
+            .iter()
+            .any(|token| file_context.iter().any(|word| word == token))
+}
+
 /// A contiguous echo of the request's own tokens (the mapping rows quote
 /// the request, never a Rust-authored sentence).
 fn echo(tokens: &[&str], from: usize, to: usize) -> String {

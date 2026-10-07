@@ -363,3 +363,17 @@ pub fn handle_product_search(
         0.75,
     ))
 }
+
+/// Whether the request names the marketplace a product search is scoped to.
+///
+/// The `marketplace_scope` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_marketplace(prompt: &str, normalized: &str) -> bool {
+    let lower = prompt.to_lowercase();
+    Catalogue::load().marketplaces.iter().any(|marketplace| {
+        marketplace
+            .phrases
+            .iter()
+            .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()))
+    })
+}

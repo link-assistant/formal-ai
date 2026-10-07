@@ -270,7 +270,11 @@ pub fn try_how_it_works(
         }
     }
 
-    // No context at all — route to meta_explanation.
+    // No context at all — route to meta_explanation, the claim row's refusal lane.
+    log.append(
+        "how_it_works:refusal",
+        "no subject and no prior reply".to_owned(),
+    );
     let body = String::from(
         "I answered that way because the prompt matched a deterministic Links Notation rule. \
          To ask about a specific topic, try \"how does X work?\" where X is a concept I know \
@@ -299,6 +303,14 @@ fn extract_how_it_works_query(prompt: &str, _normalized: &str) -> Option<HowItWo
     extract_how_it_works_subject(&original, &lower).map(|subject| HowItWorksQuery {
         subject: Some(subject),
     })
+}
+
+/// Whether the mechanism question names its subject.
+///
+/// The `mechanism_subject` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_mechanism_subject(prompt: &str) -> bool {
+    extract_how_it_works_query(prompt, "").is_some_and(|query| query.subject.is_some())
 }
 
 /// Is `lower` a bare "how it works" form — a fixed phrase carrying no subject?

@@ -249,6 +249,15 @@ fn compose(classes: &[ClassMention], separators: &[SeparatorMention]) -> Option<
     Some(pattern)
 }
 
+/// Whether the request names character classes a pattern can be composed from.
+///
+/// The `pattern_constraints` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_pattern_constraints(prompt: &str) -> bool {
+    let (classes, separators) = scan_mentions(&prompt.to_lowercase());
+    compose(&classes, &separators).is_some()
+}
+
 /// Structural verification of the composed pattern: balanced groups, every
 /// `{n}`/`{n,}` repetition well-formed, character classes closed, every
 /// backslash followed by something. Returns the list of problem codes

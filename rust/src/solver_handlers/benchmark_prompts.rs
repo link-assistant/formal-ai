@@ -199,6 +199,14 @@ fn conversation_topic(prompt: &str, normalized: &str) -> Option<String> {
     None
 }
 
+/// Whether the request names a conversation topic.
+///
+/// The `conversation_topic_subject` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_conversation_topic(prompt: &str, normalized: &str) -> bool {
+    conversation_topic(prompt, normalized).is_some()
+}
+
 fn clean_conversation_topic(raw: &str) -> Option<String> {
     let topic = raw
         .trim()
@@ -508,6 +516,14 @@ fn resolve_coreference_antecedent<'a>(
         .iter()
         .find(|antecedent| antecedent.display_name == *display_name)?;
     Some((antecedent, resolution))
+}
+
+/// Whether an earlier user turn names an antecedent a pronoun resolves to.
+///
+/// The `coreference_antecedent` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_coreference_antecedent(log: &EventLog) -> bool {
+    resolve_coreference_antecedent(coreference_seed_data(), log).is_some()
 }
 
 fn matching_coreference_pronoun<'a>(

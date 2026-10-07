@@ -6,14 +6,16 @@
 //! the same corpus in `tests/web/r1175-routing-probes.test.mjs`.
 //!
 //! Here every probe runs through an offline native solver (the worker test
-//! stubs every external provider the same way). A probe without a
-//! `rust_misroute` line must answer its intent — or its `rust_intent`, the
-//! designed runtime difference where the native chat surface refuses tool
-//! execution outside Agent mode. A probe with a `rust_misroute` line is
-//! tolerated: the native answer for it is not pinned yet, and the number of
-//! such lines must equal `rust_misroute_ceiling`, so the tolerated set can only
-//! shrink. A tolerated probe that already answers correctly is reported so its
-//! line can be dropped.
+//! stubs every external provider the same way), and every answer is measured.
+//! A probe without a `rust_misroute` line must answer its intent — or its
+//! `rust_intent`, the designed runtime difference where the native chat
+//! surface refuses tool execution outside Agent mode. A probe with a
+//! `rust_misroute` line must answer exactly the intent that line names (issue
+//! #1173 R1173-3): a misroute is a measured fact, never `unverified`, so a
+//! fixed probe fails until its line is dropped and a moved one fails until its
+//! line is updated, exactly as the browser test pins `js_misroute`. The number
+//! of such lines must equal `rust_misroute_ceiling`, so the set only shrinks.
+//! A failure prints the corrected fixture line of every probe that moved.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -253,6 +255,19 @@ fn the_corpus_is_well_formed_and_large_enough() {
         budget.number("js_misroute_ceiling"),
         "js_misroute_ceiling must equal the listed browser misroutes"
     );
+    for probe in &probes {
+        assert_ne!(
+            probe.field("rust_misroute"),
+            "unverified",
+            "{}: a native misroute is the measured intent, never `unverified`",
+            probe.id
+        );
+        assert!(
+            !probe.has("rust_misroute") || probe.field("rust_misroute") != probe.native_intent(),
+            "{}: a misroute equal to the intent is no misroute",
+            probe.id
+        );
+    }
     let rust_listed = probes
         .iter()
         .filter(|probe| probe.has("rust_misroute"))
@@ -298,40 +313,39 @@ fn every_lane_meets_the_coverage_budget_or_is_exempt_with_a_reason() {
 }
 
 #[test]
-fn the_native_solver_routes_every_pinned_probe() {
+fn the_native_solver_answers_every_probe_as_measured() {
     let solver = UniversalSolver::new(SolverConfig {
         offline: true,
         ..SolverConfig::default()
     });
-    let mut misroutes = Vec::new();
-    let mut now_passing = Vec::new();
+    let mut moved = Vec::new();
     for probe in load_probes() {
         let answer = solver.solve(probe.field("prompt"));
-        let expected = probe.native_intent();
-        if probe.has("rust_misroute") {
-            if answer.intent == expected {
-                now_passing.push(probe.id.clone());
-            }
-        } else if answer.intent != expected {
-            misroutes.push(format!(
-                "{} [{}] {:?} -> {}, expected {expected}",
-                probe.id,
-                probe.field("lane"),
-                probe.field("prompt"),
-                answer.intent
-            ));
+        let pinned = if probe.has("rust_misroute") {
+            probe.field("rust_misroute")
+        } else {
+            probe.native_intent()
+        };
+        if answer.intent == pinned {
+            continue;
         }
-    }
-    if !now_passing.is_empty() {
-        eprintln!(
-            "R1175-4: tolerated native probes that already route correctly \
-             (drop their rust_misroute lines and lower rust_misroute_ceiling): {now_passing:?}"
-        );
+        let correction = if answer.intent == probe.native_intent() {
+            "drop its rust_misroute line and lower rust_misroute_ceiling".to_owned()
+        } else {
+            format!("set `rust_misroute {}`", answer.intent)
+        };
+        moved.push(format!(
+            "{} [{}] {:?} answers {} (fixture pins {pinned}): {correction}",
+            probe.id,
+            probe.field("lane"),
+            probe.field("prompt"),
+            answer.intent,
+        ));
     }
     assert!(
-        misroutes.is_empty(),
-        "{} native misroutes:\n{}",
-        misroutes.len(),
-        misroutes.join("\n")
+        moved.is_empty(),
+        "{} probes answer other than the fixture pins:\n{}",
+        moved.len(),
+        moved.join("\n")
     );
 }

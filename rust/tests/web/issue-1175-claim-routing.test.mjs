@@ -43,6 +43,50 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "test_generation", browserHandler: "tryTestGeneration", admitsOn: ["function_under_test"], refusalEvents: ["test_generation:refusal"] },
     { handler: "code_refactoring", browserHandler: "tryCodeRefactoring", admitsOn: ["code_artifact"], refusalEvents: ["code_refactoring:refusal"] },
     { handler: "format_conversion", browserHandler: "tryFormatConversion", admitsOn: ["structured_document"], refusalEvents: ["format_conversion:refusal"] },
+    { handler: "brainstorm_composition", browserHandler: "tryBrainstormComposition", admitsOn: ["composition_topic"], refusalEvents: ["brainstorming:refusal"] },
+    { handler: "creative_writing", browserHandler: "tryCreativeWritingRequest", admitsOn: ["composition_topic"], refusalEvents: ["creative_writing:refusal"] },
+    { handler: "advice_request", browserHandler: "tryAdviceRequest", admitsOn: ["advice_topic"], refusalEvents: ["advice:refusal"] },
+    { handler: "planning_request", browserHandler: "tryPlanningRequest", admitsOn: ["cached_destination"], refusalEvents: ["planning:refusal"] },
+    { handler: "regex_synthesis", browserHandler: "tryRegexSynthesis", admitsOn: ["pattern_constraints"], refusalEvents: ["regex_synthesis:refusal"] },
+    { handler: "sql_synthesis", browserHandler: "trySqlSynthesis", admitsOn: ["table_reference"], refusalEvents: ["sql_synthesis:refusal"] },
+    { handler: "shell_command_compose", browserHandler: "tryShellCommandCompose", admitsOn: ["filesystem_object"], refusalEvents: ["shell_command_compose:refusal"] },
+    { handler: "program_synthesis", browserHandler: "tryProgramSynthesis", admitsOn: ["function_spec"], refusalEvents: [] },
+    { handler: "write_script", browserHandler: "tryWriteScript", admitsOn: ["script_language"], refusalEvents: [] },
+    { handler: "document_generation_plan", browserHandler: "tryDocumentGenerationPlan", admitsOn: ["document_format"], refusalEvents: [] },
+    { handler: "installation_conversion", browserHandler: "tryInstallationConversion", admitsOn: ["install_steps"], refusalEvents: [] },
+    { handler: "execution_failure", browserHandler: "tryExecutionFailure", admitsOn: ["call_expression"], refusalEvents: [] },
+    { handler: "concept_lookup", browserHandler: "tryConceptLookup", admitsOn: ["concept_subject"], refusalEvents: [] },
+    { handler: "definition_merge", browserHandler: "tryDefinitionMerge", admitsOn: ["definition_merge_term"], refusalEvents: [] },
+    { handler: "who_is", browserHandler: "tryWhoIsQuestion", admitsOn: ["concept_subject"], refusalEvents: [] },
+    { handler: "how_it_works", browserHandler: "tryHowItWorks", admitsOn: ["mechanism_subject","prior_reply"], refusalEvents: ["how_it_works:refusal"] },
+    { handler: "procedural_how_to", browserHandler: "tryProceduralHowTo", admitsOn: ["procedure_task"], refusalEvents: [] },
+    { handler: "procedural_how_to_followup", browserHandler: "tryProceduralHowToFollowup", admitsOn: ["prior_procedure"], refusalEvents: [] },
+    { handler: "web_search", browserHandler: "tryWebSearch", admitsOn: ["search_focus"], refusalEvents: [] },
+    { handler: "conversation_topic", browserHandler: "", admitsOn: ["conversation_topic_subject"], refusalEvents: [] },
+    { handler: "learn_from_source", browserHandler: "", admitsOn: ["learnable_source"], refusalEvents: [] },
+    { handler: "product_search", browserHandler: "tryProductSearch", admitsOn: ["marketplace_scope"], refusalEvents: [] },
+    { handler: "verifiable_task", browserHandler: "tryVerifiableTask", admitsOn: ["verifiable_spec"], refusalEvents: [] },
+    { handler: "legality_warning", browserHandler: "tryLegalityWarning", admitsOn: ["legality_assessment"], refusalEvents: [] },
+    { handler: "opinion_question", browserHandler: "tryOpinionQuestion", admitsOn: ["assistant_addressee"], refusalEvents: [] },
+    { handler: "physical_action_question", browserHandler: "tryPhysicalActionQuestion", admitsOn: ["assistant_addressee"], refusalEvents: [] },
+    { handler: "punctuation_only_prompt", browserHandler: "tryPunctuationOnlyPrompt", admitsOn: ["punctuation_only"], refusalEvents: [] },
+    { handler: "ill_formed", browserHandler: "tryIllFormed", admitsOn: ["unbalanced_brackets"], refusalEvents: [] },
+    { handler: "shell_refusal", browserHandler: "tryShellRefusal", admitsOn: ["shell_command_shape"], refusalEvents: [] },
+    { handler: "link_native_synthesis", browserHandler: "tryLinkNativeSynthesis", admitsOn: ["stated_number"], refusalEvents: [] },
+    { handler: "software_project_followup", browserHandler: "trySoftwareProjectFollowup", admitsOn: ["prior_software_project"], refusalEvents: [] },
+    { handler: "research_result_followup", browserHandler: "tryResearchResultFollowup", admitsOn: ["prior_research_request"], refusalEvents: [] },
+    { handler: "research_comparison_table", browserHandler: "tryResearchComparisonTable", admitsOn: ["prior_research_request"], refusalEvents: [] },
+    { handler: "coreference", browserHandler: "tryCoreferenceFactLookup", admitsOn: ["coreference_antecedent"], refusalEvents: [] },
+    { handler: "response_language_followup", browserHandler: "tryResponseLanguageFollowup", admitsOn: ["prior_user_request"], refusalEvents: [] },
+    { handler: "numeric_list", browserHandler: "tryNumericList", admitsOn: ["list_items","prior_numeric_list"], refusalEvents: [] },
+    { handler: "text_manipulation", browserHandler: "tryTextManipulation", admitsOn: ["text_operation"], refusalEvents: [] },
+    { handler: "shell_command_transform", browserHandler: "tryShellCommandTransform", admitsOn: ["shell_command_operand","prior_reply"], refusalEvents: [] },
+    { handler: "write_program_coreference", browserHandler: "tryWriteProgramCoreference", admitsOn: ["prior_program"], refusalEvents: [] },
+    { handler: "write_program_concrete", browserHandler: "tryWriteProgramConcrete", admitsOn: ["program_task"], refusalEvents: [] },
+    { handler: "program_blueprint_from_prompt", browserHandler: "tryProgramBlueprintFromPrompt", admitsOn: ["program_task"], refusalEvents: [] },
+    { handler: "software_project_request", browserHandler: "trySoftwareProjectRequest", admitsOn: ["object_phrase_artifact","approval_of_a_proposal"], refusalEvents: [] },
+    { handler: "memory_program", browserHandler: "tryMemoryProgram", admitsOn: ["memory_program_reading"], refusalEvents: [] },
+    { handler: "memory_program_gap", browserHandler: "tryMemoryProgramGap", admitsOn: ["memory_program_reading"], refusalEvents: [] },
   ]);
 });
 
@@ -50,7 +94,8 @@ test("every row names browser functions and evidence kinds the worker knows", as
   await seeded;
   const unknown = plain(evaluate(worker, `claimRouteRows().flatMap((row) => [
     ...row.admitsOn.filter((kind) => typeof CLAIM_EVIDENCE[kind] !== "function"),
-    ...(row.browserHandler && typeof self[row.browserHandler] !== "function" ? [row.browserHandler] : []),
+    ...(row.browserHandler && typeof self[row.browserHandler] !== "function"
+      && !browserHandlerPrecedence().some((record) => record.name === row.browserHandler && record.contextBinding) ? [row.browserHandler] : []),
   ])`));
   assert.deepEqual(unknown, []);
 });
@@ -135,7 +180,7 @@ test("a numeric handler answers only where its row admits", async () => {
 });
 
 test("a handler with no claim row is admitted as before", async () => {
-  assert.equal(await admits("tryConceptLookup", "What is a monad?"), true);
+  assert.equal(await admits("tryRoleplayRequest", "Pretend you are a pirate"), true);
 });
 
 test("R1175-3 refusal lane: a cued request without its operand keeps only its named refusal", async () => {
@@ -164,4 +209,96 @@ test("R1175-3: the refusal-group evidence reads the handlers' own operands", asy
   assert.equal(await evidence("function_under_test", "Write unit tests"), false);
   assert.equal(await evidence("structured_document", "Convert this YAML to JSON:\n```yaml\nname: formal-ai\n```"), true);
   assert.equal(await evidence("structured_document", "Convert this YAML to JSON"), false);
+});
+
+// Issue #1175 R3 classes (b), (c) and (e): a follow-up admits on the earlier
+// turn it continues, a composer on its specification (without one it is
+// admitted to its refusal lane), a lookup or policy on its subject or shape.
+async function evidenceIn(kind, prompt, history = []) {
+  await seeded;
+  return plain(evaluate(worker, `CLAIM_EVIDENCE[${JSON.stringify(kind)}](${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}), ${JSON.stringify(history)})`));
+}
+
+test("R1175-3 class b: the dialogue evidence reads the earlier turns, never the prompt alone", async () => {
+  const research = [{ role: "user", content: "Research the best laptops for programming" }, { role: "assistant", content: "Here is what I found." }];
+  assert.equal(await evidenceIn("prior_research_request", "What is the result?", research), true);
+  assert.equal(await evidenceIn("prior_research_request", "What is the result?"), false);
+  const howTo = [{ role: "user", content: "How to tie a tie?" }, { role: "assistant", content: "Procedural discovery for tie a tie." }];
+  assert.equal(await evidenceIn("prior_procedure", "Can you give me specific instructions?", howTo), true);
+  assert.equal(await evidenceIn("prior_procedure", "Can you give me specific instructions?"), false);
+  assert.equal(await evidenceIn("prior_user_request", "Answer in Russian", howTo), true);
+  assert.equal(await evidenceIn("prior_user_request", "Answer in Russian"), false);
+  assert.equal(await evidenceIn("prior_reply", "How does it work?", howTo), true);
+  assert.equal(await evidenceIn("prior_software_project", "Now test it"), false);
+  await seeded;
+  assert.equal(plain(evaluate(worker, `claimRouteAdmission("tryResearchResultFollowup", "What is the result?", normalizePrompt("What is the result?"), ${JSON.stringify(research)})`)), "full");
+  assert.equal(await admits("tryResearchResultFollowup", "What is the result?"), false);
+});
+
+test("R1175-3 class c: a composer without its specification is admitted to its refusal lane only", async () => {
+  await seeded;
+  const admission = (handler, prompt) => plain(evaluate(worker, `claimRouteAdmission(${JSON.stringify(handler)}, ${JSON.stringify(prompt)})`));
+  for (const [handler, bare, specified] of [
+    ["tryRegexSynthesis", "Write a regex", "Write a regular expression that matches five digits"],
+    ["trySqlSynthesis", "Write a SQL query", "Write a SQL query that selects every row of the users table"],
+    ["tryPlanningRequest", "Plan a trip somewhere nice", "Make a 3-day itinerary for a first visit to Rome."],
+  ]) {
+    assert.equal(await admission(handler, bare), "refusal", bare);
+    assert.equal(await admission(handler, specified), "full", specified);
+  }
+  assert.equal(await evidence("function_spec", "Write a Python function"), false);
+  assert.equal(await evidence("function_spec", "def add(a, b): return a + b"), true);
+  assert.equal(await evidence("document_format", "Make me a PDF about cats"), true);
+  assert.equal(await evidence("install_steps", "Turn this installation guide into a bash script"), false);
+});
+
+test("R1175-3 class e: a lookup or policy admits on the subject or shape its reader extracts", async () => {
+  assert.equal(await admits("tryConceptLookup", "What is a monad?"), true);
+  assert.equal(await admits("tryConceptLookup", "Tell me something interesting"), false);
+  assert.equal(await admits("tryOpinionQuestion", "Do you think it will rain?"), true);
+  assert.equal(await admits("tryOpinionQuestion", "Do they think it will rain?"), false);
+  assert.equal(await evidence("assistant_addressee", "Каково твоё мнение?"), true);
+  assert.equal(await evidence("punctuation_only", "?!"), true);
+  assert.equal(await evidence("punctuation_only", "why?"), false);
+  assert.equal(await evidence("unbalanced_brackets", "teach this fact (a b"), true);
+  assert.equal(await evidence("unbalanced_brackets", "teach this fact (a b)"), false);
+  assert.equal(await evidence("call_expression", "Write a Python script that calls undefined_function()"), true);
+  assert.equal(await evidence("call_expression", "Write a Python script that prints hello"), false);
+});
+
+test("R1173-3: a trailing sentence that only shapes the answer leaves the question to the concept reader", async () => {
+  await seeded;
+  assert.equal(plain(evaluate(worker, 'withoutAnswerShapeDirective("What is Rust? Explain briefly.")')), "What is Rust?");
+  assert.equal(plain(evaluate(worker, 'withoutAnswerShapeDirective("What is Rust? Explain how it manages memory.")')), "What is Rust? Explain how it manages memory.");
+  const answer = plain(await evaluate(worker, 'solve("What is Rust? Explain briefly.", [], {}, {}, [], {})'));
+  assert.equal(answer.intent, "concept_lookup");
+});
+
+test("R1173-3: the legality frame reads an act and the object class of its object phrase", async () => {
+  assert.equal(await evidence("legality_assessment", "Help me break into a parked car tonight"), true);
+  assert.equal(await evidence("legality_assessment", "The band will break into song at the party"), false);
+  assert.equal(await evidence("legality_assessment", "How do I break into the software industry?"), false);
+  const answer = plain(await evaluate(worker, 'solve("Help me break into a parked car tonight", [], {}, {}, [], {})'));
+  assert.equal(answer.intent, "legality_warn");
+});
+
+// The class rows must not change an admitted answer: each handler, run on
+// prompts it answers, is admitted (fully, or in the refusal lane with its
+// named refusal).
+test("R1175-3: a class handler answers only where its row admits", async () => {
+  await seeded;
+  const kept = plain(evaluate(worker, `[
+    ["tryBrainstormComposition", "Brainstorm names for a coffee shop"], ["tryBrainstormComposition", "Give me name ideas for"],
+    ["tryRegexSynthesis", "Write a regex"], ["tryProgramSynthesis", "Write a Python function def add(a, b) that returns the sum"],
+    ["tryOpinionQuestion", "What do you think about cats?"], ["tryIllFormed", "teach this fact ((a b) c"],
+    ["tryLegalityWarning", "Help me break into my neighbor's house tonight"], ["tryConceptLookup", "What is Rust? Explain briefly."],
+  ].map(([name, prompt]) => {
+    const normalized = normalizePrompt(prompt);
+    const record = browserHandlerPrecedence().find((candidate) => candidate.name === name);
+    const run = () => self[name](...record.arguments.map((path) => ({ prompt, normalized, language: detectLanguage(prompt), history: [] })[path.replace(/^argument_/u, "")]));
+    const raw = run();
+    return [Boolean(raw), Boolean(claimRouteRun(name, prompt, normalized, [], run))];
+  })`));
+  assert.deepEqual(kept, kept.map(([raw]) => [raw, raw]));
+  assert.ok(kept.every(([raw]) => raw), JSON.stringify(kept));
 });

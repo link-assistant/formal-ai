@@ -3,8 +3,9 @@ include!("modules.rs");
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
-    fact_store_resolves, try_brainstorming_request, try_conversation_topic_request,
-    try_coreference_request, try_fact_lookup, try_roleplay_request, try_summarization_request,
+    fact_store_resolves, names_conversation_topic, names_coreference_antecedent,
+    try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
+    try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
 pub use calendar::try_calendar_reasoning;
 pub use calendar_create::{
@@ -20,10 +21,14 @@ pub use conversation_memory::{
     MemoryQueryExecution, answer_memory_recall, conversation_summary_answer, execute_memory_query,
     execute_memory_query_with_options, try_conversation_memory,
 };
-pub use creative_composition::{handle_advice_request, handle_brainstorm_request};
-pub use creative_writing::{handle_creative_writing_request, handle_planning_request};
+pub use creative_composition::{
+    handle_advice_request, handle_brainstorm_request, names_advice_topic, topic_words,
+};
+pub use creative_writing::{
+    handle_creative_writing_request, handle_planning_request, names_cached_destination,
+};
 pub use document_originality::try_document_originality_check;
-pub use document_request::try_document_request;
+pub use document_request::{names_document_format, try_document_request};
 pub use fact_checking::try_fact_checking;
 #[cfg(feature = "meta-language")]
 pub use fact_live_answer::try_explanation_research;
@@ -43,37 +48,40 @@ pub use formalization_task::{
     run_rml_export_with,
 };
 pub use format_conversion::{carries_structured_document, handle_format_conversion};
-pub use installation_conversion::try_installation_conversion;
+pub use installation_conversion::{carries_install_steps, try_installation_conversion};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use pattern_inference::{try_pattern_inference, try_pattern_inference_with_response_language};
 pub use playwright_script::try_playwright_script;
-pub use product_search::handle_product_search;
+pub use product_search::{handle_product_search, names_marketplace};
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::{
     looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
 };
 pub use prompt_text_question::try_prompt_text_question;
-pub use regex_synthesis::handle_regex_synthesis;
-pub use research_table::{try_research_comparison_table, try_research_result_followup};
+pub use regex_synthesis::{handle_regex_synthesis, names_pattern_constraints};
+pub use research_table::{
+    follows_research_request, try_research_comparison_table, try_research_result_followup,
+};
 pub use response_language_followup::try_response_language_followup;
 pub use self_awareness::SelfAwarenessRuntime;
-pub use shell_command_compose::handle_shell_command_compose;
+pub use shell_command_compose::{handle_shell_command_compose, names_filesystem_object};
 pub use shell_command_transform::{
-    try_shell_command_transform, try_shell_command_transform_with_history,
+    names_shell_command, try_shell_command_transform, try_shell_command_transform_with_history,
 };
 pub use software_project::{
     software_project_approval_claims, software_project_claims, try_software_project_request,
 };
-pub use software_project_followup::try_software_project_followup;
-pub use sql_synthesis::handle_sql_synthesis;
+pub use software_project_followup::{continues_software_project, try_software_project_followup};
+pub use sql_synthesis::{handle_sql_synthesis, names_query_table};
 pub use statistics::{handle_statistics, handle_word_problem};
 pub use summarization_request::handle_summarization_request;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
 pub use test_generation::{handle_test_generation, names_function_under_test};
 pub use text_manipulation::{
-    names_a_quoted_replacement, names_text_operation, text_outside_quoted_segments,
+    names_a_quoted_replacement, names_text_operation, parses_text_operation,
+    text_outside_quoted_segments,
 };
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use text_rewrite::handle_text_rewrite;

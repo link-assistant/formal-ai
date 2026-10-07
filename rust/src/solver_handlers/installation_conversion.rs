@@ -429,6 +429,19 @@ fn extract_install_steps(source: &str, source_format: InstallFormat) -> Vec<Inst
         .collect()
 }
 
+/// Whether the request carries installation commands to convert.
+///
+/// The `install_steps` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn carries_install_steps(prompt: &str, normalized: &str) -> bool {
+    let source_format = detect_source_format(prompt, normalized);
+    let source_text = extract_source_text(prompt, source_format);
+    !extract_install_steps(&source_text, source_format).is_empty()
+        || (source_format == InstallFormat::Markdown
+            && source_text != prompt
+            && !extract_install_steps(prompt, source_format).is_empty())
+}
+
 fn collect_inline_commands(source: &str, commands: &mut Vec<String>) {
     let mut in_tick = false;
     let mut candidate = String::new();

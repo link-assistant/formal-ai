@@ -16,10 +16,15 @@
 //! it recorded that event — a cued request without its operand keeps its
 //! named refusal, and no answer is claimed on the cue alone.
 //!
+//! The dialogue kinds read the `prior_turn:*` events of the dialogue log
+//! ([`claim_admission_in_dialogue`]); the composer, lookup and dialogue kinds
+//! live in `claim_evidence.rs`.
+//!
 //! Mirrored by `claimRouteAdmits` in `js/worker/formal_ai_worker_dispatch.js`.
 
 use std::sync::OnceLock;
 
+use crate::event_log::EventLog;
 use crate::seed::parser::parse_lino;
 
 /// One `claim` row: a handler and the evidence kinds that admit it.
@@ -63,6 +68,45 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "calendar_anchor",
     "function_under_test",
     "structured_document",
+    // Issue #1175 R3 classes (b), (c) and (e): read by `claim_evidence.rs`.
+    "dialogue_turn",
+    "prior_user_request",
+    "prior_reply",
+    "prior_software_project",
+    "prior_research_request",
+    "prior_procedure",
+    "coreference_antecedent",
+    "prior_program",
+    "prior_numeric_list",
+    "list_items",
+    "text_operation",
+    "shell_command_operand",
+    "composition_topic",
+    "advice_topic",
+    "cached_destination",
+    "pattern_constraints",
+    "table_reference",
+    "filesystem_object",
+    "function_spec",
+    "script_language",
+    "program_task",
+    "document_format",
+    "install_steps",
+    "call_expression",
+    "concept_subject",
+    "definition_merge_term",
+    "mechanism_subject",
+    "procedure_task",
+    "search_focus",
+    "conversation_topic_subject",
+    "marketplace_scope",
+    "verifiable_spec",
+    "legality_assessment",
+    "assistant_addressee",
+    "punctuation_only",
+    "unbalanced_brackets",
+    "memory_program_reading",
+    "learnable_source",
 ];
 
 /// Parse the `claim` rows of a capability-routing document.
@@ -105,8 +149,31 @@ pub fn claim_rows() -> &'static [ClaimRow] {
 }
 
 /// Whether the prompt carries evidence of `kind`; `None` for an unknown kind.
+///
+/// The dialogue kinds read an empty dialogue here; the dispatcher asks
+/// [`claim_evidence_holds_in_dialogue`] with the turns before the prompt.
 #[must_use]
 pub fn claim_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<bool> {
+    claim_evidence_holds_in_dialogue(kind, prompt, normalized, &EventLog::new())
+}
+
+/// Whether the prompt, or the dialogue before it, carries evidence of `kind`.
+///
+/// `dialogue` is the event log whose `prior_turn:*` events are the earlier
+/// turns; `None` for an unknown kind.
+#[must_use]
+pub fn claim_evidence_holds_in_dialogue(
+    kind: &str,
+    prompt: &str,
+    normalized: &str,
+    dialogue: &EventLog,
+) -> Option<bool> {
+    prompt_evidence_holds(kind, prompt, normalized)
+        .or_else(|| super::claim_evidence::class_evidence_holds(kind, prompt, normalized, dialogue))
+}
+
+/// The structural evidence kinds read from the prompt alone.
+fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<bool> {
     let canonical = crate::engine::normalize_prompt(prompt);
     let canonical = if canonical.is_empty() {
         normalized
@@ -202,17 +269,29 @@ pub enum ClaimAdmission {
     Denied,
 }
 
-/// How the router offers `prompt` to `handler`.
+/// How the router offers `prompt` to `handler`, with no earlier turn.
 #[must_use]
 pub fn claim_admission(handler: &str, prompt: &str, normalized: &str) -> ClaimAdmission {
+    claim_admission_in_dialogue(handler, prompt, normalized, &EventLog::new())
+}
+
+/// How the router offers `prompt` to `handler`, given the dialogue before it.
+///
+/// `dialogue` is the event log whose `prior_turn:*` events the dialogue
+/// evidence kinds read.
+#[must_use]
+pub fn claim_admission_in_dialogue(
+    handler: &str,
+    prompt: &str,
+    normalized: &str,
+    dialogue: &EventLog,
+) -> ClaimAdmission {
     let Some(row) = claim_rows().iter().find(|row| row.handler == handler) else {
         return ClaimAdmission::Full;
     };
-    if row
-        .admits_on
-        .iter()
-        .any(|kind| claim_evidence_holds(kind, prompt, normalized) == Some(true))
-    {
+    if row.admits_on.iter().any(|kind| {
+        claim_evidence_holds_in_dialogue(kind, prompt, normalized, dialogue) == Some(true)
+    }) {
         ClaimAdmission::Full
     } else if row.refusal_events.is_empty() {
         ClaimAdmission::Denied

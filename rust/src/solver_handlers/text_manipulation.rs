@@ -86,6 +86,15 @@ pub fn names_text_operation(normalized: &str) -> bool {
     try_text_manipulation(normalized, normalized, &mut log).is_some()
 }
 
+/// Whether the request parses as input text and text operations.
+///
+/// The input may come from the earlier reply; the `text_operation` claim
+/// evidence of issue #1175 R3.
+#[must_use]
+pub fn parses_text_operation(prompt: &str, normalized: &str, history: &[ConversationTurn]) -> bool {
+    TextRequest::parse_with_history(prompt, normalized, history).is_some()
+}
+
 pub fn try_text_manipulation_with_history(
     prompt: &str,
     normalized: &str,

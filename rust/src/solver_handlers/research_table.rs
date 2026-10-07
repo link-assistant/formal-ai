@@ -225,6 +225,14 @@ fn looks_like_research_prompt(prompt: &str) -> bool {
             .any(|form| normalized.starts_with(form.before_slot()))
 }
 
+/// Whether the earlier user turn was a research request.
+///
+/// The `prior_research_request` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn follows_research_request(log: &EventLog) -> bool {
+    last_user_turn(log).is_some_and(looks_like_research_prompt)
+}
+
 fn is_research_result_followup(normalized: &str) -> bool {
     let cleaned = normalize_prompt(normalized);
     matches!(

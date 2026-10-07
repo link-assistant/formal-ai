@@ -35,6 +35,18 @@ fn destinations() -> Vec<(String, Vec<String>)> {
         .collect()
 }
 
+/// Whether the request names a destination whose places are cached.
+///
+/// The `cached_destination` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_cached_destination(normalized: &str) -> bool {
+    destinations().iter().any(|(_, surfaces)| {
+        surfaces
+            .iter()
+            .any(|surface| normalized.contains(&surface.to_lowercase()))
+    })
+}
+
 fn places(destination: &str) -> Vec<Place> {
     rules_records_named("planning_place_cache")
         .filter(|record| record.find_child_value("destination") == destination)

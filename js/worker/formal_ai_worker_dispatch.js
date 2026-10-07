@@ -71,12 +71,8 @@ function synchronousHandlerCandidates(context, registry = promotedHandlerOrder(b
   return registry.map((record) => ({
     name: record.name,
     run: () => {
-      const admission = claimRouteAdmission(record.name, context.prompt, context.normalized);
-      if (admission === "denied") return null;
-      const implementation = handlerImplementation(record, context);
-      const args = (record.arguments || []).map((path) => handlerContextValue(context, path));
-      const hit = implementation(...args);
-      if (admission === "refusal" && !claimRouteRefused(record.name, hit)) return null;
+      const hit = claimRouteRun(record.name, context.prompt, context.normalized, context.history, () =>
+        handlerImplementation(record, context)(...(record.arguments || []).map((path) => handlerContextValue(context, path))));
       return handlerResultMatches(record, hit) ? hit : null;
     },
   }));
@@ -99,6 +95,7 @@ const CLAIM_EVIDENCE = Object.freeze({
   navigation_url: (prompt, normalized) => extractUrlNavigateUrl(prompt, normalized) !== null,
   calendar_date_signal: (prompt, normalized) => mentionsCalendarCreateRequest(normalized),
   code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null, ...(typeof NUMERIC_CLAIM_EVIDENCE === "object" ? NUMERIC_CLAIM_EVIDENCE : {}),
+  ...(typeof CLASS_CLAIM_EVIDENCE === "object" ? CLASS_CLAIM_EVIDENCE : {}), // classes (b), (c), (e): formal_ai_worker_claim_evidence.js
   // Refusal group: the operand each handler's own reader extracts before it composes anything.
   function_under_test: (prompt) => testGenerationFunctionName(prompt) !== null,
   structured_document: (prompt) => formatConversionJsonText(prompt) !== null || formatConversionYamlText(prompt) !== null
@@ -119,15 +116,26 @@ function claimRouteRows() {
 }
 
 // "full" when the row's evidence holds (or there is no row), "refusal" when it does not but the row names a
-// refusal event (the handler may only refuse), "denied" otherwise (Rust `claim_admission`).
-function claimRouteAdmission(browserHandler, prompt, normalized) {
+// refusal event (the handler may only refuse), "denied" otherwise (Rust `claim_admission_in_dialogue`); the
+// dialogue kinds read the earlier turns from `history`.
+function claimRouteAdmission(browserHandler, prompt, normalized, history = []) {
   const row = claimRouteRows().find((candidate) => candidate.browserHandler === browserHandler);
-  if (!row || row.admitsOn.some((kind) => Boolean(CLAIM_EVIDENCE[kind] && CLAIM_EVIDENCE[kind](prompt, normalized ?? normalizePrompt(prompt))))) return "full";
+  if (!row || row.admitsOn.some((kind) => Boolean(CLAIM_EVIDENCE[kind] && CLAIM_EVIDENCE[kind](prompt, normalized ?? normalizePrompt(prompt), history)))) return "full";
   return row.refusalEvents.length > 0 ? "refusal" : "denied";
 }
 
-function claimRouteAdmits(browserHandler, prompt, normalized) {
-  return claimRouteAdmission(browserHandler, prompt, normalized) !== "denied";
+function claimRouteAdmits(browserHandler, prompt, normalized, history = []) {
+  return claimRouteAdmission(browserHandler, prompt, normalized, history) !== "denied";
+}
+
+// Run a handler through its claim row: null when denied, and in the refusal lane its answer only when it
+// recorded the row's refusal event. `run` may return a promise (the asynchronous lookups).
+function claimRouteRun(browserHandler, prompt, normalized, history, run) {
+  const admission = claimRouteAdmission(browserHandler, prompt, normalized, history);
+  if (admission === "denied") return null;
+  const keep = (hit) => (admission === "refusal" && !claimRouteRefused(browserHandler, hit) ? null : hit);
+  const hit = run();
+  return hit && typeof hit.then === "function" ? hit.then(keep) : keep(hit);
 }
 
 // Whether a refusal-lane answer may stand: the handler recorded one of its row's refusal events (Rust `refusal_recorded`).

@@ -172,7 +172,7 @@ function extractMeaningQuestionBody(original, lower) {
 }
 
 function extractConceptQuery(prompt) {
-  let trimmedRaw = String(prompt || "")
+  let trimmedRaw = withoutAnswerShapeDirective(prompt) // #1173 R3: "Explain briefly." shapes, not names
     .trim()
     .replace(/[?。.!!,,;:]+$/g, "")
     .trim();

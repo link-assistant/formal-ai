@@ -7,6 +7,12 @@
 # phrases are lowercase substrings matched against the normalized prompt
 # (and the raw prompt lowercased), English and Russian side by side.
 #
+# A `frame` matches by structure rather than by phrase: one of its `act`
+# surfaces followed, within the act's object phrase (the next four words,
+# up to a clause boundary), by one of its `object` nouns, so a request to
+# break into any kind of building or vehicle is recognised without listing
+# every determiner and owner a phrase would need (issue 1173 R3).
+#
 # `exemption` records name the framings that are sensitive-but-legal
 # (education, defensive security, journalism, academic study); a prompt
 # matching an exemption is answered without a warning unless its category
@@ -46,6 +52,25 @@ legality_patterns
     phrase "взломать дом соседа"
     phrase "влезть в квартиру"
     phrase "взломать квартиру"
+    frame
+      act "break into"
+      act "broke into"
+      act "breaking into"
+      act "взломать"
+      act "вскрыть"
+      act "влезть в"
+      act "проникнуть в"
+      object house
+      object home
+      object car
+      object store
+      object дом
+      object квартиру
+      object машину
+      object автомобиль
+      object гараж
+      object офис
+      object магазин
   pattern warn_stolen_goods
     category theft_and_handling
     disposition warn

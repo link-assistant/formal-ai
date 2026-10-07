@@ -142,9 +142,14 @@ test("R1175-4: the corpus is well formed and large enough", () => {
     assert.ok(!prompts.has(probe.prompt), `${probe.id}: duplicate prompt ${JSON.stringify(probe.prompt)}`);
     assert.ok(!ids.has(probe.id), `duplicate probe id ${probe.id}`);
     assert.notEqual(probe.js_misroute, probe.intent, `${probe.id}: a misroute equal to the intent is no misroute`);
+    // R1173-3: the native misroute is measured by rust/tests/unit/issue_1175_routing_probes.rs, never assumed.
+    assert.notEqual(probe.rust_misroute, "unverified", `${probe.id}: a native misroute names the measured intent`);
+    assert.notEqual(probe.rust_misroute, probe.rust_intent || probe.intent, `${probe.id}: a native misroute equal to the intent is no misroute`);
     prompts.add(probe.prompt);
     ids.add(probe.id);
   }
+  assert.equal(probes.filter((probe) => probe.rust_misroute).length, budget.rust_misroute_ceiling,
+    "rust_misroute_ceiling must equal the listed native misroutes (it may only fall)");
 });
 
 test("R1175-4: every lane meets the coverage budget or is exempt with a reason", () => {

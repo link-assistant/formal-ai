@@ -161,9 +161,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   // The punctuation_only_prompt registry row runs here, ahead of the
   // translation and lookup probes, through the seed rule interpreter
   // (data/seed/handler-rules.lino) so its wording is the seeded response.
-  const punctuationOnly = isPunctuationOnlyPrompt(prompt)
-    ? tryPunctuationOnlyPrompt(prompt, normalized)
-    : null;
+  const punctuationOnly = claimRouteRun("tryPunctuationOnlyPrompt", prompt, normalized, history, () =>
+    tryPunctuationOnlyPrompt(prompt, normalized));
   if (punctuationOnly) {
     events.push("handler:clarification");
     events.push(`clarification:punctuation_only:${String(prompt).trim()}`);
@@ -180,12 +179,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   // replay IS the follow-up's body, so re-entering here would recurse forever.
   if (!forcedResponseLanguage) {
     steps.push({ step: "invoke_tool", detail: "response_language_followup" });
-    const responseLanguageFollowup = await tryResponseLanguageFollowup(
-      prompt,
-      normalized,
-      history,
-      preferences,
-    );
+    const responseLanguageFollowup = await claimRouteRun("tryResponseLanguageFollowup", prompt, normalized, history, () =>
+      tryResponseLanguageFollowup(prompt, normalized, history, preferences));
     if (responseLanguageFollowup) {
       events.push(`handler:${responseLanguageFollowup.intent}`);
       events.push("handler:response_language_followup");
@@ -511,7 +506,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       return finalize(events, steps, toolCalls, hit, formalizationContext);
     }
   }
-  const coreferenceFact = tryCoreferenceFactLookup(prompt, normalized, history);
+  const coreferenceFact = claimRouteRun("tryCoreferenceFactLookup", prompt, normalized, history, () => tryCoreferenceFactLookup(prompt, normalized, history));
   if (coreferenceFact) {
     events.push(`handler:${coreferenceFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCoreferenceFactLookup" });
@@ -596,7 +591,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, docsMethod, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
-  const procedure = await tryProceduralHowTo(prompt, language, preferences);
+  const procedure = await claimRouteRun("tryProceduralHowTo", prompt, normalized, history, () => tryProceduralHowTo(prompt, language, preferences));
   if (procedure) {
     events.push(`handler:${procedure.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryProceduralHowTo" });
@@ -623,7 +618,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   // opener. Mirrors the procedural_how_to_followup slot in the Rust dispatch
   // table, which sits right after procedural_how_to.
   steps.push({ step: "invoke_tool", detail: "procedural_how_to_followup" });
-  const procedureFollowup = await tryProceduralHowToFollowup(prompt, language, history, preferences);
+  const procedureFollowup = await claimRouteRun("tryProceduralHowToFollowup", prompt, normalized, history, () => tryProceduralHowToFollowup(prompt, language, history, preferences));
   if (procedureFollowup) {
     events.push(`handler:${procedureFollowup.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryProceduralHowToFollowup" });
@@ -674,7 +669,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, originality, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "web_search" });
-  const webSearch = await tryWebSearch(prompt, language);
+  const webSearch = await claimRouteRun("tryWebSearch", prompt, normalized, history, () => tryWebSearch(prompt, language));
   if (webSearch) {
     events.push(`handler:${webSearch.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWebSearch" });
@@ -719,7 +714,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   // knowledge base or Wikipedia should still return a question-typed response
   // (not "unknown") and offer a typo correction when the entity name is close
   // to a known variant.
-  const whoIs = tryWhoIsQuestion(prompt);
+  const whoIs = claimRouteRun("tryWhoIsQuestion", prompt, normalized, history, () => tryWhoIsQuestion(prompt));
   if (whoIs) {
     events.push(`handler:${whoIs.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWhoIsQuestion" });
@@ -732,7 +727,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
     return finalize(events, steps, toolCalls, terminal, formalizationContext);
   }
-  const howItWorks = tryHowItWorks(prompt, history);
+  const howItWorks = claimRouteRun("tryHowItWorks", prompt, normalized, history, () => tryHowItWorks(prompt, history));
   if (howItWorks) return finalizeInlineHandler(events, steps, toolCalls, howItWorks, "tryHowItWorks", formalizationContext);
 
   if (isTargetlessProgramModification(normalized)) {

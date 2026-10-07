@@ -6,12 +6,13 @@
 # the system SHOULD answer, and the prompt. A quoted value doubles an inner
 # quote and writes a newline as \n.
 #
-# `js_misroute <intent>` records a probe the browser worker answers wrongly
-# today (the intent it answers instead); `rust_misroute unverified` records a
-# probe the native solver is not yet pinned on. Both are ratchets with ceilings
-# in budget.lino — a listed probe that starts answering correctly fails the
-# test until its line is removed and the ceiling lowered, and a new misroute
-# fails outright. `rust_intent` names a designed runtime difference (the
+# `js_misroute <intent>` / `rust_misroute <intent>` record a probe the browser
+# worker / the native solver answers wrongly today, naming the intent it
+# answers instead; both are measured, never `unverified` (issue 1173 R3). Both
+# are ratchets with ceilings in budget.lino — a listed probe that starts
+# answering correctly fails the test until its line is removed and the ceiling
+# lowered, one that moves to another intent fails until its line is updated,
+# and a new misroute fails outright. `rust_intent` names a designed runtime difference (the
 # native chat surface refuses tool execution outside Agent mode).
 # `adversarial true` marks prose that surface-matches another lane.
 routing_probes
@@ -102,7 +103,6 @@ routing_probes
     language en
     intent code_explanation
     prompt "What does this code do: x = [i*i for i in range(5)]"
-    rust_misroute unverified
   probe p060
     lane code_explanation
     language en
@@ -178,7 +178,7 @@ routing_probes
     prompt "Write a Python script that calls missing_helper()"
     adversarial true
     js_misroute write_script_python
-    rust_misroute unverified
+    rust_misroute write_script_python
   probe p106
     lane execution_failure
     language en
@@ -186,7 +186,7 @@ routing_probes
     prompt "Write a Python script that calls not_defined_anywhere()"
     adversarial true
     js_misroute write_script_python
-    rust_misroute unverified
+    rust_misroute write_script_python
   probe p107
     lane execution_failure
     language en
@@ -199,14 +199,13 @@ routing_probes
     prompt "Write a Python script that calls undefined_helper()"
     adversarial true
     js_misroute write_script_python
-    rust_misroute unverified
+    rust_misroute write_script_python
   probe p119
     lane format_conversion
     language en
     intent format_conversion
     prompt "Convert this CSV to JSON: name,age\nAnn,30"
     adversarial true
-    rust_misroute unverified
   probe p120
     lane format_conversion
     language en
@@ -243,14 +242,12 @@ routing_probes
     intent format_conversion
     prompt "Convert this JSON to YAML: {""sort"": ""words"", ""reverse"": true}"
     adversarial true
-    rust_misroute unverified
   probe p126
     lane format_conversion
     language en
     intent format_conversion
     prompt "Convert this JSON to YAML: {""text"": ""count the lines in this file""}"
     adversarial true
-    rust_misroute unverified
   probe p127
     lane format_conversion
     language en
@@ -282,7 +279,7 @@ routing_probes
     prompt "Convert to JSON: {""word_counts"": {""lines"": 4}}"
     adversarial true
     js_misroute text_manipulation
-    rust_misroute unverified
+    rust_misroute text_manipulation
   probe p132
     lane format_conversion
     language ru
@@ -311,7 +308,6 @@ routing_probes
     intent installation_conversion
     prompt "Turn this installation guide into a bash script: git clone https://github.com/acme/widget && cd widget && make install"
     adversarial true
-    rust_misroute unverified
   probe p170
     lane javascript_execution
     language en
@@ -319,7 +315,7 @@ routing_probes
     prompt "Evaluate this JS: [1,2,3].map(x => x * 2)"
     rust_intent tool_call_refused
     js_misroute meta_reasoned_program
-    rust_misroute unverified
+    rust_misroute meta_reasoned_program
   probe p171
     lane javascript_execution
     language en
@@ -410,13 +406,13 @@ routing_probes
     language en
     intent shell_command_compose
     prompt "Write a shell command that finds all .log files larger than 10MB"
-    rust_misroute unverified
+    rust_misroute capability_gap
   probe p249
     lane shell_command_compose
     language en
     intent shell_command_compose
     prompt "Write a shell command that lists all .txt files"
-    rust_misroute unverified
+    rust_misroute capability_gap
   probe p250
     lane shell_command_transform
     language en
@@ -677,7 +673,7 @@ routing_probes
     intent write_program
     prompt "Write a program in Rust that prints hello"
     js_misroute write_program_skill_gap
-    rust_misroute unverified
+    rust_misroute write_program_skill_gap
   probe p353
     lane write_program
     language hi
@@ -694,7 +690,7 @@ routing_probes
     intent write_program
     prompt "Напиши программу на Python, которая печатает привет"
     js_misroute write_program_skill_gap
-    rust_misroute unverified
+    rust_misroute write_program_skill_gap
   probe p356
     lane write_program
     language zh
