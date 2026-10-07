@@ -78,11 +78,10 @@ fn every_collected_diagnostic_is_fixed_or_kept_with_a_reason() {
     }
 
     let kept = between(&ledger, "### 4.2 ", "## 5. ");
-    let dispositions: Vec<&str> = table_rows(kept).into_iter().skip(1).collect();
+    let dispositions = table_rows(kept).len().saturating_sub(1);
     assert!(
-        dispositions.len() >= 9,
-        "section 4.2 states why each remaining diagnostic class is kept, found {}",
-        dispositions.len()
+        dispositions >= 9,
+        "section 4.2 states why each remaining diagnostic class is kept, found {dispositions}"
     );
 
     let annotations = repository_file(&format!("{ARCHIVE}/annotations/all-annotations.tsv"));
@@ -139,11 +138,10 @@ fn template_trees_and_the_best_practice_checklist_are_retained() {
         "## 5. Template and best-practice comparison",
         "## 6. ",
     );
-    let checklist: Vec<&str> = table_rows(comparison).into_iter().skip(1).collect();
+    let checklist = table_rows(comparison).len().saturating_sub(1);
     assert!(
-        checklist.len() >= 13,
-        "every Hive Mind checklist item needs a verdict, found {}",
-        checklist.len()
+        checklist >= 13,
+        "every Hive Mind checklist item needs a verdict, found {checklist}"
     );
     assert!(
         comparison.contains("Deliberately **not** adopted")
