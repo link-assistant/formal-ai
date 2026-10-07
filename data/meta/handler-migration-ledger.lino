@@ -402,6 +402,8 @@ handler_migration_ledger
     surface prelude
     reason "Runs on every turn ahead of the precedence table. What the system can do is the capability registry's own data; asking it should be a query, not a handler."
   handler playwright_script
-    status pending
-    surface prelude
-    reason "Runs on every turn ahead of the precedence table. Script recognition and the guess probability that gates it are declared policy."
+    status migrated
+    data "data/seed/meanings-playwright.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handlers/playwright_script.rs"
+    justification "issue #918 (R914-6): the prelude row recognizes the tool name, its misspelling and the script cues through the playwright_tool_name and playwright_script_cue roles, reads the docs URL from the policy playwright_script block of data/seed/handler-rules.lino, and renders the clarification, the plain and corrected leads, the starter layout and the starter TypeScript from seeded playwright_* responses; the handler names no word and holds no prose or example. The browser twin renders the same records; its pins read the expected answers from the native pins, so both runtimes hold one text."
+    held_out "rust/tests/unit/playwright_script.rs"

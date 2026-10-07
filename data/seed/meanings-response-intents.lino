@@ -570,6 +570,46 @@ meanings
     unit "not applicable"
     example "no USD->CHF exchange rate is available locally"
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_script_clarification
+    defined-by answer
+    role localized_response_template
+    precondition "a Playwright script request arrives while the guess probability is below one half"
+    effect "the answer asks for the page URL, the actions and the expected assertion before writing a script"
+    unit "not applicable"
+    example "Please provide the page URL, the actions to perform, and the expected assertion."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_script_lead
+    defined-by answer
+    role localized_response_template
+    precondition "a Playwright script request spells the tool name correctly"
+    effect "the answer opens by saying it uses the starter TypeScript example from the Playwright docs"
+    unit "not applicable"
+    example "I will use a starter TypeScript example based on the Playwright docs."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_script_lead_corrected
+    defined-by answer
+    role localized_response_template
+    precondition "a Playwright script request misspells the tool name"
+    effect "the answer opens by naming the spelling correction and the starter example it uses"
+    unit "not applicable"
+    example "I interpret Playright as Playwright."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_script_starter
+    defined-by answer
+    role localized_response_template
+    precondition "a Playwright script request is answered with the starter example"
+    effect "the answer lays out the lead, the docs source, the starter code and the commands that check it"
+    unit "not applicable"
+    example "Check it with: npx playwright test"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_starter_typescript
+    defined-by answer
+    role localized_response_template
+    precondition "the starter answer needs its example program"
+    effect "the answer embeds the starter TypeScript test from the Playwright docs"
+    unit "not applicable"
+    example "await page.goto('https://playwright.dev/');"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
   unit_incompatibility
     defined-by answer
     role localized_response_template

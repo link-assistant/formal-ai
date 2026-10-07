@@ -982,17 +982,6 @@ rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的将数字
 rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的求数字 {given} 最大值的代码:
 rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的求数字 {given} 最小值的代码:
 rust/src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的计算数字 {given} 乘积的代码:
-rust/src/solver_handlers/playwright_script.rs	1. `npm init playwright@latest`\n
-rust/src/solver_handlers/playwright_script.rs	2. `npx playwright test`\n
-rust/src/solver_handlers/playwright_script.rs	Check it with:\n
-rust/src/solver_handlers/playwright_script.rs	I can write a Playwright script. Please provide the page URL, the actions to perform, and the expected assertion. If you want a default example, I can use the starter scenario from the Playwright docs.
-rust/src/solver_handlers/playwright_script.rs	I interpret `Playright` as `Playwright` and will use a starter TypeScript example based on the Playwright docs.\n\n
-rust/src/solver_handlers/playwright_script.rs	I will use a starter TypeScript example based on the Playwright docs.\n\n
-rust/src/solver_handlers/playwright_script.rs	\nProvide the URL, actions, and expected result if you want a site-specific script.
-rust/src/solver_handlers/playwright_script.rs	\nУточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт.
-rust/src/solver_handlers/playwright_script.rs	Даю стартовый TypeScript-пример по документации Playwright.\n\n
-rust/src/solver_handlers/playwright_script.rs	Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.
-rust/src/solver_handlers/playwright_script.rs	Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.\n\n
 rust/src/solver_handlers/policy_gates.rs	Flushing the source cache is an auditable action. Confirm explicitly.
 rust/src/solver_handlers/policy_gates.rs	That message contains inappropriate content. Please keep the conversation respectful.
 rust/src/solver_handlers/policy_gates.rs	The action will run inside an isolated sandbox once confirmed.

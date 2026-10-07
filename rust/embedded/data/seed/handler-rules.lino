@@ -348,3 +348,5 @@ handler_rules
     rate_EUR_USD "1.087"
     rate_expression "1 {source} in {target}"
     final_amount_marker "final amount:"
+  policy playwright_script
+    docs_url "https://playwright.dev/docs/writing-tests"

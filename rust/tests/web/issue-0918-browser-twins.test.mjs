@@ -7,6 +7,7 @@
 // `execute_memory_query_with_options`.
 
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
@@ -113,4 +114,37 @@ test("a follow-up converts the earlier final amount", async () => {
   const response = await solveWith("Convert the final amount to rubles", history);
   assert.equal(response.intent, "calculation");
   assert.equal(response.content, `Final amount conversion\nSource amount: 1489.85 USD${COMPOUND_RUB}`);
+});
+
+// Issue #918 (R914-6): the playwright_script prelude row renders the seeded
+// playwright_* responses and the docs URL of `policy playwright_script` in
+// both runtimes. The expected answers are read from the native pins in
+// rust/tests/unit/playwright_script.rs, so the two suites hold one text.
+function rustRawConstant(name) {
+  const source = readFileSync(new URL("../unit/playwright_script.rs", import.meta.url), "utf8");
+  const match = new RegExp(`const ${name}: &str = r"([\\s\\S]*?)";`).exec(source);
+  assert.ok(match, `${name} in rust/tests/unit/playwright_script.rs`);
+  return match[1];
+}
+
+test("playwright starters answer with the native pins in every language", async () => {
+  const english = rustRawConstant("PLAYWRIGHT_EN_ANSWER");
+  const russian = rustRawConstant("PLAYWRIGHT_RU_TYPO_ANSWER");
+  for (const [prompt, expected] of [
+    ["Can you write a Playwright script?", english],
+    ["Можешь написать мне Playright скрипт?", russian],
+    ["क्या तुम Playwright script लिख सकते हो?", english],
+    ["可以写一个 Playwright script 吗？", english],
+  ]) {
+    const response = await solveWith(prompt, []);
+    assert.equal(response.intent, "playwright_script", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+});
+
+test("a low guess probability asks for the script's scope", async () => {
+  await ready;
+  const response = await worker.solve("Можешь написать мне Playright скрипт?", [], { guessProbability: 0.1 }, {}, [], {});
+  assert.equal(response.intent, "playwright_script_clarification");
+  assert.equal(response.content, "Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.");
 });

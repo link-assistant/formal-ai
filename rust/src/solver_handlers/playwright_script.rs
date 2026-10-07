@@ -1,22 +1,23 @@
-use std::fmt::Write as _;
+//! Playwright script requests.
+//!
+//! Issue #918: the handler holds no prose and no example. The tool name, its
+//! misspelling and the script cues are the `playwright_tool_name` and
+//! `playwright_script_cue` roles of the seed lexicon; the docs URL is the
+//! `policy playwright_script` block of `data/seed/handler-rules.lino`; the
+//! clarification, the two leads, the starter layout and the starter
+//! TypeScript are seeded `playwright_*` responses. The browser twin
+//! (`tryPlaywrightScript` in `js/worker/formal_ai_worker_11.js`) renders the
+//! same records.
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::language::{Language, detect as detect_language};
+use crate::language::detect as detect_language;
 use crate::seed;
 use crate::solver_handlers::finalize_simple;
 
-const PLAYWRIGHT_DOCS_URL: &str = "https://playwright.dev/docs/writing-tests";
-
-const PLAYWRIGHT_STARTER_TYPESCRIPT: &str = r"import { test, expect } from '@playwright/test';
-
-test('opens the Playwright docs', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-  await expect(page).toHaveTitle(/Playwright/);
-
-  await page.getByRole('link', { name: 'Docs' }).click();
-  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();
-});";
+fn docs_url() -> String {
+    crate::rule_interpreter::handler_policy("playwright_script", "docs_url").unwrap_or_default()
+}
 
 pub fn try_playwright_script(
     prompt: &str,
@@ -28,8 +29,9 @@ pub fn try_playwright_script(
         return None;
     }
 
+    let docs = docs_url();
     log.append("script_framework", "playwright".to_owned());
-    log.append("source", PLAYWRIGHT_DOCS_URL.to_owned());
+    log.append("source", docs.clone());
     let corrected_spelling = mentions_playwright_misspelling(normalized);
     if corrected_spelling {
         log.append("spelling_correction", "Playright -> Playwright".to_owned());
@@ -39,9 +41,10 @@ pub fn try_playwright_script(
         format!("{:.2}", guess_probability.clamp(0.0, 1.0)),
     );
 
-    let language = detect_language(prompt);
+    let language = detect_language(prompt).slug();
     if guess_probability < 0.5 {
-        let body = render_clarification(language);
+        let body = seed::localized_response("playwright_script_clarification", language)
+            .unwrap_or_default();
         return Some(finalize_simple(
             prompt,
             log,
@@ -52,7 +55,7 @@ pub fn try_playwright_script(
         ));
     }
 
-    let body = render_starter(language, corrected_spelling);
+    let body = render_starter(language, corrected_spelling, &docs);
     Some(finalize_simple(
         prompt,
         log,
@@ -85,56 +88,21 @@ fn mentions_playwright_misspelling(normalized: &str) -> bool {
         .any(|form| normalized.contains(form.text.as_str()))
 }
 
-fn render_clarification(language: Language) -> String {
-    match language {
-        Language::Russian => String::from(
-            "Я могу написать Playwright-скрипт. Уточните URL страницы, действия и \
-             ожидаемую проверку. Если нужен пример по умолчанию, я могу взять \
-             стартовый сценарий из документации Playwright.",
-        ),
-        _ => String::from(
-            "I can write a Playwright script. Please provide the page URL, the \
-             actions to perform, and the expected assertion. If you want a \
-             default example, I can use the starter scenario from the Playwright docs.",
-        ),
-    }
-}
-
-fn render_starter(language: Language, corrected_spelling: bool) -> String {
-    let mut body = String::new();
-    match (language, corrected_spelling) {
-        (Language::Russian, true) => body.push_str(
-            "Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример \
-             по документации Playwright.\n\n",
-        ),
-        (Language::Russian, false) => {
-            body.push_str("Даю стартовый TypeScript-пример по документации Playwright.\n\n");
-        }
-        (_, true) => body.push_str(
-            "I interpret `Playright` as `Playwright` and will use a starter \
-             TypeScript example based on the Playwright docs.\n\n",
-        ),
-        (_, false) => body
-            .push_str("I will use a starter TypeScript example based on the Playwright docs.\n\n"),
-    }
-    let _ = writeln!(body, "Source: {PLAYWRIGHT_DOCS_URL}\n");
-    body.push_str("```typescript\n");
-    body.push_str(PLAYWRIGHT_STARTER_TYPESCRIPT);
-    body.push_str("\n```\n\n");
-    if language == Language::Russian {
-        body.push_str("Проверка:\n");
-        body.push_str("1. `npm init playwright@latest`\n");
-        body.push_str("2. `npx playwright test`\n");
-        body.push_str(
-            "\nУточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт.",
-        );
+/// The starter answer: the seeded lead (with the spelling correction when the
+/// prompt misspelled the tool), the docs source and the seeded TypeScript
+/// starter, laid out by the seeded `playwright_script_starter` record.
+fn render_starter(language: &str, corrected_spelling: bool, docs: &str) -> String {
+    let lead_intent = if corrected_spelling {
+        "playwright_script_lead_corrected"
     } else {
-        body.push_str("Check it with:\n");
-        body.push_str("1. `npm init playwright@latest`\n");
-        body.push_str("2. `npx playwright test`\n");
-        body.push_str(
-            "\nProvide the URL, actions, and expected result if you want a site-specific script.",
-        );
-    }
-    body
+        "playwright_script_lead"
+    };
+    let opening = seed::localized_response(lead_intent, language).unwrap_or_default();
+    let starter =
+        seed::localized_response("playwright_starter_typescript", "en").unwrap_or_default();
+    seed::localized_response("playwright_script_starter", language)
+        .unwrap_or_default()
+        .replace("{lead}", &opening)
+        .replace("{source}", docs)
+        .replace("{code}", &starter)
 }

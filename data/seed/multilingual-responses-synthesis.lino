@@ -815,6 +815,42 @@ multilingual_responses
     intent compound_interest_rate_unavailable
     language en
     text "I calculated the USD amount, but no {source}->{target} exchange rate is available locally."
+  response response_playwright_script_clarification_en
+    intent playwright_script_clarification
+    language en
+    text "I can write a Playwright script. Please provide the page URL, the actions to perform, and the expected assertion. If you want a default example, I can use the starter scenario from the Playwright docs."
+  response response_playwright_script_clarification_ru
+    intent playwright_script_clarification
+    language ru
+    text "Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright."
+  response response_playwright_script_lead_en
+    intent playwright_script_lead
+    language en
+    text "I will use a starter TypeScript example based on the Playwright docs."
+  response response_playwright_script_lead_ru
+    intent playwright_script_lead
+    language ru
+    text "Даю стартовый TypeScript-пример по документации Playwright."
+  response response_playwright_script_lead_corrected_en
+    intent playwright_script_lead_corrected
+    language en
+    text "I interpret `Playright` as `Playwright` and will use a starter TypeScript example based on the Playwright docs."
+  response response_playwright_script_lead_corrected_ru
+    intent playwright_script_lead_corrected
+    language ru
+    text "Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright."
+  response response_playwright_script_starter_en
+    intent playwright_script_starter
+    language en
+    text "{lead}\n\nSource: {source}\n\n```typescript\n{code}\n```\n\nCheck it with:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nProvide the URL, actions, and expected result if you want a site-specific script."
+  response response_playwright_script_starter_ru
+    intent playwright_script_starter
+    language ru
+    text "{lead}\n\nSource: {source}\n\n```typescript\n{code}\n```\n\nПроверка:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nУточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт."
+  response response_playwright_starter_typescript_en
+    intent playwright_starter_typescript
+    language en
+    text "import { test, expect } from '@playwright/test';\n\ntest('opens the Playwright docs', async ({ page }) => {\n  await page.goto('https://playwright.dev/');\n  await expect(page).toHaveTitle(/Playwright/);\n\n  await page.getByRole('link', { name: 'Docs' }).click();\n  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();\n});"
   response response_research_result_followup_no_results_en
     intent research_result_followup_no_results
     language en
