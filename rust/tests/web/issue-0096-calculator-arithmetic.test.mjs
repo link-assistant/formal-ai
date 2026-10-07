@@ -34,3 +34,19 @@ test('R125: data/seed/demo-dialogs.lino has calculator dialog entries for all fo
     assert.ok(dialogs.includes(name), `demo-dialogs.lino is missing ${name}`);
   }
 });
+
+test('R125: the browser worker answers every seeded calculator dialog as a calculation', async () => {
+  const { createWorkerContext, evaluate, plain } = await import('./support/browser-runtime.mjs');
+  const worker = createWorkerContext();
+  await evaluate(worker, 'loadSeed()');
+  const dialogs = readFileSync(join(REPO_ROOT, 'data/seed/demo-dialogs.lino'), 'utf8');
+  const requests = [...dialogs.matchAll(/^dialog_calculator_[a-z]+\n {2}greeting [^\n]+\n {2}request "([^"]+)"/gmu)].map((match) => match[1]);
+  assert.equal(requests.length, 4, 'one calculator dialog per supported language');
+  const results = {};
+  for (const request of requests) {
+    const answer = plain(await evaluate(worker, `solve(${JSON.stringify(request)}, [], {}, {}, [], {})`));
+    assert.equal(answer.intent, 'calculation', `${request}: ${answer.content}`);
+    results[request] = answer.content;
+  }
+  assert.deepEqual(Object.values(results).map((content) => /\b(64|4)\b/u.exec(content)?.[1]), ['64', '4', '4', '4'], JSON.stringify(results));
+});

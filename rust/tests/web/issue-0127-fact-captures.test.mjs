@@ -1,7 +1,11 @@
-// Issue #127 (R174): data/seed/fact-captures.lino must declare structured
-// Wikidata entity records for the nine pre-warmed countries (Russia, Japan,
-// France, Germany, China, India, United States, United Kingdom, Brazil),
-// each with labels in all four supported languages (en, ru, hi, zh).
+// Issue #127 (R174): the nine pre-warmed countries (Russia, Japan, France,
+// Germany, China, India, United States, United Kingdom, Brazil) carry
+// structured `(relation, subject_qid, value_qid, subject_label, value_label)`
+// triples with labels in every supported language. Since issue #1172 R9 the
+// triples are not written into data/seed/facts.lino: each is derived from the
+// committed Wikidata captures in data/seed/fact-captures.lino, where the
+// country's claim for the property that grounds the `capital` relation
+// (data/seed/meanings-facts.lino) names a value item captured beside it.
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -10,35 +14,45 @@ import test from 'node:test';
 
 import { REPO_ROOT } from './support/browser-runtime.mjs';
 
-const CAPTURES = readFileSync(join(REPO_ROOT, 'data/seed/fact-captures.lino'), 'utf8');
-
-// The nine pre-warmed country Wikidata QIDs as declared in the seed.
+const read = (relative) => readFileSync(join(REPO_ROOT, relative), 'utf8');
+const CAPTURES = read('data/seed/fact-captures.lino');
 const COUNTRY_QIDS = ['Q17', 'Q159', 'Q142', 'Q183', 'Q148', 'Q668', 'Q30', 'Q145', 'Q155'];
-
-// The four required label languages.
 const LANGUAGES = ['en', 'ru', 'hi', 'zh'];
 
-test('R174: fact-captures.lino holds entity records for all nine pre-warmed countries', () => {
+/** The lines of one captured entity record, or null. */
+function entity(qid) {
+  const start = CAPTURES.indexOf(`\n  entity ${qid}\n`);
+  if (start === -1) return null;
+  const end = CAPTURES.indexOf('\n  entity ', start + 1);
+  return CAPTURES.slice(start, end === -1 ? undefined : end);
+}
+
+/** The property the `capital` relation is grounded in. */
+function capitalProperty() {
+  const relation = /\n {2}capital\n {4}grounded-in (P\d+)\n/u.exec(read('data/seed/meanings-facts.lino'));
+  assert.ok(relation, 'meanings-facts.lino grounds the capital relation in a Wikidata property');
+  return relation[1];
+}
+
+test('R174: each pre-warmed country has a capital triple whose value item is captured', () => {
+  const property = capitalProperty();
   for (const qid of COUNTRY_QIDS) {
-    assert.ok(
-      CAPTURES.includes(`entity ${qid}`),
-      `fact-captures.lino is missing entity record for ${qid}`,
-    );
+    const subject = entity(qid);
+    assert.ok(subject, `fact-captures.lino has no entity record for ${qid}`);
+    const claim = new RegExp(`claim \\("${property}" "(Q\\d+)" "(?:preferred|normal)"\\)`, 'u').exec(subject);
+    assert.ok(claim, `${qid} has no ${property} claim`);
+    assert.ok(entity(claim[1]), `${qid}'s ${property} value ${claim[1]} is not captured beside it`);
   }
 });
 
-test('R174: every pre-warmed country entity has labels in en, ru, hi, and zh', () => {
+test('R174: both ends of every triple carry a label in en, ru, hi and zh', () => {
+  const property = capitalProperty();
   for (const qid of COUNTRY_QIDS) {
-    const entityStart = CAPTURES.indexOf(`entity ${qid}\n`);
-    assert.notEqual(entityStart, -1, `entity ${qid} not found`);
-    // Find the next entity boundary to scope the label search.
-    const entityEnd = CAPTURES.indexOf('\n  entity ', entityStart + 1);
-    const block = entityEnd === -1 ? CAPTURES.slice(entityStart) : CAPTURES.slice(entityStart, entityEnd);
-    for (const lang of LANGUAGES) {
-      assert.ok(
-        block.includes(`label ("${lang}" `),
-        `entity ${qid} is missing a "${lang}" label`,
-      );
+    const value = new RegExp(`claim \\("${property}" "(Q\\d+)"`, 'u').exec(entity(qid))[1];
+    for (const [role, item] of [['subject', qid], ['value', value]]) {
+      for (const language of LANGUAGES) {
+        assert.match(entity(item), new RegExp(`label \\("${language}" "[^"]+"\\)`, 'u'), `${role} ${item} lacks a ${language} label`);
+      }
     }
   }
 });

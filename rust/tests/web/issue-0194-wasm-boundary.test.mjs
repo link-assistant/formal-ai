@@ -4,7 +4,7 @@
 // boundary-defining modules.
 
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import test from 'node:test';
 
@@ -30,4 +30,16 @@ test('R194: js/wasm-worker/src/lib.rs bridges the Rust primitives to the browser
   const path = join(REPO_ROOT, 'js/wasm-worker/src/lib.rs');
   assert.ok(existsSync(path), 'js/wasm-worker/src/lib.rs is missing');
   assert.ok(statSync(path).size > 0, 'js/wasm-worker/src/lib.rs is empty');
+});
+
+test('R194: every engine call the browser worker makes is an export of the WASM crate', () => {
+  const lib = readFileSync(join(REPO_ROOT, 'js/wasm-worker/src/lib.rs'), 'utf8');
+  const exported = new Set([...lib.matchAll(/pub extern "C" fn ([a-z_]+)\(/gu)].map((match) => match[1]));
+  const workerDirectory = join(REPO_ROOT, 'js/worker');
+  const called = new Set();
+  for (const file of readdirSync(workerDirectory).filter((name) => name.endsWith('.js'))) {
+    for (const match of readFileSync(join(workerDirectory, file), 'utf8').matchAll(/wasm(?:Text|Json|U32)Call\(\s*"([a-z_]+)"|\bwasm\.((?:engine|web_search)_[a-z_]+)\(/gu)) called.add(match[1] ?? match[2]);
+  }
+  assert.ok(called.size >= 10, `only ${called.size} engine calls found in js/worker`);
+  for (const name of called) assert.ok(exported.has(name), `js/worker calls ${name}, which js/wasm-worker/src/lib.rs does not export`);
 });
