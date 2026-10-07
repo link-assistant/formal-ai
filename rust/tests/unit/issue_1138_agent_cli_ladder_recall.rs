@@ -394,3 +394,60 @@ fn continuation_pings_do_not_restart_a_literal_file_plan() {
         "the literal-file plan must reach a completion that reports the requested file; planned steps: {steps:?}"
     );
 }
+
+/// Run 37663996930 (PR #1188 dogfooding): the Agent CLI compacted the leaf's
+/// session right after the tracked-file write -- its built-in `formal-ai` model
+/// claims a 60000-token context -- so the next turn carried only the summary
+/// envelope and a continuation ping. The run re-read the file it had already
+/// changed and wrote it in full again, which crossed the threshold again: 15
+/// of 32 leaves looped read -> write until the budget ended (`missing_proof`).
+/// A re-read that already lists the member is the change observed, not a
+/// change to make: the tracked file is never rewritten.
+#[test]
+fn after_a_compaction_the_already_edited_list_is_not_rewritten() {
+    let updated = "pub const WEB_SEARCH_PROVIDERS: [&str; 4] = [\"duckduckgo\", \"brave\", \"startpage\", \"wikiquote\"];\n";
+    let envelope = format!(
+        "Conversation summary: Atomic task L01 adds wikiquote to the provider list.\n\nTitle: Add wikiquote\n\nUser turns:\n  1. {ADD_TO_LIST_LEAF}"
+    );
+    let mut messages = vec![
+        ChatMessage::user("What did we do so far?"),
+        ChatMessage::assistant(envelope),
+        ChatMessage::user("Continue if you have next steps"),
+    ];
+    let mut steps: Vec<(String, String)> = Vec::new();
+    for _ in 0..6 {
+        let completion = agent_step(&messages);
+        let Some((name, arguments)) = planned_call(&completion) else {
+            break;
+        };
+        let target: serde_json::Value =
+            serde_json::from_str(&arguments).unwrap_or(serde_json::Value::Null);
+        assert!(
+            !(name == "write"
+                && target["filePath"]
+                    .as_str()
+                    .is_some_and(|path| path.ends_with("rust/src/web_search_core.rs"))),
+            "the tracked file already lists the member and must not be rewritten: {steps:?}"
+        );
+        let id = format!("c{}", messages.len());
+        let result = if name == "read" || (name == "bash" && arguments.contains("cat")) {
+            updated.to_owned()
+        } else {
+            String::new()
+        };
+        steps.push((name.clone(), arguments.clone()));
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall {
+            id: id.clone(),
+            kind: "function".to_owned(),
+            function: formal_ai::protocol::FunctionCall {
+                name: name.clone(),
+                arguments,
+            },
+        }]));
+        messages.push(tool_reply(&id, &name, &result));
+    }
+    assert!(
+        steps.first().is_some_and(|(name, _)| name == "read"),
+        "the compacted run re-reads the tracked file first: {steps:?}"
+    );
+}

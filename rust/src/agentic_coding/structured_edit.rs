@@ -66,7 +66,11 @@ pub(super) fn plan_structured_edit_step(
     };
     let (updated, inserted) = insert_members(&source, &edit)?;
 
-    if latest_result(current_turn, Capability::Write).is_none() {
+    // Members the file already lists need no write: after a client compaction
+    // the run re-reads the file it already changed, and rewriting it in full
+    // pushed the session straight back over the compaction threshold (the
+    // issue #1028 ladder looped read -> write until its budget ran out).
+    if !inserted.is_empty() && latest_result(current_turn, Capability::Write).is_none() {
         let write_tool = tool_for(tool_names, Capability::Write)?;
         return Some(plan_one(
             write_tool,

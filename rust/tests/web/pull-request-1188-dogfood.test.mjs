@@ -305,3 +305,35 @@ describe('PR #1188 dogfood: "their sum" of two parameters reads both of them', (
     assert.equal(result.answer, answer('multiply', 'reduce_product', '*'));
   });
 });
+
+describe('PR #1188 dogfood: a compacted ladder leaf does not rewrite the list it already changed', () => {
+  const LEAF = 'Atomic task L01: Edit the tracked file `rust/src/web_search_core.rs`: add "wikiquote" to the WEB_SEARCH_PROVIDERS list. Change only that file and keep it valid Rust.';
+  const UPDATED = 'pub const WEB_SEARCH_PROVIDERS: [&str; 4] = ["duckduckgo", "brave", "startpage", "wikiquote"];\n';
+
+  test('re-read after the summary envelope -> observe -> already present, never a second write', async () => {
+    const messages = [
+      { role: 'user', content: 'What did we do so far?' },
+      { role: 'assistant', content: `Conversation summary: Atomic task L01 adds wikiquote to the provider list.\n\nTitle: Add wikiquote\n\nUser turns:\n  1. ${LEAF}` },
+      { role: 'user', content: 'Continue if you have next steps' },
+    ];
+    const calls = [];
+    let answer = null;
+    for (let step = 0; step < 6; step += 1) {
+      const plan = await planChatStep(messages, AGENT_CLI_TOOLS);
+      if (!plan || plan.kind === 'final') {
+        answer = plan ? plan.answer : null;
+        break;
+      }
+      const [call] = plan.calls;
+      const args = JSON.parse(call.arguments);
+      assert.ok(!(call.tool === 'write' && String(args.filePath).endsWith('rust/src/web_search_core.rs')), JSON.stringify(calls));
+      calls.push(call.tool);
+      const id = `c${step}`;
+      const result = call.tool === 'read' ? agentRead(UPDATED) : call.tool === 'bash' ? UPDATED : '';
+      messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
+      messages.push({ role: 'tool', tool_call_id: id, content: result });
+    }
+    assert.deepEqual(calls, ['read', 'bash']);
+    assert.equal(answer, '`rust/src/web_search_core.rs` already lists "wikiquote"; nothing needed to change.');
+  });
+});

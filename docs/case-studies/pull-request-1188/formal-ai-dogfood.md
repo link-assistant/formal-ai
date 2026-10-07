@@ -432,3 +432,59 @@ names a code construct (`coding_request_object`) and an authoring verb
 no lead. Quoted content stays exempt, and a path such as
 `learned-program-rules.lino` is not prose (it is dropped before the check).
 Worker plan-reader budget re-baselined to 505 with the reason.
+
+### Issue #1028 ladder: 15 of 32 leaves `missing_proof` (run 37663996930)
+
+**Reported diagnosis (not confirmed).** "The Rust planner stops after the
+write while the JS planner observes and finishes." The JS planner does finish
+in-process, and so does the Rust one — `rust/tests/unit/issue_1138_agent_cli_ladder_recall.rs`
+already pins that exact read → write `""` → observe shape with continuation
+pings.
+
+**Actual root cause (from the run artifact).** The third request after the
+write is the Agent CLI's *compaction* call (summarizer system prompt, no
+tools). Its log says why: `contextLimit 60000`, `currentTokens 66482`
+(input 39,691 + output 26,791 — the whole-file `write` counts as output),
+`safeLimit 38856`, `overflow: true`. The CLI ships a built-in `formal-ai`
+model with a 60,000-token context, and Formal AI counts one token per
+character, while the server advertises an effectively unlimited window
+(`/v1/models` `context_window_tokens` ≈ 1.5e10) that the ladder's config never
+passed. After compaction the session holds only the summary envelope and
+"Continue if you have next steps"; Rust recovers the task, re-reads, rewrites
+the whole file, crosses the threshold again — nine times, no proof. The JS
+server through the real CLI hits the same compaction (and then handles the
+continuation worse; see the open gap below).
+
+**Fixes.**
+- `experiments/issue_1028_agent_cli_ladder/run.sh` reads the served
+  `context_window_tokens` / `max_output_tokens` from the node's own server and
+  passes them as the model's `limit` (fallback: the old config). Confirmed
+  through the real CLI against the JS server: L01 with the limit runs read →
+  write → `cat` → final, no `overflow: true`; without it, it compacts.
+- Convergence after a compaction anyway (both roots, `structured_edit`):
+  members the re-read file already lists are not written again; the run
+  observes the file and answers "already lists …". The idempotence pins in
+  `issue_1069_structural_edit.rs` and `agentic-write.test.mjs` change with it
+  (an already-present value is observed, not rewritten).
+- All 15 failing leaves' full prompts, driven through the JS planner
+  in-process on the real target files, now change the file with its marker and
+  write both the proof and the effect file.
+
+**Tests.** Rust `after_a_compaction_the_already_edited_list_is_not_rewritten`
+(post-compaction transcript: summary envelope + ping → read → never a write
+of the tracked file); JS twin in `pull-request-1188-dogfood.test.mjs`
+(read → `cat` → "`rust/src/web_search_core.rs` already lists "wikiquote";
+nothing needed to change."). `data/meta/ladder-ratchet.lino` is untouched; the
+CI run measures it.
+
+**Open.**
+- `formal-ai with agent` writes the same limit-less model block (no render
+  placeholder carries the served window), so ordinary CLI users hit the same
+  compaction on large files.
+- The browser worker answers the compaction request with conversation
+  statistics (`## Conversation summary`, `formal_ai_worker_05.js`), not the
+  native `Conversation summary: … / User turns:` envelope that
+  `compactedAgentTask` reads, so after a compaction the JS planner loses the
+  task (it web-searched "What did we do so far?").
+- Upstream: the CLI could take a provider's limits from its `/v1/models`
+  instead of a built-in 60,000.

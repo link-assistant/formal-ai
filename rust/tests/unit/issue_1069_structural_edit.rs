@@ -169,12 +169,13 @@ fn issue_1069_insertion_is_idempotent() {
     )];
     let read = next_call(&messages);
     record(&mut messages, &read, source);
-    let write = next_call(&messages);
-    assert_eq!(
-        argument(&write, "content"),
-        source,
-        "a value that is already present leaves the bytes unchanged"
-    );
+    // A value that is already present needs no write at all (PR #1188
+    // dogfooding: rewriting the unchanged file after a client compaction kept
+    // the issue #1028 ladder over the compaction threshold); the run observes
+    // the file instead.
+    let observe = next_call(&messages);
+    assert_eq!(observe.tool, "run_shell_command");
+    assert_eq!(argument(&observe, "command"), "cat names.rs");
 }
 
 /// The same request with the target path in prose markup. The probe sent this

@@ -48,7 +48,11 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
   const result = insertMembers(source, edit);
   if (!result) return null;
   const [updated, inserted] = result;
-  if (latestResult(currentTurn, Capability.Write) === null) {
+  // Members the file already lists need no write: after a client compaction
+  // the run re-reads the file it already changed, and rewriting it in full
+  // pushed the session straight back over the compaction threshold (the
+  // issue #1028 ladder looped read -> write until its budget ran out).
+  if (inserted.length && latestResult(currentTurn, Capability.Write) === null) {
     const writeTool = toolFor(toolNames, Capability.Write);
     return writeTool ? planOne(writeTool, writeArguments(edit.target, updated)) : null;
   }

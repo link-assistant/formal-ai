@@ -378,7 +378,22 @@ PY
     return 1
   fi
 
-  config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}' "$port")"
+  # The model's limits come from the server, not from the client's built-in
+  # table. The Agent CLI ships a `formal-ai` model with a 60000-token context,
+  # and Formal AI counts one token per character, so a single read and write of
+  # a 25 KB source file crossed the CLI's compaction threshold: the session was
+  # summarized, the read and write evidence vanished, and the leaf re-planned
+  # read -> write until its budget ran out without a proof (run 37663996930,
+  # 15 of 32 leaves `missing_proof`; PR #1188 dogfooding). The served
+  # `/v1/models` states the real window and output cap.
+  limits="$(curl -fsS "http://127.0.0.1:$port/api/openai/v1/models" \
+    | python3 -c 'import json, sys; m = json.load(sys.stdin)["models"][0]; print(m["context_window_tokens"], m["max_output_tokens"])' \
+    2>/dev/null || true)"
+  model_limit=""
+  if [[ "$limits" =~ ^([0-9]+)\ ([0-9]+)$ ]]; then
+    model_limit="$(printf ',\"limit\":{\"context\":%s,\"output\":%s}' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}")"
+  fi
+  config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"%s}}}},\"model\":\"formalai/formal-ai\"}' "$port" "$model_limit")"
 
   if [[ "$depth" -eq 5 ]]; then
     printf -v effect_contract 'Apply the change to the tracked file `%s` itself -- the file has to end up modified in the Git worktree, and nothing else may change. Then create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text %s.' \
