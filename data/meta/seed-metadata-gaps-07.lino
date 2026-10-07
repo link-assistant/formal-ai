@@ -151,6 +151,10 @@ seed_metadata_gaps
     source "data/seed/meanings-software-project.lino"
     record "scaffold"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_daca6f7229c54b47
+    source "data/seed/meanings-statistics.lino"
+    record "word_problem_share"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_cd0648ff75f66da7
     source "data/seed/meanings-summary.lino"
     record "summary_statement_kind"

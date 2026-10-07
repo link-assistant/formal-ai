@@ -59,6 +59,10 @@ seed_metadata_gaps
     source "data/seed/meanings-conversation.lino"
     record "memory_append_directive"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_e55f9369d5a3cbd3
+    source "data/seed/meanings-facts.lino"
+    record "fact_comparison_request"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_e5d9e0ca62d688a3
     source "data/seed/meanings-feature-capability.lino"
     record "feature_capability_configuration"

@@ -254,28 +254,22 @@ fn numbered(items: &[String], count: usize) -> String {
         .join("\n")
 }
 
-fn fact_records() -> &'static [FactRecord] {
-    static CELL: OnceLock<Vec<FactRecord>> = OnceLock::new();
-    CELL.get_or_init(seed::facts).as_slice()
-}
-
 /// Whether the committed fact store has a record for this prompt.
 ///
 /// The planner's open-web gate asks whether the symbolic engine can answer a
 /// request before releasing it to the open web (issue #989). Concepts and
-/// computations already answer there; a question the fact store matches --
-/// subject alias plus question keyword at word boundaries (issue #1172), so
-/// the United States alias "us" never matches inside "australia" and an
-/// unseeded subject correctly falls through to `false`, exactly the dispatch
-/// the solver's `fact_lookup` row runs -- is equally answerable, and planning
-/// a web search for it would discard the answer the engine already owns
+/// computations already answer there; a question the fact store's subject
+/// gate admits -- the formalized subject's Q-id equals a record's
+/// `subject_qid` (issue #1172 R2), with word-boundary alias matching only as
+/// the last-resort hint for Q-id-less records, so an unseeded subject such as
+/// Australia correctly falls through to `false`, exactly the dispatch the
+/// solver's `fact_lookup` row runs -- is equally answerable, and planning a
+/// web search for it would discard the answer the engine already owns
 /// (issue #1138).
 #[must_use]
 pub fn fact_store_resolves(prompt: &str) -> bool {
     let normalized = crate::engine::normalize_prompt(prompt);
-    fact_records()
-        .iter()
-        .any(|record| record.matches_normalized(&normalized))
+    super::factual_qa::gated_fact_record(prompt, &normalized).is_some()
 }
 
 /// Detect which knowledge-base relation a prompt asks about.
@@ -322,17 +316,24 @@ fn detect_subject_alias<'a>(record: &'a FactRecord, normalized: &str) -> Option<
         .map(String::as_str)
 }
 
+/// The `fact_lookup` row: a question over prompt-supplied text (issue #1172
+/// R7) and a comparison of seeded subjects (R6) first, then the seeded record
+/// the subject gate admits (R2).
 pub fn try_fact_lookup(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let record = fact_records()
-        .iter()
-        .find(|record| record.matches_normalized(normalized))?;
+    if let Some(answer) = super::prompt_text_question::try_prompt_text_question(prompt, log)
+        .or_else(|| super::factual_qa::try_fact_comparison(prompt, log))
+    {
+        return Some(answer);
+    }
+    let (record, gate) = super::factual_qa::gated_fact_record(prompt, normalized)?;
 
     log.append("fact_lookup:request", prompt.to_owned());
     log.append("fact_lookup:hit", record.slug.clone());
+    log.append("fact_lookup:subject_gate", gate);
 
     // Structured fact_query trace events (Issue #127). When the matched record
     // declares a `relation`, surface the parsed (relation, subject) tuple so

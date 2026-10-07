@@ -620,5 +620,12 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // including the `personal_facts_listing_request` role the personal-facts
     // paydown added: its five reviewed fields are pending reviewed data, so
     // it is a gap row like its siblings, not a silent omission.
-    assert_eq!(expected_gaps.len(), 737);
+    // Recounted 2026-10-07 the shards hold 778: the census-stale legs had again
+    // hidden 33 rows of reviewed-data gaps from the seed growth of issues
+    // #1163-#1187 (the `software_object_*` roles among them), and this batch
+    // adds eight -- the five `word_problem_*` relation meanings of #1176 R2
+    // and three factual-question cues of #1172 (`fact_comparison_request`,
+    // `fact_comparison_joiner`, `prompt_text_question_cue`) -- each a role whose four
+    // other reviewed fields are pending data.
+    assert_eq!(expected_gaps.len(), 778);
 }

@@ -285,6 +285,18 @@ sources_registry
     license_url "https://creativecommons.org/licenses/by/3.0/"
     cache_path data/cache/conventional-commits/
     note "The styleguide URL the commit-message genre cites (data/seed/writing-genre-styleguides.lino, issue #1174 R4); the genre templates are the seed's and this page is the named authority behind them. No runtime fetch path binds it; registered so the citation is provenance-tracked like every other named source, as the issue's design asked."
+  source web_page
+    name "Formalized web page"
+    kind web_page
+    default_enabled true
+    how_to_role none
+    extractor generic_page_v1
+    primacy citation
+      upstream "whatever record the page itself reports"
+      basis "A page reached through web search is not a registered publisher, so as a registry row it holds the weakest grade; each page's own trust score from data/seed/source-trust-weights.lino ranks it among the results instead."
+    license_name "Varies (per page)"
+    cache_path data/cache/web-pages/
+    note "Any page web search returns, read by the generic page formalizer (rust/src/web_formalize.rs, issue #1163 R12) into headings, paragraphs, lists, table rows and language-tagged code blocks. It declares no need kinds and no endpoint, so the source walker never visits it on its own; a search result reaches it through the generic_page_v1 extractor, and each page keeps its own URL, SHA-256 and rediscovery record."
   source derivations
     name "Formal AI derivation records"
     kind local_record_store

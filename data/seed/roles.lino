@@ -319,6 +319,10 @@ roles
     kind predicate
   fact_check_current_dialogue_query
     kind meaning
+  fact_comparison_cue
+    kind predicate
+  fact_comparison_joiner
+    kind meaning
   fact_relation
     kind predicate
   feature_action_arithmetic
@@ -597,6 +601,8 @@ roles
     kind predicate
   projection_route
     kind predicate
+  prompt_text_question_cue
+    kind meaning
   proof_claim_scaffold
     kind predicate
   proof_concept_determinism
@@ -912,6 +918,10 @@ roles
   wikidata_entity_anchor
     kind predicate
   word_problem_marker
+    kind predicate
+  word_problem_question
+    kind meaning
+  word_problem_relation
     kind predicate
   workspace_inspection_action
     kind predicate

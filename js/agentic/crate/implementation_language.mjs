@@ -5,7 +5,8 @@
 // (rust/src/knowledge.rs) answered by the worker realm's twin
 // `codingOracleKnowsLanguage` behind the same seed `bootstrap` gate.
 
-import { cached, childValue, childrenNamed, parseLino, readText, realm } from '../host.mjs';
+import { cached } from '../host.mjs';
+import { oracleKnowsLanguage } from './discovery_production.mjs';
 import { normalizePrompt } from './engine.mjs';
 import { programLanguageByAlias, programLanguageBySlug } from './coding_catalog.mjs';
 import { wordsForRole, wordsForRoleInLanguages } from '../write_lexicon.mjs';
@@ -26,20 +27,13 @@ const isPreposition = (token) => prepositionSurfaces().includes(token);
 const isLanguageNoun = (token) => languageNounSurfaces().includes(token);
 const isFunctionWord = (token) => functionWords().includes(token);
 
-/** Mirrors `fn bootstrap_cache_active` in rust/src/knowledge.rs. */
-function bootstrapCacheActive() {
-  return cached('program-cache-bootstrap', () => {
-    const root = parseLino(readText('data/seed/program-cache-policy.lino'));
-    const policy = root.children[0];
-    const bootstrap = childrenNamed(policy, 'bootstrap')[0];
-    return Boolean(bootstrap) && childValue(bootstrap, 'active') === 'true';
-  });
-}
-
-/** Mirrors `CodingOracle::knows_language`. */
-export function oracleKnowsLanguage(language) {
-  return bootstrapCacheActive() && Boolean(realm().codingOracleKnowsLanguage(language));
-}
+/**
+ * Mirrors `CodingOracle::knows_language`. The bootstrap gate is read by the
+ * procedure-cache twin, whose `parseRoot` keeps the policy document's single
+ * top-level record (a bare `parseLino` collapsed it, so the gate never read
+ * `bootstrap active true` and every language was unknown).
+ */
+export { oracleKnowsLanguage };
 
 /** Mirrors `fn is_known`. */
 export function isKnown(language) {

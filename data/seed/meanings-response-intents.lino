@@ -426,3 +426,83 @@ meanings
     unit "not applicable"
     example "Cached source wikipedia has been queued for refresh against its origin URL."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  fact_comparison
+    defined-by answer
+    role localized_response_template
+    precondition "a comparison of two subjects that both have seeded fact records is answered"
+    effect "both subjects' seeded properties are aligned by relation and the differences are stated"
+    unit "not applicable"
+    example "Japan and Russia, compared on their seeded facts. Difference in capital: Tokyo for Japan, Moscow for Russia."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_row
+    defined-by answer
+    role localized_response_template
+    precondition "one relation row of a seeded-fact comparison is rendered"
+    effect "the relation is listed with each subject's seeded value"
+    unit "not applicable"
+    example "- capital: Japan — Tokyo; Russia — Moscow"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_known_row
+    defined-by answer
+    role localized_response_template
+    precondition "one relation row of the side a comparison gap does know is rendered"
+    effect "the relation is listed with its seeded value"
+    unit "not applicable"
+    example "- capital: Tokyo"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_missing_value
+    defined-by answer
+    role localized_response_template
+    precondition "a comparison row lacks a seeded value for one subject"
+    effect "the missing side is marked instead of guessed"
+    unit "not applicable"
+    example "no seeded value"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_difference
+    defined-by answer
+    role localized_response_template
+    precondition "a relation seeded for both compared subjects carries different values"
+    effect "the difference is stated with both values"
+    unit "not applicable"
+    example "Difference in capital: Tokyo for Japan, Moscow for Russia."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_same
+    defined-by answer
+    role localized_response_template
+    precondition "a relation seeded for both compared subjects carries the same value"
+    effect "the shared value is stated once"
+    unit "not applicable"
+    example "Same capital for both: Tokyo."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_unaligned
+    defined-by answer
+    role localized_response_template
+    precondition "a relation is seeded for only one compared subject"
+    effect "the relation is named as not comparable yet"
+    unit "not applicable"
+    example "capital is seeded only for Japan, so it cannot be compared yet."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_gap
+    defined-by answer
+    role localized_response_template
+    precondition "a comparison names one subject with seeded facts and one without"
+    effect "the missing side is named and the known side's facts are listed"
+    unit "not applicable"
+    example "I can compare Japan and Australia only from seeded facts, and I have none for Australia."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_answer
+    defined-by answer
+    role localized_response_template
+    precondition "a question over prompt-supplied text is answered from that text alone"
+    effect "the sentence of the text that covers the question is quoted"
+    unit "not applicable"
+    example "The text answers this: «The meeting moved to Thursday at 3 pm in room 204.»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_gap
+    defined-by answer
+    role localized_response_template
+    precondition "no sentence of the prompt-supplied text covers the question"
+    effect "the answer says the text does not say, naming the uncovered words"
+    unit "not applicable"
+    example "The given text does not say: none of its sentences mentions ceo."
+    grounding "data/seed/multilingual-responses-entities.lino"

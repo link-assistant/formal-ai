@@ -163,10 +163,17 @@ pub fn execute_source_research<T: SourceTransport>(
     let limit = page_limit.min(WEB_SEARCH_PROVIDER_LIMIT as usize);
     for ranking in search.fused.iter().take(limit) {
         match client.fetch(&ranking.url) {
-            Ok(capture) => pages.push(ResearchPage {
-                ranking: ranking.clone(),
-                capture,
-            }),
+            Ok(capture) => {
+                // Issue #1163 R6: every captured page enters the solver's
+                // working memory under its URL and SHA-256, so a later solve
+                // reuses the formalized network instead of re-formalizing.
+                let rank = u32::try_from(pages.len() + 1).unwrap_or(u32::MAX);
+                let _ = crate::web_formalize::remember_capture(&capture, query, rank);
+                pages.push(ResearchPage {
+                    ranking: ranking.clone(),
+                    capture,
+                });
+            }
             Err(error) => failures.push(ResearchFailure {
                 url: ranking.url.clone(),
                 error,
@@ -179,6 +186,32 @@ pub fn execute_source_research<T: SourceTransport>(
         pages,
         failures,
     })
+}
+
+/// Whether a need of `kind` has no registered source to ask (issue #1163
+/// R4): no row of `data/seed/sources-registry.lino` declares the kind, so
+/// web search is the only entry point left. `NeedKind::None` is no need at
+/// all and never routes anywhere.
+#[must_use]
+pub fn need_routes_to_web_search(kind: crate::needs::NeedKind) -> bool {
+    kind != crate::needs::NeedKind::None
+        && !crate::seed::source_registry()
+            .iter()
+            .any(|record| record.answers(kind))
+}
+
+/// Research a need no registered source covers through the web-search
+/// boundary (issue #1163 R4): the fused results are captured and each page
+/// is formalized into working memory, exactly as [`execute_source_research`]
+/// does. `None` when a registered source declares the kind, so the registry
+/// walk stays that need's route and nothing here changes it.
+pub fn research_unmatched_need<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    kind: crate::needs::NeedKind,
+    subject: &str,
+    page_limit: usize,
+) -> Option<Result<SourceResearchExecution, FetchError>> {
+    need_routes_to_web_search(kind).then(|| execute_source_research(client, subject, page_limit))
 }
 
 /// Source research that has already updated an associative option network.

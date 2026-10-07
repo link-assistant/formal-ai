@@ -91,6 +91,7 @@ pub fn plan_symbolic_command_reroute(
             write_tool
         };
         let failed_path = next_file().map_or(recipe.path.as_str(), |(path, _)| path);
+        let mut repair_note = String::new();
         if failure.from_run {
             if let Some(plan) = super::prerequisite_recovery::plan_recovery(
                 messages,
@@ -105,21 +106,22 @@ pub fn plan_symbolic_command_reroute(
                 .with_exit_code(failure.exit_code)
                 .with_failed_command(Some(step.to_owned()))
                 .with_artifact_path(failed_path);
-            if let Some(plan) = super::repair_loop::plan_repair(
-                messages,
-                tool_names,
-                &failed,
-                progress.repair_rung.saturating_sub(1),
-                super::repair_loop::MAX_REPAIR_RUNGS,
-            ) {
-                return Some(plan);
+            let rung = progress.repair_rung.saturating_sub(1);
+            let max_rungs = super::repair_loop::MAX_REPAIR_RUNGS;
+            match super::repair_loop::repair_step(messages, tool_names, &failed, rung, max_rungs) {
+                super::repair_loop::RepairOutcome::Stop(stop) => {
+                    repair_note =
+                        super::repair_loop::stop_note(messages, &failed, stop, rung, max_rungs);
+                }
+                outcome => return outcome.plan(),
             }
         }
-        return Some(AgenticPlan::Final(failure.report(
-            messages,
-            failed_path,
-            step,
-        )));
+        let mut report = failure.report(messages, failed_path, step);
+        if !repair_note.is_empty() {
+            report.push_str("\n\n");
+            report.push_str(&repair_note);
+        }
+        return Some(AgenticPlan::Final(report));
     }
     if let Some((path, source)) = next_file() {
         return Some(one_call(write_tool, write_arguments(path, source)));

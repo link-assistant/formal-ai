@@ -34,6 +34,32 @@ fn synthesis_solver() -> UniversalSolver {
     })
 }
 
+/// The complete documented answer of a parity case whose answer is the same
+/// on every host.
+fn documented_answer(id: &str) -> &'static str {
+    match id {
+        "e34_algebra_substitution" => "17",
+        "e34_numeric_word_problem_renumbered" => "36",
+        "e34_object_counting_filtered_category" => "3",
+        "e34_program_synthesis_unseen_count_vowels" => {
+            "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef count_vowels(text: str):\n    return sum(1 for character in text if character in 'aeiouAEIOU')\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#sum (PSF-2.0)\n- https://www.unicode.org/versions/Unicode15.1.0/ch03.pdf (PSF-2.0)"
+        }
+        "e34_text_manipulation_chain" => "RULES NOTATION LINKS",
+        "e1174_summarization_free_text" => {
+            "The Halley research station, opened in 1956, is used to study the Antarctic ice \
+                 shelf. It provides year-round measurements of ozone and sea temperature."
+        }
+        "e1176_statistics_mean_median" => {
+            "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nmean: 18 (108 / 6 = 18)\nmedian: \
+                 15.5 ((15 + 16) / 2 = 15.5)"
+        }
+        "e1172_seeded_capital_subject_gate" => {
+            "The capital of the United States is Washington, D.C."
+        }
+        other => panic!("fixture lacks a complete documented answer for {other}"),
+    }
+}
+
 #[test]
 fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
     let cases: Vec<CrossRuntimeParityCase> =
@@ -42,25 +68,16 @@ fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
 
     for case in cases {
         let response = solver.solve(&case.prompt);
+        // `None` documents a case whose full answer varies by host: the
+        // formalization answer states whether `lean`/`coqc` sit in PATH, so
+        // its fixed parts are pinned by the fixture's fragments instead.
         let documented = match case.id.as_str() {
-            "e34_algebra_substitution" => "17",
-            "e34_numeric_word_problem_renumbered" => "36",
-            "e34_object_counting_filtered_category" => "3",
-            "e34_program_synthesis_unseen_count_vowels" => {
-                "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef count_vowels(text: str):\n    return sum(1 for character in text if character in 'aeiouAEIOU')\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#sum (PSF-2.0)\n- https://www.unicode.org/versions/Unicode15.1.0/ch03.pdf (PSF-2.0)"
-            }
-            "e34_text_manipulation_chain" => "RULES NOTATION LINKS",
-            "e1174_summarization_free_text" => {
-                "The Halley research station, opened in 1956, is used to study the Antarctic ice \
-                 shelf. It provides year-round measurements of ozone and sea temperature."
-            }
-            "e1176_statistics_mean_median" => {
-                "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nmean: 18 (108 / 6 = 18)\nmedian: \
-                 15.5 ((15 + 16) / 2 = 15.5)"
-            }
-            other => panic!("fixture lacks a complete documented answer for {other}"),
+            "e1186_formalization_first_order" => None,
+            documented => Some(documented_answer(documented)),
         };
-        assert_eq!(response.answer, documented);
+        if let Some(documented) = documented {
+            assert_eq!(response.answer, documented);
+        }
         assert_eq!(
             response.intent, case.expected_intent,
             "{} should preserve the expected Rust intent; answer: {}",

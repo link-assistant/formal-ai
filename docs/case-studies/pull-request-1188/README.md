@@ -61,6 +61,7 @@ The full list is [`raw-data/commits.txt`](raw-data/commits.txt).
 | 2026-10-07 | `46d45c9e1` .. `7688c93db` | Full-suite repairs, 234 test-target clippy fixes, workflow hardening. |
 | 2026-10-07 | `7d4f110d2`, `6872307e4`, `a0e1786ee`, `49447ab5c` | HTML walker, role registry, agentic call arguments, REST issue URLs, quoted-literal masking. |
 | 2026-10-07 | `2e1d6cb62` | Lean and Rocq keep the negation of a "No ..." statement. |
+| 2026-10-07 | requirement-drafting batch | Every planned open row drafted: #1163/#1164 JS twins and working memory, #1172 subject-verified facts, #1176 word relations and Wikidata-checked unit factors, #1177 GROUP BY, #1180 history store, #1184 rule stage and JS twin, #1185 honest repair stops, #1186 deformalization and probe set, #1187 optional credentials. |
 
 ## CI history
 
@@ -143,6 +144,20 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     formalization seed nesting, creative-composition roots, a double `≈` in
     unit conversion, code_debugging's whitespace scan); each was fixed to
     match the JS twin.
+12. **Stale pins hidden behind earlier failures.** The full suite of run
+    37574144432 failed only on the issue #918 metadata-gap pin (737, while the
+    shards held 770): every earlier leg had died at the census-freshness step
+    before the unit tests ran, so 33 reviewed-data gap rows from the seed
+    growth of #1163 to #1187 accumulated unpinned. The pin now records the
+    recount, including the eight meanings this batch added.
+13. **Rules reach the derivation by data.** Instead of teaching
+    `derivation.rs` the event names of the text-transform handlers, the
+    derivation schema seed declares which event kinds a `rule` stage collects;
+    a new handler joins `formal-ai explain` by naming its kind there (#1174 R9).
+14. **A stopped loop says why.** The repair loop's ladder-exhausted and
+    unresolved-need notes and its attempt chain existed but never reached an
+    answer; the executor now appends them to the failure report in both roots
+    (#1185 R4 to R6).
 
 ## Constraints
 

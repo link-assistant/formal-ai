@@ -148,7 +148,7 @@ fact_capital_japan
   relation capital
   subject_qid Q17
   value_qid Q1490
-  subject_aliases ("japan" "japan's" "japans" "япония" "японии" "япония's" "जापान" "जापानी" "日本")
+  subject_aliases ("japan" "japan's" "japans" "япония" "японии" "японию" "японией" "япония's" "जापान" "जापानी" "日本")
   question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Japan is Tokyo."
   source "https://en.wikipedia.org/wiki/Tokyo"
@@ -184,7 +184,7 @@ fact_capital_russia
   relation capital
   subject_qid Q159
   value_qid Q649
-  subject_aliases ("russia" "russia's" "russias" "russian federation" "россия" "россии" "россию" "российская федерация" "российской федерации" "रूस" "रूसी संघ" "俄罗斯" "俄羅斯")
+  subject_aliases ("russia" "russia's" "russias" "russian federation" "россия" "россии" "россию" "россией" "российская федерация" "российской федерации" "रूस" "रूसी संघ" "俄罗斯" "俄羅斯")
   question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Russia is Moscow."
   source "https://en.wikipedia.org/wiki/Moscow"

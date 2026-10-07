@@ -45,6 +45,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
 | Question necessity | #920 | [`question-necessity-suite.lino`](../data/benchmarks/question-necessity-suite.lino) | `issue_920_question_necessity_benchmark_ratchets_down` | ≤60 questions per 100 tasks |
 | Conversational wording variations | #933 (from #123) | [`conversational-variations-suite.lino`](../data/benchmarks/conversational-variations-suite.lino) | `conversational_variation_benchmark_routes_every_case` | 228 (and ≥5 wordings per case per language) |
+| Formalization probe set (en/ru/hi/zh) | #1186 R10 | [`formalization/`](../data/benchmarks/formalization/) | `every_probe_formalizes_to_its_expected_clause` | 44 (≥10 per language; universal, existential, negation, relation) |
 
 The `minimum_pass_count` column is the **curated** floor: it counts cases the
 repository's own suite must pass before a run counts, and it never measures the

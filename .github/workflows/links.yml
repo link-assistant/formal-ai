@@ -14,6 +14,9 @@ on:
       - 'scripts/recheck-broken-links.mjs'
       - 'scripts/recheck-broken-links.test.mjs'
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     paths:
       - '**.md'

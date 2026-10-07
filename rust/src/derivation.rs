@@ -29,8 +29,10 @@ use crate::event_log::EventLog;
 use crate::execution_evidence::Evidence;
 use crate::links_format::push_lino_node;
 use crate::seed::parser::parse_lino;
+use std::collections::BTreeSet;
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 
 /// What a stage a route never populated is reported as (R5). Public so the
 /// CLI renderer and the tests quote one spelling.
@@ -57,6 +59,39 @@ pub const RENDER_EMIT_KIND: &str = "render:emit";
 /// Event kind a verified route appends per executed check, with
 /// `evidence_id=… command=… exit=…` fields (verifiable-task route).
 pub const VERIFICATION_KIND: &str = "verify:evidence";
+
+/// The record's shape and stage vocabulary as data (`data/seed/derivation-schema.lino`).
+const SCHEMA: &str = include_str!("../embedded/data/seed/derivation-schema.lino");
+/// The schema field a rule-applying handler's stages collect into (issue
+/// #1174 R9): a register substitution, a grammar fix with its rule, a
+/// style-guide clause, a summarization bound, a translation step.
+const APPLIED_RULE_FIELD: &str = "rule";
+
+/// The [`EventLog`] kinds the schema's `stage` rows declare as collecting
+/// [`APPLIED_RULE_FIELD`]. A handler joins the record by naming its event
+/// kind in the schema, not by an edit here.
+fn applied_rule_kinds() -> &'static BTreeSet<String> {
+    static KINDS: OnceLock<BTreeSet<String>> = OnceLock::new();
+    KINDS.get_or_init(|| {
+        parse_lino(SCHEMA)
+            .children
+            .iter()
+            .flat_map(|schema| schema.children.iter())
+            .filter(|row| row.name == "stage")
+            .filter(|row| row.find_child_value("collects") == APPLIED_RULE_FIELD)
+            .map(|row| row.find_child_value("kind").to_owned())
+            .filter(|kind| !kind.is_empty())
+            .collect()
+    })
+}
+
+/// One rule a handler applied: the event kind that names the rule family
+/// and the payload that names the rule and what it changed.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct AppliedRule {
+    pub kind: String,
+    pub detail: String,
+}
 
 /// Where durable derivation records live under the repository root.
 pub const DERIVATIONS_DIR: &str = "data/cache/derivations";
@@ -145,6 +180,7 @@ pub struct Derivation {
     pub recomposition: Option<String>,
     pub rendering: Option<String>,
     pub verification: Vec<VerificationRecord>,
+    pub applied_rules: Vec<AppliedRule>,
 }
 
 /// The content-addressed id every answer carries (R1).
@@ -226,6 +262,12 @@ impl Derivation {
                         derivation.verification.push(record);
                     }
                 }
+                kind if applied_rule_kinds().contains(kind) => {
+                    derivation.applied_rules.push(AppliedRule {
+                        kind: kind.to_owned(),
+                        detail: event.payload.clone(),
+                    });
+                }
                 _ => {}
             }
         }
@@ -270,6 +312,11 @@ impl Derivation {
                 .exit_code
                 .map_or_else(|| String::from("none"), |code| code.to_string());
             push_lino_node(&mut out, 4, "exit", Some(&exit));
+        }
+        for rule in &self.applied_rules {
+            push_lino_node(&mut out, 2, APPLIED_RULE_FIELD, None);
+            push_lino_node(&mut out, 4, "kind", Some(&rule.kind));
+            push_lino_node(&mut out, 4, "detail", Some(&rule.detail));
         }
         out
     }
@@ -319,6 +366,10 @@ impl Derivation {
                         },
                     });
                 }
+                APPLIED_RULE_FIELD => derivation.applied_rules.push(AppliedRule {
+                    kind: child.find_child_value("kind").to_string(),
+                    detail: child.find_child_value("detail").to_string(),
+                }),
                 _ => {}
             }
         }
@@ -387,6 +438,14 @@ impl Derivation {
                     .exit_code
                     .map_or_else(|| String::from("none"), |code| code.to_string());
                 let _ = writeln!(out, "    {} exit={}", record.command, exit);
+            }
+        }
+        let _ = writeln!(out, "  stage applied_rules");
+        if self.applied_rules.is_empty() {
+            let _ = writeln!(out, "    {NOT_RECORDED}");
+        } else {
+            for rule in &self.applied_rules {
+                let _ = writeln!(out, "    {} {}", rule.kind, rule.detail);
             }
         }
         out

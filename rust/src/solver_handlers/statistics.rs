@@ -28,6 +28,7 @@ use super::calendar::contains_term;
 use super::numeric_list::parse_numbers;
 
 mod primality;
+mod word_relations;
 
 /// Seed meaning slugs carrying the word-problem markers of issue #1176.
 const MARKER_UNIT_PRICE: &str = "word_problem_unit_price";
@@ -823,7 +824,7 @@ pub fn handle_word_problem(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     if !mentions_marker(normalized, MARKER_UNIT_PRICE) {
-        return None;
+        return word_relations::relation_word_problem(prompt, normalized, log);
     }
     let lowered = prompt.to_lowercase();
     let (values, positions) = stated_numbers(&lowered)?;
@@ -916,5 +917,5 @@ pub fn handle_word_problem(
         ));
     }
 
-    None
+    word_relations::relation_word_problem(prompt, normalized, log)
 }

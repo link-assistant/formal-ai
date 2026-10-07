@@ -833,3 +833,42 @@ pub fn ladder_note(language: &str, rung: u8, max_rungs: u8) -> String {
 pub fn unresolved_note(language: &str, query: &str) -> String {
     template("repair_unresolved_need", language, &[("query", query)])
 }
+
+/// The closing note for a stopped loop, appended to the failure report.
+///
+/// A spent ladder (R4) or an unmatched diagnostic (R6) is named in the
+/// request's language, and the attempt chain follows as the
+/// `repair_attempts` evidence record (R5), so the answer carries what the
+/// loop tried. Empty when the loop never ran a rung (no diagnostic, no
+/// tools): today's failure report then stands on its own.
+#[must_use]
+pub fn stop_note(
+    messages: &[ChatMessage],
+    failure: &FailedStep,
+    stop: RepairStop,
+    ladder_rung: u8,
+    max_rungs: u8,
+) -> String {
+    let language = crate::language::detect(
+        &crate::protocol::latest_user_request(messages).unwrap_or_default(),
+    )
+    .slug();
+    let note = match stop {
+        RepairStop::Exhausted => ladder_note(language, ladder_rung, max_rungs),
+        RepairStop::NoMatch => {
+            let Some(primary) = formalize_diagnostic(&failure.language, &failure.reported)
+                .into_iter()
+                .next()
+            else {
+                return String::new();
+            };
+            unresolved_note(language, &search_query(&failure.language, &primary))
+        }
+        RepairStop::NoDiagnostic | RepairStop::NoTools => return String::new(),
+    };
+    let attempts = attempts_from(messages, failure);
+    if attempts.is_empty() {
+        return note;
+    }
+    format!("{note}\n\n```lino\n{}```", evidence_document(&attempts))
+}

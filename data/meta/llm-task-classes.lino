@@ -246,9 +246,9 @@ llm_task_classes
     benchmark "miniF2F" benchmark_url "https://github.com/openai/miniF2F"
     benchmark "ProofNet"
     formal_version "Render the informal statement in the target formal system through the relative meta logic and round-trip check"
-    status "0.347.0: canned search paragraph, no answer; open"
+    status "0.347.0: canned search paragraph, no answer; branch: formalization handler landed with the 44-probe set in data/benchmarks/formalization and parity case e1186, unmeasured until the release probe runs"
     tracking_issue 1186
-    evidence "https://github.com/link-assistant/formal-ai/issues/1186"
+    evidence "rust/tests/unit/issue_1186_formalization_probe_set.rs"
   class repository_qa
     name "Repository question answering"
     llm_strength "Recall of popular-library APIs, weak on private code"

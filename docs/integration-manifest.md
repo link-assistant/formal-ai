@@ -11,23 +11,18 @@ file, a section, and an edit.
 ## Pending
 
 - `pending:` `.github/workflows/release.yml` — #1187 R1: the five
-  `build-push-action` steps' credentials come from
-  `actions/automation-token` (replace `FORMAL_AI_BOT_TOKEN` reads);
+  `build-push-action` steps' registry credentials come from
+  `actions/automation-token` where they push to GitHub (release.yml reads
+  no `FORMAL_AI_BOT_TOKEN`; its GitHub writes use `secrets.GITHUB_TOKEN`);
   #1084: the five steps (lines ~151, 715, 760, 920, 963 as of e4193a615)
   pass `platforms: linux/amd64,linux/arm64` or delegate to
-  `container-images.yml` via `workflow_call`; #1187 R3: a `mode` input
-  (default `checks`) guards every release/publish/tag job with
-  `github.ref == 'refs/heads/main'` (the `workflow_dispatch` jobs at lines
-  ~193, 263, 295, 383, 580 currently run on any dispatch).
-- `pending:` `.github/workflows/layered-ci.yml` — #1187 R2: add
-  `workflow_dispatch` with `mode: checks` + `pull-request` inputs; add
-  `branches-ignore: e2e/**` to the `pull_request` trigger (R4).
-- `pending:` `.github/workflows/evidence-check.yml` — #1187 R2: same as layered-ci.
-- `pending:` `.github/workflows/workflows.yml` — #1187 R2: same as layered-ci.
-- `pending:` `.github/workflows/self-authored-pull-request.yml` — #1187 R1:
-  `FORMAL_AI_BOT_TOKEN` → the resolver (`AUTOMATION_TOKEN` fallback chain);
-  after opening/pushing a PR at layer `default`, call
-  `actions/dispatch-checks` (R2).
+  `container-images.yml` via `workflow_call`.
+- `applied:` `.github/workflows/release.yml` — #1187 R3: `workflow_dispatch`
+  declares the checks-mode `mode` input and a `release_mode` that defaults to
+  `checks`; `manual-release`, `changelog-pr`, the Pages deploy and the release
+  preflight run only for an explicit `instant` or `changelog-pr` mode on
+  `refs/heads/main`. `actions/dispatch-checks` may now dispatch release.yml,
+  which then runs its lint and test jobs only.
 - `pending:` `.github/workflows/cross-org-duplication.yml` — #1187 R5 (this
   branch adds it, new): after creation no pending edit; listed because its first
   scheduled run must confirm the resolver degrades (R5) rather than files
@@ -65,3 +60,16 @@ those as deferred `.yml`/`.toml` edits), but still owed:
   multi-arch builds (#1084) + slim publishing and size budget (#1153).
 - `applied:` `.github/workflows/e2e-isolation.yml` (new, this branch) — R4
   orphan-branch isolation.
+- `applied:` `.github/workflows/self-authored-pull-request.yml` — #1187
+  R1: the author job takes `GH_TOKEN` from `actions/automation-token`
+  (no `secrets.FORMAL_AI_BOT_TOKEN`; the action's `FORMAL_AI_BOT_TOKEN`
+  variable is set only at layer `app`/`token`); R2: at layer `default` it
+  calls `actions/dispatch-checks` after the bot push, with `actions: write`.
+- `applied:` `.github/workflows/layered-ci.yml`, `evidence-check.yml`,
+  `workflows.yml`, `web-ui-boundary.yml` — #1187 R2: a checks-mode
+  `workflow_dispatch` (`mode: checks`, `pull-request`), the inputs
+  `actions/dispatch-checks` passes; `evidence-check.yml` falls back to the
+  default branch when a dispatched run has no `github.base_ref`.
+- `applied:` every `pull_request`-triggered workflow — #1187 R4:
+  `branches-ignore: ['e2e/**']`, so an isolated orphan-branch pull request
+  never triggers this repository's own pipeline.

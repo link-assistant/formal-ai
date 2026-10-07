@@ -597,6 +597,23 @@ function sqlSynthesisOrderClause(tokens) {
 }
 
 /**
+ * GROUP BY from the seed `sql_grouping` cues; mirrors `group_clause`.
+ * @param {Array<string>} tokens request tokens
+ * @returns {Array<string>|null} [column, request echo]
+ */
+function sqlSynthesisGroupClause(tokens) {
+  const cues = codeTaskWordEntries("sql_grouping");
+  for (let index = 0; index < tokens.length; index += 1) {
+    const entry = cues.find((candidate) => codeTaskChildValue(candidate, "word") === tokens[index]);
+    if (entry === undefined) continue;
+    const at = index + 1 + (Number.parseInt(codeTaskChildValue(entry, "skip"), 10) || 0);
+    const column = at < tokens.length ? codeTaskIdentifier(tokens[at]) : "";
+    if (column !== "") return [column, codeTaskEcho(tokens, index, at)];
+  }
+  return null;
+}
+
+/**
  * LIMIT from "top N" / "first N" / "limit N".
  * @param {Array<string>} tokens request tokens
  * @param {Array<object>} numbers `number` word-map entries
@@ -689,7 +706,9 @@ function handleSqlSynthesis(prompt, normalized) {
   const numbers = codeTaskWordEntries("number");
   const aggregate = sqlSynthesisAggregate(tokens);
   const selected = aggregate === null ? sqlSynthesisSelectColumns(tokens) : aggregate;
-  const columns = selected[0];
+  const group = aggregate === null ? null : sqlSynthesisGroupClause(tokens);
+  const columns = group === null ? selected[0] : group[0] + ", " + selected[0];
+  const groupBy = group === null ? "" : " GROUP BY " + group[0];
   const filters = sqlSynthesisFilters(tokens);
   const clauses = [];
   for (const filter of filters) clauses.push(filter.clause);
@@ -698,10 +717,11 @@ function handleSqlSynthesis(prompt, normalized) {
   const limit = sqlSynthesisLimitClause(tokens, numbers);
   const orderText = order === null ? "" : order[0];
   const limitText = limit === null ? "" : limit[0];
-  const statement = "SELECT " + columns + " FROM " + table + whereClause + orderText + limitText + ";";
+  const statement = "SELECT " + columns + " FROM " + table + whereClause + groupBy + orderText + limitText + ";";
   codeTaskLogAppend(log, "sql_synthesis:statement", statement);
   const rows = [[selected[1], "SELECT " + columns], [table, "FROM " + table]];
   for (const filter of filters) rows.push([filter.request, filter.clause]);
+  if (group !== null) rows.push([group[1], groupBy.trim()]);
   if (orderText !== "") rows.push([order[1], orderText.trim()]);
   if (limitText !== "") rows.push([limit[1], limitText.trim()]);
   const body = codeTaskTemplate("sql_synthesis_statement", [

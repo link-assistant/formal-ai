@@ -20,6 +20,9 @@ on:
       - '.github/actions/formal-ai-binary/**'
       - '.github/workflows/coding-ladder.yml'
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     paths:
       - 'rust/src/cli_solve.rs'

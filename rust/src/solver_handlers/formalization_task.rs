@@ -11,7 +11,13 @@
 //! every target grammar the seed declares: first-order logic, Lean 4,
 //! Rocq, and Links Notation. Deformalization runs the same grammar in
 //! reverse and checks the round trip structurally (re-parsing the
-//! rendered sentence and comparing clause structure, never strings).
+//! rendered sentence and comparing clause structure, never strings); the
+//! formal input may be any declared target — FOL, Lean 4, Rocq or Links
+//! Notation — read back through that target's own templates
+//! (`formalization_task_targets.rs`). Each step lands in the answer's
+//! derivation record as a `formalize:fragment` event, so
+//! `formal-ai explain <answer-id>` prints the parsed clause, every chosen
+//! template and rendering, and the prover step that did not run.
 //!
 //! The parse is structural, not memorized: quantifier words, join words,
 //! relative markers, articles, and copula drops all come from the seed,
@@ -27,10 +33,10 @@
 use std::collections::BTreeMap;
 use std::sync::OnceLock;
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::seed::parser::{parse_lino, LinoNode};
-use super::finalize_simple;
+use crate::seed::parser::{LinoNode, parse_lino};
 
 const TARGETS: &str = include_str!("../../embedded/data/seed/formal-targets.lino");
 const INTENT: &str = "formalization";
@@ -71,6 +77,9 @@ struct NaturalLanguage {
     object_introducers: Vec<String>,
     copula_drops: Vec<String>,
     head_final: bool,
+    /// The object precedes its verb (SOV): the last main-phrase word is the
+    /// predicate and the words before it are the object.
+    verb_final: bool,
     clause_conditional: String,
     clause_conjunctive: String,
 }
@@ -146,7 +155,10 @@ fn structure_key(clause: &QuantifiedClause) -> (String, Vec<(String, Option<Stri
         .iter()
         .map(|predicate| (predicate.name.clone(), predicate.object.clone()))
         .collect();
-    predicates.push((clause.consequent.name.clone(), clause.consequent.object.clone()));
+    predicates.push((
+        clause.consequent.name.clone(),
+        clause.consequent.object.clone(),
+    ));
     (clause.quantifier.clone(), predicates)
 }
 
@@ -229,6 +241,7 @@ fn grammar() -> &'static Grammar {
                 object_introducers: child_values(record, "object_introducer"),
                 copula_drops: child_values(record, "copula_drop"),
                 head_final: named_child(record, "head_final").is_some(),
+                verb_final: named_child(record, "verb_final").is_some(),
                 clause_conditional: record.find_child_value("clause_conditional").to_owned(),
                 clause_conjunctive: record.find_child_value("clause_conjunctive").to_owned(),
             });
@@ -331,10 +344,7 @@ fn quantifier_at(
 
 /// Parse a natural-language sentence into a quantified clause using the
 /// recognition surfaces of `language`.
-fn parse_quantified_clause(
-    text: &str,
-    language: &NaturalLanguage,
-) -> Option<QuantifiedClause> {
+fn parse_quantified_clause(text: &str, language: &NaturalLanguage) -> Option<QuantifiedClause> {
     let tokens: Vec<String> = tokenize(text)
         .into_iter()
         .filter(|token| !language.copula_drops.contains(token))
@@ -438,7 +448,7 @@ fn parse_quantified_clause(
     // For comma languages the main phrase is what follows the last comma;
     // for article languages an object introducer starts the object span,
     // and otherwise the final token is the main predicate.
-    let (relative_words, main_words): (Vec<String>, Vec<String>) =
+    let (relative_words, mut main_words): (Vec<String>, Vec<String>) =
         if language.object_introducers.is_empty() {
             let tail = &after_head[marker_offset + 1..];
             let comma_positions: Vec<usize> = tail
@@ -476,19 +486,18 @@ fn parse_quantified_clause(
             }
             let before = &span_tokens[..introducer];
             let object_words = &span_tokens[introducer + 1..];
-            let mut main = vec![before
-                .last()
-                .cloned()
-                .unwrap_or_default()];
+            let mut main = vec![before.last().cloned().unwrap_or_default()];
             main.extend(object_words.iter().cloned());
-            (
-                before[..before.len() - 1].to_vec(),
-                main,
-            )
+            (before[..before.len() - 1].to_vec(), main)
         } else {
             let main = vec![span_tokens.last()?.clone()];
             (span_tokens[..span_tokens.len() - 1].to_vec(), main)
         };
+    if language.verb_final {
+        // Object-verb order: the final word is the predicate and the words
+        // before it become its object.
+        main_words.rotate_right(1);
+    }
     let relatives: Vec<AppliedPredicate> = relative_words
         .iter()
         .filter(|word| !join_words.contains(word))
@@ -505,3 +514,4 @@ fn parse_quantified_clause(
 }
 
 include!("formalization_task_render.rs");
+include!("formalization_task_targets.rs");

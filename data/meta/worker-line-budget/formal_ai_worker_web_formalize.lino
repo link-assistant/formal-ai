@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_web_formalize.js"
+  ceiling 770
+  rationale "Issue #1163 generic page formalizer, browser twin (R1163-10, JS-first doctrine). JavaScript twin of rust/src/web_formalize.rs and web_formalize_trust.rs (mime hints and sniffing, the HTML walker with container stepping, comment and opaque-tag skipping and close-tag matching, Markdown, JSON and plain-text blocks, seed-driven language tags, the page store keyed by URL and SHA-256, the two page queries with their seed templates and the trust score), added 2026-10-07; growth is the ported formalizer, not silent regrowth."

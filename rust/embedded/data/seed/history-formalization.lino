@@ -7,7 +7,12 @@
 # placeholder for the decimal reference they capture; `evidence` and
 # `conversation` say where that captured number lands on the event.
 # `source` rows name the structural census each file suffix is diffed
-# with when a commit changes it.
+# with when a commit changes it, and the `item_keyword` words that open a
+# named top-level item in that language, so a commit records which
+# functions, types and impls it added, removed or modified by name. An
+# `item_span_keyword` names its item by the whole header (an impl is its
+# trait and type), and `item_modifier` words may precede any keyword. The
+# `coauthor_trailer` row turns each co-author trailer line into evidence.
 history_formalization
   record
     kind commit
@@ -50,6 +55,9 @@ history_formalization
   merge
     pattern "Merge pull request #%number%"
     evidence "pr:%number%"
+  coauthor_trailer
+    prefix "Co-Authored-By:"
+    evidence_prefix "coauthor:"
   path_evidence
     prefix "path:"
   symbol_evidence
@@ -57,7 +65,34 @@ history_formalization
   source
     id ast_census
     applies_to ".rs"
+    item_keyword "fn"
+    item_keyword "struct"
+    item_keyword "enum"
+    item_keyword "trait"
+    item_keyword "type"
+    item_keyword "const"
+    item_keyword "static"
+    item_keyword "mod"
+    item_keyword "union"
+    item_keyword "macro_rules!"
+    item_span_keyword "impl"
   source
     id es_meta_extract
     applies_to ".js"
     applies_to ".ts"
+    item_keyword "function"
+    item_keyword "class"
+    item_keyword "const"
+    item_keyword "let"
+    item_keyword "var"
+    item_keyword "interface"
+    item_keyword "type"
+    item_keyword "enum"
+  item_modifier "pub"
+  item_modifier "async"
+  item_modifier "unsafe"
+  item_modifier "extern"
+  item_modifier "default"
+  item_modifier "export"
+  item_modifier "declare"
+  item_modifier "abstract"

@@ -24,6 +24,9 @@ on:
   issues:
     types: [labeled]
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     paths:
       - '.github/workflows/self-authored-pull-request.yml'
       - '.github/actions/author-with-formal-ai/**'
@@ -46,33 +49,55 @@ jobs:
     timeout-minutes: 60
     # Scoped to this job, not the workflow: the job pushes the bot branch,
     # opens and comments on the pull request, and comments on the task issue.
+    # `actions: write` lets the job dispatch the bot pull request's checks
+    # (issue #1187 R2); a dispatch run needs no approval.
     permissions:
       contents: write
       pull-requests: write
       issues: write
+      actions: write
     env:
-      # A push or pull request made with GITHUB_TOKEN starts no workflow run.
-      # When the repository provides FORMAL_AI_BOT_TOKEN (a fine-grained token
-      # with contents and pull-requests write), it is used instead so the bot
-      # pull request gets its checks without a human touching the branch.
-      GH_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN || github.token }}
-      FORMAL_AI_BOT_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN }}
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
       # This checkout keeps its credential (no `persist-credentials: false`):
       # the action's push steps write the bot branch with it when the
-      # repository provides no FORMAL_AI_BOT_TOKEN, and nothing else supplies
+      # resolver below falls back to github.token, and nothing else supplies
       # one (issue #1079).
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref || github.ref }}
 
+      # Issue #1187 R1: the one credential resolver -- GitHub App, then
+      # AUTOMATION_TOKEN, then github.token. Nothing is mandatory; the layer
+      # is printed to the log and the job summary.
+      - uses: ./.github/actions/automation-token
+        id: automation
+
       - uses: ./.github/actions/cache-cargo-registry
         with:
           prefix: self-authored-
 
+      # The action's contract keeps its `FORMAL_AI_BOT_TOKEN` variable name
+      # (consumers in other repositories set it): it is non-empty exactly
+      # when the resolver found a credential that starts workflow runs and
+      # may push workflow files, so the action's workflow-file guard and its
+      # "pushed with GITHUB_TOKEN" notice keep their meaning.
       - uses: ./.github/actions/author-with-formal-ai
+        id: author
+        env:
+          GH_TOKEN: ${{ steps.automation.outputs.token }}
+          FORMAL_AI_BOT_TOKEN: ${{ steps.automation.outputs.layer != 'default' && steps.automation.outputs.token || '' }}
         with:
           issue: ${{ inputs.issue }}
           formal-ai-source: source
+
+      # Issue #1187 R2: at layer `default` the push came from github.token,
+      # so every `pull_request` check would wait for a maintainer's approval.
+      # Dispatch them on the bot branch instead -- dispatch runs start at once.
+      - name: Dispatch the bot pull request's checks
+        if: steps.automation.outputs.layer == 'default' && steps.author.outputs.authored == 'true'
+        uses: ./.github/actions/dispatch-checks
+        with:
+          pull-request: ${{ steps.author.outputs.pull-request }}
+          token: ${{ steps.automation.outputs.token }}

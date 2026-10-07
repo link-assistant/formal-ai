@@ -17,7 +17,7 @@ import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { planRecovery } from './prerequisite_recovery.mjs';
 import { Progress, writeMatches } from './progress.mjs';
-import { MAX_REPAIR_RUNGS, failedStep, planRepair } from './repair_loop.mjs';
+import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loop.mjs';
 import { feedbackNeedsChanges } from './restart_feedback.mjs';
 import {
   commandArgument, failureMessage, reportedExitCode as toolReportedExitCode, shellStep,
@@ -65,6 +65,7 @@ export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) 
     const failure = progress.failure;
     const step = failure.from_run ? (expectedCommands[progress.commands_done] ?? writeTool) : writeTool;
     const failedPath = nextFile()?.[0] ?? recipe.path;
+    let repairNote = '';
     if (failure.from_run) {
       const recovery = planRecovery(messages, toolNames, step, failure.exit_code, failure.reported);
       if (recovery) return recovery;
@@ -73,10 +74,13 @@ export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) 
         failed_command: step,
         artifact_path: failedPath,
       });
-      const repair = planRepair(messages, toolNames, failed, Math.max(0, progress.repair_rung - 1), MAX_REPAIR_RUNGS);
-      if (repair) return repair;
+      const rung = Math.max(0, progress.repair_rung - 1);
+      const outcome = repairStep(messages, toolNames, failed, rung, MAX_REPAIR_RUNGS);
+      if (outcome.kind !== 'stop') return outcome.plan;
+      repairNote = stopNote(messages, failed, outcome.reason, rung, MAX_REPAIR_RUNGS);
     }
-    return finalAnswer(failureReport(failure, messages, failedPath, step));
+    const report = failureReport(failure, messages, failedPath, step);
+    return finalAnswer(repairNote === '' ? report : `${report}\n\n${repairNote}`);
   }
   const file = nextFile();
   if (file) return planOne(writeTool, writeArguments(file[0], file[1]));

@@ -499,3 +499,23 @@ multilingual_responses_quantities
     intent number_primality_below_two
     language es
     text "No, {n} no es un número primo: un primo es un entero mayor que 1 cuyos únicos divisores son 1 y él mismo."
+  response response_word_problem_relation_en
+    intent word_problem_relation
+    language en
+    text "The answer is {result}: {derivation}."
+  response response_word_problem_relation_ru
+    intent word_problem_relation
+    language ru
+    text "Ответ: {result}: {derivation}."
+  response response_word_problem_relation_hi
+    intent word_problem_relation
+    language hi
+    text "उत्तर {result} है: {derivation}।"
+  response response_word_problem_relation_zh
+    intent word_problem_relation
+    language zh
+    text "答案是 {result}：{derivation}。"
+  response response_word_problem_relation_es
+    intent word_problem_relation
+    language es
+    text "La respuesta es {result}: {derivation}."

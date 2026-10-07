@@ -165,4 +165,8 @@ page_formalization_rules
   command_verb javac
   command_verb docker
   command_verb git
+  page_query code_blocks_on
+    template "code blocks on {domain} whose text contains {term}"
+  page_query command_mentioning
+    template "the command in the paragraph that mentions {phrase}"
   note "A paragraph whose first token is one of these verbs is tagged as a command paragraph, so 'the command in the paragraph that mentions compiling' can resolve against it. The list is verbs that compile, run, or fetch in the languages the registry covers; it grows here, never in Rust."

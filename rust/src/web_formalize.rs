@@ -110,6 +110,7 @@ struct FormalizationRules {
     shebangs: Vec<(String, String)>,
     extensions: Vec<(String, String)>,
     command_verbs: Vec<String>,
+    page_queries: Vec<(String, String)>,
 }
 
 /// `hint text/html` / `kind html` pair from the seed.
@@ -150,6 +151,7 @@ impl FormalizationRules {
             shebangs: Vec::new(),
             extensions: Vec::new(),
             command_verbs: Vec::new(),
+            page_queries: Vec::new(),
         };
         for record in seed_records(&tree) {
             match record.name.as_str() {
@@ -206,6 +208,12 @@ impl FormalizationRules {
                 "command_verb" if !record.id.is_empty() => {
                     rules.command_verbs.push(record.id.clone());
                 }
+                "page_query" => {
+                    let template = record.find_child_value("template").to_owned();
+                    if !record.id.is_empty() && !template.is_empty() {
+                        rules.page_queries.push((record.id.clone(), template));
+                    }
+                }
                 _ => {}
             }
         }
@@ -257,6 +265,14 @@ fn sniff(rules: &FormalizationRules, bytes: &[u8]) -> PageMime {
         }
     }
     PageMime::Unknown
+}
+
+/// The seed's page-query surfaces as `(name, template)` pairs, the
+/// templates the memory query language resolves against formalized pages
+/// (issue #1163 R8).
+#[must_use]
+pub fn page_query_templates() -> Vec<(String, String)> {
+    FormalizationRules::load().page_queries
 }
 
 /// Host of a URL, lowercased without a port or leading `www.`.

@@ -490,7 +490,14 @@ pub use solver_handlers::{
     handle_creative_writing_request, handle_formalization_request, handle_format_conversion,
     handle_planning_request, handle_product_search, handle_regex_synthesis,
     handle_shell_command_compose, handle_sql_synthesis, handle_summarization_request,
-    handle_test_generation, handle_text_rewrite, try_translation, try_web_search_with_client,
+    handle_test_generation, handle_text_rewrite, handle_word_problem, try_translation,
+    try_web_search_with_client,
+};
+// Issue #1172 R2/R6/R7: the subject-verified fact gate, seeded comparisons and
+// questions over prompt-supplied text, public so the unit suite pins them.
+pub use solver_handlers::{
+    ResolvedSubject, SubjectGate, fact_subject_gate, gated_fact_record, resolve_fact_subject,
+    try_fact_comparison, try_prompt_text_question,
 };
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{
@@ -499,7 +506,7 @@ pub use source_fetch::{
 pub use source_research::{
     OptionResearchExecution, ResearchFailure, ResearchPage, SourceResearchExecution,
     StatementResearchExecution, execute_option_research, execute_source_research,
-    execute_statement_research,
+    execute_statement_research, need_routes_to_web_search, research_unmatched_need,
 };
 pub use statement_verification::{
     CapturedStatementEvidence, MarketPriceAssessment, MarketPriceClaim,

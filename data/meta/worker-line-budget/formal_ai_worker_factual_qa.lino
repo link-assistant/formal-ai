@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_factual_qa.js"
+  ceiling 475
+  rationale "Subject-verified factual Q&A (issue #1172 R2, R6, R7), the browser twin of rust/src/solver_handlers/factual_qa.rs and rust/src/solver_handlers/prompt_text_question.rs. The subject gate resolves the formalized question's subject slot to a Q-id through the fact store's own label index; seeded comparisons align both subjects' facts by relation; questions over a quoted passage answer from its own sentences with no network call. Cues are meanings of data/seed/meanings-facts.lino and the wording is data/seed/multilingual-responses-entities.lino; growth is the ported handler, not silent regrowth."

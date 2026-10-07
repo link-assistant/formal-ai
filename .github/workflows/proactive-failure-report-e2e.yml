@@ -2,6 +2,9 @@ name: Proactive failure report Agent CLI E2E
 
 on:
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     paths:
       - "rust/src/**"
       - "data/seed/**"

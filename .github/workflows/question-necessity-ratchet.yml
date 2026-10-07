@@ -2,6 +2,9 @@ name: Question necessity ratchet
 
 on:
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     paths:
       - '.github/workflows/question-necessity-ratchet.yml'

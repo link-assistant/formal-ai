@@ -25,6 +25,10 @@ pub use creative_writing::{handle_creative_writing_request, handle_planning_requ
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
+pub use factual_qa::{
+    ResolvedSubject, SubjectGate, fact_subject_gate, gated_fact_record, resolve_fact_subject,
+    try_fact_comparison,
+};
 pub use feature_capability::{CapabilityRuntime, try_feature_capability};
 pub use formalization_task::handle_formalization_request;
 pub use format_conversion::handle_format_conversion;
@@ -39,6 +43,7 @@ pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::{
     looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
 };
+pub use prompt_text_question::try_prompt_text_question;
 pub use regex_synthesis::handle_regex_synthesis;
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
 pub use response_language_followup::try_response_language_followup;

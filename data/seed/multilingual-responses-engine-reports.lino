@@ -33,7 +33,7 @@ multilingual_responses
   response response_code_example_no_program_shape_en
     intent code_example_no_program_shape
     language en
-    text "no program shape registered for {language}"
+    text "no decomposed {language} example contributed a program body that makes its aligned output call"
   response response_code_example_unbound_output_literal_en
     intent code_example_unbound_output_literal
     language en

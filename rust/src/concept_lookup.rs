@@ -270,12 +270,54 @@ fn read_glosses(extractor: &str, bytes: &[u8], surface: &str) -> Vec<RawGloss> {
         ("wordnet_sense_v1", Some(value)) => wordnet_sense(&value, surface),
         ("mediawiki_summary_v1", Some(value)) => mediawiki_summary(&value, surface),
         ("wikidata_entity_v1", Some(value)) => wikidata_entity(&value, surface),
+        // Issue #1163 R12: any fetched page, whatever its format, read
+        // through the generic page formalizer rather than a bespoke parser.
+        #[cfg(feature = "meta-language")]
+        ("generic_page_v1", _) => generic_page_glosses(bytes, surface),
         // The committed `data/cache/**/*.lino` projections carry the same
         // schema as the live payloads, written by issue #398's lossless codec.
         // One reader serves both because both spell a definition `definition`.
         (_, None) => projection_glosses(&text, surface),
         _ => Vec::new(),
     }
+}
+
+/// The glosses a registry source's declared extractor reads from a payload,
+/// as text: the same dispatch the concept walk runs, exposed so each
+/// extractor branch can be checked against captured bytes.
+#[must_use]
+pub fn extractor_gloss_texts(extractor: &str, bytes: &[u8], surface: &str) -> Vec<String> {
+    read_glosses(extractor, bytes, surface)
+        .into_iter()
+        .map(|gloss| gloss.gloss)
+        .collect()
+}
+
+/// The `generic_page_v1` extractor (issue #1163 R12): the page is formalized
+/// by `web_formalize`, and every paragraph or list item that mentions the
+/// surface (case-insensitively) is a gloss of it.
+#[cfg(feature = "meta-language")]
+fn generic_page_glosses(bytes: &[u8], surface: &str) -> Vec<RawGloss> {
+    use crate::web_formalize::{PageBlock, formalize_page_with_context};
+    let needle = surface.trim().to_lowercase();
+    if needle.is_empty() {
+        return Vec::new();
+    }
+    formalize_page_with_context(bytes, None, None)
+        .1
+        .into_iter()
+        .filter_map(|(_, block)| match block {
+            PageBlock::Paragraph { text, .. } | PageBlock::ListItem { text } => Some(text),
+            _ => None,
+        })
+        .filter(|text| text.to_lowercase().contains(needle.as_str()))
+        .map(|gloss| RawGloss {
+            lemma: surface.to_owned(),
+            gloss,
+            part_of_speech: String::new(),
+            synonyms: Vec::new(),
+        })
+        .collect()
 }
 
 /// The Free Dictionary API's Wiktionary entry: an array of entries, each with

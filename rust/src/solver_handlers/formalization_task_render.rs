@@ -217,6 +217,7 @@ pub fn render_clause_natural(clause: &QuantifiedClause, language: &str) -> Optio
         // The predicate's words in order: head, the seed's object
         // introducer when the language declares one, then the object.
         match (&predicate.object, natural.object_introducers.first()) {
+            (Some(object), _) if natural.verb_final => [object.as_str(), head.as_str()].join(" "),
             (Some(object), Some(introducer)) => {
                 [head.as_str(), introducer.as_str(), object.as_str()].join(" ")
             }
@@ -260,15 +261,19 @@ fn carries_formal_surface(prompt: &str) -> bool {
 /// The `lean`/`coqc` presence sentence for the honesty block. The binary
 /// is looked up in PATH and never executed.
 fn prover_check(binary: &str, label: &str) -> String {
-    let present = std::env::var_os("PATH").is_some_and(|paths| {
-        std::env::split_paths(&paths).any(|directory| directory.join(binary).is_file())
-    });
-    let intent = if present {
+    let intent = if prover_present(binary) {
         "formalization_prover_present"
     } else {
         "formalization_prover_absent"
     };
     crate::seed::report_text(intent, &[("label", label)])
+}
+
+/// True when `binary` is a file in some PATH directory (never executed).
+fn prover_present(binary: &str) -> bool {
+    std::env::var_os("PATH").is_some_and(|paths| {
+        std::env::split_paths(&paths).any(|directory| directory.join(binary).is_file())
+    })
 }
 
 /// The language of a cue role suffix (`command_ru` → `ru`).
@@ -350,8 +355,14 @@ pub fn handle_formalization_request(
     if !formalize && !deformalize {
         return None;
     }
+    // The language of the cue that decided the direction: a Lean statement
+    // named `formalized` carries the English formalize verb, so a Russian
+    // deformalize request must not answer in English.
+    let wanted = if direction { "direction" } else { "command" };
     let request_language = roles
-        .first()
+        .iter()
+        .find(|(family, _)| family == wanted)
+        .or_else(|| roles.first())
         .map_or_else(|| "en".to_owned(), |(_, language)| language.clone());
     log.append(
         "formalization:direction",
@@ -405,6 +416,7 @@ fn formalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String
                 ("consequent", &clause.consequent.name),
             ],
         );
+        record_clause_fragment(log, "parse", &clause);
         let slugs: Vec<String> = {
             let mut all: Vec<String> = grammar()
                 .formal
@@ -422,9 +434,11 @@ fn formalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String
         let mut blocks = Vec::new();
         for slug in &slugs {
             if let Some(rendered) = render_clause(&clause, slug) {
+                record_render_fragment(log, &clause, slug, &rendered);
                 blocks.push(format!("```{slug}\n{rendered}\n```"));
             }
         }
+        record_prover_fragment(log);
         let statement_block = blocks.join("\n\n");
         let antecedents = clause
             .antecedent
@@ -493,7 +507,7 @@ fn formal_span(prompt: &str) -> &str {
 /// Compose the deformalize-direction answer body, including the
 /// structural round-trip check (requirement R5).
 fn deformalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (String, f32) {
-    let Some(clause) = parse_fol_clause(formal_span(prompt)) else {
+    let Some((source, clause)) = parse_any_formal_clause(prompt) else {
         log.append(
             "formalization:clause",
             "no formal clause recognized".to_owned(),
@@ -515,8 +529,10 @@ fn deformalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (Stri
             ("quantifier", &clause.quantifier),
             ("variable", &clause.variable),
             ("source", "formal_text"),
+            ("target", &source),
         ],
     );
+    record_clause_fragment(log, "deformalize", &clause);
     let natural = grammar()
         .natural
         .iter()
@@ -524,14 +540,25 @@ fn deformalize_answer(prompt: &str, language: &str, log: &mut EventLog) -> (Stri
         .cloned()
         .unwrap_or_default();
     let sentence = render_clause_natural(&clause, language).unwrap_or_default();
+    // Both legs must hold: the natural reading re-parses to the clause, and
+    // the clause re-rendered into its source target parses back to it.
+    let target_holds = target_round_trip_holds(&clause, &source);
     let round_trip = match parse_quantified_clause(&sentence, &natural) {
-        Some(reparsed) if structure_key(&reparsed) == structure_key(&clause) => {
+        Some(reparsed) if target_holds && structure_key(&reparsed) == structure_key(&clause) => {
             "structure preserved (re-parse matches)"
         }
         Some(_) => "structure drifted (re-parse differs; stated honestly)",
         None => "re-parse failed (stated honestly)",
     };
     log.append("formalization:round_trip", round_trip.to_owned());
+    log.append_fields(
+        crate::derivation::FORMALIZE_FRAGMENT_KIND,
+        &[
+            ("stage", "round_trip"),
+            ("target", &source),
+            ("verdict", round_trip),
+        ],
+    );
     let honesty = fill(
         &response("formalization_honesty", language),
         &[

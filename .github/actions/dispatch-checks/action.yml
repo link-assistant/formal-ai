@@ -13,11 +13,10 @@
 # contract: same inputs, same outputs, so switching to the shared action
 # changes no caller.
 #
-# The dispatch targets themselves (layered-ci.yml, evidence-check.yml,
-# workflows.yml gaining `workflow_dispatch` with a `mode: checks` input, and
-# release.yml's `mode` guard) are GUARD-tracked in
-# docs/integration-manifest.md: those are edits to existing workflow files
-# and this branch's wave holds them until the #1168/#1169 commits land.
+# The dispatch targets (layered-ci.yml, evidence-check.yml, workflows.yml)
+# declare `workflow_dispatch` with the `mode` and `pull-request` inputs this
+# action passes; release.yml's `mode` guard is still a pending row in
+# docs/integration-manifest.md.
 name: dispatch-checks
 description: Dispatch every pull_request workflow on a bot pull request's head commit
 inputs:
@@ -49,10 +48,12 @@ runs:
       run: |
         set -euo pipefail
 
-        # The head sha of the pull request: dispatch runs pin to it, so the
-        # checks verify exactly the commit that was pushed.
+        # The dispatch API takes a branch or tag, never a sha, so the runs
+        # are dispatched on the pull request's head branch; the sha is logged
+        # so a reader can match each run to the commit that was pushed.
+        head_ref="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefName --jq .headRefName)"
         head_sha="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid --jq .headRefOid)"
-        echo "dispatching checks for $REPOSITORY#$PR_NUMBER at $head_sha"
+        echo "dispatching checks for $REPOSITORY#$PR_NUMBER on $head_ref at $head_sha"
 
         # Every pull_request-triggered workflow unless the caller named a
         # subset. `gh workflow list` gives filenames with trigger metadata;
@@ -66,14 +67,16 @@ runs:
 
         dispatched=""
         for workflow in $targets; do
-          # A workflow without a workflow_dispatch trigger cannot be
-          # dispatched; those are exactly the GUARD-tracked files, reported
-          # rather than silently skipped.
-          if ! grep -q 'workflow_dispatch' ".github/workflows/$workflow"; then
-            echo "::warning::${workflow} has no workflow_dispatch trigger yet (integration-manifest)"
+          # Only a workflow that declares the checks mode (the `mode` input
+          # with `options: [checks]`, issue #1187 R2) is dispatched. Any other
+          # dispatch trigger has its own meaning -- release.yml's cuts a
+          # release, self-authored-pull-request.yml's authors a change -- so
+          # it is reported, never called.
+          if ! grep -q 'options: \[checks\]' ".github/workflows/$workflow"; then
+            echo "::warning::${workflow} declares no checks-mode workflow_dispatch; not dispatched"
             continue
           fi
-          if gh workflow run "$workflow" --repo "$REPOSITORY" --ref "$head_sha" -f mode=checks -f pull-request="$PR_NUMBER"; then
+          if gh workflow run "$workflow" --repo "$REPOSITORY" --ref "$head_ref" -f mode=checks -f pull-request="$PR_NUMBER"; then
             dispatched="${dispatched}${workflow}"$'\n'
             echo "dispatched ${workflow}"
           else

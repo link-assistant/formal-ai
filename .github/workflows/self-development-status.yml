@@ -19,6 +19,9 @@ on:
   # after. The condition itself is unchanged: still red when the floor is unmet,
   # still no budget, grace period or bypass (issue #1066).
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
   schedule:
     - cron: '17 6 * * *'
   workflow_dispatch:

@@ -54,6 +54,12 @@ browser_handler_precedence
   handler trySummarizationText
     argument_prompt
     argument_normalized
+  handler tryPromptTextQuestion
+    argument_prompt
+    argument_normalized
+  handler tryFactComparison
+    argument_prompt
+    argument_normalized
   handler tryBrainstormComposition
     argument_prompt
     argument_normalized

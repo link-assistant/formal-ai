@@ -480,3 +480,164 @@ fn on_this_repo_check_self_development_release_lineage() {
             .any(|e| e == "path:scripts/check-self-development-release.rs")
     );
 }
+
+/// R1180-1: a `Co-Authored-By:` trailer becomes `coauthor:` evidence, so the
+/// co-authors of a change are a `LIKE` query like the issue and path pointers.
+#[test]
+fn coauthor_trailers_become_evidence() {
+    let repo = temp_dir("coauthor");
+    init_repo(&repo);
+    let sha = commit(
+        &repo,
+        "notes.md",
+        "notes\n",
+        "add notes",
+        Some(
+            "Refs #7\n\nCo-Authored-By: Claude Opus <noreply@anthropic.com>\nco-authored-by: Second Person <second@example.com>",
+        ),
+    );
+    let rules = HistoryRules::defaults();
+    let events = history_context::import_commits(&repo, None, &rules).expect("import");
+    let event = events
+        .iter()
+        .find(|event| event.id == format!("commit:{sha}"))
+        .expect("the commit imports");
+    for expected in ["coauthor:Claude Opus", "coauthor:Second Person", "issue:7"] {
+        assert!(
+            event.evidence.iter().any(|evidence| evidence == expected),
+            "{expected} should be evidence: {:?}",
+            event.evidence
+        );
+    }
+    assert_eq!(
+        history_context::coauthors("Co-Authored-By: A <a@x>\\nCo-Authored-By: A <a@x>", &rules),
+        vec![String::from("A")],
+        "literal `\\n` escapes split trailers and duplicates collapse"
+    );
+}
+
+/// R1180-2: a commit names the top-level items it added, removed or
+/// modified, not only the census kinds.
+#[test]
+fn changed_items_are_recorded_by_name() {
+    let repo = temp_dir("named-items");
+    init_repo(&repo);
+    commit(
+        &repo,
+        "src/lib.rs",
+        "pub fn alpha() -> u8 {\n    1\n}\n\nfn gamma() {}\n\nimpl Display for Answer {}\n",
+        "seed items",
+        None,
+    );
+    let sha = commit(
+        &repo,
+        "src/lib.rs",
+        "pub fn alpha() -> u8 {\n    2\n}\n\npub(crate) const fn beta() -> u8 {\n    3\n}\n\nimpl Display for Answer {}\n",
+        "edit items",
+        None,
+    );
+    let rules = HistoryRules::defaults();
+    let events = history_context::import_commits(&repo, None, &rules).expect("import");
+    let event = events
+        .iter()
+        .find(|event| event.id == format!("commit:{sha}"))
+        .expect("the editing commit imports");
+    for expected in [
+        "symbol:src/lib.rs#fn alpha",
+        "symbol:src/lib.rs#fn beta",
+        "symbol:src/lib.rs#fn gamma",
+    ] {
+        assert!(
+            event.evidence.iter().any(|evidence| evidence == expected),
+            "{expected} should be evidence: {:?}",
+            event.evidence
+        );
+    }
+    assert!(
+        !event
+            .evidence
+            .iter()
+            .any(|evidence| evidence.ends_with("#impl Display for Answer")),
+        "an unchanged item is not a change: {:?}",
+        event.evidence
+    );
+
+    let changes = history_context::diff_named_items(
+        "src/lib.rs",
+        "ast_census",
+        "pub fn alpha() -> u8 {\n    1\n}\n\nfn gamma() {}\n",
+        "pub fn alpha() -> u8 {\n    2\n}\n\npub(crate) const fn beta() -> u8 {\n    3\n}\n",
+        &rules,
+    );
+    let deltas: Vec<(&str, i64)> = changes
+        .iter()
+        .map(|change| (change.item.as_str(), change.delta))
+        .collect();
+    assert!(
+        deltas.contains(&("src/lib.rs#fn alpha", 0)),
+        "modified: {deltas:?}"
+    );
+    assert!(
+        deltas.contains(&("src/lib.rs#fn beta", 1)),
+        "added: {deltas:?}"
+    );
+    assert!(
+        deltas.contains(&("src/lib.rs#fn gamma", -1)),
+        "removed: {deltas:?}"
+    );
+
+    let script = history_context::diff_named_items(
+        "js/a.js",
+        "es_meta_extract",
+        "function one() {\n  return 1;\n}\n",
+        "export function one() {\n  return 2;\n}\n\nexport class Two {}\n",
+        &rules,
+    );
+    let items: Vec<&str> = script.iter().map(|change| change.item.as_str()).collect();
+    assert!(items.contains(&"js/a.js#function one"), "{items:?}");
+    assert!(items.contains(&"js/a.js#class Two"), "{items:?}");
+}
+
+/// The rules are read from the seed's rows (they sit under the
+/// `history_formalization` root), not only from the built-in defaults.
+#[test]
+fn rules_seed_rows_override_the_defaults() {
+    let rules = HistoryRules::from_seed_text(
+        "history_formalization\n  coauthor_trailer\n    prefix \"Signed-off-by:\"\n    evidence_prefix \"signoff:\"\n  item_modifier \"pub\"\n",
+    );
+    assert_eq!(rules.coauthor_prefix, "Signed-off-by:");
+    assert_eq!(rules.coauthor_evidence_prefix, "signoff:");
+    assert_eq!(rules.item_modifiers, vec![String::from("pub")]);
+}
+
+/// R1180-9: the store the importer writes answers an exact memory query,
+/// the library half of `formal-ai repository-history query`.
+#[test]
+fn the_repository_history_store_answers_a_query() {
+    let repo = temp_dir("query");
+    init_repo(&repo);
+    let sha = commit(
+        &repo,
+        "src/lib.rs",
+        "pub fn evaluate() {}\n",
+        "add evaluate",
+        Some("Refs #1180\n\nCo-Authored-By: Claude Opus <noreply@anthropic.com>"),
+    );
+    let memory = temp_dir("query-memory");
+    let rules = HistoryRules::defaults();
+    history_context::import_incremental(&repo, None, &memory, &rules).expect("import");
+    let (store_path, _) = history_context::store_paths(&memory, &repo);
+    let rows = history_context::query_repository_history(
+        &store_path,
+        "SELECT id FROM memory WHERE kind = 'commit' AND evidence LIKE '%src/lib.rs#fn evaluate%'",
+    )
+    .expect("the query compiles and runs");
+    assert!(
+        rows.iter()
+            .any(|row| row.contains(&format!("commit:{sha}"))),
+        "the named item answers the lineage question: {rows:?}"
+    );
+    let error = history_context::query_repository_history(&store_path, "SELECT FROM")
+        .expect_err("an unparseable query is refused");
+    assert_eq!(error.code(), "query_compile_failed");
+}

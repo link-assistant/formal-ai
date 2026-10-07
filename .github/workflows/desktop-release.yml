@@ -80,6 +80,9 @@ on: # zizmor: ignore[dangerous-triggers]
   # tests, with every publishing step (attest, release upload, SHA256SUMS)
   # skipped. Path-filtered so unrelated pull requests do not pay for six runners.
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     paths:
       - 'desktop/**'

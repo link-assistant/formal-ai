@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_code_examples.js"
+  ceiling 333
+  rationale "Issue #1164 code-example decomposition, browser twin (R1164-11, JS-first doctrine). JavaScript twin of rust/src/code_example_knowledge.rs (decompose against the seed vocabulary and grammar registry, generalize across languages, recompose from the aligned example bodies, step records and Links Notation renderers), added 2026-10-07; growth is the ported decomposer, not silent regrowth."

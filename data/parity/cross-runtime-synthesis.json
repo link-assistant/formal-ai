@@ -131,5 +131,27 @@
       "statistics:median:",
       "response:statistics"
     ]
+  },
+  {
+    "id": "e1186_formalization_first_order",
+    "prompt": "Formalize in first-order logic: Every student who studies passes the exam.",
+    "expectedIntent": "formalization",
+    "expectedAnswerFragments": [
+      "∀x (Student(x) ∧ Studies(x) → Passes(x, exam))",
+      "No theorem prover was invoked"
+    ],
+    "forbiddenAnswerFragments": ["Web search requested"],
+    "expectedEvidencePrefixes": ["intent:formalization", "response:formalization"],
+    "expectedTraceFragments": ["formalization"],
+    "browserExpectedEvidencePrefixes": ["response:formalization"]
+  },
+  {
+    "id": "e1172_seeded_capital_subject_gate",
+    "prompt": "What is the capital of the USA?",
+    "expectedIntent": "fact_lookup",
+    "expectedAnswerFragments": ["The capital of the United States is Washington, D.C."],
+    "forbiddenAnswerFragments": ["Canberra"],
+    "expectedEvidencePrefixes": ["fact_lookup:hit:", "fact_lookup:subject_gate:", "wikidata:"],
+    "expectedTraceFragments": ["fact_lookup"]
   }
 ]

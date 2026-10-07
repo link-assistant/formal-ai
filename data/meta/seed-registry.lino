@@ -49,6 +49,7 @@ seed_registry
     bundle true
   seed code-example-parts
     bundle true
+    web true
   seed code-node-decomposition
     bundle true
   seed code-review-rules
@@ -614,6 +615,7 @@ seed_registry
     web true
   seed page-formalization-rules
     bundle true
+    web true
   seed personas
     bundle true
     web true
@@ -626,6 +628,7 @@ seed_registry
     bundle true
   seed program-cst-grammars
     bundle true
+    web true
   seed program-plan-rules
     bundle true
     web true
@@ -671,6 +674,7 @@ seed_registry
     web true
   seed source-trust-weights
     bundle true
+    web true
   seed sources-registry
     bundle true
     web true

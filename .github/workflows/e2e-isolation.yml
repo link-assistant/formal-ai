@@ -13,10 +13,10 @@
 # pull request whose base is the orphan branch, and the cleanup job closes
 # both and deletes the branches.
 #
-# This repository's own pull_request workflows must ignore `e2e/**` base
-# branches (branches-ignore) so an isolated run never triggers the main
-# pipeline; that edit touches existing workflow files and is GUARD-tracked
-# in docs/integration-manifest.md.
+# This repository's own pull_request workflows ignore `e2e/**` base
+# branches (`branches-ignore: ['e2e/**']` on every `pull_request` trigger,
+# pinned by rust/tests/unit/issue_1187_credentials.rs) so an isolated run
+# never triggers the main pipeline.
 name: e2e-isolation
 
 on:

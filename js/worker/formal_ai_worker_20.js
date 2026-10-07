@@ -788,6 +788,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       outputs: { intent: researchedUnknown.intent, confidence: researchedUnknown.confidence, associationId } });
     return finalize(events, steps, toolCalls, researchedUnknown, formalizationContext);
   }
+  const comparisonGap = tryFactComparisonGap(prompt, normalized);
+  if (comparisonGap) return finalizeInlineHandler(events, steps, toolCalls, comparisonGap, "tryFactComparisonGap", formalizationContext);
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {

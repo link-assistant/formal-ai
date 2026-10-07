@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_formalization_targets.js"
+  ceiling 289
+  rationale "Issue #1186 R5 deformalization from every rendered target, browser twin of rust/src/solver_handlers/formalization_task_targets.rs. The Lean 4 and Rocq renderings are matched against the clause and atom templates of data/seed/formal-targets.lino run in reverse, and the Links Notation rendering is read field by field with field names taken from the same templates; no target surface is spelled in the module. Added 2026-10-07."

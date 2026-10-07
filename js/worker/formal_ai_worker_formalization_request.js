@@ -91,6 +91,7 @@ function formalGrammar() {
         objectIntroducers: textTransformRecordValues(record, "object_introducer"),
         copulaDrops: textTransformRecordValues(record, "copula_drop"),
         headFinal: formalNamedChild(record, "head_final") !== null,
+        verbFinal: formalNamedChild(record, "verb_final") !== null,
         clauseConditional: childValue(record, "clause_conditional"),
         clauseConjunctive: childValue(record, "clause_conjunctive"),
       });
@@ -308,6 +309,11 @@ function formalParseQuantifiedClause(text, language) {
       relativeWords = spanTokens.slice(0, spanTokens.length - 1);
     }
   }
+  // Object-verb order: the final word is the predicate, the words before it
+  // its object.
+  if (language.verbFinal && mainWords.length > 1) {
+    mainWords = [mainWords[mainWords.length - 1]].concat(mainWords.slice(0, mainWords.length - 1));
+  }
   const antecedent = [formalPredicateFromWords([head])].concat(
     relativeWords
       .filter((word) => !joinWords.includes(word))
@@ -498,6 +504,7 @@ function formalRenderClauseNatural(grammar, clause, language) {
   const wordsOf = (predicate) => {
     const head = formalDecapitalize(predicate.name);
     if (predicate.object === null) return head;
+    if (natural.verbFinal) return `${predicate.object} ${head}`;
     return introducer !== null ? `${head} ${introducer} ${predicate.object}` : `${head} ${predicate.object}`;
   };
   if (clause.antecedent.length === 0) return null;
@@ -651,8 +658,8 @@ function formalSpan(prompt) {
  * @returns {Array<string|number>} [body, confidence]
  */
 function formalDeformalizeAnswer(grammar, prompt, language, trace) {
-  const clause = formalParseFolClause(grammar, formalSpan(prompt));
-  if (clause === null) {
+  const parsed = formalParseAnyFormalClause(grammar, prompt);
+  if (parsed === null) {
     trace.push("formalization:clause:no formal clause recognized");
     return [
       textTransformFill(formalResponse("formalization_unparsed", language), [
@@ -661,14 +668,19 @@ function formalDeformalizeAnswer(grammar, prompt, language, trace) {
       0.4,
     ];
   }
-  trace.push(`formalization:clause:${clause.quantifier} ${clause.variable} from formal text`);
+  const source = parsed[0];
+  const clause = parsed[1];
+  trace.push(`formalization:clause:${clause.quantifier} ${clause.variable} from formal text ${source}`);
   const natural = grammar.natural.find((item) => item.language === language);
   const rendered = formalRenderClauseNatural(grammar, clause, language);
   const sentence = rendered === null ? "" : rendered;
   const reparsed = natural === undefined ? null : formalParseQuantifiedClause(sentence, natural);
   let roundTrip = "re-parse failed (stated honestly)";
+  // Both legs must hold: the natural reading re-parses to the clause, and the
+  // clause re-rendered into its source target parses back to it.
+  const targetHolds = formalTargetRoundTripHolds(grammar, clause, source);
   if (reparsed !== null) {
-    roundTrip = formalStructureKey(reparsed) === formalStructureKey(clause)
+    roundTrip = targetHolds && formalStructureKey(reparsed) === formalStructureKey(clause)
       ? "structure preserved (re-parse matches)"
       : "structure drifted (re-parse differs; stated honestly)";
   }
@@ -702,7 +714,10 @@ function tryFormalizationRequest(prompt, normalized) {
   const deformalize = direction ||
     (!formalize && ["∀", "∃", "¬∃"].some((symbol) => text.includes(symbol)));
   if (!formalize && !deformalize) return null;
-  const language = roles.length > 0 ? roles[0][1] : "en";
+  // The language of the cue that decided the direction: a Lean statement named
+  // `formalized` carries the English formalize verb.
+  const deciding = roles.find((pair) => pair[0] === (direction ? "direction" : "command"));
+  const language = deciding !== undefined ? deciding[1] : roles.length > 0 ? roles[0][1] : "en";
   const trace = [
     `formalization:direction:${formalize ? "formalize" : "deformalize"}`,
     `formalization:language:${language}`,

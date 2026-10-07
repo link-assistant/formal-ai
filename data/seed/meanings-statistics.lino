@@ -374,3 +374,327 @@ meanings
         text primo
       surface
         text "número primo"
+  word_problem_gain
+    defined-by statistics_operation
+    role word_problem_relation
+    lexeme en
+      surface
+        text buys
+      surface
+        text bought
+      surface
+        text gets
+      surface
+        text got
+      surface
+        text finds
+      surface
+        text found
+      surface
+        text receives
+      surface
+        text received
+      surface
+        text earns
+      surface
+        text earned
+      surface
+        text picks
+      surface
+        text picked
+      surface
+        text adds
+      surface
+        text added
+    lexeme ru
+      surface
+        text купил
+      surface
+        text купила
+      surface
+        text получил
+      surface
+        text получила
+      surface
+        text нашёл
+      surface
+        text нашла
+      surface
+        text заработал
+      surface
+        text заработала
+    lexeme hi
+      surface
+        text "खरीदे"
+      surface
+        text "खरीदा"
+      surface
+        text "खरीदीं"
+      surface
+        text "मिले"
+      surface
+        text "मिला"
+      surface
+        text "कमाए"
+    lexeme zh
+      surface
+        text 买了
+      surface
+        text 得到
+      surface
+        text 收到
+      surface
+        text 又买
+    lexeme es
+      surface
+        text compra
+      surface
+        text compró
+      surface
+        text recibe
+      surface
+        text recibió
+      surface
+        text encuentra
+      surface
+        text encontró
+      surface
+        text gana
+      surface
+        text ganó
+  word_problem_loss
+    defined-by statistics_operation
+    role word_problem_relation
+    lexeme en
+      surface
+        text spent
+      surface
+        text spends
+      surface
+        text spend
+      surface
+        text eats
+      surface
+        text ate
+      surface
+        text "gives away"
+      surface
+        text "gave away"
+      surface
+        text gives
+      surface
+        text gave
+      surface
+        text sold
+      surface
+        text sells
+      surface
+        text loses
+      surface
+        text lost
+      surface
+        text uses
+      surface
+        text used
+    lexeme ru
+      surface
+        text потратил
+      surface
+        text потратила
+      surface
+        text съел
+      surface
+        text съела
+      surface
+        text отдал
+      surface
+        text отдала
+      surface
+        text продал
+      surface
+        text продала
+      surface
+        text потерял
+      surface
+        text потеряла
+    lexeme hi
+      surface
+        text "खर्च"
+      surface
+        text "खाए"
+      surface
+        text "खाया"
+      surface
+        text "दिए"
+      surface
+        text "दिया"
+      surface
+        text "बेचे"
+      surface
+        text "बेचा"
+      surface
+        text "खोए"
+    lexeme zh
+      surface
+        text 花了
+      surface
+        text 吃了
+      surface
+        text 给了
+      surface
+        text 卖了
+      surface
+        text 丢了
+      surface
+        text 用了
+    lexeme es
+      surface
+        text gastó
+      surface
+        text gasta
+      surface
+        text comió
+      surface
+        text come
+      surface
+        text dio
+      surface
+        text regaló
+      surface
+        text vendió
+      surface
+        text vende
+      surface
+        text perdió
+      surface
+        text pierde
+  word_problem_group
+    defined-by statistics_operation
+    role word_problem_relation
+    lexeme en
+      surface
+        text holds
+      surface
+        text hold
+      surface
+        text contains
+      surface
+        text contain
+      surface
+        text fits
+      surface
+        text fit
+    lexeme ru
+      surface
+        text вмещает
+      surface
+        text вмещается
+      surface
+        text содержит
+      surface
+        text помещается
+    lexeme hi
+      surface
+        text "समाते"
+      surface
+        text "समाता"
+      surface
+        text "होते"
+    lexeme zh
+      surface
+        text 装
+      surface
+        text 能装
+      surface
+        text 放
+    lexeme es
+      surface
+        text contiene
+      surface
+        text caben
+      surface
+        text cabe
+      surface
+        text "tiene capacidad para"
+  word_problem_share
+    defined-by statistics_operation
+    role word_problem_relation
+    lexeme en
+      surface
+        text "shared equally"
+      surface
+        text "split equally"
+      surface
+        text "divided equally"
+      surface
+        text "shared among"
+      surface
+        text "divided among"
+      surface
+        text "split among"
+      surface
+        text "equally among"
+    lexeme ru
+      surface
+        text поровну
+      surface
+        text разделили
+      surface
+        text разделить
+    lexeme hi
+      surface
+        text "बराबर बाँटे"
+      surface
+        text "बराबर बांटे"
+      surface
+        text "बराबर"
+    lexeme zh
+      surface
+        text 平均分
+      surface
+        text 平分
+      surface
+        text 平均分给
+    lexeme es
+      surface
+        text "a partes iguales"
+      surface
+        text "se reparten"
+      surface
+        text repartidas
+      surface
+        text repartidos
+      surface
+        text repartieron
+  word_problem_question
+    defined-by statistics_operation
+    role word_problem_question
+    lexeme en
+      surface
+        text "how many"
+      surface
+        text "how much"
+    lexeme ru
+      surface
+        text сколько
+    lexeme hi
+      surface
+        text "कितने"
+      surface
+        text "कितना"
+      surface
+        text "कितनी"
+    lexeme zh
+      surface
+        text 多少
+      surface
+        text 几
+    lexeme es
+      surface
+        text cuántos
+      surface
+        text cuántas
+      surface
+        text cuánto
+      surface
+        text cuánta

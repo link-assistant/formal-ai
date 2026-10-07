@@ -24,6 +24,7 @@ mod cli_orchestration;
 mod cli_paths;
 mod cli_procedure;
 mod cli_report;
+mod cli_repository_history;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 mod cli_summarization;
@@ -49,6 +50,7 @@ use cli_memory::run_memory;
 use cli_orchestration::{AgentArgs, run_external_action};
 use cli_procedure::{ProcedureArgs, run_procedure};
 use cli_report::{ReportArgs, run_report};
+use cli_repository_history::{RepositoryHistoryAction, run_repository_history};
 use cli_shared_dialog::{SharedDialogAction, run_shared_dialog};
 use cli_statement_audit::{StatementAuditArgs, run_statement_audit};
 use cli_summarization::{SummarizationAction, run_summarization};
@@ -221,6 +223,11 @@ enum Command {
     GithubLogs {
         #[command(subcommand)]
         action: GithubLogsAction,
+    },
+    /// Import or query the repository's formalized history (issue #1180).
+    RepositoryHistory {
+        #[command(subcommand)]
+        action: RepositoryHistoryAction,
     },
     /// Run real upstream benchmark suites (issue #698) and record honest
     /// `passed/total` scores in `data/benchmarks/external-results.lino`.
@@ -694,6 +701,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Clients { format, action } => run_clients(format, action)?,
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::RepositoryHistory { action } => run_repository_history(action)?,
         Command::Benchmark { action } => run_benchmark(action)?,
         Command::Solve {
             issue,

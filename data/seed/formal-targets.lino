@@ -13,8 +13,13 @@
 # conjunctive shape for `no` when the target's precedence needs it). The `natural_language` records hold the surfaces
 # the parser recognizes (quantifier words, join words, relative markers,
 # object-introducing articles, droppable words) and the deformalization
-# templates. Nothing here is keyed to a particular probe sentence — predicate
-# symbols derive from the sentence's own words at parse time.
+# templates. A `verb_final` language puts the object before its verb, so the
+# last word of the main phrase is the predicate and the words before it are
+# the object (Hindi object-verb order reads as a two-place relation). A
+# head-final language without a `都` boundary separates the head noun from
+# its predicate with a space, which the Chinese conjunctive template renders.
+# Nothing here is keyed to a particular probe sentence — predicate symbols
+# derive from the sentence's own words at parse time.
 #
 # Read by `rust/src/solver_handlers/formalization_task.rs` through
 # `include_str!` of the embedded mirror.
@@ -186,8 +191,9 @@ formal_targets
     rel_marker
       text "जो"
     copula_drop "है"
-    clause_conditional "{quantifier} {head} {rel_marker} {relatives} {main}"
-    clause_conjunctive "{quantifier} {head} {rel_marker} {relatives} {main}"
+    verb_final true
+    clause_conditional "{quantifier} {head} {rel_marker} {relatives}, {main}"
+    clause_conjunctive "{quantifier} {head} {rel_marker} {relatives}, {main}"
   natural_language zh
     quantifier forall
       text "每个"
@@ -203,7 +209,7 @@ formal_targets
       text "的"
     head_final true
     clause_conditional "{quantifier}{relatives}的{head}都{main}"
-    clause_conjunctive "{quantifier}{relatives}的{head}{main}"
+    clause_conjunctive "{quantifier}{relatives}的{head} {main}"
   natural_language es
     quantifier forall
       text "todo"

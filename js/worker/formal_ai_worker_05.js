@@ -489,19 +489,18 @@ function localizedFactFor(record, language) {
   );
 }
 
-// Issue #1172: aliases and keywords match at word boundaries (surfacePresent over normalizePrompt, mirroring FactRecord::contains_word_sequence in rust/src/seed/facts.rs) so the alias "us" never fires inside "australia".
+// Issue #1172: a record answers only through the subject gate (gatedFactRecord, formal_ai_worker_factual_qa.js): its subject Q-id must equal the formalized question's; word-boundary alias matching is the last-resort hint for Q-id-less records.
 function tryFactLookup(prompt, normalized) {
-  const hasSurface = (values) => (values || []).some((value) => surfacePresent(normalized, normalizePrompt(value)));
-  const record = FACTS.find(
-    (fact) => hasSurface(fact.subjectAliases) && hasSurface(fact.questionKeywords),
-  );
-  if (!record) return null;
+  const gated = gatedFactRecord(normalized, prompt);
+  if (!gated) return null;
+  const record = gated.record;
   const language = detectLanguage(prompt);
   const localized = localizedFactFor(record, language);
   const summary = (localized && localized.summary) || record.summary;
   const source = (localized && localized.source) || record.source;
   const evidence = [
     `fact_lookup:hit:${record.slug}`,
+    `fact_lookup:subject_gate:${gated.gate}`,
     `language:${language}`,
     ...((record.wikidata || []).map((qid) => `wikidata:${qid}`)),
   ];

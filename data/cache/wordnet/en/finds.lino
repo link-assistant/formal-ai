@@ -1,0 +1,107 @@
+language en
+lemma finds
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a productive insight"
+    id oewn-05816226-n
+    partOfSpeech n
+    synonyms (discovery breakthrough find)
+  entry
+    definition "the act of discovering something"
+    id oewn-00043933-n
+    partOfSpeech n
+    synonyms (discovery find uncovering)
+  entry
+    definition "come upon, as if by accident; meet with"
+    examples ("We find this idea in Plato" "I happened upon the most wonderful bakery not very far from here" "She chanced upon an interesting book in the bookstore the other day")
+    id oewn-02253273-v
+    partOfSpeech v
+    synonyms (find happen chance bump encounter)
+  entry
+    definition "discover or determine the existence, presence, or fact of by perception with the eyes"
+    examples ("She detected high levels of lead in her drinking water" "We found traces of lead in the paint")
+    id oewn-02158938-v
+    partOfSpeech v
+    synonyms (detect observe find discover notice)
+  entry
+    definition "come upon after searching; find the location of something that was missed or lost"
+    examples ("Did you find your glasses?" "I cannot find my gloves!")
+    id oewn-02290474-v
+    partOfSpeech v
+    synonyms (find regain)
+  entry
+    definition "establish after a calculation, investigation, experiment, survey, or study"
+    examples ("find the product of two numbers" "The physicist who found the elusive particle won the Nobel Prize")
+    id oewn-00920843-v
+    partOfSpeech v
+    synonyms (determine find "find out" ascertain)
+  entry
+    definition "come to believe on the basis of emotion, intuitions, or indefinite grounds"
+    examples ("I feel that he doesn't like me" "I find him to be obnoxious" "I found the movie rather entertaining")
+    id oewn-00717144-v
+    partOfSpeech v
+    synonyms (find feel)
+  entry
+    definition "perceive or be contemporaneous with"
+    examples ("We found Republicans winning the offices" "You'll see a lot of cheating in this school" "The 1960's saw the rebellion of the younger generation against established traditions" "I want to see results")
+    id oewn-02133338-v
+    partOfSpeech v
+    synonyms (witness find see)
+  entry
+    definition "get something or somebody for a specific purpose"
+    examples ("I found this gadget that will serve as a bottle opener" "I got hold of these tools to fix our plumbing" "The chairman got hold of a secretary on Friday night to type the urgent letter")
+    id oewn-02218118-v
+    partOfSpeech v
+    synonyms ("line up" "get hold" "come up" find)
+  entry
+    definition "make a discovery, make a new finding"
+    examples ("Roentgen discovered X-rays" "Physicists believe they found a new elementary particle")
+    id oewn-01641524-v
+    partOfSpeech v
+    synonyms (discover find)
+  entry
+    definition "obtain through effort or management"
+    examples ("She found the time and energy to take care of her aging parents" "We found the money to send our sons to college")
+    id oewn-02217057-v
+    partOfSpeech v
+    synonyms (find)
+  entry
+    definition "decide on and make a declaration about"
+    examples ("find someone guilty")
+    id oewn-00974031-v
+    partOfSpeech v
+    synonyms (rule find)
+  entry
+    definition "receive a specified treatment (abstract)"
+    examples ("These aspects of civilization do not find expression or receive an interpretation" "His movie received a good review" "I got nothing but trouble for my good intentions")
+    id oewn-00523831-v
+    partOfSpeech v
+    synonyms (receive get find obtain incur)
+  entry
+    definition "perceive oneself to be in a certain condition or place"
+    examples ("I found myself in a difficult situation" "When he woke up, he found himself in a hospital room")
+    id oewn-02202295-v
+    partOfSpeech v
+    synonyms (find)
+  entry
+    definition "get or find back; recover the use of"
+    examples ("She regained control of herself" "She found her voice and replied quickly")
+    id oewn-02252785-v
+    partOfSpeech v
+    synonyms (recover retrieve find regain)
+  entry
+    definition "succeed in reaching; arrive at"
+    examples ("The arrow found its mark")
+    id oewn-02025505-v
+    partOfSpeech v
+    synonyms (find)
+  entry
+    definition "accept and make use of one's personality, abilities, and situation"
+    examples ("My son went to Berkeley to find himself")
+    id oewn-00251577-v
+    partOfSpeech v
+    synonyms ("find oneself" find)
+source "oewn:2024"

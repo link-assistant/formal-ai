@@ -782,12 +782,11 @@ async function tryFactQuery(prompt, normalized, preferences) {
   // Stage 1: cache check (skipped when the user asked for fresh data).
   if (!query.forceFresh) {
     trace.push("fact_query:cache:check");
-    const cached = factCacheGet(
-      query.relation,
-      query.subjectTerm,
-      query.language,
-    );
-    if (cached) {
+    // Issue #1172 R2: a seeded record answers only through the subject gate.
+    const seeded = seededFactQueryAnswer(query, prompt, trace);
+    if (seeded) return seeded;
+    const cached = factCacheGet(query.relation, query.subjectTerm, query.language);
+    if (cached && !cached.fromSeed) {
       trace.push(`fact_query:cache:hit:${cached.fromSeed ? "seed" : "runtime"}`);
       const evidence = factQueryEvidence(
         Object.assign({}, cached, { fromCache: true }),

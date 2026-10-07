@@ -1,0 +1,9 @@
+view
+  id M-dff96778cf5d
+  lemma eats
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "informal terms for a meal"
+    provenance (wordnet)

@@ -119,6 +119,10 @@ seed_metadata_gaps
     source "data/seed/meanings-software-project.lino"
     record "delivery_script_generation"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_220b75299f6817b0
+    source "data/seed/meanings-statistics.lino"
+    record "word_problem_question"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_ef88eba95d205d30
     source "data/seed/meanings-statistics.lino"
     record "word_problem_unit_price"

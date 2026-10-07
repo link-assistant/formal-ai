@@ -34,6 +34,9 @@ on:
   # itself, and otherwise on `main` and on the schedule below -- so it still
   # gates every merge, and a regression cannot reach a release unreported.
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     paths:
       - 'experiments/issue_840_task_ladder/**'

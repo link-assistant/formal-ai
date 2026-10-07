@@ -217,6 +217,34 @@ fn handler_sql_synthesis_composes_filtered_select() {
 }
 
 #[test]
+fn handler_sql_synthesis_groups_an_aggregate_by_the_seeded_cue() {
+    let counted = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query to count users per country from the users table"
+    );
+    assert!(
+        counted.contains("SELECT country, COUNT(*) FROM users GROUP BY country;"),
+        "{counted}"
+    );
+    let averaged = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query for the average salary for each department from the employees table"
+    );
+    assert!(
+        averaged.contains("SELECT department, AVG(salary) FROM employees GROUP BY department;"),
+        "{averaged}"
+    );
+    let listed = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query that selects name from the employees table for each row"
+    );
+    assert!(
+        !listed.contains("GROUP BY"),
+        "without an aggregate nothing is grouped: {listed}"
+    );
+}
+
+#[test]
 fn handler_shell_compose_builds_find_command() {
     let answer = answer_of!(
         formal_ai::handle_shell_command_compose,

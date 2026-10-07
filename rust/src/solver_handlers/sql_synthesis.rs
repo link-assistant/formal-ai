@@ -282,6 +282,31 @@ fn aggregate(tokens: &[&str]) -> Option<(String, String)> {
     None
 }
 
+/// GROUP BY from the seed `sql_grouping` cues ("per country", "for each
+/// department", "grouped by city"): the column right after the cue, past the
+/// entry's `skip` connector words. Read only alongside an aggregate, so a
+/// grouped statement always selects what it groups.
+fn group_clause(tokens: &[&str]) -> Option<(String, String)> {
+    let cues = word_entries("sql_grouping");
+    for (index, token) in tokens.iter().enumerate() {
+        let Some(entry) = cues
+            .iter()
+            .find(|entry| entry.find_child_value("word") == *token)
+        else {
+            continue;
+        };
+        let at = index + 1 + entry.find_child_value("skip").parse::<usize>().unwrap_or(0);
+        let column = tokens
+            .get(at)
+            .map(|word| identifier(word))
+            .unwrap_or_default();
+        if !column.is_empty() {
+            return Some((column, echo(tokens, index, at)));
+        }
+    }
+    None
+}
+
 /// ORDER BY from "sorted by X" / "alphabetical order", plus DESC markers.
 fn order_clause(tokens: &[&str]) -> Option<(String, String)> {
     for (index, token) in tokens.iter().enumerate() {
@@ -419,11 +444,24 @@ pub fn handle_sql_synthesis(
         Some((expression, request)) => (expression, Some(request)),
         None => (String::new(), None),
     };
+    let group = if aggregate.is_empty() {
+        None
+    } else {
+        group_clause(&tokens)
+    };
     let (columns, columns_request) = if aggregate.is_empty() {
         select_columns(&tokens)
     } else {
         (aggregate, aggregate_request.unwrap_or_default())
     };
+    let mut columns = columns;
+    if let Some((column, _)) = &group {
+        columns = format!("{column}, {columns}");
+    }
+    let group_by = group
+        .as_ref()
+        .map(|(column, _)| [" GROUP BY ", column.as_str()].concat())
+        .unwrap_or_default();
     let filter_list = filters(&tokens);
     let where_clause = if filter_list.is_empty() {
         String::new()
@@ -446,6 +484,7 @@ pub fn handle_sql_synthesis(
         " FROM ",
         &table,
         &where_clause,
+        &group_by,
         &order,
         &limit,
         ";",
@@ -457,6 +496,9 @@ pub fn handle_sql_synthesis(
     rows.push((table.clone(), format!("FROM {table}")));
     for filter in &filter_list {
         rows.push((filter.request.clone(), filter.clause.clone()));
+    }
+    if let Some((_, request)) = &group {
+        rows.push((request.clone(), group_by.trim().to_owned()));
     }
     if !order.is_empty() {
         rows.push((order_request, order.trim().to_owned()));

@@ -9,11 +9,12 @@
 
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { rustLines } from './content.mjs';
+import { latestUserRequest, rustLines } from './content.mjs';
 import { fetchArguments, jsonText, planOne, writeArguments } from './plan.mjs';
 import { Progress } from './progress.mjs';
 import { urlsIn } from './web_research.mjs';
 import { pushLinoField } from './crate/links_format.mjs';
+import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { findChildValue, parseLinoRoot } from './write_lino.mjs';
 import { readText } from './host.mjs';
@@ -351,3 +352,21 @@ export function unresolvedNote(language, query) {
   return template('repair_unresolved_need', language, [['query', query]]);
 }
 
+
+/** Mirrors `fn stop_note`: the ladder or unresolved note plus the attempt chain. */
+export function stopNote(messages, failure, reason, ladderRung, maxRungs) {
+  const language = detect(latestUserRequest(messages) ?? '');
+  let note;
+  if (reason === 'exhausted') {
+    note = ladderNote(language, ladderRung, maxRungs);
+  } else if (reason === 'no_match') {
+    const primary = formalizeDiagnostic(failure.language, failure.reported)[0];
+    if (!primary) return '';
+    note = unresolvedNote(language, searchQuery(failure.language, primary));
+  } else {
+    return '';
+  }
+  const attempts = attemptsFrom(messages, failure);
+  if (attempts.length === 0) return note;
+  return `${note}\n\n\`\`\`lino\n${evidenceDocument(attempts)}\`\`\``;
+}

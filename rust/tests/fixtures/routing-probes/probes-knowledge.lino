@@ -166,22 +166,19 @@ routing_probes
   probe p109
     lane fact_lookup
     language en
-    intent fact_query
+    intent fact_lookup
     prompt "Make sense of this: what is the capital of France?"
     adversarial true
-    rust_misroute fact_lookup
   probe p110
     lane fact_lookup
     language en
-    intent fact_query
+    intent fact_lookup
     prompt "What is the capital of the USA?"
-    rust_misroute fact_lookup
   probe p111
     lane fact_lookup
     language ru
-    intent fact_query
+    intent fact_lookup
     prompt "столица россии"
-    rust_misroute fact_lookup
   probe p112
     lane fact_lookup
     language zh
@@ -620,12 +617,13 @@ routing_probes
     language en
     intent word_problem_total
     prompt "I buy 5 apples at 2 dollars each. What is the total?"
+  # p349 is a loss relation (had 10, spent 3), read by the seeded relation
+  # words of issue 1176 R2 rather than the pay-minus-cost change shape.
   probe p349
     lane word_problem
     language en
-    intent word_problem_change
+    intent word_problem_relation
     prompt "I had 10 dollars and spent 3. How much change do I have?"
-    js_misroute calculation_error
     rust_misroute unverified
   probe p350
     lane word_problem

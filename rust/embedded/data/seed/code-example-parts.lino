@@ -5,6 +5,8 @@
 # parse produced, and the per-language vocabulary recorded here. No
 # per-language meaning table lives in Rust (R1164-3) -- every language
 # fact below is data, so growing language coverage means growing this file.
+# No program text lives here (R1164-6), recomposition reads the aligned
+# parts of the decomposed examples.
 code_example_parts
   part_language rust
     output_call println!
@@ -60,14 +62,15 @@ code_example_parts
   part_language php
     output_call echo
     entry_name none
-  # Pascal is held out (R1164-9) — no grammar row is registered in
-  # program-cst-grammars.lino yet, so decompose_code_node answers
-  # UnknownGrammar("pascal") today. The vocabulary and shape below are
-  # ready for the day the grammar lands; nothing in Rust changes then.
-  part_language pascal
-    output_call writeln
-    output_call write
+  part_language r
+    output_call print
+    output_call cat
     entry_name none
+  # Pascal is held out (R1164-9). No grammar row is registered in
+  # program-cst-grammars.lino, so decompose_code_node answers
+  # UnknownGrammar("pascal"), and on purpose no Pascal vocabulary and no
+  # Pascal program sits here either. A Pascal program may only come from a
+  # decomposed Free Pascal documentation example, never from stored text.
   entry_hint_kind function
   entry_hint_kind func
   entry_hint_kind method
@@ -84,34 +87,4 @@ code_example_parts
   prose_relation
     relation run_with
     kind run_command
-  program_shape rust
-    template `fn main() {\n    println!("{literal}");\n}\n`
-  program_shape kotlin
-    template `fun main() {\n    println("{literal}")\n}\n`
-  program_shape scala
-    template `object HelloWorld {\n  def main(args: Array[String]): Unit = {\n    println("{literal}")\n  }\n}\n`
-  program_shape swift
-    template `print("{literal}")\n`
-  program_shape go
-    template `package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("{literal}")\n}\n`
-  program_shape java
-    template `public class Main {\n    public static void main(String[] args) {\n        System.out.println("{literal}");\n    }\n}\n`
-  program_shape csharp
-    template `using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("{literal}");\n    }\n}\n`
-  program_shape c
-    template `#include <stdio.h>\n\nint main(void) {\n    printf("{literal}\\n");\n    return 0;\n}\n`
-  program_shape cpp
-    template `#include <iostream>\n\nint main() {\n    std::cout << "{literal}" << std::endl;\n    return 0;\n}\n`
-  program_shape javascript
-    template `console.log("{literal}");\n`
-  program_shape typescript
-    template `console.log("{literal}");\n`
-  program_shape python
-    template `print("{literal}")\n`
-  program_shape ruby
-    template `puts "{literal}"\n`
-  program_shape php
-    template `<?php\necho "{literal}";\n`
-  program_shape pascal
-    template "program HelloWorld;\nbegin\n    writeln('{literal}');\nend.\n"
-  note "Templates carry each language's quoting style, so the one unquoted bound literal renders correctly everywhere; {literal} is the only placeholder."
+  note "Recomposition builds every program from a decomposed example's own body with its output literal slotted, so this file stores no program templates. A language with no contributing example cannot be recomposed."

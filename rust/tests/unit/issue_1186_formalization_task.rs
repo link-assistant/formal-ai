@@ -14,6 +14,7 @@
 //! chain wires the handler). No test touches the network and no test
 //! invokes a theorem prover.
 
+use formal_ai::derivation::{Derivation, explain_answer};
 use formal_ai::event_log::EventLog;
 use formal_ai::web_engine_core::normalize_prompt;
 use formal_ai::{SolverConfig, UniversalSolver, handle_formalization_request};
@@ -238,6 +239,116 @@ fn deformalization_localizes_the_wrapper_prose() {
     // predicate vocabulary is the translation pipeline's task, honestly
     // outside this handler's grammar.
     assert!(answer.contains("studies"), "{answer}");
+}
+
+/// R5: the round trip runs from every rendered target, not only FOL — the
+/// Lean 4, Rocq and Links Notation renderings read back through their own
+/// seed templates to the same clause.
+#[test]
+fn deformalization_reads_lean_rocq_and_links_notation() {
+    let lean = handler_answer(
+        "Deformalize in plain English: theorem formalized : ∀ (x : U), Student x ∧ Studies x → Passes x exam := by sorry",
+    );
+    assert!(
+        lean.contains("every student that studies passes the exam"),
+        "the Lean statement reads back with its object: {lean}"
+    );
+    assert!(lean.contains("structure preserved"), "{lean}");
+
+    let rocq = handler_answer(
+        "Deformalize in plain English:\nTheorem formalized : ~ (exists (x : U), Cat x /\\ Sleeps x /\\ Hunts x).\nProof.\nAdmitted.",
+    );
+    assert!(
+        rocq.contains("no cat that sleeps hunts"),
+        "the Rocq negation reads back as `no`: {rocq}"
+    );
+    assert!(rocq.contains("structure preserved"), "{rocq}");
+
+    let lino = handler_answer(
+        "Deformalize in plain English:\nformal_clause\n  quantifier exists\n  variable x\n  conjuncts\n    predicate Bird\n      holds_of x\n    predicate Sings\n      holds_of x\n    predicate Flies\n      holds_of x\n",
+    );
+    assert!(
+        lino.contains("some bird that sings flies"),
+        "the Links Notation clause reads back: {lino}"
+    );
+    assert!(lino.contains("structure preserved"), "{lino}");
+}
+
+/// A Lean statement is named `formalized`, which carries the English
+/// formalize verb; the Russian deformalize cue still decides the answer's
+/// language.
+#[test]
+fn deformalization_from_lean_answers_in_the_cue_language() {
+    let answer = handler_answer(
+        "Деформализуй: theorem formalized : ∀ (x : U), студент x ∧ учится x → сдаёт x экзамен := by sorry",
+    );
+    assert!(
+        answer.contains("Прочтение на естественном языке"),
+        "the prose wrapper is Russian: {answer}"
+    );
+    assert!(
+        answer.contains("каждый студент, который учится, сдаёт экзамен"),
+        "{answer}"
+    );
+}
+
+/// Hindi puts the object before its verb (`verb_final` in the seed), so the
+/// last word of the main phrase is the predicate.
+#[test]
+fn hindi_object_verb_order_reads_as_a_two_place_relation() {
+    let answer = handler_answer("औपचारिक बनाओ: हर छात्र जो सीखता है, किताब लिखता है");
+    assert_eq!(
+        fenced(&answer, "fol"),
+        "∀x (छात्र(x) ∧ सीखता(x) → लिखता(x, किताब))",
+        "{answer}"
+    );
+    let back = handler_answer("सहज भाषा में: ∀x (छात्र(x) ∧ सीखता(x) → लिखता(x, किताब))");
+    assert!(back.contains("किताब लिखता"), "object before verb: {back}");
+    assert!(back.contains("structure preserved"), "{back}");
+}
+
+// ---------------------------------------------------------------------------
+// Derivation record (R6): `formal-ai explain <answer-id>` reads it.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn formalization_derivation_is_persisted_for_explain() {
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    });
+    let answer = solver.solve("Formalize in first-order logic: Every nurse who listens helps");
+    let id = answer.derivation_id();
+    let root = std::env::current_dir().expect("working directory");
+    let record = Derivation::load(&root, &id).expect("the solver persisted the derivation");
+    let fragments = record.formalized_fragments.join("\n");
+    assert!(
+        fragments.contains(
+            "stage=parse quantifier=forall variable=x antecedents=Nurse|Listens consequent=Helps"
+        ),
+        "the parsed clause is a fragment: {fragments}"
+    );
+    for target in ["fol", "lean", "rocq", "lino"] {
+        assert!(
+            fragments.contains(&format!(
+                "stage=render target={target} template=clause_conditional"
+            )),
+            "every chosen template is recorded ({target}): {fragments}"
+        );
+    }
+    assert!(
+        fragments.contains("text=∀x (Nurse(x) ∧ Listens(x) → Helps(x))"),
+        "the rendered target is recorded: {fragments}"
+    );
+    assert!(
+        fragments.contains("stage=prover") && fragments.contains("invoked=false"),
+        "the prover step states it did not run: {fragments}"
+    );
+    let explained = explain_answer(&root, &id).expect("explain reads the record");
+    assert!(
+        explained.contains("stage=render target=lean"),
+        "`formal-ai explain` prints the fragments: {explained}"
+    );
 }
 
 // ---------------------------------------------------------------------------

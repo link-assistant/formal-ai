@@ -90,14 +90,64 @@ impl RediscoverableRecipe {
 
     /// Whether the row carries every field the policy seed requires (R1165-3:
     /// a procedure without a rediscovery query and source is not stored).
+    ///
+    /// The required fields are the `entry_requires` rows the seed marks
+    /// `required`, plus the `(language, task)` key every row is looked up
+    /// by; a field the seed names that a row cannot carry fails the row.
     #[must_use]
     pub fn is_valid_cache_entry(&self) -> bool {
-        !self.language.trim().is_empty()
-            && !self.task.trim().is_empty()
-            && !self.rediscovery_query.trim().is_empty()
-            && !self.rediscovery_source.trim().is_empty()
-            && !self.entry.trim().is_empty()
+        [CACHE_KEY_LANGUAGE, CACHE_KEY_TASK]
+            .into_iter()
+            .map(str::to_owned)
+            .chain(required_entry_fields())
+            .all(|name| {
+                self.field(&name)
+                    .is_some_and(|value| !value.trim().is_empty())
+            })
     }
+
+    /// The text of the field `name`, when a row carries one by that name.
+    fn field(&self, name: &str) -> Option<&str> {
+        match name {
+            CACHE_KEY_LANGUAGE => Some(&self.language),
+            CACHE_KEY_TASK => Some(&self.task),
+            "rediscovery_query" => Some(&self.rediscovery_query),
+            "rediscovery_source" => Some(&self.rediscovery_source),
+            "entry" => Some(&self.entry),
+            "verified_output" => Some(&self.verified_output),
+            _ => None,
+        }
+    }
+}
+
+/// The cache key fields every row carries besides the seed's requirements.
+const CACHE_KEY_LANGUAGE: &str = "language";
+const CACHE_KEY_TASK: &str = "task";
+/// The `entry_requires` value that marks a field as required.
+const REQUIRED_MARK: &str = "required";
+
+/// The fields `data/seed/program-cache-policy.lino` marks `required` under
+/// `entry_requires` (fields the store derives, such as `content_id`, carry a
+/// different mark and are not checked here).
+fn required_entry_fields() -> Vec<String> {
+    let policy = parse_lino(POLICY);
+    policy
+        .children
+        .first()
+        .and_then(|root| {
+            root.children
+                .iter()
+                .find(|node| node.name == "entry_requires")
+        })
+        .map(|requires| {
+            requires
+                .children
+                .iter()
+                .filter(|field| field.id == REQUIRED_MARK)
+                .map(|field| field.name.clone())
+                .collect()
+        })
+        .unwrap_or_default()
 }
 
 /// Whether the policy seed still serves the embedded bootstrap snapshots.

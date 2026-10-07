@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_word_relations.js"
+  ceiling 121
+  rationale "Word problems as quantity relations (issue #1176 R2, 2026-10-07): stated numbers joined by the seeded gain, loss, group and share relation words, with the derivation shown. JavaScript-first; the Rust twin follows in rust/src/solver_handlers/statistics. Growth is the ported handler, not silent regrowth."

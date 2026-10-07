@@ -11,9 +11,18 @@
 //! in `data/seed/code-example-parts.lino` (R1164-3 -- no per-language
 //! meaning table lives here). A slug with no registered grammar is
 //! [`DecomposeError::UnknownGrammar`] naming the slug; the decomposer
-//! never guesses (R1164-1). Pascal is held out that way today: its
-//! vocabulary and program shape already sit in the seed, waiting for the
-//! grammar row.
+//! never guesses (R1164-1). Pascal is held out that way today: the seed
+//! carries no Pascal vocabulary and no program template, so a Pascal
+//! program can only ever come from a decomposed Free Pascal example
+//! (R1164-9).
+//!
+//! Recomposition builds the program from the aligned parts, never from a
+//! stored template (R1164-6): each decomposed example keeps its own source
+//! as a program body with the output literal cut out into a slot, the
+//! generalized procedure carries one body per contributing language next to
+//! the `output_call` parameter, and recomposing binds the requirement's
+//! literal into that body after checking the body still makes the aligned
+//! output call. A language no example contributed is a refusal.
 //!
 //! The schema of every record this module emits is
 //! `data/seed/code-node-decomposition.lino` (R1164-10), and promotion of a
@@ -89,7 +98,14 @@ pub struct DecomposedCodeNode {
     pub language_slug: String,
     /// The parts found in it.
     pub parts: Vec<CodePart>,
+    /// The example's own source with its output literal replaced by
+    /// [`LITERAL_SLOT`] (quotes kept); empty when no literal was printed by
+    /// the matched output call.
+    pub program_body: String,
 }
+
+/// The slot a program body carries where the output literal was.
+pub const LITERAL_SLOT: &str = concat!("{", "literal}");
 
 /// One language-specific value of a generalized slot.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -112,6 +128,9 @@ pub struct GeneralizedProcedure {
     pub parameters: Vec<Parameter>,
     /// Where every contributing part came from.
     pub source_urls: Vec<String>,
+    /// Each contributing language's program body (its example's source with
+    /// the output literal slotted), the source recomposition builds from.
+    pub program_bodies: BTreeMap<String, String>,
 }
 
 /// Requirement-supplied values for the generalized slots.
@@ -161,7 +180,6 @@ struct PartVocabulary {
     import_hint_kinds: Vec<String>,
     assert_hint_kinds: Vec<String>,
     prose_relations: Vec<(String, CodePartKind)>,
-    shapes: BTreeMap<String, String>,
 }
 
 impl PartVocabulary {
@@ -218,14 +236,6 @@ impl PartVocabulary {
                         vocabulary.prose_relations.push((relation, kind));
                     }
                 }
-                "program_shape" => {
-                    // The shape's language slug is the id; the template is a
-                    // child field.
-                    let template = record.find_child_value("template").to_owned();
-                    if !record.id.is_empty() && !template.is_empty() {
-                        vocabulary.shapes.insert(record.id.clone(), template);
-                    }
-                }
                 _ => {}
             }
         }
@@ -255,6 +265,19 @@ pub fn decompose_code_node(
     source: &str,
     language_slug: &str,
     prose_links: &[ProseLink],
+) -> Result<DecomposedCodeNode, DecomposeError> {
+    decompose_code_node_from(source, language_slug, prose_links, "")
+}
+
+/// [`decompose_code_node`] for an example read from a known page: every
+/// part derived from the code carries `source_url`, so a recomposition can
+/// cite the page each contributing part came from (R1164-6). Prose parts
+/// keep the prose's own URL.
+pub fn decompose_code_node_from(
+    source: &str,
+    language_slug: &str,
+    prose_links: &[ProseLink],
+    source_url: &str,
 ) -> Result<DecomposedCodeNode, DecomposeError> {
     let grammar = crate::coding::cst::grammar_metadata(language_slug)
         .ok_or_else(|| DecomposeError::UnknownGrammar(language_slug.to_owned()))?;
@@ -294,7 +317,7 @@ pub fn decompose_code_node(
                 kind: CodePartKind::Import,
                 source_text: String::new(),
                 cst_node_kind: kind.clone(),
-                source_url: String::new(),
+                source_url: source_url.to_owned(),
             });
             break;
         }
@@ -323,7 +346,7 @@ pub fn decompose_code_node(
                 kind: CodePartKind::EntryPoint,
                 source_text: entry,
                 cst_node_kind: function_kind.unwrap_or_else(|| "function_declaration".to_owned()),
-                source_url: String::new(),
+                source_url: source_url.to_owned(),
             });
         }
     }
@@ -351,7 +374,7 @@ pub fn decompose_code_node(
                 kind: CodePartKind::OutputOperation,
                 source_text: call.clone(),
                 cst_node_kind: call_kind,
-                source_url: String::new(),
+                source_url: source_url.to_owned(),
             });
             matched_call = Some(call.clone());
             break;
@@ -381,6 +404,11 @@ pub fn decompose_code_node(
         })
         .unwrap_or_else(|| source.to_owned());
     let literals = quoted_literals(&literal_scope);
+    let program_body = matched_call
+        .as_deref()
+        .zip(literals.first())
+        .map(|(call, literal)| slot_output_literal(source, call, literal))
+        .unwrap_or_default();
     let literals = if literals.is_empty() {
         quoted_literals(source)
     } else {
@@ -391,7 +419,7 @@ pub fn decompose_code_node(
             kind: CodePartKind::StringLiteral,
             source_text: literal,
             cst_node_kind: string_kind.clone(),
-            source_url: String::new(),
+            source_url: source_url.to_owned(),
         });
     }
     // Test assertions: any assert-shaped node kind.
@@ -405,7 +433,7 @@ pub fn decompose_code_node(
                 kind: CodePartKind::TestAssertion,
                 source_text: String::new(),
                 cst_node_kind: kind.clone(),
-                source_url: String::new(),
+                source_url: source_url.to_owned(),
             });
             break;
         }
@@ -432,7 +460,46 @@ pub fn decompose_code_node(
     Ok(DecomposedCodeNode {
         language_slug: language_slug.to_owned(),
         parts,
+        program_body,
     })
+}
+
+/// The quote characters a string literal may open with.
+const LITERAL_QUOTES: [char; 2] = ['"', '\''];
+
+/// The source with the first quoted `literal` on a line that makes `call`
+/// replaced by [`LITERAL_SLOT`] (the quotes stay); empty when no such line
+/// carries the literal.
+fn slot_output_literal(source: &str, call: &str, literal: &str) -> String {
+    let mut offset = 0usize;
+    for line in source.split_inclusive('\n') {
+        if line.contains(call) {
+            for quote in LITERAL_QUOTES {
+                let quoted = format!("{quote}{literal}{quote}");
+                if let Some(at) = line.find(&quoted) {
+                    let start = offset + at + quote.len_utf8();
+                    let end = start + literal.len();
+                    return format!("{}{LITERAL_SLOT}{}", &source[..start], &source[end..]);
+                }
+            }
+        }
+        offset += line.len();
+    }
+    String::new()
+}
+
+/// Escape a bound literal for the quote that opens its slot: the escape
+/// character and that quote are the only characters a literal cannot carry
+/// verbatim.
+fn escape_for_quote(literal: &str, quote: Option<char>) -> String {
+    let mut out = String::with_capacity(literal.len());
+    for character in literal.chars() {
+        if character == '\\' || Some(character) == quote {
+            out.push('\\');
+        }
+        out.push(character);
+    }
+    out
 }
 
 /// Lowercase and underscore a prose relation so "compile with" and
@@ -542,11 +609,17 @@ pub fn generalize_examples(examples: &[DecomposedCodeNode]) -> GeneralizedProced
         parameters.push(output_call);
     }
     let mut source_urls = Vec::new();
+    let mut program_bodies = BTreeMap::new();
     for example in examples {
         for part in &example.parts {
             if !part.source_url.is_empty() && !source_urls.contains(&part.source_url) {
                 source_urls.push(part.source_url.clone());
             }
+        }
+        if !example.program_body.is_empty() {
+            program_bodies
+                .entry(example.language_slug.clone())
+                .or_insert_with(|| example.program_body.clone());
         }
     }
     GeneralizedProcedure {
@@ -554,39 +627,58 @@ pub fn generalize_examples(examples: &[DecomposedCodeNode]) -> GeneralizedProced
         shared_structure,
         parameters,
         source_urls,
+        program_bodies,
     }
 }
 
 /// Bind requirement-supplied values into a generalized procedure and
 /// recompose for one language (R1164-6).
 ///
-/// The recomposition carries the
-/// source URL of every contributing `CodePart`. A target with no program
-/// shape in the seed is [`DecomposeError::ParseFailed`], never a guessed
-/// program.
+/// The program is built from the aligned parts, not from a stored
+/// template: the target language's program body (its own example's source
+/// with the output literal slotted) must still make the `output_call` the
+/// alignment recorded for that language, and the bound literal fills the
+/// slot, escaped for the quote that opens it. A language no example
+/// contributed a body for is [`DecomposeError::ParseFailed`] naming it,
+/// never a guessed program. The recomposition carries the source URL of
+/// every contributing `CodePart`.
 pub fn recompose_for_requirement(
     template: &GeneralizedProcedure,
     bindings: &ParameterBindings,
     target_language: &str,
 ) -> Result<CodeRecomposition, DecomposeError> {
-    let vocabulary = PartVocabulary::load();
-    let shape = vocabulary.shapes.get(target_language).ok_or_else(|| {
+    let no_body = || {
         DecomposeError::ParseFailed(crate::seed::report_text(
             "code_example_no_program_shape",
             &[("language", target_language)],
         ))
-    })?;
+    };
+    let per_language_value = |name: &str| {
+        template
+            .parameters
+            .iter()
+            .find(|parameter| parameter.name == name)
+            .and_then(|parameter| parameter.per_language.get(target_language).cloned())
+    };
+    let body = template
+        .program_bodies
+        .get(target_language)
+        .ok_or_else(no_body)?;
+    let call = bindings
+        .0
+        .get("output_call")
+        .cloned()
+        .or_else(|| per_language_value("output_call"))
+        .ok_or_else(no_body)?;
+    let slot_at = body.find(LITERAL_SLOT).ok_or_else(no_body)?;
+    if !body.contains(call.as_str()) {
+        return Err(no_body());
+    }
     let literal = bindings
         .0
         .get("output_literal")
         .cloned()
-        .or_else(|| {
-            template
-                .parameters
-                .iter()
-                .find(|parameter| parameter.name == "output_literal")
-                .and_then(|parameter| parameter.per_language.get(target_language).cloned())
-        })
+        .or_else(|| per_language_value("output_literal"))
         // The literal is bound from the requirement (or the examples'
         // per-language binding), never invented: an unbound literal is a
         // refusal naming the language, not a guessed greeting (R1164-6).
@@ -596,9 +688,16 @@ pub fn recompose_for_requirement(
                 &[("language", target_language)],
             ))
         })?;
+    let quote = body[..slot_at].chars().next_back();
+    let source = format!(
+        "{}{}{}",
+        &body[..slot_at],
+        escape_for_quote(&literal, quote),
+        &body[slot_at + LITERAL_SLOT.len()..]
+    );
     Ok(CodeRecomposition {
         language_slug: target_language.to_owned(),
-        source: shape.replace(concat!("{", "literal}"), &literal),
+        source,
         part_source_urls: template.source_urls.clone(),
     })
 }
@@ -614,8 +713,9 @@ impl GeneralizedProcedure {
         self.shared_structure
             .iter()
             .enumerate()
-            .map(|(ordinal, kind)| ProcedureStepRecord {
-                ordinal,
+            .map(|(index, kind)| ProcedureStepRecord {
+                // The gate's procedures count steps from one.
+                ordinal: index + 1,
                 text: crate::seed::report_text(
                     "code_example_procedure_step",
                     &[("part", kind.as_str())],
@@ -671,7 +771,19 @@ pub fn generalized_links_notation(procedure: &GeneralizedProcedure) -> String {
     for url in &procedure.source_urls {
         let _ = writeln!(out, "  source_url \"{url}\"");
     }
+    for (language, body) in &procedure.program_bodies {
+        let _ = writeln!(out, "  program_body");
+        let _ = writeln!(out, "    language {language}");
+        let _ = writeln!(out, "    source \"{}\"", escape_notation(body));
+    }
     out
+}
+
+/// A multi-line source as one Links Notation string value.
+fn escape_notation(text: &str) -> String {
+    text.replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\n', "\\n")
 }
 
 /// A `CodeRecomposition` as a Links Notation document (R1164-10).

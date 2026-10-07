@@ -26,9 +26,12 @@
 use std::collections::BTreeMap;
 
 use formal_ai::code_example_knowledge::{
-    CodePartKind, DecomposeError, ParameterBindings, ProseLink, decompose_code_node,
-    decomposed_links_notation, generalize_examples, generalized_links_notation,
-    recompose_for_requirement, recomposition_links_notation,
+    CodePartKind, DecomposeError, LITERAL_SLOT, ParameterBindings, ProseLink, decompose_code_node,
+    decompose_code_node_from, decomposed_links_notation, generalize_examples,
+    generalized_links_notation, recompose_for_requirement, recomposition_links_notation,
+};
+use formal_ai::coding_research_learning::{
+    CodingResearchApproval, DecomposedProcedureSource, adopt_decomposed_procedure,
 };
 use formal_ai::web_formalize::{PageBlock, formalize_page_with_context};
 
@@ -38,6 +41,8 @@ const GO_HELLO: &str =
 const KOTLIN_HELLO: &str = "fun main() {\n    println(\"Hello, world!\")\n}\n";
 const SWIFT_HELLO: &str = "print(\"Hello, world!\")\n";
 const PYTHON_HELLO: &str = "print(\"Hello, world!\")\n";
+
+const PARTS_SEED: &str = include_str!("../../../data/seed/code-example-parts.lino");
 
 const KOTLIN_PAGE: &str =
     include_str!("../fixtures/coding-discovery/issue-1164/kotlin-hello-world.html");
@@ -339,28 +344,31 @@ fn recompose_with_formal_ai_literal_yields_go_source() {
     assert!(decompose_code_node(&recomposition.source, "go", &[]).is_ok());
 }
 
-/// R1164-9 (static half): the seed already carries Pascal's program shape
-/// and output call, so the moment a grammar row is registered the held-out
-/// language recomposes; the answer today is the honest `UnknownGrammar` from
-/// decompose, and this pins the shape that waits for it.
+/// R1164-9: Pascal stays held out. The seed carries no Pascal vocabulary
+/// and no stored program of any language, so even a fully bound
+/// requirement cannot produce a Pascal program until a decomposed Free
+/// Pascal example contributes one.
 #[test]
-fn pascal_shape_is_ready_for_its_grammar_row() {
+fn pascal_is_held_out_with_no_stored_program() {
+    assert!(
+        !PARTS_SEED.contains("program_shape"),
+        "no program template is stored"
+    );
+    assert!(
+        !PARTS_SEED.contains("part_language pascal"),
+        "no Pascal vocabulary is stored"
+    );
     let examples = [decompose_code_node(RUST_HELLO, "rust", &[]).expect("rust decomposes")];
     let procedure = generalize_examples(&examples);
     let mut bindings = BTreeMap::new();
     bindings.insert("output_literal".to_owned(), "Hello, Formal AI!".to_owned());
-    let recomposition =
-        recompose_for_requirement(&procedure, &ParameterBindings(bindings), "pascal")
-            .expect("pascal shape is seeded");
-    assert!(
-        recomposition
-            .source
-            .contains("writeln('Hello, Formal AI!')")
-    );
-    assert!(recomposition.source.contains("program HelloWorld;"));
+    bindings.insert("output_call".to_owned(), "writeln".to_owned());
+    let error = recompose_for_requirement(&procedure, &ParameterBindings(bindings), "pascal")
+        .expect_err("no Pascal example contributed a body");
+    assert!(matches!(error, DecomposeError::ParseFailed(message) if message.contains("pascal")));
 }
 
-/// R1164-6: a target with no program shape in the seed is an error naming
+/// R1164-6: a target no example contributed a body for is an error naming
 /// the language, never a guessed program.
 #[test]
 fn recompose_refuses_a_language_without_a_shape() {
@@ -451,4 +459,199 @@ fn adoption_steps_leave_license_fields_to_the_gate() {
         assert_eq!(record.license_url, "");
         assert_eq!(record.source_id, procedure.id);
     }
+}
+
+/// R1164-6: recomposition is built from the aligned parts -- the target's
+/// own example body with the bound literal in its slot -- so recomposing a
+/// Rust example for its own literal returns that example byte for byte, and
+/// a held-out literal changes nothing but the literal.
+#[test]
+fn recomposition_builds_from_the_decomposed_example_body() {
+    let rust = decompose_code_node(RUST_HELLO, "rust", &[]).expect("rust decomposes");
+    assert_eq!(
+        rust.program_body,
+        RUST_HELLO.replace("Hello, world!", LITERAL_SLOT)
+    );
+    let go = decompose_code_node(GO_HELLO, "go", &[]).expect("go decomposes");
+    assert!(
+        go.program_body.contains("import \"fmt\""),
+        "the import literal is not the slot"
+    );
+    let procedure = generalize_examples(&[rust, go]);
+    assert_eq!(procedure.program_bodies.len(), 2);
+    let same = recompose_for_requirement(&procedure, &ParameterBindings::default(), "rust")
+        .expect("rust body");
+    assert_eq!(same.source, RUST_HELLO);
+    let mut bindings = BTreeMap::new();
+    bindings.insert("output_literal".to_owned(), "Hello, Formal AI!".to_owned());
+    let held_out =
+        recompose_for_requirement(&procedure, &ParameterBindings(bindings), "go").expect("go body");
+    assert_eq!(
+        held_out.source,
+        GO_HELLO.replace("Hello, world!", "Hello, Formal AI!")
+    );
+}
+
+/// R1164-6: the aligned `output_call` is checked against the body -- a
+/// requirement naming a call the example does not make is refused -- and a
+/// language no example contributed is refused even though it has a grammar.
+#[test]
+fn recomposition_refuses_an_unaligned_call_or_language() {
+    let examples = [
+        decompose_code_node(RUST_HELLO, "rust", &[]).expect("rust decomposes"),
+        decompose_code_node(GO_HELLO, "go", &[]).expect("go decomposes"),
+    ];
+    let procedure = generalize_examples(&examples);
+    let mut bindings = BTreeMap::new();
+    bindings.insert("output_literal".to_owned(), "Hello, Formal AI!".to_owned());
+    bindings.insert("output_call".to_owned(), "eprintln!".to_owned());
+    recompose_for_requirement(&procedure, &ParameterBindings(bindings), "rust")
+        .expect_err("the rust body does not make eprintln!");
+    let error = recompose_for_requirement(&procedure, &ParameterBindings::default(), "kotlin")
+        .expect_err("no kotlin example contributed");
+    assert!(matches!(error, DecomposeError::ParseFailed(message) if message.contains("kotlin")));
+}
+
+/// R1164-6: a bound literal is escaped for the quote that opens its slot.
+#[test]
+fn recomposition_escapes_the_bound_literal_for_its_quote() {
+    let procedure = generalize_examples(&[
+        decompose_code_node(RUST_HELLO, "rust", &[]).expect("rust decomposes")
+    ]);
+    let mut bindings = BTreeMap::new();
+    bindings.insert("output_literal".to_owned(), "say \"hi\"".to_owned());
+    let recomposition = recompose_for_requirement(&procedure, &ParameterBindings(bindings), "rust")
+        .expect("rust body");
+    assert!(recomposition.source.contains(r#"println!("say \"hi\"");"#));
+}
+
+/// R1164-6: parts read from a page's code carry that page's URL, so the
+/// recomposition cites the code's source, not only the prose's.
+#[test]
+fn code_parts_carry_the_page_url() {
+    const PAGE_URL: &str = "https://go.dev/tour/welcome/1";
+    let node = decompose_code_node_from(GO_HELLO, "go", &[], PAGE_URL).expect("go decomposes");
+    assert!(node.parts.iter().all(|part| part.source_url == PAGE_URL));
+    let procedure = generalize_examples(&[node]);
+    let recomposition = recompose_for_requirement(&procedure, &ParameterBindings::default(), "go")
+        .expect("go body");
+    assert_eq!(recomposition.part_source_urls, vec![PAGE_URL.to_owned()]);
+}
+
+/// R1164-2: every registered language with seed vocabulary decomposes its
+/// Hello World into an output operation and the printed literal.
+#[test]
+fn registered_languages_decompose_output_and_literal() {
+    for (language, source, call) in [
+        (
+            "javascript",
+            "console.log(\"Hello, world!\");\n",
+            "console.log",
+        ),
+        (
+            "typescript",
+            "console.log(\"Hello, world!\");\n",
+            "console.log",
+        ),
+        (
+            "java",
+            "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}\n",
+            "System.out.println",
+        ),
+        (
+            "csharp",
+            "class Program {\n    static void Main() {\n        System.Console.WriteLine(\"Hello, world!\");\n    }\n}\n",
+            "Console.WriteLine",
+        ),
+        (
+            "c",
+            "#include <stdio.h>\n\nint main(void) {\n    puts(\"Hello, world!\");\n    return 0;\n}\n",
+            "puts",
+        ),
+        (
+            "cpp",
+            "#include <iostream>\n\nint main() {\n    std::cout << \"Hello, world!\" << std::endl;\n}\n",
+            "std::cout",
+        ),
+        ("ruby", "puts \"Hello, world!\"\n", "puts"),
+        ("php", "<?php\necho \"Hello, world!\";\n", "echo"),
+        ("r", "print(\"Hello, world!\")\n", "print"),
+    ] {
+        let node = decompose_code_node(source, language, &[])
+            .unwrap_or_else(|error| panic!("{language} must decompose: {error:?}"));
+        assert!(
+            node.parts
+                .iter()
+                .any(|part| part.kind == CodePartKind::OutputOperation && part.source_text == call),
+            "{language} finds {call}"
+        );
+        assert!(
+            node.parts
+                .iter()
+                .any(|part| part.kind == CodePartKind::StringLiteral
+                    && part.source_text == "Hello, world!"),
+            "{language} finds the literal"
+        );
+        assert!(
+            node.program_body.contains(LITERAL_SLOT),
+            "{language} slots its literal"
+        );
+    }
+}
+
+/// R1164-7: `adopt_decomposed_procedure` fills the provenance the
+/// decomposer leaves empty and goes through the existing gate -- an
+/// unexecuted procedure is refused for execution, a non-commercial license
+/// is refused by name, and missing provenance never reaches the gate.
+#[test]
+fn adopt_decomposed_procedure_goes_through_the_gate() {
+    let procedure = generalize_examples(&[
+        decompose_code_node(RUST_HELLO, "rust", &[]).expect("rust decomposes"),
+        decompose_code_node(GO_HELLO, "go", &[]).expect("go decomposes"),
+    ]);
+    let records = procedure.procedure_step_records();
+    assert_eq!(records.first().map(|record| record.ordinal), Some(1));
+    let source = DecomposedProcedureSource {
+        source_url: "https://doc.rust-lang.org/book/ch01-02-hello-world.html".to_owned(),
+        sha256: "a".repeat(64),
+        fetched_at: "1759795200".to_owned(),
+        license_name: "MIT".to_owned(),
+        license_url: "https://opensource.org/licenses/MIT".to_owned(),
+    };
+    let approval = CodingResearchApproval::granted("maintainer");
+    let refusal =
+        adopt_decomposed_procedure(&procedure, "print a greeting", &source, None, &approval)
+            .expect_err("an unexecuted procedure may not be adopted");
+    assert_eq!(refusal.reason, "coding_research_execution_missing");
+
+    let non_commercial = DecomposedProcedureSource {
+        license_name: "CC BY-NC-SA 4.0".to_owned(),
+        ..source
+    };
+    let refusal = adopt_decomposed_procedure(
+        &procedure,
+        "print a greeting",
+        &non_commercial,
+        None,
+        &approval,
+    )
+    .expect_err("a non-commercial license blocks adoption");
+    assert!(
+        refusal.reason.contains("CC BY-NC-SA 4.0"),
+        "{}",
+        refusal.reason
+    );
+
+    let refusal = adopt_decomposed_procedure(
+        &procedure,
+        "print a greeting",
+        &DecomposedProcedureSource::default(),
+        None,
+        &approval,
+    )
+    .expect_err("missing provenance never reaches the gate");
+    assert_eq!(
+        refusal.reason,
+        "coding_research_decomposed_procedure_incomplete"
+    );
 }

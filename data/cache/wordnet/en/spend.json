@@ -1,0 +1,42 @@
+{
+  "lemma": "spend",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02714280-v",
+      "partOfSpeech": "v",
+      "definition": "use up a period of time in a specific way",
+      "examples": [
+        "how are you spending your summer vacation?"
+      ],
+      "synonyms": [
+        "pass"
+      ]
+    },
+    {
+      "id": "oewn-02271905-v",
+      "partOfSpeech": "v",
+      "definition": "pay out",
+      "examples": [
+        "spend money"
+      ],
+      "synonyms": [
+        "expend",
+        "drop"
+      ]
+    },
+    {
+      "id": "oewn-02272374-v",
+      "partOfSpeech": "v",
+      "definition": "spend completely",
+      "examples": [
+        "I spend my pocket money in two days"
+      ]
+    }
+  ]
+}

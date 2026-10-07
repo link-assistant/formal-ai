@@ -1,0 +1,265 @@
+language en
+lemma gave
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "cause to have, in the abstract sense or physical sense"
+    examples ("She gave him a black eye" "The draft gave me a cold")
+    id oewn-02321848-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "be the cause or source of"
+    examples ("He gave me a lot of trouble" "Our meeting afforded much interesting information")
+    id oewn-02344167-v
+    partOfSpeech v
+    synonyms (yield give afford)
+  entry
+    definition "transfer possession of something concrete or abstract to somebody"
+    examples ("I gave her my money" "can you give me lessons?" "She gave the children lots of love and tender loving care")
+    id oewn-02204104-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "convey or reveal information"
+    examples ("Give one's name")
+    id oewn-02240624-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "convey, as of a compliment, regards, attention, etc.; bestow"
+    examples ("Don't pay him any mind" "give the orders" "Give him my best regards" "pay attention")
+    id oewn-01062366-v
+    partOfSpeech v
+    synonyms (give pay)
+  entry
+    definition "organize or be responsible for"
+    examples ("hold a reception" "have, throw, or make a party" "give a course")
+    id oewn-01737358-v
+    partOfSpeech v
+    synonyms (hold throw have make give)
+  entry
+    definition "convey or communicate; of a smile, a look, a physical gesture"
+    examples ("Throw a glance" "She gave me a dirty look")
+    id oewn-01062189-v
+    partOfSpeech v
+    synonyms (give throw)
+  entry
+    definition "give as a present; make a gift of"
+    examples ("What will you give her for her birthday?")
+    id oewn-02205200-v
+    partOfSpeech v
+    synonyms (give gift present)
+  entry
+    definition "cause to happen or be responsible for"
+    examples ("His two singles gave the team the victory")
+    id oewn-01632595-v
+    partOfSpeech v
+    synonyms (give yield)
+  entry
+    definition "dedicate"
+    examples ("give thought to" "give priority to" "pay attention to")
+    id oewn-00734247-v
+    partOfSpeech v
+    synonyms (give pay devote)
+  entry
+    definition "give or supply"
+    examples ("The cow brings in 5 liters of milk" "This year's crop yielded 1,000 bushels of corn" "The estate renders some revenue for the family")
+    id oewn-01632192-v
+    partOfSpeech v
+    synonyms (render yield return give generate)
+  entry
+    definition "transmit (knowledge or skills)"
+    examples ("give a secret to the Russians" "leave your name and address here" "impart a new skill to the students")
+    id oewn-02301114-v
+    partOfSpeech v
+    synonyms (impart leave give "pass on")
+  entry
+    definition "bring about"
+    examples ("The trompe l'oeil-illusion establishes depth")
+    id oewn-01651214-v
+    partOfSpeech v
+    synonyms (establish give)
+  entry
+    definition "leave with; give temporarily"
+    examples ("Can I give you my keys while I go in the pool?" "Can I give you the children for the weekend?")
+    id oewn-02205012-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "emit or utter"
+    examples ("Give a gulp" "give a yelp")
+    id oewn-02568816-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "endure the loss of"
+    examples ("He gave his life for his children" "I gave two sons to the war")
+    id oewn-02348591-v
+    partOfSpeech v
+    synonyms (sacrifice give)
+  entry
+    definition "place into the hands or custody of"
+    examples ("hand me the spoon, please" "Turn the files over to me, please" "He turned over the prisoner to his lawyers")
+    id oewn-02235554-v
+    partOfSpeech v
+    synonyms (pass hand reach "pass on" "turn over" give)
+  entry
+    definition "give entirely to a specific person, activity, or cause"
+    examples ("She committed herself to the work of God" "give one's talents to a good cause" "consecrate your life to the church")
+    id oewn-00888984-v
+    partOfSpeech v
+    synonyms (give dedicate consecrate commit devote)
+  entry
+    definition "give (as medicine)"
+    examples ("I gave him the drug")
+    id oewn-02314354-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "give or convey physically"
+    examples ("She gave him First Aid" "I gave him a punch in the nose")
+    id oewn-02314145-v
+    partOfSpeech v
+    synonyms (give apply)
+  entry
+    definition "bestow"
+    examples ("give homage" "render thanks")
+    id oewn-01062618-v
+    partOfSpeech v
+    synonyms (give render)
+  entry
+    definition "bestow, especially officially"
+    examples ("grant a degree" "give a divorce" "This bill grants us new rights")
+    id oewn-02322074-v
+    partOfSpeech v
+    synonyms (grant give)
+  entry
+    definition "move in order to make room for someone for something"
+    examples ("The park gave way to a supermarket" "‘Move over,’ he told the crowd")
+    id oewn-01852407-v
+    partOfSpeech v
+    synonyms ("move over" "give way" give "ease up" yield)
+  entry
+    definition "give food to"
+    examples ("Feed the starving children in India" "don't give the child this tough meat")
+    id oewn-01180862-v
+    partOfSpeech v
+    synonyms (feed give)
+  entry
+    definition "contribute to some cause"
+    examples ("I gave at the office")
+    id oewn-02313721-v
+    partOfSpeech v
+    synonyms (contribute give "chip in" "kick in")
+  entry
+    definition "break down, literally or metaphorically"
+    examples ("The wall collapsed" "The business collapsed" "The dam broke" "The roof collapsed" "The wall gave in" "The roof finally gave under the weight of the ice")
+    id oewn-01993067-v
+    partOfSpeech v
+    synonyms (collapse "fall in" "cave in" give "give way" break founder)
+  entry
+    definition "estimate the duration or outcome of something"
+    examples ("He gave the patient three months to live" "I gave him a very good chance at success")
+    id oewn-00675490-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "execute and deliver"
+    examples ("Give bond")
+    id oewn-02569967-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "deliver in exchange or recompense"
+    examples ("I'll give you three books for four CDs")
+    id oewn-02364552-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "present to view"
+    examples ("He gave the sign to start")
+    id oewn-01720142-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "perform for an audience"
+    examples ("Pollini is giving another concert in New York")
+    id oewn-01719971-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "be flexible under stress of physical force"
+    examples ("This material doesn't give")
+    id oewn-01452389-v
+    partOfSpeech v
+    synonyms (give yield)
+  entry
+    definition "propose"
+    examples ("He gave the first of many toasts at the birthday party")
+    id oewn-01178107-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "accord by verdict"
+    examples ("give a decision for the plaintiff")
+    id oewn-01071660-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "manifest or show"
+    examples ("This student gives promise of real creativity" "The office gave evidence of tampering")
+    id oewn-00946279-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "offer in good faith"
+    examples ("He gave her his word")
+    id oewn-00889530-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "submit for consideration, judgment, or use"
+    examples ("give one's opinion" "give an excuse")
+    id oewn-00880397-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "guide or direct, as by behavior of persuasion"
+    examples ("You gave me to think that you agreed with me")
+    id oewn-00773851-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "allow to have or take"
+    examples ("I give you two minutes to respond")
+    id oewn-00750978-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "inflict as a punishment"
+    examples ("She gave the boy a good spanking" "The judge gave me 10 years")
+    id oewn-00750622-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "occur"
+    examples ("what gives?")
+    id oewn-00341976-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "consent to engage in sexual intercourse with a man"
+    examples ("She gave herself to many men")
+    id oewn-00108551-v
+    partOfSpeech v
+    synonyms (give)
+  entry
+    definition "proffer (a body part)"
+    examples ("She gave her hand to her little sister")
+    id oewn-00108408-v
+    partOfSpeech v
+    synonyms (give)
+source "oewn:2024"

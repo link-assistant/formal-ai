@@ -18,6 +18,9 @@ on:
     branches:
       - main
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     # Server and protocol code is exactly the surface these legs guard: the
     # issue-#671 loop lived in the planner, and the issue-#650 defects lived in

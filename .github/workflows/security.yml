@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
   schedule:
     - cron: '0 6 * * 1'
   # Issue #1017: the js pipeline template exposes a manual trigger so a security

@@ -4,20 +4,38 @@ on:
     branches:
       - main
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
-      release_mode:
-        description: 'Manual release mode'
-        required: true
+      # Issue #1187 R3: a dispatch runs the checks only unless a release mode
+      # is chosen explicitly, and every release, publish and tag job also
+      # requires the main ref.
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
         type: choice
-        default: 'instant'
+        options: [checks]
+      pull-request:
+        description: 'Pull request number whose checks are dispatched (informational)'
+        required: false
+        type: string
+      release_mode:
+        description: 'Manual release mode (checks runs no release job)'
+        required: false
+        type: choice
+        default: checks
         options:
+          - checks
           - instant
           - changelog-pr
       bump_type:
         description: 'Version bump type'
-        required: true
+        required: false
+        default: patch
         type: choice
         options:
           - patch
@@ -61,7 +79,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-detect-changes
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    if: github.event_name != 'workflow_dispatch'
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     outputs:
       rs-changed: ${{ steps.changes.outputs.rs-changed }}
       toml-changed: ${{ steps.changes.outputs.toml-changed }}
@@ -261,7 +279,8 @@ jobs:
           PREFLIGHT_MODE: >-
             ${{ ((github.event_name == 'push' && github.ref == 'refs/heads/main')
             || (github.event_name == 'workflow_dispatch'
-            && github.event.inputs.release_mode == 'instant'))
+            && github.event.inputs.release_mode == 'instant'
+            && github.ref == 'refs/heads/main'))
             && 'release' || 'report' }}
           PREFLIGHT_VERBOSE: ${{ env.FORMAL_AI_CI_VERBOSE == 'true' && '1' || '0' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -924,6 +943,7 @@ jobs:
       !cancelled() &&
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.release_mode == 'instant' &&
+      github.ref == 'refs/heads/main' &&
       needs.build.result == 'success' &&
       needs.release-preflight.result == 'success' &&
       (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
@@ -1110,7 +1130,7 @@ jobs:
     concurrency:
       group: formal-ai-repository-writes
       queue: max
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr'
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -1319,7 +1339,7 @@ jobs:
       !cancelled() &&
       needs.build.result == 'success' && (
         (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
-        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main' && needs.manual-release.result == 'success')
       )
     runs-on: ubuntu-latest
     timeout-minutes: 35

@@ -20,7 +20,8 @@
 
 use formal_ai::agentic_coding::explain::{EXPLAIN_TASK, is_explain_task};
 use formal_ai::derivation::{
-    Derivation, FetchRecord, VerificationRecord, answer_derivation_id, explain_answer, store_path,
+    AppliedRule, Derivation, FetchRecord, VerificationRecord, answer_derivation_id, explain_answer,
+    store_path,
 };
 use formal_ai::event_log::EventLog;
 use std::path::{Path, PathBuf};
@@ -267,4 +268,63 @@ fn verification_payload_preserves_shell_separators_and_legacy_spelling() {
     .expect("historical payload remains readable");
     assert_eq!(legacy.command, "python3 solution.py");
     assert_eq!(legacy.exit_code, Some(0));
+}
+
+// Issue #1174 R9: the rules a text-transform handler applied are a stage of
+// the record. The schema's `stage ... collects rule` rows name the event
+// kinds, so the register, grammar, genre, summarization and translation
+// events reach `formal-ai explain` without a per-handler edit.
+#[test]
+fn applied_rules_are_projected_round_tripped_and_explained() {
+    let mut log = EventLog::new();
+    log.append("register_rewrite", "u -> you");
+    log.append(
+        "grammar_correction",
+        "don't -> doesn't (third_person_agreement)",
+    );
+    log.append("thinking:note", "not a rule event");
+    let derivation = Derivation::record_for(&log, "answer_00000000000000aa");
+    assert_eq!(
+        derivation.applied_rules,
+        vec![
+            AppliedRule {
+                kind: String::from("register_rewrite"),
+                detail: String::from("u -> you"),
+            },
+            AppliedRule {
+                kind: String::from("grammar_correction"),
+                detail: String::from("don't -> doesn't (third_person_agreement)"),
+            },
+        ],
+        "only the kinds the schema declares are collected, in append order"
+    );
+    let parsed = Derivation::from_lino(&derivation.to_lino()).expect("the record parses back");
+    assert_eq!(
+        parsed, derivation,
+        "applied rules round-trip through Links Notation"
+    );
+    let explanation = derivation.explain_text();
+    assert!(
+        explanation.contains("stage applied_rules")
+            && explanation.contains("grammar_correction don't -> doesn't"),
+        "explain names each applied rule: {explanation}"
+    );
+    let empty = Derivation::record_for(&EventLog::new(), "answer_00000000000000ab");
+    assert!(
+        empty
+            .explain_text()
+            .contains("stage applied_rules\n    not recorded"),
+        "a route that applied no rule reports the stage as not recorded"
+    );
+}
+
+#[test]
+fn a_grammar_correction_answer_carries_its_rules_in_the_derivation() {
+    let response = formal_ai::FormalAiEngine
+        .answer("Correct the grammar: She don't like apples and he have two cat.");
+    assert!(
+        response.links_notation.contains("kind grammar_correction"),
+        "the answer's derivation record names the grammar rules it applied: {}",
+        response.links_notation
+    );
 }

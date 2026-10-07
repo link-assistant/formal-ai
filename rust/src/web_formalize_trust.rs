@@ -155,6 +155,10 @@ pub struct ParagraphIndex {
     pub text: String,
     /// The paragraph's `paragraph` link in the page network.
     pub link: Link,
+    /// The command tied to the paragraph: the paragraph itself when it is a
+    /// command paragraph, else the code block or command paragraph that
+    /// directly follows it (the command the paragraph introduces).
+    pub command: Option<Link>,
 }
 
 /// A fetched, formalized, and annotated page held in working memory.
@@ -174,7 +178,6 @@ pub struct FormalizedPage {
     pub network: LinkNetwork,
     code_blocks: Vec<CodeBlockIndex>,
     commands: Vec<CommandIndex>,
-    #[allow(dead_code)] // seed provenance, carried but not yet rendered
     paragraphs: Vec<ParagraphIndex>,
 }
 
@@ -198,22 +201,39 @@ impl FormalizedPage {
         let mut code_blocks = Vec::new();
         let mut commands = Vec::new();
         let mut paragraphs = Vec::new();
-        for (node, block) in nodes {
-            let Some(link) = network.link(node) else { continue };
+        let linked: Vec<(Link, PageBlock)> = nodes
+            .into_iter()
+            .filter_map(|(node, block)| network.link(node).map(|link| (link.clone(), block)))
+            .collect();
+        for (index, (link, block)) in linked.iter().enumerate() {
             match block {
                 PageBlock::CodeBlock { language, text } => code_blocks.push(CodeBlockIndex {
-                    language,
-                    text,
+                    language: language.clone(),
+                    text: text.clone(),
                     link: link.clone(),
                 }),
                 PageBlock::Paragraph { text, command } => {
-                    if command {
+                    if *command {
                         commands.push(CommandIndex {
                             text: text.clone(),
                             link: link.clone(),
                         });
                     }
-                    paragraphs.push(ParagraphIndex { text, link: link.clone() });
+                    let tied = if *command {
+                        Some(link.clone())
+                    } else {
+                        linked.get(index + 1).and_then(|(next_link, next)| match next {
+                            PageBlock::CodeBlock { .. } | PageBlock::Paragraph { command: true, .. } => {
+                                Some(next_link.clone())
+                            }
+                            _ => None,
+                        })
+                    };
+                    paragraphs.push(ParagraphIndex {
+                        text: text.clone(),
+                        link: link.clone(),
+                        command: tied,
+                    });
                 }
                 _ => {}
             }
@@ -249,6 +269,12 @@ impl FormalizedPage {
         &self.commands
     }
 
+    /// The page's indexed paragraphs, each with the command tied to it.
+    #[must_use]
+    pub fn paragraphs(&self) -> &[ParagraphIndex] {
+        &self.paragraphs
+    }
+
     /// Whether any statement of the page mentions the phrase.
     #[must_use]
     pub fn mentions(&self, phrase: &str) -> bool {
@@ -268,8 +294,10 @@ pub struct FormalizedPageStore {
 impl FormalizedPageStore {
     /// An empty store.
     #[must_use]
-    pub fn new() -> Self {
-        Self::default()
+    pub const fn new() -> Self {
+        Self {
+            pages: BTreeMap::new(),
+        }
     }
 
     /// Store a page under its key, replacing any earlier version.
@@ -289,6 +317,13 @@ impl FormalizedPageStore {
     #[must_use]
     pub fn contains_url(&self, url: &str) -> bool {
         self.pages.values().any(|page| page.url == url)
+    }
+
+    /// A stored page fetched from the URL, so a later solve can reuse the
+    /// formalized network before deciding to fetch again.
+    #[must_use]
+    pub fn page_for_url(&self, url: &str) -> Option<&FormalizedPage> {
+        self.pages.values().find(|page| page.url == url)
     }
 
     /// How many pages the store holds.
@@ -317,16 +352,54 @@ impl FormalizedPageStore {
             .collect()
     }
 
-    /// "The command in the paragraph that mentions `<phrase>`": command
-    /// paragraphs of every page that also carries a statement mentioning
-    /// the phrase (issue #1163 R8).
+    /// "The command in the paragraph that mentions `<phrase>`": for every
+    /// paragraph that itself mentions the phrase, the command tied to it --
+    /// the paragraph when it is a command, else the code block or command
+    /// paragraph it introduces (issue #1163 R8). A command elsewhere on the
+    /// same page never answers.
     #[must_use]
     pub fn command_mentioning(&self, phrase: &str) -> Vec<Link> {
         self.pages
             .values()
-            .filter(|page| page.mentions(phrase))
-            .flat_map(|page| page.commands.iter())
-            .map(|command| command.link.clone())
+            .flat_map(|page| page.paragraphs.iter())
+            .filter(|paragraph| paragraph.text.contains(phrase))
+            .filter_map(|paragraph| paragraph.command.clone())
             .collect()
     }
+}
+
+/// The scheme whose pages earn the trust seed's `https` feature.
+const HTTPS_SCHEME: &str = "https://";
+
+thread_local! {
+    /// The solver's working memory of formalized pages (issue #1163 R6).
+    static WORKING_MEMORY: std::cell::RefCell<FormalizedPageStore> =
+        const { std::cell::RefCell::new(FormalizedPageStore::new()) };
+}
+
+/// Run `action` against the solver's working memory of formalized pages
+/// (issue #1163 R6): the store source research writes every captured page
+/// into, keyed by URL and SHA-256, and the page queries read.
+#[must_use]
+pub fn with_working_memory<R>(action: impl FnOnce(&mut FormalizedPageStore) -> R) -> R {
+    WORKING_MEMORY.with(|store| action(&mut store.borrow_mut()))
+}
+
+/// Formalize a captured page into working memory unless the same URL and
+/// SHA-256 is already there. Returns the key and whether the stored network
+/// was reused instead of formalizing the bytes again (issue #1163 R6).
+#[must_use]
+pub fn remember_capture(capture: &SourceCapture, query: &str, rank: u32) -> (String, bool) {
+    let key = page_key(capture.source_url(), capture.sha256());
+    with_working_memory(|store| {
+        if store.get(&key).is_some() {
+            return (key, true);
+        }
+        let trust = trust_score(&TrustFeatures {
+            https: capture.source_url().starts_with(HTTPS_SCHEME),
+            ..TrustFeatures::default()
+        });
+        let page = FormalizedPage::from_capture(capture, query, rank, trust, None);
+        (store.insert(page), false)
+    })
 }

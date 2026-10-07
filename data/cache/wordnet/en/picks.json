@@ -1,0 +1,267 @@
+{
+  "lemma": "picks",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05798247-n",
+      "partOfSpeech": "n",
+      "definition": "the person or thing chosen or selected",
+      "examples": [
+        "he was my pick for mayor"
+      ],
+      "synonyms": [
+        "choice",
+        "pick",
+        "selection"
+      ]
+    },
+    {
+      "id": "oewn-13781698-n",
+      "partOfSpeech": "n",
+      "definition": "the quantity of a crop that is harvested",
+      "examples": [
+        "he sent the first picking of berries to the market",
+        "it was the biggest peach pick in years"
+      ],
+      "synonyms": [
+        "picking",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-08403766-n",
+      "partOfSpeech": "n",
+      "definition": "the best people or things in a group",
+      "examples": [
+        "the cream of England's young men were killed in the Great War"
+      ],
+      "synonyms": [
+        "cream",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-04606292-n",
+      "partOfSpeech": "n",
+      "definition": "the yarn woven across the warp yarn in weaving",
+      "synonyms": [
+        "woof",
+        "weft",
+        "filling",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-03935898-n",
+      "partOfSpeech": "n",
+      "definition": "a small thin device (of metal or plastic or ivory) used to pluck a stringed instrument",
+      "synonyms": [
+        "pick",
+        "plectrum",
+        "plectron"
+      ]
+    },
+    {
+      "id": "oewn-03935681-n",
+      "partOfSpeech": "n",
+      "definition": "a thin sharp implement used for removing unwanted material",
+      "examples": [
+        "he used a pick to clean the dirt out of the cracks"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-03935440-n",
+      "partOfSpeech": "n",
+      "definition": "a heavy iron tool with a wooden handle and a curved head that is pointed on both ends",
+      "examples": [
+        "they used picks and sledges to break the rocks"
+      ],
+      "synonyms": [
+        "pick",
+        "pickax",
+        "pickaxe"
+      ]
+    },
+    {
+      "id": "oewn-00564702-n",
+      "partOfSpeech": "n",
+      "definition": "a basketball maneuver; obstructing an opponent with one's body",
+      "examples": [
+        "he was called for setting an illegal pick"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-00162063-n",
+      "partOfSpeech": "n",
+      "definition": "the act of choosing or selecting",
+      "examples": [
+        "your choice of colors was unfortunate",
+        "you can take your pick"
+      ],
+      "synonyms": [
+        "choice",
+        "selection",
+        "option",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-00678369-v",
+      "partOfSpeech": "v",
+      "definition": "select carefully from a group",
+      "examples": [
+        "She finally picked her successor",
+        "He picked his way carefully"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-01384737-v",
+      "partOfSpeech": "v",
+      "definition": "look for and gather",
+      "examples": [
+        "pick mushrooms",
+        "pick flowers"
+      ],
+      "synonyms": [
+        "pick",
+        "pluck",
+        "cull"
+      ]
+    },
+    {
+      "id": "oewn-00844451-v",
+      "partOfSpeech": "v",
+      "definition": "harass with constant criticism",
+      "examples": [
+        "Don't always pick on your little brother"
+      ],
+      "synonyms": [
+        "blame",
+        "find fault",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-01650673-v",
+      "partOfSpeech": "v",
+      "definition": "provoke",
+      "examples": [
+        "pick a fight or a quarrel"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-00178216-v",
+      "partOfSpeech": "v",
+      "definition": "remove in small bits",
+      "examples": [
+        "pick meat from a bone"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-00177724-v",
+      "partOfSpeech": "v",
+      "definition": "remove unwanted substances from, such as feathers or pits",
+      "examples": [
+        "Clean the turkey"
+      ],
+      "synonyms": [
+        "clean",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-02326628-v",
+      "partOfSpeech": "v",
+      "definition": "pilfer or rob",
+      "examples": [
+        "pick pockets"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-02292054-v",
+      "partOfSpeech": "v",
+      "definition": "pay for something",
+      "examples": [
+        "pick up the tab",
+        "pick up the burden of high-interest mortgages",
+        "foot the bill"
+      ],
+      "synonyms": [
+        "foot",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-01455157-v",
+      "partOfSpeech": "v",
+      "definition": "pull lightly but sharply with a plucking motion",
+      "examples": [
+        "he plucked the strings of his mandolin"
+      ],
+      "synonyms": [
+        "pluck",
+        "plunk",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-01445197-v",
+      "partOfSpeech": "v",
+      "definition": "attack with or as if with a pickaxe of ice or rocky ground, for example",
+      "examples": [
+        "Pick open the ice"
+      ],
+      "synonyms": [
+        "pick",
+        "break up"
+      ]
+    },
+    {
+      "id": "oewn-01246038-v",
+      "partOfSpeech": "v",
+      "definition": "hit lightly with a picking motion",
+      "synonyms": [
+        "peck",
+        "pick",
+        "beak"
+      ]
+    },
+    {
+      "id": "oewn-01176591-v",
+      "partOfSpeech": "v",
+      "definition": "eat intermittently; take small bites of",
+      "examples": [
+        "He pieced at the sandwich all morning",
+        "She never eats a full meal — she just nibbles"
+      ],
+      "synonyms": [
+        "nibble",
+        "pick",
+        "piece"
+      ]
+    }
+  ]
+}

@@ -47,6 +47,10 @@ seed_metadata_gaps
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_resource_inbox_note"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_27df38654b67d63d
+    source "data/seed/meanings-facts.lino"
+    record "fact_comparison_joiner"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_27d5903b2993ea5d
     source "data/seed/meanings-finance.lino"
     record "investment"

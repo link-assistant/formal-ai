@@ -159,6 +159,10 @@ seed_metadata_gaps
     source "data/seed/meanings-statement-merge.lino"
     record "statement_negation_cue"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_be784a5600bca49b
+    source "data/seed/meanings-statistics.lino"
+    record "word_problem_loss"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_65dff440fd633f9b
     source "data/seed/meanings-translation.lino"
     record "affirmation_yes"

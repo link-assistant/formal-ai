@@ -405,3 +405,69 @@ fn serde_json_call_is_object(arguments: &str) -> bool {
         serde_json::from_str(arguments).unwrap_or(serde_json::Value::Null);
     value.is_object()
 }
+
+// ---------------------------------------------------------------------------
+// R4/R5/R6 — the stop is reported in the answer, with the attempt chain
+// ---------------------------------------------------------------------------
+
+#[test]
+fn stop_note_names_the_unresolved_need_and_carries_the_attempt_chain() {
+    let messages = vec![
+        user_turn(),
+        assistant_call(
+            "c1",
+            "web_search",
+            r#"{ "query": "rust E0308 mismatched types" }"#,
+        ),
+        tool_result("c1", "web_search", "https://example.org/gardening"),
+        assistant_call(
+            "c2",
+            "web_fetch",
+            r#"{ "url": "https://example.org/gardening" }"#,
+        ),
+        tool_result(
+            "c2",
+            "web_fetch",
+            "A page about raised beds and compost. Nothing about types.",
+        ),
+    ];
+    let note = repair_loop::stop_note(
+        &messages,
+        &rustc_failure(),
+        RepairStop::NoMatch,
+        0,
+        MAX_REPAIR_RUNGS,
+    );
+    assert!(
+        note.contains("unresolved") && note.contains("E0308"),
+        "the stop names the unresolved need: {note}"
+    );
+    assert!(
+        note.contains("repair_attempts")
+            && note.contains("attempt_count 1")
+            && note.contains("candidate_fix false"),
+        "the attempt chain follows the note as evidence: {note}"
+    );
+}
+
+#[test]
+fn stop_note_reports_the_spent_ladder_and_is_silent_without_a_rung() {
+    let exhausted = repair_loop::stop_note(
+        &[user_turn()],
+        &rustc_failure(),
+        RepairStop::Exhausted,
+        MAX_REPAIR_RUNGS,
+        MAX_REPAIR_RUNGS,
+    );
+    assert!(
+        exhausted.contains("rung 3") && exhausted.contains("repair_attempts"),
+        "the bound and the attempts are reported: {exhausted}"
+    );
+    for stop in [RepairStop::NoDiagnostic, RepairStop::NoTools] {
+        assert_eq!(
+            repair_loop::stop_note(&[user_turn()], &rustc_failure(), stop, 0, MAX_REPAIR_RUNGS),
+            "",
+            "{stop:?} ran no rung, so today's failure report stands alone"
+        );
+    }
+}

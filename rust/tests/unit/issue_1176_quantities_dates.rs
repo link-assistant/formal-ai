@@ -1,4 +1,6 @@
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::event_log::EventLog;
+use formal_ai::web_engine_core::normalize_prompt;
+use formal_ai::{FormalAiEngine, SymbolicAnswer, handle_word_problem};
 
 // Issue #1176: quantities, dates and statistics answered by exact local
 // computation instead of the generic fallback.
@@ -525,5 +527,160 @@ fn month_offset_from_a_weekday_asks_for_the_starting_date() {
         chinese.answer.contains("89到92天"),
         "got: {}",
         chinese.answer
+    );
+}
+
+/// Run the word-problem handler directly on `prompt`.
+fn word_problem(prompt: &str) -> Option<SymbolicAnswer> {
+    let normalized = normalize_prompt(prompt);
+    let mut log = EventLog::new();
+    handle_word_problem(prompt, &normalized, &mut log)
+}
+
+// R1176-2: word problems formalized as quantity relations. The stated numbers
+// are joined by the seeded gain, loss, group and share relation words of
+// data/seed/meanings-statistics.lino, with the derivation shown. Twin of
+// rust/tests/web/issue-1176-word-relations.test.mjs.
+#[test]
+fn relation_word_problems_derive_from_the_seeded_relation_words() {
+    for (prompt, derivation, expected) in [
+        (
+            "Tom has 5 apples and buys 3 more. How many apples does he have?",
+            "5 + 3 = 8",
+            "The answer is 8: 5 + 3 = 8.",
+        ),
+        (
+            "Anna had 20 dollars and spent 7 dollars. How much money does she have left?",
+            "20 - 7 = 13",
+            "The answer is 13: 20 - 7 = 13.",
+        ),
+        (
+            "A box holds 6 eggs. How many eggs are in 4 boxes?",
+            "6 × 4 = 24",
+            "The answer is 24: 6 × 4 = 24.",
+        ),
+        (
+            "There are 24 cookies shared equally among 6 children. How many cookies does each child get?",
+            "24 ÷ 6 = 4",
+            "The answer is 4: 24 ÷ 6 = 4.",
+        ),
+        (
+            "Lena had 12 stickers, got 5 more and gave away 4. How many stickers does she have now?",
+            "12 + 5 - 4 = 13",
+            "The answer is 13: 12 + 5 - 4 = 13.",
+        ),
+        (
+            "У Маши было 10 яблок, она съела 3. Сколько яблок осталось?",
+            "10 - 3 = 7",
+            "Ответ: 7: 10 - 3 = 7.",
+        ),
+    ] {
+        let response = word_problem(prompt)
+            .unwrap_or_else(|| panic!("the relation reading should answer {prompt:?}"));
+        assert_eq!(response.intent, "word_problem_relation", "{prompt:?}");
+        assert_eq!(response.answer, expected, "{prompt:?}");
+        assert!(
+            response.answer.contains(derivation),
+            "{prompt:?} should derive {derivation:?}, got: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
+fn relation_word_problems_decline_numbers_no_relation_joins() {
+    for prompt in [
+        "I have 5 apples and 3 pears. How many fruits?",
+        "Tom has 5 apples. How many apples does he have?",
+    ] {
+        assert!(
+            word_problem(prompt).is_none(),
+            "{prompt:?} has no relation word joining its numbers"
+        );
+    }
+}
+
+/// A terminating decimal written without trailing fractional zeros, so
+/// `0.025400` and `0.0254` compare equal.
+fn canonical_decimal(text: &str) -> String {
+    if !text.contains('.') {
+        return text.to_owned();
+    }
+    text.trim_end_matches('0').trim_end_matches('.').to_owned()
+}
+
+/// `(unit, field)` value rows of an indented Links Notation record list:
+/// each two-space record header (`si_unit`, `conversion`) opens a record, its
+/// `unit <slug>` line names it and the other `<field> <value>` lines fill it.
+fn unit_records(text: &str) -> Vec<(String, std::collections::BTreeMap<String, String>)> {
+    let mut records: Vec<(String, std::collections::BTreeMap<String, String>)> = Vec::new();
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+        let indent = line.len() - line.trim_start().len();
+        if indent == 2 {
+            records.push((String::new(), std::collections::BTreeMap::new()));
+            continue;
+        }
+        let (Some((key, value)), Some((unit, fields))) =
+            (trimmed.split_once(' '), records.last_mut())
+        else {
+            continue;
+        };
+        if key == "unit" {
+            value.clone_into(unit);
+        } else {
+            fields.insert(key.to_owned(), value.trim_matches('"').to_owned());
+        }
+    }
+    records
+}
+
+// Issue #1176 R1: the conversion factors are Wikidata's, not hand-typed.
+// Every si_factor whose unit has a cached P2370 statement converting it to
+// its dimension's reference unit (the unit of that dimension with factor 1)
+// must equal the stated amount.
+#[test]
+fn si_factors_match_the_cached_wikidata_conversion_to_si() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("..");
+    let read = |relative: &str| {
+        std::fs::read_to_string(root.join(relative))
+            .unwrap_or_else(|error| panic!("{relative} should be readable: {error}"))
+    };
+    let si = unit_records(&read("data/seed/si-unit-dimensions.lino"));
+    let cache = unit_records(&read("data/cache/wikidata/unit-conversion/P2370.lino"));
+    let si_row = |slug: &str| {
+        si.iter()
+            .find(|(unit, fields)| unit == slug && fields.contains_key("si_factor"))
+            .map(|(_, fields)| fields)
+    };
+
+    let mut compared = 0;
+    for (unit, statement) in &cache {
+        let Some(target_unit) = statement.get("target_unit") else {
+            continue;
+        };
+        let (Some(row), Some(target)) = (si_row(unit), si_row(target_unit)) else {
+            continue;
+        };
+        if row.get("dimension") != target.get("dimension")
+            || target.get("si_factor").map(String::as_str) != Some("1")
+        {
+            continue;
+        }
+        assert_eq!(
+            canonical_decimal(&row["si_factor"]),
+            canonical_decimal(&statement["amount"]),
+            "{unit}: si_factor must equal Wikidata {} P2370 to {}",
+            statement["item"],
+            target_unit,
+        );
+        compared += 1;
+    }
+    assert!(
+        compared >= 12,
+        "expected the cached P2370 rows to cover the length, mass and time units, compared {compared}"
     );
 }

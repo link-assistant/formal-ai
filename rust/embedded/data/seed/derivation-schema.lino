@@ -25,6 +25,9 @@ derivation_schema
       field evidence_id "stable_id of the executed observation; full Evidence recoverable in the obligation ledger"
       field command "the exact command line as issued"
       field exit "the process exit status, or none when the route reported none"
+    field rule
+      field kind "the event kind naming the rule family a handler applied (issue 1174)"
+      field detail "the rule applied and what it changed, as the handler logged it"
   stage
     kind "web_search:request"
     collects search_query
@@ -48,6 +51,42 @@ derivation_schema
     kind "verify:evidence"
     collects verification
     note "payload fields evidence_id, command, exit; appended by the verifiable-task route"
+  stage
+    kind "register_rewrite"
+    collects rule
+  stage
+    kind "grammar_correction"
+    collects rule
+  stage
+    kind "genre_styleguide"
+    collects rule
+  stage
+    kind "genre_composition"
+    collects rule
+  stage
+    kind "summarization_statement"
+    collects rule
+  stage
+    kind "summarization_bound"
+    collects rule
+  stage
+    kind "summarization_selected"
+    collects rule
+  stage
+    kind "translation_word"
+    collects rule
+  stage
+    kind "translation_function_word"
+    collects rule
+  stage
+    kind "translation_word_order"
+    collects rule
+  stage
+    kind "translation_unknown_word"
+    collects rule
+  stage
+    kind "translation_gap"
+    collects rule
   convention
     not_recorded "a stage the route never populated is reported as not recorded, never fabricated or inferred"
     store data/cache/derivations/

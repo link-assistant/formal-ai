@@ -1,5 +1,6 @@
 //! Git commit capture and syntax deltas for repository history (issue #1180).
 
+use super::items::{coauthors, diff_named_items};
 use super::{
     BTreeMap, BTreeSet, Command, HistoryRules, MemoryEvent, NUMBER_PLACEHOLDER, Path, RawCommit,
     RepositoryHistoryImportError, SymbolChange, effective_record, pattern_number, rule_event,
@@ -163,6 +164,14 @@ pub fn formalize_commit(
             }
         }
     }
+    // R1180-1: every co-author trailer is evidence, so "who co-authored the
+    // change to X" is a CONTAINS query like the issue and path pointers.
+    for name in coauthors(&raw.body, rules) {
+        let filled = format!("{}{name}", rules.coauthor_evidence_prefix);
+        if !evidence.contains(&filled) {
+            evidence.push(filled);
+        }
+    }
     if let Some(subject) = merge
         && let Some(number) = pattern_number(subject, &rules.merge.pattern)
     {
@@ -227,7 +236,9 @@ pub fn diff_symbols(
     {
         let before = blob_at(repo_root, &format!("{sha}^"), path).unwrap_or_default();
         let after = blob_at(repo_root, sha, path).unwrap_or_default();
-        return diff_census(path, &before, &after);
+        let mut changes = diff_census(path, &before, &after);
+        changes.extend(diff_named_items(path, "ast_census", &before, &after, rules));
+        return changes;
     }
     if rules
         .es_suffixes
@@ -236,7 +247,15 @@ pub fn diff_symbols(
     {
         let before = blob_at(repo_root, &format!("{sha}^"), path).unwrap_or_default();
         let after = blob_at(repo_root, sha, path).unwrap_or_default();
-        return diff_es(path, &before, &after);
+        let mut changes = diff_es(path, &before, &after);
+        changes.extend(diff_named_items(
+            path,
+            "es_meta_extract",
+            &before,
+            &after,
+            rules,
+        ));
+        return changes;
     }
     Vec::new()
 }

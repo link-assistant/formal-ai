@@ -294,3 +294,139 @@ meanings
         text 光速
       surface
         text 是多少
+  fact_comparison_request
+    defined-by compare
+    defined-by knowledge_relation
+    role fact_comparison_cue
+    lexeme en
+      surface
+        text "compare"
+      surface
+        text "comparison of"
+      surface
+        text "difference between"
+      surface
+        text "differences between"
+    lexeme ru
+      surface
+        text сравни
+      surface
+        text сравните
+      surface
+        text сравнить
+      surface
+        text "разница между"
+    lexeme hi
+      surface
+        text "की तुलना करें"
+      surface
+        text "की तुलना कीजिए"
+      surface
+        text "की तुलना करो"
+      surface
+        text तुलना
+    lexeme zh
+      surface
+        text 比较
+      surface
+        text 对比
+    lexeme es
+      surface
+        text compara
+      surface
+        text comparar
+      surface
+        text "diferencia entre"
+  fact_comparison_joiner
+    defined-by knowledge_subject
+    role fact_comparison_joiner
+    lexeme en
+      surface
+        text "and"
+      surface
+        text "vs"
+      surface
+        text "versus"
+      surface
+        text "with"
+    lexeme ru
+      surface
+        text и
+      surface
+        text с
+      surface
+        text против
+    lexeme hi
+      surface
+        text और
+      surface
+        text तथा
+      surface
+        text बनाम
+    lexeme zh
+      surface
+        text 和
+      surface
+        text 与
+      surface
+        text 跟
+    lexeme es
+      surface
+        text y
+      surface
+        text con
+  prompt_text_question_cue
+    defined-by knowledge_subject
+    defined-by inquiry
+    role prompt_text_question_cue
+    lexeme en
+      surface
+        text "given the text"
+      surface
+        text "read this and answer"
+      surface
+        text "according to the text"
+      surface
+        text "based on the text"
+      surface
+        text "from the text"
+      surface
+        text "in the text"
+    lexeme ru
+      surface
+        text "дан текст"
+      surface
+        text "прочитай и ответь"
+      surface
+        text "согласно тексту"
+      surface
+        text "по тексту"
+      surface
+        text "в тексте"
+    lexeme hi
+      surface
+        text "दिया गया पाठ"
+      surface
+        text "पढ़ें और उत्तर दें"
+      surface
+        text "पाठ के अनुसार"
+      surface
+        text "पाठ में"
+    lexeme zh
+      surface
+        text 根据文本
+      surface
+        text 阅读并回答
+      surface
+        text 给定文本
+      surface
+        text 根据这段话
+    lexeme es
+      surface
+        text "dado el texto"
+      surface
+        text "lee esto y responde"
+      surface
+        text "según el texto"
+      surface
+        text "en el texto"

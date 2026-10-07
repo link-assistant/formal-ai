@@ -885,7 +885,9 @@ function wordProblemMarkerPosition(lowered, slug) {
  * @returns {{intent: string, content: string, confidence: number, evidence: Array<string>}|null}
  */
 function tryWordProblem(prompt, normalized, language) {
-  if (!wordProblemMentionsMarker(normalized, WORD_PROBLEM_MARKER_UNIT_PRICE)) return null;
+  if (!wordProblemMentionsMarker(normalized, WORD_PROBLEM_MARKER_UNIT_PRICE)) {
+    return tryRelationWordProblem(prompt, normalized, language);
+  }
   const lowered = String(prompt || "").toLowerCase();
   const stated = statisticsStatedNumbers(lowered);
   if (stated === null) return null;
@@ -955,7 +957,7 @@ function tryWordProblem(prompt, normalized, language) {
       ]);
     return quantityAnswer("word_problem_total", body, log, language);
   }
-  return null;
+  return tryRelationWordProblem(prompt, normalized, language);
 }
 
 // Primality of one stated whole number (R1017), mirroring

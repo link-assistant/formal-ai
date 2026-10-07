@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_10.js"
-  ceiling 1389
+  ceiling 1388
   rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1151 to 1389 with issue #1175's object-phrase twin (objectPhraseArtifact and its boundary/lead tables mirroring object_phrase_artifact in src/solver_handlers/software_project.rs): the artifact kind is read only from the head noun of the authoring verb's object phrase, so a regex request mentioning a ZIP-code \"extension\" is not an extension project."

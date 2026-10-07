@@ -203,10 +203,10 @@ meanings
   code_example_no_program_shape
     defined-by answer
     role localized_response_template
-    precondition "recomposition targets a language without a program shape in the seed"
+    precondition "recomposition targets a language no decomposed example contributed a program body for"
     effect "recomposition fails naming the language"
     unit "not applicable"
-    example "no program shape registered for the requested language"
+    example "no decomposed example contributed a program body for the requested language"
     grounding "data/seed/multilingual-responses-engine-reports.lino"
   code_example_unbound_output_literal
     defined-by answer

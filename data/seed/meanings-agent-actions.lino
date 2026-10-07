@@ -551,3 +551,35 @@ meanings
     unit "not applicable"
     example "find the longest word in the list"
     grounding "data/seed/meta-reasoning.lino"
+  code_blocks_on
+    defined-by method
+    role action
+    precondition "a memory query asks for the code blocks on a domain whose text contains a term"
+    effect "returns the code block links of every formalized page from that domain whose text carries the term"
+    unit "not applicable"
+    example "code blocks on kotlinlang.org whose text contains -d"
+    grounding "data/seed/page-formalization-rules.lino"
+  command_mentioning
+    defined-by method
+    role action
+    precondition "a memory query asks for the command in the paragraph that mentions a phrase"
+    effect "returns, for each formalized paragraph that itself mentions the phrase, the command tied to it"
+    unit "not applicable"
+    example "the command in the paragraph that mentions compiling"
+    grounding "data/seed/page-formalization-rules.lino"
+  generic_page_v1
+    defined-by method
+    role action
+    precondition "a registered source declares the generic page extractor for a fetched payload"
+    effect "formalizes the payload into headings, paragraphs, list items, table rows and language-tagged code blocks and reads its glosses from them"
+    unit "not applicable"
+    example "read the paragraphs of a fetched documentation page that mention the asked surface"
+    grounding "data/seed/sources-registry.lino"
+  web_page
+    defined-by entity
+    role software_artifact_kind
+    precondition "a resource is reached through web search rather than a registered endpoint"
+    effect "is read by the generic page formalizer and ranked by its own trust score"
+    unit "not applicable"
+    example "the kotlinlang.org command-line compiler page"
+    grounding "data/seed/sources-registry.lino"

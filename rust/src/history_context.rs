@@ -27,7 +27,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::memory::MemoryEvent;
-use crate::seed::parser::{escape_value, parse_lino};
+use crate::seed::parser::{LinoNode, escape_value, parse_lino};
 
 /// Registered path of the rules seed this module reads.
 pub const SEED_PATH: &str = "data/seed/history-formalization.lino";
@@ -52,9 +52,10 @@ pub struct RawCommit {
 /// One syntax-item delta a commit caused in one changed path.
 ///
 /// A grammar
-/// node kind for Rust paths (the `ast_census` histogram) or `token_count`
-/// for ECMAScript paths, so a lineage query can ask which meanings changed,
-/// not only which files.
+/// node kind for Rust paths (the `ast_census` histogram), `token_count`
+/// for ECMAScript paths, or a named top-level item (`<path>#fn name`, delta
+/// +1 added, -1 removed, 0 modified), so a lineage query can ask which
+/// functions changed, not only which files.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SymbolChange {
     pub path: String,
@@ -125,6 +126,21 @@ pub struct HistoryRules {
     pub symbol_evidence_prefix: String,
     pub census_suffixes: Vec<String>,
     pub es_suffixes: Vec<String>,
+    /// The co-author trailer line prefix (matched case-insensitively) and
+    /// the evidence prefix each co-author's name lands under (R1180-1).
+    pub coauthor_prefix: String,
+    pub coauthor_evidence_prefix: String,
+    /// Per `source` id, the words that open a named top-level item, and the
+    /// words whose item is named by its whole header (R1180-2).
+    pub item_keywords: BTreeMap<String, Vec<String>>,
+    pub item_span_keywords: BTreeMap<String, Vec<String>>,
+    /// Words that may precede an item keyword (`pub`, `export`, ...).
+    pub item_modifiers: Vec<String>,
+}
+
+/// `values` as owned strings.
+fn owned_list(values: &[&str]) -> Vec<String> {
+    values.iter().map(|value| (*value).to_owned()).collect()
 }
 
 fn record_rule(
@@ -197,6 +213,45 @@ impl HistoryRules {
             symbol_evidence_prefix: String::from("symbol:"),
             census_suffixes: vec![String::from(".rs")],
             es_suffixes: vec![String::from(".js"), String::from(".ts")],
+            coauthor_prefix: String::from("Co-Authored-By:"),
+            coauthor_evidence_prefix: String::from("coauthor:"),
+            item_keywords: BTreeMap::from([
+                (
+                    String::from("ast_census"),
+                    owned_list(&[
+                        "fn",
+                        "struct",
+                        "enum",
+                        "trait",
+                        "type",
+                        "const",
+                        "static",
+                        "mod",
+                        "union",
+                        "macro_rules!",
+                    ]),
+                ),
+                (
+                    String::from("es_meta_extract"),
+                    owned_list(&[
+                        "function",
+                        "class",
+                        "const",
+                        "let",
+                        "var",
+                        "interface",
+                        "type",
+                        "enum",
+                    ]),
+                ),
+            ]),
+            item_span_keywords: BTreeMap::from([(
+                String::from("ast_census"),
+                owned_list(&["impl"]),
+            )]),
+            item_modifiers: owned_list(&[
+                "pub", "async", "unsafe", "extern", "default", "export", "declare", "abstract",
+            ]),
         }
     }
 
@@ -205,7 +260,16 @@ impl HistoryRules {
     #[must_use]
     pub fn from_seed_text(text: &str) -> Self {
         let mut rules = Self::defaults();
-        for node in parse_lino(text).children {
+        let tree = parse_lino(text);
+        // The rows sit under the `history_formalization` root record, so
+        // they are read one level down (a root-less seed reads directly).
+        let nodes: Vec<&LinoNode> = tree
+            .children
+            .iter()
+            .flat_map(|top| std::iter::once(top).chain(top.children.iter()))
+            .collect();
+        let mut modifiers = Vec::new();
+        for node in nodes {
             match node.name.as_str() {
                 "record" => {
                     let kind = node.find_child_value("kind");
@@ -267,6 +331,15 @@ impl HistoryRules {
                         prefix.clone_into(&mut rules.symbol_evidence_prefix);
                     }
                 }
+                "coauthor_trailer" => {
+                    let prefix = node.find_child_value("prefix");
+                    let evidence = node.find_child_value("evidence_prefix");
+                    if !prefix.is_empty() && !evidence.is_empty() {
+                        prefix.clone_into(&mut rules.coauthor_prefix);
+                        evidence.clone_into(&mut rules.coauthor_evidence_prefix);
+                    }
+                }
+                "item_modifier" if !node.id.is_empty() => modifiers.push(node.id.clone()),
                 "source" => {
                     let suffixes: Vec<String> = node
                         .children
@@ -274,7 +347,18 @@ impl HistoryRules {
                         .filter(|child| child.name == "applies_to" && !child.id.is_empty())
                         .map(|child| child.id.clone())
                         .collect();
-                    match (suffixes.is_empty(), node.find_child_value("id")) {
+                    let source = node.find_child_value("id");
+                    let keywords = child_ids(node, "item_keyword");
+                    if !keywords.is_empty() {
+                        rules.item_keywords.insert(source.to_owned(), keywords);
+                    }
+                    let span_keywords = child_ids(node, "item_span_keyword");
+                    if !span_keywords.is_empty() {
+                        rules
+                            .item_span_keywords
+                            .insert(source.to_owned(), span_keywords);
+                    }
+                    match (suffixes.is_empty(), source) {
                         (false, "ast_census") => rules.census_suffixes = suffixes,
                         (false, "es_meta_extract") => rules.es_suffixes = suffixes,
                         _ => {}
@@ -282,6 +366,9 @@ impl HistoryRules {
                 }
                 _ => {}
             }
+        }
+        if !modifiers.is_empty() {
+            rules.item_modifiers = modifiers;
         }
         rules
     }
@@ -326,6 +413,15 @@ fn effective_record<'a>(
             .find(|rule| rule.kind == kind)
             .unwrap_or(&defaults.records[0])
     })
+}
+
+/// The non-empty ids of `node`'s children named `name`.
+fn child_ids(node: &LinoNode, name: &str) -> Vec<String> {
+    node.children
+        .iter()
+        .filter(|child| child.name == name && !child.id.is_empty())
+        .map(|child| child.id.clone())
+        .collect()
 }
 
 fn owned_or(value: &str, fallback: &str) -> String {
@@ -382,6 +478,8 @@ fn pattern_number(haystack: &str, pattern: &str) -> Option<String> {
 mod commits;
 mod cursor;
 mod github;
+mod items;
+mod query;
 
 pub use commits::{
     diff_symbols, formalize_commit, import_commits, import_commits_for_path, parse_log_output,
@@ -391,3 +489,5 @@ pub use cursor::{
     write_repository_history,
 };
 pub use github::{import_ci_runs, import_issues_and_pulls};
+pub use items::{coauthors, diff_named_items, named_items};
+pub use query::query_repository_history;

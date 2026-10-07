@@ -296,6 +296,8 @@ const REQUIRED_KEYS = [
   'settings.uiSkin.flat',
   'settings.uiSkin.glass',
   'settings.uiSkin.contrast',
+  'settings.uiSkin.material',
+  'settings.glassOpacity',
   'settings.toolbarIconPack',
   'settings.toolbarIconPack.fontawesome',
   'settings.toolbarIconPack.materialSymbols',

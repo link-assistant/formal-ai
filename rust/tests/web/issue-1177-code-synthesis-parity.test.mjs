@@ -89,6 +89,27 @@ test("SQL composition reads order and limit clauses", () => {
   assert.ok(answer.includes("SELECT name FROM employees ORDER BY salary DESC LIMIT 5;"), answer);
 });
 
+test("SQL composition groups an aggregate by the seeded grouping cue", () => {
+  const counted = handle(
+    "handleSqlSynthesis",
+    "Write a SQL query to count users per country from the users table",
+  );
+  assert.ok(counted.includes("SELECT country, COUNT(*) FROM users GROUP BY country;"), counted);
+  const averaged = handle(
+    "handleSqlSynthesis",
+    "Write a SQL query for the average salary for each department from the employees table",
+  );
+  assert.ok(
+    averaged.includes("SELECT department, AVG(salary) FROM employees GROUP BY department;"),
+    averaged,
+  );
+  const listed = handle(
+    "handleSqlSynthesis",
+    "Write a SQL query that selects name from the employees table for each row",
+  );
+  assert.ok(!listed.includes("GROUP BY"), "without an aggregate nothing is grouped: " + listed);
+});
+
 test("unrelated prompts are not claimed by the composers", () => {
   for (const prompt of ["Hello, how are you today?", "What is the capital of France?"]) {
     for (const name of ["handleRegexSynthesis", "handleSqlSynthesis"]) {

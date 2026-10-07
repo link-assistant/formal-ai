@@ -63,3 +63,203 @@ multilingual_responses
     intent definition_merge_sources_label
     language zh
     text "来源："
+  response response_fact_comparison_en
+    intent fact_comparison
+    language en
+    text "{left} and {right}, compared on their seeded facts:\n{rows}\n{differences}"
+  response response_fact_comparison_ru
+    intent fact_comparison
+    language ru
+    text "{left} и {right} в сравнении по сохранённым фактам:\n{rows}\n{differences}"
+  response response_fact_comparison_hi
+    intent fact_comparison
+    language hi
+    text "सहेजे गए तथ्यों के आधार पर {left} और {right} की तुलना:\n{rows}\n{differences}"
+  response response_fact_comparison_zh
+    intent fact_comparison
+    language zh
+    text "根据已存事实比较{left}和{right}：\n{rows}\n{differences}"
+  response response_fact_comparison_es
+    intent fact_comparison
+    language es
+    text "{left} y {right}, comparados según sus hechos guardados:\n{rows}\n{differences}"
+  response response_fact_comparison_row_en
+    intent fact_comparison_row
+    language en
+    text "- {relation}: {left} — {left_value}; {right} — {right_value}"
+  response response_fact_comparison_row_ru
+    intent fact_comparison_row
+    language ru
+    text "- {relation}: {left} — {left_value}; {right} — {right_value}"
+  response response_fact_comparison_row_hi
+    intent fact_comparison_row
+    language hi
+    text "- {relation}: {left} — {left_value}; {right} — {right_value}"
+  response response_fact_comparison_row_zh
+    intent fact_comparison_row
+    language zh
+    text "- {relation}：{left} — {left_value}；{right} — {right_value}"
+  response response_fact_comparison_row_es
+    intent fact_comparison_row
+    language es
+    text "- {relation}: {left} — {left_value}; {right} — {right_value}"
+  response response_fact_comparison_known_row_en
+    intent fact_comparison_known_row
+    language en
+    text "- {relation}: {value}"
+  response response_fact_comparison_known_row_ru
+    intent fact_comparison_known_row
+    language ru
+    text "- {relation}: {value}"
+  response response_fact_comparison_known_row_hi
+    intent fact_comparison_known_row
+    language hi
+    text "- {relation}: {value}"
+  response response_fact_comparison_known_row_zh
+    intent fact_comparison_known_row
+    language zh
+    text "- {relation}：{value}"
+  response response_fact_comparison_known_row_es
+    intent fact_comparison_known_row
+    language es
+    text "- {relation}: {value}"
+  response response_fact_comparison_missing_value_en
+    intent fact_comparison_missing_value
+    language en
+    text "no seeded value"
+  response response_fact_comparison_missing_value_ru
+    intent fact_comparison_missing_value
+    language ru
+    text "нет сохранённого значения"
+  response response_fact_comparison_missing_value_hi
+    intent fact_comparison_missing_value
+    language hi
+    text "कोई सहेजा गया मान नहीं"
+  response response_fact_comparison_missing_value_zh
+    intent fact_comparison_missing_value
+    language zh
+    text "无已存值"
+  response response_fact_comparison_missing_value_es
+    intent fact_comparison_missing_value
+    language es
+    text "sin valor guardado"
+  response response_fact_comparison_difference_en
+    intent fact_comparison_difference
+    language en
+    text "Difference in {relation}: {left_value} for {left}, {right_value} for {right}."
+  response response_fact_comparison_difference_ru
+    intent fact_comparison_difference
+    language ru
+    text "Различие ({relation}): {left_value} у {left}, {right_value} у {right}."
+  response response_fact_comparison_difference_hi
+    intent fact_comparison_difference
+    language hi
+    text "{relation} में अंतर: {left} के लिए {left_value}, {right} के लिए {right_value}।"
+  response response_fact_comparison_difference_zh
+    intent fact_comparison_difference
+    language zh
+    text "{relation}不同：{left}是{left_value}，{right}是{right_value}。"
+  response response_fact_comparison_difference_es
+    intent fact_comparison_difference
+    language es
+    text "Diferencia en {relation}: {left_value} para {left}, {right_value} para {right}."
+  response response_fact_comparison_same_en
+    intent fact_comparison_same
+    language en
+    text "Same {relation} for both: {value}."
+  response response_fact_comparison_same_ru
+    intent fact_comparison_same
+    language ru
+    text "Одинаково ({relation}) для обоих: {value}."
+  response response_fact_comparison_same_hi
+    intent fact_comparison_same
+    language hi
+    text "दोनों के लिए {relation} समान है: {value}।"
+  response response_fact_comparison_same_zh
+    intent fact_comparison_same
+    language zh
+    text "两者的{relation}相同：{value}。"
+  response response_fact_comparison_same_es
+    intent fact_comparison_same
+    language es
+    text "Mismo {relation} para ambos: {value}."
+  response response_fact_comparison_unaligned_en
+    intent fact_comparison_unaligned
+    language en
+    text "{relation} is seeded only for {subject}, so it cannot be compared yet."
+  response response_fact_comparison_unaligned_ru
+    intent fact_comparison_unaligned
+    language ru
+    text "{relation}: значение сохранено только для {subject}, поэтому сравнить пока нельзя."
+  response response_fact_comparison_unaligned_hi
+    intent fact_comparison_unaligned
+    language hi
+    text "{relation} केवल {subject} के लिए सहेजा गया है, इसलिए अभी तुलना नहीं हो सकती।"
+  response response_fact_comparison_unaligned_zh
+    intent fact_comparison_unaligned
+    language zh
+    text "{relation}只为{subject}存有数据，因此暂时无法比较。"
+  response response_fact_comparison_unaligned_es
+    intent fact_comparison_unaligned
+    language es
+    text "{relation} solo está guardado para {subject}, así que aún no se puede comparar."
+  response response_fact_comparison_gap_en
+    intent fact_comparison_gap
+    language en
+    text "I can compare {known} and {missing} only from seeded facts, and I have none for {missing}. What I have for {known}:\n{rows}\nAdd facts for {missing} (or allow a live lookup) to compare them."
+  response response_fact_comparison_gap_ru
+    intent fact_comparison_gap
+    language ru
+    text "Я могу сравнить {known} и {missing} только по сохранённым фактам, а для {missing} их нет. Что есть для {known}:\n{rows}\nДобавьте факты для {missing} (или разрешите живой поиск), чтобы сравнить."
+  response response_fact_comparison_gap_hi
+    intent fact_comparison_gap
+    language hi
+    text "मैं {known} और {missing} की तुलना केवल सहेजे गए तथ्यों से कर सकता हूँ, और {missing} के लिए कोई तथ्य नहीं है। {known} के लिए मेरे पास है:\n{rows}\nतुलना के लिए {missing} के तथ्य जोड़ें (या लाइव खोज की अनुमति दें)।"
+  response response_fact_comparison_gap_zh
+    intent fact_comparison_gap
+    language zh
+    text "我只能根据已存事实比较{known}和{missing}，但没有关于{missing}的事实。关于{known}，我有：\n{rows}\n请为{missing}添加事实（或允许实时查询）后再比较。"
+  response response_fact_comparison_gap_es
+    intent fact_comparison_gap
+    language es
+    text "Solo puedo comparar {known} y {missing} con hechos guardados, y no tengo ninguno de {missing}. Lo que tengo de {known}:\n{rows}\nAñade hechos de {missing} (o permite una consulta en vivo) para compararlos."
+  response response_prompt_text_answer_en
+    intent prompt_text_answer
+    language en
+    text "The text answers this: «{sentence}»"
+  response response_prompt_text_answer_ru
+    intent prompt_text_answer
+    language ru
+    text "Ответ есть в тексте: «{sentence}»"
+  response response_prompt_text_answer_hi
+    intent prompt_text_answer
+    language hi
+    text "पाठ में इसका उत्तर है: «{sentence}»"
+  response response_prompt_text_answer_zh
+    intent prompt_text_answer
+    language zh
+    text "文本中的答案：「{sentence}」"
+  response response_prompt_text_answer_es
+    intent prompt_text_answer
+    language es
+    text "El texto lo responde: «{sentence}»"
+  response response_prompt_text_gap_en
+    intent prompt_text_gap
+    language en
+    text "The given text does not say: none of its sentences mentions {focus}."
+  response response_prompt_text_gap_ru
+    intent prompt_text_gap
+    language ru
+    text "В данном тексте об этом не сказано: ни одно предложение не упоминает {focus}."
+  response response_prompt_text_gap_hi
+    intent prompt_text_gap
+    language hi
+    text "दिए गए पाठ में यह नहीं बताया गया है: कोई भी वाक्य {focus} का उल्लेख नहीं करता।"
+  response response_prompt_text_gap_zh
+    intent prompt_text_gap
+    language zh
+    text "给定的文本没有说明：没有句子提到{focus}。"
+  response response_prompt_text_gap_es
+    intent prompt_text_gap
+    language es
+    text "El texto dado no lo dice: ninguna de sus frases menciona {focus}."

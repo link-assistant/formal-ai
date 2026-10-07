@@ -439,6 +439,23 @@ map
       column price
       operator ">"
 map
+  name sql_grouping
+    entry
+      word per
+      skip 0
+    entry
+      word each
+      skip 0
+    entry
+      word grouped
+      skip 1
+    entry
+      word каждого
+      skip 0
+    entry
+      word каждой
+      skip 0
+map
   name extension
     entry
       word log
