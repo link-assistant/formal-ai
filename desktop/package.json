@@ -25,10 +25,10 @@
     "agent-commander": "^0.11.0",
     "command-stream": "1.5.0",
     "electron-updater": "^6.8.9",
-    "playwright": "^1.63.0"
+    "playwright": "^1.64.0"
   },
   "devDependencies": {
-    "electron": "^44.6.0",
+    "electron": "^44.7.0",
     "electron-builder": "^26.17.0"
   },
   "command-stream//": "blocked: https://github.com/advisories/GHSA-vfj7-8cjw-p6xm (1.6.0+ and 2.0.0 depend on shelljs, whose fast-glob > micromatch > braces chain has no patched release; 1.5.0 is the newest that audits clean)",

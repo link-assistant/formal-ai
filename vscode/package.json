@@ -148,7 +148,7 @@
   "dependencies": {
     "@link-assistant/web-capture": "^1.12.0",
     "@link-assistant/web-search": "^0.11.1",
-    "playwright": "^1.63.0"
+    "playwright": "^1.64.0"
   },
   "browser-commander//": "blocked: https://github.com/link-assistant/web-capture/issues/160 (0.21+ launches the installed Chrome over CDP by default; web-capture 1.11.2 does not pass launch: 'engine', so 0.20.0 is the newest override it runs on)",
   "@kreuzberg/html-to-markdown-node//": "blocked: https://github.com/xberg-io/html-to-markdown/issues/459 (every release after 3.5.5, through 3.7.2, declares linux musl optional packages that npm does not have)",

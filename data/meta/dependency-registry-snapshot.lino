@@ -2,7 +2,7 @@
 # One flat record per registry answer; `--offline` reads exactly these.
 dependency_registry_snapshot
   record_type "dependency_registry_snapshot"
-  refreshed_at "2026-10-07T15:52:31Z"
+  refreshed_at "2026-10-07T21:07:23Z"
 registry_entry crates_io/base64
   latest "0.23.1"
   source_url "https://crates.io/api/v1/crates/base64"
@@ -91,7 +91,7 @@ registry_entry npm/@link-assistant/web-search
   latest "0.11.1"
   source_url "https://registry.npmjs.org/@link-assistant/web-search"
 registry_entry npm/@playwright/test
-  latest "1.63.0"
+  latest "1.64.0"
   source_url "https://registry.npmjs.org/@playwright/test"
 registry_entry npm/@vscode/test-web
   latest "0.0.81"
@@ -109,7 +109,7 @@ registry_entry npm/dompurify
   latest "3.4.16"
   source_url "https://registry.npmjs.org/dompurify"
 registry_entry npm/electron
-  latest "44.6.0"
+  latest "44.7.0"
   source_url "https://registry.npmjs.org/electron"
 registry_entry npm/electron-builder
   latest "26.15.3"
@@ -127,7 +127,7 @@ registry_entry npm/marked
   latest "18.1.0"
   source_url "https://registry.npmjs.org/marked"
 registry_entry npm/playwright
-  latest "1.63.0"
+  latest "1.64.0"
   source_url "https://registry.npmjs.org/playwright"
 registry_entry npm/react
   latest "19.3.0"
