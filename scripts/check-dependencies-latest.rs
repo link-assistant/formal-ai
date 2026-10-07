@@ -12,15 +12,22 @@
 //!   crates.io    /api/v1/crates/{name}            `max_stable_version`
 //!   npm          registry.npmjs.org/{name}         dist-tags.latest
 //!   GitHub       /repos/{owner}/{repo}/releases/latest   `tag_name`
-//!   Docker Hub   /v2/repositories/{image}/tags     newest pushed tag
-//!   rustc        static.rust-lang.org channel-rust-stable.toml
+//!   Docker Hub   /v2/repositories/{image}/tags     highest numeric tag
+//!   rustc        static.rust-lang.org channel-rust-stable.toml `[pkg.rust]`
+//!
+//! A `uses:` ref that names a moving branch or tool selector (`@stable`,
+//! `@nextest`) has no release to fall behind and is not compared; a floating
+//! major (`@v7`) is current while the latest release is a `7.x.y`.
 //!
 //! The one sanctioned escape hatch (issue #1169 R3) is a same-line blocked
 //! annotation naming the issue that tracks the hold-back. In Cargo.toml:
 //!
 //!   links-notation = "0.16.1" # blocked: <https://github.com/link-foundation/lino-objects-codec/issues/60>
 //!
-//! In package.json a sibling key inside the same dependency object:
+//! The reference is an issue URL, or a GitHub security advisory
+//! (`…/advisories/GHSA-…`) when the hold-back waits on an unpatched fix.
+//!
+//! In package.json a `"<name>//"` note key in the same manifest:
 //!
 //!   "electron": "^44.1.0",
 //!   "electron//": "blocked: <https://github.com/link-assistant/formal-ai/issues/1234>",
@@ -160,13 +167,11 @@ fn main() {
             }
         }
     } else {
-        match read_snapshot(&repo.join(SNAPSHOT_PATH)) {
-            Some(snapshot) => snapshot,
-            None => {
-                eprintln!(
-                    "check-dependencies-latest: no snapshot at {SNAPSHOT_PATH}; run --refresh-snapshot with the network up"
-                );
-                std::process::exit(3);
+        match offline_snapshot(&repo) {
+            Ok(snapshot) => snapshot,
+            Err(error) => {
+                eprintln!("check-dependencies-latest: {error}");
+                std::process::exit(EXIT_UNVERIFIABLE);
             }
         }
     };
@@ -213,14 +218,34 @@ fn main() {
         );
     }
 
-    if findings.iter().all(|f| f.dependency.blocked.is_some()) {
+    let code = exit_code(&findings);
+    if code == 0 {
         println!("dependency currency: every finding carries a blocked annotation");
         return;
     }
     println!(
         "dependency currency: FAIL - bump the manifest or add a `# blocked: <issue-url>` annotation"
     );
-    std::process::exit(1);
+    std::process::exit(code);
+}
+
+/// Exit status when a registry answer is unavailable: a live registry was
+/// unreachable, or `--offline` found no snapshot. Distinct from 1 so a
+/// flaky registry never reads as drift (R1169-6).
+pub const EXIT_UNVERIFIABLE: i32 = 3;
+
+/// The snapshot `--offline` answers from, or why there is none. An absent
+/// snapshot is unverifiable (exit 3), never "no findings".
+pub fn offline_snapshot(repo: &Path) -> Result<Snapshot, String> {
+    read_snapshot(&repo.join(SNAPSHOT_PATH)).ok_or_else(|| {
+        format!("no snapshot at {SNAPSHOT_PATH}; run --refresh-snapshot with the network up")
+    })
+}
+
+/// 0 when every finding carries a blocked annotation (or there are none),
+/// 1 when any drift is unannotated (R1169-3).
+pub fn exit_code(findings: &[Finding]) -> i32 {
+    i32::from(findings.iter().any(|f| f.dependency.blocked.is_none()))
 }
 
 #[cfg_attr(test, allow(dead_code))]
@@ -330,6 +355,9 @@ fn collect_workflows(repo: &Path, dependencies: &mut Vec<Dependency>) {
             continue;
         };
         for (action, reference, line) in parse_uses_pins(&text) {
+            if is_moving_ref(&reference) {
+                continue;
+            }
             dependencies.push(Dependency {
                 ecosystem: Ecosystem::GitHubAction,
                 name: action,
@@ -436,6 +464,23 @@ pub fn compare(dependencies: &[Dependency], snapshot: &Snapshot) -> (Vec<Finding
             }
             continue;
         }
+        if dependency.ecosystem == Ecosystem::GitHubAction {
+            // A commit SHA cannot be ordered against a release tag without
+            // another API call; it is reported as unverifiable, not current.
+            if is_commit_sha(&dependency.resolved) {
+                unverifiable.push(format!(
+                    "{}/{}",
+                    dependency.ecosystem.key(),
+                    dependency.name
+                ));
+            } else if !selects_latest(&dependency.resolved, &latest) {
+                findings.push(Finding {
+                    dependency: dependency.clone(),
+                    latest,
+                });
+            }
+            continue;
+        }
         let resolved = without_v(&dependency.resolved);
         let latest_bare = without_v(&latest);
         if resolved != latest_bare {
@@ -478,9 +523,11 @@ pub fn apply_latest(findings: &[Finding]) {
             let updated = match ecosystem {
                 Ecosystem::CratesIo => rewrite_cargo_line(&rewritten, dependency, bare),
                 Ecosystem::Npm => rewrite_npm_line(&rewritten, dependency, bare),
-                Ecosystem::GitHubAction => {
-                    rewrite_uses_line(&rewritten, dependency, &finding.latest)
-                }
+                Ecosystem::GitHubAction => rewrite_uses_line(
+                    &rewritten,
+                    dependency,
+                    &same_precision(&finding.latest, &dependency.resolved),
+                ),
                 Ecosystem::DockerImage => rewrite_from_line(&rewritten, dependency, bare),
                 Ecosystem::RustToolchain => {
                     rewrite_rust_version(&rewritten, dependency, &minor_of(&finding.latest))
@@ -521,11 +568,11 @@ fn rewrite_npm_line(text: &str, dependency: &Dependency, latest: &str) -> String
 
 fn rewrite_uses_line(text: &str, dependency: &Dependency, latest: &str) -> String {
     rewrite_line_at(text, dependency.line, |line| {
-        Some(line.replacen(
-            &format!("@{}", dependency.resolved),
-            &format!("@{latest}"),
-            1,
-        ))
+        let pinned = dependency
+            .declared
+            .as_deref()
+            .unwrap_or(&dependency.resolved);
+        Some(line.replacen(&format!("@{pinned}"), &format!("@{latest}"), 1))
     })
 }
 
@@ -690,10 +737,10 @@ fn live_snapshot(dependencies: &[Dependency]) -> Result<Snapshot, String> {
                 format!("https://registry.npmjs.org/{name}"),
             ),
             Ecosystem::GitHubAction => {
-                let latest = latest_github(&name)?;
+                let repository = action_repository(&name);
                 (
-                    latest,
-                    format!("https://api.github.com/repos/{name}/releases/latest"),
+                    latest_github(&repository)?,
+                    format!("https://api.github.com/repos/{repository}/releases/latest"),
                 )
             }
             Ecosystem::DockerImage => (
@@ -722,21 +769,20 @@ fn fetch(url: &str) -> Result<String, String> {
     String::from_utf8(output.stdout).map_err(|_| format!("non-utf8 body from {url}"))
 }
 
+/// The live fetchers: one `curl` each, parsed by the pure readers in
+/// `check-dependencies-latest-parsers.rs` (which the embedded suite pins
+/// against real-shaped publisher answers, R1169-2).
 #[cfg(not(test))]
 fn latest_crates_io(name: &str) -> Result<String, String> {
     let body = fetch(&format!("https://crates.io/api/v1/crates/{name}"))?;
-    json_field(&body, "max_stable_version")
+    crates_io_latest(&body)
         .ok_or_else(|| format!("crates.io answer for {name} had no max_stable_version"))
 }
 
 #[cfg(not(test))]
 fn latest_npm(name: &str) -> Result<String, String> {
     let body = fetch(&format!("https://registry.npmjs.org/{name}"))?;
-    let tags = body
-        .find("\"dist-tags\"")
-        .ok_or_else(|| format!("npm answer for {name} had no dist-tags"))?;
-    json_field(&body[tags..], "latest")
-        .ok_or_else(|| format!("npm dist-tags for {name} had no latest"))
+    npm_latest(&body).ok_or_else(|| format!("npm dist-tags for {name} had no latest"))
 }
 
 #[cfg(not(test))]
@@ -744,8 +790,7 @@ fn latest_github(repository: &str) -> Result<String, String> {
     let body = fetch(&format!(
         "https://api.github.com/repos/{repository}/releases/latest"
     ))?;
-    json_field(&body, "tag_name")
-        .ok_or_else(|| format!("github answer for {repository} had no tag_name"))
+    github_latest(&body).ok_or_else(|| format!("github answer for {repository} had no tag_name"))
 }
 
 #[cfg(not(test))]
@@ -753,51 +798,14 @@ fn latest_docker_hub(image: &str) -> Result<String, String> {
     let body = fetch(&format!(
         "https://hub.docker.com/v2/repositories/{image}/tags?page_size=100"
     ))?;
-    let results = body
-        .find("\"results\"")
-        .ok_or_else(|| format!("docker hub answer for {image} had no results"))?;
-    let mut cursor = &body[results..];
-    while let Some(name_start) = cursor.find("\"name\":\"") {
-        let after = &cursor[name_start + "\"name\":\"".len()..];
-        let end = after
-            .find('"')
-            .ok_or_else(|| format!("docker hub tag list for {image} ended mid-string"))?;
-        let tag = &after[..end];
-        if tag != "latest" && tag.chars().next().is_some_and(|c| c.is_ascii_digit()) {
-            return Ok(tag.to_string());
-        }
-        cursor = after;
-    }
-    Err(format!(
-        "docker hub tag list for {image} had no versioned tag"
-    ))
+    docker_hub_latest(&body)
+        .ok_or_else(|| format!("docker hub tag list for {image} had no versioned tag"))
 }
 
 #[cfg(not(test))]
 fn latest_rustc() -> Result<String, String> {
     let body = fetch("https://static.rust-lang.org/dist/channel-rust-stable.toml")?;
-    let mut section = String::new();
-    for line in body.lines() {
-        let trimmed = line.trim();
-        if trimmed.starts_with('[') {
-            section = trimmed.to_string();
-        } else if section == "[rust]" {
-            if let Some(rest) = trimmed.strip_prefix("version = ") {
-                return quoted_value(rest)
-                    .ok_or_else(|| "rust channel had no quoted version".to_string());
-            }
-        }
-    }
-    Err("rust channel had no [rust] version".to_string())
-}
-
-/// The value of `"key":"value"` (no spaces) anywhere in `body`.
-#[cfg(not(test))]
-fn json_field(body: &str, key: &str) -> Option<String> {
-    let needle = format!("\"{key}\":\"");
-    let start = body.find(&needle)? + needle.len();
-    let end = body[start..].find('"')? + start;
-    Some(body[start..end].to_string())
+    rust_channel_latest(&body).ok_or_else(|| "rust channel had no [pkg.rust] version".to_string())
 }
 
 #[cfg(not(test))]

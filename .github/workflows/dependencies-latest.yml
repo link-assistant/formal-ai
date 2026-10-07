@@ -25,10 +25,11 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    # Three CI-gate stages over a re-resolved tree plus two lockfile
-    # re-resolutions; the cap keeps a hung registry from inheriting the
-    # 360-minute default (issue #1017).
-    timeout-minutes: 60
+    # Three CI-gate stages (with the WASM worker and web bundle builds they
+    # need) over a re-resolved tree plus the lockfile re-resolutions; the cap
+    # keeps a hung registry from inheriting the 360-minute default (issue
+    # #1017).
+    timeout-minutes: 90
     permissions:
       contents: write
       pull-requests: write
@@ -45,35 +46,84 @@ jobs:
           automation-token: ${{ secrets.AUTOMATION_TOKEN }}
         id: automation
 
-      - name: Install the toolchains the re-resolution needs
-        run: |
-          rustup toolchain install stable --profile minimal --no-self-update
-          curl -fsSL https://bun.sh/install | bash
-          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      # The same toolchain set the release workflow's gate job uses, so the
+      # re-run below executes the gates exactly as CI does.
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      # Live registry answers; a registry that does not answer exits 3 and
+      # fails this run loudly instead of opening a PR from a partial view.
       - name: Refresh the registry snapshot the gate reads
         run: rust-script scripts/check-dependencies-latest.rs --refresh-snapshot
 
+      # Exit 1 means "findings", which is exactly what --apply just moved;
+      # any other non-zero status (2 usage, 3 unverifiable) fails the job.
       - name: Let the gate move every unblocked manifest forward
-        run: rust-script scripts/check-dependencies-latest.rs --apply --offline || test $? -eq 1
+        run: |
+          status=0
+          rust-script scripts/check-dependencies-latest.rs --apply --offline || status=$?
+          if [ "$status" -ne 0 ] && [ "$status" -ne 1 ]; then
+            exit "$status"
+          fi
 
       - name: Re-resolve the Rust lockfile from the rewritten manifest
         working-directory: rust
         run: cargo update --workspace
 
+      # Each directory is re-resolved by the tool that owns its lockfile:
+      # bun.lock by bun, package-lock.json by npm. Lock-only modes rewrite the
+      # resolution without installing; a resolver failure fails the job.
       - name: Re-resolve the JavaScript lockfiles from the rewritten manifests
         run: |
-          for directory in . desktop vscode rust/tests/e2e; do
-            if [ -f "$directory/package.json" ]; then
-              (cd "$directory" && bun install --mode=save || true)
-            fi
-          done
+          set -euo pipefail
+          while IFS= read -r lock; do
+            directory="$(dirname "$lock")"
+            case "$lock" in
+              */bun.lock)
+                (cd "$directory" && bun install --lockfile-only)
+                ;;
+              */package-lock.json)
+                (cd "$directory" && npm install --package-lock-only --ignore-scripts --no-audit --no-fund)
+                ;;
+            esac
+          done < <(git ls-files -- '*bun.lock' '*package-lock.json')
 
-      - name: Re-run the CI gates against the bumped tree
-        run: |
-          for stage in rust wasm web; do
-            rust-script scripts/run-ci-gates.rs --stage "$stage"
-          done
+      - name: Run registered gates (stage rust)
+        run: rust-script scripts/run-ci-gates.rs --stage rust
+
+      - name: Build Rust→WASM worker
+        run: sh js/wasm-worker/build.sh
+
+      - name: Run registered gates (stage wasm)
+        run: rust-script scripts/run-ci-gates.rs --stage wasm
+
+      - name: Install web bundle dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build web vendor bundle
+        run: bun run build:web
+
+      - name: Install web test dependencies
+        run: npm ci --prefix rust/tests/e2e --no-audit --no-fund
+
+      - name: Run registered gates (stage web)
+        run: rust-script scripts/run-ci-gates.rs --stage web
 
       - name: Open one pull request with everything that moved
         uses: peter-evans/create-pull-request@v8

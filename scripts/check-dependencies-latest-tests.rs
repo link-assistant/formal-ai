@@ -316,3 +316,143 @@ fn apply_leaves_blocked_lines_alone() {
     let rewritten = rewrite_cargo_line(text, &blocked, "0.22.0");
     assert_eq!(rewritten, text);
 }
+
+/// Registry answers in the shapes the publishers actually send (R1169-2):
+/// crates.io and npm answer compact JSON, api.github.com pretty-prints with a
+/// space after every colon, Docker Hub lists tags newest-pushed first, and
+/// the rust channel file nests the version under `[pkg.rust]`.
+#[test]
+fn registry_answers_parse_in_their_publishers_shapes() {
+    let crates_io = r#"{"categories":[],"crate":{"id":"clap","name":"clap","max_version":"5.0.0-beta.1","max_stable_version":"4.6.7","newest_version":"5.0.0-beta.1"},"versions":[{"num":"4.6.7"}]}"#;
+    assert_eq!(crates_io_latest(crates_io).as_deref(), Some("4.6.7"));
+
+    let npm = r#"{"_id":"react","name":"react","dist-tags":{"canary":"19.4.0-canary-1","latest":"19.3.0","next":"19.4.0-rc.0"},"versions":{"19.3.0":{"name":"react","version":"19.3.0"}}}"#;
+    assert_eq!(npm_latest(npm).as_deref(), Some("19.3.0"));
+
+    let github = "{\n  \"url\": \"https://api.github.com/repos/actions/checkout/releases/1\",\n  \"tag_name\": \"v7.0.1\",\n  \"name\": \"v7.0.1\",\n  \"draft\": false\n}\n";
+    assert_eq!(github_latest(github).as_deref(), Some("v7.0.1"));
+    assert_eq!(github_latest("{\"message\": \"Not Found\"}"), None);
+
+    let docker_hub = r#"{"count":4,"next":null,"previous":null,"results":[{"creator":1,"images":[{"architecture":"amd64","os":"linux"}],"last_updater_username":"konard","name":"latest"},{"name":"2.9.0","tag_status":"active"},{"name":"2.10.2","tag_status":"active"},{"name":"2.10.2-slim"}]}"#;
+    assert_eq!(docker_hub_latest(docker_hub).as_deref(), Some("2.10.2"));
+
+    let channel = "manifest-version = \"2\"\ndate = \"2026-09-18\"\n[pkg.cargo]\nversion = \"0.99.0 (abc 2026-09-10)\"\n[pkg.rust]\nversion = \"1.98.1 (1159e78c4 2026-09-14)\"\n";
+    assert_eq!(rust_channel_latest(channel).as_deref(), Some("1.98.1"));
+
+    assert_eq!(
+        json_field("{ \"a\" : \"x\", \"key\" :\n \"spaced\" }", "key").as_deref(),
+        Some("spaced")
+    );
+    assert_eq!(json_field("{\"key\": 7}", "key"), None);
+}
+
+/// A hold-back is accepted only with a tracking reference (R1169-3): an issue
+/// URL or a security advisory, bracketed or bare, in Cargo.toml and in a
+/// package.json note alike; a note without one is drift.
+#[test]
+fn blocked_notes_must_carry_a_tracking_reference() {
+    assert_eq!(
+        blocked_annotation("x = \"1\" # blocked: <https://github.com/o/r/issues/7> (why)"),
+        Some("https://github.com/o/r/issues/7".to_string())
+    );
+    assert_eq!(
+        tracking_reference(" https://github.com/advisories/GHSA-vfj7-8cjw-p6xm (no fix)"),
+        Some("https://github.com/advisories/GHSA-vfj7-8cjw-p6xm".to_string())
+    );
+    assert_eq!(tracking_reference(" https://example.com/docs"), None);
+    let text = "\
+{
+  \"dependencies\": {
+    \"tracked\": \"1.0.0\",
+    \"prose\": \"1.0.0\"
+  },
+  \"tracked//\": \"blocked: https://github.com/o/r/issues/9 (upstream regression)\",
+  \"prose//\": \"blocked: waiting for upstream\"
+}
+";
+    let parsed = parse_package_json(text);
+    assert_eq!(
+        parsed[0].3.as_deref(),
+        Some("https://github.com/o/r/issues/9")
+    );
+    assert_eq!(
+        parsed[1].3, None,
+        "a note without a reference blocks nothing"
+    );
+}
+
+/// Exit codes (R1169-3, R1169-6): 0 when every finding is blocked, 1 on any
+/// unannotated drift, and an absent `--offline` snapshot is unverifiable
+/// (exit 3), never "no findings".
+#[test]
+fn exit_codes_separate_drift_from_an_unverifiable_run() {
+    let finding = |blocked: Option<&str>| Finding {
+        dependency: Dependency {
+            ecosystem: Ecosystem::Npm,
+            name: "x".to_string(),
+            declared: Some("1.0.0".to_string()),
+            resolved: "1.0.0".to_string(),
+            path: PathBuf::from("package.json"),
+            line: 1,
+            blocked: blocked.map(str::to_string),
+        },
+        latest: "2.0.0".to_string(),
+    };
+    assert_eq!(exit_code(&[]), 0);
+    assert_eq!(
+        exit_code(&[finding(Some("https://github.com/o/r/issues/1"))]),
+        0
+    );
+    assert_eq!(
+        exit_code(&[
+            finding(Some("https://github.com/o/r/issues/1")),
+            finding(None)
+        ]),
+        1
+    );
+    let empty = std::env::temp_dir().join(format!("issue-1169-no-snapshot-{}", std::process::id()));
+    let error = offline_snapshot(&empty)
+        .err()
+        .expect("no snapshot is an error");
+    assert!(error.contains(SNAPSHOT_PATH), "{error}");
+    assert_eq!(EXIT_UNVERIFIABLE, 3);
+}
+
+/// Workflow refs: a moving branch or tool selector is not a release pin, a
+/// floating major is current within its major, a sub-path action is
+/// versioned by its repository, and `--apply` keeps the ref's precision
+/// (R1169-7).
+#[test]
+fn action_refs_float_and_rewrite_at_their_own_precision() {
+    assert!(is_moving_ref("stable"));
+    assert!(is_moving_ref("nextest"));
+    assert!(!is_moving_ref("v7"));
+    assert!(!is_moving_ref("0.6.4"));
+    assert!(!is_moving_ref(&"a".repeat(40)));
+    assert!(is_commit_sha(&"0123456789abcdef".repeat(3)[..40]));
+    assert_eq!(
+        action_repository("github/codeql-action/init"),
+        "github/codeql-action"
+    );
+    assert!(selects_latest("7", "v7.0.1"));
+    assert!(selects_latest("0.6.4", "v0.6.4"));
+    assert!(!selects_latest("6", "v7.0.1"));
+    assert!(!selects_latest("7.0.0", "v7.0.1"));
+    assert_eq!(same_precision("v7.0.1", "6"), "v7");
+    assert_eq!(same_precision("v0.6.5", "0.6.4"), "v0.6.5");
+
+    let workflow =
+        "steps:\n  - uses: actions/checkout@v6\n  - uses: dtolnay/rust-toolchain@stable\n";
+    let dependency = Dependency {
+        ecosystem: Ecosystem::GitHubAction,
+        name: "actions/checkout".to_string(),
+        declared: Some("v6".to_string()),
+        resolved: "6".to_string(),
+        path: PathBuf::from("ci.yml"),
+        line: 2,
+        blocked: None,
+    };
+    let rewritten = rewrite_uses_line(workflow, &dependency, &same_precision("v7.0.1", "6"));
+    assert!(rewritten.contains("actions/checkout@v7\n"), "{rewritten}");
+    assert!(rewritten.contains("rust-toolchain@stable"), "{rewritten}");
+}

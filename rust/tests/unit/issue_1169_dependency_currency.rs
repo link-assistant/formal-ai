@@ -12,7 +12,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use check_dependencies_latest::{
-    Ecosystem, Snapshot, apply_latest, collect, compare, read_snapshot, write_snapshot,
+    EXIT_UNVERIFIABLE, Ecosystem, Snapshot, apply_latest, collect, compare, offline_snapshot,
+    read_snapshot, write_snapshot,
 };
 
 fn fixture_tree(tag: &str) -> PathBuf {
@@ -209,13 +210,43 @@ fn the_repository_tree_collects_every_ecosystem() {
             "missing {name} at {resolved} in the collected set"
         );
     }
-    // The blocked Rust pin is collected with its annotation.
-    let blocked = dependencies
+    // The current hold-backs are package.json notes (the links-notation
+    // Cargo pin was lifted when lino-objects-codec 0.8.0 shipped): each is
+    // collected with its tracking reference, never with prose (R1169-3).
+    let command_stream = dependencies
         .iter()
-        .find(|d| d.name == "links-notation")
-        .expect("links-notation is a declared dependency");
+        .find(|d| d.name == "command-stream" && d.path.ends_with("desktop/package.json"))
+        .expect("desktop declares command-stream");
     assert_eq!(
-        blocked.blocked.as_deref(),
-        Some("https://github.com/link-foundation/lino-objects-codec/issues/60")
+        command_stream.blocked.as_deref(),
+        Some("https://github.com/advisories/GHSA-vfj7-8cjw-p6xm")
     );
+    for dependency in dependencies.iter().filter(|d| d.blocked.is_some()) {
+        let reference = dependency.blocked.as_deref().unwrap_or_default();
+        assert!(
+            reference.starts_with("https://")
+                && (reference.contains("/issues/") || reference.contains("/advisories/GHSA-")),
+            "{} is held back by {reference:?}, which is not a tracking reference",
+            dependency.name
+        );
+    }
+    // Moving refs (`dtolnay/rust-toolchain@stable`) are not release pins.
+    assert!(
+        !dependencies
+            .iter()
+            .any(|d| d.ecosystem == Ecosystem::GitHubAction && d.resolved == "stable"),
+        "a moving branch ref was collected as a release pin"
+    );
+}
+
+#[test]
+fn offline_without_a_snapshot_is_unverifiable_not_clean() {
+    let root = fixture_tree("no-snapshot");
+    full_fixture(&root);
+    let error = offline_snapshot(&root)
+        .err()
+        .expect("no snapshot was written");
+    assert!(error.contains("--refresh-snapshot"), "{error}");
+    assert_eq!(EXIT_UNVERIFIABLE, 3);
+    let _ = fs::remove_dir_all(&root);
 }

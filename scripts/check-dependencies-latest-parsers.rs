@@ -134,13 +134,14 @@ pub fn parse_package_json(text: &str) -> Vec<(String, String, usize, Option<Stri
         let Some((key, value)) = json_member(line) else {
             continue;
         };
+        // The note must open with `blocked:` and name its tracking reference;
+        // a note without one is prose, not a hold-back decision (R1169-3).
         if let Some(name) = key.strip_suffix("//")
-            && let Some(url) = json_string(value)
+            && let Some(note) = json_string(value)
+            && let Some(reason) = note.trim().strip_prefix("blocked:")
+            && let Some(url) = tracking_reference(reason)
         {
-            blocked.insert(
-                name.to_string(),
-                url.trim_start_matches("blocked:").trim().to_string(),
-            );
+            blocked.insert(name.to_string(), url);
         }
     }
     let mut out = Vec::new();
@@ -292,18 +293,25 @@ pub fn parse_dockerfile_from(text: &str) -> Vec<(String, String, usize)> {
 
 /// The issue URL of a `# blocked: <url>` annotation on this line.
 pub fn blocked_annotation(line: &str) -> Option<String> {
-    let marker = "# blocked: ";
+    let marker = "# blocked:";
     let start = line.find(marker)?;
-    // The issue URL is the first token; prose after it explains the hold-back.
-    let url = line[start + marker.len()..]
-        .split_whitespace()
-        .next()
-        .unwrap_or_default();
-    if url.starts_with("https://") && url.contains("/issues/") {
-        Some(url.to_string())
-    } else {
-        None
-    }
+    tracking_reference(&line[start + marker.len()..])
+}
+
+/// The tracking reference that opens a hold-back reason: its first token,
+/// with optional `<…>` brackets, when it is an `https://` URL naming an issue
+/// (`…/issues/<n>`) or a published security advisory (`…/advisories/GHSA-…`,
+/// the record that tracks an unpatched vulnerability until a fix ships).
+/// Prose after the reference explains the hold-back; a reason without such a
+/// reference is not a decision, only drift (R1169-3).
+pub fn tracking_reference(reason: &str) -> Option<String> {
+    let token = reason.split_whitespace().next()?;
+    let url = token
+        .trim_start_matches('<')
+        .trim_end_matches(['>', ',', ';']);
+    let tracked = url.starts_with("https://")
+        && (url.contains("/issues/") || url.contains("/advisories/GHSA-"));
+    tracked.then(|| url.to_string())
 }
 
 pub fn quoted_value(text: &str) -> Option<String> {
@@ -337,4 +345,132 @@ pub fn without_v(version: &str) -> &str {
 pub fn minor_of(version: &str) -> String {
     let parts: Vec<&str> = without_v(version).split('.').collect();
     parts.iter().take(2).copied().collect::<Vec<_>>().join(".")
+}
+
+/// The `owner/repo` a `uses:` action is released from: a sub-path action
+/// (`github/codeql-action/init`) is versioned by its repository.
+pub fn action_repository(action: &str) -> String {
+    action.split('/').take(2).collect::<Vec<_>>().join("/")
+}
+
+/// A `uses:` ref that names a moving branch or tool selector rather than a
+/// release (`dtolnay/rust-toolchain@stable`, `taiki-e/install-action@nextest`):
+/// it has no release to fall behind, so the gate does not compare it. A
+/// commit SHA is a pin, not a moving ref.
+pub fn is_moving_ref(reference: &str) -> bool {
+    !is_commit_sha(reference)
+        && !without_v(reference)
+            .chars()
+            .next()
+            .is_some_and(|c| c.is_ascii_digit())
+}
+
+/// A full 40-hex commit SHA.
+pub fn is_commit_sha(reference: &str) -> bool {
+    reference.len() == 40 && reference.chars().all(|c| c.is_ascii_hexdigit())
+}
+
+/// Whether `resolved` already selects `latest`: equal, or a floating prefix
+/// (`v7` floats to the newest `7.x.y`, so it is current when `latest` is
+/// `v7.0.1`).
+pub fn selects_latest(resolved: &str, latest: &str) -> bool {
+    let resolved: Vec<&str> = without_v(resolved).split('.').collect();
+    let latest: Vec<&str> = without_v(latest).split('.').collect();
+    resolved.len() <= latest.len() && resolved.iter().zip(&latest).all(|(r, l)| r == l)
+}
+
+/// `latest` cut to the precision of `resolved`, keeping a `v` prefix when
+/// `latest` carries one: a floating `@v6` moves to `@v7`, not to `@v7.0.1`.
+pub fn same_precision(latest: &str, resolved: &str) -> String {
+    let components = without_v(resolved).split('.').count();
+    let bare: Vec<&str> = without_v(latest).split('.').take(components).collect();
+    let prefix = if latest.starts_with('v') { "v" } else { "" };
+    format!("{prefix}{}", bare.join("."))
+}
+
+/// The string value of `"key": "value"` anywhere in a JSON body, whatever
+/// whitespace the publisher puts around the colon: crates.io and npm answer
+/// compact JSON, api.github.com pretty-prints it (`"tag_name": "v7.0.1"`).
+pub fn json_field(body: &str, key: &str) -> Option<String> {
+    json_field_at(body, key).map(|(value, _)| value)
+}
+
+/// [`json_field`] plus the byte offset just past the value's closing quote,
+/// so a caller can walk every occurrence of a key in order.
+pub fn json_field_at(body: &str, key: &str) -> Option<(String, usize)> {
+    let needle = format!("\"{key}\"");
+    let mut offset = 0;
+    while let Some(found) = body[offset..].find(&needle) {
+        let key_end = offset + found + needle.len();
+        let after = &body[key_end..];
+        let after_trimmed = after.trim_start();
+        if let Some(value) = after_trimmed.strip_prefix(':') {
+            let value_trimmed = value.trim_start();
+            if let Some(string) = value_trimmed.strip_prefix('"') {
+                let end = string.find('"')?;
+                let string_start = body.len() - string.len();
+                return Some((string[..end].to_string(), string_start + end + 1));
+            }
+        }
+        offset = key_end;
+    }
+    None
+}
+
+/// crates.io `/api/v1/crates/{name}`: `crate.max_stable_version`.
+pub fn crates_io_latest(body: &str) -> Option<String> {
+    json_field(body, "max_stable_version")
+}
+
+/// registry.npmjs.org `/{name}`: `dist-tags.latest`.
+pub fn npm_latest(body: &str) -> Option<String> {
+    let tags = body.find("\"dist-tags\"")?;
+    json_field(&body[tags..], "latest")
+}
+
+/// api.github.com `/repos/{owner}/{repo}/releases/latest`: `tag_name`.
+pub fn github_latest(body: &str) -> Option<String> {
+    json_field(body, "tag_name")
+}
+
+/// Docker Hub `/v2/repositories/{image}/tags`: the highest dotted-numeric tag
+/// among the listed results (`latest`, suffixed variants and a rebuilt old
+/// tag sorted first by push time do not win).
+pub fn docker_hub_latest(body: &str) -> Option<String> {
+    let results = body.find("\"results\"")?;
+    let mut rest = &body[results..];
+    let mut best: Option<(Vec<u64>, String)> = None;
+    while let Some((tag, end)) = json_field_at(rest, "name") {
+        rest = &rest[end..];
+        let numbers: Option<Vec<u64>> = without_v(&tag)
+            .split('.')
+            .map(|part| part.parse::<u64>().ok())
+            .collect();
+        if let Some(numbers) = numbers
+            && best.as_ref().is_none_or(|(current, _)| numbers > *current)
+        {
+            best = Some((numbers, tag));
+        }
+    }
+    best.map(|(_, tag)| tag)
+}
+
+/// static.rust-lang.org `channel-rust-stable.toml`: the `[pkg.rust]`
+/// `version = "1.90.0 (1159e78c4 2025-09-14)"`, first word.
+pub fn rust_channel_latest(body: &str) -> Option<String> {
+    let mut section = "";
+    for line in body.lines() {
+        let trimmed = line.trim();
+        if trimmed.starts_with('[') {
+            section = trimmed;
+        } else if section == "[pkg.rust]"
+            && let Some(rest) = trimmed.strip_prefix("version = ")
+        {
+            return quoted_value(rest)?
+                .split_whitespace()
+                .next()
+                .map(str::to_string);
+        }
+    }
+    None
 }

@@ -863,9 +863,12 @@ scripts/check-dependencies-latest.rs` fails when one does not. The one
 sanctioned way to hold a dependency back is a same-line annotation naming
 the issue that tracks the hold-back — `links-notation = "0.16.1" # blocked:
 https://github.com/link-foundation/lino-objects-codec/issues/60` in
-`Cargo.toml`, or a `"<name>//"` sibling key inside the same dependency
-object of a `package.json`. The annotation must point at an issue URL; a
-hold-back without one is not a decision, only drift. The daily
+`Cargo.toml` (the URL may be bare or `<…>`-bracketed), or a `"<name>//":
+"blocked: <url> (reason)"` note key in the same `package.json`. The
+annotation must open with an issue URL, or with the GitHub security advisory
+(`https://github.com/advisories/GHSA-…`) when the hold-back waits on an
+unpatched vulnerability; a hold-back without one is not a decision, only
+drift, and the gate fails on it. The daily
 `dependencies-latest` workflow re-checks every registry and opens one pull
 request with everything that moved, so the gate being green is a fact about
 yesterday's registries, not a permanent state anyone achieves once.
