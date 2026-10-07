@@ -77,14 +77,21 @@ each rediscovered program was saved under its run contract and run:
 | Java | docs.oracle.com Java tutorial (Unix) | `class HelloWorldApp`; the name binds `HelloWorldApp.java` and the page states `javac HelloWorldApp.java` and `java HelloWorldApp` |
 | Scala | Scala 3 book taste-hello-world | `object hello`; the `entry_container` row binds `hello.scala`, `scalac hello.scala`, `scala hello` |
 | PHP | php.net tutorial first page | `echo "...";` then `?>`; answered with `documentation_deviation trailing_newline=absent` recorded |
+| Lua | lua.org Programming in Lua, chapter 1 | `print("...")`, answered by the coding oracle (grammar row registered; snapshot retired) |
 | R | none | no official page has a lone `print`/`cat` example |
-| Laravel | none | no grammar row; the Artisan docs show no Hello World command |
+| Laravel | none | no grammar row; the routing page returns `Hello World` as an HTTP body, not the standard output `php artisan hello:world` checks |
+| Bash, Haskell | none | meta-language ships no grammar for either, so they keep their snapshots |
 
 Later the same day the run contract learned to bind a documented program's
 own name (a captured command line, else an `entry_container` keyword), every
 command became runtime data with its source recorded in the derivation, and
 the coding oracle began reading the documentation route, which brought Java,
 Scala, PHP and Swift in: only Laravel's Hello World is still stored.
+
+An answer's execution status now cites a run only when that run executed
+the same program (by content id, recorded in the policy seed); every other
+documented program says it was rediscovered from its page and checked by
+decomposition, in five languages.
 
 The ten documented Hello World programs are no longer stored anywhere:
 `ProgramTemplate.code` became runtime data and the Rust catalog table appends
