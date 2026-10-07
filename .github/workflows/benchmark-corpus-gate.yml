@@ -115,7 +115,9 @@ jobs:
       - name: Collect the integration test executable
         run: |
           set -euo pipefail
-          executable=$(jq -r 'select(.reason == "compiler-artifact" and .target.name == "integration" and .profile.test == true) | .executable // empty' corpus-build.json | tail -1)
+          # -R with fromjson?: the budget wrapper's closing line shares stdout
+          # with cargo's JSON messages, and is skipped rather than parsed.
+          executable=$(jq -rR 'fromjson? | select(.reason == "compiler-artifact" and .target.name == "integration" and .profile.test == true) | .executable // empty' corpus-build.json | tail -1)
           if [ -z "$executable" ] || [ ! -x "$executable" ]; then
             echo "::error title=No corpus gate executable::the --no-run build reported no integration test executable" >&2
             exit 1

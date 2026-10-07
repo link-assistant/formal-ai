@@ -165,7 +165,10 @@ jobs:
         run: |
           set -euo pipefail
           export CARGO_TARGET_DIR="$GITHUB_WORKSPACE/rust/target/llvm-cov-target"
-          eval "$(cd rust && cargo llvm-cov show-env --export-prefix)"
+          # `--sh` is the current name of the flag cargo-llvm-cov 0.9 renamed
+          # from `--export-prefix`; the fallback keeps an older install working.
+          env_script=$(cd rust && { cargo llvm-cov show-env --sh || cargo llvm-cov show-env --export-prefix; })
+          eval "$env_script"
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Instrumented test build" \
             cargo test --manifest-path rust/Cargo.toml --all-features --no-run \
@@ -178,8 +181,10 @@ jobs:
         run: |
           set -euo pipefail
           target=rust/target/llvm-cov-target
-          jq -r --arg root "$GITHUB_WORKSPACE/" \
-            'select(.reason == "compiler-artifact" and .profile.test == true and .executable != null)
+          # -R with fromjson?: the budget wrapper's closing line shares stdout
+          # with cargo's JSON messages, and is skipped rather than parsed.
+          jq -rR --arg root "$GITHUB_WORKSPACE/" \
+            'fromjson? | select(.reason == "compiler-artifact" and .profile.test == true and .executable != null)
              | [.target.name, (.executable | ltrimstr($root))] | @tsv' \
             coverage-build.json > coverage-tests.tsv
           if [ "$(wc -l < coverage-tests.tsv)" -lt 3 ] || grep -q $'\t/' coverage-tests.tsv; then
