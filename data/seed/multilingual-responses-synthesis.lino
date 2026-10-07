@@ -767,3 +767,39 @@ multilingual_responses
     intent source_refresh
     language en
     text "Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified."
+  response response_source_refresh_ru
+    intent source_refresh
+    language ru
+    text "Кэшированный источник {target} поставлен в очередь на обновление с исходного URL. Событие обновления добавлено в журнал аудита, а новая метка fetched_at будет записана после проверки новой копии."
+  response response_source_refresh_hi
+    intent source_refresh
+    language hi
+    text "कैश किया गया स्रोत {target} अपने मूल URL से ताज़ा करने के लिए कतार में रखा गया है। ताज़ा करने की घटना ऑडिट लॉग में जोड़ी गई है, और नई प्रति सत्यापित होने पर नया fetched_at समय-चिह्न दर्ज किया जाएगा।"
+  response response_source_refresh_zh
+    intent source_refresh
+    language zh
+    text "缓存来源 {target} 已排队，将从其原始 URL 刷新。刷新事件已追加到审计日志，新副本验证后将记录新的 fetched_at 时间戳。"
+  response response_source_refresh_es
+    intent source_refresh
+    language es
+    text "La fuente en caché {target} se ha puesto en cola para actualizarse desde su URL de origen. El evento de actualización se añade al registro de auditoría y se registrará una nueva marca fetched_at cuando se verifique la nueva copia."
+  response response_source_conflict_en
+    intent source_conflict
+    language en
+    text "Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved."
+  response response_source_conflict_ru
+    intent source_conflict
+    language ru
+    text "Источники расходятся в ответе на этот вопрос. Расхождение записано в сети как связь conflict:source_disagreement, а не разрешено молча."
+  response response_source_conflict_hi
+    intent source_conflict
+    language hi
+    text "इस प्रश्न पर स्रोत असहमत हैं। असहमति को चुपचाप सुलझाने के बजाय नेटवर्क में conflict:source_disagreement लिंक के रूप में दर्ज किया गया है।"
+  response response_source_conflict_zh
+    intent source_conflict
+    language zh
+    text "各来源对这个问题的回答不一致。这一分歧作为 conflict:source_disagreement 链接记录在网络中，而不是被悄悄消解。"
+  response response_source_conflict_es
+    intent source_conflict
+    language es
+    text "Las fuentes no coinciden en esta pregunta. El desacuerdo se registra en la red como un enlace conflict:source_disagreement en lugar de resolverse en silencio."

@@ -3,14 +3,15 @@
 //!
 //! Each function here is one procedure beside the M2 retrieval interpreter
 //! (`src/retrieval_method.rs`): the network snapshot and the self-filter read
-//! the link store, the source refresh and the learn directive maintain source
-//! state, and the conflict reply records a provenance disagreement. They are
+//! the link store, and the learn directive maintains source state. They are
 //! staging here as one visible group for the batch's seed passes: their cue
 //! vocabularies and answer wording are still Rust literals until the pass that
 //! moves each into seed rules and localized responses, and the migration
-//! ledger keeps all five rows pending until then.
+//! ledger keeps their rows pending until then. The source refresh and the
+//! conflict reply took that pass (issue #918): they are the `source_refresh`
+//! and `source_conflict` rule sets of `data/seed/handler-rules.lino`.
 
-use crate::engine::{SymbolicAnswer, knowledge_links_notation, normalize_prompt, stable_id};
+use crate::engine::{SymbolicAnswer, knowledge_links_notation, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::ROLE_PERSONAL_FACTS_LISTING_REQUEST;
@@ -78,38 +79,6 @@ pub fn try_network_query(
     None
 }
 
-pub fn try_source_refresh(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !normalized.contains("refresh")
-        || !(normalized.contains("cache") || normalized.contains("page"))
-    {
-        return None;
-    }
-    let target = stable_id("source", prompt);
-    log.append("source_refresh", target.clone());
-    if crate::capability_routing::first_url(prompt).is_none()
-        && crate::capability_routing::first_path(prompt).is_none()
-    {
-        log.append("source_refresh:refusal", "no source named".to_owned());
-    }
-    let body = format!(
-        "Cached source {target} has been queued for refresh against its origin URL. The \
-         refresh event is appended to the audit log and a fresh fetched_at timestamp will be \
-         recorded once the new copy is verified."
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "source_refresh",
-        "response:source_refresh",
-        &body,
-        1.0,
-    ))
-}
-
 /// Issue #499: recognize a "learn from this data source" directive and route it
 /// into the matching auto-learning capability instead of falling to `unknown`.
 ///
@@ -173,32 +142,4 @@ fn learning_source_summary(capability: &str) -> Option<String> {
         }
         _ => None,
     }
-}
-
-pub fn try_source_conflict(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !(normalized.contains("conflict")
-        || (normalized.contains("born in") && normalized.contains(" or ")))
-    {
-        return None;
-    }
-    log.append(
-        "conflict:source_disagreement",
-        "sources disagree on the answer".to_owned(),
-    );
-    let body = String::from(
-        "Sources disagree on this question. The disagreement is recorded as a \
-         conflict:source_disagreement link in the network rather than silently resolved.",
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "source_conflict",
-        "response:source_conflict",
-        &body,
-        0.3,
-    ))
 }

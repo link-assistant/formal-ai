@@ -192,7 +192,7 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   mechanism_subject: (prompt) => Boolean(extractHowItWorksSubject(prompt, nativeLaneLowercase(prompt))),
   procedure_task: (prompt) => extractProceduralHowToTask(normalizePrompt(prompt)) != null,
   search_focus: (prompt, normalized) => Boolean((extractWebSearchRequest(prompt, normalized) || {}).query),
-  conversation_topic_subject: (prompt, normalized) => conversationTopic(prompt, normalized) !== "",
+  conversation_topic_subject: (prompt) => handlerRuleSetClaims("conversation_topic", prompt, String(prompt || "").toLowerCase()),
   marketplace_scope: (prompt, normalized) => productSearchCatalogue().marketplaces.some((item) =>
     item.phrases.some((phrase) => normalized.includes(phrase) || String(prompt || "").toLowerCase().includes(phrase))),
   verifiable_spec: (prompt) => recogniseBrowserVerifiableTask(prompt) !== null,

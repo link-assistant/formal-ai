@@ -3,9 +3,8 @@ include!("modules.rs");
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
-    fact_store_resolves, names_conversation_topic, names_coreference_antecedent,
-    try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
-    try_fact_lookup, try_roleplay_request, try_summarization_request,
+    fact_store_resolves, names_coreference_antecedent, try_brainstorming_request,
+    try_coreference_request, try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
 pub use calendar::try_calendar_reasoning;
 pub use calendar_create::{
@@ -282,12 +281,10 @@ pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<Symb
     ))
 }
 
-// Plan 09 leaf 18: the network snapshot, source refresh, learn-from-source
-// and source-conflict procedures live in `src/retrieval_procedures.rs`, beside
-// the M2 retrieval interpreter they extend.
-pub use crate::retrieval_procedures::{
-    try_learn_from_source, try_network_query, try_source_conflict, try_source_refresh,
-};
+// Plan 09 leaf 18: the network snapshot and learn-from-source procedures live
+// in `src/retrieval_procedures.rs`, beside the M2 retrieval interpreter they
+// extend; the source refresh and source conflict are seed rules (issue #918).
+pub use crate::retrieval_procedures::{try_learn_from_source, try_network_query};
 
 pub fn try_translation(
     prompt: &str,

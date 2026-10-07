@@ -235,35 +235,17 @@ function howItWorksPriorTopic(reply) {
 }
 
 /**
- * The FNV-1a source id the native `stable_id` derives.
- * @param {string} prefix
- * @param {string} text
- * @returns {string}
- */
-function nativeLaneStableId(prefix, text) {
-  return stableBehaviorRuleId(prefix, text);
-}
-
-/**
  * `source_refresh` precedence row: a refresh request about a cached page or
- * cache queues that source for refresh. The refresh verb and its objects are
- * the `source_refresh` cue records of data/seed/code-task-cues.lino. Mirrors
- * try_source_refresh in rust/src/retrieval_procedures.rs.
+ * cache queues that source for refresh. The cue words, the refusal lane (no
+ * source named, read by the same `source_reference` claim evidence the
+ * capability table admits the row on) and the wording are the
+ * `source_refresh` rules of data/seed/handler-rules.lino, walked by the shared
+ * rule interpreter as the native dispatcher walks them.
  * @param {string} prompt
  * @returns {object|null}
  */
 function trySourceRefresh(prompt) {
-  const lower = nativeLaneLowercase(prompt);
-  if (!codeTaskCued("source_refresh", "verb", prompt, lower)) return null;
-  if (!codeTaskCued("source_refresh", "object", prompt, lower)) return null;
-  const target = nativeLaneStableId("source", prompt);
-  return {
-    intent: "source_refresh",
-    content: nativeLaneRender(answerFor("source_refresh", "en"), { target }),
-    confidence: 1.0,
-    evidence: [`source_refresh:${target}`, "response:source_refresh"] // #1175 R3: no named source is the refusal lane
-      .concat(CLASS_CLAIM_EVIDENCE.source_reference(prompt) ? [] : ["source_refresh:refusal:no source named"]),
-  };
+  return runHandlerRuleSet("source_refresh", prompt, nativeLaneLowercase(prompt), []);
 }
 
 /** Shell joiners that make any line a command sequence. */

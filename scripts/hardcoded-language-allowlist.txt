@@ -679,11 +679,9 @@ rust/src/repair_strategy.rs	Why did the reverse-sort answer change between relea
 rust/src/repair_strategy.rs	the trace shows `{signal}` — a correct behaviour is unguarded by a test
 rust/src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could not route the task
 rust/src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
-rust/src/retrieval_procedures.rs	Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.
 rust/src/retrieval_procedures.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
 rust/src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
 rust/src/retrieval_procedures.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
-rust/src/retrieval_procedures.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
 rust/src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 rust/src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
 rust/src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm
@@ -837,10 +835,6 @@ rust/src/solver_handlers/behavior_rules.rs	当用户说 `{}` 时，回答 `{}`�
 rust/src/solver_handlers/behavior_rules.rs	当用户问 `Who are you?` 或 `Кто ты?` 时，回答 `{}`。
 rust/src/solver_handlers/behavior_rules.rs	当用户问我空闲时间做什么时，回答 `{}`。
 rust/src/solver_handlers/behavior_rules.rs	现在发送 `{}`，我会使用配置的回答。导出 memory 可把这条规则消息随对话一起保存。
-rust/src/solver_handlers/benchmark_prompts.rs	We can talk about {topic}. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.
-rust/src/solver_handlers/benchmark_prompts.rs	Можем. Тема: {topic}. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник.
-rust/src/solver_handlers/benchmark_prompts.rs	हम बात कर सकते हैं. विषय: {topic}. मैं छोटी परिभाषा, संदर्भ, या किसी конкрет प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो तो public facts बाहरी स्रोत से जाँचे जा सकते हैं.
-rust/src/solver_handlers/benchmark_prompts.rs	可以聊。主题: {topic}。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。
 rust/src/solver_handlers/calculator_rate.rs	For currency calculations I use link-calculator. For USD/RUB it returns: {calculation_body}.
 rust/src/solver_handlers/calculator_rate.rs	I recognized this as a question about the USD/RUB rate used for calculations, but link-calculator could not evaluate it: {error}.
 rust/src/solver_handlers/calculator_rate.rs	При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: {calculation_body}.

@@ -591,3 +591,19 @@ meanings
     unit "not applicable"
     example "the kotlinlang.org command-line compiler page"
     grounding "data/seed/sources-registry.lino"
+  role_slot
+    defined-by method
+    role action
+    precondition "a handler rule needs the object a request names in the open slot of one of a role's prefix surfaces"
+    effect "captures the text after the first surface that opens the request, or after a scan surface anywhere in it, with its edge punctuation shed; the rule does not match when nothing is left"
+    unit "not applicable"
+    example "the topic existence from let's talk about existence"
+    grounding "data/seed/handler-rules.lino"
+  stable_id
+    defined-by method
+    role action
+    precondition "a handler rule needs a deterministic identity for the request it answers"
+    effect "derives the FNV-1a identity of the raw prompt under a declared prefix, the same identity in every runtime"
+    unit "not applicable"
+    example "source_e2db54b48c90e140 for the request to refresh the cached page for example.com"
+    grounding "data/seed/handler-rules.lino"

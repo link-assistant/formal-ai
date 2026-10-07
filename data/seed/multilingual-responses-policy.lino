@@ -95,3 +95,23 @@ multilingual_responses
     intent external_benchmark_frontier_written
     language en
     text "upstream failure frontier written: {path}"
+  response response_conversation_topic_en
+    intent conversation_topic
+    language en
+    text "We can talk about {topic}. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source."
+  response response_conversation_topic_ru
+    intent conversation_topic
+    language ru
+    text "Можем. Тема: {topic}. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник."
+  response response_conversation_topic_hi
+    intent conversation_topic
+    language hi
+    text "हम बात कर सकते हैं. विषय: {topic}. मैं छोटी परिभाषा, संदर्भ, या किसी ठोस प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो तो public facts बाहरी स्रोत से जाँचे जा सकते हैं."
+  response response_conversation_topic_zh
+    intent conversation_topic
+    language zh
+    text "可以聊。主题: {topic}。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。"
+  response response_conversation_topic_es
+    intent conversation_topic
+    language es
+    text "Podemos hablar de {topic}. Puedo empezar con una definición breve, el contexto o una pregunta concreta; cuando la búsqueda web está disponible, los datos públicos se pueden contrastar con una fuente externa."

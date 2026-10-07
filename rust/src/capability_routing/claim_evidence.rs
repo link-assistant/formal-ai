@@ -68,7 +68,9 @@ pub fn class_evidence_holds(
         "mechanism_subject" => crate::solver_handler_how::names_mechanism_subject(prompt),
         "procedure_task" => crate::solver_handler_how::procedural_how_to_task(normalized).is_some(),
         "search_focus" => handlers::detect_web_search_query(prompt).is_some(),
-        "conversation_topic_subject" => handlers::names_conversation_topic(prompt, normalized),
+        "conversation_topic_subject" => {
+            crate::rule_interpreter::handler_claims("conversation_topic", prompt, normalized)
+        }
         "learnable_source" => crate::seed::learning_sources()
             .match_directive(normalized)
             .is_some(),

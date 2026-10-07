@@ -1200,9 +1200,3 @@ function selfIntroductionContent(language, preferences) {
   if (language === "zh") return `我的名字是 ${name}。${identity}`;
   return `My name is ${name}. ${identity}`;
 }
-
-function cleanConversationTopic(raw) {
-  return String(raw || "")
-    .trim()
-    .replace(/^[`"':._,\-\s!?]+|[`"':._,\-\s!?]+$/gu, "");
-}

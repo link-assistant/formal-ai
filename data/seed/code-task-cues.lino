@@ -252,17 +252,6 @@ cues
     role prose_lead
     phrase "make a "
     phrase "can we "
-# The source-refresh row (retrieval_procedures.rs) keys on the refresh verb
-# and a cached object.
-cues
-  intent source_refresh
-    role verb
-    phrase "refresh"
-cues
-  intent source_refresh
-    role object
-    phrase "cache"
-    phrase "page"
 # The network snapshot (try_network_query in retrieval_procedures.rs) answers
 # a request to show or export the link network; its rule records are the
 # seeded intents knowledge_links_notation (engine.rs) renders, in that order.

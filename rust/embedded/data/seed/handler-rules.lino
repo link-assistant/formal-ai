@@ -233,3 +233,49 @@ handler_rules
       intent continuation_cue
       link "response:agentic_continuation"
       confidence 1.0
+  handler conversation_topic
+    rule conversation_topic
+      when
+      value topic role_slot conversation_topic_opener
+      log conversation_topic $topic
+      respond conversation_topic
+      link "response:conversation_topic"
+      confidence 0.75
+  handler source_refresh
+    rule source_refresh
+      when
+        substring refresh
+        any
+          substring cache
+          substring page
+        evidence source_reference
+      value target stable_id source
+      log source_refresh $target
+      respond source_refresh
+      link "response:source_refresh"
+      confidence 1.0
+    rule source_refresh_unnamed
+      when
+        substring refresh
+        any
+          substring cache
+          substring page
+      value target stable_id source
+      log source_refresh $target
+      log "source_refresh:refusal" "no source named"
+      respond source_refresh
+      intent source_refresh
+      link "response:source_refresh"
+      confidence 1.0
+  handler source_conflict
+    rule source_conflict
+      when
+        any
+          substring conflict
+          all
+            substring "born in"
+            substring " or "
+      log "conflict:source_disagreement" "sources disagree on the answer"
+      respond source_conflict
+      link "response:source_conflict"
+      confidence 0.3

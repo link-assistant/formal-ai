@@ -320,34 +320,19 @@ function tryDocumentGenerationPlan(prompt) {
 }
 
 // ---------------------------------------------------------------------------
-// source_conflict (rust/src/retrieval_procedures.rs try_source_conflict)
+// source_conflict (data/seed/handler-rules.lino, rule source_conflict)
 // ---------------------------------------------------------------------------
 
 /**
- * Record a source disagreement instead of resolving it silently.
- * Mirrors `try_source_conflict`.
- * @param {string} prompt raw prompt
- * @param {string} normalized normalized prompt
- * @returns {object|null} the worker answer, or null
- */
-function handleSourceConflict(prompt, normalized) {
-  if (!(normalized.includes("conflict") || (normalized.includes("born in") && normalized.includes(" or ")))) {
-    return null;
-  }
-  const log = codeTaskLog();
-  codeTaskLogAppend(log, "conflict:source_disagreement", "sources disagree on the answer");
-  return codeTaskAnswer(log, "source_conflict", "response:source_conflict",
-    "Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.",
-    0.3);
-}
-
-/**
- * Browser binding for the `source_conflict` precedence row.
+ * Browser binding for the `source_conflict` precedence row: a source
+ * disagreement is recorded instead of resolved silently. The seed rule runs
+ * through the shared rule interpreter over the lowercased prompt, the subject
+ * the native dispatcher hands every rule.
  * @param {string} prompt raw prompt
  * @returns {object|null} the worker answer, or null
  */
 function trySourceConflict(prompt) {
-  return handleSourceConflict(prompt, prompt.toLowerCase());
+  return runHandlerRuleSet("source_conflict", prompt, prompt.toLowerCase(), []);
 }
 
 // ---------------------------------------------------------------------------

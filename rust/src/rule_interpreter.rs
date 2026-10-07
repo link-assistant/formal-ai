@@ -21,6 +21,7 @@ use crate::seed_links::SeedLinkNetwork;
 use crate::solver_handlers::finalize_simple;
 
 mod parser;
+mod values;
 
 use parser::{parse_rule, parse_tree};
 
@@ -127,6 +128,10 @@ enum Condition {
     /// An earlier turn of this role (`user`, `assistant`, or `any`) exists.
     PriorTurn(String),
     Shape(Shape, Subject),
+    /// The claim-evidence kind the capability table admits a handler on holds
+    /// (`crate::capability_routing::claim_evidence_holds_in_dialogue`), so a
+    /// rule's refusal lane reads the same reader its admission does.
+    Evidence(String),
 }
 
 /// One lexical surface read by the condition evaluator. Both backends expose
@@ -162,9 +167,18 @@ pub struct LinkStoreSource {
 #[derive(Debug)]
 enum ValueSource {
     Backticks,
-    AgentInfo { key: String, default: String },
+    AgentInfo {
+        key: String,
+        default: String,
+    },
     Literal(String),
     TrimmedPrompt,
+    /// The FNV-1a identity `crate::engine::stable_id` derives from the raw
+    /// prompt under this prefix.
+    StableId(String),
+    /// The text filling the open slot of this role's prefix surface; the rule
+    /// does not match when no surface opens the subject.
+    RoleSlot(String),
 }
 
 #[derive(Debug)]
@@ -415,6 +429,16 @@ pub fn handler_matches(name: &str, prompt: &str) -> bool {
     })
 }
 
+/// Whether any rule behind `name` accepts `prompt` over the dispatcher's
+/// `normalized` text: the claim-evidence probe a migrated handler's
+/// recognition answers through.
+#[must_use]
+pub fn handler_claims(name: &str, prompt: &str, normalized: &str) -> bool {
+    rules()
+        .handler(name)
+        .is_some_and(|set| set.matches_with_source(LinkStoreSource::shared(), prompt, normalized))
+}
+
 /// One rule-condition result, before value capture or response rendering.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ConditionVerdict {
@@ -607,43 +631,6 @@ impl Rule {
             self.confidence,
         ))
     }
-
-    fn resolve_values(&self, context: &Context<'_>) -> Option<Vec<(String, String)>> {
-        let mut resolved = Vec::with_capacity(self.values.len());
-        for (name, source) in &self.values {
-            let value = match source {
-                ValueSource::Backticks => context
-                    .prompt
-                    .split('`')
-                    .nth(1)
-                    .map(str::trim)
-                    .filter(|term| !term.is_empty())?
-                    .to_owned(),
-                ValueSource::AgentInfo { key, default } => seed::agent_info()
-                    .get(key)
-                    .cloned()
-                    .unwrap_or_else(|| default.clone()),
-                ValueSource::Literal(text) => text.clone(),
-                ValueSource::TrimmedPrompt => context.prompt.trim().to_owned(),
-            };
-            resolved.push((name.clone(), value));
-        }
-        Some(resolved)
-    }
-}
-
-impl ValueRef {
-    fn resolve(&self, context: &Context<'_>, values: &[(String, String)]) -> Option<String> {
-        match self {
-            Self::Prompt => Some(context.prompt.to_owned()),
-            Self::Trimmed => Some(context.prompt.trim().to_owned()),
-            Self::Capture(name) => values
-                .iter()
-                .find(|(candidate, _)| candidate == name)
-                .map(|(_, value)| value.clone()),
-            Self::Literal(text) => Some(text.clone()),
-        }
-    }
 }
 
 impl Response {
@@ -806,6 +793,14 @@ impl Condition {
                 _ => false,
             }),
             Self::Shape(shape, subject) => shape.holds(context.text(*subject)),
+            Self::Evidence(kind) => {
+                crate::capability_routing::claim_evidence_holds_in_dialogue(
+                    kind,
+                    context.prompt,
+                    context.normalized,
+                    log,
+                ) == Some(true)
+            }
         }
     }
 }

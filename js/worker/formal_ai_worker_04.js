@@ -1,42 +1,4 @@
 // Worker module 5 of 21. Loaded by ../formal_ai_worker.js.
-function conversationTopic(prompt, normalized) {
-  // Recognized surfaces — the let-us-talk-about-X phrasings in every supported
-  // language — carry the conversation_topic_opener role; each is a prefix whose
-  // text before the … slot is the matchable opener, in declaration order. A
-  // form whose action is "scan" is also matched anywhere in the prompt, not only
-  // at the start, so an opener that follows a greeting is still found. No
-  // per-language opener list lives here — only the concept. Mirrors
-  // conversation_topic in src/solver_handlers/benchmark_prompts.rs (issue #386).
-  // Like the native handler, the lowercased prompt (keeping "let's") goes first.
-  const forms = roleWordForms(ROLE_CONVERSATION_TOPIC_OPENER);
-  const lower = String(prompt || "").toLowerCase();
-  for (const text of [lower, normalized]) {
-    const form = forms.find((candidate) => text.startsWith(candidate.before));
-    if (form) return cleanConversationTopic(text.slice(form.before.length));
-  }
-  for (const form of forms) {
-    if (form.action !== "scan") continue;
-    const index = lower.indexOf(form.before);
-    if (index >= 0) {
-      return cleanConversationTopic(lower.slice(index + form.before.length));
-    }
-  }
-  return "";
-}
-
-function conversationTopicContent(topic, language) {
-  if (language === "ru") {
-    return `Можем. Тема: ${topic}. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник.`;
-  }
-  if (language === "hi") {
-    return `हम बात कर सकते हैं. विषय: ${topic}. मैं छोटी परिभाषा, संदर्भ, या किसी конкрет प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो तो public facts बाहरी स्रोत से जाँचे जा सकते हैं.`;
-  }
-  if (language === "zh") {
-    return `可以聊。主题: ${topic}。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。`;
-  }
-  return `We can talk about ${topic}. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.`;
-}
-
 // Issue #386: a known-facts inventory query is recognised by composing meaning
 // roles, not by matching raw words per language. The universal algorithm is
 // identical for every language: the prompt either names the knowledge `fact`
@@ -359,16 +321,10 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
     };
   }
 
-  const topic = conversationTopic(prompt, normalized);
-  if (topic) {
-    const language = selfAwarenessLanguage(prompt, normalized);
-    return {
-      intent: "conversation_topic",
-      content: conversationTopicContent(topic, language),
-      confidence: 0.75,
-      evidence: [`conversation_topic:${topic}`, `language:${language}`],
-    };
-  }
+  // The `conversation_topic` rule of data/seed/handler-rules.lino: the topic is
+  // the slot of a conversation_topic_opener surface, the wording is seeded.
+  const topic = runHandlerRuleSet("conversation_topic", prompt, String(prompt || "").toLowerCase(), []);
+  if (topic) return topic;
 
   const runtimeRule = runtimeRuleForPrompt(prompt, history);
   if (runtimeRule) {

@@ -514,6 +514,14 @@ meanings
     unit "not applicable"
     example "Cached source wikipedia has been queued for refresh against its origin URL."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  source_conflict
+    defined-by answer
+    role localized_response_template
+    precondition "a question admits answers that sources disagree on"
+    effect "the disagreement is recorded as a conflict link instead of being resolved silently"
+    unit "not applicable"
+    example "Sources disagree on this question."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
   fact_comparison
     defined-by answer
     role localized_response_template

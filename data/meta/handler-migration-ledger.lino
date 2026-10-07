@@ -116,7 +116,11 @@ handler_migration_ledger
   handler brainstorming
     status pending
   handler conversation_topic
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses-policy.lino"
+    primitive "rust/src/rule_interpreter.rs"
+    justification "issue #918 (R914-6): the topic is the slot of a conversation_topic_opener surface, captured by the interpreter role_slot value (prefix surfaces open the prompt, scan surfaces anywhere), and the four-language Rust prose is seed responses in five languages; the claim evidence asks the same rule. Browser twin: js/worker/formal_ai_worker_04.js runs the rule through runHandlerRuleSet. Pinned byte-for-byte in en and ru through both engines (rust/tests/web/issue-0918-handler-rules-batch.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler advice_request
     status "justified-native"
     primitive "rust/src/solver_handlers/creative_composition.rs"
@@ -263,10 +267,17 @@ handler_migration_ledger
     status pending
     justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
   handler source_refresh
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/rule_interpreter.rs"
+    justification "issue #918 (R914-6): the refresh and cache-or-page cues are rule conditions, the target is the interpreter stable_id value, and the no-source-named refusal lane is an evidence condition over the source_reference claim reader the capability table admits the row on; the wording is a seed response in five languages. Browser twin: trySourceRefresh in js/worker/formal_ai_worker_native_lanes.js runs the same rules."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler source_conflict
-    status pending
-    justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/rule_interpreter.rs"
+    justification "issue #918 (R914-6): the conflict and born-in-or cues are rule conditions and the disagreement is a logged step; the English-only Rust reply is a seed response in five languages. Browser twin: trySourceConflict in js/worker/formal_ai_worker_code_plans.js runs the same rule."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler clarification
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"

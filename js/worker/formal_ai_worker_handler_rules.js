@@ -121,6 +121,7 @@ function handlerRulesParseCondition(node) {
     case "route_exact":
     case "history_role":
     case "prior_turn":
+    case "evidence":
       return { kind: node.name, value: handlerRulesFirstArg(node), subject };
     case "unbalanced_parentheses":
       return { kind: node.name, subject };
@@ -230,6 +231,12 @@ function handlerRulesParseValue(node) {
       const text = node.args[3] === "default" ? node.args.slice(4).join(" ") : "";
       return { name, source, text, key: node.args[2] };
     }
+    case "stable_id":
+      if (node.args.length < 3) throw new Error("handler_rules:stable_id_without_prefix");
+      return { name, source, text: "", key: node.args[2] };
+    case "role_slot":
+      if (node.args.length < 3) throw new Error("handler_rules:role_slot_without_role");
+      return { name, source, text: "", key: node.args[2] };
     default:
       throw new Error("handler_rules:unknown_value_source");
   }
@@ -481,6 +488,14 @@ function handlerRulesHolds(condition, context) {
       return context.history.some((turn) => turn && (turn.content || turn.text) && (condition.value === "any" || turn.role === condition.value));
     case "shape":
       return handlerRulesShapeHolds(condition.value, text);
+    case "evidence": {
+      // The claim-evidence kind the capability table admits a handler on
+      // (Rust `capability_routing::claim_evidence_holds_in_dialogue`), so a
+      // rule's refusal lane reads the same reader its admission does.
+      const reader = typeof CLAIM_EVIDENCE === "object" ? CLAIM_EVIDENCE[condition.value] : null;
+      return typeof reader === "function"
+        && Boolean(reader(context.prompt, context.subjects.normalized, context.history));
+    }
     case "cue_set":
     case "route_exact":
       // Neither backend is read by the rule sets this browser module runs;
@@ -579,6 +594,15 @@ function handlerRulesResolveValues(rule, context) {
       case "literal":
         text = value.text;
         break;
+      case "stable_id":
+        text = stableBehaviorRuleId(value.key, context.prompt);
+        break;
+      case "role_slot": {
+        const slot = handlerRulesRoleSlot(value.key, context);
+        if (slot === null) return null;
+        text = slot;
+        break;
+      }
       default:
         text = context.prompt.trim();
         break;
@@ -586,6 +610,62 @@ function handlerRulesResolveValues(rule, context) {
     resolved.push({ name: value.name, value: text });
   }
   return resolved;
+}
+
+/**
+ * Marks a captured slot sheds at its edges besides whitespace: the quotation
+ * and sentence punctuation a request wraps its object in (Rust
+ * `SLOT_EDGE_MARKS`).
+ */
+const HANDLER_RULES_SLOT_EDGE_MARKS = "`\"':-_.,?!";
+
+/**
+ * The text filling the open slot of a role's prefix surface (Rust
+ * `values::role_slot`): the first surface whose lead opens the normalized
+ * subject, else the first `scan` surface whose lead occurs anywhere in the
+ * lowercased prompt. Null when no surface opens the subject or the slot is
+ * empty once its edge marks are shed.
+ * @param {string} role
+ * @param {object} context
+ * @returns {string|null}
+ */
+function handlerRulesRoleSlot(role, context) {
+  const forms = roleWordForms(role);
+  const opening = context.subjects.normalized;
+  const lowercase = context.subjects.lowercase;
+  let slot = null;
+  const opener = forms.find((form) => opening.startsWith(form.before));
+  if (opener) {
+    slot = opening.slice(opener.before.length);
+  } else {
+    for (const form of forms) {
+      if (form.action !== "scan") continue;
+      const index = lowercase.indexOf(form.before);
+      if (index >= 0) {
+        slot = lowercase.slice(index + form.before.length);
+        break;
+      }
+    }
+  }
+  if (slot === null) return null;
+  const characters = Array.from(slot);
+  const shed = (character) => /\s/u.test(character) || HANDLER_RULES_SLOT_EDGE_MARKS.includes(character);
+  while (characters.length > 0 && shed(characters[0])) characters.shift();
+  while (characters.length > 0 && shed(characters[characters.length - 1])) characters.pop();
+  return characters.length > 0 ? characters.join("") : null;
+}
+
+/**
+ * Whether any rule behind `name` accepts the prompt, without answering (Rust
+ * `rule_interpreter::handler_claims`): the claim-evidence probe a migrated
+ * handler's recognition answers through.
+ * @param {string} name
+ * @param {string} prompt
+ * @param {string} normalized
+ * @returns {boolean}
+ */
+function handlerRuleSetClaims(name, prompt, normalized) {
+  return runHandlerRuleSet(name, prompt, normalized, []) !== null;
 }
 
 /**

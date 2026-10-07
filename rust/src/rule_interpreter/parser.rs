@@ -201,6 +201,7 @@ fn parse_condition(node: &Node) -> Result<Condition, String> {
         "route_exact" => Condition::RouteExact(node.first_arg()?),
         "history_role" => Condition::HistoryRole(node.first_arg()?),
         "prior_turn" => Condition::PriorTurn(node.first_arg()?),
+        "evidence" => Condition::Evidence(node.first_arg()?),
         "shape" => Condition::Shape(parse_shape(node, &node.first_arg()?)?, subject),
         _ => return Err(node.error("unknown_condition")),
     })
@@ -257,6 +258,18 @@ fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
                 .get(2)
                 .cloned()
                 .ok_or_else(|| node.error("literal_without_text"))?,
+        ),
+        "stable_id" => ValueSource::StableId(
+            node.args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("stable_id_without_prefix"))?,
+        ),
+        "role_slot" => ValueSource::RoleSlot(
+            node.args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("role_slot_without_role"))?,
         ),
         "agent_info" => {
             let key = node
