@@ -151,3 +151,7 @@ multilingual_responses
     intent external_benchmark_swe_unavailable
     language en
     text "official SWE-bench evaluation unavailable: {reason}"
+  response response_external_benchmark_shard_cannot_record_en
+    intent external_benchmark_shard_cannot_record
+    language en
+    text "--offset {offset} runs a shard of the suite; record the shards' combined total instead of appending or rewriting the frontier from one shard"

@@ -303,6 +303,14 @@ meanings
     unit "not applicable"
     example "retain benchmark evidence after each configured publisher rejects it"
     grounding "src/external_benchmarks/grade.rs"
+  external_benchmark_shard_cannot_record
+    defined-by method
+    role action
+    precondition "a benchmark run starts at a nonzero offset and asks to append to the ledger or rewrite the failure frontier"
+    effect "refuses the run so only the combined total of every shard reaches the ledger"
+    unit "not applicable"
+    example "reject an offset window of HumanEval that tries to record its partial pass count"
+    grounding "src/cli_benchmark.rs"
   external_benchmark_recovery_still_missing
     defined-by method
     role action

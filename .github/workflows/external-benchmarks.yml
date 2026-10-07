@@ -38,6 +38,11 @@ on:
         required: false
         type: boolean
         default: true
+      shard_size:
+        description: 'Split one suite (not `all`) into concurrent shards of this many cases; empty runs it in one job. Shards never commit.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -83,7 +88,7 @@ jobs:
     concurrency:
       group: formal-ai-repository-writes
       queue: max
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && !inputs.shard_size
     runs-on: ubuntu-latest
     timeout-minutes: 90
     permissions:
@@ -214,3 +219,134 @@ jobs:
           # rebases and retries, and refuses to retry a rejection a rebase
           # cannot fix.
           bash scripts/push-to-shared-branch.sh origin "${GITHUB_REF_NAME}"
+
+  # === SHARDED MEASUREMENT - one suite split into concurrent windows ===
+  #
+  # A full HumanEval slice spends about 55 seconds per case in the solver
+  # (run 37594798452: 89 cases in 81 minutes, one case taking 164 seconds), so
+  # 164 cases cannot finish inside one job cap -- and grading happens after the
+  # last case, so a cancelled run reports nothing at all. Each shard here runs
+  # `--offset`/`--slice` windows of the same suite, grades its own window, and
+  # the total job adds the windows up. Shards read only; their combined count
+  # is recorded in the ledger by a reviewed commit, never by one shard.
+  shard-plan:
+    name: Plan upstream shards
+    if: github.event_name == 'workflow_dispatch' && inputs.shard_size
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      windows: ${{ steps.plan.outputs.windows }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Plan the windows
+        id: plan
+        env:
+          SUITE: ${{ inputs.suite }}
+          SLICE: ${{ inputs.slice }}
+          SHARD_SIZE: ${{ inputs.shard_size }}
+        run: |
+          set -euo pipefail
+          if [[ "${SUITE}" == 'all' ]]; then
+            echo '::error::shard_size splits one suite; dispatch it with a suite id, not all' >&2
+            exit 1
+          fi
+          windows="$(jq -cn --argjson total "${SLICE}" --argjson size "${SHARD_SIZE}" \
+            '[range(0; $total; $size) | {offset: ., slice: ([$size, $total - .] | min)}]')"
+          echo "windows=${windows}" >> "${GITHUB_OUTPUT}"
+          echo "${windows}"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: ./.github/actions/cache-cargo-registry
+
+      # Built once here so every shard restores the same cached binary instead
+      # of each compiling it.
+      - uses: ./.github/actions/formal-ai-binary
+
+  upstream-shard:
+    name: Upstream shard ${{ matrix.window.offset }}
+    needs: shard-plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        window: ${{ fromJSON(needs.shard-plan.outputs.windows) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: ./.github/actions/cache-cargo-registry
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - uses: ./.github/actions/formal-ai-binary
+
+      - name: Run the window
+        env:
+          SUITE: ${{ inputs.suite }}
+          OFFSET: ${{ matrix.window.offset }}
+          WINDOW: ${{ matrix.window.slice }}
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          ./rust/target/release/formal-ai benchmark run \
+            --suite "${SUITE}" \
+            --offset "${OFFSET}" \
+            --slice "${WINDOW}" \
+            --online \
+            --allow-install 2>&1 | tee "ci-logs/shard-${OFFSET}.log"
+          grep -E '^(shard )?suite=' "ci-logs/shard-${OFFSET}.log" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload shard log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: external-benchmarks-shard-${{ matrix.window.offset }}
+          path: ci-logs/shard-*.log
+          if-no-files-found: warn
+
+  shard-total:
+    name: Total of upstream shards
+    needs: [shard-plan, upstream-shard]
+    if: ${{ !cancelled() && needs.shard-plan.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: external-benchmarks-shard-*
+          merge-multiple: true
+          path: shards
+
+      - name: Add the windows up
+        env:
+          SUITE: ${{ inputs.suite }}
+          SLICE: ${{ inputs.slice }}
+        run: |
+          set -euo pipefail
+          # Only graded windows count; a shard that never printed its summary
+          # makes the total incomplete, and the job says so instead of
+          # reporting a smaller suite as if it were the whole one.
+          read -r passed failed total < <(cat shards/shard-*.log 2>/dev/null |
+            awk -v suite="${SUITE}" '$1 == "suite=" suite {
+              for (i = 2; i <= NF; i++) { split($i, kv, "="); v[kv[1]] += kv[2] }
+            } END { printf "%d %d %d\n", v["passed"], v["failed"], v["total"] }')
+          line="suite=${SUITE} passed=${passed} failed=${failed} total=${total} (requested ${SLICE}, sharded)"
+          echo "${line}"
+          echo "${line}" >> "${GITHUB_STEP_SUMMARY}"
+          if [[ "${total}" -ne "${SLICE}" ]]; then
+            echo "::error::only ${total} of ${SLICE} cases were graded; a shard did not finish" >&2
+            exit 1
+          fi

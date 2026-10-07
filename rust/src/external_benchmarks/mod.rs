@@ -123,6 +123,24 @@ pub fn run_suite_with_options(
     online: bool,
     allow_install: bool,
 ) -> Result<SuiteRun, String> {
+    run_suite_window(manifest, 0, slice, repository_root, online, allow_install)
+}
+
+/// Run `slice` upstream cases of `manifest` starting `offset` cases into the
+/// upstream order.
+///
+/// A full `HumanEval` slice spends about 55 seconds per case in the solver, so
+/// 164 cases cannot finish inside one job cap (run 37594798452 reached case 90
+/// of 164 after 81 minutes and was cancelled before grading). Shards of the
+/// same suite run concurrently and their summaries add up to the full slice.
+pub fn run_suite_window(
+    manifest: &SuiteManifest,
+    offset: usize,
+    slice: usize,
+    repository_root: &Path,
+    online: bool,
+    allow_install: bool,
+) -> Result<SuiteRun, String> {
     let solver_version = env!("CARGO_PKG_VERSION").to_string();
     if let Availability::Unavailable { reason } = &manifest.availability {
         return Ok(unavailable_run(manifest, slice, &solver_version, reason));
@@ -146,8 +164,8 @@ pub fn run_suite_with_options(
             return Ok(unavailable_run(manifest, slice, &solver_version, &reason));
         }
     };
-    let cases = match cases::parse_cases(manifest, &records, slice) {
-        Ok(cases) => cases,
+    let cases = match cases::parse_cases(manifest, &records, offset + slice) {
+        Ok(mut cases) => cases.split_off(offset.min(cases.len())),
         Err(reason) => {
             return Ok(unavailable_run(manifest, slice, &solver_version, &reason));
         }

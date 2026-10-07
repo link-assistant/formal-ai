@@ -77,7 +77,8 @@ The full list is [`raw-data/commits.txt`](raw-data/commits.txt).
 | Build being restored | 37470366082 .. 37513029093 (2026-10-06) | 12-14 while the lib-test build failed; 5-7 in the runs where it built (37485467245, 37489943444, 37491306927) |
 | Full unit suite runs | 37516756207 .. 37541942966 | 5-7: lint, both test shards, both E2E suites, Docker, server parity once |
 | Narrowing | 37549001684 .. 37570930929 (2026-10-07) | 4, 3, 2, 3, 3: only `Lint and Format Check` and `Test (ubuntu-latest / full)` remain |
-| Current | 37574144432 (`28443684c`) | in progress |
+| Follow-up | 37594789849, 37599699577 | clippy, rustfmt and the relocated agent case fixed |
+| Green except one gate | 37605012854 (`4402656eb`) | 1: only `check_javascript_dependencies` in `Lint and Format Check`; every test shard, E2E, Docker and the agentic CLI matrix passed |
 
 Inside the test jobs, the first complete unit run reported **113 test
 failures plus 7 failing lint gates** (test counts as recorded in the pull request
@@ -218,6 +219,23 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     provider, but its built-in default model outranks the config's
     `model`. The case now passes the model as `formal-ai with` does, read
     from new `model_arg` fields of `formal-ai clients --format json`.
+
+23. **The hang was a slow solver, not a stall.** With per-case progress,
+    HumanEval run 37594798452 solved 89 of 164 cases in 81 minutes (55 s
+    mean, `HumanEval/87` 164 s) and was cancelled before its grading pass,
+    which runs only after the last case. `benchmark run --offset` and the
+    workflow's `shard_size` input split one suite into concurrent read-only
+    windows that each grade their own cases; a total job fails unless every
+    case was graded, and shards cannot append to the ledger.
+
+24. **New advisories fail an unchanged tree.** The dependency gate turned
+    red on `4402656eb` with no lockfile edit: proxy-addr (critical),
+    compression, and two advisories with no patched release, `sprintf-js`
+    and `braces`. The patched ones are overrides; `sprintf-js` left with an
+    override of `global-agent` to 4.1.3, which dropped `roarr`; `braces`
+    left with `@vscode/vsce` 4.0.0, which also closes the #1169 currency
+    gap. Pinning `electron-builder` 26.5.0 as `npm audit` suggested was
+    tried and rejected: it reintroduced a critical `tar` advisory.
 
 ## Constraints
 

@@ -28,12 +28,16 @@ surfaces — most `uses:` refs across `.github/workflows` predate this gate
 and carry no blocked annotation; the daily job's first PR is the designed
 way they move.
 
-VS Code packaging residual: `@vscode/vsce` remains at `^3.9.2`, matching
-`vscode/package-lock.json`. This is an unresolved dependency currency gap. Publisher
-metadata for 4.0.0 requires Node >=22 and a changed dependency graph, including
-`@napi-rs/keyring`, `@vscode/vsce-sign` ^2.1.0, and Secretlint core/types/source
-creator packages. Complete this bump in CI with a full npm lockfile resolution;
-replacing the top-level package version alone would leave missing dependencies.
+VS Code packaging: `@vscode/vsce` is `^4.0.0` (resolved 4.0.0 in
+`vscode/package-lock.json`, full npm lockfile resolution, 2026-10-07). The bump
+closes the former 3.9.2 currency gap and drops the 3.x chain through
+`secretlint` > `globby` > `fast-glob` > `micromatch` > `braces`, whose
+GHSA-vfj7-8cjw-p6xm has no patched release. 4.0.0 requires Node >=22, which
+every packaging workflow already uses (22 or 24.x). The same pass overrides
+`global-agent` to ^4.1.3 in `desktop/` (removing `roarr` > `sprintf-js`,
+GHSA-hp3w-g68c-fv3c, no patched release), `proxy-addr` to ^2.0.8 in the root
+`bun.lock` and `compression` to ^1.8.2 in `rust/tests/e2e/`; all five lockfiles
+audit clean at `--audit-level=moderate`.
 Playwright and playwright-core are updated together to 1.63.0 in that lockfile,
 using the same registry integrity records as the e2e lockfile. No builds or tests
 were run for these integration changes.

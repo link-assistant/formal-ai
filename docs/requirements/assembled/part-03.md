@@ -284,12 +284,16 @@ surfaces — most `uses:` refs across `.github/workflows` predate this gate
 and carry no blocked annotation; the daily job's first PR is the designed
 way they move.
 
-VS Code packaging residual: `@vscode/vsce` remains at `^3.9.2`, matching
-`vscode/package-lock.json`. This is an unresolved dependency currency gap. Publisher
-metadata for 4.0.0 requires Node >=22 and a changed dependency graph, including
-`@napi-rs/keyring`, `@vscode/vsce-sign` ^2.1.0, and Secretlint core/types/source
-creator packages. Complete this bump in CI with a full npm lockfile resolution;
-replacing the top-level package version alone would leave missing dependencies.
+VS Code packaging: `@vscode/vsce` is `^4.0.0` (resolved 4.0.0 in
+`vscode/package-lock.json`, full npm lockfile resolution, 2026-10-07). The bump
+closes the former 3.9.2 currency gap and drops the 3.x chain through
+`secretlint` > `globby` > `fast-glob` > `micromatch` > `braces`, whose
+GHSA-vfj7-8cjw-p6xm has no patched release. 4.0.0 requires Node >=22, which
+every packaging workflow already uses (22 or 24.x). The same pass overrides
+`global-agent` to ^4.1.3 in `desktop/` (removing `roarr` > `sprintf-js`,
+GHSA-hp3w-g68c-fv3c, no patched release), `proxy-addr` to ^2.0.8 in the root
+`bun.lock` and `compression` to ^1.8.2 in `rust/tests/e2e/`; all five lockfiles
+audit clean at `--audit-level=moderate`.
 Playwright and playwright-core are updated together to 1.63.0 in that lockfile,
 using the same registry integrity records as the e2e lockfile. No builds or tests
 were run for these integration changes.
@@ -424,7 +428,7 @@ before/after evidence, and the honest boundaries live in
 | R1177-9 | A JSON↔YAML conversion request converts the document, round-trips the result through the same subset parser, and compares against the input value; anything outside the subset is refused with a named reason. | Partial: `handle_format_conversion` in `rust/src/solver_handlers/format_conversion.rs` renders a JSON `Value` to block-style YAML and parses YAML back with a subset parser (mappings, sequences, scalars); the round-trip value equality check gates the answer, and bad JSON, a failed round trip or non-subset YAML each refuse through their own seed reason template. The subset excludes anchors, multi-line literals and flow style. No file or network I/O. |
 | R1177-10 | All nine families are pure functions of seed data — cues, word maps, rule tables and answer prose live in `data/seed/` — refuse unrelated prompts, and are covered by automated tests at handler and engine level. | Implemented: recognition cues and word maps are in `data/seed/code-task-cues.lino`, review rules in `data/seed/code-review-rules.lino`, response templates in `data/seed/multilingual-responses.lino`, and every new intent key, scope, role and package token is defined in `data/seed/meanings-code-task-templates.lino`. `rust/tests/unit/issue_1177_code_task_handlers.rs` pins all nine probes at handler and engine level (the dispatch rows are wired in `rust/src/solver_dispatch.rs`), plus the refusal of unrelated prompts. All nine have browser-worker twins (`rust/tests/web/issue-1177-code-tasks-parity.test.mjs`, `issue-1177-code-synthesis-parity.test.mjs`, `issue-1177-format-conversion-parity.test.mjs`, `issue-1177-shell-compose-parity.test.mjs`), and `ts/` is regenerated from them. |
 | R1177-11 | None of the nine sub-classes' answers ever recite a fetched Rosetta Code example verbatim (`rust/src/coding/rosetta_request.rs`'s `render_example` path is for the "example" intent only, not for explanation/debugging/review/etc.); the no-memorization gate (`rust/tests/unit/coding_discovery/no_memorization.rs`) is extended to scan the new handlers' output surfaces the same way it scans `coding-discovery-runtime.lino`. | Implemented: the no-memorization gate now scans the nine handlers' output surfaces (`CODE_TASK_OUTPUT_SURFACES` — the code-task response templates, explanation meanings, review rules, manual pages and recognition cues) with the same whole-algorithm rule it applies to `coding-discovery-runtime.lino`, generalized from `text` values to every quoted value (`code_task_output_surfaces_carry_no_whole_algorithm`), and pins that none of the nine handler sources reaches `rosetta_request` / `render_example` (`code_task_handlers_never_recite_rosetta_examples`), both in `rust/tests/unit/coding_discovery/no_memorization.rs`. |
-| R1177-12 | HumanEval and MBPP are re-measured on their full upstream slices after the change and the resulting pass counts are recorded, whatever they are, in `data/benchmarks/external-results.lino` (consumed by `docs/status.md`'s "Latest external benchmark rows" table). | Open, blocked on a hang: the full-slice HumanEval dispatch (`external-benchmarks.yml`, suite `humaneval`, slice 164, run 37578344303 on `28443684c`) printed nothing after the dataset download and was cancelled at the 90-minute job cap, so no pass count exists to record. The runner now prints every case before and after it is solved, and the dataset download has connect and transfer timeouts, so the next dispatch names the case that stalls. `data/benchmarks/external-results.lino` still carries the pre-change rows. HumanEval and then MBPP are re-dispatched after this push. |
+| R1177-12 | HumanEval and MBPP are re-measured on their full upstream slices after the change and the resulting pass counts are recorded, whatever they are, in `data/benchmarks/external-results.lino` (consumed by `docs/status.md`'s "Latest external benchmark rows" table). | Open, measured in shards: the progress lines settled the hang. HumanEval run 37594798452 (slice 164) did not stall; it solved 89 cases in 81 minutes (mean 55 s, HumanEval/87 took 164 s) and was cancelled at case 90 by the 90-minute cap before the grading pass, so no pass count exists to record yet. `formal-ai benchmark run` now takes `--offset`, and `external-benchmarks.yml` takes `shard_size`: one suite runs as concurrent read-only windows that each grade their own cases, and a total job fails unless every case was graded. HumanEval (164) and then MBPP are dispatched in 12-case shards after this push; `data/benchmarks/external-results.lino` still carries the pre-change rows until their combined counts are recorded. |
 
 ## Issue #1180 Repository History as Formal Context
 
