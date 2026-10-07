@@ -503,6 +503,7 @@ function tryProgramSynthesis(prompt, normalized) {
     content: body.join("\n"),
     confidence: 1.0,
     evidence,
+    ...(composed ? { synthesizedProgram: { language: "python", source: composed.source } } : {}),
     trace: [
       `synthesis:spec:language=python function=${functionName}`,
       `synthesis:discovered_parts:${structures.join(",")}`,

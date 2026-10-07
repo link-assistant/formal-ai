@@ -96,6 +96,9 @@ export function symbolicFromWorker(result, history = [], seedReport = undefined)
     // (js/server/self-improvement.mjs) rebuilds the solver log from.
     worker_steps: Array.isArray(result?.steps) ? result.steps : [],
     solver_events: Array.isArray(result?.solverEvents) ? result.solverEvents : undefined,
+    // Off the wire: a function the browser synthesized, which the agentic
+    // reroute turns into an execution recipe (`attachExecutionRecipe`).
+    synthesized_program: result?.synthesizedProgram ?? undefined,
   };
 }
 

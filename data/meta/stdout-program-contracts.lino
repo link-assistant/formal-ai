@@ -32,6 +32,8 @@ stdout_program_contracts
     entry '{body}\n'
     operation 'print({value})'
     comment "#"
+    definition 'def {name}({parameters}):'
+    call 'python3 -B -c "from {module} import {name}; print({name}({arguments}))"'
     unicode_escape "\\u{hex4}"
     ci_setup "      - uses: actions/setup-python@{setup_python_ref} # {setup_python_tag}\n        with:\n          python-version: '{python_version}'\n"
     ci_source "https://github.com/actions/setup-python/blob/ece7cb06caefa5fff74198d8649806c4678c61a1/action.yml"

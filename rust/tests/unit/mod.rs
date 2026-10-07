@@ -230,6 +230,7 @@ mod process_composition;
 mod proof_request;
 mod proof_request_config;
 mod proxy;
+mod pull_request_1188_function_recipe;
 mod recipe_evidence;
 mod reference_closure;
 mod requirement_span_integrity;

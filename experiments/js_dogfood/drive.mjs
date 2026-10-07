@@ -95,14 +95,17 @@ export function execute(dir, call) {
 }
 
 /** Run a whole session; returns `{transcript, answer}`. */
-export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS, steps = 12 } = {}) {
+export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null } = {}) {
   const messages = [
     { role: 'system', content: `<env>\n  Working directory: ${dir}\n  Is directory a git repo: yes\n</env>` },
     { role: 'user', content: prompt },
   ];
   const transcript = [];
   for (let step = 0; step < steps; step += 1) {
-    const plan = await planChatStep(messages, tools);
+    // The server's fall-through: no planned step means the solver answers and
+    // the symbolic command reroute may still turn that answer into tool calls
+    // (js/server/agentic.mjs commandReroutePlan).
+    const plan = (await planChatStep(messages, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
     if (!plan) return { transcript, answer: null };
     if (plan.kind === 'final') return { transcript, answer: plan.answer };
     const toolCalls = plan.calls.map((call, index) => ({
@@ -130,7 +133,14 @@ async function main(argv) {
   if (!dir || rest.length === 0) throw new Error('usage: drive.mjs --dir <sandbox> [--steps N] <prompt>');
   await installNodeHost(new WorkerHost());
   const { planChatStep } = await import('../../js/agentic/planner.mjs');
-  const { transcript, answer } = await drive(planChatStep, resolve(dir), rest.join(' '), { steps });
+  const { solve } = await import('../../js/agentic/host.mjs');
+  const { planSymbolicCommandReroute } = await import('../../js/agentic/command_reroute.mjs');
+  const { latestUserRequest } = await import('../../js/agentic/content.mjs');
+  const fallthrough = async (messages, tools) => {
+    const symbolic = await solve(latestUserRequest(messages) ?? '', []);
+    return planSymbolicCommandReroute(messages, tools, symbolic) ?? { kind: 'final', answer: symbolic.answer };
+  };
+  const { transcript, answer } = await drive(planChatStep, resolve(dir), rest.join(' '), { steps, fallthrough });
   for (const entry of transcript) {
     console.log(`>> ${entry.tool} ${entry.arguments}`);
     if (entry.result) console.log(entry.result.split('\n').map((line) => `   ${line}`).join('\n'));

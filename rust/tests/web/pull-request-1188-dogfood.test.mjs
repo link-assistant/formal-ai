@@ -337,3 +337,45 @@ describe('PR #1188 dogfood: a compacted ladder leaf does not rewrite the list it
     assert.equal(answer, '`rust/src/web_search_core.rs` already lists "wikiquote"; nothing needed to change.');
   });
 });
+
+describe('PR #1188 dogfood: a synthesized function is written to the named file and called', () => {
+  const PROMPT = 'Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.';
+  const CHECK = 'python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile';
+
+  test('write add.py -> check -> call with 2 and 3 -> report', async () => {
+    const { solve } = await import('../../../js/agentic/host.mjs');
+    const { planSymbolicCommandReroute } = await import('../../../js/agentic/command_reroute.mjs');
+    const symbolic = await solve(PROMPT, []);
+    const messages = [{ role: 'user', content: PROMPT }];
+    const planned = [];
+    let plan = null;
+    for (let step = 0; step < 6; step += 1) {
+      plan = planSymbolicCommandReroute(messages, AGENT_CLI_TOOLS, symbolic);
+      if (!plan || plan.kind !== 'tool_calls') break;
+      const [call] = plan.calls;
+      const args = JSON.parse(call.arguments);
+      planned.push([call.tool, args.command ?? args.filePath]);
+      const id = `c${step}`;
+      messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
+      messages.push({ role: 'tool', tool_call_id: id, content: String(args.command ?? '').includes('print(add(2, 3))') ? '5\n' : '' });
+      if (call.tool === 'write') assert.equal(args.content, 'def add(a, b):\n    return a + b\n');
+    }
+    assert.deepEqual(planned, [
+      ['write', 'add.py'],
+      ['bash', `${CHECK} add.py`],
+      ['bash', 'python3 -B -c "from add import add; print(add(2, 3))"'],
+    ]);
+    assert.equal(plan.kind, 'final');
+    assert.equal(plan.answer,
+      'Created and verified `add.py` through the agentic CLI harness.\n\n```python\ndef add(a, b):\n    return a + b\n\n```\n\n' +
+      `Commands executed by the harness:\n- \`${CHECK} add.py\`\n- \`python3 -B -c "from add import add; print(add(2, 3))"\`\n\n` +
+      'Actual tool output:\n\n```text\n5\n```');
+  });
+
+  test('call arguments are the numbers and quoted literals after the last run verb', async () => {
+    const { statedCallArguments } = await import('../../../js/agentic/command_reroute.mjs');
+    assert.deepEqual(statedCallArguments('Write f(x, y) in f.py and run it with 2 and 3.'), ['2', '3']);
+    assert.deepEqual(statedCallArguments('Write greet(name) in g.py and run it with "Ada".'), ['"Ada"']);
+    assert.deepEqual(statedCallArguments('Write f(x) with 2 parameters in f.py.'), []);
+  });
+});

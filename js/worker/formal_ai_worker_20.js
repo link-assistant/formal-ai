@@ -853,6 +853,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
   if (answer.programExecution) {
     result.programExecution = answer.programExecution; // R1013
   }
+  if (answer.synthesizedProgram) result.synthesizedProgram = answer.synthesizedProgram;
   // Issue #529: carry a natural-language memory write (append/substitution) out
   // to the app so it can apply the read+write transform to persistent storage.
   if (answer.memoryOperation) {

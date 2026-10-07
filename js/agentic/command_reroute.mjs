@@ -12,6 +12,11 @@ import { Capability } from './capability.mjs';
 import { classifyTool, isWorkspaceCreationTool, toolFor } from './capability_router.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
 import { pushRef, recipeCommitCommand, shellQuote, targetOf } from './git_commit.mjs';
+import { attachExecutionRecipe, functionCallCommand } from './crate/coding_program_contract.mjs';
+import { normalizeCommandWord } from './shell_command_policy.mjs';
+import { pathExtension, tokens, typedWriteTarget } from './write_request.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
@@ -34,8 +39,9 @@ import { trim } from './write_str.mjs';
  * @param {object} symbolicAnswer
  */
 export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) {
-  const recipe = symbolicAnswer?.execution_recipe;
-  if (!recipe) return null;
+  const attached = attachExecutionRecipe(symbolicAnswer ?? {}, symbolicAnswer?.synthesized_program).execution_recipe;
+  if (!attached) return null;
+  const recipe = requestedRecipe(latestUserRequest(messages) ?? '', attached);
   const writeTool = toolFor(toolNames, Capability.Write) ?? toolNames.find((name) => isWorkspaceCreationTool(name));
   if (!writeTool) return null;
   const runTool = toolFor(toolNames, Capability.Run);
@@ -263,4 +269,48 @@ function runCommandOf(messages, callId) {
     }
   }
   return null;
+}
+
+/**
+ * Mirrors `fn requested_recipe`: the recipe saved as the file the request
+ * names (`… in add.py`), and — when the request runs the function with stated
+ * arguments (`run it with 2 and 3`) — ending with the call that prints its
+ * result (PR #1188 dogfooding). A recipe with supporting files already binds
+ * its own path.
+ */
+export function requestedRecipe(request, recipe) {
+  let next = recipe;
+  const extension = pathExtension(recipe.path);
+  const target = extension === null ? null : typedWriteTarget(request, extension);
+  if (target && target !== recipe.path && !recipe.supporting_files.length) {
+    next = { ...recipe, path: target, commands: recipe.commands.map((command) => command.split(recipe.path).join(target)) };
+  }
+  const call = functionCallCommand(next.language, next.path, next.source, statedCallArguments(request));
+  if (call !== null && !next.commands.includes(call)) next = { ...next, commands: [...next.commands, call] };
+  return next;
+}
+
+/**
+ * Mirrors `fn stated_call_arguments`: the numbers and quoted literals after
+ * the request's last seeded run verb, in order.
+ */
+export function statedCallArguments(request) {
+  const verbs = terminalCommandVocabulary().run_verbs;
+  const toks = tokens(request);
+  let start = -1;
+  toks.forEach((token, index) => {
+    if (verbs.includes(normalizeCommandWord(token.text))) start = index;
+  });
+  if (start < 0) return [];
+  const from = toks[start].end;
+  const quoted = quotedSegmentSpans(request).filter((segment) => segment.start >= from);
+  const inside = (token) => quoted.some((segment) => token.start >= segment.start && token.end <= segment.end);
+  const found = [];
+  for (const token of toks.slice(start + 1)) {
+    if (inside(token)) continue;
+    const value = token.text.replace(/[,.;:!?]+$/u, '');
+    if (/^-?\d+(\.\d+)?$/u.test(value)) found.push([token.start, value]);
+  }
+  for (const segment of quoted) found.push([segment.start, JSON.stringify(segment.text)]);
+  return found.sort((left, right) => left[0] - right[0]).map(([, value]) => value);
 }

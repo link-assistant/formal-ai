@@ -187,3 +187,58 @@ export function stringLiteral(value, extraEscapes, unicodeEscape) {
   }
   return `${out}"`;
 }
+
+/**
+ * Mirrors `fn attach_execution_recipe` in rust/src/coding/synthesis_runtime.rs:
+ * a synthesized function travels as a typed recipe — its source saved as the
+ * catalog's file and checked with the catalog's check command — so an agent
+ * protocol can write it and run it with its own tools (PR #1188 dogfooding).
+ * A function is checked, never run as a program.
+ */
+export function attachExecutionRecipe(answer, program) {
+  if (!program || answer.execution_recipe) return answer;
+  const language = programLanguageBySlug(program.language);
+  if (!language) return answer;
+  const commands = [language.execution.check_command].filter((command) => command !== null && command !== undefined);
+  return {
+    ...answer,
+    execution_recipe: { language: program.language, source: program.source, path: language.save_as, supporting_files: [], commands },
+  };
+}
+
+/**
+ * Mirrors `fn function_call_command`: the command that calls the function a
+ * recipe's `source` defines with `args`, printing its result — from the
+ * language's `definition` and `call` contract templates — or null when the
+ * language has none, no definition matches, or the argument count differs.
+ */
+export function functionCallCommand(language, path, source, args) {
+  const contract = contractFor(language);
+  if (!contract || !args.length) return null;
+  const call = findChildValue(contract, 'call');
+  const signature = definedFunction(source, findChildValue(contract, 'definition'));
+  if (!call || !signature || signature.parameters.length !== args.length) return null;
+  const module = path.replace(/\.[^./]+$/u, '').split('/').join('.');
+  return replaceText(replaceText(replaceText(call, '{module}', module), '{name}', signature.name), '{arguments}', args.join(', '));
+}
+
+/** Mirrors `fn defined_function`: `{name, parameters}` of the first definition `template` matches. */
+function definedFunction(source, template) {
+  const [prefix, afterName] = String(template || '').split('{name}');
+  if (!prefix || afterName === undefined) return null;
+  const [middle, suffix] = afterName.split('{parameters}');
+  if (!middle || suffix === undefined) return null;
+  for (const raw of lines(source)) {
+    const line = raw.trimStart();
+    if (!line.startsWith(prefix)) continue;
+    const rest = line.slice(prefix.length);
+    const at = rest.indexOf(middle);
+    const tail = at > 0 ? rest.slice(at + middle.length) : '';
+    const end = tail.lastIndexOf(suffix);
+    const name = at > 0 ? rest.slice(0, at) : '';
+    if (end < 0 || !/^[A-Za-z_][A-Za-z0-9_]*$/u.test(name)) continue;
+    const parameters = tail.slice(0, end).split(',').map((part) => part.split(/[:=]/u)[0].trim()).filter(Boolean);
+    return { name, parameters };
+  }
+  return null;
+}

@@ -47,7 +47,7 @@ possible tasks you encounter on the way must be fully supported by it".
 | T17 | `Change the value of "debug" to true in config.json.` | **Fail**: edit with `oldString: the value of "debug"`. | **Pass**: read → edit of the `"debug"` line → `sha256sum`; answer `Set \`debug\` to \`true\` in \`config.json\` and observed the result.` Also `Set the value of name to prod in config.json.` (keeps the quotes) and YAML `debug: …`. |
 | T18 | `Create hello.py that prints Hello, World! and run it.` | **Fail**: answered with a program in chat (named `main.py`, printing `Hello, world!`), wrote nothing, ran nothing. | Open (unquoted output, see below) |
 | T18q | `Create hello.py that prints "Hello, World!" and run it.` | **Fail**: same chat answer. | **Pass in-process**: writes `hello.py` + `tests/verify-output.sh`, runs `python3 -m py_compile hello.py` and the output check (`Hello, World!`), reports. Through the Agent CLI the files are written and the compile step runs, then **the CLI crashes** (see "Client defect"). **After the bytecode-free check: passes end-to-end through the CLI** (rc=0, no `__pycache__`). |
-| T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = `2 and 3.` | **No longer destructive**: answers with `def add(a, b): return a + b`; writing it to `add.py` and running it with the stated arguments is open. |
+| T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = `2 and 3.` | **Pass end-to-end through the CLI**: write `add.py` → `py_compile` check → `python3 -B -c "from add import add; print(add(2, 3))"` → `5`; answer "Created and verified `add.py` …", no `__pycache__` in the workspace. |
 | T20 | `Write a Python function add(a, b) that returns their sum.` (solver) | **Fail, wrong code**: `def add(a, b): return sum(a)`; `multiply(a, b) … a times b` gave `math.prod(b)`. | **Pass**: `return a + b` / `return a * b` (browser); native pinned at the IR. `add3(a, b, c)` still stops at `a + b` (open). |
 
 ## Root causes and fixes
@@ -488,3 +488,34 @@ CI run measures it.
   task (it web-searched "What did we do so far?").
 - Upstream: the CLI could take a provider's limits from its `/v1/models`
   instead of a built-in 60,000.
+
+### T19 (continued) — writing the synthesized function where asked, and running it
+
+Three pieces, the first JS-only (native already attaches recipes to its
+verified drafts), the other two in both roots:
+
+- **B.** The browser worker's composed function travels as
+  `synthesizedProgram` (`formal_ai_worker_07.js`, copied through
+  `formal_ai_worker_20.js`, carried off the wire by `symbolicFromWorker`), and
+  the reroute turns it into an execution recipe with `attachExecutionRecipe`
+  (`js/agentic/crate/coding_program_contract.mjs`), the twin of native
+  `attach_execution_recipe`: the catalog's file and check command; a function
+  is checked, not run as a program.
+- **C.** `requestedRecipe` / `requested_recipe` (command reroute): the recipe
+  is saved as the file the request names (`typedWriteTarget(request, ext)`),
+  and its commands follow the rename. Recipes with supporting files keep
+  their own path.
+- **D.** The same function appends the call when the request runs the
+  function with stated arguments: `statedCallArguments` reads the numbers and
+  quoted literals after the request's last seeded run verb; the call comes
+  from new `definition` / `call` templates in
+  `data/meta/stdout-program-contracts.lino` (Python: `def {name}({parameters}):`
+  and `python3 -B -c "from {module} import {name}; print({name}({arguments}))"`;
+  `-B` so the import writes no byte code), and only when the argument count is
+  the parameter count.
+
+The dogfood driver now mirrors the server's fall-through (solve, then the
+symbolic command reroute). Tests: JS exact transcript and answer, the
+argument reader; Rust `rust/tests/unit/pull_request_1188_function_recipe.rs`
+(write `add.py`, check, call, final; without arguments only the write and
+check). Worker budgets 07 → 1393 and 20 → 1346 with the reason.

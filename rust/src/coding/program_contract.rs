@@ -246,3 +246,79 @@ fn string_literal(value: &str, extra_escapes: &str, unicode_escape: &str) -> Str
     out.push('"');
     out
 }
+
+/// The command that calls the function `source` defines with `arguments` and
+/// prints its result, from the language's `definition` and `call` contract
+/// templates (PR #1188 dogfooding: "… in add.py and run it with 2 and 3").
+/// `None` when the language has no call template, no definition matches, or
+/// the argument count is not the parameter count.
+#[must_use]
+#[allow(
+    clippy::literal_string_with_formatting_args,
+    reason = "bind named operands in source-backed Links Notation templates"
+)]
+pub fn function_call_command(
+    language: &str,
+    path: &str,
+    source: &str,
+    arguments: &[String],
+) -> Option<String> {
+    if arguments.is_empty() {
+        return None;
+    }
+    let root = parse_lino(CONTRACTS);
+    let contract = root
+        .children
+        .first()?
+        .children
+        .iter()
+        .find(|node| node.name == "language" && node.id == language)?;
+    let call = contract.find_child_value("call");
+    let (name, parameters) = defined_function(source, contract.find_child_value("definition"))?;
+    if call.is_empty() || parameters != arguments.len() {
+        return None;
+    }
+    let module = path
+        .rsplit_once('.')
+        .filter(|(_, extension)| !extension.is_empty() && !extension.contains('/'))
+        .map_or(path, |(stem, _)| stem)
+        .replace('/', ".");
+    Some(
+        call.replace("{module}", &module)
+            .replace("{name}", &name)
+            .replace("{arguments}", &arguments.join(", ")),
+    )
+}
+
+/// The name and parameter count of the first definition `template` matches.
+#[allow(
+    clippy::literal_string_with_formatting_args,
+    reason = "the definition template's named slots"
+)]
+fn defined_function(source: &str, template: &str) -> Option<(String, usize)> {
+    let (prefix, after_name) = template.split_once("{name}")?;
+    let (middle, suffix) = after_name.split_once("{parameters}")?;
+    if prefix.is_empty() || middle.is_empty() {
+        return None;
+    }
+    source.lines().find_map(|raw| {
+        let rest = raw.trim_start().strip_prefix(prefix)?;
+        let at = rest.find(middle).filter(|at| *at > 0)?;
+        let name = &rest[..at];
+        let tail = &rest[at + middle.len()..];
+        let end = tail.rfind(suffix)?;
+        let mut characters = name.chars();
+        let identifier = characters
+            .next()
+            .is_some_and(|first| first.is_ascii_alphabetic() || first == '_')
+            && characters.all(|character| character.is_ascii_alphanumeric() || character == '_');
+        identifier.then(|| {
+            let parameters = tail[..end]
+                .split(',')
+                .map(|part| part.split([':', '=']).next().unwrap_or_default().trim())
+                .filter(|part| !part.is_empty())
+                .count();
+            (name.to_owned(), parameters)
+        })
+    })
+}

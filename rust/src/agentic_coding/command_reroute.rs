@@ -29,7 +29,9 @@ pub fn plan_symbolic_command_reroute(
     tool_names: &[&str],
     symbolic_answer: &SymbolicAnswer,
 ) -> Option<AgenticPlan> {
-    let recipe = symbolic_answer.execution_recipe.as_ref()?;
+    let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
+    let requested = requested_recipe(&request, symbolic_answer.execution_recipe.as_ref()?);
+    let recipe = &requested;
     let write_tool = tool_for(tool_names, Capability::Write).or_else(|| {
         tool_names
             .iter()
@@ -510,4 +512,88 @@ fn run_command_of(messages: &[ChatMessage], call_id: Option<&str>) -> Option<Str
         .flat_map(|message| &message.tool_calls)
         .find(|call| call.id == call_id)?;
     super::tool_result::command_argument(&call.function.arguments)
+}
+
+/// The recipe saved as the file the request names (`… in add.py`), and --
+/// when the request runs the function with stated arguments (`run it with 2
+/// and 3`) -- ending with the call that prints its result (PR #1188
+/// dogfooding). A recipe with supporting files already binds its own path.
+fn requested_recipe(request: &str, recipe: &ExecutionRecipe) -> ExecutionRecipe {
+    let mut next = recipe.clone();
+    let extension = std::path::Path::new(&recipe.path)
+        .extension()
+        .and_then(|value| value.to_str());
+    if let Some(target) =
+        extension.and_then(|extension| super::write_request::typed_write_target(request, extension))
+        && target != recipe.path
+        && recipe.supporting_files.is_empty()
+    {
+        next.commands = recipe
+            .commands
+            .iter()
+            .map(|command| command.replace(&recipe.path, &target))
+            .collect();
+        next.path = target;
+    }
+    if let Some(call) = crate::coding::program_contract::function_call_command(
+        &next.language,
+        &next.path,
+        &next.source,
+        &stated_call_arguments(request),
+    ) && !next.commands.contains(&call)
+    {
+        next.commands.push(call);
+    }
+    next
+}
+
+/// The numbers and quoted literals after the request's last seeded run verb,
+/// in order; a quoted literal becomes a JSON string literal.
+fn stated_call_arguments(request: &str) -> Vec<String> {
+    let verbs = crate::seed::terminal_command_vocabulary().run_verbs;
+    let tokens = super::write_request::tokens(request);
+    let Some(start) = tokens.iter().rposition(|token| {
+        verbs.contains(&super::shell_command_policy::normalize_command_word(
+            token.text,
+        ))
+    }) else {
+        return Vec::new();
+    };
+    let from = tokens[start].end;
+    let quoted: Vec<_> = crate::normal_markov::quoted_segment_spans(request)
+        .into_iter()
+        .filter(|segment| segment.start >= from)
+        .collect();
+    let mut found: Vec<(usize, String)> = Vec::new();
+    for token in &tokens[start + 1..] {
+        if quoted
+            .iter()
+            .any(|segment| token.start >= segment.start && token.end <= segment.end)
+        {
+            continue;
+        }
+        let value = token.text.trim_end_matches([',', '.', ';', ':', '!', '?']);
+        if is_decimal(value) {
+            found.push((token.start, value.to_owned()));
+        }
+    }
+    for segment in quoted {
+        found.push((
+            segment.start,
+            serde_json::Value::String(segment.text).to_string(),
+        ));
+    }
+    found.sort_by_key(|(at, _)| *at);
+    found.into_iter().map(|(_, value)| value).collect()
+}
+
+/// An optional minus sign, digits, and an optional fraction of digits.
+fn is_decimal(value: &str) -> bool {
+    let digits = value.strip_prefix('-').unwrap_or(value);
+    let (whole, fraction) = digits
+        .split_once('.')
+        .map_or((digits, None), |(whole, fraction)| (whole, Some(fraction)));
+    let all_digits =
+        |part: &str| !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit());
+    all_digits(whole) && fraction.is_none_or(all_digits)
 }
