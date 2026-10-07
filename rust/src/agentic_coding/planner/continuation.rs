@@ -102,8 +102,8 @@ fn standing_sentences(head: &str) -> Option<String> {
         .into_iter()
         .filter(|sentence| {
             is_standing_task(sentence.text)
-                && !sentence.text.contains("Title:")
-                && !sentence.text.contains("User turns:")
+                && !mentions_envelope_marker(sentence.text, "compaction_title_marker")
+                && !mentions_envelope_marker(sentence.text, "compaction_turns_marker")
         })
         .map(|sentence| head[sentence.span].trim())
         .collect();
@@ -119,7 +119,15 @@ fn is_standing_task(text: &str) -> bool {
             crate::seed::ROLE_CONVERSATION_SUMMARY_PHRASE,
             &crate::engine::normalize_prompt(text),
         )
-        && !text.contains("Conversation summary:")
+        && !mentions_envelope_marker(text, "compaction_summary_marker")
+}
+
+/// Whether `text` carries one of the compaction envelope's labels, read from
+/// `data/seed/agent-info.lino` (an absent or empty label never matches).
+fn mentions_envelope_marker(text: &str, key: &str) -> bool {
+    crate::seed::agent_info()
+        .get(key)
+        .is_some_and(|marker| !marker.is_empty() && text.contains(marker.as_str()))
 }
 
 /// Repair a Markdown dotfile path spaced apart by Agent's prose summarizer.

@@ -5,6 +5,7 @@ import { plainText } from '../content.mjs';
 import { normalizePrompt } from '../crate/engine.mjs';
 import { mentionsRole } from '../write_lexicon.mjs';
 import { proseSentences } from '../shell_command_policy.mjs';
+import { agentInfoValue } from '../crate/seed_agent_info.mjs';
 import { handlerMatches } from '../crate/rule_interpreter.mjs';
 import {
   isAlphanumeric, isWhitespace, rsplitOnce, splitOnce, stripPrefix, trim, trimEndMatches, trimMatches, trimStart,
@@ -80,7 +81,9 @@ export function compactedAgentTask(earlier) {
  */
 function standingSentences(head) {
   const kept = proseSentences(head)
-    .filter((sentence) => isStandingTask(sentence.text) && !sentence.text.includes('Title:') && !sentence.text.includes('User turns:'))
+    .filter((sentence) => isStandingTask(sentence.text)
+      && !mentionsEnvelopeMarker(sentence.text, 'compaction_title_marker')
+      && !mentionsEnvelopeMarker(sentence.text, 'compaction_turns_marker'))
     .map((sentence) => trim(head.slice(sentence.span.start, sentence.span.end)));
   return kept.length ? kept.join(' ') : null;
 }
@@ -93,7 +96,13 @@ function standingSentences(head) {
 export function isStandingTask(text) {
   return !isContinuationCue(text)
     && !mentionsRole('conversation_summary_phrase', normalizePrompt(text))
-    && !text.includes('Conversation summary:');
+    && !mentionsEnvelopeMarker(text, 'compaction_summary_marker');
+}
+
+/** Mirrors `fn mentions_envelope_marker`: a compaction envelope label from data/seed/agent-info.lino. */
+function mentionsEnvelopeMarker(text, key) {
+  const marker = agentInfoValue(key);
+  return Boolean(marker) && text.includes(marker);
 }
 
 /** Mirrors `fn safe_relative_path` in rust/src/agentic_coding/write_request.rs. */
