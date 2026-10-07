@@ -162,6 +162,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/software-project-phrases.lino",
   "seed/source-trust-weights.lino",
   "seed/sources-registry.lino",
+  "seed/statement-audit-registry.lino",
   "seed/summary-topics.lino",
   "seed/terminal-commands.lino",
   "seed/tools.lino",

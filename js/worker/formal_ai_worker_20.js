@@ -109,6 +109,11 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, solverMetaProjection(metaAnswer(meta)), formalizationContext);
   }
 
+  // Issue #661 (R384): before any contextual handler can replay a language directive, warn when the prompt
+  // contradicts a requirement an earlier user turn stated (formal_ai_worker_requirement_contradiction.js).
+  const contradiction = tryRequirementContradiction(prompt, language, history, numericPreference(preferences.temperature, 0.7, 0, 1));
+  if (contradiction) return finalize(events.concat(["handler:requirement_contradiction"]), steps, toolCalls, contradiction, formalizationContext);
+
   const compound = await FormalAiSeed.solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solve);
   if (compound) return finalize(["composition:compound_response"], [], compound.toolCalls, compound, formalizationContext);
 

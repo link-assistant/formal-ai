@@ -68,6 +68,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_program_requests.js",
   "worker/formal_ai_worker_reasoning_guards.js",
   "worker/formal_ai_worker_recurrence.js",
+  "worker/formal_ai_worker_requirement_contradiction.js",
   "worker/formal_ai_worker_shell_compose.js",
   "worker/formal_ai_worker_solver_events.js",
   "worker/formal_ai_worker_source_walk.js",

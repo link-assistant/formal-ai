@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_requirement_contradiction.js"
+  ceiling 205
+  rationale "Requirement contradiction warnings (issue #661, R384 of issue #538). JavaScript-first twin of rust/src/requirement_contradiction.rs over the conversational slice of rust/src/statement_audit/ (prose statements, registry claims, exclusive-claim softmax), added under R997-R999 (2026-10-08). The browser answered never-answer-in-Russian after always-answer-in-Russian by demonstrating Russian; the surfaces come from data/seed/statement-audit-registry.lino and the warning from the requirement_contradiction templates."

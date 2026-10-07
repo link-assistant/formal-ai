@@ -697,6 +697,8 @@ seed_registry
     web true
   seed statement-audit-exclusions
     bundle true
+  seed statement-audit-registry
+    web true
   seed summary-topics
     bundle true
     web true
