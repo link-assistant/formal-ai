@@ -146,9 +146,10 @@ fn issue_from_shard(path: &Path) -> String {
 }
 
 /// `needle` occurs in `text` as words, not inside an identifier such as the
-/// `web_search:provider_planned` event a row may name.
+/// `web_search:provider_planned` event a row may name, or a compound such as
+/// "the pending-task state" a delivered row may describe.
 fn contains_word(text: &str, needle: &str) -> bool {
-    let is_word = |character: char| character.is_alphanumeric() || character == '_';
+    let is_word = |character: char| character.is_alphanumeric() || matches!(character, '_' | '-');
     text.match_indices(needle).any(|(start, _)| {
         let before = text[..start].chars().next_back();
         let after = text[start + needle.len()..].chars().next();

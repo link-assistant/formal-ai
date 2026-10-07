@@ -419,7 +419,7 @@ requirement_status_ledger_shard requirements_17
   requirement
     id "R980-2"
     shard "docs/requirements/issue-0980-default-branch-ci-false-results.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "PR #981 (issue #980)"
     issue "0980"
     automated_test "rust/tests/unit/ci-cd/issue_980.rs"
@@ -435,7 +435,7 @@ requirement_status_ledger_shard requirements_17
   requirement
     id "R980-4"
     shard "docs/requirements/issue-0980-default-branch-ci-false-results.md"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "PR #981 (issue #980)"
     issue "0980"
     automated_test "rust/tests/unit/ci-cd/issue_980.rs"
