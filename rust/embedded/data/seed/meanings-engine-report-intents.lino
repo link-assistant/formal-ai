@@ -352,3 +352,11 @@ meanings
     unit "not applicable"
     example "no R toolchain was installed on the 2026-09-12 reference machine."
     grounding "data/seed/multilingual-responses-engine-reports.lino"
+  program_execution_rediscovered
+    defined-by answer
+    role localized_response_template
+    precondition "a program rediscovered from documentation is returned and no recorded run verified that exact program"
+    effect "the execution status names the page the program was rediscovered from and says its output contract was checked by decomposition, not by running it"
+    unit "not applicable"
+    example "Execution status: not run; this program was rediscovered from https://docs.python.org and its output contract was checked by decomposition, not by executing it."
+    grounding "data/seed/multilingual-responses-engine-reports.lino"

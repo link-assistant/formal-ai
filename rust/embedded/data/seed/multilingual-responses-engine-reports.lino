@@ -94,3 +94,23 @@ multilingual_responses
     intent program_execution_notes_r
     language en
     text "no R toolchain was installed on the 2026-09-12 reference machine (data/meta/hello-world-languages.lino lists r among the nine unverified); the run is owed to the CI ladder."
+  response response_program_execution_rediscovered_en
+    intent program_execution_rediscovered
+    language en
+    text "Execution status: not run; this program was rediscovered from {page} and its output contract was checked by decomposition, not by executing it."
+  response response_program_execution_rediscovered_ru
+    intent program_execution_rediscovered
+    language ru
+    text "Статус выполнения: не запускалась; программа заново найдена на странице {page}, её контракт вывода проверен разбором, а не запуском."
+  response response_program_execution_rediscovered_hi
+    intent program_execution_rediscovered
+    language hi
+    text "निष्पादन स्थिति: चलाया नहीं गया; यह प्रोग्राम {page} से फिर से खोजा गया और इसके आउटपुट अनुबंध की जाँच विघटन से की गई, चलाकर नहीं।"
+  response response_program_execution_rediscovered_zh
+    intent program_execution_rediscovered
+    language zh
+    text "执行状态：未运行；此程序从 {page} 重新发现，其输出约定通过分解检查，而非运行。"
+  response response_program_execution_rediscovered_es
+    intent program_execution_rediscovered
+    language es
+    text "Estado de ejecución: no ejecutado; este programa se redescubrió en {page} y su contrato de salida se comprobó por descomposición, no ejecutándolo."

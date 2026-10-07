@@ -33,3 +33,30 @@ program_cache_policy
     purpose "A write_program cache miss whose language and task have documentation captures rediscovers its program from them at answer time. In each captured page the first block, in the requested language or untagged, that decomposes into an output call printing a literal is recomposed with the task's expected output bound into that literal, and the shortest such program is kept. It is answered only when decomposing it again finds the same output call printing the expected output, and when it declares every name the language's run contract invokes (the save_as stem a run or check command names bare). The row it yields cites the page as its rediscovery_source and its rediscovery_query, and is stored when the solve has a writable runtime cache (FORMAL_AI_PROCEDURE_CACHE), so the next request reuses it as a hit. The committed cache file is never written by a solve."
     verification "decomposition"
     verification "run_contract"
+  recorded_verification
+    purpose "The programs a recorded run compiled and executed, named by content_id. An answer whose program the documentation route rediscovered cites a run only when its content_id is recorded here for the language and task; any other rediscovered program is reported as rediscovered from its page with its output contract checked by decomposition, never as run. The ids are the Hello World templates the issue-8 harness ran (data/seed/toolchains.lino marks those languages verified); the documented Rust, Go and JavaScript programs equal them byte for byte."
+    environment "issue-8 local verification harness (isolated sandbox)"
+    program
+      language rust
+      task hello_world
+      content_id "0x544f96663d886356"
+    program
+      language python
+      task hello_world
+      content_id "0xb7f3f27951d54434"
+    program
+      language javascript
+      task hello_world
+      content_id "0xa17588be46bebdff"
+    program
+      language go
+      task hello_world
+      content_id "0x21e141d21c912a34"
+    program
+      language c
+      task hello_world
+      content_id "0x4e28e3a5a2cb8c10"
+    program
+      language php
+      task hello_world
+      content_id "0xd9a33911cb81ab30"

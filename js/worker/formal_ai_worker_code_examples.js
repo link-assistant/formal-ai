@@ -673,10 +673,46 @@ function writeProgramLanguageInfo(task, language) {
 }
 
 /**
+ * How a documented program was verified (issue #1165): a run the policy
+ * seed's `recorded_verification` records for its language, task and
+ * content_id, else rediscovery from its page with its output contract checked
+ * by decomposition. Mirrors `program_verification` in
+ * rust/src/discovery_production_contract.rs.
+ * @param {object} recipe the rediscovered row
+ * @returns {{verification: string, source: string}}
+ */
+function documentationVerification(recipe) {
+  const root = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_POLICY_FILE)).children[0];
+  const record = (root ? root.children : []).find((node) => node.name === "recorded_verification");
+  const recorded = record && record.children.some((row) => row.name === "program"
+    && childValue(row, "language") === recipe.language && childValue(row, "task") === recipe.task
+    && childValue(row, "content_id") === recipe.content_id);
+  return recorded
+    ? { verification: "recorded", source: childValue(record, "environment") }
+    : { verification: "decomposition", source: recipe.rediscovery_source };
+}
+
+/**
+ * The page a catalog pair's documented program was rediscovered from, when
+ * no recorded run verified that exact program; null otherwise. Mirrors
+ * `rediscovered_page` in rust/src/engine.rs.
+ * @param {string} task
+ * @param {string} language
+ * @returns {string|null}
+ */
+function documentationRediscoveredPage(task, language) {
+  const documented = typeof WRITE_PROGRAM_LANGUAGES === "object" && WRITE_PROGRAM_LANGUAGES[language] && task
+    ? documentedProgram(task, language) : null;
+  if (!documented || !documented.recipe) return null;
+  const verified = documentationVerification(documented.recipe);
+  return verified.verification === "decomposition" ? verified.source : null;
+}
+
+/**
  * The derivation a documented pair adds after its `procedure_cache` event:
  * one `command_source` per catalog command (where the command shown comes
- * from, a page or the catalog) and the `documentation_deviation` the program
- * carries, as `[kind, payload]`. Mirrors `documentation_events` in
+ * from, a page or the catalog), the `program_verification` naming what
+ * verified the program, and the `documentation_deviation` it carries, as `[kind, payload]`. Mirrors `documentation_events` in
  * rust/src/discovery_production_documentation.rs.
  * @param {string} task
  * @param {string} language
@@ -688,6 +724,9 @@ function documentationEvents(task, language) {
   if (!documented || !documented.contract) return [];
   const events = documented.contract.commands.map((entry) => ["command_source",
     `language=${language} task=${task} role=${entry.role} source=${entry.source} command=${entry.command}`]);
+  const verified = documentationVerification(documented.recipe);
+  events.push(["program_verification", `language=${language} task=${task} content_id=${documented.recipe.content_id}`
+    + ` verification=${verified.verification} source=${verified.source}`]);
   if (documented.deviation) events.push(["documentation_deviation", `language=${language} task=${task} ${documented.deviation}`]);
   return events;
 }

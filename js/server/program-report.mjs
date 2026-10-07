@@ -75,6 +75,7 @@ function executionNotes(language, seedReport) {
  * @returns {string}
  */
 export function executionReport(program, responseLanguage, seedReport) {
+  if (program.rediscoveredFrom) return rediscoveredReport(program, responseLanguage);
   const status = executionStatus(program.language);
   const language = reportLanguage(responseLanguage);
   const statusLine = serverMessage(`program_execution_status_line_${language}`, {
@@ -94,6 +95,29 @@ export function executionReport(program, responseLanguage, seedReport) {
     FENCE,
     executionNotes(program.language, seedReport),
   ].join('\n');
+}
+
+/**
+ * The report of a program the documentation route rediscovered and no
+ * recorded run verified (issue #1165): its status names the page and the
+ * decomposition check, in the response language when the messages carry it,
+ * and it borrows no run or note of the language's recorded program. Mirrors
+ * the `rediscovered_from` branch of rust/src/engine.rs `execution_report`.
+ * @param {{checkCommand?: string|null, runCommand: string, output: string, rediscoveredFrom: string}} program
+ * @param {string} responseLanguage
+ * @returns {string}
+ */
+function rediscoveredReport(program, responseLanguage) {
+  const key = (language) => `program_execution_rediscovered_${language}`;
+  const localized = serverMessage(key(responseLanguage), { page: program.rediscoveredFrom });
+  const statusLine = localized === key(responseLanguage)
+    ? serverMessage(key(FALLBACK_LANGUAGE), { page: program.rediscoveredFrom })
+    : localized;
+  const commands = [];
+  if (program.checkCommand) commands.push(serverMessage('program_execution_check_command', { command: program.checkCommand }));
+  commands.push(serverMessage('program_execution_run_command', { command: program.runCommand }));
+  const outputLabel = serverMessage(`program_execution_output_${STATUS_UNAVAILABLE}_${reportLanguage(responseLanguage)}`);
+  return [statusLine, ...commands, `${outputLabel}:`, TEXT_FENCE_OPEN, program.output, FENCE].join('\n');
 }
 
 /**

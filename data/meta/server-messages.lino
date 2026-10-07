@@ -258,6 +258,16 @@ server_messages
     text "验证后的预期输出"
   message program_execution_output_not_probed_zh
     text "输出，未在本环境中观察到"
+  message program_execution_rediscovered_en
+    text "Execution status: not run; this program was rediscovered from {page} and its output contract was checked by decomposition, not by executing it."
+  message program_execution_rediscovered_ru
+    text "Статус выполнения: не запускалась; программа заново найдена на странице {page}, её контракт вывода проверен разбором, а не запуском."
+  message program_execution_rediscovered_hi
+    text "निष्पादन स्थिति: चलाया नहीं गया; यह प्रोग्राम {page} से फिर से खोजा गया और इसके आउटपुट अनुबंध की जाँच विघटन से की गई, चलाकर नहीं।"
+  message program_execution_rediscovered_zh
+    text "执行状态：未运行；此程序从 {page} 重新发现，其输出约定通过分解检查，而非运行。"
+  message program_execution_rediscovered_es
+    text "Estado de ejecución: no ejecutado; este programa se redescubrió en {page} y su contrato de salida se comprobó por descomposición, no ejecutándolo."
   message program_execution_check_command
     text "Check command: `{command}`"
   message program_execution_run_command

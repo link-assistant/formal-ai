@@ -112,6 +112,28 @@ test("execution_report renders the recorded toolchain run", () => {
   assert.equal(nativeProgramAnswer("unchanged", undefined), "unchanged");
 });
 
+// Issue #1165: a program the documentation route rediscovered and no
+// recorded run verified reports its page and its decomposition check, in the
+// response language, and borrows neither the language's run nor its notes.
+test("a rediscovered program reports its page, not the language's recorded run", async () => {
+  const page = "https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples";
+  const program = { language: "python", checkCommand: "python3 -m py_compile main.py", runCommand: "python3 main.py", output: "Hello, world!", rediscoveredFrom: page };
+  assert.equal(executionReport(program, "en"), [
+    `Execution status: not run; this program was rediscovered from ${page} and its output contract was checked by decomposition, not by executing it.`,
+    "Check command: `python3 -m py_compile main.py`",
+    "Run command: `python3 main.py`",
+    "Expected output after verification:",
+    "```text",
+    "Hello, world!",
+    "```",
+  ].join("\n"));
+  assert.equal(executionReport(program, "es").split("\n")[0],
+    `Estado de ejecución: no ejecutado; este programa se redescubrió en ${page} y su contrato de salida se comprobó por descomposición, no ejecutándolo.`);
+  const answer = await solveSymbolic({ worker: host }, "write me hello world program in Python", []);
+  assert.ok(answer.answer.includes(`Execution status: not run; this program was rediscovered from ${page}`), answer.answer);
+  assert.ok(!answer.answer.includes("compiled and ran"), answer.answer);
+});
+
 test("a follow-up program edit carries the native execution report", async () => {
   const corpus = readFileSync(path.join(REPO_ROOT, "rust/tests/fixtures/server-parity/requests.lino"), "utf8");
   const line = corpus.split("\n").find((entry) => entry.includes("Сделай сортировку результатов")).trim();

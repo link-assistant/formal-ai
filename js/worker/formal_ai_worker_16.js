@@ -299,6 +299,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     content,
     // R1013: the sandbox block and the facts a native host reports instead (js/server/program-report.mjs).
     programExecution: { language, task, responseLanguage, checkCommand: languageInfo.checkCommand || null,
+      rediscoveredFrom: documentationRediscoveredPage(task, language), // #1165: what verified this program
       runCommand: languageInfo.runCommand, output: applyInlineHelloWorldOutputReplacement(prompt, task, expectedOutput),
       block: applyInlineHelloWorldOutputReplacement(prompt, task, executionLines.join("\n")) },
     confidence: 0.9,

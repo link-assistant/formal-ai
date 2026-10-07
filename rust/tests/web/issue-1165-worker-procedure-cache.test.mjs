@@ -124,6 +124,22 @@ test('R1165-6: the documented run contract binds the program name and records ea
   assert.equal(kinds.indexOf('command_source'), kinds.indexOf('procedure_cache') + 1);
 });
 
+// The derivation names what verified each documented program: a recorded
+// harness run only when the program's content id is the one that run
+// executed (the Rust Book's equals the template the issue-8 harness ran),
+// otherwise its page and the decomposition check.
+test('R1165-1: program_verification names the recorded run or the page', async () => {
+  const verification = async (prompt) => (await host.solve(prompt, [])).solverEvents
+    .filter((event) => event.kind === 'program_verification').map((event) => event.payload);
+  const rust = 'fn main() {\n    println!("Hello, world!");\n}';
+  assert.deepEqual(await verification('Write a hello world program in Rust'), [
+    `language=rust task=hello_world content_id=${hex(rust)} verification=recorded source=issue-8 local verification harness (isolated sandbox)`,
+  ]);
+  assert.deepEqual(await verification('Write a hello world program in Python'), [
+    `language=python task=hello_world content_id=${hex("print('Hello, world!')")} verification=decomposition source=https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples`,
+  ]);
+});
+
 // R1165-4: the coding oracle reads the documentation route before its cached
 // snapshots, so Swift (no catalog program in either runtime) is answered from
 // the Swift book and its Hello World Collection snapshot is retired.
