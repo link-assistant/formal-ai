@@ -450,6 +450,15 @@ fn council_results_are_formalized_summarized_and_cross_checked() {
             .iter()
             .any(|claim| claim.text.contains("Rust is memory safe") && claim.presented)
     );
+    // R703-9: a claim another agent denied is withheld, not presented as fact.
+    assert!(
+        report
+            .claims
+            .iter()
+            .any(|claim| !claim.presented && !claim.denied_by.is_empty()),
+        "{:?}",
+        report.claims
+    );
     assert_ne!(
         report.contradictions,
         [] as [formal_ai::orchestration::AgentSynthesisContradiction; 0]

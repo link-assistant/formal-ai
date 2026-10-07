@@ -40,6 +40,7 @@ mod issue_671_absolute_path_projection;
 mod issue_671_aider_system_echo;
 mod issue_671_supplied_file_bytes;
 mod issue_680_intent_routing;
+mod issue_703_controller_boundaries;
 mod issue_703_orchestration;
 mod issue_703_orchestration_followup;
 mod issue_703_orchestration_languages;
