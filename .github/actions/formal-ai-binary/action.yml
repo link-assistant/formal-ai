@@ -29,7 +29,11 @@ runs:
         # the hash of empty input, and every push then restores one stale
         # binary no matter which sources changed. Fail the step if the
         # pathspec goes empty again instead of caching on nothing.
-        entries=$(git ls-files -s rust/src rust/Cargo.toml rust/Cargo.lock rust/build.rs)
+        # The binary also `include_str!`s the seed mirror under rust/embedded/
+        # and build.rs bundles data/seed/api-cache/; leaving them out of the
+        # key let a seed-only push restore the binary of the previous seed, and
+        # server parity then saw a stale `/v1/bundle` (PR #1188).
+        entries=$(git ls-files -s rust/src rust/embedded rust/Cargo.toml rust/Cargo.lock rust/build.rs data/seed/api-cache)
         [ -n "$entries" ]
         digest=$(printf '%s\n' "$entries" | git hash-object --stdin)
         echo "digest=$digest" >> "$GITHUB_OUTPUT"

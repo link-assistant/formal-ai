@@ -266,6 +266,18 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     keeps only multi-character surfaces: a single character such as 在
     would have become a topic word in every Chinese composition prompt.
 
+27. **A cached binary must be keyed by everything it embeds.** Server parity
+    on `9d0bf539e` reported a new `bundle` divergence. Yet the JS and Rust
+    bundle builders are line-for-line twins, the 206-file lists match, and
+    the seed mirror is identical. The cause was the shared
+    `formal-ai-binary` action. Its cache key hashed `rust/src`, the
+    manifests and `build.rs`, but not `rust/embedded/` (308 `include_str!`
+    seed files) nor `data/seed/api-cache/` (bundled by `build.rs`). A
+    seed-only push such as `3e806b7db` (the zh stop words) therefore
+    restored the binary of the previous seed. The Rust server served the
+    old bundle, while the JS server read the new one. The key now covers
+    both trees. The ratchet stays at 5.
+
 ## Constraints
 
 - **JavaScript first, full parity.** Every requirement lands in JavaScript
