@@ -78,6 +78,13 @@ const CI_IGNORED_PATH_PREFIXES: &[&str] = &["experiments/", "dev/log/", "docs/ca
 // an edit to the gating rules re-runs the tiers they gate.
 const LAYERED_WORKFLOW: &str = ".github/workflows/layered-ci.yml";
 const LAYER_CLASSIFIER: &str = "scripts/detect-code-changes.rs";
+// The JavaScript suites the js tier runs (`node --test rust/tests/web/`).
+// They are the js tier's own tests, so a change to one re-runs that tier; the
+// ts tree does not consume them, so the ts tier stands. Before this, an edited
+// suite file -- the thing a requirement row names as its pinning test -- woke
+// the rust tier (it sits under `rust/`) but never the tier that executes it,
+// and merged unexecuted: issue #1017's false-negative class.
+const JS_SUITES: &str = "rust/tests/web/";
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
@@ -324,7 +331,9 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         agentic_routing_changed: relevant_files
             .iter()
             .any(|file| file.starts_with("rust/src/agentic_coding/")),
-        js_changed: relevant_files.iter().any(|file| js_tier_input(file)),
+        js_changed: relevant_files
+            .iter()
+            .any(|file| js_tier_input(file) || file.starts_with(JS_SUITES)),
         ts_changed: relevant_files.iter().any(|file| ts_tier_input(file)),
         rust_changed: relevant_files.iter().any(|file| rust_tier_input(file)),
         any_code_changed: relevant_files
@@ -694,6 +703,19 @@ mod tests {
         assert!(
             !binary_action.js_changed && !binary_action.ts_changed,
             "the binary action feeds only the rust tier"
+        );
+    }
+
+    /// A JavaScript suite is the js tier's own test, so editing one re-runs
+    /// that tier (issue #1017: a pinning test that never ran is a false
+    /// negative) without regenerating the ts tree, which does not consume it.
+    #[test]
+    fn a_javascript_suite_change_reruns_the_tier_that_executes_it() {
+        let suite = classify_changes(&["rust/tests/web/translate-es.test.mjs".to_string()]);
+        assert!(suite.js_changed, "the js tier runs the suite that changed");
+        assert!(
+            !suite.ts_changed,
+            "the ts tree is a function of js/, not of its tests"
         );
     }
 }

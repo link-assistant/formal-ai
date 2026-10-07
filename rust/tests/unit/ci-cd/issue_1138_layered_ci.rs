@@ -237,10 +237,52 @@ fn the_tier_predicates_live_in_the_classifier_not_the_workflow() {
         "let ts_tier_input",
         "let rust_tier_input",
         "fn tier_gates_are_cumulative_downward_and_never_upward",
+        "fn a_javascript_suite_change_reruns_the_tier_that_executes_it",
     ] {
         assert!(
             script.contains(pin),
             "the classifier carries the tier rule {pin}"
         );
+    }
+}
+
+/// Issue #1017 in the js tier: the suites own a deadline and split evenly.
+///
+/// The suites step had grown to 63% of the tier's cap with no budget of its
+/// own, so a hung test could only end as a `cancelled` tier. Each shard now
+/// runs under `scripts/run-with-budget-warning.sh`; the matrix legs and the
+/// shard count the step divides by agree, because a mismatch would silently
+/// drop or repeat files; and each leg has its own concurrency group, so the
+/// shards never cancel each other.
+#[test]
+fn the_javascript_suites_run_in_budgeted_shards_that_cover_every_file() {
+    let workflow = layered_workflow();
+    let js = job_block(&workflow, "js");
+    let legs: Vec<u32> = js
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("shard: ["))
+        .and_then(|rest| rest.strip_suffix(']'))
+        .expect("the js tier declares its shard matrix")
+        .split(',')
+        .map(|leg| leg.trim().parse().expect("a numeric shard"))
+        .collect();
+    let declared: u32 = js
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("SHARDS: "))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("the suites step names its shard count");
+    assert_eq!(
+        legs,
+        (1..=declared).collect::<Vec<u32>>(),
+        "the matrix must run every shard the step divides the files into"
+    );
+    for pin in [
+        "SHARD: ${{ matrix.shard }}",
+        "scripts/run-with-budget-warning.sh",
+        "node --test --test-shard=\"$SHARD/$SHARDS\" rust/tests/web/*.test.mjs",
+        "group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}",
+        "fail-fast: false",
+    ] {
+        assert!(js.contains(pin), "the js tier must keep {pin:?}");
     }
 }
