@@ -311,6 +311,7 @@ mod issue_1163_web_formalize;
 mod issue_1164_code_example_knowledge;
 mod issue_1164_pascal_from_docs;
 mod issue_1165_discovery_production;
+mod issue_1165_documentation_route;
 mod issue_1166_executor_gaps;
 mod issue_1166_obligation_routing;
 mod issue_1167_compose_render_parse;

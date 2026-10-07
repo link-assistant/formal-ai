@@ -773,8 +773,14 @@ fn formalization_grammar_and_runtime_memorize_no_probe_clause() {
 /// its stored template, and the ceiling drops with it until it reaches zero.
 /// It fell from 14 to 11 when the Rust, Go and Kotlin rows moved to the
 /// documentation route (R1165-4): their programs are rediscovered from the
-/// documentation captures at answer time and no longer stored.
-const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 11;
+/// documentation captures at answer time and no longer stored. It fell from
+/// 11 to 4 when the Python, JavaScript, TypeScript, C, C++, C# and Ruby rows
+/// followed them. The four left are Java, Scala, PHP and Laravel, whose
+/// captured or searched documentation yields no program the catalog can run
+/// (no official page declares a Java class or Scala object named `Main`,
+/// php.net's first example prints no trailing newline, and the Laravel docs
+/// show no Hello World command and carry no grammar).
+const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 4;
 
 /// The documentation captures seed (R1165-1): source data, not programs.
 ///
@@ -788,7 +794,12 @@ const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 11;
 const DOCUMENTATION_CAPTURES_SEED: &str = "data/seed/coding-documentation-captures.lino";
 
 /// Hello World literals the documentation captures hold, as page content.
-const DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX: usize = 7;
+///
+/// It rose from 7 to 19 with the eight captures of 2026-10-08 (Python wiki,
+/// MDN, the TypeScript handbook, Microsoft's C, C++ and C# pages, ruby-lang.org
+/// and the Swift book), each pinned by SHA-256 and re-derived from its
+/// fixture; it is the visible size of the source data, not of stored answers.
+const DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX: usize = 19;
 
 /// The quote spellings a stored program may wrap its literal in: an escaped
 /// double quote, a single quote, the `\x27` escape of a single quote, and a

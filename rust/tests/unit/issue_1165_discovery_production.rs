@@ -266,8 +266,10 @@ fn grammar_exists_reads_the_cst_seed() {
 
 /// `knows_language` is "a grammar exists and discovery found a procedure":
 /// kotlin has both a grammar and a bootstrap-recorded discovery, rust has a
-/// grammar but no recorded procedure yet (its row appears with the
-/// rediscovery run of R1165-7), and a grammarless language never answers.
+/// grammar and a program the documentation captures rediscover (R1165-4),
+/// pascal has a grammar but no procedure, and a grammarless language never
+/// answers.
+#[cfg(feature = "meta-language")]
 #[test]
 fn knows_language_requires_grammar_and_procedure() {
     assert!(
@@ -275,7 +277,11 @@ fn knows_language_requires_grammar_and_procedure() {
         "grammar plus a bootstrap-recorded discovery answers"
     );
     assert!(
-        !knows_language("rust"),
+        knows_language("rust"),
+        "grammar plus a documentation-rediscovered program answers"
+    );
+    assert!(
+        !knows_language("pascal"),
         "a grammar with no recorded procedure is a rediscovery away, not knowledge"
     );
     assert!(
@@ -327,15 +333,16 @@ fn write_program_reuses_the_cached_procedure_only_for_an_unmodified_request() {
 /// the solver's `WriteProgram` branch records the miss with the approval it
 /// lacks instead of answering as if research had run.
 ///
-/// Python has no documentation capture, so its miss is the research miss.
+/// Python counting to three has no documentation capture (its output is
+/// not one printed literal), so its miss is the research miss.
 #[test]
 fn miss_route_names_what_research_lacks_on_a_solve() {
     assert_eq!(miss_research_missing(), ["reviewer_approval"]);
     let response =
-        formal_ai::UniversalSolver::default().solve("write me hello world program in Python");
+        formal_ai::UniversalSolver::default().solve("Write a Python program that counts to three");
     assert!(
         response.links_notation.contains(
-            "procedure_cache outcome=miss language=python task=hello_world \
+            "procedure_cache outcome=miss language=python task=count_to_three \
              research_missing=reviewer_approval"
         ),
         "{}",
@@ -396,7 +403,7 @@ fn contract(save_as: &'static str, commands: &'static [&'static str]) -> RunCont
 /// returned: the Rust Book, go.dev and kotlinlang pages yield their programs
 /// (kotlinlang's command-line page beats the tour, whose example carries a
 /// comment line), the Scala book's `object hello` is refused because the
-/// catalog runs `scala Main`, and a language with no capture is the research
+/// catalog runs `scala Main`, and a pair with no capture is the research
 /// miss.
 #[cfg(feature = "meta-language")]
 #[test]
@@ -467,11 +474,12 @@ fn documentation_rediscovery_recomposes_the_captured_example_and_checks_the_run_
     assert_eq!(
         rediscover_from_documentation(
             "python",
-            "hello_world",
-            "Hello, world!",
+            "count_to_three",
+            "1\n2\n3",
             contract("main.py", &["python3 main.py"]),
         ),
-        Err(NO_DOCUMENTATION_CAPTURE.to_owned())
+        Err(NO_DOCUMENTATION_CAPTURE.to_owned()),
+        "a task no page was captured for is the research miss"
     );
     assert_eq!(
         rediscover_from_documentation(
@@ -566,7 +574,7 @@ fn documentation_captures_are_the_formalized_fixtures() {
         .parent()
         .expect("the repository root sits one level above the crate");
     let captures = all_documentation_captures();
-    assert_eq!(captures.len(), 5);
+    assert_eq!(captures.len(), 13);
     for capture in captures {
         let bytes = std::fs::read(root.join(&capture.fixture))
             .unwrap_or_else(|error| panic!("{}: {error}", capture.fixture));
@@ -590,32 +598,89 @@ fn documentation_captures_are_the_formalized_fixtures() {
 }
 
 /// R1165-4: the seed programs retired to the documentation route are
-/// reproduced by it.
+/// reproduced by it, and the catalog compiles none of them.
 ///
-/// `data/seed/hello-world-programs.lino` stores no program for the Rust, Go
-/// and Kotlin Hello World rows any more (their `program_source` is the
-/// documentation route); the program the documentation captures yield for
-/// each is exactly the template the Rust catalog still compiles as the
-/// fallback of a retired route, so both runtimes answer the same program.
+/// `data/seed/hello-world-programs.lino` stores no program for these Hello
+/// World rows (their `program_source` is the documentation route), and the
+/// Rust catalog no longer compiles a template for them: its table takes the
+/// program the documentation captures yield when it is first read, so the
+/// solver's answer and execution recipe carry exactly that program.
 #[cfg(feature = "meta-language")]
 #[test]
 fn retired_seed_programs_are_reproduced_by_the_documentation() {
-    let retired = documented_catalog_programs();
-    assert_eq!(
-        retired
-            .iter()
-            .map(|program| (program.language.as_str(), program.task.as_str()))
-            .collect::<Vec<_>>(),
-        [
-            ("rust", "hello_world"),
-            ("go", "hello_world"),
-            ("kotlin", "hello_world"),
-        ]
-    );
-    for program in retired {
-        let recipe = program
-            .rediscovered
-            .unwrap_or_else(|reason| panic!("{}: {reason}", program.language));
-        assert_eq!(recipe.entry, program.compiled, "{}", program.language);
+    let retired: Vec<(String, String, String)> = documented_catalog_programs()
+        .into_iter()
+        .map(|program| {
+            let recipe = program
+                .rediscovered
+                .unwrap_or_else(|reason| panic!("{}: {reason}", program.language));
+            (program.language, program.task, recipe.entry)
+        })
+        .collect();
+    let expected: Vec<(String, String, String)> = RETIRED_PROGRAMS
+        .iter()
+        .map(|(language, program, _)| {
+            (
+                (*language).to_owned(),
+                String::from("hello_world"),
+                (*program).to_owned(),
+            )
+        })
+        .collect();
+    assert_eq!(retired, expected);
+    for (language, program, prompt_name) in RETIRED_PROGRAMS {
+        let response = formal_ai::UniversalSolver::default()
+            .solve(&format!("write me hello world program in {prompt_name}"));
+        let recipe = response
+            .execution_recipe
+            .unwrap_or_else(|| panic!("{language}: a program answer carries its recipe"));
+        assert_eq!(recipe.source, program, "{language}");
     }
 }
+
+/// `(language, program the documentation yields, name a prompt uses)` for
+/// every Hello World row retired to the documentation route, in seed order.
+const RETIRED_PROGRAMS: &[(&str, &str, &str)] = &[
+    (
+        "rust",
+        "fn main() {\n    println!(\"Hello, world!\");\n}",
+        "Rust",
+    ),
+    ("python", "print('Hello, world!')", "Python"),
+    (
+        "javascript",
+        "console.log(\"Hello, world!\");",
+        "JavaScript",
+    ),
+    (
+        "typescript",
+        "// Greets the world.\nconsole.log(\"Hello, world!\");",
+        "TypeScript",
+    ),
+    (
+        "go",
+        "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}",
+        "Go",
+    ),
+    (
+        "c",
+        "// crt_puts.c\n// This program uses puts to write a string to stdout.\n\n#include <stdio.h>\n\nint main( void )\n{\n   puts( \"Hello, world!\" );\n}",
+        "C",
+    ),
+    (
+        "cpp",
+        "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello, world!\" << std::endl;\n    return 0;\n}",
+        "C++",
+    ),
+    ("csharp", "Console.WriteLine(\"Hello, world!\");", "C#"),
+    (
+        "ruby",
+        "# The famous Hello World\n# Program is trivial in\n# Ruby. Superfluous:\n#\n# * A \"main\" method\n# * Newline\n# * Semicolons\n#\n# Here is the Code:\n\nputs \"Hello, world!\"",
+        "Ruby",
+    ),
+    (
+        "kotlin",
+        "fun main() {\n    println(\"Hello, world!\")\n}",
+        "Kotlin",
+    ),
+];

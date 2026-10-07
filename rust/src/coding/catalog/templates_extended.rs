@@ -4,14 +4,14 @@
 //! (`experiments/issue-330-coding-tasks`). Split from [`super::templates_core`]
 //! only to keep each file well under the repository's per-file line limit.
 
-use super::types::ProgramTemplate;
+use super::types::CompiledTemplate;
 
-pub(super) const TEMPLATES_EXTENDED: &[ProgramTemplate] = &[
+pub(super) const TEMPLATES_EXTENDED: &[CompiledTemplate] = &[
     // Issue #330: FizzBuzz for 1..=15. Every template prints "Fizz" for multiples
     // of 3, "Buzz" for multiples of 5, "FizzBuzz" for multiples of 15, and the
     // number otherwise. Outputs were compiled and run locally
     // (experiments/issue-330-coding-tasks).
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "rust",
         code: r#"fn main() {
@@ -28,7 +28,7 @@ pub(super) const TEMPLATES_EXTENDED: &[ProgramTemplate] = &[
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "python",
         code: r#"for number in range(1, 16):
@@ -41,7 +41,7 @@ pub(super) const TEMPLATES_EXTENDED: &[ProgramTemplate] = &[
     else:
         print(number)"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "javascript",
         code: r#"for (let number = 1; number <= 15; number += 1) {
@@ -56,7 +56,7 @@ pub(super) const TEMPLATES_EXTENDED: &[ProgramTemplate] = &[
   }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "typescript",
         code: r#"for (let number = 1; number <= 15; number += 1) {
@@ -71,7 +71,7 @@ pub(super) const TEMPLATES_EXTENDED: &[ProgramTemplate] = &[
   }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "go",
         code: r#"package main
@@ -93,7 +93,7 @@ func main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "c",
         code: r#"#include <stdio.h>
@@ -113,7 +113,7 @@ int main(void) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "cpp",
         code: r#"#include <iostream>
@@ -132,7 +132,7 @@ int main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "java",
         code: r#"public class Main {
@@ -151,7 +151,7 @@ int main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "csharp",
         code: r#"using System;
@@ -172,7 +172,7 @@ class Program {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "ruby",
         code: r#"(1..15).each do |number|
@@ -187,7 +187,7 @@ class Program {
   end
 end"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "scala",
         code: r#"object Main {
@@ -206,7 +206,7 @@ end"#,
   }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "kotlin",
         code: r#"fun main() {
@@ -221,7 +221,7 @@ end"#,
 }"#,
     },
     // Issue #330: factorial of 5 (5! = 120).
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fizzbuzz",
         language_slug: "php",
         code: r#"<?php
@@ -238,7 +238,7 @@ foreach (range(1, 15) as $number) {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "rust",
         code: r#"fn main() {
@@ -249,7 +249,7 @@ foreach (range(1, 15) as $number) {
     println!("{result}");
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "python",
         code: r"result = 1
@@ -257,7 +257,7 @@ for number in range(1, 6):
     result *= number
 print(result)",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "javascript",
         code: r"let result = 1;
@@ -266,7 +266,7 @@ for (let number = 1; number <= 5; number += 1) {
 }
 console.log(result);",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "typescript",
         code: r"let result = 1;
@@ -275,7 +275,7 @@ for (let number = 1; number <= 5; number += 1) {
 }
 console.log(result);",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "go",
         code: r#"package main
@@ -290,7 +290,7 @@ func main() {
     fmt.Println(result)
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "c",
         code: r#"#include <stdio.h>
@@ -304,7 +304,7 @@ int main(void) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "cpp",
         code: r"#include <iostream>
@@ -317,7 +317,7 @@ int main() {
     std::cout << result << '\n';
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "java",
         code: r"public class Main {
@@ -330,7 +330,7 @@ int main() {
     }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "csharp",
         code: r"using System;
@@ -345,13 +345,13 @@ class Program {
     }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "ruby",
         code: r"result = (1..5).reduce(1, :*)
 puts result",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "scala",
         code: r"object Main {
@@ -364,7 +364,7 @@ puts result",
   }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "kotlin",
         code: r"fun main() {
@@ -376,7 +376,7 @@ puts result",
 }",
     },
     // Issue #330: reverse the literal string "hello" -> "olleh".
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "factorial",
         language_slug: "php",
         code: r"<?php
@@ -384,7 +384,7 @@ puts result",
 $result = array_product(range(1, 5));
 echo $result, PHP_EOL;",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "rust",
         code: r#"fn main() {
@@ -393,25 +393,25 @@ echo $result, PHP_EOL;",
     println!("{reversed}");
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "python",
         code: r#"text = "hello"
 print(text[::-1])"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "javascript",
         code: r#"const text = "hello";
 console.log(text.split("").reverse().join(""));"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "typescript",
         code: r#"const text: string = "hello";
 console.log(text.split("").reverse().join(""));"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "go",
         code: r#"package main
@@ -427,7 +427,7 @@ func main() {
     fmt.Println(string(runes))
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "c",
         code: r#"#include <stdio.h>
@@ -445,7 +445,7 @@ int main(void) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "cpp",
         code: r#"#include <algorithm>
@@ -458,7 +458,7 @@ int main() {
     std::cout << text << '\n';
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "java",
         code: r#"public class Main {
@@ -468,7 +468,7 @@ int main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "csharp",
         code: r#"using System;
@@ -481,13 +481,13 @@ class Program {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "ruby",
         code: r#"text = "hello"
 puts text.reverse"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "scala",
         code: r#"object Main {
@@ -497,7 +497,7 @@ puts text.reverse"#,
   }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "kotlin",
         code: r#"fun main() {
@@ -506,7 +506,7 @@ puts text.reverse"#,
 }"#,
     },
     // Issue #330: sum of the integers 1..=10 (= 55).
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "reverse_string",
         language_slug: "php",
         code: r#"<?php
@@ -514,7 +514,7 @@ puts text.reverse"#,
 $text = "hello";
 echo strrev($text), PHP_EOL;"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "rust",
         code: r#"fn main() {
@@ -522,13 +522,13 @@ echo strrev($text), PHP_EOL;"#,
     println!("{total}");
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "python",
         code: r"total = sum(range(1, 11))
 print(total)",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "javascript",
         code: r"let total = 0;
@@ -537,7 +537,7 @@ for (let number = 1; number <= 10; number += 1) {
 }
 console.log(total);",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "typescript",
         code: r"let total = 0;
@@ -546,7 +546,7 @@ for (let number = 1; number <= 10; number += 1) {
 }
 console.log(total);",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "go",
         code: r#"package main
@@ -561,7 +561,7 @@ func main() {
     fmt.Println(total)
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "c",
         code: r#"#include <stdio.h>
@@ -575,7 +575,7 @@ int main(void) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "cpp",
         code: r"#include <iostream>
@@ -588,7 +588,7 @@ int main() {
     std::cout << total << '\n';
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "java",
         code: r"public class Main {
@@ -601,7 +601,7 @@ int main() {
     }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "csharp",
         code: r"using System;
@@ -616,13 +616,13 @@ class Program {
     }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "ruby",
         code: r"total = (1..10).sum
 puts total",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "scala",
         code: r"object Main {
@@ -632,7 +632,7 @@ puts total",
   }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "kotlin",
         code: r"fun main() {
@@ -644,7 +644,7 @@ puts total",
     // With F(1)=F(2)=1 the recurrence gives F(10)=55. Every template defines the
     // recursive function and prints `fibonacci(10)`. Outputs were compiled and
     // run locally (experiments/issue-334).
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "sum_to_ten",
         language_slug: "php",
         code: r"<?php
@@ -652,7 +652,7 @@ puts total",
 $total = array_sum(range(1, 10));
 echo $total, PHP_EOL;",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "rust",
         code: r#"fn fibonacci(n: u64) -> u64 {
@@ -667,7 +667,7 @@ fn main() {
     println!("{}", fibonacci(10));
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "python",
         code: r"def fibonacci(n):
@@ -678,7 +678,7 @@ fn main() {
 
 print(fibonacci(10))",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "javascript",
         code: r"function fibonacci(n) {
@@ -690,7 +690,7 @@ print(fibonacci(10))",
 
 console.log(fibonacci(10));",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "typescript",
         code: r"function fibonacci(n: number): number {
@@ -702,7 +702,7 @@ console.log(fibonacci(10));",
 
 console.log(fibonacci(10));",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "go",
         code: r#"package main
@@ -720,7 +720,7 @@ func main() {
     fmt.Println(fibonacci(10))
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "c",
         code: r#"#include <stdio.h>
@@ -737,7 +737,7 @@ int main(void) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "cpp",
         code: r"#include <iostream>
@@ -753,7 +753,7 @@ int main() {
     std::cout << fibonacci(10) << '\n';
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "java",
         code: r"public class Main {
@@ -769,7 +769,7 @@ int main() {
     }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "csharp",
         code: r"using System;
@@ -787,7 +787,7 @@ class Program {
     }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "ruby",
         code: r"def fibonacci(n)
@@ -798,7 +798,7 @@ end
 
 puts fibonacci(10)",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "scala",
         code: r"object Main {
@@ -810,7 +810,7 @@ puts fibonacci(10)",
   }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "kotlin",
         code: r"fun fibonacci(n: Int): Long =
@@ -820,7 +820,7 @@ fun main() {
     println(fibonacci(10))
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "fibonacci",
         language_slug: "php",
         code: r"<?php

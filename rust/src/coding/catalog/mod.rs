@@ -31,7 +31,8 @@ use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 pub use languages::PROGRAM_LANGUAGES;
 pub use tasks::PROGRAM_TASKS;
 pub use types::{
-    ExecutionStatus, ProgramExecution, ProgramLanguage, ProgramSpec, ProgramTask, ProgramTemplate,
+    CompiledTemplate, ExecutionStatus, ProgramExecution, ProgramLanguage, ProgramSpec, ProgramTask,
+    ProgramTemplate,
 };
 
 pub const WRITE_PROGRAM_INTENT: &str = "write_program";
@@ -40,10 +41,11 @@ pub fn record_algorithm_construction(log: &mut EventLog) {
     MetaAlgorithmBuilder::for_surface(CodingSurface::CodingCatalog).record(log);
 }
 
-/// Every program template, grouped by source file. The groups are split purely
-/// to keep each file under the repository's per-file line limit; semantically
-/// they form a single flat catalog, iterated via [`program_templates`].
-const TEMPLATE_GROUPS: &[&[ProgramTemplate]] = &[
+/// Every compiled program template, grouped by source file. The groups are
+/// split purely to keep each file under the repository's per-file line limit;
+/// semantically they form a single flat table, read through
+/// [`program_templates`].
+const TEMPLATE_GROUPS: &[&[CompiledTemplate]] = &[
     templates_core::TEMPLATES_CORE,
     templates_listing::TEMPLATES_LISTING,
     templates_extended::TEMPLATES_EXTENDED,
@@ -51,15 +53,54 @@ const TEMPLATE_GROUPS: &[&[ProgramTemplate]] = &[
     templates_framework::TEMPLATES_FRAMEWORK,
 ];
 
-/// Iterate over every program template across all groups.
+/// The catalog's program table, built once at runtime (issue #1165 R1165-4).
+///
+/// The compiled groups come first; then every pair the seed bundle retires to
+/// the documentation route (`program_source "documentation_route"` in
+/// `data/seed/hello-world-programs.lino`) takes the program the documentation
+/// captures rediscover for it. A retired pair whose captures yield no
+/// verified program has no template.
+fn template_table() -> &'static [ProgramTemplate] {
+    static TABLE: std::sync::OnceLock<Vec<ProgramTemplate>> = std::sync::OnceLock::new();
+    TABLE.get_or_init(|| {
+        let mut table: Vec<ProgramTemplate> = TEMPLATE_GROUPS
+            .iter()
+            .copied()
+            .flatten()
+            .map(ProgramTemplate::from)
+            .collect();
+        for program in crate::discovery_production::documented_catalog_programs() {
+            let (Some(task), Some(language), Ok(recipe)) = (
+                program_task_by_slug(&program.task),
+                program_language_by_slug(&program.language),
+                program.rediscovered,
+            ) else {
+                continue;
+            };
+            let compiled = table.iter().any(|template| {
+                template.task_slug == task.slug && template.language_slug == language.slug
+            });
+            if !compiled {
+                table.push(ProgramTemplate {
+                    task_slug: task.slug,
+                    language_slug: language.slug,
+                    code: std::borrow::Cow::Owned(recipe.entry),
+                });
+            }
+        }
+        table
+    })
+}
+
+/// Iterate over every program template the catalog answers with.
 pub fn program_templates() -> impl Iterator<Item = &'static ProgramTemplate> {
-    TEMPLATE_GROUPS.iter().copied().flatten()
+    template_table().iter()
 }
 
 /// Total number of templates in the catalog (used for diagnostics).
 #[must_use]
 pub fn program_template_count() -> usize {
-    TEMPLATE_GROUPS.iter().map(|group| group.len()).sum()
+    template_table().len()
 }
 
 #[must_use]

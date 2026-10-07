@@ -15,9 +15,9 @@
 //! ([`crate::program_skill_gap`]) rather than an answer in the base language
 //! wearing the framework's name.
 
-use super::types::ProgramTemplate;
+use super::types::CompiledTemplate;
 
-pub const TEMPLATES_FRAMEWORK: &[ProgramTemplate] = &[ProgramTemplate {
+pub const TEMPLATES_FRAMEWORK: &[CompiledTemplate] = &[CompiledTemplate {
     task_slug: "hello_world",
     language_slug: "laravel",
     code: r"<?php

@@ -11,6 +11,8 @@
 //! [`super::program_task_by_alias`] read them by slug. A record names only the
 //! concept (its `slug`); the translatable words stay self-describing seed data.
 
+use std::borrow::Cow;
+
 #[derive(Clone, Copy)]
 pub struct ProgramLanguage {
     pub slug: &'static str,
@@ -150,11 +152,35 @@ impl ProgramTask {
     }
 }
 
+/// A program the catalog compiles in: a row of the `templates_*` tables.
 #[derive(Clone, Copy)]
-pub struct ProgramTemplate {
+pub struct CompiledTemplate {
     pub task_slug: &'static str,
     pub language_slug: &'static str,
     pub code: &'static str,
+}
+
+/// A program the catalog answers a `(task, language)` pair with.
+///
+/// The program is runtime data (issue #1165 R1165-4): a compiled row lends
+/// its text, while a pair the documentation route covers owns the program
+/// rediscovered from `data/seed/coding-documentation-captures.lino` when the
+/// catalog table is first read, so a retired program is no longer compiled.
+#[derive(Clone)]
+pub struct ProgramTemplate {
+    pub task_slug: &'static str,
+    pub language_slug: &'static str,
+    pub code: Cow<'static, str>,
+}
+
+impl From<&CompiledTemplate> for ProgramTemplate {
+    fn from(compiled: &CompiledTemplate) -> Self {
+        Self {
+            task_slug: compiled.task_slug,
+            language_slug: compiled.language_slug,
+            code: Cow::Borrowed(compiled.code),
+        }
+    }
 }
 
 #[derive(Clone, Copy)]

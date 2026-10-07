@@ -132,6 +132,24 @@ pub fn all_documentation_captures() -> Vec<DocumentationCapture> {
         .collect()
 }
 
+/// Whether a captured block's own language tag names `language`.
+///
+/// The tag names it when it is the slug itself, the formalizer's untagged
+/// fallback, or one of the surfaces of the `program_language_<slug>` meaning
+/// (a page tagging its example `js`, `py` or `c++`). The JavaScript twin is
+/// `documentationBlockNamesLanguage`.
+#[cfg(feature = "meta-language")]
+fn block_names_language(tag: &str, language: &str) -> bool {
+    let lower = tag.to_ascii_lowercase();
+    lower == language
+        || lower == "unknown"
+        || crate::seed::lexicon()
+            .meaning(&format!("program_language_{language}"))
+            .into_iter()
+            .flat_map(crate::seed::Meaning::words)
+            .any(|word| word == lower)
+}
+
 /// The page example a rediscovery recomposes.
 ///
 /// In each capture it is the first block in `language` (or untagged) that
@@ -153,7 +171,7 @@ fn documented_example<'a>(
     )> = None;
     for capture in captures {
         for (block_language, text) in &capture.blocks {
-            if block_language != language && block_language != "unknown" {
+            if !block_names_language(block_language, language) {
                 continue;
             }
             let Ok(node) = decompose_code_node_from(text, language, &[], &capture.url) else {
@@ -354,19 +372,186 @@ pub fn answer_cache_miss(
     }
 }
 
+/// The commands that check and run a catalog row's program, in the order
+/// the solver hands them to [`answer_cache_miss`] as its run contract.
+#[must_use]
+pub(crate) fn catalog_run_commands(language: &crate::coding::ProgramLanguage) -> Vec<&'static str> {
+    language
+        .execution
+        .check_command
+        .into_iter()
+        .chain(std::iter::once(language.execution.run_command))
+        .collect()
+}
+
+/// The program the documentation route rediscovers for a catalog pair.
+///
+/// The task's expected output for the language is bound into the documented
+/// example and the catalog row's run contract is checked, as on the solve
+/// path; the catalog table calls this once per documented pair it does not
+/// compile (R1165-4).
+///
+/// # Errors
+///
+/// Why no program was rediscovered, as [`rediscover_from_documentation`]
+/// names it.
+pub(crate) fn rediscover_catalog_program(
+    language: &crate::coding::ProgramLanguage,
+    task: &crate::coding::ProgramTask,
+) -> Result<RediscoverableRecipe, String> {
+    let commands = catalog_run_commands(language);
+    rediscover_from_documentation(
+        language.slug,
+        task.slug,
+        &task.output_for_language(language),
+        RunContract {
+            save_as: language.save_as,
+            commands: &commands,
+        },
+    )
+}
+
+/// Every `(task, language)` pair the documentation captures cover, in seed
+/// order, each once; empty while the policy seed retires the route.
+#[must_use]
+pub fn documented_pairs() -> Vec<(String, String)> {
+    if !documentation_route_active() {
+        return Vec::new();
+    }
+    let mut pairs: Vec<(String, String)> = Vec::new();
+    for capture in all_documentation_captures() {
+        let pair = (capture.task, capture.language);
+        if !pairs.contains(&pair) {
+            pairs.push(pair);
+        }
+    }
+    pairs
+}
+
+/// The shell prompts a documented command line may start with.
+const COMMAND_PROMPTS: [&str; 3] = ["$ ", "% ", "> "];
+
+/// Whether a documented command is a catalog command with the documented
+/// file name bound to the catalog's (R1165-6).
+///
+/// The words must agree, except that where the catalog word carries the stem
+/// of the file the program is saved as, the documented word may carry one
+/// other name in its place, the same name everywhere (`kotlinc hello.kt -d
+/// hello.jar` is `kotlinc Main.kt -d Main.jar` for a program saved as
+/// `Main.kt`). The JavaScript twin is `documentedCommandMatches`.
+#[must_use]
+pub fn documented_command_matches(documented: &str, catalog: &str, save_as: &str) -> bool {
+    let file = save_as.rsplit('/').next().unwrap_or_default();
+    let stem = file.rfind('.').map_or(file, |dot| &file[..dot]);
+    let words: Vec<&str> = documented.split_whitespace().collect();
+    let expected: Vec<&str> = catalog.split_whitespace().collect();
+    if words.len() != expected.len() {
+        return false;
+    }
+    let mut bound: Option<&str> = None;
+    for (said, word) in words.iter().zip(&expected) {
+        if said == word {
+            continue;
+        }
+        let Some(at) = word.find(stem).filter(|_| !stem.is_empty()) else {
+            return false;
+        };
+        let prefix = &word[..at];
+        let suffix = &word[at + stem.len()..];
+        if !said.starts_with(prefix)
+            || !said.ends_with(suffix)
+            || said.len() <= prefix.len() + suffix.len()
+        {
+            return false;
+        }
+        let name = &said[prefix.len()..said.len() - suffix.len()];
+        let identifier = name
+            .chars()
+            .all(|character| character.is_ascii_alphanumeric() || character == '_');
+        if !identifier || bound.is_some_and(|earlier| earlier != name) {
+            return false;
+        }
+        bound = Some(name);
+    }
+    true
+}
+
+/// One catalog command and the line its documentation states for it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DocumentedCommand {
+    /// The command the catalog row runs.
+    pub catalog: String,
+    /// The captured line that is the same command with the documented file
+    /// name bound to the catalog's, or `None` when the pages state none.
+    pub documented: Option<String>,
+}
+
+/// The check and run commands of a catalog pair, each with the line its
+/// documentation captures state for it (R1165-6).
+///
+/// A captured line, its shell prompt removed, states a catalog command when
+/// [`documented_command_matches`] binds it; a command no captured line states
+/// is listed with `documented: None`. The JavaScript twin is
+/// `documentedRunCommands`.
+#[must_use]
+pub fn documented_run_commands(language: &str, task: &str) -> Vec<DocumentedCommand> {
+    let Some(row) = crate::coding::program_language_by_slug(language) else {
+        return Vec::new();
+    };
+    let lines: Vec<String> = documentation_captures(language, task)
+        .iter()
+        .flat_map(|capture| capture.blocks.iter())
+        .flat_map(|(_, text)| text.lines())
+        .map(|raw| {
+            let line = raw.trim();
+            COMMAND_PROMPTS
+                .iter()
+                .find_map(|prompt| line.strip_prefix(prompt))
+                .unwrap_or(line)
+                .trim()
+                .to_owned()
+        })
+        .filter(|line| !line.is_empty())
+        .collect();
+    catalog_run_commands(row)
+        .into_iter()
+        .map(|command| DocumentedCommand {
+            catalog: command.to_owned(),
+            documented: lines
+                .iter()
+                .find(|line| documented_command_matches(line, command, row.save_as))
+                .cloned(),
+        })
+        .collect()
+}
+
+/// Whether the documentation route knows `language` (R1165-4): some task its
+/// captures cover rediscovers a verified program for the catalog row. The
+/// JavaScript twin is `documentationKnowsLanguage`.
+#[must_use]
+pub fn language_has_documented_procedure(language: &str) -> bool {
+    let needle = language.trim().to_ascii_lowercase();
+    let Some(row) = crate::coding::program_language_by_slug(&needle) else {
+        return false;
+    };
+    documented_pairs()
+        .iter()
+        .filter(|(_, documented)| *documented == needle)
+        .filter_map(|(task, _)| crate::coding::program_task_by_slug(task))
+        .any(|task| rediscover_catalog_program(row, task).is_ok())
+}
+
 /// The `program_source` of a seed template row whose program is retired to
 /// the documentation route.
 pub const DOCUMENTATION_ROUTE_SOURCE: &str = "documentation_route";
 
-/// One stored catalog program the documentation route reproduces (R1165-4).
+/// One stored catalog program the documentation route replaces (R1165-4).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DocumentedCatalogProgram {
     /// The catalog language slug.
     pub language: String,
     /// The catalog task slug.
     pub task: String,
-    /// The program the Rust catalog still compiles for the pair.
-    pub compiled: String,
     /// What the documentation captures yield for the task's expected output.
     pub rediscovered: Result<RediscoverableRecipe, String>,
 }
@@ -374,10 +559,9 @@ pub struct DocumentedCatalogProgram {
 /// The catalog pairs whose seed program is retired to the documentation route.
 ///
 /// A row of `data/seed/hello-world-programs.lino` whose `program_source` is
-/// `documentation_route` stores no program: the solver answers it from the
-/// documentation captures. The Rust catalog still compiles a template for the
-/// pair (the answer a retired route falls back to), so each such pair is
-/// listed with both programs and a test holds them equal.
+/// `documentation_route` stores no program, and the Rust catalog compiles
+/// none for it: the catalog table and the solver both take the program the
+/// documentation captures yield, listed here beside each pair.
 #[must_use]
 pub fn documented_catalog_programs() -> Vec<DocumentedCatalogProgram> {
     let seed = parse_lino(crate::seed::HELLO_WORLD_PROGRAMS_LINO);
@@ -385,29 +569,13 @@ pub fn documented_catalog_programs() -> Vec<DocumentedCatalogProgram> {
         .iter()
         .filter(|node| node.find_child_value("program_source") == DOCUMENTATION_ROUTE_SOURCE)
         .filter_map(|node| {
-            let spec = crate::coding::program_spec(
-                node.find_child_value("task"),
-                node.find_child_value("language"),
-            )?;
-            let execution = &spec.language.execution;
-            let commands: Vec<&str> = execution
-                .check_command
-                .into_iter()
-                .chain(std::iter::once(execution.run_command))
-                .collect();
+            let task = crate::coding::program_task_by_slug(node.find_child_value("task"))?;
+            let language =
+                crate::coding::program_language_by_slug(node.find_child_value("language"))?;
             Some(DocumentedCatalogProgram {
-                language: spec.language.slug.to_owned(),
-                task: spec.task.slug.to_owned(),
-                compiled: spec.template.code.to_owned(),
-                rediscovered: rediscover_from_documentation(
-                    spec.language.slug,
-                    spec.task.slug,
-                    &spec.task.output_for_language(spec.language),
-                    RunContract {
-                        save_as: spec.language.save_as,
-                        commands: &commands,
-                    },
-                ),
+                language: language.slug.to_owned(),
+                task: task.slug.to_owned(),
+                rediscovered: rediscover_catalog_program(language, task),
             })
         })
         .collect()

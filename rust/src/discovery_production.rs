@@ -241,13 +241,15 @@ pub fn grammar_exists(language: &str) -> bool {
 }
 
 /// Whether discovery knows `language` (R1165-4): a grammar exists and
-/// discovery found a procedure — a cache row, or the bootstrap record of a
-/// discovery that already ran before the cache file existed.
+/// discovery found a procedure — a cache row, a program the documentation
+/// captures rediscover, or the bootstrap record of a discovery that already
+/// ran before the cache file existed.
 #[must_use]
 pub fn knows_language(language: &str) -> bool {
     grammar_exists(language)
         && (bootstrap_cache_active() && crate::knowledge::CodingOracle::knows_language(language)
-            || language_has_cache_row(language))
+            || language_has_cache_row(language)
+            || language_has_documented_procedure(language))
 }
 
 fn language_has_cache_row(language: &str) -> bool {

@@ -742,14 +742,14 @@ impl UniversalSolver {
                     let cache = crate::discovery_production::ProcedureCache::load();
                     let rendered = crate::code_editing::apply_inline_hello_world_source_replacement(
                         prompt,
-                        spec.template.code,
+                        &spec.template.code,
                         *spec,
                     );
                     match crate::discovery_production::cached_write_program(
                         &cache,
                         spec.language.slug,
                         spec.task.slug,
-                        spec.template.code,
+                        &spec.template.code,
                         &rendered,
                     ) {
                         Some(recipe) => {
@@ -770,7 +770,7 @@ impl UniversalSolver {
                         // captures; with none that verify, the research miss
                         // names the inputs the policy seed's `miss_route`
                         // lacks instead of hiding behind the template.
-                        None if rendered == spec.template.code => {
+                        None if rendered == *spec.template.code => {
                             let execution = &spec.language.execution;
                             let commands: Vec<&str> = execution
                                 .check_command
@@ -810,7 +810,7 @@ impl UniversalSolver {
             };
             let base_answer = match (&rule, &cached_program) {
                 (SelectedRule::WriteProgram(spec), Some(entry)) => {
-                    base_answer.replace(spec.template.code, entry)
+                    base_answer.replace(spec.template.code.as_ref(), entry)
                 }
                 _ => base_answer,
             };
@@ -835,7 +835,7 @@ impl UniversalSolver {
                     source: cached_program.unwrap_or_else(|| {
                         crate::code_editing::apply_inline_hello_world_source_replacement(
                             prompt,
-                            spec.template.code,
+                            &spec.template.code,
                             *spec,
                         )
                     }),

@@ -100,7 +100,7 @@ fn python_hello_world_seed_runs() {
     let response = answer("Write hello world in Python");
     assert_write_program_parameters(&response, "python", "hello_world");
     assert!(response.answer.contains("```python"));
-    assert!(response.answer.contains("print(\"Hello, world!\")"));
+    assert!(response.answer.contains("print('Hello, world!')"));
     assert!(
         response
             .answer

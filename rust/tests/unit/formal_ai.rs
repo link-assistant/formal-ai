@@ -10,7 +10,7 @@ mod seed_and_memory;
 const PYTHON_SCRIPT_ANSWER: &str = r#"Here is a minimal Python script:
 
 ```python
-print("Hello, world!")
+print('Hello, world!')
 ```
 
 Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).

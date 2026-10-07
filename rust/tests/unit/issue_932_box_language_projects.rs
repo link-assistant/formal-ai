@@ -35,8 +35,12 @@ fn expected_program(language: &str) -> &'static str {
     println!("Hello, world!");
 }"#
         }
-        "python" => r#"print("Hello, world!")"#,
-        "javascript" | "typescript" => r#"console.log("Hello, world!");"#,
+        "python" => r#"print('Hello, world!')"#,
+        "javascript" => r#"console.log("Hello, world!");"#,
+        "typescript" => {
+            r#"// Greets the world.
+console.log("Hello, world!");"#
+        }
         "go" => {
             r#"package main
 
@@ -53,7 +57,19 @@ func main() {
     }
 }"#
         }
-        "ruby" => r#"puts "Hello, world!""#,
+        "ruby" => {
+            r#"# The famous Hello World
+# Program is trivial in
+# Ruby. Superfluous:
+#
+# * A "main" method
+# * Newline
+# * Semicolons
+#
+# Here is the Code:
+
+puts "Hello, world!""#
+        }
         other => panic!("no documented program for {other}"),
     }
 }
