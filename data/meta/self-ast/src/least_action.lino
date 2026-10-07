@@ -2,10 +2,10 @@ self_ast_census
   target src/least_action.rs
   language rust
   fidelity signature
-  byte_len 10018
-  line_count 264
-  content_id source_module_a8ed1cdc3435c63e
-  symbol_count 14
+  byte_len 8476
+  line_count 216
+  content_id source_module_9ee4532ebe7513b2
+  symbol_count 10
   symbols
     struct ActionCost 40 50
     const ZERO 54 59
@@ -17,7 +17,3 @@ self_ast_census
     struct SolutionCandidate 177 183
     function rank_by_least_action 189 210
     function least_action_solution 214 216
-    module tests 219 264
-    function subtask 222 228
-    function the_ladder_is_always_one_two_four_eight 231 238
-    function a_shorter_solution_that_fails_inputs_is_not_least_action 241 263

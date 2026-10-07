@@ -2,15 +2,12 @@ self_ast_census
   target src/lino_adapters/links_notation.rs
   language rust
   fidelity signature
-  byte_len 4644
-  line_count 125
-  content_id source_module_c3eea1344d355147
-  symbol_count 7
+  byte_len 3874
+  line_count 103
+  content_id source_module_30d83e442806559c
+  symbol_count 4
   symbols
     function parse_lino 16 31
     function convert 35 72
     function format_lino 77 103
     function emit 78 89
-    module tests 106 125
-    function indentation_and_quoted_values_survive 109 120
-    function malformed_document_is_rejected 122 124

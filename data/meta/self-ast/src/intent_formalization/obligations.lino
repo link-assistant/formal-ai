@@ -2,33 +2,34 @@ self_ast_census
   target src/intent_formalization/obligations.rs
   language rust
   fidelity signature
-  byte_len 19543
-  line_count 511
-  content_id source_module_1f270979c5032310
-  symbol_count 25
+  byte_len 20328
+  line_count 535
+  content_id source_module_a49c9b4ebb8c2200
+  symbol_count 26
   symbols
     const GRAPH_RECORD 45 45
     const SPLIT_DEPTH_BOUND 48 48
     enum ObligationKind 55 68
     function slug 73 82
-    const PRINT_VERB_FALLBACK 88 100
-    const CODE_STYLE_MARKERS 103 122
-    const FILE_NAMING_MARKERS 126 144
-    const CI_BADGE_MARKERS 147 155
-    struct ObligationGraph 163 168
-    function nodes 173 175
-    function language 179 181
-    function obligation_kinds 185 191
-    function has_obligation 195 199
-    function obligations_of_kind 203 212
-    function unique_output_literal 220 233
-    function literal_for 237 245
-    function underivable 250 255
-    function gap_report 260 280
-    function has_node_kind 282 286
-    function links_notation 291 317
-    function formalize_request 326 353
-    function coreference_pass 363 423
-    function request_carries_work_obligations 436 446
-    function classify_clause 453 503
-    function graph_id 509 511
+    const PRINT_VERB_FALLBACK 88 107
+    const CODE_STYLE_MARKERS 110 129
+    const FILE_NAMING_MARKERS 133 151
+    const CI_BADGE_MARKERS 154 162
+    struct ObligationGraph 170 175
+    function nodes 180 182
+    function language 186 188
+    function obligation_kinds 192 198
+    function has_obligation 202 206
+    function obligations_of_kind 210 219
+    function unique_output_literal 227 240
+    function literal_for 244 252
+    function underivable 257 262
+    function gap_report 267 287
+    function has_node_kind 289 293
+    function links_notation 298 324
+    function formalize_request 333 360
+    function coreference_pass 370 430
+    function request_carries_work_obligations 448 460
+    function classify_clause 467 493
+    function authoring_kind 497 527
+    function graph_id 533 535

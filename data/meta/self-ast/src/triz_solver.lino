@@ -2,10 +2,10 @@ self_ast_census
   target src/triz_solver.rs
   language rust
   fidelity signature
-  byte_len 12933
-  line_count 348
-  content_id source_module_8b8cbf476e33c4c3
-  symbol_count 20
+  byte_len 9678
+  line_count 254
+  content_id source_module_4071343de507f7fa
+  symbol_count 14
   symbols
     const SEED_PATH 34 34
     const INTENT 35 35
@@ -13,17 +13,11 @@ self_ast_census
     struct BenchmarkTask 51 58
     function seed_text 61 66
     function records_of_type 75 86
-    function principle_ids 91 96
-    function records_named_by_type 101 112
-    function triz_families 116 133
-    function triz_benchmark_tasks 137 159
-    function triz_cues 163 177
-    function relevant_tasks 182 201
-    function families_text 204 210
-    function precedents_text 213 227
-    const LINK_NOTE_INTENT 231 231
-    function handle_triz 236 278
-    module tests 281 348
-    function families_and_benchmark_load_from_the_seed 285 322
-    function umbrella_prompt_finds_the_umbrella_precedent_first 329 340
-    function stems_match_russian_and_english_cues 343 347
+    function triz_families 90 107
+    function triz_benchmark_tasks 111 133
+    function triz_cues 138 152
+    function relevant_tasks 158 177
+    function families_text 180 186
+    function precedents_text 189 203
+    const LINK_NOTE_INTENT 207 207
+    function handle_triz 212 254

@@ -2,29 +2,29 @@ self_ast_census
   target src/obligation_ledger/derivation.rs
   language rust
   fidelity signature
-  byte_len 12586
-  line_count 324
-  content_id source_module_fd502607f4fda0b3
+  byte_len 12872
+  line_count 330
+  content_id source_module_ef8585399fa948f5
   symbol_count 21
   symbols
     function clauses_with_spans 27 56
-    function opens_a_clause 60 64
-    function starts_with_cue 74 85
-    function is_unspaced_script 89 96
-    function derive_expectation 107 130
-    function shape_for 138 175
-    struct ExpectationRule 179 192
-    struct ExpectationRules 197 200
-    const CONTRACT_LINO 203 204
-    const WHEN_PLAN_MODE 209 209
-    const WHEN_GENERATED_CHECK 211 211
-    const WHEN_NO_ARTIFACT 213 213
-    function shipped 218 220
-    function from_lino 224 255
-    function for_plan_mode 259 264
-    function for_generated_check 268 270
-    function for_absent_artifact 274 276
-    function matching 278 280
-    function field 284 290
-    function unquoted 293 298
-    function expected_digest 309 324
+    function opens_a_clause 64 70
+    function starts_with_cue 80 91
+    function is_unspaced_script 95 102
+    function derive_expectation 113 136
+    function shape_for 144 181
+    struct ExpectationRule 185 198
+    struct ExpectationRules 203 206
+    const CONTRACT_LINO 209 210
+    const WHEN_PLAN_MODE 215 215
+    const WHEN_GENERATED_CHECK 217 217
+    const WHEN_NO_ARTIFACT 219 219
+    function shipped 224 226
+    function from_lino 230 261
+    function for_plan_mode 265 270
+    function for_generated_check 274 276
+    function for_absent_artifact 280 282
+    function matching 284 286
+    function field 290 296
+    function unquoted 299 304
+    function expected_digest 315 330

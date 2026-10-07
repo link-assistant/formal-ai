@@ -2,9 +2,9 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 27017
-  line_count 755
-  content_id source_module_f2d66b6ac8c73b7a
+  byte_len 27310
+  line_count 760
+  content_id source_module_61ed1f0297ce13de
   symbol_count 45
   symbols
     module obligations 26 26
@@ -30,25 +30,25 @@ self_ast_census
     function record_intent_formalization 281 309
     function select_rule_for_intent 312 325
     struct MatchedRoute 328 331
-    function route_for_prompt 333 360
-    function declared_role_surface_route 371 388
-    function matches_route 390 400
-    function contains_token 402 410
-    function write_program_rule_for_intent 412 421
-    struct WriteProgramRecovery 425 437
-    struct ProgramCoreferenceRewrite 441 444
-    function rewrite_bare_program_coreference_rule 454 483
-    struct ActiveProgramContext 485 488
-    function active_program_context 490 512
-    function recover_write_program_rule 528 599
-    function operation_vocabulary 601 604
-    static VOCABULARY 602 602
-    function detected_program_modifiers 613 620
-    function append_candidate_knowns 622 640
-    function slot_known_link 642 667
-    function has_any_token 669 671
-    function route_from_relevants 673 682
-    function infer_kind 684 728
-    function starts_with_question_word 730 745
-    function contains_question_mark 747 749
-    function push_unique 751 755
+    function route_for_prompt 333 365
+    function declared_role_surface_route 376 393
+    function matches_route 395 405
+    function contains_token 407 415
+    function write_program_rule_for_intent 417 426
+    struct WriteProgramRecovery 430 442
+    struct ProgramCoreferenceRewrite 446 449
+    function rewrite_bare_program_coreference_rule 459 488
+    struct ActiveProgramContext 490 493
+    function active_program_context 495 517
+    function recover_write_program_rule 533 604
+    function operation_vocabulary 606 609
+    static VOCABULARY 607 607
+    function detected_program_modifiers 618 625
+    function append_candidate_knowns 627 645
+    function slot_known_link 647 672
+    function has_any_token 674 676
+    function route_from_relevants 678 687
+    function infer_kind 689 733
+    function starts_with_question_word 735 750
+    function contains_question_mark 752 754
+    function push_unique 756 760

@@ -2,10 +2,10 @@ self_ast_census
   target src/small_model_fallback.rs
   language rust
   fidelity signature
-  byte_len 15124
-  line_count 423
-  content_id source_module_f84972e05b94e9d4
-  symbol_count 23
+  byte_len 11704
+  line_count 321
+  content_id source_module_04de501dcf14028a
+  symbol_count 16
   symbols
     const SEED_PATH 48 48
     struct SmallModelOptions 55 63
@@ -23,10 +23,3 @@ self_ast_census
     function lexical_affinity 252 274
     function propose_best_match 285 313
     function confirm_proposal 319 321
-    module tests 324 423
-    function default_options_show_and_load_nothing 328 331
-    function nothing_in_the_catalog_is_packaged 334 342
-    function hardware_fit_hides_oversized_models_and_sorts_by_rating 345 361
-    function the_proposal_is_advisory_and_the_rules_hold_the_pen 364 388
-    function a_disabled_feature_proposes_nothing 391 407
-    function zero_affinity_stays_silent_instead_of_guessing 410 422

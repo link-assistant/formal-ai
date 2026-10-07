@@ -2,10 +2,10 @@ self_ast_census
   target src/si_units.rs
   language rust
   fidelity signature
-  byte_len 16886
-  line_count 486
-  content_id source_module_d5b373649959d75a
-  symbol_count 29
+  byte_len 15455
+  line_count 443
+  content_id source_module_e12ba3b7768eac8f
+  symbol_count 25
   symbols
     const SEED_PATH 36 36
     const ENGINE_NAME 40 40
@@ -32,7 +32,3 @@ self_ast_census
     function describe 367 382
     function convert_through_si 396 437
     function note_unknown_unit 441 443
-    module tests 446 486
-    function dimension_strings_round_trip 450 457
-    function dimension_algebra_multiplies_and_inverts 460 476
-    function factors_parse_exactly 479 485

@@ -2,18 +2,15 @@ self_ast_census
   target src/coding/program_contract.rs
   language rust
   fidelity signature
-  byte_len 8386
-  line_count 225
-  content_id source_module_2d9b89b825e0e8d7
-  symbol_count 10
+  byte_len 7384
+  line_count 197
+  content_id source_module_e7a4fe0d65f9dd5c
+  symbol_count 7
   symbols
     const CONTRACTS 11 11
-    function runtime_steps 13 25
-    function explicit_stdout 28 47
-    function program_language 50 63
-    function answer 71 148
-    function output_verifier 154 167
-    function string_literal 169 195
-    module stdout_requirement_tests 198 225
-    const CASES 205 205
-    function explicit_stdout_reads_every_fixture_case 208 224
+    function runtime_steps 14 26
+    function explicit_stdout 30 49
+    function program_language 52 65
+    function answer 73 150
+    function output_verifier 156 169
+    function string_literal 171 197

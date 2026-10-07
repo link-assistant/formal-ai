@@ -2,9 +2,9 @@ self_ast_census
   target src/history_context/commits.rs
   language rust
   fidelity signature
-  byte_len 10374
+  byte_len 10382
   line_count 305
-  content_id source_module_9d274bb6ec9cea24
+  content_id source_module_6869d07dbdd42011
   symbol_count 15
   symbols
     function run_git 8 26

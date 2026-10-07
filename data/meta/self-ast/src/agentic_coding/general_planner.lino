@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 38268
-  line_count 821
-  content_id source_module_2948bfab84ed637d
+  byte_len 38816
+  line_count 831
+  content_id source_module_0faf3e25c66755fd
   symbol_count 38
   symbols
     const PLAN_PATH 22 22
@@ -21,48 +21,48 @@ self_ast_census
     function objective_text 140 146
     function line_anchored 150 156
     function compose_general_change_plan 158 262
-    function compose_repository_work_plan 263 292
-    function work_item_step 296 308
-    function repository_work_reference 313 337
-    function parse_command_output_request 345 399
-    function mentions_bare_role 400 427
-    function shell_quote 428 430
-    function command_plan_text 431 435
-    function has_file_write_intent 448 450
-    function has_authoritative_literal_write 457 466
-    function parse_write_request 491 501
-    function parse_write_request_bound 504 623
-    function end_of_statement 651 666
-    function positions_share_statement 677 684
-    function is_literal_content 690 692
-    function is_non_referential_content 699 705
-    function names_deferred_work_product 725 739
-    function ends_with_head_noun 748 756
-    function resolve_census_target 775 782
-    function mentions_software_authoring 786 788
-    function capability_slug 789 806
-    function language 807 809
-    function escape 810 815
-    function field 816 818
-    function field_nested 819 821
+    function compose_repository_work_plan 263 302
+    function work_item_step 306 318
+    function repository_work_reference 323 347
+    function parse_command_output_request 355 409
+    function mentions_bare_role 410 437
+    function shell_quote 438 440
+    function command_plan_text 441 445
+    function has_file_write_intent 458 460
+    function has_authoritative_literal_write 467 476
+    function parse_write_request 501 511
+    function parse_write_request_bound 514 633
+    function end_of_statement 661 676
+    function positions_share_statement 687 694
+    function is_literal_content 700 702
+    function is_non_referential_content 709 715
+    function names_deferred_work_product 735 749
+    function ends_with_head_noun 758 766
+    function resolve_census_target 785 792
+    function mentions_software_authoring 796 798
+    function capability_slug 799 816
+    function language 817 819
+    function escape 820 825
+    function field 826 828
+    function field_nested 829 831
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19864
-    named_node_count 4013
+    total_link_count 20025
+    named_node_count 4041
     distinct_node_kinds 84
     node_kinds
-      arguments 275
+      arguments 279
       array_expression 2
       array_type 1
       attribute 12
       attribute_item 12
-      binary_expression 53
+      binary_expression 54
       block 78
       boolean_literal 3
-      call_expression 275
+      call_expression 279
       char_literal 45
       closure_expression 36
       closure_parameters 36
@@ -79,15 +79,15 @@ self_ast_census
       expression_statement 50
       field_declaration 12
       field_declaration_list 2
-      field_expression 220
-      field_identifier 259
+      field_expression 224
+      field_identifier 263
       field_initializer 27
       field_initializer_list 6
       for_expression 2
       function_item 31
       function_modifiers 3
       generic_type 11
-      identifier 892
+      identifier 896
       if_expression 25
       impl_item 3
       index_expression 8
@@ -95,9 +95,9 @@ self_ast_census
       integer_literal 9
       let_chain 2
       let_condition 6
-      let_declaration 75
+      let_declaration 76
       lifetime 5
-      line_comment 256
+      line_comment 261
       macro_invocation 17
       match_arm 22
       match_block 4
@@ -133,7 +133,7 @@ self_ast_census
       tuple_type 3
       type_arguments 11
       type_identifier 57
-      unary_expression 22
+      unary_expression 23
       use_as_clause 1
       use_declaration 10
       use_list 4

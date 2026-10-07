@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/repair_loop.rs
   language rust
   fidelity full_ast
-  byte_len 32488
-  line_count 834
-  content_id source_module_f0fbb659004cf871
+  byte_len 32619
+  line_count 835
+  content_id source_module_27c02aadba2837ad
   symbol_count 40
   symbols
     const MAX_REPAIR_RUNGS 74 74
@@ -24,36 +24,36 @@ self_ast_census
     function formalize_diagnostic 262 323
     function search_query 334 348
     function message_coverage 353 375
-    function page_addresses 381 388
-    function fix_fragment 394 451
-    function lino_escape 458 460
-    function repair_document_path 464 474
-    function repair_edit_document 483 512
-    struct RepairAttempt 520 526
-    function links_notation 533 551
-    function attempts_from 562 589
-    function evidence_document 594 605
-    enum RepairStop 615 626
-    enum RepairOutcome 630 641
-    function plan 646 653
-    struct FailedStep 663 669
-    function new 673 681
-    function with_exit_code 684 687
-    function with_failed_command 690 693
-    function with_artifact_path 696 699
-    function source_urls 704 710
-    function repair_step 720 788
-    function plan_repair 793 801
-    function template 804 810
-    function ladder_note 818 827
-    function unresolved_note 832 834
+    function page_addresses 382 389
+    function fix_fragment 395 452
+    function lino_escape 459 461
+    function repair_document_path 465 475
+    function repair_edit_document 484 513
+    struct RepairAttempt 521 527
+    function links_notation 534 552
+    function attempts_from 563 590
+    function evidence_document 595 606
+    enum RepairStop 616 627
+    enum RepairOutcome 631 642
+    function plan 647 654
+    struct FailedStep 664 670
+    function new 674 682
+    function with_exit_code 685 688
+    function with_failed_command 691 694
+    function with_artifact_path 697 700
+    function source_urls 705 711
+    function repair_step 721 789
+    function plan_repair 794 802
+    function template 805 811
+    function ladder_note 819 828
+    function unresolved_note 833 835
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21175
-    named_node_count 4364
+    total_link_count 21185
+    named_node_count 4367
     distinct_node_kinds 95
     node_kinds
       arguments 316
@@ -74,7 +74,7 @@ self_ast_census
       continue_expression 5
       crate 5
       declaration_list 4
-      doc_comment 188
+      doc_comment 189
       else_clause 2
       enum_item 2
       enum_variant 9
@@ -104,7 +104,7 @@ self_ast_census
       let_declaration 80
       lifetime 4
       lifetime_parameter 1
-      line_comment 210
+      line_comment 211
       macro_invocation 16
       match_arm 20
       match_block 6
@@ -113,7 +113,7 @@ self_ast_census
       mutable_specifier 33
       or_pattern 5
       ordered_field_declaration_list 5
-      outer_doc_comment_marker 134
+      outer_doc_comment_marker 135
       parameter 58
       parameters 29
       parenthesized_expression 2

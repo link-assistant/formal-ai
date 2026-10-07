@@ -2,9 +2,9 @@ self_ast_census
   target src/research_documents/mod.rs
   language rust
   fidelity signature
-  byte_len 8792
-  line_count 257
-  content_id source_module_3be15a570a7c0e3b
+  byte_len 9003
+  line_count 260
+  content_id source_module_ddd395d690521fb5
   symbol_count 12
   symbols
     struct ResearchReference 10 15
@@ -17,5 +17,5 @@ self_ast_census
     enum ArtifactError 70 81
     function validate 84 121
     function lines 123 137
-    function render 140 213
-    function pdf_text_width_units 218 257
+    function render 140 216
+    function pdf_text_width_units 221 260
