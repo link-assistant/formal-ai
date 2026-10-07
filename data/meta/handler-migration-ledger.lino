@@ -118,9 +118,17 @@ handler_migration_ledger
     justification "issue #1085 D1.3: The scoped pandas explanation is role and word conditions over the prompt with the four-language wording moved from Rust into seed responses."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler procedural_how_to
-    status pending
+    status migrated
+    data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handler_how.rs"
+    justification "issue #918 (R914-6): recognition was already the procedural_request, procedural action and common-typo roles; the native discovery plan and its install gate (en, ru, hi, zh) are now the seeded procedural_how_to_plan and procedural_how_to_install_gate responses, the browser plan's heading, install gate, source paths and stage lines are seeded procedural_how_to_* responses, and the fallback and install search queries are the policy procedural_how_to frames, all filled in one pass so a task text with braces is never re-filled. The browser executes the plan live and the native row describes it, so each runtime keeps its own answer; both are pinned unchanged (rust/tests/unit/specification/reasoning_paths_procedures.rs natively)."
+    held_out "rust/tests/unit/specification/reasoning_paths_procedures.rs"
   handler procedural_how_to_followup
-    status pending
+    status migrated
+    data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handler_how.rs"
+    justification "issue #918 (R914-6): the follow-up recognizes the procedural_elaboration role and re-runs the seeded procedural plan of the prior how-to turn in both runtimes; it holds no wording of its own."
+    held_out "rust/tests/unit/specification/reasoning_paths_procedures.rs"
   handler conversation_memory
     status pending
   handler software_project_followup
@@ -304,7 +312,11 @@ handler_migration_ledger
     justification "The fixed table of eight people and their hand-written misspellings is gone; nearest-surface search under a length-scaled edit budget is the only native part, and candidate names come from the entity registry, concept terms and aliases, and fact labels, so no misspelling is stored anywhere."
     held_out "rust/tests/unit/issue_699_handler_migration.rs"
   handler how_it_works
-    status pending
+    status migrated
+    data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handler_how.rs"
+    justification "issue #918 (R914-6): recognition is the mechanism_inquiry, mechanism_predicate, detail_modifier and non_referential_subject roles in both runtimes; the native row now renders the seeded how_it_works, how_it_works_prior_topic and how_it_works_no_context responses the browser already rendered, and both read the concept-query frame from the policy how_it_works block. Deliberate parity fix: the English how_it_works record lacked the closing clause the native answer has, so the browser now ends 'instead of inventing details.' as the native pin in rust/tests/unit/specification/reasoning_paths.rs does."
+    held_out "rust/tests/unit/specification/reasoning_paths.rs"
   handler meta_explanation
     status pending
   handler network_query

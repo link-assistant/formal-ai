@@ -14,6 +14,7 @@ import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.
 
 const worker = createWorkerContext();
 const ready = evaluate(worker, "loadSeed()");
+const defaultFetch = worker.fetch;
 
 const RENAME_REQUEST = "List every fact I contributed about X and rename X to Y in all of them.";
 const RENAME_EN = "Memory program memory_program_41ef0c9602340676 matched 1 event(s), changed 1, and stopped at fixpoint after 2 iteration(s).";
@@ -235,4 +236,37 @@ test("web search texts come from the seed in every language", async () => {
   assert.deepEqual(texts[2], texts[0]);
   assert.equal(plain(evaluate(worker, 'wikinewsFallbackDescription("Mars rover lands", "ru")')), "В Wikinews есть новостная статья «Mars rover lands».");
   assert.equal(plain(evaluate(worker, 'wikinewsFallbackDescription("Mars rover lands", "en")')), 'Wikinews has a news article titled "Mars rover lands".');
+});
+
+// Issue #918 (R914-6): the procedural_how_to and how_it_works rows render
+// every line from seeded procedural_how_to_* and how_it_works* responses and
+// the search-query frames of the `policy procedural_how_to` and
+// `policy how_it_works` blocks, filled in one pass in both runtimes. The
+// browser plan runs its stages live, so it is pinned with the harness's
+// offline fetch; every answer is unchanged.
+async function procedure(prompt, language, preferences) {
+  await ready;
+  worker.fetch = defaultFetch;
+  return plain(await evaluate(worker, `tryProceduralHowTo(${JSON.stringify(prompt)}, ${JSON.stringify(language)}, ${JSON.stringify(preferences)})`));
+}
+
+test("a procedural plan renders its seeded lines in English and Russian", async () => {
+  assert.equal((await procedure("how to make tea", "en", { externalServiceWikihow: false })).content, "Procedural discovery plan for `make tea` (action `make`, object `tea`).\n\nSource path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).\n\nwikiHow is disabled in settings.\n\nFallback web search for `how to make tea`:\n\nNo CORS-enabled web search results were returned for `how to make tea`.\n\nProviders tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.");
+  assert.equal((await procedure("how to install docker", "en", {})).content, "Procedural discovery plan for `install docker` (action `install`, object `docker`).\n\nFor install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with `docker install official documentation` and keeps `how to install docker` as fallback.\n\nSource path: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check.\n\nOfficial-documentation web search for `docker install official documentation` did not return ranked guidance; preserving `how to install docker` as the general how-to fallback.\n\nwikiHow candidate `Install-Docker` did not return explicit steps (http_404).\n\nFallback web search for `how to install docker`:\n\nNo CORS-enabled web search results were returned for `how to install docker`.\n\nProviders tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.");
+  const russian = await procedure("как установить docker", "ru", { externalServiceWikihow: false });
+  assert.equal(russian.content, "План поиска процедуры для `установить docker` (действие `install`, объект `docker`).\n\nДля задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с `docker install official documentation` и держит `how to установить docker` как fallback.\n\nПуть источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках).\n\nOfficial-documentation web search for `docker install official documentation` did not return ranked guidance; preserving `how to установить docker` as the general how-to fallback.\n\nwikiHow is disabled in settings.\n\nFallback web search for `how to установить docker`:\n\nНе получены результаты веб-поиска с поддержкой CORS для `how to установить docker`.\n\nПопробованы провайдеры: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.");
+  assert.equal(russian.query, "how to установить docker");
+});
+
+test("a task text with braces is never re-filled", async () => {
+  const response = await procedure("how to {task} it {k}", "en", { externalServiceWikihow: false });
+  assert.ok(response.content.startsWith("Procedural discovery plan for `task it k` (action `task`, object `it k`)."));
+});
+
+test("the mechanism discovery plan answers as the native row does", async () => {
+  const response = await solveWith("how does AUR work?", []);
+  assert.equal(response.intent, "how_it_works");
+  // Deliberate parity fix: the English record now ends as the native
+  // answer pinned in rust/tests/unit/specification/reasoning_paths.rs does.
+  assert.equal(response.content, "Mechanism discovery plan for `AUR`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `AUR` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. If no source explains the mechanism, it should ask for a source or a narrower term instead of inventing details.");
 });

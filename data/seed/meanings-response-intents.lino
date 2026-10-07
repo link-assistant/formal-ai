@@ -882,6 +882,126 @@ meanings
     unit "not applicable"
     example "Wikinews has a news article titled Mars rover lands."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_plan
+    defined-by answer
+    role localized_response_template
+    precondition "the native runtime answers a procedural how-to request it cannot execute offline"
+    effect "the answer describes the source-backed discovery plan for the task, its action and object"
+    unit "not applicable"
+    example "Procedural discovery plan for make tea."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_install_gate
+    defined-by answer
+    role localized_response_template
+    precondition "a native procedural plan concerns an install task"
+    effect "the answer says official documentation is searched before community how-to sources"
+    unit "not applicable"
+    example "the first source gate prefers the product's official documentation"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_heading
+    defined-by answer
+    role localized_response_template
+    precondition "the browser runs a procedural how-to plan"
+    effect "the answer heads the plan with the task, its action and object"
+    unit "not applicable"
+    example "Procedural discovery plan for make tea."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_live_install_gate
+    defined-by answer
+    role localized_response_template
+    precondition "the browser plan concerns an install task"
+    effect "the answer says the official-documentation search runs first and names the fallback query"
+    unit "not applicable"
+    example "It starts with docker install official documentation."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_source_path_install_wikihow
+    defined-by answer
+    role localized_response_template
+    precondition "an install plan runs with wikiHow enabled"
+    effect "the answer lists the source path with the official-documentation stage and the wikiHow fallback"
+    unit "not applicable"
+    example "Source path: Wikipedia -> Wikidata -> official documentation web search"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_source_path_install_no_wikihow
+    defined-by answer
+    role localized_response_template
+    precondition "an install plan runs with wikiHow disabled"
+    effect "the answer lists the source path without the wikiHow stage"
+    unit "not applicable"
+    example "wikiHow disabled in settings"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_source_path_wikihow
+    defined-by answer
+    role localized_response_template
+    precondition "a plan runs with wikiHow enabled"
+    effect "the answer lists the source path through the wikiHow API"
+    unit "not applicable"
+    example "Source path: Wikipedia -> Wikidata -> wikiHow API"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_source_path_no_wikihow
+    defined-by answer
+    role localized_response_template
+    precondition "a plan runs with wikiHow disabled"
+    effect "the answer lists the source path without the wikiHow stage"
+    unit "not applicable"
+    example "Source path: Wikipedia -> Wikidata -> web search fallback"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_official_search
+    defined-by answer
+    role localized_response_template
+    precondition "the official-documentation search returned ranked guidance"
+    effect "the answer introduces the official search results"
+    unit "not applicable"
+    example "Official-documentation web search for docker install official documentation:"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_official_search_miss
+    defined-by answer
+    role localized_response_template
+    precondition "the official-documentation search returned no ranked guidance"
+    effect "the answer says so and keeps the general how-to query as fallback"
+    unit "not applicable"
+    example "did not return ranked guidance"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_wikihow_returned
+    defined-by answer
+    role localized_response_template
+    precondition "the wikiHow API returned a page with steps"
+    effect "the answer names the returned page and the candidate before the steps"
+    unit "not applicable"
+    example "wikiHow API returned Make Tea for candidate Make-Tea."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_wikihow_miss
+    defined-by answer
+    role localized_response_template
+    precondition "the wikiHow candidate returned no explicit steps"
+    effect "the answer names the candidate and the error"
+    unit "not applicable"
+    example "wikiHow candidate Make-Tea did not return explicit steps."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_wikihow_disabled
+    defined-by answer
+    role localized_response_template
+    precondition "wikiHow is disabled in the settings"
+    effect "the answer says the wikiHow stage was skipped"
+    unit "not applicable"
+    example "wikiHow is disabled in settings."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_fallback_search
+    defined-by answer
+    role localized_response_template
+    precondition "the fallback web search returned results"
+    effect "the answer introduces the fallback search results"
+    unit "not applicable"
+    example "Fallback web search for how to make tea:"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  procedural_how_to_fallback_search_plan
+    defined-by answer
+    role localized_response_template
+    precondition "the fallback web search could not run"
+    effect "the answer names the providers and the fusion constant the search should use"
+    unit "not applicable"
+    example "Fallback web search should use reciprocal rank fusion."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
   unit_incompatibility
     defined-by answer
     role localized_response_template

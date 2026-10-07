@@ -194,7 +194,7 @@ function howItWorksFromHistory(history) {
   const prior = lastHistoryTurn(history, "assistant");
   const term = prior ? howItWorksPriorTopic(prior) : null;
   if (term) {
-    const concept = tryConceptLookup(`what is ${term}`);
+    const concept = tryConceptLookup(howPolicy("how_it_works", "concept_query", { term }));
     if (concept) {
       concept.evidence = [`followup:subject:prior_reply:${term}`, ...concept.evidence];
       return concept;

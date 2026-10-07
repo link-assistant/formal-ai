@@ -350,3 +350,9 @@ handler_rules
     final_amount_marker "final amount:"
   policy playwright_script
     docs_url "https://playwright.dev/docs/writing-tests"
+  policy procedural_how_to
+    fallback_query "how to {task}"
+    install_query "{target} install official documentation"
+  policy how_it_works
+    concept_query "what is {term}"
+    mechanism_query "how {subject} works"

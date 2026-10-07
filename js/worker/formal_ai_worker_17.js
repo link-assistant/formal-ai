@@ -832,11 +832,33 @@ function externalServiceEnabled(preferences, key) {
   return !(preferences && preferences[key] === false);
 }
 
+// Issue #918: the search-query frames and every line of the procedural plan
+// are seed data — the `policy procedural_how_to` block of
+// data/seed/handler-rules.lino and the seeded procedural_how_to_* responses —
+// filled in one pass so a task text with braces is never re-filled. Mirrors
+// how_policy / how_response in rust/src/solver_handler_how.rs.
+function howFillOnce(template, values) {
+  return String(template || "").replace(/\{([^{}]*)\}/gu, (whole, name) =>
+    Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : whole);
+}
+
+function howPolicy(handler, key, values) {
+  return howFillOnce(handlerRulesPolicy(handler, key), values);
+}
+
+function howResponse(intent, language, values = {}) {
+  return howFillOnce(answerFor(intent, language), values);
+}
+
+function proceduralFallbackQuery(task) {
+  return howPolicy("procedural_how_to", "fallback_query", { task });
+}
+
 function proceduralSearchQuery(task) {
-  const fallbackQuery = `how to ${task.task}`;
+  const fallbackQuery = proceduralFallbackQuery(task.task);
   if (!task || task.action !== "install") return fallbackQuery;
   const target = String(task.object || task.task || "").trim();
-  return `${target || task.task} install official documentation`.trim();
+  return howPolicy("procedural_how_to", "install_query", { target: target || task.task }).trim();
 }
 
 async function tryProceduralHowTo(prompt, language, preferences = {}) {
@@ -844,7 +866,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const task = extractProceduralHowToTask(normalized);
   if (!task) return null;
 
-  const query = `how to ${task.task}`;
+  const query = proceduralFallbackQuery(task.task);
   // Issue #991: the browser and the Rust solver run the same bounded
   // multi-source synthesis (worker module 24, mirroring `src/how_to_guide.rs`).
   // When it captures enough corroborated steps the answer *is* the synthesised
@@ -892,70 +914,16 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
     evidence.push(`spelling_correction:${correction.from}->${correction.to}`);
   }
 
-  const sourcePath = isInstallProcedure
-    ? wikihowEnabled
-      ? "Source path: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
-      : "Source path: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow disabled in settings)."
-    : wikihowEnabled
-      ? "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
-      : "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).";
-  const russianSourcePath = isInstallProcedure
-    ? wikihowEnabled
-      ? "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
-      : "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках)."
-    : wikihowEnabled
-      ? "Путь источников: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
-      : "Путь источников: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow отключен в настройках).";
-  const installGate = `For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with \`${searchQuery}\` and keeps \`${query}\` as fallback.`;
-  let lines;
-  if (language === "ru") {
-    lines = [
-      `План поиска процедуры для \`${task.task}\` (действие \`${task.action}\`, объект \`${task.object}\`).`,
-      "",
-      ...(isInstallProcedure
-        ? [
-            `Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с \`${searchQuery}\` и держит \`${query}\` как fallback.`,
-            "",
-          ]
-        : []),
-      russianSourcePath,
-      "",
-    ];
-  } else if (language === "hi") {
-    lines = [
-      `\`${task.task}\` के लिए procedural discovery plan (action \`${task.action}\`, object \`${task.object}\`).`,
-      "",
-      ...(isInstallProcedure
-        ? [
-            `इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver पहले \`${searchQuery}\` चलाता है और \`${query}\` को fallback रखता है.`,
-            "",
-          ]
-        : []),
-      sourcePath,
-      "",
-    ];
-  } else if (language === "zh") {
-    lines = [
-      `\`${task.task}\` 的过程发现计划（action \`${task.action}\`, object \`${task.object}\`）。`,
-      "",
-      ...(isInstallProcedure
-        ? [
-            `对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行 \`${searchQuery}\`，并把 \`${query}\` 保留为 fallback。`,
-            "",
-          ]
-        : []),
-      sourcePath,
-      "",
-    ];
-  } else {
-    lines = [
-      `Procedural discovery plan for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
-      "",
-      ...(isInstallProcedure ? [installGate, ""] : []),
-      sourcePath,
-      "",
-    ];
-  }
+  const pathVariant = `${isInstallProcedure ? "install_" : ""}${wikihowEnabled ? "wikihow" : "no_wikihow"}`;
+  const lines = [
+    howResponse("procedural_how_to_heading", language, { task: task.task, action: task.action, object: task.object }),
+    "",
+    ...(isInstallProcedure
+      ? [howResponse("procedural_how_to_live_install_gate", language, { search_query: searchQuery, fallback_query: query }), ""]
+      : []),
+    howResponse(`procedural_how_to_source_path_${pathVariant}`, language === "ru" ? "ru" : "en"),
+    "",
+  ];
 
   let confidence = 0.78;
   let diagnostics = null;
@@ -976,15 +944,13 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
       officialSearchUsable = officialSearch.confidence >= 0.8;
       if (officialSearchUsable) {
         confidence = Math.max(confidence, 0.82);
-        lines.push(`Official-documentation web search for \`${searchQuery}\`:`);
+        lines.push(howResponse("procedural_how_to_official_search", "en", { query: searchQuery }));
         lines.push("");
         lines.push(officialSearch.content);
       }
     }
     if (!officialSearchUsable) {
-      lines.push(
-        `Official-documentation web search for \`${searchQuery}\` did not return ranked guidance; preserving \`${query}\` as the general how-to fallback.`,
-      );
+      lines.push(howResponse("procedural_how_to_official_search_miss", "en", { query: searchQuery, fallback: query }));
       lines.push("");
     }
   }
@@ -1010,7 +976,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
       evidence.push(`source:${wikiHow.sourceUrl}`);
       formalizedObject = `WH:${pageTitle}`;
       confidence = 0.86;
-      lines.push(`wikiHow API returned \`${wikiHow.title}\` for candidate \`${pageTitle}\`.`);
+      lines.push(howResponse("procedural_how_to_wikihow_returned", "en", { title: wikiHow.title, candidate: pageTitle }));
       lines.push("");
       wikiHow.steps.forEach((step, index) => {
         lines.push(`${index + 1}. ${step}`);
@@ -1023,8 +989,8 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
       }
       evidence.push("procedural_how_to:stage:web_search");
       const missNote = wikihowEnabled
-        ? `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`
-        : "wikiHow is disabled in settings.";
+        ? howResponse("procedural_how_to_wikihow_miss", "en", { candidate: pageTitle, error: wikiHow.error || "no_match" })
+        : howResponse("procedural_how_to_wikihow_disabled", "en");
       const fallbackSearchQuery = isInstallProcedure ? query : searchQuery;
       const webSearch = await runWebSearchQuery(
         fallbackSearchQuery,
@@ -1037,7 +1003,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
         formalizedObject = webSearch.formalizedObject || formalizedObject;
         lines.push(missNote);
         lines.push("");
-        lines.push(`Fallback web search for \`${fallbackSearchQuery}\`:`);
+        lines.push(howResponse("procedural_how_to_fallback_search", "en", { query: fallbackSearchQuery }));
         lines.push("");
         lines.push(webSearch.content);
       } else {
@@ -1048,9 +1014,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
         evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
         lines.push(missNote);
         lines.push("");
-        lines.push(
-          `Fallback web search for \`${fallbackSearchQuery}\` should use ${providerSummary} and reciprocal rank fusion (k = ${webSearchRrfK()}).`,
-        );
+        lines.push(howResponse("procedural_how_to_fallback_search_plan", "en", { query: fallbackSearchQuery, providers: providerSummary, k: webSearchRrfK() }));
       }
     }
   }
