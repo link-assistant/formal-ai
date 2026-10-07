@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/compound_interest.rs
   language rust
   fidelity signature
-  byte_len 18185
+  byte_len 18197
   line_count 558
-  content_id source_module_609e52b4b89fe5a1
+  content_id source_module_667dcbd33422595c
   symbol_count 34
   symbols
     const USD_EUR_FALLBACK_RATE 15 15

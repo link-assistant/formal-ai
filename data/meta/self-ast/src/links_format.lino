@@ -2,16 +2,16 @@ self_ast_census
   target src/links_format.rs
   language rust
   fidelity signature
-  byte_len 6679
-  line_count 148
-  content_id source_module_f09a377f63712a3c
+  byte_len 7022
+  line_count 154
+  content_id source_module_062a6fc94616c479
   symbol_count 8
   symbols
     const PROBE 7 7
     function format_lino_record 9 21
-    function format_lino_value_verbatim 41 52
-    function format_lino_value 68 70
-    function push_lino_node 74 84
-    function push_lino_field 90 100
-    function sanitize_lino_value 116 122
-    function flatten_lino_value 143 148
+    function format_lino_value_verbatim 47 58
+    function format_lino_value 74 76
+    function push_lino_node 80 90
+    function push_lino_field 96 106
+    function sanitize_lino_value 122 128
+    function flatten_lino_value 149 154

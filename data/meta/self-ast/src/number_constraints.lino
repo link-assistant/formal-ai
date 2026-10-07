@@ -2,9 +2,9 @@ self_ast_census
   target src/number_constraints.rs
   language rust
   fidelity signature
-  byte_len 14415
+  byte_len 14423
   line_count 427
-  content_id source_module_0c751b3e84106512
+  content_id source_module_6f50924f868e49b4
   symbol_count 28
   symbols
     struct Bound 21 24

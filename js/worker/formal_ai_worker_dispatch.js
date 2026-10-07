@@ -96,7 +96,7 @@ const CLAIM_EVIDENCE = Object.freeze({
   fetch_url: (prompt, normalized) => extractHttpFetchUrl(prompt, normalized) !== null,
   navigation_url: (prompt, normalized) => extractUrlNavigateUrl(prompt, normalized) !== null,
   calendar_date_signal: (prompt, normalized) => mentionsCalendarCreateRequest(normalized),
-  code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null, ...NUMERIC_CLAIM_EVIDENCE,
+  code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null, ...(typeof NUMERIC_CLAIM_EVIDENCE === "object" ? NUMERIC_CLAIM_EVIDENCE : {}),
 });
 
 function claimRouteRows() {

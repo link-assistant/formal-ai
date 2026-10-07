@@ -2,15 +2,15 @@ self_ast_census
   target src/capability_routing/claims.rs
   language rust
   fidelity signature
-  byte_len 5221
-  line_count 129
-  content_id source_module_5804356d8ac8dafa
+  byte_len 7527
+  line_count 183
+  content_id source_module_81693a011dc11509
   symbol_count 7
   symbols
     struct ClaimRow 22 27
-    const CLAIM_EVIDENCE_KINDS 33 45
-    function claim_rows_from 49 71
-    function claim_rows 75 78
-    static ROWS 76 76
-    function claim_evidence_holds 82 115
-    function claim_admitted 122 129
+    const CLAIM_EVIDENCE_KINDS 33 55
+    function claim_rows_from 59 81
+    function claim_rows 85 88
+    static ROWS 86 86
+    function claim_evidence_holds 92 169
+    function claim_admitted 176 183

@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/unit_conversion.rs
   language rust
   fidelity signature
-  byte_len 16235
+  byte_len 16243
   line_count 426
-  content_id source_module_88f789b4c47e607f
+  content_id source_module_bf5edfe47da6bbd7
   symbol_count 14
   symbols
     const ROLE_UNIT_CONVERSION_QUESTION 32 32

@@ -564,7 +564,7 @@ Generated from `data/benchmarks/external-results.lino`.
 | `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
 | `humaneval` | 2026-10-07 | 164 | 21 | 164 | 0.352.1 |
 | `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
-| `mbpp` | 2026-09-18 | 500 | 49 | 500 | 0.350.0 |
+| `mbpp` | 2026-10-07 | 500 | 68 | 500 | 0.352.1 |
 | `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `swebench_lite` | 2026-09-07 | 1 | 0 | 1 | 0.347.0 |
 <!-- status:end benchmarks -->

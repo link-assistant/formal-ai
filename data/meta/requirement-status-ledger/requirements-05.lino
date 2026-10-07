@@ -92,7 +92,7 @@ requirement_status_ledger_shard requirements_05
     id "R1177-12"
     shard "docs/requirements/issue-1177-code-tasks-formal-answers.md"
     verdict "partial"
-    delivered "partial — HumanEval full slice 21/164 recorded (sharded run 37613780755; was 14/164); MBPP 500-case sharded run pending"
+    delivered "implemented — HumanEval full slice 21/164 (sharded run 37613780755; was 14/164) and MBPP 68/500 online (sharded run 37622330993; was 60/500) recorded, floors raised"
     issue "1177"
     automated_test ""
     manual "`rust/tests/unit/specification/external_benchmarks.rs`"

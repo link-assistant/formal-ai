@@ -278,6 +278,17 @@ Every failure was traced to a root cause; no test was relaxed to pass.
     old bundle, while the JS server read the new one. The key now covers
     both trees. The ratchet stays at 5.
 
+28. **A spread runs at load time; a lookup runs at call time.** The
+    numeric claim kinds were merged into `CLAIM_EVIDENCE` with
+    `...NUMERIC_CLAIM_EVIDENCE`. In the worker, `formal_ai_worker_16.js`
+    loads before the dispatch file, so this worked there. The handler-registry
+    test loads the dispatch file alone, though, and the spread threw a
+    `ReferenceError` there. The other evidence kinds call their helpers
+    lazily, inside the arrow. The spread now falls back to an empty object
+    when the numeric table is absent. MBPP's full 500-case slice, measured
+    in twenty-five graded windows, rose from 60 to 68 online (R1177-12 is
+    implemented).
+
 ## Constraints
 
 - **JavaScript first, full parity.** Every requirement lands in JavaScript

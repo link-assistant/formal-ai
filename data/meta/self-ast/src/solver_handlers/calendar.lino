@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/calendar.rs
   language rust
   fidelity signature
-  byte_len 28136
+  byte_len 28156
   line_count 756
-  content_id source_module_b4226e6d177c1aea
+  content_id source_module_70d7bf0cd706130b
   symbol_count 49
   symbols
     module date_weekday 18 18

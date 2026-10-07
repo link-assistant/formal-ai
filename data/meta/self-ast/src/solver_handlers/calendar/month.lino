@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/calendar/month.rs
   language rust
   fidelity signature
-  byte_len 9546
+  byte_len 9539
   line_count 234
-  content_id source_module_4ac54cdf05981c40
+  content_id source_module_89a85f2a2144d40a
   symbol_count 12
   symbols
     const MONTH_UNIT_SLUG 27 27
