@@ -152,6 +152,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/prompt-patterns.lino",
   "seed/proof-program-templates.lino",
   "seed/register-lexicon.lino",
+  "seed/research-table-procedure.lino",
   "seed/self-improvement-loop.lino",
   "seed/sentence-punctuation.lino",
   "seed/shell-intents.lino",

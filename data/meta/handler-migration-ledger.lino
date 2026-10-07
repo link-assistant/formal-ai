@@ -82,9 +82,17 @@ handler_migration_ledger
   handler learn_from_source
     status pending
   handler research_comparison_table
-    status pending
+    status migrated
+    data "data/seed/research-table-procedure.lino|data/seed/meanings-research-table.lino"
+    primitive "rust/src/solver_handlers/research_table.rs"
+    justification "issue #918 (R914-6): the trigger, research-signal and criterion words are meaning roles; the columns, their localized labels and source-dependent cell instructions, and the localized table text are the procedure seed, which also supplies the default columns the code used to list as an enum. The native part reads the prior research turn and lays out the table. The browser twin (js/worker/formal_ai_worker_16.js) now reads the same procedure seed and no longer writes memorized topic facts into the cells; both runtimes render the same table, pinned byte-for-byte in rust/tests/web/issue-0918-handler-rules-batch.test.mjs."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler research_result_followup
-    status pending
+    status migrated
+    data "data/seed/research-table-procedure.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handlers/research_table.rs"
+    justification "issue #918 (R914-6): the whole-prompt result follow-ups, the prior-answer status markers and the fallback status are the procedure seed, and each status renders its seeded research_result_followup_<status> response (English-only, as before) with the prior task preview in a slot. The native part classifies the prior assistant turn and previews the prior research request. Browser twin: tryResearchResultFollowup in js/worker/formal_ai_worker_16.js reads the same records; pinned in both runtimes."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler docs_method_explanation
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-docs.lino|data/seed/multilingual-responses-policy.lino"

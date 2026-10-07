@@ -665,6 +665,7 @@ seed_registry
     bundle true
   seed research-table-procedure
     bundle true
+    web true
   seed self-improvement-loop
     bundle true
     web true

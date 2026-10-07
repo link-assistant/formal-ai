@@ -123,3 +123,39 @@ test("the buy-an-elephant idiom answers through its seed rule in the prompt lang
     assert.equal(response.content, expected, prompt);
   }
 });
+
+const RESEARCH_SEARCH = "Search for information about:\n1. Machine learning algorithms\n2. Deep learning vs traditional ML\n3. Neural networks basics";
+const RESEARCH_TABLE = "Research comparison table (draft; verify claims against the source links from the preceding retrieval).\n\n| Topic | Key differences | Use cases | Advantages | Disadvantages |\n| --- | --- | --- | --- | --- |\n| Machine learning algorithms | Extract from the preceding source captures what distinguishes this topic from the others. | Extract the practical settings in which the preceding sources apply this topic. | Extract strengths supported by the preceding source captures; leave unsupported claims unverified. | Extract limitations supported by the preceding source captures; leave unsupported claims unverified. |\n| Deep learning vs traditional ML | Extract from the preceding source captures what distinguishes this topic from the others. | Extract the practical settings in which the preceding sources apply this topic. | Extract strengths supported by the preceding source captures; leave unsupported claims unverified. | Extract limitations supported by the preceding source captures; leave unsupported claims unverified. |\n| Neural networks basics | Extract from the preceding source captures what distinguishes this topic from the others. | Extract the practical settings in which the preceding sources apply this topic. | Extract strengths supported by the preceding source captures; leave unsupported claims unverified. | Extract limitations supported by the preceding source captures; leave unsupported claims unverified. |";
+const RESEARCH_TASK = "Research task: What would be the economic impact if Rust replaced C++ in all major open-source projects by 2030?\nSteps required:\n1. Search for current C++ vs Rust usage statistics in open-source projects.";
+const RESEARCH_PREVIEW = "Research task: What would be the economic impact if Rust replaced C++ in all major open-source projects by 2030? Steps required: 1. Search for current C++ vs Rust usage statistics in open-source projects.";
+const RESEARCH_NO_RESULTS = `The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: \`${RESEARCH_PREVIEW}\`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources.`;
+const RESEARCH_OPEN = `There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: \`${RESEARCH_PREVIEW}\`\n\nNext step: run the search or provide source links; then I can produce the requested result.`;
+
+test("a research comparison table renders the seeded procedure, never a memorized fact", async () => {
+  const search = await solve(RESEARCH_SEARCH);
+  await ready;
+  const response = await worker.solve(
+    "create a comparison table showing:\n- Key differences\n- Use cases for each\n- Advantages and disadvantages",
+    [{ role: "user", content: RESEARCH_SEARCH }, { role: "assistant", content: search.content }],
+    {}, {}, [], {},
+  );
+  assert.equal(response.intent, "research_comparison_table");
+  assert.equal(response.content, RESEARCH_TABLE);
+});
+
+test("a research result follow-up reads its status and wording from the seed", async () => {
+  await ready;
+  for (const [priorAnswer, expected, status] of [
+    ["No CORS-enabled web search results were returned for `x`.\n\nProviders tried: DuckDuckGo.", RESEARCH_NO_RESULTS, "no_results"],
+    ["Here is a summary I wrote.", RESEARCH_OPEN, "open_research"],
+  ]) {
+    const response = await worker.solve(
+      "What is the result?",
+      [{ role: "user", content: RESEARCH_TASK }, { role: "assistant", content: priorAnswer }],
+      {}, {}, [], {},
+    );
+    assert.equal(response.intent, "research_result_followup", status);
+    assert.equal(response.content, expected, status);
+    assert.ok(response.evidence.includes(`research_result_followup:status:${status}`), status);
+  }
+});

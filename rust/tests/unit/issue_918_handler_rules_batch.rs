@@ -16,14 +16,21 @@
 //! native primitive). Both had English-only wording, so their responses are
 //! seeded in English only and every language renders it exactly as before.
 //!
+//! The third batch moved the research follow-ups onto their procedure seed:
+//! `research_comparison_table` and `research_result_followup` read their
+//! columns, statuses, whole-prompt follow-ups and wording from
+//! `data/seed/research-table-procedure.lino` and the seeded
+//! `research_result_followup_<status>` responses in both runtimes; the
+//! browser twin stopped writing memorized topic facts into the table cells.
+//!
 //! The English and Russian answers below are byte-identical to the ones the
 //! deleted Rust produced (`tests/unit/specification/issue_146.rs` pins the
 //! same two conversation-topic answers). The browser twin is
 //! `rust/tests/web/issue-0918-handler-rules-batch.test.mjs`.
 
-use formal_ai::FormalAiEngine;
 use formal_ai::event_log::EventLog;
 use formal_ai::rule_interpreter::{handler_claims, rules, run_handler};
+use formal_ai::{ConversationTurn, FormalAiEngine, UniversalSolver};
 
 const TOPIC_EN: &str = "We can talk about existence. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.";
 const TOPIC_RU: &str = "Можем. Тема: бытие. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник.";
@@ -210,5 +217,55 @@ fn an_incompatible_unit_pair_answers_unchanged_from_the_seeded_wording() {
         let response = FormalAiEngine.answer(prompt);
         assert_eq!(response.intent, "unit_incompatibility", "{prompt}");
         assert_eq!(response.answer, expected, "{prompt}");
+    }
+}
+
+const RESEARCH_SEARCH: &str = "Search for information about:\n1. Machine learning algorithms\n2. Deep learning vs traditional ML\n3. Neural networks basics";
+const RESEARCH_TABLE: &str = "Research comparison table (draft; verify claims against the source links from the preceding retrieval).\n\n| Topic | Key differences | Use cases | Advantages | Disadvantages |\n| --- | --- | --- | --- | --- |\n| Machine learning algorithms | Extract from the preceding source captures what distinguishes this topic from the others. | Extract the practical settings in which the preceding sources apply this topic. | Extract strengths supported by the preceding source captures; leave unsupported claims unverified. | Extract limitations supported by the preceding source captures; leave unsupported claims unverified. |\n| Deep learning vs traditional ML | Extract from the preceding source captures what distinguishes this topic from the others. | Extract the practical settings in which the preceding sources apply this topic. | Extract strengths supported by the preceding source captures; leave unsupported claims unverified. | Extract limitations supported by the preceding source captures; leave unsupported claims unverified. |\n| Neural networks basics | Extract from the preceding source captures what distinguishes this topic from the others. | Extract the practical settings in which the preceding sources apply this topic. | Extract strengths supported by the preceding source captures; leave unsupported claims unverified. | Extract limitations supported by the preceding source captures; leave unsupported claims unverified. |";
+const RESEARCH_TASK: &str = "Research task: What would be the economic impact if Rust replaced C++ in all major open-source projects by 2030?\nSteps required:\n1. Search for current C++ vs Rust usage statistics in open-source projects.";
+const RESEARCH_NO_RESULTS: &str = "The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: `Research task: What would be the economic impact if Rust replaced C++ in all major open-source projects by 2030? Steps required: 1. Search for current C++ vs Rust usage statistics in open-source projects.`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources.";
+const RESEARCH_OPEN: &str = "There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: `Research task: What would be the economic impact if Rust replaced C++ in all major open-source projects by 2030? Steps required: 1. Search for current C++ vs Rust usage statistics in open-source projects.`\n\nNext step: run the search or provide source links; then I can produce the requested result.";
+
+#[test]
+fn a_research_comparison_table_renders_the_seeded_procedure() {
+    let solver = UniversalSolver::default();
+    let history = [
+        ConversationTurn::user(RESEARCH_SEARCH),
+        ConversationTurn::assistant(solver.solve(RESEARCH_SEARCH).answer),
+    ];
+    let response = solver.solve_with_history(
+        "create a comparison table showing:\n- Key differences\n- Use cases for each\n- Advantages and disadvantages",
+        &history,
+    );
+    assert_eq!(response.intent, "research_comparison_table");
+    assert_eq!(response.answer, RESEARCH_TABLE);
+}
+
+#[test]
+fn a_research_result_followup_reads_its_status_and_wording_from_the_seed() {
+    let solver = UniversalSolver::default();
+    for (prior_answer, expected, status) in [
+        (
+            "No CORS-enabled web search results were returned for `x`.\n\nProviders tried: DuckDuckGo.",
+            RESEARCH_NO_RESULTS,
+            "no_results",
+        ),
+        ("Here is a summary I wrote.", RESEARCH_OPEN, "open_research"),
+    ] {
+        let history = [
+            ConversationTurn::user(RESEARCH_TASK),
+            ConversationTurn::assistant(prior_answer),
+        ];
+        let response = solver.solve_with_history("What is the result?", &history);
+        assert_eq!(response.intent, "research_result_followup", "{status}");
+        assert_eq!(response.answer, expected, "{status}");
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("research_result_followup:status:{status}")),
+            "{status}: {:?}",
+            response.evidence_links
+        );
     }
 }

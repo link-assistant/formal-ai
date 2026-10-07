@@ -1010,10 +1010,6 @@ rust/src/solver_handlers/policy_gates.rs	loops are refused. Re-send a bounded ve
 rust/src/solver_handlers/policy_gates.rs	mode runs in an isolated sandbox so the host stays safe.
 rust/src/solver_handlers/policy_gates.rs	step will be appended to the action log.
 rust/src/solver_handlers/program_synthesis.rs	tests_passed assertion_count={}
-rust/src/solver_handlers/research_table.rs	The previous turn only set up the research/search step. It did not produce a final result, calculation, or sourced executive summary yet.\n\nPrior research task: `{preview}`\n\nNext step: run the source search and use the returned sources to finish the calculation.
-rust/src/solver_handlers/research_table.rs	The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: `{preview}`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources.
-rust/src/solver_handlers/research_table.rs	The result of the previous research step is: web search could not run because the CORS-readable search providers were disabled. No verified research result was produced yet.\n\nPrior research task: `{preview}`\n\nNext step: enable a search provider or provide source links; then I can complete the requested analysis from those sources.
-rust/src/solver_handlers/research_table.rs	There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: `{preview}`\n\nNext step: run the search or provide source links; then I can produce the requested result.
 rust/src/solver_handlers/self_awareness.rs	- **Conversation memory**: {}.
 rust/src/solver_handlers/self_awareness.rs	- **Conversation memory**: {}。
 rust/src/solver_handlers/self_awareness.rs	- **Execution surface**: {} (`{}`).\n

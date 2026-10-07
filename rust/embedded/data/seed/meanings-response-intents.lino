@@ -530,6 +530,38 @@ meanings
     unit "not applicable"
     example "meters measures length; kilogram measures mass."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  research_result_followup_no_results
+    defined-by answer
+    role localized_response_template
+    precondition "the prior research step returned no CORS-readable web search results"
+    effect "the answer reports that no verified source data exists yet and names the prior research task and the next step"
+    unit "not applicable"
+    example "Prior research task: the economic impact of replacing C++ with Rust."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  research_result_followup_all_providers_disabled
+    defined-by answer
+    role localized_response_template
+    precondition "the prior research step could not search because every CORS-readable provider was disabled"
+    effect "the answer reports that no research result was produced and asks for a provider or source links"
+    unit "not applicable"
+    example "Prior research task: the economic impact of replacing C++ with Rust."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  research_result_followup_search_plan_only
+    defined-by answer
+    role localized_response_template
+    precondition "the prior turn only set up the research search step"
+    effect "the answer reports that no final result exists yet and points at running the source search"
+    unit "not applicable"
+    example "Prior research task: the economic impact of replacing C++ with Rust."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  research_result_followup_open_research
+    defined-by answer
+    role localized_response_template
+    precondition "the prior research request has no completed source-backed answer"
+    effect "the answer reports that there is no verified final result yet and names the next step"
+    unit "not applicable"
+    example "Prior research task: the economic impact of replacing C++ with Rust."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
   fact_comparison
     defined-by answer
     role localized_response_template

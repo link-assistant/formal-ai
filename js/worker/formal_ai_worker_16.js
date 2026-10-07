@@ -486,19 +486,61 @@ function extractResearchTopics(prompt) {
   return topics;
 }
 
-const RESEARCH_TABLE_DEFAULT_CRITERIA = [
-  "key_differences",
-  "use_cases",
-  "advantages",
-  "disadvantages",
-];
+let cachedResearchTableProcedure = null;
 
-const RESEARCH_TABLE_CRITERION_LABELS = {
-  key_differences: "Key differences",
-  use_cases: "Use cases",
-  advantages: "Advantages",
-  disadvantages: "Disadvantages",
-};
+/**
+ * The research comparison procedure of data/seed/research-table-procedure.lino:
+ * the prior-answer statuses and their markers (a status without markers is the
+ * fallback), the localized table text, the criterion columns with their labels
+ * and cell instructions, and the whole-prompt result follow-ups. Mirrors
+ * parse_research_table_procedure in rust/src/solver_handlers/research_table.rs.
+ * @returns {object}
+ */
+function researchTableProcedure() {
+  if (cachedResearchTableProcedure) return cachedResearchTableProcedure;
+  const text = seedRawText(SEED_RAW, "research-table-procedure.lino");
+  const root = text
+    ? parseLinoTree(text).children.find((node) => node.name === "research_table_procedure")
+    : null;
+  const records = root ? root.children : [];
+  const localized = (node, name) => linoChildValues(node, name).map((raw) => {
+    const value = String(raw || "");
+    const space = value.search(/\s/u);
+    if (space < 0) return null;
+    const text = value.slice(space).trim().replace(/^"+|"+$/gu, "").split('""').join('"');
+    return { language: value.slice(0, space), text };
+  }).filter(Boolean);
+  const named = (name) => records.filter((node) => node.name === name);
+  const procedure = {
+    statuses: named("status").map((node) => ({
+      slug: node.value,
+      markers: linoChildValues(node, "marker").map((marker) => String(marker).toLowerCase()),
+    })),
+    tableTexts: named("table_text").map((node) => ({
+      language: node.value,
+      intro: childValue(node, "intro"),
+      topicLabel: childValue(node, "topic_label"),
+    })),
+    criteria: named("criterion").map((node) => ({
+      slug: node.value,
+      labels: localized(node, "label"),
+      instructions: localized(node, "instruction"),
+    })),
+    followupRequests: named("followup_request").map((node) => String(node.value).toLowerCase()),
+  };
+  if (text) cachedResearchTableProcedure = procedure;
+  return procedure;
+}
+
+function researchTableColumn(slug) {
+  return researchTableProcedure().criteria.find((column) => column.slug === slug) || null;
+}
+
+function researchLocalizedValue(values, language) {
+  const hit = values.find((value) => value.language === language) ||
+    values.find((value) => value.language === "en");
+  return hit ? hit.text : null;
+}
 
 function pushUniqueCriterion(criteria, criterion) {
   if (!criteria.includes(criterion)) criteria.push(criterion);
@@ -506,18 +548,15 @@ function pushUniqueCriterion(criteria, criterion) {
 
 // Add every comparison column the text names. Walks the research_criterion
 // meanings in declaration order (which fixes the column order) and adds a
-// criterion when any of its surface words occurs as a raw substring — the same
-// substring contract the legacy code used, so space-guarded stems like 'pro '
-// and ' con ' still avoid matching inside 'process'/'control'. The trigger words
-// live in the seed data; only the language-independent slug keys each column.
-// Mirrors append_criteria_from_text in src/solver_handlers/research_table.rs.
+// criterion when any of its surface words occurs as a raw substring and the
+// procedure declares its column — the same substring contract the legacy code
+// used, so space-guarded stems like 'pro ' and ' con ' still avoid matching
+// inside 'process'/'control'. Mirrors append_criteria_from_text in
+// src/solver_handlers/research_table.rs.
 function appendResearchCriteriaFromText(text, criteria) {
   const normalized = normalizePrompt(text);
   for (const meaning of meaningsWithRole(ROLE_RESEARCH_CRITERION)) {
-    if (
-      RESEARCH_TABLE_CRITERION_LABELS[meaning.slug] &&
-      meaning.words.some((word) => word && normalized.includes(word))
-    ) {
+    if (researchTableColumn(meaning.slug) && meaning.words.some((word) => normalized.includes(word))) {
       pushUniqueCriterion(criteria, meaning.slug);
     }
   }
@@ -530,84 +569,36 @@ function extractResearchCriteria(prompt) {
     if (item) appendResearchCriteriaFromText(item, criteria);
   }
   if (criteria.length === 0) appendResearchCriteriaFromText(prompt, criteria);
-  return criteria.length > 0 ? criteria : RESEARCH_TABLE_DEFAULT_CRITERIA.slice();
-}
-
-function researchTableCell(topic, criterion) {
-  const normalized = normalizePrompt(topic);
-  if (normalized.includes("machine learning algorithm")) {
-    if (criterion === "key_differences") {
-      return "Broad family of data-driven methods; includes supervised, unsupervised, and reinforcement approaches.";
-    }
-    if (criterion === "use_cases") {
-      return "Classification, regression, clustering, recommendation, anomaly detection, and forecasting.";
-    }
-    if (criterion === "advantages") {
-      return "Flexible toolkit; often efficient on structured data; many models are easier to inspect than deep nets.";
-    }
-    if (criterion === "disadvantages") {
-      return "Model choice, preprocessing, and feature design can dominate results; overfitting remains a risk.";
-    }
-  }
-  if (normalized.includes("deep learning") && normalized.includes("traditional ml")) {
-    if (criterion === "key_differences") {
-      return "Deep learning learns layered representations; traditional ML often relies more on explicit feature engineering.";
-    }
-    if (criterion === "use_cases") {
-      return "Deep learning fits images, speech, and language at scale; traditional ML fits many tabular and smaller-data tasks.";
-    }
-    if (criterion === "advantages") {
-      return "Deep learning scales with data and reduces manual features; traditional ML is usually faster and more interpretable.";
-    }
-    if (criterion === "disadvantages") {
-      return "Deep learning needs more data/compute and is harder to explain; traditional ML may underfit unstructured signals.";
-    }
-  }
-  if (normalized.includes("neural network")) {
-    if (criterion === "key_differences") {
-      return "Built from weighted layers, activations, losses, and optimization; provides the base mechanism for deep learning.";
-    }
-    if (criterion === "use_cases") {
-      return "Pattern recognition, embeddings, sequence modeling, vision, speech, and nonlinear function approximation.";
-    }
-    if (criterion === "advantages") {
-      return "Captures nonlinear relationships and can be trained end-to-end for complex perception tasks.";
-    }
-    if (criterion === "disadvantages") {
-      return "Requires tuning and regularization; decisions can be opaque; training can be unstable on poor data.";
-    }
-  }
-  if (criterion === "key_differences") {
-    return "Use the prior search sources to identify what distinguishes this topic from the others.";
-  }
-  if (criterion === "use_cases") {
-    return "Summarize the practical settings where the Step 1 sources apply this topic.";
-  }
-  if (criterion === "advantages") {
-    return "Extract strengths reported by the prior search sources before treating them as verified.";
-  }
-  return "Extract limitations reported by the prior search sources before treating them as verified.";
+  return criteria.length > 0 ? criteria : researchTableProcedure().criteria.map((column) => column.slug);
 }
 
 function escapeResearchTableCell(value) {
   return String(value || "").replace(/\|/g, "\\|").replace(/\n/g, " ");
 }
 
-function renderResearchComparisonTable(topics, criteria) {
-  const lines = [
-    "Research comparison table (draft; verify claims against the Step 1 source links).",
-    "",
-    `| Topic | ${criteria.map((criterion) => RESEARCH_TABLE_CRITERION_LABELS[criterion]).join(" | ")} |`,
-    `| --- | ${criteria.map(() => "---").join(" | ")} |`,
-  ];
+// The draft table: the seeded intro, a topic column and one column per
+// criterion with the seeded, source-dependent cell instruction in the request's
+// language. Mirrors render_comparison_table in
+// src/solver_handlers/research_table.rs; no topic fact is ever written here.
+function renderResearchComparisonTable(topics, criteria, language) {
+  const procedure = researchTableProcedure();
+  const tableText = procedure.tableTexts.find((entry) => entry.language === language) ||
+    procedure.tableTexts.find((entry) => entry.language === "en") || null;
+  const columnText = (criterion, field) => {
+    const column = researchTableColumn(criterion);
+    return (column && researchLocalizedValue(column[field], language)) || criterion;
+  };
+  let body = `${tableText ? tableText.intro : ""}\n\n| ${tableText ? tableText.topicLabel : ""} |`;
+  for (const criterion of criteria) body += ` ${columnText(criterion, "labels")} |`;
+  body += `\n| --- |${criteria.map(() => " --- |").join("")}\n`;
   for (const topic of topics) {
-    lines.push(
-      `| ${escapeResearchTableCell(topic)} | ${criteria
-        .map((criterion) => escapeResearchTableCell(researchTableCell(topic, criterion)))
-        .join(" | ")} |`,
-    );
+    body += `| ${escapeResearchTableCell(topic)} |`;
+    for (const criterion of criteria) {
+      body += ` ${escapeResearchTableCell(columnText(criterion, "instructions"))} |`;
+    }
+    body += "\n";
   }
-  return lines.join("\n");
+  return body.trimEnd();
 }
 
 function compactResearchLogValue(value) {
@@ -624,7 +615,7 @@ function tryResearchComparisonTable(prompt, normalized, history = []) {
   if (criteria.length === 0) return null;
   return {
     intent: "research_comparison_table",
-    content: renderResearchComparisonTable(topics, criteria),
+    content: renderResearchComparisonTable(topics, criteria, detectLanguage(prompt)),
     confidence: 0.78,
     evidence: [
       `research_table:prior_search:${compactResearchLogValue(priorSearch)}`,
@@ -634,62 +625,21 @@ function tryResearchComparisonTable(prompt, normalized, history = []) {
   };
 }
 
-const RESEARCH_RESULT_FOLLOWUP_PROMPTS = new Set([
-  "result",
-  "the result",
-  "what result",
-  "what is result",
-  "what s the result",
-  "what is the result",
-  "what was the result",
-  "what are the results",
-  "what were the results",
-  "show the result",
-  "show the results",
-  "give me the result",
-  "give me the results",
-  "what is the answer",
-  "what was the answer",
-  "what did you find",
-  "what did we find",
-  "what is the outcome",
-  "what was the outcome",
-]);
-
+// The whole prompt is one of the procedure's followup_request phrasings.
+// Mirrors is_research_result_followup.
 function isResearchResultFollowup(normalized) {
-  return RESEARCH_RESULT_FOLLOWUP_PROMPTS.has(normalizePrompt(normalized));
+  return researchTableProcedure().followupRequests.includes(normalizePrompt(normalized));
 }
 
+// The first status whose marker the prior answer carries, else the status
+// that declares no marker. Mirrors classify_prior_research_answer.
 function classifyPriorResearchAnswer(answer) {
-  const normalized = normalizePrompt(answer || "");
-  if (
-    normalized.includes("no cors enabled web search results") ||
-    normalized.includes("no cors readable web search results") ||
-    normalized.includes("no usable cors search results") ||
-    normalized.includes("не получены результаты веб поиска") ||
-    normalized.includes("未获取到") ||
-    normalized.includes("कोई खोज परिणाम नहीं")
-  ) {
-    return "no_results";
-  }
-  if (
-    normalized.includes("all cors readable search providers are disabled") ||
-    normalized.includes("all cors enabled search providers are disabled") ||
-    normalized.includes("все cors совместимые поисковые провайдеры отключены") ||
-    normalized.includes("所有支持 cors 的搜索提供方都已禁用") ||
-    normalized.includes("सभी cors समर्थित खोज प्रदाता अक्षम हैं")
-  ) {
-    return "all_providers_disabled";
-  }
-  if (
-    normalized.includes("web search requested") ||
-    normalized.includes("open research question detected") ||
-    normalized.includes("search providers that can be queried") ||
-    normalized.includes("verify claims against")
-  ) {
-    return "search_plan_only";
-  }
-  return "open_research";
+  const statuses = researchTableProcedure().statuses;
+  const fallback = (statuses.find((status) => status.markers.length === 0) || { slug: "" }).slug;
+  if (!answer) return fallback;
+  const normalized = normalizePrompt(answer);
+  const hit = statuses.find((status) => status.markers.some((marker) => normalized.includes(marker)));
+  return hit ? hit.slug : fallback;
 }
 
 function researchPromptPreview(value) {
@@ -698,18 +648,11 @@ function researchPromptPreview(value) {
   return chars.length <= 240 ? compact : `${chars.slice(0, 237).join("")}...`;
 }
 
-function renderResearchResultFollowup(priorSearch, status) {
-  const preview = researchPromptPreview(priorSearch);
-  if (status === "no_results") {
-    return `The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: \`${preview}\`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources.`;
-  }
-  if (status === "all_providers_disabled") {
-    return `The result of the previous research step is: web search could not run because the CORS-readable search providers were disabled. No verified research result was produced yet.\n\nPrior research task: \`${preview}\`\n\nNext step: enable a search provider or provide source links; then I can complete the requested analysis from those sources.`;
-  }
-  if (status === "search_plan_only") {
-    return `The previous turn only set up the research/search step. It did not produce a final result, calculation, or sourced executive summary yet.\n\nPrior research task: \`${preview}\`\n\nNext step: run the source search and use the returned sources to finish the calculation.`;
-  }
-  return `There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: \`${preview}\`\n\nNext step: run the search or provide source links; then I can produce the requested result.`;
+// The seeded research_result_followup_<status> response with the prior task's
+// preview in its slot. Mirrors render_research_result_followup.
+function renderResearchResultFollowup(priorSearch, status, language) {
+  return nativeLaneRender(answerFor(`research_result_followup_${status}`, language),
+    { preview: researchPromptPreview(priorSearch) });
 }
 
 function tryResearchResultFollowup(prompt, normalized, history = []) {
@@ -719,7 +662,7 @@ function tryResearchResultFollowup(prompt, normalized, history = []) {
   const status = classifyPriorResearchAnswer(lastHistoryTurn(history, "assistant"));
   return {
     intent: "research_result_followup",
-    content: renderResearchResultFollowup(priorSearch, status),
+    content: renderResearchResultFollowup(priorSearch, status, detectLanguage(prompt)),
     confidence: 0.76,
     evidence: [
       `research_result_followup:prior_search:${compactResearchLogValue(priorSearch)}`,
