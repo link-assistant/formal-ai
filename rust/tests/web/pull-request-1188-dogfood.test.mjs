@@ -271,6 +271,14 @@ describe('PR #1188 dogfood: a description of code is never written as a file\'s 
     assert.equal(files.has('.formal-ai/general-change-plan.lino'), false);
   });
 
+  test('a request to author a function never writes a clause of itself as the file', async () => {
+    const { composeGeneralChangePlan } = await import('../../../js/agentic/general_planner.mjs');
+    assert.equal(composeGeneralChangePlan(
+      'Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.'), null);
+    const lino = 'substitution_rules\n  id "learned_program_plan_rules"';
+    assert.equal(composeGeneralChangePlan(`Create file data/seed/learned-program-rules.lino containing\n${lino}`).content, lino);
+  });
+
   test('literal content still writes the file', async () => {
     const { composeGeneralChangePlan } = await import('../../../js/agentic/general_planner.mjs');
     assert.equal(composeGeneralChangePlan('Create a file a.txt containing hello').content, 'hello');

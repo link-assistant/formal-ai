@@ -28,15 +28,41 @@ const TARGET_PLACEHOLDER: &str = "{target}";
 /// dogfooding). Content a seeded content lead introduces (`containing`, `with
 /// exactly this content:`) is bytes whatever it mentions.
 fn describes_code_to_author(request: &str, content: &str) -> bool {
-    !content.is_empty()
-        && first_content_lead_end(&request.to_lowercase()).is_none()
-        && !crate::normal_markov::quoted_segments(request)
+    if content.is_empty()
+        || crate::normal_markov::quoted_segments(request)
             .iter()
             .any(|segment| segment.contains(content))
+    {
+        return false;
+    }
+    (first_content_lead_end(&request.to_lowercase()).is_none()
         && seed::lexicon().mentions_role(
             "coding_request_object",
             &crate::engine::normalize_prompt(content),
-        )
+        ))
+        || asks_to_author_code(&prose_around(request, content))
+}
+
+/// The request itself asks to write a code construct (`Write a Python
+/// function add(a, b) … in add.py and run it with 2 and 3`), so whatever clause
+/// the write grammar picks as content (`2 and 3.`) is not the file's bytes.
+fn asks_to_author_code(prose: &str) -> bool {
+    let normalized = crate::engine::normalize_prompt(prose);
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role("coding_request_object", &normalized)
+        && lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized)
+}
+
+/// The request without the content and its file paths: a path such as
+/// `learned-program-rules.lino` names a file, not the code to author.
+fn prose_around(request: &str, content: &str) -> String {
+    let rest = request.replace(content, " ");
+    tokens(&rest)
+        .iter()
+        .filter(|token| !looks_like_file_path(clean_path_token(token.text)))
+        .map(|token| token.text)
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 pub(crate) use super::write_request::typed_write_target;

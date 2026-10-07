@@ -47,7 +47,7 @@ possible tasks you encounter on the way must be fully supported by it".
 | T17 | `Change the value of "debug" to true in config.json.` | **Fail**: edit with `oldString: the value of "debug"`. | **Pass**: read → edit of the `"debug"` line → `sha256sum`; answer `Set \`debug\` to \`true\` in \`config.json\` and observed the result.` Also `Set the value of name to prod in config.json.` (keeps the quotes) and YAML `debug: …`. |
 | T18 | `Create hello.py that prints Hello, World! and run it.` | **Fail**: answered with a program in chat (named `main.py`, printing `Hello, world!`), wrote nothing, ran nothing. | Open (unquoted output, see below) |
 | T18q | `Create hello.py that prints "Hello, World!" and run it.` | **Fail**: same chat answer. | **Pass in-process**: writes `hello.py` + `tests/verify-output.sh`, runs `python3 -m py_compile hello.py` and the output check (`Hello, World!`), reports. Through the Agent CLI the files are written and the compile step runs, then **the CLI crashes** (see "Client defect"). **After the bytecode-free check: passes end-to-end through the CLI** (rc=0, no `__pycache__`). |
-| T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = a phrase of the request. | Open |
+| T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = `2 and 3.` | **No longer destructive**: answers with `def add(a, b): return a + b`; writing it to `add.py` and running it with the stated arguments is open. |
 | T20 | `Write a Python function add(a, b) that returns their sum.` (solver) | **Fail, wrong code**: `def add(a, b): return sum(a)`; `multiply(a, b) … a times b` gave `math.prod(b)`. | **Pass**: `return a + b` / `return a * b` (browser); native pinned at the IR. `add3(a, b, c)` still stops at `a + b` (open). |
 
 ## Root causes and fixes
@@ -418,3 +418,17 @@ no two-parameter reduction case, so it needed no change.
 pool is crowded by placeholder chains (`left + right + left …`, high
 "coherence" because they reuse the fragment's own slot names, never closed),
 so `a + b + c` (depth 3) is evicted before ranking.
+
+### T19 — the prose around the content asked for code
+
+**Root cause.** `run it with 2 and 3` contains the content lead `with`, so the
+literal plan took `2 and 3.` as `add.py`'s bytes; the content itself names no
+code construct, so the T1 rule did not fire.
+
+**Fix (both roots + worker mirror).** `asksToAuthorCode(proseAround(request,
+content))`: the request with the content and its file-path tokens removed
+names a code construct (`coding_request_object`) and an authoring verb
+(`coding_request_verb`) — then the content is never the file's bytes, lead or
+no lead. Quoted content stays exempt, and a path such as
+`learned-program-rules.lino` is not prose (it is dropped before the check).
+Worker plan-reader budget re-baselined to 505 with the reason.

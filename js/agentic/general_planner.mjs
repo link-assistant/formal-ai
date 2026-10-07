@@ -68,10 +68,27 @@ const CAPABILITY_SLUGS = Object.freeze({
  * bytes whatever it mentions.
  */
 function describesCodeToAuthor(request, content) {
-  return content !== ''
-    && firstContentLeadEnd(request.toLowerCase()) === null
-    && !quotedSegments(request).some((segment) => segment.includes(content))
-    && mentionsRole('coding_request_object', normalizePrompt(content));
+  if (content === '' || quotedSegments(request).some((segment) => segment.includes(content))) return false;
+  return (firstContentLeadEnd(request.toLowerCase()) === null && mentionsRole('coding_request_object', normalizePrompt(content)))
+    || asksToAuthorCode(proseAround(request, content));
+}
+
+/**
+ * Mirrors `fn asks_to_author_code`: the request itself asks to write a code
+ * construct (`Write a Python function add(a, b) … in add.py and run it with 2
+ * and 3`), so whatever clause the write grammar picks as content (`2 and 3.`)
+ * is not the file's bytes.
+ */
+function asksToAuthorCode(prose) {
+  const normalized = normalizePrompt(prose);
+  return mentionsRole('coding_request_object', normalized) && mentionsRole('coding_request_verb', normalized);
+}
+
+/** Mirrors `fn prose_around`: the request without the content and its file paths. */
+function proseAround(request, content) {
+  return tokens(request.split(content).join(' '))
+    .filter((token) => !looksLikeFilePath(cleanPathToken(token.text)))
+    .map((token) => token.text).join(' ');
 }
 
 /** Mirrors `GeneralChangePlan::links_notation`. */

@@ -418,10 +418,17 @@ function oblWriteRequestBound(request, toks, binding) {
 // Mirrors `fn describes_code_to_author`: unquoted content without a content
 // lead that names a code construct is code to author, not the file's bytes.
 function oblDescribesCodeToAuthor(request, content) {
-  return content !== ""
-    && oblFirstPrefixLeadEnd(request.toLowerCase(), "file_write_content_lead") === null
-    && !quotedTextSegments(request).some((segment) => segment.includes(content))
-    && lexiconMentionsRole("coding_request_object", normalizePrompt(content));
+  if (content === "" || quotedTextSegments(request).some((segment) => segment.includes(content))) return false;
+  return (oblFirstPrefixLeadEnd(request.toLowerCase(), "file_write_content_lead") === null
+    && lexiconMentionsRole("coding_request_object", normalizePrompt(content)))
+    || oblAsksToAuthorCode(oblTokens(request.split(content).join(" "))
+      .filter((token) => !oblLooksLikeFilePath(oblCleanPathToken(token.text))).map((token) => token.text).join(" "));
+}
+
+// Mirrors `fn asks_to_author_code`.
+function oblAsksToAuthorCode(prose) {
+  const normalized = normalizePrompt(prose);
+  return lexiconMentionsRole("coding_request_object", normalized) && lexiconMentionsRole("coding_request_verb", normalized);
 }
 
 // Mirrors `fn parse_command_output_request`: whether one is stated.
