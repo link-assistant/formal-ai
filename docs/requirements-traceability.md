@@ -287,17 +287,17 @@ line number, which had gone stale for every row.
 | R498-8 | docs/requirements/issue-0498-google-trends-requirements.md | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): rust/tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
 | R498-9 | docs/requirements/issue-0498-google-trends-requirements.md | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): rust/tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
 | R498-10 | docs/requirements/issue-0498-google-trends-requirements.md | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): rust/tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
-| R527-1 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
-| R527-2 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
-| R527-3 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
-| R527-4 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
-| R527-5 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
-| R527-6 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
-| R527-7 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
-| R527-8 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-1 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/docs_requirements/issue_527.rs | not yet confirmed |
+| R527-2 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527.rs | not yet confirmed |
+| R527-3 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527.rs | not yet confirmed |
+| R527-4 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527.rs | not yet confirmed |
+| R527-5 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527.rs | not yet confirmed |
+| R527-6 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527.rs | not yet confirmed |
+| R527-7 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527.rs | not yet confirmed |
+| R527-8 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/docs_requirements/issue_527.rs | not yet confirmed |
 | R527-9 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527_question_catalog.rs | not yet confirmed |
-| R527-10 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
-| R527-11 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): rust/tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-10 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527_question_catalog.rs | not yet confirmed |
+| R527-11 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527_question_catalog.rs | not yet confirmed |
 | R527-12 | docs/requirements/issue-0527-question-generation-requirements.md | pre-2026-07 (undated); issue #527 | rust/tests/unit/issue_527_question_catalog.rs | not yet confirmed |
 | R216 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | none recorded | not yet confirmed |
 | R217 | docs/requirements/issue-0187-current-day-calendar-prompt.md | pre-2026-07 (undated); issue #187 | none recorded | not yet confirmed |
