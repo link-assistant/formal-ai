@@ -6,9 +6,9 @@
 // rust/src/shared_memory.rs (`shared_memory_path`, `ensure_shared_memory_file`)
 // and rust/src/context_capacity.rs (`ContextCapacity::current`).
 //
-// Omitted from the Rust store: the anticipation `prediction_hit` event (only
-// emitted once idle dreaming has written prediction events), and the native
-// link-cli projection `SyncStore::persist` / `open_at` keep beside the log
+// A recorded user turn is linked to the newest anticipation prediction of its
+// class (`prediction_hit_event`, js/server/anticipation.mjs). Omitted from the
+// Rust store: the native link-cli projection `SyncStore::persist` / `open_at` keep beside the log
 // (rust/src/link_store/projection_sync.rs `synchronize_memory_events`: the
 // 64 MiB memory-mapped doublets file `<memory>.links`, its `.links.nodes`
 // address map, `.links.projected` marker and `.transitions.links` log). That
@@ -24,6 +24,7 @@ import path from 'node:path';
 
 import { stableId } from './ids.mjs';
 import { serverMessage } from './messages.mjs';
+import { predictionHitEvent } from './anticipation.mjs';
 import { LEARNED_CHUNK_KIND, importLearned, takeLearned } from './meta-learned.mjs';
 import { applyAutoFreeSpaceForWrite } from './storage-policy.mjs';
 
@@ -480,6 +481,8 @@ export class SyncStore {
     const seed = `${prompt}\u0000${answer}`;
     const userId = stableId('chat_user', seed);
     const recorded = [memoryEvent({ id: userId, kind: 'message', role: 'user', content: prompt, write_count: 1 })];
+    const hit = predictionHitEvent(this.events, prompt, userId, this.classify);
+    if (hit) recorded.push(hit);
     const evidence = [userId];
     for (const execution of tools) {
       const id = stableId('chat_tool', `${prompt}\u0000${execution.tool}\u0000${execution.inputs}\u0000${execution.outputs}`);

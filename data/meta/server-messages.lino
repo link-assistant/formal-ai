@@ -204,6 +204,8 @@ server_messages
     text "dreaming replay did not answer within {seconds} seconds"
   message dreaming_background_failed
     text "[dreaming] background run failed: {error}"
+  message learning_cycle_proposal_summary
+    text "Adopt {count} learned request-opener surface(s) for the '{variation}' frontier class ({languages}), derived from {support} recorded frontier prompts each and validated on {passed} held-out prompt(s) with {failed} failure(s)."
   message program_execution_status_line_en
     text "Execution status: {status} in {environment}."
   message program_execution_status_line_ru

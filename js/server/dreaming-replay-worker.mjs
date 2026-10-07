@@ -3,7 +3,9 @@
 // HTTP server answers with) serving
 // rust/src/dreaming_application.rs `replay_answer_with_amendments` requests:
 // `solve_with_amendment_records(&UniversalSolver::default(), input, &[],
-// amendments).answer`. Each reply is posted before the shared flag is raised,
+// amendments).answer`, and rust/src/anticipation.rs `classify_prompt`
+// requests (`{ classify }`: the solver's intent for one prompt). Each reply
+// is posted before the shared flag is raised,
 // so the blocked caller can take it with `receiveMessageOnPort`.
 
 import { workerData } from 'node:worker_threads';
@@ -15,12 +17,17 @@ import { WorkerHost } from './worker-host.mjs';
 const { port, signal } = workerData;
 const host = new WorkerHost();
 
-port.on('message', async ({ input, amendments }) => {
+port.on('message', async ({ input, amendments, classify }) => {
   let reply;
   try {
     const solve = async (prompt, history) => symbolicFromWorker(await host.solve(prompt, history), history);
-    const answer = await solveWithAmendmentRecords(solve, input, [], amendments);
-    reply = { answer: answer.answer };
+    if (classify !== undefined) {
+      // rust/src/anticipation.rs `classify_prompt`: the offline solver's intent.
+      reply = { intent: (await solve(classify, [])).intent };
+    } else {
+      const answer = await solveWithAmendmentRecords(solve, input, [], amendments);
+      reply = { answer: answer.answer };
+    }
   } catch (error) {
     reply = { error: String(error?.stack || error) };
   }

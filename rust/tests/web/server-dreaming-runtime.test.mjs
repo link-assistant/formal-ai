@@ -14,9 +14,10 @@ import { fileURLToPath } from 'node:url';
 
 import { exportLinksNotation, memoryEvent, parseLinksNotation } from '../../../js/server/memory-store.mjs';
 import {
-  FOREGROUND, beginForegroundActivity, composeRecipeWithAmendments, coreIsIdle, dreamingDisabled, recipePath,
-  runCoreDreamingOnce, runOnDreamingThread, startCoreDreaming,
+  FOREGROUND, beginForegroundActivity, composeRecipeWithAmendments, coreIsIdle, dreamingDisabled, learningCycleRecordPath,
+  recipePath, runCoreDreamingOnce, runOnDreamingThread, startCoreDreaming,
 } from '../../../js/server/dreaming-runtime.mjs';
+import { googleTrendsLearningCycle, learningCycleLinksNotation } from '../../../js/server/learning-cycle.mjs';
 import { persistAutoFreeSpaceChoice } from '../../../js/server/storage-policy.mjs';
 import { memoizedReplay, replayAnswerWithAmendments } from '../../../js/server/dreaming-replay.mjs';
 
@@ -106,10 +107,15 @@ test('an idle run learns but does not free without consent, and writes the compo
   ));
 });
 
-test('a missing log is an empty run that creates nothing; an incompatible one is refused unmodified', () => {
+test('a missing log is never created, yet the run leaves its ledger and learning-cycle record; an incompatible one is refused unmodified', () => {
+  // rust/tests/unit/issue_701_learning_adoption.rs: every idle run leaves the
+  // proposal-only record, the same artifact `learn cycle --dry-run` prints.
   const missing = tempMemory('missing');
   assert.equal(runCoreDreamingOnce(missing).learned_amendments, 0);
-  assert.deepEqual(fs.readdirSync(path.dirname(missing)), []);
+  assert.deepEqual(fs.readdirSync(path.dirname(missing)).sort(), [
+    'memory.anticipation.lino', 'memory.anticipation.lino.lock', 'memory.learning-cycle.lino', 'memory.learning-cycle.lino.lock',
+  ]);
+  assert.equal(fs.readFileSync(learningCycleRecordPath(missing), 'utf8'), `${learningCycleLinksNotation(googleTrendsLearningCycle())}\n`);
 
   const future = tempMemory('future');
   const text = 'demo_memory\n  schema_version "99"\n  event "future"\n    content "untouched"\n';

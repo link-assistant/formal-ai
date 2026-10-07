@@ -1,6 +1,7 @@
 // Cooperative, default-on dreaming for the JavaScript server: the twin of
 // rust/src/dreaming_runtime.rs (`ForegroundActivity`, `core_is_idle`,
-// `start_core_dreaming`, `run_core_dreaming_once`, `dreaming_disabled`) and
+// `start_core_dreaming`, `run_core_dreaming_once`, `dreaming_disabled`,
+// `write_learning_cycle_record`, `learning_cycle_record_path`) and
 // rust/src/dreaming.rs `compose_recipe_with_amendments`.
 //
 // The run never starts while a request is in flight and waits for a real idle
@@ -15,9 +16,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Worker } from 'node:worker_threads';
 
+import { recordedEvents, runIdleAnticipation } from './anticipation.mjs';
 import { applyDreamingPlan } from './dreaming-plan.mjs';
-import { memoizedReplay } from './dreaming-replay.mjs';
+import { memoizedReplay, solveIntent } from './dreaming-replay.mjs';
 import { loadDataDocument } from './dreaming-support.mjs';
+import { googleTrendsLearningCycle, learningCycleLinksNotation } from './learning-cycle.mjs';
 import { SyncStore, parseBoolEnv, writeAtomic } from './memory-store.mjs';
 import { serverMessage } from './messages.mjs';
 import { retainedAmendments } from './standing-requirements.mjs';
@@ -88,29 +91,56 @@ const emptyOutcome = () => ({
 
 /**
  * Mirrors `run_core_dreaming_once` in rust/src/dreaming_runtime.rs: one idle
- * run over the memory log at `memoryPath`. A missing log is an empty store;
- * an incompatible one throws (the Rust `io::Result` error) and is never
- * written. `foreground` is the shared request counter checked between
- * planning and application.
+ * run over the memory log at `memoryPath`. A missing log is an empty store
+ * that is never created; an incompatible one throws (the Rust `io::Result`
+ * error) before anything is written. `foreground` is the shared request
+ * counter checked between planning and application. After the dreaming
+ * plan, the run anticipates the next requests (js/server/anticipation.mjs,
+ * writing `<memory>.anticipation.lino`) and leaves the proposal-only
+ * learning-cycle record (`<memory>.learning-cycle.lino`). `classify` is the
+ * offline solver's intent for a prompt.
  */
-export function runCoreDreamingOnce(memoryPath, { env = process.env, replay = memoizedReplay(), foreground = FOREGROUND } = {}) {
-  if (!fs.existsSync(memoryPath)) return emptyOutcome();
-  const store = SyncStore.open({ ...env, FORMAL_AI_MEMORY_PATH: memoryPath }, memoryPath);
-  if (!store.compatible) throw new Error(serverMessage('memory_schema_write_refused'));
-  const plan = planForRealStorage(store.events, memoryPath, 0, replay);
+export function runCoreDreamingOnce(memoryPath, {
+  env = process.env, replay = memoizedReplay(), foreground = FOREGROUND, classify = solveIntent,
+} = {}) {
+  const store = fs.existsSync(memoryPath) ? SyncStore.open({ ...env, FORMAL_AI_MEMORY_PATH: memoryPath }, memoryPath) : null;
+  if (store && !store.compatible) throw new Error(serverMessage('memory_schema_write_refused'));
+  let events = store ? store.events : [];
+  const plan = planForRealStorage(events, memoryPath, 0, replay);
   if (!autoFreeSpaceEnabled(memoryPath)) {
     plan.actions = [];
     plan.selected_reclaim_bytes = 0;
   }
   // Mid-run cancellation point: planning is the expensive half.
   if (Atomics.load(foreground, 0) !== 0) return emptyOutcome();
-  const { events, outcome } = applyDreamingPlan(store.events, plan, replay);
-  if (Object.values(outcome).some((count) => count > 0)) {
-    store.events = events;
-    store.persist();
+  const dreamed = applyDreamingPlan(events, plan, replay);
+  if (Object.values(dreamed.outcome).some((count) => count > 0)) {
+    events = dreamed.events;
+    persist(store, events);
     writeAtomic(recipePath(memoryPath), composeRecipeWithAmendments(events, env));
   }
-  return outcome;
+  const anticipated = runIdleAnticipation(memoryPath, events, { env, classify });
+  if (recordedEvents(anticipated.outcome) > 0) persist(store, anticipated.events);
+  writeLearningCycleRecord(memoryPath);
+  return dreamed.outcome;
+}
+
+/** Persist `events` through the opened store (a missing log never gains records). */
+function persist(store, events) {
+  if (!store) return;
+  store.events = events;
+  store.persist();
+}
+
+/** Mirrors `learning_cycle_record_path`: `Path::with_extension("learning-cycle.lino")`. */
+export function learningCycleRecordPath(memoryPath) {
+  const extension = path.extname(memoryPath);
+  return `${memoryPath.slice(0, memoryPath.length - extension.length)}.learning-cycle.lino`;
+}
+
+/** Mirrors `write_learning_cycle_record`: the Google Trends cycle, proposal-only, beside the log. */
+export function writeLearningCycleRecord(memoryPath) {
+  writeAtomic(learningCycleRecordPath(memoryPath), `${learningCycleLinksNotation(googleTrendsLearningCycle())}\n`);
 }
 
 /** Run one pass on the dreaming thread; resolves with its outcome or rejects with its error. */

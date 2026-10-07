@@ -39,9 +39,25 @@ function boot() {
  * @returns {string}
  */
 export function replayAnswerWithAmendments(input, amendments) {
+  return ask({ input, amendments }).answer;
+}
+
+/**
+ * The intent the offline solver gives `prompt`, synchronously: the
+ * `UniversalSolver::solve(prompt).intent` rust/src/anticipation.rs
+ * `classify_prompt` reads, answered by the same solver realm.
+ * @param {string} prompt
+ * @returns {string}
+ */
+export function solveIntent(prompt) {
+  return ask({ classify: prompt }).intent;
+}
+
+/** Post one request to the solver realm and block until it answers. */
+function ask(request) {
   const { port, signal } = boot();
   Atomics.store(signal, 0, 0);
-  port.postMessage({ input, amendments });
+  port.postMessage(request);
   const deadline = Date.now() + REPLAY_TIMEOUT_MS;
   let received;
   for (;;) {
@@ -55,7 +71,7 @@ export function replayAnswerWithAmendments(input, amendments) {
     throw new Error(serverMessage('dreaming_replay_timeout', { seconds: REPLAY_TIMEOUT_MS / 1000 }));
   }
   if (received.message.error !== undefined) throw new Error(received.message.error);
-  return received.message.answer;
+  return received.message;
 }
 
 /**
