@@ -326,6 +326,15 @@ fn outside_markdown_fences(prompt: &str) -> String {
 /// Capture a program's requested stdout through the same multilingual slot
 /// records used by the software-project surface. Prefix and circumfix forms
 /// cover natural word order without putting any output literal in code.
+///
+/// A circumfix form ("打印 … 的") closes the span itself. A prefix form
+/// ("prints …") leaves it open, so the span is read the way the obligation
+/// graph binds an unquoted output (PR #1188 T18): a quoted payload right
+/// after the form is the output; otherwise the words up to the first seeded
+/// clause separator or sentence end, when they open with a capital and do
+/// not describe a computed value ("prints Hello, World! and run it" binds
+/// `Hello, World!`; "prints the sum of a and b" binds nothing). A circumfix
+/// span that describes a computed value is not stdout either.
 fn extract_expected_stdout(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
     let mut forms = crate::seed::lexicon()
@@ -347,18 +356,28 @@ fn extract_expected_stdout(prompt: &str) -> Option<String> {
         let Some(tail) = prompt.get(start..) else {
             continue;
         };
-        let end = if after.is_empty() {
-            tail.len()
-        } else if let Some(found) = tail.to_lowercase().find(after) {
-            found
-        } else {
+        if after.is_empty() {
+            let opening = tail.trim_start();
+            let quoted = crate::normal_markov::quoted_segment_spans(opening)
+                .into_iter()
+                .find(|segment| segment.start == 0)
+                .map(|segment| segment.text.trim().to_owned())
+                .filter(|text| !text.is_empty());
+            if let Some(value) = quoted.or_else(|| {
+                crate::intent_formalization::unquoted_utterance(opening.split_whitespace())
+            }) {
+                return Some(value);
+            }
+            continue;
+        }
+        let Some(end) = tail.to_lowercase().find(after) else {
             continue;
         };
         let value = tail[..end]
             .trim()
             .trim_end_matches(['.', '?', '。', '？'])
             .trim();
-        if !value.is_empty() {
+        if !value.is_empty() && !crate::intent_formalization::describes_a_value(value) {
             return Some(value.to_owned());
         }
     }

@@ -532,33 +532,37 @@ fn bare_word(word: &str) -> String {
 }
 
 /// The output a clause that quotes nothing names in the open, when it is an
-/// utterance rather than a description of one (PR #1188 T18).
-///
-/// The words after the clause's first `print_stdout` word, up to the first
-/// seed clause separator (`skill_procedure_clause_separator`: "and", "then",
-/// "и", "फिर", …) or through the first word that ends a sentence. They are an
-/// utterance only when they read as one:
-///
-/// * they open with a capital, the way a quoted utterance does mid-sentence
-///   ("prints Hello, World!"), where a description opens with an ordinary
-///   word ("prints prime numbers below 50");
-/// * no word is a seed function word (`statement_function_word`: "the", "of",
-///   "for", …), which is how a described value is built ("the sum of a and
-///   b", "a greeting", "`FizzBuzz` for 1 to 100");
-/// * they mention no coding structure (`coding_structure`: "the sum …",
-///   "Fibonacci numbers …") and no program task (`program_task_alias`:
-///   `FizzBuzz`), which name a computation the program must perform, not text
-///   it echoes. The one task that *is* its text is the greeting program: a
-///   task alias that is also a `social_greeting` ("Hello, World!") stays an
-///   utterance.
+/// utterance rather than a description of one (PR #1188 T18): the
+/// [`unquoted_utterance`] the words after the clause's first `print_stdout`
+/// word spell.
 fn unquoted_output(clause: &str) -> Option<String> {
     let lexicon = seed::lexicon();
     let print = lexicon.meaning("print_stdout")?;
-    let separators = lexicon.words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
     let mut words = clause.split_whitespace();
     words
         .by_ref()
         .find(|word| print.evidenced_in(&bare_word(word)))?;
+    unquoted_utterance(words)
+}
+
+/// The utterance `words` (the words after a print verb) open with, if they
+/// open with one (PR #1188 T18).
+///
+/// The words up to the first seed clause separator
+/// (`skill_procedure_clause_separator`: "and", "then", "и", "फिर", …) or
+/// through the first word that ends a sentence. They are an utterance only
+/// when they read as one:
+///
+/// * they open with a capital, the way a quoted utterance does mid-sentence
+///   ("prints Hello, World!"), where a description opens with an ordinary
+///   word ("prints prime numbers below 50");
+/// * they do not describe a value ([`describes_a_value`]).
+///
+/// The coding task specification binds a program's stdout through the same
+/// reading, so both bind the same output for one request.
+pub(crate) fn unquoted_utterance<'a>(words: impl Iterator<Item = &'a str>) -> Option<String> {
+    let lexicon = seed::lexicon();
+    let separators = lexicon.words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
     let mut kept: Vec<&str> = Vec::new();
     for word in words {
         if separators.contains(&bare_word(word)) {
@@ -571,15 +575,31 @@ fn unquoted_output(clause: &str) -> Option<String> {
     }
     let joined = kept.join(" ");
     let output = joined.trim_end_matches(UNQUOTED_OUTPUT_PEEL);
+    (output.chars().next().is_some_and(char::is_uppercase) && !describes_a_value(output))
+        .then(|| output.to_owned())
+}
+
+/// Whether `output` describes a value the program must compute rather than
+/// spelling the text it echoes (PR #1188 T18):
+///
+/// * a word is a seed function word (`statement_function_word`: "the", "of",
+///   "for", …), which is how a described value is built ("the sum of a and
+///   b", "a greeting", "`FizzBuzz` for 1 to 100");
+/// * it mentions a coding structure (`coding_structure`: "the sum …",
+///   "Fibonacci numbers …") or a program task (`program_task_alias`:
+///   `FizzBuzz`), which name a computation, not text. The one task that *is*
+///   its text is the greeting program: a task alias that is also a
+///   `social_greeting` ("Hello, World!") stays an utterance.
+pub(crate) fn describes_a_value(output: &str) -> bool {
+    let lexicon = seed::lexicon();
     let lower = normalize_prompt(&output.to_lowercase());
     let function_words = lexicon.words_for_role(seed::ROLE_STATEMENT_FUNCTION_WORD);
-    let describes = output
+    output
         .split_whitespace()
         .any(|word| function_words.contains(&bare_word(word)))
         || lexicon.mentions_role(seed::ROLE_CODING_STRUCTURE, &lower)
         || (lexicon.mentions_role(seed::ROLE_PROGRAM_TASK_ALIAS, &lower)
-            && !lexicon.mentions_role(seed::ROLE_SOCIAL_GREETING, &lower));
-    (output.chars().next().is_some_and(char::is_uppercase) && !describes).then(|| output.to_owned())
+            && !lexicon.mentions_role(seed::ROLE_SOCIAL_GREETING, &lower))
 }
 
 /// The event kind an executor records one undischargeable clause under.

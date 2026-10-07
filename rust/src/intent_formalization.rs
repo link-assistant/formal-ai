@@ -32,6 +32,7 @@ pub use obligations::{
     formalize_request, obligation_gap_lines, record_obligation_gaps,
     request_carries_work_obligations, request_demands,
 };
+pub(crate) use obligations::{describes_a_value, unquoted_utterance};
 use prompt_relevants::append_prompt_relevants;
 pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};
 pub(crate) use requirements::{requirement_list_spans, requirement_operand_spans};
