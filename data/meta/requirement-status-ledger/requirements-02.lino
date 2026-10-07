@@ -211,7 +211,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1073-3"
     shard "docs/requirements/issue-1073-reasoning-standard.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1074 (issue #1073), 2026-09-04"
     issue "1073"
     automated_test "rust/tests/unit/issue_1073_reasoning_standard.rs"
@@ -227,7 +227,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1073-5"
     shard "docs/requirements/issue-1073-reasoning-standard.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1074 (issue #1073), 2026-09-04"
     issue "1073"
     automated_test "rust/tests/unit/issue_1073_reasoning_standard.rs"
@@ -235,7 +235,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1073-6"
     shard "docs/requirements/issue-1073-reasoning-standard.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1074 (issue #1073), 2026-09-04"
     issue "1073"
     automated_test "rust/tests/unit/specification/reasoning_standard_meta_algorithm.rs"
@@ -243,7 +243,7 @@ requirement_status_ledger_shard requirements_02
   requirement
     id "R1073-7"
     shard "docs/requirements/issue-1073-reasoning-standard.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #1074 (issue #1073), 2026-09-04"
     issue "1073"
     automated_test "rust/tests/unit/issue_1073_reasoning_standard.rs"

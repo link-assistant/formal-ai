@@ -195,7 +195,7 @@ requirement_status_ledger_shard requirements_10
   requirement
     id "R427"
     shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #645 (issue #540)"
     issue "0540"
     automated_test "rust/tests/unit/dreaming_runtime.rs"

@@ -451,7 +451,7 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R59"
     shard "docs/requirements/issue-0012-holistic-vision-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #12"
     issue "0012"
     automated_test "rust/tests/unit/docs_requirements.rs"
@@ -475,7 +475,7 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R61"
     shard "docs/requirements/issue-0012-holistic-vision-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #12"
     issue "0012"
     automated_test "rust/tests/unit/docs_requirements.rs"
@@ -499,7 +499,7 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R64"
     shard "docs/requirements/issue-0012-holistic-vision-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #12"
     issue "0012"
     automated_test "rust/tests/unit/docs_requirements.rs"
@@ -563,7 +563,7 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R68"
     shard "docs/requirements/issue-0012-holistic-vision-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #12"
     issue "0012"
     automated_test "rust/tests/unit/docs_requirements.rs"
@@ -587,7 +587,7 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R69"
     shard "docs/requirements/issue-0012-holistic-vision-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #12"
     issue "0012"
     automated_test "rust/tests/unit/docs_requirements.rs"
@@ -619,7 +619,7 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R701-2"
     shard "docs/requirements/issue-0701-auto-learning-adoption-gap.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #817 (issue #701)"
     issue "0701"
     automated_test "rust/tests/unit/issue_701_learning_adoption.rs"
@@ -627,7 +627,7 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R701-3"
     shard "docs/requirements/issue-0701-auto-learning-adoption-gap.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #817 (issue #701)"
     issue "0701"
     automated_test "rust/tests/unit/issue_701_learning_adoption.rs"

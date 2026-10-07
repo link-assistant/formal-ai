@@ -19,7 +19,7 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R476"
     shard "docs/requirements/issue-0657-release-self-hosting-metric.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #735 (issue #657)"
     issue "0657"
     automated_test "rust/tests/unit/issue_657_self_hosting_learning.rs"
@@ -27,7 +27,7 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R477"
     shard "docs/requirements/issue-0657-release-self-hosting-metric.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #735 (issue #657)"
     issue "0657"
     automated_test "rust/tests/unit/issue_657_self_hosting_learning.rs"
@@ -75,7 +75,7 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R481"
     shard "docs/requirements/issue-0673-workspace-self-ast-census.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #807 (issue #673)"
     issue "0673"
     automated_test "rust/tests/unit/issue_673_self_ast_census.rs"

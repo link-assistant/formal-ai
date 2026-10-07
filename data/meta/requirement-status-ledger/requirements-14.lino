@@ -467,7 +467,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R835-1"
     shard "docs/requirements/issue-0835-multi-jurisdiction-file-legal-risk-assessment.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #900 (issue #835)"
     issue "0835"
     automated_test "rust/tests/unit/issue_835_file_legality.rs"
@@ -475,7 +475,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R835-2"
     shard "docs/requirements/issue-0835-multi-jurisdiction-file-legal-risk-assessment.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #900 (issue #835)"
     issue "0835"
     automated_test "rust/tests/unit/issue_835_file_legality.rs"
@@ -483,7 +483,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R835-3"
     shard "docs/requirements/issue-0835-multi-jurisdiction-file-legal-risk-assessment.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #900 (issue #835)"
     issue "0835"
     automated_test "rust/tests/unit/issue_835_file_legality.rs"
@@ -507,7 +507,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R835-6"
     shard "docs/requirements/issue-0835-multi-jurisdiction-file-legal-risk-assessment.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #900 (issue #835)"
     issue "0835"
     automated_test "rust/tests/unit/issue_835_file_legality.rs"
@@ -515,7 +515,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R835-7"
     shard "docs/requirements/issue-0835-multi-jurisdiction-file-legal-risk-assessment.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #900 (issue #835)"
     issue "0835"
     automated_test "rust/tests/unit/issue_835_file_legality.rs"
@@ -523,7 +523,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R835-8"
     shard "docs/requirements/issue-0835-multi-jurisdiction-file-legal-risk-assessment.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #900 (issue #835)"
     issue "0835"
     automated_test "rust/tests/unit/issue_835_file_legality.rs"
@@ -531,7 +531,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R835-9"
     shard "docs/requirements/issue-0835-multi-jurisdiction-file-legal-risk-assessment.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #900 (issue #835)"
     issue "0835"
     automated_test "rust/tests/unit/issue_835_file_legality.rs"
@@ -603,7 +603,7 @@ requirement_status_ledger_shard requirements_14
   requirement
     id "R847-8"
     shard "docs/requirements/issue-0847-task-decomposition-as-a-working-task.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #857 (issue #847)"
     issue "0847"
     automated_test "rust/tests/unit/specification/task_decomposition.rs"

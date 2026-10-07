@@ -19,7 +19,7 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R267"
     shard "docs/requirements/issue-0398-recursive-semantic-meta-language.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #398"
     issue "0398"
     automated_test "rust/tests/unit/reference_closure.rs"

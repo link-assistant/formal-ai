@@ -18,9 +18,9 @@ This document is a deterministic projection of committed ledgers.
 
 | Verdict | Count |
 | --- | ---: |
-| `implemented` | 714 |
+| `implemented` | 756 |
 | `not-delivered` | 12 |
-| `partial` | 636 |
+| `partial` | 594 |
 | `superseded` | 2 |
 | `withdrawn` | 2 |
 

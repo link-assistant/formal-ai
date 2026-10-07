@@ -323,7 +323,7 @@ requirement_status_ledger_shard requirements_13
   requirement
     id "R706-3"
     shard "docs/requirements/issue-0706-any-language-protocol.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #880 (issue #706)"
     issue "0706"
     automated_test "rust/tests/unit/issue_706_any_language.rs"
@@ -347,7 +347,7 @@ requirement_status_ledger_shard requirements_13
   requirement
     id "R706-6"
     shard "docs/requirements/issue-0706-any-language-protocol.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #880 (issue #706)"
     issue "0706"
     automated_test "rust/tests/unit/issue_706_any_language.rs"
@@ -443,7 +443,7 @@ requirement_status_ledger_shard requirements_13
   requirement
     id "R708-9"
     shard "docs/requirements/issue-0708-bounded-natural-language-memory-programs.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "PR #883 (issue #708)"
     issue "0708"
     automated_test "rust/tests/integration/memory_query.rs"
