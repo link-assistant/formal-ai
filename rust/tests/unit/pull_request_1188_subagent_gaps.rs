@@ -68,3 +68,25 @@ fn a_multi_line_replacement_written_with_escapes_edits_the_function() {
     assert_eq!(planned[1].1["oldString"], "fn old() -> u8 {\n    1\n}");
     assert_eq!(planned[1].1["newString"], "fn old() -> u8 {\n    2\n}");
 }
+
+/// Gap 2: cues inside a quoted payload do not steer routing. The payload that
+/// itself says "Append an empty line to notes.txt." is appended to the file the
+/// request names, and a quoted "Commit all changes" is text, not a commit.
+#[test]
+fn cues_inside_a_quoted_payload_do_not_steer_routing() {
+    let planned = read_then_change(
+        "Append \"/// Append an empty line to notes.txt.\" to src/lib.rs.",
+        "fn keep() {}\n",
+    );
+    assert_eq!(planned.len(), 2, "{planned:?}");
+    assert_eq!(planned[0].1["filePath"], "src/lib.rs");
+    assert_eq!(planned[1].0, "edit", "{planned:?}");
+    assert_eq!(
+        planned[1].1["newString"],
+        "fn keep() {}\n/// Append an empty line to notes.txt.\n"
+    );
+
+    let planned = read_then_change("Append \"Commit all changes\" to notes.txt.", "first\n");
+    assert_eq!(planned[0].0, "read", "{planned:?}");
+    assert_eq!(planned[1].1["newString"], "first\nCommit all changes\n");
+}

@@ -155,7 +155,11 @@ pub(super) fn plan_commit_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
-    let normalized = crate::engine::normalize_prompt(task);
+    // The commit cue must be the request's own words: `Append "Commit all
+    // changes" to notes.txt.` quotes it as text to write (PR #1188 gap 2).
+    let normalized = crate::engine::normalize_prompt(
+        &crate::solver_handlers::text_outside_quoted_segments(task),
+    );
     if !seed::lexicon().mentions_role(seed::ROLE_GIT_COMMIT_REQUEST, &normalized) {
         return None;
     }

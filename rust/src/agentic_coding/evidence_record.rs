@@ -67,6 +67,23 @@ struct DeliveryBinding {
     residual: String,
 }
 
+/// `text` with every quoted segment that holds whitespace replaced, delimiters
+/// included, by as many `x` as it has bytes, so spans still index the
+/// original. A single-token quote -- a backticked path or name -- stays
+/// readable.
+fn masked_multi_word_quotes(text: &str) -> String {
+    let mut masked = text.to_owned();
+    for segment in crate::normal_markov::quoted_segment_spans(text) {
+        if segment.text.chars().any(char::is_whitespace) {
+            masked.replace_range(
+                segment.start..segment.end,
+                &"x".repeat(segment.end - segment.start),
+            );
+        }
+    }
+    masked
+}
+
 /// Split a request into its delivery obligation and the investigation left over.
 ///
 /// The obligation is read one sentence at a time, and a sentence carries it only
@@ -95,8 +112,21 @@ fn parse_obligation(request: &str) -> Option<DeliveryBinding> {
     let mut field_lines = Vec::new();
     let mut residual = String::new();
     let mut later_obligation = false;
-    for sentence in sentences(request) {
-        if let Some(line) = pinned_first_line(sentence.text) {
+    // Sentences and delivery cues are read with every multi-word quoted
+    // payload masked: `Append "/// Append an empty line to notes.txt." to
+    // src/lib.rs.` is one sentence about src/lib.rs, not a delivery to the
+    // notes.txt its payload mentions (PR #1188 sub-agent gap 2). The pinned
+    // line, field lines and the work before the delivery are read from the
+    // request itself, where the quoted text is intact.
+    let masked = masked_multi_word_quotes(request);
+    for sentence in sentences(&masked) {
+        let start = masked[sentence.span.clone()]
+            .find(sentence.text)
+            .map_or(sentence.span.start, |at| sentence.span.start + at);
+        let text = request
+            .get(start..start + sentence.text.len())
+            .unwrap_or(sentence.text);
+        if let Some(line) = pinned_first_line(text) {
             if target.is_some() && !later_obligation {
                 first_line = first_line.or(Some(line));
                 continue;
@@ -118,9 +148,9 @@ fn parse_obligation(request: &str) -> Option<DeliveryBinding> {
             .flatten();
         if let Some(named) = delivered {
             if target.is_none() {
-                field_lines = exact_field_lines(sentence.text, &named);
+                field_lines = exact_field_lines(text, &named);
                 target = Some(named);
-                if let Some(work) = work_before_delivery(sentence.text) {
+                if let Some(work) = work_before_delivery(text) {
                     residual.push_str(work);
                     residual.push_str(". ");
                 }

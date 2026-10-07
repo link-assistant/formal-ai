@@ -584,3 +584,24 @@ responses keyed by the existing `file_edit_blank_line` meaning ("Added an empty
 line to `{path}` and observed the result.", five languages) instead of
 "Appended `` to …". Tests: JS (exact transcript, file and answer for both) and
 Rust `a_multi_line_replacement_written_with_escapes_edits_the_function`.
+
+### Sub-agent gap 2 — cues inside a quoted payload steered routing
+
+Reproduced worse than reported: `Append "/// Append an empty line to
+notes.txt." to src/lib.rs.` read `src/lib.rs` and then **wrote a tool-result
+rendering over it**, and `Append "Commit all changes" to notes.txt.` ran
+`git commit`.
+
+- The evidence-record arm (which runs before the workspace-change arm) split
+  sentences at the payload's inner full stop and took the quoted `notes.txt`
+  for a delivery target. It now detects sentences and delivery cues on a copy
+  of the request with every multi-word quoted segment masked to the same
+  length (`maskedMultiWordQuotes` / `masked_multi_word_quotes`), so spans
+  still index the original; single-token quotes (backticked paths and names,
+  the ladder's field lines) stay readable, and the pinned first line, field
+  lines and the work before the delivery are read from the unmasked text.
+- The commit arm reads its cue from the text outside quoted segments
+  (`textOutsideQuotedSegments` / `text_outside_quoted_segments`).
+
+Both roots. Tests: JS (the doc-comment append, the quoted commit) and Rust
+`cues_inside_a_quoted_payload_do_not_steer_routing`.

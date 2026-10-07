@@ -430,3 +430,19 @@ describe('PR #1188 dogfood: code and blank lines are stated in seeded words', ()
     assert.equal(answer, 'Added an empty line to `src/lib.rs` and observed the result.');
   });
 });
+
+describe('PR #1188 dogfood: cues inside a quoted payload do not steer routing', () => {
+  test('a payload that names another file is appended to the file the request names', async () => {
+    const { calls, files, answer } = await drive('Append "/// Append an empty line to notes.txt." to src/lib.rs.', { 'src/lib.rs': 'fn keep() {}\n' });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('src/lib.rs'), 'fn keep() {}\n/// Append an empty line to notes.txt.\n');
+    assert.equal(files.has('notes.txt'), false);
+    assert.equal(answer, 'Appended `/// Append an empty line to notes.txt.` to the end of `src/lib.rs` and observed the result.');
+  });
+
+  test('a quoted "Commit all changes" is text to append, not a commit', async () => {
+    const { calls, files } = await drive('Append "Commit all changes" to notes.txt.', { 'notes.txt': 'first\n' });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('notes.txt'), 'first\nCommit all changes\n');
+  });
+});

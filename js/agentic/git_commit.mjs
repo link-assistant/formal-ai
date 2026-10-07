@@ -15,6 +15,7 @@ import { bareSurfaces, cleanCueToken, tokens } from './write_request.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { mentionsRole, wordsForRole } from './write_lexicon.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
 import { charIn, isAscii, isAsciiAlphanumeric, isWhitespace, trim, trimEnd, trimMatches, trimStart } from './write_str.mjs';
 
 /** Mirrors `CommitTarget::push_ref`. */
@@ -91,7 +92,9 @@ export function recipeSubject(recipe) {
  * @param {Array<string>} toolNames
  */
 export function planCommitStep(task, messages, toolNames) {
-  const normalized = normalizePrompt(task);
+  // The commit cue must be the request's own words: `Append "Commit all
+  // changes" to notes.txt.` quotes it as text to write (PR #1188 gap 2).
+  const normalized = normalizePrompt(textOutsideQuotedSegments(task));
   if (!mentionsRole('git_commit_request', normalized)) return null;
   if (repositoryWorkReference(task) !== null || mentionsSoftwareAuthoring(task)) return null;
   const run = toolFor(toolNames, Capability.Run);

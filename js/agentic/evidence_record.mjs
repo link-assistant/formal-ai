@@ -29,6 +29,7 @@ import {
 import { solve } from './host.mjs';
 import { announcesAListItDoesNotMake, defersToTheOpenWeb, isInconclusive } from './crate/engine_answer.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { detect } from './crate/language.mjs';
 import { renderResponse } from './crate/seed.mjs';
 import { mentionsRole } from './write_lexicon.mjs';
@@ -42,15 +43,39 @@ const OUTPUT_OPTION = '--output';
 const deliveryProbeAnswers = new Map();
 
 /** Mirrors `fn parse_obligation`: a `DeliveryBinding` or null. */
+/**
+ * Mirrors `fn masked_multi_word_quotes`: `text` with every quoted segment that
+ * holds whitespace replaced, delimiters included, by as many `x` as it is long,
+ * so spans still index the original. A single-token quote — a backticked path
+ * or name — stays readable.
+ */
+function maskedMultiWordQuotes(text) {
+  let masked = text;
+  for (const segment of quotedSegmentSpans(text)) {
+    if (!/\s/u.test(segment.text)) continue;
+    masked = masked.slice(0, segment.start) + 'x'.repeat(segment.end - segment.start) + masked.slice(segment.end);
+  }
+  return masked;
+}
+
 function parseObligation(request) {
   let target = null;
   let firstLine = null;
   let fieldLines = [];
   let residual = '';
   let laterObligation = false;
-  for (const sentence of sentences(request)) {
+  // Sentences and delivery cues are read with every multi-word quoted
+  // payload masked: `Append "/// Append an empty line to notes.txt." to
+  // src/lib.rs.` is one sentence about src/lib.rs, not a delivery to the
+  // notes.txt its payload mentions (PR #1188 sub-agent gap 2). The pinned
+  // line, field lines and the work before the delivery are read from the
+  // request itself, where the quoted text is intact.
+  const masked = maskedMultiWordQuotes(request);
+  for (const sentence of sentences(masked)) {
     const spanText = request.slice(sentence.span.start, sentence.span.end);
-    const line = pinnedFirstLine(sentence.text);
+    const at = masked.indexOf(sentence.text, sentence.span.start);
+    const text = at < 0 ? sentence.text : request.slice(at, at + sentence.text.length);
+    const line = pinnedFirstLine(text);
     if (line !== null && line !== undefined) {
       if (target !== null && !laterObligation) {
         if (firstLine === null) firstLine = line;
@@ -62,9 +87,9 @@ function parseObligation(request) {
     const delivered = carriesAuthoringTask(normalizePrompt(sentence.text)) ? null : deliveredWriteTarget(sentence.text);
     if (delivered !== null && delivered !== undefined) {
       if (target === null) {
-        fieldLines = exactFieldLines(sentence.text, delivered);
+        fieldLines = exactFieldLines(text, delivered);
         target = delivered;
-        const work = workBeforeDelivery(sentence.text);
+        const work = workBeforeDelivery(text);
         if (work !== null) residual += `${work}. `;
         continue;
       }
