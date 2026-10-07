@@ -405,14 +405,14 @@ line number, which had gone stale for every row.
 | R318 | docs/requirements/issue-0468-agentic-coding-mode.md | PR #469 (issue #468) | issue-level coverage (not row-pinned): rust/tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
 | R319 | docs/requirements/issue-0468-agentic-coding-mode.md | PR #469 (issue #468) | rust/tests/unit/agentic_coding.rs; rust/tests/unit/agentic_surfaces.rs | not yet confirmed |
 | R320 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
-| R321 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
-| R322 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
-| R323 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
-| R324 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
-| R325 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R321 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/unit/ci-cd/release_publishing.rs | not yet confirmed |
+| R322 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/unit/docs_requirements.rs | not yet confirmed |
+| R323 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/unit/docker_runtime.rs | not yet confirmed |
+| R324 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/unit/docs_requirements.rs; rust/tests/unit/docker_runtime.rs | not yet confirmed |
+| R325 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/unit/ci-cd/release_publishing.rs | not yet confirmed |
 | R326 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/unit/docker_runtime.rs::compose_file_runs_prebuilt_telegram_image_with_minimum_configuration; rust/tests/unit/ci-cd/release_publishing.rs::release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror | not yet confirmed |
-| R327 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
-| R328 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R327 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | desktop/scripts/service-control.test.mjs | not yet confirmed |
+| R328 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/unit/docker_runtime.rs | not yet confirmed |
 | R329 | docs/requirements/issue-0438-prepared-telegram-docker-image.md | PR #470 (issue #438) | rust/tests/unit/specification/desktop_surface.rs::{desktop_service_control_starts_and_stops_prepared_containers,desktop_web_surface_exposes_one_click_service_controls}; rust/tests/unit/docker_runtime.rs::compose_file_offers_optional_openai_compatible_server_profile | not yet confirmed |
 | R330 | docs/requirements/issue-0559-general-meta-algorithm.md | PR #560 (issue #559) | rust/tests/unit/specification/meta_frame.rs; rust/tests/unit/docs_requirements/issue_559.rs::issue_559_problem_frame_is_traceable | not yet confirmed |
 | R331 | docs/requirements/issue-0559-general-meta-algorithm.md | PR #560 (issue #559) | rust/tests/unit/specification/method_registry.rs; rust/tests/unit/specification/reasoning_paths.rs::selected_specialized_handler_is_recorded_as_a_meta_method | not yet confirmed |
