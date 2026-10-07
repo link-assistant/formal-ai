@@ -371,10 +371,10 @@ requirement_status_ledger_shard requirements_03
   requirement
     id "R114"
     shard "docs/requirements/issue-0018-full-memory-export-import-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #18"
     issue "0018"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/multilingual-memory-settings.spec.js"
     manual "not yet confirmed"
   requirement
     id "R115"
@@ -459,10 +459,10 @@ requirement_status_ledger_shard requirements_03
   requirement
     id "R116"
     shard "docs/requirements/issue-0078-shorter-issue-reporting-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #78"
     issue "0078"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R1161-1"

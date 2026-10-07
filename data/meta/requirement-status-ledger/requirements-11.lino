@@ -51,10 +51,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R48"
     shard "docs/requirements/issue-0010-demo-feedback-and-identity-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #10"
     issue "0010"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R480"
@@ -147,10 +147,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R49"
     shard "docs/requirements/issue-0010-demo-feedback-and-identity-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #10"
     issue "0010"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R490"
@@ -427,10 +427,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R50"
     shard "docs/requirements/issue-0010-demo-feedback-and-identity-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #10"
     issue "0010"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R500"
@@ -515,10 +515,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R51"
     shard "docs/requirements/issue-0010-demo-feedback-and-identity-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #10"
     issue "0010"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R510"
@@ -531,10 +531,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R52"
     shard "docs/requirements/issue-0010-demo-feedback-and-identity-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #10"
     issue "0010"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R526-1"

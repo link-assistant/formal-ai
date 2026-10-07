@@ -595,10 +595,10 @@ requirement_status_ledger_shard requirements_05
   requirement
     id "R119"
     shard "docs/requirements/issue-0078-shorter-issue-reporting-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #78"
     issue "0078"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/multilingual-chat.spec.js"
     manual "not yet confirmed"
   requirement
     id "R12"

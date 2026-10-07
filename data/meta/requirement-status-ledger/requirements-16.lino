@@ -134,7 +134,7 @@ requirement_status_ledger_shard requirements_16
     verdict "partial"
     delivered "none recorded"
     issue "0917"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/issue-917.spec.js"
     manual "not yet confirmed"
   requirement
     id "R917-5"
@@ -507,10 +507,10 @@ requirement_status_ledger_shard requirements_16
   requirement
     id "R93"
     shard "docs/requirements/issue-0016-multilingual-wikipedia-and-append-only-memory-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #16"
     issue "0016"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/multilingual-chat.spec.js"
     manual "not yet confirmed"
   requirement
     id "R931-1"

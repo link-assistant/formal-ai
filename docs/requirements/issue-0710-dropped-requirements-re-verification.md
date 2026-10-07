@@ -10,35 +10,35 @@ regressions are present; closing an issue alone is not evidence.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R710-01 | Conversation-history recall. | `works-now` — pinned history-search and previous-question specifications. |
-| R710-02 | Russian identity and capabilities. | `works-now` — pinned localized identity/capability specifications. |
-| R710-03 | Multi-statement and many-question composition. | `works-now` — issue-710 native and browser regressions. |
-| R710-04 | Context-qualified questions such as IIR in ML. | `works-now` — four-language contextual concept regressions. |
-| R710-05 | Typo tolerance, clarification, and full-path fuzzy matching. | `works-now` — worker and native fuzzy regressions. |
-| R710-06 | Antiregime and false-totality definition class. | `works-now` — seeded multilingual concept regressions. |
+| R710-01 | Conversation-history recall. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — pinned history-search and previous-question specifications. Pinned by `rust/tests/unit/specification/conversation_history.rs`. |
+| R710-02 | Russian identity and capabilities. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — pinned localized identity/capability specifications. Pinned by `rust/tests/unit/specification/multilingual.rs`. |
+| R710-03 | Multi-statement and many-question composition. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-710 native and browser regressions. Pinned by `rust/tests/unit/specification/issue_710.rs`, `rust/tests/e2e/tests/issue-710.spec.js`. |
+| R710-04 | Context-qualified questions such as IIR in ML. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — four-language contextual concept regressions. Pinned by `rust/tests/unit/specification/multilingual.rs`. |
+| R710-05 | Typo tolerance, clarification, and full-path fuzzy matching. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — worker and native fuzzy regressions. Pinned by `rust/tests/e2e/tests/issue-343.spec.js`, `rust/tests/unit/specification/calculator_delegation.rs`. |
+| R710-06 | Antiregime and false-totality definition class. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — seeded multilingual concept regressions. Pinned by `rust/tests/unit/specification/multilingual.rs`. |
 | R710-07 | Folder-listing prompt variants. | `superseded` — #745, #758, and PR #850 generalized capability routing. |
-| R710-08 | Target-less modifications ask exactly one question. | `works-now` — issue-710 four-language specification. |
-| R710-09 | Multiple deterministic free-time replies. | `works-now` — issue-710 stable-variant specification. |
-| R710-10 | Assistant name set/read and attribution. | `works-now` — issue-710 four-language naming plus issue-157 attribution coverage. |
-| R710-11 | Issue #292 rules, answer language, parity, and Markdown. | `works-now` — native/browser localization and generated parity checks. |
-| R710-12 | Thinking localization on CLI/API/Telegram. | `works-now` — issue-889 cross-surface regressions for every registered language. |
-| R710-13 | Collapsed thinking animation and top placement. | `works-now` — issue-488 browser and issue-676 narrative-order regressions. |
-| R710-14 | Translate formal proofs to programming languages. | `works-now` — issue-890 compile-and-execute regressions for every registered target. |
-| R710-15 | At least 50 verified equation types. | `works-now` — issue-891 catalog and non-decreasing ratchet cover 72 types. |
-| R710-16 | Compose calculations with other instructions. | `works-now` — calculator continuation and issue-710 composition regressions. |
-| R710-17 | Word problems beyond train meeting. | `works-now` — Fibonacci and box-relation regressions. |
-| R710-18 | Current source-backed film release ordering. | `works-now` — issue-892 timestamped Wikidata timeline regressions. |
-| R710-19 | Closest contextual pronoun resolution. | `works-now` — issue-465 follow-up specification. |
-| R710-20 | How-to multi-source synthesis and seven-day availability cache. | `works-now` — issue #991's shared bounded guide synthesizer runs in Rust/server and the browser worker, while `service_accessibility` persists success and failure for seven days; native, real-HTTP, browser, offline-capture, and opt-out regressions pin the production paths. |
-| R710-21 | Iterative two-file summary validation and 80% quality bar. | `works-now` — issue-893 iteration, threshold, and ratchet regressions. |
-| R710-22 | Interior/plain-capitalized entity reasoning class. | `works-now` — issue-571 class regression and worker entity coverage. |
-| R710-23 | Calendar interchange and Apple/Google/Microsoft flows. | `works-now` — RFC 5545 plus Google insertion regression. |
-| R710-24 | Optional gated OCR and attachment transcription. | `works-now` — issue-493 real-worker OCR regressions. |
-| R710-25 | E2E against deployed GitHub Pages. | `works-now` — deployment-output and matching-deployment workflow regressions. |
-| R710-26 | Four-template CI comparison and upstream filings. | `works-now` — issue-894 four-template comparison and filing-ledger regressions. |
-| R710-27 | Published coverage with a non-decreasing ratchet. | `works-now` — issue-895 80% published-coverage floor and ratchet regressions. |
-| R710-28 | Gemini headless tools. | `works-now` — #671 / PR #814 real-client matrix evidence. |
-| R710-29 | macOS signed/notarized auto-update production path. | `works-now` — desktop workflow and issue-548 regressions. |
-| R710-30 | link-foundation/start and command-stream adoption. | `works-now` — `start-command` owns Docker lifecycle, the Electron adapter and POSIX Rust orchestrator use published `command-stream`, and every unsupported boundary is explicitly mapped to an upstream component issue; command-runner and orchestration process regressions pin streaming, exact argv, exit status, cancellation, and host/Docker selection. |
-| R710-31 | web-search/web-capture as production components. | `works-now` — issue-896 production-component and feature-wiring regressions. |
-| R710-32 | Iframe pre-check and external-link actions. | `works-now` — browser navigation/embedding regressions. |
+| R710-08 | Target-less modifications ask exactly one question. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-710 four-language specification. Pinned by `rust/tests/unit/specification/issue_710.rs`, `rust/tests/e2e/tests/issue-710.spec.js`. |
+| R710-09 | Multiple deterministic free-time replies. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-710 stable-variant specification. Pinned by `rust/tests/unit/specification/issue_710.rs`. |
+| R710-10 | Assistant name set/read and attribution. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-710 four-language naming plus issue-157 attribution coverage. Pinned by `rust/tests/unit/specification/issue_710.rs`, `rust/tests/e2e/tests/issue-157.spec.js`. |
+| R710-11 | Issue #292 rules, answer language, parity, and Markdown. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — native/browser localization and generated parity checks. Pinned by `rust/tests/unit/specification/behavior_rules.rs`. |
+| R710-12 | Thinking localization on CLI/API/Telegram. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-889 cross-surface regressions for every registered language. Pinned by `rust/tests/issue_889_thinking_surfaces.rs`, `rust/tests/unit/issue_889_thinking_seed.rs`. |
+| R710-13 | Collapsed thinking animation and top placement. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-488 browser and issue-676 narrative-order regressions. Pinned by `rust/tests/e2e/tests/issue-488.spec.js`, `rust/tests/unit/issue_676_thinking_narrative.rs`. |
+| R710-14 | Translate formal proofs to programming languages. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-890 compile-and-execute regressions for every registered target. Pinned by `rust/tests/unit/issue_890.rs`. |
+| R710-15 | At least 50 verified equation types. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-891 catalog and non-decreasing ratchet cover 72 types. Pinned by `rust/tests/unit/specification/equation_corpus.rs`. |
+| R710-16 | Compose calculations with other instructions. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — calculator continuation and issue-710 composition regressions. Pinned by `rust/tests/unit/specification/calculator_delegation.rs`. |
+| R710-17 | Word problems beyond train meeting. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — Fibonacci and box-relation regressions. Pinned by `rust/tests/unit/specification/calculator_delegation.rs`. |
+| R710-18 | Current source-backed film release ordering. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-892 timestamped Wikidata timeline regressions. Pinned by `rust/tests/unit/specification/issue_892.rs`. |
+| R710-19 | Closest contextual pronoun resolution. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-465 follow-up specification. Pinned by `rust/tests/unit/specification/issue_465.rs`. |
+| R710-20 | How-to multi-source synthesis and seven-day availability cache. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue #991's shared bounded guide synthesizer runs in Rust/server and the browser worker, while `service_accessibility` persists success and failure for seven days; native, real-HTTP, browser, offline-capture, and opt-out regressions pin the production paths. Pinned by `rust/tests/unit/issue_991_how_to_synthesis.rs`, `rust/tests/integration/issue_991_how_to_http.rs`, `rust/tests/web/issue-991-how-to-synthesis.test.mjs`. |
+| R710-21 | Iterative two-file summary validation and 80% quality bar. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-893 iteration, threshold, and ratchet regressions. Pinned by `rust/tests/unit/specification/issue_893_summarization_validation.rs`. |
+| R710-22 | Interior/plain-capitalized entity reasoning class. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-571 class regression and worker entity coverage. Pinned by `rust/tests/unit/issue_571.rs`. |
+| R710-23 | Calendar interchange and Apple/Google/Microsoft flows. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — RFC 5545 plus Google insertion regression. Pinned by `rust/tests/e2e/tests/issue-404.spec.js`. |
+| R710-24 | Optional gated OCR and attachment transcription. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-493 real-worker OCR regressions. Pinned by `rust/tests/e2e/tests/issue-493.spec.js`. |
+| R710-25 | E2E against deployed GitHub Pages. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — deployment-output and matching-deployment workflow regressions. Pinned by `rust/tests/unit/ci-cd/workflow_release.rs`. |
+| R710-26 | Four-template CI comparison and upstream filings. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-894 four-template comparison and filing-ledger regressions. Pinned by `rust/tests/unit/docs_requirements/issue_894.rs`. |
+| R710-27 | Published coverage with a non-decreasing ratchet. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-895 80% published-coverage floor and ratchet regressions. Pinned by `rust/tests/unit/ci-cd/workflow_coverage.rs`. |
+| R710-28 | Gemini headless tools. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — #671 / PR #814 real-client matrix evidence. Pinned by `rust/tests/unit/issue_671_matrix_coverage.rs`. |
+| R710-29 | macOS signed/notarized auto-update production path. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — desktop workflow and issue-548 regressions. Pinned by `rust/tests/e2e/tests/issue-548.spec.js`. |
+| R710-30 | link-foundation/start and command-stream adoption. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — `start-command` owns Docker lifecycle, the Electron adapter and POSIX Rust orchestrator use published `command-stream`, and every unsupported boundary is explicitly mapped to an upstream component issue; command-runner and orchestration process regressions pin streaming, exact argv, exit status, cancellation, and host/Docker selection. Pinned by `desktop/scripts/command-runner.test.mjs`. |
+| R710-31 | web-search/web-capture as production components. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — issue-896 production-component and feature-wiring regressions. Pinned by `rust/tests/unit/issue_896_component_boundaries.rs`, `rust/tests/e2e/tests/issue-896.spec.js`. |
+| R710-32 | Iframe pre-check and external-link actions. | Implemented (`works-now`, re-verified 2026-09-15 against PR #888) — browser navigation/embedding regressions. Pinned by `rust/tests/e2e/tests/multilingual-chat.spec.js`. |

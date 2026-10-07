@@ -90,7 +90,10 @@ fn test_path(text: &str, root: &Path) -> String {
         let candidate = token.trim_matches(|character| matches!(character, '.' | ':' | '"'));
         // JavaScript is the first root (R997): a browser-worker test under
         // `rust/tests/web/` pins a requirement as well as a Rust test does.
-        let Some(candidate) = [".test.mjs", ".rs"].iter().find_map(|suffix| {
+        // The Playwright suites (`rust/tests/e2e/tests/*.spec.js`) and the
+        // desktop library tests (`desktop/scripts/*.test.mjs`, the
+        // check-desktop-library gate) run in CI as well.
+        let Some(candidate) = [".test.mjs", ".spec.js", ".rs"].iter().find_map(|suffix| {
             candidate
                 .find(suffix)
                 .map(|end| &candidate[..end + suffix.len()])
@@ -99,7 +102,9 @@ fn test_path(text: &str, root: &Path) -> String {
         };
         // The workspace move (plan 16 L1) put the Rust tests under `rust/`;
         // shards name the new location, older trace rows the old one.
-        if (candidate.starts_with("tests/") || candidate.starts_with("rust/tests/"))
+        if (candidate.starts_with("tests/")
+            || candidate.starts_with("rust/tests/")
+            || candidate.starts_with("desktop/scripts/"))
             && root.join(candidate).is_file()
         {
             return candidate.to_owned();

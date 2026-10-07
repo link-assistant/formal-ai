@@ -483,10 +483,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R247"
     shard "docs/requirements/issue-0327-cross-runtime-synthesis-parity.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #327"
     issue "0327"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/issue-327.spec.js"
     manual "not yet confirmed"
   requirement
     id "R248"
@@ -595,10 +595,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R26"
     shard "docs/requirements/issue-0006-ui-follow-up-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #6"
     issue "0006"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R260"
@@ -627,10 +627,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R263"
     shard "docs/requirements/issue-0349-reverse-sort-program-modification-roadmap.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #349"
     issue "0349"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/issue-363.spec.js"
     manual "not yet confirmed"
   requirement
     id "R264"

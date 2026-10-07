@@ -294,7 +294,7 @@ requirement_status_ledger_shard requirements_15
     verdict "partial"
     delivered "pre-2026-07 (undated); issue #890"
     issue "0890"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/issue-890.spec.js"
     manual "not yet confirmed"
   requirement
     id "R890-6"

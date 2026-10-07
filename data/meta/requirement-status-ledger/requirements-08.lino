@@ -43,10 +43,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R27"
     shard "docs/requirements/issue-0006-ui-follow-up-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #6"
     issue "0006"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R270"
@@ -139,10 +139,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R28"
     shard "docs/requirements/issue-0006-ui-follow-up-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #6"
     issue "0006"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R280"
@@ -227,10 +227,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R29"
     shard "docs/requirements/issue-0006-ui-follow-up-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #6"
     issue "0006"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R290"
@@ -323,10 +323,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R30"
     shard "docs/requirements/issue-0006-ui-follow-up-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated); issue #6"
     issue "0006"
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R300"
@@ -582,7 +582,7 @@ requirement_status_ledger_shard requirements_08
     verdict "implemented"
     delivered "PR #470 (issue #438)"
     issue "0438"
-    automated_test "rust/tests/unit/specification/desktop_surface.rs"
+    automated_test "desktop/scripts/service-control.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R33"
