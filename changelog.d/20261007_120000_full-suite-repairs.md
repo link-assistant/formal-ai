@@ -12,6 +12,7 @@ bump: patch
 - A folder named on a personal location ("on my desktop") stays the honest `list_dir` gap; only a file-type filter (`.lino files`) hands the request to the shell-command composer.
 - "Make an add-on for ..." is read as an extension project: `add-on` is a seeded surface of the extension artifact, grounded in WordNet.
 - The role registry is generated from exactly the files the meaning lexicon loads, so roles declared in `software-project-phrases.lino` are registered.
+- Lean and Rocq renderings of a "No ..." statement keep the negation (`¬∃` in Lean, `~ (exists ...)` in Rocq).
 
 ### Changed
 - The coding-ladder gate accepts a lower floor only with a `coding_ladder_correction` note that says "corrected overcount" and names the previous floor.
