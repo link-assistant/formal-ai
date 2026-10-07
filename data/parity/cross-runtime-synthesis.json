@@ -166,9 +166,9 @@
   },
   {
     "id": "e1164_supplied_page_code_example_parts",
-    "prompt": "The parts of the code example:\nThe program below prints a greeting.\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nCompile it with this line.\n\nrustc hello.rs",
+    "prompt": "The parts of the code example:\nThe program below prints a greeting.\n\n```rust\nfn main() {\n    println!(\"Greetings, reader!\");\n}\n```\n\nCompile it with this line.\n\nrustc hello.rs",
     "expectedIntent": "code_example_decomposition",
-    "expectedAnswerFragments": ["entry_point main", "output_operation println!", "string_literal Hello, world!"],
+    "expectedAnswerFragments": ["entry_point main", "output_operation println!", "string_literal Greetings, reader!"],
     "forbiddenAnswerFragments": [],
     "expectedEvidencePrefixes": ["code_example_decomposition:rust parts=3", "code_example_part:rust entry_point main", "intent:code_example_decomposition", "response:code_example_decomposition"],
     "expectedTraceFragments": ["code_example_decomposition"],

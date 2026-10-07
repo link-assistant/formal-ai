@@ -170,7 +170,9 @@ test("R1164-11: the supplied-page route reaches the decomposer for the shared pa
   const answer = plain(await worker.solve(parity.prompt, [], {}, {}, [], {}));
   assert.equal(answer.intent, parity.expectedIntent, JSON.stringify(answer));
   // The complete answer rust/tests/unit/specification/synthesis.rs documents.
-  assert.equal(answer.content, "entry_point main\noutput_operation println!\nstring_literal Hello, world!");
+  // The parts are a property of the supplied page, so the expected answer is
+  // the fixture's own fragments in order, not a stored program literal.
+  assert.equal(answer.content, parity.expectedAnswerFragments.join("\n"));
   for (const fragment of parity.forbiddenAnswerFragments) assert.ok(!answer.content.includes(fragment), fragment);
   for (const prefix of parity.browserExpectedEvidencePrefixes) {
     assert.ok(answer.evidence.some((link) => link.startsWith(prefix)), `${prefix}: ${JSON.stringify(answer.evidence)}`);
