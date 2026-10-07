@@ -607,3 +607,19 @@ meanings
     unit "not applicable"
     example "source_e2db54b48c90e140 for the request to refresh the cached page for example.com"
     grounding "data/seed/handler-rules.lino"
+  quoted
+    defined-by method
+    role action
+    precondition "a handler rule needs the phrase a request quotes"
+    effect "captures the first phrase between a pair of quotation marks, trying the single, double, backtick and guillemet pairs in that order; the rule does not match without one"
+    unit "not applicable"
+    example "greeting from what do you know about 'greeting'"
+    grounding "data/seed/handler-rules.lino"
+  snapshot
+    defined-by method
+    role action
+    precondition "a handler rule renders the link network the runtime holds"
+    effect "renders the runtime's own link network as a Links Notation document at the moment of the request"
+    unit "not applicable"
+    example "the formal_ai_knowledge header, the concept index and one record per seeded rule"
+    grounding "data/seed/handler-rules.lino"

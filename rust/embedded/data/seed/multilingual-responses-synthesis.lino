@@ -762,7 +762,7 @@ multilingual_responses
   response response_network_snapshot_en
     intent network_snapshot
     language en
-    text "Here is the link network this runtime has loaded from its seed data, as a links-notation snapshot:\n\n```links\n{snapshot}\n```"
+    text "Here is the current link network as a links-notation snapshot:\n\n```links\n{snapshot}\n```"
   response response_source_refresh_en
     intent source_refresh
     language en
@@ -807,6 +807,14 @@ multilingual_responses
     intent research_result_followup_open_research
     language en
     text "There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: `{preview}`\n\nNext step: run the search or provide source links; then I can produce the requested result."
+  response response_concept_introspection_en
+    intent concept_introspection
+    language en
+    text "Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links."
+  response response_filter_user_en
+    intent filter_user
+    language en
+    text "No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list."
   response response_source_conflict_en
     intent source_conflict
     language en

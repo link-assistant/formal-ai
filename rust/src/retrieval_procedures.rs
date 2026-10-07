@@ -1,83 +1,20 @@
 //! Retrieval-family procedures retired out of the handler dispatcher's module
 //! (issue #1138 B9, plan 09 leaf 18).
 //!
-//! Each function here is one procedure beside the M2 retrieval interpreter
-//! (`src/retrieval_method.rs`): the network snapshot and the self-filter read
-//! the link store, and the learn directive maintains source state. They are
-//! staging here as one visible group for the batch's seed passes: their cue
-//! vocabularies and answer wording are still Rust literals until the pass that
-//! moves each into seed rules and localized responses, and the migration
-//! ledger keeps their rows pending until then. The source refresh and the
-//! conflict reply took that pass (issue #918): they are the `source_refresh`
-//! and `source_conflict` rule sets of `data/seed/handler-rules.lino`.
+//! The learn directive here is one procedure beside the M2 retrieval
+//! interpreter (`src/retrieval_method.rs`); it maintains source state. Its
+//! summary wording is still a Rust literal until the pass that moves it into a
+//! localized response, and the migration ledger keeps its row pending until
+//! then. The network snapshot and self-filter, the source refresh and the
+//! conflict reply took that pass (issue #918): they are the `network_query`,
+//! `source_refresh` and `source_conflict` rule sets of
+//! `data/seed/handler-rules.lino`.
 
-use crate::engine::{SymbolicAnswer, knowledge_links_notation, normalize_prompt};
+use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::ROLE_PERSONAL_FACTS_LISTING_REQUEST;
 use crate::seed::localized_response;
 use crate::solver_handlers::finalize_simple;
-use crate::solver_helpers::extract_concept_from_query;
-
-pub fn try_network_query(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if normalized.contains("show me the current network")
-        || normalized.contains("show me the network")
-        || normalized.contains("export the network")
-        || normalized.contains("export network")
-    {
-        let snapshot = knowledge_links_notation();
-        let body = format!(
-            "Here is the current link network as a links-notation snapshot:\n\n```links\n{snapshot}\n```"
-        );
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "network_snapshot",
-            "response:network_snapshot",
-            &body,
-            1.0,
-        ));
-    }
-    if let Some(concept) = extract_concept_from_query(prompt) {
-        let body = format!(
-            "Here is what I know about '{concept}':\n\nintent: {concept}\nrole: \
-             the network records '{concept}' as a concept with rules and example links."
-        );
-        return Some(finalize_simple(
-            prompt,
-            log,
-            &format!("concept_introspection_{concept}"),
-            "response:concept_introspection",
-            &body,
-            1.0,
-        ));
-    }
-    if normalized.starts_with("list facts")
-        || crate::seed::lexicon().mentions_role(
-            ROLE_PERSONAL_FACTS_LISTING_REQUEST,
-            &normalize_prompt(prompt),
-        )
-    {
-        log.append("filter:user", "self".to_owned());
-        let body = String::from(
-            "No facts have been recorded under your user filter yet. Submit a 'teach this fact' \
-             request to start your personal contribution list.",
-        );
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "filter_user",
-            "response:filter_user",
-            &body,
-            1.0,
-        ));
-    }
-    None
-}
 
 /// Issue #499: recognize a "learn from this data source" directive and route it
 /// into the matching auto-learning capability instead of falling to `unknown`.

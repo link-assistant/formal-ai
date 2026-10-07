@@ -253,6 +253,8 @@ fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
     let source = match kind.as_str() {
         "backticks" => ValueSource::Backticks,
         "trimmed_prompt" => ValueSource::TrimmedPrompt,
+        "quoted" => ValueSource::Quoted,
+        "network_snapshot" => ValueSource::NetworkSnapshot,
         "literal" => ValueSource::Literal(
             node.args
                 .get(2)

@@ -23,6 +23,12 @@
 //! `research_result_followup_<status>` responses in both runtimes; the
 //! browser twin stopped writing memorized topic facts into the table cells.
 //!
+//! The fourth batch moved `network_query` into the rule document too: the
+//! snapshot, concept-introspection and user-filter branches are rules whose
+//! values come from two more domain-free primitives (`quoted`, the first
+//! quoted phrase, and `network_snapshot`, the runtime's own link network), and
+//! a rule's intent may now name a captured value.
+//!
 //! The English and Russian answers below are byte-identical to the ones the
 //! deleted Rust produced (`tests/unit/specification/issue_146.rs` pins the
 //! same two conversation-topic answers). The browser twin is
@@ -51,6 +57,7 @@ fn the_migrated_handlers_are_seed_rule_sets() {
         "source_refresh",
         "source_conflict",
         "execution_failure",
+        "network_query",
     ] {
         assert!(
             rules().handler(name).is_some(),
@@ -268,4 +275,40 @@ fn a_research_result_followup_reads_its_status_and_wording_from_the_seed() {
             response.evidence_links
         );
     }
+}
+
+const CONCEPT_INTROSPECTION: &str = "Here is what I know about 'greeting':\n\nintent: greeting\nrole: the network records 'greeting' as a concept with rules and example links.";
+const FILTER_USER: &str = "No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.";
+
+#[test]
+fn the_network_query_rules_answer_unchanged_through_the_engine() {
+    let snapshot = FormalAiEngine.answer("Export the network");
+    assert_eq!(snapshot.intent, "network_snapshot");
+    let expected_snapshot = format!(
+        "Here is the current link network as a links-notation snapshot:\n\n```links\n{}\n```",
+        formal_ai::knowledge_links_notation()
+    );
+    assert_eq!(snapshot.answer, expected_snapshot);
+
+    let introspection = UniversalSolver::default().solve("What do you know about 'greeting'?");
+    assert_eq!(introspection.answer, CONCEPT_INTROSPECTION);
+    assert!(
+        introspection
+            .evidence_links
+            .iter()
+            .any(|link| link == "intent:concept_introspection_greeting"),
+        "the rule's intent names the captured concept: {:?}",
+        introspection.evidence_links
+    );
+
+    let filter = FormalAiEngine.answer("List the facts I have contributed");
+    assert_eq!(filter.intent, "filter_user");
+    assert_eq!(filter.answer, FILTER_USER);
+    assert!(
+        filter
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("filter:user")),
+        "personal queries declare a user filter"
+    );
 }

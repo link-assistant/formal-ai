@@ -949,7 +949,7 @@ function workerHandlerRegistryDefinition() {
     who_is: workerHandlerAliases.who_is,
     how_it_works: "tryHowItWorks", // runs inline after the async lookups, so online sources answer first
     meta_explanation: "tryMetaExplanation",
-    network_query: "tryNetworkSnapshot", // the snapshot branch; concept introspection and the user filter stay native
+    network_query: "tryNetworkSnapshot", // the network_query seed rules: snapshot, concept introspection, user filter
     execution_failure: "tryExecutionFailure",
     installation_conversion: "tryInstallationConversion",
     write_script: "tryWriteScript",

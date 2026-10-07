@@ -38,9 +38,9 @@ impl ConditionSource for FixtureTables<'_> {
 }
 
 /// The precedence names that are now data rather than Rust functions. The
-/// last four moved in the issue #918 minimal-core batches
+/// last five moved in the issue #918 minimal-core batches
 /// (`rust/tests/unit/issue_918_handler_rules_batch.rs`).
-const MIGRATED_HANDLERS: [&str; 16] = [
+const MIGRATED_HANDLERS: [&str; 17] = [
     "conversation_control",
     "github_repository_traffic",
     "docs_method_explanation",
@@ -57,6 +57,7 @@ const MIGRATED_HANDLERS: [&str; 16] = [
     "source_refresh",
     "source_conflict",
     "execution_failure",
+    "network_query",
 ];
 
 fn answer(prompt: &str) -> SymbolicAnswer {
@@ -73,8 +74,9 @@ fn the_embedded_rule_document_declares_every_migrated_handler() {
     // a5abd1ab2); 20 since the issue #918 batch added the conversation-topic
     // rule, the two source-refresh rules (named source and refusal lane) and
     // the source-conflict rule; 22 with the two execution-failure rules (agent
-    // opt-in first).
-    assert_eq!(parsed.rule_count(), 22);
+    // opt-in first); 25 with the snapshot, concept-introspection and
+    // user-filter rules of the network query.
+    assert_eq!(parsed.rule_count(), 25);
     let precedence = formal_ai::seed::handler_precedence();
     for name in MIGRATED_HANDLERS {
         assert!(

@@ -29,6 +29,10 @@ impl Rule {
                 ValueSource::TrimmedPrompt => context.prompt.trim().to_owned(),
                 ValueSource::StableId(prefix) => crate::engine::stable_id(prefix, context.prompt),
                 ValueSource::RoleSlot(role) => role_slot(role, context)?,
+                ValueSource::Quoted => {
+                    crate::solver_helpers::extract_quoted_phrase(context.prompt)?
+                }
+                ValueSource::NetworkSnapshot => crate::engine::knowledge_links_notation(),
             };
             resolved.push((name.clone(), value));
         }

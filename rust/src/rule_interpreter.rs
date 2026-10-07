@@ -179,6 +179,10 @@ enum ValueSource {
     /// The text filling the open slot of this role's prefix surface; the rule
     /// does not match when no surface opens the subject.
     RoleSlot(String),
+    /// The first quoted phrase of the prompt; the rule does not match without one.
+    Quoted,
+    /// The runtime's own link network as a Links Notation snapshot.
+    NetworkSnapshot,
 }
 
 #[derive(Debug)]
@@ -619,13 +623,18 @@ impl Rule {
             }
         }
         let body = self.response.render(context, &values)?;
-        let intent = self.intent.as_deref().unwrap_or(&self.name);
+        // An intent may name a captured value (`concept_introspection_{concept}`).
+        let pairs: Vec<(&str, &str)> = values
+            .iter()
+            .map(|(name, value)| (name.as_str(), value.as_str()))
+            .collect();
+        let intent = substitute(self.intent.as_deref().unwrap_or(&self.name), &pairs);
         let default_link = format!("response:{intent}");
         let link = self.link.as_deref().unwrap_or(&default_link);
         Some(finalize_simple(
             context.prompt,
             log,
-            intent,
+            &intent,
             link,
             &body,
             self.confidence,

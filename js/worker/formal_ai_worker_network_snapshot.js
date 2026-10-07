@@ -1,13 +1,14 @@
-// Browser twin of the snapshot branch of the native `network_query`
-// precedence row (try_network_query in rust/src/retrieval_procedures.rs,
-// PR #1188, issue #1175 routing probes). The native engine renders its whole
-// knowledge network (knowledge_links_notation in rust/src/engine.rs); the
-// browser renders, in the same Links Notation record shape, only what it has
-// actually loaded: the agent-info header, a concept index and one rule record
-// per seeded rule intent whose response the worker carries. The request cues
-// and the rule intents are `network_snapshot` cue records of
-// data/seed/code-task-cues.lino; the answer is the seeded `network_snapshot`
-// response. Concept introspection and the user filter stay native.
+// The `network_snapshot` value of the `network_query` rules of
+// data/seed/handler-rules.lino (issue #918; first ported in PR #1188 for the
+// issue #1175 routing probes). The native engine renders its whole knowledge
+// network (knowledge_links_notation in rust/src/engine.rs); the browser
+// renders, in the same Links Notation record shape, only what it has actually
+// loaded: the agent-info header, a concept index and one rule record per
+// seeded rule intent whose response the worker carries. The rule intents are
+// the `network_snapshot_record` cue records of data/seed/code-task-cues.lino.
+// The request cues, the concept introspection, the user filter and their
+// wording are the rules and their seeded responses, walked by the shared
+// rule interpreter exactly as the native one walks them.
 
 /**
  * Quote one value the way format_lino_value does: sanitize line breaks and
@@ -89,19 +90,11 @@ function networkSnapshotLinksNotation() {
 }
 
 /**
- * `network_query` precedence row, snapshot branch: a request to show or
- * export the network answers with the loaded network as Links Notation.
+ * `network_query` precedence row: the `network_query` rules over the
+ * lowercased prompt, the subject the native dispatcher hands every rule.
  * @param {string} prompt
  * @returns {object|null}
  */
 function tryNetworkSnapshot(prompt) {
-  const lower = String(prompt || "").toLowerCase();
-  if (!codeTaskCued("network_snapshot", "request", prompt, lower)) return null;
-  const snapshot = networkSnapshotLinksNotation();
-  return {
-    intent: "network_snapshot",
-    content: answerFor("network_snapshot", "en").split("{snapshot}").join(snapshot),
-    confidence: 1.0,
-    evidence: ["response:network_snapshot"],
-  };
+  return runHandlerRuleSet("network_query", prompt, String(prompt || "").toLowerCase(), []);
 }

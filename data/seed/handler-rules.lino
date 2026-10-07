@@ -298,3 +298,34 @@ handler_rules
       respond execution_failure
       link "response:execution_failure"
       confidence 0.4
+  handler network_query
+    rule network_snapshot
+      when
+        any
+          substring "show me the current network"
+          substring "show me the network"
+          substring "export the network"
+          substring "export network"
+      value snapshot network_snapshot
+      respond network_snapshot
+      link "response:network_snapshot"
+      confidence 1.0
+    rule concept_introspection
+      when
+        any
+          substring "what do you know about" of lowercase
+          substring "introspect" of lowercase
+      value concept quoted
+      respond concept_introspection
+      intent "concept_introspection_{concept}"
+      link "response:concept_introspection"
+      confidence 1.0
+    rule filter_user
+      when
+        any
+          prefix "list facts"
+          role personal_facts_listing_request of cleaned
+      log "filter:user" "self"
+      respond filter_user
+      link "response:filter_user"
+      confidence 1.0

@@ -679,9 +679,7 @@ rust/src/repair_strategy.rs	Why did the reverse-sort answer change between relea
 rust/src/repair_strategy.rs	the trace shows `{signal}` — a correct behaviour is unguarded by a test
 rust/src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could not route the task
 rust/src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
-rust/src/retrieval_procedures.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
 rust/src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
-rust/src/retrieval_procedures.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
 rust/src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 rust/src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
 rust/src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm

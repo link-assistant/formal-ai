@@ -281,10 +281,9 @@ pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<Symb
     ))
 }
 
-// Plan 09 leaf 18: the network snapshot and learn-from-source procedures live
-// in `src/retrieval_procedures.rs`, beside the M2 retrieval interpreter they
-// extend; the source refresh and source conflict are seed rules (issue #918).
-pub use crate::retrieval_procedures::{try_learn_from_source, try_network_query};
+// Plan 09 leaf 18: learn-from-source lives beside the M2 retrieval interpreter;
+// network query, source refresh and source conflict are seed rules (#918).
+pub use crate::retrieval_procedures::try_learn_from_source;
 
 pub fn try_translation(
     prompt: &str,

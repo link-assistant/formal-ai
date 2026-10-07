@@ -258,7 +258,11 @@ handler_migration_ledger
   handler meta_explanation
     status pending
   handler network_query
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/rule_interpreter.rs"
+    justification "issue #918 (R914-6): the snapshot, concept-introspection and user-filter branches are three rules; their cues are rule conditions (the personal-facts phrasings the personal_facts_listing_request role), the concept is the interpreter quoted value, the intent names it, and the snapshot is the interpreter network_snapshot value, the runtime's own link network (knowledge_links_notation natively, the loaded seed records in the worker). The English-only wording is seeded English. Browser twin: tryNetworkSnapshot in js/worker/formal_ai_worker_network_snapshot.js runs the same rules, so the browser gained the introspection and user-filter branches; pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler execution_failure
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"

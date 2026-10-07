@@ -261,15 +261,6 @@ pub fn translate_surface_detailed(
     crate::translation::translate_via_default_pipeline(surface, source, target)
 }
 
-pub fn extract_concept_from_query(prompt: &str) -> Option<String> {
-    let lower = prompt.to_lowercase();
-    if !(lower.contains("what do you know about") || lower.contains("introspect")) {
-        return None;
-    }
-    let quoted = extract_quoted_phrase(prompt)?;
-    Some(quoted)
-}
-
 pub fn detect_algorithm_language(normalized: &str) -> &'static str {
     let langs = [
         ("python", "python"),

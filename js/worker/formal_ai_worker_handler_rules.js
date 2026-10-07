@@ -222,6 +222,8 @@ function handlerRulesParseValue(node) {
   switch (source) {
     case "backticks":
     case "trimmed_prompt":
+    case "quoted":
+    case "network_snapshot":
       return { name, source, text: "", key: "" };
     case "literal":
       if (node.args.length < 3) throw new Error("handler_rules:literal_without_text");
@@ -603,6 +605,15 @@ function handlerRulesResolveValues(rule, context) {
         text = slot;
         break;
       }
+      case "quoted": {
+        const quoted = handlerRulesQuotedPhrase(context.prompt);
+        if (quoted === null) return null;
+        text = quoted;
+        break;
+      }
+      case "network_snapshot":
+        text = networkSnapshotLinksNotation();
+        break;
       default:
         text = context.prompt.trim();
         break;
@@ -610,6 +621,22 @@ function handlerRulesResolveValues(rule, context) {
     resolved.push({ name: value.name, value: text });
   }
   return resolved;
+}
+
+/**
+ * The first quoted phrase of the prompt, trying the quote pairs in the order
+ * the native `extract_quoted_phrase` does; null without one.
+ * @param {string} prompt
+ * @returns {string|null}
+ */
+function handlerRulesQuotedPhrase(prompt) {
+  for (const [open, close] of [["'", "'"], ['"', '"'], ["`", "`"], ["«", "»"]]) {
+    const start = prompt.indexOf(open);
+    if (start === -1) continue;
+    const end = prompt.indexOf(close, start + open.length);
+    if (end !== -1) return prompt.slice(start + open.length, end);
+  }
+  return null;
 }
 
 /**
@@ -715,7 +742,8 @@ function runHandlerRuleSet(name, prompt, normalized, history) {
     }
     const content = handlerRulesRender(rule.response, context, values);
     if (content === null) return null;
-    const intent = rule.intent || rule.name;
+    // An intent may name a captured value (`concept_introspection_{concept}`).
+    const intent = handlerRulesSubstitute(rule.intent || rule.name, values);
     evidence.push(rule.link || `response:${intent}`);
     evidence.push(`language:${language}`);
     return { intent, content, confidence: rule.confidence, evidence };

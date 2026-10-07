@@ -159,3 +159,21 @@ test("a research result follow-up reads its status and wording from the seed", a
     assert.ok(response.evidence.includes(`research_result_followup:status:${status}`), status);
   }
 });
+
+test("the network query rules answer the snapshot, the introspection and the user filter", async () => {
+  const snapshot = await solve("Export the network");
+  assert.equal(snapshot.intent, "network_snapshot");
+  await ready;
+  const loaded = evaluate(worker, "networkSnapshotLinksNotation()");
+  assert.equal(snapshot.content,
+    `Here is the current link network as a links-notation snapshot:\n\n\`\`\`links\n${loaded}\n\`\`\``);
+  const introspection = await rule("network_query", "What do you know about 'greeting'?");
+  assert.equal(introspection.intent, "concept_introspection_greeting");
+  assert.equal(introspection.content,
+    "Here is what I know about 'greeting':\n\nintent: greeting\nrole: the network records 'greeting' as a concept with rules and example links.");
+  const filter = await solve("List the facts I have contributed");
+  assert.equal(filter.intent, "filter_user");
+  assert.equal(filter.content,
+    "No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.");
+  assert.ok(filter.evidence.includes("filter:user:self"));
+});

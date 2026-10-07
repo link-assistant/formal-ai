@@ -562,6 +562,22 @@ meanings
     unit "not applicable"
     example "Prior research task: the economic impact of replacing C++ with Rust."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  concept_introspection
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks what the system knows about a quoted concept"
+    effect "the answer names the concept as a network intent with its rules and example links"
+    unit "not applicable"
+    example "Here is what I know about 'greeting'."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  filter_user
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks to list the facts they contributed"
+    effect "the answer applies the user filter and reports that no personal contribution is recorded yet"
+    unit "not applicable"
+    example "No facts have been recorded under your user filter yet."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
   fact_comparison
     defined-by answer
     role localized_response_template

@@ -33,7 +33,7 @@ use crate::solver_handlers::{
     try_document_originality_check, try_document_request, try_fact_checking, try_fact_lookup,
     try_fact_lookup_with_offline, try_http_fetch, try_http_fetch_with_offline,
     try_installation_conversion, try_javascript_execution, try_learn_from_source,
-    try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
+    try_meta_explanation, try_meta_explanation_with_runtime, try_numeric_list,
     try_numeric_list_with_history, try_program_synthesis, try_program_synthesis_with_online,
     try_proof_request, try_proof_request_with_config, try_research_comparison_table,
     try_research_result_followup, try_response_language_followup, try_roleplay_request,
@@ -466,7 +466,6 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     ("who_is", resolve_who_is),
     ("how_it_works", try_how_it_works),
     ("meta_explanation", try_meta_explanation),
-    ("network_query", try_network_query),
     // `execution_failure` must run before `write_script`/`algorithm` so that
     // explicit failure prompts (e.g. "calls undefined_function()") surface a
     // failure trace instead of being silently transformed into a passing
