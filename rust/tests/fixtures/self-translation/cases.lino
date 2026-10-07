@@ -1,0 +1,51 @@
+# The shared self-translation corpus, in the manner of meta-language PR #196
+# (parity/self-translation/cases.lino) and relative-meta-logic's
+# test-corpus/ (one contract both runtimes consume).
+#
+# (case <name> (source <path>) (from <language>) (to <language>) (expected <path>))
+#   `node scripts/self-translate.mjs --check` fails when the translator no
+#   longer produces <expected> (and expected/<name>.items.lino) from <source>;
+#   `--write` rewrites them. A case whose expected file is a source asserts
+#   the round trip restores that source byte for byte.
+# (call <case> (javascript <name>) (rust <name>) (arguments <value>...) (result <value>))
+#   rust/tests/web/self-translation.test.mjs runs the JavaScript side and
+#   rust/tests/unit/issue_1188_self_translation_corpus.rs the Rust side of
+#   every call; both compare the printed result with <result>. A value is
+#   (number n), (boolean b) or (text t) with t percent-encoded.
+(case ratings-to-rust (source sources/ratings.mjs) (from JavaScript) (to Rust) (expected expected/ratings-to-rust.rs))
+(case ratings-to-meta (source sources/ratings.mjs) (from JavaScript) (to Meta) (expected expected/ratings-to-meta.lino))
+(case ratings-from-meta (source expected/ratings-to-meta.lino) (from Meta) (to Rust) (expected expected/ratings-from-meta.rs))
+(case ratings-back-to-javascript (source expected/ratings-to-rust.rs) (from Rust) (to JavaScript) (expected sources/ratings.mjs))
+(case ratings-edited-to-javascript (source sources/ratings-edited.rs) (from Rust) (to JavaScript) (expected expected/ratings-edited-to-javascript.mjs))
+(case geometry-to-javascript (source sources/geometry.rs) (from Rust) (to JavaScript) (expected expected/geometry-to-javascript.mjs))
+(case geometry-back-to-rust (source expected/geometry-to-javascript.mjs) (from JavaScript) (to Rust) (expected sources/geometry.rs))
+(call ratings-to-rust (javascript add) (rust add) (arguments (number 2) (number 3.5)) (result (number 5.5)))
+(call ratings-to-rust (javascript average) (rust average) (arguments (number 9) (number 2)) (result (number 4.5)))
+(call ratings-to-rust (javascript average) (rust average) (arguments (number 9) (number 0)) (result (number 0)))
+(call ratings-to-rust (javascript distance) (rust distance) (arguments (number 3) (number 4)) (result (number 5)))
+(call ratings-to-rust (javascript scoreBand) (rust score_band) (arguments (number 10)) (result (text top)))
+(call ratings-to-rust (javascript scoreBand) (rust score_band) (arguments (number 7)) (result (text high)))
+(call ratings-to-rust (javascript scoreBand) (rust score_band) (arguments (number 2)) (result (text low)))
+(call ratings-to-rust (javascript isRatingUnit) (rust is_rating_unit) (arguments (text stars)) (result (boolean true)))
+(call ratings-to-rust (javascript isRatingUnit) (rust is_rating_unit) (arguments (text starchers)) (result (boolean true)))
+(call ratings-to-rust (javascript isRatingUnit) (rust is_rating_unit) (arguments (text moons)) (result (boolean false)))
+(call ratings-to-rust (javascript mentionsRating) (rust mentions_rating) (arguments (text five%20stars)) (result (boolean true)))
+(call ratings-to-rust (javascript mentionsRating) (rust mentions_rating) (arguments (text none)) (result (boolean false)))
+(call ratings-to-rust (javascript mentionsRating) (rust mentions_rating) (arguments (text stars)) (result (boolean false)))
+(call ratings-to-rust (javascript ratingLabel) (rust rating_label) (arguments (number 10)) (result (text top)))
+(call ratings-to-rust (javascript ratingLabel) (rust rating_label) (arguments (number 3)) (result (text rated)))
+(call ratings-to-rust (javascript isRated) (rust is_rated) (arguments (number 3) (boolean false)) (result (boolean true)))
+(call ratings-to-rust (javascript isRated) (rust is_rated) (arguments (number 3) (boolean true)) (result (boolean false)))
+(call ratings-to-rust (javascript isRated) (rust is_rated) (arguments (number 0) (boolean false)) (result (boolean false)))
+(call ratings-to-rust (javascript spread) (rust spread) (arguments (number 2) (number 7.5)) (result (number 5.5)))
+(call ratings-to-rust (javascript wholeStars) (rust whole_stars) (arguments (number 3.2)) (result (number 4)))
+(call ratings-to-rust (javascript wholeStars) (rust whole_stars) (arguments (number 4.7)) (result (number 4)))
+(call ratings-to-rust (javascript wholeStars) (rust whole_stars) (arguments (number 0.5)) (result (number 1)))
+(call geometry-to-javascript (javascript squared) (rust squared) (arguments (number 1.5)) (result (number 2.25)))
+(call geometry-to-javascript (javascript hypotenuse) (rust hypotenuse) (arguments (number 3) (number 4)) (result (number 5)))
+(call geometry-to-javascript (javascript quadrant) (rust quadrant) (arguments (number 1) (number 2)) (result (text first)))
+(call geometry-to-javascript (javascript quadrant) (rust quadrant) (arguments (number -1) (number 2)) (result (text west)))
+(call geometry-to-javascript (javascript quadrant) (rust quadrant) (arguments (number 1) (number -2)) (result (text east)))
+(call geometry-to-javascript (javascript isUnit) (rust is_unit) (arguments (text units)) (result (boolean true)))
+(call geometry-to-javascript (javascript isUnit) (rust is_unit) (arguments (text one)) (result (boolean true)))
+(call geometry-to-javascript (javascript isUnit) (rust is_unit) (arguments (text two)) (result (boolean false)))

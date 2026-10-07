@@ -337,7 +337,7 @@ function codeExampleContentId(text) {
 /**
  * The values one per-language row of the part vocabulary carries
  * (`entry_container`, `bare_output_call`, `newline_token`), in seed order.
- * Mirrors `language_rows` in rust/src/discovery_production_documentation.rs.
+ * Mirrors `language_rows` in rust/src/discovery_production_contract.rs.
  * @param {string} language
  * @param {string} rowName
  * @returns {Array<string>}
@@ -387,7 +387,7 @@ const CODE_EXAMPLE_COMMAND_PROMPTS = ["$ ", "% ", "> "];
  * consistently (`kotlinc hello.kt -d hello.jar` binds `hello` for
  * `kotlinc Main.kt -d Main.jar`). A line equal to the catalog command binds
  * the stem itself. Mirrors `documented_command_binding` in
- * rust/src/discovery_production_documentation.rs.
+ * rust/src/discovery_production_contract.rs.
  * @param {string} documented
  * @param {string} catalog
  * @param {string} saveAs
@@ -465,7 +465,7 @@ function codeExampleRebind(word, stem, name) {
  * the name after one of the language's `entry_container` keywords
  * (`object hello`). Every command carries its source: the page whose
  * captured line states it, else `catalog`. Mirrors `documented_run_contract`
- * in rust/src/discovery_production_documentation.rs.
+ * in rust/src/discovery_production_contract.rs.
  * @param {string} language
  * @param {object|null} languageInfo a WRITE_PROGRAM_LANGUAGES row
  * @param {string} program
@@ -509,7 +509,7 @@ function documentedRunContract(language, languageInfo, program, captures) {
  * line break (a `bare_output_call` of the part vocabulary, PHP's `echo`) and
  * its line carries none of the language's `newline_token` rows, so the
  * program prints the expected text without the trailing newline. Mirrors
- * `documentation_deviation` in rust/src/discovery_production_documentation.rs.
+ * `documentation_deviation` in rust/src/discovery_production_contract.rs.
  * @param {string} language
  * @param {string} call
  * @param {string} program
@@ -524,7 +524,7 @@ function documentationDeviation(language, call, program) {
 /**
  * Rediscover a write_program procedure from the documentation captures
  * (issue #1165 R1165-1, the documentation_route of the policy seed). Mirrors
- * `rediscover_from_documentation` in rust/src/discovery_production.rs.
+ * `rediscover_from_documentation` in rust/src/discovery_production_documentation.rs.
  * Each page's first block in the language (or untagged) that decomposes into
  * an output call printing a literal is recomposed with the task's expected
  * output bound into that literal; the shortest program is kept and verified
@@ -624,7 +624,7 @@ function documentedProgram(task, language) {
 /**
  * Whether the documentation route knows a language (issue #1165 R1165-4):
  * some task its captures cover rediscovers a verified program. Mirrors
- * `language_has_documented_procedure` in rust/src/discovery_production.rs.
+ * `language_has_documented_procedure` in rust/src/discovery_production_documentation.rs.
  * @param {string} language
  * @returns {boolean}
  */
@@ -713,7 +713,7 @@ function documentationRediscoveredPage(task, language) {
  * one `command_source` per catalog command (where the command shown comes
  * from, a page or the catalog), the `program_verification` naming what
  * verified the program, and the `documentation_deviation` it carries, as `[kind, payload]`. Mirrors `documentation_events` in
- * rust/src/discovery_production_documentation.rs.
+ * rust/src/discovery_production_contract.rs.
  * @param {string} task
  * @param {string} language
  * @returns {Array<Array<string>>}

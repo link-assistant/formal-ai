@@ -1,0 +1,9 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check_twin_citations
+  stage web
+  description "R1024: every JavaScript twin that says it mirrors a symbol in rust/src/<path>.rs names a Rust definition that still exists there, so a Rust rename, move or deletion cannot leave the JavaScript root citing a stale original."
+  run "node scripts/check-twin-citations.mjs"

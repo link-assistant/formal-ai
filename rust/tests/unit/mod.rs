@@ -353,6 +353,7 @@ mod issue_1186_formalization_task;
 mod issue_1186_prover_step;
 mod issue_1186_rml_export;
 mod issue_1187_credentials;
+mod issue_1188_self_translation_corpus;
 mod issue_447_dialog_politeness;
 mod issue_483_small_model_fallback;
 mod issue_491_least_action;
