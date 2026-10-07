@@ -135,7 +135,10 @@ fn a_spelled_function_application_is_computed() {
         ("What is the square root of 144?", "sqrt(144) = 12"),
         ("Calculate the square root of 81", "sqrt(81) = 9"),
         ("Сколько будет квадратный корень из 144?", "sqrt(144) = 12"),
-        ("What is the square root of 2?", "sqrt(2) = 1.414213562373095"),
+        (
+            "What is the square root of 2?",
+            "sqrt(2) = 1.414213562373095",
+        ),
     ] {
         let response = FormalAiEngine.answer(prompt);
         assert_eq!(
