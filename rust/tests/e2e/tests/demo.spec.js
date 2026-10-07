@@ -95,6 +95,20 @@ test.describe('formal-ai demo UI', () => {
     await expect(demoStatus).not.toHaveText(firstCountdown || '');
   });
 
+  // Issue #1 R22/R23: each demo cycle opens with a user greeting, and the
+  // next cycle starts 10-20 seconds later.
+  test('each demo cycle opens with a user greeting and waits 10-20 seconds', async ({ page }) => {
+    const firstUser = page.locator('[data-testid="chat-message"].user').first();
+    await expect(firstUser).toBeVisible({ timeout: 15_000 });
+    await expect(firstUser).toContainText(/\b(Hi)\b|Привет|नमस्ते|你好/);
+
+    const demoStatus = page.locator('[data-testid="demo-status"]');
+    await expect(demoStatus).toContainText(/Next dialog in \d+s/, { timeout: 30_000 });
+    const seconds = Number(/Next dialog in (\d+)s/.exec((await demoStatus.textContent()) || '')?.[1]);
+    expect(seconds).toBeGreaterThanOrEqual(1);
+    expect(seconds).toBeLessThanOrEqual(20);
+  });
+
   test('automatic demo renders a chat exchange', async ({ page }) => {
     const messageList = page.locator('[data-testid="message-list"]');
     await expect(messageList).toBeVisible();

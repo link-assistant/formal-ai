@@ -451,10 +451,10 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R6"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/specification/probabilistic_reasoning/counted_utility.rs"
     manual "not yet confirmed"
   requirement
     id "R60"
@@ -587,10 +587,10 @@ requirement_status_ledger_shard requirements_12
   requirement
     id "R7"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/formal_ai.rs"
     manual "not yet confirmed"
   requirement
     id "R70"

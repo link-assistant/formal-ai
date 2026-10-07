@@ -467,10 +467,10 @@ requirement_status_ledger_shard requirements_15
   requirement
     id "R9"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/formal_ai.rs"
     manual 'manually confirmed 2026-08-04 (audit): README `chat --prompt "Hi"` en greeting run via built binary'
   requirement
     id "R90"

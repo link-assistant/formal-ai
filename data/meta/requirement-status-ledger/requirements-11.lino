@@ -411,10 +411,10 @@ requirement_status_ledger_shard requirements_11
   requirement
     id "R5"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/web/preamble-issue-1.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R50"

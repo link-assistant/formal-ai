@@ -35,18 +35,18 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R2"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/formal_ai.rs"
     manual "not yet confirmed"
   requirement
     id "R20"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/formal_ai.rs"
     manual "not yet confirmed"
   requirement
     id "R200"
@@ -131,10 +131,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R21"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/issue-180.spec.js"
     manual "not yet confirmed"
   requirement
     id "R210"
@@ -219,10 +219,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R22"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "manually confirmed 2026-08-04 (audit): README greetings run in en/ru/hi/zh (Hello/Привет/नमस्ते/你好)"
   requirement
     id "R220"
@@ -315,10 +315,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R23"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R230"
@@ -419,10 +419,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R24"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/web/preamble-issue-1.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R240"
@@ -507,10 +507,10 @@ requirement_status_ledger_shard requirements_07
   requirement
     id "R25"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/data_files.rs"
     manual "not yet confirmed"
   requirement
     id "R250"

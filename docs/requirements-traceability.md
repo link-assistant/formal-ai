@@ -49,31 +49,31 @@ line number, which had gone stale for every row.
 
 | ID | Shard | Delivered | Automated test | Manual confirmation |
 | --- | --- | --- | --- | --- |
-| R1 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R2 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R3 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R4 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R5 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R6 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R7 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R8 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R9 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): README `chat --prompt "Hi"` en greeting run via built binary |
-| R10 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): README `chat --prompt "Write me hello world program in Rust"` run, JSON chat format checked |
-| R11 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R12 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R13 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): `formal-ai serve` started, `/v1/chat/completions` and `/v1/responses` called, server stopped cleanly |
-| R14 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R15 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R16 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R17 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed |
-| R18 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R19 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R20 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R21 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R22 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): README greetings run in en/ru/hi/zh (Hello/Привет/नमस्ते/你好) |
-| R23 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R24 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
-| R25 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R1 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/web/preamble-issue-1.test.mjs | not yet confirmed |
+| R2 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs; rust/tests/unit/specification/openai_compatibility.rs | not yet confirmed |
+| R3 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs; rust/tests/unit/specification/openai_compatibility.rs | not yet confirmed |
+| R4 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs; rust/tests/web/server.test.mjs | not yet confirmed |
+| R5 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/web/preamble-issue-1.test.mjs | not yet confirmed |
+| R6 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/specification/probabilistic_reasoning/counted_utility.rs | not yet confirmed |
+| R7 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs | not yet confirmed |
+| R8 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/data_files.rs | not yet confirmed |
+| R9 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs; rust/tests/e2e/tests/demo.spec.js | manually confirmed 2026-08-04 (audit): README `chat --prompt "Hi"` en greeting run via built binary |
+| R10 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs; rust/tests/e2e/tests/demo.spec.js | manually confirmed 2026-08-04 (audit): README `chat --prompt "Write me hello world program in Rust"` run, JSON chat format checked |
+| R11 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs | not yet confirmed |
+| R12 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/issue_660_cli.rs | not yet confirmed |
+| R13 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs; rust/tests/unit/server_route_manifest.rs | manually confirmed 2026-08-04 (audit): `formal-ai serve` started, `/v1/chat/completions` and `/v1/responses` called, server stopped cleanly |
+| R14 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/docker_runtime.rs | not yet confirmed |
+| R15 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
+| R16 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/e2e/tests/issue-776.spec.js; rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
+| R17 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/specification/desktop_surface.rs | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed |
+| R18 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/proof_request_config.rs | not yet confirmed |
+| R19 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/web/preamble-issue-1.test.mjs | not yet confirmed |
+| R20 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/formal_ai.rs; rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
+| R21 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/e2e/tests/issue-180.spec.js; rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
+| R22 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/e2e/tests/demo.spec.js | manually confirmed 2026-08-04 (audit): README greetings run in en/ru/hi/zh (Hello/Привет/नमस्ते/你好) |
+| R23 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/e2e/tests/demo.spec.js | not yet confirmed |
+| R24 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/web/preamble-issue-1.test.mjs | not yet confirmed |
+| R25 | docs/requirements/preamble-requirements-for-issue-1.md | pre-2026-07 (undated) | rust/tests/unit/data_files.rs | not yet confirmed |
 | R26 | docs/requirements/issue-0006-ui-follow-up-requirements.md | pre-2026-07 (undated); issue #6 | issue-level coverage (not row-pinned): rust/tests/e2e/tests/demo.spec.js:80 | not yet confirmed |
 | R27 | docs/requirements/issue-0006-ui-follow-up-requirements.md | pre-2026-07 (undated); issue #6 | issue-level coverage (not row-pinned): rust/tests/e2e/tests/demo.spec.js:80 | not yet confirmed |
 | R28 | docs/requirements/issue-0006-ui-follow-up-requirements.md | pre-2026-07 (undated); issue #6 | issue-level coverage (not row-pinned): rust/tests/e2e/tests/demo.spec.js:80 | not yet confirmed |

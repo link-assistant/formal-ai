@@ -51,10 +51,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R13"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/formal_ai.rs"
     manual "manually confirmed 2026-08-04 (audit): `formal-ai serve` started, `/v1/chat/completions` and `/v1/responses` called, server stopped cleanly"
   requirement
     id "R130"
@@ -139,10 +139,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R14"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/docker_runtime.rs"
     manual "not yet confirmed"
   requirement
     id "R140"
@@ -227,10 +227,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R15"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "not yet confirmed"
   requirement
     id "R150"
@@ -315,10 +315,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R16"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/e2e/tests/issue-776.spec.js"
     manual "not yet confirmed"
   requirement
     id "R160"
@@ -403,10 +403,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R17"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/specification/desktop_surface.rs"
     manual "manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed"
   requirement
     id "R170"
@@ -491,10 +491,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R18"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/proof_request_config.rs"
     manual "not yet confirmed"
   requirement
     id "R180"
@@ -579,10 +579,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R19"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/web/preamble-issue-1.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R190"

@@ -315,10 +315,10 @@ requirement_status_ledger_shard requirements_08
   requirement
     id "R3"
     shard "docs/requirements/preamble-requirements-for-issue-1.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "pre-2026-07 (undated)"
     issue ""
-    automated_test ""
+    automated_test "rust/tests/unit/formal_ai.rs"
     manual "not yet confirmed"
   requirement
     id "R30"
