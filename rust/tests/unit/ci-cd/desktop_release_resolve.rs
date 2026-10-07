@@ -206,6 +206,21 @@ fn expected_asset_names(version: &str) -> String {
         "latest-linux.yml".to_string(),
     ]
     .join("\n")
+        + "\n"
+        + &cli_archive_names()
+}
+
+/// Issue #1181: the five archives the `cli` job of desktop-release.yml uploads
+/// to the same release; the resolver reads them from that job's matrix.
+fn cli_archive_names() -> String {
+    [
+        "formal-ai-cli-x86_64-unknown-linux-musl.tar.gz",
+        "formal-ai-cli-aarch64-unknown-linux-musl.tar.gz",
+        "formal-ai-cli-x86_64-apple-darwin.tar.gz",
+        "formal-ai-cli-aarch64-apple-darwin.tar.gz",
+        "formal-ai-cli-x86_64-pc-windows-msvc.zip",
+    ]
+    .join("\n")
 }
 
 fn macos_and_windows_asset_names(version: &str) -> String {
@@ -327,6 +342,50 @@ fn workflow_run_skips_when_release_has_all_required_assets() {
         result.should_build, "false",
         "a release that already has all required desktop assets must not rebuild on workflow_run\nstdout:\n{}\nstderr:\n{}",
         result.stdout, result.stderr
+    );
+}
+
+#[test]
+fn workflow_run_builds_when_release_is_missing_cli_archives() {
+    // Issue #1181: a release whose desktop set is complete but which lacks the
+    // standalone CLI archives is partial, so the automatic run must build and
+    // upload them instead of skipping on the desktop set alone.
+    if !bash_available() {
+        eprintln!("skipping: /bin/bash not available");
+        return;
+    }
+    let complete = expected_asset_names("0.201.0");
+    let without_cli: Vec<&str> = complete
+        .lines()
+        .filter(|name| !name.starts_with("formal-ai-cli-"))
+        .collect();
+    let without_cli = without_cli.join("\n");
+    let result = run_resolve(
+        "cli-missing",
+        &[
+            ("EVENT", "workflow_run"),
+            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+        ],
+        &GhMock {
+            tags_jq_output: "",
+            latest_tag: "v0.201.0",
+            parent_sha: "0abd3f45parenthead",
+            release_exists: true,
+            asset_names: &without_cli,
+        },
+    );
+    assert!(result.ok, "resolve script failed: {}", result.stderr);
+    assert_eq!(
+        result.should_build, "true",
+        "a release without the CLI archives must build them\nstdout:\n{}",
+        result.stdout
+    );
+    assert!(
+        result
+            .stdout
+            .contains("formal-ai-cli-x86_64-pc-windows-msvc.zip"),
+        "the log names the missing CLI archive: {}",
+        result.stdout
     );
 }
 

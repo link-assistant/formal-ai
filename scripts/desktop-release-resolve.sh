@@ -118,6 +118,24 @@ expected_desktop_assets() {
     "latest.yml" \
     "latest-mac.yml" \
     "latest-linux.yml"
+  expected_cli_assets
+}
+
+# Issue #1181: the `cli` job's archives belong to the same release, so a release
+# that lacks one of them is partial too. The names come from the `cli` job's own
+# matrix (`target:` and `archive:` of every `label: cli-*` leg), so a leg added
+# there is required here without a second list.
+DESKTOP_RELEASE_WORKFLOW="${DESKTOP_RELEASE_WORKFLOW:-$(dirname "$0")/../.github/workflows/desktop-release.yml}"
+expected_cli_assets() {
+  if [ ! -f "$DESKTOP_RELEASE_WORKFLOW" ]; then
+    # Unknown matrix: require a name no release carries, so the guard builds
+    # (the fail-safe direction) instead of silently dropping the CLI assets.
+    log "warning: ${DESKTOP_RELEASE_WORKFLOW} not found; cannot list the CLI archives, building." >&2
+    echo "formal-ai-cli-<matrix unknown>"
+    return 0
+  fi
+  sed -n 's/.*target: *\([A-Za-z0-9_.-]*\), *label: *cli-[^,]*,.*archive: *\([a-z.]*\),.*/formal-ai-cli-\1.\2/p' \
+    "$DESKTOP_RELEASE_WORKFLOW"
 }
 
 group "desktop-release resolve inputs"
@@ -232,7 +250,7 @@ else
   # naming in the log. Either way the fail-safe direction is the same (build),
   # so the status only drives diagnostics, never the decision.
   if existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
-    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml")' 2>/dev/null)"; then
+    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or startswith("formal-ai-cli-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml")' 2>/dev/null)"; then
     :
   else
     log "warning: could not list assets for ${tag} (gh exited non-zero); treating them as absent and building."
@@ -250,7 +268,7 @@ else
 
   log "release version: ${release_version}"
   log "existing desktop assets: ${existing_count}"
-  log "required desktop assets: 17"
+  log "required desktop assets: 17 desktop and updater files plus $(expected_cli_assets | wc -l | tr -d ' ') CLI archives"
   if [ ${#missing[@]} -eq 0 ]; then
     log "all required desktop assets are present."
   else
