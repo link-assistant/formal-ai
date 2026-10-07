@@ -92,11 +92,17 @@ fn r1177_7_an_unknown_shape_without_examples_is_refused_by_name() {
 #[test]
 fn r1177_9_a_csv_table_converts_to_json_and_is_checked_cell_by_cell() {
     assert_eq!(
-        answer_of(formal_ai::handle_format_conversion, "Convert this CSV to JSON:\n```csv\nname,quote\nAnn,\"says \"\"hi\"\", twice\"\nBob,ok\n```"),
+        answer_of(
+            formal_ai::handle_format_conversion,
+            "Convert this CSV to JSON:\n```csv\nname,quote\nAnn,\"says \"\"hi\"\", twice\"\nBob,ok\n```"
+        ),
         "Converted CSV to JSON. Data rows: 2; header columns: name, quote. CSV carries no types, so every value stays a JSON string rather than a guessed number or boolean.\n\n```json\n[\n  {\n    \"name\": \"Ann\",\n    \"quote\": \"says \\\"hi\\\", twice\"\n  },\n  {\n    \"name\": \"Bob\",\n    \"quote\": \"ok\"\n  }\n]\n```\nRound-trip check: parsing the emitted JSON back gave every row the same value under every header column as the CSV it came from."
     );
     assert_eq!(
-        answer_of(formal_ai::handle_format_conversion, "Convert this CSV to JSON: name,age\nAnn"),
+        answer_of(
+            formal_ai::handle_format_conversion,
+            "Convert this CSV to JSON: name,age\nAnn"
+        ),
         "I will not guess a conversion. The text is outside the supported CSV subset (a header row of unique, non-empty names, then at least one row with the same number of comma-separated fields, double-quoted fields with doubled quotes inside), so I will not guess a conversion."
     );
 }

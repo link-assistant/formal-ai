@@ -278,11 +278,22 @@ pub fn parse_dockerfile_from(text: &str) -> Vec<(String, String, usize)> {
         let Some(rest) = lower.strip_prefix("from ") else {
             continue;
         };
-        let words: Vec<&str> = rest.split_whitespace().take_while(|w| !w.starts_with('#')).collect();
-        if let Some(alias) = words.iter().position(|w| *w == "as").and_then(|i| words.get(i + 1)) {
+        let words: Vec<&str> = rest
+            .split_whitespace()
+            .take_while(|w| !w.starts_with('#'))
+            .collect();
+        if let Some(alias) = words
+            .iter()
+            .position(|w| *w == "as")
+            .and_then(|i| words.get(i + 1))
+        {
             stages.push((*alias).to_string());
         }
-        let first = words.iter().find(|w| !w.starts_with("--")).copied().unwrap_or_default();
+        let first = words
+            .iter()
+            .find(|w| !w.starts_with("--"))
+            .copied()
+            .unwrap_or_default();
         if first.is_empty()
             || first.starts_with("${")
             || first == "scratch"

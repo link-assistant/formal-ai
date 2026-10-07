@@ -96,7 +96,11 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 "tryTestGeneration",
                 vec!["function_under_test"]
             ),
-            ("code_refactoring", "tryCodeRefactoring", vec!["code_artifact"]),
+            (
+                "code_refactoring",
+                "tryCodeRefactoring",
+                vec!["code_artifact"]
+            ),
             (
                 "format_conversion",
                 "tryFormatConversion",

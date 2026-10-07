@@ -148,10 +148,7 @@ FROM --platform=$BUILDPLATFORM rust:1.98-slim AS cross
         bases[1],
         ("konrad/box-dind".to_string(), "2.10.2".to_string(), 3)
     );
-    assert_eq!(
-        bases[2],
-        ("rust".to_string(), "1.98-slim".to_string(), 5)
-    );
+    assert_eq!(bases[2], ("rust".to_string(), "1.98-slim".to_string(), 5));
 }
 
 #[test]
@@ -467,8 +464,14 @@ fn action_refs_float_and_rewrite_at_their_own_precision() {
 fn drift_is_numeric_at_the_pinned_precision() {
     assert_eq!(numeric_prefix("v1.98-slim"), vec![1, 98]);
     assert!(is_behind("1.98-slim", "1.99.0"));
-    assert!(!is_behind("1.99-slim", "1.99.0"), "a variant of the latest is current");
-    assert!(!is_behind("26.17.0", "26.15.3"), "a pin past a lagging dist-tag is not drift");
+    assert!(
+        !is_behind("1.99-slim", "1.99.0"),
+        "a variant of the latest is current"
+    );
+    assert!(
+        !is_behind("26.17.0", "26.15.3"),
+        "a pin past a lagging dist-tag is not drift"
+    );
     assert!(is_behind("0.10.1", "0.11.0"));
     assert!(!is_behind("2.10.2", "2.10.2"));
     let tags = r#"[{"name": "codeql-bundle-v2.27.2"}, {"name": "v4.31.2"}, {"name": "v3.30.9"}]"#;

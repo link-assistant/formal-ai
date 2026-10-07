@@ -794,7 +794,16 @@ fn fetch(url: &str) -> Result<String, String> {
         .find(|value| !value.trim().is_empty())
         .filter(|_| url.starts_with("https://api.github.com/"));
     let mut child = Command::new("curl")
-        .args(["-sfL", "--max-time", "30", "-A", USER_AGENT, "--config", "-", url])
+        .args([
+            "-sfL",
+            "--max-time",
+            "30",
+            "-A",
+            USER_AGENT,
+            "--config",
+            "-",
+            url,
+        ])
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .spawn()
@@ -842,7 +851,9 @@ fn latest_github(repository: &str) -> Result<String, String> {
     if without_v(&latest).starts_with(|c: char| c.is_ascii_digit()) {
         return Ok(latest);
     }
-    let tags = fetch(&format!("https://api.github.com/repos/{repository}/tags?per_page=100"))?;
+    let tags = fetch(&format!(
+        "https://api.github.com/repos/{repository}/tags?per_page=100"
+    ))?;
     github_tags_latest(&tags)
         .ok_or_else(|| format!("github tags for {repository} had no version-shaped tag"))
 }
@@ -850,7 +861,11 @@ fn latest_github(repository: &str) -> Result<String, String> {
 #[cfg(not(test))]
 fn latest_docker_hub(image: &str) -> Result<String, String> {
     // Official images (`rust`, `ubuntu`) live under Docker Hub's `library/`.
-    let repository = if image.contains('/') { image.to_string() } else { format!("library/{image}") };
+    let repository = if image.contains('/') {
+        image.to_string()
+    } else {
+        format!("library/{image}")
+    };
     let body = fetch(&format!(
         "https://hub.docker.com/v2/repositories/{repository}/tags?page_size=100"
     ))?;
