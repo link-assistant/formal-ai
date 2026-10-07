@@ -659,35 +659,13 @@ ipcMain.handle("formalAiDesktop:syncMemory", async (_event, payload) => {
 // --install-extension` — the same artifact the manual `install.sh vscode` flow
 // uses. Each side-effecting dependency is injected so the lib stays testable.
 function runVsCodeCli(command, args) {
-  if (process.platform === "win32") {
-    // command-stream#191: its shell mode accepts a command string but has no
-    // argv-safe Windows command-shim interface. Keep Node's native argv
-    // handling for code.cmd until that focused upstream limitation is fixed.
-    return new Promise((resolve) => {
-      let stdout = "";
-      let stderr = "";
-      let child;
-      try {
-        child = childProcess.spawn(command, args, {
-          stdio: ["ignore", "pipe", "pipe"],
-          shell: true,
-        });
-      } catch (error) {
-        resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
-        return;
-      }
-      child.stdout.on("data", (chunk) => { stdout += chunk; });
-      child.stderr.on("data", (chunk) => { stderr += chunk; });
-      child.once("error", (error) => {
-        resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
-      });
-      child.once("exit", (code) => {
-        resolve({ code: typeof code === "number" ? code : 1, stdout, stderr });
-      });
-    });
-  }
+  // Windows ships the CLI as the `code.cmd` shim, which cannot be executed
+  // directly. command-stream's shell `{ file, args }` form hands argument
+  // construction to Node's shell-enabled spawn (command-stream#191), so both
+  // platforms go through the same adapter.
   return commandRunner.run(command, args, {
     env: process.env,
+    shell: process.platform === "win32",
   });
 }
 

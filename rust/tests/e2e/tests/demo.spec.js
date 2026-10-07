@@ -791,7 +791,7 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     });
 
     expect(runtime).toEqual({
-      engine: 'lino-i18n@0.1.1',
+      engine: 'lino-i18n@0.3.0',
       russian: 'Сообщить о проблеме',
       fallback: 'Report issue',
     });
@@ -816,7 +816,7 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     });
 
     expect(catalog).toMatchObject({
-      source: 'lino-i18n@0.1.1',
+      source: 'lino-i18n@0.3.0',
       settingsLanguage: 'Language',
       timedStatus: 'Next dialog in 8s',
       catalogUrl: 'i18n-catalog.lino',

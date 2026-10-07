@@ -47,7 +47,7 @@ test.describe('Issue #193 bundled web runtime', () => {
     });
 
     expect(runtime).toEqual({
-      engine: 'lino-i18n@0.1.1',
+      engine: 'lino-i18n@0.3.0',
       russian: 'Сообщить о проблеме',
       fallback: 'Report issue',
       lastError: null,

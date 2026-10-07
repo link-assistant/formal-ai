@@ -11,7 +11,7 @@ an in-tree annotation naming the issue that tracks it.
 | --- | --- | --- |
 | R1169-1 | A gate reads every ecosystem the repository declares: `rust/Cargo.toml` against `rust/Cargo.lock`, every `package.json` against its lockfile (manifest-range fallback where a directory ships no lock), `uses:` refs in `.github/workflows` and composite actions, `FROM` bases in the `Dockerfile`, and the `rust-version` floor. | Implemented: `collect` in `scripts/check-dependencies-latest.rs`, walking with `node_modules`/`target`/`.git`/`.claude`/`cache` excluded; pinned by `the_repository_tree_collects_every_ecosystem` in `rust/tests/unit/issue_1169_dependency_currency.rs`. |
 | R1169-2 | "Latest" comes from the publisher's own registry — crates.io `max_stable_version`, npm `dist-tags.latest`, GitHub `releases/latest`, Docker Hub tags, the rust stable channel — never a memorized list. | Implemented: the `latest_*` fetchers (curl + `USER_AGENT`, 30 s cap), each parsed from the publisher's own answer. |
-| R1169-3 | A dependency may be held back only with a same-line annotation naming the tracking issue; the gate verifies the annotation, and drift without one fails. | Implemented: `blocked_annotation` requires `# blocked: <https://…/issues/…>` in Cargo.toml and a `"<name>//"` sibling key in package.json; blocked findings are reported with `(blocked)` and do not fail, unblocked drift exits 1. Documented in `CONTRIBUTING.md` beside the self-maintained-dependencies policy. `links-notation = "0.16.1" # blocked: …` is the first resident: lino-objects-codec 0.7.0 requires `^0.16`. |
+| R1169-3 | A dependency may be held back only with a same-line annotation naming the tracking issue; the gate verifies the annotation, and drift without one fails. | Implemented: `blocked_annotation` requires `# blocked: <https://…/issues/…>` in Cargo.toml and a `"<name>//"` sibling key in package.json; blocked findings are reported with `(blocked)` and do not fail, unblocked drift exits 1. Documented in `CONTRIBUTING.md` beside the self-maintained-dependencies policy. `links-notation = "0.16.1" # blocked: …` was the first resident (lino-objects-codec 0.7.0 required `^0.16`); it was lifted on 2026-10-07 when codec 0.8.0 moved to links-notation 0.23 and lino-objects-codec#60 closed. The current residents are package.json `"<name>//"` notes: desktop `command-stream`, and desktop/VS Code `browser-commander` and `@kreuzberg/html-to-markdown-node` overrides (see the 2026-10-07 pass below). |
 | R1169-4 | The tree itself is moved to latest: `cargo update` resolution (already applied to `rust/Cargo.lock` — command-stream 1.2.0, webrtc 0.21.0, toml_edit 0.25.15, clap 4.6.7 …), npm manifests hand-bumped with real registry integrity (react/react-dom 19.3.0, dompurify 3.4.16, marked 18.0.14, command-stream 1.2.0, electron 44.4.5, electron-builder 26.17.0 with its app-builder-lib/dmg-builder/builder-util/electron-publish/squirrel-windows ring, playwright 1.63.0 across desktop + e2e + vscode), and the pin edits (`konrad/box-dind` 2.10.2, `actions/cache` v6 in both composite actions, `zizmor-action` v0.6.4). | Implemented (re-checked 2026-10-07, this pull request). The listed moves are in the tree: `rust/Cargo.lock` resolves command-stream 1.2.0, webrtc 0.21.0, toml_edit 0.25.15 and clap 4.6.7; `package.json` pins react/react-dom 19.3.0, dompurify 3.4.16 and marked 18.0.14; `desktop/package.json` pins command-stream 1.2.0, electron ^44.4.5, electron-builder ^26.17.0 and playwright ^1.63.0; vscode and `rust/tests/e2e` pin playwright ^1.63.0 with their locks; `Dockerfile` runs `FROM konard/box-dind:2.10.2`; all three composite actions use `actions/cache@v6`; `zizmor-action@v0.6.4`. The desktop/e2e lock edits were verified closed by a before/after range-resolution diff over the `packages` map. The stale `konard/box-dind:2.1.1` comments in `Dockerfile.slim` and `container-images.yml` now name 2.10.2. The desktop and VS Code sandbox image now name `konard/box-dind:2.10.2` too (verified on Docker Hub as the current tag, published for linux/amd64 and linux/arm64): `desktop/lib/tool-router.cjs` `SANDBOX_IMAGE`, `desktop/scripts/smoke.mjs`, `vscode/src/lib/config.cjs` `DEFAULT_IMAGE`, the `vscode/package.json` setting default, the `docker_microservice` environment of `data/seed/environments.lino` (embedded mirror too), README, `vscode/README.md` and the architecture/desktop/vscode docs, with `docker_runtime.rs`, `docs_requirements.rs` and `formal_ai_cli.rs` pinning 2.10.2. The one remaining 2.1.1 pin is the historical issue #195 case-study research note, which records what was true then. No desktop or VS Code smoke run against the new image was recorded locally; the pinning tests run in CI. |
 | R1169-5 | A daily job refreshes the registry answers, applies every unblocked bump, re-resolves lockfiles, re-runs the CI gates, and opens one PR with whatever moved. | Implemented: `.github/workflows/dependencies-latest.yml` (cron `23 5 * * *`, off the fleet's :00 stampede per issue #1021) — `--refresh-snapshot`, `--apply --offline`, `cargo update --workspace`, `bun install` per manifest directory, `run-ci-gates` all three stages, `peter-evans/create-pull-request@v8`. Not yet run (needs CI). |
 | R1169-6 | Registry flakiness never reddens CI: `--offline` answers from `data/meta/dependency-registry-snapshot.lino`, written by `--refresh-snapshot`; an unreachable registry exits 3, distinct from findings. | Implemented: `read_snapshot`/`write_snapshot` (flat lino, one `registry_entry <ecosystem>/<name>` record per answer) and the exit-code ladder 0/1/2/3 in `main`. |
@@ -41,3 +41,33 @@ audit clean at `--audit-level=moderate`.
 Playwright and playwright-core are updated together to 1.63.0 in that lockfile,
 using the same registry integrity records as the e2e lockfile. No builds or tests
 were run for these integration changes.
+
+Latest-release pass (2026-10-07, lockfile-only; nothing was built locally, so
+the Rust adaptations compile and run first in CI):
+
+- Rust (`rust/Cargo.toml` + `cargo update`): links-notation 0.16.1 → 0.23.0
+  (pin lifted), lino-objects-codec 0.7.0 → 0.8.0, lino-arguments =0.3.0 →
+  0.4.0 (the exact pin had no recorded reason; 0.4.0 only moves `ctor` to 1.x,
+  and link-cli 1.0.0 still pulls 0.3.0 beside it), link-calculator 0.20.3 →
+  0.22.0, link-cli 0.2.11 → 1.0.0, web-search 0.5.0 → 0.6.0 with the
+  recommended `merge` feature, command-stream 1.2.0 → 1.5.3. Only `cc` 1.2.67
+  (tree-sitter grammars) and `generic-array` 0.14.7 (RustCrypto 0.14 line) stay
+  behind, held by transitive requirements; meta-language 0.58.2 still resolves
+  its own links-notation 0.13.0.
+- npm: root `@link-assistant/web-search` 0.11.1, `lino-i18n` 0.3.0, `marked`
+  18.1.0 (bun.lock); e2e `lino-i18n` 0.3.0; desktop electron ^44.6.0,
+  web-search ^0.11.1, puppeteer/puppeteer-core overrides ^25.12.0,
+  `browser-commander` override 0.16.1 → 0.20.0, command-stream 1.2.0 → 1.5.0;
+  VS Code the same web-search and override moves.
+- Held back, with `"<name>//"` notes: desktop `command-stream` at 1.5.0 (1.6.0+
+  and 2.0.0 depend on shelljs > fast-glob > micromatch > braces,
+  GHSA-vfj7-8cjw-p6xm, no patched release); the `browser-commander` override at
+  0.20.0 (0.21+ launches the installed Chrome over CDP by default, which
+  web-capture 1.11.2 does not opt out of; web-capture#160); the
+  `@kreuzberg/html-to-markdown-node` override at 3.5.5 (every later release,
+  through 3.7.2, still declares linux musl packages npm does not have).
+- Security overrides kept, still required: `proxy-addr` (express 5.2.1 allows
+  ^2.0.7), `compression` (serve 14.2.6 pins 1.8.1), `global-agent`
+  (`@electron/get` 3.1.0 wants ^3.0.0) and the web-capture `qs` override.
+  bun.lock and all three package-locks audit clean at `--audit-level=moderate`.
+

@@ -1,26 +1,9 @@
 use super::*;
 
 #[test]
-fn bare_dot_is_detected_only_for_non_decimal_periods() {
-    // Issue #334 OOM triggers: a `.` that is not flanked by digits.
-    for unsafe_expr in ["2. 3", "2+2. 3+3", "5. 5", ".5", "5.", "2 .3", "a.b"] {
-        assert!(
-            has_bare_dot(unsafe_expr),
-            "{unsafe_expr:?} contains a bare dot and must be rejected"
-        );
-    }
-    // Genuine decimals / dot-grouped digits stay on the link-calculator path.
-    for safe_expr in ["3.14", "3.14 + 2.5", "1.000.000", "2024.01.01", "8% of 500"] {
-        assert!(
-            !has_bare_dot(safe_expr),
-            "{safe_expr:?} is a valid decimal expression and must stay safe"
-        );
-    }
-}
-
-#[test]
-fn link_calculator_path_is_skipped_for_bare_dot_expressions() {
-    // Before the guard this aborted the process with a multi-GB allocation.
+fn link_calculator_rejects_bare_dot_expressions_as_recoverable_errors() {
+    // link-calculator <= 0.17.2 aborted the process with a multi-GB allocation
+    // here (issue #334); since 0.18.0 it returns an error (calculator#168).
     assert!(evaluate_with_link_calculator("2. 3").is_err());
     assert!(evaluate_with_link_calculator("2+2. 3+3").is_err());
     // Real decimals still reach the upstream calculator and evaluate.

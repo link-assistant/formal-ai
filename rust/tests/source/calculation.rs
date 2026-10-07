@@ -54,42 +54,12 @@ pub struct PromptInterpretation {
     pub corrected: String,
 }
 
-/// Issue #334: `link-calculator` (≤ 0.17.2) attempts a multi-gigabyte
-/// allocation and aborts the whole process when handed an expression that
-/// contains a *bare* period — a `.` that is not a decimal point flanked by
-/// digits on both sides. The prompt "What is 2+2. What is 3+3." reduces to the
-/// expression `2+2. 3+3` after the "what is" wrapper is stripped, and the
-/// minimal trigger is as small as `2. 3`. A Rust allocation failure aborts via
-/// `SIGABRT`/`SIGKILL` and cannot be caught with `catch_unwind`, so the only
-/// safe option is to never hand such an expression to the upstream parser.
-///
-/// Genuine decimals (`3.14`), thousands/date dot groups (`1.000.000`,
-/// `2024.01.01`) keep every `.` between two digits and stay on the fast path;
-/// anything else falls through to the local fallback evaluator, which rejects
-/// it with a clean `Unparseable` error instead of crashing.
-///
-/// Reported upstream: <https://github.com/link-assistant/calculator/issues/168>.
-fn has_bare_dot(expression: &str) -> bool {
-    let bytes = expression.as_bytes();
-    bytes.iter().enumerate().any(|(index, &byte)| {
-        if byte != b'.' {
-            return false;
-        }
-        let prev_is_digit = index
-            .checked_sub(1)
-            .and_then(|i| bytes.get(i))
-            .is_some_and(u8::is_ascii_digit);
-        let next_is_digit = bytes.get(index + 1).is_some_and(u8::is_ascii_digit);
-        !(prev_is_digit && next_is_digit)
-    })
-}
-
 fn evaluate_with_link_calculator(
     expression: &str,
 ) -> Result<CalculationEvaluation, ArithmeticError> {
-    if has_bare_dot(expression) {
-        return Err(ArithmeticError::Unparseable);
-    }
+    // A bare `.` (`2. 3`) is rejected by link-calculator itself as a
+    // recoverable parse error since 0.18.0 (link-assistant/calculator#168), so
+    // it falls through to the local evaluator like any other upstream error.
     let mut calculator = link_calculator::Calculator::new();
     let (_expression, value, steps, lino) = calculator
         .calculate_with_value(expression)

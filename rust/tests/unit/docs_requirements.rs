@@ -668,7 +668,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         &cargo,
         &[
             "default = [\"doublets-native\", \"equality-saturation\", \"meta-language\"]",
-            "link-cli = { version = \"0.2.11\", optional = true }",
+            "link-cli = { version = \"1.0.0\", optional = true }",
             "doublets-native = [\"dep:link-cli\"]",
         ],
     );

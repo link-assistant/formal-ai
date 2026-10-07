@@ -1,7 +1,6 @@
 use std::fs;
 use std::path::Path;
 
-use crate::lino_location::first_unparseable_lino_line;
 use formal_ai::json_lino::{json_cache_file, lino_to_json};
 use links_notation::parse_lino as parse_canonical_lino;
 use regex::Regex;
@@ -54,16 +53,14 @@ fn lino_data_files_are_parseable_human_readable_and_bounded() {
             path.display()
         );
 
-        parse_canonical_lino(content.trim()).unwrap_or_else(|error| {
-            let location = match first_unparseable_lino_line(&content) {
-                Some((line, text)) => format!(":{line} (`{text}`)"),
-                None => String::new(),
-            };
+        // links-notation 0.23 locates the failure itself: the error names the
+        // line and column and quotes the offending line under a caret.
+        if let Err(error) = parse_canonical_lino(content.trim()) {
             panic!(
-                "{}{location} contains invalid canonical Links Notation: {error}",
+                "{} contains invalid canonical Links Notation: {error}",
                 path.display()
             );
-        });
+        }
     }
 
     assert!(

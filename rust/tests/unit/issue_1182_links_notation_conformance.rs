@@ -10,9 +10,11 @@
 //! empty and this test is green, `rust/src/seed/parser.rs` and the parser
 //! half of `js/seed_loader.js` are deleted (R11's final step).
 //!
-//! The installed direct dependency is 0.16.1; its public unflattened parser
-//! supports the adapter without a Cargo update. The full corpus audit is an
-//! explicitly ignored adoption gate until gaps are measured and filed upstream.
+//! The installed direct dependency is 0.23.0; its public unflattened parser
+//! supports the adapter, and its comment rule (`links_notation::comments`)
+//! replaced the adapter's whole-line filter, closing the inline-comment gap.
+//! The full corpus audit is an explicitly ignored adoption gate until the
+//! remaining gaps are measured and filed upstream.
 //! CI can run it separately with `cargo test --test unit -- --ignored`.
 
 use std::fs;
@@ -73,7 +75,7 @@ fn gap_list() -> Vec<String> {
 }
 
 #[test]
-#[ignore = "pending full corpus adoption: inline comments, nested groups and historical escapes require measured upstream gaps"]
+#[ignore = "pending full corpus adoption: nested groups and historical escapes require measured upstream gaps"]
 fn every_seed_file_parses_to_the_same_tree_with_both_parsers() {
     let files = lino_files();
     assert!(

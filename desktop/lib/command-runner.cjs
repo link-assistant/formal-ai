@@ -25,9 +25,14 @@ function createCommandRunner(options = {}) {
   async function start(command, args = [], runOptions = {}) {
     const { ProcessRunner } = await component();
     const shell = runOptions.shell === true;
-    const spec = shell
-      ? { mode: "shell", command: String(command) }
-      : { mode: "exec", file: String(command), args: args.map(String) };
+    // A shell command with arguments uses the `{ file, args }` shell form, so
+    // Windows command shims such as `code.cmd` get Node's own argument
+    // handling instead of a hand-joined command string (command-stream#191).
+    const spec = !shell
+      ? { mode: "exec", file: String(command), args: args.map(String) }
+      : args.length > 0
+        ? { mode: "shell", file: String(command), args: args.map(String) }
+        : { mode: "shell", command: String(command) };
     const stdoutChunks = [];
     const stderrChunks = [];
     let cancelled = Boolean(runOptions.signal && runOptions.signal.aborted);

@@ -4,7 +4,7 @@
 //! a dependency release is a one-line change at the call site instead of a
 //! rewrite.
 //!
-//! - [`links_notation`] — the `links-notation` crate (installed 0.16.1) behind the
+//! - [`links_notation`] — the `links-notation` crate (installed 0.23.0) behind the
 //!   seed parser's [`crate::seed::parser::LinoNode`] /
 //!   [`crate::seed::parser::parse_lino`] interface.
 

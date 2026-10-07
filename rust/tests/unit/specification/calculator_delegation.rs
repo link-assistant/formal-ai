@@ -507,7 +507,8 @@ fn bare_dot_calculation_candidates_do_not_crash_the_process() {
     // gigabyte allocation and aborts the whole process on such input, so the
     // dialog "Write a Python function ... Then calculate the 10th Fibonacci
     // number and multiply it by 8% of 500 ..." used to crash with SIGKILL.
-    // After the guard the engine returns a normal answer for every prompt — the
+    // link-calculator 0.18.0 rejects them as recoverable parse errors
+    // (link-assistant/calculator#168), so the engine-side guard is gone; the
     // test reaching its assertions at all proves the process did not abort.
     for prompt in [
         "What is 2+2. What is 3+3.",
