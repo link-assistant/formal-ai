@@ -888,18 +888,11 @@ const WRITE_PROGRAM_TASKS = {
 };
 
 const WRITE_PROGRAM_TEMPLATES = {
-  // Issue #1165 R1165-4: rust, go and kotlin hello_world are rediscovered from
+  // Issue #1165 R1165-4: the hello_world programs of every language with a
+  // documentation capture are rediscovered from
   // data/seed/coding-documentation-captures.lino (writeProgramTemplate).
   hello_world: {
-    python: 'print("Hello, world!")',
-    javascript: 'console.log("Hello, world!");',
-    typescript: 'console.log("Hello, world!");',
-    c: '#include <stdio.h>\n\nint main(void) {\n    puts("Hello, world!");\n    return 0;\n}',
-    cpp: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, world!" << std::endl;\n    return 0;\n}',
     java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, world!");\n    }\n}',
-    csharp:
-      'using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, world!");\n    }\n}',
-    ruby: 'puts "Hello, world!"',
     scala:
       'object Main {\n  def main(args: Array[String]): Unit = {\n    println("Hello, world!")\n  }\n}',
     php: '<?php\n\necho "Hello, world!", PHP_EOL;',

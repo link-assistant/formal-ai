@@ -4,7 +4,10 @@
 # A template row names its task and language in the Rust table order; its
 # program text is not copied here. It is read from data/seed/hello-world-programs.lino,
 # the seed bundle the Rust catalog tests already hold equal to the tables, so the
-# catalog stores each program once (issue #1165 R1165-8).
+# catalog stores each program once (issue #1165 R1165-8). The rows after the
+# compiled ones are the pairs the seed bundle retires to the documentation
+# route, in seed order: the Rust table appends them when it is first read,
+# with the program the documentation captures rediscover (R1165-4).
 coding_catalog
   language rust
     name "Rust"
@@ -182,42 +185,12 @@ coding_catalog
     label "copy standard input to standard output"
     output "hello\nworld"
     input "hello\nworld\n"
-  template "hello_world:rust"
-    task_slug hello_world
-    language_slug rust
-  template "hello_world:python"
-    task_slug hello_world
-    language_slug python
-  template "hello_world:javascript"
-    task_slug hello_world
-    language_slug javascript
-  template "hello_world:typescript"
-    task_slug hello_world
-    language_slug typescript
-  template "hello_world:go"
-    task_slug hello_world
-    language_slug go
-  template "hello_world:c"
-    task_slug hello_world
-    language_slug c
-  template "hello_world:cpp"
-    task_slug hello_world
-    language_slug cpp
   template "hello_world:java"
     task_slug hello_world
     language_slug java
-  template "hello_world:csharp"
-    task_slug hello_world
-    language_slug csharp
-  template "hello_world:ruby"
-    task_slug hello_world
-    language_slug ruby
   template "hello_world:scala"
     task_slug hello_world
     language_slug scala
-  template "hello_world:kotlin"
-    task_slug hello_world
-    language_slug kotlin
   template "hello_world:php"
     task_slug hello_world
     language_slug php
@@ -635,3 +608,33 @@ coding_catalog
   template "hello_world:laravel"
     task_slug hello_world
     language_slug laravel
+  template "hello_world:rust"
+    task_slug hello_world
+    language_slug rust
+  template "hello_world:python"
+    task_slug hello_world
+    language_slug python
+  template "hello_world:javascript"
+    task_slug hello_world
+    language_slug javascript
+  template "hello_world:typescript"
+    task_slug hello_world
+    language_slug typescript
+  template "hello_world:go"
+    task_slug hello_world
+    language_slug go
+  template "hello_world:c"
+    task_slug hello_world
+    language_slug c
+  template "hello_world:cpp"
+    task_slug hello_world
+    language_slug cpp
+  template "hello_world:csharp"
+    task_slug hello_world
+    language_slug csharp
+  template "hello_world:ruby"
+    task_slug hello_world
+    language_slug ruby
+  template "hello_world:kotlin"
+    task_slug hello_world
+    language_slug kotlin

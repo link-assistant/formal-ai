@@ -24,9 +24,13 @@ import { loadProcedureCache, procedureCachePath } from '../../../js/server/proce
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 
 const ENV = 'FORMAL_AI_PROCEDURE_CACHE';
-const PROMPT = 'Write a hello world program in Python';
-const ENTRY = 'import sys\nsys.stdout.write("Hello, world!\\n")';
-const TEMPLATE = 'print("Hello, world!")';
+// A pair the documentation captures do not cover (Python counting to three:
+// its output is not one printed literal), so an unmodified request with no
+// cache row is the research miss (every catalog Hello World is rediscovered
+// from documentation since R1165-1).
+const PROMPT = 'Write a Python program that counts to three';
+const ENTRY = 'import sys\nsys.stdout.write("1\\n2\\n3\\n")';
+const TEMPLATE = 'for number in range(1, 4):\n    print(number)';
 
 let host;
 let directory;
@@ -53,10 +57,20 @@ function writeCache(name, rows) {
 
 const pythonRow = () => rediscoverableRecipe({
   language: 'python',
+  task: 'count_to_three',
+  rediscovery_query: 'python count to three',
+  rediscovery_source: 'https://docs.python.org/3/library/sys.html#sys.stdout',
+  entry: ENTRY,
+  verified_output: '1\n2\n3',
+});
+
+const HELLO_ENTRY = 'import sys\nsys.stdout.write("Hello, world!\\n")';
+const helloRow = () => rediscoverableRecipe({
+  language: 'python',
   task: 'hello_world',
   rediscovery_query: 'python hello world',
   rediscovery_source: 'https://docs.python.org/3/library/sys.html#sys.stdout',
-  entry: ENTRY,
+  entry: HELLO_ENTRY,
   verified_output: 'Hello, world!',
 });
 
@@ -77,7 +91,7 @@ test('the committed cache has no rows, so an unmodified request stays the native
   assert.deepEqual(loadProcedureCache().recipes, []);
   const result = await host.solve(PROMPT, []);
   assert.deepEqual(cacheEvents(result), [
-    { kind: 'procedure_cache', payload: 'outcome=miss language=python task=hello_world research_missing=reviewer_approval' },
+    { kind: 'procedure_cache', payload: 'outcome=miss language=python task=count_to_three research_missing=reviewer_approval' },
   ]);
   assert.ok(result.content.includes(TEMPLATE));
 });
@@ -87,7 +101,7 @@ test('a verified row answers the unmodified request with the cached entry and lo
   const result = await host.solve(PROMPT, []);
   const contentId = `0x${contentAddress(ENTRY).toString(16).padStart(16, '0')}`;
   assert.deepEqual(cacheEvents(result), [
-    { kind: 'procedure_cache', payload: `outcome=hit language=python task=hello_world content_id=${contentId}` },
+    { kind: 'procedure_cache', payload: `outcome=hit language=python task=count_to_three content_id=${contentId}` },
   ]);
   assert.ok(result.content.includes(ENTRY), 'the cached entry replaces the template');
   assert.ok(!result.content.includes(TEMPLATE));
@@ -112,11 +126,11 @@ test('a row whose content_id drifted is dropped on load, as in Rust', async () =
 });
 
 test('a customised request is never answered from the cache', async () => {
-  process.env[ENV] = writeCache('custom.lino', [pythonRow()]);
+  process.env[ENV] = writeCache('custom.lino', [helloRow()]);
   const result = await host.solve('Write a hello world program in Python and replace "Hello, world!" with "Hi there"', []);
   assert.equal(result.intent, 'write_program');
   assert.deepEqual(cacheEvents(result), []);
-  assert.ok(!result.content.includes(ENTRY));
+  assert.ok(!result.content.includes(HELLO_ENTRY));
 });
 
 test('R1165-1: a rediscovered row is recorded in the runtime cache and reused as a hit', async () => {

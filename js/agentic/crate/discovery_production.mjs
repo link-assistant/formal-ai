@@ -178,7 +178,18 @@ export function oracleKnowsLanguage(language) {
 /** Mirrors `fn knows_language`. @param {string} language */
 export function knowsLanguage(language) {
   return grammarExists(language)
-    && ((bootstrapCacheActive() && oracleKnowsLanguage(language)) || languageHasCacheRow(language));
+    && ((bootstrapCacheActive() && oracleKnowsLanguage(language))
+      || languageHasCacheRow(language)
+      || languageHasDocumentedProcedure(language));
+}
+
+/**
+ * Mirrors `fn language_has_documented_procedure`: the worker realm's
+ * `documentationKnowsLanguage`, the documentation route's rediscovery.
+ * @param {string} language
+ */
+function languageHasDocumentedProcedure(language) {
+  return Boolean(realm()?.documentationKnowsLanguage?.(language));
 }
 
 /** Mirrors `fn language_has_cache_row`. @param {string} language */

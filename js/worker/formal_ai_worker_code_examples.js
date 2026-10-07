@@ -302,6 +302,21 @@ function documentationCaptures(language, task) {
     }));
 }
 
+/**
+ * Whether a captured block's own language tag names `language`: the slug
+ * itself, the formalizer's untagged fallback, or one of the surfaces of the
+ * `program_language_<slug>` meaning (a page tagging its example `js`, `py`
+ * or `c++`). Mirrors `block_names_language` in
+ * rust/src/discovery_production_documentation.rs.
+ * @param {string} tag
+ * @param {string} language
+ * @returns {boolean}
+ */
+function documentationBlockNamesLanguage(tag, language) {
+  const lower = pageAsciiLower(String(tag || ""));
+  return lower === language || lower === "unknown" || wordsForMeaning("program_language_" + language).includes(lower);
+}
+
 /** FNV-1a (64-bit) of the UTF-8 bytes as `0x` and 16 hex digits (`fnv1a64`). */
 function codeExampleContentId(text) {
   let hash = 0xcbf29ce484222325n;
@@ -351,7 +366,7 @@ function rediscoverDocumentedProgram(task, language) {
   let best = null;
   for (const capture of captures) {
     for (const block of capture.blocks) {
-      if (block.language !== language && block.language !== "unknown") continue;
+      if (!documentationBlockNamesLanguage(block.language, language)) continue;
       const node = decomposeCodeExample(block.text, language, [], capture.url).ok;
       if (!node || !node.programBody || !node.parts.some((part) => part.kind === "output_operation")) continue;
       if (!best || [...node.programBody].length < [...best.node.programBody].length) best = { capture, node };
@@ -385,6 +400,75 @@ function rediscoverDocumentedProgram(task, language) {
   };
 }
 
+/** The shell prompts a documented command line may start with. */
+const CODE_EXAMPLE_COMMAND_PROMPTS = ["$ ", "% ", "> "];
+
+/**
+ * Whether a documented command is a catalog command with the documented file
+ * name bound to the catalog's (issue #1165 R1165-6): the same words, except
+ * that where the catalog word carries the stem of the file it saves the
+ * program as, the documented word carries one other name in its place,
+ * consistently (`kotlinc hello.kt -d hello.jar` is `kotlinc Main.kt -d
+ * Main.jar` for a program saved as `Main.kt`). Mirrors
+ * `documented_command_matches` in rust/src/discovery_production_documentation.rs.
+ * @param {string} documented
+ * @param {string} catalog
+ * @param {string} saveAs
+ * @returns {boolean}
+ */
+function documentedCommandMatches(documented, catalog, saveAs) {
+  const file = String(saveAs || "").split("/").pop();
+  const stem = file.includes(".") ? file.slice(0, file.lastIndexOf(".")) : file;
+  const words = documented.trim().split(/\s+/);
+  const expected = catalog.trim().split(/\s+/);
+  if (words.length !== expected.length) return false;
+  let bound = null;
+  return expected.every((word, index) => {
+    const said = words[index];
+    if (said === word) return true;
+    const at = stem ? word.indexOf(stem) : -1;
+    if (at === -1) return false;
+    const prefix = word.slice(0, at);
+    const suffix = word.slice(at + stem.length);
+    if (!said.startsWith(prefix) || !said.endsWith(suffix) || said.length <= prefix.length + suffix.length) return false;
+    const name = said.slice(prefix.length, said.length - suffix.length);
+    if (!/^[A-Za-z0-9_]+$/.test(name) || (bound !== null && bound !== name)) return false;
+    bound = name;
+    return true;
+  });
+}
+
+/**
+ * The catalog's check and run commands for a pair, each with the command
+ * line its documentation captures state for it (R1165-6): a line of a
+ * captured block, its shell prompt removed, that is the catalog command
+ * with the documented file name bound to the catalog's. `documented` is null
+ * when the captured pages state no such command. Mirrors
+ * `documented_run_commands` in rust/src/discovery_production_documentation.rs.
+ * @param {string} task
+ * @param {string} language
+ * @returns {Array<{catalog: string, documented: string|null}>}
+ */
+function documentedRunCommands(task, language) {
+  const languageInfo = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
+  if (!languageInfo) return [];
+  const lines = [];
+  for (const capture of documentationCaptures(language, task)) {
+    for (const block of capture.blocks) {
+      for (const raw of pageLines(block.text)) {
+        let line = raw.trim();
+        const prompt = CODE_EXAMPLE_COMMAND_PROMPTS.find((candidate) => line.startsWith(candidate));
+        if (prompt) line = line.slice(prompt.length).trim();
+        if (line) lines.push(line);
+      }
+    }
+  }
+  return [languageInfo.checkCommand, languageInfo.runCommand].filter(Boolean).map((command) => ({
+    catalog: command,
+    documented: lines.find((line) => documentedCommandMatches(line, command, languageInfo.saveAs)) || null,
+  }));
+}
+
 /** Rediscovery is deterministic over the seed, so a worker computes it once per pair. */
 const CODE_EXAMPLE_DOCUMENTED = new Map();
 
@@ -400,6 +484,24 @@ function documentedProgram(task, language) {
   const result = rediscoverDocumentedProgram(task, language);
   if (seedRawText(SEED_RAW, CODE_EXAMPLE_CAPTURES_FILE) !== "") CODE_EXAMPLE_DOCUMENTED.set(key, result);
   return result;
+}
+
+/**
+ * Whether the documentation route knows a language (issue #1165 R1165-4):
+ * some task its captures cover rediscovers a verified program. Mirrors
+ * `language_has_documented_procedure` in rust/src/discovery_production.rs.
+ * @param {string} language
+ * @returns {boolean}
+ */
+function documentationKnowsLanguage(language) {
+  const needle = pageAsciiLower(String(language || "").trim());
+  if (!needle || !documentationRouteActive()) return false;
+  const root = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_CAPTURES_FILE)).children
+    .find((node) => node.name === "coding_documentation_captures");
+  const tasks = (root ? root.children : [])
+    .filter((node) => node.name === "capture" && childValue(node, "language") === needle)
+    .map((node) => childValue(node, "task"));
+  return Array.from(new Set(tasks)).some((task) => documentedProgram(task, needle).recipe !== null);
 }
 
 /**

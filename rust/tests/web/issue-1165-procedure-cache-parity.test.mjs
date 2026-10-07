@@ -208,7 +208,11 @@ test('grammar_exists reads the CST seed', () => {
 
 test('knows_language requires a grammar and a procedure', () => {
   assert.ok(knowsLanguage('kotlin'), 'grammar plus a bootstrap-recorded discovery answers');
-  assert.equal(knowsLanguage('rust'), false, 'a grammar with no recorded procedure is a rediscovery away');
+  // R1165-4: the documentation route is a procedure too, so Rust (the Rust
+  // Book capture) is known; Pascal has a grammar and nothing that found a
+  // procedure for it.
+  assert.ok(knowsLanguage('rust'), 'grammar plus a documentation-rediscovered program answers');
+  assert.equal(knowsLanguage('pascal'), false, 'a grammar with no recorded procedure is a rediscovery away');
   assert.equal(knowsLanguage('latin-vulgate'), false, 'no grammar means no amount of caching answers');
 });
 

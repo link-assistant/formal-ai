@@ -29,11 +29,13 @@ test('the worker and the agentic root read the same miss_route gap', () => {
   assert.deepEqual(missResearchMissing(), ['reviewer_approval']);
 });
 
+// Python counting to three has no documentation capture (its output is not
+// one printed literal), so its unmodified request is the research miss.
 test('an unmodified catalog request logs the exact native procedure_cache miss', async () => {
-  const result = await host.solve('Write a hello world program in Python', []);
+  const result = await host.solve('Write a Python program that counts to three', []);
   assert.equal(result.intent, 'write_program');
   assert.deepEqual(cacheEvents(result), [
-    { kind: 'procedure_cache', payload: 'outcome=miss language=python task=hello_world research_missing=reviewer_approval' },
+    { kind: 'procedure_cache', payload: 'outcome=miss language=python task=count_to_three research_missing=reviewer_approval' },
   ]);
   const kinds = result.solverEvents.map((event) => event.kind);
   assert.equal(kinds.indexOf('procedure_cache'), kinds.indexOf('legacy_intent') + 1);
@@ -52,8 +54,22 @@ test('a non-program answer logs no procedure_cache event', async () => {
 const hex = (entry) => `0x${contentAddress(entry).toString(16).padStart(16, '0')}`;
 const DISCOVERED = [
   ['Rust', 'rust', 'https://doc.rust-lang.org/book/ch01-02-hello-world.html', 'fn main() {\n    println!("Hello, world!");\n}'],
+  ['Python', 'python', 'https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples', "print('Hello, world!')"],
+  ['JavaScript', 'javascript', 'https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/console/index.md',
+    'console.log("Hello, world!");'],
+  ['TypeScript', 'typescript',
+    'https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md',
+    '// Greets the world.\nconsole.log("Hello, world!");'],
   ['Go', 'go', 'https://go.dev/doc/tutorial/getting-started',
     'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, world!")\n}'],
+  ['C', 'c', 'https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/main/docs/c-runtime-library/reference/puts-putws.md',
+    '// crt_puts.c\n// This program uses puts to write a string to stdout.\n\n#include <stdio.h>\n\nint main( void )\n{\n   puts( "Hello, world!" );\n}'],
+  ['C++', 'cpp', 'https://learn.microsoft.com/en-us/cpp/build/vscpp-step-1-create',
+    '#include <iostream>\n\nint main()\n{\n    std::cout << "Hello, world!" << std::endl;\n    return 0;\n}'],
+  ['C#', 'csharp', 'https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/tutorials/hello-world',
+    'Console.WriteLine("Hello, world!");'],
+  ['Ruby', 'ruby', 'https://www.ruby-lang.org/en/examples/hello_world/',
+    '# The famous Hello World\n# Program is trivial in\n# Ruby. Superfluous:\n#\n# * A "main" method\n# * Newline\n# * Semicolons\n#\n# Here is the Code:\n\nputs "Hello, world!"'],
   ['Kotlin', 'kotlin', 'https://kotlinlang.org/docs/command-line.html', 'fun main() {\n    println("Hello, world!")\n}'],
 ];
 
@@ -68,7 +84,7 @@ test('R1165-1: a pair with documentation captures answers from the program redis
     }], name);
     assert.ok(result.content.includes(program), result.content);
     // R1165-4: the worker stores no program for the pair; the captures supply it.
-    assert.equal(evaluate(context, `WRITE_PROGRAM_TEMPLATES.hello_world.${language}`), undefined, name);
+    assert.equal(evaluate(context, `WRITE_PROGRAM_TEMPLATES.hello_world[${JSON.stringify(language)}]`), undefined, name);
   }
 });
 
