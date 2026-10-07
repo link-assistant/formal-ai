@@ -5,7 +5,6 @@
 //! repository states it where contributors and agents read it and when the
 //! mechanism it names exists; these tests pin both, so a row that says
 //! "Implemented" fails here once its rule or its mechanism is removed.
-//! R1024 stays partial and is not pinned.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -125,6 +124,48 @@ fn work_does_not_idle_on_ci_or_put_choices_to_the_owner() {
             "not put to the owner as questions",
         ],
     );
+}
+
+/// R1024: the conversion copies meta-language's and relative-meta-logic's
+/// practices, records what it adopted and why, and gates them.
+#[test]
+fn conversion_adopts_meta_language_and_relative_meta_logic_practices() {
+    assert_states(
+        "docs/case-studies/pull-request-1188/conversion-best-practices.md",
+        &[
+            "## What meta-language PR #196 does",
+            "## What relative-meta-logic does",
+            "## What was adopted",
+            "## What was not adopted, and why",
+            "released into the public domain under the Unlicense",
+        ],
+    );
+    assert_states(
+        "CONTRIBUTING.md",
+        &[
+            "node scripts/self-translate.mjs --to rust",
+            "node scripts/check-twin-citations.mjs",
+            "never hand-edit the expected files",
+        ],
+    );
+    assert_states(
+        "data/meta/ci-gates/check-self-translation.lino",
+        &["run \"node scripts/self-translate.mjs --check\""],
+    );
+    assert_states(
+        "data/meta/ci-gates/check-twin-citations.lino",
+        &["run \"node scripts/check-twin-citations.mjs\""],
+    );
+    for path in [
+        "scripts/self-translate.mjs",
+        "scripts/self-translation/envelope.mjs",
+        "data/meta/self-translation/constructs.lino",
+        "rust/tests/fixtures/self-translation/cases.lino",
+        "rust/tests/web/self-translation.test.mjs",
+        "rust/tests/unit/issue_1188_self_translation_corpus.rs",
+    ] {
+        assert!(repository_path(path).is_file(), "{path} must exist");
+    }
 }
 
 /// R1025: the meta algorithm is compared with published approaches.

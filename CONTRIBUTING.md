@@ -558,7 +558,23 @@ Removal from a public thread is not approval to retain another copy.
    ```bash
    formal-ai translate --list                  # every direction and its status
    formal-ai translate --from rust --to meta --input rust/src/module.rs
+   node scripts/self-translate.mjs --to rust js/agentic/crate/module.mjs
+   node scripts/self-translate.mjs --report    # the twins against their Rust
+   node scripts/check-twin-citations.mjs       # every twin cites a live Rust item
    ```
+
+   `node scripts/self-translate.mjs` is the JavaScript-first self-translation
+   copied from meta-language PR #196: a provenance header, every top-level
+   item translated or carried with the reason
+   `data/meta/self-translation/constructs.lino` gives, and a round trip that
+   restores the source byte for byte (`--to js` reads a translation back,
+   `--to meta` prints the links IR). To widen the fragment, add the construct
+   map row, a case and its `(call ...)` rows to
+   `rust/tests/fixtures/self-translation/cases.lino`, then run
+   `node scripts/self-translate.mjs --write`; never hand-edit the expected
+   files. Both runtimes run every call of that one corpus, the practice of
+   relative-meta-logic's `test-corpus/`. What was adopted and why is
+   [docs/case-studies/pull-request-1188/conversion-best-practices.md](docs/case-studies/pull-request-1188/conversion-best-practices.md).
 
    Translation in any direction goes through the meta pivot
    (`rust/src/meta_translate.rs`); a leg that is not materialized yet

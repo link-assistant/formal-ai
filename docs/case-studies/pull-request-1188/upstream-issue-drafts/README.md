@@ -19,3 +19,4 @@ done
 | 04 | link-foundation/lino-objects-codec | JS `formatIndented` output re-checked 2026-10-07 |
 | 05 | link-foundation/meta-language | crates.io 0.58.2 dependency list checked 2026-10-08 |
 | 06 | link-assistant/agent | Reproduced 2026-10-08 on @link-assistant/agent 0.26.0 (exit 1) and 0.26.11 (summary dropped); `gh search issues --repo link-assistant/agent` found only the related #304 (unhandled summary rejection, fixed) |
+| 07 | link-foundation/meta-language | `parity/self-translation/expected/arithmetic-to-rust.rs` and the prelude constant read at PR #196 head `ddcde32` on 2026-10-08; lint behaviour from the clippy and rustc lint definitions (no upstream build run); `gh search issues --repo link-foundation/meta-language` found no existing report |
