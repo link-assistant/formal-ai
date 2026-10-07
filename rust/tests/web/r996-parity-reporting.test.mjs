@@ -9,6 +9,8 @@
 //   data/meta/js-parity-ratchet.lino, the number scripts/check-js-parity.mjs
 //   enforces;
 // - only the rust/ row calls its root complete, and no row claims full parity.
+// The register's own R992 row is held to the same facts: no ts/ stub once
+// ts/ is generated, and the js → rust counts of data/meta/js-rust-translation.lino.
 
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
