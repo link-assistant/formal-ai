@@ -103,6 +103,11 @@ fn meaning_records(source: &str, text: &str) -> Vec<(String, String, BTreeSet<St
     let mut records = Vec::new();
     let mut current: Option<(String, String, BTreeSet<String>)> = None;
     for line in text.lines().skip(1) {
+        // A `#` line documents the records around it, as in the audit script
+        // (`scripts/audit-seed-metadata.rs`); it is never a record itself.
+        if line.trim_start().starts_with('#') {
+            continue;
+        }
         let indentation = line.bytes().take_while(|byte| *byte == b' ').count();
         if indentation == 2 {
             if let Some(record) = current.take() {

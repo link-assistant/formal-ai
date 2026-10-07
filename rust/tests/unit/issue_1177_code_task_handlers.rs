@@ -186,7 +186,10 @@ fn handler_regex_synthesis_composes_anchored_pattern() {
         "the composed pattern must be anchored: {answer}"
     );
     assert!(answer.contains("Verified structurally"), "{answer}");
-    assert!(answer.contains("No match was run"), "{answer}");
+    assert!(
+        answer.contains("no match was run against any input"),
+        "{answer}"
+    );
 }
 
 #[test]

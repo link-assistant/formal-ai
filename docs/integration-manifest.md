@@ -28,8 +28,8 @@ file, a section, and an edit.
   `FORMAL_AI_BOT_TOKEN` → the resolver (`AUTOMATION_TOKEN` fallback chain);
   after opening/pushing a PR at layer `default`, call
   `actions/dispatch-checks` (R2).
-- `pending:` `.github/workflows/cross-org-duplication.yml` (this branch adds
-  it, new) — #1187 R5: after creation no pending edit; listed because its first
+- `pending:` `.github/workflows/cross-org-duplication.yml` — #1187 R5 (this
+  branch adds it, new): after creation no pending edit; listed because its first
   scheduled run must confirm the resolver degrades (R5) rather than files
   cross-repository issues at layer `default`.
 - `pending:` `.github/workflows/layered-ci.yml` — #1088: add a step running

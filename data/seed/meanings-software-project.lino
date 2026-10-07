@@ -376,6 +376,8 @@ meanings
         text "add on"
       surface
         text addon
+      surface
+        text add-on
     lexeme ru
       surface
         text расширение

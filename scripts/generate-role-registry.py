@@ -21,7 +21,6 @@ and writes them, sorted, to `data/seed/roles.lino`. The matching CI tests in
 The transform is deterministic and idempotent: re-running it reproduces the
 file byte-for-byte. Run with `python3 scripts/generate-role-registry.py`.
 """
-import glob
 import os
 import re
 import sys
@@ -44,9 +43,29 @@ def strip_comment(stripped):
     return stripped
 
 
+def meaning_files(root):
+    """Return the seed files the lexicon loads: `MEANING_FILES` in the registry.
+
+    The constant lists `*_LINO` names; each is bound to its file by an
+    `include_str!` of the embedded mirror, whose data/seed twin is read here.
+    """
+    registry = os.path.join(root, "rust/src/seed/embedded_registry.rs")
+    with open(registry, encoding="utf-8") as fh:
+        source = fh.read()
+    paths = dict(
+        re.findall(
+            r'pub const (\w+): &str =\s*include_str!\("\.\./\.\./embedded/(data/seed/[^"]+)"\)',
+            source,
+        )
+    )
+    block = source.split("pub const MEANING_FILES: &[&str] = &[", 1)[1].split("];", 1)[0]
+    names = re.findall(r"\b(\w+_LINO)\b", block)
+    return sorted(os.path.join(root, paths[name]) for name in names)
+
+
 def collect(root):
     """Return (defined_meaning_slugs, distinct_role_values)."""
-    files = sorted(glob.glob(os.path.join(root, "data/seed/meanings*.lino")))
+    files = meaning_files(root)
     defined = set()
     roles = set()
     for path in files:

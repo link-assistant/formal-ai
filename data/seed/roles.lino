@@ -741,8 +741,20 @@ roles
     kind predicate
   software_language
     kind meaning
+  software_object_boundary_character
+    kind meaning
+  software_object_boundary_word
+    kind meaning
+  software_object_lead_bigram
+    kind meaning
+  software_object_lead_word
+    kind meaning
+  software_object_word_internal_character
+    kind meaning
   software_requirement_category
     kind predicate
+  software_sentence_end_character
+    kind meaning
   software_step_granularity
     kind meaning
   statement_function_word

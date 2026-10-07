@@ -235,6 +235,15 @@ pub const SOLVER_CAPABILITIES: &[&str] = &[
     "ask_user",
 ];
 
+/// Whether `prompt` names a file-type filter: a `.ext` or `*.ext` operand.
+fn names_file_type_filter(prompt: &str) -> bool {
+    prompt.split_whitespace().any(|token| {
+        let token = token.trim_end_matches(|c: char| matches!(c, ',' | ';' | '?' | '!' | ')'));
+        let extension = token.trim_start_matches('*').strip_prefix('.');
+        extension.is_some_and(|ext| !ext.is_empty() && ext.chars().all(char::is_alphanumeric))
+    })
+}
+
 /// Execute the object/act/locus decision on the non-agent solver surface.
 ///
 /// This is intentionally a dispatcher, not another recognizer.  All lexical
@@ -419,9 +428,13 @@ fn try_capability_route(
             // #1175). A request to compose a command is likewise the
             // composer's: its search root (`under data/meta`) is the printed
             // command's operand, not a read this surface owes (issue #1177).
+            // Only a file-type filter (`.lino files`) makes it a composition:
+            // a folder named by name on a personal locus ("on my desktop")
+            // stays the honest list_dir gap (issue #1138 self-use).
             if !commit_anchored_gap
                 && (crate::solver_terminal::names_terminal_command(prompt)
-                    || crate::solver_dispatch::shell_compose_claims(prompt))
+                    || (names_file_type_filter(prompt)
+                        && crate::solver_dispatch::shell_compose_claims(prompt)))
             {
                 return None;
             }

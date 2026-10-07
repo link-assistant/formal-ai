@@ -183,7 +183,12 @@ fn miss_path_runs_research_and_stores_the_verified_procedure() {
     let transport = ServingCount {
         requests: Arc::clone(&requests),
     };
-    let client = CachedSourceClient::new(path.join("source-cache"), transport);
+    // The capture store lives beside the procedure cache file, never under
+    // it (the cache path is a file), and the client is online over the
+    // fixture transport -- the issue #919 idiom -- since an offline client
+    // answers only from captures already on disk.
+    let client =
+        CachedSourceClient::new(isolated_cache("miss-path-sources"), transport).with_online(true);
     let candidate = "def main\n  __COUNT_TO_THREE__\nend\n";
     let verified = "def main\n  1.upto(3) { |number| puts number }\nend\n";
     let mut gap = CodingResearchGap::for_program_task("count_to_three", "ruby");

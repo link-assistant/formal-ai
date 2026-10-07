@@ -353,14 +353,43 @@ fn blocks_to_network(
     (network, nodes)
 }
 
+/// Tags whose content is never page prose: the walker jumps past their
+/// close tag instead of stepping into them.
+const OPAQUE_HTML_TAGS: [&str; 4] = ["script", "style", "template", "noscript"];
+
+/// Offset of the close tag `</name` that really closes `name`: the next
+/// character must end the tag name, so `</p` never matches `</pre>`.
+fn find_close_tag(lower: &str, from: usize, name: &str) -> Option<usize> {
+    let close = format!("</{name}");
+    let mut search = from;
+    while let Some(rel) = lower[search..].find(&close) {
+        let at = search + rel;
+        let next = lower[at + close.len()..].chars().next();
+        if next.is_none_or(|character| character == '>' || character.is_whitespace()) {
+            return Some(at);
+        }
+        search = at + close.len();
+    }
+    None
+}
+
 /// HTML walking without an HTML dependency: for each opening tag of
-/// interest, take the text up to its matching close tag.
+/// interest, take the text up to its matching close tag. Container tags
+/// (`html`, `body`, `div`, `table`, `ul`, ...) are stepped into, never
+/// skipped, so the blocks they hold are reached; comments and opaque tags
+/// (`script`, `style`) are skipped whole.
 fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
     let lower = text.to_ascii_lowercase();
     let mut out = Vec::new();
     let mut cursor = 0usize;
     while let Some(rel) = lower[cursor..].find('<') {
         let open = cursor + rel;
+        if lower[open..].starts_with("<!--") {
+            cursor = lower[open + 4..]
+                .find("-->")
+                .map_or(lower.len(), |end| open + 4 + end + 3);
+            continue;
+        }
         let Some(tag_end_rel) = lower[open..].find('>') else {
             break;
         };
@@ -377,10 +406,7 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
             cursor = tag_end + 1;
             continue;
         }
-        let close = format!("</{name}");
-        let inner_end = lower[tag_end + 1..]
-            .find(&close)
-            .map(|offset| tag_end + 1 + offset);
+        let inner_end = find_close_tag(&lower, tag_end + 1, &name);
         let block = match name.as_str() {
             "h1" | "h2" | "h3" | "h4" | "h5" | "h6" => inner_end.map(|end| {
                 let level = name.as_bytes()[1] - b'0';
@@ -422,10 +448,14 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
             }),
             _ => None,
         };
+        let consumed = block.is_some() || OPAQUE_HTML_TAGS.contains(&name.as_str());
         if let Some(block) = block {
             out.push(block);
         }
-        cursor = inner_end.map_or(tag_end + 1, |end| end + close.len());
+        cursor = match inner_end {
+            Some(end) if consumed => end + 2 + name.len(),
+            _ => tag_end + 1,
+        };
     }
     out
 }
@@ -618,11 +648,8 @@ fn resolve_language(
                             .map(|at| &class_value[at + prefix.len()..])
                         {
                             let token = rest.split_whitespace().next().unwrap_or_default();
-                            let token = token
-                                .strip_prefix("highlight-")
-                                .unwrap_or(token)
-                                .strip_prefix("source-")
-                                .unwrap_or(token);
+                            let token = token.strip_prefix("highlight-").unwrap_or(token);
+                            let token = token.strip_prefix("source-").unwrap_or(token);
                             if !token.is_empty() {
                                 return token.to_owned();
                             }
