@@ -91,7 +91,7 @@ fn dialogue_turns(dialogue: &EventLog) -> Vec<ConversationTurn> {
     dialogue
         .events()
         .iter()
-        .filter_map(|event| match event.kind.as_str() {
+        .filter_map(|event| match event.kind {
             "prior_turn:user" => Some(ConversationTurn::user(event.payload.clone())),
             "prior_turn:assistant" => Some(ConversationTurn::assistant(event.payload.clone())),
             _ => None,
@@ -111,6 +111,9 @@ fn continues_procedure(dialogue: &EventLog) -> bool {
 }
 
 /// Whether the prompt carries a call expression: an identifier followed by `(`.
+///
+/// The identifier holds at least one letter or underscore, as the browser
+/// twin's pattern requires.
 fn names_call_expression(prompt: &str) -> bool {
     let chars: Vec<char> = prompt.chars().collect();
     chars.iter().enumerate().any(|(index, ch)| {
@@ -118,8 +121,9 @@ fn names_call_expression(prompt: &str) -> bool {
             && chars[..index]
                 .iter()
                 .rev()
-                .find(|before| !before.is_whitespace())
-                .is_some_and(|before| before.is_alphanumeric() || *before == '_')
+                .skip_while(|before| before.is_whitespace())
+                .take_while(|before| before.is_alphanumeric() || **before == '_')
+                .any(|before| before.is_alphabetic() || *before == '_')
     })
 }
 
@@ -144,7 +148,7 @@ fn words(text: &str) -> Vec<&str> {
 /// scripts and multi-word surfaces match as substrings.
 fn addresses_assistant(normalized: &str) -> bool {
     let text = normalized.to_lowercase();
-    let words = words(&text);
+    let text_words = words(&text);
     crate::seed::lexicon()
         .words_for_role(crate::seed::ROLE_ASSISTANT_SELF_REFERENCE)
         .iter()
@@ -153,7 +157,7 @@ fn addresses_assistant(normalized: &str) -> bool {
             if surface.contains(char::is_whitespace) || surface.chars().any(is_unspaced_script) {
                 text.contains(&surface)
             } else {
-                words.iter().any(|word| {
+                text_words.iter().any(|word| {
                     word.strip_prefix(surface.as_str())
                         .is_some_and(|ending| ending.chars().count() <= 3)
                 })
