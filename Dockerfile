@@ -12,7 +12,7 @@
 # `ubuntu-latest` builds it and `konard/box-dind:2.10.2` runs it.
 ARG BINARY_SOURCE=compile
 
-FROM rust:1.98-slim AS builder
+FROM rust:1.99-slim AS builder
 
 WORKDIR /app
 RUN apt-get update && \

@@ -4,7 +4,7 @@
 [![Desktop Release](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml)
 [![Crates.io](https://img.shields.io/crates/v/formal-ai?label=crates.io&style=flat)](https://crates.io/crates/formal-ai)
 [![Docs.rs](https://img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat)](https://docs.rs/formal-ai)
-[![Rust Version](https://img.shields.io/badge/rust-1.98%2B-blue.svg)](https://www.rust-lang.org/)
+[![Rust Version](https://img.shields.io/badge/rust-1.99%2B-blue.svg)](https://www.rust-lang.org/)
 [![Codecov](https://codecov.io/gh/link-assistant/formal-ai/branch/main/graph/badge.svg)](https://codecov.io/gh/link-assistant/formal-ai)
 [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 

@@ -139,12 +139,18 @@ steps:
 FROM ubuntu:24.04 AS build
 FROM ${BINARY_SOURCE}-binary AS selected-binary
 FROM konrad/box-dind:2.10.2
+FROM build AS compile-binary
+FROM --platform=$BUILDPLATFORM rust:1.98-slim AS cross
 ";
     let bases = parse_dockerfile_from(dockerfile);
-    assert_eq!(bases.len(), 2);
+    assert_eq!(bases.len(), 3, "a stage alias is not an image: {bases:?}");
     assert_eq!(
         bases[1],
         ("konrad/box-dind".to_string(), "2.10.2".to_string(), 3)
+    );
+    assert_eq!(
+        bases[2],
+        ("rust".to_string(), "1.98-slim".to_string(), 5)
     );
 }
 
@@ -455,4 +461,19 @@ fn action_refs_float_and_rewrite_at_their_own_precision() {
     let rewritten = rewrite_uses_line(workflow, &dependency, &same_precision("v7.0.1", "6"));
     assert!(rewritten.contains("actions/checkout@v7\n"), "{rewritten}");
     assert!(rewritten.contains("rust-toolchain@stable"), "{rewritten}");
+}
+
+#[test]
+fn drift_is_numeric_at_the_pinned_precision() {
+    assert_eq!(numeric_prefix("v1.98-slim"), vec![1, 98]);
+    assert!(is_behind("1.98-slim", "1.99.0"));
+    assert!(!is_behind("1.99-slim", "1.99.0"), "a variant of the latest is current");
+    assert!(!is_behind("26.17.0", "26.15.3"), "a pin past a lagging dist-tag is not drift");
+    assert!(is_behind("0.10.1", "0.11.0"));
+    assert!(!is_behind("2.10.2", "2.10.2"));
+    let tags = r#"[{"name": "codeql-bundle-v2.27.2"}, {"name": "v4.31.2"}, {"name": "v3.30.9"}]"#;
+    assert_eq!(github_tags_latest(tags), Some("v4.31.2".to_string()));
+    assert_eq!(docker_tag_at_precision("1.98-slim", "1.99.0"), "1.99-slim");
+    assert_eq!(docker_tag_at_precision("24.04", "26.04"), "26.04");
+    assert_eq!(docker_tag_at_precision("2.10.2", "2.11.0"), "2.11.0");
 }

@@ -372,7 +372,30 @@ fn collect_workflows(repo: &Path, dependencies: &mut Vec<Dependency>) {
 }
 
 fn collect_dockerfile(repo: &Path, dependencies: &mut Vec<Dependency>) {
-    let path = repo.join("Dockerfile");
+    // Every root `Dockerfile*` (the full image and `Dockerfile.slim`).
+    let mut paths: Vec<PathBuf> = fs::read_dir(repo)
+        .map(|entries| {
+            entries
+                .filter_map(Result::ok)
+                .map(|entry| entry.path())
+                .filter(|path| {
+                    path.is_file()
+                        && path
+                            .file_name()
+                            .and_then(|name| name.to_str())
+                            .is_some_and(|name| name.starts_with("Dockerfile"))
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    paths.sort();
+    for path in paths {
+        collect_dockerfile_at(&path, dependencies);
+    }
+}
+
+fn collect_dockerfile_at(path: &Path, dependencies: &mut Vec<Dependency>) {
+    let path = path.to_path_buf();
     let Ok(text) = fs::read_to_string(&path) else {
         return;
     };
@@ -481,9 +504,7 @@ pub fn compare(dependencies: &[Dependency], snapshot: &Snapshot) -> (Vec<Finding
             }
             continue;
         }
-        let resolved = without_v(&dependency.resolved);
-        let latest_bare = without_v(&latest);
-        if resolved != latest_bare {
+        if is_behind(&dependency.resolved, &latest) {
             findings.push(Finding {
                 dependency: dependency.clone(),
                 latest,
@@ -528,7 +549,11 @@ pub fn apply_latest(findings: &[Finding]) {
                     dependency,
                     &same_precision(&finding.latest, &dependency.resolved),
                 ),
-                Ecosystem::DockerImage => rewrite_from_line(&rewritten, dependency, bare),
+                Ecosystem::DockerImage => rewrite_from_line(
+                    &rewritten,
+                    dependency,
+                    &docker_tag_at_precision(&dependency.resolved, bare),
+                ),
                 Ecosystem::RustToolchain => {
                     rewrite_rust_version(&rewritten, dependency, &minor_of(&finding.latest))
                 }
@@ -757,12 +782,34 @@ fn live_snapshot(dependencies: &[Dependency]) -> Result<Snapshot, String> {
     Ok(snapshot)
 }
 
+/// GitHub's API allows 60 unauthenticated requests an hour, fewer than the
+/// action pins alone; a `GH_TOKEN`/`GITHUB_TOKEN` in the environment is sent
+/// to api.github.com only, through curl's stdin config so it never reaches argv.
 #[cfg(not(test))]
 fn fetch(url: &str) -> Result<String, String> {
-    let output = Command::new("curl")
-        .args(["-sfL", "--max-time", "30", "-A", USER_AGENT, url])
-        .output()
+    use std::io::Write as _;
+    let token = ["GH_TOKEN", "GITHUB_TOKEN"]
+        .iter()
+        .filter_map(|key| std::env::var(key).ok())
+        .find(|value| !value.trim().is_empty())
+        .filter(|_| url.starts_with("https://api.github.com/"));
+    let mut child = Command::new("curl")
+        .args(["-sfL", "--max-time", "30", "-A", USER_AGENT, "--config", "-", url])
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::piped())
+        .spawn()
         .map_err(|error| format!("curl failed to launch: {error}"))?;
+    if let Some(mut stdin) = child.stdin.take() {
+        let config = token
+            .map(|token| format!("header = \"Authorization: Bearer {}\"\n", token.trim()))
+            .unwrap_or_default();
+        stdin
+            .write_all(config.as_bytes())
+            .map_err(|error| format!("curl config write failed: {error}"))?;
+    }
+    let output = child
+        .wait_with_output()
+        .map_err(|error| format!("curl failed: {error}"))?;
     if !output.status.success() {
         return Err(format!("curl exited {} for {url}", output.status));
     }
@@ -790,13 +837,22 @@ fn latest_github(repository: &str) -> Result<String, String> {
     let body = fetch(&format!(
         "https://api.github.com/repos/{repository}/releases/latest"
     ))?;
-    github_latest(&body).ok_or_else(|| format!("github answer for {repository} had no tag_name"))
+    let latest = github_latest(&body)
+        .ok_or_else(|| format!("github answer for {repository} had no tag_name"))?;
+    if without_v(&latest).starts_with(|c: char| c.is_ascii_digit()) {
+        return Ok(latest);
+    }
+    let tags = fetch(&format!("https://api.github.com/repos/{repository}/tags?per_page=100"))?;
+    github_tags_latest(&tags)
+        .ok_or_else(|| format!("github tags for {repository} had no version-shaped tag"))
 }
 
 #[cfg(not(test))]
 fn latest_docker_hub(image: &str) -> Result<String, String> {
+    // Official images (`rust`, `ubuntu`) live under Docker Hub's `library/`.
+    let repository = if image.contains('/') { image.to_string() } else { format!("library/{image}") };
     let body = fetch(&format!(
-        "https://hub.docker.com/v2/repositories/{image}/tags?page_size=100"
+        "https://hub.docker.com/v2/repositories/{repository}/tags?page_size=100"
     ))?;
     docker_hub_latest(&body)
         .ok_or_else(|| format!("docker hub tag list for {image} had no versioned tag"))

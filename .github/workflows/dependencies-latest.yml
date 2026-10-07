@@ -70,6 +70,8 @@ jobs:
       # Live registry answers; a registry that does not answer exits 3 and
       # fails this run loudly instead of opening a PR from a partial view.
       - name: Refresh the registry snapshot the gate reads
+        env:
+          GH_TOKEN: ${{ steps.automation.outputs.token }}
         run: rust-script scripts/check-dependencies-latest.rs --refresh-snapshot
 
       # Exit 1 means "findings", which is exactly what --apply just moved;

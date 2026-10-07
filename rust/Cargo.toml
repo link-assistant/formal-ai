@@ -9,7 +9,7 @@ keywords = ["formal-ai", "symbolic-ai", "openai", "links"]
 categories = ["command-line-utilities", "web-programming::http-server"]
 repository = "https://github.com/link-assistant/formal-ai"
 documentation = "https://github.com/link-assistant/formal-ai"
-rust-version = "1.98"
+rust-version = "1.99"
 include = [
     "/Cargo.lock",
     "/Cargo.toml",

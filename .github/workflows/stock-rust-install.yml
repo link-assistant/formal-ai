@@ -42,7 +42,7 @@ jobs:
     # digest-pinned (issue #1079, defect D3); this is the documented exception,
     # and the narrow pedantic zizmor pass in `workflows.yml` fails on any new
     # unpinned image that does not carry the same explicit marker.
-    container: rust:1.98-slim-bookworm # zizmor: ignore[unpinned-images]
+    container: rust:1.99-slim-bookworm # zizmor: ignore[unpinned-images]
     timeout-minutes: 40
     env:
       CARGO_INSTALL_ROOT: /tmp/formal-ai-install

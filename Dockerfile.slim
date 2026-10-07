@@ -31,7 +31,7 @@
 # the binary the pipeline already built and tested.
 ARG BINARY_SOURCE=compile
 
-FROM rust:1.98-slim AS builder
+FROM rust:1.99-slim AS builder
 
 WORKDIR /app
 RUN apt-get update && \
@@ -61,7 +61,7 @@ COPY rust/target/release/formal-ai /app/target/release/formal-ai
 
 FROM ${BINARY_SOURCE}-binary AS selected-binary
 
-FROM ubuntu:24.04
+FROM ubuntu:26.10
 
 LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai" \
       org.opencontainers.image.description="Formal AI slim runtime (serve sidecar); the self-contained code-execution variant is the default tag"

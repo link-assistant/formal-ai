@@ -146,7 +146,7 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@link-assistant/web-capture": "^1.11.2",
+    "@link-assistant/web-capture": "^1.12.0",
     "@link-assistant/web-search": "^0.11.1",
     "playwright": "^1.63.0"
   },

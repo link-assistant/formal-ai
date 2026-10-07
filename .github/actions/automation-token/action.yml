@@ -134,7 +134,7 @@ runs:
     # GUARD-tracked first run chooses the pin consciously).
     - id: app-token
       if: ${{ steps.resolve.outputs.layer == 'app' }}
-      uses: actions/create-github-app-token@v2
+      uses: actions/create-github-app-token@v3
       with:
         app-id: ${{ inputs.app-id }}
         private-key: ${{ inputs.app-private-key }}

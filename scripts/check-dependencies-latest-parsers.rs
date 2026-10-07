@@ -266,17 +266,28 @@ pub fn parse_uses_pins(text: &str) -> Vec<(String, String, usize)> {
     out
 }
 
-/// `FROM image:tag` bases, `${VAR}` stages and `scratch` excluded.
+/// `FROM image:tag` bases; `--platform=` flags are skipped, and `${VAR}`
+/// stages, `scratch` and earlier multi-stage aliases (`FROM builder` after
+/// `FROM rust:1 AS builder`) are excluded because no registry publishes them.
 pub fn parse_dockerfile_from(text: &str) -> Vec<(String, String, usize)> {
     let mut out = Vec::new();
+    let mut stages: Vec<String> = Vec::new();
     for (index, line) in text.lines().enumerate() {
         let trimmed = line.trim_start();
         let lower = trimmed.to_ascii_lowercase();
         let Some(rest) = lower.strip_prefix("from ") else {
             continue;
         };
-        let first = rest.split_whitespace().next().unwrap_or_default();
-        if first.is_empty() || first.starts_with("${") || first == "scratch" {
+        let words: Vec<&str> = rest.split_whitespace().take_while(|w| !w.starts_with('#')).collect();
+        if let Some(alias) = words.iter().position(|w| *w == "as").and_then(|i| words.get(i + 1)) {
+            stages.push((*alias).to_string());
+        }
+        let first = words.iter().find(|w| !w.starts_with("--")).copied().unwrap_or_default();
+        if first.is_empty()
+            || first.starts_with("${")
+            || first == "scratch"
+            || stages.iter().any(|stage| stage == first)
+        {
             continue;
         }
         let (image, tag) = match split_once(first, ':') {
@@ -473,4 +484,79 @@ pub fn rust_channel_latest(body: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Leading dotted-numeric components of a version: `v1.98-slim` is `[1, 98]`,
+/// `26.17.0` is `[26, 17, 0]`, and a part with a suffix ends the prefix.
+pub fn numeric_prefix(version: &str) -> Vec<u64> {
+    let mut numbers = Vec::new();
+    for part in without_v(version).split('.') {
+        let digits: String = part.chars().take_while(char::is_ascii_digit).collect();
+        let Ok(number) = digits.parse::<u64>() else {
+            break;
+        };
+        numbers.push(number);
+        if digits.len() != part.len() {
+            break;
+        }
+    }
+    numbers
+}
+
+/// Whether `resolved` is behind `latest` at the precision both state: a pin
+/// newer than the registry's `latest` tag (a dist-tag lagging a release) or a
+/// variant of the same version (`1.99-slim` against `1.99.0`) is not drift.
+pub fn is_behind(resolved: &str, latest: &str) -> bool {
+    let resolved_numbers = numeric_prefix(resolved);
+    let latest_numbers = numeric_prefix(latest);
+    if resolved_numbers.is_empty() || latest_numbers.is_empty() {
+        return without_v(resolved) != without_v(latest);
+    }
+    let shared = resolved_numbers.len().min(latest_numbers.len());
+    latest_numbers[..shared] > resolved_numbers[..shared]
+}
+
+/// api.github.com `/repos/{repo}/tags`: the highest version-shaped tag, for a
+/// repository whose "latest release" is not one (github/codeql-action's is a
+/// `codeql-bundle-v2.x` CLI bundle, not the action's `v4.x` line).
+pub fn github_tags_latest(body: &str) -> Option<String> {
+    let mut rest = body;
+    let mut best: Option<(Vec<u64>, String)> = None;
+    while let Some((tag, end)) = json_field_at(rest, "name") {
+        rest = &rest[end..];
+        let numbers = numeric_prefix(&tag);
+        if !numbers.is_empty()
+            && without_v(&tag).starts_with(|c: char| c.is_ascii_digit())
+            && best.as_ref().is_none_or(|(current, _)| numbers > *current)
+        {
+            best = Some((numbers, tag));
+        }
+    }
+    best.map(|(_, tag)| tag)
+}
+
+/// The tag `resolved` moves to: `latest`'s numbers at the precision the pin
+/// states, keeping its variant suffix (`1.98-slim` with `1.99.0` is
+/// `1.99-slim`, not `1.99.0`, which would swap the slim base for the full one).
+pub fn docker_tag_at_precision(resolved: &str, latest: &str) -> String {
+    let pinned = numeric_prefix(resolved);
+    let latest_numbers = numeric_prefix(latest);
+    if pinned.is_empty() || latest_numbers.len() < pinned.len() {
+        return without_v(latest).to_string();
+    }
+    let numeric_len = {
+        let mut consumed = 0;
+        for (index, part) in resolved.split('.').enumerate().take(pinned.len()) {
+            let digits = part.chars().take_while(char::is_ascii_digit).count();
+            consumed += digits + usize::from(index > 0);
+        }
+        consumed
+    };
+    // The publisher's own digit strings, so Ubuntu's `26.04` keeps its zero.
+    let numbers: Vec<String> = without_v(latest)
+        .split('.')
+        .take(pinned.len())
+        .map(|part| part.chars().take_while(char::is_ascii_digit).collect())
+        .collect();
+    format!("{}{}", numbers.join("."), &resolved[numeric_len..])
 }
