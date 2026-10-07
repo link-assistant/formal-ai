@@ -270,6 +270,10 @@ describe('R345-R349: the statement pipeline (mod.rs)', () => {
     assert.equal(applySemanticPrimes('X orchestrates agents.', 'en'), 'X controls many agents.');
   });
 
+  it('apply_compound_words_shortens_russian_phrases', () => {
+    assert.equal(applyCompoundWords('в которой для того чтобы к примеру', 'ru'), 'где чтобы например');
+  });
+
   it('apply_semantic_primes_supports_russian', () => {
     assert.ok(applySemanticPrimes('X автоматизация всего.', 'ru').includes('когда машина делает'));
   });

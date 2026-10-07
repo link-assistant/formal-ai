@@ -17,6 +17,7 @@
 // `RepositoryFileFormalization` and `directory` is a
 // `RepositoryDirectoryFormalization`.
 
+import { agenticMessage } from '../messages.mjs';
 import {
   fileLinksNotation, fileSummary, formalizeRepositoryFile, pushField,
 } from './summarization_file.mjs';
@@ -87,8 +88,17 @@ export function childSummaryCap(mode) {
 
 /** Mirrors `RepositoryDirectoryFormalization::identity_sentence` in rust/src/summarization/resource.rs. */
 function identitySentence(directory) {
-  const lines = pluralize(directory.total_line_count, 'line', 'lines');
-  return `${directory.path} is a repository directory with ${directory.direct_file_count} ${pluralize(directory.direct_file_count, 'file', 'files')} and ${directory.direct_directory_count} ${pluralize(directory.direct_directory_count, 'subdirectory', 'subdirectories')} (${directory.total_line_count} ${lines} total across ${directory.total_file_count} ${pluralize(directory.total_file_count, 'file', 'files')}).`;
+  return agenticMessage('summarization_directory_identity', {
+    path: directory.path,
+    direct_files: directory.direct_file_count,
+    direct_files_noun: pluralize(directory.direct_file_count, 'file', 'files'),
+    direct_directories: directory.direct_directory_count,
+    direct_directories_noun: pluralize(directory.direct_directory_count, 'subdirectory', 'subdirectories'),
+    lines: directory.total_line_count,
+    lines_noun: pluralize(directory.total_line_count, 'line', 'lines'),
+    files: directory.total_file_count,
+    files_noun: pluralize(directory.total_file_count, 'file', 'files'),
+  });
 }
 
 /**
@@ -111,7 +121,7 @@ export function directorySummary(directory, config) {
   }
   const hidden = Math.max(0, directory.children.length - cap);
   if (childSummaries.length > 0) parts.push(`Contents: ${childSummaries.join(' ')}`);
-  if (hidden > 0) parts.push(`${hidden} more ${pluralize(hidden, 'entry', 'entries')} omitted for brevity.`);
+  if (hidden > 0) parts.push(agenticMessage('summarization_omitted_entries', { hidden, noun: pluralize(hidden, 'entry', 'entries') }));
   return parts.join(' ');
 }
 

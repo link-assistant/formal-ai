@@ -22,6 +22,7 @@
 // the grammars a host loads (the vendored tree-sitter-rust), and states
 // exactly which of meta-language's numbers it reproduces.
 
+import { agenticMessage } from '../messages.mjs';
 import { flattenLinoValue } from './links_format.mjs';
 import {
   StatementKind, deformalize, formalize, statement, summarize,
@@ -81,7 +82,7 @@ export function formalizeRepositoryFile(path, content) {
   const embeddedGrammars = format === 'markdown' ? formalizeMarkdownEmbeddedGrammars(content) : [];
   const statements = statementsForFile(path, content, format);
   if (statements.length === 0) {
-    statements.push(statement(`${path} is an empty ${displayFileFormat(format)} file`, StatementKind.Identity, 90));
+    statements.push(statement(agenticMessage('summarization_empty_file', { path, format: displayFileFormat(format) }), StatementKind.Identity, 90));
   }
   return {
     path,
@@ -115,10 +116,10 @@ export function fileSummary(formalized, config) {
   parts.push(`${formalized.path} is a ${displayFileFormat(formalized.format)} file with ${formalized.line_count} lines and ${formalized.byte_count} bytes.`);
   const meta = formalized.meta_language;
   if (meta !== null && meta !== undefined && metaLanguageIsValid(meta)) {
-    parts.push(`meta-language parsed it as ${meta.label} with ${meta.syntax_link_count} syntax links.`);
+    parts.push(agenticMessage('summarization_meta_language_parsed', { label: meta.label, count: meta.syntax_link_count }));
   }
   if (formalized.embedded_grammars.length > 0) {
-    parts.push(`It has embedded grammar blocks: ${embeddedLanguageList(formalized.embedded_grammars)}.`);
+    parts.push(agenticMessage('summarization_embedded_grammar_blocks', { languages: embeddedLanguageList(formalized.embedded_grammars) }));
   }
   const contentSummary = deformalize(summarize(formalized.statements, config));
   if (contentSummary !== '') parts.push(`Key content: ${contentSummary}`);
@@ -221,7 +222,7 @@ function codeStatements(path, content, format) {
 function structuredStatements(path, content, format) {
   const statements = [statement(`${path} is a ${displayFileFormat(format)} data file`, StatementKind.Identity, 90)];
   const keys = extractStructuralKeys(content);
-  if (keys.length > 0) statements.push(statement(`Top-level keys: ${keys.join(', ')}.`, StatementKind.Feature, 70));
+  if (keys.length > 0) statements.push(statement(agenticMessage('summarization_top_level_keys', { keys: keys.join(', ') }), StatementKind.Feature, 70));
   return statements;
 }
 

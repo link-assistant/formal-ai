@@ -25,6 +25,7 @@
 // validation/) that nothing in the #563 call graph reaches.
 
 import { cached } from '../host.mjs';
+import { agenticMessage } from '../messages.mjs';
 import { identifierBudget, NamingConvention, toIdentifier } from './summarization_identifier.mjs';
 import { meaningsWithRole, words } from './seed_meanings.mjs';
 
@@ -417,22 +418,24 @@ export function maxByWeight(statements) {
 }
 
 /**
+ * The `[from, to]` substitution pairs of a data/meta/agentic-messages.lino
+ * entry: `from=>to` records separated by `|`, in the order Rust lists them
+ * (the `pairs` slices of `apply_compound_words` / `apply_semantic_primes`).
+ * @param {string} key
+ * @returns {Array<[string, string]>}
+ */
+function messagePairs(key) {
+  return agenticMessage(key).split('|').map((pair) => pair.split('=>'));
+}
+
+/**
  * Mirrors `fn apply_compound_words` in rust/src/summarization/mod.rs: shorter
  * compound forms (Russian for `ru`, English otherwise).
  * @param {string} text
  * @param {string} language
  */
 export function applyCompoundWords(text, language) {
-  const pairs = language === 'ru'
-    ? [['в которой ', 'где '], ['для того чтобы ', 'чтобы '], ['к примеру', 'например']]
-    : [
-      ['in order to ', 'to '],
-      ['for the purpose of ', 'for '],
-      ['a number of ', 'several '],
-      ['user interface', 'UI'],
-      ['command line interface', 'CLI'],
-      ['artificial intelligence', 'AI'],
-    ];
+  const pairs = messagePairs(language === 'ru' ? 'summarization_compound_words_ru' : 'summarization_compound_words_en');
   let out = text;
   for (const [long, short] of pairs) out = out.split(long).join(short);
   return out;
@@ -445,22 +448,7 @@ export function applyCompoundWords(text, language) {
  * @param {string} language
  */
 export function applySemanticPrimes(text, language) {
-  const pairs = language === 'ru'
-    ? [
-      ['автоматизация', 'когда машина делает'],
-      ['оркестрирует', 'управляет вместе'],
-      ['делегирование', 'передача работы'],
-      ['детерминированный', 'всегда одинаковый'],
-    ]
-    : [
-      ['orchestrates', 'controls many'],
-      ['automation of automation', 'machine that makes other machines do'],
-      ['automation', 'machine doing'],
-      ['delegating', 'giving work to'],
-      ['deterministic', 'always the same'],
-      ['multilingual', 'in many languages'],
-      ['symbolic', 'rule-based'],
-    ];
+  const pairs = messagePairs(language === 'ru' ? 'summarization_semantic_primes_ru' : 'summarization_semantic_primes_en');
   let out = text;
   for (const [compound, prime] of pairs) out = out.split(compound).join(prime);
   return out;

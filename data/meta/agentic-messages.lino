@@ -422,3 +422,25 @@ agentic_messages
     text "An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning."
   message self_explanation_agentic_interface
     text "Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests."
+  message summarization_compound_words_en
+    text "in order to =>to |for the purpose of =>for |a number of =>several |user interface=>UI|command line interface=>CLI|artificial intelligence=>AI"
+  message summarization_compound_words_ru
+    text "в которой =>где |для того чтобы =>чтобы |к примеру=>например"
+  message summarization_semantic_primes_en
+    text "orchestrates=>controls many|automation of automation=>machine that makes other machines do|automation=>machine doing|delegating=>giving work to|deterministic=>always the same|multilingual=>in many languages|symbolic=>rule-based"
+  message summarization_semantic_primes_ru
+    text "автоматизация=>когда машина делает|оркестрирует=>управляет вместе|делегирование=>передача работы|детерминированный=>всегда одинаковый"
+  message summarization_empty_file
+    text "{path} is an empty {format} file"
+  message summarization_meta_language_parsed
+    text "meta-language parsed it as {label} with {count} syntax links."
+  message summarization_embedded_grammar_blocks
+    text "It has embedded grammar blocks: {languages}."
+  message summarization_top_level_keys
+    text "Top-level keys: {keys}."
+  message summarization_char_boundary
+    text "byte index {index} is not a char boundary"
+  message summarization_directory_identity
+    text "{path} is a repository directory with {direct_files} {direct_files_noun} and {direct_directories} {direct_directories_noun} ({lines} {lines_noun} total across {files} {files_noun})."
+  message summarization_omitted_entries
+    text "{hidden} more {noun} omitted for brevity."

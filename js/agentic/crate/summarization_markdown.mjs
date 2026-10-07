@@ -5,6 +5,7 @@
 // deformalize pipeline over the cleaned text. Every transformation is a linear
 // scan; no regex engine decides what is noise.
 
+import { agenticMessage } from '../messages.mjs';
 import {
   deformalize, formalize, isLabelOnly, labelForMode, summarize, toTopic,
 } from './summarization.mjs';
@@ -85,7 +86,7 @@ function stripHtmlComments(text) {
     index += 1;
     if (character === '<' && chars[index] === '!') {
       if (outBytes < bytes.length && (bytes[outBytes] & 0xc0) === 0x80) {
-        throw new Error(`byte index ${outBytes} is not a char boundary`);
+        throw new Error(agenticMessage('summarization_char_boundary', { index: outBytes }));
       }
       if (opener.every((byte, offset) => bytes[outBytes + offset] === byte)) {
         index += 3;
