@@ -213,11 +213,11 @@ line number, which had gone stale for every row.
 | R162 | docs/requirements/issue-0080-software-project-request-requirements.md | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
 | R163 | docs/requirements/issue-0080-software-project-request-requirements.md | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
 | R164 | docs/requirements/issue-0080-software-project-request-requirements.md | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
-| R165 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | js/tests/index.html | not yet confirmed |
-| R166 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | js/tests/connectivity.js | not yet confirmed |
-| R167 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): rust/tests/connectivity.js | not yet confirmed |
-| R168 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): rust/tests/connectivity.js | not yet confirmed |
-| R169 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): rust/tests/connectivity.js | not yet confirmed |
+| R165 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/e2e/tests/connectivity.spec.js; js/tests/index.html | not yet confirmed |
+| R166 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/e2e/tests/connectivity.spec.js; js/tests/connectivity.js | not yet confirmed |
+| R167 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/e2e/tests/connectivity.spec.js | not yet confirmed |
+| R168 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/e2e/tests/connectivity.spec.js | not yet confirmed |
+| R169 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/e2e/tests/connectivity.spec.js | not yet confirmed |
 | R170 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/e2e/tests/connectivity.spec.js | not yet confirmed |
 | R171 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/unit/ci-cd/workflow_release.rs | not yet confirmed |
 | R172 | docs/requirements/issue-0129-connectivity-diagnostics-requirements.md | pre-2026-07 (undated); issue #129 | rust/tests/web/case-study-preservation.test.mjs | not yet confirmed |
