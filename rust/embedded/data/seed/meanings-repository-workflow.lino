@@ -295,6 +295,36 @@ meanings
         text "al final de"
       surface
         text "añade al final"
+  line
+    defined-by concept
+    role file_edit_line_lead
+    precondition "an additive edit introduces its unquoted text as a line"
+    effect "the words after the lead, up to the destination cue before the path, are the line"
+    unit "not applicable"
+    example "append the line third to notes.txt"
+    lexeme en
+      surface
+        text "the line"
+      surface
+        text "a line"
+      surface
+        text line
+    lexeme ru
+      surface
+        text строку
+      surface
+        text строка
+    lexeme hi
+      surface
+        text पंक्ति
+    lexeme zh
+      surface
+        text 一行
+    lexeme es
+      surface
+        text "la línea"
+      surface
+        text línea
   file_edit_blank_line
     defined-by concept
     role file_edit_blank_line

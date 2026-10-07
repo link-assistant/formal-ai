@@ -17,7 +17,10 @@ use super::workspace_change::{
     VerifiedChange, changed_lines_edit, identifier_tokens, plan_digest_verification,
     read_arguments, result_for_edit, result_for_path,
 };
-use super::write_request::{clean_path_token, looks_like_file_path, safe_relative_path, tokens};
+use super::write_request::{
+    bare_surfaces, clean_cue_token, clean_path_token, looks_like_file_path, safe_relative_path,
+    tokens,
+};
 use crate::normal_markov::{quoted_segment_spans, quoted_segments};
 use crate::protocol::ChatMessage;
 use crate::seed;
@@ -122,7 +125,9 @@ fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
     if at_end == mentions("file_edit_position_start", task) {
         return None;
     }
-    let (target, text) = quoted_payload_and_path(task).or_else(|| blank_line_and_path(task))?;
+    let (target, text) = quoted_payload_and_path(task)
+        .or_else(|| blank_line_and_path(task))
+        .or_else(|| line_payload_and_path(task))?;
     let text = super::positional_edit::unescape_prose_newlines(&text);
     Some(ComputedChange {
         target,
@@ -411,6 +416,61 @@ pub(super) fn plan_computed_change_step(
         return Some(plan_one(tool, write_arguments(target, &updated)));
     }
     plan_digest_verification(task, current_turn, tool_names, &verified)
+}
+
+/// `Append the line third to notes.txt`: no quoted text, one path, and the
+/// seeded `file_edit_line_lead`; the line is the words after the lead up to
+/// the last destination cue before the path (`go to bed to notes.txt` keeps
+/// `go to bed`). A request without a lead is declined, never guessed.
+fn line_payload_and_path(task: &str) -> Option<(String, String)> {
+    if !quoted_segment_spans(task).is_empty() {
+        return None;
+    }
+    let tokens = tokens(task);
+    let paths: Vec<(usize, &str)> = tokens
+        .iter()
+        .enumerate()
+        .map(|(index, token)| (index, clean_path_token(token.text)))
+        .filter(|(_, path)| looks_like_file_path(path) && safe_relative_path(path))
+        .collect();
+    let (path_index, target) = *paths.first()?;
+    if paths.iter().any(|(_, path)| *path != target) {
+        return None;
+    }
+    let mut leads: Vec<Vec<String>> = seed::lexicon()
+        .words_for_role("file_edit_line_lead")
+        .iter()
+        .map(|lead| {
+            lead.to_lowercase()
+                .split_whitespace()
+                .map(str::to_owned)
+                .collect::<Vec<_>>()
+        })
+        .filter(|words| !words.is_empty())
+        .collect();
+    leads.sort_by_key(|words| std::cmp::Reverse(words.len()));
+    let lead_end = (0..path_index).find_map(|index| {
+        leads
+            .iter()
+            .find(|words| {
+                words.iter().enumerate().all(|(offset, word)| {
+                    index + offset < path_index
+                        && clean_cue_token(tokens[index + offset].text) == *word
+                })
+            })
+            .map(|words| index + words.len())
+    })?;
+    let destinations = bare_surfaces("file_write_destination_cue");
+    let end = (lead_end..path_index)
+        .rev()
+        .find(|index| destinations.contains(&clean_cue_token(tokens[*index].text)))?;
+    if end <= lead_end {
+        return None;
+    }
+    Some((
+        target.to_owned(),
+        task[tokens[lead_end].start..tokens[end - 1].end].to_owned(),
+    ))
 }
 
 /// The seeded `file_edit_blank_line` with one named path and no quoted text:

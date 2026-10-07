@@ -118,8 +118,16 @@ describe('an append keeps the file it appends to', () => {
     assert.equal(files.get('ledger.md'), `${LEDGER}\n`);
   });
 
-  test('an append the arm cannot ground is declined, never a whole-file rewrite', async () => {
+  // An unquoted line is grounded between the seeded line lead and the last
+  // destination cue before the path (PR #1188, gap 1); one with no lead is
+  // still declined, never a whole-file rewrite.
+  test('an unquoted line after a line lead is appended', async () => {
     const { files } = await drive('Append the line third to notes.txt.', { 'notes.txt': 'first\nsecond\n' });
+    assert.equal(files.get('notes.txt'), 'first\nsecond\nthird\n');
+  });
+
+  test('an append the arm cannot ground is declined, never a whole-file rewrite', async () => {
+    const { files } = await drive('Append third to notes.txt.', { 'notes.txt': 'first\nsecond\n' });
     assert.equal(files.get('notes.txt'), 'first\nsecond\n');
   });
 });

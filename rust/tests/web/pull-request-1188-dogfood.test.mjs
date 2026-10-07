@@ -395,3 +395,21 @@ describe('PR #1188 dogfood: a typo without its correction is corrected by discov
     assert.equal(correctedSpelling('teh'), 'the');
   });
 });
+
+describe('PR #1188 dogfood: an unquoted line is grounded between its lead and the destination cue', () => {
+  for (const [prompt, line] of [
+    ['Append the line third to notes.txt.', 'third'],
+    ['Append the line go to bed to notes.txt.', 'go to bed'],
+    ['Добавь строку третья в конец notes.txt', 'третья'],
+  ]) {
+    test(`${prompt} appends ${line}`, async () => {
+      const { files } = await drive(prompt, { 'notes.txt': 'first line\n' });
+      assert.equal(files.get('notes.txt'), `first line\n${line}\n`);
+    });
+  }
+
+  test('without a line lead nothing is guessed and nothing is written', async () => {
+    const { files } = await drive('Append third to notes.txt.', { 'notes.txt': 'first line\n' });
+    assert.equal(files.get('notes.txt'), 'first line\n');
+  });
+});

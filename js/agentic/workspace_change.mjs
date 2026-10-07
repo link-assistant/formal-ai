@@ -11,7 +11,7 @@ import { editArguments } from './intent_router.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { composePositionalInsert, unescapeProseNewlines, unquotedPathTokens } from './positional_edit.mjs';
-import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
+import { bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
 import { commandArgument, failureMessage } from './tool_result.mjs';
 import { quotedSegmentSpans, quotedSegments, unwrapTransportQuotes } from './crate/normal_markov.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
@@ -243,7 +243,7 @@ function groundedEndInsertion(task) {
   const lowered = task.toLowerCase();
   const atEnd = mentionsRole('file_edit_position_end', lowered);
   if (atEnd === mentionsRole('file_edit_position_start', lowered)) return null;
-  const named = quotedPayloadAndPath(task) ?? blankLineAndPath(task);
+  const named = quotedPayloadAndPath(task) ?? blankLineAndPath(task) ?? linePayloadAndPath(task);
   if (!named) return null;
   return {
     target: named.target,
@@ -564,9 +564,41 @@ function readArguments(path) {
 }
 
 /**
+ * `Append the line third to notes.txt`: no quoted text, one path, and the
+ * seeded `file_edit_line_lead`; the line is the words after the lead up to
+ * the last destination cue before the path (`go to bed to notes.txt` keeps
+ * `go to bed`). A request without a lead is declined, never guessed.
+ */
+
+/**
  * `Append an empty line to notes.txt`: the seeded `file_edit_blank_line` and
  * one named path, with no quoted text, adds one empty line at the named end.
  */
+function linePayloadAndPath(task) {
+  if (quotedSegmentSpans(task).length > 0) return null;
+  const toks = tokens(task);
+  const pathIndices = toks.map((token, index) => [index, cleanPathToken(token.text)])
+    .filter(([, path]) => looksLikeFilePath(path) && safeRelativePath(path));
+  if (new Set(pathIndices.map(([, path]) => path)).size !== 1) return null;
+  const [pathIndex, target] = pathIndices[0];
+  const leads = wordsForRole('file_edit_line_lead').map((lead) => splitWhitespace(lead.toLowerCase()))
+    .filter((words) => words.length > 0).sort((left, right) => right.length - left.length);
+  let leadEnd = -1;
+  for (let index = 0; index < pathIndex && leadEnd < 0; index += 1) {
+    const lead = leads.find((words) => words.every((word, offset) => index + offset < pathIndex
+      && cleanCueToken(toks[index + offset].text) === word));
+    if (lead) leadEnd = index + lead.length;
+  }
+  if (leadEnd < 0) return null;
+  const destinations = bareSurfaces('file_write_destination_cue');
+  let end = -1;
+  for (let index = leadEnd; index < pathIndex; index += 1) {
+    if (destinations.includes(cleanCueToken(toks[index].text))) end = index;
+  }
+  if (end <= leadEnd) return null;
+  return { target, text: task.slice(toks[leadEnd].start, toks[end - 1].end) };
+}
+
 function blankLineAndPath(task) {
   if (quotedSegmentSpans(task).length > 0 || !mentionsRole('file_edit_blank_line', task.toLowerCase())) return null;
   const paths = [...new Set(unquotedPathTokens(task).map((token) => cleanPathToken(token.text))

@@ -550,3 +550,18 @@ because they are not grounded tokens yet.
 `Projet → Project`, `teh → the`; Rust
 `rust/tests/unit/pull_request_1188_typo_discovery.rs` (read, then the edit of
 the one line).
+
+### Sub-agent gap 1 — an unquoted appended line
+
+`Append the line third to notes.txt.` was declined (after 882a7d711 it no
+longer rewrote the file). Now grounded in both roots
+(`linePayloadAndPath` / `line_payload_and_path`): no quoted text, exactly one
+path, a seeded concept `line` (role `file_edit_line_lead`: `the line`,
+`a line`, `line`, `строку`, `पंक्ति`, `一行`, `la línea`, …), and the line is the
+words after the lead up to the *last* seeded destination cue before the path —
+so `go to bed to notes.txt` keeps `go to bed`, and `третья в конец notes.txt`
+cuts at `в`. A request without a lead (`Append third to notes.txt.`) is still
+declined; the coordinator's pin in
+`rust/tests/web/formal-ai-subagent-quoted-payloads.test.mjs` moved to that
+prompt, and its old prompt now pins the append. Tests: JS (three languages
+and the declined case) and Rust `rust/tests/unit/pull_request_1188_subagent_gaps.rs`.
