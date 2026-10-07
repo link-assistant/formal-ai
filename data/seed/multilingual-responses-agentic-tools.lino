@@ -219,6 +219,26 @@ multilingual_responses
     intent file_edit_position_before
     language es
     text "Se insertó `{new}` antes de `{anchor}` en `{path}` y se verificó el resultado."
+  response response_coding_text_remove_en
+    intent coding_text_remove
+    language en
+    text "Removed `{old}` from `{path}` and observed the result."
+  response response_coding_text_remove_ru
+    intent coding_text_remove
+    language ru
+    text "Из `{path}` удалено `{old}`, результат проверен."
+  response response_coding_text_remove_hi
+    intent coding_text_remove
+    language hi
+    text "`{path}` से `{old}` हटाया और परिणाम सत्यापित किया।"
+  response response_coding_text_remove_zh
+    intent coding_text_remove
+    language zh
+    text "已从 `{path}` 中删除 `{old}` 并验证了结果。"
+  response response_coding_text_remove_es
+    intent coding_text_remove
+    language es
+    text "Se eliminó `{old}` de `{path}` y se verificó el resultado."
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en

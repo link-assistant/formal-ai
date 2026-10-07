@@ -40,8 +40,8 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   if (change) return planCompositeStep(task, currentTurn, toolNames, change);
   const rewrite = groundedRewrite(task);
   if (rewrite) return planRewriteStep(task, currentTurn, toolNames, rewrite);
-  const insertion = groundedEndInsertion(task);
-  return insertion ? planEndInsertionStep(task, currentTurn, toolNames, insertion) : null;
+  const computed = groundedEndInsertion(task) ?? groundedRemoval(task);
+  return computed ? planComputedChangeStep(task, currentTurn, toolNames, computed) : null;
 }
 
 /** Mirrors `fn is_verification_failure_answer`. */
@@ -218,16 +218,10 @@ function groundedRewrite(task) {
 }
 
 /**
- * An additive edit at one end of a named file (`append 'x' to notes.txt`,
- * `prepend "x" to a.md`): `{target, text, atEnd}` or null. The position comes
- * from the seeded `file_edit_position_end` / `file_edit_position_start`
- * meanings, the payload is the request's one quoted segment that is not the
- * path, and the target is the one workspace path the request names.
+ * The one workspace path a request names and its one quoted segment that is
+ * not that path: `{target, text}` or null.
  */
-function groundedEndInsertion(task) {
-  const lowered = task.toLowerCase();
-  const atEnd = mentionsRole('file_edit_position_end', lowered);
-  if (atEnd === mentionsRole('file_edit_position_start', lowered)) return null;
+function quotedPayloadAndPath(task) {
   const segments = quotedSegmentSpans(task);
   const inside = (token) => segments.some((segment) => token.start >= segment.start && token.end <= segment.end
     && cleanPathToken(token.text) !== segment.text);
@@ -235,8 +229,56 @@ function groundedEndInsertion(task) {
     .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
   if (paths.length !== 1) return null;
   const payloads = segments.filter((segment) => segment.text !== paths[0] && trim(segment.text) !== '');
-  if (payloads.length !== 1) return null;
-  return { target: paths[0], text: payloads[0].text, atEnd };
+  return payloads.length === 1 ? { target: paths[0], text: payloads[0].text } : null;
+}
+
+/**
+ * An additive edit at one end of a named file (`append 'x' to notes.txt`,
+ * `prepend "x" to a.md`), positioned by the seeded `file_edit_position_end` /
+ * `file_edit_position_start` meanings. A missing file is created, as `>>`
+ * would.
+ */
+function groundedEndInsertion(task) {
+  const lowered = task.toLowerCase();
+  const atEnd = mentionsRole('file_edit_position_end', lowered);
+  if (atEnd === mentionsRole('file_edit_position_start', lowered)) return null;
+  const named = quotedPayloadAndPath(task);
+  if (!named) return null;
+  return {
+    target: named.target,
+    compute: (source) => insertedAtEnd(source, named.text, atEnd),
+    edit: (source, updated) => (source === '' ? null : compactEndEdit(source, updated, atEnd)),
+    intent: atEnd ? 'file_edit_position_end' : 'file_edit_position_start',
+    slots: [['{new}', named.text]],
+  };
+}
+
+/**
+ * `Delete the line 'x' from notes.txt`, `remove "TODO" from a.md`: the seeded
+ * `coding_text_remove_action` with one quoted payload and one path. Every
+ * line that is exactly the payload goes; otherwise its one occurrence inside
+ * a line does. A missing file, or a payload found nowhere or more than once
+ * inside lines, is not a removal anyone can verify.
+ */
+function groundedRemoval(task) {
+  const lowered = task.toLowerCase();
+  if (!mentionsRole('coding_text_remove_action', lowered) || mentionsRole('coding_member_add_action', lowered)) return null;
+  const named = quotedPayloadAndPath(task);
+  if (!named) return null;
+  return {
+    target: named.target,
+    compute: (source, missing) => (missing ? null : removedLiteral(source, named.text)),
+    edit: changedLinesEdit,
+    intent: 'coding_text_remove',
+    slots: [['{old}', named.text]],
+  };
+}
+
+function removedLiteral(source, text) {
+  const kept = source.split(/(?<=\n)/u).filter((line) => line.replace(/\r?\n$/u, '') !== text);
+  const withoutLines = kept.join('');
+  if (withoutLines !== source) return withoutLines;
+  return matchIndices(source, text).length === 1 ? source.replace(text, '') : null;
 }
 
 /** The file after the insertion; a file without a final newline keeps none. */
@@ -266,16 +308,20 @@ function compactEndEdit(source, updated, atEnd) {
   return null;
 }
 
-function planEndInsertionStep(task, currentTurn, toolNames, insertion) {
-  const { target, text, atEnd } = insertion;
+/**
+ * A change whose new bytes are computed from the file: read it, compute, send
+ * the smallest unique edit (or the whole file), check the digest, and state
+ * the change from the seeded response for its intent.
+ */
+function planComputedChangeStep(task, currentTurn, toolNames, change) {
+  const { target, intent, slots } = change;
   const read = resultForPath(currentTurn, Capability.Read, target, null);
   if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(target));
   const missing = failureMessage(read, false, true) !== null;
   const source = missing ? '' : sourceFromReadResult(read);
-  const updated = insertedAtEnd(source, text, atEnd);
-  const intent = atEnd ? 'file_edit_position_end' : 'file_edit_position_start';
-  const slots = [['{new}', text]];
-  const compact = source === '' ? null : compactEndEdit(source, updated, atEnd);
+  const updated = change.compute(source, missing);
+  if (updated === null || updated === source) return failed(task, target);
+  const compact = change.edit(source, updated);
   const editTool = compact ? toolFor(toolNames, Capability.Edit) : null;
   if (compact && editTool) {
     const [old, next] = compact;

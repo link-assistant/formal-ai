@@ -139,3 +139,30 @@ describe('PR #1188 dogfood: a replacement edits only what it names', () => {
     assert.equal(answer, 'Verification failed for `t.txt`: the observed bytes differ from the planned workspace effect.');
   });
 });
+
+describe('PR #1188 dogfood: a removal takes out what it quotes', () => {
+  test('`Delete the line \'second line\' from notes.txt.` removes that line', async () => {
+    const { calls, files, answer } = await drive("Delete the line 'second line' from notes.txt.", {
+      'notes.txt': 'first line\nsecond line\n',
+    });
+    assert.deepEqual(calls, ['read', 'edit', 'bash']);
+    assert.equal(files.get('notes.txt'), 'first line\n');
+    assert.equal(answer, 'Removed `second line` from `notes.txt` and observed the result.');
+  });
+
+  test('quoted text inside a line is removed from that line only', async () => {
+    const { files } = await drive("Remove 'smal ' from README.md.", { 'README.md': '# P\n\nThis is a smal project.\n' });
+    assert.equal(files.get('README.md'), '# P\n\nThis is a project.\n');
+  });
+
+  test('deleting a file is still a file deletion, not a text removal', async () => {
+    const { calls } = await drive('Delete the file notes.txt.', { 'notes.txt': 'x\n' });
+    assert.deepEqual(calls, ['bash']);
+  });
+
+  test('text found nowhere is reported, not written', async () => {
+    const { files, answer } = await drive("Delete the line 'absent' from notes.txt.", { 'notes.txt': 'first line\n' });
+    assert.equal(files.get('notes.txt'), 'first line\n');
+    assert.equal(answer, 'Verification failed for `notes.txt`: the observed bytes differ from the planned workspace effect.');
+  });
+});

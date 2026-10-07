@@ -36,7 +36,7 @@ possible tasks you encounter on the way must be fully supported by it".
 | T6 | `Fix the typo 'smal' in README.md.` | **Fail**: read the file, echoed it, changed nothing. | Open |
 | T7 | `Replace 'smal' with 'small' in README.md.` (README also says `A small tool.`) | **Fail**: edit `oldString: "smal"` — the Agent CLI refuses it ("Found multiple matches"); an edit tool that takes the first match turns `small` into `smalll`. Without the second line it passed, answering only "The command completed successfully without output." | **Pass**: read → edit of the one changed line → `sha256sum`; answer `Replaced \`smal\` with \`small\` in \`README.md\` and observed the result.` |
 | T8 | `Insert 'middle' after the line 'first line' in notes.txt.` | **Fail**: no plan at all (single quotes were not literals). With double quotes it worked but answered "The command completed successfully without output." | **Pass**: read → edit → `sha256sum`; answer `Inserted \`middle\` after \`first line\` in \`notes.txt\` and observed the result.` |
-| T9 | `Delete the line 'second line' from notes.txt.` | **Fail**: read the file, changed nothing. | Open |
+| T9 | `Delete the line 'second line' from notes.txt.` | **Fail**: read the file, changed nothing. | **Pass**: read → edit (`second line\n` → empty) → `sha256sum`; answer `Removed \`second line\` from \`notes.txt\` and observed the result.` |
 | T10 | `Run ls and summarize what is in this directory.` | Pass (lists the output; no prose summary). | — |
 | T11 | `How many lines are in notes.txt?` | Pass (`wc -l`). | — |
 | T12 | `Delete the file notes.txt.` / `Rename the file notes.txt to todo.txt.` | Pass (`rm`, `mv`). | — |
@@ -121,3 +121,29 @@ tool refuses an ambiguous `oldString` exactly as the Agent CLI does.
 **Rust twin.** The quoting fix is in both roots. The word-scoped replacement,
 the line-scoped edit and the positional ownership (with its seeded answer)
 are JS-only so far: `rust/src/agentic_coding/workspace_change.rs`.
+
+### T9 — no arm removed quoted text from a file
+
+**Root cause.** Nothing in the seed bound "delete/remove" to *text in a file*:
+the only removal surfaces belonged to `cancel` (undo a program change) and to
+reserved-word lists. With no edit pair and no write content, the request fell
+through to the file-read arm, which showed the file.
+
+**Fix.** A seeded action meaning `coding_text_remove` (role
+`coding_text_remove_action`; en/ru/hi/zh/es surfaces; `drop`/`erase` were left
+out because they are not grounded tokens yet) and a removal in the
+workspace-change arm: every line that is exactly the quoted payload goes,
+otherwise its single occurrence inside a line does; anything else is the
+honest verification-failure answer with nothing written. The end insertion and
+the removal now share one planner, `planComputedChangeStep` (read → compute
+bytes → smallest unique edit, else whole-file write → digest → seeded answer).
+`Delete the file notes.txt.` still plans `rm` — a quoted path is never a
+payload.
+
+**Tests.** "a removal takes out what it quotes": the T9 prompt, an in-line
+removal, the file-deletion non-regression, and text found nowhere.
+
+**Whole JS suite.** `node --test --test-concurrency=1 rust/tests/web/`:
+945 pass, 0 fail after T7–T9.
+
+**Rust twin.** JS-only (`workspace_change.rs`), together with T4 and T7.

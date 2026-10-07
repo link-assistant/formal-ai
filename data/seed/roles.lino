@@ -205,6 +205,8 @@ roles
     kind predicate
   coding_test_artifact_kind
     kind predicate
+  coding_text_remove_action
+    kind predicate
   coding_value_slot
     kind predicate
   coding_visibility

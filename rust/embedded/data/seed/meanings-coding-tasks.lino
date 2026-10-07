@@ -227,6 +227,58 @@ meanings
     lexeme zh
       surface
         text 重命名
+  coding_text_remove
+    defined-by action
+    role coding_text_remove_action
+    precondition "a coding request names quoted text and the file it should leave"
+    effect "the requested operation is bound to removing that text from the file"
+    unit "not applicable"
+    example "delete the line"
+    lexeme en
+      surface
+        text delete
+      surface
+        text remove
+      surface
+        text "get rid of"
+    lexeme ru
+      surface
+        text удали
+      surface
+        text удалить
+      surface
+        text убери
+      surface
+        text убрать
+      surface
+        text сотри
+    lexeme hi
+      surface
+        text हटाओ
+      surface
+        text हटाएं
+      surface
+        text मिटाओ
+    lexeme zh
+      surface
+        text 删除
+      surface
+        text 删掉
+      surface
+        text 去掉
+      surface
+        text 移除
+    lexeme es
+      surface
+        text elimina
+      surface
+        text eliminar
+      surface
+        text borra
+      surface
+        text borrar
+      surface
+        text quita
   coding_artifact_name
     defined-by relation
     role coding_name_slot
