@@ -153,5 +153,15 @@
     "forbiddenAnswerFragments": ["Canberra"],
     "expectedEvidencePrefixes": ["fact_lookup:hit:", "fact_lookup:subject_gate:", "wikidata:"],
     "expectedTraceFragments": ["fact_lookup"]
+  },
+  {
+    "id": "e1163_supplied_page_command_query",
+    "prompt": "The command in the paragraph that mentions compiler:\n\nThe compiler turns hello.kt into a runnable jar with this line.\n\nkotlinc hello.kt -include-runtime -d hello.jar\n\nThe launcher starts that jar with this line.\n\njava -jar hello.jar",
+    "expectedIntent": "page_query",
+    "expectedAnswerFragments": ["kotlinc hello.kt -include-runtime -d hello.jar"],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": ["page_query:", "page_query_page:", "page_query_answer:", "intent:page_query", "response:page_query"],
+    "expectedTraceFragments": ["page_query"],
+    "browserExpectedEvidencePrefixes": ["page_query:", "page_query_page:", "page_query_answer:", "response:page_query"]
   }
 ]

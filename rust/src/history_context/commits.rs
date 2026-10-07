@@ -117,6 +117,42 @@ fn import_commits_impl(
         .collect())
 }
 
+/// The lineage of one path (issue #1180 R10): `git log --follow` on the
+/// working repository, chronological, each commit formalized with its
+/// trailers and delivering merge but without the per-path syntax diff, so a
+/// chat answer runs only the history it reports.
+///
+/// # Errors
+///
+/// Returns [`RepositoryHistoryImportError`] when `git log` cannot run.
+pub fn lineage_for_path(
+    repo_root: &Path,
+    path: &str,
+    rules: &HistoryRules,
+) -> Result<Vec<MemoryEvent>, RepositoryHistoryImportError> {
+    let format = format!("--format={LOG_FORMAT}");
+    let output = run_git(
+        repo_root,
+        &[
+            "log",
+            "--no-show-signature",
+            &format,
+            "--name-only",
+            "--follow",
+            "HEAD",
+            "--",
+            path,
+        ],
+    )?;
+    Ok(parse_log_output(&output)
+        .iter()
+        .map(|raw| {
+            let merge = merge_subject_for(repo_root, &raw.sha);
+            formalize_commit(raw, &[], merge.as_deref(), rules)
+        })
+        .collect())
+}
+
 /// Formalize one raw commit: symbol diff per changed path, merge-commit
 /// resolution, trailer scan, then the record mapping.
 fn formalize_raw_commit(repo_root: &Path, raw: &RawCommit, rules: &HistoryRules) -> MemoryEvent {

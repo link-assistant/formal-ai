@@ -13,6 +13,8 @@ sources_registry
       basis "Wikidata:Verifiability, the project's own policy, requires each statement to cite a source outside Wikidata, so an item is a synthesis one hop from the references it names."
     api "https://www.wikidata.org/wiki/Special:EntityData/{id}.json"
     lexeme_api "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&type=lexeme&search={lemma}&language={language}&uselang={language}&limit=5"
+    item_search_api "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&type=item&search={query}&language={language}&uselang={language}&limit=1"
+    reference_url_property "P854"
     api_language en ru hi zh es
     license_name "CC0 1.0"
     license_url "https://creativecommons.org/publicdomain/zero/1.0/"

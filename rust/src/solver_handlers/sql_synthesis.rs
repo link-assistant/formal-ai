@@ -362,6 +362,42 @@ fn having_clause(
     None
 }
 
+/// The seeded `sql_join` role ("join", "filler" or "key") of a word.
+fn join_role(word: &str, entries: &[LinoNode]) -> String {
+    entries
+        .iter()
+        .find(|entry| entry.find_child_value("word") == word)
+        .map(|entry| entry.find_child_value("value").to_owned())
+        .unwrap_or_default()
+}
+
+/// JOIN from the seeded `sql_join` roles ("joined with the orders table on
+/// user_id"): the first non-filler word after a `join` word names the
+/// joined table, and the first non-filler word after a `key` word the
+/// shared column, emitted as `JOIN t USING (column)`. Without a key no
+/// join is guessed. Returns the clause, the request echo and the token span.
+fn join_clause(tokens: &[&str], table: &str) -> Option<(String, String, (usize, usize))> {
+    let entries = word_entries("sql_join");
+    let role = |index: usize| join_role(tokens[index], &entries);
+    let cue_at = (0..tokens.len()).find(|index| role(*index) == "join")?;
+    let named = |from: usize| {
+        (from..tokens.len()).find(|index| {
+            let name = identifier(tokens[*index]);
+            !name.is_empty() && role(*index).is_empty()
+        })
+    };
+    let table_at = named(cue_at + 1)?;
+    let joined = identifier(tokens[table_at]);
+    let key_at = (table_at + 1..tokens.len()).find(|index| role(*index) == "key")?;
+    let column_at = named(key_at + 1)?;
+    let column = identifier(tokens[column_at]);
+    if joined == table {
+        return None;
+    }
+    let clause = [" JOIN ", &joined, " USING (", &column, ")"].concat();
+    Some((clause, echo(tokens, cue_at, column_at), (cue_at, column_at)))
+}
+
 /// ORDER BY from "sorted by X" / "alphabetical order", plus DESC markers.
 fn order_clause(tokens: &[&str]) -> Option<(String, String)> {
     for (index, token) in tokens.iter().enumerate() {
@@ -475,7 +511,15 @@ pub fn handle_sql_synthesis(
     if !is_sql_request(prompt, normalized) {
         return None;
     }
-    let tokens: Vec<&str> = normalized.split(' ').filter(|t| !t.is_empty()).collect();
+    // Tokens come from the lowercased prompt with edge punctuation trimmed,
+    // not from `normalized`, so an identifier keeps its underscores
+    // (`user_id`) whichever normalization the caller applied.
+    let lowered = prompt.to_lowercase();
+    let tokens: Vec<&str> = lowered
+        .split_whitespace()
+        .map(|token| token.trim_matches(|c: char| !c.is_alphanumeric() && c != '_'))
+        .filter(|token| !token.is_empty())
+        .collect();
     log.append(
         "sql_synthesis:request",
         format!("{} token(s)", tokens.len()),
@@ -521,7 +565,11 @@ pub fn handle_sql_synthesis(
     let having = group
         .as_ref()
         .and_then(|(_, _, after)| having_clause(&tokens, &aggregate_expression, *after));
+    let join = join_clause(&tokens, &table);
     let mut filter_list = filters(&tokens);
+    if let Some((_, _, (start, end))) = &join {
+        filter_list.retain(|filter| filter.at < *start || filter.at > *end);
+    }
     if let Some((_, _, (start, end))) = &having {
         filter_list.retain(|filter| filter.at < *start || filter.at > *end);
     }
@@ -549,6 +597,7 @@ pub fn handle_sql_synthesis(
         &columns,
         " FROM ",
         &table,
+        join.as_ref().map_or("", |(clause, _, _)| clause.as_str()),
         &where_clause,
         &group_by,
         &having_text,
@@ -561,6 +610,9 @@ pub fn handle_sql_synthesis(
 
     let mut rows: Vec<(String, String)> = vec![(columns_request, format!("SELECT {columns}"))];
     rows.push((table.clone(), format!("FROM {table}")));
+    if let Some((clause, request, _)) = &join {
+        rows.push((request.clone(), clause.trim().to_owned()));
+    }
     for filter in &filter_list {
         rows.push((filter.request.clone(), filter.clause.clone()));
     }

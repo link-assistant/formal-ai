@@ -6,10 +6,10 @@
 //! `research_coding_skill_gap`, and the embedded `ORACLE_SNAPSHOTS` bootstrap
 //! answers only while the policy seed says it is active — the deletable-cache
 //! contract applied to the compiled-in tier. The production wiring points the
-//! issue names (the `WriteProgram` branch of the solver and
-//! `plan_work_item_execution`) call `cached_or_research`; the six-language
-//! online rediscovery run of R1165-7 lands with that wiring and is gated by
-//! `FORMAL_AI_LIVE_FETCH` there.
+//! issue names (the `WriteProgram` branch of the solver, whose answer
+//! `plan_work_item_execution` executes) read the cache through
+//! `cached_write_program`; the six-language online rediscovery run of
+//! R1165-7 is still open and will be gated by `FORMAL_AI_LIVE_FETCH`.
 
 use std::path::PathBuf;
 
@@ -17,8 +17,8 @@ use formal_ai::coding_research_learning::{
     CodingResearchApproval, CodingResearchGap, ResearchedCodingProcedureLedger,
 };
 use formal_ai::discovery_production::{
-    CachedOrDiscovered, ProcedureCache, RediscoverableRecipe, bootstrap_cache_active, fnv1a64,
-    grammar_exists, knows_language,
+    CachedOrDiscovered, ProcedureCache, RediscoverableRecipe, bootstrap_cache_active,
+    cached_write_program, fnv1a64, grammar_exists, knows_language,
 };
 
 /// An isolated cache file per test, so a failing test never destroys the
@@ -289,4 +289,27 @@ fn bootstrap_tier_is_governed_by_the_policy_seed() {
     );
     assert!(formal_ai::knowledge::CodingOracle::knows_language("kotlin"));
     assert!(formal_ai::knowledge::CodingOracle::lookup("hello_world", "kotlin").is_some());
+}
+
+/// R1165-1/R1165-2: the solver's `WriteProgram` branch reuses a verified
+/// cache row for an unmodified request, and keeps the catalog template when
+/// the prompt customised it or the cache has no row for the pair.
+#[test]
+fn write_program_reuses_the_cached_procedure_only_for_an_unmodified_request() {
+    let mut cache = ProcedureCache::load_at(&isolated_cache("write-program"));
+    cache
+        .store(kotlin_hello_recipe())
+        .expect("policy-complete row stores");
+    let template = "fun main() {\n    println(\"Hello, world!\")\n}\n";
+    let customised = "fun main() {\n    println(\"Hi\")\n}\n";
+    let answers = [
+        ("kotlin", template),
+        ("kotlin", customised),
+        ("pascal", template),
+    ]
+    .map(|(language, rendered)| {
+        cached_write_program(&cache, language, "hello_world", template, rendered)
+            .map(|recipe| recipe.entry.clone())
+    });
+    assert_eq!(answers, [Some(kotlin_hello_recipe().entry), None, None]);
 }

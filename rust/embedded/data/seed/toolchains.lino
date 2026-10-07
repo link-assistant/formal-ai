@@ -213,6 +213,23 @@ generated_version java_lts
   latest_sha ""
   releases_url "https://api.adoptium.net/v3/info/available_releases"
   measured_at "2026-09-30"
+generated_version setup_coursier_action
+  record_type "generated_version_baseline"
+  publisher "coursier"
+  repository "setup-action"
+  latest_tag "v3.0.4"
+  latest_sha "648df969f41ef15fda2baba8b37f9fa3d16390a3"
+  releases_url "https://api.github.com/repos/coursier/setup-action/releases/latest"
+  measured_at "2026-10-07"
+  workflow_uses "coursier/setup-action"
+generated_version scala_compiler
+  record_type "generated_version_baseline"
+  publisher "scala"
+  repository "scala"
+  latest_tag "2.13.18"
+  latest_sha ""
+  releases_url "https://api.github.com/repos/scala/scala/releases/latest"
+  measured_at "2026-10-07"
 generated_workflow_step uses_step
   record_type "generated_workflow_step"
   marker "- uses:"

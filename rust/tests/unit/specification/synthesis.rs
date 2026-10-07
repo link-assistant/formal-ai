@@ -56,6 +56,7 @@ fn documented_answer(id: &str) -> &'static str {
         "e1172_seeded_capital_subject_gate" => {
             "The capital of the United States is Washington, D.C."
         }
+        "e1163_supplied_page_command_query" => "kotlinc hello.kt -include-runtime -d hello.jar",
         other => panic!("fixture lacks a complete documented answer for {other}"),
     }
 }

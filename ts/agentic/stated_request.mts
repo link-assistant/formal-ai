@@ -1,0 +1,1 @@
+import { trim } from './crate/rust_str.mjs' ; export function requestBlocks ( prompt ) { const blocks = prompt . split ( '\n\n' ) . map ( trim ) . filter ( ( block ) => block !== '' ) ; return blocks . length < 2 ? [ prompt ] : blocks ; }

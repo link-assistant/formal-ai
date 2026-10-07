@@ -6,6 +6,11 @@
 # interprets. No fix lives here; a fix always comes from a fetched,
 # formalized source. Slots are validated by shape, so a template cannot
 # read prose as a path or a line number.
+#
+# Location rows are tried before patterns, so a language that prints its
+# location inline (php: `... in {file} on line {line}`) carries it inside
+# the pattern; a location row there would read the whole diagnostic line
+# as a path and drop the diagnostic (issue #1185 R7).
 
 diagnostic_code_shapes
   language rust
@@ -61,9 +66,10 @@ diagnostic_code_shapes
   language ruby
     pattern "{file}:{line}: {message}"
   language php
+    pattern "PHP Parse error: {message} in {file} on line {line}"
+    pattern "PHP Fatal error: {message} in {file} on line {line}"
     pattern "PHP Parse error: {message}"
     pattern "PHP Fatal error: {message}"
-    location "{file} on line {line}"
   language swift
     pattern "{file}:{line}:{column}: error: {message}"
     pattern "error: {message}"

@@ -419,7 +419,32 @@ fn rules_seed_round_trips_through_the_parser() {
     ))
     .expect("seed on disk");
     let rules = HistoryRules::from_seed_text(&seed);
-    assert_eq!(rules, HistoryRules::defaults());
+    // The structural rows equal the shipped defaults; the lifecycle states,
+    // the requirement marker and the lineage phrases are seed-only (R1180-3,
+    // R1180-10), so no natural-language word is typed into Rust.
+    let structural = HistoryRules {
+        state_transitions: Vec::new(),
+        state_evidence_prefix: String::new(),
+        requirement: history_context::RequirementRule::default(),
+        lineage_cues: Vec::new(),
+        ..rules.clone()
+    };
+    assert_eq!(structural, HistoryRules::defaults());
+    let states: Vec<&str> = rules
+        .state_transitions
+        .iter()
+        .map(|rule| rule.state.as_str())
+        .collect();
+    assert_eq!(states, vec!["opened", "closed", "merged"]);
+    assert_eq!(rules.state_evidence_prefix, "state:");
+    assert_eq!(rules.requirement.marker, "R");
+    assert_eq!(rules.requirement.evidence_prefix, "requirement:");
+    let cue_languages: Vec<&str> = rules
+        .lineage_cues
+        .iter()
+        .map(|(language, _)| language.as_str())
+        .collect();
+    assert_eq!(cue_languages, vec!["en", "ru", "hi", "zh", "es"]);
 }
 
 #[test]
@@ -640,4 +665,172 @@ fn the_repository_history_store_answers_a_query() {
     let error = history_context::query_repository_history(&store_path, "SELECT FROM")
         .expect_err("an unparseable query is refused");
     assert_eq!(error.code(), "query_compile_failed");
+}
+
+/// R1180-3: a captured body is formalized into its requirement statements
+/// and the capture's timestamps into the dated lifecycle transitions, so a
+/// lineage query can ask what an issue required and when it closed, not
+/// only read its text and current state.
+#[test]
+fn issue_bodies_formalize_into_requirement_statements_and_dated_transitions() {
+    let logs = temp_dir("statements");
+    std::fs::write(
+        logs.join("pr-1188.json"),
+        r#"{
+            "number": 1188,
+            "title": "bulk fixes",
+            "body": "This cites R1180-3 in prose.\n\n- **R1** A prompt routes by its formalization.\nR2. Every answer carries a derivation id.\n* R3: Retries are bounded",
+            "state": "MERGED",
+            "labels": [],
+            "createdAt": "2026-09-30T00:00:00Z",
+            "closedAt": "2026-10-07T10:00:00Z",
+            "mergedAt": "2026-10-07T10:00:00Z",
+            "updatedAt": "2026-10-07T10:00:00Z"
+        }"#,
+    )
+    .expect("write pr fixture");
+    let rules = HistoryRules::load(None);
+    let events =
+        history_context::import_issues_and_pulls(&logs, None, &rules).expect("import fixture");
+    let pull = events
+        .iter()
+        .find(|event| event.id == "pull:1188")
+        .expect("the pull request is imported");
+    assert_eq!(
+        pull.evidence,
+        vec![
+            "requirement:R1 A prompt routes by its formalization.",
+            "requirement:R2 Every answer carries a derivation id.",
+            "requirement:R3 Retries are bounded",
+            "state:opened@2026-09-30T00:00:00Z",
+            "state:closed@2026-10-07T10:00:00Z",
+            "state:merged@2026-10-07T10:00:00Z",
+        ],
+        "a prose reference (R1180-3) is not a statement; equal stamps keep seed order"
+    );
+    assert_eq!(pull.intent.as_deref(), Some("MERGED"));
+}
+
+/// R1180-10: the lineage route claims a prompt only when a seeded lineage cue
+/// names a path-shaped token, read whole through backticks, a question mark
+/// or unspaced CJK text; a cue without a path, or a path without a cue, is
+/// not a lineage question.
+#[test]
+fn lineage_subjects_need_a_cue_and_a_path() {
+    let rules = HistoryRules::load(None);
+    assert_eq!(
+        history_context::lineage_subjects(
+            "Which issue introduced `scripts/check-self-development-release.rs`?",
+            &rules
+        ),
+        vec!["scripts/check-self-development-release.rs"]
+    );
+    assert_eq!(
+        history_context::lineage_subjects("scripts/gate.rs的历史是什么？", &rules),
+        vec!["scripts/gate.rs"]
+    );
+    assert_eq!(
+        history_context::lineage_subjects("Какая задача добавила rust/src/solver.rs?", &rules),
+        vec!["rust/src/solver.rs"]
+    );
+    assert_eq!(
+        history_context::lineage_subjects("Explain scripts/gate.rs", &rules),
+        Vec::<String>::new()
+    );
+    assert_eq!(
+        history_context::lineage_subjects("Which issue asked for faster builds?", &rules),
+        Vec::<String>::new()
+    );
+    assert_eq!(
+        history_context::lineage_subjects("What is the history of /etc/passwd?", &rules),
+        Vec::<String>::new(),
+        "an absolute path is never a repository path"
+    );
+}
+
+/// R1180-10: the answer lists the path's commits oldest first and names the
+/// introducing commit's issue (its trailer) and pull request (its delivering
+/// merge); one the history does not record is said to be unrecorded.
+#[test]
+fn lineage_answer_names_the_commits_issue_and_unrecorded_pull_request() {
+    let repo = temp_dir("lineage");
+    init_repo(&repo);
+    let first = commit(
+        &repo,
+        "scripts/gate.rs",
+        "fn main() {}\n",
+        "add the gate",
+        Some("Refs #1014"),
+    );
+    let second = commit(
+        &repo,
+        "scripts/gate.rs",
+        "fn main() { run(); }\n",
+        "tighten the gate",
+        None,
+    );
+    let rules = HistoryRules::load(None);
+    let events =
+        history_context::lineage_for_path(&repo, "scripts/gate.rs", &rules).expect("lineage");
+    let date = |index: usize| -> String {
+        events[index]
+            .sent_at
+            .as_deref()
+            .unwrap_or("")
+            .chars()
+            .take(10)
+            .collect()
+    };
+    let answer = history_context::lineage_answer("en", "scripts/gate.rs", &events, &rules)
+        .expect("the path has history");
+    assert_eq!(
+        answer,
+        format!(
+            "scripts/gate.rs has 2 commits in this repository's history, oldest first:\n\
+             - {} {} add the gate\n\
+             - {} {} tighten the gate\n\n\
+             The introducing commit {} was made for issue #1014 and delivered by pull request \
+             (not recorded in the history). The lineage is read from `git log --follow`; the \
+             issue comes from the commit's trailer and the pull request from the merge that \
+             delivered it.",
+            &first[..9],
+            date(0),
+            &second[..9],
+            date(1),
+            &first[..9],
+        )
+    );
+    assert_eq!(
+        history_context::lineage_answer("en", "scripts/gate.rs", &[], &rules),
+        None,
+        "no history, no answer"
+    );
+}
+
+/// R1180-10 end to end on this repository: `formal-ai chat` answers a
+/// lineage question from the path's git history through the solver route.
+/// The exact answer is the lineage the route renders for the same history.
+#[test]
+fn chat_answers_a_lineage_question_from_this_repositorys_history() {
+    let repo_root =
+        std::fs::canonicalize(Path::new(env!("CARGO_MANIFEST_DIR")).join("..")).expect("repo root");
+    let shallow = git(&repo_root, &["rev-parse", "--is-shallow-repository"]);
+    if shallow == "true" {
+        eprintln!("skip: shallow clone has no followable history");
+        return;
+    }
+    let path = "scripts/check-self-development-release.rs";
+    let rules = HistoryRules::load(None);
+    let events = history_context::lineage_for_path(&repo_root, path, &rules).expect("lineage");
+    let expected = history_context::lineage_answer("en", path, &events, &rules).expect("history");
+    let response = formal_ai::FormalAiEngine.answer(&format!("Which issue introduced {path}?"));
+    assert_eq!(response.intent, "repository_lineage");
+    assert_eq!(response.answer, expected);
+    assert!(
+        response
+            .answer
+            .contains("was made for issue #1014 and delivered by pull request #1015"),
+        "the introducing commit's issue and pull request: {}",
+        response.answer
+    );
 }

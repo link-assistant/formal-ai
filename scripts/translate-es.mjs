@@ -8,6 +8,13 @@
 // `ts/` without compiling the crate; the rust tier in layered-ci.yml stays
 // the authority and diffs this script's output against the native one.
 //
+// The agentic modules (`js/agentic/**/*.mjs`, the node-side twins of
+// rust/src/agentic_coding and its crate helpers) are mirrored the same way
+// into `ts/agentic/**/*.mts`: the ES-module extension maps to its TypeScript
+// counterpart, so their relative `./x.mjs` imports resolve to `./x.mts` under
+// NodeNext resolution. The native leg owns the `.js` → `.ts` file set only;
+// the `.mts` set is this script's alone, checked by the same --check.
+//
 // Usage:
 //   node scripts/translate-es.mjs --write    regenerate ts/ from js/
 //   node scripts/translate-es.mjs --check    exit 1 when ts/ drifted
@@ -392,20 +399,42 @@ export function translateJsToTs(source) {
 }
 
 /**
+ * @param {string} repo
  * @param {string} directory
  * @returns {Array<string>}
  */
-function walk(directory) {
+function walk(repo, directory) {
   const out = [];
   for (const name of readdirSync(directory).sort()) {
     const path = join(directory, name);
     if (statSync(path).isDirectory()) {
-      out.push(...walk(path));
-    } else if (name.endsWith('.js')) {
+      out.push(...walk(repo, path));
+    } else if (isTranslatedSource(relative(repo, path).split('\\').join('/'))) {
       out.push(path);
     }
   }
   return out;
+}
+
+/** The module roots whose `.mjs` sources gain a `.mts` twin. */
+const MODULE_ROOTS = ['js/agentic/'];
+
+/**
+ * Whether a repository-relative path is a translated source.
+ * @param {string} line
+ * @returns {boolean}
+ */
+function isTranslatedSource(line) {
+  return line.endsWith('.js') || (line.endsWith('.mjs') && MODULE_ROOTS.some((root) => line.startsWith(root)));
+}
+
+/**
+ * The ts path a js source renders to: `.js` → `.ts`, `.mjs` → `.mts`.
+ * @param {string} rel path relative to js/
+ * @returns {string}
+ */
+export function tsTwinPath(rel) {
+  return rel.endsWith('.mjs') ? rel.replace(/\.mjs$/, '.mts') : rel.replace(/\.js$/, '.ts');
 }
 
 /**
@@ -424,7 +453,7 @@ function sourceFiles(repo) {
     );
     return listed
       .split('\n')
-      .filter((line) => line.endsWith('.js'))
+      .filter(isTranslatedSource)
       .map((line) => join(repo, line))
       .filter((path) => {
         try {
@@ -435,7 +464,7 @@ function sourceFiles(repo) {
       })
       .sort();
   } catch {
-    return walk(join(repo, 'js'));
+    return walk(repo, join(repo, 'js'));
   }
 }
 
@@ -450,7 +479,7 @@ function main(argv) {
   const drifted = [];
   const expected = new Set();
   for (const file of sourceFiles(repo)) {
-    const rel = relative(jsRoot, file).replace(/\.js$/, '.ts');
+    const rel = tsTwinPath(relative(jsRoot, file));
     const target = join(repo, 'ts', rel);
     expected.add(target);
     const rendered = translateJsToTs(readFileSync(file, 'utf8'));
@@ -493,7 +522,7 @@ function listTs(directory) {
     const path = join(directory, name);
     if (statSync(path).isDirectory()) {
       out.push(...listTs(path));
-    } else if (name.endsWith('.ts')) {
+    } else if (name.endsWith('.ts') || name.endsWith('.mts')) {
       out.push(path);
     }
   }

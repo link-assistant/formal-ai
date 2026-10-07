@@ -287,6 +287,10 @@ fn formalize_issue_or_pull(
             }
         }
     }
+    // R1180-3: the body's requirement statements and the dated lifecycle
+    // transitions, not only the text and the current state.
+    evidence.extend(super::requirement_statements(body, rules));
+    evidence.extend(super::state_transitions(value, rules));
     let content = if body.is_empty() {
         title.to_owned()
     } else {

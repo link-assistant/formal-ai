@@ -829,7 +829,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
     confidence: answer.confidence,
     evidence: [...evidence, ...trace],
     steps: withThinkingLevels(steps),
-    toolCalls,
+    toolCalls, derivationId: stableBehaviorRuleId("answer", answer.content), // #1184 R1: SymbolicAnswer::derivation_id
   };
   if (formalizationContext && formalizationContext.initial) result.solverEvents = solverEventLog(formalizationContext.initial.raw, answer); // R1013
   if (formalizationContext && formalizationContext.meta) {
@@ -884,10 +884,11 @@ function workerHandlerRegistryDefinition() {
     program_blueprint_from_prompt: "tryProgramBlueprintFromPrompt",
     write_program_concrete: "@writeProgram",
     legality_warning: "tryLegalityWarning",
+    page_query_text: "tryPageQueryText",
     http_fetch: null, // phase async
     url_navigate: null, // phase async
     github_repository_traffic: "tryGithubRepositoryTraffic",
-    document_originality_check: "tryDocumentOriginalityCheck",
+    document_originality_check: "tryDocumentOriginalityCheck", repository_lineage: null, // native: git history of the working repository (#1180 R10)
     formalization_request: "tryFormalizationRequest",
     product_search: "tryProductSearch",
     web_search: null, // phase async

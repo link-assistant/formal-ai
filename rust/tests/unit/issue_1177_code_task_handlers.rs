@@ -299,6 +299,40 @@ fn handler_code_debugging_reports_an_assignment_inside_a_condition() {
 }
 
 #[test]
+fn handler_sql_synthesis_joins_on_a_stated_shared_column() {
+    let answer = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query that selects name from the users table joined with the orders table on user_id"
+    );
+    let expected = "Composed SQL:\n\n    SELECT name FROM users JOIN orders USING (user_id);\n\nClause-by-clause mapping:\n  - 'selects name' -> SELECT name\n  - 'users' -> FROM users\n  - 'joined with the orders table on user_id' -> JOIN orders USING (user_id)\nVerified by construction: each clause above maps to one constraint in the request, and the statement is a single SELECT in standard syntax.\nNot verified by execution: this project carries no SQL engine or parser dependency, so nothing was run \u{2014} check the column names against your actual schema before running it.";
+    assert_eq!(answer, expected);
+    let filtered = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query that selects name from the users table join orders using user_id where age greater than 30"
+    );
+    assert!(
+        filtered.contains("SELECT name FROM users JOIN orders USING (user_id) WHERE age > 30;"),
+        "{filtered}"
+    );
+    let keyless = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Write a SQL query that selects name from the users table joined with orders"
+    );
+    assert!(
+        keyless.contains("SELECT name FROM users;"),
+        "without a stated key no join is guessed: {keyless}"
+    );
+    let russian = answer_of!(
+        formal_ai::handle_sql_synthesis,
+        "Выбери всех users соедини с таблицей orders по user_id"
+    );
+    assert!(
+        russian.contains("SELECT * FROM users JOIN orders USING (user_id);"),
+        "{russian}"
+    );
+}
+
+#[test]
 fn handler_code_debugging_reports_a_loop_bound_past_the_end() {
     let answer = answer_of!(
         formal_ai::handle_code_debugging,

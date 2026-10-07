@@ -27,9 +27,9 @@
 //! discarded (R710-R9).
 //!
 //! Callers replace phrase-match decision points with [`formalize_request`]:
-//! `crate::coding::program_contract::explicit_stdout` and
-//! `crate::agentic_coding::ci_workflow::requested_in` delegate here (issue
-//! wiring), and `crate::solver_terminal` consults
+//! `crate::agentic_coding::ci_workflow::requested_in` delegates to
+//! [`request_demands`] (`crate::coding::program_contract::explicit_stdout`
+//! is the open half of that wiring), and `crate::solver_terminal` consults
 //! [`request_carries_work_obligations`] before classifying a leading shell
 //! token as a command line.
 
@@ -457,6 +457,24 @@ pub fn request_carries_work_obligations(text: &str) -> bool {
     (graph.has_obligation(ObligationKind::OutputLiteral) && !authoring.is_empty())
         || names_or_badges(ObligationKind::FileNaming)
         || names_or_badges(ObligationKind::CiBadge)
+}
+
+/// Whether the formalized request demands an obligation of `kind` (R1166-3).
+///
+/// The executor's decision points read the request through its obligation
+/// nodes rather than through a phrase match over the whole text: a node's own
+/// classification counts, and so does the authoring kind of its clause text,
+/// because one clause can carry both an output literal and an authoring
+/// demand while the graph keeps one kind per node (the same reading
+/// [`request_carries_work_obligations`] makes).
+#[must_use]
+pub fn request_demands(text: &str, kind: ObligationKind) -> bool {
+    let graph = formalize_request(text);
+    graph.has_obligation(kind)
+        || graph
+            .nodes
+            .iter()
+            .any(|node| authoring_kind(&node.clause) == Some(kind))
 }
 
 /// Classify one clause against the seed lexicon and the fallback tables.

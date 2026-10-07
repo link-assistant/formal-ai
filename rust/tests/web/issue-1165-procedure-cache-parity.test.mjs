@@ -24,6 +24,7 @@ import {
   bootstrapCacheActive,
   cacheFileHeader,
   cachedOrResearch,
+  cachedWriteProgram,
   contentAddress,
   deleteAll,
   fnv1a64,
@@ -213,4 +214,14 @@ test('knows_language requires a grammar and a procedure', () => {
 test('the bootstrap tier is governed by the policy seed', () => {
   assert.ok(bootstrapCacheActive(), 'the committed policy keeps the bootstrap active');
   assert.ok(oracleKnowsLanguage('kotlin'), 'the snapshots answer while the bootstrap is active');
+});
+
+test('write_program_reuses_the_cached_procedure_only_for_an_unmodified_request', () => {
+  const cache = loadAt(isolatedCache('write-program'), nodeIo);
+  assert.deepEqual(store(cache, kotlinHelloRecipe()), { ok: true }, 'policy-complete row stores');
+  const template = 'fun main() {\n    println("Hello, world!")\n}\n';
+  const customised = 'fun main() {\n    println("Hi")\n}\n';
+  const answers = [['kotlin', template], ['kotlin', customised], ['pascal', template]]
+    .map(([language, rendered]) => cachedWriteProgram(cache, language, 'hello_world', template, rendered)?.entry ?? null);
+  assert.deepEqual(answers, [kotlinHelloRecipe().entry, null, null]);
 });

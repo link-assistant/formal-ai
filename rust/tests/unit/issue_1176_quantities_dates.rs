@@ -650,7 +650,7 @@ fn si_factors_match_the_cached_wikidata_conversion_to_si() {
             .unwrap_or_else(|error| panic!("{relative} should be readable: {error}"))
     };
     let si = unit_records(&read("data/seed/si-unit-dimensions.lino"));
-    let cache = unit_records(&read("data/cache/wikidata/unit-conversion/P2370.lino"));
+    let cache = unit_records(&read("data/cache/unit-conversion/wikidata-P2370.lino"));
     let si_row = |slug: &str| {
         si.iter()
             .find(|(unit, fields)| unit == slug && fields.contains_key("si_factor"))

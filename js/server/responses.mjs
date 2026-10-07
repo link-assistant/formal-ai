@@ -60,6 +60,9 @@ export function responseFromSymbolic(request, chatRequest, prompt, symbolic) {
       total_tokens: inputTokens + outputTokens,
     },
     evidence_links: symbolic.evidence_links,
+    // Issue #1184 R8: the answer's content-addressed derivation id
+    // (`SymbolicAnswer::derivation_id`), the key `formal-ai explain` reads.
+    derivation_id: stableId('answer', symbolic.answer),
   };
   if (steps.length) response.thinking_steps = steps;
   return response;

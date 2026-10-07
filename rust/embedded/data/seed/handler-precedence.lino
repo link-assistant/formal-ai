@@ -61,6 +61,9 @@ handler_precedence
   handler legality_warning
     rank 125
     note "issue 836 advisory and narrow refusal precede ordinary task routing"
+  handler page_query_text
+    rank 127
+    note "issue 1163 a page query over a page the prompt supplies is answered from that page before any fetch or search handler"
   handler http_fetch
     rank 130
     note "phase async -- the worker answers fetches in its async network phase"
@@ -71,6 +74,9 @@ handler_precedence
     rank 150
   handler document_originality_check
     rank 160
+  handler repository_lineage
+    rank 162
+    note "issue 1180 a lineage question naming an existing repository path is answered from its git history before formalization and search"
   handler formalization_request
     rank 165
     note "issue 1186 formalization is parsed before generic web search"

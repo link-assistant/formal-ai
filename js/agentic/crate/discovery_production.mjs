@@ -27,8 +27,12 @@
 //
 // The JavaScript root has no twin of `research_coding_skill_gap`
 // (rust/src/coding_research_learning.rs), so `cachedOrResearch` takes the
-// research round as an injected function; no JavaScript solver path calls
-// `cachedOrResearch` yet.
+// research round as an injected function. Rust's solver reads the cache
+// through `cached_write_program` in its `WriteProgram` branch; its twin
+// `cachedWriteProgram` is here, but no JavaScript root carries that catalog
+// `write_program` recipe arm yet (js/agentic/general_execution.mjs ports only
+// the program-contract arm, and the browser worker has no cache file), so no
+// JavaScript solver path calls either function yet.
 
 import { cached, readText as hostReadText, realm } from '../host.mjs';
 import { pushLinoField } from './links_format.mjs';
@@ -291,6 +295,17 @@ function write(cache) {
   } catch (error) {
     return { ok: false, error: `procedure_cache_write_failed:${error?.message ?? error}` };
   }
+}
+
+/**
+ * Mirrors `fn cached_write_program` (R1165-1/R1165-2): the cache row a
+ * concrete `write_program` answer reuses, or `null`. A prompt that customised
+ * the template (`rendered !== template`) asked for a different program than
+ * the row verified, so only an unmodified request is answered from the cache.
+ */
+export function cachedWriteProgram(cache, language, task, template, rendered) {
+  if (rendered !== template) return null;
+  return lookup(cache, language, task);
 }
 
 /** Mirrors `enum CachedOrDiscovered` variant tags. */

@@ -47,13 +47,18 @@ pub fn trust_score(features: &TrustFeatures) -> u8 {
     }
     if let Some(primacy) = &features.primacy {
         let factor = grades.get(primacy).copied().unwrap_or(0.0);
-        score = f64::mul_add(weights.get("primacy").copied().unwrap_or(0.0), factor, score);
+        score = f64::mul_add(
+            weights.get("primacy").copied().unwrap_or(0.0),
+            factor,
+            score,
+        );
     }
     if features.open_license {
         score += weights.get("open_license").copied().unwrap_or(0.0);
     }
     // `agreement_scale` is at least 1.0, so its floor is the whole-page cap.
-    let agreement = f64::from(features.agreement_pages).min(agreement_scale.floor()) / agreement_scale;
+    let agreement =
+        f64::from(features.agreement_pages).min(agreement_scale.floor()) / agreement_scale;
     score = f64::mul_add(
         weights.get("cross_page_agreement").copied().unwrap_or(0.0),
         agreement,
@@ -75,7 +80,13 @@ pub fn trust_score(features: &TrustFeatures) -> u8 {
 /// the rank at fetch time, the URL, the SHA-256, the timestamp, and whether
 /// the bytes came from the cache, so the record can be dropped under
 /// storage pressure and re-fetched deterministically.
-pub fn annotate_capture(network: &mut LinkNetwork, capture: &SourceCapture, query: &str, rank: u32, trust: u8) {
+pub fn annotate_capture(
+    network: &mut LinkNetwork,
+    capture: &SourceCapture,
+    query: &str,
+    rank: u32,
+    trust: u8,
+) {
     let rediscovery = network.insert_object("rediscovery");
     for (label, value) in [
         ("query", query.to_owned()),
@@ -179,6 +190,61 @@ pub struct FormalizedPage {
     code_blocks: Vec<CodeBlockIndex>,
     commands: Vec<CommandIndex>,
     paragraphs: Vec<ParagraphIndex>,
+    /// The capture the page was formalized from, so a later solve can reuse
+    /// it instead of fetching the URL again (issue #1163 R6). A page supplied
+    /// in a prompt has none.
+    capture: Option<SourceCapture>,
+}
+
+/// The page's code blocks, command paragraphs and paragraphs, each with its
+/// link; a paragraph is tied to its command (the paragraph itself when it is
+/// a command, else the code block or command paragraph directly after it).
+fn index_blocks(
+    network: &LinkNetwork,
+    nodes: Vec<(LinkId, PageBlock)>,
+) -> (Vec<CodeBlockIndex>, Vec<CommandIndex>, Vec<ParagraphIndex>) {
+    let mut code_blocks = Vec::new();
+    let mut commands = Vec::new();
+    let mut paragraphs = Vec::new();
+    let linked: Vec<(Link, PageBlock)> = nodes
+        .into_iter()
+        .filter_map(|(node, block)| network.link(node).map(|link| (link.clone(), block)))
+        .collect();
+    for (index, (link, block)) in linked.iter().enumerate() {
+        match block {
+            PageBlock::CodeBlock { language, text } => code_blocks.push(CodeBlockIndex {
+                language: language.clone(),
+                text: text.clone(),
+                link: link.clone(),
+            }),
+            PageBlock::Paragraph { text, command } => {
+                if *command {
+                    commands.push(CommandIndex {
+                        text: text.clone(),
+                        link: link.clone(),
+                    });
+                }
+                let tied = if *command {
+                    Some(link.clone())
+                } else {
+                    linked
+                        .get(index + 1)
+                        .and_then(|(next_link, next)| match next {
+                            PageBlock::CodeBlock { .. }
+                            | PageBlock::Paragraph { command: true, .. } => Some(next_link.clone()),
+                            _ => None,
+                        })
+                };
+                paragraphs.push(ParagraphIndex {
+                    text: text.clone(),
+                    link: link.clone(),
+                    command: tied,
+                });
+            }
+            _ => {}
+        }
+    }
+    (code_blocks, commands, paragraphs)
 }
 
 /// The working-memory key under which a formalized page is stored, encoding
@@ -194,50 +260,17 @@ impl FormalizedPage {
     /// blocks, command paragraphs, and plain paragraphs, and annotate the
     /// network with the rediscovery procedure.
     #[must_use]
-    pub fn from_capture(capture: &SourceCapture, query: &str, rank: u32, trust: u8, mime_hint: Option<&str>) -> Self {
+    pub fn from_capture(
+        capture: &SourceCapture,
+        query: &str,
+        rank: u32,
+        trust: u8,
+        mime_hint: Option<&str>,
+    ) -> Self {
         let (mut network, nodes) =
             formalize_page_with_context(capture.bytes(), mime_hint, Some(capture.source_url()));
         annotate_capture(&mut network, capture, query, rank, trust);
-        let mut code_blocks = Vec::new();
-        let mut commands = Vec::new();
-        let mut paragraphs = Vec::new();
-        let linked: Vec<(Link, PageBlock)> = nodes
-            .into_iter()
-            .filter_map(|(node, block)| network.link(node).map(|link| (link.clone(), block)))
-            .collect();
-        for (index, (link, block)) in linked.iter().enumerate() {
-            match block {
-                PageBlock::CodeBlock { language, text } => code_blocks.push(CodeBlockIndex {
-                    language: language.clone(),
-                    text: text.clone(),
-                    link: link.clone(),
-                }),
-                PageBlock::Paragraph { text, command } => {
-                    if *command {
-                        commands.push(CommandIndex {
-                            text: text.clone(),
-                            link: link.clone(),
-                        });
-                    }
-                    let tied = if *command {
-                        Some(link.clone())
-                    } else {
-                        linked.get(index + 1).and_then(|(next_link, next)| match next {
-                            PageBlock::CodeBlock { .. } | PageBlock::Paragraph { command: true, .. } => {
-                                Some(next_link.clone())
-                            }
-                            _ => None,
-                        })
-                    };
-                    paragraphs.push(ParagraphIndex {
-                        text: text.clone(),
-                        link: link.clone(),
-                        command: tied,
-                    });
-                }
-                _ => {}
-            }
-        }
+        let (code_blocks, commands, paragraphs) = index_blocks(&network, nodes);
         Self {
             url: capture.source_url().to_owned(),
             sha256: capture.sha256().to_owned(),
@@ -248,7 +281,52 @@ impl FormalizedPage {
             code_blocks,
             commands,
             paragraphs,
+            capture: Some(capture.clone()),
         }
+    }
+
+    /// A page the prompt itself supplies (issue #1163 R10): formalized from
+    /// its text, the kind sniffed by the seed's rules, keyed by the text's
+    /// SHA-256 with no URL, no rank, no trust and no rediscovery record --
+    /// nothing was fetched, so there is nothing to rediscover.
+    #[must_use]
+    pub fn from_supplied_text(text: &str, query: &str) -> Self {
+        let (network, nodes) = formalize_page_with_context(text.as_bytes(), None, None);
+        let (code_blocks, commands, paragraphs) = index_blocks(&network, nodes);
+        Self {
+            url: String::new(),
+            sha256: crate::source_fetch::sha256_hex(text.as_bytes()),
+            rank: 0,
+            query: query.to_owned(),
+            trust: 0,
+            network,
+            code_blocks,
+            commands,
+            paragraphs,
+            capture: None,
+        }
+    }
+
+    /// The capture the page was formalized from, when it was fetched.
+    #[must_use]
+    pub const fn capture(&self) -> Option<&SourceCapture> {
+        self.capture.as_ref()
+    }
+
+    /// The text of the block a page-query link points at: a code block or a
+    /// paragraph of this page.
+    #[must_use]
+    pub fn block_text(&self, link: &Link) -> Option<&str> {
+        self.code_blocks
+            .iter()
+            .find(|block| &block.link == link)
+            .map(|block| block.text.as_str())
+            .or_else(|| {
+                self.paragraphs
+                    .iter()
+                    .find(|paragraph| &paragraph.link == link)
+                    .map(|paragraph| paragraph.text.as_str())
+            })
     }
 
     /// The store key for this page.
@@ -395,11 +473,25 @@ pub fn remember_capture(capture: &SourceCapture, query: &str, rank: u32) -> (Str
         if store.get(&key).is_some() {
             return (key, true);
         }
-        let trust = trust_score(&TrustFeatures {
-            https: capture.source_url().starts_with(HTTPS_SCHEME),
-            ..TrustFeatures::default()
-        });
-        let page = FormalizedPage::from_capture(capture, query, rank, trust, None);
+        // Issue #1163 R7: the features are computed from the capture, the
+        // registry and the pages already in memory, not supplied by a caller.
+        // No Wikidata P856 record is at hand on the search path, so the
+        // official-site feature stays unset here.
+        let features = trust_features_for(capture.source_url(), capture.bytes(), store, &[]);
+        let page = FormalizedPage::from_capture(capture, query, rank, trust_score(&features), None);
         (store.insert(page), false)
+    })
+}
+
+/// The capture of a page already formalized into working memory from `url`,
+/// replayed as a cache hit, so the fetch path consults working memory before
+/// it fetches (issue #1163 R6). `None` when no stored page came from the URL.
+#[must_use]
+pub fn remembered_capture(url: &str) -> Option<SourceCapture> {
+    with_working_memory(|store| {
+        store
+            .page_for_url(url)
+            .and_then(FormalizedPage::capture)
+            .map(SourceCapture::replayed)
     })
 }

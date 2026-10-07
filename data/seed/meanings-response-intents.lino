@@ -290,6 +290,22 @@ meanings
     unit "not applicable"
     example "The diagnostic search found no fetched source that addresses this exact error."
     grounding "data/seed/multilingual-responses-repair.lino"
+  repository_lineage
+    defined-by answer
+    role localized_response_template
+    precondition "a lineage question named a path that exists in the working repository"
+    effect "the path's commits are listed oldest first with the issue and pull request of the introducing commit"
+    unit "not applicable"
+    example "scripts/check-self-development-release.rs has 6 commits in this repository's history, oldest first."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_lineage_unrecorded
+    defined-by answer
+    role localized_response_template
+    precondition "the introducing commit carries no issue trailer or no delivering merge"
+    effect "the missing issue or pull request is said to be unrecorded instead of guessed"
+    unit "not applicable"
+    example "(not recorded in the history)"
+    grounding "data/seed/multilingual-responses-formalization.lino"
   product_search_result
     defined-by answer
     role localized_response_template

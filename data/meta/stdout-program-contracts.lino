@@ -25,7 +25,7 @@ stdout_program_contracts
     operation 'println({value})'
     comment "//"
     unicode_escape "\\u{hex4}"
-    ci_setup "      - uses: coursier/setup-action@9b7939bf01fd1185ce2babe16135168361bf2c62\n        with:\n          jvm: temurin:21\n          apps: scala:2.13.18 scalac:2.13.18\n"
+    ci_setup "      - uses: coursier/setup-action@{setup_coursier_ref} # {setup_coursier_tag}\n        with:\n          jvm: temurin:{java_lts}\n          apps: scala:{scala_version} scalac:{scala_version}\n"
     ci_source "https://github.com/coursier/setup-action/blob/9b7939bf01fd1185ce2babe16135168361bf2c62/action.yml"
   language python
     source "https://docs.python.org/3/library/functions.html#print"

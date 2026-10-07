@@ -5,13 +5,9 @@
 //! half: the `data/` gate that fails on any memorized
 //! third-party action SHA or toolchain version.
 //!
-//! The gate is drafted red-by-design against the two template files that
-//! still carry literals (`data/meta/stdout-program-contracts.lino`,
-//! `data/meta/work-item-steps.lino`): the same change that rewrites them to
-//! `{placeholders}` (R6) turns both the gate and the pinning test green. The
-//! test here therefore asserts the findings are confined to those two known
-//! templates -- zero elsewhere -- rather than zero everywhere, so it stays
-//! honest before and after the rewrite.
+//! Both template files (`data/meta/stdout-program-contracts.lino`,
+//! `data/meta/work-item-steps.lino`) carry `{placeholders}` only (R6), so
+//! the gate scans the repository's `data/` clean.
 
 #[path = "../../../scripts/check-generated-version-literals.rs"]
 mod check_generated_version_literals;
@@ -110,22 +106,23 @@ fn captured_evidence_under_cache_is_not_generated_code() {
     assert!(scan_data(&data).is_empty());
 }
 
+/// R1168-6/R1168-7: both templates now carry `{placeholders}` only, so the
+/// repository's own `data/` scans clean.
 #[test]
-fn repository_findings_are_confined_to_the_two_unrewritten_templates() {
-    let known = [
-        "data/meta/stdout-program-contracts.lino",
-        "data/meta/work-item-steps.lino",
-    ];
-    let data = repository_data();
-    let findings = scan_data(&data);
-    for finding in &findings {
-        let path = finding.path.display().to_string();
-        assert!(
-            known.contains(&path.as_str()),
-            "unexpected memorized pin outside the two templates awaiting the R6 rewrite: {path}: {}",
-            finding.detail
-        );
-    }
+fn repository_data_carries_no_memorized_pin() {
+    let findings = scan_data(&repository_data());
+    let described = findings
+        .iter()
+        .map(|finding| {
+            format!(
+                "{}:{} {}",
+                finding.path.display(),
+                finding.line,
+                finding.detail
+            )
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(described, Vec::<String>::new());
 }
 
 // --- version resolution (moved from the in-crate test module) ---
@@ -143,6 +140,10 @@ const CPYTHON_COMMIT: &str = r#"{"sha":"0000000000000000000000000000000000000000
 const KOTLIN_RELEASE: &str = r#"{"tag_name":"v2.4.20"}"#;
 const KOTLIN_COMMIT: &str = r#"{"sha":"0000000000000000000000000000000000000000"}"#;
 const ADOPTIUM: &str = r#"{"most_recent_lts":25}"#;
+const SETUP_COURSIER_RELEASE: &str = r#"{"tag_name":"v3.0.4"}"#;
+const SETUP_COURSIER_COMMIT: &str = r#"{"sha":"648df969f41ef15fda2baba8b37f9fa3d16390a3"}"#;
+const SCALA_RELEASE: &str = r#"{"tag_name":"v2.13.18"}"#;
+const SCALA_COMMIT: &str = r#"{"sha":"0000000000000000000000000000000000000000"}"#;
 
 #[derive(Default)]
 struct MockTransport {
@@ -205,6 +206,22 @@ impl MockTransport {
                 "https://api.adoptium.net/v3/info/available_releases",
                 ADOPTIUM,
             ),
+            (
+                "https://api.github.com/repos/coursier/setup-action/releases/latest",
+                SETUP_COURSIER_RELEASE,
+            ),
+            (
+                "https://api.github.com/repos/coursier/setup-action/commits/v3.0.4",
+                SETUP_COURSIER_COMMIT,
+            ),
+            (
+                "https://api.github.com/repos/scala/scala/releases/latest",
+                SCALA_RELEASE,
+            ),
+            (
+                "https://api.github.com/repos/scala/scala/commits/v2.13.18",
+                SCALA_COMMIT,
+            ),
         ] {
             responses.insert(url.to_owned(), body);
         }
@@ -264,6 +281,14 @@ fn resolves_every_pin_from_live_fixtures() {
     assert_eq!(versions.java_lts.tag, "25");
     assert_eq!(versions.java_lts.sha, "");
     assert_eq!(versions.java_lts.origin, Origin::Live);
+    assert_eq!(versions.setup_coursier.tag, "v3.0.4");
+    assert_eq!(
+        versions.setup_coursier.sha,
+        "648df969f41ef15fda2baba8b37f9fa3d16390a3"
+    );
+    assert_eq!(versions.setup_coursier.origin, Origin::Live);
+    assert_eq!(versions.scala.tag, "2.13.18");
+    assert_eq!(versions.scala.origin, Origin::Live);
     assert_eq!(versions.provenance_note(), [] as [std::string::String; 0]);
 }
 
@@ -348,6 +373,24 @@ fn the_toolchains_seed_carries_every_baseline() {
     assert_eq!(versions.python_interpreter.tag, "3.14.7");
     assert_eq!(versions.kotlin.tag, "v2.4.20");
     assert_eq!(versions.java_lts.tag, "25");
+    assert_eq!(
+        versions.setup_coursier.sha,
+        "648df969f41ef15fda2baba8b37f9fa3d16390a3"
+    );
+    assert_eq!(versions.scala.tag, "2.13.18");
+}
+
+/// R1168-6: the Scala `ci_setup` row is placeholders only, so the coursier
+/// ref, the JVM it installs, and the Scala version all come from the
+/// resolved set.
+#[test]
+fn fills_the_scala_ci_setup_placeholders() {
+    let versions = VersionSet::baseline().expect("baselines");
+    let template = "      - uses: coursier/setup-action@{setup_coursier_ref} # {setup_coursier_tag}\n        with:\n          jvm: temurin:{java_lts}\n          apps: scala:{scala_version} scalac:{scala_version}\n";
+    assert_eq!(
+        fill_workflow_versions(template, &versions),
+        "      - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3  # v3.0.4\n        with:\n          jvm: temurin:25\n          apps: scala:2.13.18 scalac:2.13.18"
+    );
 }
 
 #[test]

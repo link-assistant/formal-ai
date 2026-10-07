@@ -19,6 +19,8 @@ routing_probe_budget
   rust_misroute_ceiling 51
   extra_lane agent_suggestion
     reason "the terminal-command detector answers before the handler table; it is not a precedence row"
+  exempt_lane repository_lineage
+    reason "native_only: answers from the working repository's git history, which an offline single-turn probe and the browser worker do not carry; pinned by rust/tests/unit/issue_1180_history_context.rs"
   exempt_lane exact_memory_query
     reason "browser_only: needs the worker's memory store"
   exempt_lane memory_program

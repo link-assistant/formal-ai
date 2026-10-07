@@ -13,6 +13,15 @@
 # `item_span_keyword` names its item by the whole header (an impl is its
 # trait and type), and `item_modifier` words may precede any keyword. The
 # `coauthor_trailer` row turns each co-author trailer line into evidence.
+# `state_transition` rows name the lifecycle states a captured issue or
+# pull request passed through and the timestamp fields that date each one
+# (gh CLI camelCase, then REST snake_case), so the transitions land as
+# dated `state_evidence` in chronological order (R1180-3). The
+# `requirement_statement` row reads a body line that opens with the marker
+# and a number (after any `lead`) as one requirement statement. The
+# `lineage_cue` rows are the phrases, per language, that ask for the
+# history of a repository path; the lineage route answers them from
+# `git log --follow` on the working repository (R1180-10).
 history_formalization
   record
     kind commit
@@ -58,6 +67,58 @@ history_formalization
   coauthor_trailer
     prefix "Co-Authored-By:"
     evidence_prefix "coauthor:"
+  state_transition
+    state "opened"
+    field "createdAt"
+    field "created_at"
+  state_transition
+    state "closed"
+    field "closedAt"
+    field "closed_at"
+  state_transition
+    state "merged"
+    field "mergedAt"
+    field "merged_at"
+  state_evidence
+    prefix "state:"
+  requirement_statement
+    marker "R"
+    lead "- "
+    lead "* "
+    lead "**"
+    evidence_prefix "requirement:"
+  lineage_cue
+    language en
+    phrase "which issue"
+    phrase "which pull request"
+    phrase "which commit"
+    phrase "history of"
+    phrase "lineage of"
+    phrase "who introduced"
+  lineage_cue
+    language ru
+    phrase "какая задача"
+    phrase "какой пулл-реквест"
+    phrase "какой коммит"
+    phrase "история"
+    phrase "кто добавил"
+  lineage_cue
+    language hi
+    phrase "कौन सा इश्यू"
+    phrase "कौन सा कमिट"
+    phrase "इतिहास"
+  lineage_cue
+    language zh
+    phrase "哪个问题"
+    phrase "哪个提交"
+    phrase "历史"
+    phrase "来历"
+  lineage_cue
+    language es
+    phrase "qué issue"
+    phrase "qué pull request"
+    phrase "qué commit"
+    phrase "historia de"
   path_evidence
     prefix "path:"
   symbol_evidence

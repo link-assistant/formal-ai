@@ -217,6 +217,17 @@ impl SourceCapture {
         .concat()
     }
 
+    /// The same capture replayed from memory: identical URL, timestamp,
+    /// digest and bytes, marked as a cache hit because nothing was fetched
+    /// (issue #1163 R6, the formalized-page working memory).
+    #[must_use]
+    pub fn replayed(&self) -> Self {
+        Self {
+            cached: true,
+            ..self.clone()
+        }
+    }
+
     /// Append evidence events that are backed by this capture.
     pub fn record(&self, log: &mut EventLog) {
         log.append("source:http", self.trace_payload());

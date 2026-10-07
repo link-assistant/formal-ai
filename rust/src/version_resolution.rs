@@ -99,6 +99,10 @@ pub struct VersionSet {
     pub python_interpreter: ResolvedVersion,
     pub kotlin: ResolvedVersion,
     pub java_lts: ResolvedVersion,
+    /// `coursier/setup-action`, which installs the Scala toolchain.
+    pub setup_coursier: ResolvedVersion,
+    /// The Scala compiler version the coursier step installs.
+    pub scala: ResolvedVersion,
     /// The captures the resolutions were read from, for the derivation.
     pub captures: Vec<SourceCapture>,
 }
@@ -129,6 +133,17 @@ impl VersionSet {
         let kotlin = Self::resolve_github(client, "JetBrains", "kotlin", &mut captures)
             .or_else(|| baseline("kotlin_compiler"));
         let java_lts = resolve_java_lts(client, &mut captures).or_else(|| baseline("java_lts"));
+        let setup_coursier =
+            Self::resolve_github(client, "coursier", "setup-action", &mut captures)
+                .or_else(|| baseline("setup_coursier_action"));
+        // Like CPython, the Scala release tag carries a leading `v` and the
+        // coursier `apps:` line wants the bare version.
+        let scala = Self::resolve_github(client, "scala", "scala", &mut captures)
+            .map(|mut resolved| {
+                resolved.tag = resolved.tag.trim_start_matches('v').to_owned();
+                resolved
+            })
+            .or_else(|| baseline("scala_compiler"));
         Self {
             checkout: checkout.expect("the toolchains seed carries the checkout baseline"),
             setup_java: setup_java.expect("the toolchains seed carries the setup-java baseline"),
@@ -140,6 +155,9 @@ impl VersionSet {
                 .expect("the toolchains seed carries the CPython baseline"),
             kotlin: kotlin.expect("the toolchains seed carries the Kotlin baseline"),
             java_lts: java_lts.expect("the toolchains seed carries the Java LTS baseline"),
+            setup_coursier: setup_coursier
+                .expect("the toolchains seed carries the coursier setup-action baseline"),
+            scala: scala.expect("the toolchains seed carries the Scala baseline"),
             captures,
         }
     }
@@ -164,6 +182,8 @@ impl VersionSet {
             python_interpreter: baseline("python_interpreter")?,
             kotlin: baseline("kotlin_compiler")?,
             java_lts: baseline("java_lts")?,
+            setup_coursier: baseline("setup_coursier_action")?,
+            scala: baseline("scala_compiler")?,
             captures: Vec::new(),
         })
     }
@@ -205,7 +225,7 @@ impl VersionSet {
     }
 
     /// Every pin beside its `generated_version` id in the toolchains seed.
-    const fn pins(&self) -> [(&'static str, &ResolvedVersion); 7] {
+    const fn pins(&self) -> [(&'static str, &ResolvedVersion); 9] {
         [
             ("actions_checkout", &self.checkout),
             ("actions_setup_java", &self.setup_java),
@@ -214,6 +234,8 @@ impl VersionSet {
             ("python_interpreter", &self.python_interpreter),
             ("kotlin_compiler", &self.kotlin),
             ("java_lts", &self.java_lts),
+            ("setup_coursier_action", &self.setup_coursier),
+            ("scala_compiler", &self.scala),
         ]
     }
 
@@ -256,6 +278,8 @@ impl VersionSet {
             ("python", &self.python_interpreter),
             ("kotlin", &self.kotlin),
             ("java", &self.java_lts),
+            ("coursier/setup-action", &self.setup_coursier),
+            ("scala", &self.scala),
         ]
         .into_iter()
         .filter(|(_, pin)| pin.origin != Origin::Live)
@@ -355,7 +379,10 @@ pub fn fill_workflow_versions(template: &str, versions: &VersionSet) -> String {
         .replace("{setup_python_tag}", &versions.setup_python.tag)
         .replace("{python_version}", &versions.python_interpreter.tag)
         .replace("{kotlin_version}", &versions.kotlin.tag)
-        .replace("{java_lts}", &versions.java_lts.tag);
+        .replace("{java_lts}", &versions.java_lts.tag)
+        .replace("{setup_coursier_ref}", versions.setup_coursier.pinned_ref())
+        .replace("{setup_coursier_tag}", &versions.setup_coursier.tag)
+        .replace("{scala_version}", &versions.scala.tag);
 
     let actions = workflow_actions(versions);
     let step_marker = workflow_step_marker();

@@ -644,6 +644,36 @@ function sqlSynthesisHavingClause(tokens, aggregate, after) {
 }
 
 /**
+ * JOIN from the seeded `sql_join` roles; mirrors `join_clause`.
+ * @param {Array<string>} tokens request tokens
+ * @param {string} table the FROM table
+ * @returns {Array|null} [clause, request echo, start, end]
+ */
+function sqlSynthesisJoinClause(tokens, table) {
+  const entries = codeTaskWordEntries("sql_join");
+  const role = (index) => {
+    const entry = codeTaskEntryFor(entries, tokens[index]);
+    return entry === null ? "" : codeTaskChildValue(entry, "value");
+  };
+  const find = (from, accept) => {
+    for (let index = from; index < tokens.length; index += 1) if (accept(index)) return index;
+    return -1;
+  };
+  const named = (from) => find(from, (index) => codeTaskIdentifier(tokens[index]) !== "" && role(index) === "");
+  const cueAt = find(0, (index) => role(index) === "join");
+  if (cueAt === -1) return null;
+  const tableAt = named(cueAt + 1);
+  if (tableAt === -1) return null;
+  const joined = codeTaskIdentifier(tokens[tableAt]);
+  const keyAt = find(tableAt + 1, (index) => role(index) === "key");
+  if (keyAt === -1) return null;
+  const columnAt = named(keyAt + 1);
+  if (columnAt === -1 || joined === table) return null;
+  const clause = " JOIN " + joined + " USING (" + codeTaskIdentifier(tokens[columnAt]) + ")";
+  return [clause, codeTaskEcho(tokens, cueAt, columnAt), cueAt, columnAt];
+}
+
+/**
  * LIMIT from "top N" / "first N" / "limit N".
  * @param {Array<string>} tokens request tokens
  * @param {Array<object>} numbers `number` word-map entries
@@ -723,7 +753,11 @@ function sqlSynthesisIsRequest(prompt, normalized) {
  */
 function handleSqlSynthesis(prompt, normalized) {
   if (!sqlSynthesisIsRequest(prompt, normalized)) return null;
-  const tokens = codeTaskTokens(normalized);
+  // Lowercased prompt with edge punctuation trimmed (Rust handle_sql_synthesis),
+  // so an identifier keeps its underscores whichever normalization the caller applied.
+  const tokens = prompt.toLowerCase().split(/\s+/u)
+    .map((token) => token.replace(/^[^\p{L}\p{N}_]+|[^\p{L}\p{N}_]+$/gu, ""))
+    .filter((token) => token !== "");
   const log = codeTaskLog();
   codeTaskLogAppend(log, "sql_synthesis:request", tokens.length + " token(s)");
   const table = sqlSynthesisTableName(tokens);
@@ -740,8 +774,10 @@ function handleSqlSynthesis(prompt, normalized) {
   const columns = group === null ? selected[0] : group[0] + ", " + selected[0];
   const groupBy = group === null ? "" : " GROUP BY " + group[0];
   const having = group === null ? null : sqlSynthesisHavingClause(tokens, selected[0], group[2]);
+  const join = sqlSynthesisJoinClause(tokens, table);
   const filters = sqlSynthesisFilters(tokens)
-    .filter((filter) => having === null || filter.at < having[2] || filter.at > having[3]);
+    .filter((filter) => having === null || filter.at < having[2] || filter.at > having[3])
+    .filter((filter) => join === null || filter.at < join[2] || filter.at > join[3]);
   const havingText = having === null ? "" : having[0];
   const clauses = [];
   for (const filter of filters) clauses.push(filter.clause);
@@ -750,9 +786,10 @@ function handleSqlSynthesis(prompt, normalized) {
   const limit = sqlSynthesisLimitClause(tokens, numbers);
   const orderText = order === null ? "" : order[0];
   const limitText = limit === null ? "" : limit[0];
-  const statement = "SELECT " + columns + " FROM " + table + whereClause + groupBy + havingText + orderText + limitText + ";";
+  const statement = "SELECT " + columns + " FROM " + table + (join === null ? "" : join[0]) + whereClause + groupBy + havingText + orderText + limitText + ";";
   codeTaskLogAppend(log, "sql_synthesis:statement", statement);
   const rows = [[selected[1], "SELECT " + columns], [table, "FROM " + table]];
+  if (join !== null) rows.push([join[1], join[0].trim()]);
   for (const filter of filters) rows.push([filter.request, filter.clause]);
   if (group !== null) rows.push([group[1], groupBy.trim()]);
   if (having !== null) rows.push([having[1], havingText.trim()]);

@@ -632,3 +632,13 @@ routing_probes
     prompt "I pay 20 dollars for a 13 dollar book. How much change do I get?"
     js_misroute calculation_error
     rust_misroute unverified
+  probe p360
+    lane page_query_text
+    language en
+    intent page_query
+    prompt "The command in the paragraph that mentions compiler:\n\nThe compiler turns hello.kt into a runnable jar with this line.\n\nkotlinc hello.kt -include-runtime -d hello.jar\n\nThe launcher starts that jar with this line.\n\njava -jar hello.jar"
+  probe p361
+    lane page_query_text
+    language en
+    intent page_query
+    prompt "The command in the paragraph that mentions launcher:\n\nThe launcher starts the jar with this line.\n\njava -jar hello.jar\n\nThe compiler builds it with this line.\n\nkotlinc hello.kt -d hello.jar"

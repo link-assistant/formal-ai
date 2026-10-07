@@ -535,6 +535,14 @@ meanings
     unit "not applicable"
     example "search for TODO in the project"
     grounding "data/seed/code-task-cues.lino"
+  filler
+    defined-by method
+    role action
+    precondition "a SQL request words a join with connector words around the joined table"
+    effect "marks a word the join reading skips when it looks for the joined table or the shared column"
+    unit "not applicable"
+    example "with, the and table in 'joined with the orders table on user_id'"
+    grounding "data/seed/code-task-cues.lino"
   substitute_with
     defined-by method
     role property

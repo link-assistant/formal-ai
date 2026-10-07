@@ -74,6 +74,7 @@ pub(crate) mod execution_intent;
 pub mod external_benchmarks;
 pub mod fact_check;
 pub mod fact_checking;
+pub mod fact_live;
 pub(crate) mod failure_reporting;
 pub mod family_method;
 pub mod file_legality;
@@ -276,9 +277,9 @@ pub use client_integrations::{
 pub use coding::rosetta_request::try_rosetta_code_request_with_client;
 pub use document_formats::{
     DOCUMENT_FORMAT_ENGINE, DocumentConversion, DocumentFormatCapabilities,
-    canonical_document_format_label, convert_document_format, cross_format_document_concepts,
-    document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
-    supported_document_formats,
+    FormalizedDocumentSource, canonical_document_format_label, convert_document_format,
+    cross_format_document_concepts, document_format_capabilities, document_package_is_recognized,
+    document_profile_is_recognized, formalize_document_source, supported_document_formats,
 };
 pub use dreaming::{
     DreamingAction, DreamingActionKind, DreamingConfig, DreamingDurability,

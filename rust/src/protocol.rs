@@ -933,6 +933,7 @@ fn response_from_plan(
             total_tokens: input_tokens.saturating_add(output_tokens),
         },
         evidence_links: Vec::new(),
+        derivation_id: None,
         thinking_steps: Vec::new(),
     }
 }
@@ -945,6 +946,7 @@ fn response_from_symbolic(
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = responses_input_tokens(request);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
+    let derivation_id = symbolic_answer.derivation_id();
     let answer = symbolic_answer.answer;
     let thinking_steps = symbolic_answer.thinking_steps;
     let mut output = vec![ResponseOutputItem::Message(ResponseOutputMessage {
@@ -974,6 +976,7 @@ fn response_from_symbolic(
             total_tokens: input_tokens.saturating_add(output_tokens),
         },
         evidence_links: symbolic_answer.evidence_links,
+        derivation_id: Some(derivation_id),
         thinking_steps,
     }
 }

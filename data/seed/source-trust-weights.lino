@@ -7,6 +7,7 @@
 source_trust_weights
   feature official_site
     weight 0.30
+    claim_property P856
     note "The page sits on the subject's official website (Wikidata P856 of the formalized subject, e.g. kotlinlang.org for Kotlin)."
   feature https
     weight 0.10
@@ -28,7 +29,11 @@ source_trust_weights
     note "The registry primacy of a matching registered source; an unregistered page grades 0."
   feature open_license
     weight 0.15
-    note "The page declares an open license."
+    license_marker "creativecommons.org/licenses/"
+    license_marker "creativecommons.org/publicdomain/"
+    license_marker "opensource.org/licenses/"
+    license_marker "gnu.org/licenses/"
+    note "The page declares an open license: its text carries one of the license_marker strings (a Creative Commons, OSI or GNU license URL)."
   feature cross_page_agreement
     weight 0.25
     agreement_scale 3

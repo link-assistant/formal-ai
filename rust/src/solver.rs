@@ -709,6 +709,40 @@ impl UniversalSolver {
                 log.append("program_parameters", spec.parameter_summary());
                 log.append("legacy_intent", spec.legacy_intent());
             }
+            // Issue #1165 R1165-1/R1165-2: a verified cache row for this
+            // (language, task) pair replaces the catalog template in the
+            // answer and in the execution recipe the work-item executor runs.
+            let cached_program = match &rule {
+                SelectedRule::WriteProgram(spec) => {
+                    let cache = crate::discovery_production::ProcedureCache::load();
+                    let rendered = crate::code_editing::apply_inline_hello_world_source_replacement(
+                        prompt,
+                        spec.template.code,
+                        *spec,
+                    );
+                    crate::discovery_production::cached_write_program(
+                        &cache,
+                        spec.language.slug,
+                        spec.task.slug,
+                        spec.template.code,
+                        &rendered,
+                    )
+                    .map(|recipe| {
+                        let content_id = format!("0x{:016x}", recipe.content_id);
+                        log.append_fields(
+                            "procedure_cache",
+                            &[
+                                ("outcome", "hit"),
+                                ("language", &recipe.language),
+                                ("task", &recipe.task),
+                                ("content_id", &content_id),
+                            ],
+                        );
+                        recipe.entry.clone()
+                    })
+                }
+                _ => None,
+            };
 
             record_candidates(&mut log, prompt, &intent);
 
@@ -723,6 +757,12 @@ impl UniversalSolver {
             let base_answer = match (&validation_choice, &rule) {
                 (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
                 _ => language_aware_answer_for(&rule, language, prompt, prior),
+            };
+            let base_answer = match (&rule, &cached_program) {
+                (SelectedRule::WriteProgram(spec), Some(entry)) => {
+                    base_answer.replace(spec.template.code, entry)
+                }
+                _ => base_answer,
             };
             let base_answer = crate::question_necessity::enforce_questions(&base_answer, &mut log);
 
@@ -742,11 +782,13 @@ impl UniversalSolver {
             let execution_recipe = match &rule {
                 SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
                     language: spec.language.code_fence.to_owned(),
-                    source: crate::code_editing::apply_inline_hello_world_source_replacement(
-                        prompt,
-                        spec.template.code,
-                        *spec,
-                    ),
+                    source: cached_program.clone().unwrap_or_else(|| {
+                        crate::code_editing::apply_inline_hello_world_source_replacement(
+                            prompt,
+                            spec.template.code,
+                            *spec,
+                        )
+                    }),
                     path: spec.language.save_as.to_owned(),
                     supporting_files: Vec::new(),
                     commands: spec

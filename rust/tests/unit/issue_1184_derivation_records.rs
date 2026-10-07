@@ -328,3 +328,39 @@ fn a_grammar_correction_answer_carries_its_rules_in_the_derivation() {
         response.links_notation
     );
 }
+
+// R1184-1: the id is the FNV-1a `stable_id` of the answer text, so every
+// root computes the same value. The browser worker (`finalize` in
+// js/worker/formal_ai_worker_20.js) and the JavaScript server pin the same
+// constant in rust/tests/web/issue-1184-derivation-id-surfaces.test.mjs.
+#[test]
+fn the_derivation_id_is_the_same_constant_in_every_root() {
+    assert_eq!(
+        answer_derivation_id("Kotlin programs are compiled with kotlinc."),
+        "answer_91f06b150735a87e"
+    );
+}
+
+// R1184-8: the Serve API's `/v1/responses` object carries `derivation_id`
+// alongside `evidence_links`, and it is the id of the answer the response
+// renders, so `formal-ai explain <derivation_id>` finds its record.
+#[test]
+fn the_responses_api_carries_the_derivation_id_beside_evidence_links() {
+    let request = formal_ai::ResponsesRequest {
+        input: serde_json::Value::String(String::from("1 + 1")),
+        ..formal_ai::ResponsesRequest::default()
+    };
+    let response = formal_ai::create_response(&request);
+    let text = response.output_messages()[0].content[0].text.clone();
+    let expected = answer_derivation_id(&text);
+    assert_eq!(response.derivation_id.as_deref(), Some(expected.as_str()));
+    assert!(
+        response
+            .evidence_links
+            .contains(&format!("derivation:{expected}")),
+        "the evidence links name the same derivation"
+    );
+    let wire = serde_json::to_value(&response).expect("serialize response");
+    assert_eq!(wire["derivation_id"].as_str(), Some(expected.as_str()));
+    assert!(wire["evidence_links"].is_array());
+}

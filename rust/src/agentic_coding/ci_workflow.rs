@@ -8,7 +8,7 @@
 //! recipe, so it is written, committed and pushed with the program.
 
 use crate::engine::{ExecutionRecipe, ExecutionRecipeFile};
-use crate::seed;
+use crate::intent_formalization::{ObligationKind, request_demands};
 
 /// Where the workflow is written.
 #[allow(clippy::literal_string_with_formatting_args, dead_code)] // not yet read by the work-item steps
@@ -17,11 +17,12 @@ pub(super) fn workflow_path() -> String {
 }
 
 /// Whether the work item asks for a CI workflow, in any seeded language.
+///
+/// Read from the formalized request (issue #1166 R1166-3): a clause of the
+/// obligation graph demands the workflow, so a role word that only appears
+/// inside a quoted literal is data the request carries, not a demand.
 pub(super) fn requested_in(objective: &str) -> bool {
-    seed::lexicon().mentions_role(
-        seed::ROLE_CI_WORKFLOW_REQUEST,
-        &crate::engine::normalize_prompt(objective),
-    )
+    request_demands(objective, ObligationKind::CiWorkflow)
 }
 
 /// Add the workflow to `recipe` as a supporting file, once.

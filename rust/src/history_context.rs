@@ -136,6 +136,32 @@ pub struct HistoryRules {
     pub item_span_keywords: BTreeMap<String, Vec<String>>,
     /// Words that may precede an item keyword (`pub`, `export`, ...).
     pub item_modifiers: Vec<String>,
+    /// R1180-3: the lifecycle states an issue or pull request passed
+    /// through, each with the capture fields that date it, in seed order,
+    /// and the evidence prefix the dated transitions land under.
+    pub state_transitions: Vec<StateTransitionRule>,
+    pub state_evidence_prefix: String,
+    /// R1180-3: how a body line is read as one requirement statement.
+    pub requirement: RequirementRule,
+    /// R1180-10: per language, the phrases that ask for a path's lineage.
+    pub lineage_cues: Vec<(String, Vec<String>)>,
+}
+
+/// One `state_transition` row: a lifecycle state and the timestamp fields
+/// (first present wins) that date the transition into it.
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct StateTransitionRule {
+    pub state: String,
+    pub fields: Vec<String>,
+}
+
+/// The `requirement_statement` row: a line opening with `marker` and a
+/// number, after any of the `leads`, is one requirement statement.
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct RequirementRule {
+    pub marker: String,
+    pub leads: Vec<String>,
+    pub evidence_prefix: String,
 }
 
 /// `values` as owned strings.
@@ -252,6 +278,12 @@ impl HistoryRules {
             item_modifiers: owned_list(&[
                 "pub", "async", "unsafe", "extern", "default", "export", "declare", "abstract",
             ]),
+            // The structural defaults only; the lifecycle states, requirement
+            // marker and lineage phrases are read from the seed.
+            state_transitions: Vec::new(),
+            state_evidence_prefix: String::new(),
+            requirement: RequirementRule::default(),
+            lineage_cues: Vec::new(),
         }
     }
 
@@ -340,6 +372,35 @@ impl HistoryRules {
                     }
                 }
                 "item_modifier" if !node.id.is_empty() => modifiers.push(node.id.clone()),
+                "state_transition" => {
+                    let state = node.find_child_value("state");
+                    let fields = child_ids(node, "field");
+                    if !state.is_empty() && !fields.is_empty() {
+                        rules.state_transitions.push(StateTransitionRule {
+                            state: state.to_owned(),
+                            fields,
+                        });
+                    }
+                }
+                "state_evidence" => {
+                    node.find_child_value("prefix")
+                        .clone_into(&mut rules.state_evidence_prefix);
+                }
+                "requirement_statement" => {
+                    rules.requirement = RequirementRule {
+                        marker: node.find_child_value("marker").to_owned(),
+                        leads: child_ids(node, "lead"),
+                        evidence_prefix: node.find_child_value("evidence_prefix").to_owned(),
+                    };
+                }
+                "lineage_cue" => {
+                    let phrases = child_ids(node, "phrase");
+                    if !phrases.is_empty() {
+                        rules
+                            .lineage_cues
+                            .push((node.find_child_value("language").to_owned(), phrases));
+                    }
+                }
                 "source" => {
                     let suffixes: Vec<String> = node
                         .children
@@ -479,10 +540,13 @@ mod commits;
 mod cursor;
 mod github;
 mod items;
+mod lineage;
 mod query;
+mod statements;
 
 pub use commits::{
-    diff_symbols, formalize_commit, import_commits, import_commits_for_path, parse_log_output,
+    diff_symbols, formalize_commit, import_commits, import_commits_for_path, lineage_for_path,
+    parse_log_output,
 };
 pub use cursor::{
     RepositoryHistoryCursor, import_incremental, repository_slug, store_paths,
@@ -490,4 +554,6 @@ pub use cursor::{
 };
 pub use github::{import_ci_runs, import_issues_and_pulls};
 pub use items::{coauthors, diff_named_items, named_items};
+pub use lineage::{handle_repository_lineage, lineage_answer, lineage_subjects};
 pub use query::query_repository_history;
+pub use statements::{requirement_statements, state_transitions};

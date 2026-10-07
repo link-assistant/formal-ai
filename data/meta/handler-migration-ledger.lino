@@ -49,6 +49,10 @@ handler_migration_ledger
     status "justified-native"
     primitive "rust/src/legality_warning.rs"
     justification "Issue 836 evaluates seeded legality patterns and exemptions before ordinary task routing; advisory wording is localized seed data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_reasoning_guards.js answers the same seed records in the worker."
+  handler page_query_text
+    status "justified-native"
+    primitive "rust/src/solver_handlers/page_query_text.rs"
+    justification "Issue #1163 R10: the page queries are the seed's page_query templates (data/seed/page-formalization-rules.lino) run over a page the prompt supplies, formalized by the generic page formalizer; the answer is the page's own block text. Browser twin (PR #1188, JavaScript-first parity): tryPageQueryText in js/worker/formal_ai_worker_web_formalize.js answers the same templates in the worker."
   handler http_fetch
     status pending
   handler url_navigate
@@ -61,6 +65,10 @@ handler_migration_ledger
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler document_originality_check
     status pending
+  handler repository_lineage
+    status "justified-native"
+    primitive "rust/src/history_context/lineage.rs"
+    justification "Issue #1180 R10: the lineage route reads the working repository's git history (a subprocess the browser worker has no access to); the cue phrases, the trailer and merge patterns and the answer templates are seed data (data/seed/history-formalization.lino, data/seed/multilingual-responses-formalization.lino). JavaScript twin of the pure claim and render half: js/agentic/crate/history_lineage.mjs."
   handler formalization_request
     status "justified-native"
     primitive "rust/src/solver_handlers/formalization_task.rs"

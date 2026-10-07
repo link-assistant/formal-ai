@@ -471,3 +471,182 @@ fn stop_note_reports_the_spent_ladder_and_is_silent_without_a_rung() {
         );
     }
 }
+
+// ---------------------------------------------------------------------------
+// R1/R7 — one shape table, all fourteen emitted languages
+// ---------------------------------------------------------------------------
+
+/// One captured diagnostic per emitted language, with the structure the
+/// generic matcher reads from it: (language, raw output, file, line, code,
+/// message). The JavaScript root replays the same table in
+/// `rust/tests/web/issue-1185-fourteen-languages.test.mjs`.
+const FOURTEEN_LANGUAGES: [(&str, &str, &str, u32, Option<&str>, &str); 14] = [
+    (
+        "rust",
+        "error[E0308]: mismatched types\n --> src/main.rs:6:33",
+        "src/main.rs",
+        6,
+        Some("E0308"),
+        "mismatched types",
+    ),
+    (
+        "typescript",
+        "src/app.ts(4,7): error TS2322: Type 'string' is not assignable to type 'number'.",
+        "src/app.ts",
+        4,
+        Some("TS2322"),
+        "Type 'string' is not assignable to type 'number'.",
+    ),
+    (
+        "javascript",
+        "/work/index.js:3\nconsole.log(total);\n            ^\nerror: total is not defined",
+        "/work/index.js",
+        3,
+        None,
+        "total is not defined",
+    ),
+    (
+        "kotlin",
+        "Main.kt:3:5: error: unresolved reference: printn",
+        "Main.kt",
+        3,
+        None,
+        "unresolved reference: printn",
+    ),
+    (
+        "scala",
+        "Main.scala:4: error: not found: value printn",
+        "Main.scala",
+        4,
+        None,
+        "not found: value printn",
+    ),
+    (
+        "java",
+        "Main.java:5: error: cannot find symbol",
+        "Main.java",
+        5,
+        None,
+        "cannot find symbol",
+    ),
+    (
+        "go",
+        "./main.go:7:2: undefined: fmt.Printn",
+        "./main.go",
+        7,
+        None,
+        "undefined: fmt.Printn",
+    ),
+    (
+        "python",
+        "Traceback (most recent call last):\n  File \"main.py\", line 2, in <module>\n    print(1/0)\nZeroDivisionError: division by zero",
+        "main.py",
+        2,
+        None,
+        "division by zero",
+    ),
+    (
+        "c",
+        "main.c:4:5: error: implicit declaration of function 'printff'",
+        "main.c",
+        4,
+        None,
+        "implicit declaration of function 'printff'",
+    ),
+    (
+        "cpp",
+        "main.cpp:6:3: error: 'cout' was not declared in this scope",
+        "main.cpp",
+        6,
+        None,
+        "'cout' was not declared in this scope",
+    ),
+    (
+        "csharp",
+        "Program.cs(9,13): error CS0103: The name 'Consle' does not exist in the current context",
+        "Program.cs",
+        9,
+        Some("CS0103"),
+        "The name 'Consle' does not exist in the current context",
+    ),
+    (
+        "ruby",
+        "main.rb:2: syntax error, unexpected end-of-input",
+        "main.rb",
+        2,
+        None,
+        "syntax error, unexpected end-of-input",
+    ),
+    (
+        "php",
+        "PHP Parse error: syntax error, unexpected end of file in /work/index.php on line 5",
+        "/work/index.php",
+        5,
+        None,
+        "syntax error, unexpected end of file",
+    ),
+    (
+        "swift",
+        "main.swift:3:1: error: cannot find 'prin' in scope",
+        "main.swift",
+        3,
+        None,
+        "cannot find 'prin' in scope",
+    ),
+];
+
+#[test]
+fn every_emitted_language_formalizes_through_the_one_shape_table() {
+    for (language, raw, file, line, code, message) in FOURTEEN_LANGUAGES {
+        let diagnostics = repair_loop::formalize_diagnostic(language, raw);
+        let read: Vec<(Option<&str>, Option<u32>, Option<&str>, &str)> = diagnostics
+            .iter()
+            .map(|diagnostic| {
+                (
+                    diagnostic.file.as_deref(),
+                    diagnostic.line,
+                    diagnostic.code.as_deref(),
+                    diagnostic.message.as_str(),
+                )
+            })
+            .collect();
+        assert_eq!(
+            read,
+            vec![(Some(file), Some(line), code, message)],
+            "{language}: one diagnostic with its file, line, code and message"
+        );
+    }
+}
+
+// R7: a PHP diagnostic states its location inline; before the shape table
+// carried it inside the pattern, a `{file} on line {line}` location row read
+// the whole line as a path and the diagnostic was dropped.
+#[test]
+fn an_inline_php_location_does_not_swallow_the_diagnostic() {
+    let diagnostics = repair_loop::formalize_diagnostic(
+        "php",
+        "PHP Fatal error: Uncaught Error: Call to undefined function greet() in /work/index.php on line 3",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].message,
+        "Uncaught Error: Call to undefined function greet()"
+    );
+    assert_eq!(diagnostics[0].file.as_deref(), Some("/work/index.php"));
+    assert_eq!(diagnostics[0].line, Some(3));
+}
+
+// R2: the query names the language and carries the exact code, and a
+// fetched page is retained only when it addresses that exact code.
+#[test]
+fn the_search_query_names_the_language_and_the_exact_code() {
+    let diagnostic = repair_loop::formalize_diagnostic(
+        "csharp",
+        "Program.cs(9,13): error CS0103: The name 'Consle' does not exist in the current context",
+    )
+    .remove(0);
+    assert_eq!(
+        repair_loop::search_query("csharp", &diagnostic),
+        "csharp CS0103 The name Consle does not exist in the current context"
+    );
+}

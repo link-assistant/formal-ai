@@ -29,7 +29,7 @@ mod requirements;
 mod write_program_request;
 pub use obligations::{
     ObligationGraph, ObligationKind, coreference_pass, formalize_request,
-    request_carries_work_obligations,
+    request_carries_work_obligations, request_demands,
 };
 use prompt_relevants::append_prompt_relevants;
 pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};

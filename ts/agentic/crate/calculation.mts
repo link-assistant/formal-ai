@@ -1,0 +1,1 @@
+import { realm } from '../host.mjs' ; export function calculationExpressionCandidates ( prompt ) { const extracted = realm () . extractArithmeticExpression ( prompt ) ; return extracted && extracted . expression ? [ { expression : extracted . expression } ] : [] ; }

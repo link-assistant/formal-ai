@@ -141,3 +141,13 @@ test("SQL composition reads HAVING after the grouping span", () => {
   );
   assert.ok(beforeGrouping.includes("SELECT country, COUNT(*) FROM users WHERE age > 30 GROUP BY country;"), beforeGrouping);
 });
+
+test("SQL composition joins on a stated shared column", () => {
+  assert.equal(handle("handleSqlSynthesis", "Write a SQL query that selects name from the users table joined with the orders table on user_id"), "Composed SQL:\n\n    SELECT name FROM users JOIN orders USING (user_id);\n\nClause-by-clause mapping:\n  - 'selects name' -> SELECT name\n  - 'users' -> FROM users\n  - 'joined with the orders table on user_id' -> JOIN orders USING (user_id)\nVerified by construction: each clause above maps to one constraint in the request, and the statement is a single SELECT in standard syntax.\nNot verified by execution: this project carries no SQL engine or parser dependency, so nothing was run — check the column names against your actual schema before running it.");
+  const filtered = handle("handleSqlSynthesis", "Write a SQL query that selects name from the users table join orders using user_id where age greater than 30");
+  assert.ok(filtered.includes("SELECT name FROM users JOIN orders USING (user_id) WHERE age > 30;"), filtered);
+  const keyless = handle("handleSqlSynthesis", "Write a SQL query that selects name from the users table joined with orders");
+  assert.ok(keyless.includes("SELECT name FROM users;"), "without a stated key no join is guessed: " + keyless);
+  const russian = handle("handleSqlSynthesis", "Выбери всех users соедини с таблицей orders по user_id");
+  assert.ok(russian.includes("SELECT * FROM users JOIN orders USING (user_id);"), russian);
+});

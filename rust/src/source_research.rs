@@ -147,6 +147,27 @@ impl SourceResearchExecution {
         }
         records.join("\n")
     }
+
+    /// The captured pages ordered by the trust score working memory holds
+    /// for them, highest first (issue #1163 R7). The score ranks, it never
+    /// excludes: every captured page is returned, ties keep the fused order.
+    #[must_use]
+    pub fn pages_by_trust(&self) -> Vec<&ResearchPage> {
+        let trust_of = |page: &ResearchPage| {
+            let key =
+                crate::web_formalize::page_key(page.capture.source_url(), page.capture.sha256());
+            crate::web_formalize::with_working_memory(|store| {
+                store.get(&key).map_or(0, |stored| stored.trust)
+            })
+        };
+        let mut ranked: Vec<(u8, &ResearchPage)> = self
+            .pages
+            .iter()
+            .map(|page| (trust_of(page), page))
+            .collect();
+        ranked.sort_by(|left, right| right.0.cmp(&left.0));
+        ranked.into_iter().map(|(_, page)| page).collect()
+    }
 }
 
 /// Search through the common capture client and optionally read the first
@@ -162,7 +183,12 @@ pub fn execute_source_research<T: SourceTransport>(
     let mut failures = Vec::new();
     let limit = page_limit.min(WEB_SEARCH_PROVIDER_LIMIT as usize);
     for ranking in search.fused.iter().take(limit) {
-        match client.fetch(&ranking.url) {
+        // Issue #1163 R6: working memory is consulted before the network. A
+        // page already formalized from this URL is replayed from memory (as a
+        // cache hit with its original timestamp and digest) and not fetched.
+        let fetched = crate::web_formalize::remembered_capture(&ranking.url)
+            .map_or_else(|| client.fetch(&ranking.url), Ok);
+        match fetched {
             Ok(capture) => {
                 // Issue #1163 R6: every captured page enters the solver's
                 // working memory under its URL and SHA-256, so a later solve

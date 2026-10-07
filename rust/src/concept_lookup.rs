@@ -261,6 +261,11 @@ struct RawGloss {
     synonyms: Vec<String>,
 }
 
+/// The registry extractor name of the generic page formalizer (issue #1163
+/// R12), the reader for any page web search returns.
+#[cfg(feature = "meta-language")]
+const GENERIC_PAGE_EXTRACTOR: &str = "generic_page_v1";
+
 /// Dispatch on the registry's declared extractor, never on a host name.
 fn read_glosses(extractor: &str, bytes: &[u8], surface: &str) -> Vec<RawGloss> {
     let text = String::from_utf8_lossy(bytes);
@@ -273,7 +278,7 @@ fn read_glosses(extractor: &str, bytes: &[u8], surface: &str) -> Vec<RawGloss> {
         // Issue #1163 R12: any fetched page, whatever its format, read
         // through the generic page formalizer rather than a bespoke parser.
         #[cfg(feature = "meta-language")]
-        ("generic_page_v1", _) => generic_page_glosses(bytes, surface),
+        (GENERIC_PAGE_EXTRACTOR, _) => generic_page_glosses(bytes, surface),
         // The committed `data/cache/**/*.lino` projections carry the same
         // schema as the live payloads, written by issue #398's lossless codec.
         // One reader serves both because both spell a definition `definition`.
@@ -291,6 +296,19 @@ pub fn extractor_gloss_texts(extractor: &str, bytes: &[u8], surface: &str) -> Ve
         .into_iter()
         .map(|gloss| gloss.gloss)
         .collect()
+}
+
+/// What a registry extractor yields from a payload, as statement text (issue
+/// #1163 R3): the lexical extractors' glosses, the OEIS reader's record
+/// statements, and the Python-docs reader's signatures and descriptions --
+/// the bespoke side of the generic-covers-bespoke comparison.
+#[must_use]
+pub fn extractor_statements(extractor: &str, bytes: &[u8], surface: &str) -> Vec<String> {
+    match extractor {
+        "oeis_sequence_v1" => crate::coding::function_catalog::oeis::record_statements(bytes),
+        "python_docs_v1" => crate::coding::function_catalog::python_docs::page_statements(bytes),
+        _ => extractor_gloss_texts(extractor, bytes, surface),
+    }
 }
 
 /// The `generic_page_v1` extractor (issue #1163 R12): the page is formalized
@@ -632,6 +650,49 @@ impl<'a, T: SourceTransport> RegistrySourceLookup<'a, T> {
         self.bounds
     }
 
+    /// Research a need no registered source covers (issue #1163 R4): web
+    /// search through [`crate::source_research::research_unmatched_need`],
+    /// each captured page read by the registry row whose extractor is the
+    /// generic page formalizer, so every sense keeps the page's URL, digest
+    /// and that row's license and tier.
+    #[cfg(feature = "meta-language")]
+    fn research_unmatched(&mut self, need: &Need, bounds: &LookupBounds) -> LookupOutcome {
+        let not_found = || LookupOutcome::NotFound {
+            consulted: Vec::new(),
+        };
+        let Some(record) = crate::seed::source_registry()
+            .into_iter()
+            .find(|record| record.extractor == GENERIC_PAGE_EXTRACTOR)
+        else {
+            return not_found();
+        };
+        let Some(Ok(research)) = crate::source_research::research_unmatched_need(
+            self.client,
+            need.kind,
+            &need.subject,
+            bounds.max_pages_per_service,
+        ) else {
+            return not_found();
+        };
+        self.consulted.insert(record.id.clone());
+        let language = if need.language.is_empty() {
+            self.language.clone()
+        } else {
+            need.language.clone()
+        };
+        let extractor = SenseExtractor::new(&need.subject, &language);
+        let mut senses = Vec::new();
+        for page in research.pages_by_trust() {
+            let read = extractor.read(&record, &page.capture, 0, senses.len(), bounds);
+            senses.extend(read.items);
+        }
+        if senses.is_empty() {
+            not_found()
+        } else {
+            LookupOutcome::Found(senses)
+        }
+    }
+
     /// Resolve one surface and keep the outcome rows.
     fn resolve(&mut self, surface: &str, language: &str, bounds: &LookupBounds) -> LookupOutcome {
         let walked = lookup_surface(
@@ -658,6 +719,13 @@ impl<'a, T: SourceTransport> RegistrySourceLookup<'a, T> {
 
 impl<T: SourceTransport> SourceLookup for RegistrySourceLookup<'_, T> {
     fn lookup(&mut self, need: &Need, bounds: &LookupBounds) -> LookupOutcome {
+        // Issue #1163 R4: a need whose kind no registry row declares has no
+        // source to walk, so it is researched through web search instead of
+        // answering empty.
+        #[cfg(feature = "meta-language")]
+        if crate::source_research::need_routes_to_web_search(need.kind) {
+            return self.research_unmatched(need, bounds);
+        }
         if need.kind != NeedKind::Concept {
             // One implementation, but not one that pretends every kind is a
             // word. A procedure need belongs to the how-to extractor over the

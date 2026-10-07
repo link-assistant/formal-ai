@@ -1,9 +1,14 @@
 // Version pins for generated workflows (rust/src/version_resolution.rs).
 //
-// Only the shipped baseline is resolved here: live and cached GitHub /
-// Adoptium captures are native-only. A `ResolvedVersion` is `{tag, sha,
-// origin: 'live'|'cache'|'baseline', source_url, fetched_at,
-// response_sha256}`.
+// A `ResolvedVersion` is `{tag, sha, origin: 'live'|'cache'|'baseline',
+// source_url, fetched_at, response_sha256}`.
+//
+// `resolveVersionSet` mirrors `VersionSet::resolve` over an injected `fetch`
+// (the JavaScript root has no `CachedSourceClient` twin): `fetch(url)` returns
+// a capture `{source_url, text, fetched_at, sha256, cached}` — the fields of
+// Rust's `SourceCapture` the resolution reads — or null where Rust's
+// `client.fetch(url)` errs. `forGeneration` still answers from the shipped
+// baseline, because no JavaScript host owns a source cache to replay.
 
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
@@ -51,6 +56,8 @@ const PIN_IDS = [
   ['python_interpreter', 'python_interpreter'],
   ['kotlin', 'kotlin_compiler'],
   ['java_lts', 'java_lts'],
+  ['setup_coursier', 'setup_coursier_action'],
+  ['scala', 'scala_compiler'],
 ];
 
 /** Mirrors `VersionSet::baseline`. */
@@ -62,6 +69,104 @@ export function baselineVersionSet() {
     set[field] = pin;
   }
   return set;
+}
+
+/** Mirrors `fn json_string`: a top-level JSON string field, or null. */
+function jsonString(capture, key) {
+  try {
+    const value = JSON.parse(capture.text)[key];
+    return typeof value === 'string' ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Mirrors `str::trim_start_matches('v')` on a resolved pin's tag. */
+function bareTag(resolved) {
+  return resolved ? { ...resolved, tag: trimStartV(resolved.tag) } : null;
+}
+
+/** Mirrors `VersionSet::resolve_github`. */
+function resolveGithub(fetch, publisher, repository, captures) {
+  const releasesUrl = `https://api.github.com/repos/${publisher}/${repository}/releases/latest`;
+  const release = fetch(releasesUrl);
+  if (!release) return null;
+  const origin = release.cached ? 'cache' : 'live';
+  const tag = jsonString(release, 'tag_name');
+  if (tag === null) return null;
+  const commit = fetch(`https://api.github.com/repos/${publisher}/${repository}/commits/${tag}`);
+  if (!commit) return null;
+  const sha = jsonString(commit, 'sha');
+  if (sha === null) return null;
+  captures.push(commit);
+  return { tag, sha, origin, source_url: releasesUrl, fetched_at: commit.fetched_at, response_sha256: commit.sha256 };
+}
+
+/** Mirrors `fn resolve_java_lts`: Adoptium's `most_recent_lts`, no SHA. */
+function resolveJavaLts(fetch, captures) {
+  const url = 'https://api.adoptium.net/v3/info/available_releases';
+  const capture = fetch(url);
+  if (!capture) return null;
+  let lts = null;
+  try {
+    lts = JSON.parse(capture.text).most_recent_lts;
+  } catch {
+    return null;
+  }
+  if (!Number.isInteger(lts) || lts < 0) return null;
+  captures.push(capture);
+  return {
+    tag: String(lts),
+    sha: '',
+    origin: capture.cached ? 'cache' : 'live',
+    source_url: url,
+    fetched_at: capture.fetched_at,
+    response_sha256: capture.sha256,
+  };
+}
+
+/**
+ * Mirrors `VersionSet::resolve`: every pin through `fetch`, each falling back
+ * to the shipped baseline when the publisher cannot be reached (R5), in the
+ * Rust order so the capture list matches.
+ */
+export function resolveVersionSet(fetch) {
+  const captures = [];
+  const set = { captures };
+  set.checkout = resolveGithub(fetch, 'actions', 'checkout', captures) ?? baseline('actions_checkout');
+  set.setup_java = resolveGithub(fetch, 'actions', 'setup-java', captures) ?? baseline('actions_setup_java');
+  set.setup_kotlin = resolveGithub(fetch, 'fwilhe2', 'setup-kotlin', captures) ?? baseline('setup_kotlin_action');
+  set.setup_python = resolveGithub(fetch, 'actions', 'setup-python', captures) ?? baseline('actions_setup_python');
+  set.python_interpreter = bareTag(resolveGithub(fetch, 'python', 'cpython', captures)) ?? baseline('python_interpreter');
+  set.kotlin = resolveGithub(fetch, 'JetBrains', 'kotlin', captures) ?? baseline('kotlin_compiler');
+  set.java_lts = resolveJavaLts(fetch, captures) ?? baseline('java_lts');
+  set.setup_coursier = resolveGithub(fetch, 'coursier', 'setup-action', captures) ?? baseline('setup_coursier_action');
+  set.scala = bareTag(resolveGithub(fetch, 'scala', 'scala', captures)) ?? baseline('scala_compiler');
+  return set;
+}
+
+/**
+ * Mirrors `VersionSet::record`: the derivation events, as `{kind, payload}`
+ * rows — each capture's `source:http` (and `cache_hit`) line, then one
+ * `version_resolution` line per pin.
+ */
+export function recordVersionSet(versions) {
+  const events = [];
+  for (const capture of versions.captures) {
+    events.push({
+      kind: 'source:http',
+      payload: `${capture.source_url} fetched_at=${capture.fetched_at} sha256=${capture.sha256} cached=${capture.cached ? 'true' : 'false'}`,
+    });
+    if (capture.cached) events.push({ kind: 'cache_hit', payload: capture.source_url });
+  }
+  for (const [field, id] of PIN_IDS) {
+    const entry = versions[field];
+    events.push({
+      kind: 'version_resolution',
+      payload: `pin=${id} tag=${entry.tag} sha=${entry.sha} origin=${entry.origin}`,
+    });
+  }
+  return events;
 }
 
 /**
@@ -89,6 +194,8 @@ export function provenanceNote(versions) {
     ['python', versions.python_interpreter],
     ['kotlin', versions.kotlin],
     ['java', versions.java_lts],
+    ['coursier/setup-action', versions.setup_coursier],
+    ['scala', versions.scala],
   ]
     .filter(([, entry]) => entry.origin !== 'live')
     .map(([name, entry]) => reportText(
@@ -138,6 +245,9 @@ export function fillWorkflowVersions(template, versions) {
     ['{python_version}', versions.python_interpreter.tag],
     ['{kotlin_version}', versions.kotlin.tag],
     ['{java_lts}', versions.java_lts.tag],
+    ['{setup_coursier_ref}', pinnedRef(versions.setup_coursier)],
+    ['{setup_coursier_tag}', versions.setup_coursier.tag],
+    ['{scala_version}', versions.scala.tag],
   ];
   const text = replacements.reduce((current, [from, to]) => current.split(from).join(to), template);
   const actions = workflowActions(versions);

@@ -61,6 +61,7 @@ mod text_request_framing;
 mod unit_conversion;
 
 pub mod numeric_list;
+pub mod page_query_text;
 pub mod policy_gates;
 pub mod summarization_request;
 pub mod text_rewrite;

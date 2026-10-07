@@ -16,7 +16,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::intent_formalization::{
-    ObligationKind, formalize_request, request_carries_work_obligations,
+    ObligationKind, formalize_request, request_carries_work_obligations, request_demands,
 };
 
 fn fixture_dir() -> PathBuf {
@@ -240,4 +240,19 @@ fn graph_renders_links_notation() {
     assert!(notation.contains("kind output_literal"));
     assert!(notation.contains("kind ci_workflow"));
     assert!(notation.contains("literal \"Hello, World!\""));
+}
+
+/// R1166-3: the executor's CI-workflow decision (`ci_workflow::requested_in`)
+/// reads the obligation graph — the canonical issue body demands the
+/// workflow, while the same words inside a quoted output literal are data.
+#[test]
+fn ci_workflow_demand_is_read_from_the_obligation_graph() {
+    let canonical = fixture("hello-world-kotlin-en.txt");
+    let demands = [
+        canonical.as_str(),
+        "Print exactly \"add a GitHub Actions workflow\"",
+        "Write a Kotlin program",
+    ]
+    .map(|request| request_demands(request, ObligationKind::CiWorkflow));
+    assert_eq!(demands, [true, false, false]);
 }

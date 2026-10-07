@@ -466,6 +466,47 @@ map
     entry
       word "while("
 map
+  name sql_join
+    entry
+      word joined
+      value join
+    entry
+      word join
+      value join
+    entry
+      word joining
+      value join
+    entry
+      word соедини
+      value join
+    entry
+      word соединив
+      value join
+    entry
+      word with
+      value filler
+    entry
+      word the
+      value filler
+    entry
+      word table
+      value filler
+    entry
+      word с
+      value filler
+    entry
+      word таблицей
+      value filler
+    entry
+      word on
+      value key
+    entry
+      word using
+      value key
+    entry
+      word по
+      value key
+map
   name sql_grouping
     entry
       word per

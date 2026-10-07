@@ -383,6 +383,33 @@ impl ProcedureCache {
     }
 }
 
+/// The cached program a concrete `write_program` answer reuses (R1165-1,
+/// R1165-2), when discovery already verified one for `(language, task)`.
+///
+/// `template` is the catalog template the request matched and `rendered` is
+/// what the solver made of it for this prompt; a prompt that customised the
+/// template (an inline replacement literal) asked for a different program
+/// than the cached row verified, so only an unmodified request is answered
+/// from the cache. The solver's `WriteProgram` branch calls this before it
+/// builds the answer and the execution recipe, and the work-item executor
+/// takes its recipe from that same answer, so both production paths read the
+/// cache. A miss returns `None` and the caller keeps the template: running
+/// [`cached_or_research`] needs an expected output and a reviewer's
+/// approval, which a solve call does not carry.
+#[must_use]
+pub fn cached_write_program<'cache>(
+    cache: &'cache ProcedureCache,
+    language: &str,
+    task: &str,
+    template: &str,
+    rendered: &str,
+) -> Option<&'cache RediscoverableRecipe> {
+    if rendered != template {
+        return None;
+    }
+    cache.lookup(language, task)
+}
+
 /// What [`cached_or_research`] returned: a cache row, or a row research just
 /// verified and stored.
 #[derive(Debug, Clone, PartialEq, Eq)]

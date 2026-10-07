@@ -9,6 +9,7 @@ use crate::definition_merge::merge_definitions;
 use crate::engine::SymbolicAnswer;
 use crate::entity_resolution::resolve_who_is;
 use crate::event_log::EventLog;
+use crate::history_context::handle_repository_lineage;
 use crate::legality_warning::handle_legality_warning;
 use crate::number_constraints::solve_number_constraints;
 use crate::proof_engine::ProofRenderConfig;
@@ -18,6 +19,7 @@ use crate::solver_handler_how::{
 };
 use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
 use crate::solver_handler_units::try_incompatible_units;
+use crate::solver_handlers::page_query_text::handle_page_query_text;
 use crate::solver_handlers::{
     SelfAwarenessRuntime, handle_advice_request, handle_brainstorm_request, handle_code_debugging,
     handle_code_explanation, handle_code_refactoring, handle_code_review,
@@ -314,9 +316,19 @@ pub fn try_contextual_override(
 /// never silently drift.
 const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     ("legality_warning", handle_legality_warning),
+    // Issue #1163 R10: a page query whose page the prompt itself supplies is
+    // answered from that page's formalized blocks. It claims only a prompt
+    // whose first line matches a seed page-query template and whose rest
+    // formalizes into a block the query links to.
+    ("page_query_text", handle_page_query_text),
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("document_originality_check", try_document_originality_check),
+    // Issue #1180 R10: a lineage question ("which issue introduced
+    // scripts/x.rs?") that names a path existing in the working repository is
+    // answered from that path's git history. A cue without such a path is not
+    // claimed, so the prompt goes on to formalization and search.
+    ("repository_lineage", handle_repository_lineage),
     ("formalization_request", handle_formalization_request),
     ("product_search", handle_product_search),
     ("web_search", try_web_search),

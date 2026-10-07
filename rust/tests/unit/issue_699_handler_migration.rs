@@ -369,16 +369,16 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status \"justified-native\"").count(),
-        24,
+        25,
         "the native set must stay explicit and small: two originals (arithmetic, \
-         javascript_execution) plus fourteen handlers from issues #1174/#1176/#1177 \
-         and eight from issues #1178/#1186/#800/#872/#836/#901, all with seeded \
-         vocabulary and response templates",
+         javascript_execution) plus fourteen handlers from issues #1174/#1176/#1177, \
+         eight from issues #1178/#1186/#800/#872/#836/#901 and one from issue #1163 \
+         (page_query_text), all with seeded vocabulary and response templates",
     );
     let pending = ledger.matches("status pending").count();
     assert_eq!(
         pending,
-        expected.len() - 40,
+        expected.len() - 41,
         "every other current method must honestly remain pending",
     );
     assert_eq!(

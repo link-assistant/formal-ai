@@ -1,0 +1,1 @@
+import { isWhitespace } from './rust_str.mjs' ; export function isWordBoundary ( character ) { const code = character . codePointAt ( 0 ) ; return isWhitespace ( character ) || ( code < 0x80 && ! /^[0-9A-Za-z]$/ . test ( character ) && character !== '_' ) ; }

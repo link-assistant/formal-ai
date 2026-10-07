@@ -1,0 +1,1 @@
+import { hasHost , host } from '../host.mjs' ; export function currentDialogId () { if ( ! hasHost () ) return null ; const id = host () . currentDialogId ?. () ; return typeof id === 'string' ? id : null ; }

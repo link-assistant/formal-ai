@@ -1,0 +1,1 @@
+import { stableId } from './engine_stable_id.mjs' ; import { normalizePrompt } from './engine.mjs' ; export function impulseIdFor ( prompt ) { return stableId ( 'impulse' , normalizePrompt ( prompt ) ) ; } export function formalizeIntent ( prompt , language ) { return { impulse_id : impulseIdFor ( prompt ) , source_text : prompt , language } ; }

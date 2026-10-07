@@ -5,9 +5,10 @@
 // (data/seed/history-formalization.lino) read into the same tables, the
 // `git log` record splitter, the trailer, co-author and merge scans, the
 // named top-level item diff, and the commit-to-memory-event mapping. The
-// subprocess half (running git, reading github-logs captures, the store and
-// cursor files) stays with the native importer; a JavaScript caller hands the
-// `git log` text and the blobs in.
+// subprocess half (running git and the store and cursor files) stays with the
+// native importer; a JavaScript caller hands the `git log` text and the blobs
+// in. The github-logs importers are js/agentic/crate/history_github.mjs and the
+// lineage route's claim and answer are js/agentic/crate/history_lineage.mjs.
 
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
@@ -43,6 +44,10 @@ export function historyRulesFromSeedText(text) {
     itemKeywords: new Map(),
     itemSpanKeywords: new Map(),
     itemModifiers: [],
+    stateTransitions: [],
+    stateEvidencePrefix: '',
+    requirement: { marker: '', leads: [], evidencePrefix: '' },
+    lineageCues: [],
   };
   const nodes = [];
   for (const top of parseRoot(text).children || []) {
@@ -81,6 +86,21 @@ export function historyRulesFromSeedText(text) {
     } else if (node.name === 'coauthor_trailer') {
       rules.coauthorPrefix = findChildValue(node, 'prefix');
       rules.coauthorEvidencePrefix = findChildValue(node, 'evidence_prefix');
+    } else if (node.name === 'state_transition') {
+      const state = findChildValue(node, 'state');
+      const fields = childValues(node, 'field');
+      if (state && fields.length > 0) rules.stateTransitions.push({ state, fields });
+    } else if (node.name === 'state_evidence') {
+      rules.stateEvidencePrefix = findChildValue(node, 'prefix');
+    } else if (node.name === 'requirement_statement') {
+      rules.requirement = {
+        marker: findChildValue(node, 'marker'),
+        leads: childValues(node, 'lead'),
+        evidencePrefix: findChildValue(node, 'evidence_prefix'),
+      };
+    } else if (node.name === 'lineage_cue') {
+      const phrases = childValues(node, 'phrase');
+      if (phrases.length > 0) rules.lineageCues.push([findChildValue(node, 'language'), phrases]);
     } else if (node.name === 'item_modifier' && node.value) {
       rules.itemModifiers.push(node.value);
     } else if (node.name === 'source') {
@@ -139,6 +159,61 @@ export function patternNumber(haystack, pattern) {
     if (digits.length > 0 && rest.slice(digits.length).startsWith(suffix)) return digits;
     from = found + Math.max(prefix.length, 1);
   }
+}
+
+/**
+ * Mirrors `state_transitions` (rust/src/history_context/statements.rs): the
+ * dated lifecycle transitions of a captured issue or pull request,
+ * chronological, as `<prefix><state>@<timestamp>` evidence.
+ * @param {object} value the captured JSON record
+ * @param {object} rules
+ */
+export function stateTransitions(value, rules) {
+  const dated = [];
+  for (const rule of rules.stateTransitions) {
+    const field = rule.fields.find((name) => typeof value?.[name] === 'string');
+    const stamp = field === undefined ? '' : value[field];
+    if (stamp) dated.push([stamp, rule.state]);
+  }
+  // Array.prototype.sort is stable, as Rust's sort_by_key is.
+  dated.sort((left, right) => (left[0] < right[0] ? -1 : left[0] > right[0] ? 1 : 0));
+  return dated.map(([stamp, state]) => `${rules.stateEvidencePrefix}${state}@${stamp}`);
+}
+
+const STATEMENT_SEPARATORS = [' ', '.', ':', ')', '*'];
+
+/**
+ * Mirrors `requirement_statements`: each body line that opens (after any
+ * seeded lead) with the marker, a number and a separator is one statement.
+ * @param {string} body
+ * @param {object} rules
+ */
+export function requirementStatements(body, rules) {
+  const rule = rules.requirement;
+  if (!rule.marker) return [];
+  const statements = [];
+  for (const line of String(body).split('\n')) {
+    let rest = line.trim();
+    for (;;) {
+      const lead = rule.leads.find((candidate) => candidate && rest.startsWith(candidate));
+      if (lead === undefined) break;
+      rest = rest.slice(lead.length).trimStart();
+    }
+    if (!rest.startsWith(rule.marker)) continue;
+    const afterMarker = rest.slice(rule.marker.length);
+    const digits = /^[0-9]*/u.exec(afterMarker)[0];
+    if (!digits) continue;
+    const tail = afterMarker.slice(digits.length);
+    if (tail && !STATEMENT_SEPARATORS.includes(tail[0])) continue;
+    let start = 0;
+    while (start < tail.length && STATEMENT_SEPARATORS.includes(tail[start])) start += 1;
+    let end = tail.length;
+    while (end > start && tail[end - 1] === '*') end -= 1;
+    const statement = tail.slice(start, end).trim();
+    if (!statement) continue;
+    statements.push(`${rule.evidencePrefix}${rule.marker}${digits} ${statement}`);
+  }
+  return statements;
 }
 
 /** Mirrors `coauthors`: co-author names from the trailer lines. */

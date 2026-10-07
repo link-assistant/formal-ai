@@ -66,6 +66,8 @@ function pageFormalizationRules() {
     extensions: [],
     commandVerbs: [],
     pageQueries: [],
+    documentSources: [],
+    suppliedPageSeparator: "",
   };
   for (const record of pageSeedRecords(text)) {
     if (record.name === "mime") {
@@ -98,6 +100,11 @@ function pageFormalizationRules() {
       rules.commandVerbs.push(record.value);
     } else if (record.name === "page_query" && record.value && childValue(record, "template")) {
       rules.pageQueries.push([record.value, childValue(record, "template")]);
+    } else if (record.name === "document_source" && record.value && childValue(record, "hint")) {
+      const aliases = record.children.filter((child) => child.name === "alias" && child.value).map((child) => child.value);
+      rules.documentSources.push({ name: record.value, hint: childValue(record, "hint"), aliases: aliases });
+    } else if (record.name === "supplied_page_separator" && record.value) {
+      rules.suppliedPageSeparator = record.value;
     }
   }
   PAGE_RULES_CACHE = { text: text, rules: rules };
@@ -269,7 +276,7 @@ function pageHtmlBlocks(text, rules) {
         block = { kind: "heading", level: Number(name.charAt(1)), text: pageDecodeEntities(pageStripTags(inner)) };
       } else if (name === "p") {
         block = pageParagraphBlock(pageStripTags(inner), rules);
-      } else if (name === "li") {
+      } else if (name === "li" || name === "dt") {
         block = { kind: "list_item", text: pageDecodeEntities(pageStripTags(inner)) };
       } else if (name === "tr") {
         block = { kind: "table_row", text: pageDecodeEntities(pageCellTexts(inner).join(" | ")) };
@@ -605,6 +612,17 @@ function formalizedPageFromCapture(capture, query, rank, trust, mimeHint) {
     cached: String(Boolean(capture.cached)),
     trust: String(trust),
   };
+  return pageIndexed(network, { url: capture.url, sha256: capture.sha256, rank: rank, query: query, trust: trust, capture: capture });
+}
+
+/**
+ * A page record over a formalized network: its code blocks, command
+ * paragraphs, and paragraphs tied to the command each introduces.
+ * @param {object} network
+ * @param {object} fields
+ * @returns {object}
+ */
+function pageIndexed(network, fields) {
   const paragraphs = [];
   network.blocks.forEach((block, index) => {
     if (block.kind !== "paragraph") return;
@@ -615,17 +633,12 @@ function formalizedPageFromCapture(capture, query, rank, trust, mimeHint) {
     }
     paragraphs.push({ text: block.text, link: block, command: command });
   });
-  return {
-    url: capture.url,
-    sha256: capture.sha256,
-    rank: rank,
-    query: query,
-    trust: trust,
+  return Object.assign({}, fields, {
     network: network,
     codeBlocks: network.blocks.filter((block) => block.kind === "code_block"),
     commands: network.blocks.filter((block) => block.kind === "paragraph" && block.command),
     paragraphs: paragraphs,
-  };
+  });
 }
 
 /**
@@ -767,4 +780,190 @@ function formalizedPageQuery(store, query) {
     if (name === "command_mentioning") return formalizedPageCommandMentioning(store, slots.phrase || "");
   }
   return null;
+}
+
+/**
+ * The capture of a page already in the store from `url`, replayed as a
+ * cache hit, so a fetch path consults working memory before it fetches
+ * (issue #1163 R6); null when no stored page came from the URL.
+ * @param {{pages: Map<string, object>}} store
+ * @param {string} url
+ * @returns {object|null}
+ */
+function formalizedPageStoreCapture(store, url) {
+  for (const page of store.pages.values()) {
+    if (page.url === url && page.capture) return Object.assign({}, page.capture, { cached: true });
+  }
+  return null;
+}
+
+/**
+ * The seed's trust-feature detectors: open-license markers and the
+ * official-website claim property (issue #1163 R7).
+ * @returns {{licenseMarkers: Array<string>, officialSiteProperty: string}}
+ */
+function pageTrustFeatureRules() {
+  const rules = { licenseMarkers: [], officialSiteProperty: "" };
+  for (const record of pageSeedRecords(seedRawText(SEED_RAW, PAGE_TRUST_FILE))) {
+    if (record.name !== "feature") continue;
+    for (const child of record.children) {
+      if (child.name === "license_marker" && child.value) rules.licenseMarkers.push(pageAsciiLower(child.value));
+      if (child.name === "claim_property" && child.value) rules.officialSiteProperty = child.value;
+    }
+  }
+  return rules;
+}
+
+/**
+ * The official websites a Wikidata entity payload states through the seed's
+ * claim property (P856).
+ * @param {string} entityText
+ * @returns {Array<string>}
+ */
+function pageOfficialWebsites(entityText) {
+  const property = pageTrustFeatureRules().officialSiteProperty;
+  let value = null;
+  try {
+    value = JSON.parse(String(entityText || ""));
+  } catch {
+    return [];
+  }
+  const out = [];
+  for (const entity of Object.values((value && value.entities) || {})) {
+    const claims = (entity && entity.claims && entity.claims[property]) || [];
+    for (const claim of Array.isArray(claims) ? claims : []) {
+      const site = claim && claim.mainsnak && claim.mainsnak.datavalue && claim.mainsnak.datavalue.value;
+      if (typeof site === "string") out.push(site);
+    }
+  }
+  return out;
+}
+
+/**
+ * The primacy grade of the registered source whose endpoint shares the
+ * domain, or null.
+ * @param {string} domain
+ * @returns {string|null}
+ */
+function pageRegistryPrimacy(domain) {
+  if (!domain) return null;
+  for (const record of pageSeedRecords(seedRawText(SEED_RAW, "sources-registry.lino"))) {
+    if (record.name !== "source") continue;
+    const api = childValue(record, "api");
+    const primacy = childValue(record, "primacy");
+    if (api && primacy && pageUrlDomain(api) === domain) return primacy;
+  }
+  return null;
+}
+
+/**
+ * Compute a page's trust features (issue #1163 R7): HTTPS from the URL, the
+ * registry primacy of the domain, an open license from the seed's markers,
+ * agreement from stored pages on other domains, and the official site from
+ * the given Wikidata P856 sites.
+ * @param {string} url
+ * @param {string} text
+ * @param {{pages: Map<string, object>}} store
+ * @param {Array<string>} officialSites
+ * @returns {object}
+ */
+function pageTrustFeatures(url, text, store, officialSites) {
+  const rules = pageTrustFeatureRules();
+  const domain = pageUrlDomain(url);
+  const lower = pageAsciiLower(String(text || ""));
+  const own = new Set(
+    formalizePage(text, null, url).blocks
+      .filter((block) => (block.kind === "paragraph" || block.kind === "code_block") && block.text.trim() !== "")
+      .map((block) => block.text),
+  );
+  let agreementPages = 0;
+  for (const page of store.pages.values()) {
+    if (pageUrlDomain(page.url) === domain) continue;
+    const texts = page.paragraphs.map((paragraph) => paragraph.text).concat(page.codeBlocks.map((block) => block.text));
+    if (texts.some((candidate) => own.has(candidate))) agreementPages += 1;
+  }
+  return {
+    officialSite: domain !== "" && (officialSites || []).some((site) => pageUrlDomain(site) === domain),
+    https: url.startsWith("https://"),
+    primacy: pageRegistryPrimacy(domain),
+    openLicense: rules.licenseMarkers.some((marker) => lower.includes(marker)),
+    agreementPages: agreementPages,
+  };
+}
+
+/**
+ * Read a document as a conversion source through the formalizer (issue
+ * #1163 R13); the formats and their mime hints are the seed's
+ * `document_source` rows. Null for any other format.
+ * @param {string} format
+ * @param {string} text
+ * @returns {object|null}
+ */
+function formalizeDocumentSource(format, text) {
+  const wanted = pageAsciiLower(String(format || "").trim());
+  if (!wanted) return null;
+  const source = pageFormalizationRules().documentSources.find((candidate) => {
+    return pageAsciiLower(candidate.name) === wanted || candidate.aliases.some((alias) => pageAsciiLower(alias) === wanted);
+  });
+  if (!source) return null;
+  const network = formalizePage(text, source.hint, null);
+  return {
+    sourceFormat: source.name,
+    mimeHint: source.hint,
+    blocks: network.blocks.map((block) => [block.kind, block.text]),
+    codeLanguages: network.blocks.filter((block) => block.kind === "code_block").map((block) => block.language),
+  };
+}
+
+/**
+ * Split a prompt into a page query (its first line, the seed's separator
+ * trimmed) and the page it supplies (the rest); null when either is empty.
+ * @param {string} prompt
+ * @returns {{query: string, page: string}|null}
+ */
+function pageSplitSuppliedPage(prompt) {
+  const text = String(prompt || "").trim();
+  const newline = text.indexOf("\n");
+  if (newline === -1) return null;
+  const separator = pageFormalizationRules().suppliedPageSeparator;
+  let query = text.slice(0, newline).trim();
+  if (separator) while (query.endsWith(separator)) query = query.slice(0, -separator.length);
+  query = query.trimEnd();
+  const page = text.slice(newline + 1).trim();
+  return query && page ? { query: query, page: page } : null;
+}
+
+/**
+ * A page query over a page the prompt supplies (issue #1163 R10): the page
+ * is formalized, the seed's page-query template runs against it, and the
+ * answer is the text of the blocks it links to. Null when the prompt carries
+ * no page, no template matches, or no block answers.
+ * @param {string} prompt
+ * @returns {object|null}
+ */
+function tryPageQueryText(prompt) {
+  const split = pageSplitSuppliedPage(prompt);
+  if (split === null) return null;
+  const network = formalizePage(split.page, null, null);
+  // The worker has no synchronous SHA-256, so a supplied page is keyed by the
+  // worker's stable content id, as formalization_support keys a document.
+  const digest = conceptStableId("page", split.page).replace("page_", "");
+  const page = pageIndexed(network, { url: "", sha256: digest, rank: 0, query: split.query, trust: 0 });
+  const store = createFormalizedPageStore();
+  const key = formalizedPageStoreInsert(store, page);
+  const blocks = formalizedPageQuery(store, split.query);
+  if (!blocks || blocks.length === 0) return null;
+  const texts = blocks.map((block) => block.text);
+  const trace = [
+    `page_query:${split.query}`,
+    `page_query_page:${key} blocks=${page.codeBlocks.length + page.paragraphs.length}`,
+    ...texts.map((text) => `page_query_answer:${text}`),
+  ];
+  return {
+    intent: "page_query",
+    content: texts.join("\n"),
+    confidence: 0.85,
+    evidence: ["handler:page_query_text", ...trace, "response:page_query"],
+    trace: trace,
+  };
 }

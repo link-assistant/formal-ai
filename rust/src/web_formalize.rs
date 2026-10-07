@@ -439,7 +439,10 @@ fn html_blocks(text: &str, rules: &FormalizationRules) -> Vec<PageBlock> {
             "p" => {
                 inner_end.map(|end| paragraph_block(&strip_tags(&text[tag_end + 1..end]), rules))
             }
-            "li" => inner_end.map(|end| PageBlock::ListItem {
+            // A definition term (`<dt>`, the signature line of reference
+            // docs) is a list item of its definition list; its `<dd>` is a
+            // container whose paragraphs are reached by stepping in.
+            "li" | "dt" => inner_end.map(|end| PageBlock::ListItem {
                 text: decode_entities(&strip_tags(&text[tag_end + 1..end])),
             }),
             "tr" => inner_end.map(|end| {
@@ -810,3 +813,4 @@ pub struct TrustFeatures {
 }
 
 include!("web_formalize_trust.rs");
+include!("web_formalize_features.rs");

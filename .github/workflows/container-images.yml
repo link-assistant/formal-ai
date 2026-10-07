@@ -7,7 +7,7 @@
 # emulation at best.
 #
 # Nothing upstream blocks native multi-arch:
-#   - the base `konard/box-dind:2.1.1` already publishes amd64 + arm64
+#   - the base `konard/box-dind:2.10.2` already publishes amd64 + arm64
 #     (verified against the Docker Hub manifest list),
 #   - `ubuntu-24.04-arm` runners are already used by desktop-release.yml,
 #   - no `setup-qemu-action` exists anywhere, so adopting a native matrix

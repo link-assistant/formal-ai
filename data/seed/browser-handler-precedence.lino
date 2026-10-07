@@ -37,6 +37,8 @@ browser_handler_precedence
   handler tryLegalityWarning
     argument_prompt
     argument_normalized
+  handler tryPageQueryText
+    argument_prompt
   handler tryFormalizationRequest
     argument_prompt
     argument_normalized

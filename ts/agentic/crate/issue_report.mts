@@ -1,0 +1,1 @@
+export const LINO_FENCE_LANGUAGE = 'lino' ; export function fencedBlock ( language , content ) { const body = content . trimEnd () ; let fence = '```' ; while ( body . includes ( fence ) ) fence += '`' ; return `${fence}${language}\n${body}\n${fence}` ; }

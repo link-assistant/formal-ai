@@ -6,6 +6,10 @@
 # are filled by the handler. The rendering blocks themselves (FOL, Lean,
 # Rocq, Links Notation) are language-neutral and are inserted through the
 # {statement_block} and {derivation} slots.
+#
+# The `repository_lineage` records render the lineage route's answer
+# (issue #1180 R10, repository history formalized into commits, issues and
+# pull requests); the commit list, path and numbers fill their slots.
 
 multilingual_responses
   response response_formalization_result_en
@@ -88,3 +92,43 @@ multilingual_responses
     intent formalization_honesty
     language es
     text "No se invocó ningún demostrador de teoremas. {lean_check} {rocq_check} Los textos Lean y Rocq son producciones de la gramática semilla; su exportación en proceso a través de relative-meta-logic queda registrada como trabajo posterior hasta su publicación en crates.io (link-foundation/relative-meta-logic#185)."
+  response response_repository_lineage_en
+    intent repository_lineage
+    language en
+    text "{path} has {count} commits in this repository's history, oldest first:\n{commits}\n\nThe introducing commit {first} was made for issue {issue} and delivered by pull request {pull}. The lineage is read from `git log --follow`; the issue comes from the commit's trailer and the pull request from the merge that delivered it."
+  response response_repository_lineage_ru
+    intent repository_lineage
+    language ru
+    text "У {path} в истории этого репозитория {count} коммитов, от старых к новым:\n{commits}\n\nВводящий коммит {first} сделан для задачи {issue} и доставлен пулл-реквестом {pull}. Происхождение прочитано из `git log --follow`; задача взята из трейлера коммита, пулл-реквест — из доставившего его слияния."
+  response response_repository_lineage_hi
+    intent repository_lineage
+    language hi
+    text "इस रिपॉज़िटरी के इतिहास में {path} के {count} कमिट हैं, सबसे पुराने पहले:\n{commits}\n\nपरिचय कराने वाला कमिट {first} इश्यू {issue} के लिए बना और पुल रिक्वेस्ट {pull} द्वारा पहुँचाया गया। वंश `git log --follow` से पढ़ा गया है; इश्यू कमिट के ट्रेलर से और पुल रिक्वेस्ट उसे पहुँचाने वाले मर्ज से आता है।"
+  response response_repository_lineage_zh
+    intent repository_lineage
+    language zh
+    text "{path} 在本仓库历史中有 {count} 个提交，按时间从早到晚：\n{commits}\n\n引入它的提交 {first} 是为问题 {issue} 而做的，并由拉取请求 {pull} 交付。来历读取自 `git log --follow`；问题来自提交的尾注，拉取请求来自交付它的合并。"
+  response response_repository_lineage_es
+    intent repository_lineage
+    language es
+    text "{path} tiene {count} commits en la historia de este repositorio, del más antiguo al más reciente:\n{commits}\n\nEl commit que lo introdujo, {first}, se hizo para el issue {issue} y lo entregó el pull request {pull}. El linaje se lee de `git log --follow`; el issue sale del trailer del commit y el pull request de la fusión que lo entregó."
+  response response_repository_lineage_unrecorded_en
+    intent repository_lineage_unrecorded
+    language en
+    text "(not recorded in the history)"
+  response response_repository_lineage_unrecorded_ru
+    intent repository_lineage_unrecorded
+    language ru
+    text "(не записан в истории)"
+  response response_repository_lineage_unrecorded_hi
+    intent repository_lineage_unrecorded
+    language hi
+    text "(इतिहास में दर्ज नहीं)"
+  response response_repository_lineage_unrecorded_zh
+    intent repository_lineage_unrecorded
+    language zh
+    text "（历史中未记录）"
+  response response_repository_lineage_unrecorded_es
+    intent repository_lineage_unrecorded
+    language es
+    text "(no registrado en la historia)"
