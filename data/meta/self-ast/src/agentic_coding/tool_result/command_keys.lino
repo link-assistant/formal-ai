@@ -15,16 +15,16 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2249
-    named_node_count 469
+    total_link_count 2272
+    named_node_count 475
     distinct_node_kinds 51
     node_kinds
       arguments 38
       array_expression 2
       array_type 3
       assignment_expression 1
-      attribute 1
-      attribute_item 1
+      attribute 2
+      attribute_item 2
       binary_expression 2
       block 13
       call_expression 38
@@ -33,7 +33,7 @@ self_ast_census
       const_item 1
       continue_expression 4
       crate 2
-      doc_comment 20
+      doc_comment 21
       expression_statement 10
       field_expression 39
       field_identifier 39
@@ -41,16 +41,16 @@ self_ast_census
       function_item 2
       generic_function 1
       generic_type 2
-      identifier 84
+      identifier 85
       if_expression 2
       inner_doc_comment_marker 4
       integer_literal 1
       let_declaration 9
-      line_comment 22
+      line_comment 23
       macro_invocation 1
       mut_pattern 1
       mutable_specifier 3
-      outer_doc_comment_marker 16
+      outer_doc_comment_marker 17
       parameter 4
       parameters 2
       primitive_type 2

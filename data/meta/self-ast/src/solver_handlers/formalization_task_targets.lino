@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/formalization_task_targets.rs
   language rust
   fidelity signature
-  byte_len 14698
-  line_count 390
-  content_id source_module_14a6b585ca0103fa
-  symbol_count 16
+  byte_len 14100
+  line_count 369
+  content_id source_module_fd9b2bdcf8d00abc
+  symbol_count 15
   symbols
     enum TemplatePiece 18 21
     function collapse_whitespace 25 27
@@ -22,4 +22,3 @@ self_ast_census
     function target_round_trip_holds 308 312
     function record_clause_fragment 320 339
     function record_render_fragment 343 369
-    function record_prover_fragment 373 390

@@ -1,0 +1,26 @@
+self_ast_census
+  target src/solver_handlers/formalization_task_prover.rs
+  language rust
+  fidelity signature
+  byte_len 11984
+  line_count 326
+  content_id source_module_d73bd05f506db4ee
+  symbol_count 17
+  symbols
+    enum ClauseExporter 26 29
+    function active 35 37
+    function name 41 45
+    function export 49 53
+    struct ProverRecord 58 73
+    function prover_records 77 99
+    static RECORDS 78 78
+    function prover_unit 104 136
+    function prover_command_in 141 146
+    enum ProverRun 150 160
+    function prover_file_stem 165 172
+    function run_prover_with 176 204
+    function prover_runs_with 209 225
+    function prover_runs 228 232
+    function prover_check_slots 237 277
+    function record_prover_fragment 281 316
+    function honesty_block 319 326
