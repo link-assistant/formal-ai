@@ -346,8 +346,11 @@ function browserComposeProgramIr(prompt, normalized, structures) {
     .sort((left, right) =>
       browserUnboundPlaceholderCount(left, relevant, parameters) -
         browserUnboundPlaceholderCount(right, relevant, parameters) ||
-      parameters.filter((parameter) => !left.source.includes(parameter.name)).length -
-        parameters.filter((parameter) => !right.source.includes(parameter.name)).length ||
+      // A parameter is read when its identifier occurs, not when its letters
+      // do: `a` is not read by `__import__('math').prod(b)` (mirrors native
+      // collect_parameter_names over the IR tree).
+      parameters.filter((parameter) => browserIdentifierCount(left.source, parameter.name) === 0).length -
+        parameters.filter((parameter) => browserIdentifierCount(right.source, parameter.name) === 0).length ||
       // Least action first: native sorts by action cost before anything else,
       // so a derivation reusing an already-bound name outranks one that
       // recomputes a subprogram to fill the same slot.

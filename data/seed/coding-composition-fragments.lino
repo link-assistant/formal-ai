@@ -239,6 +239,7 @@ meanings
     fragment_signature (integer integer)
     fragment_result integer
     supports grid_minimum_cost_path
+    supports reduce_sum
   integer_multiply
     defined-by reduction
     role coding_fragment
@@ -249,3 +250,4 @@ meanings
     rediscovery_query "multiplication of two integers"
     fragment_signature (integer integer)
     fragment_result integer
+    supports reduce_product

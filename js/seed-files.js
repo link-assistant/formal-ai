@@ -15,6 +15,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/code-example-parts.lino",
   "seed/code-review-rules.lino",
   "seed/code-task-cues.lino",
+  "seed/coding-composition-fragments.lino",
   "seed/coding-documentation-captures.lino",
   "seed/coding-idioms.lino",
   "seed/concept-contexts.lino",

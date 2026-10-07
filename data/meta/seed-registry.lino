@@ -60,6 +60,8 @@ seed_registry
   seed code-task-cues
     bundle true
     web true
+  seed coding-composition-fragments
+    web true
   seed coding-documentation-captures
     web true
   seed coding-guidance
@@ -720,9 +722,6 @@ seed_registry
   seed writing-genre-styleguides
     bundle true
     web true
-  unregistered coding-composition-fragments
-    owner "src/coding/fragment_catalog.rs"
-    reason "The composition fragment catalog reads these fragments from the seed directory, and the web worker feeds them to the program-ir checker through its own seed list."
   unregistered coding-discovery-runtime
     owner "src/coding/python_render.rs"
     reason "Coding discovery embeds these executable structural templates only in the Python renderer that interprets them."

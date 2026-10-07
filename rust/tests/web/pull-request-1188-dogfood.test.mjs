@@ -277,3 +277,23 @@ describe('PR #1188 dogfood: a description of code is never written as a file\'s 
     assert.equal(composeGeneralChangePlan("Write 'function f() {}' to f.js").content, 'function f() {}');
   });
 });
+
+describe('PR #1188 dogfood: "their sum" of two parameters reads both of them', () => {
+  const answer = (name, operation, symbol) =>
+    `Coding task formalized for Python function \`${name}\`.\nDiscovered structural parts: ${operation}.\n` +
+    `\`\`\`python\ndef ${name}(a, b):\n    return a ${symbol} b\n\`\`\`\n` +
+    'Verification status: unverified in the browser boundary; run the Rust/native solver to execute the derived program and its tests.';
+
+  test('`add(a, b) that returns their sum` is `a + b`, not `sum(a)`', async () => {
+    const { solve } = await import('../../../js/agentic/host.mjs');
+    const result = await solve('Write a Python function add(a, b) that returns their sum.', []);
+    assert.equal(result.intent, 'write_program');
+    assert.equal(result.answer, answer('add', 'reduce_sum', '+'));
+  });
+
+  test('`multiply(a, b) that returns a times b` is `a * b`: `a` is not read by `math`', async () => {
+    const { solve } = await import('../../../js/agentic/host.mjs');
+    const result = await solve('Write a Python function multiply(a, b) that returns a times b.', []);
+    assert.equal(result.answer, answer('multiply', 'reduce_product', '*'));
+  });
+});
