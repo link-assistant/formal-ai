@@ -282,21 +282,28 @@ function documentationRouteActive() {
   return Boolean(route) && childValue(route, "active") === "true";
 }
 
-/**
- * The documentation captures for one language and task, in seed order, each
- * with its URL, rediscovery query and the code blocks its page holds.
- * @param {string} language
- * @param {string} task
- * @returns {Array<{url: string, query: string, blocks: Array<{language: string, text: string}>}>}
- */
-function documentationCaptures(language, task) {
+/** Every capture record of the captures seed, in seed order. */
+function documentationCaptureNodes() {
   const root = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_CAPTURES_FILE)).children
     .find((node) => node.name === "coding_documentation_captures");
-  return (root ? root.children : [])
-    .filter((node) => node.name === "capture" && childValue(node, "language") === language && childValue(node, "task") === task)
+  return (root ? root.children : []).filter((node) => node.name === "capture");
+}
+
+/**
+ * The documentation captures for one language and task, in seed order, each
+ * with its URL, rediscovery query, the language name the page states (when
+ * the capture records one) and the code blocks its page holds.
+ * @param {string} language
+ * @param {string} task
+ * @returns {Array<{url: string, query: string, languageName: string, blocks: Array<{language: string, text: string}>}>}
+ */
+function documentationCaptures(language, task) {
+  return documentationCaptureNodes()
+    .filter((node) => childValue(node, "language") === language && childValue(node, "task") === task)
     .map((node) => ({
       url: childValue(node, "url"),
       query: childValue(node, "rediscovery_query"),
+      languageName: childValue(node, "language_name") || "",
       blocks: node.children.filter((child) => child.name === "block")
         .map((block) => ({ language: childValue(block, "language"), text: childValue(block, "text") })),
     }));
@@ -328,6 +335,33 @@ function codeExampleContentId(text) {
 }
 
 /**
+ * The values one per-language row of the part vocabulary carries
+ * (`entry_container`, `bare_output_call`, `newline_token`), in seed order.
+ * Mirrors `language_rows` in rust/src/discovery_production_documentation.rs.
+ * @param {string} language
+ * @param {string} rowName
+ * @returns {Array<string>}
+ */
+function codeExampleLanguageRows(language, rowName) {
+  const values = [];
+  const pending = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_PARTS_FILE)).children.slice().reverse();
+  let current = "";
+  while (pending.length > 0) {
+    const record = pending.pop();
+    for (let index = record.children.length - 1; index >= 0; index -= 1) pending.push(record.children[index]);
+    if (record.name === "part_language") current = record.value;
+    else if (record.name === rowName && current === language && record.value) values.push(record.value);
+  }
+  return values;
+}
+
+/** The stem of the file a program is saved as (`Main` for `src/Main.java`). */
+function codeExampleFileStem(saveAs) {
+  const file = String(saveAs || "").split("/").pop();
+  return file.includes(".") ? file.slice(0, file.lastIndexOf(".")) : file;
+}
+
+/**
  * The names a language's run contract invokes that a program must declare:
  * the stem of the file it is saved as, when a run or check command names it
  * bare (`scala Main` runs the object `Main`; `rustc main.rs -o main` only
@@ -337,10 +371,154 @@ function codeExampleContentId(text) {
  */
 function runContractNames(languageInfo) {
   if (!languageInfo) return [];
-  const file = String(languageInfo.saveAs || "").split("/").pop();
-  const stem = file.includes(".") ? file.slice(0, file.lastIndexOf(".")) : file;
+  const stem = codeExampleFileStem(languageInfo.saveAs);
   const words = [languageInfo.runCommand, languageInfo.checkCommand].filter(Boolean).join(" ").split(/\s+/);
   return stem && words.includes(stem) ? [stem] : [];
+}
+
+/** The shell prompts a documented command line may start with. */
+const CODE_EXAMPLE_COMMAND_PROMPTS = ["$ ", "% ", "> "];
+
+/**
+ * The name a documented command binds in place of the stem of the file the
+ * catalog saves the program as (issue #1165 R1165-6), or null when it is not
+ * the catalog command: the same words, except that where the catalog word
+ * carries the stem, the documented word carries one other name in its place,
+ * consistently (`kotlinc hello.kt -d hello.jar` binds `hello` for
+ * `kotlinc Main.kt -d Main.jar`). A line equal to the catalog command binds
+ * the stem itself. Mirrors `documented_command_binding` in
+ * rust/src/discovery_production_documentation.rs.
+ * @param {string} documented
+ * @param {string} catalog
+ * @param {string} saveAs
+ * @returns {string|null}
+ */
+function documentedCommandBinding(documented, catalog, saveAs) {
+  const stem = codeExampleFileStem(saveAs);
+  const words = documented.trim().split(/\s+/);
+  const expected = catalog.trim().split(/\s+/);
+  if (words.length !== expected.length) return null;
+  let bound = null;
+  const same = expected.every((word, index) => {
+    const said = words[index];
+    if (said === word) return true;
+    const at = stem ? word.indexOf(stem) : -1;
+    if (at === -1) return false;
+    const prefix = word.slice(0, at);
+    const suffix = word.slice(at + stem.length);
+    if (!said.startsWith(prefix) || !said.endsWith(suffix) || said.length <= prefix.length + suffix.length) return false;
+    const name = said.slice(prefix.length, said.length - suffix.length);
+    if (!/^[A-Za-z0-9_]+$/.test(name) || (bound !== null && bound !== name)) return false;
+    bound = name;
+    return true;
+  });
+  if (!same) return null;
+  return bound === null ? stem : bound;
+}
+
+/**
+ * Whether a documented command is a catalog command with the documented file
+ * name bound to the catalog's. Mirrors `documented_command_matches`.
+ * @param {string} documented
+ * @param {string} catalog
+ * @param {string} saveAs
+ * @returns {boolean}
+ */
+function documentedCommandMatches(documented, catalog, saveAs) {
+  return documentedCommandBinding(documented, catalog, saveAs) !== null;
+}
+
+/**
+ * Every non-empty line of the captured pages' code blocks, its shell prompt
+ * removed, with the page that states it.
+ * @param {Array<object>} captures
+ * @returns {Array<{line: string, url: string}>}
+ */
+function documentationCommandLines(captures) {
+  const lines = [];
+  for (const capture of captures) {
+    for (const block of capture.blocks) {
+      for (const raw of pageLines(block.text)) {
+        let line = raw.trim();
+        const prompt = CODE_EXAMPLE_COMMAND_PROMPTS.find((candidate) => line.startsWith(candidate));
+        if (prompt) line = line.slice(prompt.length).trim();
+        if (line) lines.push({ line: line, url: capture.url });
+      }
+    }
+  }
+  return lines;
+}
+
+/** `word` with its first `stem` replaced by `name`. */
+function codeExampleRebind(word, stem, name) {
+  const at = stem && stem !== name ? word.indexOf(stem) : -1;
+  return at === -1 ? word : word.slice(0, at) + name + word.slice(at + stem.length);
+}
+
+/**
+ * The run contract a documented program binds (issue #1165 R1165-6). The
+ * catalog row's file stem stays when the program declares every name the
+ * row's commands invoke; otherwise the program's own name binds in its place,
+ * in the file it is saved as and in every command, as a documented file name
+ * binds Kotlin's: the name a captured command line states for a catalog
+ * command, when the program declares it (`javac HelloWorldApp.java`), else
+ * the name after one of the language's `entry_container` keywords
+ * (`object hello`). Every command carries its source: the page whose
+ * captured line states it, else `catalog`. Mirrors `documented_run_contract`
+ * in rust/src/discovery_production_documentation.rs.
+ * @param {string} language
+ * @param {object|null} languageInfo a WRITE_PROGRAM_LANGUAGES row
+ * @param {string} program
+ * @param {Array<object>} captures
+ * @returns {{ok: {saveAs: string, commands: Array<{role: string, command: string, source: string}>}}|{error: string}}
+ */
+function documentedRunContract(language, languageInfo, program, captures) {
+  if (!languageInfo) return { ok: { saveAs: "", commands: [] } };
+  const stem = codeExampleFileStem(languageInfo.saveAs);
+  const tokens = program.split(/[^A-Za-z0-9_]+/).filter(Boolean);
+  const missing = runContractNames(languageInfo).filter((name) => !tokens.includes(name));
+  const roles = [["check", languageInfo.checkCommand], ["run", languageInfo.runCommand]].filter((pair) => pair[1]);
+  const lines = documentationCommandLines(captures);
+  let name = stem;
+  if (missing.length > 0) {
+    const stated = roles
+      .flatMap((pair) => lines.map((entry) => documentedCommandBinding(entry.line, pair[1], languageInfo.saveAs)))
+      .find((bound) => bound !== null && bound !== stem && tokens.includes(bound));
+    const containers = codeExampleLanguageRows(language, "entry_container");
+    const declared = tokens.find((token, index) => index > 0 && containers.includes(tokens[index - 1]));
+    name = stated || declared || "";
+    if (!name) return { error: "run_contract:" + missing.join(",") };
+  }
+  const path = languageInfo.saveAs.split("/");
+  path[path.length - 1] = codeExampleRebind(path[path.length - 1], stem, name);
+  return {
+    ok: {
+      saveAs: path.join("/"),
+      commands: roles.map(([role, command]) => {
+        const page = lines.find((entry) => documentedCommandBinding(entry.line, command, languageInfo.saveAs) !== null);
+        const bound = name === stem ? command : command.split(/\s+/).map((word) => codeExampleRebind(word, stem, name)).join(" ");
+        return { role: role, command: bound, source: page ? page.url : "catalog" };
+      }),
+    },
+  };
+}
+
+/**
+ * How a documented program departs from the output the catalog verifies, in
+ * a way its decomposition cannot see (issue #1165): its output call prints no
+ * line break (a `bare_output_call` of the part vocabulary, PHP's `echo`) and
+ * its line carries none of the language's `newline_token` rows, so the
+ * program prints the expected text without the trailing newline. Mirrors
+ * `documentation_deviation` in rust/src/discovery_production_documentation.rs.
+ * @param {string} language
+ * @param {string} call
+ * @param {string} program
+ * @returns {string|null}
+ */
+function documentationDeviation(language, call, program) {
+  if (!codeExampleLanguageRows(language, "bare_output_call").includes(call)) return null;
+  const line = pageLines(program).find((candidate) => candidate.includes(call)) || "";
+  return codeExampleLanguageRows(language, "newline_token").some((token) => line.includes(token)) ? null : "trailing_newline=absent";
 }
 
 /**
@@ -350,16 +528,19 @@ function runContractNames(languageInfo) {
  * Each page's first block in the language (or untagged) that decomposes into
  * an output call printing a literal is recomposed with the task's expected
  * output bound into that literal; the shortest program is kept and verified
- * by decomposing it again and against the run contract. `rejected` names why
- * captured pages yielded no program; `captured` says whether any existed.
+ * by decomposing it again and against the run contract it binds. `rejected`
+ * names why captured pages yielded no program; `captured` says whether any
+ * existed; `contract` is the bound run contract and `deviation` what the
+ * program departs from that its verification cannot see.
  * @param {string} task
  * @param {string} language
- * @returns {{recipe: object|null, rejected: string|null, captured: boolean}}
+ * @returns {{recipe: object|null, rejected: string|null, captured: boolean, contract: object|null, deviation: string|null, languageName: string}}
  */
 function rediscoverDocumentedProgram(task, language) {
   const captures = documentationRouteActive() ? documentationCaptures(language, task) : [];
-  if (captures.length === 0) return { recipe: null, rejected: null, captured: false };
-  const reject = (reason) => ({ recipe: null, rejected: reason, captured: true });
+  const empty = { recipe: null, rejected: null, captured: false, contract: null, deviation: null, languageName: "" };
+  if (captures.length === 0) return empty;
+  const reject = (reason) => ({ ...empty, rejected: reason, captured: true });
   const taskInfo = typeof WRITE_PROGRAM_TASKS === "object" ? WRITE_PROGRAM_TASKS[task] : null;
   const expected = taskInfo ? String(taskInfo.output) : "";
   if (expected === "" || expected.includes("\n")) return reject("no_single_line_output");
@@ -381,10 +562,9 @@ function rediscoverDocumentedProgram(task, language) {
   const verified = Boolean(check) && check.parts.some((part) => part.kind === "output_operation" && part.sourceText === call)
     && check.parts.some((part) => part.kind === "string_literal" && part.sourceText === expected);
   if (!verified) return reject("verification");
-  const tokens = recomposed.source.split(/[^A-Za-z0-9_]+/);
   const languageInfo = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
-  const undeclared = runContractNames(languageInfo).filter((name) => !tokens.includes(name));
-  if (undeclared.length > 0) return reject("run_contract:" + undeclared.join(","));
+  const contract = documentedRunContract(language, languageInfo || null, recomposed.source, captures);
+  if (contract.error) return reject(contract.error);
   return {
     recipe: {
       language: language,
@@ -397,45 +577,10 @@ function rediscoverDocumentedProgram(task, language) {
     },
     rejected: null,
     captured: true,
+    contract: contract.ok,
+    deviation: documentationDeviation(language, call, recomposed.source),
+    languageName: best.capture.languageName,
   };
-}
-
-/** The shell prompts a documented command line may start with. */
-const CODE_EXAMPLE_COMMAND_PROMPTS = ["$ ", "% ", "> "];
-
-/**
- * Whether a documented command is a catalog command with the documented file
- * name bound to the catalog's (issue #1165 R1165-6): the same words, except
- * that where the catalog word carries the stem of the file it saves the
- * program as, the documented word carries one other name in its place,
- * consistently (`kotlinc hello.kt -d hello.jar` is `kotlinc Main.kt -d
- * Main.jar` for a program saved as `Main.kt`). Mirrors
- * `documented_command_matches` in rust/src/discovery_production_documentation.rs.
- * @param {string} documented
- * @param {string} catalog
- * @param {string} saveAs
- * @returns {boolean}
- */
-function documentedCommandMatches(documented, catalog, saveAs) {
-  const file = String(saveAs || "").split("/").pop();
-  const stem = file.includes(".") ? file.slice(0, file.lastIndexOf(".")) : file;
-  const words = documented.trim().split(/\s+/);
-  const expected = catalog.trim().split(/\s+/);
-  if (words.length !== expected.length) return false;
-  let bound = null;
-  return expected.every((word, index) => {
-    const said = words[index];
-    if (said === word) return true;
-    const at = stem ? word.indexOf(stem) : -1;
-    if (at === -1) return false;
-    const prefix = word.slice(0, at);
-    const suffix = word.slice(at + stem.length);
-    if (!said.startsWith(prefix) || !said.endsWith(suffix) || said.length <= prefix.length + suffix.length) return false;
-    const name = said.slice(prefix.length, said.length - suffix.length);
-    if (!/^[A-Za-z0-9_]+$/.test(name) || (bound !== null && bound !== name)) return false;
-    bound = name;
-    return true;
-  });
 }
 
 /**
@@ -452,20 +597,10 @@ function documentedCommandMatches(documented, catalog, saveAs) {
 function documentedRunCommands(task, language) {
   const languageInfo = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
   if (!languageInfo) return [];
-  const lines = [];
-  for (const capture of documentationCaptures(language, task)) {
-    for (const block of capture.blocks) {
-      for (const raw of pageLines(block.text)) {
-        let line = raw.trim();
-        const prompt = CODE_EXAMPLE_COMMAND_PROMPTS.find((candidate) => line.startsWith(candidate));
-        if (prompt) line = line.slice(prompt.length).trim();
-        if (line) lines.push(line);
-      }
-    }
-  }
+  const lines = documentationCommandLines(documentationCaptures(language, task));
   return [languageInfo.checkCommand, languageInfo.runCommand].filter(Boolean).map((command) => ({
     catalog: command,
-    documented: lines.find((line) => documentedCommandMatches(line, command, languageInfo.saveAs)) || null,
+    documented: (lines.find((entry) => documentedCommandMatches(entry.line, command, languageInfo.saveAs)) || { line: null }).line,
   }));
 }
 
@@ -496,28 +631,65 @@ function documentedProgram(task, language) {
 function documentationKnowsLanguage(language) {
   const needle = pageAsciiLower(String(language || "").trim());
   if (!needle || !documentationRouteActive()) return false;
-  const root = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_CAPTURES_FILE)).children
-    .find((node) => node.name === "coding_documentation_captures");
-  const tasks = (root ? root.children : [])
-    .filter((node) => node.name === "capture" && childValue(node, "language") === needle)
+  const tasks = documentationCaptureNodes()
+    .filter((node) => childValue(node, "language") === needle)
     .map((node) => childValue(node, "task"));
   return Array.from(new Set(tasks)).some((task) => documentedProgram(task, needle).recipe !== null);
 }
 
 /**
- * The program a write_program answer starts from: the one rediscovered from
- * documentation when the captures yield a verified one, else the stored
- * catalog template, else null.
+ * The program a write_program answer starts from, for a catalogued language:
+ * the one rediscovered from documentation when the captures yield a verified
+ * one, else the stored catalog template, else null. A captured language the
+ * catalog has no row for (Swift) is the coding oracle's to answer.
  * @param {string} task
  * @param {string} language
  * @returns {string|null}
  */
 function writeProgramTemplate(task, language) {
-  if (!task || !language) return null;
+  if (!task || !language || typeof WRITE_PROGRAM_LANGUAGES !== "object" || !WRITE_PROGRAM_LANGUAGES[language]) return null;
   const documented = documentedProgram(task, language);
   if (documented.recipe) return documented.recipe.entry;
   const stored = typeof WRITE_PROGRAM_TEMPLATES === "object" ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
   return typeof stored === "string" ? stored : null;
+}
+
+/**
+ * The catalog row a write_program answer runs a pair's program with: the
+ * WRITE_PROGRAM_LANGUAGES row, its file and commands replaced by the run
+ * contract the documented program binds (R1165-6), so a documented command
+ * is the one shown and a documented class name (`HelloWorldApp`) is the file
+ * the answer saves. Null for an uncatalogued language.
+ * @param {string} task
+ * @param {string} language
+ * @returns {object|null}
+ */
+function writeProgramLanguageInfo(task, language) {
+  const base = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
+  const contract = base && task ? documentedProgram(task, language).contract : null;
+  if (!contract) return base || null;
+  const command = (role) => (contract.commands.find((entry) => entry.role === role) || { command: null }).command;
+  return { ...base, saveAs: contract.saveAs, checkCommand: command("check"), runCommand: command("run") };
+}
+
+/**
+ * The derivation a documented pair adds after its `procedure_cache` event:
+ * one `command_source` per catalog command (where the command shown comes
+ * from, a page or the catalog) and the `documentation_deviation` the program
+ * carries, as `[kind, payload]`. Mirrors `documentation_events` in
+ * rust/src/discovery_production_documentation.rs.
+ * @param {string} task
+ * @param {string} language
+ * @returns {Array<Array<string>>}
+ */
+function documentationEvents(task, language) {
+  const documented = typeof WRITE_PROGRAM_LANGUAGES === "object" && WRITE_PROGRAM_LANGUAGES[language]
+    ? documentedProgram(task, language) : null;
+  if (!documented || !documented.contract) return [];
+  const events = documented.contract.commands.map((entry) => ["command_source",
+    `language=${language} task=${task} role=${entry.role} source=${entry.source} command=${entry.command}`]);
+  if (documented.deviation) events.push(["documentation_deviation", `language=${language} task=${task} ${documented.deviation}`]);
+  return events;
 }
 
 /**

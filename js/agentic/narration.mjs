@@ -3,7 +3,7 @@
 
 import { Capability } from './capability.mjs';
 import { classifyTool } from './capability_router.mjs';
-import { programLanguageByAlias, programTaskByAlias } from './crate/coding_catalog.mjs';
+import { programExecution, programLanguageByAlias, programTaskByAlias } from './crate/coding_catalog.mjs';
 import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { narrationFor } from './local_search.mjs';
@@ -57,13 +57,15 @@ function capabilityIntent(capability) {
 /** Mirrors `fn program_command_intent` in rust/src/agentic_coding/narration.rs. */
 function programCommandIntent(prompt, args) {
   const normalized = prompt.toLowerCase();
-  if (!programTaskByAlias(normalized)) return null;
+  const task = programTaskByAlias(normalized);
+  if (!task) return null;
   const language = programLanguageByAlias(normalized);
   if (!language) return null;
   const command = commandArgument(args);
   if (command === null) return null;
-  if (language.execution.check_command === command) return 'agentic_action_compile_program';
-  if (language.execution.run_command === command) return 'agentic_action_run_program';
+  const execution = programExecution(task.slug, language);
+  if (execution.check_command === command) return 'agentic_action_compile_program';
+  if (execution.run_command === command) return 'agentic_action_run_program';
   return null;
 }
 

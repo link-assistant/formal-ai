@@ -23,7 +23,9 @@ import { REPO_ROOT, createWorkerContext, evaluate, plain } from '../js/server/wo
 
 export const SEED_PATH = 'data/seed/coding-documentation-captures.lino';
 export const EMBEDDED_PATH = 'rust/embedded/data/seed/coding-documentation-captures.lino';
-const HEADER_FIELDS = ['language', 'task', 'rediscovery_query', 'url', 'mime', 'fixture', 'sha256'];
+const HEADER_FIELDS = ['language', 'language_name', 'task', 'rediscovery_query', 'url', 'mime', 'fixture', 'sha256'];
+/** Header fields a capture may leave out: the name the page gives its language. */
+const OPTIONAL_FIELDS = ['language_name'];
 
 const HEADER = `# Documentation captures for coding discovery (issue #1165, R1165-1).
 #
@@ -77,6 +79,7 @@ export function renderSeed(context, headers) {
     lines.push('  capture');
     for (const field of HEADER_FIELDS) {
       const value = header[field];
+      if (value === '' && OPTIONAL_FIELDS.includes(field)) continue;
       lines.push(`    ${field} ${bare(value)}`);
     }
     for (const block of captureBlocks(context, header)) {

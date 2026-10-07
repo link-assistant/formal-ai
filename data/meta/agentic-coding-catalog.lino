@@ -185,15 +185,6 @@ coding_catalog
     label "copy standard input to standard output"
     output "hello\nworld"
     input "hello\nworld\n"
-  template "hello_world:java"
-    task_slug hello_world
-    language_slug java
-  template "hello_world:scala"
-    task_slug hello_world
-    language_slug scala
-  template "hello_world:php"
-    task_slug hello_world
-    language_slug php
   template "count_to_three:rust"
     task_slug count_to_three
     language_slug rust
@@ -629,12 +620,21 @@ coding_catalog
   template "hello_world:cpp"
     task_slug hello_world
     language_slug cpp
+  template "hello_world:java"
+    task_slug hello_world
+    language_slug java
   template "hello_world:csharp"
     task_slug hello_world
     language_slug csharp
   template "hello_world:ruby"
     task_slug hello_world
     language_slug ruby
+  template "hello_world:scala"
+    task_slug hello_world
+    language_slug scala
   template "hello_world:kotlin"
     task_slug hello_world
     language_slug kotlin
+  template "hello_world:php"
+    task_slug hello_world
+    language_slug php

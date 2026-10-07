@@ -468,6 +468,7 @@ coding_documentation_captures
       text "# The famous Hello World\n# Program is trivial in\n# Ruby. Superfluous:\n#\n# * A ""main"" method\n# * Newline\n# * Semicolons\n#\n# Here is the Code:\n\nputs ""Hello World!"""
   capture
     language swift
+    language_name "Swift"
     task hello_world
     rediscovery_query "Swift hello world program"
     url "https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/GuidedTour/GuidedTour.md"
@@ -831,3 +832,52 @@ coding_documentation_captures
     block
       language "swifttest"
       text "  -> func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool\n         where T.Element: Equatable, T.Element == U.Element\n     {\n         for lhsItem in lhs {\n             for rhsItem in rhs {\n                 if lhsItem == rhsItem {\n                     return true\n                 }\n             }\n         }\n        return false\n     }\n  >> let hasAnyCommon =\n  -> anyCommonElements([1, 2, 3], [3])\n  >> print(hasAnyCommon)\n  << true"
+  capture
+    language java
+    task hello_world
+    rediscovery_query "Java hello world application"
+    url "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/oracle-hello-world-unix.html"
+    sha256 "df36cbcc99836cfadc67f7bbb7c7bedeea27b57f0df0d6c79d85dae81b6e3750"
+    block
+      language "unknown"
+      text "cd /tmp\nmkdir examples\ncd examples\nmkdir java"
+    block
+      language "unknown"
+      text "cd /tmp/examples/java"
+    block
+      language "unknown"
+      text "/**\n * The HelloWorldApp class implements an application that\n * simply prints ""Hello World!"" to standard output.\n */\nclass HelloWorldApp {\n    public static void main(String[] args) {\n        System.out.println(""Hello World!""); // Display the string.\n    }\n}"
+    block
+      language "unknown"
+      text "cd /tmp/examples/java"
+    block
+      language "unknown"
+      text "javac HelloWorldApp.java"
+    block
+      language "unknown"
+      text "java HelloWorldApp"
+  capture
+    language php
+    task hello_world
+    rediscovery_query "PHP first page tutorial"
+    url "https://www.php.net/manual/en/tutorial.firstpage.php"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/php-tutorial-firstpage.html"
+    sha256 "83a92271b42f99981742b4750be07d16455d29d1ad9b90287d9533588799b0b6"
+    block
+      language "unknown"
+      text "<?php\n\necho ""Hello World!"";\n\n?>"
+    block
+      language "unknown"
+      text "php -S localhost:8000"
+    block
+      language "unknown"
+      text "<!DOCTYPE html>\n<html>\n    <head>\n        <title>PHP Test</title>\n    </head>\n    <body>\n        <?php echo '<p>Hello World</p>'; ?>\n    </body>\n</html>"
+    block
+      language "unknown"
+      text "<!DOCTYPE html>\n<html>\n    <head>\n        <title>PHP Test</title>\n    </head>\n    <body>\n        <p>Hello World</p>\n    </body>\n</html>"
+    block
+      language "unknown"
+      text "<?php\n\nphpinfo();\n\n?>"

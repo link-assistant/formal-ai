@@ -13,14 +13,18 @@ code_example_parts
     output_call print!
     output_call eprintln!
     entry_name main
+    bare_output_call print!
   part_language kotlin
     output_call println
     output_call print
     entry_name main
+    bare_output_call print
   part_language scala
     output_call println
     output_call print
     entry_name main
+    bare_output_call print
+    entry_container object
   part_language swift
     output_call print
     entry_name none
@@ -29,23 +33,31 @@ code_example_parts
     output_call fmt.Print
     output_call println
     entry_name main
+    bare_output_call fmt.Print
   part_language java
     output_call System.out.println
     output_call System.out.print
     entry_name main
+    bare_output_call System.out.print
+    entry_container class
   part_language csharp
     output_call Console.WriteLine
     output_call Console.Write
     entry_name Main
+    bare_output_call Console.Write
   part_language c
     output_call printf
     output_call puts
     entry_name main
+    bare_output_call printf
   part_language cpp
     output_call "std::cout"
     output_call printf
     output_call puts
     entry_name main
+    bare_output_call "std::cout"
+    bare_output_call printf
+    newline_token "std::endl"
   part_language javascript
     output_call console.log
     entry_name none
@@ -59,13 +71,17 @@ code_example_parts
     output_call puts
     output_call print
     entry_name none
+    bare_output_call print
   part_language php
     output_call echo
     entry_name none
+    bare_output_call echo
+    newline_token PHP_EOL
   part_language r
     output_call print
     output_call cat
     entry_name none
+    bare_output_call cat
   # Pascal is held out (R1164-9). Its grammar row is registered in
   # program-cst-grammars.lino (meta-language ships tree-sitter-pascal), but
   # on purpose no Pascal vocabulary and no Pascal program sits here. The
@@ -94,4 +110,11 @@ code_example_parts
   prose_relation
     relation print
     kind print_stdout
+  # A bare_output_call prints its argument with no line break, and a
+  # newline_token on the same line supplies one; together they tell the
+  # documentation route when a documented program prints its text without
+  # the trailing newline (issue #1165). An entry_container keyword is
+  # followed by the name a run contract invokes (a Java class or a Scala
+  # object), the name a documented program binds in the file it is saved
+  # as and in its commands.
   note "Recomposition builds every program from a decomposed example's own body with its output literal slotted, so this file stores no program templates. A language with no contributing example cannot be recomposed."

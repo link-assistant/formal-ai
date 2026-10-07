@@ -269,7 +269,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
       trace: diagnostics.trace,
     };
   }
-  const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
+  const languageInfo = writeProgramLanguageInfo(task, language); // #1165 R1165-6: the documented run contract
   const taskInfo = WRITE_PROGRAM_TASKS[task];
   const expectedOutput = writeProgramExpectedOutput(task, languageInfo, taskInfo);
   // The sandbox can only execute self-contained JavaScript; a snippet that pulls

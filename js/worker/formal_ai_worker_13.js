@@ -1,6 +1,24 @@
 // Worker module 14 of 21. Loaded by ../formal_ai_worker.js.
+// Issue #1165 R1165-4: a language the documentation route rediscovers a
+// program for is answered from the captured page before any cached snapshot
+// (mirrors `documented_oracle_snippet` in Rust).
+function codingOracleDocumentedSnippet(taskSlug, language) {
+  const slug = String(language || "").trim().toLowerCase();
+  const documented = slug && taskSlug ? documentedProgram(taskSlug, slug) : null;
+  if (!documented || !documented.recipe) return null;
+  return {
+    taskSlug: taskSlug,
+    languageSlug: slug,
+    languageLabel: documented.languageName || slug,
+    source: "documentation-capture",
+    sourceUrl: documented.recipe.rediscovery_source,
+    code: documented.recipe.entry,
+    expectedOutput: documented.recipe.verified_output,
+  };
+}
+
 function codingOracleAnswer(taskSlug, language) {
-  const snippet = codingOracleLookup(taskSlug, language);
+  const snippet = codingOracleDocumentedSnippet(taskSlug, language) || codingOracleLookup(taskSlug, language);
   if (!snippet) return null;
   const sourceMeta = KNOWLEDGE_SOURCES[snippet.source];
   const content =

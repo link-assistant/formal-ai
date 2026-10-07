@@ -117,6 +117,27 @@ export function programTemplate(taskSlug, languageSlug) {
     template.task_slug === taskSlug && template.language_slug === languageSlug) ?? null;
 }
 
+/**
+ * The file a pair's program is saved as: the catalog row's, or the one the
+ * documented run contract binds when the program declares another name
+ * (issue #1165 R1165-6, HelloWorldApp.java). Mirrors
+ * `program_spec(..).language.save_as`.
+ */
+export function programSaveAs(taskSlug, language) {
+  return realm()?.writeProgramLanguageInfo?.(taskSlug, language.slug)?.saveAs ?? language.save_as;
+}
+
+/**
+ * The check and run commands a pair's program is run with: the catalog row's,
+ * or the ones the documented run contract binds (issue #1165 R1165-6).
+ * Mirrors `program_spec(..).language.execution`.
+ */
+export function programExecution(taskSlug, language) {
+  const bound = realm()?.writeProgramLanguageInfo?.(taskSlug, language.slug);
+  if (!bound) return language.execution;
+  return { ...language.execution, check_command: bound.checkCommand ?? null, run_command: bound.runCommand };
+}
+
 /** Mirrors `ProgramLanguage::is_framework`. */
 export function isFramework(language) {
   return language.framework_of !== null;

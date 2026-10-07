@@ -100,7 +100,7 @@ template_hello_world_java
   language java
   task hello_world
   code_fence java
-  code 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, world!");\n    }\n}'
+  program_source "documentation_route"
 template_hello_world_csharp
   intent write_program
   language csharp
@@ -118,7 +118,7 @@ template_hello_world_scala
   language scala
   task hello_world
   code_fence scala
-  code 'object Main {\n  def main(args: Array[String]): Unit = {\n    println("Hello, world!")\n  }\n}'
+  program_source "documentation_route"
 template_hello_world_kotlin
   intent write_program
   language kotlin
@@ -130,7 +130,7 @@ template_hello_world_php
   language php
   task hello_world
   code_fence php
-  code '<?php\n\necho "Hello, world!", PHP_EOL;'
+  program_source "documentation_route"
 template_count_to_three_python
   intent write_program
   language python

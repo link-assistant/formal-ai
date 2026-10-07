@@ -892,10 +892,6 @@ const WRITE_PROGRAM_TEMPLATES = {
   // documentation capture are rediscovered from
   // data/seed/coding-documentation-captures.lino (writeProgramTemplate).
   hello_world: {
-    java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, world!");\n    }\n}',
-    scala:
-      'object Main {\n  def main(args: Array[String]): Unit = {\n    println("Hello, world!")\n  }\n}',
-    php: '<?php\n\necho "Hello, world!", PHP_EOL;',
     laravel:
       "<?php\n\nnamespace App\\Console\\Commands;\n\nuse Illuminate\\Console\\Command;\n\nclass HelloWorld extends Command\n{\n    protected $signature = 'hello:world';\n\n    protected $description = 'Print a greeting';\n\n    public function handle(): int\n    {\n        $this->line('Hello, world!');\n\n        return self::SUCCESS;\n    }\n}",
   },
@@ -1141,6 +1137,8 @@ const KNOWLEDGE_SOURCES = {
     baseUrl: "http://helloworldcollection.de",
   },
   "stack-overflow": { displayName: "Stack Overflow", baseUrl: "https://stackoverflow.com" },
+  // Issue #1165: a page captured under data/seed/coding-documentation-captures.lino.
+  "documentation-capture": { displayName: "Documentation capture", baseUrl: "" },
 };
 
 // The committed popular-case cache (mirrors ORACLE_SNAPSHOTS in src/knowledge.rs).
@@ -1154,15 +1152,6 @@ const CODING_ORACLE_SNAPSHOTS = [
     source: "hello-world-collection",
     sourceUrl: "http://helloworldcollection.de/#Kotlin",
     code: 'fun main() {\n    println("Hello, World!")\n}',
-    expectedOutput: "Hello, World!",
-  },
-  {
-    taskSlug: "hello_world",
-    languageSlug: "swift",
-    languageLabel: "Swift",
-    source: "hello-world-collection",
-    sourceUrl: "http://helloworldcollection.de/#Swift",
-    code: 'print("Hello, World!")',
     expectedOutput: "Hello, World!",
   },
   {
@@ -1231,6 +1220,7 @@ function codingOracleLookup(taskSlug, language) {
 function codingOracleKnowsLanguage(language) {
   const needle = String(language || "").trim().toLowerCase();
   if (!needle) return false;
+  if (typeof documentationKnowsLanguage === "function" && documentationKnowsLanguage(needle)) return true;
   return CODING_ORACLE_SNAPSHOTS.some(
     (snippet) =>
       snippet.languageSlug === needle ||

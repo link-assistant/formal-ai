@@ -6,7 +6,7 @@ import { classifyTool, toolFor } from './capability_router.mjs';
 import { plainText } from './content.mjs';
 import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
-import { programLanguageByAlias, programTaskByAlias, programTemplate } from './crate/coding_catalog.mjs';
+import { programLanguageByAlias, programSaveAs, programTaskByAlias, programTemplate } from './crate/coding_catalog.mjs';
 import { escapeReference } from './crate/links_format.mjs';
 import { parseSubstitutionQuery, renderSubstitutionQuery, substitutionEffect } from './crate/links_substitution_query.mjs';
 import {
@@ -124,7 +124,7 @@ function generatedArtifact(task) {
   if (!programTask) return null;
   const template = programTemplate(programTask.slug, language.slug);
   if (!template) return null;
-  return { path: language.save_as, content: `${trimEnd(template.code)}\n` };
+  return { path: programSaveAs(programTask.slug, language), content: `${trimEnd(template.code)}\n` };
 }
 
 function requestedRewrite(task, artifact) {

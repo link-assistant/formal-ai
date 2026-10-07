@@ -71,6 +71,11 @@ const DISCOVERED = [
   ['Ruby', 'ruby', 'https://www.ruby-lang.org/en/examples/hello_world/',
     '# The famous Hello World\n# Program is trivial in\n# Ruby. Superfluous:\n#\n# * A "main" method\n# * Newline\n# * Semicolons\n#\n# Here is the Code:\n\nputs "Hello, world!"'],
   ['Kotlin', 'kotlin', 'https://kotlinlang.org/docs/command-line.html', 'fun main() {\n    println("Hello, world!")\n}'],
+  ['Java', 'java', 'https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html',
+    '/**\n * The HelloWorldApp class implements an application that\n * simply prints "Hello World!" to standard output.\n */\nclass HelloWorldApp {\n    public static void main(String[] args) {\n        System.out.println("Hello, world!"); // Display the string.\n    }\n}'],
+  ['Scala', 'scala', 'https://docs.scala-lang.org/scala3/book/taste-hello-world.html',
+    'object hello {\n  def main(args: Array[String]) = {\n    println("Hello, world!")\n  }\n}'],
+  ['PHP', 'php', 'https://www.php.net/manual/en/tutorial.firstpage.php', '<?php\n\necho "Hello, world!";\n\n?>'],
 ];
 
 test('R1165-1: a pair with documentation captures answers from the program rediscovered from them', async () => {
@@ -88,13 +93,46 @@ test('R1165-1: a pair with documentation captures answers from the program redis
   }
 });
 
-test('R1165-1: a captured example that breaks the run contract is named on the miss', async () => {
-  const result = await host.solve('Write a hello world program in Scala', []);
-  assert.deepEqual(cacheEvents(result), [{
-    kind: 'procedure_cache',
-    payload: 'outcome=miss language=scala task=hello_world research_missing=reviewer_approval documentation_rejected=run_contract:Main',
-  }]);
-  assert.ok(result.content.includes('object Main'), 'the stored template still answers');
+const documentationEvents = (result) => (result.solverEvents || [])
+  .filter((event) => event.kind === 'command_source' || event.kind === 'documentation_deviation');
+
+// R1165-6 and the Java/Scala binding: the documented class or object name
+// binds the file the answer saves and every command, a command a captured
+// page states is shown from that page, and the derivation records the
+// source of each command and the deviation a documented program carries.
+test('R1165-6: the documented run contract binds the program name and records each command source', async () => {
+  const oracle = 'https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html';
+  const java = await host.solve('Write a hello world program in Java', []);
+  assert.deepEqual(documentationEvents(java), [
+    { kind: 'command_source', payload: `language=java task=hello_world role=check source=${oracle} command=javac HelloWorldApp.java` },
+    { kind: 'command_source', payload: `language=java task=hello_world role=run source=${oracle} command=java HelloWorldApp` },
+  ]);
+  assert.ok(java.content.includes('Save the code above to a file named `HelloWorldApp.java`.'), java.content);
+  assert.deepEqual([java.programExecution.checkCommand, java.programExecution.runCommand], ['javac HelloWorldApp.java', 'java HelloWorldApp']);
+  const scala = await host.solve('Write a hello world program in Scala', []);
+  assert.deepEqual(documentationEvents(scala), [
+    { kind: 'command_source', payload: 'language=scala task=hello_world role=check source=catalog command=scalac hello.scala' },
+    { kind: 'command_source', payload: 'language=scala task=hello_world role=run source=catalog command=scala hello' },
+  ]);
+  const php = await host.solve('Write a hello world program in PHP', []);
+  assert.deepEqual(documentationEvents(php), [
+    { kind: 'command_source', payload: 'language=php task=hello_world role=check source=catalog command=php -l main.php' },
+    { kind: 'command_source', payload: 'language=php task=hello_world role=run source=catalog command=php main.php' },
+    { kind: 'documentation_deviation', payload: 'language=php task=hello_world trailing_newline=absent' },
+  ]);
+  const kinds = php.solverEvents.map((event) => event.kind);
+  assert.equal(kinds.indexOf('command_source'), kinds.indexOf('procedure_cache') + 1);
+});
+
+// R1165-4: the coding oracle reads the documentation route before its cached
+// snapshots, so Swift (no catalog program in either runtime) is answered from
+// the Swift book and its Hello World Collection snapshot is retired.
+test('R1165-4: the oracle answers Swift from the captured Swift book', async () => {
+  const context = await host.boot();
+  const swift = await host.solve('write me a hello world program in swift', []);
+  assert.equal(swift.intent, 'write_program_oracle_hello_world_swift');
+  assert.equal(swift.content, 'Here is a minimal Swift program (hello world):\n\n```swift\nprint("Hello, world!")\n// Prints "Hello, world!"\n```\n\nOutput:\n```text\nHello, world!\n```\nSource: Documentation capture (https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/GuidedTour/GuidedTour.md), cached locally as a popular example.');
+  assert.equal(evaluate(context, 'CODING_ORACLE_SNAPSHOTS.some((snippet) => snippet.languageSlug === "swift")'), false);
 });
 
 test('R1165-1: a customised request reuses the rediscovered procedure with its own literal', async () => {

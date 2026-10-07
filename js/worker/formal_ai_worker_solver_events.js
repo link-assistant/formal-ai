@@ -253,6 +253,9 @@ function solverWriteProgramEvents(answer, prompt) {
     solverEvent("legacy_intent", legacy),
     ...solverObligationGapEvents(prompt),
     ...solverProcedureCacheEvents(prompt, language, task),
+    // R1165-6: where each command shown comes from, and what the documented
+    // program departs from (`documentation_events` in Rust).
+    ...documentationEvents(task, language).map((pair) => solverEvent(pair[0], pair[1])),
   ];
 }
 

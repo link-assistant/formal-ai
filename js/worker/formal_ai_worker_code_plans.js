@@ -173,7 +173,7 @@ function tryWriteScript(prompt, responseLanguage) {
   const language = writeScriptLanguage(prompt, normalizePrompt(prompt));
   if (!language) return null;
   const template = writeProgramTemplate("hello_world", language);
-  const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
+  const languageInfo = writeProgramLanguageInfo("hello_world", language);
   const taskInfo = WRITE_PROGRAM_TASKS.hello_world;
   const i18n = writeProgramStrings(responseLanguage);
   const output = writeProgramExpectedOutput("hello_world", languageInfo, taskInfo);
