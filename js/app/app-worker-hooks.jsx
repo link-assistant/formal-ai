@@ -10,6 +10,7 @@ import {
 } from "./desktop-bridge.jsx";
 import { normalizeAssistantName } from "./interface-commands.jsx";
 import { localFallbackAnswer } from "./local-fallback.jsx";
+import { waitForMemoryWrites } from "./memory-events.jsx";
 import {
   desktopToolRouterGrants, persistPreferences, serializeDesktopToolGrants,
 } from "./preferences.jsx";
@@ -360,19 +361,18 @@ export function useAnswerRequest({
 }) {
   const requestAnswer = useCallback(async (text, history = []) => {
     const worker = workerRef.current;
-    // Issue #529: snapshot every searchable persistent-memory value so the
-    // worker can report how many occurrences a natural-language substitution
-    // rewrites. The actual read+write transform is applied back to IndexedDB
-    // when the answer returns (see handleMemoryOperation).
+    // Issue #529: snapshot every searchable persistent-memory value (after the
+    // previous answer's background writes, e.g. its #1184 derivation record,
+    // settle) so the worker sees them; handleMemoryOperation writes back.
     let memory = [];
     let memoryEvents = [];
     if (typeof window !== "undefined" && window.FormalAiMemory) {
       try {
+        await waitForMemoryWrites();
         memoryEvents = await window.FormalAiMemory.listEvents();
         memory = await window.FormalAiMemory.collectSearchableValues();
       } catch (_error) {
-        memory = [];
-        memoryEvents = [];
+        memory = []; memoryEvents = [];
       }
     }
     const prefs = {

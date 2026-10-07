@@ -880,11 +880,11 @@ export function App() {
       return;
     }
     appendAssistantMessage(answer);
-    // Issue #529: persist any natural-language memory write the worker
-    // recognised; issue #1184 R1184-9: file the answer's derivation record in
-    // the memory log, where `explain <answer id>` reads it back.
-    for (const op of [answer.memoryOperation, answer.derivationRecord]) if (op) await handleMemoryOperation(op);
+    // Issue #529: persist the user's memory write before releasing the composer;
+    // the #1184 derivation record is bookkeeping, filed in the background.
+    if (answer.memoryOperation) await handleMemoryOperation(answer.memoryOperation);
     setPending(false);
+    if (answer.derivationRecord) handleMemoryOperation(answer.derivationRecord);
   }
 
   async function send() {
