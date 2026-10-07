@@ -2,9 +2,9 @@ self_ast_census
   target src/history_context.rs
   language rust
   fidelity signature
-  byte_len 23735
-  line_count 618
-  content_id source_module_3cd33bbe226749ae
+  byte_len 23769
+  line_count 620
+  content_id source_module_111e465fd3878b08
   symbol_count 35
   symbols
     const SEED_PATH 33 33

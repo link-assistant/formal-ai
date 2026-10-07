@@ -2,9 +2,9 @@ self_ast_census
   target src/code_example_knowledge.rs
   language rust
   fidelity signature
-  byte_len 31166
+  byte_len 31147
   line_count 828
-  content_id source_module_04e6b00850bd9c04
+  content_id source_module_c5d091a306d14bd6
   symbol_count 29
   symbols
     const PARTS_TEXT 44 44

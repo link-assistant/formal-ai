@@ -2,9 +2,9 @@ self_ast_census
   target src/web_formalize.rs
   language rust
   fidelity signature
-  byte_len 33204
-  line_count 874
-  content_id source_module_5a2bef0e30a9914d
+  byte_len 33521
+  line_count 879
+  content_id source_module_30073e37815d74f4
   symbol_count 42
   symbols
     const RULES_TEXT 38 38
@@ -26,26 +26,26 @@ self_ast_census
     function url_domain 285 291
     function formalize_page 300 302
     function formalize_page_with_context 308 329
-    function blocks_to_network 334 375
-    const OPAQUE_HTML_TAGS 379 379
-    const NESTED_BLOCK_OPENERS 383 383
-    const HTML_COMMENT_OPEN 386 386
-    const HTML_COMMENT_CLOSE 387 387
-    function find_close_tag 391 403
-    function html_blocks 410 524
-    function has_class_prefix 527 532
-    function language_class 538 538
-    function markdown_blocks 547 627
-    function json_blocks 631 657
-    function plain_blocks 661 679
-    function paragraph_block 683 694
-    function flush_paragraph 697 702
-    function resolve_language 708 756
-    function shebang_language 759 766
-    function extension_language 769 775
-    function tag_attr 778 795
-    function strip_tags 798 810
-    function strip_tags_keep_lines 813 819
-    function cell_texts 822 846
-    function decode_entities 849 856
-    struct TrustFeatures 860 871
+    function blocks_to_network 334 380
+    const OPAQUE_HTML_TAGS 384 384
+    const NESTED_BLOCK_OPENERS 388 388
+    const HTML_COMMENT_OPEN 391 391
+    const HTML_COMMENT_CLOSE 392 392
+    function find_close_tag 396 408
+    function html_blocks 415 529
+    function has_class_prefix 532 537
+    function language_class 543 543
+    function markdown_blocks 552 632
+    function json_blocks 636 662
+    function plain_blocks 666 684
+    function paragraph_block 688 699
+    function flush_paragraph 702 707
+    function resolve_language 713 761
+    function shebang_language 764 771
+    function extension_language 774 780
+    function tag_attr 783 800
+    function strip_tags 803 815
+    function strip_tags_keep_lines 818 824
+    function cell_texts 827 851
+    function decode_entities 854 861
+    struct TrustFeatures 865 876
