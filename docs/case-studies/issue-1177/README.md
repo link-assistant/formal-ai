@@ -64,7 +64,9 @@ them. Every prompt reached #1173's fallback paragraph.
 Each probe is answered with the derived artifact and its honesty marker:
 the debugging answer quotes line 1, names `- 1` as the shift, shows both
 fixes and the property `average` promises with its source; the regex answer
-is `^\d{5}(-\d{4})?$`, "Verified structurally", "No match was run"; the SQL
+is `^\d{5}(-\d{4})?$`, "Verified structurally", and (since 2026-10-07)
+the derived examples it accepts and rejects, matched in both runtimes with no
+input of the user's run; the SQL
 answer is `SELECT * FROM users WHERE age > 30;` with a clause-by-clause
 mapping and "nothing was run"; the find answer is
 `find /var -name '*.log' -size +10M` with the manual link and "Not
