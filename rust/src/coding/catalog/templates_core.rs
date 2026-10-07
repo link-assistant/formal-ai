@@ -1,37 +1,14 @@
-//! Templates for the original coding tasks — hello world, count to three, and
-//! the two directory-listing variants — in every supported language. Split from
+//! Templates for the original coding tasks — count to three and the two
+//! directory-listing variants — in every supported language. Split from
 //! [`super::templates_extended`] only to keep each file well under the
 //! repository's per-file line limit; the two groups are concatenated in
-//! [`super`].
+//! [`super`]. The hello world programs are no longer compiled here: the
+//! documentation route rediscovers them from captured pages (issue #1165
+//! R1165-4) and the catalog table appends them at runtime.
 
 use super::types::CompiledTemplate;
 
 pub(super) const TEMPLATES_CORE: &[CompiledTemplate] = &[
-    CompiledTemplate {
-        task_slug: "hello_world",
-        language_slug: "java",
-        code: r#"public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, world!");
-    }
-}"#,
-    },
-    CompiledTemplate {
-        task_slug: "hello_world",
-        language_slug: "scala",
-        code: r#"object Main {
-  def main(args: Array[String]): Unit = {
-    println("Hello, world!")
-  }
-}"#,
-    },
-    CompiledTemplate {
-        task_slug: "hello_world",
-        language_slug: "php",
-        code: r#"<?php
-
-echo "Hello, world!", PHP_EOL;"#,
-    },
     CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "rust",

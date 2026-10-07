@@ -48,7 +48,9 @@ const PHP_CATALOG_ANSWER: &str = r#"Here is a minimal PHP hello world program:
 ```php
 <?php
 
-echo "Hello, world!", PHP_EOL;
+echo "Hello, world!";
+
+?>
 ```
 
 Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
@@ -137,14 +139,13 @@ fn kotlin_graduated_from_the_oracle_to_the_catalog() {
     assert_eq!(response.answer, KOTLIN_CATALOG_ANSWER);
 }
 
-/// Swift is still uncatalogued, so it still resolves from the oracle: the
-/// fallback keeps its job for every language the catalog does not template.
-///
-/// PHP shared this test until issue #1021 catalogued it, and rewriting what was
-/// left was the chance to show the answer rather than a substring of it (R234-2,
-/// issue #960): the oracle route is the one place an answer carries an external
-/// attribution, and a reader cannot check that the attribution is honest -- a
-/// cached snippet, credited to where it came from -- from `contains("```swift")`.
+/// Swift has no catalog program, so it still resolves from the oracle -- and
+/// the oracle reads the documentation route before its cached snapshots
+/// (issue #1165 R1165-4): the program is the Swift book's, rediscovered from
+/// its captured guided tour, and the Hello World Collection snapshot that
+/// used to answer here is retired. The oracle route is the one place an
+/// answer carries an external attribution, so the answer is shown whole
+/// (R234-2, issue #960): the source line names the captured page.
 #[test]
 fn swift_hello_world_resolves_from_the_oracle() {
     let solver = UniversalSolver::default();
@@ -156,16 +157,17 @@ fn swift_hello_world_resolves_from_the_oracle() {
         "Here is a minimal Swift program (hello world):\n\
          \n\
          ```swift\n\
-         print(\"Hello, World!\")\n\
+         print(\"Hello, world!\")\n\
+         // Prints \"Hello, world!\"\n\
          ```\n\
          \n\
          Output:\n\
          ```text\n\
-         Hello, World!\n\
+         Hello, world!\n\
          ```\n\
-         Source: Hello World Collection \
-         (http://helloworldcollection.de/#Swift), cached locally as a popular \
-         example."
+         Source: Documentation capture \
+         (https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/GuidedTour/GuidedTour.md), \
+         cached locally as a popular example."
     );
 }
 

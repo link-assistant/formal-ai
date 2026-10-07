@@ -667,7 +667,7 @@ fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bo
 pub fn format_write_script_execution(program: ProgramSpec) -> String {
     let execution = &program.language.execution;
     let expected_output = program.expected_output();
-    let cmd = execution.check_command.map_or_else(
+    let cmd = execution.check_command.as_deref().map_or_else(
         || format!("Run command: `{}`", execution.run_command),
         |check| {
             format!(

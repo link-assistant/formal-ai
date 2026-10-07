@@ -402,9 +402,10 @@ fn contract(save_as: &'static str, commands: &'static [&'static str]) -> RunCont
 /// bound into its literal, and the program is verified before it is
 /// returned: the Rust Book, go.dev and kotlinlang pages yield their programs
 /// (kotlinlang's command-line page beats the tour, whose example carries a
-/// comment line), the Scala book's `object hello` is refused because the
-/// catalog runs `scala Main`, and a pair with no capture is the research
-/// miss.
+/// comment line), the Scala book's `object hello` binds its own name in
+/// place of the catalog's `Main` (its `entry_container` keyword), a program
+/// that declares no name the contract can bind is refused, and a pair with no
+/// capture is the research miss.
 #[cfg(feature = "meta-language")]
 #[test]
 fn documentation_rediscovery_recomposes_the_captured_example_and_checks_the_run_contract() {
@@ -462,14 +463,26 @@ fn documentation_rediscovery_recomposes_the_captured_example_and_checks_the_run_
         rediscover_from_documentation("kotlin", "hello_world", "Hi there", kotlin_contract)
             .expect("the bound literal is the requirement's");
     assert_eq!(greeting.entry, "fun main() {\n    println(\"Hi there\")\n}");
+    let scala = rediscover_from_documentation(
+        "scala",
+        "hello_world",
+        "Hello, world!",
+        contract("Main.scala", &["scalac Main.scala", "scala Main"]),
+    )
+    .expect("the Scala book's object binds its own name");
+    assert_eq!(
+        scala.entry,
+        "object hello {\n  def main(args: Array[String]) = {\n    println(\"Hello, world!\")\n  }\n}"
+    );
     assert_eq!(
         rediscover_from_documentation(
-            "scala",
+            "kotlin",
             "hello_world",
             "Hello, world!",
             contract("Main.scala", &["scalac Main.scala", "scala Main"]),
         ),
-        Err(String::from("run_contract:Main"))
+        Err(String::from("run_contract:Main")),
+        "a program declaring no name the contract can bind is refused"
     );
     assert_eq!(
         rediscover_from_documentation(
@@ -521,20 +534,61 @@ fn write_program_miss_answers_from_the_documentation() {
     assert_eq!(recipe.source, program);
 }
 
-/// A captured page whose example breaks the run contract is not answered:
-/// the Scala miss names the rejection beside the research gap.
+/// R1165-6: a documented class or object name binds the file the answer
+/// saves and every command, and the derivation records where each command
+/// shown comes from.
+///
+/// Oracle's tutorial declares `class HelloWorldApp` and states `javac
+/// HelloWorldApp.java` and `java HelloWorldApp`, so both commands are the
+/// page's; the Scala book's `object hello` binds the catalog's commands,
+/// whose source stays the catalog. php.net's `echo` prints no trailing
+/// newline, and the derivation records that deviation.
 #[cfg(feature = "meta-language")]
 #[test]
-fn a_rejected_documented_example_is_named_on_the_miss() {
-    let response =
-        formal_ai::UniversalSolver::default().solve("write me hello world program in Scala");
+fn a_documented_program_binds_its_run_contract_and_records_each_command_source() {
+    const ORACLE: &str = "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html";
+    let cases = [
+        (
+            "Java",
+            "HelloWorldApp.java",
+            ["javac HelloWorldApp.java", "java HelloWorldApp"],
+            [ORACLE, ORACLE],
+        ),
+        (
+            "Scala",
+            "hello.scala",
+            ["scalac hello.scala", "scala hello"],
+            ["catalog", "catalog"],
+        ),
+    ];
+    for (name, path, commands, sources) in cases {
+        let response = formal_ai::UniversalSolver::default()
+            .solve(&format!("write me hello world program in {name}"));
+        let language = name.to_ascii_lowercase();
+        for ((role, command), source) in ["check", "run"].iter().zip(commands).zip(sources) {
+            let event = format!(
+                "command_source language={language} task=hello_world role={role} \
+                 source={source} command={command}"
+            );
+            assert!(
+                response.links_notation.contains(&event),
+                "{event}: {}",
+                response.links_notation
+            );
+        }
+        let recipe = response
+            .execution_recipe
+            .unwrap_or_else(|| panic!("{name}: a program answer carries its recipe"));
+        assert_eq!(recipe.path, path, "{name}");
+        assert_eq!(recipe.commands, commands, "{name}");
+    }
+    let php = formal_ai::UniversalSolver::default().solve("write me hello world program in PHP");
     assert!(
-        response.links_notation.contains(
-            "procedure_cache outcome=miss language=scala task=hello_world \
-             research_missing=reviewer_approval documentation_rejected=run_contract:Main"
+        php.links_notation.contains(
+            "documentation_deviation language=php task=hello_world trailing_newline=absent"
         ),
         "{}",
-        response.links_notation
+        php.links_notation
     );
 }
 
@@ -574,7 +628,7 @@ fn documentation_captures_are_the_formalized_fixtures() {
         .parent()
         .expect("the repository root sits one level above the crate");
     let captures = all_documentation_captures();
-    assert_eq!(captures.len(), 13);
+    assert_eq!(captures.len(), 15);
     for capture in captures {
         let bytes = std::fs::read(root.join(&capture.fixture))
             .unwrap_or_else(|error| panic!("{}: {error}", capture.fixture));
@@ -611,10 +665,10 @@ fn retired_seed_programs_are_reproduced_by_the_documentation() {
     let retired: Vec<(String, String, String)> = documented_catalog_programs()
         .into_iter()
         .map(|program| {
-            let recipe = program
+            let documented = program
                 .rediscovered
                 .unwrap_or_else(|reason| panic!("{}: {reason}", program.language));
-            (program.language, program.task, recipe.entry)
+            (program.language, program.task, documented.recipe.entry)
         })
         .collect();
     let expected: Vec<(String, String, String)> = RETIRED_PROGRAMS
@@ -672,6 +726,11 @@ const RETIRED_PROGRAMS: &[(&str, &str, &str)] = &[
         "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello, world!\" << std::endl;\n    return 0;\n}",
         "C++",
     ),
+    (
+        "java",
+        "/**\n * The HelloWorldApp class implements an application that\n * simply prints \"Hello World!\" to standard output.\n */\nclass HelloWorldApp {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\"); // Display the string.\n    }\n}",
+        "Java",
+    ),
     ("csharp", "Console.WriteLine(\"Hello, world!\");", "C#"),
     (
         "ruby",
@@ -679,8 +738,14 @@ const RETIRED_PROGRAMS: &[(&str, &str, &str)] = &[
         "Ruby",
     ),
     (
+        "scala",
+        "object hello {\n  def main(args: Array[String]) = {\n    println(\"Hello, world!\")\n  }\n}",
+        "Scala",
+    ),
+    (
         "kotlin",
         "fun main() {\n    println(\"Hello, world!\")\n}",
         "Kotlin",
     ),
+    ("php", "<?php\n\necho \"Hello, world!\";\n\n?>", "PHP"),
 ];

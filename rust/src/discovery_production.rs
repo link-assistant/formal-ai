@@ -580,3 +580,4 @@ fn quote(value: &str) -> String {
 }
 
 include!("discovery_production_documentation.rs");
+include!("discovery_production_contract.rs");

@@ -771,19 +771,15 @@ impl UniversalSolver {
                         // names the inputs the policy seed's `miss_route`
                         // lacks instead of hiding behind the template.
                         None if rendered == *spec.template.code => {
-                            let execution = &spec.language.execution;
-                            let commands: Vec<&str> = execution
-                                .check_command
-                                .into_iter()
-                                .chain(std::iter::once(execution.run_command))
-                                .collect();
+                            let commands =
+                                crate::discovery_production::catalog_run_commands(spec.language);
                             crate::discovery_production::answer_cache_miss(
                                 &mut log,
                                 spec.language.slug,
                                 spec.task.slug,
                                 &spec.task.output_for_language(spec.language),
                                 crate::discovery_production::RunContract {
-                                    save_as: spec.language.save_as,
+                                    save_as: &spec.language.save_as,
                                     commands: &commands,
                                 },
                             )
@@ -793,6 +789,21 @@ impl UniversalSolver {
                 }
                 _ => None,
             };
+            // Issue #1165 R1165-6: where each command the answer shows comes
+            // from (a documentation page or the catalog), and what the
+            // documented program departs from.
+            if let SelectedRule::WriteProgram(spec) = &rule
+                && let Some(pair) =
+                    crate::coding::documented_pair(spec.task.slug, spec.language.slug)
+            {
+                for (kind, payload) in crate::discovery_production::documentation_events(
+                    spec.language.slug,
+                    spec.task.slug,
+                    &pair.program,
+                ) {
+                    log.append(kind, payload);
+                }
+            }
 
             record_candidates(&mut log, prompt, &intent);
 
@@ -839,14 +850,10 @@ impl UniversalSolver {
                             *spec,
                         )
                     }),
-                    path: spec.language.save_as.to_owned(),
+                    path: spec.language.save_as.to_string(),
                     supporting_files: Vec::new(),
-                    commands: spec
-                        .language
-                        .execution
-                        .check_command
+                    commands: crate::discovery_production::catalog_run_commands(spec.language)
                         .into_iter()
-                        .chain(std::iter::once(spec.language.execution.run_command))
                         .map(str::to_owned)
                         .collect(),
                 })),

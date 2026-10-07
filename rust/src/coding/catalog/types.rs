@@ -13,7 +13,13 @@
 
 use std::borrow::Cow;
 
-#[derive(Clone, Copy)]
+/// A catalog row: an implementation target and how its programs are run.
+///
+/// The file a program is saved as and its check and run commands are runtime
+/// data (issue #1165 R1165-6): a compiled row lends its constants, while the
+/// row a documented program binds owns the file and commands its
+/// documentation states or its declared name binds.
+#[derive(Clone)]
 pub struct ProgramLanguage {
     pub slug: &'static str,
     pub name: &'static str,
@@ -22,7 +28,7 @@ pub struct ProgramLanguage {
     pub source: &'static str,
     /// File name a novice should save the snippet as before running it (issue
     /// #330). The check/run commands above already reference this name.
-    pub save_as: &'static str,
+    pub save_as: Cow<'static, str>,
     /// The catalogued language this row is a *framework of*, or `None` when the
     /// row is a language in its own right.
     ///
@@ -147,7 +153,7 @@ pub struct ProgramTask {
 impl ProgramTask {
     #[must_use]
     pub fn output_for_language(&self, language: &ProgramLanguage) -> String {
-        list_files_sample_output(self.slug, language.save_as)
+        list_files_sample_output(self.slug, &language.save_as)
             .unwrap_or_else(|| self.output.to_owned())
     }
 }
@@ -237,9 +243,9 @@ impl ProgramSpec {
     /// against (issue #863).
     #[must_use]
     pub fn run_command_line(self) -> String {
-        let run_command = self.language.execution.run_command;
+        let run_command = &self.language.execution.run_command;
         self.stdin_fixture().map_or_else(
-            || run_command.to_owned(),
+            || run_command.to_string(),
             |input| format!("printf '{}' | {run_command}", shell_escaped(input)),
         )
     }
@@ -284,10 +290,10 @@ fn list_files_sample_output(task_slug: &str, save_as: &str) -> Option<String> {
 /// they are rows of `data/seed/toolchains.lino` now, read through
 /// [`ProgramLanguage::execution_status`] and [`ProgramLanguage::environment`],
 /// beside the probe that observes the toolchain on this machine.
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct ProgramExecution {
-    pub check_command: Option<&'static str>,
-    pub run_command: &'static str,
+    pub check_command: Option<Cow<'static, str>>,
+    pub run_command: Cow<'static, str>,
     pub notes: &'static str,
 }
 

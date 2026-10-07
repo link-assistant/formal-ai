@@ -29,9 +29,10 @@ pub fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String 
     // `find` command builder uses, so narration and action always agree.
     if capability == Some(Capability::Run) {
         if let Some(found) = super::local_search::narration_for(prompt)
-            && let Some(template) = localized(&found.intent, language) {
-                return template.replace(SUBJECT_SLOT, found.subject.trim());
-            }
+            && let Some(template) = localized(&found.intent, language)
+        {
+            return template.replace(SUBJECT_SLOT, found.subject.trim());
+        }
         if let Some(intent) = program_command_intent(prompt, &first.arguments) {
             return localized(intent, language).unwrap_or_default();
         }
@@ -75,12 +76,16 @@ fn localized(intent: &str, language: &str) -> Option<String> {
 /// narration and no command spelling is hardcoded here.
 fn program_command_intent(prompt: &str, arguments: &str) -> Option<&'static str> {
     let normalized = prompt.to_lowercase();
-    crate::coding::program_task_by_alias(&normalized)?;
-    let language = crate::coding::program_language_by_alias(&normalized)?;
+    let task = crate::coding::program_task_by_alias(&normalized)?;
+    let catalog = crate::coding::program_language_by_alias(&normalized)?;
+    // Issue #1165 R1165-6: a pair the documentation route answers runs with
+    // the commands its documented program binds.
+    let language =
+        crate::coding::program_spec(task.slug, catalog.slug).map_or(catalog, |spec| spec.language);
     let command = super::tool_result::command_argument(arguments)?;
-    if language.execution.check_command == Some(command.as_str()) {
+    if language.execution.check_command.as_deref() == Some(command.as_str()) {
         Some("agentic_action_compile_program")
-    } else if language.execution.run_command == command {
+    } else if *language.execution.run_command == *command {
         Some("agentic_action_run_program")
     } else {
         None

@@ -25,6 +25,8 @@ mod templates_listing;
 mod templates_stdin;
 mod types;
 
+use std::borrow::Cow;
+
 use crate::event_log::EventLog;
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 
@@ -53,54 +55,114 @@ const TEMPLATE_GROUPS: &[&[CompiledTemplate]] = &[
     templates_framework::TEMPLATES_FRAMEWORK,
 ];
 
-/// The catalog's program table, built once at runtime (issue #1165 R1165-4).
+/// A catalog pair the documentation route answers (issue #1165 R1165-4/6):
+/// the program it rediscovers and the row its run contract binds.
+pub struct DocumentedPair {
+    /// The task slug.
+    pub task_slug: &'static str,
+    /// The catalog row with the file and commands the documented program
+    /// binds (`HelloWorldApp.java` and `javac HelloWorldApp.java`).
+    pub language: ProgramLanguage,
+    /// The rediscovered program, its contract and its deviation.
+    pub program: crate::discovery_production::DocumentedProgram,
+}
+
+/// The catalog's runtime tables: every program it answers with, and the
+/// pairs the documentation route answers.
+struct CatalogTable {
+    templates: Vec<ProgramTemplate>,
+    documented: Vec<DocumentedPair>,
+}
+
+/// The catalog row a documented program binds: the base row with the file it
+/// is saved as and its commands taken from the program's run contract.
+fn bound_language(
+    base: &ProgramLanguage,
+    contract: &crate::discovery_production::DocumentedContract,
+) -> ProgramLanguage {
+    let command = |role: &str| {
+        contract
+            .commands
+            .iter()
+            .find(|command| command.role == role)
+            .map(|command| Cow::Owned(command.command.clone()))
+    };
+    let mut language = base.clone();
+    language.save_as = Cow::Owned(contract.save_as.clone());
+    language.execution.check_command = command("check");
+    if let Some(run) = command("run") {
+        language.execution.run_command = run;
+    }
+    language
+}
+
+/// The catalog's tables, built once at runtime (issue #1165 R1165-4).
 ///
 /// The compiled groups come first; then every pair the seed bundle retires to
 /// the documentation route (`program_source "documentation_route"` in
 /// `data/seed/hello-world-programs.lino`) takes the program the documentation
-/// captures rediscover for it. A retired pair whose captures yield no
-/// verified program has no template.
-fn template_table() -> &'static [ProgramTemplate] {
-    static TABLE: std::sync::OnceLock<Vec<ProgramTemplate>> = std::sync::OnceLock::new();
+/// captures rediscover for it, and the row its run contract binds. A retired
+/// pair whose captures yield no verified program has no template.
+fn catalog_table() -> &'static CatalogTable {
+    static TABLE: std::sync::OnceLock<CatalogTable> = std::sync::OnceLock::new();
     TABLE.get_or_init(|| {
-        let mut table: Vec<ProgramTemplate> = TEMPLATE_GROUPS
+        let mut templates: Vec<ProgramTemplate> = TEMPLATE_GROUPS
             .iter()
             .copied()
             .flatten()
             .map(ProgramTemplate::from)
             .collect();
+        let mut documented = Vec::new();
         for program in crate::discovery_production::documented_catalog_programs() {
-            let (Some(task), Some(language), Ok(recipe)) = (
+            let (Some(task), Some(language), Ok(rediscovered)) = (
                 program_task_by_slug(&program.task),
                 program_language_by_slug(&program.language),
                 program.rediscovered,
             ) else {
                 continue;
             };
-            let compiled = table.iter().any(|template| {
+            let compiled = templates.iter().any(|template| {
                 template.task_slug == task.slug && template.language_slug == language.slug
             });
-            if !compiled {
-                table.push(ProgramTemplate {
-                    task_slug: task.slug,
-                    language_slug: language.slug,
-                    code: std::borrow::Cow::Owned(recipe.entry),
-                });
+            if compiled {
+                continue;
             }
+            templates.push(ProgramTemplate {
+                task_slug: task.slug,
+                language_slug: language.slug,
+                code: Cow::Owned(rediscovered.recipe.entry.clone()),
+            });
+            documented.push(DocumentedPair {
+                task_slug: task.slug,
+                language: bound_language(language, &rediscovered.contract),
+                program: rediscovered,
+            });
         }
-        table
+        CatalogTable {
+            templates,
+            documented,
+        }
     })
 }
 
 /// Iterate over every program template the catalog answers with.
 pub fn program_templates() -> impl Iterator<Item = &'static ProgramTemplate> {
-    template_table().iter()
+    catalog_table().templates.iter()
 }
 
 /// Total number of templates in the catalog (used for diagnostics).
 #[must_use]
 pub fn program_template_count() -> usize {
-    template_table().len()
+    catalog_table().templates.len()
+}
+
+/// The pair the documentation route answers, when it answers this one.
+#[must_use]
+pub fn documented_pair(task_slug: &str, language_slug: &str) -> Option<&'static DocumentedPair> {
+    catalog_table()
+        .documented
+        .iter()
+        .find(|pair| pair.task_slug == task_slug && pair.language.slug == language_slug)
 }
 
 #[must_use]
@@ -121,11 +183,16 @@ pub fn program_template(task_slug: &str, language_slug: &str) -> Option<&'static
         .find(|template| template.task_slug == task_slug && template.language_slug == language_slug)
 }
 
+/// The `(task, language, template)` triple a request resolves to; a pair the
+/// documentation route answers runs with the row its program binds.
 #[must_use]
 pub fn program_spec(task_slug: &str, language_slug: &str) -> Option<ProgramSpec> {
+    let language = documented_pair(task_slug, language_slug)
+        .map(|pair| &pair.language)
+        .or_else(|| program_language_by_slug(language_slug))?;
     Some(ProgramSpec {
         task: program_task_by_slug(task_slug)?,
-        language: program_language_by_slug(language_slug)?,
+        language,
         template: program_template(task_slug, language_slug)?,
     })
 }

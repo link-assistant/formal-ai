@@ -62,11 +62,11 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let language = program_language(prompt)?;
     let output = explicit_stdout(prompt)?;
     let catalog = super::program_language_by_slug(&language)?;
-    let extension = std::path::Path::new(catalog.save_as)
+    let extension = std::path::Path::new(catalog.save_as.as_ref())
         .extension()?
         .to_str()?;
     let path = crate::agentic_coding::general_planner::typed_write_target(prompt, extension)
-        .unwrap_or_else(|| catalog.save_as.to_owned());
+        .unwrap_or_else(|| catalog.save_as.to_string());
     let root = parse_lino(CONTRACTS);
     let contract = root
         .children
@@ -86,9 +86,10 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let mut commands: Vec<String> = catalog
         .execution
         .check_command
+        .as_deref()
         .into_iter()
-        .chain(std::iter::once(catalog.execution.run_command))
-        .map(|command| command.replace(catalog.save_as, &path))
+        .chain(std::iter::once(catalog.execution.run_command.as_ref()))
+        .map(|command| command.replace(catalog.save_as.as_ref(), &path))
         .collect();
     let comment = contract.find_child_value("comment");
     let source_url = contract.find_child_value("source");

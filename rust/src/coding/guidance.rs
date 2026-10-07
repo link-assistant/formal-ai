@@ -302,7 +302,7 @@ pub fn program_test_instructions(
     prior_code_response: bool,
 ) -> String {
     let execution = &spec.language.execution;
-    let save_as = spec.language.save_as;
+    let save_as: &str = &spec.language.save_as;
     // Issue #863: a task defined against standard input is not run by naming
     // the command alone — without the pipe the reader gets a program waiting on
     // a terminal, not the expected output. `run_command_line` carries the
@@ -360,7 +360,7 @@ pub fn program_test_instructions(
         Language::Spanish => spanish("step_save").replace(concat!("{", "save_as", "}"), save_as),
         _ => format!("Save the code above to a file named `{save_as}`."),
     });
-    if let Some(check_command) = execution.check_command {
+    if let Some(check_command) = execution.check_command.as_deref() {
         steps.push(match language {
             Language::Russian => format!("Проверьте, что код компилируется: `{check_command}`."),
             Language::Hindi => format!("जाँचें कि कोड संकलित होता है: `{check_command}`।"),

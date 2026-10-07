@@ -775,12 +775,12 @@ fn formalization_grammar_and_runtime_memorize_no_probe_clause() {
 /// documentation route (R1165-4): their programs are rediscovered from the
 /// documentation captures at answer time and no longer stored. It fell from
 /// 11 to 4 when the Python, JavaScript, TypeScript, C, C++, C# and Ruby rows
-/// followed them. The four left are Java, Scala, PHP and Laravel, whose
-/// captured or searched documentation yields no program the catalog can run
-/// (no official page declares a Java class or Scala object named `Main`,
-/// php.net's first example prints no trailing newline, and the Laravel docs
-/// show no Hello World command and carry no grammar).
-const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 4;
+/// followed them, and from 4 to 1 when Java and Scala bound their documented
+/// class and object names into the run contract and PHP's page example was
+/// answered with its missing trailing newline recorded as a deviation. The
+/// one left is Laravel: the Laravel docs show no Hello World command and the
+/// catalog carries no Laravel grammar.
+const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
 
 /// The documentation captures seed (R1165-1): source data, not programs.
 ///
@@ -797,9 +797,10 @@ const DOCUMENTATION_CAPTURES_SEED: &str = "data/seed/coding-documentation-captur
 ///
 /// It rose from 7 to 19 with the eight captures of 2026-10-08 (Python wiki,
 /// MDN, the TypeScript handbook, Microsoft's C, C++ and C# pages, ruby-lang.org
-/// and the Swift book), each pinned by SHA-256 and re-derived from its
-/// fixture; it is the visible size of the source data, not of stored answers.
-const DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX: usize = 19;
+/// and the Swift book), and to 22 with Oracle's Java tutorial and php.net's
+/// first page, each pinned by SHA-256 and re-derived from its fixture; it is
+/// the visible size of the source data, not of stored answers.
+const DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX: usize = 22;
 
 /// The quote spellings a stored program may wrap its literal in: an escaped
 /// double quote, a single quote, the `\x27` escape of a single quote, and a

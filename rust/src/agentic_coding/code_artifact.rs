@@ -6,18 +6,18 @@
 use std::fmt::Write as _;
 
 use lino_objects_codec::format::escape_reference;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use super::planner::{
-    plan_one, tool_capability, tool_for, write_arguments, AgenticPlan, Capability,
+    AgenticPlan, Capability, plan_one, tool_capability, tool_for, write_arguments,
 };
-use crate::coding::{program_language_by_alias, program_task_by_alias, program_template};
+use crate::coding::{program_language_by_alias, program_spec, program_task_by_alias};
 use crate::links_substitution_query::{
     parse_substitution_query, render_substitution_query, substitution_effect,
 };
 use crate::normal_markov::{
-    quoted_segments, unwrap_transport_quotes, RewriteHalt, RewriteOutcome, RewriteProgram,
-    RewriteRule,
+    RewriteHalt, RewriteOutcome, RewriteProgram, RewriteRule, quoted_segments,
+    unwrap_transport_quotes,
 };
 use crate::protocol::ChatMessage;
 
@@ -179,10 +179,12 @@ fn generated_artifact(task: &str) -> Option<WorkspaceArtifact> {
     let normalized = task.to_lowercase();
     let language = program_language_by_alias(&normalized)?;
     let program_task = program_task_by_alias(&normalized)?;
-    let template = program_template(program_task.slug, language.slug)?;
+    // Issue #1165 R1165-6: the file a documented program binds
+    // (`HelloWorldApp.java`) is the one it is written to.
+    let spec = program_spec(program_task.slug, language.slug)?;
     Some(WorkspaceArtifact {
-        path: language.save_as.to_owned(),
-        content: format!("{}\n", template.code.trim_end()),
+        path: spec.language.save_as.to_string(),
+        content: format!("{}\n", spec.template.code.trim_end()),
     })
 }
 

@@ -26,6 +26,8 @@ pub const NO_DOCUMENTATION_CAPTURE: &str = "no_documentation_capture";
 pub struct DocumentationCapture {
     /// The language the page documents.
     pub language: String,
+    /// The name the page gives that language, when the capture records one.
+    pub language_name: String,
     /// The task it was captured for.
     pub task: String,
     /// The page's URL, the row's `rediscovery_source`.
@@ -47,7 +49,9 @@ pub struct DocumentationCapture {
 pub struct RunContract<'a> {
     /// The file the program is saved as (`Main.scala`).
     pub save_as: &'a str,
-    /// The commands that check and run the saved file.
+    /// The commands that check and run the saved file: the check command
+    /// (when the row has one) before the run command, as a catalog row
+    /// orders them.
     pub commands: &'a [&'a str],
 }
 
@@ -111,6 +115,7 @@ pub fn all_documentation_captures() -> Vec<DocumentationCapture> {
         .filter(|node| node.name == "capture")
         .map(|node| DocumentationCapture {
             language: node.find_child_value("language").to_owned(),
+            language_name: node.find_child_value("language_name").to_owned(),
             task: node.find_child_value("task").to_owned(),
             url: node.find_child_value("url").to_owned(),
             mime: node.find_child_value("mime").to_owned(),
@@ -198,12 +203,34 @@ fn documented_example<'a>(
 
 /// Rediscover a `write_program` procedure from the documentation captures.
 ///
+/// The recipe of [`rediscover_documented_program`]: the row names the page
+/// as its `rediscovery_source`.
+///
+/// # Errors
+///
+/// As [`rediscover_documented_program`].
+pub fn rediscover_from_documentation(
+    language: &str,
+    task: &str,
+    expected_output: &str,
+    contract: RunContract<'_>,
+) -> Result<RediscoverableRecipe, String> {
+    rediscover_documented_program(language, task, expected_output, contract)
+        .map(|program| program.recipe)
+}
+
+/// Rediscover a program from the documentation captures, with what
+/// answering it needs.
+///
 /// The page example (each capture's first block that prints a literal,
 /// the shortest across captures) is recomposed with
 /// `expected_output` bound into its literal slot, then verified: decomposing
 /// the program again must find the same output call printing
-/// `expected_output`, and the program must declare every name `contract`
-/// invokes. The row names the page as its `rediscovery_source`.
+/// `expected_output`, and the program must bind the run contract
+/// ([`documented_run_contract`]). The result carries the bound contract and
+/// the deviation the program's verification cannot see
+/// ([`documentation_deviation`]). The JavaScript twin is
+/// `rediscoverDocumentedProgram`.
 ///
 /// # Errors
 ///
@@ -212,12 +239,12 @@ fn documented_example<'a>(
 /// `no_single_line_output`, `no_output_example`, `no_program_body`,
 /// `verification`, or `run_contract:<names>`.
 #[cfg(feature = "meta-language")]
-pub fn rediscover_from_documentation(
+pub fn rediscover_documented_program(
     language: &str,
     task: &str,
     expected_output: &str,
     contract: RunContract<'_>,
-) -> Result<RediscoverableRecipe, String> {
+) -> Result<DocumentedProgram, String> {
     use crate::code_example_knowledge::{
         CodePartKind, ParameterBindings, decompose_code_node_from, generalize_examples,
         recompose_for_requirement,
@@ -260,26 +287,21 @@ pub fn rediscover_from_documentation(
     if !verified {
         return Err(String::from("verification"));
     }
-    let tokens: Vec<&str> = recomposed
-        .source
-        .split(|character: char| !(character.is_ascii_alphanumeric() || character == '_'))
-        .collect();
-    let undeclared: Vec<String> = contract
-        .invoked_names()
-        .into_iter()
-        .filter(|name| !tokens.contains(&name.as_str()))
-        .collect();
-    if !undeclared.is_empty() {
-        return Err(format!("run_contract:{}", undeclared.join(",")));
-    }
-    Ok(RediscoverableRecipe {
-        language: language.to_owned(),
-        task: task.to_owned(),
-        rediscovery_query: capture.rediscovery_query.clone(),
-        rediscovery_source: capture.url.clone(),
-        content_id: RediscoverableRecipe::content_address(&recomposed.source),
-        entry: recomposed.source,
-        verified_output: expected_output.to_owned(),
+    let bound = documented_run_contract(language, contract, &recomposed.source, &captures)?;
+    let deviation = documentation_deviation(language, &call, &recomposed.source);
+    Ok(DocumentedProgram {
+        recipe: RediscoverableRecipe {
+            language: language.to_owned(),
+            task: task.to_owned(),
+            rediscovery_query: capture.rediscovery_query.clone(),
+            rediscovery_source: capture.url.clone(),
+            content_id: RediscoverableRecipe::content_address(&recomposed.source),
+            entry: recomposed.source,
+            verified_output: expected_output.to_owned(),
+        },
+        contract: bound,
+        deviation,
+        language_name: capture.language_name.clone(),
     })
 }
 
@@ -291,12 +313,12 @@ pub fn rediscover_from_documentation(
 ///
 /// Always: rediscovery needs the decomposer.
 #[cfg(not(feature = "meta-language"))]
-pub fn rediscover_from_documentation(
+pub fn rediscover_documented_program(
     language: &str,
     task: &str,
     expected_output: &str,
     contract: RunContract<'_>,
-) -> Result<RediscoverableRecipe, String> {
+) -> Result<DocumentedProgram, String> {
     let _ = (expected_output, contract);
     if documentation_route_active() && !documentation_captures(language, task).is_empty() {
         return Err(String::from("no_decomposer"));
@@ -375,37 +397,38 @@ pub fn answer_cache_miss(
 /// The commands that check and run a catalog row's program, in the order
 /// the solver hands them to [`answer_cache_miss`] as its run contract.
 #[must_use]
-pub(crate) fn catalog_run_commands(language: &crate::coding::ProgramLanguage) -> Vec<&'static str> {
+pub(crate) fn catalog_run_commands(language: &crate::coding::ProgramLanguage) -> Vec<&str> {
     language
         .execution
         .check_command
+        .as_deref()
         .into_iter()
-        .chain(std::iter::once(language.execution.run_command))
+        .chain(std::iter::once(language.execution.run_command.as_ref()))
         .collect()
 }
 
 /// The program the documentation route rediscovers for a catalog pair.
 ///
 /// The task's expected output for the language is bound into the documented
-/// example and the catalog row's run contract is checked, as on the solve
-/// path; the catalog table calls this once per documented pair it does not
-/// compile (R1165-4).
+/// example and the catalog row's run contract is bound, as on the solve
+/// path; the catalog table calls this once per pair the seed bundle retires
+/// to the documentation route (R1165-4).
 ///
 /// # Errors
 ///
-/// Why no program was rediscovered, as [`rediscover_from_documentation`]
+/// Why no program was rediscovered, as [`rediscover_documented_program`]
 /// names it.
 pub(crate) fn rediscover_catalog_program(
     language: &crate::coding::ProgramLanguage,
     task: &crate::coding::ProgramTask,
-) -> Result<RediscoverableRecipe, String> {
+) -> Result<DocumentedProgram, String> {
     let commands = catalog_run_commands(language);
-    rediscover_from_documentation(
+    rediscover_documented_program(
         language.slug,
         task.slug,
         &task.output_for_language(language),
         RunContract {
-            save_as: language.save_as,
+            save_as: &language.save_as,
             commands: &commands,
         },
     )
@@ -426,54 +449,6 @@ pub fn documented_pairs() -> Vec<(String, String)> {
         }
     }
     pairs
-}
-
-/// The shell prompts a documented command line may start with.
-const COMMAND_PROMPTS: [&str; 3] = ["$ ", "% ", "> "];
-
-/// Whether a documented command is a catalog command with the documented
-/// file name bound to the catalog's (R1165-6).
-///
-/// The words must agree, except that where the catalog word carries the stem
-/// of the file the program is saved as, the documented word may carry one
-/// other name in its place, the same name everywhere (`kotlinc hello.kt -d
-/// hello.jar` is `kotlinc Main.kt -d Main.jar` for a program saved as
-/// `Main.kt`). The JavaScript twin is `documentedCommandMatches`.
-#[must_use]
-pub fn documented_command_matches(documented: &str, catalog: &str, save_as: &str) -> bool {
-    let file = save_as.rsplit('/').next().unwrap_or_default();
-    let stem = file.rfind('.').map_or(file, |dot| &file[..dot]);
-    let words: Vec<&str> = documented.split_whitespace().collect();
-    let expected: Vec<&str> = catalog.split_whitespace().collect();
-    if words.len() != expected.len() {
-        return false;
-    }
-    let mut bound: Option<&str> = None;
-    for (said, word) in words.iter().zip(&expected) {
-        if said == word {
-            continue;
-        }
-        let Some(at) = word.find(stem).filter(|_| !stem.is_empty()) else {
-            return false;
-        };
-        let prefix = &word[..at];
-        let suffix = &word[at + stem.len()..];
-        if !said.starts_with(prefix)
-            || !said.ends_with(suffix)
-            || said.len() <= prefix.len() + suffix.len()
-        {
-            return false;
-        }
-        let name = &said[prefix.len()..said.len() - suffix.len()];
-        let identifier = name
-            .chars()
-            .all(|character| character.is_ascii_alphanumeric() || character == '_');
-        if !identifier || bound.is_some_and(|earlier| earlier != name) {
-            return false;
-        }
-        bound = Some(name);
-    }
-    true
 }
 
 /// One catalog command and the line its documentation states for it.
@@ -498,29 +473,15 @@ pub fn documented_run_commands(language: &str, task: &str) -> Vec<DocumentedComm
     let Some(row) = crate::coding::program_language_by_slug(language) else {
         return Vec::new();
     };
-    let lines: Vec<String> = documentation_captures(language, task)
-        .iter()
-        .flat_map(|capture| capture.blocks.iter())
-        .flat_map(|(_, text)| text.lines())
-        .map(|raw| {
-            let line = raw.trim();
-            COMMAND_PROMPTS
-                .iter()
-                .find_map(|prompt| line.strip_prefix(prompt))
-                .unwrap_or(line)
-                .trim()
-                .to_owned()
-        })
-        .filter(|line| !line.is_empty())
-        .collect();
+    let lines = documentation_command_lines(&documentation_captures(language, task));
     catalog_run_commands(row)
         .into_iter()
         .map(|command| DocumentedCommand {
             catalog: command.to_owned(),
             documented: lines
                 .iter()
-                .find(|line| documented_command_matches(line, command, row.save_as))
-                .cloned(),
+                .find(|(line, _)| documented_command_matches(line, command, &row.save_as))
+                .map(|(line, _)| line.clone()),
         })
         .collect()
 }
@@ -553,7 +514,7 @@ pub struct DocumentedCatalogProgram {
     /// The catalog task slug.
     pub task: String,
     /// What the documentation captures yield for the task's expected output.
-    pub rediscovered: Result<RediscoverableRecipe, String>,
+    pub rediscovered: Result<DocumentedProgram, String>,
 }
 
 /// The catalog pairs whose seed program is retired to the documentation route.

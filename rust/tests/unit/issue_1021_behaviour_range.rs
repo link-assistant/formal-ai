@@ -614,7 +614,9 @@ fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
 ```php
 <?php
 
-echo "Hello, world!", PHP_EOL;
+echo "Hello, world!";
+
+?>
 ```
 
 Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).

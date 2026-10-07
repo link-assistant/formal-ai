@@ -348,14 +348,15 @@ pub fn attach_execution_recipe(
     let language = crate::coding::program_language_by_slug(&spec.language);
     let path = language.map_or_else(
         || format!("main.{}", spec.language),
-        |language| language.save_as.to_owned(),
+        |language| language.save_as.to_string(),
     );
     let commands = language.map_or_else(Vec::new, |language| {
         language
             .execution
             .check_command
+            .as_deref()
             .into_iter()
-            .chain(program.then_some(language.execution.run_command))
+            .chain(program.then_some(language.execution.run_command.as_ref()))
             .map(str::to_owned)
             .collect()
     });

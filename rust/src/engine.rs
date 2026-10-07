@@ -891,7 +891,7 @@ fn execution_output_label(status: ExecutionStatus, language: Language) -> &'stat
 /// ([`crate::coding::ProgramSpec::run_command_line`], issue #863); for every
 /// other task it is `execution.run_command` unchanged.
 fn execution_command_lines(execution: &ProgramExecution, run_command: &str) -> String {
-    execution.check_command.map_or_else(
+    execution.check_command.as_deref().map_or_else(
         || format!("Run command: `{run_command}`"),
         |check_command| format!("Check command: `{check_command}`\nRun command: `{run_command}`"),
     )

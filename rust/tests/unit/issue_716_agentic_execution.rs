@@ -111,8 +111,8 @@ fn every_catalog_language_projects_its_structured_execution_metadata() {
         (
             "Java",
             "java",
-            "Main.java",
-            &["javac Main.java", "java Main"][..],
+            "HelloWorldApp.java",
+            &["javac HelloWorldApp.java", "java HelloWorldApp"][..],
         ),
         (
             "C#",

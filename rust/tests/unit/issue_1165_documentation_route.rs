@@ -9,8 +9,8 @@
 //! browser twins are in `rust/tests/web/issue-1165-documentation-captures.test.mjs`.
 
 use formal_ai::discovery_production::{
-    DocumentedCommand, documented_command_matches, documented_run_commands,
-    language_has_documented_procedure,
+    DocumentedCommand, documented_catalog_programs, documented_command_matches,
+    documented_run_commands, language_has_documented_procedure,
 };
 
 /// `(catalog command, documented line)` for a captured language.
@@ -94,6 +94,108 @@ fn documented_commands_of_every_captured_language() {
         documented("ruby"),
         [row("ruby -c main.rb", None), row("ruby main.rb", None)]
     );
+    assert_eq!(
+        documented("java"),
+        [
+            row("javac Main.java", Some("javac HelloWorldApp.java")),
+            row("java Main", Some("java HelloWorldApp"))
+        ]
+    );
+    assert_eq!(
+        documented("php"),
+        [row("php -l main.php", None), row("php main.php", None)]
+    );
+}
+
+/// The run contract a catalog row's documented program binds, as
+/// `(file, [(role, command, source)])`.
+#[cfg(feature = "meta-language")]
+fn bound(language: &str) -> (String, Vec<(String, String, String)>) {
+    let program = documented_catalog_programs()
+        .into_iter()
+        .find(|program| program.language == language)
+        .unwrap_or_else(|| panic!("{language} is retired to the documentation route"))
+        .rediscovered
+        .unwrap_or_else(|reason| panic!("{language}: {reason}"));
+    (
+        program.contract.save_as,
+        program
+            .contract
+            .commands
+            .into_iter()
+            .map(|command| (command.role.to_owned(), command.command, command.source))
+            .collect(),
+    )
+}
+
+#[cfg(feature = "meta-language")]
+fn sourced(role: &str, command: &str, source: &str) -> (String, String, String) {
+    (role.to_owned(), command.to_owned(), source.to_owned())
+}
+
+/// R1165-6: the catalog's file stem stays when the program declares what
+/// the commands invoke (Kotlin); otherwise the name a captured command states
+/// (Java's `HelloWorldApp`) or the name after an `entry_container` keyword
+/// (Scala's `object hello`) binds in the file and every command, and each
+/// command names its source.
+#[cfg(feature = "meta-language")]
+#[test]
+fn the_documented_run_contract_of_every_bound_language() {
+    const ORACLE: &str = "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html";
+    const KOTLINLANG: &str = "https://kotlinlang.org/docs/command-line.html";
+    assert_eq!(
+        bound("java"),
+        (
+            String::from("HelloWorldApp.java"),
+            vec![
+                sourced("check", "javac HelloWorldApp.java", ORACLE),
+                sourced("run", "java HelloWorldApp", ORACLE),
+            ]
+        )
+    );
+    assert_eq!(
+        bound("scala"),
+        (
+            String::from("hello.scala"),
+            vec![
+                sourced("check", "scalac hello.scala", "catalog"),
+                sourced("run", "scala hello", "catalog"),
+            ]
+        )
+    );
+    assert_eq!(
+        bound("kotlin"),
+        (
+            String::from("Main.kt"),
+            vec![
+                sourced(
+                    "check",
+                    "kotlinc Main.kt -include-runtime -d Main.jar",
+                    KOTLINLANG
+                ),
+                sourced("run", "java -jar Main.jar", KOTLINLANG),
+            ]
+        )
+    );
+}
+
+/// The deviation a documented program carries that its verification cannot
+/// see: php.net's `echo` prints no line break and its line has no `PHP_EOL`;
+/// every other retired program prints its trailing newline.
+#[cfg(feature = "meta-language")]
+#[test]
+fn only_the_php_page_example_prints_no_trailing_newline() {
+    let deviations: Vec<(String, String)> = documented_catalog_programs()
+        .into_iter()
+        .filter_map(|program| {
+            let deviation = program.rediscovered.ok()?.deviation?;
+            Some((program.language, deviation))
+        })
+        .collect();
+    assert_eq!(
+        deviations,
+        [(String::from("php"), String::from("trailing_newline=absent"))]
+    );
 }
 
 /// R1165-6: the documented file name is bound once and everywhere.
@@ -122,8 +224,7 @@ fn a_documented_command_binds_the_file_name_consistently() {
 }
 
 /// R1165-4: the documentation route knows exactly the languages its captures
-/// rediscover a verified program for (Scala's captured example breaks the
-/// run contract; Java, PHP, R and Laravel have no capture).
+/// rediscover a verified program for (R and Laravel have no capture).
 #[cfg(feature = "meta-language")]
 #[test]
 fn the_documentation_route_knows_the_languages_it_rediscovers() {
@@ -162,7 +263,10 @@ fn the_documentation_route_knows_the_languages_it_rediscovers() {
             "csharp",
             "ruby",
             "kotlin",
-            "swift"
+            "swift",
+            "scala",
+            "java",
+            "php"
         ]
     );
 }

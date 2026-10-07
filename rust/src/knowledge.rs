@@ -124,6 +124,11 @@ pub enum KnowledgeSource {
     /// <https://stackoverflow.com> — community answers, treated read-only and
     /// only for snippets under a compatible licence.
     StackOverflow,
+    /// A documentation page captured byte for byte under
+    /// `data/seed/coding-documentation-captures.lino` (issue #1165): the
+    /// documentation route rediscovers a program from it before any snapshot
+    /// answers.
+    DocumentationCapture,
 }
 
 impl KnowledgeSource {
@@ -136,6 +141,7 @@ impl KnowledgeSource {
             Self::Wikifunctions => "wikifunctions",
             Self::HelloWorldCollection => "hello-world-collection",
             Self::StackOverflow => "stack-overflow",
+            Self::DocumentationCapture => "documentation-capture",
         }
     }
 
@@ -147,6 +153,7 @@ impl KnowledgeSource {
             Self::Wikifunctions => "Wikifunctions",
             Self::HelloWorldCollection => "Hello World Collection",
             Self::StackOverflow => "Stack Overflow",
+            Self::DocumentationCapture => "Documentation capture",
         }
     }
 
@@ -158,6 +165,7 @@ impl KnowledgeSource {
             Self::Wikifunctions => "https://www.wikifunctions.org",
             Self::HelloWorldCollection => "http://helloworldcollection.de",
             Self::StackOverflow => "https://stackoverflow.com",
+            Self::DocumentationCapture => "",
         }
     }
 
@@ -174,6 +182,7 @@ impl KnowledgeSource {
             Self::Wikifunctions => 3_000,
             Self::HelloWorldCollection => 600,
             Self::StackOverflow => 24_000_000,
+            Self::DocumentationCapture => 0,
         }
     }
 }
@@ -198,9 +207,10 @@ pub struct OracleSnippet {
 /// The committed popular-case cache for the coding oracle.
 ///
 /// These are the "Hello, World!" programs for languages the built-in
-/// [`crate::coding::catalog`] does not template (Kotlin, Swift, PHP, Bash, Lua,
+/// [`crate::coding::catalog`] did not template (Kotlin, PHP, Bash, Lua,
 /// Haskell), plus a Rosetta-Code factorial in Kotlin to exercise a non-trivial
-/// task. The set is intentionally tiny — well under [`cache_capacity`] for every
+/// task. Swift's left with issue #1165: the oracle answers it from the
+/// captured Swift book through the documentation route. The set is intentionally tiny — well under [`cache_capacity`] for every
 /// source — and is the offline accelerator a live refresh would repopulate.
 const ORACLE_SNAPSHOTS: &[OracleSnippet] = &[
     OracleSnippet {
@@ -210,15 +220,6 @@ const ORACLE_SNAPSHOTS: &[OracleSnippet] = &[
         source: KnowledgeSource::HelloWorldCollection,
         source_url: "http://helloworldcollection.de/#Kotlin",
         code: "fun main() {\n    println(\"Hello, World!\")\n}",
-        expected_output: "Hello, World!",
-    },
-    OracleSnippet {
-        task_slug: "hello_world",
-        language_slug: "swift",
-        language_label: "Swift",
-        source: KnowledgeSource::HelloWorldCollection,
-        source_url: "http://helloworldcollection.de/#Swift",
-        code: "print(\"Hello, World!\")",
         expected_output: "Hello, World!",
     },
     OracleSnippet {
@@ -268,6 +269,20 @@ const ORACLE_SNAPSHOTS: &[OracleSnippet] = &[
     },
 ];
 
+/// A snippet the oracle answers a `(task, language)` request with, owned so
+/// a program rediscovered from documentation and a cached snapshot render
+/// alike.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct OracleAnswer {
+    pub task_slug: String,
+    pub language_slug: String,
+    pub language_label: String,
+    pub source: KnowledgeSource,
+    pub source_url: String,
+    pub code: String,
+    pub expected_output: String,
+}
+
 /// Offline-first lookup that generalises the built-in coding catalogue using
 /// the external knowledge sources' cached snapshots.
 pub struct CodingOracle;
@@ -301,6 +316,45 @@ impl CodingOracle {
         })
     }
 
+    /// The snippet the oracle answers a pair with (issue #1165 R1165-4).
+    ///
+    /// The program the documentation route rediscovers comes first (the
+    /// Swift book), credited to its captured page; a cached snapshot answers
+    /// only a pair no captured page covers. The browser twin is
+    /// `codingOracleAnswer` with `codingOracleDocumentedSnippet`.
+    #[must_use]
+    pub fn answer(task_slug: &str, language: &str) -> Option<OracleAnswer> {
+        if let Some(program) =
+            crate::discovery_production::documented_oracle_program(task_slug, language)
+        {
+            let slug = language.trim().to_ascii_lowercase();
+            let label = if program.language_name.is_empty() {
+                slug.clone()
+            } else {
+                program.language_name
+            };
+            return Some(OracleAnswer {
+                task_slug: task_slug.to_owned(),
+                language_slug: slug,
+                language_label: label,
+                source: KnowledgeSource::DocumentationCapture,
+                source_url: program.recipe.rediscovery_source,
+                code: program.recipe.entry,
+                expected_output: program.recipe.verified_output,
+            });
+        }
+        let snippet = Self::lookup(task_slug, language)?;
+        Some(OracleAnswer {
+            task_slug: snippet.task_slug.to_owned(),
+            language_slug: snippet.language_slug.to_owned(),
+            language_label: snippet.language_label.to_owned(),
+            source: snippet.source,
+            source_url: snippet.source_url.to_owned(),
+            code: snippet.code.to_owned(),
+            expected_output: snippet.expected_output.to_owned(),
+        })
+    }
+
     /// Whether the oracle can answer for `language` (any task), used to decide
     /// when to generalise beyond the static catalogue.
     ///
@@ -316,6 +370,9 @@ impl CodingOracle {
             return false;
         }
         let needle = language.trim().to_ascii_lowercase();
+        if crate::discovery_production::language_has_documented_procedure(&needle) {
+            return true;
+        }
         ORACLE_SNAPSHOTS.iter().any(|snippet| {
             snippet.language_slug == needle || snippet.language_label.to_ascii_lowercase() == needle
         })
