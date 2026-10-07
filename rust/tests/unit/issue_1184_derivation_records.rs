@@ -366,3 +366,98 @@ fn the_responses_api_carries_the_derivation_id_beside_evidence_links() {
     assert_eq!(wire["derivation_id"].as_str(), Some(expected.as_str()));
     assert!(wire["evidence_links"].is_array());
 }
+
+/// R1184-2: every stage kind the record names projects into its own field,
+/// in append order — the record captures queries, fetches, formalized
+/// fragments, decomposed parts, the recomposition, the rendering and the
+/// verification evidence whenever a route appends them.
+#[test]
+fn every_stage_event_kind_lands_in_its_record_field() {
+    let mut log = online_answer_log();
+    log.append(
+        formal_ai::derivation::FORMALIZE_FRAGMENT_KIND,
+        "fragment=kotlinc hello.kt",
+    );
+    log.append(
+        formal_ai::derivation::DECOMPOSE_PART_KIND,
+        "entry_point main",
+    );
+    log.append(
+        formal_ai::derivation::DECOMPOSE_PART_KIND,
+        "output_operation println",
+    );
+    log.append(
+        formal_ai::derivation::RECOMPOSE_BIND_KIND,
+        "bound literal=Hi",
+    );
+    log.append(formal_ai::derivation::RENDER_EMIT_KIND, "kotlin");
+    let check = VerificationRecord {
+        evidence_id: String::from("evidence_00000000000000aa"),
+        command: String::from("kotlinc hello.kt"),
+        exit_code: Some(0),
+    };
+    log.append(formal_ai::derivation::VERIFICATION_KIND, check.payload());
+    let derivation = Derivation::record_for(&log, "answer_0123456789abcdef");
+    assert_eq!(derivation.search_queries.len(), 2);
+    assert_eq!(derivation.fetches.len(), 2);
+    assert_eq!(
+        derivation.formalized_fragments,
+        ["fragment=kotlinc hello.kt"]
+    );
+    assert_eq!(
+        derivation.decomposed_parts,
+        ["entry_point main", "output_operation println"]
+    );
+    assert_eq!(
+        derivation.recomposition.as_deref(),
+        Some("bound literal=Hi")
+    );
+    assert_eq!(derivation.rendering.as_deref(), Some("kotlin"));
+    assert_eq!(derivation.verification, vec![check]);
+    let explanation = derivation.explain_text();
+    // Only the applied-rules stage, which no event here fills, is unrecorded.
+    assert_eq!(
+        explanation.matches("not recorded").count(),
+        1,
+        "a populated record reports every populated stage: {explanation}"
+    );
+}
+
+/// R1184-4: the `formal-ai explain <answer-id>` subcommand itself prints the
+/// durable record from the working directory's store, in both formats, and a
+/// miss is an error naming the id — the binary, not only the library call.
+#[test]
+fn the_explain_subcommand_prints_the_durable_record() {
+    let root = isolated_directory("explain-cli");
+    let mut derivation = Derivation::record_for(&online_answer_log(), "answer_00000000000000ab");
+    derivation.rendering = Some(String::from("kotlin"));
+    derivation
+        .persist(&root)
+        .expect("the record persists under data/cache/derivations");
+    let run = |args: &[&str]| {
+        std::process::Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+            .args(args)
+            .current_dir(&root)
+            .output()
+            .expect("the formal-ai binary runs")
+    };
+
+    let text = run(&["explain", "answer_00000000000000ab"]);
+    assert!(text.status.success(), "{text:?}");
+    assert_eq!(
+        String::from_utf8_lossy(&text.stdout),
+        derivation.explain_text()
+    );
+
+    let links = run(&["explain", "answer_00000000000000ab", "--format", "links"]);
+    assert!(links.status.success(), "{links:?}");
+    assert_eq!(String::from_utf8_lossy(&links.stdout), derivation.to_lino());
+
+    let miss = run(&["explain", "answer_ffffffffffffffff"]);
+    assert!(!miss.status.success(), "a missing record is an error");
+    assert!(
+        String::from_utf8_lossy(&miss.stderr).contains("answer_ffffffffffffffff"),
+        "the miss names the id: {miss:?}"
+    );
+    let _ = std::fs::remove_dir_all(&root);
+}
