@@ -1095,6 +1095,8 @@ function isInconclusiveReplayIntent(intent) {
 // not just project lookups. Mirrors try_response_language_followup in
 // src/solver_handlers/response_language_followup.rs.
 async function tryResponseLanguageFollowup(prompt, normalized, history, preferences) {
+  // A directive against a language ("never answer in Russian") is not a request to re-answer in it.
+  if (responseLanguageForbidden(prompt)) return null;
   const targetLanguage = detectResponseLanguage(normalized);
   if (!targetLanguage) return null;
   if (!isLanguageReanswerFollowup(normalized)) return null;

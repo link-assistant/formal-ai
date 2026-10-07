@@ -55,3 +55,26 @@ fn reports_grid_symmetry() {
     assert!(report.has_structure());
     assert!(report.summary().contains("left-right mirror"));
 }
+
+/// The symmetry list is joined by the `pattern_grid_symmetry_separator` seed
+/// template (`data/seed/multilingual-responses-pattern.lino`): a comma in
+/// English, the enumeration comma in Chinese. The JavaScript twin is
+/// `rust/tests/web/issue-0531-pattern-inference.test.mjs`.
+#[test]
+fn grid_symmetries_join_with_the_seeded_separator() {
+    let mut store = SequenceStore::new();
+    let mut symbols = SymbolTable::new();
+    let cells = atoms(&mut store, &mut symbols, &[1, 2, 1, 1, 2, 1]);
+    let grid = Grid::new(2, 3, cells).unwrap();
+    let report = infer_grid_patterns(&mut store, &grid);
+    let english = report.summary_in("en");
+    let chinese = report.summary_in("zh");
+    assert_eq!(
+        english.lines().nth(1),
+        Some("Symmetric under: left-right mirror, top-bottom mirror, 180-degree rotation.")
+    );
+    assert_eq!(
+        chinese.lines().nth(1),
+        Some("对称于：左右镜像、上下镜像、180度旋转。")
+    );
+}

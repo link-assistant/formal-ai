@@ -11,7 +11,9 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     options && isKnownResponseLanguage(options.forcedResponseLanguage)
       ? options.forcedResponseLanguage
       : null;
-  const previousForced = setForcedResponseLanguage(forced);
+  // Issue #724: absent a replay's forced language, the language an earlier user turn established
+  // drives detection for the whole turn, as `established_response_language` does natively.
+  const previousForced = setForcedResponseLanguage(forced || establishedResponseLanguage(history));
   try {
     // Meanings learned in earlier sessions come back through memory; the
     // ones learned now leave as this answer's memory operation.

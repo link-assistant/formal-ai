@@ -95,6 +95,16 @@ describe('the browser worker answers pattern-inference requests (R403, R405)', (
     assert.ok(answer.evidence.includes('pattern_inference:symmetries:1'));
   });
 
+  it('a definition question about the word pattern reaches the concept lookup, as natively', async () => {
+    // definitional_question_routes_to_concept_lookup: the pattern expectation is
+    // read only by the data-gated arm, so with no run of atoms nothing claims a
+    // verifiable task (formal_ai_worker_claim_evidence.js `verifiable_spec`).
+    const answer = await host.solve('what is a pattern?');
+    assert.equal(answer.intent, 'concept_lookup');
+    assert.ok(answer.evidence.includes('concept_lookup:hit:concept_pattern'));
+    assert.equal(worker('recogniseBrowserVerifiableTask("what is a pattern?")'), null);
+  });
+
   it('leaves prompts without a run of atoms to other handlers', async () => {
     for (const prompt of ['what is a pattern?', 'what pattern does issue 531 describe?', '1 2 1 2 1 2']) {
       assert.notEqual((await host.solve(prompt)).intent, 'pattern_inference', prompt);
@@ -117,6 +127,15 @@ describe('the browser worker answers pattern-inference requests (R403, R405)', (
       assert.equal(answer.content.split('\n').at(-1), line, slug);
       assert.ok(answer.evidence.includes(`language_to:${slug}`), slug);
     }
+  });
+
+  it('the symmetry separator is the seeded template in every language (grid_symmetries_join_with_the_seeded_separator)', () => {
+    const separators = worker('["en", "ru", "hi", "zh", "es"].map((language) => answerFor("pattern_grid_symmetry_separator", language))');
+    assert.deepEqual(separators, [', ', ', ', ', ', '、', ', ']);
+    const grid = '({ rows: 2, cols: 3, cells: [1, 2, 1, 1, 2, 1] })';
+    const lines = (language) => worker(`patternGridSummary(${grid}, patternInferSequence(patternStoreNew(), [1, 2, 1, 1, 2, 1]), "${language}").split("\\n")`);
+    assert.equal(lines('en')[1], 'Symmetric under: left-right mirror, top-bottom mirror, 180-degree rotation.');
+    assert.equal(lines('zh')[1], '对称于：左右镜像、上下镜像、180度旋转。');
   });
 
   it('the Chinese grid report joins its symmetries with the Chinese list comma', async () => {

@@ -80,3 +80,47 @@ fn a_conversation_with_no_established_language_stays_in_the_prompt_language() {
         follow_up.answer
     );
 }
+
+/// A directive that names a language only to forbid it ("Never answer in
+/// Russian.") is a requirement against Russian, read from the forbidden
+/// surfaces of `data/seed/statement-audit-registry.lino`: it is not the routed
+/// demonstration, and it establishes no language for later turns. The
+/// JavaScript twin is `rust/tests/web/issue-0661-requirement-contradiction.test.mjs`.
+#[test]
+fn a_forbidden_language_is_neither_demonstrated_nor_established() {
+    let alone = offline_solver().solve_with_history("Never answer in Russian.", &[]);
+    assert_ne!(alone.intent, "response_language_demonstration");
+    assert!(
+        !alone
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_to:ru"),
+        "a forbidden language must not be answered in: {:?}",
+        alone.evidence_links
+    );
+
+    let established = vec![
+        ConversationTurn::user("Say something to me in Russian."),
+        ConversationTurn::assistant("Здравствуйте! Чем могу помочь?"),
+    ];
+    let bound = offline_solver().solve_with_history("What is an isogram?", &established);
+    assert!(
+        bound
+            .evidence_links
+            .iter()
+            .any(|link| link == "language:ru")
+    );
+
+    let mut revoked = established;
+    revoked.push(ConversationTurn::user("Never answer in Russian."));
+    revoked.push(ConversationTurn::assistant("Understood."));
+    let unbound = offline_solver().solve_with_history("What is an isogram?", &revoked);
+    assert!(
+        unbound
+            .evidence_links
+            .iter()
+            .any(|link| link == "language:en"),
+        "the latest directive forbids Russian, so no language is established: {:?}",
+        unbound.evidence_links
+    );
+}

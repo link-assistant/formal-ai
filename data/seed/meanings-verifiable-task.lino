@@ -131,9 +131,11 @@ meanings
         text un
       surface
         text una
+  # The pattern expectation is read only by the data-gated pattern-inference arm
+  # (a run of atoms or a grid), never by the generic task reader, so it carries
+  # its own role and not the generic verifiable_expectation role.
   expectation_pattern
     defined-by expectation
-    role verifiable_expectation
     role verifiable_expectation_pattern
     lexeme en
       surface
@@ -186,6 +188,9 @@ meanings
         text secuencia
       surface
         text palíndromo
+  pattern_grid_symmetry_separator
+    defined-by expectation_pattern
+    grounding "src/sequences/inference.rs"
   quantity_flow_increase
     defined-by relation
     role verifiable_quantity_flow_increase

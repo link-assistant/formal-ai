@@ -460,7 +460,7 @@ function patternGridSymmetries(grid) {
 
 /**
  * The localized lines of a grid report. Mirrors `GridPatternReport::summary_in`;
- * the symmetry list separator mirrors inference.rs (`、` in Chinese).
+ * the symmetry list separator is the `pattern_grid_symmetry_separator` template.
  * @param {{rows: number, cols: number, cells: Array<number>}} grid
  * @param {object} rowMajor
  * @param {string} language
@@ -473,7 +473,7 @@ function patternGridSummary(grid, rowMajor, language) {
     lines.push(patternRender("pattern_grid_no_symmetry", language, {}));
   } else {
     lines.push(patternRender("pattern_grid_symmetry", language, {
-      symmetries: symmetries.join(language === "zh" ? "、" : ", "),
+      symmetries: symmetries.join(patternRender("pattern_grid_symmetry_separator", language, {})),
     }));
   }
   lines.push(patternSequenceSummary(rowMajor, language));

@@ -439,6 +439,26 @@ function nativeLaneLanguageName(code) {
 }
 
 /**
+ * The response language the conversation already established, read from the
+ * user's own turns (issue #724): the latest user turn naming a language
+ * decides, and one that forbids it establishes none. Mirrors
+ * `established_response_language` in rust/src/meta_method_answers.rs.
+ * @param {Array<{role: string, content: string}>} history
+ * @returns {string|null}
+ */
+function establishedResponseLanguage(history) {
+  const turns = Array.isArray(history) ? history : [];
+  for (let index = turns.length - 1; index >= 0; index -= 1) {
+    const turn = turns[index];
+    if (!turn || turn.role !== "user") continue;
+    const content = String(turn.content || "");
+    const language = detectResponseLanguage(content.toLowerCase());
+    if (language) return responseLanguageForbidden(content) ? null : language;
+  }
+  return null;
+}
+
+/**
  * The response-language demonstration: a terse "answer in <language>" with no
  * earlier turn to re-render is answered in that language. The canonical name
  * comes from the language ledger, the surface is the marker word the prompt
@@ -448,6 +468,8 @@ function nativeLaneLanguageName(code) {
  * @returns {object|null}
  */
 function tryResponseLanguageDemonstration(prompt) {
+  // "Never answer in Russian" names Russian only to forbid it.
+  if (responseLanguageForbidden(prompt)) return null;
   const lower = nativeLaneLowercase(prompt);
   const target = detectResponseLanguage(lower);
   if (!target || !isLanguageReanswerFollowup(lower)) return null;

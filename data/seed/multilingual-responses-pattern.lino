@@ -299,6 +299,26 @@ multilingual_responses
     intent pattern_grid_symmetry
     language es
     text "Simétrica bajo: {symmetries}."
+  response response_pattern_grid_symmetry_separator_en
+    intent pattern_grid_symmetry_separator
+    language en
+    text ", "
+  response response_pattern_grid_symmetry_separator_ru
+    intent pattern_grid_symmetry_separator
+    language ru
+    text ", "
+  response response_pattern_grid_symmetry_separator_hi
+    intent pattern_grid_symmetry_separator
+    language hi
+    text ", "
+  response response_pattern_grid_symmetry_separator_zh
+    intent pattern_grid_symmetry_separator
+    language zh
+    text "、"
+  response response_pattern_grid_symmetry_separator_es
+    intent pattern_grid_symmetry_separator
+    language es
+    text ", "
   response response_pattern_grid_horizontal_en
     intent pattern_grid_horizontal
     language en

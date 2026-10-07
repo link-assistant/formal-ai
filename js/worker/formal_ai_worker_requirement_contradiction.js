@@ -90,6 +90,22 @@ function contradictionClaim(text, registry) {
 }
 
 /**
+ * Whether a sentence of `text` that names a response language forbids it:
+ * "never answer in Russian" names Russian only to rule it out, while "Never use
+ * slang. Answer in Russian." still asks for Russian. Mirrors
+ * `forbids_response_language` in rust/src/translation/language_markers.rs.
+ * @param {string} text
+ * @returns {boolean}
+ */
+function responseLanguageForbidden(text) {
+  const registry = contradictionRegistry();
+  return String(text || "").split(/[.!?\n。！？।]/u).some((sentence) => {
+    const claim = contradictionClaim(sentence, registry);
+    return claim !== null && claim.value === "forbidden" && Boolean(detectResponseLanguage(sentence.toLowerCase()));
+  });
+}
+
+/**
  * The prose statements of one document: every non-empty line outside a code
  * fence that is not a heading or table row, list markers stripped. Mirrors
  * `extract_prose` plus `push_statement`.

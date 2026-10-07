@@ -195,7 +195,8 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   conversation_topic_subject: (prompt) => handlerRuleSetClaims("conversation_topic", prompt, String(prompt || "").toLowerCase()),
   marketplace_scope: (prompt, normalized) => productSearchCatalogue().marketplaces.some((item) =>
     item.phrases.some((phrase) => normalized.includes(phrase) || String(prompt || "").toLowerCase().includes(phrase))),
-  verifiable_spec: (prompt) => recogniseBrowserVerifiableTask(prompt) !== null,
+  // As names_verifiable_spec: the task reader formalizes the request, or the pattern arm reads a run of atoms.
+  verifiable_spec: (prompt) => recogniseBrowserVerifiableTask(prompt) !== null || tryPatternInference(prompt) !== null,
   legality_assessment: (prompt, normalized) => assessLegality(prompt, normalized) !== null,
   assistant_addressee: (prompt, normalized) => claimEvidenceAddressesAssistant(normalized),
   punctuation_only: (prompt) => String(prompt || "").trim() !== "" && !/[\p{L}\p{N}]/u.test(String(prompt || "")),

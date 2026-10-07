@@ -130,6 +130,18 @@ fn english_requirement_contradiction_warns_with_both_statements_and_a_resolution
         "the resolution must reuse the append-only retraction protocol, got {:?}",
         response.evidence_links,
     );
+
+    // The first turn established Russian (issue #724), so the warning renders in
+    // Russian, as the browser twin does
+    // (rust/tests/web/issue-0661-requirement-contradiction.test.mjs).
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language:ru"),
+        "the warning is rendered in the established response language, got {:?}",
+        response.evidence_links,
+    );
 }
 
 #[test]

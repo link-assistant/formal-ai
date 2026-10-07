@@ -50,13 +50,25 @@ pub(super) fn proposed_resolution() -> String {
     registry().resolution
 }
 
+/// The claim value of a directive opened by a forbidden surface.
+const FORBIDDEN: &str = "forbidden";
+
+/// Whether `text` is a durable directive against what follows its surface.
+///
+/// "never …", "must not …" and "никогда не …" are read from the same registry
+/// surfaces as [`requirement_claim`].
+#[must_use]
+pub fn forbids(text: &str) -> bool {
+    requirement_claim(text).is_some_and(|claim| claim.value == FORBIDDEN)
+}
+
 /// Convert a durable natural-language directive into an exclusive claim.
 #[must_use]
 pub fn requirement_claim(text: &str) -> Option<Claim> {
     let normalized = trim_statement(text).to_lowercase();
     let registry = registry();
     for (surfaces, value) in [
-        (&registry.forbidden, "forbidden"),
+        (&registry.forbidden, FORBIDDEN),
         (&registry.required, "required"),
     ] {
         for surface in surfaces {

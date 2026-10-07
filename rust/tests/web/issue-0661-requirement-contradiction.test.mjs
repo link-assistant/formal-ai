@@ -26,18 +26,31 @@ async function afterDirective(first, second) {
 }
 
 describe('opposing directives are flagged with both statements and a resolution', () => {
-  it('English: the warning quotes both requirements, their weights, and the retraction protocol', async () => {
+  it('English: the warning quotes both requirements, their weights, and the retraction protocol, in the established language', async () => {
+    // The first turn established Russian (issue #724), so the warning is the
+    // Russian template, as issue_661.rs pins natively through `language:ru`.
     const answer = await afterDirective('always answer in Russian', 'never answer in Russian');
     assert.equal(answer.intent, 'requirement_contradiction');
     assert.equal(answer.content, [
-      'Warning: two of your requirements contradict each other.',
-      '- Statement 1 (weight 0.500000): “always answer in Russian”',
-      '- Statement 2 (weight 0.500000): “never answer in Russian”',
-      'They make opposite demands on the same subject (answer in russian), so both cannot hold at once.',
-      'Proposed resolution: keep one and retract the other by sending a superseding requirement. The requirement network is append-only, so retraction records a new event without erasing history. Alternatively, split the meanings or scope each requirement to a different context.',
+      'Предупреждение: два ваших требования противоречат друг другу.',
+      '- Утверждение 1 (вес 0.500000): «always answer in Russian»',
+      '- Утверждение 2 (вес 0.500000): «never answer in Russian»',
+      'Они предъявляют противоположные требования к одному предмету (answer in russian), поэтому оба не могут выполняться одновременно.',
+      'Предлагаемое решение: оставьте одно требование и отзовите другое (retract) замещающим требованием. Сеть требований работает только на добавление, поэтому отзыв записывается новым событием без удаления истории. Либо разделите смыслы или ограничьте требования разными контекстами.',
     ].join('\n'));
     assert.ok(answer.evidence.some((link) => link.startsWith('requirement_contradiction:subject=answer in russian ')));
     assert.ok(answer.evidence.includes('policy:add_only_history'));
+    assert.ok(answer.evidence.includes('trace:language:ru'));
+  });
+
+  it('an English pair with no established language is warned in English', async () => {
+    const answer = await afterDirective('always use tabs', 'never use tabs');
+    assert.equal(answer.intent, 'requirement_contradiction');
+    assert.equal(answer.content.split('\n').slice(0, 3).join('\n'), [
+      'Warning: two of your requirements contradict each other.',
+      '- Statement 1 (weight 0.500000): “always use tabs”',
+      '- Statement 2 (weight 0.500000): “never use tabs”',
+    ].join('\n'));
   });
 
   it('Russian directives produce the Russian warning', async () => {
@@ -91,5 +104,43 @@ describe('the claim reader (statement_audit/extract.rs)', () => {
   it('the Rust audit reads the same registry file the worker fetches', () => {
     assert.ok(read('rust/src/statement_audit/extract.rs').includes('include_str!("../../embedded/data/seed/statement-audit-registry.lino")'));
     assert.equal(read('rust/embedded/data/seed/statement-audit-registry.lino'), read('data/seed/statement-audit-registry.lino'));
+  });
+});
+
+describe('a forbidden language is neither demonstrated nor established (issue #724, issue_724_response_language_binding.rs)', () => {
+  const established = (history) => JSON.parse(evaluate(context, `JSON.stringify(establishedResponseLanguage(${JSON.stringify(history)}))`));
+  const forbidden = (text) => evaluate(context, `responseLanguageForbidden(${JSON.stringify(text)})`);
+
+  it('"Never answer in Russian." alone is not answered in Russian', async () => {
+    const answer = await host.solve('Never answer in Russian.');
+    assert.notEqual(answer.intent, 'response_language_demonstration');
+    assert.ok(!answer.evidence.includes('language_to:ru'), answer.evidence.join(' '));
+    assert.ok(answer.evidence.includes('trace:language:en'));
+  });
+
+  it('only the sentence that names the language decides', () => {
+    assert.equal(forbidden('never answer in Russian'), true);
+    assert.equal(forbidden('Никогда не отвечай на русском'), true);
+    assert.equal(forbidden('Never use slang. Answer in Russian.'), false);
+    assert.equal(forbidden('answer in Russian'), false);
+  });
+
+  it('the latest user turn naming a language establishes it, unless it forbids it', async () => {
+    const say = { role: 'user', content: 'Say something to me in Russian.' };
+    const reply = { role: 'assistant', content: 'Здравствуйте! Чем могу помочь?' };
+    const never = { role: 'user', content: 'Never answer in Russian.' };
+    assert.equal(established([say, reply]), 'ru');
+    assert.equal(established([say, reply, never, { role: 'assistant', content: 'Understood.' }]), null);
+    assert.equal(established([{ role: 'assistant', content: 'answer in Russian' }]), null);
+    const bound = await host.solve('What is an isogram?', [say, reply]);
+    assert.ok(bound.evidence.includes('trace:language:ru'), bound.evidence.join(' '));
+    const unbound = await host.solve('What is an isogram?', [say, reply, never, { role: 'assistant', content: 'Understood.' }]);
+    assert.ok(unbound.evidence.includes('trace:language:en'), unbound.evidence.join(' '));
+  });
+
+  it('a conversation bound to Russian greets in Russian', async () => {
+    const answer = await host.solve('hello', [{ role: 'user', content: 'always answer in Russian' }, { role: 'assistant', content: 'Хорошо.' }]);
+    assert.equal(answer.intent, 'greeting');
+    assert.equal(answer.content, 'Здравствуйте! Чем могу помочь?');
   });
 });
