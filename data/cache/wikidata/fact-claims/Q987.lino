@@ -1,0 +1,31 @@
+Q987
+  aliases
+    en ("Nayi Dilli" "New Delhi Municipal Council Area" "NDMC area" "Nai Dilli")
+    hi ("नयी दिल्ली")
+    ru ("Новый Дели")
+  id Q987
+  labels
+    en "New Delhi"
+    hi "नई दिल्ली"
+    ru "Нью-Дели"
+    zh "新德里"
+    zh-hans "新德里"
+  sitelinks
+    enwiki
+      site enwiki
+      title "New Delhi"
+    hiwiki
+      site hiwiki
+      title "नई दिल्ली"
+    ruwiki
+      site ruwiki
+      title "Нью-Дели"
+    zhwiki
+      site zhwiki
+      title "新德里"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

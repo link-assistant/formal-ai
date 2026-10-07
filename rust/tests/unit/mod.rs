@@ -320,6 +320,7 @@ mod issue_1168_latest_versions;
 mod issue_1168_workflow_render_parity;
 mod issue_1169_dependency_currency;
 mod issue_1171_llm_task_parity;
+mod issue_1172_fact_derivation;
 mod issue_1172_factual_qa_gate;
 mod issue_1172_factual_qa_subject_match;
 mod issue_1172_live_fact;

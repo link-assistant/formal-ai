@@ -4,6 +4,7 @@ total_closure_schema
   invariant "Only the first value of a declaration head with children is an identity. The same head on a leaf remains a semantic reference. Every value of a literal operand head is matcher syntax rather than a meaning edge."
   declaration_identity_head capability
   declaration_identity_head capability_gap
+  declaration_identity_head case
   declaration_identity_head category
   declaration_identity_head coding_meta_algorithm
   declaration_identity_head construct

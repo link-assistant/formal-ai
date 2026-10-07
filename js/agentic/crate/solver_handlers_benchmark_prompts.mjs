@@ -1,10 +1,12 @@
 // `fact_store_resolves` from rust/src/solver_handlers/benchmark_prompts.rs,
-// over the fact records of rust/src/seed/facts.rs (data/seed/facts.lino).
-// Only the fields the match reads are kept: `{subject_aliases,
-// question_keywords}`.
+// over the fact records of rust/src/seed/facts.rs: the written ones of
+// data/seed/facts.lino, then those derived from the committed Wikidata
+// captures (fact_derivation.mjs, issue #1172 R9). Only the fields the match
+// reads are kept: `{subject_aliases, question_keywords}`.
 
 import { cached, readText } from '../host.mjs';
 import { normalizePrompt } from './engine.mjs';
+import { derivedFacts } from './fact_derivation.mjs';
 import { splitPipeList } from './seed.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
 import { containsCjk } from './seed_meanings.mjs';
@@ -23,6 +25,9 @@ function factRecords() {
         subject_aliases: splitPipeList(findChildValue(entry, 'subject_aliases')).map((alias) => alias.toLowerCase()),
         question_keywords: splitPipeList(findChildValue(entry, 'question_keywords')).map((word) => word.toLowerCase()),
       });
+    }
+    for (const record of derivedFacts()) {
+      out.push({ subject_aliases: record.subjectAliases, question_keywords: record.questionKeywords });
     }
     return out;
   });

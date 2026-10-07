@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "Q15228": {
+      "type": "item",
+      "id": "Q15228",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "The Lord of the Rings"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Властелин колец"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "द लॉर्ड ऑफ़ द रिंग्स"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "魔戒"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "魔戒"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Lord of the Rings"
+          },
+          {
+            "language": "en",
+            "value": "TLotR"
+          },
+          {
+            "language": "en",
+            "value": "LotR"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "指环王"
+          },
+          {
+            "language": "zh",
+            "value": "指環王"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "The Lord of the Rings"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Властелин колец"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "द लॉर्ड ऑफ़ द रिंग्स"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "魔戒"
+        }
+      },
+      "claims": {
+        "P50": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P50",
+              "hash": "6d366c1bb38dfe6b6a52f6eb4fa88b885a51fa0f",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 892,
+                  "id": "Q892"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P50"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

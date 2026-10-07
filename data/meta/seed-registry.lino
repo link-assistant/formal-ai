@@ -101,8 +101,14 @@ seed_registry
   seed environments
     bundle true
     web true
+  seed fact-captures
+    bundle true
+    web true
   seed fact-check-sources
     bundle true
+  seed fact-realization
+    bundle true
+    web true
   seed facts
     bundle true
     web true

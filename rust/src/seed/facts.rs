@@ -13,6 +13,12 @@
 //! to the event log as a separate `wikidata` event so evidence links surface
 //! as `wikidata:Qxxx`.
 //!
+//! The written records are the facts no committed capture can reproduce. A
+//! fact the captures state (a relation grounded in a Wikidata property, both
+//! items captured) is not written here at all: `fact_derivation` derives it
+//! from `data/seed/fact-captures.lino` and `data/seed/fact-realization.lino`
+//! and [`facts`] appends it after the written ones (issue #1172 R9).
+//!
 //! `localized` (optional) carries per-language overrides of `summary`,
 //! `source`, and `source_kind`. The solver picks the override matching the
 //! user's prevailing language and falls back to the outer (English) values
@@ -264,5 +270,8 @@ pub fn facts() -> Vec<FactRecord> {
             localized,
         });
     }
+    // Issue #1172 R9: the records the committed Wikidata captures derive
+    // (`fact_derivation`) follow the written ones.
+    out.extend(super::fact_derivation::derived_facts().iter().cloned());
     out
 }

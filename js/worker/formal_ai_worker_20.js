@@ -1075,7 +1075,9 @@ async function loadSeed() {
         CONCEPT_CONTEXTS = seed.conceptContexts;
       }
       if (Array.isArray(seed && seed.facts) && seed.facts.length > 0) {
-        FACTS = seed.facts;
+        // Issue #1172 R9: the written records, then those derived from the
+        // committed Wikidata captures (formal_ai_worker_fact_derivation.js).
+        FACTS = seed.facts.concat(derivedCaptureFacts(SEED_RAW));
         warmFactCacheFromSeed();
       }
       if (Array.isArray(seed && seed.projects) && seed.projects.length > 0) {

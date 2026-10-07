@@ -192,12 +192,14 @@ fn explanation_answers_from_retrieved_statements_with_citations() {
     );
 }
 
-/// R9: the seeded records the live path can reproduce -- a relation grounded
-/// in a Wikidata property and a subject Q-id -- are exactly the ten the shard
-/// documents as retained (offline answers, the R2 label index, the R6
-/// comparison store); the other seven carry no property triple at all.
+/// R9: the records the live path can reproduce -- a relation grounded in a
+/// Wikidata property and a subject Q-id -- are no longer written in
+/// `facts.lino`: all ten are derived from the committed captures and follow
+/// the written records (`seed::fact_derivation`); the other seven written
+/// records carry no property triple. The derivation itself is pinned by
+/// `rust/tests/unit/issue_1172_fact_derivation.rs`.
 #[test]
-fn live_reproducible_seeded_records_are_the_documented_ten() {
+fn live_reproducible_records_are_the_ten_derived_from_captures() {
     let lexicon = formal_ai::seed::lexicon();
     let reproducible: Vec<String> = formal_ai::seed::facts()
         .into_iter()
@@ -212,52 +214,16 @@ fn live_reproducible_seeded_records_are_the_documented_ten() {
     assert_eq!(
         reproducible,
         [
-            "fact_lotr_author",
-            "fact_capital_japan",
-            "fact_capital_russia",
-            "fact_capital_france",
-            "fact_capital_germany",
-            "fact_capital_china",
-            "fact_capital_india",
-            "fact_capital_usa",
-            "fact_capital_uk",
-            "fact_capital_brazil",
+            "fact_capital_q17",
+            "fact_capital_q159",
+            "fact_capital_q142",
+            "fact_capital_q183",
+            "fact_capital_q148",
+            "fact_capital_q668",
+            "fact_capital_q30",
+            "fact_capital_q145",
+            "fact_capital_q155",
+            "fact_author_of_book_q15228",
         ]
     );
-}
-
-/// R1172-9: the ten stay seeded because no committed subject capture states
-/// the relation's claim (the entity captures are trimmed to labels, aliases
-/// and, for grounded entities, P17/P297), so the triple cannot be read from
-/// the cache yet. The full gap audit (summaries, aliases, sitelinks) is
-/// `rust/tests/web/issue-1172-seeded-fact-retirement.test.mjs`.
-#[test]
-fn no_committed_subject_capture_states_a_seeded_relation_claim() {
-    let lexicon = formal_ai::seed::lexicon();
-    let cache =
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../data/cache/wikidata/entity");
-    let with_claim: Vec<String> = formal_ai::seed::facts()
-        .into_iter()
-        .filter_map(|record| {
-            let property = lexicon.meaning(&record.relation)?.wikidata.clone();
-            if record.subject_qid.is_empty() || !property.starts_with('P') {
-                return None;
-            }
-            let path = cache.join(format!("{}.json", record.subject_qid));
-            let text = std::fs::read_to_string(&path)
-                .unwrap_or_else(|error| panic!("{}: {error}", path.display()));
-            let document: serde_json::Value =
-                serde_json::from_str(&text).expect("committed capture is JSON");
-            let claims =
-                &document["entities"][record.subject_qid.as_str()]["claims"][property.as_str()];
-            let states = claims.as_array().is_some_and(|entries| {
-                entries.iter().any(|entry| {
-                    entry["mainsnak"]["datavalue"]["value"]["id"].as_str()
-                        == Some(record.value_qid.as_str())
-                })
-            });
-            states.then_some(record.slug)
-        })
-        .collect();
-    assert!(with_claim.is_empty(), "retirable now: {with_claim:?}");
 }

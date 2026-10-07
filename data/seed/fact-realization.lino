@@ -1,0 +1,168 @@
+# How a fact answer is realized from committed Wikidata captures (issue
+# #1172 R9).
+#
+# The fact records this file realizes are not written anywhere. Each one is a
+# subject capture in fact-captures.lino whose truthy claim for a property
+# grounds a fact_relation meaning of meanings-facts.lino (P36 for capital, P50
+# for author_of_book), and whose value item is captured beside it. The record
+# reads its value from that claim, its labels from the two captures, its
+# sources from their sitelinks, and its sentence from the relation's sentence
+# template below. Both runtimes derive the same records at seed load
+# (rust/src/seed/fact_derivation.rs and the browser worker's
+# formal_ai_worker_fact_derivation.js), so nothing here is an answer.
+#
+# A slot whose surface ends in the absorbed mark takes the place of the same
+# mark right after it, so an abbreviation closes the sentence once.
+#
+# A record's source is the page of the relation's source_page entity (the
+# subject or the value) in the answer language, its captured sitelink title
+# filled into the source record's url.
+#
+# Sentence slots name a subject or value surface and optionally a form, as in
+# {subject|definite} or {value|instrumental}. A surface is the entity's
+# preferred label in the language (the preferred_label records, each either a
+# Wikidata alias or a recorded variant), else its label in the first captured
+# label variant the language lists, else its label. A form comes from the
+# language's article or morphology record.
+#
+# The subject records of each relation are the capture manifest
+# scripts/ground-fact-captures.py refreshes; the runtimes read the captures,
+# not the manifest. The prompt_surface records list the label-index surfaces
+# a subject's captured labels and the morphology cannot generate (an adjective,
+# an older spelling, a colloquial name), so a prompt that used to resolve keeps
+# resolving.
+fact_realization
+  languages ("en" "ru" "hi" "zh")
+  label_variant zh ("zh-hans" "zh")
+  absorbed_mark "."
+  source wikipedia
+    site "{language}wiki"
+    url "https://{language}.wikipedia.org/wiki/{title}"
+    title_space "_"
+  relation capital
+    intent fact_lookup
+    category geography
+    source_kind wikipedia
+    source_page value
+    wikidata_order ("subject" "value")
+    question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
+    sentence en
+      text "The capital of {subject|definite} is {value}."
+    sentence ru
+      text "Столица {subject|genitive} — {value}."
+    sentence hi
+      text "{subject} की राजधानी {value} है।"
+    sentence zh
+      text "{subject}的首都是{value}。"
+    subject Q17
+    subject Q159
+    subject Q142
+    subject Q183
+    subject Q148
+    subject Q668
+    subject Q30
+    subject Q145
+    subject Q155
+  relation author_of_book
+    intent fact_lookup
+    category literature
+    source_kind wikipedia
+    source_page subject
+    wikidata_order ("value" "subject")
+    question_keywords ("who wrote" "wrote" "author" "written by" "написал" "автор" "किसने लिखी" "किसने लिखा" "कौन है लेखक" "लेखक" "是谁写的" "作者" "作者是谁")
+    sentence en
+      text "{subject} was written by {value}."
+    sentence ru
+      text "«{subject}» был написан {value|instrumental}."
+    sentence hi
+      text "{subject} को {value} ने लिखा था।"
+    sentence zh
+      text "《{subject}》由 {value} 创作。"
+    subject Q15228
+  preferred_label Q148
+    en
+      text "China"
+      origin "recorded"
+    zh
+      text "中国"
+      origin "wikidata_alias"
+  preferred_label Q1490
+    zh
+      text "东京"
+      origin "wikidata_alias"
+  preferred_label Q956
+    zh
+      text "北京"
+      origin "recorded"
+  preferred_label Q142
+    hi
+      text "फ्रांस"
+      origin "wikidata_alias"
+  preferred_label Q30
+    hi
+      text "संयुक्त राज्य अमेरिका"
+      origin "wikidata_alias"
+  preferred_label Q61
+    hi
+      text "वाशिंगटन, डी.सी."
+      origin "recorded"
+  preferred_label Q15228
+    hi
+      text "द लॉर्ड ऑफ द रिंग्स"
+      origin "recorded"
+  preferred_label Q892
+    ru
+      text "Дж. Р. Р. Толкин"
+      origin "wikidata_alias"
+    hi
+      text "जे. आर. आर. टॉल्किन"
+      origin "recorded"
+    zh
+      text "J·R·R·托爾金"
+      origin "wikidata_alias"
+  prompt_surface Q17 ("япония's" "जापानी")
+  prompt_surface Q159 ("russian federation" "российская федерация" "российской федерации" "रूसी संघ" "俄羅斯")
+  prompt_surface Q142 ("french republic" "французская республика" "फ़्रांस")
+  prompt_surface Q183 ("federal republic of germany" "федеративная республика германия")
+  prompt_surface Q148 ("prc" "китайская народная республика" "中華人民共和國")
+  prompt_surface Q668 ("republic of india" "इंडिया")
+  prompt_surface Q30 ("united states of america" "usa" "us" "america" "соединенные штаты" "соединённые штаты" "соединенных штатов" "соединённых штатов" "америка" "америки" "америку" "अमेरिका" "美利坚合众国" "美利堅合眾國")
+  prompt_surface Q145 ("uk" "britain" "great britain" "england" "британия" "британии" "англия" "англии" "ब्रिटेन" "इंग्लैंड" "大不列颠" "英國" "大不列顛")
+  prompt_surface Q155 ("brasil" "federative republic of brazil" "ब्राजील" "巴西聯邦共和國")
+  prompt_surface Q15228 ("魔戒之王" "指環王")
+  article en
+    definite "the"
+    definite_head ("states" "kingdom" "republic" "emirates" "union" "netherlands" "islands")
+    possessive ("'s" "s")
+  morphology ru
+    initial_mark "."
+    indeclinable_acronym true
+    consonants "бвгджзклмнпрстфхцчшщ"
+    case genitive
+      ending ("ия" "ии")
+      ending ("ай" "ая")
+      ending ("а" "ы")
+      ending ("я" "и")
+      after_consonant "а"
+    case dative
+      ending ("ия" "ии")
+      ending ("ай" "аю")
+      ending ("а" "е")
+      ending ("я" "е")
+      after_consonant "у"
+    case accusative
+      ending ("ия" "ию")
+      ending ("а" "у")
+      ending ("я" "ю")
+    case instrumental
+      ending ("ия" "ией")
+      ending ("ай" "аем")
+      ending ("а" "ой")
+      ending ("я" "ей")
+      after_consonant "ом"
+    case prepositional
+      ending ("ия" "ии")
+      ending ("ай" "ае")
+      ending ("а" "е")
+      ending ("я" "е")
+      after_consonant "е"

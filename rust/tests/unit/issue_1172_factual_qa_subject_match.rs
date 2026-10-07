@@ -24,12 +24,12 @@ use formal_ai::FormalAiEngine;
 use formal_ai::seed::{FactRecord, facts};
 use formal_ai::web_engine_core::normalize_prompt;
 
-/// Fetch a seeded fact record by slug (e.g. `fact_capital_usa`).
+/// Fetch a seeded fact record by slug (e.g. `fact_capital_q30`).
 fn fact(slug: &str) -> FactRecord {
     facts()
         .into_iter()
         .find(|record| record.slug == slug)
-        .unwrap_or_else(|| panic!("seeded fact {slug} should exist in facts.lino"))
+        .unwrap_or_else(|| panic!("seeded fact {slug} should exist in the fact store"))
 }
 
 #[test]
@@ -76,7 +76,7 @@ fn contains_word_sequence_requires_whole_word_boundaries() {
 
 #[test]
 fn usa_fact_no_longer_answers_australia_prompts() {
-    let record = fact("fact_capital_usa");
+    let record = fact("fact_capital_q30");
     let normalized = normalize_prompt("What is the capital of Australia?");
     assert_eq!(normalized, "what is the capital of australia");
     assert!(
@@ -97,7 +97,7 @@ fn usa_fact_no_longer_answers_australia_prompts() {
 
 #[test]
 fn usa_fact_still_matches_its_own_prompts() {
-    let record = fact("fact_capital_usa");
+    let record = fact("fact_capital_q30");
     for prompt in [
         "What is the capital of the United States?",
         "Which city is the capital of the USA?",
@@ -116,7 +116,7 @@ fn usa_fact_still_matches_its_own_prompts() {
 
 #[test]
 fn japan_fact_still_matches_multilingual_prompts() {
-    let record = fact("fact_capital_japan");
+    let record = fact("fact_capital_q17");
     for prompt in [
         "What is the capital of Japan?",
         "Which city is Japan's capital?",
@@ -136,7 +136,7 @@ fn keyword_inside_a_longer_word_does_not_route_to_a_fact() {
     // The alias side matches ("usa" is a whole token) but the keyword
     // "capital" only appears inside "capitalism", so the conjunction fails
     // and the prompt must not be treated as a seeded capital question.
-    let record = fact("fact_capital_usa");
+    let record = fact("fact_capital_q30");
     let normalized = normalize_prompt("Is capitalism the system of the usa?");
     assert!(!record.matches_normalized(&normalized));
 }

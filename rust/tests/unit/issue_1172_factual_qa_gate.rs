@@ -68,7 +68,7 @@ fn the_gate_names_how_a_record_was_admitted() {
     let prompt = "What is the capital of the USA?";
     let (record, gate) =
         gated_fact_record(prompt, &normalize_prompt(prompt)).expect("USA is seeded");
-    assert_eq!(record.slug, "fact_capital_usa");
+    assert_eq!(record.slug, "fact_capital_q30");
     assert_eq!(gate, "subject_qid:Q30");
 
     // A record without a Q-id keeps the word-boundary alias hint.

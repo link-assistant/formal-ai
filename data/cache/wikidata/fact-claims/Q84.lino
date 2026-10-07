@@ -1,0 +1,30 @@
+Q84
+  aliases
+    en ("London, UK" "London, United Kingdom" "London, England" "London UK" "London U.K." Londinium "Loñ" Lundenwic Londinio Londini Londiniensium Augusta Trinovantum Kaerlud Karelundein Lunden "Big Smoke" "the Big Smoke" Lundenburh Lundenburgh "Llyn Dain" "Llan Dian" Londinion Loniniensi Lon. "Loñ." Lond. LDN)
+    hi ("लंदन,इंग्लॅण्ड" "लंदन,यूनाइटेड किंगडम")
+  id Q84
+  labels
+    en London
+    hi "लंदन"
+    ru "Лондон"
+    zh "倫敦"
+    zh-hans "伦敦"
+  sitelinks
+    enwiki
+      site enwiki
+      title London
+    hiwiki
+      site hiwiki
+      title "लंदन"
+    ruwiki
+      site ruwiki
+      title "Лондон"
+    zhwiki
+      site zhwiki
+      title "伦敦"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

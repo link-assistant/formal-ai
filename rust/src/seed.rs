@@ -31,6 +31,7 @@ mod coreference;
 mod draft_strategies;
 mod embedded;
 mod entity_names;
+mod fact_derivation;
 mod facts;
 mod grounding_overrides;
 mod handler_precedence;

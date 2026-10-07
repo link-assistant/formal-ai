@@ -1,0 +1,31 @@
+Q1490
+  aliases
+    en ("Tôkyô" Tokyo-to "Tokyo Metropolitan prefecture" "Tōkyō-to" "Tôkyô-to" "Tokyo Metropolis" Tokio "Tokyo Prefecture" "Tokyo, Japan" Tokei "Tokyo (Japan)" Edo Jedo Yedo)
+    ru ("Токио-то" "Токё" "Токё-то")
+    zh ("东京都" "东京" "東京" "日本东京" "日本東京")
+  id Q1490
+  labels
+    en Tokyo
+    hi "टोक्यो"
+    ru "Токио"
+    zh "東京都"
+    zh-hans "东京都"
+  sitelinks
+    enwiki
+      site enwiki
+      title Tokyo
+    hiwiki
+      site hiwiki
+      title "टोक्यो"
+    ruwiki
+      site ruwiki
+      title "Токио"
+    zhwiki
+      site zhwiki
+      title "東京都"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

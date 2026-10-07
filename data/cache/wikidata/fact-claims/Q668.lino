@@ -1,0 +1,48 @@
+Q668
+  aliases
+    en ("Republic of India" Bharatvarsh Hindustan Bharata Hindoostan Indostan "Bharat Ganarajya" "Al Hind" Tianzhu Tenjiku)
+    hi ("हिंदुस्तान" "भारतवर्ष" "इंडिया" "भारत गणराज्य" "इण्डिया" "हिन्दोस्तान" "हिन्दुस्तान" "आर्यवर्त")
+    ru ("Республика Индия" "Бхарат")
+    zh ("印" "天竺" "身毒" "贤督" "賢豆" "神督")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q987
+              numeric-id 987
+          hash c3d26bb09ec5cc1ef7122e9f7212c0594cc8b1ec
+          property P36
+          snaktype value
+        rank normal
+  id Q668
+  labels
+    en India
+    hi "भारत"
+    ru "Индия"
+    zh "印度"
+    zh-hans "印度"
+  sitelinks
+    enwiki
+      site enwiki
+      title India
+    hiwiki
+      site hiwiki
+      title "भारत"
+    ruwiki
+      site ruwiki
+      title "Индия"
+    zhwiki
+      site zhwiki
+      title "印度"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1
