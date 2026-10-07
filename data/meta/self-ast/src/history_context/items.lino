@@ -2,9 +2,9 @@ self_ast_census
   target src/history_context/items.rs
   language rust
   fidelity signature
-  byte_len 5716
-  line_count 157
-  content_id source_module_340b6825a96a2daf
+  byte_len 5747
+  line_count 159
+  content_id source_module_3a678b05f9cb5601
   symbol_count 6
   symbols
     function is_name_character 14 16
@@ -12,4 +12,4 @@ self_ast_census
     function item_header 25 71
     function named_items 76 98
     function diff_named_items 103 130
-    function coauthors 136 157
+    function coauthors 138 159

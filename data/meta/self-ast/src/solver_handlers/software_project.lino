@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/software_project.rs
   language rust
   fidelity signature
-  byte_len 32163
-  line_count 840
-  content_id source_module_3c83998d49535579
-  symbol_count 42
+  byte_len 32583
+  line_count 850
+  content_id source_module_b8c05ab066cf1715
+  symbol_count 43
   symbols
     struct SoftwareProjectMeaning 20 31
     struct SoftwareSubtask 34 38
@@ -15,37 +15,38 @@ self_ast_census
     enum ApprovalState 72 75
     function label 78 83
     function software_project_claims 97 104
-    function from_prompt 107 140
-    function canonical_key 142 160
-    function meaning_id 162 164
-    function delivery_mode_label 168 170
-    function domain_label 172 178
-    function meaning_lino 180 235
-    function try_software_project_request 238 276
-    function prior_software_project_meaning 278 286
-    function record_meaning 288 342
-    function artifact_label 353 377
-    function artifact_surface_table 386 397
-    function action_surface_table 404 413
-    function extract_target 415 430
-    function extract_after_marker 432 453
-    function capitalize_short_target 455 465
-    function requirement_marker_words 471 478
-    function extract_requirements 480 501
-    function derive_subtasks 503 516
-    function requirement_category_label 523 535
-    function classify_requirement 542 559
-    function subtask_title 561 575
-    function detect_delivery_mode 583 588
-    function detect_implementation_language 593 598
-    function implementation_language_from_slug 604 606
-    function approval_gates 608 631
-    function push_unique 633 637
-    function sentence_case 639 646
-    function is_game_unit_tracker 652 656
-    function is_approval_prompt 664 673
-    function reasoning_steps 675 708
-    function plan_steps 710 753
-    function render_plan_response 755 796
-    function render_implementation_response 798 831
-    function lino_string 833 840
+    function software_project_approval_claims 112 114
+    function from_prompt 117 150
+    function canonical_key 152 170
+    function meaning_id 172 174
+    function delivery_mode_label 178 180
+    function domain_label 182 188
+    function meaning_lino 190 245
+    function try_software_project_request 248 286
+    function prior_software_project_meaning 288 296
+    function record_meaning 298 352
+    function artifact_label 363 387
+    function artifact_surface_table 396 407
+    function action_surface_table 414 423
+    function extract_target 425 440
+    function extract_after_marker 442 463
+    function capitalize_short_target 465 475
+    function requirement_marker_words 481 488
+    function extract_requirements 490 511
+    function derive_subtasks 513 526
+    function requirement_category_label 533 545
+    function classify_requirement 552 569
+    function subtask_title 571 585
+    function detect_delivery_mode 593 598
+    function detect_implementation_language 603 608
+    function implementation_language_from_slug 614 616
+    function approval_gates 618 641
+    function push_unique 643 647
+    function sentence_case 649 656
+    function is_game_unit_tracker 662 666
+    function is_approval_prompt 674 683
+    function reasoning_steps 685 718
+    function plan_steps 720 763
+    function render_plan_response 765 806
+    function render_implementation_response 808 841
+    function lino_string 843 850

@@ -2,9 +2,9 @@ self_ast_census
   target src/document_formats.rs
   language rust
   fidelity signature
-  byte_len 10054
-  line_count 279
-  content_id source_module_88d330b980b28acb
+  byte_len 10057
+  line_count 280
+  content_id source_module_a5e006c3dea3919f
   symbol_count 13
   symbols
     const DOCUMENT_FORMAT_ENGINE 18 18
@@ -18,5 +18,5 @@ self_ast_census
     function document_package_is_recognized 154 168
     function convert_document_format 172 199
     struct FormalizedDocumentSource 204 215
-    function formalize_document_source 223 260
-    function package_bytes_for_target 263 279
+    function formalize_document_source 224 261
+    function package_bytes_for_target 264 280

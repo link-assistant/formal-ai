@@ -1,0 +1,106 @@
+self_ast_census
+  target src/agentic_coding/repair_apply.rs
+  language rust
+  fidelity full_ast
+  byte_len 8269
+  line_count 222
+  content_id source_module_101efca74aef3c0f
+  symbol_count 10
+  symbols
+    struct RepairEdit 22 28
+    enum RepairApplyGap 32 46
+    function slug 51 60
+    function read_quoted 67 83
+    function record_fields 89 118
+    function parse_repair_edit 122 139
+    function indentation 142 144
+    function reindented 147 165
+    function splice_repair_edit 172 200
+    function render_repair_edit 208 222
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 6112
+    named_node_count 1251
+    distinct_node_kinds 78
+    node_kinds
+      arguments 94
+      assignment_expression 8
+      attribute 4
+      attribute_item 4
+      binary_expression 16
+      block 27
+      boolean_literal 3
+      break_expression 1
+      call_expression 94
+      char_literal 6
+      closure_expression 8
+      closure_parameters 8
+      compound_assignment_expr 3
+      crate 1
+      declaration_list 1
+      doc_comment 50
+      else_clause 5
+      enum_item 1
+      enum_variant 6
+      enum_variant_list 1
+      escape_sequence 1
+      expression_statement 32
+      field_declaration 9
+      field_declaration_list 4
+      field_expression 82
+      field_identifier 95
+      field_initializer 4
+      field_initializer_list 3
+      for_expression 2
+      function_item 8
+      function_modifiers 1
+      generic_type 12
+      identifier 243
+      if_expression 10
+      impl_item 1
+      index_expression 9
+      inner_doc_comment_marker 18
+      integer_literal 8
+      let_declaration 26
+      lifetime 1
+      line_comment 50
+      macro_invocation 1
+      match_arm 12
+      match_block 2
+      match_expression 2
+      match_pattern 12
+      mutable_specifier 7
+      outer_doc_comment_marker 32
+      parameter 12
+      parameters 8
+      parenthesized_expression 3
+      primitive_type 19
+      range_expression 8
+      reference_expression 6
+      reference_type 14
+      remaining_field_pattern 3
+      return_expression 5
+      scoped_identifier 13
+      scoped_type_identifier 6
+      self 2
+      self_parameter 1
+      source_file 1
+      string_content 14
+      string_literal 15
+      struct_expression 3
+      struct_item 1
+      struct_pattern 3
+      token_tree 4
+      try_expression 4
+      tuple_expression 4
+      tuple_pattern 4
+      tuple_struct_pattern 1
+      tuple_type 2
+      type_arguments 12
+      type_identifier 38
+      unary_expression 5
+      visibility_modifier 11
+      while_expression 1

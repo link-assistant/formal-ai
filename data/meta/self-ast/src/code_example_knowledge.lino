@@ -2,9 +2,9 @@ self_ast_census
   target src/code_example_knowledge.rs
   language rust
   fidelity signature
-  byte_len 30002
-  line_count 804
-  content_id source_module_4cf3df6919eb730e
+  byte_len 31166
+  line_count 828
+  content_id source_module_04e6b00850bd9c04
   symbol_count 29
   symbols
     const PARTS_TEXT 44 44
@@ -19,20 +19,20 @@ self_ast_census
     struct CodeRecomposition 143 150
     struct ProseLink 154 161
     enum DecomposeError 165 170
-    struct PartVocabulary 174 183
-    function load 186 243
-    const KIND_ORDER 247 247
-    function decompose_code_node 264 270
-    function decompose_code_node_from 276 465
-    const LITERAL_QUOTES 468 468
-    function slot_output_literal 473 489
-    function escape_for_quote 494 503
-    function normalize_relation 507 519
-    function quoted_literals 522 557
-    function generalize_examples 563 632
-    function recompose_for_requirement 645 703
-    function procedure_step_records 712 732
-    function decomposed_links_notation 737 753
-    function generalized_links_notation 757 780
-    function escape_notation 783 787
-    function recomposition_links_notation 791 804
+    struct PartVocabulary 174 189
+    function load 192 252
+    const KIND_ORDER 256 256
+    function decompose_code_node 273 279
+    function decompose_code_node_from 286 489
+    const LITERAL_QUOTES 492 492
+    function slot_output_literal 497 513
+    function escape_for_quote 518 527
+    function normalize_relation 531 543
+    function quoted_literals 546 581
+    function generalize_examples 587 656
+    function recompose_for_requirement 669 727
+    function procedure_step_records 736 756
+    function decomposed_links_notation 761 777
+    function generalized_links_notation 781 804
+    function escape_notation 807 811
+    function recomposition_links_notation 815 828

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/command_reroute.rs
   language rust
   fidelity full_ast
-  byte_len 19787
+  byte_len 19791
   line_count 513
-  content_id source_module_82e674a3ffa1f9a7
+  content_id source_module_af3be2b9d561c3b7
   symbol_count 18
   symbols
     function plan_symbolic_command_reroute 27 139

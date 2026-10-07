@@ -2,9 +2,9 @@ self_ast_census
   target src/web_formalize_trust.rs
   language rust
   fidelity signature
-  byte_len 17606
-  line_count 497
-  content_id source_module_8f5d628b27350398
+  byte_len 17565
+  line_count 499
+  content_id source_module_dd120b8ecb5dae8e
   symbol_count 35
   symbols
     function trust_score 4 74
@@ -40,5 +40,5 @@ self_ast_census
     const HTTPS_SCHEME 450 450
     static WORKING_MEMORY 454 455
     function with_working_memory 462 464
-    function remember_capture 470 484
-    function remembered_capture 490 497
+    function remember_capture 471 485
+    function remembered_capture 492 499

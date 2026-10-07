@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/formalization_task_render.rs
   language rust
   fidelity signature
-  byte_len 20751
-  line_count 580
-  content_id source_module_5a8491780cf5100e
+  byte_len 20947
+  line_count 584
+  content_id source_module_de7c850f4020f1a6
   symbol_count 17
   symbols
     function render_atom 6 20
@@ -21,6 +21,6 @@ self_ast_census
     function named_target 313 324
     function sentence_under_discussion 328 336
     function handle_formalization_request 343 391
-    function formalize_answer 394 494
-    function formal_span 498 505
-    function deformalize_answer 509 580
+    function formalize_answer 394 496
+    function formal_span 500 507
+    function deformalize_answer 511 584

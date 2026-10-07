@@ -2,11 +2,12 @@ self_ast_census
   target src/solver_handlers/page_query_text.rs
   language rust
   fidelity signature
-  byte_len 2321
-  line_count 58
-  content_id source_module_fe7c3b198301700e
-  symbol_count 3
+  byte_len 2801
+  line_count 69
+  content_id source_module_7f3656880f99ae65
+  symbol_count 4
   symbols
     const PAGE_QUERY_INTENT 19 19
     const PAGE_QUERY_RESPONSE 21 21
-    function handle_page_query_text 25 58
+    function page_query_text_claims 29 32
+    function handle_page_query_text 36 69

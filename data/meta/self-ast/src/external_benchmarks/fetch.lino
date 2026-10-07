@@ -2,9 +2,9 @@ self_ast_census
   target src/external_benchmarks/fetch.rs
   language rust
   fidelity signature
-  byte_len 9559
-  line_count 270
-  content_id source_module_4f987fbeb5cfc626
+  byte_len 9751
+  line_count 273
+  content_id source_module_a12978217682ccbf
   symbol_count 14
   symbols
     function fetch_records 21 78
@@ -12,12 +12,12 @@ self_ast_census
     function non_empty_lines 86 91
     function read_cached 93 96
     function create_parent 98 108
-    function download 110 124
-    function download_gzip 126 146
-    function unavailable_reason 150 159
-    function python_module_available 161 167
-    function parquet_records 169 206
-    function provenance_path 208 212
-    function cache_is_valid 214 234
-    function write_provenance 236 261
-    function fnv1a64 263 270
+    function download 110 127
+    function download_gzip 129 149
+    function unavailable_reason 153 162
+    function python_module_available 164 170
+    function parquet_records 172 209
+    function provenance_path 211 215
+    function cache_is_valid 217 237
+    function write_provenance 239 264
+    function fnv1a64 266 273

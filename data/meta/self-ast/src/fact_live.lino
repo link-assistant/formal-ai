@@ -2,9 +2,9 @@ self_ast_census
   target src/fact_live.rs
   language rust
   fidelity signature
-  byte_len 7817
-  line_count 204
-  content_id source_module_e231c6a0eeb854c6
+  byte_len 7913
+  line_count 210
+  content_id source_module_c350c7285c3252c4
   symbol_count 12
   symbols
     const REGISTRY_TEXT 25 25
@@ -18,4 +18,4 @@ self_ast_census
     function first_claim 89 91
     function claim_value 94 103
     function claim_reference 106 122
-    function resolve_fact_live 133 204
+    function resolve_fact_live 133 210

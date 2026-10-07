@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/statistics/word_relations.rs
   language rust
   fidelity signature
-  byte_len 4941
-  line_count 127
-  content_id source_module_ad742d7719817fb8
+  byte_len 4939
+  line_count 128
+  content_id source_module_c2ec5bf2d8e4888e
   symbol_count 11
   symbols
     const QUESTION 21 21
@@ -16,5 +16,5 @@ self_ast_census
     const MAX_VALUES 27 27
     const DIVISION_PRECISION 28 28
     function relation_sign 33 39
-    function relation_word_problem 42 98
-    function sequential 102 127
+    function relation_word_problem 42 99
+    function sequential 103 128

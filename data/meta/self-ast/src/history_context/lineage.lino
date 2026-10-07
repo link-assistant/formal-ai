@@ -2,10 +2,10 @@ self_ast_census
   target src/history_context/lineage.rs
   language rust
   fidelity signature
-  byte_len 7611
-  line_count 204
-  content_id source_module_c4d4d2dbc95f84e6
-  symbol_count 9
+  byte_len 8093
+  line_count 214
+  content_id source_module_db84eb7e06991351
+  symbol_count 10
   symbols
     const LINEAGE_INTENT 23 23
     const UNRECORDED_INTENT 25 25
@@ -13,6 +13,7 @@ self_ast_census
     function lineage_subjects 40 71
     function pattern_value 75 79
     function template 82 88
-    function lineage_answer 97 155
-    function working_repository 158 168
-    function handle_repository_lineage 172 204
+    function introducing_issue 91 101
+    function lineage_answer 110 163
+    function working_repository 166 176
+    function handle_repository_lineage 180 214

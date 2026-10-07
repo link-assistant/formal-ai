@@ -2,9 +2,9 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 27327
+  byte_len 27372
   line_count 760
-  content_id source_module_eb5a19b81a75f0d4
+  content_id source_module_7862e8e2a5d2fa5a
   symbol_count 45
   symbols
     module obligations 26 26

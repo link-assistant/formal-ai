@@ -2,17 +2,17 @@ self_ast_census
   target src/web_formalize_features.rs
   language rust
   fidelity signature
-  byte_len 7209
-  line_count 196
-  content_id source_module_a0a7a865b98b6ec6
+  byte_len 7252
+  line_count 200
+  content_id source_module_ecca5d170bc711e7
   symbol_count 9
   symbols
     struct TrustFeatureRules 9 12
     function load 15 35
-    function official_websites 43 64
-    function registry_primacy 68 82
-    function agreement_texts 85 96
-    function agreeing_pages 100 116
-    function trust_features_for 124 144
-    function document_source 152 175
-    function split_supplied_page 182 196
+    function official_websites 44 65
+    function registry_primacy 69 83
+    function agreement_texts 86 97
+    function agreeing_pages 101 117
+    function trust_features_for 126 146
+    function document_source 155 178
+    function split_supplied_page 186 200

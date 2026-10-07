@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/sql_synthesis.rs
   language rust
   fidelity signature
-  byte_len 23098
+  byte_len 23100
   line_count 646
-  content_id source_module_3d0db5c7442a97d8
+  content_id source_module_5c08f7e35ee49b52
   symbol_count 24
   symbols
     const CUES_PATH 20 20

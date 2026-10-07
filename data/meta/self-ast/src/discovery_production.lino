@@ -2,10 +2,10 @@ self_ast_census
   target src/discovery_production.rs
   language rust
   fidelity signature
-  byte_len 21119
-  line_count 546
-  content_id source_module_f1ebe75e1e760073
-  symbol_count 34
+  byte_len 22275
+  line_count 578
+  content_id source_module_db830d8a3ec8d8ca
+  symbol_count 35
   symbols
     const POLICY 42 42
     const GRAMMARS 45 45
@@ -20,24 +20,25 @@ self_ast_census
     const REQUIRED_MARK 127 127
     function required_entry_fields 132 151
     function bootstrap_cache_active 159 166
-    function cache_file_header 170 186
-    function grammar_exists 190 209
-    function knows_language 215 219
-    function language_has_cache_row 221 226
-    struct ProcedureCache 235 238
-    function load_at 244 253
-    function load 259 261
-    function recipes 265 267
-    function lookup 271 276
-    function store 284 297
-    function delete_all 301 304
-    function parse 306 339
-    function write 341 383
-    function cached_write_program 400 411
-    enum CachedOrDiscovered 416 419
-    function recipe 424 428
-    function was_cached 432 434
-    function cached_or_research 451 497
-    function gap_field 503 513
-    function default_cache_path 518 535
-    function quote 538 546
+    function miss_research_missing 176 198
+    function cache_file_header 202 218
+    function grammar_exists 222 241
+    function knows_language 247 251
+    function language_has_cache_row 253 258
+    struct ProcedureCache 267 270
+    function load_at 276 285
+    function load 291 293
+    function recipes 297 299
+    function lookup 303 308
+    function store 316 329
+    function delete_all 333 336
+    function parse 338 371
+    function write 373 415
+    function cached_write_program 432 443
+    enum CachedOrDiscovered 448 451
+    function recipe 456 460
+    function was_cached 464 466
+    function cached_or_research 483 529
+    function gap_field 535 545
+    function default_cache_path 550 567
+    function quote 570 578

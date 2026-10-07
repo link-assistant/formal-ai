@@ -2,10 +2,10 @@ self_ast_census
   target src/web_formalize.rs
   language rust
   fidelity signature
-  byte_len 30521
-  line_count 816
-  content_id source_module_ac3a3728c65137bd
-  symbol_count 39
+  byte_len 33204
+  line_count 874
+  content_id source_module_5a2bef0e30a9914d
+  symbol_count 42
   symbols
     const RULES_TEXT 38 38
     const TRUST_TEXT 40 40
@@ -13,36 +13,39 @@ self_ast_census
     function from_hint 65 68
     function from_hint_or_sniff 74 89
     enum PageBlock 94 100
-    struct FormalizationRules 104 114
-    struct MimeHint 118 121
-    struct SniffRule 125 130
-    function seed_records 135 140
-    function load 143 221
-    function non_empty 225 227
-    function kind 230 232
-    function kind_of 236 245
-    function sniff 248 268
-    function page_query_templates 274 276
-    function url_domain 280 286
-    function formalize_page 295 297
-    function formalize_page_with_context 303 324
-    function blocks_to_network 329 370
-    const OPAQUE_HTML_TAGS 374 374
-    const HTML_COMMENT_OPEN 377 377
-    const HTML_COMMENT_CLOSE 378 378
-    function find_close_tag 382 394
-    function html_blocks 401 485
-    function markdown_blocks 489 569
-    function json_blocks 573 599
-    function plain_blocks 603 621
-    function paragraph_block 625 636
-    function flush_paragraph 639 644
-    function resolve_language 650 698
-    function shebang_language 701 708
-    function extension_language 711 717
-    function tag_attr 720 737
-    function strip_tags 740 752
-    function strip_tags_keep_lines 755 761
-    function cell_texts 764 788
-    function decode_entities 791 798
-    struct TrustFeatures 802 813
+    struct FormalizationRules 104 115
+    struct MimeHint 119 122
+    struct SniffRule 126 131
+    function seed_records 136 141
+    function load 144 226
+    function non_empty 230 232
+    function kind 235 237
+    function kind_of 241 250
+    function sniff 253 273
+    function page_query_templates 279 281
+    function url_domain 285 291
+    function formalize_page 300 302
+    function formalize_page_with_context 308 329
+    function blocks_to_network 334 375
+    const OPAQUE_HTML_TAGS 379 379
+    const NESTED_BLOCK_OPENERS 383 383
+    const HTML_COMMENT_OPEN 386 386
+    const HTML_COMMENT_CLOSE 387 387
+    function find_close_tag 391 403
+    function html_blocks 410 524
+    function has_class_prefix 527 532
+    function language_class 538 538
+    function markdown_blocks 547 627
+    function json_blocks 631 657
+    function plain_blocks 661 679
+    function paragraph_block 683 694
+    function flush_paragraph 697 702
+    function resolve_language 708 756
+    function shebang_language 759 766
+    function extension_language 769 775
+    function tag_attr 778 795
+    function strip_tags 798 810
+    function strip_tags_keep_lines 813 819
+    function cell_texts 822 846
+    function decode_entities 849 856
+    struct TrustFeatures 860 871

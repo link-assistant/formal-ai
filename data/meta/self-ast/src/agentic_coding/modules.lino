@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/modules.rs
   language rust
   fidelity full_ast
-  byte_len 6048
-  line_count 159
-  content_id source_module_c3965c7e850c7c71
-  symbol_count 74
+  byte_len 6070
+  line_count 160
+  content_id source_module_e32c79ad7685ac77
+  symbol_count 75
   symbols
     module algorithm_learning 10 10
     module associative_learning 11 11
@@ -55,49 +55,50 @@ self_ast_census
     module progress 55 55
     module question_catalog 56 56
     module rebuild_plan 57 57
-    module repair_loop 58 58
-    module repair_strategy 59 59
-    module report_issue 60 60
-    module report_script 61 61
-    module requirement_resolution 62 62
-    module restart_feedback 63 63
-    module routing_learning 64 64
-    module self_ast 65 65
-    module self_heal 66 66
-    module shell_command 67 67
-    module shell_command_policy 68 68
-    module shell_file_fallback 69 69
-    module source_links 70 70
-    module stated_request 71 71
-    module statement_audit 72 72
-    module structured_document 73 73
-    module structured_edit 74 74
-    module task_obligations 75 75
-    module task_structure 76 76
-    module tool_result 77 77
-    module transcript_evidence 78 78
-    module web_research 79 79
-    module work_item_steps 80 80
-    module workspace_change 81 81
-    module workspace_inspection 82 82
-    module write_request 83 83
+    module repair_apply 58 58
+    module repair_loop 59 59
+    module repair_strategy 60 60
+    module report_issue 61 61
+    module report_script 62 62
+    module requirement_resolution 63 63
+    module restart_feedback 64 64
+    module routing_learning 65 65
+    module self_ast 66 66
+    module self_heal 67 67
+    module shell_command 68 68
+    module shell_command_policy 69 69
+    module shell_file_fallback 70 70
+    module source_links 71 71
+    module stated_request 72 72
+    module statement_audit 73 73
+    module structured_document 74 74
+    module structured_edit 75 75
+    module task_obligations 76 76
+    module task_structure 77 77
+    module tool_result 78 78
+    module transcript_evidence 79 79
+    module web_research 80 80
+    module work_item_steps 81 81
+    module workspace_change 82 82
+    module workspace_inspection 83 83
+    module write_request 84 84
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3324
-    named_node_count 513
+    total_link_count 3344
+    named_node_count 516
     distinct_node_kinds 11
     node_kinds
       crate 7
-      identifier 235
+      identifier 236
       line_comment 8
-      mod_item 74
+      mod_item 75
       scoped_identifier 10
       scoped_use_list 32
       source_file 1
       use_as_clause 1
       use_declaration 36
       use_list 32
-      visibility_modifier 77
+      visibility_modifier 78
