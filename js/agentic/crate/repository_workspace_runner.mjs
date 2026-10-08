@@ -4,7 +4,7 @@ import { stableId } from './engine_stable_identifier.mjs';
 import { observedEvidence, ObservationKind, EvidenceSource } from './execution_evidence.mjs';
 import { EDITOR_STRUCTURAL, loadProtocol, newProtocolTrace, recordStage, renderProtocolTrace,
   renderProtocolTemplate, stepAppliesTo } from './repository_workspace.mjs';
-import { deriveRepositoryChange, locateRepositoryTargets, repositoryCommandArguments, runRepositoryCommand }
+import { deriveRepositoryChange, locateRepositoryTargets, locateRepositoryAmbiguity, repositoryCommandArguments, runRepositoryCommand }
   from './repository_workspace_stages.mjs';
 
 function observed(outcome, step, command, argumentsList, exit, output, kind, source = EvidenceSource.LocalProcess) {
@@ -68,7 +68,11 @@ export async function executeWorkspaceProtocol(workspace, task, {
           const files = await workspace.io.sourceFiles(workspace.root);
           const census = workspace.io.census ? await workspace.io.census(workspace.root) : { modules: [] };
           outcome.located = locateRepositoryTargets(files, task.requirement, census, task.language ?? '');
-          if (!outcome.located.length) throw new Error(task.requirement);
+          if (!outcome.located.length) {
+            const candidates = locateRepositoryAmbiguity(files, task.requirement, census, task.language ?? '');
+            throw new Error(candidates.length ? 'ambiguous repository declarations: '
+              + candidates.map((candidate) => candidate.relative_path + ':' + candidate.symbol).join(', ') : task.requirement);
+          }
           observed(outcome, step, 'repository locate', [], null,
             outcome.located.map((location) => `${location.relative_path}:${location.symbol ?? ''}:${location.how}`).join('\n'),
             ObservationKind.SymbolicCheck, EvidenceSource.Engine);

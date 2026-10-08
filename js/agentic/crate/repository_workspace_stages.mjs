@@ -77,20 +77,49 @@ function words(text) {
     .map((word) => word.length > 3 && word.endsWith('s') && !word.endsWith('ss') ? word.slice(0, -1) : word);
 }
 
-/** Mirrors `fn locate_targets`: a named path or one evidenced declaration; ties stay open. */
-export function locateRepositoryTargets(files, requirement, census = { modules: [] }, language = '') {
+function censusCandidates(census, files, terms) {
+  const candidates = [];
+  for (const module of census.modules) {
+    for (const symbol of module.symbols) {
+      if (!['const', 'static'].includes(symbol.kind)) continue;
+      const parts = new Set(words(symbol.name));
+      const matched = [...parts].filter((part) => terms.has(part)).length;
+      if (parts.size < 2 || matched < 2) continue;
+      const source = files.find(([path]) => path === module.path)?.[1] ?? '';
+      const declaration = source.split('\n').slice(Math.max(0, symbol.start_line - 1), symbol.end_line).join(' ');
+      const value = declaration.includes('=') ? declaration.slice(declaration.indexOf('=') + 1).trim().replace(/;$/u, '').trim() : '';
+      candidates.push({ matched, parts: parts.size,
+        path_matches: new Set(words(module.path).filter((part) => terms.has(part))).size,
+        owns_value: /[\[{}(0-9]/u.test(value) || /^["'&]/u.test(value),
+        location: { relative_path: module.path, symbol: symbol.name, how: 'Census' } });
+    }
+  }
+  const compare = (left, right) => left.matched * right.parts - right.matched * left.parts
+    || left.matched - right.matched || left.path_matches - right.path_matches
+    || Number(left.owns_value) - Number(right.owns_value);
+  if (!candidates.length) return [];
+  const best = candidates.reduce((left, right) => compare(left, right) >= 0 ? left : right);
+  return candidates.filter((candidate) => compare(candidate, best) === 0).map((candidate) => candidate.location);
+}
+
+function locationCandidates(files, requirement, census, language) {
   const named = files.filter(([path]) => /[/.]/u.test(path) && requirement.toLowerCase().includes(path.toLowerCase()));
-  if (named.length) return named.map(([relative_path]) => ({ relative_path, symbol: null, how: 'NamedPath' }));
+  if (named.length) return { named: true,
+    locations: named.map(([relative_path]) => ({ relative_path, symbol: null, how: 'NamedPath' })) };
   const terms = new Set(words(requirement));
   const languages = language === 'en' ? ['en'] : [language, 'en'];
   for (const meaning of meaningsWithRole('coding_search_subject_kind')) {
     if (!mentionsInLanguagesRaw(meaning, requirement.toLowerCase(), languages)) continue;
-    for (const term of words(`${meaning.slug} ${wordIn(meaning, 'en') ?? ''}`)) terms.add(term);
+    for (const term of words(meaning.slug + ' ' + (wordIn(meaning, 'en') ?? ''))) terms.add(term);
   }
   const modules = census.modules.some((module) => module.path.split('/').includes('src'))
     ? census.modules.filter((module) => module.path.split('/').includes('src')) : census.modules;
-  const resolved = resolveIn({ ...census, modules }, [...terms].join(' '));
-  if (resolved) return [{ relative_path: resolved.module_path, symbol: resolved.symbol, how: 'Census' }];
+  const selected = { ...census, modules };
+  const resolved = resolveIn(selected, [...terms].join(' '));
+  if (resolved) return { named: false,
+    locations: [{ relative_path: resolved.module_path, symbol: resolved.symbol, how: 'Census' }] };
+  const partial = censusCandidates(selected, files, terms);
+  if (partial.length) return { named: false, locations: partial };
   const candidates = [];
   for (const [relative_path, contents] of files) {
     for (const line of contents.split('\n')) {
@@ -106,7 +135,19 @@ export function locateRepositoryTargets(files, requirement, census = { modules: 
       }
     }
   }
-  return candidates.length === 1 ? candidates : [];
+  return { named: false, locations: candidates };
+}
+
+/** Mirrors `fn locate_targets`: exact names then native partial-census evidence; ties stay open. */
+export function locateRepositoryTargets(files, requirement, census = { modules: [] }, language = '') {
+  const found = locationCandidates(files, requirement, census, language);
+  return found.named || found.locations.length === 1 ? found.locations : [];
+}
+
+/** Mirrors `fn locate_ambiguity`: every equally evidenced candidate, without a path-order tiebreaker. */
+export function locateRepositoryAmbiguity(files, requirement, census = { modules: [] }, language = '') {
+  const found = locationCandidates(files, requirement, census, language);
+  return found.locations.length > 1 ? found.locations : [];
 }
 
 /** Mirrors `fn derive_change`: structural list edits require a located symbol. */

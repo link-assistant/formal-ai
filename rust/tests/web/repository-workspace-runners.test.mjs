@@ -149,3 +149,23 @@ test('unobserved authoring prerequisites keep the commit gate closed; failed sta
   assert.deepEqual(failure.open, ['read failed']);
   assert.equal(failure.trace.stages.find((stage) => stage.id === 'serve').status, 'not_reached');
 });
+
+
+test('partial census uses native coverage, path evidence and value ownership without guessing ties', () => {
+  const files = [['src/alias.rs', 'pub static PREFIX_TEST_NAMES: &[&str];'],
+    ['src/owner.rs', '// header\npub const PREFIX_TEST_NAMES: &[&str] = &["alpha"];\n'],
+    ['snapshot.rs', 'pub const TEST_NAMES: &[&str] = &["snapshot"];']];
+  const symbol = { kind: 'const', name: 'PREFIX_TEST_NAMES', start_line: 1, end_line: 1 };
+  const census = { modules: [
+    { path: 'src/alias.rs', symbols: [symbol] },
+    { path: 'src/owner.rs', symbols: [{ ...symbol, start_line: 2, end_line: 2 }] },
+    { path: 'snapshot.rs', symbols: [{ ...symbol, name: 'TEST_NAMES' }] },
+  ] };
+  assert.deepEqual(stageFunctions.locateRepositoryTargets(files, 'edit test names', census),
+    [{ relative_path: 'src/owner.rs', symbol: 'PREFIX_TEST_NAMES', how: 'Census' }]);
+  const tiedFiles = files.map(([path, source]) => [path, source.replace('= &["alpha"]', '= ALIAS')]);
+  assert.deepEqual(stageFunctions.locateRepositoryTargets(tiedFiles, 'edit test names', census), []);
+  assert.equal(stageFunctions.locateRepositoryAmbiguity(tiedFiles, 'edit test names', census).length, 2);
+  assert.equal(stageFunctions.locateRepositoryTargets(tiedFiles, 'edit owner test names', census)[0].relative_path,
+    'src/owner.rs');
+});

@@ -84,7 +84,7 @@ function assignments() {
   const counts = new Map();
   for (const move of proposed) counts.set(move.area, (counts.get(move.area) ?? 0) + 1);
   return proposed.filter((move) => counts.get(move.area) >= 5
-    && (!source.has(move.area.replaceAll('-', '_')) || proposed.some((candidate) => candidate.from === `${DIRECTORY}/${move.area.replaceAll('-', '_')}.rs` && candidate.area === move.area))); 
+    && (!source.has(move.area.replaceAll('-', '_')) || proposed.some((candidate) => candidate.from === `${DIRECTORY}/${move.area.replaceAll('-', '_')}.rs` && candidate.area === move.area)));
 }
 
 function renderTree(moves) {

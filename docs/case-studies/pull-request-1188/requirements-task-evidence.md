@@ -60,3 +60,15 @@ T1020: a new code payload containing `.split(\'\n\')` lost its literal escape. B
 | T1208 | REPO-RUNNERS: copy expanded task evidence through Formal AI | **Pass**: exact source payload copied. | No change needed. |
 
 The map now records the generated browser factory explicitly. The existing rename rule moved its TypeScript and line-budget companions and rewrote both boot inventories. T1204 could not start because the inventory still referenced an already removed generated file; T1205 and T1206-T1207 verify the repaired boot and final Formal AI map authoring.
+
+## Partial census continuation
+
+| T1209 | REPO-RUNNERS: recover one trailing-space line through Formal AI whole copy | **Pass**: byte-identical reviewed generator except the trailing space. | diff --check clean. |
+| T1210 | REPO-RUNNERS: append continuation file claim | **Pass**: exact append. | No change needed. |
+| T1211 | REPO-RUNNERS: port native partial-census location ranking | **Pass**: reviewed payload copied exactly. | Identifier coverage, path relevance and value ownership preserve native ordering. |
+| T1212 | REPO-RUNNERS: preserve exact Rust twin citations | **Pass**: reviewed stage payload copied exactly. | No change needed. |
+| T1213 | REPO-RUNNERS: name every tied declaration in stopped outcome | **Pass**: reviewed runner payload copied exactly. | Ambiguous locations remain unresolved. |
+| T1214 | REPO-RUNNERS: pin native partial-census evidence ordering | **Pass**: reviewed test payload copied exactly. | Eight closest runner tests pass. |
+| T1215 | REPO-RUNNERS: copy continuation task evidence | **Pass**: reviewed evidence copied exactly. | Parent integrates rows under shared ledger ownership. |
+
+The native partial-census fallback now ranks const/static symbols by identifier coverage, match count, path evidence and value ownership. Equal evidence remains ambiguous and the stopped outcome names every candidate. Eight closest runner tests passed. Full live Node caller integration and authoring artifact adapters remain open.
