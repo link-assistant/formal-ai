@@ -901,16 +901,8 @@ function parseAffixTextRequest(prompt, history, quoted) {
   return { input, affix: quoted[0].text };
 }
 
-function isAgentTextRequest(normalized) {
-  return (
-    normalized.includes("[agent]") ||
-    normalized.includes("enable agent") ||
-    normalized.includes("agent mode")
-  );
-}
-
 function parseTextManipulationRequest(prompt, normalized, history = []) {
-  if (isAgentTextRequest(normalized)) return null;
+  if (isAgentModeRequest(prompt)) return null; // `is_agent_request` over the lowercased prompt, brackets kept
   const quoted = quotedTextSpans(prompt);
   const operations = [];
   const fallbackInput = lastAssistantTextArtifact(history);

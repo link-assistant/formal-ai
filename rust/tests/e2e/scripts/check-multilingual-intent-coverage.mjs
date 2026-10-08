@@ -1039,7 +1039,7 @@ const requiredLocalizedResponseIntents = [
   'unknown_reasoning_question',
   'unknown_reasoning_trace',
   'meta_explanation',
-  'inappropriate_content',
+  'inappropriate-content',
 ];
 
 for (const intent of requiredLocalizedResponseIntents) {

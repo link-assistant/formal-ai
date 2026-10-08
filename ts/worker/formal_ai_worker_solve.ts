@@ -454,19 +454,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       ],
     }, formalizationContext);
   }
-  // Issue #1085: an opinion opener ("what do you think about …") is the
-  // opinion_question (and clarification) row natively, which identity must not
-  // claim; the rows answer from the synchronous table below, as Rust dispatches.
-  if (isIdentityPrompt(normalized, prompt) && !tryOpinionQuestion(prompt, normalized) && !tryClarification(prompt, normalized)) {
-    events.push("rule:identity");
-    steps.push({ step: "match_rule", detail: "identity" });
-    return finalize(events, steps, toolCalls, {
-      intent: "identity",
-      content: answerFor("identity", language),
-      confidence: 1.0,
-      evidence: ["rule:identity", `language:${language}`],
-    }, formalizationContext);
-  }
   // Issue #312: compute the write-program result once so a concrete program
   // request (a known language + task with a template) can take precedence over
   // the concept lookup, while the "unsupported" variant still falls back after
@@ -521,6 +508,21 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       }
       return finalize(events, steps, toolCalls, hit, formalizationContext);
     }
+  }
+  // R1188-U29: the identity rule answers after the handler table, as rust/src/solver.rs renders
+  // the selected seeded rule only after meta_method_dispatch::try_dispatch declines.
+  // Issue #1085: an opinion opener ("what do you think about …") is the
+  // opinion_question (and clarification) row natively, which identity must not
+  // claim; the rows answer from the synchronous table below, as Rust dispatches.
+  if (isIdentityPrompt(normalized, prompt) && !tryOpinionQuestion(prompt, normalized) && !tryClarification(prompt, normalized)) {
+    events.push("rule:identity");
+    steps.push({ step: "match_rule", detail: "identity" });
+    return finalize(events, steps, toolCalls, {
+      intent: "identity",
+      content: answerFor("identity", language),
+      confidence: 1.0,
+      evidence: ["rule:identity", `language:${language}`],
+    }, formalizationContext);
   }
   const coreferenceFact = claimRouteRun("tryCoreferenceFactLookup", prompt, normalized, history, () => tryCoreferenceFactLookup(prompt, normalized, history));
   if (coreferenceFact) {
@@ -748,6 +750,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   }
   const howItWorks = claimRouteRun("tryHowItWorks", prompt, normalized, history, () => tryHowItWorks(prompt, history));
   if (howItWorks) return finalizeInlineHandler(events, steps, toolCalls, howItWorks, "tryHowItWorks", formalizationContext);
+  const policyGate = tryPolicyGates(prompt, language); // rust/src/solver.rs asks try_policy_gates after the handler table
+  if (policyGate) return finalizeInlineHandler(events, steps, toolCalls, policyGate, "tryPolicyGates", formalizationContext);
 
   if (isTargetlessProgramModification(normalized)) {
     events.push("handler:ambiguous_modification_clarification");
@@ -822,6 +826,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     content: unknownAnswerWithVariation(prompt, language),
     confidence: 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
+    solverEvents: [{ kind: "search:external", payload: prompt }], // the research above ran: rust/src/solver_search.rs record_external_search
   }, formalizationContext);
 }
 function finalize(events, steps, toolCalls, answer, formalizationContext) {
@@ -856,7 +861,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
     steps: withThinkingLevels(steps),
     toolCalls, derivationId: stableBehaviorRuleId("answer", answer.content), // #1184 R1: SymbolicAnswer::derivation_id
   };
-  if (formalizationContext && formalizationContext.initial) result.solverEvents = solverEventLog(formalizationContext.initial.raw, answer); // R1013
+  if (formalizationContext && formalizationContext.initial) recordSolverEventLog(result, formalizationContext.initial.raw, answer); // R1013
   if (formalizationContext && formalizationContext.meta) {
     result.derivation = formalizationContext.meta.derivationLino;
   }

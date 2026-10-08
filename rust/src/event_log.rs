@@ -800,6 +800,24 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
     links
 }
 
+/// The evidence links of a recorded log: [`build_evidence_links`] with the
+/// prompt read from the log's `impulse` event and the response link from its
+/// last `response` event (`response:<intent>` when none was logged). `None`
+/// when the log holds no impulse.
+///
+/// The browser worker and the JavaScript server project the native log they
+/// record through the twin, `eventLogEvidenceLinks` in
+/// js/agentic/crate/event_log.mjs (R1188-U29).
+#[must_use]
+pub fn event_log_evidence_links(log: &EventLog, intent: &str) -> Option<Vec<String>> {
+    let impulse = log.first_of("impulse")?;
+    let response_link = log.last_of("response").map_or_else(
+        || format!("response:{intent}"),
+        |event| event.payload.clone(),
+    );
+    Some(build_evidence_links(&impulse.payload, log, &response_link))
+}
+
 fn sanitize_payload(value: &str) -> String {
     value
         .replace('\r', "\\r")

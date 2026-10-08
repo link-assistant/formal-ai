@@ -14,12 +14,12 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 134
-  translated_items 281
+  modules 135
+  translated_items 284
   workaround_items 31
   inferred_signatures 2
-  carried_items 2204
-  translated_modules 93
+  carried_items 2214
+  translated_modules 94
   fully_translated_modules 1
   refused_modules 41
 workaround array-push items 2
@@ -52,6 +52,7 @@ module js/agentic/crate/engine.mjs translated 1 workaround 1 inferred 0 carried 
 module js/agentic/crate/engine_answer.mjs translated 0 workaround 0 inferred 0 carried 4
 module js/agentic/crate/engine_stable_id.mjs translated 2 workaround 0 inferred 0 carried 5
 module js/agentic/crate/es_tokenizer.mjs translated 6 workaround 0 inferred 0 carried 10
+module js/agentic/crate/event_log.mjs translated 3 workaround 0 inferred 0 carried 10
 module js/agentic/crate/execution_evidence.mjs translated 0 workaround 0 inferred 0 carried 11
 module js/agentic/crate/fact_derivation.mjs translated 2 workaround 0 inferred 0 carried 20
 module js/agentic/crate/failure_reporting.mjs translated 0 workaround 0 inferred 0 carried 3
@@ -160,19 +161,19 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
-refusal "import of names its module does not translate" 282
-refusal "JSDoc type {…}" 210
+refusal "import of names its module does not translate" 283
+refusal "JSDoc type {…}" 212
 refusal "null" 180
 refusal "import from '…'" 139
 refusal "type: unknown name (a sibling item or an import)" 115
 refusal "arrow function" 111
 refusal "function value …" 99
-refusal "new expression" 83
+refusal "new expression" 88
 refusal "object without a $ tag" 83
 refusal "regular expression" 61
 refusal "method call .find()" 59
+refusal "method call .split()" 53
 refusal "method call .map()" 52
-refusal "method call .split()" 52
 refusal "method call .filter()" 45
 refusal "method call .some()" 44
 refusal "Array.from" 42
@@ -184,8 +185,8 @@ refusal "nullish coalescing" 26
 refusal "method call .replace()" 23
 refusal "optional chaining" 20
 refusal "case test" 18
+refusal "export …" 18
 refusal "syntax: malformed number" 18
-refusal "export …" 17
 refusal "try statement" 17
 refusal "method call .every()" 14
 refusal "typeof operator" 13

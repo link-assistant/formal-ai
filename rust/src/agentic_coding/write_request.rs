@@ -909,7 +909,7 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
     // A sentence boundary inside a quoted literal is payload: extend to its end.
     // When that literal ends early, because the backtick spans inside the
     // payload paired among themselves, a payload quoted whole up to the file
-    // clause runs to it (PR #1188 G63).
+    // clause runs to it (PR #1188 G63), else to its own close (G107).
     let sentence_end = crate::normal_markov::quoted_segment_spans(request)
         .into_iter()
         .find(|segment| segment.start < sentence_end && sentence_end < segment.end)
@@ -927,7 +927,7 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
     let new_end = if file_clause_start > new_lead.end {
         file_clause_start.min(sentence_end)
     } else {
-        sentence_end
+        super::quote_nesting::whole_payload_end(request, new_lead.end, sentence_end)
     };
     let new_span = request.get(new_lead.end..new_end)?;
     let old = super::positional_edit::literal_text(old_span)?;

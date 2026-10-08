@@ -477,6 +477,22 @@ meanings
     unit "not applicable"
     example "A quote in this request opens and never closes (`'x with y in f.txt.`), so I cannot tell the quoted text from the instruction, and nothing was done."
     grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request-quote-nested
+    defined-by answer
+    role localized_response_template
+    precondition "a quoted text of a request naming a file closes with a mark followed by a letter, a digit or another quote mark"
+    effect "nothing is done and the answer names the quote that holds its own mark"
+    unit "not applicable"
+    example "A quoted text in this request holds its own quote mark (`'a('x')' with 'b' in f.rs.`), so I cannot tell where it ends, and nothing was done."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request-edit-clause-unplanned
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for several edits and one clause after the first is no replacement of quoted text"
+    effect "nothing is changed and the answer names the clause, rather than making the first edit alone"
+    unit "not applicable"
+    example "This request asks for several edits, and I cannot read `replace C with D` as a replacement of quoted text, so nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
   request_several_edit_targets
     defined-by answer
     role localized_response_template
@@ -861,6 +877,62 @@ meanings
     unit "not applicable"
     example "Requirements stated in the text:"
     grounding "data/seed/multilingual-responses-text-transform.lino"
+  inappropriate-content
+    defined-by answer
+    role localized_response_template
+    precondition "a message holds vulgar or abusive words"
+    effect "asks to keep the conversation respectful"
+    unit "not applicable"
+    example "That message contains inappropriate content."
+    grounding "data/seed/multilingual-responses.lino"
+  bounded-autonomy
+    defined-by answer
+    role localized_response_template
+    precondition "a chat request asks for repeated actions with no end and no agent opt-in"
+    effect "says a chat reply is bounded and open-ended work needs agent mode in a sandbox"
+    unit "not applicable"
+    example "I can only run a bounded chat reply per message."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  add-only-history
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks to forget something the link network holds"
+    effect "says the network only appends and a retraction appends a superseding event"
+    unit "not applicable"
+    example "The link network is append-only."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  cache-flush-requires-confirmation
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks to clear the source cache"
+    effect "asks for an explicit confirmation of the auditable flush"
+    unit "not applicable"
+    example "Flushing the source cache is an auditable action."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  destructive-action-requires-confirmation
+    defined-by answer
+    role localized_response_template
+    precondition "an agent request asks to destroy a repository, a database or a file tree"
+    effect "asks for an explicit human confirmation before the sandboxed action runs"
+    unit "not applicable"
+    example "Destructive agent actions require an explicit human confirmation."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  agent-time-budget
+    defined-by answer
+    role localized_response_template
+    precondition "an agent request asks to run without a time bound"
+    effect "refuses the unbounded loop under the documented time budget"
+    unit "not applicable"
+    example "Agent execution is bounded by a documented time budget."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  agent-action
+    defined-by answer
+    role localized_response_template
+    precondition "a request opts in to agent mode for one message"
+    effect "confirms the opt-in, the isolated sandbox and the action log"
+    unit "not applicable"
+    example "Agent mode is opted in for this message."
+    grounding "data/seed/multilingual-responses-policy.lino"
   machine
     defined-by concept
     role response_audience

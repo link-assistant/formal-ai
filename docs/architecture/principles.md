@@ -33,7 +33,7 @@ Before asking for review, check the change against each group below: the gates r
 | Principle of Least Surprise | Formal AI as a coding agent takes no action it was not asked for: quoted payloads are data, unpaired quotes are declined, a line edit never becomes a whole-file write. | — | R1188-U17 |
 | Clear Naming | Names are full English words; files and directories say what they hold. | — | R1188-U4, R1188-U5 |
 | Extensible Public Surface | New behaviour is added as seed data (a meaning, a response row, a handler rule) without changing the compiled surface. | [`check-seed-registry`](../../data/meta/ci-gates/check-seed-registry.lino) | — |
-| Small Public Documentation | ARCHITECTURE.md is a table of contents; each topic lives in one file under docs/architecture/. | — | — |
+| Small Public Documentation | ARCHITECTURE.md is a table of contents; each topic lives in one file under docs/architecture/. | [`check-architecture-contents`](../../data/meta/ci-gates/check-architecture-contents.lino) | — |
 | Intent-Revealing Interfaces | Tests read as documentation of the behaviour they pin, named by the requirement they cover. | [`check-tests-as-docs`](../../data/meta/ci-gates/check-tests-as-docs.lino) | — |
 | Protected Variations | Language differences are confined to seed lexemes and response rows; code reads roles, so adding a language changes data only. | [`check-language-parity`](../../data/meta/ci-gates/check-language-parity.lino), [`check-response-parity-debt`](../../data/meta/ci-gates/check-response-parity-debt.lino) | — |
 
@@ -99,4 +99,4 @@ Before asking for review, check the change against each group below: the gates r
 | Configuration vs. Code | Thresholds, vocabularies, gate lists and CI limits are data under data/meta and data/seed, not constants in code. | [`check-ci-gate-registry`](../../data/meta/ci-gates/check-ci-gate-registry.lino), [`check-hardcoded-language`](../../data/meta/ci-gates/check-hardcoded-language.lino) | — |
 | Declarative Dependencies | Dependencies are pinned in Cargo.lock and package locks and kept at their latest versions. | [`check-cargo-lock-is-synchronized`](../../data/meta/ci-gates/check-cargo-lock-is-synchronized.lino), [`check-dependencies-latest`](../../data/meta/ci-gates/check-dependencies-latest.lino), [`check-javascript-dependencies`](../../data/meta/ci-gates/check-javascript-dependencies.lino) | — |
 | Logs as Streams, Not Internal Storage | The solver emits an append-only event log that surfaces stream and memory stores as links. | — | — |
-| Environment Parity | The browser, the Node server and the native binary give the same answers for the same prompt. | — | R994 |
+| Environment Parity | The browser, the Node server and the native binary give the same answers for the same prompt. | [`check-specification-in-javascript`](../../data/meta/ci-gates/check-specification-in-javascript.lino) | R994 |

@@ -224,6 +224,7 @@ mod pull_request_1188_cifix2;
 mod pull_request_1188_destructive_edit;
 mod pull_request_1188_dialogue_utterance;
 mod pull_request_1188_edit_composer_gaps;
+mod pull_request_1188_fix_gaps;
 mod pull_request_1188_function_recipe;
 mod pull_request_1188_line_anchor;
 mod pull_request_1188_line_operations;

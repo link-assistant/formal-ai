@@ -639,6 +639,46 @@ multilingual_responses
     intent request_quote_unpaired
     language es
     text "Una comilla de esta solicitud se abre y nunca se cierra (`{fragment}`), así que no puedo distinguir el texto citado de la instrucción y no se hizo nada. Cierre la comilla, o use «» o comillas invertidas cuando el texto contenga comillas propias."
+  response response-request-quote-nested-en
+    intent request-quote-nested
+    language en
+    text "A quoted text in this request holds its own quote mark (`{fragment}`), so I cannot tell where it ends, and nothing was done. Quote such a text with «», or with a mark it does not hold."
+  response response-request-quote-nested-ru
+    intent request-quote-nested
+    language ru
+    text "Цитируемый текст в этом запросе содержит свою же кавычку (`{fragment}`), поэтому я не могу понять, где он заканчивается, и ничего не сделано. Заключите такой текст в «» или в кавычки, которых в нём нет."
+  response response-request-quote-nested-hi
+    intent request-quote-nested
+    language hi
+    text "इस अनुरोध के एक उद्धृत पाठ में उसका अपना ही उद्धरण चिह्न है (`{fragment}`), इसलिए मैं नहीं बता सकता कि वह कहाँ समाप्त होता है, और कुछ नहीं किया गया। ऐसे पाठ को «» में, या ऐसे चिह्न में उद्धृत करें जो उसमें न हो।"
+  response response-request-quote-nested-zh
+    intent request-quote-nested
+    language zh
+    text "此请求中的一段引用文本含有与其自身相同的引号（`{fragment}`），因此我无法判断它在哪里结束，未做任何操作。请用 «» 或文本中没有的引号来引用这样的文本。"
+  response response-request-quote-nested-es
+    intent request-quote-nested
+    language es
+    text "Un texto citado en esta solicitud contiene su propia comilla (`{fragment}`), así que no puedo saber dónde termina y no se hizo nada. Cite ese texto con «» o con una comilla que no contenga."
+  response response-request-edit-clause-unplanned-en
+    intent request-edit-clause-unplanned
+    language en
+    text "This request asks for several edits, and I cannot read `{clause}` as a replacement of quoted text, so nothing was changed. Quote its old and new texts, or ask for that edit on its own."
+  response response-request-edit-clause-unplanned-ru
+    intent request-edit-clause-unplanned
+    language ru
+    text "Этот запрос просит несколько правок, и я не могу прочитать `{clause}` как замену текста в кавычках, поэтому ничего не изменено. Заключите старый и новый текст в кавычки или попросите эту правку отдельно."
+  response response-request-edit-clause-unplanned-hi
+    intent request-edit-clause-unplanned
+    language hi
+    text "यह अनुरोध कई संपादन माँगता है, और मैं `{clause}` को उद्धृत पाठ के प्रतिस्थापन के रूप में नहीं पढ़ सकता, इसलिए कुछ नहीं बदला गया। उसके पुराने और नए पाठ को उद्धृत करें, या वह संपादन अलग से माँगें।"
+  response response-request-edit-clause-unplanned-zh
+    intent request-edit-clause-unplanned
+    language zh
+    text "此请求要求多处编辑，而我无法把 `{clause}` 读作对引用文本的替换，因此未做任何更改。请为它的旧文本和新文本加上引号，或单独提出这项编辑。"
+  response response-request-edit-clause-unplanned-es
+    intent request-edit-clause-unplanned
+    language es
+    text "Esta solicitud pide varias ediciones y no puedo leer `{clause}` como un reemplazo de texto citado, así que no se cambió nada. Cite su texto antiguo y el nuevo, o pida esa edición por separado."
   response response_request_several_edit_targets_en
     intent request_several_edit_targets
     language en

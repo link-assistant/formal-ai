@@ -125,6 +125,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/meanings-writing-systems.lino",
   "seed/memory-programs.lino",
   "seed/meta-reasoning.lino",
+  "seed/method-execution.lino",
   "seed/multilingual-responses.lino",
   "seed/multilingual-responses-agentic.lino",
   "seed/multilingual-responses-agentic-continuation.lino",

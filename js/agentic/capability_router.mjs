@@ -253,6 +253,11 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
   if (capability === Capability.Read && statesWriteAction(routedTask) && statedWriteTarget(routedTask) !== null) {
     return null;
   }
+  // Nor is it one of several files to read (PR #1188 G102).
+  if (decided === 'read_many' && statesWriteAction(routedTask)
+    && fileTokens(routedTask).includes(statedWriteTarget(routedTask))) {
+    return null;
+  }
   const tool = toolFor(toolNames, capability);
   if (tool === null) return null;
   const args = routedArguments(capability, loweredFrom, routedTask);
@@ -358,10 +363,18 @@ function wildcardToken(task) {
     .find((token) => token.includes('*') || token.includes('?') || token.includes('[')) ?? null;
 }
 
+/**
+ * Marks that a path never holds: a token that still holds one after trimming
+ * is a fragment of quoted text or code (`fn(«x»`), never a file to read
+ * (PR #1188 G102).
+ */
+const FRAGMENT_MARKS = '«»“”‘’()[]{}<>`"\'';
+
 function fileTokens(task) {
   return splitWhitespace(task)
     .map((token) => trimMatches(token, (character) => FILE_TRIM.has(character)))
-    .filter((token) => token.includes('.') && !token.startsWith('.') && !token.endsWith('.') && !token.includes('//'));
+    .filter((token) => token.includes('.') && !token.startsWith('.') && !token.endsWith('.') && !token.includes('//'))
+    .filter((token) => !Array.from(token).some((character) => FRAGMENT_MARKS.includes(character)));
 }
 
 function shellFallback(capability, task) {

@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-architecture-contents
+  stage web
+  description "ARCHITECTURE.md stays a table of contents: every topic file under docs/architecture/ is linked from it, every linked topic file exists, and every #anchor it links names a heading of that file."
+  run "node scripts/check-architecture-contents.mjs"
+  justification "PR #1188 (R1188-U2): the Small Public Documentation principle of link-foundation/code-architecture-principles keeps ARCHITECTURE.md as contents over one file per topic; without this gate a renamed heading or a new topic file silently drifts out of the contents."

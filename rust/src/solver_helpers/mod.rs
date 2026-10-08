@@ -37,57 +37,42 @@ pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationC
     }
 }
 
+// The policy-gate predicates (R1188-U29): each reads its seed role in
+// `data/seed/meanings-policy.lino` as raw substrings of the lowercased prompt,
+// in every supported language, as `is_inappropriate_content` reads the vulgar
+// markers. The browser worker's twins read the same roles.
+
+fn mentions_policy_role(role: &str, normalized: &str) -> bool {
+    crate::seed::lexicon().mentions_role_raw(role, normalized)
+}
+
 pub fn is_unbounded_autonomy(normalized: &str) -> bool {
-    let triggers = [
-        "forever",
-        "continuously",
-        "non-stop",
-        "nonstop",
-        "indefinitely",
-        "without stopping",
-        "until i tell you to stop",
-    ];
-    triggers.iter().any(|trigger| normalized.contains(trigger))
+    mentions_policy_role(crate::seed::ROLE_UNBOUNDED_AUTONOMY_MARKER, normalized)
 }
 
 pub fn is_forget_request(normalized: &str) -> bool {
-    normalized.contains("forget ")
-        || normalized.starts_with("forget")
-        || normalized.contains("delete the greeting concept")
+    mentions_policy_role(crate::seed::ROLE_FORGET_REQUEST_MARKER, normalized)
 }
 
 pub fn is_cache_flush_request(normalized: &str) -> bool {
-    (normalized.contains("flush") || normalized.contains("clear")) && normalized.contains("cache")
+    mentions_policy_role(crate::seed::ROLE_CACHE_CLEARING_ACTION, normalized)
+        && mentions_policy_role(crate::seed::ROLE_CACHE_REFERENCE, normalized)
 }
 
 pub fn is_agent_request(normalized: &str) -> bool {
-    normalized.contains("[agent]")
-        || normalized.contains("enable agent")
-        || normalized.contains("agent mode")
+    is_agent_opt_in(normalized)
 }
 
 pub fn is_agent_opt_in(normalized: &str) -> bool {
-    normalized.contains("[agent]")
-        || normalized.contains("enable agent")
-        || normalized.contains("agent mode")
+    mentions_policy_role(crate::seed::ROLE_AGENT_MODE_OPT_IN_MARKER, normalized)
 }
 
 pub fn is_destructive_action(normalized: &str) -> bool {
-    let triggers = [
-        "rm -rf",
-        "delete the .git",
-        "drop table",
-        "delete /",
-        "delete the database",
-    ];
-    triggers.iter().any(|trigger| normalized.contains(trigger))
+    mentions_policy_role(crate::seed::ROLE_DESTRUCTIVE_ACTION_MARKER, normalized)
 }
 
 pub fn is_unbounded_loop(normalized: &str) -> bool {
-    normalized.contains("while true")
-        || normalized.contains("infinite loop")
-        || normalized.contains("for one hour")
-        || normalized.contains("forever")
+    mentions_policy_role(crate::seed::ROLE_UNBOUNDED_LOOP_MARKER, normalized)
 }
 
 pub fn is_inappropriate_content(normalized: &str) -> bool {

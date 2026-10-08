@@ -42,6 +42,36 @@ pub const ROLE_CIRCULAR_JOKE_PHRASE: &str = "circular_joke_phrase";
 /// worker has no content-policy handler, so the data is mirrored but unused
 /// there).
 pub const ROLE_VULGAR_CONTENT_MARKER: &str = "vulgar_content_marker";
+/// Semantic role: a surface asking for repeated actions with no end
+/// ("forever", "без остановки", "हमेशा के लिए", "永远", "para siempre").
+///
+/// The policy gates (`crate::solver_handlers::policy_gates`) and their browser
+/// twin read this and the roles below as raw substrings of the lowercased
+/// prompt, in every supported language (R1188-U29). Carried by
+/// `unbounded-autonomy` in `data/seed/meanings-policy.lino`.
+pub const ROLE_UNBOUNDED_AUTONOMY_MARKER: &str = "unbounded-autonomy-marker";
+/// Semantic role: an explicit opt-in to agent mode for one message
+/// ("[agent]", "agent mode", "режим агента", "एजेंट मोड", "代理模式",
+/// "modo agente"). Carried by `agent-mode-opt-in`.
+pub const ROLE_AGENT_MODE_OPT_IN_MARKER: &str = "agent-mode-opt-in-marker";
+/// Semantic role: a request to erase what the link network holds ("forget",
+/// "забудь", "भूल जाओ", "忘记", "olvida"). Carried by `forget-request`.
+pub const ROLE_FORGET_REQUEST_MARKER: &str = "forget-request-marker";
+/// Semantic role: an action that empties a store ("flush", "очисти", "साफ़
+/// करो", "清空", "vacía"); a cache flush needs it with [`ROLE_CACHE_REFERENCE`].
+/// Carried by `cache-clearing`.
+pub const ROLE_CACHE_CLEARING_ACTION: &str = "cache-clearing-action";
+/// Semantic role: a named cache ("cache", "кэш", "कैश", "缓存", "caché").
+/// Carried by `cache-store`.
+pub const ROLE_CACHE_REFERENCE: &str = "cache-reference";
+/// Semantic role: an action that destroys a repository, a database or a file
+/// tree ("rm -rf", "drop table", "удали базу данных", "删除数据库"). Carried by
+/// `destructive-agent-action`.
+pub const ROLE_DESTRUCTIVE_ACTION_MARKER: &str = "destructive-action-marker";
+/// Semantic role: an agent run with no time bound ("while true", "infinite
+/// loop", "бесконечный цикл", "无限循环", "bucle infinito"). Carried by
+/// `unbounded-loop`.
+pub const ROLE_UNBOUNDED_LOOP_MARKER: &str = "unbounded-loop-marker";
 /// Semantic role: a surface form that signals a prompt is talking about the
 /// exchange rate between two currencies.
 ///

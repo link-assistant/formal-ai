@@ -22,4 +22,29 @@
     - The abbreviation rule has a measure and a falling ratchet (gate `check-abbreviations`).
     - Twelve file names are spelled in full words.
     - The lexicon-import shards and the changelog archives are named by what they hold (`meanings-lexicon-import-actor-to-diamond.lino`, `releases-from-0.1.0.md`).
+  - **Text capabilities in chat (R1188-U18, R1188-U19, R1188-U21).**
+    - "Summarize …" answers through the dependency summarizer in both roots. The browser worker runs the JavaScript crate module itself, through generated `js/worker/formal_ai_worker_crate_*.js` copies kept current by the gate `check-worker-crate-modules`.
+    - "Formalize <url>" and "formalize this page: <url>" fetch the page and answer its statements, in five languages, from a seeded `page_formalization` meaning. Offline, the answer says so and formalizes nothing.
+    - Chat translation chooses, among the surfaces a dictionary offers, the one whose meaning comes back through the seed lexicon (`round_trip_choice` / `roundTripChoice`); the primary surface wins ties.
+  - **Requirement extraction (R1188-U20)** reads a definition-of-done label ("Fixed means:", "done when", and the same in Russian, Hindi, Chinese and Spanish) as an obligation: recall 0.411 → 0.419 and precision 0.406 → 0.407 on the 138-issue benchmark.
+  - **The last three test files named only by an issue number** are named for what they pin (R1188-U5).
+  - **CI.**
+    - Clippy 1.99's new `doc_markdown` and `significant_drop_tightening` findings are fixed.
+    - `audit-seed-metadata` finds the `meanings` root after a comment header, and has a JavaScript twin.
+    - The browser app registers its offline service worker only after the engine is ready, so the precache no longer delays the first answer past the end-to-end tests' wait.
+  - **The browser worker passes 122 of the 136 carried Rust specification cases (was 102, R1188-U29).**
+    - Its answers carry the native evidence links, through a JavaScript twin of `build_evidence_links` (`js/agentic/crate/event_log.mjs`).
+    - The policy gates (bounded autonomy, destructive actions, agent time budget, cache flush, add-only history, inappropriate content) read seeded trigger words and responses in five languages in both roots.
+    - Project lookup follows the two phases `data/seed/method-execution.lino` declares.
+  - **Formal AI edit gaps fixed in both roots:**
+    - nested same-mark quotes are declined (G90);
+    - "then" sequences of edits are applied step by step (G99);
+    - a create request that describes the file is declined safely (G102);
+    - every file of a coordinated list is counted (G104);
+    - an edit clause that cannot be planned is named (G106);
+    - a backticked payload runs to its own close (G107).
+    The several-files guard reads only the clause that holds the edit, which restores the Issue 1028 ladder's proof leaves.
+  - **The `check-architecture-contents` gate** keeps ARCHITECTURE.md a table of contents whose links and anchors name the topic files (R1188-U2).
+  - **Handoff.** `docs/case-studies/pull-request-1188/handoff.md` records the owner's requirements, the methodology and what is left, for the next agent.
+  - **Formal AI.** 31 dogfood rows whose gaps were fixed or not reproduced later now say so. 160 of 165 recorded failures are fixed.
   - The Formal AI tally counts "Not fixed …" as open.

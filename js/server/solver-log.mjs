@@ -39,6 +39,7 @@ import { formalizePromptCandidates } from '../agentic/crate/translation_formaliz
 const IMPULSE = 'impulse';
 const LANGUAGE = 'language';
 const ROUTE = 'intent_formalization:route';
+const CANDIDATE = 'candidate';
 const META_RESPONSE = 'response:meta_reasoner';
 const DISPATCH_STEP = 'dispatch_handler';
 const UNKNOWN_RULE_SELECTION = 'initial unknown reason no_seed_route next try_rule_synthesis';
@@ -92,7 +93,10 @@ export function nativeSolverLog(result) {
     log.push({ kind: 'search:local', payload: prompt });
     if (!SEEDED_RULE_ROUTES.has(record.route)) log.push({ kind: 'selected_rule', payload: UNKNOWN_RULE_SELECTION });
   }
-  log.push(...rest);
+  // `finalize_simple` logs its `candidate` only when none is logged yet: the
+  // worker logs one in its tail, which the formalization candidate replaces.
+  const logged = log.some((event) => event.kind === CANDIDATE);
+  log.push(...(logged ? rest.filter((event) => event.kind !== CANDIDATE) : rest));
   const method = metaAnswer ? null : dispatchedMethod(result);
   if (method) log.push({ kind: 'method', payload: method });
   return log;

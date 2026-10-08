@@ -988,7 +988,7 @@ function testGenerationExampleAssertion(fn, example) {
  */
 function handleTestGeneration(prompt, normalized) {
   const lower = prompt.toLowerCase(); // an agent opt-in is the agent flow's (Rust `is_agent_opt_in`)
-  if (isAgentTextRequest(lower) || !codeTaskCued("test_generation", "request", prompt, normalized)) return null;
+  if (isAgentModeRequest(lower) || !codeTaskCued("test_generation", "request", prompt, normalized)) return null;
   const log = codeTaskLog();
   codeTaskLogAppend(log, "test_generation:request", "cued");
   const fn = testGenerationFunctionName(prompt);

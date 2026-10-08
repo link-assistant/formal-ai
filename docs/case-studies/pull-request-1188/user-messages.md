@@ -8,7 +8,7 @@ first sent in and its timestamp. Tool results, system reminders, task
 notifications, local command echoes, subagent hand-backs and continuation
 summaries are left out; token-shaped strings are redacted.
 
-Messages: 146.
+Messages: 152.
 
 ## 1. 2026-09-07T17:30:29.241Z
 
@@ -1182,4 +1182,52 @@ Session `7ded2366-68ef-48b9-9436-5961d572a965`.
 
 ```text
 It also must be recorded in our documents.
+```
+
+## 147. 2026-10-08T15:52:54.921Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+No need to wait, you work also, while all other processes are in progress.
+```
+
+## 148. 2026-10-08T16:05:08.805Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+You don't pause, you do everything until is done.
+```
+
+## 149. 2026-10-08T18:44:18.907Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+Please don't start new sub-agents, and ask existing to finish to next concluded point and do for this issue a handoff document where you summarize all my requirements from this conversation, all the methodology on how to do development and what is left to do, and so on. I want to give other AI a chance to finish this pull request.
+```
+
+## 150. 2026-10-08T18:45:17.082Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+No need to rush, just make sure all worktrees are finished, committed and so on, everything is committed and pushed, everything is described to handoff document and you give me a link to it.
+```
+
+## 151. 2026-10-08T18:46:12.149Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+All worktrees (if any must be fully finished and removed) all disk space we use and temporary files related to formal-ai must be cleared and so on. Be careful with temporary files.
+```
+
+## 152. 2026-10-08T18:48:32.429Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+Double check there is no more duplicate copies of this repository on the system. Cache and node modules are cleared and so on. Also use https://github.com/link-foundation/disk-space-saviour and make sure it is able to auto clear cache, node_modules and all similar files across the system, including playwright caches (but not their data directories), also browsers caches and so on, telegram cache and other caches, everything that is safe to be cleared should be clearable by default with disk space saviour, if any features are missing or working wrong - report issues about that we will deliver it later.
 ```

@@ -959,7 +959,39 @@ async function renderPromotedProjectLookup(prompt, language, project) {
 async function tryProjectLookup(prompt, language, preferences) {
   // A guide being converted quotes its repository as content; Rust asks installation_conversion first.
   if (tryInstallationConversion(prompt, normalizePrompt(prompt))) return null;
+  if (!projectLookupPhaseAdmits(prompt)) return null;
   return tryProjectLookupForPrompt(prompt, prompt, language, preferences);
+}
+
+const PROJECT_LOOKUP_EXECUTION_FILE = "method-execution.lino";
+const PROJECT_LOOKUP_ATTRIBUTE = "project_lookup";
+const PROJECT_LOOKUP_FALLBACK_PHASE = "fallback";
+const PROJECT_LOOKUP_IDENTITY_ROUTE = "identity";
+
+// The worker functions of the methods a name lookup is the fallback of
+// (`project_lookup fallback` in data/seed/method-execution.lino).
+function projectLookupFallbackHandlers() {
+  const text = typeof SEED_RAW === "object" ? seedRawText(SEED_RAW, PROJECT_LOOKUP_EXECUTION_FILE) : "";
+  const methods = (parseLinoTree(text).children[0]?.children || [])
+    .filter((node) => node.children.some((child) =>
+      child.name === PROJECT_LOOKUP_ATTRIBUTE && child.value === PROJECT_LOOKUP_FALLBACK_PHASE))
+    .map((node) => node.value);
+  const bindings = typeof WORKER_HANDLER_REGISTRY === "object" ? WORKER_HANDLER_REGISTRY.workerHandlers : {};
+  return methods.map((slug) => self[bindings[slug]]).filter((handler) => typeof handler === "function");
+}
+
+// The two phases rust/src/meta_method_dispatch.rs runs project lookup in
+// (R1188-U29): an explicit repository reference before the runtime methods,
+// unless a fetch or navigation URL claims it (`try_explicit_repository_lookup`);
+// a name lookup only as the fallback of the methods above, once their own
+// handler declines, and never on the identity route.
+function projectLookupPhaseAdmits(prompt) {
+  const normalized = normalizePrompt(prompt);
+  if (repositoryFromPrompt(prompt)) {
+    return extractHttpFetchUrl(prompt, normalized) === null && extractUrlNavigateUrl(prompt, normalized) === null;
+  }
+  if (solverIntentRoute(prompt) === PROJECT_LOOKUP_IDENTITY_ROUTE) return false;
+  return !projectLookupFallbackHandlers().some((handler) => handler(prompt));
 }
 
 async function tryProjectLookupForPrompt(prompt, lookupPrompt, language, preferences) {

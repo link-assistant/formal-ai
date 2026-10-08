@@ -7,7 +7,11 @@
 // stated pair by pair. The JavaScript twin of rust/src/agentic_coding/replace_list.rs.
 
 import { quotedSegmentSpans, quotedSegments } from './crate/normal_markov.mjs';
-import { bareSurfaces, cleanCueToken, composeEditRequest, cuedWriteTargets, tokens } from './write_request.mjs';
+import {
+  bareSurfaces, cleanCueToken, cleanPathToken, composeEditClauses, composeEditRequest, cuedWriteTargets, looksLikeFilePath,
+  safeRelativePath, spanOf, tokens,
+} from './write_request.mjs';
+import { sentences } from './shell_command_policy.mjs';
 import { renderSeededChange } from './code_task.mjs';
 import { instructionEnd, unescapeProseNewlines } from './positional_edit.mjs';
 
@@ -73,6 +77,39 @@ export function replaceList(request) {
 }
 
 /**
+ * Mirrors `fn unplanned_edit_clause`: the first clause of a request asking
+ * for several edits that cannot be read as one replacement of quoted text in
+ * the request's file, when the first can (PR #1188 G106). Such a request
+ * would otherwise make the first edit and drop the rest without a word, so
+ * it is declined, naming the clause. A clause is an edit of its own only
+ * when a clause mark or a seeded joiner opens it (`, replace`, `and replace`);
+ * null when there is no such clause or every one is a replacement.
+ * @param {string} request
+ */
+export function unplannedEditClause(request) {
+  const clauses = replaceClauses(request);
+  if (clauses === null || replaceList(request) !== null) return null;
+  const first = composeEditRequest(clauses[0]);
+  if (first === null) return null;
+  const [target] = first;
+  const joiners = bareSurfaces('file_edit_joiner_cue');
+  let from = 0;
+  for (const clause of clauses.slice(1)) {
+    const at = request.indexOf(clause, from);
+    from = at + clause.length;
+    const lead = request.slice(0, at).trimEnd();
+    const opened = /[,;，；]$/u.test(lead) || joiners.includes(cleanCueToken(lead.split(/\s+/u).at(-1) ?? ''));
+    if (!opened) continue;
+    const edit = clause.includes(target) ? composeEditRequest(clause) : composeEditRequest(`${clause} in ${target}`);
+    const segments = quotedSegments(clause);
+    if (edit === null || edit[0] !== target || !segments.includes(edit[1]) || !segments.includes(edit[2])) {
+      return clause.replace(/[.!?。！？]+$/u, '');
+    }
+  }
+  return null;
+}
+
+/**
  * Mirrors `fn several_edit_targets`: the distinct files an edit request names
  * outside its quotes when it names more than one, or null. One edit request
  * changes one file, so such a request is declined with the files named
@@ -80,18 +117,73 @@ export function replaceList(request) {
  * @param {string} request
  */
 export function severalEditTargets(request) {
-  if (composeEditRequest(request) === null) return null;
+  const composed = composeEditClauses(request);
+  if (composed === null) return null;
   const segments = quotedSegmentSpans(request);
   const toks = tokens(request);
-  const end = instructionEnd(request);
+  const [from, end] = editRegion(request, composed.spans);
+  const counted = (index) => toks[index].start >= from && toks[index].start < end
+    && !segments.some((segment) => toks[index].start < segment.end && toks[index].end > segment.start);
+  const targets = cuedWriteTargets(toks).filter(([index]) => counted(index));
+  // A file listed after a cued one shares its cue (PR #1188 G104):
+  // `In a.mjs and b.mjs, replace ...` names b.mjs as much as a.mjs.
+  for (const [index, path] of coordinatedPaths(toks, targets.map(([cued]) => cued))) {
+    if (counted(index)) targets.push([index, path]);
+  }
   const paths = [];
-  for (const [index, path] of cuedWriteTargets(toks)) {
-    const token = toks[index];
-    if (token.start >= end) continue;
-    if (segments.some((segment) => token.start < segment.end && token.end > segment.start)) continue;
+  for (const [, path] of targets.sort(([a], [b]) => a - b)) {
     if (!paths.includes(path)) paths.push(path);
   }
   return paths.length > 1 ? paths : null;
+}
+
+/**
+ * Mirrors `fn edit_region`: `[from, end]` -- the sentences that hold the
+ * composed edit's clauses (`spans`), or the whole instruction when the edit
+ * has none. A path in a later sentence (`Leave supporting evidence in
+ * proof.md.`) is no target of the edit (PR #1188 ladder regression of G91).
+ * @param {string} request
+ * @param {Array<[number, number]>|null} spans
+ */
+function editRegion(request, spans) {
+  const end = instructionEnd(request);
+  if (spans === null) return [0, end];
+  const first = Math.min(...spans.map(([start]) => start));
+  const last = Math.max(...spans.map(([, stop]) => stop));
+  const parts = sentences(request).map((sentence) => spanOf(sentence));
+  const opening = parts.find((span) => first >= span.start && first < span.end);
+  const closing = parts.find((span) => last > span.start && last <= span.end);
+  return [opening ? opening.start : 0, Math.min(end, closing ? closing.end : end)];
+}
+
+/**
+ * Mirrors `fn coordinated_paths`: the paths listed right after one of the
+ * `cued` path tokens -- after a comma that closes the token before, or after
+ * a seeded joiner word (`and`) -- each with its token index.
+ * @param {Array<{text: string}>} toks
+ * @param {number[]} cued
+ */
+export function coordinatedPaths(toks, cued) {
+  const joiners = bareSurfaces('file_edit_joiner_cue');
+  const pathOf = (token) => {
+    const cleaned = token === undefined ? '' : cleanPathToken(token.text);
+    return looksLikeFilePath(cleaned) && safeRelativePath(cleaned) ? cleaned : null;
+  };
+  const out = [];
+  for (const start of cued) {
+    let index = start;
+    for (;;) {
+      const listed = toks[index].text.endsWith(',');
+      let next = index + 1;
+      if (toks[next] !== undefined && joiners.includes(cleanCueToken(toks[next].text))) next += 1;
+      else if (!listed) break;
+      const path = pathOf(toks[next]);
+      if (path === null) break;
+      out.push([next, path]);
+      index = next;
+    }
+  }
+  return out;
 }
 
 /**

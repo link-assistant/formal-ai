@@ -11,6 +11,7 @@ import { composePositionalInsert, introducedBlock, literalText, unquotedPathToke
 import { resolveCensusTarget } from './general_planner.mjs';
 import { containsCjk } from './crate/coding_catalog.mjs';
 import { quotedSegmentSpans, wrappedInQuotePair } from './crate/normal_markov.mjs';
+import { wholePayloadEnd } from './quote_nesting.mjs';
 import { meaningEvidencedIn, mentionsRole, roleWordForms, wordsForRole } from './write_lexicon.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import {
@@ -553,7 +554,11 @@ export function composeEditClauses(raw) {
     sentenceEnd = fileClauseStart > literalAround.end && wrappedInQuotePair(request.slice(newLead.end, fileClauseStart))
       ? fileClauseStart : literalAround.end;
   }
-  const newEnd = fileClauseStart > newLead.end ? Math.min(fileClauseStart, sentenceEnd) : sentenceEnd;
+  // A payload whose inner spans pair among themselves runs to the end of the
+  // instruction when it closes there (PR #1188 G107).
+  const newEnd = fileClauseStart > newLead.end
+    ? Math.min(fileClauseStart, sentenceEnd)
+    : wholePayloadEnd(request, newLead.end, sentenceEnd);
   if (newEnd < newLead.end) return null;
   const newSpan = request.slice(newLead.end, newEnd);
   const oldText = literalText(oldSpan);

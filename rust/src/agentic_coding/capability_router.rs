@@ -618,6 +618,14 @@ fn plan_routed_capability_step_in(
     {
         return None;
     }
+    // Nor is it one of several files to read (PR #1188 G102).
+    if decided == "read_many"
+        && super::write_request::states_write_action(routed_task)
+        && super::write_request::stated_write_target(routed_task)
+            .is_some_and(|target| file_tokens(routed_task).contains(&target.as_str()))
+    {
+        return None;
+    }
     let tool = tool_for(tool_names, capability)?;
     let arguments = routed_arguments(capability, lowered_from.as_deref(), routed_task)?;
     Some(plan_one(tool, arguments))
@@ -813,9 +821,15 @@ fn file_tokens(task: &str) -> Vec<&str> {
                 && !token.starts_with('.')
                 && !token.ends_with('.')
                 && !token.contains("//")
+                && !token.contains(|c: char| FRAGMENT_MARKS.contains(c))
         })
         .collect()
 }
+
+/// Marks that a path never holds: a token that still holds one after
+/// trimming is a fragment of quoted text or code (`fn(«x»`), never a file to
+/// read (PR #1188 G102; mirrors `FRAGMENT_MARKS`).
+const FRAGMENT_MARKS: &str = "«»“”‘’()[]{}<>`\"'";
 
 fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
     match capability {

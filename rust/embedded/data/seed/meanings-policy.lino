@@ -108,3 +108,88 @@ meanings
     lexeme hi "तुम्हारा" "तुम्हारे" "तुम्हारी" "आपका" "आपके" "आपकी"
     lexeme zh "你的" "您的"
     lexeme es "tu" "tus"
+  unbounded-autonomy
+    # R1188-U29: the policy gates of rust/src/solver_handlers/policy_gates.rs and their browser twin read these surfaces as raw substrings of the lowercased prompt.
+    defined-by concept
+    role unbounded-autonomy-marker
+    precondition "a chat request asks for repeated actions with no end"
+    effect "without an agent opt-in the reply is the bounded-autonomy refusal"
+    unit "not applicable"
+    example "Continuously improve my codebase forever"
+    lexeme en "forever" "continuously" "non-stop" "nonstop" "indefinitely" "without stopping" "until i tell you to stop"
+    lexeme ru "без остановки" "непрерывно" "до бесконечности" "бесконечно долго" "пока я не скажу остановиться"
+    lexeme hi "हमेशा के लिए" "लगातार" "बिना रुके" "अनिश्चित काल तक" "जब तक मैं रुकने को न कहूँ"
+    lexeme zh "永远" "不停地" "无休止地" "无限期地" "直到我让你停下"
+    lexeme es "para siempre" "continuamente" "sin parar" "indefinidamente" "hasta que te diga que pares"
+  agent-mode-opt-in
+    defined-by action
+    role agent-mode-opt-in-marker
+    precondition "a request opts in to agent mode for this message"
+    effect "the request is an agent request: the agent gates answer it and the chat handlers decline it"
+    unit "not applicable"
+    example "[agent] Delete the .git directory"
+    lexeme en "[agent]" "enable agent" "agent mode"
+    lexeme ru "режим агента" "агентный режим" "включи агента" "включите агента"
+    lexeme hi "एजेंट मोड" "एजेंट चालू करो" "एजेंट सक्षम करें"
+    lexeme zh "代理模式" "智能体模式" "启用代理" "开启代理"
+    lexeme es "modo agente" "activa el agente" "habilita el agente"
+  forget-request
+    defined-by action
+    role forget-request-marker
+    precondition "a request asks to erase something the link network holds"
+    effect "the reply is the add-only history policy: a retraction appends, it never erases"
+    unit "not applicable"
+    example "Forget the greeting concept"
+    lexeme en "forget"
+    lexeme ru "забудь" "забудьте"
+    lexeme hi "भूल जाओ" "भूल जाइए" "भुला दो"
+    lexeme zh "忘记" "忘掉"
+    lexeme es "olvida" "olvídate" "olvide"
+  cache-clearing
+    defined-by action
+    role cache-clearing-action
+    precondition "a request asks to empty a store"
+    effect "together with a cache reference the reply asks for an explicit confirmation"
+    unit "not applicable"
+    example "Flush the source cache please"
+    lexeme en "flush" "clear"
+    lexeme ru "очисти" "очистить" "сбрось" "сбросить"
+    lexeme hi "साफ़ करो" "साफ करो" "साफ़ करें" "खाली करो"
+    lexeme zh "清空" "清除"
+    lexeme es "vacía" "vaciar" "limpia" "limpiar" "borra"
+  cache-store
+    defined-by concept
+    role cache-reference
+    precondition "a request names a cache"
+    effect "together with a clearing action the reply asks for an explicit confirmation"
+    unit "not applicable"
+    example "the source cache"
+    lexeme en "cache"
+    lexeme ru "кэш" "кеш"
+    lexeme hi "कैश"
+    lexeme zh "缓存"
+    lexeme es "caché"
+  destructive-agent-action
+    defined-by action
+    role destructive-action-marker
+    precondition "a request asks to destroy a repository, a database or a file tree"
+    effect "an agent request with it waits for an explicit human confirmation"
+    unit "not applicable"
+    example "[agent] Delete the .git directory"
+    lexeme en "rm -rf" "delete the .git" "drop table" "delete /" "delete the database"
+    lexeme ru "удали .git" "удалить .git" "удали базу данных" "удалить базу данных"
+    lexeme hi ".git हटाओ" "डेटाबेस हटाओ" "डेटाबेस मिटाओ"
+    lexeme zh "删除 .git" "删除数据库"
+    lexeme es "borra .git" "elimina .git" "borra la base de datos" "elimina la base de datos"
+  unbounded-loop
+    defined-by concept
+    role unbounded-loop-marker
+    precondition "a request asks an agent to run without a time bound"
+    effect "the agent request is refused under the documented time budget"
+    unit "not applicable"
+    example "[agent] Run while True: pass for one hour"
+    lexeme en "while true" "infinite loop" "for one hour" "forever"
+    lexeme ru "бесконечный цикл" "в течение часа" "целый час"
+    lexeme hi "अनंत लूप" "एक घंटे तक"
+    lexeme zh "无限循环" "死循环" "一个小时"
+    lexeme es "bucle infinito" "durante una hora"

@@ -21,6 +21,7 @@ import { handlerMatches } from './crate/rule_interpreter.mjs';
 import { quoteFault } from './crate/normal_markov.mjs';
 import * as testAssertion from './test_assertion.mjs';
 import * as replaceList from './replace_list.mjs';
+import * as quoteNesting from './quote_nesting.mjs';
 import * as requestSequence from './request_sequence.mjs';
 import { plannerPrecedence } from './crate/seed.mjs';
 import { looksLikeSkillDescription } from './crate/skill_compiler.mjs';
@@ -150,12 +151,20 @@ async function planWorkspaceChangeArm(task, messages, toolNames) {
  * @param {string} task
  */
 function requestFaultAnswer(task) {
-  const fault = quoteFault(task);
-  const files = fault === null ? replaceList.severalEditTargets(task) : null;
-  if (fault === null && files === null) return null;
-  const answer = fault === null
+  const fault = quoteFault(task) ?? quoteNesting.nestedQuoteFault(task);
+  if (fault !== null) {
+    const answer = codeTask.renderSeededChange(fault.intent ?? `request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
+    return answer === null ? null : finalAnswer(answer);
+  }
+  // Steps joined by a sequence cue are each checked alone (PR #1188 G99).
+  if (requestSequence.sequenceSteps(task) !== null) return null;
+  const files = replaceList.severalEditTargets(task);
+  const clause = files === null ? replaceList.unplannedEditClause(task) : null;
+  const answer = files !== null
     ? codeTask.renderSeededChange('request_several_edit_targets', task, '', [['{files}', files.join('`, `')]])
-    : codeTask.renderSeededChange(`request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
+    : clause !== null
+      ? codeTask.renderSeededChange('request-edit-clause-unplanned', task, '', [['{clause}', clause]])
+      : null;
   return answer === null ? null : finalAnswer(answer);
 }
 

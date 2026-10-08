@@ -21,6 +21,8 @@
 // shared prelude and finish, so their traces differ only in the middle.
 
 const SOLVER_EVENT_VALIDATION = "validation";
+const SOLVER_EVENT_CANDIDATE = "candidate";
+const SOLVER_EVENT_LOG_MODULE = "crate/event_log.mjs";
 const SOLVER_VALIDATION_ACCEPTED = "accepted_without_extra_constraints";
 const SOLVER_EVENT_SIMPLIFICATION = "trace:simplification";
 const SOLVER_SIMPLIFICATION_SMALLEST = "smallest_sufficient";
@@ -295,8 +297,9 @@ function solverMetaProjection(answer) {
 
 // The whole log for a finished answer: the solver prelude, the route, the
 // handler's own events, then `finalize_simple` (or the meta reasoner's
-// `project`, which records no validation). Not recorded yet: the formalization,
-// intent-formalization and meta-core records, and `finalize_simple`'s `candidate`.
+// `project`, which records no validation). Not recorded here: the formalization,
+// intent-formalization and meta-core records (js/server/solver-log.mjs splices
+// them in; its formalization `candidate` then stands for the one below).
 function solverEventLog(prompt, answer) {
   const events = [solverEvent("impulse", prompt), solverEvent("language", detectLanguage(prompt))];
   const route = solverIntentRoute(prompt);
@@ -310,12 +313,30 @@ function solverEventLog(prompt, answer) {
     events.push(solverEvent("trace", answer.intent));
     return events;
   }
+  if (!events.some((event) => event.kind === SOLVER_EVENT_CANDIDATE)) {
+    events.push(solverEvent(SOLVER_EVENT_CANDIDATE, answer.intent));
+  }
   if (!events.some((event) => event.kind === SOLVER_EVENT_VALIDATION)) {
     events.push(solverEvent(SOLVER_EVENT_VALIDATION, SOLVER_VALIDATION_ACCEPTED));
   }
-  events.push(solverEvent("response", `${SOLVER_RESPONSE_PREFIX}${answer.intent}`));
+  events.push(solverEvent("response", answer.responseLink || `${SOLVER_RESPONSE_PREFIX}${answer.intent}`));
   // The `finalize_simple` tail; the `trace` link is the Telegram `/trace` footer.
   events.push(solverEvent(SOLVER_EVENT_SIMPLIFICATION, SOLVER_SIMPLIFICATION_SMALLEST));
   events.push(solverEvent("trace", answer.intent));
   return events;
+}
+
+// Record the native log on a finished `result` (R1013) and append its native
+// links to the answer's evidence (R1188-U29): rust/src/event_log.rs
+// `build_evidence_links`, run from js/agentic/crate/event_log.mjs, gives the
+// prompt link and one typed link per logged event (`impulse:`, `intent:`,
+// `candidate:`, `policy:*`, `response:*` ...). The worker's own links stay
+// first, so the native block opens with the prompt link and holds only the
+// links the answer does not carry yet.
+function recordSolverEventLog(result, prompt, answer) {
+  result.solverEvents = solverEventLog(prompt, answer);
+  const links = crateModule(SOLVER_EVENT_LOG_MODULE).eventLogEvidenceLinks(result.solverEvents, answer.intent);
+  if (!links) return;
+  const present = new Set(result.evidence);
+  result.evidence = [...result.evidence, ...links.filter((link) => !present.has(link))];
 }

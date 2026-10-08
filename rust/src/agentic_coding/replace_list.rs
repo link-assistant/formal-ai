@@ -9,7 +9,8 @@
 
 use super::positional_edit::{instruction_end, unescape_prose_newlines};
 use super::write_request::{
-    bare_surfaces, clean_cue_token, compose_edit_request, cued_write_targets, tokens,
+    Token, bare_surfaces, clean_cue_token, clean_path_token, compose_edit_request,
+    cued_write_targets, looks_like_file_path, safe_relative_path, tokens,
 };
 use crate::normal_markov::{quoted_segment_spans, quoted_segments};
 use crate::seed;
@@ -110,6 +111,54 @@ pub(super) fn replace_list(request: &str) -> Option<(String, Vec<(String, String
     Some((target, pairs))
 }
 
+/// The marks that end a sentence, dropped from a clause the answer names.
+const SENTENCE_END: &[char] = &['.', '!', '?', '。', '！', '？'];
+
+/// The first clause of a request asking for several edits that is no
+/// replacement of quoted text in the request's file, when the first clause is
+/// one (PR #1188 G106; mirrors `unplannedEditClause`).
+///
+/// Such a request would otherwise make the first edit and drop the rest
+/// without a word, so it is declined, naming the clause. A clause is an edit
+/// of its own only when a clause mark or a seeded joiner opens it (`, replace`,
+/// `and replace`); `None` when there is no such clause or every one is a
+/// replacement.
+pub(super) fn unplanned_edit_clause(request: &str) -> Option<String> {
+    let clauses = replace_clauses(request)?;
+    if replace_list(request).is_some() {
+        return None;
+    }
+    let (target, _, _) = compose_edit_request(&clauses[0])?;
+    let joiners = bare_surfaces("file_edit_joiner_cue");
+    let mut from = 0;
+    for clause in &clauses[1..] {
+        let at = from + request.get(from..)?.find(clause.as_str())?;
+        from = at + clause.len();
+        let lead = request[..at].trim_end();
+        let opened = lead.ends_with(CLAUSE_TAIL)
+            || lead
+                .split_whitespace()
+                .last()
+                .is_some_and(|word| joiners.contains(&clean_cue_token(word)));
+        if !opened {
+            continue;
+        }
+        let edit = if clause.contains(target.as_str()) {
+            compose_edit_request(clause)
+        } else {
+            compose_edit_request(&format!("{clause} in {target}"))
+        };
+        let segments = quoted_segments(clause);
+        let replaces = edit.is_some_and(|(file, old, new)| {
+            file == target && segments.contains(&old) && segments.contains(&new)
+        });
+        if !replaces {
+            return Some(clause.trim_end_matches(SENTENCE_END).to_owned());
+        }
+    }
+    None
+}
+
 /// The distinct files an edit request names outside its quotes, when it names
 /// more than one (PR #1188 G91).
 ///
@@ -117,21 +166,97 @@ pub(super) fn replace_list(request: &str) -> Option<(String, Vec<(String, String
 /// files named rather than applied to the first alone (mirrors
 /// `severalEditTargets`).
 pub(super) fn several_edit_targets(request: &str) -> Option<Vec<String>> {
-    compose_edit_request(request)?;
+    let composed = super::write_request::compose_edit_clauses(request)?;
     let segments = quoted_segment_spans(request);
     let toks = tokens(request);
-    let end = instruction_end(request);
-    let mut paths: Vec<String> = Vec::new();
-    for (index, path) in cued_write_targets(&toks) {
+    let (from, end) = edit_region(request, composed.spans);
+    let counted = |index: usize| {
         let token = &toks[index];
-        let quoted = segments
-            .iter()
-            .any(|segment| token.start < segment.end && token.end > segment.start);
-        if token.start < end && !quoted && !paths.contains(&path) {
+        token.start >= from
+            && token.start < end
+            && !segments
+                .iter()
+                .any(|segment| token.start < segment.end && token.end > segment.start)
+    };
+    let mut targets: Vec<(usize, String)> = cued_write_targets(&toks)
+        .into_iter()
+        .filter(|(index, _)| counted(*index))
+        .collect();
+    // A file listed after a cued one shares its cue (PR #1188 G104):
+    // `In a.mjs and b.mjs, replace ...` names b.mjs as much as a.mjs.
+    let cued: Vec<usize> = targets.iter().map(|(index, _)| *index).collect();
+    for (index, path) in coordinated_paths(&toks, &cued) {
+        if counted(index) {
+            targets.push((index, path));
+        }
+    }
+    targets.sort_by_key(|(index, _)| *index);
+    let mut paths: Vec<String> = Vec::new();
+    for (_, path) in targets {
+        if !paths.contains(&path) {
             paths.push(path);
         }
     }
     (paths.len() > 1).then_some(paths)
+}
+
+/// The sentences that hold the composed edit's clauses (`spans`), or the
+/// whole instruction when the edit has none (mirrors `editRegion`).
+///
+/// A path in a later sentence (`Leave supporting evidence in proof.md.`) is
+/// no target of the edit (PR #1188 ladder regression of G91).
+fn edit_region(request: &str, spans: Option<[(usize, usize); 2]>) -> (usize, usize) {
+    let end = instruction_end(request);
+    let Some(spans) = spans else {
+        return (0, end);
+    };
+    let first = spans[0].0.min(spans[1].0);
+    let last = spans[0].1.max(spans[1].1);
+    let parts = super::shell_command_policy::sentences(request);
+    let opening = parts
+        .iter()
+        .find(|sentence| first >= sentence.span.start && first < sentence.span.end)
+        .map_or(0, |sentence| sentence.span.start);
+    let closing = parts
+        .iter()
+        .find(|sentence| last > sentence.span.start && last <= sentence.span.end)
+        .map_or(end, |sentence| sentence.span.end);
+    (opening, end.min(closing))
+}
+
+/// The paths listed right after one of the `cued` path tokens, each with its
+/// token index (PR #1188 G104).
+///
+/// A path is listed when a comma closes the token before it, or when a seeded
+/// joiner word (`and`) stands between them (mirrors `coordinatedPaths`).
+pub(super) fn coordinated_paths(toks: &[Token<'_>], cued: &[usize]) -> Vec<(usize, String)> {
+    let joiners = bare_surfaces("file_edit_joiner_cue");
+    let path_at = |index: usize| -> Option<String> {
+        let cleaned = clean_path_token(toks.get(index)?.text);
+        (looks_like_file_path(cleaned) && safe_relative_path(cleaned)).then(|| cleaned.to_owned())
+    };
+    let mut out = Vec::new();
+    for &start in cued {
+        let mut index = start;
+        loop {
+            let listed = toks[index].text.ends_with(',');
+            let mut next = index + 1;
+            let joined = toks
+                .get(next)
+                .is_some_and(|token| joiners.contains(&clean_cue_token(token.text)));
+            if joined {
+                next += 1;
+            } else if !listed {
+                break;
+            }
+            let Some(path) = path_at(next) else {
+                break;
+            };
+            out.push((next, path));
+            index = next;
+        }
+    }
+    out
 }
 
 /// `source` with each pair's old text replaced everywhere, in order.

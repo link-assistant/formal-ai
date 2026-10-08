@@ -51,6 +51,18 @@ meanings
     lexeme hi और
     lexeme zh 和
     lexeme es "y"
+  file-edit-sequence
+    defined-by relation
+    role file-edit-sequence-cue
+    precondition "a request asks for several edits one after another, the cue opening a clause after a comma or a joiner"
+    effect "each step is planned as the request it would be alone, in order, over the file as the step before left it"
+    unit "not applicable"
+    example "insert the line 'b2' after the line 'b' in f.txt, then delete the line 'c' from f.txt"
+    lexeme en "then" "after that" "afterwards"
+    lexeme ru затем потом "после этого"
+    lexeme hi फिर "उसके बाद"
+    lexeme zh 然后 接着 随后
+    lexeme es luego "después de eso" "a continuación"
   file_edit_anchor_context
     defined-by relation
     role file_edit_anchor_context_cue

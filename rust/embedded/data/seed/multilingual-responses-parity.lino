@@ -65,8 +65,8 @@ multilingual_responses
     intent meta_explanation
     language es
     text "Trabajo comparando tu solicitud con reglas deterministas de Links Notation almacenadas en memoria. Cada regla asigna un patrón reconocido a una respuesta fija. Cuando ninguna regla coincide, informo intent: unknown. No hay inferencia neuronal: cada respuesta se puede rastrear por completo hasta una regla simbólica."
-  response response_inappropriate_content_es
-    intent inappropriate_content
+  response response-inappropriate-content-es
+    intent inappropriate-content
     language es
     text "Ese mensaje contiene contenido inapropiado. Mantén una conversación respetuosa."
   response response_clarification_es

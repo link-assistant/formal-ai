@@ -13,6 +13,8 @@ roles
     kind meaning
   advice_request
     kind meaning
+  agent-mode-opt-in-marker
+    kind predicate
   agent_action_formalize_verb
     kind predicate
   agent_action_report_subject
@@ -45,6 +47,10 @@ roles
     kind predicate
   brainstorming_request
     kind meaning
+  cache-clearing-action
+    kind predicate
+  cache-reference
+    kind predicate
   calculation_basis_reference
     kind predicate
   calculation_domain_term
@@ -317,6 +323,8 @@ roles
     kind meaning
   dependency_relation
     kind predicate
+  destructive-action-marker
+    kind predicate
   detail_modifier
     kind meaning
   document_composition_action
@@ -357,6 +365,8 @@ roles
     kind predicate
   feature_capability_question
     kind meaning
+  file-edit-sequence-cue
+    kind predicate
   file_analysis_gap_marker
     kind meaning
   file_contents_source_cue
@@ -423,6 +433,8 @@ roles
     kind predicate
   followup_instruction_verb
     kind meaning
+  forget-request-marker
+    kind predicate
   frame_filler_word
     kind meaning
   function_call_verb
@@ -981,6 +993,10 @@ roles
     kind predicate
   unauthorized_mutation_correction
     kind meaning
+  unbounded-autonomy-marker
+    kind predicate
+  unbounded-loop-marker
+    kind predicate
   unit_conversion_question
     kind meaning
   unobservable_task_action

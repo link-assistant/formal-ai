@@ -65,6 +65,7 @@ architecture-principles
       enforced-by check-seed-registry
     principle "Small Public Documentation"
       practice "ARCHITECTURE.md is a table of contents; each topic lives in one file under docs/architecture/."
+      enforced-by check-architecture-contents
     principle "Intent-Revealing Interfaces"
       practice "Tests read as documentation of the behaviour they pin, named by the requirement they cover."
       enforced-by check-tests-as-docs
@@ -194,4 +195,5 @@ architecture-principles
       practice "The solver emits an append-only event log that surfaces stream and memory stores as links."
     principle "Environment Parity"
       practice "The browser, the Node server and the native binary give the same answers for the same prompt."
+      enforced-by check-specification-in-javascript
       gap R994

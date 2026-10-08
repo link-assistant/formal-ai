@@ -307,7 +307,7 @@ fn plan_chat_step_routes(
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
     // payload as words to act on (PR #1188 G71).
-    if let Some(plan) = request_fault_answer(&task)
+    if let Some(plan) = super::quote_nesting::request_fault_answer(&task)
         .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
     {
         return Some(plan);
@@ -961,28 +961,6 @@ pub(super) fn fetch_arguments(url: &str) -> String {
         "format": "text",
     })
     .to_string()
-}
-
-/// The seeded answer declining a request whose quotes do not pair (PR #1188
-/// G71) or whose edit names several files (G91).
-fn request_fault_answer(task: &str) -> Option<AgenticPlan> {
-    let answer = if let Some(fault) = crate::normal_markov::quote_fault(task) {
-        code_task::render_seeded_change(
-            &format!("request_quote_{}", fault.kind),
-            task,
-            "",
-            &[("{fragment}", &fault.fragment)],
-        )
-    } else {
-        let targets = super::replace_list::several_edit_targets(task)?.join("`, `");
-        code_task::render_seeded_change(
-            "request_several_edit_targets",
-            task,
-            "",
-            &[("{files}", &targets)],
-        )
-    };
-    answer.map(AgenticPlan::Final)
 }
 
 /// The seeded question for an addition that quotes no text (PR #1188 G69).

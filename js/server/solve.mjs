@@ -7,7 +7,7 @@
 import { finalizeServerAnswer } from './derivation-store.mjs';
 import { beginTurn, endTurn, gateTurn } from './debug-session.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
-import { EventLog, buildEvidenceLinks } from './evidence-links.mjs';
+import { eventLogEvidenceLinks } from './evidence-links.mjs';
 import { f32 } from './json.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
 import { serverMessage } from './messages.mjs';
@@ -32,17 +32,19 @@ export { estimateTokens, stableId };
 const PRIOR_TURN_USER = 'prior_turn:user';
 const PRIOR_TURN_ASSISTANT = 'prior_turn:assistant';
 const ASSISTANT_ROLE = 'assistant';
-const IMPULSE_KIND = 'impulse';
 const RESPONSE_KIND = 'response';
 const META_RESPONSE_LINK = 'response:meta_reasoner';
 const BROWSER_TRACE_PREFIX = 'trace:';
+const NATIVE_PROMPT_LINK = /^prompt:prompt_[0-9a-f]{16}$/u;
 
 /**
- * The worker's own evidence without the browser trace `finalize` appends
- * after it (`trace:<event>` per dispatch event): the handler's evidence.
+ * The worker's own evidence without what `finalize` appends after it: the
+ * browser trace (`trace:<event>` per dispatch event) and the native links of
+ * its log, which open with the prompt link. What is left is the handler's.
  */
 function handlerEvidence(evidence) {
-  let end = evidence.length;
+  const native = evidence.findIndex((link) => NATIVE_PROMPT_LINK.test(link));
+  let end = native < 0 ? evidence.length : native;
   while (end > 0 && evidence[end - 1].startsWith(BROWSER_TRACE_PREFIX)) end -= 1;
   return evidence.slice(0, end);
 }
@@ -57,17 +59,14 @@ function handlerEvidence(evidence) {
 export function solverEvidenceLinks(result, history = []) {
   const events = Array.isArray(result?.solverEvents) ? result.solverEvents : null;
   if (!events) return null;
-  const impulse = events.find((event) => event.kind === IMPULSE_KIND);
-  if (!impulse) return null;
-  const log = new EventLog();
-  for (const turn of history || []) {
-    log.append(turn?.role === ASSISTANT_ROLE ? PRIOR_TURN_ASSISTANT : PRIOR_TURN_USER, String(turn?.content ?? ''));
-  }
-  for (const event of events) log.append(String(event.kind), String(event.payload ?? ''));
-  const response = log.lastOf(RESPONSE_KIND);
-  const responseLink = response ? response.payload : `${RESPONSE_KIND}:${String(result?.intent ?? 'unknown')}`;
-  const links = buildEvidenceLinks(String(impulse.payload), log, responseLink);
-  if (responseLink === META_RESPONSE_LINK && Array.isArray(result?.evidence)) {
+  const priorTurns = (history || []).map((turn) => ({
+    kind: turn?.role === ASSISTANT_ROLE ? PRIOR_TURN_ASSISTANT : PRIOR_TURN_USER,
+    payload: String(turn?.content ?? ''),
+  }));
+  const links = eventLogEvidenceLinks([...priorTurns, ...events], result?.intent);
+  if (!links) return null;
+  const response = events.findLast((event) => event.kind === RESPONSE_KIND);
+  if (response?.payload === META_RESPONSE_LINK && Array.isArray(result?.evidence)) {
     links.push(...handlerEvidence(result.evidence.map(String)));
   }
   return links;

@@ -376,6 +376,12 @@ pub(super) fn plan_evidence_record_step(
                     trace_route("evidence_record", "residual_reported_failure");
                     return Some(AgenticPlan::Final(answer));
                 }
+                // A failed step's output is never a file's content: the answer
+                // that reports it is the answer (PR #1188 G102).
+                if progress.latest_failure().is_some() {
+                    trace_route("evidence_record", "residual_step_failed");
+                    return Some(AgenticPlan::Final(answer));
+                }
                 answer
             }
             None => {
@@ -927,11 +933,13 @@ fn source_authority(path_or_line: &str) -> usize {
 /// and a harness reading the file finds a heading with no list and calls the
 /// node proved.
 fn symbolic_answer(residual: &str) -> Option<String> {
+    // Any gap (`capability_gap`, `write_program_skill_gap`) is such a refusal
+    // (PR #1188 G102).
     let answer = crate::engine::FormalAiEngine.answer(residual);
     // A gap refusal is a definite statement about the surface, not a finding
     // to record: left through, the delivery wrote the refusal into the file
     // the caller named (issue #1138).
-    if answer.intent == "capability_gap"
+    if answer.intent.ends_with(GAP_INTENT_SUFFIX)
         || answer.is_inconclusive()
         || answer.defers_to_the_open_web()
         || answer.announces_a_list_it_does_not_make()
@@ -941,6 +949,9 @@ fn symbolic_answer(residual: &str) -> Option<String> {
     let text = answer.answer.trim().to_owned();
     (!text.is_empty()).then_some(text)
 }
+
+/// The suffix of an intent that reports a gap: a refusal, never content.
+const GAP_INTENT_SUFFIX: &str = "_gap";
 
 /// The same conversation with the served request reduced to `residual`.
 ///

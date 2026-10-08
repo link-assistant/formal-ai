@@ -544,3 +544,123 @@ multilingual_responses
     intent software_project_followup_proposed
     language es
     text "Responde `approve plan` para generar el artefacto junto con este arnés de pruebas. Ejecutarlo en vivo contra el destino necesita las compuertas test_execution y network_access."
+  response response-bounded-autonomy-en
+    intent bounded-autonomy
+    language en
+    text "I can only run a bounded chat reply per message. To take repeated, open-ended actions I need an explicit opt-in to agent mode, and agent mode runs in an isolated sandbox so the host stays safe."
+  response response-bounded-autonomy-ru
+    intent bounded-autonomy
+    language ru
+    text "За одно сообщение я могу дать только ограниченный ответ в чате. Чтобы выполнять повторяющиеся действия без заданного конца, мне нужно явное включение режима агента, а режим агента работает в изолированной песочнице, чтобы основная система оставалась в безопасности."
+  response response-bounded-autonomy-hi
+    intent bounded-autonomy
+    language hi
+    text "मैं हर संदेश पर केवल एक सीमित चैट उत्तर दे सकता हूँ। बार-बार और बिना तय अंत वाले काम करने के लिए मुझे एजेंट मोड की स्पष्ट सहमति चाहिए, और एजेंट मोड एक अलग सैंडबॉक्स में चलता है ताकि मुख्य सिस्टम सुरक्षित रहे।"
+  response response-bounded-autonomy-zh
+    intent bounded-autonomy
+    language zh
+    text "每条消息我只能给出一次有限的聊天回复。要执行重复的、没有明确终点的操作，我需要你明确启用代理模式，而代理模式在隔离的沙箱中运行，以保证主机安全。"
+  response response-bounded-autonomy-es
+    intent bounded-autonomy
+    language es
+    text "Solo puedo dar una respuesta de chat acotada por mensaje. Para realizar acciones repetidas y sin final definido necesito que actives explícitamente el modo agente, y el modo agente se ejecuta en un entorno aislado para que el sistema anfitrión siga seguro."
+  response response-add-only-history-en
+    intent add-only-history
+    language en
+    text "The link network is append-only. To retract a fact, send the explicit retraction protocol; it will append a superseding event without erasing history."
+  response response-add-only-history-ru
+    intent add-only-history
+    language ru
+    text "Сеть связей только дополняется. Чтобы отозвать факт, отправьте явный протокол отзыва: он добавит замещающее событие, не стирая историю."
+  response response-add-only-history-hi
+    intent add-only-history
+    language hi
+    text "लिंक नेटवर्क में केवल जोड़ा जा सकता है। किसी तथ्य को वापस लेने के लिए स्पष्ट वापसी प्रोटोकॉल भेजें; वह इतिहास मिटाए बिना उसकी जगह लेने वाली एक नई घटना जोड़ देगा।"
+  response response-add-only-history-zh
+    intent add-only-history
+    language zh
+    text "链接网络只能追加。要撤回一个事实，请发送明确的撤回协议；它会追加一个取代原事实的事件，而不会抹去历史。"
+  response response-add-only-history-es
+    intent add-only-history
+    language es
+    text "La red de enlaces solo admite añadir. Para retirar un hecho, envía el protocolo de retractación explícito; añadirá un evento que lo sustituye sin borrar el historial."
+  response response-cache-flush-requires-confirmation-en
+    intent cache-flush-requires-confirmation
+    language en
+    text "Flushing the source cache is an auditable action. Confirm explicitly."
+  response response-cache-flush-requires-confirmation-ru
+    intent cache-flush-requires-confirmation
+    language ru
+    text "Очистка кэша источников — действие, которое попадает в журнал аудита. Подтвердите его явно."
+  response response-cache-flush-requires-confirmation-hi
+    intent cache-flush-requires-confirmation
+    language hi
+    text "स्रोत कैश को साफ़ करना एक ऑडिट योग्य कार्रवाई है। कृपया स्पष्ट रूप से पुष्टि करें।"
+  response response-cache-flush-requires-confirmation-zh
+    intent cache-flush-requires-confirmation
+    language zh
+    text "清空来源缓存是一项可审计的操作。请明确确认。"
+  response response-cache-flush-requires-confirmation-es
+    intent cache-flush-requires-confirmation
+    language es
+    text "Vaciar la caché de fuentes es una acción auditable. Confírmalo explícitamente."
+  response response-destructive-action-requires-confirmation-en
+    intent destructive-action-requires-confirmation
+    language en
+    text "Destructive agent actions require an explicit human confirmation. The action will run inside an isolated sandbox once confirmed."
+  response response-destructive-action-requires-confirmation-ru
+    intent destructive-action-requires-confirmation
+    language ru
+    text "Разрушительные действия агента требуют явного подтверждения человеком. После подтверждения действие выполнится в изолированной песочнице."
+  response response-destructive-action-requires-confirmation-hi
+    intent destructive-action-requires-confirmation
+    language hi
+    text "विनाशकारी एजेंट कार्रवाइयों के लिए किसी व्यक्ति की स्पष्ट पुष्टि आवश्यक है। पुष्टि के बाद कार्रवाई एक अलग सैंडबॉक्स में चलेगी।"
+  response response-destructive-action-requires-confirmation-zh
+    intent destructive-action-requires-confirmation
+    language zh
+    text "具有破坏性的代理操作需要人工明确确认。确认后，该操作将在隔离的沙箱中运行。"
+  response response-destructive-action-requires-confirmation-es
+    intent destructive-action-requires-confirmation
+    language es
+    text "Las acciones destructivas del agente requieren una confirmación humana explícita. Una vez confirmada, la acción se ejecutará dentro de un entorno aislado."
+  response response-agent-time-budget-en
+    intent agent-time-budget
+    language en
+    text "Agent execution is bounded by a documented time budget; unbounded loops are refused. Re-send a bounded version inside an isolated sandbox."
+  response response-agent-time-budget-ru
+    intent agent-time-budget
+    language ru
+    text "Работа агента ограничена задокументированным бюджетом времени; бесконечные циклы отклоняются. Отправьте ограниченную версию для запуска в изолированной песочнице."
+  response response-agent-time-budget-hi
+    intent agent-time-budget
+    language hi
+    text "एजेंट का निष्पादन एक दर्ज समय-सीमा से बँधा है; असीमित लूप अस्वीकार किए जाते हैं। एक सीमित संस्करण फिर से भेजें, जो अलग सैंडबॉक्स में चलेगा।"
+  response response-agent-time-budget-zh
+    intent agent-time-budget
+    language zh
+    text "代理的执行受已记录的时间预算限制；无界循环会被拒绝。请重新发送一个有界的版本，在隔离的沙箱中运行。"
+  response response-agent-time-budget-es
+    intent agent-time-budget
+    language es
+    text "La ejecución del agente está limitada por un presupuesto de tiempo documentado; los bucles sin límite se rechazan. Vuelve a enviar una versión acotada para ejecutarla en un entorno aislado."
+  response response-agent-action-en
+    intent agent-action
+    language en
+    text "Agent mode is opted in for this message. The action will run inside an isolated sandbox (docker, webvm or sandbox-equivalent) and every step will be appended to the action log."
+  response response-agent-action-ru
+    intent agent-action
+    language ru
+    text "Для этого сообщения включён режим агента. Действие выполнится в изолированной песочнице (docker, webvm или её аналог), и каждый шаг будет добавлен в журнал действий."
+  response response-agent-action-hi
+    intent agent-action
+    language hi
+    text "इस संदेश के लिए एजेंट मोड चालू है। कार्रवाई एक अलग सैंडबॉक्स (docker, webvm या उसके समान) में चलेगी और हर चरण कार्रवाई लॉग में जोड़ा जाएगा।"
+  response response-agent-action-zh
+    intent agent-action
+    language zh
+    text "此消息已启用代理模式。该操作将在隔离的沙箱（docker、webvm 或同等沙箱）中运行，每一步都会追加到操作日志中。"
+  response response-agent-action-es
+    intent agent-action
+    language es
+    text "El modo agente está activado para este mensaje. La acción se ejecutará en un entorno aislado (docker, webvm o equivalente) y cada paso se añadirá al registro de acciones."

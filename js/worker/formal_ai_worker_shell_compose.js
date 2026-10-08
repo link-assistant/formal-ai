@@ -461,7 +461,7 @@ function shellComposeLsListing(tokens, prompt) {
 function handleShellCommandCompose(prompt, normalized) {
   const tokens = codeTaskTokens(normalized);
   const actions = codeTaskCuePhrases("shell_command_compose", "action");
-  if (isAgentTextRequest(prompt.toLowerCase())) return null; // an agent opt-in is the agent flow's
+  if (isAgentModeRequest(prompt.toLowerCase())) return null; // an agent opt-in is the agent flow's
   // A complete substitution request is its own cue (Rust `sed_substitution`).
   const substitution = shellComposeSedSubstitution(prompt);
   if (substitution === null && !tokens.some(function (token) { return actions.includes(token); })) return null;

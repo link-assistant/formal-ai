@@ -63,6 +63,7 @@ mod positional_edit;
 mod prerequisite_recovery;
 pub mod procedure;
 mod progress;
+mod quote_nesting;
 pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_apply;

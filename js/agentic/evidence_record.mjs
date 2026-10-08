@@ -188,6 +188,12 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
         traceRoute('evidence_record', 'residual_reported_failure');
         return plan;
       }
+      // A failed step's output is never a file's content: the answer that
+      // reports it is the answer, and nothing is written (PR #1188 G102).
+      if (progress.latestFailure() !== null) {
+        traceRoute('evidence_record', 'residual_step_failed');
+        return plan;
+      }
       answer = plan.answer;
     } else {
       traceRoute('evidence_record', 'symbolic_residual');
@@ -439,9 +445,16 @@ function sourceAuthority(pathOrLine) {
  * Mirrors `fn symbolic_answer` through the host solver (async).
  * @param {string} residual
  */
+/**
+ * The suffix of an intent that reports a gap -- `capability_gap`,
+ * `write_program_skill_gap`: a refusal, never content to record (PR #1188
+ * G102: a request describing a test file wrote the refusal into it).
+ */
+const GAP_INTENT_SUFFIX = '_gap';
+
 async function symbolicAnswer(residual) {
   const answer = await solve(residual);
-  if (!answer || answer.intent === 'capability_gap' || isInconclusive(answer) || defersToTheOpenWeb(answer)
+  if (!answer || answer.intent.endsWith(GAP_INTENT_SUFFIX) || isInconclusive(answer) || defersToTheOpenWeb(answer)
     || announcesAListItDoesNotMake(answer)) return null;
   const text = trim(answer.answer ?? '');
   return text === '' ? null : text;

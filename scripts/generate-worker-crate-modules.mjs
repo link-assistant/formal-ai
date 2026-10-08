@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Generate the browser worker's copies of the crate modules the chat routes
 // call (R1188-U18, U19, U21): text formalization, dependency summarization,
-// page formalization and round-trip translation.
+// page formalization and round-trip translation; and the event log's evidence
+// projection every answer carries (R1188-U29).
 //
 // The browser worker is a classic script (js/worker/formal_ai_worker.js loads
 // its modules with `importScripts`), so it cannot import the ES modules of
@@ -34,6 +35,7 @@ import { REPO_ROOT } from '../js/server/lino.mjs';
 /** The modules the chat routes call; their import closure is generated. */
 export const ENTRY_MODULES = Object.freeze([
   'crate/dependency_summarization.mjs',
+  'crate/event_log.mjs',
   'crate/page_formalization.mjs',
   'crate/round_trip_translation.mjs',
 ]);

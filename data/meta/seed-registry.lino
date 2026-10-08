@@ -528,6 +528,7 @@ seed_registry
     web true
   seed method-execution
     bundle true
+    web true
   seed model-aliases
     bundle true
   seed multilingual-responses

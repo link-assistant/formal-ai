@@ -142,7 +142,7 @@ function documentPlanRender(language, label) {
  */
 function handleDocumentGenerationPlan(prompt, normalized) {
   const lowercased = normalized.toLowerCase();
-  if (isAgentTextRequest(lowercased)) return null;
+  if (isAgentModeRequest(lowercased)) return null;
   if (handlerRulesTableRow("document_software_artifact", lowercased) !== null) return null;
   if (handlerRulesTableRow("document_authoring_action", lowercased) === null) return null;
   const label = documentPlanFormat(lowercased);
