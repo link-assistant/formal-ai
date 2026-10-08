@@ -72,3 +72,31 @@ The map now records the generated browser factory explicitly. The existing renam
 | T1215 | REPO-RUNNERS: copy continuation task evidence | **Pass**: reviewed evidence copied exactly. | Parent integrates rows under shared ledger ownership. |
 
 The native partial-census fallback now ranks const/static symbols by identifier coverage, match count, path evidence and value ownership. Equal evidence remains ambiguous and the stopped outcome names every candidate. Eight closest runner tests passed. Full live Node caller integration and authoring artifact adapters remain open.
+
+## Live Node caller continuation
+
+| T1216 | REPO-RUNNERS: Copy bounded confined Node repository port | **Pass**: reviewed payload exact. | Three actual Git/npm caller replays pass. |
+| T1217 | REPO-RUNNERS: Guard broken and internal symlink paths | **Pass**: reviewed payload exact. | Path escapes and symlinks refused before writes. |
+| T1218 | REPO-RUNNERS: Copy closest Node file/process/caller pins | **Pass**: reviewed payload exact. | Three closest Node tests passed. |
+| T1219 | REPO-RUNNERS: Copy Node authoring artifact/server/session/landing adapter | **Pass**: reviewed payload exact. | Closest contract pins follow. |
+| T1220 | REPO-RUNNERS: Add raw artifact byte reads to Node port | **Pass**: reviewed payload exact. | Invalid UTF-8 companion bytes preserved. |
+| T1221 | REPO-RUNNERS: Preserve artifact bytes and reject hosted model labels | **Pass**: reviewed payload exact. | No change needed. |
+| T1222 | REPO-RUNNERS: Copy live JSON-task command-line caller | **Pass**: reviewed payload exact. | Caller route pin follows. |
+| T1223 | REPO-RUNNERS: Copy authoring and command-line regression pins | **Pass**: reviewed payload exact. | Five authoring/command-line plus three Node tests passed. |
+| T1224 | REPO-RUNNERS: Exercise actual Node server and installed Agent CLI | **Partial**: sandbox rejected loopback listen before a model attempt. | Authorized local-port retry T1225 passed. |
+| T1225 | REPO-RUNNERS: Retry actual local Node server/Agent CLI authoring fixture | **Pass**: installed Agent CLI 0.26.0 completed through local Formal AI, observed resumable session and artifact bytes, then landed without commit. | Live stream/session/protocol captured; no paid or external model. |
+| T1226 | REPO-RUNNERS: Copy exact-base allowlisted Node clone port | **Pass**: reviewed payload exact. | Moving references refused before creating destination. |
+| T1227 | REPO-RUNNERS: Copy real tiny local Git origin clone regression | **Pass**: reviewed payload exact. | Four closest Node tests passed; shared repo never copied. |
+| T1228 | REPO-RUNNERS: Move command-line surface to full English filename | **Pass**: Formal AI executed requested mv. | No change needed. |
+| T1229 | REPO-RUNNERS: Use full English exported command-line function and user commands | **Pass**: reviewed payload exact. | No change needed. |
+| T1230 | REPO-RUNNERS: Update command-line pin import and call by full words | **Pass**: reviewed payload exact. | No change needed. |
+| T1231 | REPO-RUNNERS: Replace stale R1138-3-5 missing clauses with verified Node delivery | **Pass**: reviewed payload exact. | Requirement implemented with live and replay evidence. |
+| T1232 | REPO-RUNNERS: Copy runnable Node caller documentation and live protocol/session evidence | **Pass**: reviewed payload exact. | No change needed. |
+| T1233 | REPO-RUNNERS: Copy actual framed Agent CLI live stream | **Pass**: exact captured stream. | No change needed. |
+| T1234 | REPO-RUNNERS: Append final Node boundary file claim | **Pass**: exact append. | Supersedes initial adapter path plan. |
+| T1235 | REPO-RUNNERS: Copy Node caller continuation task evidence | **Pass**: reviewed evidence exact. | Parent integrates shared dogfood rows. |
+| T1236 | REPO-RUNNERS: Copy Node caller changelog fragment | **Pass**: reviewed payload exact. | No change needed. |
+
+Seventeen closest runner/Node/authoring tests passed after exact-base cloning and full-word command-line naming. Actual local Formal AI server plus Agent CLI completed T1225; the live stream, task, protocol and session are captured in javascript-repository-callers.md and javascript-repository-authoring-stream.jsonl. This completes the R1138-3-5 JavaScript caller delivery. The host owns process network isolation, and remote clone access requires an explicit host grant. Native compilation remains CI-owned.
+
+A private-index commit raced the coordinator documentation commit; a dedicated restoration commit retained its original worktree bytes exactly. Subsequent commits use the shared atomic commit lock and refresh the default index within that lock.
