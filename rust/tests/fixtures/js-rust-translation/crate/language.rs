@@ -7,11 +7,11 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:translated JavaScript export_statement items=1 sha256=a352c99d140ed49b027e7695923a4339383b233523a9bdac690072abf69cd7a9
 // | export const UNKNOWN = 'unknown';

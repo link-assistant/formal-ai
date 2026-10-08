@@ -14,12 +14,12 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 133
-  translated_items 279
+  modules 134
+  translated_items 280
   workaround_items 6
   inferred_signatures 2
-  carried_items 2216
-  translated_modules 84
+  carried_items 2222
+  translated_modules 85
   fully_translated_modules 1
   refused_modules 49
 workaround import-pruning items 6
@@ -67,6 +67,7 @@ module js/agentic/crate/intent_formalization_requirements.mjs translated 0 worka
 module js/agentic/crate/issue_report.mjs translated 2 workaround 0 inferred 0 carried 0
 module js/agentic/crate/issue_report_title.mjs translated 2 workaround 0 inferred 0 carried 9
 module js/agentic/crate/language.mjs translated 2 workaround 0 inferred 0 carried 30
+module js/agentic/crate/least_action.mjs translated 1 workaround 0 inferred 0 carried 6
 module js/agentic/crate/links_format.mjs translated 0 workaround 0 inferred 0 carried 10
 module js/agentic/crate/links_substitution_query.mjs translated 0 workaround 0 inferred 0 carried 10
 module js/agentic/crate/memory.mjs translated 5 workaround 0 inferred 0 carried 18
@@ -157,7 +158,7 @@ module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 in
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
 refusal "import of names its module does not translate" 281
-refusal "JSDoc type {…}" 203
+refusal "JSDoc type {…}" 209
 refusal "null" 177
 refusal "import from '…'" 139
 refusal "type: unknown name (a sibling item or an import)" 116

@@ -92,15 +92,15 @@ pub mod ml_math {
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=29901c80cfba3b51858a52e46abe27cf42c09641ef80b1c3630a3eb8a617f3c9
 // | const INTENT_EVIDENCE_SUMMARY = 'summarization_evidence_summary';

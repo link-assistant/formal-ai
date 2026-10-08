@@ -8,19 +8,19 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript export_statement items=1 sha256=3dbc73de8045d4b4585eeaa99d396013fbc2fcb5e120acd3065b9ddbeb6a7204
 // | /** `crate::seed::ROLE_COMPUTER_USE_OPERATION_CUE`. */

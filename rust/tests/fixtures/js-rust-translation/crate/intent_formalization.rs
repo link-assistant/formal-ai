@@ -8,31 +8,31 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=344b43fb7b585894fce9c383a58d1c8a44b96a2b1047eff671b7adf460232bf4
 // | const ROLE_INTERROGATIVE_OPENER = 'interrogative_opener';

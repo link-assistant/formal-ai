@@ -378,7 +378,7 @@ pub mod ml_math {
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal Math.fround

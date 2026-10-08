@@ -86,7 +86,7 @@ test('every use an import translates to names an item its module translated', ()
   const byModule = new Map(projections.map(({ file, text }) => [file, text]));
   let checked = 0;
   for (const { file, text } of projections) {
-    for (const [line, module, list] of text.matchAll(/^use crate::(\w+)::(?:\{(.*)\}|(\w+(?: as \w+)?));$/gmu)
+    for (const [line, module, list] of [...text.matchAll(/^use crate::(\w+)::(?:\{(.*)\}|(\w+(?: as \w+)?));$/gmu)]
       .map((match) => [match[0], match[1], match[2] ?? match[3]])) {
       const target = byModule.get(`${file.slice(0, file.lastIndexOf('/'))}/${module}.rs`);
       assert.ok(target, `${file}: ${line} names no module of its root`);

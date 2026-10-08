@@ -8,19 +8,19 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=3101dcb60c56ddac57d98cdcd675df2b1612ac0d7c7dca9a2735aa682571799f
 // | const TASKS_PATH = 'data/seed/computer-use-tasks.lino';

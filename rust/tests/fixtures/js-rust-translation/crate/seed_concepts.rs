@@ -8,11 +8,11 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript export_statement items=1 sha256=4d20ea1481bf64391f643f5ec72c872c2942be34d4e42fadb16a05f04ca50141
 // | /** Mirrors `CONCEPTS_LINO`'s path in rust/src/seed.rs. */

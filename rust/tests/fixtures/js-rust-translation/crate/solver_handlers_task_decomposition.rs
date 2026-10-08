@@ -8,7 +8,7 @@
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=a2a7ebc608b0575f2e42c804b1a30fb701db71db896b923024256b427db7115d
 // | const ROLE_DECOMPOSABLE_TASK_NOUN = 'decomposable_task_noun';

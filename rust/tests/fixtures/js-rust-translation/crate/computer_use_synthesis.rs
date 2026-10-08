@@ -8,7 +8,7 @@
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning JavaScript import_statement items=1 sha256=8315bb4c8544b356f02abca6e612b26c65fb36c445c557e0d3861c7038bf0ee5
 // | import { FETCH_OPERATION, learned } from './computer_use_induction.mjs';
@@ -16,15 +16,15 @@ use crate::computer_use_induction::FETCH_OPERATION;
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=7c66196baa00cc4ac1d98f619300dbe714133f2226b3282a3e166feb25f4b3d8
 // | /** `PATH_FIELDS`: argument fields bound per request from the data flow. */

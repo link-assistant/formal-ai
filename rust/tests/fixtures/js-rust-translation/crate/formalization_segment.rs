@@ -8,11 +8,11 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript export_statement items=1 sha256=1bb4cbeebc085918297f8259e3d67dccf9691e3d097695d82347c34fc64b34e8
 // | /** Mirrors `SENTENCE_PUNCTUATION_LINO` (the repository path it embeds). */

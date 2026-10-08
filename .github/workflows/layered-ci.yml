@@ -306,7 +306,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: link-foundation/meta-language
-          ref: 679a3b3c3c56177b8df1ad82672690c6e9889aeb
+          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
           path: .meta-language
           persist-credentials: false
       - name: Install meta-language's runtime dependencies

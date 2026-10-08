@@ -7,7 +7,7 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=563173ce78cfeea54c78b53e217ba3f7d05255a5ee4f643ac009353e81503b82
 // | const PATCH_BEGIN = '*** Begin Patch';

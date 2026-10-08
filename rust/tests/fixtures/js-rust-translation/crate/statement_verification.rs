@@ -8,7 +8,7 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning JavaScript import_statement items=1 sha256=8ec329f423ba3f3fefa0421789f50553a185b2492b901d95887e0f344b6b32fb
 // | import { ASSUMED_TRUE_PRIOR, assessStatement, truthValue } from './relative_meta_logic.mjs';

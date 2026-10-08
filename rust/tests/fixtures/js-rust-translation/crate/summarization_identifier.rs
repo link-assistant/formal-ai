@@ -8,7 +8,7 @@
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript export_statement items=1 sha256=9246fa1727f5fc4d70961741d06d975d2cc0977dc260c4661b50581346c89331
 // | /** Mirrors `DEFAULT_IDENTIFIER_MAX_LENGTH` in rust/src/summarization/identifier.rs. */

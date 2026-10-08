@@ -7,15 +7,15 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=75ba74e6a02da8511e29dca594446be98e403d5762242b78ed3b8005878e65b8
 // | const CATALOG_FILE = 'data/meta/agentic-coding-catalog.lino';

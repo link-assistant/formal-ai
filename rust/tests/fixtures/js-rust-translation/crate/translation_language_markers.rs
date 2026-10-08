@@ -8,11 +8,11 @@
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=3f3d195b0ca582df0a7996615693331de0ad1b93354081aa13402e1fa703a970
 // | const ROLE_RESPONSE_LANGUAGE_MARKER = 'response_language_marker';

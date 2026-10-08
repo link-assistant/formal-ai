@@ -7,11 +7,11 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:translated JavaScript export_statement items=1 sha256=af811582039fec5a465c406c135d6414fda571ad0d4a39d8a31f4f668cf052d8
 // | /** Mirrors `const CENSUS_DIR`. */

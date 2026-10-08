@@ -8,7 +8,7 @@
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:carried JavaScript lexical_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)

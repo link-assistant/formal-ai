@@ -8,11 +8,11 @@
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
-// formal-ai:blockers import { … }
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript export_statement items=1 sha256=c08fca1bfece6b19da6c61552d27df6475f5c8e0334bd5d0030618a777467dfc
 // | /** Mirrors `ROOT_HEADER` in rust/src/memory.rs. */

@@ -8,7 +8,7 @@
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=88d7c2f27a7ae1e51566e790bd48dd70d9745566600048271e7ae4691001c386
 // | const CACHE_FORMAT_VERSION = 'source-capture-v2';

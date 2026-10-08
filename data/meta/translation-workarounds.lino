@@ -1,0 +1,24 @@
+# Temporary workarounds of the js -> rust translation (R1188-U30).
+#
+# Where the pinned link-foundation/meta-language cannot translate a construct
+# yet, or emits Rust that does not hold together across modules, a workaround
+# in this repository completes the translation (docs/progressive-delivery.md).
+# Each record names the refusal or defect it lifts, the upstream issue whose
+# fix retires it, where it acts and how. scripts/lib/translation-workarounds.mjs
+# implements them; a projection's header names the ones its module needed
+# (`// formal-ai:workarounds`), and data/meta/js-rust-translation.lino counts
+# the items they translate (`workaround_items`) apart from upstream's own
+# (`translated_items`). When the upstream issue is fixed and the pin moves
+# past it, the record and its code are deleted, and the ledger shows the
+# items moving from `workaround_items` to `translated_items`.
+# rust/tests/web/translation-workarounds.test.mjs pins this table.
+workaround import-pruning
+  lifts "use crate::m::{…} naming an item m does not translate"
+  upstream "https://github.com/link-foundation/meta-language/issues/220"
+  scope "projection"
+  how "A translated import keeps only the names that the imported module's signatures bind. Upstream carries every item that uses an unbound name, so no Rust needs it. An import with no bound name is carried with the refusal 'import of names its module does not translate'."
+workaround crate-assembly
+  lifts "crate-rooted helper paths (crate::ml_*) beside imports of sibling modules (use crate::m::…)"
+  upstream "https://github.com/link-foundation/meta-language/issues/219"
+  scope "compile"
+  how "--compile (CI only) builds each root (crate, worker) as one crate with one module per projection. Each module's own crate::x paths are rewritten to crate::<module>::x, so imports and helpers both resolve. The committed projections are not changed."

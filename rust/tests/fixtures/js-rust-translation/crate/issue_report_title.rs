@@ -8,7 +8,7 @@
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import { … }
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript export_statement items=1 sha256=268343b4f36856e8cb54f62b64056d17ec0bc8e83fee4255045529ba752c59ff
 // | /** Mirrors `TITLE_MAX_LENGTH`. */
