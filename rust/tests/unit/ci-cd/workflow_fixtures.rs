@@ -72,7 +72,7 @@ pub fn unwrapped(workflow: &str) -> String {
 
 pub fn job_block<'a>(workflow: &'a str, job_name: &str) -> &'a str {
     let marker = format!("  {job_name}:\n");
-    let start = workflow.find(&marker).unwrap();
+    let start = workflow.find(&format!("\n{marker}")).unwrap() + 1;
     let body_start = start + marker.len();
     let rest = &workflow[body_start..];
 
@@ -92,6 +92,15 @@ pub fn job_block<'a>(workflow: &'a str, job_name: &str) -> &'a str {
         || &workflow[start..],
         |end| &workflow[start..body_start + end],
     )
+}
+
+#[test]
+fn job_lookup_ignores_a_nested_input_with_the_same_name() {
+    let workflow = "on:\n  workflow_dispatch:\n    inputs:\n      publish:\n        type: boolean\njobs:\n  publish:\n    timeout-minutes: 30\n  resolve:\n    timeout-minutes: 5\n";
+    assert_eq!(
+        job_block(workflow, "publish"),
+        "  publish:\n    timeout-minutes: 30\n"
+    );
 }
 
 pub fn workflow_step_block<'a>(job: &'a str, step_name: &str) -> &'a str {
