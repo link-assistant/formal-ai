@@ -198,6 +198,15 @@ function writeIfChanged(path, before, after, changed) {
   }
 }
 
+/** Captured names own response placeholders before and after a rename. */
+export function capturePlaceholderMapping(mapping, document) {
+  const captures = new Set(
+    [...document.matchAll(/^\s+value ([A-Za-z][A-Za-z0-9_-]*) /gmu)]
+      .map((match) => match[1]),
+  );
+  return new Map([...mapping].filter(([name, renamed]) => captures.has(name) || captures.has(renamed)));
+}
+
 /**
  * Apply one family's renames: the notation, its mirrors, the readers and the
  * documents. Returns the changed paths.
@@ -209,11 +218,7 @@ export function applyMapping(mapping, files) {
   const changed = [];
   // Captured names also appear in response templates outside this family.
   // Other handler fields may share a spelling with unrelated code variables.
-  const captures = new Set(
-    [...read("data/seed/handler-rules.lino").matchAll(/^\s+value ([A-Za-z][A-Za-z0-9_-]*) /gmu)]
-      .map((match) => match[1]),
-  );
-  const placeholderMapping = new Map([...mapping].filter(([, renamed]) => captures.has(renamed)));
+  const placeholderMapping = capturePlaceholderMapping(mapping, read("data/seed/handler-rules.lino"));
   const placeholderFiles = tracked(["data/seed/*.lino"]).filter((path) =>
     [...read(path).matchAll(/\{([A-Za-z][A-Za-z0-9_-]*)\}/gu)].some((match) => placeholderMapping.has(match[1])),
   );

@@ -1,6 +1,7 @@
 // PR #1188 T935-T936: a notation rename carries response placeholders too.
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { capturePlaceholderMapping } from '../../../experiments/formal_ai_subagent/apply-notation-rules.mjs';
 import { rewriteNotation, rewriteSource } from '../../../scripts/lib/notation-substitution.mjs';
 import { createWorkerContext, evaluate, plain } from './support/browser-runtime.mjs';
 
@@ -45,4 +46,12 @@ test('source templates migrate notation placeholders while Rust format variables
   const source = 'const answer = "{sample_value}";';
   assert.equal(rewriteSource(source, 'javascript', mapping, new Set()).text, 'const answer = "{sample-value}";');
   assert.equal(rewriteSource(source, 'rust', mapping, new Set(['sample_value'])).text, source);
+});
+
+test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {
+  const mapping = new Map([['sample_value', 'sample-value'], ['unrelated_field', 'unrelated-field']]);
+  for (const spelling of ['sample_value', 'sample-value']) {
+    const document = 'handler sample\n  value ' + spelling + ' literal "example"\n  unrelated-field "unrelated field"\n';
+    assert.deepEqual([...capturePlaceholderMapping(mapping, document)], [['sample_value', 'sample-value']]);
+  }
 });
