@@ -17,63 +17,84 @@ pub const ASSUMED_TRUE_PRIOR: f64 = 0.6f64;
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers Object.freeze | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal exponentiation
+// formal-ai:blockers exponentiation
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers call of a sibling function | sibling value
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .toFixed()
+// formal-ai:blockers method call .toFixed()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers Object.freeze | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…}
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal case test
+// formal-ai:blockers arrow callback of .reduce() | call of a sibling function | method call .reduce() | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers Object.freeze | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal case test
+// formal-ai:blockers sibling value
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers Object.freeze | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers call of a sibling function | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers call of a sibling function | field access | sibling value
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .toFixed()
+// formal-ai:blockers call of a sibling function | field access | method call .toFixed()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .map() | call of a sibling function | field access | method call .filter() | method call .map() | object without a $ tag | sibling value
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal function value …
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: function value ASSUMED_TRUE_PRIOR: functions and namespaces are only portable when a function is called
+// formal-ai:blockers call of a sibling function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers field access
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | field access

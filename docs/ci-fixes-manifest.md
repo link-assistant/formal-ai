@@ -55,7 +55,7 @@ validated TLS store fetched the records instead. No certificate check was disabl
   operands and prevents seeded fact questions being taken by web-search routing.
   It addresses the ten specification fact-routing failures and related concrete
   thinking failures; final CI validation is outstanding.
-- **Documentation issue state:** docs_issue_citations fails against the committed
+- **Documentation issue state:** documentation_issue_citations fails against the committed
   issue snapshot. Refresh actual issue status/citations after the final PR table,
   without changing the gate to hide stale references.
 - **Self-hosting evidence:** [run 36707093387](https://github.com/link-assistant/formal-ai/actions/runs/36707093387)

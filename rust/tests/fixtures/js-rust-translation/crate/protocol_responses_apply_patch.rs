@@ -6,7 +6,8 @@
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=563173ce78cfeea54c78b53e217ba3f7d05255a5ee4f643ac009353e81503b82
 // | const PATCH_BEGIN = '*** Begin Patch';
@@ -22,6 +23,8 @@ pub const PATCH_END: &str = "*** End Patch";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal try statement
+// formal-ai:blockers Array.isArray | JSON.parse | null | try statement | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow callback of .find() | call of a sibling function | call of an imported function | field access | method call .find() | method call .test() | null | regular expression | typeof operator | undefined

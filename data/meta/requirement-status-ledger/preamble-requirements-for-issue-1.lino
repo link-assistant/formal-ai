@@ -46,7 +46,7 @@ requirement_status_ledger_shard
   requirement
     id "R18"
     verdict "implemented"
-    automated_test "rust/tests/unit/proof_request_config.rs"
+    automated_test "rust/tests/unit/proof_request_configuration.rs"
   requirement
     id "R19"
     verdict "implemented"

@@ -7,6 +7,7 @@
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers JSDoc type {…} | Object.assign | new Error | object without a $ tag
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=36e417d81c90fce382d2770abb23ed63e23949ea949154a6a5c45038cde5cd3f
 // | const REGEX_CONTEXT_KEYWORDS = [
@@ -52,32 +53,47 @@ pub fn is_alpha(b: f64) -> bool {
     (((b >= (65f64)) && (b <= (90f64))) || ((b >= (97f64)) && (b <= (122f64))))
 }
 
-// meta-language:carried JavaScript function_declaration (type)
-// formal-ai:refusal type: unknown name (a sibling item or an import)
+// meta-language:translated JavaScript function_declaration items=1 sha256=799cf70fe5e756b9dd3ab1a877d20e91aa21777e4800f613195ee5240597d68f
+// | /** @param {number} b @returns {boolean} */
+// | function isIdentByte(b) {
+// |   return isAlpha(b) || isDigit(b) || b === 0x5f || b === 0x24 || b >= 0x80;
+// | }
+pub fn is_ident_byte(b: f64) -> bool {
+    ((((is_alpha(b) || is_digit(b)) || (b == (95f64))) || (b == (36f64))) || (b >= (128f64)))
+}
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc
+// formal-ai:blockers JSDoc type {…}
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc
+// formal-ai:blockers JSDoc type {…}
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc
+// formal-ai:blockers JSDoc type {…}
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc
+// formal-ai:blockers JSDoc type {…}
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | call of a sibling function | object without a $ tag | throw of a non-error value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers JSDoc type {…} | method call .charCodeAt()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | REGEX_CONTEXT_KEYWORDS.includes | arrow callback of .find() | arrow function | assignment of a field or element | call of a sibling function | field access | method call .decode() | method call .encode() | method call .find() | method call .pop() | method call .push() | method call .reverse() | method call .slice() | method call .subarray() | new TextDecoder | new TextEncoder | throw of a non-error value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | field access

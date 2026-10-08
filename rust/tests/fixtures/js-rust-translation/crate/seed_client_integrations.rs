@@ -1,18 +1,22 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0028f1e05a2e6271b17a9fae9cdf2daf6b8a4e5f38984cb4c16e215967a01c34 bytes=8275
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=2
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=06b879771f1d500c4d96ab5ad1ace40c3587a533181ab8d0edfb12b43f1cd12a
 // | const CONFIG_FORMATS = ['toml', 'json', 'shell_env'];
@@ -28,21 +32,28 @@ pub static MODEL_ARG_POSITIONS: std::sync::LazyLock<Vec<String>> = std::sync::La
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .indexOf()
+// formal-ai:blockers method call .indexOf() | method call .slice() | null
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers arrow function | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers assignment of a field or element | call of a sibling function | field access | in operator | method call .push() | null | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | in operator | method call .push() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers CONFIG_FORMATS.includes | call of an imported function | field access | null | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | call of a sibling function | call of an imported function | field access | global value Boolean | method call .filter() | method call .find() | method call .map() | method call .slice() | null | nullish coalescing | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .filter() | arrow function | call of a sibling function | call of an imported function | field access | method call .filter() | method call .push() | object without a $ tag

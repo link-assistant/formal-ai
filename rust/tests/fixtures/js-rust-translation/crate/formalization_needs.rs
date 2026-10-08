@@ -1,5 +1,6 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=26aee84110482bdcd26ecb0786bbf005618cede1f2f8ff57e973d5e47b28dae6 bytes=3079
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=5
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -101,29 +102,37 @@ pub mod ml_number {
 }
 // meta-language:prelude end
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal export …
+// formal-ai:blockers export … | imported value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers Object.freeze | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow callback of .some() | assignment of a field or element | call of an imported function | destructuring | field access | imported value | method call .grounds() | method call .push() | method call .some()
 
 // meta-language:translated JavaScript export_statement items=1 sha256=f7a9152e85bf2078b4b69f4858752bdca7b92d45eb0da5fb5c76a9faf139c7a5
 // | /**
@@ -142,3 +151,4 @@ pub fn span(doc_id: String, start: f64, end: f64) -> String {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers assignment of a field or element | field access | imported value | method call .lookup() | method call .push() | object without a $ tag | sibling value

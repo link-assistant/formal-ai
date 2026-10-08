@@ -98,7 +98,8 @@ requirement_status_ledger_shard
     verdict "partial"
   requirement
     id "R1188-U4"
-    verdict "not-delivered"
+    verdict "partial"
+    automated_test "rust/tests/web/abbreviations.test.mjs"
   requirement
     id "R1188-U5"
     verdict "partial"

@@ -1,5 +1,6 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=94c01c5ea49d6bb01c88de91a13bbcd933fd7aaf082c5976b7babf9bf6689742 bytes=8927
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -89,8 +90,9 @@ pub mod ml_math {
 }
 // meta-language:prelude end
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript export_statement items=1 sha256=7bbefa9855f1d92b680d94a70cc38c1c474bd2431ba0fbb595bb7ee5f9cb3fd4
 // | export const SESSION_SCHEMA = 'formal-ai-agent-session-v1';
@@ -138,9 +140,11 @@ pub static CHANGE_KINDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock:
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal namespace property …
+// formal-ai:blockers object without a $ tag
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal namespace property …
+// formal-ai:blockers object without a $ tag
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=866409fd0066d4f2dbf818adacc80256c8e7e793ff40d67964a0eccbf09225cd
 // | const COMPOSITION_STARTED = 'composition_verification_started';
@@ -156,18 +160,23 @@ pub const NATIVE_SESSION_RESUMED: &str = "native_session_resumed";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal export …
+// formal-ai:blockers JSDoc type {…} | assignment of a field or element | class | export … | field access | null
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal throw new …
+// formal-ai:blockers arrow function | new ReplayError | object without a $ tag
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers new Set
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers Array.isArray | Object.keys | arrow callback of .find() | arrow callback of .some() | call of a sibling function | in operator | method call .find() | method call .has() | method call .indexOf() | method call .slice() | method call .some() | null | sibling value | typeof operator
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal typeof operator
+// formal-ai:blockers arrow function | typeof operator
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=a6b78a1c0462176ee4b28c136176425fba16d0a0ad0c33f082324824477957f9
 // | const isCount = (value) => Number.isSafeInteger(value) && value >= 0;
@@ -177,30 +186,40 @@ pub fn is_count(value: f64) -> bool {
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal undefined
+// formal-ai:blockers arrow function | null | undefined
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal Array.isArray
+// formal-ai:blockers Array.isArray | arrow function | method call .every() | sibling value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers CHANGE_KINDS.includes | EVENT_FIELDS.slice | STATUSES.includes | TARGETS.includes | arrow callback of .every() | call of a sibling function | field access | loose equality | method call .every() | null | typeof operator
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal Array.isArray
+// formal-ai:blockers Array.isArray | arrow function | call of a sibling function
 
 // meta-language:carried JavaScript function_declaration (syntax)
 // formal-ai:refusal syntax: unsupported template escape
+// formal-ai:blockers call of a sibling function | call of an imported function | destructuring | field access | method call .entries() | method call .repeat()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | field access | in operator | loose equality | method call .filter() | method call .map() | method call .some() | null | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers JSON.stringify | null
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | JSON.parse | call of a sibling function | field access | let without a value | try statement
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function | field access

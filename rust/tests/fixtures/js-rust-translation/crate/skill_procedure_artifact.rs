@@ -1,5 +1,6 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c25db872e16f48263b801cd2256622b8f8f12236ddc7b993c9d4ff2e35680ecb bytes=10239
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=1 carried=5
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -32,46 +33,63 @@ pub mod ml_array {
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning JavaScript import_statement items=1 sha256=07b960894096992bed2c87e4cb0bf65152b802e97957073735855b39a82add61
+// | import {
+// |   KNOWLEDGE_SCHEMA_VERSION, MINIMUM_STEPS, ROLE_SKILL_PROCEDURE_STEP_OBJECT, ROLE_SKILL_PROCEDURE_STEP_VERB,
+// |   ROLE_TRANSLATION_LANGUAGE, canonicalProgram, meaningHasRole, requirementId, stepId,
+// | } from './skill_procedure.mjs';
+use crate::skill_procedure::{KNOWLEDGE_SCHEMA_VERSION, MINIMUM_STEPS, ROLE_SKILL_PROCEDURE_STEP_OBJECT, ROLE_SKILL_PROCEDURE_STEP_VERB, ROLE_TRANSLATION_LANGUAGE};
 
 // meta-language:carried JavaScript class_declaration (unsupported)
 // formal-ai:refusal top-level class statement
+// formal-ai:blockers class
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow function | call of an imported function | field access | global call String() | null | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal throw new …
+// formal-ai:blockers call of an imported function | field access | new ProcedureArtifactError
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of an imported function | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers call of a sibling function | field access | method call .replace() | method call .test() | new ProcedureArtifactError | regular expression
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .filter()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow function | field access | method call .filter() | method call .map()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of an imported function | method call .slice() | null
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=79ab840611c941c9a315836b741b7bfe6a11746e95cd14797a500aec77a139d0
 // | /**
@@ -87,12 +105,16 @@ pub fn same_span(left: Vec<f64>, right: Vec<f64>) -> bool {
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers arrow callback of .findIndex() | arrow callback of .flatMap() | arrow callback of .forEach() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | method call .findIndex() | method call .flatMap() | method call .forEach() | method call .some() | new ProcedureArtifactError | null | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .find() | method call .map() | new ProcedureArtifactError | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | call of a sibling function | instanceof operator | method call .indexOf() | method call .slice() | null | sibling value | throw of a non-error value | try statement
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of an imported function

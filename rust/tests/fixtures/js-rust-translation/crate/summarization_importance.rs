@@ -1,5 +1,6 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=fa8f9abe925a34c99c22260ac216e0159ca06f0d18c5778df7a268d070fc2ffc bytes=6431
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=3
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -89,14 +90,17 @@ pub mod ml_math {
 }
 // meta-language:prelude end
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=29901c80cfba3b51858a52e46abe27cf42c09641ef80b1c3630a3eb8a617f3c9
 // | const INTENT_EVIDENCE_SUMMARY = 'summarization_evidence_summary';
@@ -132,6 +136,7 @@ pub const EVIDENCE_PLACEHOLDER: &str = "{evidence}";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers object without a $ tag
 
 // meta-language:translated JavaScript function_declaration items=1 sha256=3b2b435991ad3a3b88871967edbd931adb698b6e4c0a5e42485543ab185cf396
 // | /**
@@ -154,24 +159,32 @@ pub fn percentage(part: f64, whole: f64) -> f64 {
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .reduce()
+// formal-ai:blockers arrow callback of .reduce() | call of an imported function | method call .reduce()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow callback of .find() | arrow callback of .map() | call of a sibling function | call of an imported function | destructuring | field access | imported value | method call .find() | method call .map() | method call .push() | null | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow callback of .map() | arrow callback of .sort() | call of a sibling function | call of an imported function | field access | method call .map() | method call .sort()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers field access
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: @param needs a type and a name
+// formal-ai:blockers JSDoc type {…} | call of an imported function | field access | global call String()
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: @param needs a type and a name
+// formal-ai:blockers JSDoc type {…} | arrow callback of .map() | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .map() | method call .slice() | object spread | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function

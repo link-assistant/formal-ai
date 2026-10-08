@@ -249,8 +249,9 @@ jobs:
           restore-only: 'true'
 
       # Issue #1138: three unit tests shell out to `rust-script` (the
-      # docs_issue_citations snapshot test and both `docs_status` render-cycle
-      # tests); without it they fail on a missing binary.
+      # documentation_issue_citations snapshot test and both
+      # `documentation_status` render-cycle tests); without it they fail on a
+      # missing binary.
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
 

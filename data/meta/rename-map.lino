@@ -585,9 +585,9 @@ rename-map
       review "Reviewed on 2026-10-08: the proposal read from the test names was aliases_launch_opencode.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
     rename
       from "rust/tests/issue_902.rs"
-      to "rust/tests/codex_provider_config.rs"
+      to "rust/tests/codex_provider_configuration.rs"
       reason "The Codex provider configuration survives caller overrides."
-      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names, spelled in full words by the abbreviation rule (R1188-U4: config is configuration)."
     rename
       from "rust/tests/unit/ci-cd/issue_1001.rs"
       to "rust/tests/unit/ci-cd/container_image_visibility.rs"
@@ -1338,3 +1338,59 @@ rename-map
       from "docs/changelog/archive-07.md"
       to "docs/changelog/releases-from-0.346.0.md"
       reason "The changelog archive of releases 0.346.0, named for the oldest release it holds, which never changes once the archive opens (experiments/issue_711_rebuild_changelog.mjs)."
+  tree file-names-in-full-words
+    rename
+      from "js/worker/formal_ai_worker_nl_tools.js"
+      to "js/worker/formal_ai_worker_natural_language_tools.js"
+      reason "The browser worker module of the natural-language tool calls (calculator, web search and local shell), the twin of rust/src/solver_handlers/natural_language_tools.rs."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/unit/proof_request_config.rs"
+      to "rust/tests/unit/proof_request_configuration.rs"
+      reason "The proof engine respects the guess and follow-up presentation sliders of the solver configuration (issue #185)."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/unit/docs_status.rs"
+      to "rust/tests/unit/documentation_status.rs"
+      reason "The one generated status surface (docs/status.md and the generated regions of README.md and docs/benchmarks.md) and its render cycle."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/unit/docs_issue_citations.rs"
+      to "rust/tests/unit/documentation_issue_citations.rs"
+      reason "The consolidated issue-citation gate over the narrative documentation."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/source/solver_handler_docs.rs"
+      to "rust/tests/source/solver_handler_documentation.rs"
+      reason "The scoped documentation-answer handlers for known project methods."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/unit/ci-cd/pr_1188_sharding.rs"
+      to "rust/tests/unit/ci-cd/pull_request_1188_sharding.rs"
+      reason "Pull request #1188: the long jobs run as short parallel shards behind one verdict."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/web/pr-1188-doctrine-ratchets.test.mjs"
+      to "rust/tests/web/pull-request-1188-doctrine-ratchets.test.mjs"
+      reason "Pull request #1188 doctrine rows pinned by the ratchet gates they name."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/web/issue-1184-derivation-id-surfaces.test.mjs"
+      to "rust/tests/web/issue-1184-derivation-identifier-surfaces.test.mjs"
+      reason "Issue #1184: every calling surface carries the answer's content-addressed derivation identifier."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/unit/issue_1181_boolean_env_parser.rs"
+      to "rust/tests/unit/issue_1181_boolean_environment_parser.rs"
+      reason "Issue #1181: one boolean spelling table for every FORMAL_AI_* environment switch."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/unit/issue_1161_client_registry_env.rs"
+      to "rust/tests/unit/issue_1161_client_registry_environment.rs"
+      reason "Issue #1161: the client registry names the environment variable that points a client at its configuration."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+    rename
+      from "rust/tests/unit/issue_1164_pascal_from_docs.rs"
+      to "rust/tests/unit/issue_1164_pascal_from_documentation.rs"
+      reason "Issue #1164: the held-out Pascal path learned from documentation and the execution half of recomposition."
+      review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."

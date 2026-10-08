@@ -1,18 +1,22 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1390ee78a666b6bc4c9fbaa8a36b66a86aa7d69e474eb7e59d043a3441bc583f bytes=12666
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript export_statement items=1 sha256=af4c04522de8630bf4ede8978b5718c494f97c55d4280728391ad205c7df9bd7
 // | /** Mirrors `PRELUDE_METHOD_NAMES` in rust/src/solver_dispatch.rs. */
@@ -58,54 +62,72 @@ pub const HEURISTIC_RECORD_TYPE: &str = "selection_heuristic";
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers new Set
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow callback of .sort() | call of an imported function | field access | method call .filter() | method call .map() | method call .sort() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers assignment of a field or element | call of an imported function | field access | in operator | method call .set() | new Map | null | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .sort() | arrow function | call of an imported function | field access | method call .isInteger() | method call .parseInt() | method call .push() | method call .slice() | method call .sort() | method call .split() | method call .test() | null | nullish coalescing | object without a $ tag | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers field access | method call .slice() | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .split()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | call of a sibling function | field access | method call .filter() | method call .find() | method call .push() | method call .split() | null | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .map() | arrow function | call of an imported function | field access | method call .map() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | field access | method call .filter() | method call .has() | method call .map() | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | field access | method call .filter() | method call .map() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .map() | arrow function | call of a sibling function | call of an imported function | method call .get() | method call .map() | null | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow callback of .find() | field access | method call .find() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | field access | global call String() | global value Boolean | method call .filter() | method call .map() | method call .split() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .filter()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .sort() | field access | method call .filter() | method call .sort()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers call of an imported function | field access | global call String() | method call .push()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | global call String() | method call .push()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers call of an imported function | destructuring | field access | global call String() | method call .push()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .filter() | arrow function | call of a sibling function | call of an imported function | field access | global call String() | method call .filter() | method call .push()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers call of a sibling function | field access | global call String() | method call .push() | object without a $ tag

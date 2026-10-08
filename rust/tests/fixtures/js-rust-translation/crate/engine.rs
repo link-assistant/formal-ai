@@ -6,16 +6,20 @@
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .codePointAt()
+// formal-ai:blockers method call .codePointAt()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers Array.from | arrow callback of .from() | call of a sibling function | global call String() | global value Boolean | method call .filter() | method call .join() | method call .replaceAll() | method call .split() | method call .test() | regular expression | sibling value
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=cb9fdcb64553fc365383881e4f579ec72c03aaf69efbc625b7165184b32a7a77
 // | const LANGUAGES_FILE = 'data/seed/languages.lino';
@@ -23,6 +27,8 @@ pub const LANGUAGES_FILE: &str = "data/seed/languages.lino";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow function | call of an imported function | global value Boolean | method call .filter() | method call .indexOf() | method call .push() | method call .replace() | method call .slice() | method call .split() | null | object without a $ tag | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .split()
+// formal-ai:blockers arrow callback of .every() | arrow callback of .find() | call of a sibling function | method call .every() | method call .find() | method call .join() | method call .push() | method call .split()

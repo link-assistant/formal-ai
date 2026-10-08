@@ -175,7 +175,7 @@ javascript-test-durations
     seconds 0.7
   test "rust/tests/web/server-evidence-links.test.mjs"
     seconds 0.7
-  test "rust/tests/web/issue-1184-derivation-id-surfaces.test.mjs"
+  test "rust/tests/web/issue-1184-derivation-identifier-surfaces.test.mjs"
     seconds 0.7
   test "rust/tests/web/issue-934-engine-hard-fail.test.mjs"
     seconds 0.6
@@ -315,7 +315,7 @@ javascript-test-durations
     seconds 0.4
   test "rust/tests/web/handler-registry.test.mjs"
     seconds 0.4
-  test "rust/tests/web/pr-1188-doctrine-ratchets.test.mjs"
+  test "rust/tests/web/pull-request-1188-doctrine-ratchets.test.mjs"
     seconds 0.3
   test "rust/tests/web/issue-0563-repository-summarization.test.mjs"
     seconds 0.3

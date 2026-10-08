@@ -7,7 +7,7 @@ requirement_status_ledger_shard
     id "R1161-1"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1161_client_registry_env.rs"
+    automated_test "rust/tests/unit/issue_1161_client_registry_environment.rs"
   requirement
     id "R1161-2"
     verdict "implemented"
@@ -27,7 +27,7 @@ requirement_status_ledger_shard
     id "R1161-5"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1161_client_registry_env.rs"
+    automated_test "rust/tests/unit/issue_1161_client_registry_environment.rs"
   requirement
     id "R1161-6"
     verdict "implemented"
@@ -37,4 +37,4 @@ requirement_status_ledger_shard
     id "R1161-7"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); `case_relocated` in the agentic CLI matrix starts each declaring CLI from its relocated config with an empty HOME"
-    automated_test "rust/tests/unit/issue_1161_client_registry_env.rs"
+    automated_test "rust/tests/unit/issue_1161_client_registry_environment.rs"

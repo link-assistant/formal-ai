@@ -1,5 +1,6 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=da24d751f89809de904278211849fb625151d4d4c55805a465f5a7c15b94b597 bytes=6099
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=2
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -292,22 +293,28 @@ pub mod ml {
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
+// formal-ai:blockers import from '…'
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
+// formal-ai:blockers import from '…'
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=092b6ee3814a770beb5f2933f26e03f8199c06df2a7bded9ccdadbad585d543f
 // | const SESSION_TRAILER = 'Formal-AI-Session';
@@ -327,21 +334,27 @@ pub static MAX_U64: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock::n
 
 // meta-language:carried JavaScript lexical_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers Buffer.compare | Buffer.from | arrow function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | call of an imported function | field access | method call .join() | object spread | object without a $ tag | throw of a non-error value
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: malformed number
+// formal-ai:blockers arrow function | assignment of a field or element | destructuring | method call .slice() | method call .split() | method call .test() | null | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | null | throw of a non-error value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal try statement
+// formal-ai:blockers arrow callback of .some() | call of an imported function | field access | imported value | method call .isAbsolute() | method call .isFile() | method call .join() | method call .relative() | method call .some() | method call .split() | method call .statSync() | throw of a non-error value | try statement
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal throw of a non-error value
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | method call .test() | regular expression | throw of a non-error value
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=9911700c9ec37495186962440ed4079553225814d04070ba2869a074a482fe54
 // | /**
@@ -357,3 +370,4 @@ pub fn trailer(name: String, value: String) -> String {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .has() | method call .join() | method call .map() | method call .some() | method call .sort() | method call .split() | new Set | sibling value | throw of a non-error value

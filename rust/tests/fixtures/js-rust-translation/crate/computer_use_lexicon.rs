@@ -1,21 +1,26 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e92ff93f3773e19a19bf17d13ac9b6df568c00fa708fc2c77bdf329cc9ace054 bytes=5875
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=3
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript export_statement items=1 sha256=3dbc73de8045d4b4585eeaa99d396013fbc2fcb5e120acd3065b9ddbeb6a7204
 // | /** `crate::seed::ROLE_COMPUTER_USE_OPERATION_CUE`. */
@@ -51,27 +56,36 @@ pub static COMBINING_RANGES: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::Laz
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .codePointAt()
+// formal-ai:blockers COMBINING_RANGES.some | arrow callback of .some() | method call .codePointAt()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .join()
+// formal-ai:blockers call of a sibling function | call of an imported function | method call .join()
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers arrow callback of .sort() | call of a sibling function | call of an imported function | field access | method call .sort()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | field access | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | field access | method call .slice() | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | call of an imported function | method call .filter() | method call .map() | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | null | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of an imported function | method call .indexOf() | null

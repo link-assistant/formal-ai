@@ -3,6 +3,8 @@
 
 // meta-language:carried JavaScript function_declaration (syntax)
 // formal-ai:refusal syntax: malformed number
+// formal-ai:blockers method call .codePointAt() | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .slice()
+// formal-ai:blockers method call .slice()

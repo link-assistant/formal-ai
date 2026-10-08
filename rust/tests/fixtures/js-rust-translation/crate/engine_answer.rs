@@ -3,12 +3,16 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers field access
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: one value is used as an array and as a string; declare the types of the function with JSDoc
+// formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
+// formal-ai:blockers field access | method call .replace() | regular expression

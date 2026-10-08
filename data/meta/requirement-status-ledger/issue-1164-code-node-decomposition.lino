@@ -27,7 +27,7 @@ requirement_status_ledger_shard
     id "R1164-13"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): `live_held_out_pascal_hello_world_from_official_docs`, gated by FORMAL_AI_LIVE_FETCH; not yet run live"
-    automated_test "rust/tests/unit/issue_1164_pascal_from_docs.rs"
+    automated_test "rust/tests/unit/issue_1164_pascal_from_documentation.rs"
   requirement
     id "R1164-14"
     verdict "implemented"
@@ -72,7 +72,7 @@ requirement_status_ledger_shard
     id "R1164-8"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): Rust, Go and the held-out Pascal recompositions compiled and run with their own toolchains (rustc always; go and fpc where installed, a missing toolchain reported) and must print `Hello, Formal AI!`"
-    automated_test "rust/tests/unit/issue_1164_pascal_from_docs.rs"
+    automated_test "rust/tests/unit/issue_1164_pascal_from_documentation.rs"
   requirement
     id "R1164-9"
     verdict "implemented"

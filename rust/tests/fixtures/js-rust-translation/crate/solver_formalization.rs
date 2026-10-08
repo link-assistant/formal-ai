@@ -1,5 +1,6 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c bytes=10914
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -375,11 +376,13 @@ pub mod ml_math {
 }
 // meta-language:prelude end
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal Math.fround
+// formal-ai:blockers Math.fround | Object.freeze | object without a $ tag
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal function value …
@@ -394,9 +397,11 @@ pub static FNV_PRIME: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock:
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal shift <<
+// formal-ai:blockers bitwise operator
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers new TextEncoder
 
 // meta-language:translated JavaScript function_declaration items=1 sha256=6d84295b7155330b50fcc47a127cc29ba8ba91db02e8326943431c389b4e3f9c
 // | /**
@@ -419,48 +424,63 @@ pub fn finite_clamped(value: f64, min: f64, max: f64) -> f64 {
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .toFixed()
+// formal-ai:blockers call of a sibling function | method call .toFixed()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .forEach()
+// formal-ai:blockers Math.exp | arrow callback of .forEach() | arrow callback of .map() | arrow callback of .reduce() | call of a sibling function | method call .forEach() | method call .map() | method call .reduce() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | arrow callback of .sort() | call of a sibling function | field access | method call .map() | method call .sort() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | call of a sibling function | field access | method call .join() | method call .map()
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of an imported function
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | arrow callback of .sort() | field access | method call .map() | method call .sort()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers bitwise operator | method call .encode() | sibling value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal shift >>
+// formal-ai:blockers bitwise operator | call of a sibling function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers call of a sibling function | field access | imported value | method call .join() | method call .map()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal for with const
+// formal-ai:blockers call of a sibling function | destructuring | method call .entries()
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: @param needs a type and a name
+// formal-ai:blockers JSDoc type {…} | arrow callback of .find() | arrow callback of .map() | arrow function | assignment of a field or element | call of a sibling function | destructuring | field access | method call .find() | method call .map() | nullish coalescing | object without a $ tag | optional chaining | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal nullish coalescing
+// formal-ai:blockers field access | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .forEach()
+// formal-ai:blockers arrow callback of .forEach() | call of a sibling function | call of an imported function | field access | method call .forEach() | method call .push() | nullish coalescing | object without a $ tag
 
 // meta-language:translated JavaScript export_statement items=1 sha256=043cb6d98a6087e7a857f37da47301ca7cc63c9b0e2a07a004d845b12d936674
 // | /**
@@ -509,3 +529,4 @@ pub fn formalization_slot_kind(role: String, anchor_kind: String) -> String {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers call of an imported function | field access | method call .push() | object without a $ tag

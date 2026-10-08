@@ -117,141 +117,187 @@ pub mod ml_array {
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers regular expression
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers regular expression
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers regular expression
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers arrow function | method call .test() | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers arrow function | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers arrow function | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers arrow function | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers arrow function | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: malformed number
+// formal-ai:blockers arrow function | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers arrow function | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers arrow function | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: unterminated template literal
+// formal-ai:blockers arrow function | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
+// formal-ai:blockers arrow function | method call .replace() | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
+// formal-ai:blockers arrow function | method call .replace() | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
+// formal-ai:blockers arrow function | method call .replace() | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()
+// formal-ai:blockers arrow function | global value Boolean | method call .filter() | method call .split() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers arrow function | method call .encode() | new TextEncoder
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal Array.from
+// formal-ai:blockers Array.from | arrow function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
+// formal-ai:blockers arrow callback of .replace() | arrow function | method call .replace() | regular expression
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers arrow function | call of a sibling function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal Array.from
+// formal-ai:blockers Array.from | method call .join() | method call .slice()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal Array.from
+// formal-ai:blockers Array.from | method call .join() | method call .slice()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal Array.from
+// formal-ai:blockers Array.from | method call .join() | method call .slice()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .indexOf()
+// formal-ai:blockers method call .indexOf() | method call .slice() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .lastIndexOf()
+// formal-ai:blockers method call .lastIndexOf() | method call .slice() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .slice()
+// formal-ai:blockers arrow function | method call .slice() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .slice()
+// formal-ai:blockers arrow function | method call .slice() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()
+// formal-ai:blockers arrow function | method call .join() | method call .split()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .indexOf()
+// formal-ai:blockers method call .indexOf() | method call .push() | method call .slice()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers JSON.stringify | call of a sibling function | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSON.stringify
+// formal-ai:blockers JSON.stringify | call of a sibling function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal Array.isArray
+// formal-ai:blockers Array.isArray | Object.keys | assignment of a field or element | method call .map() | method call .sort() | object without a $ tag | sibling value | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers Array.from | arrow callback of .from() | method call .codePointAt()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal try statement
+// formal-ai:blockers JSON.parse | try statement | undefined
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal typeof operator
+// formal-ai:blockers Array.isArray | arrow function | global call Boolean() | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal Object.prototype.hasOwnProperty.call
+// formal-ai:blockers Object.prototype | arrow function | call of a sibling function | field access | method call .call() | undefined
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal typeof operator
+// formal-ai:blockers arrow function | null | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal typeof operator
+// formal-ai:blockers arrow function | null | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers method call .test() | null | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers method call .test() | null | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .slice()
+// formal-ai:blockers arrow function | call of a sibling function | method call .slice()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | method call .slice() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .indexOf()
+// formal-ai:blockers call of a sibling function | method call .indexOf()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow function | let without a value | undefined
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow function | let without a value | undefined
 
 // meta-language:translated JavaScript export_statement items=3 sha256=dbc15d06aab1cdbac5f23e0b3658b091d44b9459ffd10edf22b05aa018a4c271
 // | /**

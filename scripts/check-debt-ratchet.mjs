@@ -218,7 +218,7 @@ export function measure(root) {
   measured.set('dispatch-name-special-cases', dispatchNameSpecialCases(root));
   measured.set('worker-sync-handler-literals', workerSyncHandlerLiterals(root));
   measured.set('store-read-share', storeReadShare(root));
-  measured.set('docs-requirements-suites', countEntries(join(root, 'rust/tests/unit'), 'tests/unit', (entry) => entry.name.startsWith('docs_')));
+  measured.set('docs-requirements-suites', countEntries(join(root, 'rust/tests/unit'), 'tests/unit', (entry) => entry.name.startsWith('docs_') || entry.name.startsWith('documentation_')));
   const ladder = join(root, AUTHORED_LADDER_RULES);
   measured.set('authored-ladder-rules', countEntries(ladder, ladder, (entry) => extension(entry.path) === 'lino'));
   measured.set('language-parity-gaps', currentGapCount(root));

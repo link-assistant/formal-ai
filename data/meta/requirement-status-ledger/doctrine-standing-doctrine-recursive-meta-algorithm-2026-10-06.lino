@@ -24,7 +24,7 @@ requirement_status_ledger_shard
     id "R1005"
     verdict "implemented"
     delivered "reasoner vocabulary and trace wording are seed data"
-    automated_test "rust/tests/web/pr-1188-doctrine-ratchets.test.mjs"
+    automated_test "rust/tests/web/pull-request-1188-doctrine-ratchets.test.mjs"
   requirement
     id "R1006"
     verdict "implemented"
@@ -45,7 +45,7 @@ requirement_status_ledger_shard
     id "R1010"
     verdict "implemented"
     delivered "js/worker natural-language literal ratchet"
-    automated_test "rust/tests/web/pr-1188-doctrine-ratchets.test.mjs"
+    automated_test "rust/tests/web/pull-request-1188-doctrine-ratchets.test.mjs"
   requirement
     id "R1011"
     verdict "implemented"

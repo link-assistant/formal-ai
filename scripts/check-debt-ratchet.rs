@@ -297,7 +297,11 @@ fn docs_requirements_suites(root: &Path) -> Result<u64, String> {
         fs::read_dir(root.join("rust/tests/unit")).map_err(|error| format!("tests/unit: {error}"))?;
     Ok(entries
         .filter_map(Result::ok)
-        .filter(|entry| entry.file_name().to_string_lossy().starts_with("docs_"))
+        .filter(|entry| {
+            // R1188-U4 spells `docs_` in full words; the count follows the rename.
+            let name = entry.file_name().to_string_lossy().into_owned();
+            name.starts_with("docs_") || name.starts_with("documentation_")
+        })
         .count() as u64)
 }
 

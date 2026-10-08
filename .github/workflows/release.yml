@@ -429,7 +429,7 @@ jobs:
           # The specification suite ran only on macOS, so a linux-only failure
           # in it could not turn any required check red; these legs close that
           # blind spot (issue #1107). PR #1188 runs it as three shards (17-19
-          # min in one job); pr_1188_sharding.rs pins that `shards` legs exist.
+          # min in one job); pull_request_1188_sharding.rs pins that `shards` legs exist.
           - { os: ubuntu-latest, test-suite: specification, shard: 1, shards: 3 }
           - { os: ubuntu-latest, test-suite: specification, shard: 2, shards: 3 }
           - { os: ubuntu-latest, test-suite: specification, shard: 3, shards: 3 }

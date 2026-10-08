@@ -1,5 +1,6 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e8d592616362c163fae74c116531746f3d367f230358622e51fed4d847ddbf45 bytes=7637
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=3
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -102,16 +103,20 @@ pub mod ml_number {
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript function_declaration items=1 sha256=1d38dea5082b05fa03787097a0e13e0bde40eb19282f077bd769083004b3ca15
 // | /**
@@ -137,33 +142,44 @@ pub fn child_path(parent: String, index: f64) -> String {
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .filter()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .map() | null | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | call of a sibling function | call of an imported function | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers field access | method call .push()
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers field access | method call .map() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | call of an imported function | field access | global call String() | method call .map()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .join()
+// formal-ai:blockers call of an imported function | global call String() | method call .join()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .join()
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | global call String() | method call .join()
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: unsupported template escape
+// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .map() | arrow function | call of a sibling function | field access | method call .add() | method call .attempt() | method call .extend_for() | method call .filter() | method call .has() | method call .map() | method call .push() | method call .retry_after_children() | new Set | object without a $ tag | sibling value

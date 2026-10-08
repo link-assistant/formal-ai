@@ -20,18 +20,24 @@ pub const TRIVIA_LINKS_PER_EXTRA_TOKEN: f64 = 2f64;
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers field access | method call .push() | method call .slice() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers field access | method call .push() | method call .slice() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal assignment
+// formal-ai:blockers call of a sibling function | field access | method call .add() | method call .child() | method call .fieldNameForChild() | method call .has() | null | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | arrow callback of .sort() | field access | method call .map() | method call .sort() | object spread | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | SELF_DESCRIPTION_TERMS.includes | call of a sibling function | field access | method call .add() | method call .delete() | method call .parse() | new Set | object without a $ tag | try statement
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | Object.keys | arrow function | async function | call of a sibling function | field access | method call .Parser() | method call .get() | method call .init() | method call .load() | method call .set() | method call .setLanguage() | new Map | new expression | object without a $ tag | undefined

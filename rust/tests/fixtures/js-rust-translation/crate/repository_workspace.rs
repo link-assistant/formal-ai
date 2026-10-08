@@ -6,16 +6,20 @@
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | arrow callback of .reduce() | call of an imported function | field access | method call .find() | method call .join() | method call .reduce() | method call .split() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | call of a sibling function | call of an imported function
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=b55651f3d28fe19c1b901064fdcb2a0d94b0a320dd4f50dc92081ee43d8d0f4f
 // | const RECORD_STEP = 'meta_step';
@@ -45,30 +49,40 @@ pub const EDITOR_AGENT_SESSION: &str = "agent_session";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .filter()
+// formal-ai:blockers Number.parseInt | arrow callback of .filter() | arrow callback of .map() | arrow callback of .sort() | call of an imported function | field access | method call .filter() | method call .map() | method call .sort() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow callback of .map() | call of a sibling function | field access | method call .map() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | assignment of a field or element | field access | method call .find()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | assignment of a field or element | field access | method call .find() | method call .push()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .split()
+// formal-ai:blockers method call .join() | method call .split()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers call of a sibling function | destructuring | field access | method call .join() | method call .push()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()
+// formal-ai:blockers method call .indexOf() | method call .push() | method call .replace() | method call .slice() | method call .split() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | call of a sibling function | method call .map()

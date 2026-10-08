@@ -8,7 +8,7 @@ requirement_status_ledger_shard
     id "R1184-1"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); Rust `SymbolicAnswer::derivation_id`, browser worker `derivationId`, JS server"
-    automated_test "rust/tests/web/issue-1184-derivation-id-surfaces.test.mjs"
+    automated_test "rust/tests/web/issue-1184-derivation-identifier-surfaces.test.mjs"
   requirement
     id "R1184-2"
     verdict "implemented"
@@ -37,7 +37,7 @@ requirement_status_ledger_shard
     id "R1184-8"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); `ResponseObject.derivation_id` beside `evidence_links` (Rust and JS servers)"
-    automated_test "rust/tests/web/issue-1184-derivation-id-surfaces.test.mjs"
+    automated_test "rust/tests/web/issue-1184-derivation-identifier-surfaces.test.mjs"
   requirement
     id "R1184-9"
     verdict "implemented"

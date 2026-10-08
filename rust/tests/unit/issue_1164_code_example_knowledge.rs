@@ -13,13 +13,13 @@
 //! `UnknownGrammar` error and never guessed (R1164-1). Pascal is held out of
 //! the seed vocabulary: its grammar row is registered, but its output call
 //! and program body come only from the Free Pascal documentation
-//! (`issue_1164_pascal_from_docs`, R1164-9).
+//! (`issue_1164_pascal_from_documentation`, R1164-9).
 //!
 //! Here the recompositions are proved structurally -- the held out literal
 //! is present, the call is the language's own from the seed, and the
 //! meta-language parse accepts the source. Compiling and running them
 //! (R1164-8's execution half, the fpc run for Pascal) lives in
-//! `issue_1164_pascal_from_docs`.
+//! `issue_1164_pascal_from_documentation`.
 
 #![cfg(feature = "meta-language")]
 

@@ -80,7 +80,7 @@ test("a lower level that grows while a higher one is refined fails", () => {
   const raised = { ...RATCHET, "recorded-ceiling": 2, "partial-ceiling": 0 };
   const { grown, next } = holdRatchet(raised, RATCHET);
   assert.equal(grown.length, 1);
-  assert.match(grown[0], /level 1 \(recorded\) grew by 1 beyond the 0 requirement/u);
+  assert.match(grown[0], /level 1 \(recorded\) grew by 1 beyond the requirements recorded/u);
   assert.equal(next["recorded-ceiling"], 1);
   assert.equal(next["partial-ceiling"], 0);
 });
@@ -91,6 +91,13 @@ test("a newly recorded requirement may enter a low level, and a fallen ceiling i
     grown: [],
     next: { ...RATCHET, requirements: 4, "recorded-ceiling": 2, "partial-ceiling": 0 },
   });
+});
+
+test("a row that rises out of a lower level may join a higher one", () => {
+  const risen = { ...RATCHET, "recorded-ceiling": 0, "partial-ceiling": 2 };
+  assert.deepEqual(holdRatchet(risen, RATCHET), { grown: [], next: risen });
+  const skipped = { ...RATCHET, "partial-ceiling": 2 };
+  assert.match(holdRatchet(skipped, RATCHET).grown.join("\n"), /level 3 \(partial\) grew by 1/u);
 });
 
 test("the Rust-only count never grows, even with new requirements", () => {

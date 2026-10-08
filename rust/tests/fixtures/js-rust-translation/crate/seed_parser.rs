@@ -2,10 +2,13 @@
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal undefined
+// formal-ai:blockers call of an imported function | field access | object without a $ tag | undefined
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal optional chaining
+// formal-ai:blockers arrow callback of .find() | field access | method call .find() | nullish coalescing | optional chaining

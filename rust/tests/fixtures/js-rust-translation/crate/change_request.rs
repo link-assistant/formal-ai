@@ -1,24 +1,30 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8edfd00cd71bfe63a52f3127aa530d7805ca7664739836a0a1af09e6127dbf12 bytes=5451
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=3
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript export_statement items=1 sha256=8d6c5ad72885fd47128957ecd0604737218898d88e34c12aaaf61746fc6d4a6f
 // | /** The canonical change's grounded target (Rust `canonical_change_request`). */
@@ -27,33 +33,44 @@ pub const CANONICAL_TARGET_MODULE: &str = "src/agentic_coding/planner.rs";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow function | call of an imported function | null | object without a $ tag | try statement
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal nullish coalescing
+// formal-ai:blockers call of a sibling function | call of an imported function | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers field access | object without a $ tag
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal function value …
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: function value CANONICAL_TARGET_MODULE: functions and namespaces are only portable when a function is called
+// formal-ai:blockers call of a sibling function | call of an imported function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .join()
+// formal-ai:blockers arrow function | call of a sibling function | call of an imported function | method call .join() | method call .slice() | method call .split() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (syntax)
 // formal-ai:refusal syntax: malformed number
+// formal-ai:blockers arrow function | call of an imported function | method call .join() | method call .slice() | method call .split() | method call .test() | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers call of an imported function | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal Array.from
+// formal-ai:blockers Array.from | method call .join() | method call .slice()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replaceAll()
+// formal-ai:blockers method call .replaceAll()
 
 // meta-language:carried JavaScript lexical_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers arrow function | call of a sibling function

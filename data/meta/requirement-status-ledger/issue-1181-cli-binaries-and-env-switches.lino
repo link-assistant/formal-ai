@@ -28,9 +28,9 @@ requirement_status_ledger_shard
     id "R1181-6"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1181_boolean_env_parser.rs"
+    automated_test "rust/tests/unit/issue_1181_boolean_environment_parser.rs"
   requirement
     id "R1181-7"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1181_boolean_env_parser.rs"
+    automated_test "rust/tests/unit/issue_1181_boolean_environment_parser.rs"

@@ -15,7 +15,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 - Distinct requirements: 119 (56 from the owner's messages and the vision, 63 items of the 8 fixed issues).
 - Covered by rows that existed before this audit: 96 (every issue item has its own row).
 - Drafted in `docs/requirements/issue-1188-user-requirements.md`: 30 rows for 30 requirements, 23 of which no earlier row covered and 7 of which earlier rows covered only in part.
-- Row verdicts in scope: implemented 122, not-delivered 2, partial 24, superseded 1.
+- Row verdicts in scope: implemented 122, not-delivered 1, partial 25, superseded 1.
 - Evidence check: 122 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
 
 ## The owner's requirements
@@ -42,7 +42,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
-| Names are full English words, without abbreviations, in code and in owned links notation. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U4 | R1188-U4 not-delivered |
+| Names are full English words, without abbreviations, in code and in owned links notation. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U4 | R1188-U4 partial |
 | File and directory names say what they hold; no numbered parts where a meaningful category exists. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U5 | R1188-U5 partial |
 
 ### Notation

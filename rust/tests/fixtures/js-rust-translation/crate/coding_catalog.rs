@@ -6,13 +6,16 @@
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=75ba74e6a02da8511e29dca594446be98e403d5762242b78ed3b8005878e65b8
 // | const CATALOG_FILE = 'data/meta/agentic-coding-catalog.lino';
@@ -34,78 +37,104 @@ pub const WRITE_PROGRAM_INTENT: &str = "write_program";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of an imported function | field access | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow function | call of a sibling function | call of an imported function | field access | method call .get() | method call .set() | new Map | null | nullish coalescing | object without a $ tag | optional chaining
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal optional chaining
+// formal-ai:blockers assignment of a field or element | call of an imported function | field access | nullish coalescing | optional chaining
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .map() | arrow function | call of a sibling function | call of an imported function | field access | method call .map() | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | call of a sibling function | field access | method call .find() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | call of a sibling function | field access | method call .find() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | call of a sibling function | field access | method call .find() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal optional chaining
+// formal-ai:blockers call of an imported function | field access | nullish coalescing | optional chaining
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal optional chaining
+// formal-ai:blockers call of an imported function | field access | null | nullish coalescing | object spread | object without a $ tag | optional chaining
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers field access | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | field access | null
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of an imported function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .some()
+// formal-ai:blockers arrow callback of .some() | call of a sibling function | field access | method call .some()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | call of a sibling function | method call .find() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal nullish coalescing
+// formal-ai:blockers call of a sibling function | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | arrow callback of .some() | call of a sibling function | field access | method call .find() | method call .some() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | call of a sibling function | field access | method call .join() | method call .map()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | call of a sibling function | field access | method call .join() | method call .map()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .codePointAt()
+// formal-ai:blockers method call .codePointAt()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .codePointAt()
+// formal-ai:blockers method call .codePointAt()
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal Array.from
+// formal-ai:blockers arrow callback of .some() | call of a sibling function | call of an imported function | method call .every() | method call .from() | method call .indexOf() | method call .pop() | method call .slice() | method call .some() | undefined
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function

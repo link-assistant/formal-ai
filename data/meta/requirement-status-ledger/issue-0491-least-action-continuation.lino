@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0491-least-action-continuation.md"
   issue "0491"
   delivered "none recorded"
+  automated_test "rust/tests/web/least-action.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R491-C1"
@@ -16,3 +17,4 @@ requirement_status_ledger_shard
   requirement
     id "R491-C4"
     verdict "partial"
+    automated_test ""

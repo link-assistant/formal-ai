@@ -12,12 +12,12 @@ requirement_status_ledger_shard
     id "R997"
     verdict "implemented"
     delivered "delivered 2026-10-07 on PR #1188"
-    automated_test "rust/tests/web/pr-1188-doctrine-ratchets.test.mjs"
+    automated_test "rust/tests/web/pull-request-1188-doctrine-ratchets.test.mjs"
   requirement
     id "R998"
     verdict "implemented"
     delivered "delivered 2026-10-06"
-    automated_test "rust/tests/web/pr-1188-doctrine-ratchets.test.mjs"
+    automated_test "rust/tests/web/pull-request-1188-doctrine-ratchets.test.mjs"
   requirement
     id "R999"
     verdict "implemented"

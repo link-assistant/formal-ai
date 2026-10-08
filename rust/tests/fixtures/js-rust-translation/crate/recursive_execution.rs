@@ -12,39 +12,52 @@ pub const DEFAULT_SPLIT_DEPTH_BOUND: f64 = 4f64;
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .reduce()
+// formal-ai:blockers arrow callback of .reduce() | field access | method call .reduce()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .reduce()
+// formal-ai:blockers arrow callback of .reduce() | field access | method call .reduce()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .flatMap()
+// formal-ai:blockers call of a sibling function | field access | method call .flatMap()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers field access
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .filter()
+// formal-ai:blockers arrow callback of .filter() | field access | method call .filter()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .attempt()
+// formal-ai:blockers async function | call of a sibling function | field access | let without a value | method call .attempt() | method call .every() | method call .extend_for() | method call .push() | method call .retry_after_children() | method call .split() | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal function value …
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: function value DEFAULT_SPLIT_DEPTH_BOUND: functions and namespaces are only portable when a function is called
+// formal-ai:blockers call of a sibling function

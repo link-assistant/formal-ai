@@ -166,9 +166,10 @@ export function measure(records) {
 /**
  * Hold the measured values to the ratchet (R1188-U28, R1188-U29). An open
  * level may grow only by the requirements recorded since the ratchet was
- * written, so a pass that raises a high level while a lower one grows fails;
- * the Rust-only count never grows. The next ratchet lowers every ceiling that
- * fell and never raises one past its allowance.
+ * written and by the rows that rose out of the open levels below it, so a pass
+ * that refines a high level while a lower one grows fails; the Rust-only count
+ * never grows. The next ratchet lowers every ceiling that fell and never raises
+ * one past its allowance.
  * @param {Record<string, number>} measured
  * @param {Record<string, number>} ratchet
  * @returns {{grown: Array<string>, next: Record<string, number>}}
@@ -177,14 +178,18 @@ export function holdRatchet(measured, ratchet) {
   const added = Math.max(0, measured.requirements - ratchet.requirements);
   const grown = [];
   const next = { requirements: measured.requirements };
+  let risen = 0;
   for (const [level, name] of [...OPEN_LEVELS, [null, 'rust-only']]) {
     const key = `${name}-ceiling`;
-    const allowance = ratchet[key] + (level === null ? 0 : added);
+    const allowance = ratchet[key] + (level === null ? 0 : added + risen);
+    if (level !== null) {
+      risen += Math.max(0, allowance - measured[key]);
+    }
     if (measured[key] > allowance) {
       grown.push(
         level === null
           ? `${measured[key] - allowance} more requirement(s) pinned only by a Rust test (R1188-U29: JavaScript first); pin them with a JavaScript test.`
-          : `level ${level} (${name}) grew by ${measured[key] - allowance} beyond the ${added} requirement(s) recorded since the ratchet (R1188-U28: raise the lowest level first); raise those rows before refining a higher level.`,
+          : `level ${level} (${name}) grew by ${measured[key] - allowance} beyond the requirements recorded since the ratchet and the rows risen from below (R1188-U28: raise the lowest level first); raise those rows before refining a higher level.`,
       );
     }
     next[key] = Math.min(measured[key], allowance);

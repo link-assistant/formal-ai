@@ -58,14 +58,15 @@ fn reviewed_ceiling(measure: &str) -> usize {
 }
 
 /// Every `docs_*` entry directly under `tests/unit`, file or directory — the
-/// same set `ls tests/unit | grep -c '^docs_'` counts.
+/// same set `ls tests/unit | grep -c '^docs_'` counts — and every entry R1188-U4
+/// renamed to the full word `documentation_*`.
 fn docs_suites() -> Vec<String> {
     let mut names: Vec<String> = fs::read_dir(repo_root().join("rust/tests/unit"))
         .expect("rust/tests/unit readable")
         .filter_map(Result::ok)
         .filter_map(|entry| {
             let name = entry.file_name().to_string_lossy().into_owned();
-            name.starts_with("docs_").then_some(name)
+            (name.starts_with("docs_") || name.starts_with("documentation_")).then_some(name)
         })
         .collect();
     names.sort();

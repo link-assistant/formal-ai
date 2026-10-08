@@ -6,9 +6,12 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow callback of .map() | arrow callback of .reduce() | field access | method call .child() | method call .get() | method call .keys() | method call .map() | method call .pop() | method call .push() | method call .reduce() | method call .set() | method call .sort() | new Map | nullish coalescing | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow function | async function | call of a sibling function | destructuring | field access | method call .Parser() | method call .delete() | method call .init() | method call .load() | method call .parse() | method call .setLanguage() | new expression | object without a $ tag | try statement
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | arrow function | field access

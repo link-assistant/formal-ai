@@ -1,27 +1,34 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=182c1dfdd8abda96d15ce145f6c9343971d39dd356cd69d5597f7dacf3c93f33 bytes=15885
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=4
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript export_statement items=1 sha256=dacb82787d1636a91a39db254d82dfc76f2d39de0d6f9c8656061e3161a668c7
 // | /** Mirrors `const NOT_RECORDED`. */
@@ -80,57 +87,75 @@ pub const APPLIED_RULE_FIELD: &str = "rule";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow function | call of an imported function | field access | method call .add() | new Set | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers exponentiation | method call .test() | null | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | global call String() | null | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .indexOf()
+// formal-ai:blockers method call .indexOf() | method call .slice() | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .lastIndexOf()
+// formal-ai:blockers method call .lastIndexOf() | method call .slice() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers JSDoc type {…} | null | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal nullish coalescing
+// formal-ai:blockers call of a sibling function | field access | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
+// formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers assignment of a field or element | call of a sibling function | destructuring | method call .slice() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers null | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | assignment of a field or element | call of a sibling function | destructuring | field access | method call .has() | method call .push() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()
+// formal-ai:blockers arrow callback of .find() | arrow function | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .find() | method call .push() | null | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers arrow callback of .map() | method call .join() | method call .map()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
+// formal-ai:blockers arrow callback of .map() | call of a sibling function | field access | method call .join() | method call .map() | nullish coalescing
 
 // meta-language:translated JavaScript function_declaration items=1 sha256=37b99e02d27b8d457127e00b1ecd45d619f6944d2cae859115c424a47aab4624
 // | /** `Path::join` for the `/`-separated paths this module builds. @param {string} root @param {string} relative */
@@ -152,6 +177,7 @@ pub fn join_path(root: String, relative: String) -> String {
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: malformed number
+// formal-ai:blockers method call .test() | null | regular expression
 
 // meta-language:translated JavaScript export_statement items=1 sha256=629b50d2ce83266a05e86adf04bdbb234dbd49ecd49b5c7339826b5b6b2e05b9
 // | /** The refusal `persist` returns for an id `storePath` will not address. */
@@ -160,21 +186,28 @@ pub const UNUSABLE_ANSWER_ID: &str = "derivation_answer_id_unusable";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .lastIndexOf()
+// formal-ai:blockers method call .lastIndexOf() | method call .slice()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers call of a sibling function | field access | method call .createDirAll() | method call .writeText() | null | nullish coalescing | object without a $ tag | optional chaining | try statement | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers call of a sibling function | field access | let without a value | method call .readText() | null | object without a $ tag | try statement | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
+// formal-ai:blockers call of a sibling function | null | object without a $ tag
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal function value …
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: function value DERIVATIONS_DIR: functions and namespaces are only portable when a function is called
+// formal-ai:blockers call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers arrow callback of .find() | arrow function | call of a sibling function | call of an imported function | let without a value | method call .find() | method call .slice() | method call .split() | null | nullish coalescing | optional chaining
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | call of an imported function | method call .push() | null

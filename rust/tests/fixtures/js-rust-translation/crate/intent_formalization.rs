@@ -1,30 +1,38 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e7dbdfa1df9ef9e03fc90c2555792bdff1c351a8cbfb99d5515a763e3b85a73b bytes=10108
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=5
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import { … }
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import { … }
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=344b43fb7b585894fce9c383a58d1c8a44b96a2b1047eff671b7adf460232bf4
 // | const ROLE_INTERROGATIVE_OPENER = 'interrogative_opener';
@@ -36,12 +44,15 @@ pub const TRANSLATION_PREDICATE: &str = "wikidata:P5972";
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers new Set
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers new Set
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers new Set
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=f00d29ff5b66242f5a6b5502ad494bf9dfa08ca7289c4604fe486565a2976f60
 // | const REQUIREMENT_TOKENS = ['must', 'should', 'require', 'requires'];
@@ -53,18 +64,23 @@ pub static TASK_TOKENS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | call of a sibling function | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .map() | arrow function | assignment of a field or element | call of an imported function | field access | method call .map() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers method call .push()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal regular expression
+// formal-ai:blockers method call .split() | method call .test() | regular expression
 
 // meta-language:translated JavaScript function_declaration items=1 sha256=f76ca3c775b9cf828242e4db3893e28365753890ec3405c34c0a2c2e67e6413b
 // | /**
@@ -114,24 +130,32 @@ pub fn slot_known_link(role: String, kind: String, id: String) -> String {
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .slice()
+// formal-ai:blockers call of an imported function | method call .slice() | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers arrow callback of .some() | call of an imported function | method call .slice() | method call .some()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
+// formal-ai:blockers REQUIREMENT_TOKENS.some | TASK_TOKENS.some | arrow callback of .some() | call of a sibling function | field access | method call .has() | sibling value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal typeof operator
+// formal-ai:blockers call of an imported function | field access | global call String() | method call .push() | method call .writeProgramParameters() | null | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers Array.from | JSDoc type {…} | call of a sibling function | call of an imported function | destructuring | field access | global call String() | method call .solverPromotedHandlers() | method call .solverRouteForPrompt() | null | object without a $ tag | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
+// formal-ai:blockers call of an imported function | destructuring | field access | method call .push() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .push()
+// formal-ai:blockers call of a sibling function | field access | method call .push() | null | object without a $ tag

@@ -118,7 +118,7 @@ export function statementGraph(entries) {
   return nodes;
 }
 
-/** Mirrors `fn keep_budget` in rust/src/summarization/dependency.rs: one statement in `KEEP_DIVISOR`, at least one. */
+/** Mirrors `fn keep_budget` in rust/src/summarization/dependency.rs: one statement in `KEEP_DIVISOR`, at least one. @param {number} count @returns {number} */
 export function keepBudget(count) {
   return count === 0 ? 0 : Math.max(1, Math.ceil(count / KEEP_DIVISOR));
 }

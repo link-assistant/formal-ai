@@ -19,7 +19,7 @@ export const CENSUS_DIR = 'data/meta/self-ast';
 /** Mirrors `const FULL_FIDELITY_PREFIX`. */
 export const FULL_FIDELITY_PREFIX = 'src/agentic_coding/';
 
-/** Mirrors `fn fidelity_for`: 'full_ast' | 'signature'. */
+/** Mirrors `fn fidelity_for`: 'full_ast' | 'signature'. @param {string} modulePath @returns {string} */
 export function fidelityFor(modulePath) {
   return modulePath.startsWith(FULL_FIDELITY_PREFIX) ? 'full_ast' : 'signature';
 }

@@ -301,15 +301,20 @@ pub static FNV_PRIME: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock:
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal shift <<
+// formal-ai:blockers bitwise operator
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression
+// formal-ai:blockers new TextEncoder
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
+// formal-ai:blockers bitwise operator | method call .encode() | method call .padStart() | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .codePointAt()
+// formal-ai:blockers method call .codePointAt()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | call of a sibling function | null | undefined

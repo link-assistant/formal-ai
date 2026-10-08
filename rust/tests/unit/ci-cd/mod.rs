@@ -51,9 +51,9 @@ mod npm_deprecation_review;
 mod one_build_per_platform;
 mod optimized_test_profile;
 mod pinned_tool_images;
-mod pr_1188_sharding;
 mod production_readiness_gates;
 mod protocol_callers;
+mod pull_request_1188_sharding;
 mod release_publishing;
 mod release_site_layout;
 #[path = "../../../../scripts/rust-paths.rs"]

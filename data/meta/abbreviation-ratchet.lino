@@ -1,0 +1,20 @@
+# Abbreviation ratchet (PR #1188, R1188-U4: names are full English words).
+#
+# The ceilings on abbreviated names in code, measured by
+# scripts/measure-abbreviations.mjs over the scopes of
+# data/meta/abbreviation-rules.lino (gate check-abbreviations), with the
+# abbreviation list of data/meta/notation-rules.lino. A file counts once when a
+# word of its stem is on the list; a binding counts once per declaration. A new
+# abbreviated file name or declaration raises a count and fails the gate; the
+# ceilings only fall: `--write` lowers them to the measure after a rename pass.
+#
+# History. Recorded on 2026-10-08 after tree file-names-in-full-words of
+# data/meta/rename-map.lino spelled twelve file names in full words
+# (formal_ai_worker_nl_tools is formal_ai_worker_natural_language_tools).
+abbreviation-ratchet
+  file-names
+    abbreviated-file-names 100
+  bindings js
+    abbreviated-bindings 729
+  bindings rust/src
+    abbreviated-bindings 913

@@ -55,7 +55,7 @@ debt-ratchet
   ceiling
     measure docs-requirements-suites
     value 5
-    how "files and directories directly under rust/tests/unit whose names start with docs_, matching rust/tests/unit/docs_requirements/count.rs"
+    how "files and directories directly under rust/tests/unit whose names start with docs_ or, spelled in full words since R1188-U4, documentation_, matching rust/tests/unit/docs_requirements/count.rs"
     note "Issue #1138 plan 11 leaf L76 physically nests every retained per-issue suite under one directory while preserving module registration and coverage; the five surviving top-level entries separate benchmark parity, status rendering, issue citations, and the requirement suite's file-plus-directory module surface."
   ceiling
     measure language-parity-gaps
