@@ -169,3 +169,11 @@ test('partial census uses native coverage, path evidence and value ownership wit
   assert.equal(stageFunctions.locateRepositoryTargets(tiedFiles, 'edit owner test names', census)[0].relative_path,
     'src/owner.rs');
 });
+
+
+test('a command killed without an exit status cannot satisfy verification through diagnostic bytes', async () => {
+  const workspace = fixture({ exit_code: null, stdout: 'process interrupted' });
+  const outcome = await runner.executeWorkspaceProtocol(workspace, workspace.task);
+  assert.equal(outcome.stopped_at.id, 'verify');
+  assert.equal(outcome.need_ledger.rows.find((row) => row.route === 'verify').status, 'planned');
+});

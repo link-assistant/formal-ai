@@ -33,7 +33,9 @@ function boundedProcess(root, program, argumentsList, policy) {
   if (!(deadline > 0) || !(limit > 0)) throw new Error('positive process limits are required');
   return new Promise((resolve) => {
     const started = Date.now();
-    let stdout = ''; let stderr = ''; let byteLength = 0; let timedOut = false; let overflow = false;
+    const stdout = []; const stderr = [];
+    const text = (chunks) => Buffer.concat(chunks).toString('utf8');
+    let byteLength = 0; let timedOut = false; let overflow = false;
     const child = spawn(program, argumentsList, { cwd: root, detached: process.platform !== 'win32',
       env: { ...process.env, GIT_TERMINAL_PROMPT: '0', npm_config_offline: 'true', PIP_NO_INDEX: '1', ...policy.env },
       stdio: ['ignore', 'pipe', 'pipe'] });
@@ -44,18 +46,18 @@ function boundedProcess(root, program, argumentsList, policy) {
     const collect = (name, bytes) => {
       byteLength += bytes.length;
       if (byteLength > limit) { overflow = true; kill(); return; }
-      if (name === 'stdout') stdout += bytes.toString(); else stderr += bytes.toString();
+      if (name === 'stdout') stdout.push(bytes); else stderr.push(bytes);
     };
     child.stdout.on('data', (bytes) => collect('stdout', bytes));
     child.stderr.on('data', (bytes) => collect('stderr', bytes));
     child.once('error', (error) => {
       clearTimeout(timer);
-      resolve({ exit_code: error.code === 'ENOENT' ? 127 : null, stdout, stderr: error.message,
+      resolve({ exit_code: error.code === 'ENOENT' ? 127 : null, stdout: text(stdout), stderr: text(stderr) + error.message,
         missing: error.code === 'ENOENT', elapsed_seconds: (Date.now() - started) / 1000 });
     });
     child.once('close', (code, signal) => {
       clearTimeout(timer);
-      resolve({ exit_code: code, stdout, stderr: stderr + (overflow ? '\nprocess output limit exceeded' : ''),
+      resolve({ exit_code: overflow ? null : code, stdout: text(stdout), stderr: text(stderr) + (overflow ? '\nprocess output limit exceeded' : ''),
         timed_out: timedOut, output_limit_exceeded: overflow, signal, elapsed_seconds: (Date.now() - started) / 1000 });
     });
   });

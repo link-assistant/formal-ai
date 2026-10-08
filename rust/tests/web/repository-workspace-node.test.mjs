@@ -73,3 +73,21 @@ test('clone-at-base materializes only a tiny local fixture and refuses moving re
   assert.equal(readFileSync(join(origin, 'lists.rs'), 'utf8'), before);
   assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(), task.clone.base_commit);
 });
+
+
+test('bounded process output retains UTF-8 characters split across stdout and stderr chunks', async () => {
+  const { root } = fixture();
+  const script = "process.stdout.write(Buffer.from([0xe2]));process.stderr.write(Buffer.from([0xe2]));"
+    + "setTimeout(()=>{process.stdout.write(Buffer.from([0x82,0xac]));process.stderr.write(Buffer.from([0x82,0xac]));},20)";
+  const result = await nodeRepositoryIo().run(root, process.execPath, ['-e', script], { deadline_seconds: 2 });
+  assert.equal(result.exit_code, 0); assert.equal(result.stdout, '€'); assert.equal(result.stderr, '€');
+});
+
+
+test('bounded output overflow never reports a successful process exit', async () => {
+  const { root } = fixture();
+  const result = await nodeRepositoryIo().run(root, process.execPath, ['-e', "process.stdout.write('abcdefghijklmnop')"],
+    { deadline_seconds: 2, output_limit_bytes: 4 });
+  assert.equal(result.output_limit_exceeded, true); assert.equal(result.exit_code, null);
+  assert.ok(Buffer.byteLength(result.stdout) <= 4);
+});

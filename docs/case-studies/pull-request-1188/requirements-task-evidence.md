@@ -53,9 +53,9 @@ T1020: a new code payload containing `.split(\'\n\')` lost its literal escape. B
 
 ## Boot inventory recovery
 
-| T1204 | REPO-RUNNERS: append generated factory mapping through JavaScript Formal AI | **Fail**: worker boot inventory named the removed engine_stable_id factory, so the planner never started. An exact manual mapping fallback was applied using prior authorization before the revocation message arrived. | T1206-T1207 removed and reapplied the map through Formal AI; subsequent operations remain Formal AI only. |
+| T1204 | REPO-RUNNERS: append generated factory mapping through JavaScript Formal AI | **Fail**: worker boot inventory named the removed engine_stable_id factory, so the planner never started. An exact manual mapping fallback was applied using prior authorization before the revocation message arrived. | T1206 confirmed the prior FA-produced baseline already present in scratch, and T1207 actually appended the final mapping through Formal AI; subsequent operations remain Formal AI only. |
 | T1205 | REPO-RUNNERS: read naming payload after existing rename rule repaired boot inventory | **Pass**: Formal AI booted and read the requested payload. | No change needed. |
-| T1206 | REPO-RUNNERS: restore map without temporary manual mapping through Formal AI | **Pass**: reviewed whole-copy bytes observed exactly. | No change needed. |
+| T1206 | REPO-RUNNERS: restore map without temporary manual mapping through Formal AI | **Partial**: the cp guard refused the existing destination; the scratch file already contained the prior correct FA-produced baseline bytes. | No physical mutation; T1207 actually appended the final mapping through FA. |
 | T1207 | REPO-RUNNERS: append generated-worker mapping through Formal AI | **Pass**: final mapping bytes observed exactly; generated factory, TypeScript twin, line-budget and JS/TS boot inventory follow the source rename. | No change needed. |
 | T1208 | REPO-RUNNERS: copy expanded task evidence through Formal AI | **Pass**: exact source payload copied. | No change needed. |
 
@@ -115,3 +115,19 @@ A private-index commit raced the coordinator documentation commit; a dedicated r
 | T1246 | REPO-RUNNERS: Copy original Copy-gap retry evidence and updated After cells | **Pass**: exact reviewed evidence copied. | Parent integrates all pending rows and Fixed cells. |
 
 Historical G116 and G118 failures above remain recorded. T1242, T1243 and T1245 repeated the exact original natural-language prompts with their original absent-destination preconditions: each planned and executed cp, retained identical source bytes and created an identical destination. These original-task retries establish the general repair; the earlier explicit cp workaround and existing-destination refusals alone did not.
+
+## Final bounded process evidence and physical authorship
+
+| T1247 | REPO-RUNNERS: Preserve bounded stdout/stderr bytes until UTF-8 decode | **Pass**: reviewed port payload exact. | Split multi-byte character regression passes. |
+| T1248 | REPO-RUNNERS: Pin stdout/stderr characters split across chunks | **Pass**: reviewed test payload exact. | Five closest Node tests passed. |
+| T1249 | REPO-RUNNERS: Force unknown process exit on output-limit exhaustion | **Pass**: reviewed port payload exact. | Truncated output cannot report successful exit. |
+| T1250 | REPO-RUNNERS: Keep command with unknown exit from satisfying verification through diagnostics | **Pass**: reviewed runner payload exact. | Non-command file/symbol observations retain byte evidence semantics. |
+| T1251 | REPO-RUNNERS: Pin byte output bound and non-success overflow status | **Pass**: reviewed test payload exact. | Output limit regression passes. |
+| T1252 | REPO-RUNNERS: Pin signaled-command diagnostics leaving verify need planned | **Pass**: reviewed test payload exact. | Fifteen closest Node/runner tests pass. |
+| T1253 | REPO-RUNNERS: Copy final bounded-output, physical-authorship and ledger evidence | **Pass**: exact reviewed evidence copied. | Final role batch ready for coordinator integration. |
+
+Bounded stdout/stderr now retain raw byte chunks until decoding, preserving multi-byte characters split between reads. Output-limit exhaustion has no successful exit status, and an unknown command exit cannot satisfy a verification need through diagnostic bytes. Fifteen closest Node/runner tests passed; earlier five authoring/command-line tests also passed.
+
+Physical editing count for the role: 78 observed mutating JavaScript-driver tool calls, plus two unique write calls in the actual live Agent CLI stream (one plan event and one artifact), for 80 observed delegated physical mutation calls. The 78 includes the recorded incorrect G115 edit and G116 move, later repaired; it excludes read-only tasks, failed boot, declined collisions and the T1206 skipped copy. The two live writes are deduplicated by tool_use_id. Checked rename/generation passes count as neither delegated edits nor hand edits under the existing authorship-table convention.
+
+By hand: one physical source edit affecting one file at T1204, data/meta/rename-map/javascript-full-word-file-names.lino. The exception was applied after failed worker boot using the prior authorization message, before the revocation message arrived. It is retained explicitly here. The final map is produced by T1207 Formal AI append to the prior FA-produced baseline. Reviewed source logic and literal payloads were designed by the coding agent and executed by Formal AI; the count establishes physical delegation and does not claim autonomous logic synthesis.

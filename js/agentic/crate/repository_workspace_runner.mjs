@@ -13,7 +13,7 @@ function observed(outcome, step, command, argumentsList, exit, output, kind, sou
   evidence.for_need = row.need_id;
   evidence.produced_by = `repository_protocol_${step.id}`;
   // Only a linked successful observation can upgrade this planned need.
-  if ((exit === null && evidence.observed_byte_length > 0) || exit === 0) row.status = 'satisfied';
+  if ((exit === null && kind !== ObservationKind.CommandExit && evidence.observed_byte_length > 0) || exit === 0) row.status = 'satisfied';
   outcome.observations.push(evidence);
   return evidence;
 }
