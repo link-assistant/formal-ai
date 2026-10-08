@@ -25,7 +25,7 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     let macos_call = job_block(&workflow, "macos-core-tests");
     let macos = repository_file(".github/workflows/macos-core-tests.yml");
 
-    assert_eq!(test.matches("os: macos-15-intel").count(), 1);
+    assert_eq!(macos.matches("runs-on: macos-15-intel").count(), 2);
     assert!(test.contains("test-suite: specification"));
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
     // Issue #1059: macOS runs only the tests whose behaviour can differ from

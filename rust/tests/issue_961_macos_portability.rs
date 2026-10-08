@@ -45,7 +45,10 @@ fn macos_platform_modules() -> usize {
 }
 
 fn supported_macos_test_shards_are_complete() -> bool {
-    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
+    MACOS_CORE_WORKFLOW
+        .matches("runs-on: macos-15-intel")
+        .count()
+        == 2
         && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
         && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 1
         && macos_platform_modules() >= 5

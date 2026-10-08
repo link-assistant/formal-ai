@@ -23,7 +23,7 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     // rather than the whole suite across eight.
     assert!(macos.contains("- { partition: 1 }"));
     assert!(test.contains("test-suite: specification"));
-    assert_eq!(test.matches("os: macos-15-intel").count(), 1);
+    assert_eq!(macos.matches("runs-on: macos-15-intel").count(), 2);
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
     // Issue #1055 raised the archive cap to 35m and issue #1081 to 45m; see
     // issue_1012 for the math, which is where the cap is checked. Pinning an
@@ -34,10 +34,14 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     assert!(macos.contains("cargo nextest --manifest-path rust/Cargo.toml archive"));
     assert!(macos.contains("cargo nextest --manifest-path rust/Cargo.toml run --archive-file"));
     assert!(macos.contains("--macos-platform"));
-    assert!(test.contains("cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification::"));
+    assert!(test.contains("TEST_SUITE: specification"));
+    assert!(test.contains("scripts/run-prebuilt-tests.sh"));
     assert!(macos.contains("test(specification::)"));
     assert!(test.contains("matrix.test-suite == 'full'"));
     assert!(test.contains("matrix.test-suite == 'specification'"));
+    assert!(
+        repository_file("scripts/run-prebuilt-tests.sh").contains("selection=(specification::)")
+    );
 }
 
 #[test]

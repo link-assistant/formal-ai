@@ -42,11 +42,8 @@ CORPUS_GATE_SKIP=(--skip issue_1138_no_silent_unknown)
 # Every target runs even after one fails, so a single run reports every
 # failure instead of stopping at the first red target.
 #
-# RECORD_TEST_TIMES=true prints each test's duration (libtest's unstable
-# `--report-time`, admitted on a stable toolchain by RUSTC_BOOTSTRAP) so
-# `experiments/formal_ai_subagent/ci-durations.mjs --tests` can refresh the
-# recorded durations. Off by default: the variable reaches every process the
-# tests spawn.
+# Existing per-test durations drive the stable shard plan. Suite wall timing
+# comes from the CI step timestamps without enabling unstable test features.
 SHARD_INDEX="${SHARD_INDEX:-1}"
 SHARD_TOTAL="${SHARD_TOTAL:-1}"
 SHARD_RESERVED_SECONDS="${SHARD_RESERVED_SECONDS:-}"
@@ -65,12 +62,6 @@ case "$TEST_SUITE" in
     exit 2
     ;;
 esac
-time_flags=()
-if [ "${RECORD_TEST_TIMES:-false}" = "true" ] \
-  && RUSTC_BOOTSTRAP=1 dist/tests/unit -Z unstable-options --report-time --list >/dev/null 2>&1; then
-  export RUSTC_BOOTSTRAP=1
-  time_flags=(-Z unstable-options --report-time)
-fi
 status=0
 if [ "$SHARD_TOTAL" -gt 1 ]; then
   listing="$(mktemp)"
@@ -93,9 +84,9 @@ for target in "${targets[@]}"; do
       continue
     fi
     echo "shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} ${target} test(s)"
-    "dist/tests/$target" "${time_flags[@]}" --exact "${names[@]}" || status=1
+    "dist/tests/$target" --exact "${names[@]}" || status=1
   else
-    "dist/tests/$target" "${time_flags[@]}" "${selection[@]}" || status=1
+    "dist/tests/$target" "${selection[@]}" || status=1
   fi
 done
 exit "$status"
