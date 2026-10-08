@@ -5,12 +5,9 @@
 // formal_ai_worker_crate_modules.js runs on first use.
 
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/event_log.mjs"] = (crateRequire) => {
-// rust/src/event_log.rs, the solver event log and its evidence projection:
-// `EventLog::append` (content-addressed event ids) and `build_evidence_links`
-// (one typed link per event, after the prompt link, ending with the response
-// link). Every arm of the Rust `match` is here; the arms that address an event
-// by its id (`trace:execution_failure`, `formalization`, `search:local`, ...)
-// produce exactly the catch-all's `{kind}:{id}`, so they need no row.
+// Mirrors rust/src/event_log.rs: content-addressed IDs and typed evidence.
+// ID-based kinds use the {kind}:{id} fallback without an explicit row.
+// Named transform metadata supplements its original event provenance.
 //
 // One implementation for both JavaScript surfaces (R1188-U29): the server
 // (js/server/evidence-links.mjs re-exports it) and the browser worker, which
@@ -135,8 +132,8 @@ function evidenceLink(event) {
 }
 
 /**
- * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one
- * link per logged event, then `responseLink` unless a link already equals it.
+ * Mirrors rust/src/event_log.rs `build_evidence_links`: prompt and provenance
+ * links, typed transform metadata, then `responseLink` unless already present.
  * @param {string} prompt
  * @param {EventLog|{events: Array<{id: string, kind: string, payload: string}>}} log
  * @param {string} responseLink
