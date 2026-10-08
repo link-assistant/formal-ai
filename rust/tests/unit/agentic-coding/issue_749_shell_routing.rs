@@ -370,3 +370,17 @@ fn file_operation_cues_do_not_come_from_path_operands() {
         );
     }
 }
+#[test]
+fn g128_explicit_command_payload_does_not_become_research() {
+    let command = r#"node -e 'console.log("search Wikipedia for proof and source")'"#;
+    let messages = [ChatMessage::user(format!("Run {command}"))];
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        plan_chat_step(&messages, &["exec_command", "read", "write", "websearch"])
+    else {
+        panic!("explicit command must be executable");
+    };
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "exec_command");
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    assert_eq!(arguments["command"].as_str(), Some(command));
+}

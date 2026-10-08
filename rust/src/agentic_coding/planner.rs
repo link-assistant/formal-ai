@@ -385,6 +385,13 @@ pub(super) fn plan_settled_routes(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
+    if tool_for(tool_names, Capability::Run).is_some()
+        && let Some(command) = shell_command::explicit_passthrough_command(task)
+    {
+        return shell_file_fallback::plan_step(task, messages, tool_names, &command)
+            .or_else(|| mutating_action::plan_step(&command, messages, tool_names, task))
+            .or_else(|| Some(plan_shell_step(messages, tool_names, &command)));
+    }
     // A request to commit what is already in the tree is one shell step. It
     // is claimed first because its words ("review these changes and commit
     // them", with a `?? Main.scala` listing) read to later routes as a search

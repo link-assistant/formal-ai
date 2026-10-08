@@ -266,6 +266,12 @@ async function planChatStepRoutes(messages, toolNames, received) {
  * @returns {Promise<object|null>}
  */
 export async function planSettledRoutes(task, messages, toolNames) {
+  const explicit = shellCommand.explicitPassthroughCommand(task);
+  if (explicit !== null && toolFor(toolNames, Capability.Run) !== null) {
+    return await shellFileFallback.planStep(task, messages, toolNames, explicit)
+      ?? await mutatingAction.planStep(explicit, messages, toolNames, task)
+      ?? planShellStep(messages, toolNames, explicit);
+  }
   for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
     const plan = await arm(task, messages, toolNames);
     if (plan !== null) return plan;
