@@ -279,7 +279,7 @@ fn the_javascript_suites_run_in_budgeted_shards_that_cover_every_file() {
     for pin in [
         "SHARD: ${{ matrix.shard }}",
         "scripts/run-with-budget-warning.sh",
-        "node --test --test-shard=\"$SHARD/$SHARDS\" rust/tests/web/*.test.mjs",
+        "node scripts/plan-test-shards.mjs --shard \"$SHARD\" --of \"$SHARDS\" --durations data/meta/javascript-test-durations.lino",
         "group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}",
         "fail-fast: false",
     ] {

@@ -2,7 +2,7 @@
 // (rust/src/agentic_coding/workspace_change.rs).
 
 import { scopedDecline } from './edit_scope.mjs';
-import { replaceList, replacedInOrder } from './replace_list.mjs';
+import { absentTextAnswer, replaceList, replacedInOrder } from './replace_list.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
 import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
@@ -10,6 +10,7 @@ import { renderRustTemplate, renderSeededChange, renderSeededOutcome, rustSource
 import { plainText } from './content.mjs';
 import { contentsSource, withContents } from './contents_source.mjs';
 import { insertedInSection, sectionScope } from './markdown_section.mjs';
+import { lineRangeMove, planLineRangeMoveStep } from './line_range_move.mjs';
 import { composeEditRequest } from './general_planner.mjs';
 import { editArguments } from './intent_router.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
@@ -53,6 +54,9 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   const task = sourced?.task ?? unwrapTransportQuotes(rawTask);
   const change = compositeModuleChange(task);
   if (change) return planCompositeStep(task, currentTurn, toolNames, change);
+  // Numbered lines moved to another file: placed there, then removed (G85).
+  const rangeMove = lineRangeMove(task);
+  if (rangeMove) return planLineRangeMoveStep(task, currentTurn, toolNames, rangeMove);
   // A whole-line operation (numbered, adjacent, moved, swapped lines) is read
   // before a rewrite: `move 'x' after 'y'` is not an insertion (PR #1188).
   const lineOperation = groundedLineOperation(task);
@@ -112,7 +116,11 @@ function planRewriteStep(task, currentTurn, toolNames, grounded) {
   const source = sourceFromReadResult(read);
   const rewrite = asWritten(source, grounded);
   const updated = rewrittenSource(source, rewrite);
-  if (updated === null) return failed(task, rewrite.target);
+  if (updated === null) {
+    // A replace asked again finds its old text gone: that is the answer (G87).
+    const absent = absentTextAnswer(task, rewrite.target, source, rewrite.pattern, rewrite.replacement);
+    return absent === null ? failed(task, rewrite.target) : finalAnswer(absent);
+  }
   const occurrences = rewrite.scope === RewriteScope.Substring
     ? matchIndices(source, rewrite.pattern).length
     : wordScopedMatches(source, rewrite.pattern).length;
@@ -947,7 +955,7 @@ function removedLiteral(source, text) {
 }
 
 /** The file after the insertion; a file without a final newline keeps none. */
-function insertedAtEnd(source, text, atEnd) {
+export function insertedAtEnd(source, text, atEnd) {
   if (source === '') return `${text}\n`;
   if (!atEnd) return `${text}\n${source}`;
   return source.endsWith('\n') ? `${source}${text}\n` : `${source}\n${text}`;
@@ -978,7 +986,7 @@ function compactEndEdit(source, updated, atEnd) {
  * the smallest unique edit (or the whole file), check the digest, and state
  * the change from the seeded response for its intent.
  */
-function planComputedChangeStep(task, currentTurn, toolNames, change) {
+export function planComputedChangeStep(task, currentTurn, toolNames, change) {
   const { target } = change;
   const read = resultForPath(currentTurn, Capability.Read, target, null);
   if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(target));
@@ -989,7 +997,14 @@ function planComputedChangeStep(task, currentTurn, toolNames, change) {
   const scoped = scopedDecline(task, target, source);
   if (scoped !== null) return finalOrNull(scoped);
   const updated = change.compute(source, missing);
-  if (updated === null || updated === source) return failed(task, target);
+  if (updated === null || updated === source) {
+    // Text the change names that the file no longer holds is the answer (G87).
+    const slot = (name) => (change.slots ?? []).find(([key]) => key === name)?.[1] ?? null;
+    const old = slot('{old}');
+    const textual = change.intent === 'coding_text_replaced' || change.intent === 'coding_text_remove';
+    const absent = missing || old === null || !textual ? null : absentTextAnswer(task, target, source, old, slot('{new}'));
+    return absent === null ? failed(task, target) : finalAnswer(absent);
+  }
   // A change that would drop most of the file is refused unless its request
   // states that extent (PR #1188 T29).
   if (!change.bounded && dropsMostOfFile(source, updated)) {

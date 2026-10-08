@@ -15,7 +15,7 @@ js_rust_translation
   modules 128
   translated_items 254
   inferred_signatures 2
-  carried_items 2127
+  carried_items 2129
   translated_modules 80
   fully_translated_modules 1
   refused_modules 48
@@ -70,7 +70,7 @@ module js/agentic/crate/meta_frame.mjs translated 5 inferred 0 carried 47
 module js/agentic/crate/meta_translate.mjs translated 0 inferred 0 carried 6
 module js/agentic/crate/method_registry.mjs translated 9 inferred 0 carried 21
 module js/agentic/crate/needs.mjs translated 1 inferred 0 carried 8
-module js/agentic/crate/normal_markov.mjs translated 5 inferred 0 carried 16
+module js/agentic/crate/normal_markov.mjs translated 5 inferred 0 carried 17
 module js/agentic/crate/obligation_ledger.mjs translated 0 inferred 0 carried 36
 module js/agentic/crate/orchestration_analysis.mjs translated 2 inferred 0 carried 25
 module js/agentic/crate/orchestration_attribution.mjs translated 5 inferred 0 carried 13
@@ -94,7 +94,7 @@ module js/agentic/crate/repository_workspace.mjs translated 6 inferred 0 carried
 module js/agentic/crate/rule_interpreter.mjs translated 0 inferred 0 carried 5
 module js/agentic/crate/rust_ast_census.mjs translated 0 inferred 0 carried 4
 module js/agentic/crate/rust_str.mjs translated 1 inferred 0 carried 46
-module js/agentic/crate/seed.mjs translated 1 inferred 0 carried 12
+module js/agentic/crate/seed.mjs translated 1 inferred 0 carried 13
 module js/agentic/crate/seed_agent_info.mjs translated 0 inferred 0 carried 3
 module js/agentic/crate/seed_agentic_tool_capabilities.mjs translated 0 inferred 0 carried 4
 module js/agentic/crate/seed_caller_context.mjs translated 0 inferred 0 carried 12
@@ -151,7 +151,7 @@ refusal "import { … }" 406
 refusal "JSDoc type {…}" 198
 refusal "null" 162
 refusal "type: unknown name (a sibling item or an import)" 114
-refusal "arrow function" 100
+refusal "arrow function" 101
 refusal "function value …" 95
 refusal "object without a $ tag" 77
 refusal "new expression" 74
@@ -165,7 +165,7 @@ refusal "Array.from" 40
 refusal "method call .slice()" 40
 refusal "method call .push()" 34
 refusal "field access" 32
-refusal "method call .indexOf()" 27
+refusal "method call .indexOf()" 28
 refusal "nullish coalescing" 26
 refusal "method call .replace()" 23
 refusal "optional chaining" 20

@@ -46,6 +46,7 @@ mod intent_router;
 pub mod learning_report;
 pub mod ledger;
 pub(crate) mod lexicon;
+mod line_range_move;
 mod line_removal;
 pub mod link_edit_rules;
 mod literal_write_guard;

@@ -155,6 +155,17 @@ migration are recorded in the 2026-09-24 standing doctrine in
 [`REQUIREMENTS.md`](REQUIREMENTS.md) and planned in
 [plan 16](docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md).
 
+### Code shape (2026-10-08)
+
+The 2026-10-08 instructions, as summarised in [`experiments/formal_ai_subagent/preamble.md`](experiments/formal_ai_subagent/preamble.md) until the verbatim note is recorded ([R1188-U14, R1188-U15](docs/requirements/issue-1188-user-requirements.md)):
+
+- Generalize, don't specialize: specific tests are fine, but they all pass through smaller, more universal code; a fix that adds a case for one prompt is wrong (R1188-U1).
+- Code follows [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles) (R1188-U2).
+- Names are full English words, and file and directory names say what they hold, with no numbered parts where a meaningful category exists (R1188-U4, R1188-U5).
+- The links notation we own prefers `-` over `_`, stays human readable, and is deduplicated: shared structure is stated once and referenced (R1188-U6, R1188-U7).
+- Bulk changes are automated as rules; small edits are delegated to Formal AI, and Formal AI is fixed when it fails (R1188-U8, R1188-U13).
+- CI: no job or step runs over 15-30 minutes, long-running jobs and tests start first, and work runs in parallel at job and test level, enforced by a gate (R1188-U9 to R1188-U12).
+
 ### Where the architect's notes live
 
 This section is kept up to date from

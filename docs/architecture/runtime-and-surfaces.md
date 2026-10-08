@@ -131,7 +131,7 @@ The same `FormalAiEngine` answers prompts in every surface:
   [#666](https://github.com/link-assistant/formal-ai/issues/666).
 - **Browser demo** — `js/worker/formal_ai_worker.js` (a small loader shim) plus
   the solver logic it `importScripts`-loads from
-  `js/worker/formal_ai_worker_00.js` … `_23.js`, alongside the WebAssembly
+  `js/worker/formal_ai_worker_00.js` … `_24.js` (numbered parts that requirement R1188-U5 replaces with named modules), alongside the WebAssembly
   worker built from `js/wasm-worker/src/lib.rs`.
 
 Rust/WASM owns deterministic domain primitives that must match the native

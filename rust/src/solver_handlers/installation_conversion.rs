@@ -209,8 +209,8 @@ fn detect_source_format(prompt: &str, normalized: &str) -> InstallFormat {
 }
 
 fn detect_target_formats(normalized: &str, source_format: InstallFormat) -> Vec<InstallFormat> {
-    let named = named_values(normalized, "installation_target_marker");
-    let names = |label: &str| named.contains(&label);
+    let target_markers = named_values(normalized, "installation_target_marker");
+    let names = |label: &str| target_markers.contains(&label);
     let mut targets = Vec::new();
     if names(InstallFormat::Markdown.label()) {
         push_target(&mut targets, InstallFormat::Markdown);

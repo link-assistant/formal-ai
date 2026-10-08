@@ -346,3 +346,55 @@ meanings
     lexeme es
       surface
         text sección
+  file_edit_all_occurrences
+    defined-by relation
+    role file_edit_all_occurrences_cue
+    precondition "a replace request states that every occurrence of the old text is meant"
+    effect "the cue is no part of the old or new text; every occurrence is replaced, which a replace does by default (PR #1188 G84)"
+    unit "not applicable"
+    example "replace 'a' with 'b' everywhere"
+    lexeme en
+      surface
+        text "everywhere"
+      surface
+        text "all occurrences"
+      surface
+        text "every occurrence"
+      surface
+        text "all instances"
+      surface
+        text "throughout the file"
+      surface
+        text "in all occurrences"
+      surface
+        text "in every occurrence"
+      surface
+        text "in all instances"
+      surface
+        text "in all places"
+    lexeme ru
+      surface
+        text везде
+      surface
+        text "все вхождения"
+      surface
+        text "во всём файле"
+      surface
+        text "во всех вхождениях"
+    lexeme hi
+      surface
+        text "हर जगह"
+      surface
+        text "सभी जगह"
+    lexeme zh
+      surface
+        text 所有出现处
+      surface
+        text 全部出现处
+    lexeme es
+      surface
+        text "en todas partes"
+      surface
+        text "todas las apariciones"
+      surface
+        text "en todas las apariciones"

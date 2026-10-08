@@ -89,10 +89,10 @@ pub(super) enum Computation {
 /// sentence (intent and slots) that states it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) struct ComputedChange {
-    target: String,
-    computation: Computation,
-    intent: &'static str,
-    slots: Vec<(&'static str, String)>,
+    pub(super) target: String,
+    pub(super) computation: Computation,
+    pub(super) intent: &'static str,
+    pub(super) slots: Vec<(&'static str, String)>,
 }
 
 /// The first computed change `task` asks for, if any.
@@ -564,6 +564,26 @@ fn context_lines_edit(
 }
 
 impl ComputedChange {
+    /// The seeded answer when the text a replace or removal names is gone.
+    fn absent_text_answer(&self, task: &str, source: &str) -> Option<String> {
+        if !matches!(self.intent, "coding_text_replaced" | "coding_text_remove") {
+            return None;
+        }
+        let slot = |name: &str| {
+            self.slots
+                .iter()
+                .find(|(key, _)| *key == name)
+                .map(|(_, value)| value.as_str())
+        };
+        super::replace_list::absent_text_answer(
+            task,
+            &self.target,
+            source,
+            slot("{old}")?,
+            slot("{new}"),
+        )
+    }
+
     /// The file after the change, or `None` when it cannot apply.
     fn compute(&self, source: &str, missing: bool) -> Option<String> {
         match &self.computation {
@@ -820,11 +840,16 @@ pub(super) fn plan_computed_change_step(
         .compute(&source, missing)
         .filter(|updated| *updated != source)
     else {
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_verification_failed",
-            task,
-            target,
-        )?));
+        // Text the change names that the file no longer holds is the answer (G87).
+        let absent = if missing {
+            None
+        } else {
+            change.absent_text_answer(task, &source)
+        };
+        return Some(AgenticPlan::Final(match absent {
+            Some(answer) => answer,
+            None => render_seeded_outcome("coding_workspace_verification_failed", task, target)?,
+        }));
     };
     // A change that would drop most of the file is refused unless its request
     // states that extent (PR #1188 T29).

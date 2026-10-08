@@ -124,8 +124,8 @@ jobs:
     # suites ran as one unbudgeted step that took 378s of this 600s cap
     # (63%, run 37652295664, 2026-10-07) and grows with every pull request,
     # so only the cap stood between a hung test and a `cancelled` tier. Two
-    # shards on parallel runners each run half the files -- `--test-shard`
-    # splits the sorted file list round-robin, so the shards together run
+    # shards on parallel runners each run part of the files -- the plan
+    # (scripts/plan-test-shards.mjs) splits them longest-first, so the shards together run
     # every file exactly once -- and each owns a 360s budget (60% of the
     # cap) that fails with an `::error` instead of being cancelled. Run
     # 37706284975 (2026-10-08) had shard 2/2 terminated at that budget once
@@ -202,10 +202,20 @@ jobs:
           SHARDS: 4
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
+        # PR #1188: the suite files are planned longest-first from
+        # data/meta/javascript-test-durations.lino by scripts/plan-test-shards.mjs
+        # (dealing the sorted files out by index gave shards of 3.4, 2.4, 1.1 and
+        # 1.0 minutes, run 37753750847); `--check` proves every file runs in
+        # exactly one shard, and a shard's files run on every core, longest first.
         run: |
+          set -euo pipefail
+          suites="$RUNNER_TEMP/javascript-suites.txt"
+          printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
+          node scripts/plan-test-shards.mjs --of "$SHARDS" --durations data/meta/javascript-test-durations.lino --check < "$suites"
+          mapfile -t files < <(node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites")
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "JavaScript suites shard $SHARD/$SHARDS" \
-            node --test --test-shard="$SHARD/$SHARDS" rust/tests/web/*.test.mjs
+            node --test --test-concurrency="$(nproc)" "${files[@]}"
 
   # Issue #1186 R4: the Lean and Rocq texts a formalization answer renders
   # must compile when the provers are present. The js tier pins the prover

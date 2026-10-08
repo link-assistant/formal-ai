@@ -1,0 +1,823 @@
+# Measured GitHub Actions job durations, the input of the CI speed gate
+# (`scripts/check-ci-speed.mjs`, `data/meta/ci-speed.lino`, PR #1188).
+# Generated; do not edit by hand. Per workflow: the run wall-clock (start to
+# finish, queueing included) and per job display name the median and maximum
+# minutes from start to completion over the sampled runs. `key` is the job id
+# in the workflow file, or the calling job for a reusable workflow.
+ci-durations
+  issue 1188
+  branch "qa-reasoning-coding-bulk-fixes"
+  measured-date "2026-10-08"
+  runs-per-workflow 10
+  unit "minutes"
+  regenerate "node experiments/formal_ai_subagent/ci-durations.mjs --write"
+  workflow ".github/workflows/agentic-cli-matrix.yml"
+    name "Agentic CLI Matrix"
+    runs 10
+    wall-median 36.8
+    wall-maximum 54.6
+    job "Build formal-ai"
+      key build
+      median 5.2
+      maximum 8.2
+      samples 10
+    job "E2E (opencode-vscode)"
+      key matrix
+      median 2.8
+      maximum 4.2
+      samples 8
+    job "E2E (qwen)"
+      key matrix
+      median 3.9
+      maximum 4
+      samples 8
+    job "E2E (claude)"
+      key matrix
+      median 3.8
+      maximum 3.8
+      samples 8
+    job "E2E (grok)"
+      key matrix
+      median 3.2
+      maximum 3.3
+      samples 8
+    job "E2E (opencode-desktop)"
+      key matrix
+      median 1.5
+      maximum 3.1
+      samples 8
+    job "Learn reusable client contracts"
+      key learn
+      median 0.3
+      maximum 3
+      samples 7
+    job "E2E (aider)"
+      key matrix
+      median 2.2
+      maximum 2.4
+      samples 8
+    job "E2E (opencode)"
+      key matrix
+      median 1.7
+      maximum 2.1
+      samples 8
+    job "E2E (agent)"
+      key matrix
+      median 1.5
+      maximum 2
+      samples 8
+    job "E2E (gemini)"
+      key matrix
+      median 1.5
+      maximum 1.7
+      samples 8
+    job "E2E (codex)"
+      key matrix
+      median 1.3
+      maximum 1.5
+      samples 8
+    job "E2E (t3code)"
+      key matrix
+      median 0.9
+      maximum 1.4
+      samples 8
+    job "E2E (cursor)"
+      key matrix
+      median 0.5
+      maximum 0.6
+      samples 8
+    job "Replay recorded sessions"
+      key replay
+      median 0.3
+      maximum 0.4
+      samples 10
+    job "Matrix summary"
+      key summary
+      median 0.1
+      maximum 0.1
+      samples 9
+  workflow ".github/workflows/benchmark-corpus-gate.yml"
+    name "Benchmark Corpus Gate"
+    runs 10
+    wall-median 40.2
+    wall-maximum 49.1
+    job "Build the corpus gate binary"
+      key corpus-build
+      median 6.1
+      maximum 9.1
+      samples 7
+    job "Corpus shard 5"
+      key corpus-shard
+      median 6.8
+      maximum 7.5
+      samples 6
+    job "Corpus shard 6"
+      key corpus-shard
+      median 6.9
+      maximum 7.5
+      samples 6
+    job "Corpus shard 1"
+      key corpus-shard
+      median 6.5
+      maximum 7.2
+      samples 6
+    job "Corpus shard 3"
+      key corpus-shard
+      median 6.7
+      maximum 6.9
+      samples 6
+    job "Corpus shard 2"
+      key corpus-shard
+      median 5.6
+      maximum 6.5
+      samples 6
+    job "Corpus shard 4"
+      key corpus-shard
+      median 5.3
+      maximum 5.9
+      samples 6
+    job "no benchmark prompt reaches the unknown opener (all shards)"
+      key corpus-gate
+      median 0.3
+      maximum 0.4
+      samples 7
+  workflow ".github/workflows/coding-ladder.yml"
+    name "Coding Ladder"
+    runs 10
+    wall-median 26.9
+    wall-maximum 51.4
+    job "Coding ladder shard 2"
+      key ladder-shard
+      median 5.1
+      maximum 8.6
+      samples 6
+    job "Coding ladder shard 4"
+      key ladder-shard
+      median 5.2
+      maximum 8.2
+      samples 6
+    job "Coding ladder binary"
+      key ladder-binary
+      median 5.6
+      maximum 6.6
+      samples 7
+    job "Coding ladder shard 3"
+      key ladder-shard
+      median 5.3
+      maximum 5.7
+      samples 6
+    job "Coding ladder shard 1"
+      key ladder-shard
+      median 4.6
+      maximum 5.1
+      samples 6
+    job "Coding ladder shard 5"
+      key ladder-shard
+      median 5
+      maximum 5.1
+      samples 6
+    job "130-task coding ladder (all shards)"
+      key coding-ladder
+      median 1
+      maximum 1.5
+      samples 7
+  workflow ".github/workflows/coverage.yml"
+    name "Coverage"
+    runs 10
+    wall-median 64.7
+    wall-maximum 105
+    job "Coverage shard 2"
+      key coverage-shard
+      median 15.5
+      maximum 27.6
+      samples 5
+    job "Coverage shard 8"
+      key coverage-shard
+      median 12.8
+      maximum 24.7
+      samples 5
+    job "Coverage shard 3"
+      key coverage-shard
+      median 17.7
+      maximum 22.5
+      samples 4
+    job "Build instrumented test executables"
+      key coverage-build
+      median 18.1
+      maximum 20.5
+      samples 6
+    job "Coverage shard 10"
+      key coverage-shard
+      median 16.3
+      maximum 19.3
+      samples 5
+    job "Coverage shard 5"
+      key coverage-shard
+      median 14.2
+      maximum 19.3
+      samples 5
+    job "Coverage shard 6"
+      key coverage-shard
+      median 14.5
+      maximum 18.9
+      samples 5
+    job "Coverage shard 4"
+      key coverage-shard
+      median 11.1
+      maximum 18.7
+      samples 5
+    job "Coverage shard 9"
+      key coverage-shard
+      median 13.7
+      maximum 16.6
+      samples 5
+    job "Coverage shard 7"
+      key coverage-shard
+      median 15
+      maximum 16.2
+      samples 5
+    job "Coverage shard 1"
+      key coverage-shard
+      median 13.7
+      maximum 14.4
+      samples 5
+    job "Browser Code Coverage"
+      key browser-coverage
+      median 8.5
+      maximum 12.9
+      samples 10
+    job "Code Coverage (merged shards)"
+      key coverage
+      median 0.4
+      maximum 6.2
+      samples 6
+    job "Detect Changes"
+      key detect-changes
+      median 1.3
+      maximum 1.5
+      samples 10
+  workflow ".github/workflows/desktop-release.yml"
+    name "Desktop Release"
+    runs 10
+    wall-median 41
+    wall-maximum 54.6
+    job "Build macos-x64"
+      key build
+      median 23.2
+      maximum 41.3
+      samples 10
+    job "Build windows-arm64"
+      key build
+      median 34.8
+      maximum 37.6
+      samples 10
+    job "Build CLI cli-macos-x64"
+      key cli
+      median 13.8
+      maximum 34.4
+      samples 10
+    job "Build windows-x64"
+      key build
+      median 30.9
+      maximum 33
+      samples 10
+    job "Build CLI cli-windows-x64"
+      key cli
+      median 13.1
+      maximum 15.2
+      samples 10
+    job "Build macos-arm64"
+      key build
+      median 11.4
+      maximum 15.2
+      samples 10
+    job "Build linux-arm64"
+      key build
+      median 12.3
+      maximum 14.9
+      samples 10
+    job "Build linux-x64"
+      key build
+      median 10.2
+      maximum 12.5
+      samples 10
+    job "Build CLI cli-macos-arm64"
+      key cli
+      median 10.3
+      maximum 12
+      samples 10
+    job "Build CLI cli-linux-x64"
+      key cli
+      median 5.9
+      maximum 8
+      samples 10
+    job "Build CLI cli-linux-arm64"
+      key cli
+      median 6
+      maximum 7.8
+      samples 10
+    job "Package VS Code extension (.vsix)"
+      key vscode
+      median 1.5
+      maximum 1.9
+      samples 10
+    job "base / Pin base commit"
+      key base
+      median 0.4
+      maximum 0.4
+      samples 10
+  workflow ".github/workflows/evidence-check.yml"
+    name "Self-hosting evidence"
+    runs 10
+    wall-median 5.8
+    wall-maximum 16
+    job "Self-Hosting Evidence Check"
+      key evidence-check
+      median 1.2
+      maximum 1.4
+      samples 10
+    job "Evidence Check Status"
+      key evidence-status
+      median 0.3
+      maximum 0.4
+      samples 10
+  workflow ".github/workflows/external-benchmarks.yml"
+    name "External Benchmarks"
+    runs 10
+    wall-median 4.8
+    wall-maximum 9.6
+    job "Verify monotonic ledger"
+      key ratchet
+      median 3.1
+      maximum 3.6
+      samples 10
+  workflow ".github/workflows/issue-1028-agent-ladder.yml"
+    name "Issue 1028 Agent CLI binary-tree ladder"
+    runs 10
+    wall-median 55.6
+    wall-maximum 94.1
+    job "Agent CLI ladder 1.1.1.2"
+      key ladder
+      median 17.8
+      maximum 19
+      samples 5
+    job "Agent CLI ladder 2.1.2.2"
+      key ladder
+      median 15.9
+      maximum 18.7
+      samples 5
+    job "Agent CLI ladder 2.1.1.2"
+      key ladder
+      median 16.8
+      maximum 17.8
+      samples 5
+    job "Agent CLI ladder 1.2.2.1"
+      key ladder
+      median 16.9
+      maximum 17.6
+      samples 5
+    job "Agent CLI ladder 1.2.1.1"
+      key ladder
+      median 16.1
+      maximum 17.4
+      samples 5
+    job "Agent CLI ladder 2.2.2.2"
+      key ladder
+      median 13
+      maximum 17.1
+      samples 5
+    job "Agent CLI ladder 2.2.2.1"
+      key ladder
+      median 15.5
+      maximum 17
+      samples 5
+    job "Agent CLI ladder 2.1.2.1"
+      key ladder
+      median 15.1
+      maximum 16.8
+      samples 5
+    job "Agent CLI ladder 1.1.1.1"
+      key ladder
+      median 16.5
+      maximum 16.6
+      samples 5
+    job "Agent CLI ladder 1.2.1.2"
+      key ladder
+      median 15.4
+      maximum 16.6
+      samples 5
+    job "Agent CLI ladder 2.1.1.1"
+      key ladder
+      median 13.9
+      maximum 16.5
+      samples 5
+    job "Agent CLI ladder 2.2.1.1"
+      key ladder
+      median 15.1
+      maximum 16.2
+      samples 5
+    job "Agent CLI ladder 1.1.2.2"
+      key ladder
+      median 15.3
+      maximum 15.9
+      samples 5
+    job "Agent CLI ladder 1.2.2.2"
+      key ladder
+      median 13.8
+      maximum 14.6
+      samples 5
+    job "Agent CLI ladder 1.1.2.1"
+      key ladder
+      median 11.2
+      maximum 11.9
+      samples 5
+    job "Agent CLI ladder 2.2.1.2"
+      key ladder
+      median 11.1
+      maximum 11.8
+      samples 5
+    job "Plan the Agent CLI ladder"
+      key plan
+      median 3.4
+      maximum 5.7
+      samples 7
+    job "Compare the measured ladder with the record"
+      key compare
+      median 0.5
+      maximum 0.6
+      samples 7
+  workflow ".github/workflows/layered-ci.yml"
+    name "Layered CI"
+    runs 10
+    wall-median 16.3
+    wall-maximum 44.4
+    job "js tier (node --check over js, suites 2/4)"
+      key js
+      median 3.5
+      maximum 6.4
+      samples 8
+    job "js -> rust leg (meta-language self-translation)"
+      key js-rust
+      median 5
+      maximum 5.1
+      samples 2
+    job "js tier (node --check over js, suites 1/4)"
+      key js
+      median 2.2
+      maximum 3.5
+      samples 8
+    job "js tier (node --check over js, suites 3/4)"
+      key js
+      median 2.3
+      maximum 3.4
+      samples 8
+    job "js tier (node --check over js, suites 4/4)"
+      key js
+      median 1.4
+      maximum 2.1
+      samples 8
+    job "Detect tier changes"
+      key changes
+      median 1.3
+      maximum 1.7
+      samples 10
+    job "server parity (JavaScript server vs Rust server)"
+      key server-parity
+      median 1.1
+      maximum 1.6
+      samples 2
+    job "provers (real Lean 4 and Rocq compile, R1186-4)"
+      key provers
+      median 1
+      maximum 1.3
+      samples 9
+    job "rust tier (dogfood regeneration gate)"
+      key rust
+      median 0.4
+      maximum 0.4
+      samples 2
+    job "ts tier (js<->ts file-set parity)"
+      key ts
+      median 0.4
+      maximum 0.4
+      samples 2
+  workflow ".github/workflows/links.yml"
+    name "Broken Link Checker"
+    runs 10
+    wall-median 1.5
+    wall-maximum 7.6
+    job "Check Links"
+      key link-checker
+      median 0.7
+      maximum 3.6
+      samples 10
+  workflow ".github/workflows/proactive-failure-report-e2e.yml"
+    name "Proactive failure report Agent CLI E2E"
+    runs 10
+    wall-median 6.7
+    wall-maximum 10.5
+    job "agent-cli-failure-report"
+      key agent-cli-failure-report
+      median 4.4
+      maximum 7.1
+      samples 10
+  workflow ".github/workflows/question-necessity-ratchet.yml"
+    name "Question necessity ratchet"
+    runs 10
+    wall-median 8.3
+    wall-maximum 14.9
+    job "Question necessity ratchet (issue #920)"
+      key question-necessity-ratchet
+      median 6.5
+      maximum 8.4
+      samples 10
+  workflow ".github/workflows/regenerate-self-ast-census.yml"
+    name "Regenerate self-AST census"
+    runs 10
+    wall-median 5.6
+    wall-maximum 13.1
+    job "Build the census and upload it"
+      key regenerate
+      median 4.8
+      maximum 5.9
+      samples 10
+  workflow ".github/workflows/release.yml"
+    name "CI/CD Pipeline"
+    runs 10
+    wall-median 64
+    wall-maximum 87.8
+    job "E2E Tests (local web app) / E2E Tests (local web app)"
+      key test-e2e-local
+      median 13.8
+      maximum 30
+      samples 10
+    job "E2E Tests (agent CLI ↔ formal-ai) / E2E Tests (agent CLI ↔ formal-ai)"
+      key test-agent-cli-e2e
+      median 14.3
+      maximum 23.1
+      samples 10
+    job "Docker Image Build & Runtime Check"
+      key docker-build
+      median 15.6
+      maximum 20
+      samples 8
+    job "Test (ubuntu-latest / specification)"
+      key test
+      median 18.8
+      maximum 19.3
+      samples 2
+    job "E2E Tests (agent CLI ↔ formal-ai) / E2E Tests (agent CLI ↔ formal-ai) (method learning)"
+      key test-agent-cli-e2e
+      median 11.3
+      maximum 19.2
+      samples 8
+    job "Test (ubuntu-latest / full)"
+      key test
+      median 13.2
+      maximum 18.9
+      samples 10
+    job "Test (ubuntu-latest / specification) shard 2/3"
+      key test
+      median 12.2
+      maximum 18.6
+      samples 8
+    job "Test (ubuntu-latest / full) shard 3/4"
+      key test
+      median 12.7
+      maximum 14.5
+      samples 10
+    job "Test (ubuntu-latest / full) shard 4/4"
+      key test
+      median 11.7
+      maximum 14.4
+      samples 10
+    job "Test (ubuntu-latest / specification) shard 1/3"
+      key test
+      median 10.9
+      maximum 13.9
+      samples 8
+    job "Build binaries and tests"
+      key build-artifacts
+      median 11.4
+      maximum 13.8
+      samples 10
+    job "Test (ubuntu-latest / full) shard 2/4"
+      key test
+      median 11.1
+      maximum 13.8
+      samples 10
+    job "Lint and Format Check (lane 2)"
+      key lint
+      median 7.7
+      maximum 13.5
+      samples 8
+    job "Test (ubuntu-latest / specification) shard 3/3"
+      key test
+      median 10.9
+      maximum 13.1
+      samples 8
+    job "Lint and Format Check (lane 4)"
+      key lint
+      median 6.5
+      maximum 9.3
+      samples 8
+    job "Lint and Format Check (lane 3)"
+      key lint
+      median 6.6
+      maximum 8.2
+      samples 8
+    job "Lint and Format Check (lane 1)"
+      key lint
+      median 6.3
+      maximum 7.8
+      samples 8
+    job "Box Image Projects (go)"
+      key box-language-projects
+      median 3.6
+      maximum 5.7
+      samples 10
+    job "Box Image Projects (python)"
+      key box-language-projects
+      median 3.8
+      maximum 5.3
+      samples 10
+    job "Box Image Projects (rust)"
+      key box-language-projects
+      median 3.9
+      maximum 5.3
+      samples 10
+    job "Box Image Projects (java)"
+      key box-language-projects
+      median 3.3
+      maximum 4.9
+      samples 10
+    job "Box Image Projects (ruby)"
+      key box-language-projects
+      median 3.8
+      maximum 4.9
+      samples 10
+    job "Box Image Projects (typescript)"
+      key box-language-projects
+      median 2.9
+      maximum 4.6
+      samples 10
+    job "Box Image Projects (javascript)"
+      key box-language-projects
+      median 2.9
+      maximum 4
+      samples 10
+    job "Server parity (JavaScript vs Rust)"
+      key server-parity
+      median 1.4
+      maximum 1.9
+      samples 8
+    job "Changelog Fragment Check"
+      key changelog
+      median 1.3
+      maximum 1.8
+      samples 8
+    job "Detect Changes"
+      key detect-changes
+      median 1.3
+      maximum 1.5
+      samples 10
+    job "Version Modification Check"
+      key version-check
+      median 1.3
+      maximum 1.5
+      samples 10
+    job "Test (macos-15-intel / specification)"
+      key test
+      median 1
+      maximum 1.4
+      samples 10
+    job "Secrets Scan"
+      key secrets-scan
+      median 0.6
+      maximum 0.7
+      samples 10
+    job "base / Pin base commit"
+      key base
+      median 0.3
+      maximum 0.4
+      samples 10
+    job "Pipeline Status"
+      key pipeline-status
+      median 0.3
+      maximum 0.4
+      samples 10
+    job "Release Preflight"
+      key release-preflight
+      median 0.3
+      maximum 0.4
+      samples 10
+  workflow ".github/workflows/security.yml"
+    name "Security"
+    runs 10
+    wall-median 13.7
+    wall-maximum 24.6
+    job "CodeQL (rust)"
+      key codeql
+      median 9.8
+      maximum 10.6
+      samples 10
+    job "CodeQL (actions)"
+      key codeql
+      median 1.1
+      maximum 1.2
+      samples 10
+    job "Cargo audit"
+      key cargo-audit
+      median 0.6
+      maximum 0.7
+      samples 10
+    job "Dependency Review"
+      key dependency-review
+      median 0.5
+      maximum 0.6
+      samples 10
+  workflow ".github/workflows/self-authored-pull-request.yml"
+    name "Self-authored pull request"
+    runs 10
+    wall-median 3.1
+    wall-maximum 9.3
+    job "Formal AI authors a change and opens the pull request"
+      key author
+      median 0.7
+      maximum 0.8
+      samples 10
+  workflow ".github/workflows/self-development-status.yml"
+    name "Self-development status"
+    runs 10
+    wall-median 3.1
+    wall-maximum 12.3
+    job "Self-development floor and debt ratchet since the last tag"
+      key self-development-status
+      median 1.4
+      maximum 1.5
+      samples 10
+  workflow ".github/workflows/stock-rust-install.yml"
+    name "Stock Rust Install"
+    runs 10
+    wall-median 7.9
+    wall-maximum 17.2
+    job "stock-rust-install"
+      key stock-rust-install
+      median 7.3
+      maximum 7.5
+      samples 10
+  workflow ".github/workflows/summarization-ratchet.yml"
+    name "Summarization Ratchet"
+    runs 10
+    wall-median 6.1
+    wall-maximum 9.5
+    job "Summarization quality ratchet (issue #893)"
+      key summarization-ratchet
+      median 4.9
+      maximum 7.6
+      samples 10
+  workflow ".github/workflows/task-ladder.yml"
+    name "Task Ladder"
+    runs 10
+    wall-median 7.1
+    wall-maximum 9.5
+    job "Task Ladder (issue #840 dataset)"
+      key task-ladder
+      median 5
+      maximum 7.6
+      samples 10
+  workflow ".github/workflows/web-ui-boundary.yml"
+    name "Web UI boundary"
+    runs 10
+    wall-median 1.3
+    wall-maximum 8.1
+    job "boundary"
+      key boundary
+      median 0.3
+      maximum 0.3
+      samples 10
+  workflow ".github/workflows/workflows.yml"
+    name "Workflows"
+    runs 10
+    wall-median 2.1
+    wall-maximum 8.1
+    job "Zizmor"
+      key zizmor
+      median 0.6
+      maximum 0.8
+      samples 10
+    job "Actionlint"
+      key actionlint
+      median 0.5
+      maximum 0.6
+      samples 10
+  workflow ".github/workflows/write-effect-ladder.yml"
+    name "Write-Effect Ladder"
+    runs 10
+    wall-median 6.6
+    wall-maximum 9.2
+    job "Write-Effect Ladder (issue #916 rungs)"
+      key write-effect-ladder
+      median 4.6
+      maximum 7.1
+      samples 10

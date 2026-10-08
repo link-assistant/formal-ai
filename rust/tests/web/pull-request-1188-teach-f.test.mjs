@@ -1,5 +1,5 @@
 // PR #1188 TEACH-F: the open gaps of experiments/formal_ai_subagent/gaps.md
-// taught to Formal AI (ledger rows T210-T229 in
+// taught to Formal AI (ledger rows T210-T229, T290-T299 and T360-T369 in
 // docs/case-studies/pull-request-1188/formal-ai-dogfood.md). Each request is
 // replayed through the planner the JS server runs (`planChatStep`) over an
 // in-memory workspace whose tools answer as the Agent CLI's do. The Rust twin
@@ -14,11 +14,14 @@ import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 
 let planChatStep;
 let quoteFault;
+let quotedSegmentSpans;
+let namesAsDestination;
 
 before(async () => {
   await installNodeHost(new WorkerHost());
   ({ planChatStep } = await import('../../../js/agentic/planner.mjs'));
-  ({ quoteFault } = await import('../../../js/agentic/crate/normal_markov.mjs'));
+  ({ quoteFault, quotedSegmentSpans } = await import('../../../js/agentic/crate/normal_markov.mjs'));
+  ({ namesAsDestination } = await import('../../../js/agentic/literal_write_guard.mjs'));
 });
 
 const TOOLS = ['bash', 'edit', 'glob', 'grep', 'list', 'read', 'write'];
@@ -29,7 +32,7 @@ function agentRead(text) {
   return `<file>\n${body}\n\n(End of file - total ${text.split('\n').length} lines)\n</file>`;
 }
 
-/** The Agent CLI's tools over an in-memory workspace; bash knows `sha256sum --`, `cat` and a passing `node --test`. */
+/** The Agent CLI's tools over an in-memory workspace; bash knows `sha256sum --`, `cat`, a word-for-word `perl -pi` and a passing `node --test`. */
 function execute(files, tool, args) {
   if (tool === 'read') {
     const path = pathOf(args);
@@ -59,6 +62,12 @@ function execute(files, tool, args) {
     const copy = /^cp (\S+) (\S+)$/u.exec(args.command);
     if (copy) {
       files.set(copy[2], files.get(copy[1]) ?? '');
+      return '';
+    }
+    // A replace of every occurrence of a plain word (G84).
+    const perl = /^perl -pi -e 's\/(\w+)\/(\w+)\/g' -- (\S+)$/u.exec(args.command);
+    if (perl) {
+      files.set(perl[3], (files.get(perl[3]) ?? '').split(perl[1]).join(perl[2]));
       return '';
     }
     // A suite slower than the driver's timeout comes back killed (G77).
@@ -466,5 +475,131 @@ describe('G82: a copy followed by edits of the copy', () => {
     assert.equal(files.get('b.lino'), 'y one\nq two\nn three\n');
     assert.equal(answer, 'Completed the action `cp a.lino b.lino` and verified it with `test -e b.lino`, `test -e a.lino`.\n\n'
       + 'Made 3 replacements in `b.lino`, in order: `x` → `y`, `p` → `q`, `m` → `n`; and observed the result.');
+  });
+});
+
+describe('G86: guillemets nested inside a guillemet payload', () => {
+  const request = 'Insert the line «| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |» after the line containing «| T2 |» in l.md.';
+
+  test('pairs as a stack: the inner pairs are part of the payload', () => {
+    assert.deepEqual(quotedSegmentSpans(request).map((segment) => segment.text),
+      ['| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |', '| T2 |']);
+  });
+
+  test('the row is inserted into the named file, and no other file is written', async () => {
+    const { files, answer } = await drive(request, { 'l.md': '| T1 | a |\n| T2 | b |\n' });
+    assert.deepEqual([...files.keys()], ['l.md']);
+    assert.equal(files.get('l.md'), '| T1 | a |\n| T2 | b |\n| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |\n');
+    assert.equal(answer, 'Inserted `| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |` after `| T2 |` in `l.md` and observed the result.');
+  });
+
+  test('an outer guillemet whose stack never empties is declined as unpaired', async () => {
+    const { files, answer } = await drive('Insert the line «| T3 | a «b» c after the line containing «| T2 |» in l.md.', { 'l.md': '| T2 | b |\n' });
+    assert.deepEqual([...files.keys()], ['l.md']);
+    assert.equal(answer, 'A quote in this request opens and never closes (`«| T3 | a «b» c after the line c`), so I cannot tell the quoted text from the instruction, and nothing was done. Close the quote, or use «» or backticks when the text holds quotes of its own.');
+  });
+
+  test('a write never targets a path named only inside quoted text', () => {
+    assert.equal(namesAsDestination('Insert the line «see f.md» in l.md.', 'f.md'), false);
+    assert.equal(namesAsDestination('Insert the line «see f.md» in l.md.', 'l.md'), true);
+    assert.equal(namesAsDestination("Create 'notes.txt' containing hi", 'notes.txt'), true);
+  });
+});
+
+describe('G84: a replace asked for everywhere', () => {
+  for (const cue of ['everywhere', 'in all occurrences', 'throughout the file']) {
+    test(`"${cue}" is no part of the new text, and every occurrence is replaced`, async () => {
+      const { files, answer } = await drive(`In f.txt replace «a» with «b» ${cue}.`, { 'f.txt': 'a x a\ny a\n' });
+      assert.equal(files.get('f.txt'), 'b x b\ny b\n');
+      assert.equal(answer, 'Replaced `a` with `b` in `f.txt` and observed the result.');
+    });
+  }
+
+  test('a cue word inside the quotes is part of the text', async () => {
+    const { files } = await drive('In f.txt replace «a» with «b everywhere».', { 'f.txt': 'a x\n' });
+    assert.equal(files.get('f.txt'), 'b everywhere x\n');
+  });
+
+  test('the cue is seeded in every registered language', async () => {
+    const { withoutAllOccurrenceCues } = await import('../../../js/agentic/write_request.mjs');
+    for (const request of ['В f.txt замени «a» на «b» везде.', 'f.txt में «a» को «b» से हर जगह बदलो।', '在 f.txt 中将 «a» 替换为 «b» 所有出现处。',
+      'En f.txt reemplaza «a» por «b» en todas partes.']) {
+      const blanked = withoutAllOccurrenceCues(request);
+      assert.equal(blanked.length, request.length);
+      assert.doesNotMatch(blanked, /везде|हर जगह|所有出现处|en todas partes/u);
+    }
+  });
+});
+
+describe('G87: a replace asked again after its old text is gone', () => {
+  test('the new text already there: the replacement is already made', async () => {
+    const { files, answer, calls } = await drive('In g.txt replace «x» with «y».', { 'g.txt': 'a y b\n' });
+    assert.equal(files.get('g.txt'), 'a y b\n');
+    assert.deepEqual(calls.filter((call) => call !== 'read'), []);
+    assert.equal(answer, '`g.txt` already holds `y` and no `x`: the replacement is already made, and nothing changed.');
+  });
+
+  test('neither text there: the old text does not occur', async () => {
+    const { answer } = await drive('In g.txt replace «q» with «z».', { 'g.txt': 'a y b\n' });
+    assert.equal(answer, '`q` does not occur in `g.txt`, so nothing was changed.');
+  });
+
+  test('a line replace whose line is gone is answered the same way', async () => {
+    const { answer } = await drive('In g.txt replace the line «nope» with the line «z».', { 'g.txt': 'a y b\n' });
+    assert.equal(answer, '`nope` does not occur in `g.txt`, so nothing was changed.');
+  });
+});
+
+describe('G84: the dogfood driver never prints a bare null answer', () => {
+  test('a session cut by the step budget says so', async () => {
+    const { drive: driveSession, unanswered } = await import('../../../experiments/js_dogfood/drive.mjs');
+    const looping = async () => ({ kind: 'tools', calls: [{ tool: 'list', arguments: '{"path":"."}' }] });
+    const cut = await driveSession(looping, process.cwd(), 'Copy a to b.', { steps: 2 });
+    assert.equal(cut.answer, null);
+    assert.equal(cut.stop, 'steps');
+    assert.equal(unanswered(cut.stop, 2, cut.transcript.length),
+      '(no answer: the 2-step budget ran out after 2 tool calls, before the task finished; run again with a larger --steps)');
+    const silent = await driveSession(async () => null, process.cwd(), 'x', { steps: 2 });
+    assert.equal(silent.stop, 'no-plan');
+    assert.equal(unanswered(silent.stop, 2, 0), '(no answer: the planner planned no step after 0 tool calls)');
+  });
+});
+
+describe('G85: numbered lines moved to another file', () => {
+  const A = 'l1\nl2\nl3\nl4\nl5\n';
+  const B = 'b1\n';
+
+  test('the range is appended to the destination, then removed from the source; no file is renamed', async () => {
+    const { files, answer, commands } = await drive('Move lines 2-3 of a.md to the end of b.md.', { 'a.md': A, 'b.md': B }, 12);
+    assert.equal(files.get('a.md'), 'l1\nl4\nl5\n');
+    assert.equal(files.get('b.md'), 'b1\nl2\nl3\n');
+    assert.ok(commands.every((command) => !/^(mv|cp) /u.test(command)), commands.join('\n'));
+    assert.equal(answer, 'Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result.');
+  });
+
+  test('the destination is the path after the cue, wherever the source is named', async () => {
+    const { files, answer } = await drive('In a.md move lines 2 to 3 to the start of b.md.', { 'a.md': A, 'b.md': B }, 12);
+    assert.equal(files.get('a.md'), 'l1\nl4\nl5\n');
+    assert.equal(files.get('b.md'), 'l2\nl3\nb1\n');
+    assert.equal(answer, 'Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result.');
+  });
+
+  test('one line, asked in Russian', async () => {
+    const { files, answer } = await drive('Перенеси строку 4 из a.md в конец b.md.', { 'a.md': A, 'b.md': B }, 12);
+    assert.equal(files.get('a.md'), 'l1\nl2\nl3\nl5\n');
+    assert.equal(files.get('b.md'), 'b1\nl4\n');
+    assert.equal(answer, 'Перенёс строку 4 из `a.md` в конец `b.md` и проверил результат.');
+  });
+
+  test('a range past the end of the source changes nothing and says why', async () => {
+    const { files, answer, calls } = await drive('Move lines 7-9 of a.md to the end of b.md.', { 'a.md': A, 'b.md': B }, 12);
+    assert.deepEqual(calls, ['read']);
+    assert.equal(files.get('b.md'), B);
+    assert.equal(answer, '`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed.');
+  });
+
+  test('a file move without line numbers is still a file move', async () => {
+    const { commands } = await drive('Move a.md to c.md.', { 'a.md': A }, 4);
+    assert.ok(commands.includes('test -e a.md'), commands.join('\n'));
   });
 });

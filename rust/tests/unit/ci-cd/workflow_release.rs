@@ -770,7 +770,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #808's evidence-check job now lives in
         // `.github/workflows/evidence-check.yml`; its timeout is asserted by
         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
-        ("docker-build", 60),
+        ("docker-build", 30),
         ("secrets-scan", 10),
         ("version-check", 5),
         // Issue #1081 (D15): probes every publishing credential with a write

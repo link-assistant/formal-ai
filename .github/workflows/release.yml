@@ -136,7 +136,7 @@ jobs:
     permissions:
       contents: read
       packages: read
-    timeout-minutes: 60
+    timeout-minutes: 30
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-docker-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -530,6 +530,10 @@ jobs:
           TEST_BUDGET_SECONDS: 2400
           SHARD_INDEX: ${{ matrix.shard || 1 }}
           SHARD_TOTAL: 4
+          # PR #1188: seconds a shard spends in other steps (shard 1 the LiNo and
+          # census gates, shard 2 the doc tests; run 37753751698), planned around.
+          SHARD_RESERVED_SECONDS: 1=330,2=80
+          RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           chmod +x dist/tests/*
@@ -563,16 +567,26 @@ jobs:
           TEST_WARN_RATIO_PERCENT: 70
           SHARD_INDEX: ${{ matrix.shard || 1 }}
           SHARD_TOTAL: ${{ matrix.shards || 1 }}
-        # Every SHARD_TOTAL-th test of the listed suite; `--exact` makes the
-        # `specification::` filter match nothing, so only this shard's names run.
+          RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
+        # PR #1188: this shard's part, planned longest-first (index order gave
+        # 236s, 641s and 378s, run 37753751698); `--check` proves each test runs
+        # once. `--exact` makes the `specification::` filter match nothing.
         run: |
           set -euo pipefail
-          mapfile -t names < <(cargo test --manifest-path rust/Cargo.toml --test unit --all-features specification:: -- --list --format terse \
-            | sed -n 's/: test$//p' | awk -v i="$SHARD_INDEX" -v n="$SHARD_TOTAL" '(NR - 1) % n == i - 1')
+          listing="$RUNNER_TEMP/specification-tests.txt"
+          cargo test --manifest-path rust/Cargo.toml --test unit --all-features specification:: -- --list --format terse \
+            | sed -n 's/: test$//p' > "$listing"
+          node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --check < "$listing"
+          mapfile -t names < <(node scripts/plan-test-shards.mjs --shard "$SHARD_INDEX" --of "$SHARD_TOTAL" < "$listing")
           [ "${#names[@]}" -gt 0 ] || { echo "::error::specification shard $SHARD_INDEX/$SHARD_TOTAL selected no test" >&2; exit 1; }
+          time_flags=()
+          if [ "$RECORD_TEST_TIMES" = "true" ]; then
+            export RUSTC_BOOTSTRAP=1
+            time_flags=(-Z unstable-options --report-time)
+          fi
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
-            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification:: -- --exact "${names[@]}"
+            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification:: -- "${time_flags[@]}" --exact "${names[@]}"
       - name: Run doc tests
         if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && matrix.shard == 2 }}
         env:

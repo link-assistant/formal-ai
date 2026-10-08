@@ -128,6 +128,15 @@ pub(super) fn plan_workspace_change_step(
     if let Some(change) = composite_module_change(task) {
         return plan_composite_step(task, current_turn, tool_names, &change);
     }
+    // Numbered lines moved to another file: placed there, then removed (G85).
+    if let Some(order) = super::line_range_move::line_range_move(task) {
+        return super::line_range_move::plan_line_range_move_step(
+            task,
+            current_turn,
+            tool_names,
+            &order,
+        );
+    }
     if let Some(change) = super::workspace_computed_change::grounded_line_change(task) {
         return super::workspace_computed_change::plan_computed_change_step(
             task,
@@ -243,11 +252,22 @@ fn plan_rewrite_step(
     let written = as_written(&source, rewrite);
     let rewrite = written.as_ref().unwrap_or(rewrite);
     let Some(updated) = rewritten_source(&source, rewrite) else {
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_verification_failed",
+        // A replace asked again finds its old text gone: that is the answer (G87).
+        let absent = super::replace_list::absent_text_answer(
             task,
             &rewrite.target,
-        )?));
+            &source,
+            &rewrite.pattern,
+            Some(&rewrite.replacement),
+        );
+        return Some(AgenticPlan::Final(match absent {
+            Some(answer) => answer,
+            None => render_seeded_outcome(
+                "coding_workspace_verification_failed",
+                task,
+                &rewrite.target,
+            )?,
+        }));
     };
 
     let occurrences = match rewrite.scope {

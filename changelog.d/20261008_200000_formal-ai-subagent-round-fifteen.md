@@ -38,3 +38,21 @@
     - the debug-session test helper is fixed.
   - **Upstream:** link-foundation/meta-language PR #216 (issues #202, #203) translates sibling items and relative imports. Measured on our tree, it raises the JS -> Rust translated items from 254 to 657.
   - Formal AI did the ledger rows, gap marks and most single-line edits. Its new failures are logged as gaps G73–G86.
+- Round 15, second push:
+  - **CI speed:**
+    - `scripts/check-ci-speed.mjs` (gate `check-ci-speed`) enforces the 30-minute job limit, with 15 listed exceptions, and rejects sharding by list position.
+    - `scripts/plan-test-shards.mjs` splits tests longest-first from recorded durations. The JS tier runs `node --test` with full concurrency.
+  - **Requirement audit:**
+    - 106 distinct requirements were mapped (`docs/case-studies/pull-request-1188/requirement-coverage.md`), and every owner message was collected (`user-messages.md`).
+    - New rows R1188-U1 to U26 in `docs/requirements/issue-1188-user-requirements.md`: architecture, naming, notation, CI speed, text understanding (web formalization, round-trip translation, requirement extraction, dependency summarization), readable multi-line code, minimal local tests, disk care.
+  - **Seed registry:** `scripts/generate-seed-registry.mjs` is the JS twin of the registry generator, with a parity gate. `meanings-coding-assertions` is now registered. The JS planner reads its response files from the registry instead of a hand-kept list.
+  - **Responses:**
+    - 54 Spanish agentic responses were added, applied by `experiments/formal_ai_subagent/add-translations.mjs`.
+    - The `local_search_*` responses now live in `multilingual-responses-local-search.lino`.
+    - Response debt is 382.
+  - **TEACH-F round 4:**
+    - nested «» pairs are part of the payload, and an unnamed write target is refused (G86, unsafe);
+    - "everywhere" replaces every occurrence (G84);
+    - a repeated Replace answers not-found or already-replaced (G87);
+    - a line-range move between files is a move of lines, never `mv` (G85).
+  - **CI fixes:** a non-exact-size iterator in `test_assertion.rs`, plus two clippy errors.

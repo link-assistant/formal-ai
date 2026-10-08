@@ -17,7 +17,7 @@
 // `edit` return an empty string, `bash` returns stdout+stderr.
 
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync, writeSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -147,7 +147,12 @@ export function execute(dir, call) {
   }
 }
 
-/** Run a whole session; returns `{transcript, answer}`. */
+/**
+ * Run a whole session; returns `{transcript, answer, stop}`. `answer` is null
+ * when the session ends without one, and `stop` then says why: `no-plan` (the
+ * planner and its fall-through planned nothing) or `steps` (the step budget
+ * ran out mid-task, PR #1188 G84).
+ */
 export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null } = {}) {
   const messages = [
     { role: 'system', content: `<env>\n  Working directory: ${dir}\n  Is directory a git repo: yes\n</env>` },
@@ -159,8 +164,8 @@ export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS
     // the symbolic command reroute may still turn that answer into tool calls
     // (js/server/agentic.mjs commandReroutePlan).
     const plan = (await planChatStep(messages, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
-    if (!plan) return { transcript, answer: null };
-    if (plan.kind === 'final') return { transcript, answer: plan.answer };
+    if (!plan) return { transcript, answer: null, stop: 'no-plan' };
+    if (plan.kind === 'final') return { transcript, answer: plan.answer, stop: 'final' };
     const toolCalls = plan.calls.map((call, index) => ({
       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
     }));
@@ -171,7 +176,13 @@ export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS
       messages.push({ role: 'tool', tool_call_id: toolCalls[index].id, name: call.tool, content: result });
     });
   }
-  return { transcript, answer: null };
+  return { transcript, answer: null, stop: 'steps' };
+}
+
+/** What the driver prints when a session ends with no answer: never a bare `null`. */
+export function unanswered(stop, steps, calls) {
+  if (stop === 'steps') return `(no answer: the ${steps}-step budget ran out after ${calls} tool calls, before the task finished; run again with a larger --steps)`;
+  return `(no answer: the planner planned no step after ${calls} tool calls)`;
 }
 
 async function main(argv) {
@@ -193,12 +204,16 @@ async function main(argv) {
     const symbolic = await solve(latestUserRequest(messages) ?? '', []);
     return planSymbolicCommandReroute(messages, tools, symbolic) ?? { kind: 'final', answer: symbolic.answer };
   };
-  const { transcript, answer } = await drive(planChatStep, resolve(dir), rest.join(' '), { steps, fallthrough });
+  const { transcript, answer, stop } = await drive(planChatStep, resolve(dir), rest.join(' '), { steps, fallthrough });
+  const out = [];
   for (const entry of transcript) {
-    console.log(`>> ${entry.tool} ${entry.arguments}`);
-    if (entry.result) console.log(entry.result.split('\n').map((line) => `   ${line}`).join('\n'));
+    out.push(`>> ${entry.tool} ${entry.arguments}`);
+    if (entry.result) out.push(entry.result.split('\n').map((line) => `   ${line}`).join('\n'));
   }
-  console.log(`== answer ==\n${answer}`);
+  out.push(`== answer ==\n${answer ?? unanswered(stop, steps, transcript.length)}`);
+  // Written synchronously: process.exit drops what a pipe has not drained yet,
+  // which cut the answer off a long transcript.
+  writeSync(1, `${out.join('\n')}\n`);
   process.exit(0);
 }
 

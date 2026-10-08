@@ -16,6 +16,7 @@ than that, so it is written as ordered parts: `assembled/part-01.md`,
 `assembled/part-02.md`, and so on, each at most 1400 lines. Sections are packed
 into parts in assembly order and never cut in half. `REQUIREMENTS.md` is the
 index: it links every part and lists the sections each part holds.
+The numbered part names contradict the 2026-10-08 vision that file names say what they hold; [R1188-U5](issue-1188-user-requirements.md) replaces them with named parts once both generators change.
 
 Anything that reads "the requirements document" reads every part in file-name
 order — `scripts/generate-requirement-status.rs`,

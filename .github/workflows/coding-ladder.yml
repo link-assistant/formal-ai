@@ -91,11 +91,11 @@ jobs:
     name: Coding ladder shard ${{ matrix.shard }}
     needs: [ladder-binary]
     runs-on: ubuntu-latest
-    # 1500s of budget under a 40-minute cap is 62.5%, inside the 70% share
+    # 1200s of budget under a 30-minute cap is 66.7%, inside the 70% share
     # issue #1081 allows. All 130 tasks measured 17.7-23.1 minutes in one job,
-    # so a fifth is ~4-5 minutes; the budget is five times that, for a shard
+    # so a fifth is ~4-5 minutes (8.6 at most, PR #1188); the budget is four times that, for a shard
     # whose tasks run into the harness's 300s per-task timeout.
-    timeout-minutes: 40
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -114,7 +114,7 @@ jobs:
           SHARD_INDEX: ${{ strategy.job-index }}
           SHARD_TOTAL: ${{ strategy.job-total }}
           RESULTS: ${{ runner.temp }}/coding-ladder-shard
-          TEST_BUDGET_SECONDS: 1500
+          TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           set -euo pipefail

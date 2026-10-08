@@ -178,7 +178,8 @@ describe('PR #1188 dogfood: a removal takes out what it quotes', () => {
   test('text found nowhere is reported, not written', async () => {
     const { files, answer } = await drive("Delete the line 'absent' from notes.txt.", { 'notes.txt': 'first line\n' });
     assert.equal(files.get('notes.txt'), 'first line\n');
-    assert.equal(answer, 'Verification failed for `notes.txt`: the observed bytes differ from the planned workspace effect.');
+    // Nothing was planned, so nothing failed to verify: the text is not there (G87).
+    assert.equal(answer, '`absent` does not occur in `notes.txt`, so nothing was changed.');
   });
 });
 

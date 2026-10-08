@@ -5,22 +5,23 @@
 import { cached, childValue, childrenNamed, parseLino, readText } from '../host.mjs';
 import { languageFromSlug } from './language.mjs';
 
-/** `RESPONSE_FILES`, in the order rust/src/seed/embedded_registry.rs lists them. */
-const RESPONSE_SUFFIXES = [
-  '', '-agentic', '-agentic-continuation', '-agentic-tools', '-client-config', '-code-tasks',
-  '-concept-lookup', '-creative-tasks', '-decomposition', '-engine-reports', '-entities',
-  '-external-benchmark', '-formalization', '-language-protocol', '-legality', '-memory-program',
-  '-orchestration', '-parity', '-pattern', '-policy', '-procedure', '-product-search', '-quantities',
-  '-repair', '-substitution-compiler', '-summarization', '-summarization-quality', '-symbolic',
-  '-synthesis', '-text-transform', '-thinking', '-thinking-narrative', '-translate', '-triz',
-];
+/** The one inventory of the seed files and the lexicons that read them. */
+const SEED_REGISTRY = 'data/meta/seed-registry.lino';
+
+/** `RESPONSE_FILES`: every seed the registry (data/meta/seed-registry.lino) gives the
+ * `response` lexicon, in its order, as rust/src/seed/embedded_registry.rs lists them. */
+export function responseFiles() {
+  return cached('response-files', () => childrenNamed(parseLino(readText(SEED_REGISTRY)), 'seed')
+    .filter((seed) => childrenNamed(seed, 'lexicon').some((lexicon) => lexicon.id === 'response'))
+    .map((seed) => `data/seed/${seed.id}.lino`));
+}
 
 /** Mirrors `fn multilingual_responses`: `{id, intent, language, text, variants}` records. */
 export function multilingualResponses() {
   return cached('multilingual-responses', () => {
     const out = [];
-    for (const suffix of RESPONSE_SUFFIXES) {
-      const root = parseLino(readText(`data/seed/multilingual-responses${suffix}.lino`));
+    for (const file of responseFiles()) {
+      const root = parseLino(readText(file));
       for (const entry of childrenNamed(root, 'response')) {
         const intent = childValue(entry, 'intent');
         const language = childValue(entry, 'language');

@@ -1,0 +1,83 @@
+# The CI speed rule (PR #1188), enforced by `scripts/check-ci-speed.mjs`
+# (`data/meta/ci-gates/check-ci-speed.lino`). Documented in docs/ci-cd/speed.md.
+#
+# - No job or step runs longer than limit-minutes; target-minutes is the aim.
+#   Every job declares a timeout-minutes at or under the limit, and no job's
+#   measured maximum in data/meta/ci-durations.lino is above it.
+# - Long work starts first. A job whose measured median is at or above
+#   long-job-minutes waits only on jobs whose outputs, results or artifacts it
+#   uses; test shards are planned longest-first by shard-planner from recorded
+#   durations, and every sharded-suite runs through it.
+# - Sharding loses nothing: the plan puts every listed test in exactly one shard.
+#
+# A job that cannot meet the limit yet is an over-limit-job under its workflow,
+# with the cap it may keep and the reason. The list only shrinks: an entry whose
+# job meets the limit again, or no longer exists, fails the gate until removed.
+ci-speed
+  issue 1188
+  limit-minutes 30
+  target-minutes 15
+  long-job-minutes 10
+  durations "data/meta/ci-durations.lino"
+  test-durations "data/meta/test-durations.lino"
+  javascript-test-durations "data/meta/javascript-test-durations.lino"
+  shard-planner "scripts/plan-test-shards.mjs"
+  sharded-suite "scripts/run-prebuilt-tests.sh"
+  sharded-suite "scripts/run-coverage-shard.sh"
+  sharded-suite ".github/workflows/release.yml"
+  sharded-suite ".github/workflows/layered-ci.yml"
+  workflow ".github/workflows/agent-cli-e2e.yml"
+    over-limit-job agent-cli-e2e
+      timeout-minutes 45
+      reason "Measured 23.1 minutes at most. The cap outlasts the 900s computer-use record/replay and 600s held-out deadlines plus setup under the 70% share rule (issue #1069, #1081). To meet 30: move the two computer-use steps into a third matrix leg."
+  workflow ".github/workflows/container-images.yml"
+    over-limit-job build
+      timeout-minutes 90
+      reason "Dispatch and workflow_call only, never on a pull request: one multi-architecture image build per Dockerfile, arm64 under emulation, with a 45-minute build step. To meet 30: build each architecture on its own native runner."
+  workflow ".github/workflows/coverage.yml"
+    over-limit-job coverage-build
+      timeout-minutes 40
+      reason "One instrumented build of every test target, measured 20.5 minutes at most (median 18.1); its 1500s budget needs the 40-minute cap under the 70% share rule (issue #1081). To meet 30: build the unit, integration and source harnesses in parallel jobs."
+  workflow ".github/workflows/dependencies-latest.yml"
+    over-limit-job update
+      timeout-minutes 90
+      reason "Weekly schedule and dispatch only: updates every dependency, then builds and tests the whole crate in one job."
+  workflow ".github/workflows/desktop-release.yml"
+    over-limit-job build
+      timeout-minutes 50
+      reason "Measured 41.3 minutes at most (macos-x64; windows-arm64 37.6): one release build plus Electron packaging per operating system, which one machine has to do. Pull requests run it only when desktop, vscode or Rust sources change. To meet 30: package a release binary built once per target."
+    over-limit-job cli
+      timeout-minutes 50
+      reason "Measured 34.4 minutes at most (cli-macos-x64): one cold release build per target on the slowest runner. To meet 30: share the release build with the desktop job for the same target."
+  workflow ".github/workflows/e2e-local.yml"
+    over-limit-job e2e-local
+      timeout-minutes 40
+      reason "Measured 30.0 minutes at most (median 13.8); Playwright's 25-minute globalTimeout must stay under the cap (issue #977). To meet 30: shard the Playwright suite over matrix legs, spec files longest first."
+  workflow ".github/workflows/external-benchmarks.yml"
+    over-limit-job external-benchmarks
+      timeout-minutes 90
+      reason "Schedule and dispatch only (skipped on pull requests, which run the ratchet): runs the upstream suites, 21.2 minutes at most on main. To meet 30: run the sharded upstream-shard path on schedule too."
+    over-limit-job upstream-shard
+      timeout-minutes 45
+      reason "Dispatch with a shard size only: one window of the upstream suites. To meet 30: size the windows from measured durations."
+  workflow ".github/workflows/issue-1028-agent-ladder.yml"
+    over-limit-job ladder
+      timeout-minutes 180
+      reason "Pull-request legs measured 19.0 minutes at most; the static 180 bounds the weekly all mode, one leg walking every tree level in sequence, and is the ceiling data/meta/ci-wall-clock.lino records (R1085-16). To meet 30: plan the all mode as parallel per-level legs."
+  workflow ".github/workflows/macos-core-tests.yml"
+    over-limit-job build-archive
+      timeout-minutes 55
+      reason "Switched off while non-Linux CI is off (issue #1111): a cold build of the macOS test archive. To meet 30: build the archive from a shared compiler cache on the Linux build job's schedule."
+  workflow ".github/workflows/release.yml"
+    over-limit-job test
+      timeout-minutes 90
+      reason "Measured 19.3 minutes at most. The cap is sized by the 70% share rule (issue #1081) over the specification lane's 1800s build and 1800s run budgets. To meet 30: re-size those budgets from the longest-first shards this change introduces once CI has measured them."
+    over-limit-job auto-release
+      timeout-minutes 90
+      reason "Push to main only: builds and publishes the Docker images and the GitHub release in one job; issue #977 requires at least 60 minutes, because at 30 the job was killed mid-build before the release step."
+    over-limit-job manual-release
+      timeout-minutes 90
+      reason "Dispatch only: the auto-release job's work on demand, under the same issue #977 floor of 60 minutes."
+    over-limit-job deploy-pages
+      timeout-minutes 35
+      reason "Push to main only: cargo doc for the API reference plus the GitHub Pages deployment queue, which can stall for minutes (PR #965)."

@@ -26,27 +26,59 @@ bash scripts/install-rust-script.sh
 # twenty-six seconds in). "${CORPUS_GATE_SKIP[@]}" expands to the two words.
 CORPUS_GATE_SKIP=(--skip issue_1138_no_silent_unknown)
 
-# Sharding (PR #1188): the full lane runs as SHARD_TOTAL parallel jobs, each
-# taking every SHARD_TOTAL-th test (round-robin by listed index) of every
-# target, so the ~25-minute suite finishes in a fraction of the time. Every
-# target runs even after one fails, so a single run reports every failure
-# instead of stopping at the first red target.
+# Sharding (PR #1188): the full lane runs as SHARD_TOTAL parallel jobs. Every
+# job lists all three targets and hands the one listing to
+# scripts/plan-test-shards.mjs, which splits it longest-first from
+# data/meta/test-durations.lino -- the same plan in every job, each test in
+# exactly one shard -- and runs only its own part. Dealing tests out by listed
+# index instead left one shard with the slow tests while the others idled.
+# `--check` re-proves on the real listing that the shards cover every test
+# exactly once. SHARD_RESERVED_SECONDS (`<shard>=<seconds>,...`) is work a
+# shard already carries in other steps, so the plan gives it fewer tests.
+# Every target runs even after one fails, so a single run reports every
+# failure instead of stopping at the first red target.
+#
+# RECORD_TEST_TIMES=true prints each test's duration (libtest's unstable
+# `--report-time`, admitted on a stable toolchain by RUSTC_BOOTSTRAP) so
+# `experiments/formal_ai_subagent/ci-durations.mjs --tests` can refresh the
+# recorded durations. Off by default: the variable reaches every process the
+# tests spawn.
 SHARD_INDEX="${SHARD_INDEX:-1}"
 SHARD_TOTAL="${SHARD_TOTAL:-1}"
+SHARD_RESERVED_SECONDS="${SHARD_RESERVED_SECONDS:-}"
+targets=(unit integration source)
+skips=(--skip data_files:: --skip self_ast_census --skip specification:: "${CORPUS_GATE_SKIP[@]}")
+time_flags=()
+if [ "${RECORD_TEST_TIMES:-false}" = "true" ] \
+  && RUSTC_BOOTSTRAP=1 dist/tests/unit -Z unstable-options --report-time --list >/dev/null 2>&1; then
+  export RUSTC_BOOTSTRAP=1
+  time_flags=(-Z unstable-options --report-time)
+fi
 status=0
-for target in unit integration source; do
-  skips=(--skip data_files:: --skip self_ast_census --skip specification:: "${CORPUS_GATE_SKIP[@]}")
-  if [ "$SHARD_TOTAL" -gt 1 ]; then
-    mapfile -t names < <("dist/tests/$target" --list --format terse "${skips[@]}" \
+if [ "$SHARD_TOTAL" -gt 1 ]; then
+  listing="$(mktemp)"
+  plan="$(mktemp)"
+  trap 'rm -f "$listing" "$plan"' EXIT
+  for target in "${targets[@]}"; do
+    "dist/tests/$target" --list --format terse "${skips[@]}" \
       | sed -n 's/: test$//p' \
-      | awk -v index_="$SHARD_INDEX" -v total="$SHARD_TOTAL" '(NR - 1) % total == index_ - 1')
+      | awk -v target="$target" '{ print target "\t" $0 }' >> "$listing" || status=1
+  done
+  node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --reserve "$SHARD_RESERVED_SECONDS" --check < "$listing"
+  node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --reserve "$SHARD_RESERVED_SECONDS" --report < "$listing"
+  node scripts/plan-test-shards.mjs --shard "$SHARD_INDEX" --of "$SHARD_TOTAL" --reserve "$SHARD_RESERVED_SECONDS" \
+    < "$listing" > "$plan"
+fi
+for target in "${targets[@]}"; do
+  if [ "$SHARD_TOTAL" -gt 1 ]; then
+    mapfile -t names < <(awk -F '\t' -v target="$target" '$1 == target { print $2 }' "$plan")
     if [ "${#names[@]}" -eq 0 ]; then
       continue
     fi
     echo "shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} ${target} test(s)"
-    "dist/tests/$target" --exact "${names[@]}" || status=1
+    "dist/tests/$target" "${time_flags[@]}" --exact "${names[@]}" || status=1
   else
-    "dist/tests/$target" "${skips[@]}" || status=1
+    "dist/tests/$target" "${time_flags[@]}" "${skips[@]}" || status=1
   fi
 done
 exit "$status"

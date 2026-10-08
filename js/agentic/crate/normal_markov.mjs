@@ -60,7 +60,7 @@ export function quotedSegmentSpans(text) {
     if (!next) break;
     const [openAt, open, close] = next;
     const contentStart = openAt + open.length;
-    const contentEnd = closingDelimiter(text, contentStart, close);
+    const contentEnd = closingDelimiter(text, contentStart, open, close);
     if (contentEnd === null) break;
     const segmentEnd = contentEnd + close.length;
     result.push({ text: text.slice(contentStart, contentEnd), start: openAt, end: segmentEnd });
@@ -175,7 +175,7 @@ function nextCompletePair(text, cursor, open, close) {
     if (openAt < 0) return null;
     const previousIsAsciiWord = open === "'" && isAsciiAlphanumeric(previousChar(text, openAt));
     const contentStart = openAt + open.length;
-    if (!previousIsAsciiWord && closingDelimiter(text, contentStart, close) !== null) return [openAt, open, close];
+    if (!previousIsAsciiWord && closingDelimiter(text, contentStart, open, close) !== null) return [openAt, open, close];
     from = contentStart;
   }
 }
@@ -188,9 +188,33 @@ function nextCompletePair(text, cursor, open, close) {
  * opens a nested literal there, and the payload closes after that literal
  * does. When such nesting never closes, the first close stands.
  */
-function closingDelimiter(text, cursor, close) {
-  return close === "'" ? nestedClosingDelimiter(text, cursor) ?? plainClosingDelimiter(text, cursor, close)
-    : plainClosingDelimiter(text, cursor, close);
+function closingDelimiter(text, cursor, open, close) {
+  if (close === "'") return nestedClosingDelimiter(text, cursor) ?? plainClosingDelimiter(text, cursor, close);
+  return open === close ? plainClosingDelimiter(text, cursor, close) : stackedClosingDelimiter(text, cursor, open, close);
+}
+
+/**
+ * Mirrors `fn stacked_closing_delimiter`: the close of a pair whose marks
+ * differ (`«…»`, `“…”`, `「…」`), counted as a stack -- an inner `«…»` is part
+ * of the payload (PR #1188 G86) -- or null when the stack never empties.
+ */
+function stackedClosingDelimiter(text, cursor, open, close) {
+  let depth = 0;
+  let from = cursor;
+  for (;;) {
+    const closeAt = text.indexOf(close, from);
+    if (closeAt < 0) return null;
+    const openAt = text.indexOf(open, from);
+    if (openAt >= 0 && openAt < closeAt) {
+      depth += 1;
+      from = openAt + open.length;
+    } else if (depth === 0) {
+      return closeAt;
+    } else {
+      depth -= 1;
+      from = closeAt + close.length;
+    }
+  }
 }
 
 function plainClosingDelimiter(text, cursor, close) {

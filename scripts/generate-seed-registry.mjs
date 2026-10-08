@@ -1,0 +1,259 @@
+#!/usr/bin/env node
+// JavaScript twin of scripts/generate-seed-registry.rs: the same checks, the
+// same output lines and exit codes, and byte-identical generated files.
+//
+// data/meta/seed-registry.lino is the one inventory of data/seed/*.lino; this
+// generator canonicalizes it (sorted, union-merge repeats folded) and writes
+// rust/src/seed/embedded_registry.rs and js/seed-files.js from it.
+//
+// Usage:
+//   node scripts/generate-seed-registry.mjs           # verify
+//   node scripts/generate-seed-registry.mjs --write   # regenerate
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+const REGISTRY = 'data/meta/seed-registry.lino';
+const SEED_DIR = 'data/seed';
+const RUST_TARGET = 'src/seed/embedded_registry.rs';
+const WEB_TARGET = 'js/seed-files.js';
+const MAX_WIDTH = 100;
+
+const byteOrder = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
+const unquote = (value) => {
+  const trimmed = value.trim();
+  return trimmed.length > 1 && trimmed.startsWith('"') && trimmed.endsWith('"') ? trimmed.slice(1, -1) : trimmed;
+};
+const embedded = (seed) => seed.bundle || seed.lexicon.size > 0;
+const constant = (seed) => `${seed.name.toUpperCase().replaceAll('-', '_')}_LINO`;
+const seedPath = (seed) => `${SEED_DIR}/${seed.name}.lino`;
+const sortedLexicon = (seed) => [...seed.lexicon].sort(byteOrder);
+
+export function parseRegistry(source) {
+  const registry = { seeds: [], unregistered: [] };
+  let inSeed = false;
+  for (const line of source.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed === '' || trimmed.startsWith('#')) continue;
+    const indent = line.length - line.trimStart().length;
+    const space = trimmed.indexOf(' ');
+    const key = space < 0 ? trimmed : trimmed.slice(0, space);
+    const value = space < 0 ? '' : trimmed.slice(space + 1).trim();
+    if (indent === 2 && key === 'seed') {
+      registry.seeds.push({ name: unquote(value), bundle: false, lexicon: new Set(), web: false });
+      inSeed = true;
+    } else if (indent === 2 && key === 'unregistered') {
+      registry.unregistered.push({ pattern: unquote(value), owner: '', reason: '' });
+      inSeed = false;
+    } else if (indent === 2) {
+      inSeed = false;
+    } else if (indent === 4 && inSeed) {
+      const seed = registry.seeds.at(-1);
+      if (key === 'bundle') seed.bundle = unquote(value) === 'true';
+      else if (key === 'web') seed.web = unquote(value) === 'true';
+      else if (key === 'lexicon') seed.lexicon.add(unquote(value));
+    } else if (indent === 4 && registry.unregistered.length) {
+      const entry = registry.unregistered.at(-1);
+      if (key === 'owner') entry.owner = unquote(value);
+      else if (key === 'reason') entry.reason = unquote(value);
+    }
+  }
+  return registry;
+}
+
+export function canonicalize(registry) {
+  const seeds = [...registry.seeds].sort((left, right) => byteOrder(left.name, right.name));
+  const merged = [];
+  for (const seed of seeds) {
+    const previous = merged.at(-1);
+    if (previous && previous.name === seed.name) {
+      previous.bundle ||= seed.bundle;
+      previous.web ||= seed.web;
+      for (const lexicon of seed.lexicon) previous.lexicon.add(lexicon);
+    } else merged.push({ ...seed, lexicon: new Set(seed.lexicon) });
+  }
+  const unregistered = [...registry.unregistered].sort((left, right) => byteOrder(left.pattern, right.pattern))
+    .filter((entry, index, all) => index === 0 || all[index - 1].pattern !== entry.pattern);
+  return { seeds: merged, unregistered };
+}
+
+export function patternMatches(pattern, name) {
+  const star = pattern.indexOf('*');
+  if (star < 0) return pattern === name;
+  const head = pattern.slice(0, star);
+  const tail = pattern.slice(star + 1);
+  if (!name.startsWith(head)) return false;
+  const rest = name.slice(head.length);
+  for (let split = 0; split <= rest.length; split += 1) if (patternMatches(tail, rest.slice(split))) return true;
+  return false;
+}
+
+export function renderRegistry(registry, header) {
+  const lines = [header.trimEnd(), 'seed_registry'];
+  for (const seed of registry.seeds) {
+    lines.push(`  seed ${seed.name}`);
+    if (seed.bundle) lines.push('    bundle true');
+    for (const lexicon of sortedLexicon(seed)) lines.push(`    lexicon ${lexicon}`);
+    if (seed.web) lines.push('    web true');
+  }
+  for (const entry of registry.unregistered) {
+    lines.push(`  unregistered ${entry.pattern}`, `    owner "${entry.owner}"`, `    reason "${entry.reason}"`);
+  }
+  return `${lines.join('\n')}\n`;
+}
+
+export function registryHeader(source) {
+  const lines = [];
+  for (const line of source.split('\n')) {
+    if (line.trim() === '' || line.trimStart().startsWith('#')) lines.push(line);
+    else break;
+  }
+  return lines.join('\n');
+}
+
+const RUST_HEADER = `// Embedded Links Notation seed files and the file registry.
+//
+// Generated by \`rust-script scripts/generate-seed-registry.rs --write\` from
+// \`data/meta/seed-registry.lino\`. Do not edit by hand: issue #991 moved this
+// inventory out of hand-written lists because two branches adding a seed file
+// always appended to the same lines here, and the registry is \`merge=union\` so
+// that never happens again.
+//
+// \`src/seed/embedded.rs\` pulls this in with \`include!\`, which keeps it outside
+// rustfmt's reach -- the generator owns every byte, so a regenerated file is
+// byte-identical whatever rustfmt would have preferred.
+`;
+
+export function renderRust(registry) {
+  const embeddedSeeds = registry.seeds.filter(embedded);
+  let out = RUST_HEADER;
+  out += '\n/// Raw embedded contents (used by `merged_bundle` and by tests).\n';
+  for (const seed of embeddedSeeds) {
+    const oneLine = `pub const ${constant(seed)}: &str = include_str!("../../embedded/${seedPath(seed)}");`;
+    out += oneLine.length <= MAX_WIDTH ? oneLine
+      : `pub const ${constant(seed)}: &str =\n    include_str!("../../embedded/${seedPath(seed)}");`;
+    out += '\n';
+  }
+  out += '\n/// Embedded copy of every Links Notation seed file. Returned in registry\n'
+    + '/// order so callers can render the merged bundle deterministically.\n'
+    + '#[must_use]\n'
+    + "pub fn seed_files() -> Vec<(&'static str, &'static str)> {\n    vec![\n";
+  for (const seed of embeddedSeeds.filter((candidate) => candidate.bundle)) {
+    const oneLine = `        ("${seedPath(seed)}", ${constant(seed)}),`;
+    out += oneLine.length <= MAX_WIDTH ? `${oneLine}\n`
+      : `        (\n            "${seedPath(seed)}",\n            ${constant(seed)},\n        ),\n`;
+  }
+  out += '    ]\n}\n';
+  out += '\n/// The registered set of multilingual-response files, walked by\n'
+    + '/// [`super::multilingual_responses`].\n'
+    + '///\n'
+    + '/// Split so none breaches the seed file-size guard; each wraps its records\n'
+    + '/// under a top-level `multilingual_responses` node and the parser walks all of\n'
+    + '/// them, so an intent may live in whichever file keeps the sizes balanced.\n'
+    + 'pub const RESPONSE_FILES: &[&str] = &[\n';
+  for (const seed of embeddedSeeds.filter((candidate) => candidate.lexicon.has('response'))) out += `    ${constant(seed)},\n`;
+  out += '];\n';
+  out += '\n/// The registered set of meaning-lexicon files, concatenated by\n'
+    + '/// [`super::lexicon`].\n'
+    + '///\n'
+    + '/// Split across several `.lino` files so none breaches the seed file-size\n'
+    + '/// guard; each wraps its records under a top-level `meanings` node (the loader\n'
+    + '/// walks all of them).\n'
+    + 'pub const MEANING_FILES: &[&str] = &[\n';
+  for (const seed of embeddedSeeds.filter((candidate) => candidate.lexicon.has('meaning'))) out += `    ${constant(seed)},\n`;
+  out += '];\n';
+  return out;
+}
+
+export function renderWeb(registry) {
+  let out = '// Generated by `rust-script scripts/generate-seed-registry.rs --write` from\n'
+    + '// data/meta/seed-registry.lino. Do not edit by hand.\n'
+    + '//\n'
+    + "// Issue #991: this list used to live inside `seed_loader.js`, where every\n"
+    + '// branch that added a seed file appended to the same lines. It is the browser\n'
+    + '// half of the one inventory `src/seed/embedded.rs` is generated from, so the\n'
+    + '// worker and the Rust engine can never drift apart about which files exist.\n'
+    + '\n'
+    + 'self.FORMAL_AI_SEED_FILES = Object.freeze([\n';
+  for (const seed of registry.seeds.filter((candidate) => candidate.web)) out += `  "seed/${seed.name}.lino",\n`;
+  return `${out}]);\n`;
+}
+
+export function problems(registry, onDisk) {
+  const failures = [];
+  const registered = new Set(registry.seeds.map((seed) => seed.name));
+  for (const seed of registry.seeds) {
+    if (!onDisk.includes(seed.name)) failures.push(`\`${seed.name}\` is registered but \`${seedPath(seed)}\` does not exist`);
+    if (!embedded(seed) && !seed.web) {
+      failures.push(`\`${seed.name}\` is registered with no consumer: give it \`bundle\`, \`lexicon\` or \`web\`, or move it to an \`unregistered\` entry`);
+    }
+    for (const lexicon of sortedLexicon(seed)) {
+      if (lexicon !== 'meaning' && lexicon !== 'response') {
+        failures.push(`\`${seed.name}\` declares lexicon \`${lexicon}\`; the lexicons are \`meaning\` and \`response\``);
+      }
+    }
+  }
+  for (const entry of registry.unregistered) {
+    if (entry.owner.trim() === '' || entry.reason.trim() === '') {
+      failures.push(`unregistered \`${entry.pattern}\` names no owner or no reason; an exclusion without one is an omission, not a decision`);
+    }
+    if (!onDisk.some((name) => patternMatches(entry.pattern, name))) {
+      failures.push(`unregistered \`${entry.pattern}\` matches no file in ${SEED_DIR}; drop the stale exclusion`);
+    }
+  }
+  for (const name of onDisk) {
+    if (registered.has(name) || registry.unregistered.some((entry) => patternMatches(entry.pattern, name))) continue;
+    failures.push(`\`${SEED_DIR}/${name}.lino\` exists but the registry neither registers nor excludes it; add a \`seed ${name}\` block naming which paths load it`);
+  }
+  return failures;
+}
+
+function seedNamesOnDisk(root) {
+  const directory = join(root, SEED_DIR);
+  if (!existsSync(directory)) return [];
+  return readdirSync(directory).filter((name) => name.endsWith('.lino')).map((name) => name.slice(0, -'.lino'.length)).sort(byteOrder);
+}
+
+function main() {
+  const write = process.argv.includes('--write');
+  const root = process.cwd();
+  let source;
+  try {
+    source = readFileSync(join(root, REGISTRY), 'utf8');
+  } catch (error) {
+    console.log(`::error::Could not read ${REGISTRY}: ${error.message}`);
+    process.exit(1);
+  }
+  const header = registryHeader(source);
+  const registry = canonicalize(parseRegistry(source));
+  const onDisk = seedNamesOnDisk(root);
+  console.log(`\nChecking the seed registry in ${REGISTRY}...\n`);
+  console.log(`  ${registry.seeds.length} registered, ${registry.seeds.filter(embedded).length} embedded, ${registry.seeds.filter((seed) => seed.web).length} in the browser worker, ${onDisk.length} on disk\n`);
+  const failures = problems(registry, onDisk);
+  if (failures.length) {
+    for (const failure of failures) console.log(`::error::${failure}`);
+    console.log(`\n${failures.length} seed registry violation(s). Update ${REGISTRY}.\n`);
+    process.exit(1);
+  }
+  const targets = [
+    [REGISTRY, join(root, REGISTRY), renderRegistry(registry, header)],
+    [RUST_TARGET, join(root, 'rust', RUST_TARGET), renderRust(registry)],
+    [WEB_TARGET, join(root, WEB_TARGET), renderWeb(registry)],
+  ];
+  const stale = [];
+  for (const [path, full, expected] of targets) {
+    const actual = existsSync(full) ? readFileSync(full, 'utf8') : '';
+    if (actual === expected) continue;
+    if (write) {
+      writeFileSync(full, expected);
+      console.log(`  wrote ${path}`);
+    } else stale.push(path);
+  }
+  if (stale.length === 0) {
+    console.log('\nThe seed registry and every file generated from it agree.\n');
+    return;
+  }
+  for (const path of stale) console.log(`::error::${path} does not match ${REGISTRY}. Run \`rust-script scripts/generate-seed-registry.rs --write\``);
+  process.exit(1);
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) main();

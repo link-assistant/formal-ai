@@ -216,6 +216,10 @@ seed_registry
     web true
   seed meanings-code-task-templates
     bundle true
+  seed meanings-coding-assertions
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-coding-catalog
     bundle true
     lexicon meaning
@@ -559,6 +563,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-legality
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-local-search
     bundle true
     lexicon response
     web true

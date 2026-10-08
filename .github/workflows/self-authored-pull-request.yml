@@ -46,7 +46,7 @@ jobs:
     name: Formal AI authors a change and opens the pull request
     if: github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
     # Scoped to this job, not the workflow: the job pushes the bot branch,
     # opens and comments on the pull request, and comments on the task issue.
     # `actions: write` lets the job dispatch the bot pull request's checks

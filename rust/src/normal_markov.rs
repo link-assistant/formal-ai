@@ -177,7 +177,7 @@ pub fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
             break;
         };
         let content_start = open_at + open.len();
-        let Some(content_end) = closing_delimiter(text, content_start, close) else {
+        let Some(content_end) = closing_delimiter(text, content_start, open, close) else {
             break;
         };
         let segment_end = content_end + close.len();
@@ -352,7 +352,8 @@ fn next_complete_pair(
                 .next_back()
                 .is_some_and(|character| character.is_ascii_alphanumeric());
         let content_start = open_at + open.len();
-        if !previous_is_ascii_word && closing_delimiter(text, content_start, close).is_some() {
+        if !previous_is_ascii_word && closing_delimiter(text, content_start, open, close).is_some()
+        {
             return Some((open_at, open, close));
         }
         from = content_start;
@@ -365,13 +366,39 @@ fn next_complete_pair(
 /// own (PR #1188 G61): a quote with a space before it and a word character
 /// after it opens a nested literal, and the payload closes after that literal
 /// does. When such nesting never closes, the first close stands.
-fn closing_delimiter(text: &str, cursor: usize, close: &str) -> Option<usize> {
+fn closing_delimiter(text: &str, cursor: usize, open: &str, close: &str) -> Option<usize> {
     if close == "'"
         && let Some(close_at) = nested_closing_delimiter(text, cursor)
     {
         return Some(close_at);
     }
+    if open != close {
+        return stacked_closing_delimiter(text, cursor, open, close);
+    }
     plain_closing_delimiter(text, cursor, close)
+}
+
+/// The close of a pair whose marks differ (`«…»`, `“…”`, `「…」`), counted as
+/// a stack: an inner `«…»` is part of the payload (PR #1188 G86). `None` when
+/// the stack never empties, so the opening mark pairs with nothing.
+fn stacked_closing_delimiter(text: &str, cursor: usize, open: &str, close: &str) -> Option<usize> {
+    let mut depth = 0_usize;
+    let mut from = cursor;
+    loop {
+        let rest = &text[from..];
+        let close_at = from + rest.find(close)?;
+        match rest.find(open).map(|relative| from + relative) {
+            Some(open_at) if open_at < close_at => {
+                depth += 1;
+                from = open_at + open.len();
+            }
+            _ if depth == 0 => return Some(close_at),
+            _ => {
+                depth -= 1;
+                from = close_at + close.len();
+            }
+        }
+    }
 }
 
 /// The close of a single-quoted payload that holds nested single-quoted

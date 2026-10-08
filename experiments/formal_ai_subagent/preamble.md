@@ -22,3 +22,6 @@ Vision rules (user, 2026-10-08; see https://github.com/link-foundation/code-arch
 - Links notation we own prefers `-` over `_` in names, stays human readable, and is deduplicated: shared structure is stated once and referenced, not repeated.
 - Automate bulk changes as rules (substitution passes, generators with --check), not hand edits; delegate the small edits to Formal AI and fix it when it fails.
 - CI: no job or step over 15-30 minutes; long-running jobs and tests start first; parallel at job level and at test level, enforced by a gate.
+- At most three subagents at once (owner, 2026-10-08). Never stop a running agent early; every started task is delivered in full.
+- Disk: never copy the whole repository (1 GB) into the scratchpad or sandboxes; use `git show <rev>:<path>` or `git archive <rev> <paths>` for only the files you need, and delete every copy before you report.
+- Local tests are minimal (owner, 2026-10-08): run only the tests next to the code you change; leave the full web suite and all Rust to CI.

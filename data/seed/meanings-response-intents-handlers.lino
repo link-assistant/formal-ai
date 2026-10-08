@@ -437,6 +437,14 @@ meanings
     unit "not applicable"
     example "Left `m.mjs` unchanged: it already has content, and the request does not say to replace the whole file."
     grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  general_change_target_unnamed
+    defined-by answer
+    role localized_response_template
+    precondition "a literal-file write targets a path the request names only inside quoted text, never as the file to write"
+    effect "nothing is written and the refusal names the path (PR #1188 G86)"
+    unit "not applicable"
+    example "Did not write `f.md`: the request names it only inside quoted text, not as the file to write, so nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
   module_exports_listed
     defined-by answer
     role localized_response_template
@@ -524,6 +532,62 @@ meanings
     effect "the replacements are made in order, the file's digest is checked, and the answer lists each pair"
     unit "not applicable"
     example "Made 3 replacements in `b.lino`, in order: `x` → `y`, `p` → `q`, `m` → `n`; and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_range_moved_end
+    defined-by answer
+    role localized_response_template
+    precondition "numbered lines of one file are moved to the end of another"
+    effect "the range is appended to the destination, then removed from the source, each observed by its digest (PR #1188 G85)"
+    unit "not applicable"
+    example "Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_range_moved_start
+    defined-by answer
+    role localized_response_template
+    precondition "numbered lines of one file are moved to the start of another"
+    effect "the range is placed first in the destination, then removed from the source, each observed by its digest (PR #1188 G85)"
+    unit "not applicable"
+    example "Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_number_moved_end
+    defined-by answer
+    role localized_response_template
+    precondition "one numbered line of a file is moved to the end of another"
+    effect "the line is appended to the destination, then removed from the source, each observed by its digest (PR #1188 G85)"
+    unit "not applicable"
+    example "Moved line 4 of `a.md` to the end of `b.md` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_number_moved_start
+    defined-by answer
+    role localized_response_template
+    precondition "one numbered line of a file is moved to the start of another"
+    effect "the line is placed first in the destination, then removed from the source, each observed by its digest (PR #1188 G85)"
+    unit "not applicable"
+    example "Moved line 4 of `a.md` to the start of `b.md` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_range_outside_file
+    defined-by answer
+    role localized_response_template
+    precondition "a line-range move names lines past the end of its source file"
+    effect "nothing is planned or written and the answer states the file's line count (PR #1188 G85)"
+    unit "not applicable"
+    example "`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_text_not_found
+    defined-by answer
+    role localized_response_template
+    precondition "a replace or removal names text the file does not hold"
+    effect "nothing is planned or written and the answer says the text does not occur (PR #1188 G87)"
+    unit "not applicable"
+    example "`x` does not occur in `f.txt`, so nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_text_already_replaced
+    defined-by answer
+    role localized_response_template
+    precondition "a replace is asked again: the file holds its new text and no longer its old text"
+    effect "nothing is planned or written and the answer says the replacement is already made (PR #1188 G87)"
+    unit "not applicable"
+    example "`f.txt` already holds `y` and no `x`: the replacement is already made, and nothing changed."
     grounding "data/seed/multilingual-responses-agentic-tools.lino"
   test_expectation_missing
     defined-by answer

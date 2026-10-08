@@ -751,7 +751,6 @@ pub(super) fn unescape_prose_newlines(text: &str) -> String {
 /// the anchor, `new` those lines with the inserted text beside the anchor's
 /// line; `None` unless the context (with none, the anchor) occurs once and the
 /// anchor occurs after it.
-
 fn insert_edit(source: &str, given: &PositionalInsert) -> Option<(usize, String, String, String)> {
     let resolved = if given.spans {
         Some(unquoted_anchor::resolved_spans(source, given)?)

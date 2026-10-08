@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=da62d3f1b1b6a6fe20b48b6ca1d432f4b0be88fc907fd035b4300e96035d3a40 bytes=8706
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=f5b6bbaad87a9af44dea1c43432bd58fef0d6fc68fbc0dc87255847840d95f74 bytes=9524
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -69,6 +69,9 @@ pub static PAIRS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::n
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal nullish coalescing
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .indexOf()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .indexOf()

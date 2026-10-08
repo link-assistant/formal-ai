@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a05e71dbd638d81b9f41aeae353ba2a205e45d09298ab60946105e9bdfb4797d bytes=5268
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=00add7312cce70e3d3c20622276c7d718e8e484dd37d775c1dec52fd13b9b16b bytes=5122
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -11,17 +11,13 @@
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import { … }
 
-// meta-language:translated JavaScript lexical_declaration items=1 sha256=fa7b3ace1090ede01933fc6f5d06aa7d19a5703fbfd7fc6c492c89f376044c74
-// | /** `RESPONSE_FILES`, in the order rust/src/seed/embedded_registry.rs lists them. */
-// | const RESPONSE_SUFFIXES = [
-// |   '', '-agentic', '-agentic-continuation', '-agentic-tools', '-client-config', '-code-tasks',
-// |   '-concept-lookup', '-creative-tasks', '-decomposition', '-engine-reports', '-entities',
-// |   '-external-benchmark', '-formalization', '-language-protocol', '-legality', '-memory-program',
-// |   '-orchestration', '-parity', '-pattern', '-policy', '-procedure', '-product-search', '-quantities',
-// |   '-repair', '-substitution-compiler', '-summarization', '-summarization-quality', '-symbolic',
-// |   '-synthesis', '-text-transform', '-thinking', '-thinking-narrative', '-translate', '-triz',
-// | ];
-pub static RESPONSE_SUFFIXES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from(""), String::from("-agentic"), String::from("-agentic-continuation"), String::from("-agentic-tools"), String::from("-client-config"), String::from("-code-tasks"), String::from("-concept-lookup"), String::from("-creative-tasks"), String::from("-decomposition"), String::from("-engine-reports"), String::from("-entities"), String::from("-external-benchmark"), String::from("-formalization"), String::from("-language-protocol"), String::from("-legality"), String::from("-memory-program"), String::from("-orchestration"), String::from("-parity"), String::from("-pattern"), String::from("-policy"), String::from("-procedure"), String::from("-product-search"), String::from("-quantities"), String::from("-repair"), String::from("-substitution-compiler"), String::from("-summarization"), String::from("-summarization-quality"), String::from("-symbolic"), String::from("-synthesis"), String::from("-text-transform"), String::from("-thinking"), String::from("-thinking-narrative"), String::from("-translate"), String::from("-triz")]);
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=2d9b8c1bb4b4437bcb320c603c2f802a000e40fa9092307c59f02af758705f8f
+// | /** The one inventory of the seed files and the lexicons that read them. */
+// | const SEED_REGISTRY = 'data/meta/seed-registry.lino';
+pub const SEED_REGISTRY: &str = "data/meta/seed-registry.lino";
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal arrow function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function

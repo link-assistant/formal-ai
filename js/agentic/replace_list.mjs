@@ -8,6 +8,7 @@
 
 import { quotedSegmentSpans, quotedSegments } from './crate/normal_markov.mjs';
 import { bareSurfaces, cleanCueToken, composeEditRequest, tokens } from './write_request.mjs';
+import { renderSeededChange } from './code_task.mjs';
 
 const CLAUSE_TAIL = /[\s,;，；]+$/u;
 
@@ -77,4 +78,26 @@ export function replacedInOrder(source, pairs) {
     text = text.split(old).join(next);
   }
   return text;
+}
+
+/** How a slot lists several names: `a`, `b`. */
+const LISTED = '`, `';
+
+/**
+ * Mirrors `fn absent_text_answer`: when the file no longer holds `old`, the
+ * honest answer -- the replacement is already made when it holds `next`, else
+ * the text does not occur -- never a failed verification of an effect nothing
+ * planned (PR #1188 G87). Null while `old` is still there.
+ * @param {string} task
+ * @param {string} target
+ * @param {string} source
+ * @param {string} old
+ * @param {string|null} next
+ */
+export function absentTextAnswer(task, target, source, old, next) {
+  // A slot listing several names (`a`, `b`) is absent only when each is.
+  if (old === '' || old.split(LISTED).some((name) => source.includes(name))) return null;
+  const done = next !== null && next !== '' && source.includes(next);
+  const slots = done ? [['{old}', old], ['{new}', next]] : [['{old}', old]];
+  return renderSeededChange(done ? 'coding_text_already_replaced' : 'coding_text_not_found', task, target, slots);
 }

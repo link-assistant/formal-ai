@@ -439,6 +439,8 @@ meanings
         text "at the top of"
       surface
         text "at the start of"
+      surface
+        text "to the start of"
     lexeme ru
       surface
         text "в начало"

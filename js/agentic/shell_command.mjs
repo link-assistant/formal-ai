@@ -370,6 +370,9 @@ function intentShellCommand(prompt, vocab) {
   // A destructive intent (`destructive true` in the seed) never reads a
   // request about text inside a file as a request to delete the file.
   if (intent.destructive && insideAFile) return null;
+  // Nor does it read a move or copy of text inside a file (`Move lines 2-3 of
+  // a.md to the end of b.md`) as a move or copy of the file (PR #1188 G85).
+  if (intent.argument === 'two_paths' && insideAFile) return null;
   const withArgument = (argument) => (argument === null ? null : `${intent.command} ${argument}`);
   switch (intent.argument) {
     case 'none':

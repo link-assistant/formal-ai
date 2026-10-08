@@ -11,6 +11,9 @@ use super::write_request::{bare_surfaces, clean_cue_token, compose_edit_request,
 use crate::normal_markov::{quoted_segment_spans, quoted_segments};
 use crate::seed;
 
+/// How a slot lists several names: `a`, `b`.
+const LISTED: &str = "`, `";
+
 /// The marks that end a clause before the next edit action.
 const CLAUSE_TAIL: &[char] = &[',', ';', '，', '；'];
 
@@ -103,4 +106,35 @@ pub(super) fn replaced_in_order(source: &str, pairs: &[(String, String)]) -> Opt
         text = text.replace(old.as_str(), new);
     }
     Some(text)
+}
+
+/// The honest answer when the file no longer holds `old` (PR #1188 G87).
+///
+/// The replacement is already made when the file holds `new`, else the text
+/// does not occur -- never a failed verification of an effect nothing
+/// planned. `None` while `old` (any name a listed slot gives) is still there.
+pub(super) fn absent_text_answer(
+    task: &str,
+    target: &str,
+    source: &str,
+    old: &str,
+    new: Option<&str>,
+) -> Option<String> {
+    if old.is_empty() || old.split(LISTED).any(|name| source.contains(name)) {
+        return None;
+    }
+    match new.filter(|new| !new.is_empty() && source.contains(*new)) {
+        Some(new) => super::code_task::render_seeded_change(
+            "coding_text_already_replaced",
+            task,
+            target,
+            &[("{old}", old), ("{new}", new)],
+        ),
+        None => super::code_task::render_seeded_change(
+            "coding_text_not_found",
+            task,
+            target,
+            &[("{old}", old)],
+        ),
+    }
 }

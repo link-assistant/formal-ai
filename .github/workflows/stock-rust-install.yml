@@ -43,7 +43,7 @@ jobs:
     # and the narrow pedantic zizmor pass in `workflows.yml` fails on any new
     # unpinned image that does not carry the same explicit marker.
     container: rust:1.99-slim-bookworm # zizmor: ignore[unpinned-images]
-    timeout-minutes: 40
+    timeout-minutes: 30
     env:
       CARGO_INSTALL_ROOT: /tmp/formal-ai-install
     steps:

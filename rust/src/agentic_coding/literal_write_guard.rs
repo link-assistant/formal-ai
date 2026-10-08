@@ -27,6 +27,7 @@ const ROLE_WHOLE_WRITE: &str = "file_whole_write_action";
 const ROLE_OVERWRITE_CONSENT: &str = "file_overwrite_consent";
 const ROLE_DECLARED_NOUN: &str = "file_declared_noun";
 const REFUSAL: &str = "general_change_existing_file_kept";
+const UNNAMED: &str = "general_change_target_unnamed";
 
 /// Whether the request's first write verb names a file's whole new content,
 /// or the request consents to replacing it.
@@ -79,7 +80,19 @@ pub(super) fn guarded_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
-    if plan.mode != GeneralPlanMode::LiteralFile || writes_whole_file(&plan.goal) {
+    if plan.mode != GeneralPlanMode::LiteralFile {
+        return None;
+    }
+    let language = crate::language::detect(&plan.goal).slug();
+    // A write never targets a path the request names only inside quoted text
+    // (PR #1188 G86).
+    if !names_as_destination(&plan.goal, &plan.target) {
+        let values = [("path", plan.target.as_str())];
+        return seed::render_response(UNNAMED, language, &values)
+            .or_else(|| seed::render_response(UNNAMED, "en", &values))
+            .map(AgenticPlan::Final);
+    }
+    if writes_whole_file(&plan.goal) {
         return None;
     }
     let read = tool_for(tool_names, Capability::Read)?;
@@ -94,10 +107,29 @@ pub(super) fn guarded_step(
         return None;
     }
     let values = [("path", plan.target.as_str())];
-    let language = crate::language::detect(&plan.goal).slug();
     seed::render_response(REFUSAL, language, &values)
         .or_else(|| seed::render_response(REFUSAL, "en", &values))
         .map(AgenticPlan::Final)
+}
+
+/// Whether `request` names `target` outside its quoted text.
+///
+/// Or, naming no path outside it, quotes `target` whole (mirrors
+/// `namesAsDestination`).
+fn names_as_destination(request: &str, target: &str) -> bool {
+    let segments = crate::normal_markov::quoted_segment_spans(request);
+    let unquoted: Vec<&str> = tokens(request)
+        .iter()
+        .filter(|token| {
+            !segments
+                .iter()
+                .any(|segment| token.start < segment.end && token.end > segment.start)
+        })
+        .map(|token| clean_path_token(token.text))
+        .filter(|path| looks_like_file_path(path))
+        .collect();
+    unquoted.contains(&target)
+        || (unquoted.is_empty() && segments.iter().any(|segment| segment.text.trim() == target))
 }
 
 /// Whether a failed call is the guard's read of a target that does not exist

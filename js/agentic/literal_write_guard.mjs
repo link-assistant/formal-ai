@@ -20,6 +20,7 @@ import { normalizePrompt } from './crate/engine.mjs';
 import { detect } from './crate/language.mjs';
 import { renderResponse } from './crate/seed.mjs';
 import { mentionsRole } from './crate/seed_meanings.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { readSource } from './module_function.mjs';
 import { finalAnswer, planOne } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
@@ -73,7 +74,15 @@ function declaresFile(request, toks) {
  * the plan may proceed.
  */
 export function guardedStep(plan, messages, toolNames) {
-  if (plan.mode !== LITERAL_FILE || writesWholeFile(plan.goal)) return null;
+  if (plan.mode !== LITERAL_FILE) return null;
+  // A write never targets a path the request names only inside quoted text
+  // (PR #1188 G86).
+  if (!namesAsDestination(plan.goal, plan.target)) {
+    const values = [['path', plan.target]];
+    return finalAnswer(renderResponse('general_change_target_unnamed', detect(plan.goal), values)
+      ?? renderResponse('general_change_target_unnamed', 'en', values));
+  }
+  if (writesWholeFile(plan.goal)) return null;
   const read = toolFor(toolNames, Capability.Read);
   if (read === null) return null;
   const source = readSource(messages.slice(evidenceWindowStart(messages)), plan.target);
@@ -82,6 +91,21 @@ export function guardedStep(plan, messages, toolNames) {
   const values = [['path', plan.target]];
   return finalAnswer(renderResponse('general_change_existing_file_kept', detect(plan.goal), values)
     ?? renderResponse('general_change_existing_file_kept', 'en', values));
+}
+
+/**
+ * Mirrors `fn names_as_destination`: whether `request` names `target` outside
+ * its quoted text, or -- naming no path outside it -- quotes `target` whole.
+ * @param {string} request
+ * @param {string} target
+ */
+export function namesAsDestination(request, target) {
+  const segments = quotedSegmentSpans(request);
+  const unquoted = tokens(request)
+    .filter((token) => !segments.some((segment) => token.start < segment.end && token.end > segment.start))
+    .map((token) => cleanPathToken(token.text))
+    .filter((path) => looksLikeFilePath(path));
+  return unquoted.includes(target) || (unquoted.length === 0 && segments.some((segment) => segment.text.trim() === target));
 }
 
 /**

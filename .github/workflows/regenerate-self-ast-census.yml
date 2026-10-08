@@ -50,7 +50,7 @@ jobs:
   regenerate:
     name: Build the census and upload it
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
         with:
@@ -63,7 +63,7 @@ jobs:
           restore-only: 'true'
       - name: Regenerate the census
         env:
-          TEST_BUDGET_SECONDS: 2400
+          TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \

@@ -78,9 +78,9 @@ jobs:
   corpus-build:
     name: Build the corpus gate binary
     runs-on: ubuntu-latest
-    # 1500s of budget under a 40-minute cap is 62.5%, inside the 70% share
-    # issue #1081 allows. A warm sccache build measured 2.0-6.6 minutes.
-    timeout-minutes: 40
+    # 1200s of budget under a 30-minute cap is 66.7%, inside the 70% share
+    # issue #1081 allows. A warm sccache build measured 2.0-6.6 minutes, the job 9.1 at most (PR #1188, data/meta/ci-durations.lino).
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
         with:
@@ -100,8 +100,8 @@ jobs:
           # One test target plus the lib. The all-targets build job measures
           # ~1200s worst with sccache warm (run 34095902681); a single
           # target with the same cache sits well under that, and a cold
-          # miss has 1500s of room before the cap is what fires.
-          TEST_BUDGET_SECONDS: 1500
+          # miss has 1200s of room before the cap is what fires.
+          TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \

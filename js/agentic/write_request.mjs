@@ -11,7 +11,7 @@ import { composePositionalInsert, introducedBlock, literalText, unquotedPathToke
 import { resolveCensusTarget } from './general_planner.mjs';
 import { containsCjk } from './crate/coding_catalog.mjs';
 import { quotedSegmentSpans, wrappedInQuotePair } from './crate/normal_markov.mjs';
-import { meaningEvidencedIn, mentionsRole, roleWordForms } from './write_lexicon.mjs';
+import { meaningEvidencedIn, mentionsRole, roleWordForms, wordsForRole } from './write_lexicon.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import {
   charIn, isAlphanumeric, isAscii, isAsciiPunctuation, isWhitespace, minByKey, trim, trimEnd,
@@ -403,6 +403,35 @@ export function composeEditRequest(request) {
   return composeEditClauses(request)?.edit ?? null;
 }
 
+const SCRIPT_WITHOUT_SPACES = /[\u3040-\u9fff]/u;
+const wordCharacter = (character) => character !== undefined && /[\p{L}\p{N}]/u.test(character)
+  && !SCRIPT_WITHOUT_SPACES.test(character);
+
+/**
+ * Mirrors `fn without_all_occurrence_cues`: `request` with every seeded
+ * all-occurrences cue outside its quotes (`everywhere`, `all occurrences`,
+ * `везде`, `हर जगह`) blanked, offsets kept: a replace replaces every
+ * occurrence already, and the words belong to neither text (PR #1188 G84).
+ * @param {string} request
+ */
+export function withoutAllOccurrenceCues(request) {
+  const lowered = request.toLowerCase();
+  if (lowered.length !== request.length) return request;
+  const quoted = quotedSegmentSpans(request);
+  let out = request;
+  for (const surface of wordsForRole('file_edit_all_occurrences_cue')) {
+    const needle = surface.toLowerCase();
+    if (needle === '') continue;
+    for (let at = lowered.indexOf(needle); at >= 0; at = lowered.indexOf(needle, at + 1)) {
+      const end = at + needle.length;
+      if (wordCharacter(request[at - 1]) || wordCharacter(request[end])) continue;
+      if (quoted.some((segment) => at < segment.end && end > segment.start)) continue;
+      out = `${out.slice(0, at)}${' '.repeat(end - at)}${out.slice(end)}`;
+    }
+  }
+  return out;
+}
+
 /**
  * Mirrors `fn compose_edit_clauses`: `{edit, spans}` -- the `[target, old,
  * new]` of `composeEditRequest` and, when the request words them as clauses,
@@ -410,7 +439,9 @@ export function composeEditRequest(request) {
  * for a positional insert or lines under the request) -- or null.
  * @param {string} request
  */
-export function composeEditClauses(request) {
+export function composeEditClauses(raw) {
+  // `everywhere`, `all occurrences`: no part of the old or new text (G84).
+  const request = withoutAllOccurrenceCues(raw);
   const positional = composePositionalInsert(request);
   if (positional) return { edit: positional, spans: null };
   const block = introducedBlock(request);

@@ -419,6 +419,146 @@ multilingual_responses
     intent coding_texts_replaced
     language es
     text "Se hicieron {count} reemplazos en `{path}`, en orden: {pairs}; y se observó el resultado."
+  response response_line_range_moved_end_en
+    intent line_range_moved_end
+    language en
+    text "Moved lines {lines} of `{source}` to the end of `{path}` and observed the result."
+  response response_line_range_moved_end_ru
+    intent line_range_moved_end
+    language ru
+    text "Перенёс строки {lines} из `{source}` в конец `{path}` и проверил результат."
+  response response_line_range_moved_end_hi
+    intent line_range_moved_end
+    language hi
+    text "`{source}` की पंक्तियाँ {lines} `{path}` के अंत में ले जाईं और परिणाम देखा।"
+  response response_line_range_moved_end_zh
+    intent line_range_moved_end
+    language zh
+    text "已将 `{source}` 的第 {lines} 行移到 `{path}` 末尾，并核对了结果。"
+  response response_line_range_moved_end_es
+    intent line_range_moved_end
+    language es
+    text "Moví las líneas {lines} de `{source}` al final de `{path}` y comprobé el resultado."
+  response response_line_range_moved_start_en
+    intent line_range_moved_start
+    language en
+    text "Moved lines {lines} of `{source}` to the start of `{path}` and observed the result."
+  response response_line_range_moved_start_ru
+    intent line_range_moved_start
+    language ru
+    text "Перенёс строки {lines} из `{source}` в начало `{path}` и проверил результат."
+  response response_line_range_moved_start_hi
+    intent line_range_moved_start
+    language hi
+    text "`{source}` की पंक्तियाँ {lines} `{path}` की शुरुआत में ले जाईं और परिणाम देखा।"
+  response response_line_range_moved_start_zh
+    intent line_range_moved_start
+    language zh
+    text "已将 `{source}` 的第 {lines} 行移到 `{path}` 开头，并核对了结果。"
+  response response_line_range_moved_start_es
+    intent line_range_moved_start
+    language es
+    text "Moví las líneas {lines} de `{source}` al principio de `{path}` y comprobé el resultado."
+  response response_line_number_moved_end_en
+    intent line_number_moved_end
+    language en
+    text "Moved line {lines} of `{source}` to the end of `{path}` and observed the result."
+  response response_line_number_moved_end_ru
+    intent line_number_moved_end
+    language ru
+    text "Перенёс строку {lines} из `{source}` в конец `{path}` и проверил результат."
+  response response_line_number_moved_end_hi
+    intent line_number_moved_end
+    language hi
+    text "`{source}` की पंक्ति {lines} `{path}` के अंत में ले गया और परिणाम देखा।"
+  response response_line_number_moved_end_zh
+    intent line_number_moved_end
+    language zh
+    text "已将 `{source}` 的第 {lines} 行移到 `{path}` 末尾，并核对了结果。"
+  response response_line_number_moved_end_es
+    intent line_number_moved_end
+    language es
+    text "Moví la línea {lines} de `{source}` al final de `{path}` y comprobé el resultado."
+  response response_line_number_moved_start_en
+    intent line_number_moved_start
+    language en
+    text "Moved line {lines} of `{source}` to the start of `{path}` and observed the result."
+  response response_line_number_moved_start_ru
+    intent line_number_moved_start
+    language ru
+    text "Перенёс строку {lines} из `{source}` в начало `{path}` и проверил результат."
+  response response_line_number_moved_start_hi
+    intent line_number_moved_start
+    language hi
+    text "`{source}` की पंक्ति {lines} `{path}` की शुरुआत में ले गया और परिणाम देखा।"
+  response response_line_number_moved_start_zh
+    intent line_number_moved_start
+    language zh
+    text "已将 `{source}` 的第 {lines} 行移到 `{path}` 开头，并核对了结果。"
+  response response_line_number_moved_start_es
+    intent line_number_moved_start
+    language es
+    text "Moví la línea {lines} de `{source}` al principio de `{path}` y comprobé el resultado."
+  response response_line_range_outside_file_en
+    intent line_range_outside_file
+    language en
+    text "`{path}` has {count} lines, so it has no lines {lines} to move, and nothing was changed."
+  response response_line_range_outside_file_ru
+    intent line_range_outside_file
+    language ru
+    text "В `{path}` {count} строк, поэтому строк {lines} для переноса нет, и ничего не изменено."
+  response response_line_range_outside_file_hi
+    intent line_range_outside_file
+    language hi
+    text "`{path}` में {count} पंक्तियाँ हैं, इसलिए ले जाने के लिए पंक्तियाँ {lines} नहीं हैं, और कुछ नहीं बदला गया।"
+  response response_line_range_outside_file_zh
+    intent line_range_outside_file
+    language zh
+    text "`{path}` 只有 {count} 行，没有可移动的第 {lines} 行，因此未做任何更改。"
+  response response_line_range_outside_file_es
+    intent line_range_outside_file
+    language es
+    text "`{path}` tiene {count} líneas, así que no tiene las líneas {lines} que mover, y no se cambió nada."
+  response response_coding_text_not_found_en
+    intent coding_text_not_found
+    language en
+    text "`{old}` does not occur in `{path}`, so nothing was changed."
+  response response_coding_text_not_found_ru
+    intent coding_text_not_found
+    language ru
+    text "`{old}` не встречается в `{path}`, поэтому ничего не изменено."
+  response response_coding_text_not_found_hi
+    intent coding_text_not_found
+    language hi
+    text "`{old}` `{path}` में नहीं है, इसलिए कुछ नहीं बदला गया।"
+  response response_coding_text_not_found_zh
+    intent coding_text_not_found
+    language zh
+    text "`{path}` 中没有 `{old}`，因此未做任何更改。"
+  response response_coding_text_not_found_es
+    intent coding_text_not_found
+    language es
+    text "`{old}` no aparece en `{path}`, así que no se cambió nada."
+  response response_coding_text_already_replaced_en
+    intent coding_text_already_replaced
+    language en
+    text "`{path}` already holds `{new}` and no `{old}`: the replacement is already made, and nothing changed."
+  response response_coding_text_already_replaced_ru
+    intent coding_text_already_replaced
+    language ru
+    text "`{path}` уже содержит `{new}` и не содержит `{old}`: замена уже сделана, ничего не изменено."
+  response response_coding_text_already_replaced_hi
+    intent coding_text_already_replaced
+    language hi
+    text "`{path}` में पहले से `{new}` है और `{old}` नहीं है: बदलाव पहले ही हो चुका है, कुछ नहीं बदला गया।"
+  response response_coding_text_already_replaced_zh
+    intent coding_text_already_replaced
+    language zh
+    text "`{path}` 已包含 `{new}` 且没有 `{old}`：替换早已完成，未做任何更改。"
+  response response_coding_text_already_replaced_es
+    intent coding_text_already_replaced
+    language es
+    text "`{path}` ya contiene `{new}` y no `{old}`: el reemplazo ya está hecho y no cambió nada."
   response response_coding_text_replaced_unchecked_en
     intent coding_text_replaced_unchecked
     language en
@@ -1059,6 +1199,26 @@ multilingual_responses
     intent general_change_existing_file_kept
     language es
     text "`{path}` se dejó sin cambios: ya tiene contenido y la solicitud no pide reemplazar todo el archivo."
+  response response_general_change_target_unnamed_en
+    intent general_change_target_unnamed
+    language en
+    text "Did not write `{path}`: the request names it only inside quoted text, not as the file to write, so nothing was changed."
+  response response_general_change_target_unnamed_ru
+    intent general_change_target_unnamed
+    language ru
+    text "`{path}` не записан: запрос упоминает его только внутри цитаты, а не как файл для записи, поэтому ничего не изменено."
+  response response_general_change_target_unnamed_hi
+    intent general_change_target_unnamed
+    language hi
+    text "`{path}` नहीं लिखा गया: अनुरोध इसे केवल उद्धृत पाठ के भीतर बताता है, लिखने वाली फ़ाइल के रूप में नहीं, इसलिए कुछ नहीं बदला गया।"
+  response response_general_change_target_unnamed_zh
+    intent general_change_target_unnamed
+    language zh
+    text "未写入 `{path}`：请求只在引用文本中提到它，并未将其指定为要写入的文件，因此未做任何更改。"
+  response response_general_change_target_unnamed_es
+    intent general_change_target_unnamed
+    language es
+    text "No se escribió `{path}`: la solicitud solo lo nombra dentro de texto citado, no como el archivo que se debe escribir, así que no se cambió nada."
   response response_module_exports_listed_en
     intent module_exports_listed
     language en

@@ -772,7 +772,10 @@ pub(super) struct EditClauses {
 /// [`compose_edit_request`] with the spans of its clauses.
 ///
 /// Mirrors `composeEditClauses`.
-pub(super) fn compose_edit_clauses(request: &str) -> Option<EditClauses> {
+pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
+    // `everywhere`, `all occurrences`: no part of the old or new text (G84).
+    let blanked = super::edit_scope::without_all_occurrence_cues(raw);
+    let request = blanked.as_str();
     if let Some(edit) = super::positional_edit::compose_positional_insert(request) {
         return Some(EditClauses { edit, spans: None });
     }

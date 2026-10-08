@@ -164,6 +164,7 @@ order: together they are the whole register.
    - Issue #1185 Error-Driven Repair Loop
    - Issue #1186 Formalization as a User-Facing Task
    - Issue #1187 Optional GitHub Credentials in Every Workflow
+   - Issue #1188 User Requirements
    - Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
    - Standing Doctrine: JavaScript First, Full Parity, Then Translate (2026-10-06)
    - Standing Doctrine: The JavaScript Server Has Full Parity With the Rust Server (2026-10-07)

@@ -133,6 +133,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/multilingual-responses-issue-710.lino",
   "seed/multilingual-responses-language-protocol.lino",
   "seed/multilingual-responses-legality.lino",
+  "seed/multilingual-responses-local-search.lino",
   "seed/multilingual-responses-memory-program.lino",
   "seed/multilingual-responses-numeric-list.lino",
   "seed/multilingual-responses-orchestration.lino",

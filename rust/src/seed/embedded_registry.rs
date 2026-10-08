@@ -299,6 +299,8 @@ pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-language-protocol.lino");
 pub const MULTILINGUAL_RESPONSES_LEGALITY_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-legality.lino");
+pub const MULTILINGUAL_RESPONSES_LOCAL_SEARCH_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-local-search.lino");
 pub const MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-memory-program.lino");
 pub const MULTILINGUAL_RESPONSES_NUMERIC_LIST_LINO: &str =
@@ -614,6 +616,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/multilingual-responses-legality.lino", MULTILINGUAL_RESPONSES_LEGALITY_LINO),
         (
+            "data/seed/multilingual-responses-local-search.lino",
+            MULTILINGUAL_RESPONSES_LOCAL_SEARCH_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-memory-program.lino",
             MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
         ),
@@ -728,6 +734,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_LEGALITY_LINO,
+    MULTILINGUAL_RESPONSES_LOCAL_SEARCH_LINO,
     MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
     MULTILINGUAL_RESPONSES_NUMERIC_LIST_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,

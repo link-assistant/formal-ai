@@ -633,7 +633,9 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
     let (intent, cue) = matched_intent_cue(outside.as_deref().unwrap_or(&lower), vocab)?;
     // A destructive intent (`destructive true` in the seed) never reads a
     // request about text inside a file as a request to delete the file.
-    if intent.destructive && inside_a_file {
+    // Nor does it read a move or copy of text inside a file (`Move lines 2-3
+    // of a.md to the end of b.md`) as a move or copy of the file (PR #1188 G85).
+    if (intent.destructive || intent.argument == ShellIntentArgument::TwoPaths) && inside_a_file {
         return None;
     }
     match intent.argument {

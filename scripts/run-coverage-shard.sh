@@ -8,13 +8,14 @@
 # over them, and the verdict job merges every shard's profile into the one
 # report the ratchet reads.
 #
-# A test belongs to exactly one shard: tests are numbered by their position in
-# one running sequence over every executable in manifest order (each
-# executable's own `--list`, so the order is the libtest order), and shard i of
-# n runs the positions p with p % n == i - 1. The running position, rather than
-# a per-executable restart, keeps the many one-test targets from all landing
-# on the first shard. Every executable runs even after one fails, so a single
-# shard reports every failure it owns.
+# A test belongs to exactly one shard: every executable's `--list` goes into
+# one listing of `<target>\t<test>` lines, and scripts/plan-test-shards.mjs
+# splits that listing longest-first from data/meta/test-durations.lino (PR
+# #1188) -- the same plan in every shard, which `--check` re-proves covers
+# every listed test exactly once. Dealing tests out by running position left
+# the shards between 11 and 18 minutes (run 37753750834) while the merge
+# waited on the slowest. Every executable runs even after one fails, so a
+# single shard reports every failure it owns.
 #
 # The executables run from the crate root, as `cargo test` runs them, with
 # LLVM_PROFILE_FILE inherited from the caller so every process -- the test
@@ -48,8 +49,8 @@ trap 'rm -rf "$list_profiles"' EXIT
   exit 1
 }
 
-position=0
-selected_total=0
+listing="$list_profiles/tests.tsv"
+plan="$list_profiles/plan.tsv"
 status=0
 while IFS=$'\t' read -r name path; do
   [ -n "$name" ] || continue
@@ -59,26 +60,34 @@ while IFS=$'\t' read -r name path; do
     status=1
     continue
   }
-  mapfile -t listed < <(cd rust && LLVM_PROFILE_FILE="$list_profiles/list-%p-%m.profraw" \
-    "$executable" --list --format terse "$@" | sed -n 's/: test$//p')
-  names=()
-  for test_name in "${listed[@]}"; do
-    if [ $((position % SHARD_TOTAL)) -eq $((SHARD_INDEX - 1)) ]; then
-      names+=("$test_name")
-    fi
-    position=$((position + 1))
-  done
-  if [ "${#names[@]}" -eq 0 ]; then
-    continue
-  fi
-  selected_total=$((selected_total + ${#names[@]}))
-  echo "coverage shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} of ${#listed[@]} ${name} test(s)"
-  (cd rust && "$executable" --exact "${names[@]}") || status=1
+  (cd rust && LLVM_PROFILE_FILE="$list_profiles/list-%p-%m.profraw" \
+    "$executable" --list --format terse "$@") \
+    | sed -n 's/: test$//p' \
+    | awk -v name="$name" '{ print name "\t" $0 }' >> "$listing" || status=1
 done < "$manifest"
-
-echo "coverage shard ${SHARD_INDEX}/${SHARD_TOTAL}: ran ${selected_total} of ${position} test(s)"
-if [ "$position" -eq 0 ]; then
+touch "$listing"
+listed_total="$(wc -l < "$listing" | tr -d ' ')"
+if [ "$listed_total" -eq 0 ]; then
   echo "::error::no executable listed a single test; the shard measured nothing" >&2
   exit 1
 fi
+node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --check < "$listing"
+node scripts/plan-test-shards.mjs --shard "$SHARD_INDEX" --of "$SHARD_TOTAL" < "$listing" > "$plan"
+
+selected_total=0
+while IFS=$'\t' read -r name path; do
+  [ -n "$name" ] || continue
+  executable="$root/$path"
+  [ -x "$executable" ] || continue
+  mapfile -t names < <(awk -F '\t' -v name="$name" '$1 == name { print $2 }' "$plan")
+  if [ "${#names[@]}" -eq 0 ]; then
+    continue
+  fi
+  of_target="$(awk -F '\t' -v name="$name" '$1 == name' "$listing" | wc -l | tr -d ' ')"
+  selected_total=$((selected_total + ${#names[@]}))
+  echo "coverage shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} of ${of_target} ${name} test(s)"
+  (cd rust && "$executable" --exact "${names[@]}") || status=1
+done < "$manifest"
+
+echo "coverage shard ${SHARD_INDEX}/${SHARD_TOTAL}: ran ${selected_total} of ${listed_total} test(s)"
 exit "$status"

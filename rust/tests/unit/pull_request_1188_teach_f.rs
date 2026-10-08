@@ -1,11 +1,11 @@
 //! PR #1188 TEACH-F: the open gaps of `experiments/formal_ai_subagent/gaps.md`
-//! taught to Formal AI (ledger rows T210-T229, T290-T299). Twin of
+//! taught to Formal AI (ledger rows T210-T229, T290-T299, T360-T369). Twin of
 //! `rust/tests/web/pull-request-1188-teach-f.test.mjs`.
 
 use std::collections::BTreeMap;
 
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
-use formal_ai::normal_markov::quote_fault;
+use formal_ai::normal_markov::{quote_fault, quoted_segment_spans};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::source_fetch::sha256_hex;
 
@@ -88,6 +88,12 @@ fn execute(
                 files.insert(to.to_owned(), text);
                 return String::new();
             }
+            // A replace of every occurrence of a plain word (G84).
+            if let Some((old, new, path)) = perl_replace(command) {
+                let text = files.get(path).cloned().unwrap_or_default();
+                files.insert(path.to_owned(), text.replace(old, new));
+                return String::new();
+            }
             // A suite slower than the driver's timeout comes back killed (G77).
             if command == "node --test slow.test.mjs" {
                 return "Output: TAP version 13\nError: \nSignal: SIGTERM\nTimeout: 60000 ms"
@@ -103,6 +109,16 @@ fn execute(
         }
         _ => format!("Error: {tool} is not simulated"),
     }
+}
+
+/// The old word, new word and path of `perl -pi -e 's/OLD/NEW/g' -- PATH`.
+fn perl_replace(command: &str) -> Option<(&str, &str, &str)> {
+    let (expression, path) = command
+        .strip_prefix("perl -pi -e 's/")?
+        .split_once("/g' -- ")?;
+    let (old, new) = expression.split_once('/')?;
+    let word = |text: &str| !text.is_empty() && text.chars().all(char::is_alphanumeric);
+    (word(old) && word(new)).then_some((old, new, path))
 }
 
 fn drive(prompt: &str, workspace: &[(&str, &str)]) -> Run {
@@ -770,5 +786,194 @@ fn g82_a_copy_then_its_edits_are_planned_sentence_by_sentence() {
         Some(
             "Completed the action `cp a.lino b.lino` and verified it with `test -e b.lino`, `test -e a.lino`.\n\nMade 3 replacements in `b.lino`, in order: `x` → `y`, `p` → `q`, `m` → `n`; and observed the result."
         )
+    );
+}
+
+const G86_REQUEST: &str = "Insert the line «| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |» after the line containing «| T2 |» in l.md.";
+
+#[test]
+fn g86_guillemets_pair_as_a_stack() {
+    let texts: Vec<String> = quoted_segment_spans(G86_REQUEST)
+        .into_iter()
+        .map(|segment| segment.text)
+        .collect();
+    assert_eq!(
+        texts,
+        [
+            "| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |",
+            "| T2 |"
+        ]
+    );
+}
+
+#[test]
+fn g86_a_nested_guillemet_payload_is_inserted_and_no_other_file_is_written() {
+    let run = drive(G86_REQUEST, &[("l.md", "| T1 | a |\n| T2 | b |\n")]);
+    assert_eq!(run.files.keys().collect::<Vec<_>>(), ["l.md"]);
+    assert_eq!(
+        run.files["l.md"],
+        "| T1 | a |\n| T2 | b |\n| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |\n"
+    );
+    assert_eq!(
+        run.answer.as_deref(),
+        Some(
+            "Inserted `| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |` after `| T2 |` in `l.md` and observed the result."
+        )
+    );
+}
+
+#[test]
+fn g86_an_outer_guillemet_whose_stack_never_empties_is_declined() {
+    let run = drive(
+        "Insert the line «| T3 | a «b» c after the line containing «| T2 |» in l.md.",
+        &[("l.md", "| T2 | b |\n")],
+    );
+    assert_eq!(run.files.keys().collect::<Vec<_>>(), ["l.md"]);
+    assert_eq!(
+        run.answer.as_deref(),
+        Some(
+            "A quote in this request opens and never closes (`«| T3 | a «b» c after the line c`), so I cannot tell the quoted text from the instruction, and nothing was done. Close the quote, or use «» or backticks when the text holds quotes of its own."
+        )
+    );
+}
+
+#[test]
+fn g84_a_replace_asked_for_everywhere_replaces_every_occurrence() {
+    for cue in ["everywhere", "in all occurrences", "throughout the file"] {
+        let run = drive(
+            &format!("In f.txt replace «a» with «b» {cue}."),
+            &[("f.txt", "a x a\ny a\n")],
+        );
+        assert_eq!(run.files["f.txt"], "b x b\ny b\n", "{cue}");
+        assert_eq!(
+            run.answer.as_deref(),
+            Some("Replaced `a` with `b` in `f.txt` and observed the result."),
+            "{cue}"
+        );
+    }
+}
+
+#[test]
+fn g84_a_cue_word_inside_the_quotes_is_part_of_the_text() {
+    let run = drive(
+        "In f.txt replace «a» with «b everywhere».",
+        &[("f.txt", "a x\n")],
+    );
+    assert_eq!(run.files["f.txt"], "b everywhere x\n");
+}
+
+#[test]
+fn g87_a_replace_whose_new_text_is_already_there_is_already_made() {
+    let run = drive("In g.txt replace «x» with «y».", &[("g.txt", "a y b\n")]);
+    assert_eq!(run.files["g.txt"], "a y b\n");
+    assert!(run.tools.iter().all(|tool| tool == "read"));
+    assert_eq!(
+        run.answer.as_deref(),
+        Some(
+            "`g.txt` already holds `y` and no `x`: the replacement is already made, and nothing changed."
+        )
+    );
+}
+
+#[test]
+fn g87_a_replace_whose_old_text_does_not_occur_says_so() {
+    for prompt in [
+        "In g.txt replace «q» with «z».",
+        "In g.txt replace the line «q» with the line «z».",
+    ] {
+        let run = drive(prompt, &[("g.txt", "a y b\n")]);
+        assert_eq!(
+            run.answer.as_deref(),
+            Some("`q` does not occur in `g.txt`, so nothing was changed."),
+            "{prompt}"
+        );
+    }
+}
+
+const G85_SOURCE: &str = "l1\nl2\nl3\nl4\nl5\n";
+
+#[test]
+fn g85_a_line_range_is_appended_to_the_destination_then_removed_from_the_source() {
+    let run = drive(
+        "Move lines 2-3 of a.md to the end of b.md.",
+        &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+    );
+    assert_eq!(run.files["a.md"], "l1\nl4\nl5\n");
+    assert_eq!(run.files["b.md"], "b1\nl2\nl3\n");
+    assert!(
+        run.commands
+            .iter()
+            .all(|command| !command.starts_with("mv ") && !command.starts_with("cp ")),
+        "{:?}",
+        run.commands
+    );
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result.")
+    );
+}
+
+#[test]
+fn g85_the_destination_is_the_path_after_the_cue_wherever_the_source_is_named() {
+    let run = drive(
+        "In a.md move lines 2 to 3 to the start of b.md.",
+        &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+    );
+    assert_eq!(run.files["a.md"], "l1\nl4\nl5\n");
+    assert_eq!(run.files["b.md"], "l2\nl3\nb1\n");
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result.")
+    );
+}
+
+#[test]
+fn g85_one_line_moved_in_russian() {
+    let run = drive(
+        "Перенеси строку 4 из a.md в конец b.md.",
+        &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+    );
+    assert_eq!(run.files["a.md"], "l1\nl2\nl3\nl5\n");
+    assert_eq!(run.files["b.md"], "b1\nl4\n");
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("Перенёс строку 4 из `a.md` в конец `b.md` и проверил результат.")
+    );
+}
+
+#[test]
+fn g85_a_range_past_the_end_of_the_source_changes_nothing() {
+    let run = drive(
+        "Move lines 7-9 of a.md to the end of b.md.",
+        &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+    );
+    assert_eq!(run.tools, ["read"]);
+    assert_eq!(run.files["b.md"], "b1\n");
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed.")
+    );
+}
+
+#[test]
+fn g85_a_file_move_without_line_numbers_is_still_a_file_move() {
+    let run = drive("Move a.md to c.md.", &[("a.md", G85_SOURCE)]);
+    assert!(
+        run.commands.iter().any(|command| command == "test -e a.md"),
+        "{:?}",
+        run.commands
+    );
+}
+
+#[test]
+fn g87_a_removal_whose_text_is_gone_says_so() {
+    let run = drive(
+        "Delete the line 'absent' from notes.txt.",
+        &[("notes.txt", "first line\n")],
+    );
+    assert_eq!(run.files["notes.txt"], "first line\n");
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("`absent` does not occur in `notes.txt`, so nothing was changed.")
     );
 }

@@ -236,7 +236,7 @@ fn role_words(role: &str) -> Vec<String> {
 /// A seeded `numbered_line_noun` comes before the number (`line 12`, `lines
 /// 3-5`, `lines from 3 to 5`, `строки с 3 по 5`), or, after a seeded lead,
 /// after it (`第3到5行`).
-fn numbered_lines(task: &str) -> Vec<(usize, usize)> {
+pub(super) fn numbered_lines(task: &str) -> Vec<(usize, usize)> {
     let pieces = line_pieces(task);
     let nouns = role_words("numbered_line_noun");
     let leads = role_words("numbered_line_lead");

@@ -1,0 +1,12 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# PR #1188: the CI speed rule (data/meta/ci-speed.lino, docs/ci-cd/speed.md).
+ci_gate check_ci_speed
+  stage web
+  description "No CI job or step may run longer than 30 minutes (15 is the target), long jobs wait only on jobs whose outputs they use, and test shards are planned longest-first from recorded durations with every test in exactly one shard; the jobs that cannot meet the limit yet are listed with their reason, and that list only shrinks."
+  run "node scripts/check-ci-speed.mjs --report"
+  justification "Commit 6e1c539fc's pipeline took 78 minutes of wall clock for 32 minutes of critical-path work, with jobs capped at up to 180 minutes and shards dealt out by index (specification shards of 236s, 641s and 378s); the owner's rule for #1188 is small parallel jobs of 15-30 minutes with the long work started first, enforced automatically."

@@ -365,6 +365,8 @@ roles
     kind meaning
   file_edit_action_cue
     kind predicate
+  file_edit_all_occurrences_cue
+    kind predicate
   file_edit_anchor_context_cue
     kind predicate
   file_edit_blank_line

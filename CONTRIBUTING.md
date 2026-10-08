@@ -680,7 +680,10 @@ This project uses:
 - Write tests for all new functionality
 - Keep functions focused and reasonably sized
 - Keep Rust files under 1000 lines (`.lino` files and the browser worker JavaScript are capped at 1500); all limits are enforced by `rust-script scripts/check-file-size.rs`
-- Use meaningful variable and function names
+- Name things in full English words (`index`, not `idx`; `arguments`, not `args`) in code and in the links notation we own, and name files and directories after what they hold, never with numbered parts (R1188-U4, R1188-U5)
+- In the links notation we own, prefer `-` over `_` in names, keep it human readable, and state shared structure once and reference it (R1188-U6, R1188-U7)
+- Generalize, don't specialize: fix a failing case with the smallest universal rule that covers its class, so specific tests pass through shared code (R1188-U1), and follow [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles) (R1188-U2)
+- Make bulk changes by rules, such as a substitution pass or a generator with `--check`, not by hand (R1188-U8)
 
 ### Documentation Format
 
@@ -693,8 +696,8 @@ Use Rust documentation comments:
 ///
 /// # Arguments
 ///
-/// * `arg1` - Description of arg1
-/// * `arg2` - Description of arg2
+/// * `left` - Description of left
+/// * `right` - Description of right
 ///
 /// # Returns
 ///
@@ -711,8 +714,8 @@ Use Rust documentation comments:
 /// let result = example_function(1, 2);
 /// assert_eq!(result, 3);
 /// ```
-pub fn example_function(arg1: i32, arg2: i32) -> i32 {
-    arg1 + arg2
+pub fn example_function(left: i32, right: i32) -> i32 {
+    left + right
 }
 ```
 
@@ -1308,7 +1311,7 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 
 1. Collects all fragments
 2. Updates CHANGELOG.md with the new version entry; CHANGELOG.md keeps only
-   the newest releases, and older ones roll into `docs/changelog/archive-NN.md`
+   the newest releases, and older ones roll into `docs/changelog/archive-NN.md` (numbered parts, which R1188-U5 replaces with named ones)
    so no changelog file exceeds the 1500-line cap
 3. Removes processed fragment files
 4. Bumps the version in Cargo.toml

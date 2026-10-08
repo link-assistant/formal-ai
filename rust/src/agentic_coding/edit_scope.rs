@@ -130,3 +130,43 @@ pub(super) fn scoped_decline(request: &str, target: &str, source: &str) -> Optio
         ],
     )
 }
+
+/// Whether `character` is part of a word in a script that spaces its words.
+fn word_character(character: Option<char>) -> bool {
+    character.is_some_and(|character| {
+        character.is_alphanumeric() && !('\u{3040}'..='\u{9fff}').contains(&character)
+    })
+}
+
+/// `request` with every seeded all-occurrences cue outside its quotes blanked.
+///
+/// `everywhere`, `all occurrences`, `везде`, `हर जगह`: a replace replaces every
+/// occurrence already, and the words belong to neither text; offsets are kept
+/// (PR #1188 G84; mirrors `withoutAllOccurrenceCues`).
+pub(super) fn without_all_occurrence_cues(request: &str) -> String {
+    let lowered = request.to_lowercase();
+    if lowered.len() != request.len() {
+        return request.to_owned();
+    }
+    let quoted = crate::normal_markov::quoted_segment_spans(request);
+    let mut out = request.to_owned();
+    for surface in seed::lexicon().words_for_role("file_edit_all_occurrences_cue") {
+        let needle = surface.to_lowercase();
+        if needle.is_empty() {
+            continue;
+        }
+        for (at, _) in lowered.match_indices(needle.as_str()) {
+            let end = at + needle.len();
+            if word_character(request[..at].chars().next_back())
+                || word_character(request[end..].chars().next())
+                || quoted
+                    .iter()
+                    .any(|segment| at < segment.end && end > segment.start)
+            {
+                continue;
+            }
+            out.replace_range(at..end, &" ".repeat(end - at));
+        }
+    }
+    out
+}

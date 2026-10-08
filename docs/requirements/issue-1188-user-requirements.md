@@ -1,0 +1,87 @@
+## Issue #1188 User Requirements
+
+Pull request [#1188](https://github.com/link-assistant/formal-ai/pull/1188)
+is worked from the project owner's messages in the Claude Code sessions as
+much as from the issues it fixes. The REQ-AUDIT pass of 2026-10-08 mapped every
+distinct requirement in those messages, the fixed issues and the latest vision
+(summarised at the end of `experiments/formal_ai_subagent/preamble.md`) to the
+rows that cover it; the mapping is
+[`requirement-coverage.md`](../case-studies/pull-request-1188/requirement-coverage.md).
+The rows below are the requirements no row covered, or covered only in part.
+Each row says what holds today and what is still missing.
+
+### Architecture
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1188-U1 | Generalize, don't specialize: a failing prompt is fixed by the smallest, more universal rule that covers its class (seed vocabulary, a general mechanism). Specific tests are fine, but they must all pass through that shared code; a case written for one prompt is wrong. (Owner, 2026-09-15 and 2026-10-06; latest vision, 2026-10-08.) Narrower rows cover parts of this: R1017 covers tasks delegated to Formal AI, R1005 and R1010 cover the meta reasoner and the worker literals. | Partial: several gates push the same way. `scripts/check-hardcoded-language.mjs` keeps natural language out of code. The literal ratchet of R1010 only falls. The ladder of R1009 fails on any rung answered by a handler. The no-memorization ratchet of R1165-8 counts verbatim per-language programs. Missing: no check notices a branch, cue or test fixture keyed to a single prompt, so whether a fix generalizes is still decided in review only. |
+| R1188-U2 | Code follows link-foundation/code-architecture-principles: modularity, separation of concerns, low coupling, stable explicit contracts, single source of truth, clear naming. (Latest vision, 2026-10-08.) | Not delivered: the principles are cached only in the git-ignored `experiments/formal_ai_subagent/sandboxes/refs/`. Neither CONTRIBUTING nor ARCHITECTURE.md names them, and no review checklist or gate refers to them. |
+| R1188-U3 | The `.lino` representation and the source are one to one and lossless on every merge: the links form holds the full source, not a signature, and translates back byte for byte. (Owner, 2026-09-11, `docs/architect-notes/2026-09-11-lino-and-src-one-to-one.md`.) | Partial: one-to-one file correspondence is kept by the self-AST census (R480, R482). A lossless round trip over twenty spread files runs in every CI run (`whole_repo_round_trip_sampled` in `rust/tests/unit/issue_558_source_links.rs`). The exhaustive whole-repository variant is still `#[ignore]`d, and the committed census remains a signature rather than the full representation. |
+
+### Naming
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1188-U4 | Names are full English words, without abbreviations, in code and in the links notation we own: variables, functions, files and link names. (Latest vision, 2026-10-08.) | Not delivered: no gate checks it. A 2026-10-08 count of single-binding abbreviations found 35 `ch`, 34 `args`, 28 `fn` and 12 `pos` bindings under `js/`, and `pos`, `ch`, `num` and `len` bindings in `rust/src/`. File names abbreviate too, for example `js/worker/formal_ai_worker_nl_tools.js`. |
+| R1188-U5 | File and directory names say what they hold; there are no numbered parts (`_05`, `part-03`) where a meaningful category exists. (Latest vision, 2026-10-08.) | Not delivered: 154 tracked files carry a numbered-part name. They include `js/worker/formal_ai_worker_00.js` to `_24.js` and their `ts/worker` and `data/meta/worker-line-budget/` twins, `data/meta/seed-metadata-gaps-00.lino` to `-15.lino`, `data/seed/meanings-lexicon-import-01.lino` to `-04.lino` and `docs/changelog/archive-01.md` to `-07.md`. Two generators also write numbered parts: `scripts/assemble-requirements.*` writes `docs/requirements/assembled/part-NN.md`, and `scripts/generate-requirement-status.*` writes `data/meta/requirement-status-ledger/requirements-NN.lino` (80 records per shard). The renames need the module loader, both generators and their Rust originals changed first; `docs/requirements/README.md` still describes the numbered parts as the design. |
+
+### Notation
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1188-U6 | Names in the links notation we own prefer `-` over `_`. (Latest vision, 2026-10-08.) | Not delivered: 8264 of the 86640 lines in `data/seed/*.lino` and 7511 of the 23999 lines in `data/meta/*.lino` open with an `_` name (2026-10-08 count), for example `requirement_status_ledger`, `automated_test` and `verdict_vocabulary`. The change needs a substitution pass with a `--check` mode over the seed, its byte-for-byte `rust/embedded` mirror, and the readers in both roots that match those names. |
+| R1188-U7 | The links notation we own is human readable and deduplicated: shared structure is stated once and referenced, not repeated per record. (Latest vision, 2026-10-08.) | Not delivered: the generated requirement-status ledger repeats `manual "not yet confirmed"` 1260 times and the owning shard path on every record. No check measures repetition in owned `.lino` files. |
+| R1188-U8 | Bulk changes are automated as rules (substitution passes, generators with `--check`), not made by hand. (Latest vision, 2026-10-08.) | Partial: the generated documents and ledgers have `--write`/`--check` generators (`scripts/assemble-requirements.mjs`, `scripts/generate-requirement-status.mjs`, `scripts/render-status.mjs`, the seed mirror). The renames and notation passes of R1188-U4 to R1188-U7 have no rule yet, and no gate tells a hand edit apart from a generated one. |
+
+### CI speed
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1188-U9 | No CI job or step runs longer than 15 to 30 minutes. (Owner, September 2026, on the 1.5-hour runs; latest vision, 2026-10-08.) | Partial: `scripts/check-ci-speed.mjs` (gate `data/meta/ci-gates/check-ci-speed.lino`, rule in `data/meta/ci-speed.lino`) fails a job with no timeout or a cap or measured maximum over 30 minutes; 77 of 92 jobs meet the limit and 15 are listed exceptions with reasons (release `test`, coverage-build, e2e-local, agent-cli-e2e, desktop packaging, the weekly agent ladder, and jobs that never run on pull requests). Pinned by `rust/tests/web/ci-speed.test.mjs`. |
+| R1188-U10 | Long-running jobs and tests start first. (Latest vision, 2026-10-08.) | Partial: `scripts/plan-test-shards.mjs` splits tests longest-first from recorded durations (`data/meta/test-durations.lino`, `data/meta/javascript-test-durations.lino`) for the Rust prebuilt tests, the specification lane, coverage shards and the JS tier, and the gate rejects sharding by list position and checks that long jobs do not wait on unrelated jobs. Remaining: Playwright spec ordering and a fresh Rust per-test duration recording (opt-in through `FORMAL_AI_RECORD_TEST_TIMES`). |
+| R1188-U11 | CI runs in parallel at job level and at test level. (Latest vision, 2026-10-08.) | Partial: jobs run in parallel tiers; sharded suites use the longest-first planner and the JS tier runs `node --test --test-concurrency=$(nproc)`; the gate rejects list-position sharding. Remaining: Playwright `fullyParallel` sharding. |
+| R1188-U12 | The CI speed rules of R1188-U9 to R1188-U11 are enforced automatically by a gate that fails the pull request. (Latest vision, 2026-10-08.) | Implemented: gate `data/meta/ci-gates/check-ci-speed.lino` runs `node scripts/check-ci-speed.mjs`, which fails on a missing or over-limit timeout, an over-limit measured maximum, a stale exception, a long job waiting on an unrelated job, list-position sharding, or a planner that loses or repeats a test; `rust/tests/web/ci-speed.test.mjs` pins each rule and that the repository meets it. |
+
+### Formal AI delegation
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1188-U13 | Every small, well-specified step of the work on a pull request is delegated to Formal AI (a single row, a single replace, a single function). The tally of edits made by Formal AI and by the coding agent is kept, and each Formal AI failure is fixed by a general mechanism with a regression test. (Owner, 2026-10-06 and 2026-10-07: "Use more smaller tasks delegated to Formal AI ideally - each step.") This is a sub-row of R1017, which covers the ladder of delegated tasks but not the per-step tally. | Partial: `docs/case-studies/pull-request-1188/formal-ai-dogfood.md` records every delegated task with its failure and fix (183 rows on 2026-10-08), the gaps are listed in `experiments/formal_ai_subagent/gaps.md`, and the fixes are pinned by `rust/tests/web/pull-request-1188-dogfood.test.mjs` and the per-pass suites. Missing: the tally is kept by hand, no gate checks that a failure row names its regression test, and gap G76 (a backticked command followed by prose runs as a command substitution) is unfixed. |
+
+### Docs sync
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1188-U14 | The latest vision is recorded verbatim as an architect note and folded into `VISION.md`. README, ARCHITECTURE, CONTRIBUTING and `docs/` never contradict it: no numbered files described as the design, no abbreviations recommended, no `_` names prescribed for links notation, no CI described as one long job. (Owner, 2026-09-12 and 2026-09-15; latest vision, 2026-10-08.) | Partial: the 2026-10-08 rules are summarised in `experiments/formal_ai_subagent/preamble.md`, and this audit fixed the contradicting wording that is only text (listed in `requirement-coverage.md`). Missing: the verbatim architect note and the `VISION.md` section, which wait on R1188-U15. The contradictions that need code changes first are rows R1188-U5, R1188-U6 and R1188-U9. |
+| R1188-U15 | Every message the owner sent in the Claude Code sessions for this repository is compiled verbatim into one regenerable file, and each requirement in it is mapped to a row. (Owner, 2026-09-23, 2026-09-24 and 2026-10-08.) | Partial: `experiments/issue_1138_feedback_recovery/` holds a collector and snapshots through 2026-10-07. The mapping is `docs/case-studies/pull-request-1188/requirement-coverage.md`, regenerated by `node experiments/formal_ai_subagent/requirement-coverage.mjs --write` (`--check` compares). A streaming collector with `--check`, `experiments/formal_ai_subagent/collect-user-messages.mjs`, is written. Missing: `docs/case-studies/pull-request-1188/user-messages.md`, because the auto-mode permission classifier blocked copying the session transcripts into the repository. The owner has to allow it. |
+
+### JS-first parity
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1188-U16 | The agentic planner is JavaScript first: every behaviour of `js/agentic/*.mjs` has its Rust twin in `rust/src/agentic_coding/` with the same behaviour, and each twin names its counterpart. (Owner, 2026-10-06; `experiments/formal_ai_subagent/preamble.md`.) R997 and R998 cover the worker's handler registry, not the planner. | Partial: the twins cite each other in `Mirrors` comments, and `node scripts/check-twin-citations.mjs` (R1024) fails on a citation whose Rust definition is gone. Missing: no ratchet counts planner functions that have no twin, as `scripts/check-js-parity.mjs` does for handlers, so a planner function can land in JavaScript alone without anything failing. |
+
+### Safety
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1188-U17 | Formal AI acting as a coding agent never takes an action it was not asked for. A quoted payload is data and never picks a command route; a request whose quotes do not pair is declined; a line edit never becomes a whole-file write; a deletion matches the whole quoted line before containment; a planned shell command never carries an unbalanced or prose-trailing backtick span. (Owner's safety direction for Formal AI as a subagent, 2026-10-07 to 2026-10-08; gaps G1, G13, G17, G32, G60, G61, G71 and G76.) | Partial: gaps G1, G13, G17, G32, G60, G61 and G71 are fixed in both roots and pinned by `rust/tests/web/pull-request-1188-dogfood.test.mjs` and `rust/tests/web/pull-request-1188-teach-f.test.mjs`. G76 is unfixed (a backticked command followed by prose runs as a command substitution), and no general property test drives the planner with adversarial quoting. |
+
+### Text understanding
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R1188-U18 | Formal AI formalizes any text from the internet with high quality, a whole Wikipedia page included, not only single grammatical sentences: every sentence becomes formal statements in the links network, nothing is silently dropped, and deformalizing the statements restates the page's facts. (Owner, 2026-10-08.) | Not delivered: the formalization probe set (`data/benchmarks/formalization/{en,ru,hi,zh}.lino`, issue #1186 R10) pins single quantified sentences; no benchmark formalizes a fetched page end to end, and no measure reports per-page sentence coverage or fact survival. |
+| R1188-U19 | Formal AI translates natural language between all its languages, and the best translation is the one that survives the round trip: source → meta → target → meta → source, across every language pair, for sentences and whole texts. (Owner, 2026-10-08; extends R526-1.) | Partial: `rust/tests/unit/specification/translation_round_trip.rs` pins round-trip survival for seeded vocabulary (single words such as apple); no sentence or document corpus is measured, and candidate translations are not ranked by round-trip survival across all five languages. |
+| R1188-U20 | Formal AI lists every exact requirement stated in an issue, measured against the repository's own issues: the requirement shards in `docs/requirements/issue-*.md` are the reviewed answers for those issues. (Owner, 2026-10-08.) | Not delivered: requirements are extracted by agents and reviewed by hand; no Formal AI route extracts them and no benchmark scores its list against the shards. |
+| R1188-U21 | Formal AI summarizes algorithmically, with no language model: it keeps the statements that the other statements describe or depend on, drops what restates something already said, and deformalizes the kept core concisely. (Owner, 2026-10-08; extends R197.) | Partial: the summarization pipeline (`formalize`, `summarize`, `deformalize`; R197–R205) and the issue #893 ratchet exist; selection by dependency (the statements others depend on) and deduplication against the earlier text are not measured. |
+| R1188-U22 | At most three subagents run at once; running agents are never stopped early, and the work of every started agent is fully delivered. (Owner, 2026-10-08.) | Partial: recorded in `experiments/formal_ai_subagent/preamble.md`; the SPANISH task stopped on 2026-10-08 is queued for the next free slot (`experiments/formal_ai_subagent/tasks/spanish.md`). |
+
+### Readability and working rules
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R1188-U23 | Every regular code file in `js/`, `ts/` and `rust/` is human-readable multi-line code: no generated single-line file. Only real distribution bundles may be exempt, and each exemption is listed. (Owner, 2026-10-08: a strict requirement.) | Not delivered: `scripts/translate-es.mjs` writes each `ts/` twin as one line of space-joined tokens; no gate rejects single-line files. |
+| R1188-U24 | Local checks are minimal: only the tests closest to the code being fixed run locally, and the full suites run in CI, where failures are fixed in bulk. (Owner, 2026-10-08.) | Partial: recorded in `experiments/formal_ai_subagent/preamble.md`; `local-gates.mjs` already leaves every Rust compile to CI. |
+| R1188-U25 | Local work is careful with disk: no Rust builds and no full repository copies; scratch copies are deleted as soon as they are used. (Owner, 2026-10-07 and 2026-10-08.) | Partial: `local-gates.mjs` runs JS twins and never compiles Rust; the preamble forbids whole-repository copies; on 2026-10-08 the lead removed 3.7 GB of `rust-script` cache and about 9 GB of scratch copies. No check measures it automatically. |
+| R1188-U26 | One of the (at most three) subagents is a CI fixer that commits and pushes fixes as soon as each CI run reports, while the others bulk-draft undrafted requirements. (Owner, 2026-10-08.) | Partial: `experiments/formal_ai_subagent/tasks/cifix-loop.md` defines the role; it runs from 2026-10-08. |

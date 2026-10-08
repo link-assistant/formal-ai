@@ -104,7 +104,7 @@ const roleWords = (role) => wordsForRole(role).map((word) => word.toLowerCase())
  * `lines from 3 to 5`, `строки с 3 по 5`), or, after a seeded lead, after it
  * (`第3到5行`) — as `{first, last}`, one-based and inclusive.
  */
-function numberedLines(task) {
+export function numberedLines(task) {
   const pieces = linePieces(task);
   const nouns = roleWords('numbered_line_noun');
   const leads = roleWords('numbered_line_lead');
@@ -247,7 +247,7 @@ function uniqueLine(lines, text) {
 }
 
 /** Mirrors `fn removed_range`: lines `first..=last` (one-based) gone. */
-function removedRange(source, first, last) {
+export function removedRange(source, first, last) {
   const { lines, trailing } = fileLines(source);
   if (first < 1 || last < first || last > lines.length) return null;
   return joinedLines([...lines.slice(0, first - 1), ...lines.slice(last)], trailing);

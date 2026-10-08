@@ -194,8 +194,9 @@ fn assertion_request(task: &str) -> Option<AssertionRequest> {
 /// Its index, the style (the longest lead when several fit) and its
 /// indentation (mirrors `lastAssertion`).
 fn last_assertion<'a>(source: &'a str, styles: &[String]) -> Option<(usize, String, &'a str)> {
-    source
-        .split('\n')
+    let lines: Vec<&str> = source.split('\n').collect();
+    lines
+        .into_iter()
         .enumerate()
         .rev()
         .find_map(|(index, line)| {
