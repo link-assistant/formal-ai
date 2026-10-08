@@ -93,6 +93,7 @@ function parseLine(line) {
 export function parseRenameMap(source) {
   const map = { exclude: [], resort: [], renames: [] };
   let tree = '';
+  let treeReason = '';
   let current = null;
   let renameDepth = -1;
   for (const raw of source.split('\n')) {
@@ -105,9 +106,12 @@ export function parseRenameMap(source) {
     }
     if (line.head === 'exclude') map.exclude.push(line.value);
     else if (line.head === 'resort') map.resort.push(line.value);
-    else if (line.head === 'tree') tree = line.value;
+    else if (line.head === 'tree') {
+      tree = line.value;
+      treeReason = '';
+    } else if (line.head === 'reason') treeReason = line.value;
     else if (line.head === 'rename') {
-      current = { tree, from: '', to: '', reason: '', review: '' };
+      current = { tree, from: '', to: '', reason: treeReason, review: '' };
       renameDepth = line.depth;
       map.renames.push(current);
     }

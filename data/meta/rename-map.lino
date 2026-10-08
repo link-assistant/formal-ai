@@ -21,6 +21,7 @@ rename-map
   exclude "data/benchmarks/issue-requirements/"
   exclude "data/cache/"
   exclude "experiments/formal_ai_subagent/archive/"
+  exclude "experiments/formal_ai_subagent/evidence/"
   exclude "experiments/formal_ai_subagent/claims.md"
   exclude "experiments/formal_ai_subagent/tasks/"
   exclude "experiments/formal_ai_subagent/sandboxes/"

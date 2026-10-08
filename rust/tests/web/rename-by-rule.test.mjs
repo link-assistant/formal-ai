@@ -141,3 +141,13 @@ test("a generated one-entry-per-line list is re-sorted after a rename", () => {
   const list = 'self.X = [\n  "worker/zeta.js",\n  "worker/alpha.js",\n];\n';
   assert.equal(resortQuotedLists(list), 'self.X = [\n  "worker/alpha.js",\n  "worker/zeta.js",\n];\n');
 });
+
+test("shared tree reasons retain per-record overrides and never leak into the next tree", () => {
+  const map = parseRenameMap([
+    'rename-map', '  tree first', '    reason "shared reason"',
+    '    rename', '      from "a.mjs"', '      to "b.mjs"',
+    '    rename', '      from "c.mjs"', '      to "d.mjs"', '      reason "specific reason"',
+    '  tree second', '    rename', '      from "e.mjs"', '      to "f.mjs"',
+  ].join("\n"));
+  assert.deepEqual(map.renames.map(({ reason }) => reason), ["shared reason", "specific reason", ""]);
+});
