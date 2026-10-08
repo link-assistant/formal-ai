@@ -80,6 +80,16 @@ async function drive(prompt, workspace, maxSteps = 12) {
   return { calls, files, answer: null };
 }
 
+test('an advertised multi_edit capability receives every explicitly named path', async () => {
+  const plan = await planChatStep([{ role: 'user', content: 'replace alpha with beta in a.txt and b.txt' }], ['multi_edit', 'web_search']);
+  assert.equal(plan.kind, 'tool_calls');
+  assert.equal(plan.calls[0].tool, 'multi_edit');
+  const args = JSON.parse(plan.calls[0].arguments);
+  assert.deepEqual(args.paths, ['a.txt', 'b.txt']);
+  assert.equal(args.edits[0].old_string, 'alpha');
+  assert.equal(args.edits[0].new_string, 'beta');
+});
+
 const MODULE = 'import { A } from "x";\nfoo(C);\n';
 const LINES = 'a\nb\nc\nd\n';
 const ROW = 'row A. one\nrow C two\n';

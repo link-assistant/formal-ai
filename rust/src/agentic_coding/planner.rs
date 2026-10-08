@@ -298,6 +298,7 @@ fn plan_chat_step_routes(
         // An edit request's block is its payload: a `when … then` inside it is
         // text being written, not a skill being taught (PR #1188 T57).
         || (!has_authoritative_literal_write(&task)
+            && super::general_planner::compose_edit_request(&task).is_none()
             && looks_like_skill_description(super::positional_edit::own_text(&task)))
     {
         return None;
@@ -308,8 +309,11 @@ fn plan_chat_step_routes(
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
     // payload as words to act on (PR #1188 G71).
-    if let Some(plan) = super::quote_nesting::request_fault_answer(&task)
-        .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
+    if let Some(plan) = super::quote_nesting::request_fault_answer(
+        &task,
+        tool_for(tool_names, Capability::MultiEdit).is_some(),
+    )
+    .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
     {
         return Some(plan);
     }

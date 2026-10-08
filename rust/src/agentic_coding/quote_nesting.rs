@@ -149,7 +149,7 @@ pub(super) fn nested_quote_fault(text: &str) -> Option<NestedQuote> {
 /// `requestFaultAnswer` in `js/agentic/planner.mjs`.
 ///
 /// Steps joined by a sequence cue are each checked alone (G99).
-pub(super) fn request_fault_answer(task: &str) -> Option<AgenticPlan> {
+pub(super) fn request_fault_answer(task: &str, allow_multiple_files: bool) -> Option<AgenticPlan> {
     let fault = crate::normal_markov::quote_fault(task)
         .map(|fault| (format!("request_quote_{}", fault.kind), fault.fragment))
         .or_else(|| {
@@ -160,6 +160,9 @@ pub(super) fn request_fault_answer(task: &str) -> Option<AgenticPlan> {
     } else if super::request_sequence::sequence_steps(task).is_some() {
         return None;
     } else if let Some(targets) = super::replace_list::several_edit_targets(task) {
+        if allow_multiple_files {
+            return None;
+        }
         code_task::render_seeded_list_change(
             "request_several_edit_targets",
             task,

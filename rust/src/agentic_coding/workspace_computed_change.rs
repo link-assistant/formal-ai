@@ -62,6 +62,7 @@ pub(super) enum Computation {
     /// Every line that is `old` becomes `new` (the request names a line), or
     /// only the first one after `context`.
     LineReplacement {
+        listed: bool,
         old: String,
         new: String,
         context: Option<String>,
@@ -506,18 +507,9 @@ fn grounded_line_replacement(task: &str) -> Option<ComputedChange> {
         target,
         intent: "coding_text_replaced",
         // Listed lines are named one by one, not as one span holding line breaks.
-        slots: vec![
-            (
-                "{old}",
-                if listed {
-                    original.replace('\n', "`, `")
-                } else {
-                    original.clone()
-                },
-            ),
-            ("{new}", replacement.clone()),
-        ],
+        slots: vec![("{old}", original.clone()), ("{new}", replacement.clone())],
         computation: Computation::LineReplacement {
+            listed,
             old: original,
             new: replacement,
             context: context.map(|(_, _, text)| text),
@@ -616,6 +608,7 @@ impl ComputedChange {
                 new,
                 context,
                 rebase,
+                ..
             } => (!missing)
                 .then(|| {
                     let new = if *rebase {
@@ -809,6 +802,9 @@ impl ComputedChange {
             Computation::DeclarationRemoval { names } => {
                 removed_declarations(source, names).map(|(_, values)| values)
             }
+            Computation::LineReplacement {
+                old, listed: true, ..
+            } => Some(old.split('\n').map(str::to_owned).collect()),
             Computation::Line(operation) => operation.reported_values(source),
             _ => None,
         }

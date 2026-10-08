@@ -213,6 +213,26 @@ fn g109_copy_then_comma_joined_edits_preserves_source() {
 }
 
 #[test]
+fn advertised_multi_edit_receives_every_explicit_path() {
+    use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+    use formal_ai::protocol::ChatMessage;
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(
+        &[ChatMessage::user(
+            "replace alpha with beta in a.txt and b.txt",
+        )],
+        &["multi_edit", "web_search"],
+    ) else {
+        panic!("advertised multi-edit must be routed");
+    };
+    assert_eq!(calls[0].tool, "multi_edit");
+    let args: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("tool arguments");
+    assert_eq!(args["paths"], serde_json::json!(["a.txt", "b.txt"]));
+    assert_eq!(args["edits"][0]["old_string"], "alpha");
+    assert_eq!(args["edits"][0]["new_string"], "beta");
+}
+
+#[test]
 fn g108_scalar_backtick_comma_payload_is_fenced_whole() {
     let payload = "values `left`, `right` remain scalar";
     let request = format!("In f.txt replace «x» with «{payload}»");

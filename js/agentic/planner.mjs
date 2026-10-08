@@ -38,7 +38,7 @@ import { fileReadTaskFor, planFileReadStep } from './file_read.mjs';
 import * as formalizationRecipe from './formalization_recipe.mjs';
 import * as functionExpectation from './function_expectation.mjs';
 import { planGeneralChangeStep } from './general_execution.mjs';
-import { composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText } from './general_planner.mjs';
+import { composeEditRequest, composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText } from './general_planner.mjs';
 import * as gitCommit from './git_commit.mjs';
 import * as googleTrendsCatalog from './google_trends_catalog.mjs';
 import * as googleTrendsLearning from './google_trends_learning.mjs';
@@ -150,7 +150,7 @@ async function planWorkspaceChangeArm(task, messages, toolNames) {
  * (G91), or null.
  * @param {string} task
  */
-function requestFaultAnswer(task) {
+function requestFaultAnswer(task, allowMultipleFiles = false) {
   const fault = quoteFault(task) ?? quoteNesting.nestedQuoteFault(task);
   if (fault !== null) {
     const answer = codeTask.renderSeededChange(fault.intent ?? `request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
@@ -159,6 +159,7 @@ function requestFaultAnswer(task) {
   // Steps joined by a sequence cue are each checked alone (PR #1188 G99).
   if (requestSequence.sequenceSteps(task) !== null) return null;
   const files = replaceList.severalEditTargets(task);
+  if (files !== null && allowMultipleFiles) return null;
   const clause = files === null ? replaceList.unplannedEditClause(task) : null;
   const answer = files !== null
     ? codeTask.renderSeededListChange('request_several_edit_targets', task, '', '{files}', files)
@@ -234,13 +235,14 @@ async function planChatStepRoutes(messages, toolNames, received) {
   if (handlerMatches('conversation_control', task) || isContinuationCue(task)
     // An edit request's block is its payload: a `when … then` inside it is text
     // being written, not a skill being taught (PR #1188 T57).
-    || (!hasAuthoritativeLiteralWrite(task) && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
+    || (!hasAuthoritativeLiteralWrite(task) && composeEditRequest(task) === null
+      && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
     return null;
   }
   // The computer_use arm. Ahead of it, quotes that do not pair leave no
   // telling the quoted text from the instruction, so the request is declined
   // before any arm reads its payload as words to act on (PR #1188 G71).
-  const computerUse = requestFaultAnswer(task) ?? computerUsePlanAgenticStep(messages, toolNames);
+  const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null) ?? computerUsePlanAgenticStep(messages, toolNames);
   if (computerUse !== null) return computerUse;
   if (hasAuthoritativeLiteralWrite(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
     const general = composeGeneralChangePlan(task);
