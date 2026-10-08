@@ -11,7 +11,7 @@ adoption-effect-ratchet
     direction up
     value 1
     measured_by tests/unit/issue_1138_learning_ratchet.rs
-    invariant "equals adopted_items"
+    invariant "equals adopted-items"
   measure learned-items-never-read-back
     direction down
     value 0

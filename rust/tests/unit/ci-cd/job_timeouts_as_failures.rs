@@ -390,10 +390,9 @@ fn no_workflow_pins_an_action_on_the_deprecated_node_20_runtime() {
 #[test]
 fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
     let workflow = release_workflow();
-    // Some of these scripts are release-job steps and some became registered
-    // gates in issue #991; both are CI calling the script rather than inlining
-    // it, which is what this case is about.
-    let surface = ci_surface();
+    // Reusable workflow steps and registered gates both execute their shared
+    // scripts; moving a step must not remove it from this contract.
+    let surface = crate::ci_gates::pipeline_workflows();
 
     for script in [
         "scripts/check-pipeline-status.sh",

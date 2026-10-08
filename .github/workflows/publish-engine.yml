@@ -133,4 +133,10 @@ jobs:
         working-directory: packages/formal-ai-engine
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: node ../../scripts/publish-browser-engine.mjs
+          NPM_TRUSTED_PUBLISHING: ${{ vars.FORMAL_AI_NPM_TRUSTED_PUBLISHING }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ] && [ "$NPM_TRUSTED_PUBLISHING" != "true" ]; then
+            echo "::notice::npm publication is not configured; the installable tarball is attached to the release"
+            exit 0
+          fi
+          node ../../scripts/publish-browser-engine.mjs

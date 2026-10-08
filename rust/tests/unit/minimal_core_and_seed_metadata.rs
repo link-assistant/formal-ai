@@ -398,7 +398,18 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
         .filter_map(|line| line.strip_prefix("  complete_source "))
         .map(|value| value.trim_matches('"').to_owned())
         .collect::<BTreeSet<_>>();
-    assert_eq!(complete_sources.len(), 3);
+    assert_eq!(
+        complete_sources,
+        BTreeSet::from(
+            [
+                "data/seed/meanings-coding-catalog.lino",
+                "data/seed/meanings-coding-config.lino",
+                "data/seed/meanings-coding-tasks.lino",
+                "data/seed/meanings-decomposition-ladder.lino",
+            ]
+            .map(str::to_owned)
+        )
+    );
     let registered_languages = formal_ai::language::registered_languages();
     assert!(!registered_languages.is_empty(), "language registry");
 

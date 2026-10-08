@@ -157,7 +157,7 @@ fn change_detection_covers_the_complete_pull_request() {
 
 #[test]
 fn generated_api_documentation_fails_on_every_rustdoc_warning() {
-    let release = workflow("release.yml");
+    let release = workflow("pages-artifact.yml");
     let docs = release
         .split("      - name: Generate Rust API docs (cargo doc --manifest-path rust/Cargo.toml)\n")
         .nth(1)

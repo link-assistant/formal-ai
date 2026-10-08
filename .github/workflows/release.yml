@@ -200,6 +200,9 @@ jobs:
         run: scripts/prune-docker.sh
   docker-slim:
     name: Slim Docker build and runtime
+    concurrency:
+      group: ${{ github.workflow }}-docker-slim-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, build-artifacts]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     uses: ./.github/workflows/docker-slim.yml

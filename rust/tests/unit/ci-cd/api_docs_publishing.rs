@@ -4,7 +4,7 @@ use std::fs;
 
 use toml_edit::DocumentMut;
 
-use super::workflow_fixtures::ci_surface;
+use super::workflow_fixtures::{ci_surface, pages_artifact_workflow};
 
 fn manifest() -> String {
     fs::read_to_string(format!("{}/Cargo.toml", env!("CARGO_MANIFEST_DIR")))
@@ -54,7 +54,7 @@ fn pull_requests_validate_the_same_dependency_profile_docs_rs_uses() {
 
 #[test]
 fn generated_api_docs_are_published_below_the_site_docs_route() {
-    let workflow = release_workflow();
+    let workflow = format!("{}\n{}", pages_artifact_workflow(), release_workflow());
 
     assert!(workflow.contains("mkdir -p js/docs/api"));
     assert!(workflow.contains("cp -R target/doc/. js/docs/api/"));

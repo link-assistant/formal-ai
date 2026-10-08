@@ -781,10 +781,10 @@ fn both_release_jobs_budget_the_docker_publish_above_its_measured_worst_case() {
             .collect();
         assert_eq!(
             step_caps,
-            vec![45, 20],
+            vec![45, 15, 20],
             "{job_name} must budget the GHCR publish at 45 minutes -- 1.4x the worst \
-             measured build (32.5 min, run 33955786226) -- and the Docker Hub publish \
-             that reuses its layers at 20"
+             measured build (32.5 min, run 33955786226) -- the prebuilt slim sidecar \
+             at 15 and the Docker Hub publish that reuses its layers at 20"
         );
     }
 }
