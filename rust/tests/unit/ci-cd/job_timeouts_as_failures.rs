@@ -12,7 +12,7 @@
 
 use std::fs;
 
-use super::workflow_fixtures::{ci_surface, job_block, release_workflow, workflow_job_names};
+use super::workflow_fixtures::{job_block, release_workflow, workflow_job_names};
 
 fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/../{path}", env!("CARGO_MANIFEST_DIR")))

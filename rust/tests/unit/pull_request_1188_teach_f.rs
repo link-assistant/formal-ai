@@ -11,6 +11,31 @@ use formal_ai::source_fetch::sha256_hex;
 
 const TOOLS: [&str; 7] = ["bash", "edit", "glob", "grep", "list", "read", "write"];
 
+struct AppendWorkspace(std::path::PathBuf);
+
+impl AppendWorkspace {
+    fn new() -> Self {
+        static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+        let sequence = NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let root = std::env::temp_dir().join(format!(
+            "formal-ai-plan-event-{}-{sequence}",
+            std::process::id()
+        ));
+        std::fs::create_dir(&root).expect("append workspace");
+        Self(root)
+    }
+
+    fn path(&self) -> &std::path::Path {
+        &self.0
+    }
+}
+
+impl Drop for AppendWorkspace {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
+    }
+}
+
 /// One driven session: the workspace afterwards, the bash commands and tools
 /// it ran, and its final answer.
 pub struct Run {
@@ -59,7 +84,7 @@ fn execute(
         "bash" => {
             let command = arguments["command"].as_str().unwrap_or_default();
             if command.starts_with("mkdir -p -- .formal-ai && (lock=") {
-                let directory = tempfile::tempdir().expect("append workspace");
+                let directory = AppendWorkspace::new();
                 std::fs::create_dir(directory.path().join(".formal-ai")).expect("event directory");
                 let event_path = ".formal-ai/general-change-plan.lino";
                 if let Some(before) = files.get(event_path) {
