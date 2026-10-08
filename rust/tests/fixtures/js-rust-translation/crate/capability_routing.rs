@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=40dbfe1b52ea5bbea9c86ed13a5f5be38f476462a3937b098c1b77d416c0e513 bytes=21094
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=ecfc48968aa85c351fb86365ae766d6f6499da3882ba4dc2c97d38f344064b78 bytes=22348
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -79,6 +79,18 @@ pub const ROUTING_FILE: &str = "data/seed/capability-routing.lino";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal function value …
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .map()
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .flatMap()
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .some()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function

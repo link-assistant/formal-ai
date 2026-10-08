@@ -234,6 +234,7 @@ mod proof_request;
 mod proof_request_config;
 mod proxy;
 mod pull_request_1188_destructive_edit;
+mod pull_request_1188_dialogue_utterance;
 mod pull_request_1188_function_recipe;
 mod pull_request_1188_line_removal;
 mod pull_request_1188_module_function;

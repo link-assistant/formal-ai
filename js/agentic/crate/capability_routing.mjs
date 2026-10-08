@@ -89,6 +89,36 @@ export function tableRoutingEnabled() {
     .some((document) => findChildValue(document, 'routing_enabled') === 'false');
 }
 
+/** Mirrors `fn dialogue_utterance_roles`. */
+export function dialogueUtteranceRoles() {
+  return parseRoot(readText(ROUTING_FILE)).children
+    .flatMap((document) => document.children || [])
+    .filter((child) => child.name === 'dialogue_utterance_role' && child.value)
+    .map((child) => child.value);
+}
+
+/** Mirrors `fn words` in rust/src/capability_routing/claim_evidence.rs. */
+function claimWords(text) {
+  return splitWhitespace(text)
+    .map((word) => word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ''))
+    .filter((word) => word !== '');
+}
+
+/** Mirrors `fn content_beyond_roles` in rust/src/capability_routing/claim_evidence.rs. */
+export function contentBeyondRoles(text, roles) {
+  const covered = [...roles, 'request_function_word', 'statement_function_word']
+    .flatMap((role) => wordsForRole(role))
+    .flatMap((surface) => claimWords(surface.toLowerCase()));
+  return claimWords(text.toLowerCase()).some((word) => !covered.includes(word));
+}
+
+/** Mirrors `fn is_dialogue_utterance`. */
+export function isDialogueUtterance(prompt) {
+  const roles = dialogueUtteranceRoles();
+  const normalized = normalizePrompt(prompt);
+  return roles.some((role) => mentionsRole(role, normalized)) && !contentBeyondRoles(normalized, roles);
+}
+
 /** Mirrors `fn object_type`: every object the prompt carries, ranked. */
 export function objectType(prompt) {
   const normalized = normalizePrompt(prompt);

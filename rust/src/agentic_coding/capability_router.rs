@@ -456,9 +456,7 @@ fn plan_routed_capability_step_in(
     // whole shape, so the boundary below still declines it as governed.
     let policy_free_request = super::shell_command_policy::sentence_spans(routed_task)
         .into_iter()
-        .filter(|sentence| {
-            !super::shell_command_policy::states_a_command_policy(sentence)
-        })
+        .filter(|sentence| !super::shell_command_policy::states_a_command_policy(sentence))
         .collect::<Vec<_>>()
         .join(" ");
     let routed_task: &str = if policy_free_request.is_empty() {
@@ -506,9 +504,15 @@ fn plan_routed_capability_step_in(
     // is the catalog, because the recipe path also composes programs no
     // contract pins.
     let engine_answerable_program = super::code_artifact::catalog_claims(routed_task);
+    // The dialogue half: "hi" or "thanks" on its own is an exchange the engine
+    // answers in the reply, not a bare term for the open web.
+    let engine_answerable_dialogue = crate::capability_routing::is_dialogue_utterance(routed_task);
     if stage == RoutingStage::OpenWeb
         && !crate::capability_routing::names_open_web(routed_task)
-        && (engine_answerable_concept || engine_answerable_fact || engine_answerable_program)
+        && (engine_answerable_concept
+            || engine_answerable_fact
+            || engine_answerable_program
+            || engine_answerable_dialogue)
     {
         return None;
     }

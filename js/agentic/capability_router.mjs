@@ -18,7 +18,7 @@ import { composeEditRequest, statedWriteTarget, statesWriteAction } from './writ
 import { workspaceInspectionSearchForTask } from './workspace_inspection.mjs';
 import {
   Act, Locus, ObjectType, acts, evidencesRetrieveAct, explicitContent, firstPath, firstUrl, locus, namesOpenWeb,
-  objectType, route, tableRoutingEnabled,
+  isDialogueUtterance, objectType, route, tableRoutingEnabled,
 } from './crate/capability_routing.mjs';
 import { extractConceptQuery } from './crate/concepts_lookup.mjs';
 import { factStoreResolves } from './crate/solver_handlers_benchmark_prompts.mjs';
@@ -208,8 +208,9 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
   const engineAnswerableConcept = extractConceptQuery(routedTask) !== null && !conceptLookupLeavesUnknown(routedTask);
   const engineAnswerableFact = factStoreResolves(routedTask);
   const engineAnswerableProgram = catalogClaims(routedTask);
+  const engineAnswerableDialogue = isDialogueUtterance(routedTask);
   if (stage === RoutingStage.OpenWeb && !namesOpenWeb(routedTask)
-    && (engineAnswerableConcept || engineAnswerableFact || engineAnswerableProgram)) {
+    && (engineAnswerableConcept || engineAnswerableFact || engineAnswerableProgram || engineAnswerableDialogue)) {
     return null;
   }
   const advertised = ROUTED_CAPABILITIES

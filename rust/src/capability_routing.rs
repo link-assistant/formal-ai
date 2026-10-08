@@ -375,6 +375,39 @@ pub fn table_routing_enabled() -> bool {
     true
 }
 
+/// The `dialogue_utterance_role` fields of the shipped table: the roles whose
+/// surfaces, said on their own, are an exchange with the assistant itself.
+#[must_use]
+pub fn dialogue_utterance_roles() -> Vec<String> {
+    let tree = parse_lino(CAPABILITY_ROUTING_LINO);
+    tree.children
+        .iter()
+        .flat_map(|document| document.children.iter())
+        .filter(|child| child.name == "dialogue_utterance_role" && !child.id.is_empty())
+        .map(|child| child.id.clone())
+        .collect()
+}
+
+/// Whether the request is only a dialogue act -- a greeting, a thank-you, a
+/// how-are-you -- that the engine answers in the reply.
+///
+/// Every word belongs to a seeded `dialogue_utterance_role` surface or to the
+/// function words, and at least one such role is mentioned. A bare term
+/// otherwise reads as `(bare_term, retrieve, web)`, which is how the opencode
+/// greeting leg searched the web for "hi" and read a dictionary page before
+/// it answered.
+#[must_use]
+pub fn is_dialogue_utterance(prompt: &str) -> bool {
+    let owned = dialogue_utterance_roles();
+    let roles: Vec<&str> = owned.iter().map(String::as_str).collect();
+    let normalized = normalize_prompt(prompt);
+    let lexicon = crate::seed::lexicon();
+    roles
+        .iter()
+        .any(|role| lexicon.mentions_role(role, &normalized))
+        && !content_beyond_roles(&normalized, &roles)
+}
+
 /// Every object the prompt carries, ranked; the table is consulted for the
 /// highest-ranked first.
 #[must_use]
