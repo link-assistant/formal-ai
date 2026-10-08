@@ -15,7 +15,7 @@ use formal_ai::rule_interpreter::run_handler;
 fn last_five_rows_every_precedence_handler_carries_a_claim_row() {
     for handler in formal_ai::seed::handler_precedence() {
         assert!(
-            claim_rows().iter().any(|row| row.handler == handler),
+            claim_rows().iter().any(|row| row.handler == *handler),
             "handler `{handler}` has no claim row"
         );
     }
@@ -269,12 +269,9 @@ fn last_five_rows_a_formalization_claims_only_with_a_statement() {
             "{prompt}"
         );
         let mut log = EventLog::new();
-        let answer = formal_ai::solver_handlers::handle_formalization_request(
-            prompt,
-            &prompt.to_lowercase(),
-            &mut log,
-        )
-        .unwrap_or_else(|| panic!("the cue is refused by name: {prompt}"));
+        let answer =
+            formal_ai::handle_formalization_request(prompt, &prompt.to_lowercase(), &mut log)
+                .unwrap_or_else(|| panic!("the cue is refused by name: {prompt}"));
         assert_eq!(answer.intent, "formalization", "{prompt}");
         assert!(
             refusal_recorded("formalization_request", log.events()),

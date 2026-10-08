@@ -701,7 +701,7 @@ fn retired_seed_programs_are_reproduced_by_the_documentation() {
         let recipe = response
             .execution_recipe
             .unwrap_or_else(|| panic!("{language}: a program answer carries its recipe"));
-        assert_eq!(recipe.source, program, "{language}");
+        assert_eq!(recipe.source, *program, "{language}");
     }
 }
 
