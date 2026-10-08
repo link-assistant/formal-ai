@@ -115,6 +115,14 @@ export function renderSeededChange(intent, task, path, slots) {
   return template === null || template === undefined ? null : renderTemplate(template, [['{path}', path], ...slots]);
 }
 
+/** Mirrors `fn render_seeded_list_change`: an explicitly typed list slot. */
+export function renderSeededListChange(intent, task, path, slot, values) {
+  const template = renderSeededChange(intent, task, path, []);
+  if (template === null) return null;
+  const rendered = values.map(codeSpanItem).join(', ');
+  return template.split(`\`${slot}\``).join(rendered).split(slot).join(rendered);
+}
+
 // A placeholder the seed sentence wraps in backticks becomes a CommonMark code
 // span: a value holding a backtick run gets a longer fence, padded when it
 // starts or ends with a backtick, so the inserted text reads back verbatim.
@@ -127,10 +135,8 @@ function codeSpanItem(value) {
   return `${fence}${pad}${value}${pad}${fence}`;
 }
 
-// A list slot is joined with LIST_JOIN so that it reads `a`, `b` inside the
-// template's backticks; each item is fenced on its own.
-const LIST_JOIN = '`, `';
-const codeSpan = (value) => value.split(LIST_JOIN).map(codeSpanItem).join(', ');
+// A scalar payload is fenced whole, even when it contains comma-separated code.
+const codeSpan = codeSpanItem;
 
 function renderTemplate(template, substitutions) {
   return substitutions.reduce((text, [placeholder, value]) =>

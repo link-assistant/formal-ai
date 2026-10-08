@@ -201,3 +201,63 @@ fn g102_a_file_described_rather_than_given_is_never_written() {
     assert_eq!(run.answer, None);
     assert!(!run.files.contains_key("abbreviations.test.mjs"));
 }
+
+#[test]
+fn g109_copy_then_comma_joined_edits_preserves_source() {
+    let run = drive(
+        "Copy a.lino to b.lino, then in b.lino replace every «x» with «y» and replace «m» with «n».",
+        &[("a.lino", "x m\n")],
+    );
+    assert_eq!(run.files["a.lino"], "x m\n");
+    assert_eq!(run.files["b.lino"], "y n\n");
+}
+
+#[test]
+fn g108_scalar_backtick_comma_payload_is_fenced_whole() {
+    let payload = "values `left`, `right` remain scalar";
+    let request = format!("In f.txt replace «x» with «{payload}»");
+    let run = drive(&request, &[("f.txt", "x")]);
+    assert_eq!(run.files["f.txt"], payload);
+    assert!(
+        run.answer
+            .as_deref()
+            .is_some_and(|answer| answer.contains(&format!("``{payload}``")))
+    );
+}
+
+#[test]
+fn g110_payload_paths_are_never_creation_targets() {
+    let content = "record destination to rust/src/solver_handlers/policy_gates.rs";
+    let request = format!("Create budget.lino with the content «{content}».");
+    let run = drive(&request, &[]);
+    assert_eq!(run.files["budget.lino"], content);
+    assert!(
+        !run.files
+            .contains_key("rust/src/solver_handlers/policy_gates.rs")
+    );
+}
+
+#[test]
+fn g113_quoted_content_retains_all_whitespace() {
+    let content = "  seed method-execution\n    bundle true\n";
+    let request = format!("Create rows.lino with the content «{content}».");
+    let run = drive(&request, &[]);
+    assert_eq!(run.files["rows.lino"], content);
+}
+
+#[test]
+fn g114_quoted_objective_is_preserved() {
+    let content = "pub fn emit(\n    task: &str,\n) {}";
+    let request = format!("In f.rs replace «old» with «{content}»");
+    let run = drive(&request, &[("f.rs", "old")]);
+    assert_eq!(run.files["f.rs"], content);
+}
+
+#[test]
+fn g115_new_only_escape_is_source_text() {
+    let old = "const lines = text;";
+    let next = r"const lines = text.split('\n');";
+    let request = format!("In f.mjs replace «{old}» with «{next}»");
+    let run = drive(&request, &[("f.mjs", old)]);
+    assert_eq!(run.files["f.mjs"], next);
+}

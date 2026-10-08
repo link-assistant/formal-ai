@@ -10,7 +10,7 @@
 use serde_json::json;
 
 use super::code_artifact::latest_result;
-use super::planner::{plan_one, tool_for, write_arguments, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use crate::normal_markov::unwrap_transport_quotes;
 use crate::protocol::ChatMessage;
 use crate::seed::{self, Slot};
@@ -233,6 +233,27 @@ pub(super) fn render_seeded_change(
     ))
 }
 
+/// Render an explicitly typed list slot; mirrors `renderSeededListChange`.
+pub(super) fn render_seeded_list_change(
+    intent: &str,
+    task: &str,
+    path: &str,
+    slot: &str,
+    values: &[String],
+) -> Option<String> {
+    let template = render_seeded_change(intent, task, path, &[])?;
+    let rendered = values
+        .iter()
+        .map(|value| code_span_item(value))
+        .collect::<Vec<_>>()
+        .join(", ");
+    Some(
+        template
+            .replace(&format!("`{slot}`"), &rendered)
+            .replace(slot, &rendered),
+    )
+}
+
 /// A placeholder the seed sentence wraps in backticks becomes a `CommonMark`
 /// code span: a value holding a backtick run gets a longer fence, padded when
 /// it starts or ends with a backtick, so the inserted text reads back verbatim.
@@ -254,16 +275,8 @@ fn code_span_item(value: &str) -> String {
     format!("{fence}{pad}{value}{pad}{fence}")
 }
 
-/// A list slot is joined with [`LIST_JOIN`] so that it reads `` `a`, `b` ``
-/// inside the template's backticks; each item is fenced on its own.
-const LIST_JOIN: &str = "`, `";
-
 fn code_span(value: &str) -> String {
-    value
-        .split(LIST_JOIN)
-        .map(code_span_item)
-        .collect::<Vec<_>>()
-        .join(", ")
+    code_span_item(value)
 }
 
 fn render_template(mut template: String, substitutions: &[(&str, &str)]) -> String {
@@ -298,9 +311,10 @@ fn requested_identifier(task: &str, path: &str, kind: RustItemKind) -> Option<St
     let normalized = task.to_lowercase();
     if kind != RustItemKind::Constant
         && let Some(name) = slot_identifier(&normalized, seed::ROLE_CODING_NAME_SLOT)
-            && valid_identifier(&name) {
-                return Some(name);
-            }
+        && valid_identifier(&name)
+    {
+        return Some(name);
+    }
     let without_path = task.replacen(path, "", 1);
     let mut candidates = identifier_tokens(&without_path)
         .filter(|candidate| valid_identifier(candidate))

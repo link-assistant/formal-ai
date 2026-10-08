@@ -18,7 +18,7 @@ import {
   honouringPinnedFirstLine, looksLikeFilePath, payloadContinuesPastItsFirstLine, rankedBindings,
   safeRelativePath, spanOf, tokens,
 } from './write_request.mjs';
-import { stableId } from './crate/engine_stable_id.mjs';
+import { stableId } from './crate/engine_stable_identifier.mjs';
 import { formalizeIntent } from './crate/intent_formalization.mjs';
 import { withoutTrailingKnownModifier } from './crate/implementation_language.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
@@ -28,7 +28,7 @@ import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { resolveReference, workspace } from './crate/self_ast_census.mjs';
 import { mentionsRole, roleWordForms } from './write_lexicon.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
-import { quotedSegments } from './crate/normal_markov.mjs';
+import { quotedSegmentSpans, quotedSegments } from './crate/normal_markov.mjs';
 import {
   charIn, isAlphanumeric, isAscii, isAsciiAlphanumeric, isAsciiDigit, isWhitespace, lastChar,
   splitWhitespace, trim, trimEnd, trimEndMatches, trimMatches, trimStart,
@@ -145,7 +145,8 @@ export function plannedNotExecutedAnswer(plan) {
 export function objectiveText(request) {
   const lowered = request.toLowerCase();
   const lead = firstPrefixLeadEnd(lowered, 'request_objective_lead');
-  if (!lead || !lineAnchored(lowered, lead[0])) return request;
+  if (!lead || !lineAnchored(lowered, lead[0])
+    || quotedSegmentSpans(request).some((segment) => lead[0] >= segment.start && lead[0] < segment.end)) return request;
   return trim(request.slice(lead[1]));
 }
 
@@ -427,6 +428,9 @@ function endOfStatement(request, from, limit) {
   });
   if (!sentence) return limit;
   const span = spanOf(sentence);
+  const literal = quotedSegmentSpans(request).find((segment) => segment.start >= from
+    && segment.start < span.end && segment.end > span.end);
+  if (literal) return Math.min(literal.end, limit);
   const tail = slice(request, from, span.end);
   const saysMore = tail !== null && Array.from(tail).some(isAlphanumeric);
   if (saysMore && !payloadContinuesPastItsFirstLine(request, from, span.end)) return Math.min(span.end, limit);

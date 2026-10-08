@@ -1,12 +1,6 @@
-//! Recovering the parts of a write request from its prose (issue #654).
+//! Recover write-request targets and literal payloads from seeded prose cues.
 //!
-//! A request that asks for a file to be produced carries the same four parts
-//! however it is worded: whitespace tokens, the seed-defined cues that mark a
-//! target or an action, the shape that tells a path from an ordinary word, and
-//! the span that holds the payload.  [`general_planner`](super::general_planner)
-//! composes them into a plan; this module answers only what the prose says, so
-//! a second route can ask the same questions without re-deriving them and
-//! drifting from the parse the planner will actually execute (issue #1066).
+//! The general planner and request inspection share this parse (issues #654, #1066).
 use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::shell_command_policy::{prose_sentences, sentences};
 use crate::seed::{self, Slot};
@@ -17,16 +11,10 @@ pub(super) struct Token<'a> {
     pub(super) text: &'a str,
     pub(super) start: usize,
     pub(super) end: usize,
+    pub(super) request: &'a str,
 }
-/// Split a request into tokens, recording each token's byte span.
-///
-/// The separators are whitespace *and* the ideographic punctuation marks, for
-/// the same reason the clause splitter knows `。`: a script that does not space
-/// its words still separates its clauses, and a whitespace-only split glues the
-/// punctuation and everything after it onto the token before. `创建文件
-/// notes/attribution.md，内容为 Gemfile.lock。` produced the single token
-/// `notes/attribution.md，内容为`, which is not a safe relative path, so the
-/// Chinese wording of a write request named no target at all.
+/// Split whitespace and ideographic punctuation while retaining byte spans.
+/// Without punctuation boundaries, an unspaced clause can become one path token.
 pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
     let mut out = Vec::new();
     let mut start: Option<usize> = None;
@@ -37,6 +25,7 @@ pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
                     text: &request[from..index],
                     start: from,
                     end: index,
+                    request,
                 });
             }
             continue;
@@ -50,6 +39,7 @@ pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
             text: &request[from..],
             start: from,
             end: request.len(),
+            request,
         });
     }
     out
@@ -321,6 +311,8 @@ fn write_bindings(toks: &[Token<'_>]) -> Vec<WriteBinding> {
         (CueFamily::Target, &target_cues, true),
         (CueFamily::Action, &action_cues, false),
     ];
+    let quoted =
+        crate::normal_markov::quoted_segment_spans(toks.first().map_or("", |token| token.request));
     toks.iter()
         .enumerate()
         .filter_map(|(index, token)| {
@@ -359,6 +351,11 @@ fn write_bindings(toks: &[Token<'_>]) -> Vec<WriteBinding> {
                     family,
                     cue_precedes: false,
                 })
+        })
+        .filter(|binding| {
+            !quoted
+                .iter()
+                .any(|segment| binding.cue_start < segment.end && binding.cue_end > segment.start)
         })
         .collect()
 }
@@ -694,7 +691,7 @@ pub(super) fn clean_content(raw: &str) -> Option<String> {
         && only.start == 0
         && only.end == closed.len()
     {
-        let text = only.text.trim();
+        let text = &only.text;
         return (!text.is_empty()).then(|| text.to_owned());
     }
     let bytes = led.as_bytes();

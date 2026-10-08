@@ -60,3 +60,4 @@ rust/src/seed/embedded_registry.rs merge=union
 js/seed-files.js merge=union
 # Verbatim upstream captures (issues #1163, #1164) are pinned by SHA-256.
 rust/tests/fixtures/coding-discovery/captured/** -text whitespace=-blank-at-eol,-blank-at-eof
+experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof

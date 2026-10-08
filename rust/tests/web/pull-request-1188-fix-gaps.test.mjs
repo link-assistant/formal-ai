@@ -46,6 +46,15 @@ function execute(files, tool, args) {
     return '';
   }
   if (tool === 'bash') {
+    const presence = args.command.match(/^test (! )?-e (\S+)$/u);
+    if (presence) return files.has(presence[2]) !== Boolean(presence[1]) ? '' : ['Output: ', 'Error: ', 'Exit Code: 1'].join(String.fromCharCode(10));
+    if (args.command.startsWith('mkdir -p -- ')) return '';
+    const transfer = args.command.match(/^(cp|mv) (\S+) (\S+)$/u);
+    if (transfer && files.has(transfer[2])) {
+      files.set(transfer[3], files.get(transfer[2]));
+      if (transfer[1] === 'mv') files.delete(transfer[2]);
+      return '';
+    }
     const digest = /^sha256sum -- (\S+)$/u.exec(args.command);
     if (digest) return `${createHash('sha256').update(files.get(digest[1]) ?? '').digest('hex')}  ${digest[1]}\n`;
     const cat = /^cat (\S+)$/u.exec(args.command);
@@ -216,4 +225,55 @@ describe('G102: a file described rather than given is never written from a faile
     assert.equal(answer, null);
     assert.deepEqual([...files.keys()], ['scripts/measure-abbreviations.mjs']);
   });
+});
+
+test('G109: copy then comma-joined replacements preserves the source', async () => {
+  const { files, answer } = await drive('Copy a.lino to b.lino, then in b.lino replace every «x» with «y» and replace «m» with «n».', { 'a.lino': 'x m\n' }, 24);
+  assert.equal(files.get('a.lino'), 'x m\n');
+  assert.equal(files.get('b.lino'), 'y n\n');
+  assert.ok(answer && !answer.includes('failed'));
+});
+
+test('G109: move then a quoted edit runs in order', async () => {
+  const { files, answer } = await drive('Move a.lino to b.lino, then in b.lino replace «x» with «y».', { 'a.lino': 'x\n' }, 24);
+  assert.equal(files.has('a.lino'), false);
+  assert.equal(files.get('b.lino'), 'y\n');
+  assert.ok(answer && !answer.includes('failed'));
+});
+
+test('G108: scalar payload code spans keep comma-separated backticks whole', async () => {
+  const { renderSeededChange } = await import('../../../js/agentic/code_task.mjs');
+  const payload = 'values `left`, `right` remain scalar';
+  const answer = renderSeededChange('coding_text_replaced', 'Replace text in f.txt', 'f.txt', [['{old}', 'x'], ['{new}', payload]]);
+  assert.ok(answer?.includes('``' + payload + '``'));
+});
+
+test('G110: payload file paths and cues cannot become the creation target', async () => {
+  const content = 'record destination to rust/src/solver_handlers/policy_gates.rs';
+  const { files } = await drive('Create budget.lino with the content «' + content + '».', {});
+  assert.equal(files.get('budget.lino'), content);
+  assert.equal(files.has('rust/src/solver_handlers/policy_gates.rs'), false);
+});
+
+test('G113: exact quoted content retains indentation and terminal newline', async () => {
+  const content = '  seed method-execution\n    bundle true\n';
+  const { files } = await drive('Create rows.lino with the content «' + content + '».', {});
+  assert.equal(files.get('rows.lino'), content);
+  const single = await drive('Create r.md with exactly this content «x\n».', {});
+  assert.equal(single.files.get('r.md'), 'x\n');
+});
+
+test('G114: an objective label in quoted source is data', async () => {
+  const { objectiveText } = await import('../../../js/agentic/general_planner.mjs');
+  const payload = ['pub fn emit(', '    task: &str,', ') {}'].join(String.fromCharCode(10));
+  const prompt = 'In f.rs replace «old» with «' + payload + '»';
+  assert.equal(objectiveText(prompt), prompt);
+  assert.equal(objectiveText('Task: Read f.txt'), 'Read f.txt');
+});
+
+test('G115: replacement preserves a new-only source newline escape', async () => {
+  const old = 'const lines = text;';
+  const next = 'const lines = text.split(' + String.fromCharCode(39, 92) + 'n' + String.fromCharCode(39) + ');';
+  const { files } = await drive('In f.mjs replace «' + old + '» with «' + next + '»', { 'f.mjs': old });
+  assert.equal(files.get('f.mjs'), next);
 });

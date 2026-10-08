@@ -7,8 +7,8 @@
 use super::planner::{Capability, trace_route};
 use super::shell_command_policy::prose_sentences;
 use super::write_request::{
-    CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_cue_token,
-    clean_content, clean_path_token, content_lead_close, first_action_cue_end,
+    CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_content,
+    clean_cue_token, clean_path_token, content_lead_close, first_action_cue_end,
     first_content_lead_end, first_prefix_lead_end, honouring_pinned_first_line,
     looks_like_file_path, payload_continues_past_its_first_line, ranked_bindings,
     safe_relative_path, tokens,
@@ -25,8 +25,8 @@ const TARGET_PLACEHOLDER: &str = "{target}";
 mod content_shape;
 use content_shape::{describes_code_to_author, names_an_addition};
 
-pub(crate) use super::write_request::typed_write_target;
 pub use super::write_request::compose_edit_request;
+pub(crate) use super::write_request::typed_write_target;
 /// What the bounded general planner can truthfully execute.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GeneralPlanMode {
@@ -144,6 +144,11 @@ pub fn objective_text(request: &str) -> &str {
     let lowered = request.to_lowercase();
     first_prefix_lead_end(&lowered, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
         .filter(|(start, _)| line_anchored(&lowered, *start))
+        .filter(|(start, _)| {
+            !crate::normal_markov::quoted_segment_spans(request)
+                .iter()
+                .any(|segment| *start >= segment.start && *start < segment.end)
+        })
         .and_then(|(_, end)| request.get(end..))
         .map_or(request, str::trim)
 }
@@ -345,8 +350,30 @@ pub(super) fn repository_work_reference(request: &str) -> Option<String> {
         let url = token.trim_matches(|character: char| {
             matches!(
                 character,
-                '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | ',' | ';' | '.' | '"' | '\''
-                    | '。' | '，' | '、' | '；' | '：' | '（' | '）' | '「' | '」' | '«' | '»' | '।'
+                '<' | '>'
+                    | '('
+                    | ')'
+                    | '['
+                    | ']'
+                    | '{'
+                    | '}'
+                    | ','
+                    | ';'
+                    | '.'
+                    | '"'
+                    | '\''
+                    | '。'
+                    | '，'
+                    | '、'
+                    | '；'
+                    | '：'
+                    | '（'
+                    | '）'
+                    | '「'
+                    | '」'
+                    | '«'
+                    | '»'
+                    | '।'
             )
         });
         let path = url
@@ -583,26 +610,23 @@ fn parse_write_request_bound(
             .map_or(statement_end, |close| close.min(statement_end));
         let marker_span = request.get(marker_end..payload_end);
         if (!marker_leads || first_action_cue_end(toks).is_some())
-            && let Some(content) = marker_span
-                .and_then(clean_content)
-                .filter(|content| {
-                    is_literal_content(content)
-                        && (!names_deferred_work_product(content)
-                            || first_prefix_lead_end(
-                                &lowered,
-                                seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
-                            )
-                            .is_some())
-                })
-            {
-                return Some((target, content));
-            }
+            && let Some(content) = marker_span.and_then(clean_content).filter(|content| {
+                is_literal_content(content)
+                    && (!names_deferred_work_product(content)
+                        || first_prefix_lead_end(
+                            &lowered,
+                            seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
+                        )
+                        .is_some())
+            })
+        {
+            return Some((target, content));
+        }
     }
     let content_span = if cue_is_destination && binding.cue_precedes {
         let action_end = first_action_cue_end(toks)?;
-        (action_end <= clause_start
-            && positions_share_statement(request, action_end, clause_start))
-        .then(|| request.get(action_end..clause_start))?
+        (action_end <= clause_start && positions_share_statement(request, action_end, clause_start))
+            .then(|| request.get(action_end..clause_start))?
     } else if cue_is_destination {
         // The same shape read from the other side. A language that marks its
         // destination with a postposition and closes the clause with the verb —
@@ -683,6 +707,16 @@ fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
     else {
         return limit;
     };
+    if let Some(literal) = crate::normal_markov::quoted_segment_spans(request)
+        .into_iter()
+        .find(|segment| {
+            segment.start >= from
+                && segment.start < sentence.span.end
+                && segment.end > sentence.span.end
+        })
+    {
+        return literal.end.min(limit);
+    }
     let says_more = request
         .get(from..sentence.span.end)
         .is_some_and(|tail| tail.chars().any(char::is_alphanumeric));

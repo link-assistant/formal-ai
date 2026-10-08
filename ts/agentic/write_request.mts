@@ -39,7 +39,7 @@ export function tokens(request) {
   for (const character of request) {
     if (isWhitespace(character) || isIdeographicPunctuation(character)) {
       if (start !== null) {
-        out.push({ text: request.slice(start, index), start, end: index });
+        out.push({ text: request.slice(start, index), start, end: index, request });
         start = null;
       }
     } else if (start === null) {
@@ -47,7 +47,7 @@ export function tokens(request) {
     }
     index += character.length;
   }
-  if (start !== null) out.push({ text: request.slice(start), start, end: request.length });
+  if (start !== null) out.push({ text: request.slice(start), start, end: request.length, request });
   return out;
 }
 
@@ -171,6 +171,7 @@ function writeBindings(toks) {
     [CueFamily.Action, bareSurfaces('file_write_action_cue'), false],
   ];
   const out = [];
+  const quoted = quotedSegmentSpans(toks[0]?.request ?? '');
   toks.forEach((token, index) => {
     const cleaned = cleanPathToken(token.text);
     if (!looksLikeFilePath(cleaned) || !safeRelativePath(cleaned)) return;
@@ -193,7 +194,8 @@ function writeBindings(toks) {
       }
     }
   });
-  return out;
+  return out.filter((binding) => !quoted.some((segment) =>
+    binding.cue_start < segment.end && binding.cue_end > segment.start));
 }
 
 function trailingCue(token, cues, fused) {
@@ -358,7 +360,7 @@ export function cleanContent(raw) {
   const closed = trim(led.replace(/[.!?\u0964\u3002\uff01\uff1f]$/u, ''));
   const [only, ...others] = quotedSegmentSpans(closed);
   if (only && others.length === 0 && only.start === 0 && only.end === closed.length) {
-    return trim(only.text) || null;
+    return only.text.length > 0 ? only.text : null;
   }
   let result = led;
   const bytes = new TextEncoder().encode(led);

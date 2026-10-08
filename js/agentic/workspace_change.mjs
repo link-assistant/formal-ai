@@ -184,7 +184,8 @@ function groundedReplaceList(task) {
  */
 function asWritten(source, rewrite) {
   const { verbatim } = rewrite;
-  if (!verbatim || source.includes(rewrite.pattern) || !source.includes(verbatim.pattern)) return rewrite;
+  if (!verbatim || (rewrite.pattern !== verbatim.pattern && source.includes(rewrite.pattern))
+    || !source.includes(verbatim.pattern)) return rewrite;
   return { ...rewrite, pattern: verbatim.pattern, replacement: verbatim.replacement, verbatim: null };
 }
 
@@ -530,7 +531,7 @@ function groundedRewrite(task) {
   if (isLiteral(oldClause) && isLiteral(newClause)) {
     [old, next] = [oldClause, newClause];
     const asQuoted = (text) => quotedSegments(task).find((raw) => raw !== text && unescapeProseNewlines(raw) === text) ?? text;
-    if (asQuoted(old) !== old) verbatim = { pattern: asQuoted(old), replacement: asQuoted(next) };
+    if (asQuoted(old) !== old || asQuoted(next) !== next) verbatim = { pattern: asQuoted(old), replacement: asQuoted(next) };
   } else if (renaming) {
     old = identifierTokens(oldClause).pop();
     next = identifierTokens(newClause)[0];

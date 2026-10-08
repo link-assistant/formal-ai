@@ -160,11 +160,12 @@ pub(super) fn request_fault_answer(task: &str) -> Option<AgenticPlan> {
     } else if super::request_sequence::sequence_steps(task).is_some() {
         return None;
     } else if let Some(targets) = super::replace_list::several_edit_targets(task) {
-        code_task::render_seeded_change(
+        code_task::render_seeded_list_change(
             "request_several_edit_targets",
             task,
             "",
-            &[("{files}", &targets.join("`, `"))],
+            "{files}",
+            &targets,
         )
     } else {
         let clause = super::replace_list::unplanned_edit_clause(task)?;

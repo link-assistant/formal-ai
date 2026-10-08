@@ -111,7 +111,8 @@ export function sequenceSteps(task) {
   for (let index = 0; index < bounds.length; index += 2) {
     steps.push(task.slice(bounds[index], bounds[index + 1]).trim().replace(/[\s,;，；.。]+$/u, ''));
   }
-  if (steps.some((step) => step === '' || quotedSegmentSpans(step).length === 0)) return null;
+  if (steps.some((step, index) => step === '' || (quotedSegmentSpans(step).length === 0
+    && (index !== 0 || semanticShellCommandForTask(step) === null)))) return null;
   const named = [...new Set(steps.flatMap(unquotedPaths))];
   return steps.map((step) => {
     if (unquotedPaths(step).length > 0) return step;

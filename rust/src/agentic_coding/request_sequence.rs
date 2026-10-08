@@ -157,10 +157,12 @@ pub(super) fn sequence_steps(task: &str) -> Option<Vec<String>> {
                 .trim_end_matches(|c: char| c.is_whitespace() || STEP_TAIL.contains(&c))
         })
         .collect();
-    if steps
-        .iter()
-        .any(|step| step.is_empty() || quoted_segment_spans(step).is_empty())
-    {
+    if steps.iter().enumerate().any(|(index, step)| {
+        step.is_empty()
+            || (quoted_segment_spans(step).is_empty()
+                && (index != 0
+                    || super::shell_command::semantic_shell_command_for_task(step).is_none()))
+    }) {
         return None;
     }
     let mut named: Vec<String> = Vec::new();

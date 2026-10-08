@@ -486,7 +486,9 @@ fn plan_composite_step(
 /// PR #1188 G65).
 fn as_written(source: &str, rewrite: &GroundedRewrite) -> Option<GroundedRewrite> {
     let (pattern, replacement) = rewrite.verbatim.clone()?;
-    if source.contains(&rewrite.pattern) || !source.contains(&pattern) {
+    if (rewrite.pattern != pattern && source.contains(&rewrite.pattern))
+        || !source.contains(&pattern)
+    {
         return None;
     }
     Some(GroundedRewrite {
@@ -678,7 +680,8 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
             .find(|raw| raw != text && super::positional_edit::unescape_prose_newlines(raw) == text)
             .unwrap_or_else(|| text.to_owned())
     };
-    let verbatim = (as_quoted(&old) != old).then(|| (as_quoted(&old), as_quoted(&new)));
+    let verbatim = (as_quoted(&old) != old || as_quoted(&new) != new)
+        .then(|| (as_quoted(&old), as_quoted(&new)));
     // A rename names a *word*, so the edit is word-scoped whichever way the
     // request spelled its operands. Without that scope the most ordinary rename
     // there is -- giving a name a prefix or a suffix -- has to be refused, since

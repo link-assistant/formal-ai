@@ -161,7 +161,7 @@ function requestFaultAnswer(task) {
   const files = replaceList.severalEditTargets(task);
   const clause = files === null ? replaceList.unplannedEditClause(task) : null;
   const answer = files !== null
-    ? codeTask.renderSeededChange('request_several_edit_targets', task, '', [['{files}', files.join('`, `')]])
+    ? codeTask.renderSeededListChange('request_several_edit_targets', task, '', '{files}', files)
     : clause !== null
       ? codeTask.renderSeededChange('request-edit-clause-unplanned', task, '', [['{clause}', clause]])
       : null;

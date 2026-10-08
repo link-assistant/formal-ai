@@ -1,0 +1,16 @@
+>> read {"filePath":"rows.lino","file_path":"rows.lino","path":"rows.lino"}
+   <file>
+   00001| seed method-execution
+   00002|     bundle true
+   
+   (End of file - total 2 lines)
+   </file>
+>> edit {"filePath":"rows.lino","file_path":"rows.lino","new":"seed method-execution\n    bundle true\n    web true","newString":"seed method-execution\n    bundle true\n    web true","new_str":"seed method-execution\n    bundle true\n    web true","new_string":"seed method-execution\n    bundle true\n    web true","old":"seed method-execution\n    bundle true","oldString":"seed method-execution\n    bundle true","old_str":"seed method-execution\n    bundle true","old_string":"seed method-execution\n    bundle true","path":"rows.lino"}
+>> bash {"command":"sha256sum -- rows.lino"}
+   393ea61f0de76f27aecb53b56936ec28a63ba5ced633383cdc402e77d4ddec6b  rows.lino
+   
+== answer ==
+Replaced `seed method-execution
+    bundle true` with `seed method-execution
+    bundle true
+    web true` in `rows.lino` and observed the result.

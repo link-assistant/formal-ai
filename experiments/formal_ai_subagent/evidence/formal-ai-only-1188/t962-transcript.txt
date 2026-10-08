@@ -1,0 +1,31 @@
+>> write {"content":"general_change_plan\n  id \"general_change_plan_920f6d6a9a21a592\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create r.md with exactly this content: «x\\n»\"\n  target \"r.md\"\n  step 1\n    capability \"Write\"\n    action \"write the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_c3b31adbde269411\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to r.md\"\n    expected_evidence \"workspace file r.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"«x\"\n    command \"cat r.md\"\n  verification_command \"cat r.md\"\n","filePath":".formal-ai/general-change-plan.lino","file_path":".formal-ai/general-change-plan.lino","path":".formal-ai/general-change-plan.lino"}
+>> write {"content":"«x","filePath":"r.md","file_path":"r.md","path":"r.md"}
+>> bash {"command":"cat r.md"}
+   «x
+== answer ==
+Completed the general change request for r.md and verified it with `cat r.md`.
+
+Plan event (.formal-ai/general-change-plan.lino):
+
+```lino
+general_change_plan
+  id "general_change_plan_920f6d6a9a21a592"
+  execution_mode "literal_file"
+  terminal_state "executed"
+  goal "Create r.md with exactly this content: «x\n»"
+  target "r.md"
+  step 1
+    capability "Write"
+    action "write the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_c3b31adbde269411"
+  step 2
+    capability "Write"
+    action "write the requested content to r.md"
+    expected_evidence "workspace file r.md"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "«x"
+    command "cat r.md"
+  verification_command "cat r.md"
+```
