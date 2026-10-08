@@ -9,9 +9,9 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | ---: | --- | ---: |
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
 | 1 recorded | the row exists, nothing measures it yet | 2 |
-| 2 measured | a test pins it, but the row says it is not delivered | 3 |
+| 2 measured | a test pins it, but the row says it is not delivered | 2 |
 | 3 partial | delivered in part | 46 |
-| 4 implemented | delivered, with a test | 1310 |
+| 4 implemented | delivered, with a test | 1311 |
 | | **all** | **1369** |
 
 ## JavaScript first
@@ -20,8 +20,8 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 230 |
-| a Rust test only | 1116 |
+| a JavaScript test | 231 |
+| a Rust test only | 1115 |
 | no test | 23 |
 
 ## Next pass
@@ -36,7 +36,6 @@ Level 1 (recorded): 2 requirement(s) to raise before any level above it is refin
 ### Level 2: measured
 
 - `docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md`: R994
-- `docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md`: R918-2
 - `docs/requirements/issue-1187-optional-github-credentials.md`: R1187-8
 
 ### Level 3: partial

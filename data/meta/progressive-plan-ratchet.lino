@@ -4,4 +4,4 @@
 # lowered when it falls, so a requirement gains a JavaScript test and never
 # loses one. Measured 2026-10-08.
 progressive-plan-ratchet
-  rust-only-ceiling 1116
+  rust-only-ceiling 1115

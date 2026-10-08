@@ -10,8 +10,8 @@ requirement_status_ledger_shard
     verdict "implemented"
   requirement
     id "R918-2"
-    verdict "not-delivered"
-    automated_test "rust/tests/unit/issue_918_handler_rules_batch.rs"
+    verdict "implemented"
+    automated_test "rust/tests/web/issue-0918-handler-inventory.test.mjs"
   requirement
     id "R918-3"
     verdict "implemented"
