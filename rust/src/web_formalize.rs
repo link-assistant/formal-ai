@@ -291,7 +291,9 @@ pub fn url_domain(url: &str) -> String {
 }
 
 /// The prose of a fetched page (R1188-U18): the text of its paragraphs and
-/// list items, one block per line, in page order. Headings, table rows and
+/// list items, one block per line, in page order.
+///
+/// Headings, table rows and
 /// code are not prose, so text formalization never reads them as sentences.
 /// The browser twin is `pageProse` in
 /// `js/worker/formal_ai_worker_page_formalization.js`.

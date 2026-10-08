@@ -1,7 +1,7 @@
 //! A quoted text that holds its own quote mark (PR #1188 G90, G107), and the
 //! request faults the planner declines before any arm reads a payload.
 //!
-//! With one mark for both ends (', ", `), `Replace 'a('x')' with 'b' in
+//! With one mark for both ends (apostrophe, double quote or backtick), `Replace 'a('x')' with 'b' in
 //! f.rs.` pairs the outer opening quote with the first inner one. A closing
 //! mark is followed by a space, the end, or punctuation; one followed straight
 //! away by a letter, a digit or another quote mark opened an inner quote
@@ -28,6 +28,8 @@ const OPEN_LEADERS: &str = "([{";
 /// The seeded answer to a quote that holds its own mark.
 const NESTED_INTENT: &str = "request-quote-nested";
 /// The seeded answer to a clause of several edits that is no replacement.
+const FRAGMENT_PLACEHOLDER: &str = "{fragment}";
+const CLAUSE_PLACEHOLDER: &str = "{clause}";
 const UNPLANNED_CLAUSE_INTENT: &str = "request-edit-clause-unplanned";
 
 /// A quoted text whose closing mark opens an inner quote.
@@ -154,7 +156,7 @@ pub(super) fn request_fault_answer(task: &str) -> Option<AgenticPlan> {
             nested_quote_fault(task).map(|fault| (fault.intent.to_owned(), fault.fragment))
         });
     let answer = if let Some((intent, fragment)) = fault {
-        code_task::render_seeded_change(&intent, task, "", &[("{fragment}", &fragment)])
+        code_task::render_seeded_change(&intent, task, "", &[(FRAGMENT_PLACEHOLDER, &fragment)])
     } else if super::request_sequence::sequence_steps(task).is_some() {
         return None;
     } else if let Some(targets) = super::replace_list::several_edit_targets(task) {
@@ -166,7 +168,12 @@ pub(super) fn request_fault_answer(task: &str) -> Option<AgenticPlan> {
         )
     } else {
         let clause = super::replace_list::unplanned_edit_clause(task)?;
-        code_task::render_seeded_change(UNPLANNED_CLAUSE_INTENT, task, "", &[("{clause}", &clause)])
+        code_task::render_seeded_change(
+            UNPLANNED_CLAUSE_INTENT,
+            task,
+            "",
+            &[(CLAUSE_PLACEHOLDER, &clause)],
+        )
     };
     answer.map(AgenticPlan::Final)
 }

@@ -51,7 +51,7 @@ pub const ROLE_VULGAR_CONTENT_MARKER: &str = "vulgar_content_marker";
 /// `unbounded-autonomy` in `data/seed/meanings-policy.lino`.
 pub const ROLE_UNBOUNDED_AUTONOMY_MARKER: &str = "unbounded-autonomy-marker";
 /// Semantic role: an explicit opt-in to agent mode for one message
-/// ("[agent]", "agent mode", "режим агента", "एजेंट मोड", "代理模式",
+/// (`[agent]`, "agent mode", "режим агента", "एजेंट मोड", "代理模式",
 /// "modo agente"). Carried by `agent-mode-opt-in`.
 pub const ROLE_AGENT_MODE_OPT_IN_MARKER: &str = "agent-mode-opt-in-marker";
 /// Semantic role: a request to erase what the link network holds ("forget",

@@ -11,7 +11,7 @@
 //! deformalization, read again in the same language, names the same known
 //! terms.
 //!
-//! [`page_answer`] renders a report as the chat answer to "formalize <url>":
+//! [`page_answer`] renders a report as the chat answer to `formalize <url>`:
 //! the page's counts, then each statement with its formal notation.
 
 use super::statement_rendering::deformalize_statement;
@@ -120,7 +120,8 @@ pub fn statement_notation(statement: &Statement) -> String {
 }
 
 /// The answer to a request to formalize the page at `url`, in `language`:
-/// the seeded summary of the report's counts, then one line per statement
+///
+/// The seeded summary of the report's counts, then one line per statement
 /// (its text and its notation), up to [`ANSWER_STATEMENT_LIMIT`], then the
 /// count of the rest. A page with no statement is answered with the seeded
 /// empty-page response.

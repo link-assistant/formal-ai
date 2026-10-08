@@ -144,7 +144,8 @@ pub(super) fn sequence_steps(task: &str) -> Option<Vec<String>> {
     }
     let mut bounds = vec![0];
     for (step_end, next_start) in cues {
-        bounds.extend([step_end, next_start]);
+        bounds.push(step_end);
+        bounds.push(next_start);
     }
     bounds.push(task.len());
     let steps: Vec<&str> = bounds

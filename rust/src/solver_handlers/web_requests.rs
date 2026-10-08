@@ -121,8 +121,9 @@ fn answer_http_fetch_url(
     finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0)
 }
 
-/// Formalize the page a request names (R1188-U18), fetched through
-/// `client`: the cache answers first, and the network only when the client is
+/// Formalize the page a request names through `client` (R1188-U18).
+///
+/// The cache answers first, and the network only when the client is
 /// online. Returns `None` when the request names no URL or does not ask for
 /// a formalization. The browser twin is `tryPageFormalization` in
 /// `js/worker/formal_ai_worker_page_formalization.js`.

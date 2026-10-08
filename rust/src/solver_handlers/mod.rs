@@ -91,10 +91,10 @@ pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
 pub use web_requests::{
     detect_web_search_query, http_fetch_claims, repository_slug_candidates,
     try_explicit_repository_lookup, try_http_fetch, try_http_fetch_with_offline,
-    try_project_lookup, try_project_lookup_with_response_language,
-    try_page_formalization_with_client, try_routed_http_fetch_with_offline, try_url_navigate,
-    try_web_search,
-    try_web_search_with_client, try_web_search_with_offline, url_navigation_claims,
+    try_page_formalization_with_client, try_project_lookup,
+    try_project_lookup_with_response_language, try_routed_http_fetch_with_offline,
+    try_url_navigate, try_web_search, try_web_search_with_client, try_web_search_with_offline,
+    url_navigation_claims,
 };
 pub use word_definition::{
     definition_term, try_word_definition_with_client, try_word_definition_with_offline,
