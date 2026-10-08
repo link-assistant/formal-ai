@@ -354,10 +354,10 @@ fn parse_intent_effect(node: &LinoNode) -> ShellIntentEffect {
     };
     ShellIntentEffect {
         flags: templates("flag"),
-        value_options: templates("value_option"),
-        reuse_options: templates("reuse_option"),
-        before_reuse: templates("before_reuse"),
-        directory_targets: node.find_child_value("directory_targets") == "true",
+        value_options: templates("value-option"),
+        reuse_options: templates("reuse-option"),
+        before_reuse: templates("before-reuse"),
+        directory_targets: node.find_child_value("directory-targets") == "true",
         before: templates("before"),
         prepare: templates("prepare"),
         after: templates("after"),

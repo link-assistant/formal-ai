@@ -173,7 +173,7 @@ export function planStep(command, messages, toolNames, prompt) {
 
 function blockedReport(recipe, check, observed, prompt, attempted) {
   const language = responseLanguage(prompt);
-  let answer = localizedResponse(attempted ? 'mutating_action_observed_failure' : 'mutating_action_blocked', language);
+  let answer = localizedResponse(attempted ? 'mutating-action-observed-failure' : 'mutating_action_blocked', language);
   if (answer === null) return render(check, observed, prompt);
   answer = replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]);
   answer = replaceAllLiteral(answer, CHECK_PLACEHOLDER, check);

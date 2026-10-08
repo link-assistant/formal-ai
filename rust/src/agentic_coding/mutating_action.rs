@@ -379,7 +379,7 @@ fn blocked_report(
 ) -> String {
     let language = tool_result::response_language(prompt);
     let intent = if attempted {
-        "mutating_action_observed_failure"
+        "mutating-action-observed-failure"
     } else {
         "mutating_action_blocked"
     };

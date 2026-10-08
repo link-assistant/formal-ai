@@ -799,24 +799,24 @@ multilingual_responses
     intent tool_result_failed_exit_code
     language es
     text "El comando falló: `{tool}` terminó con código {exit_code}.\n\n```text\n{error}\n```"
-  response response_mutating_action_observed_failure_en
-    intent mutating_action_observed_failure
+  response response-mutating-action-observed-failure-en
+    intent mutating-action-observed-failure
     language en
     text "I attempted `{action}`. The step `{check}` exited {exit_code}, so completion is not verified."
-  response response_mutating_action_observed_failure_ru
-    intent mutating_action_observed_failure
+  response response-mutating-action-observed-failure-ru
+    intent mutating-action-observed-failure
     language ru
     text "Я попытался выполнить `{action}`. Шаг `{check}` завершился с кодом {exit_code}, поэтому завершение не подтверждено."
-  response response_mutating_action_observed_failure_hi
-    intent mutating_action_observed_failure
+  response response-mutating-action-observed-failure-hi
+    intent mutating-action-observed-failure
     language hi
     text "मैंने `{action}` चलाने का प्रयास किया। चरण `{check}` {exit_code} कोड के साथ समाप्त हुआ, इसलिए पूरा होना सत्यापित नहीं है।"
-  response response_mutating_action_observed_failure_zh
-    intent mutating_action_observed_failure
+  response response-mutating-action-observed-failure-zh
+    intent mutating-action-observed-failure
     language zh
     text "我尝试执行了 `{action}`。步骤 `{check}` 以退出码 {exit_code} 结束，因此尚未验证操作完成。"
-  response response_mutating_action_observed_failure_es
-    intent mutating_action_observed_failure
+  response response-mutating-action-observed-failure-es
+    intent mutating-action-observed-failure
     language es
     text "Intenté ejecutar `{action}`. El paso `{check}` terminó con código {exit_code}, así que la finalización no está verificada."
   response response_mutating_action_completed_en
